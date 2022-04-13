@@ -2,8 +2,11 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { store } from "../store";
+import useChains from "services/useChains";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function SafeWebCore({ Component, pageProps }: AppProps) {
+  useChains();
+
   return (
     <Provider store={store}>
       <Component {...pageProps} />
@@ -11,4 +14,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default SafeWebCore;
