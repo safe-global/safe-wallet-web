@@ -1,5 +1,5 @@
 import { AddressEx, SafeInfo } from "@gnosis.pm/safe-react-gateway-sdk";
-import { createSlice } from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import { RootState } from ".";
 
 const emptyAddressEx: AddressEx = {
@@ -9,10 +9,7 @@ const emptyAddressEx: AddressEx = {
 };
 
 const initialState: SafeInfo = {
-  address: {
-    ...emptyAddressEx,
-    value: "0x0000000000000000000000000000000000000000",
-  },
+  address: emptyAddressEx,
   chainId: "",
   nonce: 0,
   threshold: 0,
@@ -31,7 +28,7 @@ export const safeInfoSlice = createSlice({
   name: "safeInfo",
   initialState,
   reducers: {
-    setSafeInfo: (_, action) => {
+    setSafeInfo: (_, action: PayloadAction<SafeInfo>) => {
       return action.payload;
     },
   },
