@@ -1,28 +1,24 @@
-import { ChainInfo, getChainsConfig, type ChainListResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getChainsConfig, type ChainListResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { GATEWAY_URL } from 'config/constants'
 import { useEffect } from 'react'
 import { useAppDispatch } from 'store'
 import { setChains } from 'store/chainsSlice'
-import useAsync from './useAsync'
 
-const getChainConfigs = (): Promise<ChainListResponse> => {
-  return getChainsConfig(GATEWAY_URL)
+let promise: Promise<ChainListResponse> | null = null
+const getChains = (): Promise<ChainListResponse> => {
+  promise = promise || getChainsConfig(GATEWAY_URL)
+  promise.finally(() => (promise = null))
+  return promise
 }
 
-const useChains = (): {
-  chains: ChainInfo[]
-  error?: Error
-  loading: boolean
-} => {
+const useChains = (): void => {
   const dispatch = useAppDispatch()
-  const [data, error, loading] = useAsync<ChainListResponse>(getChainConfigs)
-  const chains = data?.results || []
 
   useEffect(() => {
-    dispatch(setChains(chains))
-  }, [chains, dispatch])
-
-  return { chains, error, loading }
+    getChains().then((data) => {
+      dispatch(setChains(data.results))
+    })
+  }, [dispatch])
 }
 
 export default useChains

@@ -2,7 +2,7 @@ import EventEmitter from 'events'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { GATEWAY_URL, POLLING_INTERVAL } from 'config/constants'
 
-export enum SAFE_INFO_EVENTS {
+enum SAFE_INFO_EVENTS {
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
 }
