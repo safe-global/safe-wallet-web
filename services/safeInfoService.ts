@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { GATEWAY_URL, POLLING_INTERVAL } from 'config/constants'
+import { Errors, logError } from './exceptions/CodedException'
 
 enum SAFE_INFO_EVENTS {
   SUCCESS = 'SUCCESS',
@@ -32,7 +33,10 @@ export const initSafeInfoService = (chainId: string, address: string): SafeInfoD
   }
 
   const onError = (handler: (error: Error) => unknown): void => {
-    eventEmitter.addListener(SAFE_INFO_EVENTS.ERROR, handler)
+    eventEmitter.addListener(SAFE_INFO_EVENTS.ERROR, (err: Error) => {
+      logError(Errors._605, err.message)
+      handler(err)
+    })
   }
 
   const unsubscribe = () => {
