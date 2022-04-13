@@ -13,11 +13,20 @@ import { GATEWAY_URL } from "config/constants";
 import { selectSafeInfo } from "./safeInfoSlice";
 import type { RootState } from "store";
 
-type ChainsState = Pick<ChainListResponse, "results"> & { loading: boolean };
+export const enum STATUS {
+  NONE = "NONE",
+  PENDING = "PENDING",
+  FULFILLED = "FULFILLED",
+  REJECTED = "REJECTED",
+}
+
+type ChainsState = Pick<ChainListResponse, "results"> & {
+  status: STATUS;
+};
 
 const initialState: ChainsState = {
   results: [],
-  loading: false,
+  status: STATUS.NONE,
 };
 
 export const chainsSlice = createSlice({
@@ -27,17 +36,17 @@ export const chainsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getChains.pending, (state) => {
-        state.loading = true;
+        state.status = STATUS.PENDING;
       })
       .addCase(
         getChains.fulfilled,
         (_, action: PayloadAction<ChainListResponse>) => ({
           results: action.payload.results,
-          loading: false,
+          status: STATUS.FULFILLED,
         })
       )
       .addCase(getChains.rejected, (state) => {
-        state.loading = false;
+        state.status = STATUS.REJECTED;
       });
   },
 });
