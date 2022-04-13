@@ -1,10 +1,14 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
+import type { NextPage } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useAppSelector } from "../../store";
+import { safeInfoState } from "../../store/safeInfoSlice";
 
 const Home: NextPage = () => {
-  const router = useRouter()
-  const { safeAddress } = router.query
+  const router = useRouter();
+  const { safeAddress } = router.query;
+
+  const { address } = useAppSelector(safeInfoState);
 
   return (
     <div>
@@ -14,11 +18,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        Hello Balances of {safeAddress}
-      </main>
+      <main>Hello Balances of {safeAddress}</main>
+      <pre>{JSON.stringify(address, null, 2)}</pre>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
