@@ -1,8 +1,18 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import type { NextPage } from "next";
+import Head from "next/head";
+import { useEffect } from "react";
+
+import { useAppDispatch } from "store";
+import { getChains } from "store/chainsSlice";
+import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getChains());
+  }, [dispatch]);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -11,11 +21,9 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        Hello web-core
-      </main>
+      <main>Hello web-core</main>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

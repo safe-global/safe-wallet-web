@@ -1,13 +1,19 @@
 import {
   configureStore,
-  ThunkAction,
-  Action,
   combineReducers,
+  type ThunkAction,
+  type Action,
 } from "@reduxjs/toolkit";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import {
+  useDispatch,
+  useSelector,
+  type TypedUseSelectorHook,
+} from "react-redux";
+import { chainsSlice } from "./chainsSlice";
 import { safeInfoSlice } from "./safeInfoSlice";
 
 const rootReducer = combineReducers({
+  [chainsSlice.name]: chainsSlice.reducer,
   [safeInfoSlice.name]: safeInfoSlice.reducer,
 });
 
