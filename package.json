@@ -6,17 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cmp": "./scripts/cmp.sh"
   },
   "dependencies": {
     "@gnosis.pm/safe-react-components": "^1.1.2",
-    "@material-ui/core": "^4.12.4",
     "@reduxjs/toolkit": "^1.8.1",
+    "ethereum-blockies-base64": "^1.0.2",
     "next": "12.1.5",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-redux": "^7.2.8",
-    "styled-components": "^5.3.5"
+    "react-redux": "^7.2.8"
   },
   "devDependencies": {
     "@gnosis.pm/safe-react-gateway-sdk": "^2.10.2",

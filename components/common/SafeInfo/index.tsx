@@ -1,7 +1,7 @@
-import { Identicon } from "@gnosis.pm/safe-react-components";
 import { ReactElement } from "react";
 import { connect } from "react-redux";
 import { RootState } from "../../../store";
+import Identicon from "../Identicon";
 import css from "./styles.module.css";
 
 interface SafeInfoProps {
@@ -13,7 +13,11 @@ interface SafeInfoProps {
 export const SafeInfo = (props: SafeInfoProps): ReactElement => {
   return (
     <div className={css.container}>
-      <Identicon address={props.address} size="lg" />
+      <Identicon address={props.address} />
+      <div>
+        {props.threshold}/{props.owners}
+      </div>
+      {props.address}
     </div>
   );
 };
