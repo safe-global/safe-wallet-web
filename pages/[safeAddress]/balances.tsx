@@ -6,10 +6,10 @@ import type {SafeInfo} from "@gnosis.pm/safe-react-gateway-sdk";
 
 import {useAppDispatch, useAppSelector} from "store";
 import {safeInfoState, setSafeInfo} from "store/safeInfoSlice";
-import {initSafeInfoService, SAFE_INFO_EVENTS} from "services/SafeInfoService";
+import {initSafeInfoService} from "services/safeInfoService";
 import {isString} from "utils/strings";
 import {parsePrefixedAddress} from "utils/addresses";
-import SafeInfo from "../../components/common/SafeInfo";
+import SafeHeader from "components/common/SafeHeader";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -23,7 +23,7 @@ const Home: NextPage = () => {
 
     const {address} = parsePrefixedAddress(safeAddress)
 
-    const eventEmitter = initSafeInfoService("4", address)
+    const {onSuccess, onError, unsubscribe} = initSafeInfoService("4", address)
 
     const handleSuccess = (data: SafeInfo) => {
       dispatch(setSafeInfo(data))
@@ -32,11 +32,11 @@ const Home: NextPage = () => {
       console.error("Error loading Safe info", error)
     }
 
-    eventEmitter.addListener(SAFE_INFO_EVENTS.SUCCESS, handleSuccess)
-    eventEmitter.addListener(SAFE_INFO_EVENTS.ERROR, handleError)
+    onSuccess(handleSuccess)
+    onError(handleError)
 
     return () => {
-      eventEmitter.removeAllListeners()
+      unsubscribe()
     }
   }, [dispatch, safeAddress])
 
@@ -48,7 +48,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <SafeInfo />
+      <SafeHeader />
 
       <main>Hello Balances of {safeAddress}</main>
       <pre>{JSON.stringify(safeInfo, null, 2)}</pre>

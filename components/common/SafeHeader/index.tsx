@@ -4,13 +4,13 @@ import { RootState } from "../../../store";
 import Identicon from "../Identicon";
 import css from "./styles.module.css";
 
-interface SafeInfoProps {
+interface SafeHeaderProps {
   address: string;
   threshold: number;
   owners: number;
 }
 
-export const SafeInfo = (props: SafeInfoProps): ReactElement => {
+export const SafeHeader = (props: SafeHeaderProps): ReactElement => {
   return (
     <div className={css.container}>
       <Identicon address={props.address} />
@@ -22,7 +22,7 @@ export const SafeInfo = (props: SafeInfoProps): ReactElement => {
   );
 };
 
-function mapStateToProps(state: RootState): SafeInfoProps {
+function mapStateToProps(state: RootState): SafeHeaderProps {
   const { safeInfo } = state;
   return {
     address: safeInfo.address.value,
@@ -31,4 +31,4 @@ function mapStateToProps(state: RootState): SafeInfoProps {
   };
 }
 
-export default connect(mapStateToProps)(SafeInfo);
+export default connect(mapStateToProps)(SafeHeader);
