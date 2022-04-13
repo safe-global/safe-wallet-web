@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
 
-type AsyncResult<T> = [
-  result: T | undefined,
-  error: Error | undefined,
-  loading: boolean,
-]
+type AsyncResult<T> = [result: T | undefined, error: Error | undefined, loading: boolean]
 
 const useAsync = <T>(asyncCall: () => Promise<T>): AsyncResult<T> => {
   const [result, setResult] = useState<T>()
@@ -34,7 +30,7 @@ const useAsync = <T>(asyncCall: () => Promise<T>): AsyncResult<T> => {
     }
   }, [asyncCall])
 
-  return [ result, error, loading ]
+  return [result, error, loading]
 }
 
 export default useAsync

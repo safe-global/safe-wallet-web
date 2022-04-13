@@ -13,11 +13,9 @@ const Identicon = ({ address }: IdenticonProps): ReactElement => {
     } catch (e) {
       return ''
     }
-  }, [address]);
+  }, [address])
 
-  return (
-    <img src={iconSrc} alt={address} className={css.icon} />
-  )
+  return <img src={iconSrc} alt={address} className={css.icon} />
 }
 
 export default Identicon

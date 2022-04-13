@@ -1,15 +1,15 @@
-import EventEmitter from "events";
-import {getSafeInfo, SafeInfo} from '@gnosis.pm/safe-react-gateway-sdk'
-import {GATEWAY_URL, POLLING_INTERVAL} from "config/constants";
+import EventEmitter from 'events'
+import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { GATEWAY_URL, POLLING_INTERVAL } from 'config/constants'
 
 export enum SAFE_INFO_EVENTS {
-  SUCCESS = "SUCCESS",
-  ERROR = "ERROR"
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
 }
 
 type SafeInfoDispatcher = {
-  onSuccess: (handler: (data: SafeInfo) => unknown) => void,
-  onError: (handler: (error: Error) => unknown) => void,
+  onSuccess: (handler: (data: SafeInfo) => unknown) => void
+  onError: (handler: (error: Error) => unknown) => void
   unsubscribe: () => void
 }
 
@@ -45,6 +45,6 @@ export const initSafeInfoService = (chainId: string, address: string): SafeInfoD
   return {
     onSuccess,
     onError,
-    unsubscribe
+    unsubscribe,
   }
 }

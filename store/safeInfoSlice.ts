@@ -1,16 +1,16 @@
-import { AddressEx, SafeInfo } from "@gnosis.pm/safe-react-gateway-sdk";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import { RootState } from ".";
+import { AddressEx, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { RootState } from '.'
 
 const emptyAddressEx: AddressEx = {
-  value: "",
+  value: '',
   name: null,
   logoUri: null,
-};
+}
 
 const initialState: SafeInfo = {
   address: emptyAddressEx,
-  chainId: "",
+  chainId: '',
   nonce: 0,
   threshold: 0,
   owners: [],
@@ -18,24 +18,24 @@ const initialState: SafeInfo = {
   modules: [],
   guard: emptyAddressEx,
   fallbackHandler: emptyAddressEx,
-  version: "",
-  collectiblesTag: "",
-  txQueuedTag: "",
-  txHistoryTag: "",
-};
+  version: '',
+  collectiblesTag: '',
+  txQueuedTag: '',
+  txHistoryTag: '',
+}
 
 export const safeInfoSlice = createSlice({
-  name: "safeInfo",
+  name: 'safeInfo',
   initialState,
   reducers: {
     setSafeInfo: (_, action: PayloadAction<SafeInfo>) => {
-      return action.payload;
+      return action.payload
     },
   },
-});
+})
 
-export const { setSafeInfo } = safeInfoSlice.actions;
+export const { setSafeInfo } = safeInfoSlice.actions
 
 export const selectSafeInfo = (state: RootState): SafeInfo => {
-  return state[safeInfoSlice.name];
-};
+  return state[safeInfoSlice.name]
+}

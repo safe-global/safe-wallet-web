@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier -w **/*.{ts,tsx}",
+    "prettier": "prettier -w './**/*.{ts,tsx}'",
     "cmp": "./scripts/cmp.sh"
   },
   "dependencies": {

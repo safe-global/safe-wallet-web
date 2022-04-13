@@ -1,10 +1,10 @@
-import Head from "next/head";
-import type {NextPage} from "next";
+import Head from 'next/head'
+import type { NextPage } from 'next'
 
-import {selectSafeInfo} from "store/safeInfoSlice";
-import SafeHeader from "components/common/SafeHeader";
-import useSafeAddress from "services/useSafeAddress";
-import { useAppSelector } from "store";
+import { selectSafeInfo } from 'store/safeInfoSlice'
+import SafeHeader from 'components/common/SafeHeader'
+import useSafeAddress from 'services/useSafeAddress'
+import { useAppSelector } from 'store'
 
 const Balances: NextPage = () => {
   const { address, chainId } = useSafeAddress()
@@ -20,10 +20,12 @@ const Balances: NextPage = () => {
 
       <SafeHeader />
 
-      <main>Hello Balances of {address} on chainId {chainId}</main>
+      <main>
+        Hello Balances of {address} on chainId {chainId}
+      </main>
       <pre>{JSON.stringify(safeInfo, null, 2)}</pre>
     </div>
-  );
-};
+  )
+}
 
-export default Balances;
+export default Balances
