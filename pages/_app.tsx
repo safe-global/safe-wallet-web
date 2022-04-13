@@ -1,15 +1,24 @@
-import "../styles/globals.css";
+import { ReactElement } from "react";
 import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { store } from "../store";
 import useChains from "services/useChains";
+import useSafeInfo from "services/useSafeInfo";
+import "../styles/globals.css";
+
+const Consumer = ({ children }: { children: ReactElement }): ReactElement => {
+  useChains();
+  useSafeInfo();
+
+  return children
+}
 
 function SafeWebCore({ Component, pageProps }: AppProps) {
-  useChains();
-
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
+      <Consumer>
+        <Component {...pageProps} />
+      </Consumer>
     </Provider>
   );
 }

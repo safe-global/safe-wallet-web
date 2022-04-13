@@ -1,39 +1,14 @@
-import {useEffect} from "react";
 import Head from "next/head";
 import type {NextPage} from "next";
-import type {SafeInfo} from "@gnosis.pm/safe-react-gateway-sdk";
 
-import {useAppDispatch, useAppSelector} from "store";
-import {selectSafeInfo, setSafeInfo} from "store/safeInfoSlice";
-import {initSafeInfoService} from "services/safeInfoService";
+import {selectSafeInfo} from "store/safeInfoSlice";
 import SafeHeader from "components/common/SafeHeader";
 import useSafeAddress from "services/useSafeAddress";
+import { useAppSelector } from "store";
 
-const Home: NextPage = () => {
+const Balances: NextPage = () => {
   const { address, chainId } = useSafeAddress()
-  const dispatch = useAppDispatch()
-
-  const safeInfo = useAppSelector(selectSafeInfo);
-
-  useEffect(() => {
-    if (!address || !chainId) return
-
-    const {onSuccess, onError, unsubscribe} = initSafeInfoService(chainId, address)
-
-    const handleSuccess = (data: SafeInfo) => {
-      dispatch(setSafeInfo(data))
-    }
-    const handleError = (error: Error) => {
-      console.error("Error loading Safe info", error)
-    }
-
-    onSuccess(handleSuccess)
-    onError(handleError)
-
-    return () => {
-      unsubscribe()
-    }
-  }, [dispatch, address, chainId])
+  const safeInfo = useAppSelector(selectSafeInfo)
 
   return (
     <div>
@@ -45,10 +20,10 @@ const Home: NextPage = () => {
 
       <SafeHeader />
 
-      <main>Hello Balances of {address}</main>
+      <main>Hello Balances of {address} on chainId {chainId}</main>
       <pre>{JSON.stringify(safeInfo, null, 2)}</pre>
     </div>
   );
 };
 
-export default Home;
+export default Balances;
