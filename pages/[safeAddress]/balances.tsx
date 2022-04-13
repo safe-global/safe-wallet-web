@@ -5,7 +5,7 @@ import type {NextPage} from "next";
 import type {SafeInfo} from "@gnosis.pm/safe-react-gateway-sdk";
 
 import {useAppDispatch, useAppSelector} from "store";
-import {safeInfoState, setSafeInfo} from "store/safeInfoSlice";
+import {selectSafeInfo, setSafeInfo} from "store/safeInfoSlice";
 import {initSafeInfoService} from "services/safeInfoService";
 import {isString} from "utils/strings";
 import {parsePrefixedAddress} from "utils/addresses";
@@ -16,7 +16,7 @@ const Home: NextPage = () => {
   const { safeAddress } = router.query;
   const dispatch = useAppDispatch()
 
-  const safeInfo = useAppSelector(safeInfoState);
+  const safeInfo = useAppSelector(selectSafeInfo);
 
   useEffect(() => {
     if (!isString(safeAddress)) return

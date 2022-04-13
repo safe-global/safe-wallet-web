@@ -36,6 +36,6 @@ export const safeInfoSlice = createSlice({
 
 export const { setSafeInfo } = safeInfoSlice.actions;
 
-export const safeInfoState = (state: RootState): SafeInfo => {
+export const selectSafeInfo = (state: RootState): SafeInfo => {
   return state[safeInfoSlice.name];
 };

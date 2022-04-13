@@ -1,15 +1,16 @@
 #!/bin/bash
 
 name=$1
+dir="${name}"
 
-mkdir -p "$name"
+mkdir -p "${dir}"
 
-cat << EOF > "$name/styles.module.css"
+cat << EOF > "${dir}/styles.module.css"
 .container {
 }
 EOF
 
-cat << EOF > "$name/index.tsx"
+cat << EOF > "${dir}/index.tsx"
 import { ReactElement } from 'react'
 import css from './styles.module.css'
 

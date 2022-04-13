@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import { connect } from "react-redux";
+import { selectSafeInfo } from "store/safeInfoSlice";
 import { RootState } from "../../../store";
 import Identicon from "../Identicon";
 import css from "./styles.module.css";
@@ -22,8 +23,8 @@ export const SafeHeader = (props: SafeHeaderProps): ReactElement => {
   );
 };
 
-function mapStateToProps(state: RootState): SafeHeaderProps {
-  const { safeInfo } = state;
+const mapStateToProps = (state: RootState): SafeHeaderProps => {
+  const safeInfo = selectSafeInfo(state)
   return {
     address: safeInfo.address.value,
     threshold: safeInfo.threshold,
