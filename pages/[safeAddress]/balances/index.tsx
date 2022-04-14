@@ -19,7 +19,6 @@ const Balances: NextPage = () => {
       Owners: {safe.owners.map((item) => item.value).join(', ')}
       <h2>Balances</h2>
       <AssetsTable items={balances?.items} />
-      {balances ? <pre>{JSON.stringify(balances, null, 2)}</pre> : null}
     </main>
   )
 }
