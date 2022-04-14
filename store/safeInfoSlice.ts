@@ -47,7 +47,15 @@ export const safeInfoSlice = createSlice({
       state.status = LOADING_STATUS.PENDING
       state.error = undefined
     })
-    builder.addCase(fetchSafeInfo.fulfilled, (state, { payload }) => {
+    builder.addCase(fetchSafeInfo.fulfilled, (state, { meta, payload }) => {
+      const { chainId, address } = meta.arg
+
+      const isRaceCondition = address !== payload.address.value || chainId !== payload.chainId
+      if (isRaceCondition) {
+        fetchSafeInfo(meta.arg)
+        return state
+      }
+
       state.status = LOADING_STATUS.SUCCEEDED
       state.safe = payload
     })
