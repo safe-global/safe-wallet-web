@@ -6,14 +6,29 @@
   overflow: hidden;
 }
 
-.sidebar {
-  width: 300px;
-  flex-shrink: 0;
-  overflow: auto;
-}
-
 .main {
   flex: 1;
   padding: 20px;
   overflow: auto;
+}
+
+.sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  overflow: auto;
+  transition: transform 200ms ease-out;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    height: 100%;
+    transform: translateX(-95%);
+  }
+
+  .sidebar.sidebarExpanded {
+    transform: translateX(0);
+  }
 }
