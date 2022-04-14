@@ -14,11 +14,7 @@ const Sidebar = (): ReactElement => {
 
       {!error && <SafeList />}
 
-      {loading ? (
-        'Loading Safe info...'
-      ) : error ? (
-        'Error loading Safe'
-      ) : ''}
+      {loading ? 'Loading Safe info...' : error ? 'Error loading Safe' : ''}
     </div>
   )
 }

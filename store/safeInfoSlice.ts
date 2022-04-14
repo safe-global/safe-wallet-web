@@ -31,6 +31,7 @@ const initialState: SafeInfoState = {
     txHistoryTag: '',
   },
   loading: true,
+  error: undefined,
 }
 
 export const safeInfoSlice = createSlice({

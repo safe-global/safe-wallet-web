@@ -5,86 +5,74 @@ import { setSafeError, setSafeInfo, setSafeLoading } from 'store/safeInfoSlice'
 import useSafeAddress from './useSafeAddress'
 import { GATEWAY_URL, POLLING_INTERVAL } from 'config/constants'
 import { Errors, logError } from './exceptions/CodedException'
-import useAsync from './useAsync'
 
 const fetchSafeInfo = (chainId: string, address: string): Promise<SafeInfo> => {
   return getSafeInfo(GATEWAY_URL, chainId, address)
 }
 
-const usePolling = <T>(
-  callback: () => Promise<T>,
-  interval: number,
-): [data: T | undefined, error: Error | undefined, loading: boolean, count: number] => {
-  const [count, setCount] = useState<number>(0)
-
-  const [data, error, loading] = useAsync<T>(callback, [count, callback])
-
-  useEffect(() => {
-    if (!data && !error) return
-
-    const timer = setTimeout(() => {
-      setCount((prev: number) => prev + 1)
-    }, interval)
-
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [data, error, setCount, interval])
-
-  return [data, error, loading, count]
-}
-
-// Fetch Safe Info every N seconds
-const usePolledSafeInfo = (
-  chainId: string,
-  address: string,
-): [safeInfo: SafeInfo | undefined, error: Error | undefined, loading: boolean] => {
-  // Memoized function that loads safe info
-  const loadSafeInfo = useCallback(async () => {
-    if (chainId && address) {
-      return fetchSafeInfo(chainId, address)
-    }
-  }, [address, chainId])
-
-  // Poll safe info
-  const [data, error, loading, count] = usePolling<SafeInfo | undefined>(loadSafeInfo, POLLING_INTERVAL)
-
-  return [
-    data,
-    // Pass error and loading state only when polling for the first time
-    count === 0 ? error : undefined,
-    count === 0 ? loading : false,
-  ]
-}
-
-// Dispatch the Safe Info into the store
+// Poll & dispatch the Safe Info into the store
 const useSafeInfo = (): void => {
   const { address, chainId } = useSafeAddress()
-  const [safeInfo, error, loading] = usePolledSafeInfo(chainId, address)
   const dispatch = useAppDispatch()
 
-  // Set loading state
+  const onError = useCallback(
+    (error: Error, isFirst = false) => {
+      logError(Errors._605, error.message)
+
+      // Pass the error to the store only on first request
+      if (isFirst) {
+        dispatch(setSafeError(error))
+      }
+    },
+    [dispatch],
+  )
+
+  const onData = useCallback(
+    (data: SafeInfo) => {
+      dispatch(setSafeInfo(data))
+    },
+    [dispatch],
+  )
+
+  const onLoading = useCallback(
+    (loading: boolean, isFirst = false) => {
+      if (isFirst) {
+        dispatch(setSafeLoading(loading))
+      }
+    },
+    [dispatch],
+  )
+
   useEffect(() => {
-    dispatch(setSafeLoading(loading))
-  }, [loading])
+    if (!chainId || !address) return
 
-  // Update the store when safe info is changed
-  useEffect(() => {
-    if (!safeInfo || !address || !chainId) return
+    let isCurrent = true
+    let timer: NodeJS.Timeout | null = null
 
-    // Check that the data is still relevant
-    if (safeInfo.chainId !== chainId || safeInfo.address.value !== address) return
+    const loadSafe = (isFirst = false) => {
+      onLoading(true, isFirst)
 
-    dispatch(setSafeInfo(safeInfo))
-  }, [dispatch, safeInfo, address, chainId])
+      fetchSafeInfo(chainId, address)
+        .then((data) => isCurrent && onData(data))
+        .catch((err) => isCurrent && onError(err, isFirst))
+        .finally(() => {
+          if (isCurrent) {
+            onLoading(false, isFirst)
 
-  // Log on error
-  useEffect(() => {
-    if (!error) return
-    logError(Errors._605, error.message)
+            // Set a timer to fetch Safe Info again
+            timer = setTimeout(() => loadSafe(), POLLING_INTERVAL)
+          }
+        })
+    }
 
-    dispatch(setSafeError(error))
-  }, [error])
+    // First load
+    loadSafe(true)
+
+    return () => {
+      isCurrent = false
+      timer && clearTimeout(timer)
+    }
+  }, [chainId, address])
 }
 
 export default useSafeInfo
