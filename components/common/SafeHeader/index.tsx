@@ -12,13 +12,15 @@ interface SafeHeaderProps {
 }
 
 export const SafeHeader = (props: SafeHeaderProps): ReactElement => {
+  const { address } = props
+
   return (
     <div className={css.container}>
-      <Identicon address={props.address} />
+      <Identicon address={address} />
       <div>
         {props.threshold}/{props.owners}
       </div>
-      {props.address}
+      {address.slice(0, 6)}...{address.slice(-4)}
     </div>
   )
 }

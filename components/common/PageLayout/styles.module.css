@@ -7,9 +7,12 @@
 }
 
 .sidebar {
-  width: 400px;
+  width: 300px;
+  flex-shrink: 0;
 }
 
 .main {
+  flex: 1;
   overflow: auto;
+  padding: 20px;
 }
