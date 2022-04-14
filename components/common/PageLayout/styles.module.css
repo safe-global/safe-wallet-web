@@ -9,10 +9,11 @@
 .sidebar {
   width: 300px;
   flex-shrink: 0;
+  overflow: auto;
 }
 
 .main {
   flex: 1;
-  overflow: auto;
   padding: 20px;
+  overflow: auto;
 }

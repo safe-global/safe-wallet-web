@@ -1,7 +1,7 @@
-import type {NextPage} from "next";
+import type { NextPage } from 'next'
 
 const SpendingLimit: NextPage = () => {
   return <main>Settings Spending Limit</main>
-};
+}
 
-export default SpendingLimit;
+export default SpendingLimit

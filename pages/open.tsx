@@ -1,8 +1,8 @@
-import Head from "next/head";
-import type {NextPage} from "next";
+import Head from 'next/head'
+import type { NextPage } from 'next'
 
 const Open: NextPage = () => {
   return <main>Create new Safe</main>
-};
+}
 
-export default Open;
+export default Open
