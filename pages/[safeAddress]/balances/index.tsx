@@ -5,7 +5,7 @@ import useSafeAddress from 'services/useSafeAddress'
 import { useAppSelector } from 'store'
 import { selectChainById } from 'store/chainsSlice'
 import { selectBalances } from 'store/balancesSlice'
-import AssetsTable from 'components/common/AssetsTable'
+import AssetsTable from 'components/balances/AssetsTable'
 
 const Balances: NextPage = () => {
   const { chainId } = useSafeAddress()
