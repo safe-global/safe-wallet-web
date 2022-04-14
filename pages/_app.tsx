@@ -4,15 +4,17 @@ import Head from 'next/head'
 import { Provider } from 'react-redux'
 import '../styles/globals.css'
 import { store } from 'store'
+import PageLayout from 'components/common/PageLayout'
 import useChains from 'services/useChains'
 import useSafeInfo from 'services/useSafeInfo'
 import useBalances from 'services/useBalances'
-import PageLayout from 'components/common/PageLayout'
+import useTxHistory from 'services/useTxHistory'
 
 const InitApp = (): null => {
   useChains()
   useSafeInfo()
   useBalances()
+  useTxHistory()
 
   return null
 }
