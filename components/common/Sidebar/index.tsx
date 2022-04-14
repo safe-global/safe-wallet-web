@@ -8,17 +8,15 @@ import { selectSafeInfo } from 'store/safeInfoSlice'
 import SafeHeader from '../SafeHeader'
 import SafeList from '../SafeList'
 import css from './styles.module.css'
-import {getSafeSDK, getWeb3Adapter} from "utils/web3";
+import {getSafeSDK} from "utils/web3";
 
 const Sidebar = (): ReactElement => {
-  const { loading, error, safe } = useAppSelector(selectSafeInfo)
+  const { loading, error } = useAppSelector(selectSafeInfo)
   const { address, chainId } = useSafeAddress()
   const chainConfig = useAppSelector((state) => selectChainById(state, chainId))
 
   const handleCreateTransaction = async () => {
-    const connectedWalletAddress = "0xd8BBcB76BC9AeA78972ED4773A5EB67B413f26A5"
-    const safeSdk = await getSafeSDK(connectedWalletAddress, address, safe.version)
-
+    const safeSdk = getSafeSDK()
     // TODO: Get these values from a form
     const nonce = await safeSdk.getNonce()
     const transaction: SafeTransactionDataPartial = {
