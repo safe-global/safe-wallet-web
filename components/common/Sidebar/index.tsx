@@ -1,16 +1,19 @@
-import { ReactElement } from 'react'
-import useSafeAddress from 'services/useSafeAddress'
 import { useAppSelector } from 'store'
+import type { ReactElement } from 'react'
+
+import useSafeAddress from 'services/useSafeAddress'
 import { selectChainById } from 'store/chainsSlice'
 import { selectSafeInfo } from 'store/safeInfoSlice'
-import SafeHeader from '../SafeHeader'
-import SafeList from '../SafeList'
-import css from './styles.module.css'
+import SafeHeader from 'components/common/SafeHeader'
+import SafeList from 'components/common/SafeList'
+import css from 'components/common/Sidebar/styles.module.css'
 
 const Sidebar = (): ReactElement => {
-  const { loading, error } = useAppSelector(selectSafeInfo)
-  const { chainId } = useSafeAddress()
+  const { safe, error } = useAppSelector(selectSafeInfo)
+  const { chainId, address } = useSafeAddress()
   const chainConfig = useAppSelector((state) => selectChainById(state, chainId))
+
+  const loading = safe.address.value !== address
 
   return (
     <div className={css.container}>
