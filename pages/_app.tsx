@@ -1,24 +1,34 @@
 import { ReactElement } from 'react'
 import type { AppProps } from 'next/app'
+import Head from 'next/head'
 import { Provider } from 'react-redux'
-import { store } from '../store'
+import '../styles/globals.css'
+import { store } from 'store'
 import useChains from 'services/useChains'
 import useSafeInfo from 'services/useSafeInfo'
-import '../styles/globals.css'
+import PageLayout from 'components/common/PageLayout'
 
-const Consumer = ({ children }: { children: ReactElement }): ReactElement => {
+const InitApp = (): null => {
   useChains()
   useSafeInfo()
 
-  return children
+  return null
 }
 
-function SafeWebCore({ Component, pageProps }: AppProps) {
+const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
   return (
     <Provider store={store}>
-      <Consumer>
+      <Head>
+        <title>Safe</title>
+        <meta name="description" content="Safe app" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <InitApp />
+
+      <PageLayout>
         <Component {...pageProps} />
-      </Consumer>
+      </PageLayout>
     </Provider>
   )
 }
