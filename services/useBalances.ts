@@ -15,16 +15,23 @@ const useBalances = (): void => {
   const { safe } = useAppSelector(selectSafeInfo)
   const dispatch = useAppDispatch()
 
-  // Re-fetch assets when SafeInfo changes
+  // Re-fetch assets when the entire SafeInfo updates
   const [data, error] = useAsync<SafeBalanceResponse | undefined>(async () => {
-    const safeAddress = safe.address.value
-    return safeAddress ? loadBalances(safe.chainId, safeAddress) : undefined
+    if (!safe.address.value) return
+    return loadBalances(safe.chainId, safe.address.value)
   }, [safe])
 
+  // Clear the old Balances when Safe address is changed
   useEffect(() => {
-    dispatch(setBalances(data))
+    dispatch(setBalances(undefined))
+  }, [safe.address.value, safe.chainId])
+
+  // Save the Balances in the store
+  useEffect(() => {
+    if (data) dispatch(setBalances(data))
   }, [data, dispatch])
 
+  // Log errors
   useEffect(() => {
     if (!error) return
     logError(Errors._601, error.message)
