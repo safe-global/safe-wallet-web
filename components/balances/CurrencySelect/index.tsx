@@ -1,5 +1,5 @@
-import { ChangeEvent, ReactElement } from 'react'
-import { FormControl, MenuItem, Select } from '@material-ui/core'
+import { ReactElement } from 'react'
+import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'store'
 import { selectCurrency, setCurrency } from 'store/currencySlice'
 import useCurriencies from './useCurrencies'
@@ -10,7 +10,7 @@ const CurrencySelect = (): ReactElement => {
   const dispatch = useAppDispatch()
   const fiatCurrencies = useCurriencies() || [currency]
 
-  const handleChange = (e: ChangeEvent<{ value: string }>) => {
+  const handleChange = (e: SelectChangeEvent<string>) => {
     dispatch(setCurrency(e.target.value))
   }
 
