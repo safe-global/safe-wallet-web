@@ -4,11 +4,13 @@ import { GATEWAY_URL } from 'config/constants'
 import useAsync from 'services/useAsync'
 import { Errors, logError } from 'services/exceptions/CodedException'
 
+const fetchCurrencies = () => {
+  return getFiatCurrencies(GATEWAY_URL)
+}
+
 const useCurriencies = (): FiatCurrencies | undefined => {
   // Re-fetch assets when the entire SafeInfo updates
-  const [data, error] = useAsync<FiatCurrencies>(async () => {
-    return getFiatCurrencies(GATEWAY_URL)
-  }, [])
+  const [data, error] = useAsync<FiatCurrencies>(fetchCurrencies, [])
 
   // Log errors
   useEffect(() => {

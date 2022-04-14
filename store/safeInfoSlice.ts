@@ -47,6 +47,7 @@ export const safeInfoSlice = createSlice({
       state.status = LOADING_STATUS.PENDING
       state.error = undefined
     })
+
     builder.addCase(fetchSafeInfo.fulfilled, (state, { meta, payload }) => {
       const { chainId, address } = meta.arg
 
@@ -58,6 +59,7 @@ export const safeInfoSlice = createSlice({
       state.status = LOADING_STATUS.SUCCEEDED
       state.safe = payload
     })
+
     builder.addCase(fetchSafeInfo.rejected, (state, { error }) => {
       state.status = LOADING_STATUS.FAILED
       state.error = error

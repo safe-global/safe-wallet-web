@@ -1,27 +1,21 @@
-import { useAppSelector } from 'store'
-import type { ReactElement } from 'react'
-
+import { ReactElement } from 'react'
 import useSafeAddress from 'services/useSafeAddress'
-import { selectChainById } from 'store/chainsSlice'
+import { useAppSelector } from 'store'
 import { selectSafeInfo } from 'store/safeInfoSlice'
-import SafeHeader from 'components/common/SafeHeader'
-import SafeList from 'components/common/SafeList'
-import css from 'components/common/Sidebar/styles.module.css'
+import ChainIndicator from '../ChainIndicator'
+import SafeHeader from '../SafeHeader'
+import SafeList from '../SafeList'
+import css from './styles.module.css'
 
 const Sidebar = (): ReactElement => {
+  const { address } = useSafeAddress()
   const { safe, error } = useAppSelector(selectSafeInfo)
-  const { chainId, address } = useSafeAddress()
-  const chainConfig = useAppSelector((state) => selectChainById(state, chainId))
-
   const loading = safe.address.value !== address
 
   return (
     <div className={css.container}>
-      <div
-        className={css.chain}
-        style={{ backgroundColor: chainConfig?.theme.backgroundColor, color: chainConfig?.theme.textColor }}
-      >
-        {chainConfig?.chainName || ' '}
+      <div className={css.chain}>
+        <ChainIndicator />
       </div>
 
       {!error && <SafeHeader />}
