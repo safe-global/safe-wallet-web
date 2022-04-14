@@ -3,11 +3,13 @@ import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux
 import { chainsSlice } from './chainsSlice'
 import { safeInfoSlice } from './safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
+import { currencySlice } from './currencySlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
   [safeInfoSlice.name]: safeInfoSlice.reducer,
   [balancesSlice.name]: balancesSlice.reducer,
+  [currencySlice.name]: currencySlice.reducer,
 })
 
 export const store = configureStore({
