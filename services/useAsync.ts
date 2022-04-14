@@ -12,7 +12,6 @@ const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[]): Asyn
   useEffect(() => {
     let isCurrent = true
 
-    setResult(undefined)
     setError(undefined)
     setLoading(true)
 
