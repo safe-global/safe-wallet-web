@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@gnosis.pm/safe-react-components": "^1.1.2",
+    "@material-ui/core": "^4.12.4",
     "@reduxjs/toolkit": "^1.8.1",
     "@sentry/react": "^6.19.6",
+    "bignumber.js": "^9.0.2",
     "ethereum-blockies-base64": "^1.0.2",
     "next": "12.1.5",
     "react": "18.0.0",

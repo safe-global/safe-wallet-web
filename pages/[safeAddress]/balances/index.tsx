@@ -5,6 +5,7 @@ import useSafeAddress from 'services/useSafeAddress'
 import { useAppSelector } from 'store'
 import { selectChainById } from 'store/chainsSlice'
 import { selectBalances } from 'store/balancesSlice'
+import AssetsTable from 'components/balances/AssetsTable'
 
 const Balances: NextPage = () => {
   const { chainId } = useSafeAddress()
@@ -17,7 +18,7 @@ const Balances: NextPage = () => {
       <h1>Hello Safe on {chainConfig?.chainName}</h1>
       Owners: {safe.owners.map((item) => item.value).join(', ')}
       <h2>Balances</h2>
-      {balances ? <pre>{JSON.stringify(balances, null, 2)}</pre> : null}
+      <AssetsTable items={balances?.items} />
     </main>
   )
 }
