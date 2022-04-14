@@ -1,0 +1,11 @@
+.container {
+}
+
+.ownedSafes li a {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ownedSafes li {
+  margin-bottom: 0.2em;
+}
