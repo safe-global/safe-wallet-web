@@ -1,0 +1,10 @@
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.container > *:first-child {
+  width: 6em;
+}

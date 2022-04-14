@@ -10,11 +10,13 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
     setSidebarExpanded((prev: boolean) => !prev)
   }
 
-  const sidebarClasses = [css.sidebar, sidebarExpanded ? css.sidebarExpanded : ''].join(' ')
-
   return (
     <div className={css.container} onClick={() => setSidebarExpanded(false)}>
-      <aside className={sidebarClasses} onClick={onSidebarToggle}>
+      <header>
+        <img src="/logo.svg" alt="Safe" />
+      </header>
+
+      <aside className={sidebarExpanded ? css.sidebarExpanded : ''} onClick={onSidebarToggle}>
         <Sidebar />
       </aside>
 

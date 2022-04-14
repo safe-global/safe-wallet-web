@@ -1,26 +1,45 @@
 .container {
-  display: flex;
-  flex-wrap: nowrap;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  display: grid;
+  grid-template-rows: min-content;
+  grid-template-columns: 300px 1fr;
+  grid-template-areas:
+    "header  header"
+    "sidebar main";
+}
+
+.container header {
+  grid-area: header;
+  width: 100%;
+  display: flex;
+  padding: 10px 20px;
+  box-shadow: 0 0 4px #333;
+  position: relative;
+  z-index: 2;
+}
+
+.container header img {
+  height: 36px;
+  width: auto;
+  display: block;
 }
 
 .main {
-  flex: 1;
+  grid-area: main;
   padding: 20px;
   overflow: auto;
 }
 
-.sidebar {
-  width: 300px;
-  flex-shrink: 0;
+.container aside {
+  grid-area: sidebar;
   overflow: auto;
   transition: transform 200ms ease-out;
 }
 
 @media (max-width: 768px) {
-  .sidebar {
+  .container aside {
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -28,7 +47,7 @@
     transform: translateX(-95%);
   }
 
-  .sidebar.sidebarExpanded {
+  .container aside.sidebarExpanded {
     transform: translateX(0);
   }
 }
