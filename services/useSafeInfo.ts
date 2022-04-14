@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppDispatch } from 'store'
-import { setSafeInfo } from 'store/safeInfoSlice'
+import { setSafeError, setSafeInfo, setSafeLoading } from 'store/safeInfoSlice'
 import useSafeAddress from './useSafeAddress'
 import { GATEWAY_URL, POLLING_INTERVAL } from 'config/constants'
 import { Errors, logError } from './exceptions/CodedException'
@@ -14,7 +14,7 @@ const fetchSafeInfo = (chainId: string, address: string): Promise<SafeInfo> => {
 const usePolling = <T>(
   callback: () => Promise<T>,
   interval: number,
-): [data: T | undefined, error: Error | undefined, loading: boolean] => {
+): [data: T | undefined, error: Error | undefined, loading: boolean, count: number] => {
   const [count, setCount] = useState<number>(0)
 
   const [data, error, loading] = useAsync<T>(callback, [count, callback])
@@ -31,7 +31,7 @@ const usePolling = <T>(
     }
   }, [data, error, setCount, interval])
 
-  return [data, error, loading]
+  return [data, error, loading, count]
 }
 
 // Fetch Safe Info every N seconds
@@ -48,14 +48,26 @@ const usePolledSafeInfo = (
   }, [address, chainId])
 
   // Poll safe info
-  return usePolling<SafeInfo | undefined>(loadSafeInfo, POLLING_INTERVAL)
+  const [data, error, loading, count] = usePolling<SafeInfo | undefined>(loadSafeInfo, POLLING_INTERVAL)
+
+  return [
+    data,
+    // Pass error and loading state only when polling for the first time
+    count === 0 ? error : undefined,
+    count === 0 ? loading : false,
+  ]
 }
 
 // Dispatch the Safe Info into the store
-const useSafeInfo = (): { loading: boolean; error?: Error } => {
+const useSafeInfo = (): void => {
   const { address, chainId } = useSafeAddress()
   const [safeInfo, error, loading] = usePolledSafeInfo(chainId, address)
   const dispatch = useAppDispatch()
+
+  // Set loading state
+  useEffect(() => {
+    dispatch(setSafeLoading(loading))
+  }, [loading])
 
   // Update the store when safe info is changed
   useEffect(() => {
@@ -69,10 +81,11 @@ const useSafeInfo = (): { loading: boolean; error?: Error } => {
 
   // Log on error
   useEffect(() => {
-    if (error) logError(Errors._605, error.message)
-  }, [error])
+    if (!error) return
+    logError(Errors._605, error.message)
 
-  return { loading, error }
+    dispatch(setSafeError(error))
+  }, [error])
 }
 
 export default useSafeInfo

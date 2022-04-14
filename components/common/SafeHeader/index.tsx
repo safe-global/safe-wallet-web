@@ -26,11 +26,12 @@ export const SafeHeader = (props: SafeHeaderProps): ReactElement => {
 }
 
 const mapStateToProps = (state: RootState): SafeHeaderProps => {
-  const safeInfo = selectSafeInfo(state)
+  const { safe } = selectSafeInfo(state)
+
   return {
-    address: safeInfo.address.value,
-    threshold: safeInfo.threshold,
-    owners: safeInfo.owners.length,
+    address: safe.address.value,
+    threshold: safe.threshold,
+    owners: safe.owners.length,
   }
 }
 

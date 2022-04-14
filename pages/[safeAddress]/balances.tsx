@@ -8,14 +8,14 @@ import useAssets from 'services/useAssets'
 
 const Balances: NextPage = () => {
   const { chainId } = useSafeAddress()
-  const safeInfo = useAppSelector(selectSafeInfo)
+  const { safe } = useAppSelector(selectSafeInfo)
   const chainConfig = useAppSelector((state) => selectChainById(state, chainId))
   const { balances, loading } = useAssets()
 
   return (
     <main>
       <h1>Hello Safe on {chainConfig?.chainName}</h1>
-      Owners: {safeInfo.owners.map((item) => item.value).join(', ')}
+      Owners: {safe.owners.map((item) => item.value).join(', ')}
       <h2>Balances {loading ? '(loading...)' : ''}</h2>
       {balances ? <pre>{JSON.stringify(balances, null, 2)}</pre> : null}
     </main>
