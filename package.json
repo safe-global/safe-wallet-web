@@ -11,9 +11,12 @@
     "cmp": "./scripts/cmp.sh"
   },
   "dependencies": {
-    "@gnosis.pm/safe-react-components": "^1.1.2",
     "@reduxjs/toolkit": "^1.8.1",
     "@sentry/react": "^6.19.6",
+    "@web3-onboard/core": "^2.2.1",
+    "@web3-onboard/injected-wallets": "^2.0.5",
+    "@web3-onboard/react": "^2.1.1",
+    "@web3-onboard/walletconnect": "^2.0.1",
     "ethereum-blockies-base64": "^1.0.2",
     "next": "12.1.5",
     "react": "18.0.0",

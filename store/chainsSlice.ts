@@ -1,6 +1,7 @@
-import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '.'
+import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+
+import type { RootState } from 'store'
 
 type ChainsState = ChainInfo[]
 
@@ -10,7 +11,7 @@ export const chainsSlice = createSlice({
   name: 'chains',
   initialState,
   reducers: {
-    setChains: (_: RootState, action: PayloadAction<ChainsState>): ChainsState => {
+    setChains: (_, action: PayloadAction<ChainsState>): ChainsState => {
       return action.payload
     },
   },

@@ -1,20 +1,22 @@
+import Link from 'next/link'
 import { getOwnedSafes, OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
 import Web3 from 'web3'
-import { GATEWAY_URL } from 'config/constants'
 import { ReactElement } from 'react'
-import { useSelector } from 'react-redux'
+
+import { GATEWAY_URL } from 'config/constants'
 import useAsync from 'services/useAsync'
 import { selectSafeInfo } from 'store/safeInfoSlice'
+import { useAppSelector } from 'store'
 import css from './styles.module.css'
-import Link from 'next/link'
-import chains from 'config/chains'
+import { selectChains } from 'store/chainsSlice'
 
 const getOwned = (chainId: string, walletAddress: string): Promise<OwnedSafes> => {
   return getOwnedSafes(GATEWAY_URL, chainId, walletAddress)
 }
 
 const OwnedSafes = ({ safes, chainId }: { safes: string[]; chainId: string }) => {
-  const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
+  const chains = useAppSelector(selectChains)
+  const shortName = chains.find((chain) => chain.chainId === chainId)?.shortName || ''
 
   return (
     <ul className={css.ownedSafes}>
@@ -34,7 +36,7 @@ const OwnedSafes = ({ safes, chainId }: { safes: string[]; chainId: string }) =>
 }
 
 const SafeList = (): ReactElement => {
-  const { safe } = useSelector(selectSafeInfo)
+  const { safe } = useAppSelector(selectSafeInfo)
   const { chainId } = safe
 
   const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(() => {

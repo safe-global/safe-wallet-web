@@ -7,9 +7,11 @@ import { store } from 'store'
 import useChains from 'services/useChains'
 import useSafeInfo from 'services/useSafeInfo'
 import PageLayout from 'components/common/PageLayout'
+import useOnboard from 'services/useOnboard'
 
 const InitApp = (): null => {
   useChains()
+  useOnboard()
   useSafeInfo()
 
   return null
