@@ -20,8 +20,10 @@ const OwnedSafes = ({ safes, chainId }: { safes: string[]; chainId: string }) =>
     <ul className={css.ownedSafes}>
       {safes.map((safeAddress) => (
         <li key={safeAddress}>
+          {/* @FIXME */}
           <Link href={`/${shortName}:${safeAddress}/balances`}>
             <a>
+              {/* @FIXME */}
               {safeAddress.slice(0, 6)}...{safeAddress.slice(-4)}
             </a>
           </Link>
@@ -32,7 +34,8 @@ const OwnedSafes = ({ safes, chainId }: { safes: string[]; chainId: string }) =>
 }
 
 const SafeList = (): ReactElement => {
-  const { chainId } = useSelector(selectSafeInfo)
+  const { safe } = useSelector(selectSafeInfo)
+  const { chainId } = safe
 
   const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(() => {
     // @FIXME
