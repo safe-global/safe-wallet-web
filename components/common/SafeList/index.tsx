@@ -1,13 +1,14 @@
 import { getOwnedSafes, OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
 import Web3 from 'web3'
 import { GATEWAY_URL } from 'config/constants'
-import { ReactElement } from 'react'
+import { ReactElement, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import useAsync from 'services/useAsync'
 import { selectSafeInfo } from 'store/safeInfoSlice'
 import css from './styles.module.css'
 import Link from 'next/link'
 import chains from 'config/chains'
+import useSafeAddress from 'services/useSafeAddress'
 
 const getOwned = (chainId: string, walletAddress: string): Promise<OwnedSafes> => {
   return getOwnedSafes(GATEWAY_URL, chainId, walletAddress)
@@ -32,14 +33,12 @@ const OwnedSafes = ({ safes, chainId }: { safes: string[]; chainId: string }) =>
 }
 
 const SafeList = (): ReactElement => {
-  const { safe } = useSelector(selectSafeInfo)
-  const { chainId } = safe
+  const { chainId } = useSafeAddress()
 
-  const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(() => {
+  const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(async () => {
     // @FIXME
     const walletAddress = typeof window !== 'undefined' ? (window as any).ethereum?.selectedAddress || '' : ''
-
-    if (!walletAddress || !chainId) return Promise.resolve(undefined)
+    if (!walletAddress || !chainId) return
 
     return getOwned(chainId, Web3.utils.toChecksumAddress(walletAddress))
   }, [chainId])
