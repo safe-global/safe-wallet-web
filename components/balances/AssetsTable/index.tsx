@@ -2,6 +2,7 @@ import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
 import { ReactElement } from 'react'
 import { BigNumber } from 'bignumber.js'
+import FiatValue from 'components/common/FiatValue'
 
 export const humanReadableValue = (value: string, decimals = 18): string => {
   return new BigNumber(value).times(`1e-${decimals}`).toFixed()
@@ -29,10 +30,14 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
               <TableCell component="th" scope="row">
                 {row.tokenInfo.name}
               </TableCell>
+
               <TableCell align="right">
                 {humanReadableValue(row.balance, row.tokenInfo.decimals)} {row.tokenInfo.symbol}
               </TableCell>
-              <TableCell align="right">{row.fiatBalance}</TableCell>
+
+              <TableCell align="right">
+                <FiatValue value={row.fiatBalance} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

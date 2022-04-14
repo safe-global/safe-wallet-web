@@ -1,2 +1,35 @@
 .container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.icon {
+  position: relative;
+}
+
+.threshold {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  transform: translateX(-30%) translateY(-30%);
+  padding: 4px;
+  border-radius: 100%;
+  background: #ddd;
+  font-size: 11px;
+}
+
+.totalValue {
+  font-size: 1.2em;
+  margin-top: 10px;
+}
+
+.totalValue span {
+  display: block;
+  margin-bottom: 0.1em;
+  color: #999;
 }
