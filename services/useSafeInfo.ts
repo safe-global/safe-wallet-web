@@ -4,53 +4,57 @@ import { useAppDispatch } from 'store'
 import { setSafeInfo } from 'store/safeInfoSlice'
 import useSafeAddress from './useSafeAddress'
 import { GATEWAY_URL, POLLING_INTERVAL } from 'config/constants'
-import useAsync from './useAsync'
 import { Errors, logError } from './exceptions/CodedException'
+import useAsync from './useAsync'
 
 const fetchSafeInfo = (chainId: string, address: string): Promise<SafeInfo> => {
   return getSafeInfo(GATEWAY_URL, chainId, address)
+}
+
+const usePolling = <T>(
+  callback: () => Promise<T>,
+  interval: number,
+): [data: T | undefined, error: Error | undefined, loading: boolean] => {
+  const [count, setCount] = useState<number>(0)
+
+  const [data, error, loading] = useAsync<T>(callback, [count, callback])
+
+  useEffect(() => {
+    if (!data && !error) return
+
+    const timer = setTimeout(() => {
+      setCount((prev: number) => prev + 1)
+    }, interval)
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [data, error, setCount, interval])
+
+  return [data, error, loading]
 }
 
 // Fetch Safe Info every N seconds
 const usePolledSafeInfo = (
   chainId: string,
   address: string,
-): { safeInfo?: SafeInfo; loading: boolean; error?: Error } => {
-  const [fetchCount, setFetchCount] = useState<number>(0)
-
+): [safeInfo: SafeInfo | undefined, error: Error | undefined, loading: boolean] => {
   // Memoized function that loads safe info
   const loadSafeInfo = useCallback(() => {
     if (!chainId || !address) {
       return Promise.resolve(undefined)
     }
     return fetchSafeInfo(chainId, address)
-  }, [address, chainId, fetchCount])
+  }, [address, chainId])
 
-  // Load safe info
-  const [data, error, loading] = useAsync<SafeInfo | undefined>(loadSafeInfo)
-
-  // Set a timer to re-fetch safe info after when data or error updates
-  useEffect(() => {
-    if (!data && !error) return
-
-    // Update the count so that loadSafeInfo is updated and called again
-    const timer = setTimeout(() => {
-      setFetchCount((prev: number) => prev + 1)
-    }, POLLING_INTERVAL)
-
-    // If the component is unmounted, the next poll won't happen
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [data, error, setFetchCount])
-
-  return { safeInfo: data, loading, error }
+  // Poll safe info
+  return usePolling<SafeInfo | undefined>(loadSafeInfo, POLLING_INTERVAL)
 }
 
 // Dispatch the Safe Info into the store
 const useSafeInfo = (): { loading: boolean; error?: Error } => {
   const { address, chainId } = useSafeAddress()
-  const { safeInfo, error, loading } = usePolledSafeInfo(chainId, address)
+  const [safeInfo, error, loading] = usePolledSafeInfo(chainId, address)
   const dispatch = useAppDispatch()
 
   // Update the store when safe info is changed
