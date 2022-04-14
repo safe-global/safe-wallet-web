@@ -40,11 +40,10 @@ const usePolledSafeInfo = (
   address: string,
 ): [safeInfo: SafeInfo | undefined, error: Error | undefined, loading: boolean] => {
   // Memoized function that loads safe info
-  const loadSafeInfo = useCallback(() => {
-    if (!chainId || !address) {
-      return Promise.resolve(undefined)
+  const loadSafeInfo = useCallback(async () => {
+    if (chainId && address) {
+      return fetchSafeInfo(chainId, address)
     }
-    return fetchSafeInfo(chainId, address)
   }, [address, chainId])
 
   // Poll safe info

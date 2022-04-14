@@ -10,16 +10,15 @@ const Sidebar = (): ReactElement => {
 
   return (
     <div className={css.container}>
+      {!error && <SafeHeader />}
+
+      {!error && <SafeList />}
+
       {loading ? (
         'Loading Safe info...'
       ) : error ? (
         'Error loading Safe'
-      ) : (
-        <>
-          <SafeHeader />
-          <SafeList />
-        </>
-      )}
+      ) : ''}
     </div>
   )
 }

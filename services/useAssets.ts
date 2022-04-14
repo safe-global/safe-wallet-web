@@ -14,13 +14,9 @@ const useAssets = (): { balances?: SafeBalanceResponse; error?: Error; loading: 
   const { safe } = useAppSelector(selectSafeInfo)
 
   // Re-fetch assets when SafeInfo changes
-  const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(() => {
+  const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(async () => {
     const safeAddress = safe.address.value
-
-    if (!safeAddress) {
-      return Promise.resolve(undefined)
-    }
-    return loadBalances(safe.chainId, safeAddress)
+    return safeAddress ? loadBalances(safe.chainId, safeAddress) : undefined
   }, [safe])
 
   useEffect(() => {
