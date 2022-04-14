@@ -28,7 +28,7 @@ const useSafeInfo = (): void => {
   )
 
   const onData = useCallback(
-    (data: SafeInfo, isFirst: boolean) => {
+    (data: SafeInfo | undefined, isFirst: boolean) => {
       if (data || isFirst) {
         dispatch(setSafeInfo(data))
       }
@@ -52,18 +52,19 @@ const useSafeInfo = (): void => {
     let timer: NodeJS.Timeout | null = null
 
     const loadSafe = (isFirst = false) => {
+      onData(undefined, isFirst)
       onLoading(true, isFirst)
 
       fetchSafeInfo(chainId, address)
         .then((data) => isCurrent && onData(data, isFirst))
         .catch((err) => isCurrent && onError(err, isFirst))
         .finally(() => {
-          if (isCurrent) {
-            onLoading(false, isFirst)
+          if (!isCurrent) return
 
-            // Set a timer to fetch Safe Info again
-            timer = setTimeout(() => loadSafe(), POLLING_INTERVAL)
-          }
+          onLoading(false, isFirst)
+
+          // Set a timer to fetch Safe Info again
+          timer = setTimeout(() => loadSafe(), POLLING_INTERVAL)
         })
     }
 

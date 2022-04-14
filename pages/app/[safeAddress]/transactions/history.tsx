@@ -1,7 +1,7 @@
-import type {NextPage} from "next";
+import type { NextPage } from 'next'
 
 const History: NextPage = () => {
   return <main>History</main>
-};
+}
 
-export default History;
+export default History
