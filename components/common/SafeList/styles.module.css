@@ -1,7 +1,7 @@
 .container {
 }
 
-.ownedSafes li a {
+.ownedSafes li:not(.selected) a {
   text-decoration: underline;
   cursor: pointer;
 }
