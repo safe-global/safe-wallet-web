@@ -18,16 +18,19 @@ const useSafeInfo = (): void => {
     let isCurrent = true
     let timer: NodeJS.Timeout | null = null
 
-    dispatch(fetchSafeInfo({ chainId, address })).finally(() => {
+    let promise = dispatch(fetchSafeInfo({ chainId, address }))
+
+    promise.finally(() => {
       if (isCurrent) {
         timer = setTimeout(() => {
-          dispatch(fetchSafeInfo({ chainId, address }))
+          promise = dispatch(fetchSafeInfo({ chainId, address }))
         }, POLLING_INTERVAL)
       }
     })
 
     return () => {
       isCurrent = false
+      promise.abort()
       if (timer) {
         clearTimeout(timer)
       }
