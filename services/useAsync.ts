@@ -29,7 +29,7 @@ const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[]): Asyn
     return () => {
       isCurrent = false
     }
-  }, dependencies.concat([ callback ]))
+  }, dependencies.concat([callback]))
 
   return [result, error, loading]
 }

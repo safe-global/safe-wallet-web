@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useAppDispatch } from 'store'
 import { setChains } from 'store/chainsSlice'
 import { Errors, logError } from './exceptions/CodedException'
+import useAsync from './useAsync'
 
 let promise: Promise<ChainListResponse> | null = null
 const getChains = (): Promise<ChainListResponse> => {
@@ -12,18 +13,24 @@ const getChains = (): Promise<ChainListResponse> => {
   return promise
 }
 
-const useChains = (): void => {
+const useChains = (): { error?: Error; loading: boolean } => {
   const dispatch = useAppDispatch()
 
+  const [data, error, loading] = useAsync<ChainListResponse>(getChains, [])
+
   useEffect(() => {
-    getChains()
-      .then((data) => {
-        dispatch(setChains(data.results))
-      })
-      .catch((err) => {
-        logError(Errors._904, err.message)
-      })
-  }, [dispatch])
+    if (data) {
+      dispatch(setChains(data.results))
+    }
+  }, [data, dispatch])
+
+  useEffect(() => {
+    if (error) {
+      logError(Errors._904, error.message)
+    }
+  }, [error])
+
+  return { error, loading }
 }
 
 export default useChains
