@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 400px;
+}
+
+.main {
+  overflow: auto;
+}
