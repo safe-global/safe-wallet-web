@@ -4,7 +4,7 @@ import { AddressEx, getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-
 import { GATEWAY_URL } from 'config/constants'
 import { LOADING_STATUS } from 'store/commonTypes'
 import { Errors, logError } from 'services/exceptions/CodedException'
-import type { RootState } from 'store'
+import { RootState } from 'store'
 
 const emptyAddressEx: AddressEx = {
   value: '',
@@ -52,7 +52,6 @@ export const safeInfoSlice = createSlice({
 
       const isRaceCondition = address !== payload.address.value || chainId !== payload.chainId
       if (isRaceCondition) {
-        fetchSafeInfo(meta.arg)
         return state
       }
 
