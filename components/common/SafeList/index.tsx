@@ -20,10 +20,8 @@ const OwnedSafes = ({ safes, chainId }: { safes: string[]; chainId: string }) =>
     <ul className={css.ownedSafes}>
       {safes.map((safeAddress) => (
         <li key={safeAddress}>
-          {/* @FIXME */}
           <Link href={`/${shortName}:${safeAddress}/balances`}>
             <a>
-              {/* @FIXME */}
               {safeAddress.slice(0, 6)}...{safeAddress.slice(-4)}
             </a>
           </Link>
@@ -48,10 +46,13 @@ const SafeList = (): ReactElement => {
 
   return (
     <div className={css.container}>
+      <h4>Owned Safes</h4>
+
       {loading && 'Loading owned Safes...'}
 
-      <h4>Owned Safes</h4>
-      <OwnedSafes safes={ownedSafes ? ownedSafes.safes : []} chainId={chainId} />
+      {!loading && error && `Error loading owned Safes: ${error.message}`}
+
+      {!loading && !error && <OwnedSafes safes={ownedSafes ? ownedSafes.safes : []} chainId={chainId} />}
     </div>
   )
 }

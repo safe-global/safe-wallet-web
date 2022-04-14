@@ -6,11 +6,13 @@ import '../styles/globals.css'
 import { store } from 'store'
 import useChains from 'services/useChains'
 import useSafeInfo from 'services/useSafeInfo'
+import useBalances from 'services/useBalances'
 import PageLayout from 'components/common/PageLayout'
 
 const InitApp = (): null => {
   useChains()
   useSafeInfo()
+  useBalances()
 
   return null
 }

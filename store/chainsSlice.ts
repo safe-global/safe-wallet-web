@@ -10,7 +10,7 @@ export const chainsSlice = createSlice({
   name: 'chains',
   initialState,
   reducers: {
-    setChains: (_: RootState, action: PayloadAction<ChainsState>): ChainsState => {
+    setChains: (_, action: PayloadAction<ChainsState>): ChainsState => {
       return action.payload
     },
   },

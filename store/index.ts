@@ -2,10 +2,12 @@ import { configureStore, combineReducers, type ThunkAction, type Action } from '
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
 import { chainsSlice } from './chainsSlice'
 import { safeInfoSlice } from './safeInfoSlice'
+import { balancesSlice } from './balancesSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
   [safeInfoSlice.name]: safeInfoSlice.reducer,
+  [balancesSlice.name]: balancesSlice.reducer,
 })
 
 export const store = configureStore({
