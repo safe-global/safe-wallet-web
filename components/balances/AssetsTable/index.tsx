@@ -3,7 +3,7 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import { ReactElement } from 'react'
 import { BigNumber } from 'bignumber.js'
 
-export const humanReadableValue = (value: number | string, decimals = 18): string => {
+export const humanReadableValue = (value: string, decimals = 18): string => {
   return new BigNumber(value).times(`1e-${decimals}`).toFixed()
 }
 
@@ -30,7 +30,7 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
                 {row.tokenInfo.name}
               </TableCell>
               <TableCell align="right">
-                {humanReadableValue(row.balance)} {row.tokenInfo.symbol}
+                {humanReadableValue(row.balance, row.tokenInfo.decimals)} {row.tokenInfo.symbol}
               </TableCell>
               <TableCell align="right">{row.fiatBalance}</TableCell>
             </TableRow>
