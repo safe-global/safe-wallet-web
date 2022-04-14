@@ -1,5 +1,5 @@
 import { getBalances, SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useAppSelector } from 'store'
 import { selectSafeInfo } from 'store/safeInfoSlice'
 import { GATEWAY_URL } from 'config/constants'
@@ -13,14 +13,13 @@ const loadBalances = (chainId: string, address: string) => {
 const useAssets = (): { balances?: SafeBalanceResponse; error?: Error; loading: boolean } => {
   const safeInfo = useAppSelector(selectSafeInfo)
 
-  const loadAssets = useCallback(() => {
+  // Re-fetch assets when SafeInfo changes
+  const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(() => {
     if (!safeInfo.address.value) {
       return Promise.resolve(undefined)
     }
     return loadBalances(safeInfo.chainId, safeInfo.address.value)
   }, [safeInfo])
-
-  const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(loadAssets)
 
   useEffect(() => {
     if (!error) return
