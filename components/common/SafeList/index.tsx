@@ -7,6 +7,7 @@ import css from './styles.module.css'
 import Link from 'next/link'
 import chains from 'config/chains'
 import useSafeAddress from 'services/useSafeAddress'
+import { shortenAddress } from 'services/formatters'
 
 const getOwned = (chainId: string, walletAddress: string): Promise<OwnedSafes> => {
   return getOwnedSafes(GATEWAY_URL, chainId, walletAddress)
@@ -20,9 +21,7 @@ const OwnedSafes = ({ safes, chainId, safeAddress }: { safes: string[]; chainId:
       {safes.map((address) => (
         <li key={address} className={address === safeAddress ? css.selected : undefined}>
           <Link href={`/${shortName}:${address}/balances`}>
-            <a>
-              {address.slice(0, 6)}...{address.slice(-4)}
-            </a>
+            <a>{shortenAddress(address)}</a>
           </Link>
         </li>
       ))}

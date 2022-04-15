@@ -3,6 +3,7 @@ import type { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Grid, Paper } from '@mui/material'
 import DateTime from 'components/common/DateTime'
 import css from './styles.module.css'
+import TxInfo from '../TxInfo'
 
 type TxSummaryProps = {
   item: Transaction
@@ -24,15 +25,17 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
             {tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''}
           </Grid>
 
-          <Grid item xs={2}>
+          <Grid item xs={3}>
             <DateTime value={tx.timestamp} options={dateOptions} />
           </Grid>
 
-          <Grid item xs={2}>
+          <Grid item xs={4}>
             {tx.txInfo.type}
           </Grid>
 
-          <Grid item xs></Grid>
+          <Grid item xs>
+            <TxInfo info={tx.txInfo} />
+          </Grid>
         </Grid>
       </div>
     </Paper>
