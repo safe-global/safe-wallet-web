@@ -6,6 +6,7 @@ import { selectSafeInfo } from 'store/safeInfoSlice'
 import ChainIndicator from '../ChainIndicator'
 import SafeHeader from '../SafeHeader'
 import SafeList from '../SafeList'
+import ErrorToast from '../ErrorToast'
 import chains from 'config/chains'
 import css from './styles.module.css'
 
@@ -38,7 +39,9 @@ const Sidebar = (): ReactElement => {
 
       {!error && <SafeList />}
 
-      {loading ? 'Loading Safe info...' : error ? 'Error loading Safe' : ''}
+      {loading && 'Loading Safe info...'}
+
+      {error && <ErrorToast message="Failed loading the Safe" />}
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from 'store'
 import { selectSafeInfo } from 'store/safeInfoSlice'
 import { GATEWAY_URL } from 'config/constants'
 import useAsync from './useAsync'
-import { Errors, logError } from './exceptions/CodedException'
+import { Errors, logError } from './exceptions'
 import { selectTxHistory, setHistoryPage, setPageUrl } from 'store/txHistorySlice'
 
 const loadTxHistory = (chainId: string, address: string, pageUrl?: string) => {
