@@ -2,10 +2,10 @@ import Web3 from 'web3'
 import { provider as Provider } from 'web3-core'
 import semverSatisfies from 'semver/functions/satisfies'
 import Web3Adapter from '@gnosis.pm/safe-web3-lib'
-import Safe from "@gnosis.pm/safe-core-sdk";
-import {RPC_AUTHENTICATION, RpcUri} from "@gnosis.pm/safe-react-gateway-sdk";
+import Safe from '@gnosis.pm/safe-core-sdk'
+import { RPC_AUTHENTICATION, RpcUri } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import {INFURA_TOKEN} from "config/constants";
+import { INFURA_TOKEN } from 'config/constants'
 
 let web3ReadOnly: Web3
 export const getWeb3ReadOnly = (): Web3 => web3ReadOnly
