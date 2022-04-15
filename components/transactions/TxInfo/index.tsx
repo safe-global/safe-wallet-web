@@ -12,6 +12,7 @@ import { useAppSelector } from 'store'
 import { selectChainById } from 'store/chainsSlice'
 import useSafeAddress from 'services/useSafeAddress'
 import TokenAmount from 'components/common/TokenAmount'
+import { shortenAddress } from 'services/formatters'
 
 const TransferTx = ({ info }: { info: Transfer }): ReactElement => {
   const { chainId } = useSafeAddress()
@@ -52,7 +53,7 @@ const CustomTx = ({ info }: { info: Custom }): ReactElement => {
 }
 
 const CreationTx = ({ info }: { info: Creation }): ReactElement => {
-  return <>Safe created by {info.creator.value}</>
+  return <>Safe created by {shortenAddress(info.creator.value)}</>
 }
 
 const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => {

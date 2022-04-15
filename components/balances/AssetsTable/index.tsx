@@ -2,7 +2,7 @@ import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { ReactElement } from 'react'
 import FiatValue from 'components/common/FiatValue'
-import TokenAmount from 'components/common/TokenAmount'
+import TokenAmount, { TokenIcon } from 'components/common/TokenAmount'
 
 interface AssetsTableProps {
   items?: SafeBalanceResponse['items']
@@ -24,6 +24,8 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
           {items?.map((row) => (
             <TableRow key={row.tokenInfo.name}>
               <TableCell component="th" scope="row">
+                <TokenIcon logoUri={row.tokenInfo.logoUri} tokenSymbol={row.tokenInfo.symbol} />
+
                 {row.tokenInfo.name}
               </TableCell>
 
