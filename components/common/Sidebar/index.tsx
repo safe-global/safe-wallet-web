@@ -1,4 +1,6 @@
 import { ReactElement } from 'react'
+import { SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types'
+
 import Link from 'next/link'
 import useSafeAddress from 'services/useSafeAddress'
 import { useAppSelector } from 'store'
@@ -9,11 +11,28 @@ import SafeList from '../SafeList'
 import ErrorToast from '../ErrorToast'
 import chains from 'config/chains'
 import css from './styles.module.css'
+import { getSafeSDK } from 'utils/web3'
 
 const Sidebar = (): ReactElement => {
   const { address, chainId } = useSafeAddress()
   const { error, loading } = useAppSelector(selectSafeInfo)
   const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
+
+  const handleCreateTransaction = async () => {
+    const safeSdk = getSafeSDK()
+    // TODO: Get these values from a form
+    const nonce = await safeSdk.getNonce()
+    const transaction: SafeTransactionDataPartial = {
+      nonce,
+      to: address,
+      value: '1',
+      data: '0x',
+    }
+
+    const safeTransaction = await safeSdk.createTransaction(transaction)
+    const executeTxResponse = await safeSdk.executeTransaction(safeTransaction)
+    await executeTxResponse.transactionResponse?.wait()
+  }
 
   return (
     <div className={css.container}>
@@ -22,6 +41,8 @@ const Sidebar = (): ReactElement => {
       </div>
 
       {!error && <SafeHeader />}
+      
+      <button onClick={handleCreateTransaction}>Create Transaction</button>
 
       <ul>
         <li>
