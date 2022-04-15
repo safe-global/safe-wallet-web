@@ -35,6 +35,7 @@
 .container aside {
   grid-area: sidebar;
   overflow: auto;
+  background: #F6F7F8;
   transition: transform 200ms ease-out;
   box-shadow: rgb(40 54 61 / 18%) 0px 2px 4px 0px;
 }

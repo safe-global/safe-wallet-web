@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from 'store'
 import { selectSafeInfo } from 'store/safeInfoSlice'
 import { GATEWAY_URL } from 'config/constants'
 import useAsync from './useAsync'
-import { Errors, logError } from './exceptions/CodedException'
+import { Errors, logError } from './exceptions'
 import { setBalances } from 'store/balancesSlice'
 
 const loadBalances = (chainId: string, address: string) => {

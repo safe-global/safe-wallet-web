@@ -4,7 +4,7 @@ import { useAppDispatch } from 'store'
 import { setSafeError, setSafeInfo, setSafeLoading } from 'store/safeInfoSlice'
 import useSafeAddress from './useSafeAddress'
 import { GATEWAY_URL, POLLING_INTERVAL } from 'config/constants'
-import { Errors, logError } from './exceptions/CodedException'
+import { Errors, logError } from './exceptions'
 
 const fetchSafeInfo = (chainId: string, address: string): Promise<SafeInfo> => {
   return getSafeInfo(GATEWAY_URL, chainId, address)

@@ -3,7 +3,7 @@ import { GATEWAY_URL } from 'config/constants'
 import { useEffect } from 'react'
 import { useAppDispatch } from 'store'
 import { setChains } from 'store/chainsSlice'
-import { Errors, logError } from './exceptions/CodedException'
+import { Errors, logError } from './exceptions'
 import useAsync from './useAsync'
 
 const getChains = (): Promise<ChainListResponse> => {
