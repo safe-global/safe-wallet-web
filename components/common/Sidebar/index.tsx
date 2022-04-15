@@ -1,16 +1,19 @@
 import { ReactElement } from 'react'
+import Link from 'next/link'
 import useSafeAddress from 'services/useSafeAddress'
 import { useAppSelector } from 'store'
 import { selectSafeInfo } from 'store/safeInfoSlice'
 import ChainIndicator from '../ChainIndicator'
 import SafeHeader from '../SafeHeader'
 import SafeList from '../SafeList'
+import chains from 'config/chains'
 import css from './styles.module.css'
 
 const Sidebar = (): ReactElement => {
-  const { address } = useSafeAddress()
+  const { address, chainId } = useSafeAddress()
   const { safe, error } = useAppSelector(selectSafeInfo)
   const loading = safe.address.value !== address
+  const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
 
   return (
     <div className={css.container}>
@@ -19,6 +22,14 @@ const Sidebar = (): ReactElement => {
       </div>
 
       {!error && <SafeHeader />}
+
+      <ul>
+        <li>
+          <Link href={`/${shortName}:${address}/transactions`}>
+            <a>Transactions</a>
+          </Link>
+        </li>
+      </ul>
 
       {!error && <SafeList />}
 

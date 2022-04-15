@@ -1,41 +1,33 @@
-import { getTransactionHistory, TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'store'
 import { selectSafeInfo } from 'store/safeInfoSlice'
-import { GATEWAY_URL } from 'config/constants'
-import useAsync from './useAsync'
-import { Errors, logError } from './exceptions/CodedException'
-import { setTxHistory } from 'store/txHistorySlice'
-
-const loadTxHistory = (chainId: string, address: string) => {
-  return getTransactionHistory(GATEWAY_URL, chainId, address)
-}
+import { fetchTxHistory, selectTxHistory, setPageUrl } from 'store/txHistorySlice'
 
 const useTxHistory = (): void => {
   const { safe } = useAppSelector(selectSafeInfo)
+  const { pageUrl } = useAppSelector(selectTxHistory)
   const dispatch = useAppDispatch()
+  const { chainId, txHistoryTag } = safe
+  const address = safe.address.value
+  const [, setPrevAddress] = useState<[string, string]>([chainId, address])
 
-  // Re-fetch assets when address, chainId, or txHistoryTag change
-  const [data, error] = useAsync<TransactionListPage | undefined>(async () => {
-    if (!safe.address.value) return
-    return loadTxHistory(safe.chainId, safe.address.value)
-  }, [safe.txHistoryTag, safe.chainId, safe.address.value])
-
-  // Clear the old TxHistory when Safe address is changed
+  // Fetch TxHistory when the Safe address, txHistoryTag, or pageUrl is updated
   useEffect(() => {
-    dispatch(setTxHistory(undefined))
-  }, [safe.address.value, safe.chainId])
+    setPrevAddress((prev) => {
+      // If Safe chainId/address has changed, reset the pageUrl
+      const [prevChainId, prevAddress] = prev
+      if (prevChainId !== chainId || prevAddress !== address) {
+        dispatch(setPageUrl(undefined))
+        return [chainId, address]
+      }
 
-  // Save the TxHistory in the store
-  useEffect(() => {
-    if (data) dispatch(setTxHistory(data))
-  }, [data, dispatch])
+      // Otherwise, if pageUrl or txHistoryTag have changed, fetch new history
+      dispatch(fetchTxHistory({ chainId, address, pageUrl }))
 
-  // Log errors
-  useEffect(() => {
-    if (!error) return
-    logError(Errors._602, error.message)
-  }, [error])
+      // And keep the previous chainId/address unchanged
+      return prev
+    })
+  }, [dispatch, chainId, address, txHistoryTag, pageUrl, setPrevAddress])
 }
 
 export default useTxHistory
