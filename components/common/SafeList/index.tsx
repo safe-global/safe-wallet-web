@@ -12,16 +12,16 @@ const getOwned = (chainId: string, walletAddress: string): Promise<OwnedSafes> =
   return getOwnedSafes(GATEWAY_URL, chainId, walletAddress)
 }
 
-const OwnedSafes = ({ safes, chainId }: { safes: string[]; chainId: string }) => {
+const OwnedSafes = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
   const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
 
   return (
     <ul className={css.ownedSafes}>
-      {safes.map((safeAddress) => (
-        <li key={safeAddress}>
-          <Link href={`/${shortName}:${safeAddress}/balances`}>
+      {safes.map((address) => (
+        <li key={address} className={address === safeAddress ? css.selected : undefined}>
+          <Link href={`/${shortName}:${address}/balances`}>
             <a>
-              {safeAddress.slice(0, 6)}...{safeAddress.slice(-4)}
+              {address.slice(0, 6)}...{address.slice(-4)}
             </a>
           </Link>
         </li>
@@ -31,7 +31,7 @@ const OwnedSafes = ({ safes, chainId }: { safes: string[]; chainId: string }) =>
 }
 
 const SafeList = (): ReactElement => {
-  const { chainId } = useSafeAddress()
+  const { chainId, address } = useSafeAddress()
 
   const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(async () => {
     // @FIXME
@@ -49,7 +49,9 @@ const SafeList = (): ReactElement => {
 
       {!loading && error && `Error loading owned Safes: ${error.message}`}
 
-      {!loading && !error && <OwnedSafes safes={ownedSafes ? ownedSafes.safes : []} chainId={chainId} />}
+      {!loading && !error && (
+        <OwnedSafes safes={ownedSafes ? ownedSafes.safes : []} chainId={chainId} safeAddress={address} />
+      )}
     </div>
   )
 }

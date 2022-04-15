@@ -1,5 +1,5 @@
 import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { ReactElement } from 'react'
 import { BigNumber } from 'bignumber.js'
 import FiatValue from 'components/common/FiatValue'
