@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 import { SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types'
+import { Button } from '@mui/material'
 
 import Link from 'next/link'
 import useSafeAddress from 'services/useSafeAddress'
@@ -41,8 +42,10 @@ const Sidebar = (): ReactElement => {
       </div>
 
       {!error && <SafeHeader />}
-      
-      <button onClick={handleCreateTransaction}>Create Transaction</button>
+
+      <Button onClick={handleCreateTransaction} variant="contained" sx={{ margin: '20px 0' }}>
+        New Transaction
+      </Button>
 
       <ul>
         <li>

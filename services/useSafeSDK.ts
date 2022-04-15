@@ -1,19 +1,30 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getWeb3, setSafeSDK } from 'utils/web3'
 import { useAppSelector } from 'store'
 import { selectSafeInfo } from 'store/safeInfoSlice'
 import useSafeAddress from 'services/useSafeAddress'
 
-export const useSafeSDK = () => {
-  const { safe } = useAppSelector(selectSafeInfo)
-  const { address } = useSafeAddress()
-  const web3 = getWeb3()
-  // TODO: Get from store
-  const connectedWalletAddress = '0xd8BBcB76BC9AeA78972ED4773A5EB67B413f26A5'
+const useWalletAddress = (): string | undefined => {
+  const [walletAddress, setWalletAddress] = useState<string>()
 
   useEffect(() => {
-    if (!web3) return
+    if (typeof window !== undefined) {
+      setWalletAddress((window as any).ethereum?.selectedAddress)
+    }
+  }, [])
 
-    setSafeSDK(connectedWalletAddress, address, safe.version)
-  }, [connectedWalletAddress, address, safe.version, web3])
+  return walletAddress
+}
+
+export const useSafeSDK = () => {
+  const { safe } = useAppSelector(selectSafeInfo)
+  const { address, chainId } = useSafeAddress()
+  const walletAddress = useWalletAddress()
+  const web3 = getWeb3()
+
+  useEffect(() => {
+    if (!web3 || !walletAddress) return
+
+    setSafeSDK(walletAddress, chainId, address, safe.version)
+  }, [walletAddress, chainId, address, safe.version, web3])
 }
