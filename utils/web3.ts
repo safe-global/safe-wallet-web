@@ -8,9 +8,10 @@ import { RPC_AUTHENTICATION, RpcUri } from '@gnosis.pm/safe-react-gateway-sdk'
 import { INFURA_TOKEN } from 'config/constants'
 import chains from 'config/chains'
 
+const LEGACY_VERSION = '<1.3.0'
+
 // Web3
 let web3ReadOnly: Web3
-
 export const getWeb3ReadOnly = (): Web3 => web3ReadOnly
 
 export const setWeb3ReadOnly = (provider: Provider): void => {
@@ -19,6 +20,7 @@ export const setWeb3ReadOnly = (provider: Provider): void => {
 
 let web3: Web3 = new Web3(Web3.givenProvider)
 export const getWeb3 = (): Web3 => web3
+
 export const setWeb3 = (provider: Provider): void => {
   web3 = new Web3(provider)
 }
@@ -32,7 +34,6 @@ export const getWeb3Adapter = (signerAddress: string): Web3Adapter => {
 
 // Safe Core SDK
 let safeSDK: Safe
-
 export const getSafeSDK = (): Safe => safeSDK
 
 export const setSafeSDK = async (
@@ -43,9 +44,11 @@ export const setSafeSDK = async (
 ): Promise<void> => {
   const ethAdapter = getWeb3Adapter(signerAddress)
 
-  let isL1SafeMasterCopy = true
-  if (!semverSatisfies(safeVersion, '<1.3.0')) {
-    isL1SafeMasterCopy = chainId === chains.eth
+  let isL1SafeMasterCopy = chainId === chains.eth || chainId === chains.rin
+
+  // Legacy Safe contracts
+  if (semverSatisfies(safeVersion, LEGACY_VERSION)) {
+    isL1SafeMasterCopy = true
   }
 
   safeSDK = await Safe.create({

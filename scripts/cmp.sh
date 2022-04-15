@@ -11,7 +11,7 @@ cat << EOF > "${dir}/styles.module.css"
 EOF
 
 cat << EOF > "${dir}/index.tsx"
-import { ReactElement } from 'react'
+import { type ReactElement } from 'react'
 import css from './styles.module.css'
 
 const ${name} = (): ReactElement => {
