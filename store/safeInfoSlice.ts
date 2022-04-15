@@ -1,10 +1,6 @@
-import { createAsyncThunk, createSlice, SerializedError } from '@reduxjs/toolkit'
-import { AddressEx, getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-
-import { GATEWAY_URL } from 'config/constants'
-import { LOADING_STATUS } from 'store/commonTypes'
-import { Errors, logError } from 'services/exceptions/CodedException'
-import { RootState } from 'store'
+import { AddressEx, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import type { RootState } from '.'
 
 const emptyAddressEx: AddressEx = {
   value: '',
@@ -14,8 +10,8 @@ const emptyAddressEx: AddressEx = {
 
 type SafeInfoState = {
   safe: SafeInfo
-  status: LOADING_STATUS
-  error?: SerializedError
+  loading: boolean
+  error?: Error
 }
 
 const initialState: SafeInfoState = {
@@ -34,47 +30,27 @@ const initialState: SafeInfoState = {
     txQueuedTag: '',
     txHistoryTag: '',
   },
-  status: LOADING_STATUS.IDLE,
+  loading: true,
   error: undefined,
 }
 
 export const safeInfoSlice = createSlice({
   name: 'safeInfo',
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(fetchSafeInfo.pending, (state) => {
-      state.status = LOADING_STATUS.PENDING
-      state.error = undefined
-    })
-
-    builder.addCase(fetchSafeInfo.fulfilled, (state, { meta, payload }) => {
-      const { chainId, address } = meta.arg
-
-      const isRaceCondition = address !== payload.address.value || chainId !== payload.chainId
-      if (isRaceCondition) {
-        return state
-      }
-
-      state.status = LOADING_STATUS.SUCCEEDED
-      state.safe = payload
-    })
-
-    builder.addCase(fetchSafeInfo.rejected, (state, { error }) => {
-      state.status = LOADING_STATUS.FAILED
-      state.error = error
-
-      logError(Errors._605, error.message)
-    })
+  reducers: {
+    setSafeInfo: (state, action: PayloadAction<SafeInfo | undefined>) => {
+      return { ...state, safe: action.payload || initialState.safe }
+    },
+    setSafeError: (state, action: PayloadAction<Error>) => {
+      return { ...state, error: action.payload }
+    },
+    setSafeLoading: (state, action: PayloadAction<boolean>) => {
+      return { ...state, loading: action.payload }
+    },
   },
 })
 
-export const fetchSafeInfo = createAsyncThunk(
-  `${safeInfoSlice.name}/fetchSafeInfo`,
-  async ({ chainId, address }: { chainId: string; address: string }) => {
-    return await getSafeInfo(GATEWAY_URL, chainId, address)
-  },
-)
+export const { setSafeInfo, setSafeError, setSafeLoading } = safeInfoSlice.actions
 
 export const selectSafeInfo = (state: RootState): SafeInfoState => {
   return state[safeInfoSlice.name]
