@@ -8,14 +8,14 @@ import { selectSafeInfo } from 'store/safeInfoSlice'
 import ChainIndicator from '../ChainIndicator'
 import SafeHeader from '../SafeHeader'
 import SafeList from '../SafeList'
+import ErrorToast from '../ErrorToast'
 import chains from 'config/chains'
 import css from './styles.module.css'
 import { getSafeSDK } from 'utils/web3'
 
 const Sidebar = (): ReactElement => {
   const { address, chainId } = useSafeAddress()
-  const { safe, error } = useAppSelector(selectSafeInfo)
-  const loading = safe.address.value !== address
+  const { error, loading } = useAppSelector(selectSafeInfo)
   const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
 
   const handleCreateTransaction = async () => {
@@ -41,8 +41,16 @@ const Sidebar = (): ReactElement => {
       </div>
 
       {!error && <SafeHeader />}
+      
+      <button onClick={handleCreateTransaction}>Create Transaction</button>
 
       <ul>
+        <li>
+          <Link href={`/${shortName}:${address}/balances`}>
+            <a>Balances</a>
+          </Link>
+        </li>
+
         <li>
           <Link href={`/${shortName}:${address}/transactions`}>
             <a>Transactions</a>
@@ -52,8 +60,9 @@ const Sidebar = (): ReactElement => {
 
       {!error && <SafeList />}
 
-      {loading ? 'Loading Safe info...' : error ? 'Error loading Safe' : ''}
-      <button onClick={handleCreateTransaction}>Create Transaction</button>
+      {loading && 'Loading Safe info...'}
+
+      {error && <ErrorToast message="Failed loading the Safe" />}
     </div>
   )
 }

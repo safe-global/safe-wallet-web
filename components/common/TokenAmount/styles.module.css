@@ -1,0 +1,10 @@
+.container {
+  white-space: nowrap;
+}
+
+.tokenIcon {
+  height: 1.1em;
+  width: auto;
+  vertical-align: middle;
+  margin-right: 0.3em;
+}

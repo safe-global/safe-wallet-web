@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { getFiatCurrencies, FiatCurrencies } from '@gnosis.pm/safe-react-gateway-sdk'
 import { GATEWAY_URL } from 'config/constants'
 import useAsync from 'services/useAsync'
-import { Errors, logError } from 'services/exceptions/CodedException'
+import { Errors, logError } from 'services/exceptions'
 
 const fetchCurrencies = () => {
   return getFiatCurrencies(GATEWAY_URL)

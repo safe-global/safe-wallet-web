@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react'
 import { CaptureContext } from '@sentry/types'
-import ErrorCodes from './registry'
+import ErrorCodes from './ErrorCodes'
 import IS_PRODUCTION from 'constants'
 
 export class CodedException extends Error {

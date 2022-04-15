@@ -1,3 +1,4 @@
+import TxList from 'components/transactions/TxList'
 import type { NextPage } from 'next'
 import { useAppDispatch, useAppSelector } from 'store'
 import { selectTxHistory, setPageUrl } from 'store/txHistorySlice'
@@ -43,7 +44,7 @@ const History: NextPage = () => {
         Next page →
       </button>
 
-      <pre>{JSON.stringify(page, null, 2)}</pre>
+      <TxList items={page.results} />
     </main>
   )
 }

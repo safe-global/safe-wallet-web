@@ -35,11 +35,19 @@
 .container aside {
   grid-area: sidebar;
   overflow: auto;
+  background: #F6F7F8;
   transition: transform 200ms ease-out;
   box-shadow: rgb(40 54 61 / 18%) 0px 2px 4px 0px;
 }
 
 @media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main";
+  }
+
   .container aside {
     position: fixed;
     z-index: 1000;

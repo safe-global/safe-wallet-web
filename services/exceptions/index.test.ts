@@ -1,4 +1,4 @@
-import { Errors, logError, trackError, CodedException } from './CodedException'
+import { Errors, logError, trackError, CodedException } from '.'
 import * as constants from 'src/utils/constants'
 import * as Sentry from '@sentry/react'
 

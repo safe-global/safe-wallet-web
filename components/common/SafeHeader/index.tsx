@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 import { connect } from 'react-redux'
+import { shortenAddress } from 'services/formatters'
 import { selectBalances } from 'store/balancesSlice'
 import { selectSafeInfo } from 'store/safeInfoSlice'
 import { RootState } from '../../../store'
@@ -26,7 +27,9 @@ export const SafeHeader = (props: SafeHeaderProps): ReactElement => {
           {props.threshold}/{props.owners}
         </div>
       </div>
-      {address.slice(0, 6)}...{address.slice(-4)}
+
+      {shortenAddress(address)}
+
       <div className={css.totalValue}>
         <span>Total value</span>
         <FiatValue value={props.fiatTotal} />
