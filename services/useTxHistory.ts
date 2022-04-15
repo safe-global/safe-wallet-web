@@ -22,7 +22,9 @@ const useTxHistory = (): void => {
       }
 
       // Otherwise, if pageUrl or txHistoryTag have changed, fetch new history
-      dispatch(fetchTxHistory({ chainId, address, pageUrl }))
+      if (chainId && address) {
+        dispatch(fetchTxHistory({ chainId, address, pageUrl }))
+      }
 
       // And keep the previous chainId/address unchanged
       return prev
