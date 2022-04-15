@@ -11,8 +11,7 @@ import css from './styles.module.css'
 
 const Sidebar = (): ReactElement => {
   const { address, chainId } = useSafeAddress()
-  const { safe, error } = useAppSelector(selectSafeInfo)
-  const loading = safe.address.value !== address
+  const { error, loading } = useAppSelector(selectSafeInfo)
   const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
 
   return (
@@ -24,6 +23,12 @@ const Sidebar = (): ReactElement => {
       {!error && <SafeHeader />}
 
       <ul>
+        <li>
+          <Link href={`/${shortName}:${address}/balances`}>
+            <a>Balances</a>
+          </Link>
+        </li>
+
         <li>
           <Link href={`/${shortName}:${address}/transactions`}>
             <a>Transactions</a>
