@@ -3,9 +3,7 @@ import { Typography } from '@mui/material'
 import { type ReactElement } from 'react'
 import css from './styles.module.css'
 
-const ExecuteTx = ({ data }: { data: unknown }): ReactElement => {
-  const tx: SafeTransaction = data as SafeTransaction
-
+const ExecuteTx = ({ tx }: { tx: SafeTransaction }): ReactElement => {
   return (
     <div className={css.container}>
       <Typography variant="h6">All done!</Typography>

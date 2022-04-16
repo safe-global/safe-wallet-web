@@ -4,12 +4,13 @@ import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
+import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+
 import SendAssetsForm from '../SendAssetsForm'
-import ReviewTx from '../ReviewTx'
 import SignTx from '../SignTx'
 import ExecuteTx from '../ExecuteTx'
 
-const steps = ['Create transaction', 'Review transaction', 'Sign transaction']
+const steps = ['Create transaction', 'Sign transaction', 'Done']
 
 const TxStepper = (): ReactElement => {
   const [activeStep, setActiveStep] = useState<number>(0)
@@ -35,11 +36,9 @@ const TxStepper = (): ReactElement => {
   const stepComponents = [
     () => <SendAssetsForm onSubmit={onSubmit} />,
 
-    () => <ReviewTx data={stepData} onSubmit={onSubmit} />,
+    () => <SignTx tx={stepData as SafeTransaction} onSubmit={onSubmit} />,
 
-    () => <SignTx data={stepData} onSubmit={onSubmit} />,
-
-    () => <ExecuteTx data={stepData} />,
+    () => <ExecuteTx tx={stepData as SafeTransaction} />,
   ]
 
   return (
@@ -59,7 +58,7 @@ const TxStepper = (): ReactElement => {
       {stepComponents[activeStep]()}
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-        {activeStep === steps.length ? (
+        {activeStep === steps.length - 1 ? (
           <>
             <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handleReset}>Create another transaction</Button>

@@ -1,11 +1,13 @@
 import { ReactElement } from 'react'
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { useForm, type FieldValues } from 'react-hook-form'
+import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import css from './styles.module.css'
 import { useAppSelector } from 'store'
 import { selectBalances } from 'store/balancesSlice'
 import TokenAmount, { TokenIcon } from 'components/common/TokenAmount'
+import { createTokenTransferTx } from 'services/createTransaction'
 
 export type SendAssetsFormData = {
   recepient: string
@@ -14,20 +16,28 @@ export type SendAssetsFormData = {
 }
 
 type SendAssetsFormProps = {
-  onSubmit: (data: SendAssetsFormData) => void
+  onSubmit: (tx: SafeTransaction) => void
 }
 
 const SendAssetsForm = ({ onSubmit }: SendAssetsFormProps): ReactElement => {
   const balances = useAppSelector(selectBalances)
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm()
 
-  const onFormSubmit = (data: FieldValues) => {
-    console.log({ data })
-    onSubmit(data as SendAssetsFormData)
+  const onFormSubmit = async (data: FieldValues) => {
+    const token = balances.items.find((item) => item.tokenInfo.address === data.tokenAddress)
+    if (!token) return
+    const tx = await createTokenTransferTx(
+      data.recepient,
+      data.amount,
+      token.tokenInfo.decimals,
+      token.tokenInfo.address,
+    )
+    onSubmit(tx)
   }
 
   return (
@@ -59,7 +69,7 @@ const SendAssetsForm = ({ onSubmit }: SendAssetsFormProps): ReactElement => {
 
       <div className={css.submit}>
         <Button variant="contained" type="submit">
-          Next
+          Create transaction
         </Button>
       </div>
     </form>

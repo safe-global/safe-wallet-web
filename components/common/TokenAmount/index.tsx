@@ -1,14 +1,11 @@
+import { type ReactElement } from 'react'
 import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
-import { ReactElement, useState } from 'react'
 import { formatDecimals } from 'services/formatters'
 import css from './styles.module.css'
 
 export const TokenIcon = (props: { logoUri?: string | null; tokenSymbol?: string | null }): ReactElement | null => {
-  const [src, setSrc] = useState<string>(props.logoUri || '')
-
-  return src ? (
-    <img src={src} alt={props.tokenSymbol || ''} onError={() => setSrc('')} className={css.tokenIcon} />
-  ) : null
+  const src = props.logoUri
+  return src ? <img src={src} alt={props.tokenSymbol || ''} className={css.tokenIcon} /> : null
 }
 
 const TokenAmount = (props: {
