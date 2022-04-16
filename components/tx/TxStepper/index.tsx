@@ -7,7 +7,7 @@ import Button from '@mui/material/Button'
 import { SafeTransactionDataPartial, type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import SendAssetsForm from '../SendAssetsForm'
-import SendAssetsReview from '../SendAssetsReview'
+import ReviewTx from '../ReviewTx'
 import SignTx from '../SignTx'
 import FinishTx from '../FinishTx'
 
@@ -39,7 +39,7 @@ const TxStepper = (): ReactElement => {
   const stepComponents = [
     () => <SendAssetsForm onSubmit={onSubmit} />,
 
-    () => <SendAssetsReview params={stepData[1] as SafeTransactionDataPartial} onSubmit={onSubmit} />,
+    () => <ReviewTx params={stepData[1] as SafeTransactionDataPartial} onSubmit={onSubmit} />,
 
     () => <SignTx tx={stepData[2] as SafeTransaction} onSubmit={onSubmit} />,
 
