@@ -13,6 +13,7 @@ const proposeTx = async (chainId: string, safeAddress: string, tx: SafeTransacti
     ...tx.data,
     safeTxHash,
     sender,
+    value: parseInt(tx.data.value, 16).toString(),
     operation: tx.data.operation as unknown as Operation,
     nonce: tx.data.nonce.toString(),
     safeTxGas: tx.data.safeTxGas.toString(),

@@ -10,6 +10,7 @@ import { useAppSelector } from 'store'
 import { selectBalances } from 'store/balancesSlice'
 import { useForm, type FieldValues } from 'react-hook-form'
 import css from './styles.module.css'
+import useSafeTxGas from 'services/useSafeTxGas'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -33,6 +34,10 @@ const ReviewTx = ({
   const balances = useAppSelector(selectBalances)
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const tokenInfo = token?.tokenInfo
+  const txParams = tokenInfo
+    ? createTokenTransferParams(params.recepient, params.amount, tokenInfo.decimals, tokenInfo.address)
+    : undefined
+  const { safeGas, error, loading } = useSafeTxGas(txParams)
 
   const {
     register,
@@ -41,13 +46,13 @@ const ReviewTx = ({
   } = useForm()
 
   const onFormSubmit = async (data: FieldValues) => {
-    if (!tokenInfo) return
-
-    const txParams = createTokenTransferParams(params.recepient, params.amount, tokenInfo.decimals, tokenInfo.address)
+    if (!txParams) return
 
     const editedTxParams = {
       ...txParams,
       nonce: data.nonce,
+      // @TODO: Safes <1.3.0 need safeTxGas
+      //safeTxGas: safeGas?.safeTxGas
     }
 
     const tx = await createTransaction(editedTxParams)
@@ -62,7 +67,13 @@ const ReviewTx = ({
       {tokenInfo && <TokenTransferReview params={params} tokenInfo={tokenInfo} />}
 
       <FormControl fullWidth>
-        <TextField required label="Nonce" {...register('nonce')} />
+        <TextField
+          key={safeGas?.recommendedNonce}
+          disabled={loading}
+          label="Nonce"
+          defaultValue={safeGas?.recommendedNonce}
+          {...register('nonce')}
+        />
       </FormControl>
 
       <div className={css.submit}>

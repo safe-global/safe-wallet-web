@@ -2,14 +2,11 @@ import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Typography } from '@mui/material'
 import { useEffect, type ReactElement } from 'react'
 import proposeTx from 'services/proposeTransaction'
-import { useAppSelector } from 'store'
-import { selectSafeInfo } from 'store/safeInfoSlice'
+import useSafeAddress from 'services/useSafeAddress'
 import css from './styles.module.css'
 
 const FinishTx = ({ tx }: { tx: SafeTransaction }): ReactElement => {
-  const { safe } = useAppSelector(selectSafeInfo)
-  const { chainId } = safe
-  const address = safe.address.value
+  const { address, chainId } = useSafeAddress()
 
   useEffect(() => {
     proposeTx(chainId, address, tx)

@@ -55,7 +55,7 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
 
       <div className={css.submit}>
         <Button variant="contained" type="submit">
-          Create transaction
+          Next
         </Button>
       </div>
     </form>
