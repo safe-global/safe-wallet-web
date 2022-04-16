@@ -4,17 +4,18 @@ import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
-import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { SafeTransactionDataPartial, type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import SendAssetsForm from '../SendAssetsForm'
+import SendAssetsReview from '../SendAssetsReview'
 import SignTx from '../SignTx'
 import FinishTx from '../FinishTx'
 
-const steps = ['Create transaction', 'Sign transaction', 'Done']
+const steps = ['Create transaction', 'Review', 'Sign', 'Done']
 
 const TxStepper = (): ReactElement => {
   const [activeStep, setActiveStep] = useState<number>(0)
-  const [stepData, setStepData] = useState<unknown>()
+  const [stepData, setStepData] = useState<Array<unknown>>([])
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -29,16 +30,20 @@ const TxStepper = (): ReactElement => {
   }
 
   const onSubmit = (data: unknown) => {
-    setStepData(data)
+    const allData = [...stepData]
+    allData[activeStep + 1] = data
+    setStepData(allData)
     handleNext()
   }
 
   const stepComponents = [
     () => <SendAssetsForm onSubmit={onSubmit} />,
 
-    () => <SignTx tx={stepData as SafeTransaction} onSubmit={onSubmit} />,
+    () => <SendAssetsReview params={stepData[1] as SafeTransactionDataPartial} onSubmit={onSubmit} />,
 
-    () => <FinishTx tx={stepData as SafeTransaction} />,
+    () => <SignTx tx={stepData[2] as SafeTransaction} onSubmit={onSubmit} />,
+
+    () => <FinishTx tx={stepData[3] as SafeTransaction} />,
   ]
 
   return (

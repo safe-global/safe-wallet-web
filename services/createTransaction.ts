@@ -8,30 +8,12 @@ const encodeTokenTransferData = (to: string, value: string): string => {
   return web3.eth.abi.encodeFunctionCall(erc20Transfer, [to, value])
 }
 
-const createTransaction = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
-  const safeSdk = getSafeSDK()
-
-  const nonce = await safeSdk.getNonce()
-
-  const transaction: SafeTransactionDataPartial = {
-    ...txParams,
-    nonce: txParams.nonce ?? nonce,
-    data: txParams.data ?? '0x',
-  }
-
-  const safeTransaction = await safeSdk.createTransaction(transaction)
-
-  console.log('Created tx', safeTransaction)
-
-  return safeTransaction
-}
-
-export const createTokenTransferTx = async (
+export const createTokenTransferParams = (
   recepient: string,
   amount: string,
   decimals: number,
   tokenAddress: string,
-): Promise<SafeTransaction> => {
+): SafeTransactionDataPartial => {
   const value = toDecimals(amount, decimals)
   const isNativeToken = parseInt(tokenAddress, 16) === 0
 
@@ -47,12 +29,20 @@ export const createTokenTransferTx = async (
         data: encodeTokenTransferData(recepient, value),
       }
 
-  return await createTransaction(txParams)
+  return txParams
+}
+
+export const createTransaction = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
+  const safeSdk = getSafeSDK()
+  const tx = await safeSdk.createTransaction(txParams)
+
+  console.log('Created tx', tx)
+
+  return tx
 }
 
 export const signTransaction = async (tx: SafeTransaction): Promise<SafeTransaction> => {
   const safeSdk = getSafeSDK()
-
   await safeSdk.signTransaction(tx)
 
   console.log('Signed tx', tx)
