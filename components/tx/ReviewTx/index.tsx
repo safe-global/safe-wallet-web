@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import { useState, type ReactElement } from 'react'
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { type SendAssetsFormData } from '../SendAssetsForm'
@@ -11,6 +11,7 @@ import { selectBalances } from 'store/balancesSlice'
 import { useForm, type FieldValues } from 'react-hook-form'
 import css from './styles.module.css'
 import useSafeTxGas from 'services/useSafeTxGas'
+import ErrorToast from 'components/common/ErrorToast'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -37,7 +38,9 @@ const ReviewTx = ({
   const txParams = tokenInfo
     ? createTokenTransferParams(params.recepient, params.amount, tokenInfo.decimals, tokenInfo.address)
     : undefined
-  const { safeGas, error, loading } = useSafeTxGas(txParams)
+  const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
+  const [creationError, setCreationError] = useState<Error>()
+  const anyError = creationError || safeGasError
 
   const {
     register,
@@ -55,9 +58,18 @@ const ReviewTx = ({
       //safeTxGas: safeGas?.safeTxGas
     }
 
-    const tx = await createTransaction(editedTxParams)
+    try {
+      const tx = await createTransaction(editedTxParams)
+      onSubmit(tx)
+    } catch (err) {
+      setCreationError(err as Error)
+    }
+  }
 
-    onSubmit(tx)
+  const validateNonce = (nonce: string) => {
+    if (!/^[0-9]+$/.test(nonce)) {
+      return 'Nonce must be a number'
+    }
   }
 
   return (
@@ -69,18 +81,21 @@ const ReviewTx = ({
       <FormControl fullWidth>
         <TextField
           key={safeGas?.recommendedNonce}
-          disabled={loading}
+          disabled={safeGasLoading}
           label="Nonce"
           defaultValue={safeGas?.recommendedNonce}
-          {...register('nonce')}
+          helperText={errors.nonce?.message}
+          {...register('nonce', { validate: validateNonce })}
         />
       </FormControl>
 
       <div className={css.submit}>
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" disabled={safeGasLoading}>
           Create transaction
         </Button>
       </div>
+
+      {anyError && <ErrorToast message={anyError.message} />}
     </form>
   )
 }

@@ -1,13 +1,20 @@
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Typography } from '@mui/material'
-import { ReactElement } from 'react'
+import ErrorToast from 'components/common/ErrorToast'
+import { ReactElement, useState } from 'react'
 import { signTransaction } from 'services/createTransaction'
 import css from './styles.module.css'
 
 const SignTx = ({ tx, onSubmit }: { tx: SafeTransaction; onSubmit: (tx: SafeTransaction) => void }): ReactElement => {
+  const [error, setError] = useState<Error>()
+
   const onSign = async () => {
-    const signedTx = await signTransaction(tx)
-    onSubmit(signedTx)
+    try {
+      const signedTx = await signTransaction(tx)
+      onSubmit(signedTx)
+    } catch (err) {
+      setError(err as Error)
+    }
   }
 
   return (
@@ -21,6 +28,8 @@ const SignTx = ({ tx, onSubmit }: { tx: SafeTransaction; onSubmit: (tx: SafeTran
           Sign transaction
         </Button>
       </div>
+
+      {error && <ErrorToast message={error.message} />}
     </div>
   )
 }

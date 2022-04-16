@@ -21,17 +21,17 @@ const useSafeTxGas = (
   txParams?: MetaTransactionData,
 ): {
   safeGas?: SafeTransactionEstimation
-  error?: Error
-  loading: boolean
+  safeGasError?: Error
+  safeGasLoading: boolean
 } => {
   const { address, chainId } = useSafeAddress()
   const serializedParams = JSON.stringify(txParams)
 
-  const [safeGas, error, loading] = useAsync<SafeTransactionEstimation | undefined>(async () => {
+  const [safeGas, safeGasError, safeGasLoading] = useAsync<SafeTransactionEstimation | undefined>(async () => {
     return txParams ? await estimateGas(chainId, address, txParams) : undefined
   }, [chainId, address, serializedParams])
 
-  return { safeGas, error, loading }
+  return { safeGas, safeGasError, safeGasLoading }
 }
 
 export default useSafeTxGas

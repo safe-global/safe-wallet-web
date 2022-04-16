@@ -6,6 +6,8 @@ import css from './styles.module.css'
 import { useAppSelector } from 'store'
 import { selectBalances } from 'store/balancesSlice'
 import TokenAmount, { TokenIcon } from 'components/common/TokenAmount'
+import { formatDecimals } from 'services/formatters'
+import { validateAddress } from 'services/validation'
 
 export type SendAssetsFormData = {
   recepient: string
@@ -19,6 +21,7 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm()
 
@@ -26,10 +29,30 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
     onSubmit(data as SendAssetsFormData)
   }
 
+  const validateAmount = (amount: string) => {
+    const tokenAddress = watch('tokenAddress')
+    const token = tokenAddress && balances.items.find((item) => item.tokenInfo.address === tokenAddress)
+
+    if (!token) return
+
+    const maxVal = formatDecimals(token.balance)
+    const value = parseFloat(amount)
+    const balanceValue = parseFloat(maxVal)
+
+    if (value > balanceValue) {
+      return `Maximum value is ${maxVal}`
+    }
+  }
+
   return (
     <form className={css.container} onSubmit={handleSubmit(onFormSubmit)}>
       <FormControl fullWidth>
-        <TextField required label="Recepient" {...register('recepient', { required: true })} />
+        <TextField
+          required
+          label="Recepient"
+          helperText={errors.recepient?.message}
+          {...register('recepient', { required: true, validate: validateAddress })}
+        />
       </FormControl>
 
       <FormControl fullWidth>
@@ -50,7 +73,12 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
       </FormControl>
 
       <FormControl fullWidth>
-        <TextField required label="Amount" {...register('amount', { required: true })} />
+        <TextField
+          required
+          label="Amount"
+          helperText={errors.amount?.message}
+          {...register('amount', { required: true, validate: validateAmount })}
+        />
       </FormControl>
 
       <div className={css.submit}>
