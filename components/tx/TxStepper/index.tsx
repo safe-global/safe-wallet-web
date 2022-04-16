@@ -8,7 +8,7 @@ import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import SendAssetsForm from '../SendAssetsForm'
 import SignTx from '../SignTx'
-import ExecuteTx from '../ExecuteTx'
+import FinishTx from '../FinishTx'
 
 const steps = ['Create transaction', 'Sign transaction', 'Done']
 
@@ -38,7 +38,7 @@ const TxStepper = (): ReactElement => {
 
     () => <SignTx tx={stepData as SafeTransaction} onSubmit={onSubmit} />,
 
-    () => <ExecuteTx tx={stepData as SafeTransaction} />,
+    () => <FinishTx tx={stepData as SafeTransaction} />,
   ]
 
   return (
