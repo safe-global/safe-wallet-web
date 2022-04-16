@@ -41,8 +41,14 @@ const Sidebar = (): ReactElement => {
         </li>
 
         <li>
-          <Link href={`/${shortName}:${address}/transactions`}>
-            <a>Transactions</a>
+          <Link href={`/${shortName}:${address}/transactions/history`}>
+            <a>History</a>
+          </Link>
+        </li>
+
+        <li>
+          <Link href={`/${shortName}:${address}/transactions/queue`}>
+            <a>Queue</a>
           </Link>
         </li>
       </ul>
