@@ -999,6 +999,13 @@
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
+"@mui/icons-material@^5.6.1":
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.6.1.tgz#421e2b73992349abb07f8f03074d7e56e20bf7ba"
+  integrity sha512-I1x8u+FRLOmoJpRJASMx9UG+jZrSkNLyRQmBXivQQwXu3m3iasMoaKYhhI0J18t8+FWktbkNTp63oEUHE9Gw0Q==
+  dependencies:
+    "@babel/runtime" "^7.17.2"
+
 "@mui/material@^5.6.1":
   version "5.6.1"
   resolved "https://registry.yarnpkg.com/@mui/material/-/material-5.6.1.tgz#b74cfbe4666586e054a28cf3df448369892085e1"
