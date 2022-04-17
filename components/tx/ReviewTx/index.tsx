@@ -29,7 +29,7 @@ const ReviewTx = ({
   params,
   onSubmit,
 }: {
-  params: SendAssetsFormData
+  params: SendAssetsFormData,
   onSubmit: (tx: SafeTransaction) => void
 }): ReactElement => {
   const balances = useAppSelector(selectBalances)

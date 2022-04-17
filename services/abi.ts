@@ -1,4 +1,6 @@
-export const erc20Transfer = {
+import { type AbiItem } from 'web3-utils'
+
+export const erc20Transfer: AbiItem = {
   name: 'transfer',
   type: 'function',
   inputs: [

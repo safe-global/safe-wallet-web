@@ -5471,7 +5471,7 @@ web3-shh@1.7.3:
     web3-core-subscriptions "1.7.3"
     web3-net "1.7.3"
 
-web3-utils@1.7.3, web3-utils@^1.6.0, web3-utils@^1.7.1:
+web3-utils@1.7.3, web3-utils@^1.6.0, web3-utils@^1.7.1, web3-utils@^1.7.3:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/web3-utils/-/web3-utils-1.7.3.tgz#b214d05f124530d8694ad364509ac454d05f207c"
   integrity sha512-g6nQgvb/bUpVUIxJE+ezVN+rYwYmlFyMvMIRSuqpi1dk6ApDD00YNArrk7sPcZnjvxOJ76813Xs2vIN2rgh4lg==

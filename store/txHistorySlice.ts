@@ -20,6 +20,7 @@ export const txHistorySlice = createSlice({
   initialState,
   reducers: {
     setHistoryPage: (state, action: PayloadAction<TransactionListPage | undefined>) => {
+      // @ts-ignore: Type instantiation is excessively deep and possibly infinite.
       state.page = action.payload || initialState.page
     },
 

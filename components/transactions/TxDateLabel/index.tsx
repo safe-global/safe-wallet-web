@@ -7,7 +7,7 @@ const dateOptions = {
   dateStyle: 'long',
 }
 
-const DateLabel = ({ item }: { item: DateLabel }): ReactElement => {
+const TxDateLabel = ({ item }: { item: DateLabel }): ReactElement => {
   return (
     <div className={css.container}>
       <DateTime value={item.timestamp} options={dateOptions} />
@@ -15,4 +15,4 @@ const DateLabel = ({ item }: { item: DateLabel }): ReactElement => {
   )
 }
 
-export default DateLabel
+export default TxDateLabel
