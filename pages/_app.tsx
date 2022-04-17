@@ -9,6 +9,7 @@ import useChains from 'services/useChains'
 import useSafeInfo from 'services/useSafeInfo'
 import useBalances from 'services/useBalances'
 import useTxHistory from 'services/useTxHistory'
+import useTxQueue from 'services/useTxQueue'
 import { useWeb3 } from 'services/useWeb3'
 import { useSafeSDK } from 'services/useSafeSDK'
 import { useWeb3ReadOnly } from 'services/useWeb3ReadOnly'
@@ -18,6 +19,7 @@ const InitApp = (): null => {
   useSafeInfo()
   useBalances()
   useTxHistory()
+  useTxQueue()
   useWeb3()
   useWeb3ReadOnly()
   useSafeSDK()

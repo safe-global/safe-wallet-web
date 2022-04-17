@@ -5,6 +5,7 @@ import { safeInfoSlice } from './safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { currencySlice } from './currencySlice'
 import { txHistorySlice } from './txHistorySlice'
+import { txQueueSlice } from './txQueueSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   [balancesSlice.name]: balancesSlice.reducer,
   [currencySlice.name]: currencySlice.reducer,
   [txHistorySlice.name]: txHistorySlice.reducer,
+  [txQueueSlice.name]: txQueueSlice.reducer,
 })
 
 export const store = configureStore({

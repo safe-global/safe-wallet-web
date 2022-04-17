@@ -1,18 +1,17 @@
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Typography } from '@mui/material'
-import { useEffect, type ReactElement } from 'react'
+import ErrorToast from 'components/common/ErrorToast'
+import { useEffect, useState, type ReactElement } from 'react'
 import proposeTx from 'services/proposeTransaction'
-import { useAppSelector } from 'store'
-import { selectSafeInfo } from 'store/safeInfoSlice'
+import useSafeAddress from 'services/useSafeAddress'
 import css from './styles.module.css'
 
 const FinishTx = ({ tx }: { tx: SafeTransaction }): ReactElement => {
-  const { safe } = useAppSelector(selectSafeInfo)
-  const { chainId } = safe
-  const address = safe.address.value
+  const { address, chainId } = useSafeAddress()
+  const [error, setError] = useState<Error>()
 
   useEffect(() => {
-    proposeTx(chainId, address, tx)
+    proposeTx(chainId, address, tx).catch(setError)
   }, [chainId, address, tx])
 
   return (
@@ -29,6 +28,8 @@ const FinishTx = ({ tx }: { tx: SafeTransaction }): ReactElement => {
           2,
         )}
       </pre>
+
+      {error && <ErrorToast message={error.message} />}
     </div>
   )
 }
