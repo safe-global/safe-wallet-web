@@ -21,6 +21,7 @@ export default usePathRewrite
 // Rewrite the URL back to `?safe=`
 export const useQueryRewrite = (): boolean => {
   const [redirecting, setRedirecting] = useState<boolean>(true)
+  const router = useRouter()
 
   useEffect(() => {
     if (typeof location === 'undefined') return
@@ -29,7 +30,7 @@ export const useQueryRewrite = (): boolean => {
 
     if (pathSafe) {
       const newPath = location.pathname.replace(pathSafe, 'safe')
-      location.href = `${newPath}?safe=${pathSafe}${location.search ? '&' + location.search.slice(1) : ''}`
+      router.replace(`${newPath}?safe=${pathSafe}${location.search ? '&' + location.search.slice(1) : ''}`)
     } else {
       setRedirecting(false)
     }
