@@ -11,7 +11,7 @@ import { selectBalances } from 'store/balancesSlice'
 import { useForm, type FieldValues } from 'react-hook-form'
 import css from './styles.module.css'
 import ErrorToast from 'components/common/ErrorToast'
-import useNextNonce from 'services/useNextNonce'
+import useSafeTxGas from 'services/useSafeTxGas'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -39,9 +39,9 @@ const ReviewTx = ({
     ? createTokenTransferParams(params.recepient, params.amount, tokenInfo.decimals, tokenInfo.address)
     : undefined
   const [creationError, setCreationError] = useState<Error>()
-  const { nonce, nonceError } = useNextNonce()
+  const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
 
-  const anyError = creationError || nonceError
+  const anyError = creationError || safeGasError
 
   const {
     register,
@@ -55,6 +55,8 @@ const ReviewTx = ({
     const editedTxParams = {
       ...txParams,
       nonce: data.nonce,
+      // @TODO: Safes <1.3.0 need safeTxGas
+      //safeTxGas: Number(safeGas?.safeTxGas || 0)
     }
 
     try {
@@ -79,9 +81,9 @@ const ReviewTx = ({
 
       <FormControl fullWidth>
         <TextField
-          key={nonce}
-          defaultValue={nonce}
-          disabled={nonce == null}
+          key={safeGas?.recommendedNonce}
+          defaultValue={safeGas?.recommendedNonce}
+          disabled={safeGasLoading}
           label="Nonce"
           helperText={errors.nonce?.message}
           {...register('nonce', { validate: validateNonce, required: true })}
