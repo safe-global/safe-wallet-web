@@ -6,7 +6,7 @@ import css from './styles.module.css'
 import { useAppSelector } from 'store'
 import { selectBalances } from 'store/balancesSlice'
 import TokenAmount, { TokenIcon } from 'components/common/TokenAmount'
-import { formatDecimals } from 'services/formatters'
+import { formatDecimals, toDecimals } from 'services/formatters'
 import { validateAddress } from 'services/validation'
 
 export type SendAssetsFormData = {
@@ -35,12 +35,8 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
 
     if (!token) return
 
-    const maxVal = formatDecimals(token.balance)
-    const value = parseFloat(amount)
-    const balanceValue = parseFloat(maxVal)
-
-    if (value > balanceValue) {
-      return `Maximum value is ${maxVal}`
+    if (toDecimals(amount, token.tokenInfo.decimals).gt(token.balance)) {
+      return `Maximum value is ${formatDecimals(token.balance, token.tokenInfo.decimals)}`
     }
   }
 

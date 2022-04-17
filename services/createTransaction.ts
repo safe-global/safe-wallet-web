@@ -14,7 +14,7 @@ export const createTokenTransferParams = (
   decimals: number,
   tokenAddress: string,
 ): SafeTransactionDataPartial => {
-  const value = toDecimals(amount, decimals)
+  const value = toDecimals(amount, decimals).toFixed()
   const isNativeToken = parseInt(tokenAddress, 16) === 0
 
   const txParams = isNativeToken
