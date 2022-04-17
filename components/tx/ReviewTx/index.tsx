@@ -10,8 +10,8 @@ import { useAppSelector } from 'store'
 import { selectBalances } from 'store/balancesSlice'
 import { useForm, type FieldValues } from 'react-hook-form'
 import css from './styles.module.css'
-import useSafeTxGas from 'services/useSafeTxGas'
 import ErrorToast from 'components/common/ErrorToast'
+import useNextNonce from 'services/useNextNonce'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -38,9 +38,10 @@ const ReviewTx = ({
   const txParams = tokenInfo
     ? createTokenTransferParams(params.recepient, params.amount, tokenInfo.decimals, tokenInfo.address)
     : undefined
-  const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
   const [creationError, setCreationError] = useState<Error>()
-  const anyError = creationError || safeGasError
+  const { nonce, nonceError } = useNextNonce()
+
+  const anyError = creationError || nonceError
 
   const {
     register,
@@ -54,8 +55,6 @@ const ReviewTx = ({
     const editedTxParams = {
       ...txParams,
       nonce: data.nonce,
-      // @TODO: Safes <1.3.0 need safeTxGas
-      //safeTxGas: safeGas?.safeTxGas
     }
 
     try {
@@ -66,8 +65,8 @@ const ReviewTx = ({
     }
   }
 
-  const validateNonce = (nonce: string) => {
-    if (!/^[0-9]+$/.test(nonce)) {
+  const validateNonce = (userNonce: string) => {
+    if (!/^[0-9]+$/.test(userNonce)) {
       return 'Nonce must be a number'
     }
   }
@@ -80,17 +79,17 @@ const ReviewTx = ({
 
       <FormControl fullWidth>
         <TextField
-          key={safeGas?.recommendedNonce}
-          disabled={safeGasLoading}
+          key={nonce}
+          defaultValue={nonce}
+          disabled={nonce == null}
           label="Nonce"
-          defaultValue={safeGas?.recommendedNonce}
           helperText={errors.nonce?.message}
-          {...register('nonce', { validate: validateNonce })}
+          {...register('nonce', { validate: validateNonce, required: true })}
         />
       </FormControl>
 
       <div className={css.submit}>
-        <Button variant="contained" type="submit" disabled={safeGasLoading}>
+        <Button variant="contained" type="submit">
           Create transaction
         </Button>
       </div>

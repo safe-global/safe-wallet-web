@@ -1,4 +1,8 @@
-import { getTransactionQueue, TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  getTransactionQueue,
+  type TransactionListItem,
+  type TransactionListPage,
+} from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'store'
 import { selectSafeInfo } from 'store/safeInfoSlice'
@@ -6,6 +10,7 @@ import { GATEWAY_URL } from 'config/constants'
 import useAsync from './useAsync'
 import { Errors, logError } from './exceptions'
 import { selectTxQueue, setQueuePage, setPageUrl } from 'store/txQueueSlice'
+import useSafeAddress from './useSafeAddress'
 
 const loadTxQueue = (chainId: string, address: string, pageUrl?: string) => {
   return getTransactionQueue(GATEWAY_URL, chainId, address, pageUrl)
@@ -44,3 +49,20 @@ const useTxQueue = (): void => {
 }
 
 export default useTxQueue
+
+export const getLastQueue = (): { qLastItems?: TransactionListItem[]; qError?: Error; qLoading: boolean } => {
+  const { chainId, address } = useSafeAddress()
+
+  // Re-fetch assets when pageUrl, chainId/address, or txQueueTag change
+  const [data, error, loading] = useAsync<TransactionListPage | undefined>(async () => {
+    if (chainId && address) {
+      return loadTxQueue(chainId, address)
+    }
+  }, [chainId, address])
+
+  return {
+    qLastItems: data?.results,
+    qLoading: loading,
+    qError: error,
+  }
+}
