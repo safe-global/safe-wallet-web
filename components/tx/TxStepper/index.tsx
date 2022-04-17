@@ -4,18 +4,18 @@ import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
-import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
-import SendAssetsForm, { SendAssetsFormData } from '../SendAssetsForm'
-import ReviewTx from '../ReviewTx'
-import SignTx from '../SignTx'
-import FinishTx from '../FinishTx'
+export type TxStepperProps = {
+  steps: Array<{
+    label: string
+    render: (onSubmit: (data: unknown) => void, data: unknown) => ReactElement
+  }>
+  initialStepData?: unknown[]
+}
 
-const steps = ['Create transaction', 'Review', 'Sign', 'Done']
-
-const TxStepper = (): ReactElement => {
+const TxStepper = ({ steps, initialStepData }: TxStepperProps): ReactElement => {
   const [activeStep, setActiveStep] = useState<number>(0)
-  const [stepData, setStepData] = useState<Array<unknown>>([])
+  const [stepData, setStepData] = useState<Array<unknown>>(initialStepData || [])
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -31,25 +31,15 @@ const TxStepper = (): ReactElement => {
 
   const onSubmit = (data: unknown) => {
     const allData = [...stepData]
-    allData[activeStep] = data
+    allData[activeStep + 1] = data
     setStepData(allData)
     handleNext()
   }
 
-  const stepComponents = [
-    () => <SendAssetsForm onSubmit={onSubmit} />,
-
-    () => <ReviewTx params={stepData[0] as SendAssetsFormData} onSubmit={onSubmit} />,
-
-    () => <SignTx tx={stepData[1] as SafeTransaction} onSubmit={onSubmit} />,
-
-    () => <FinishTx tx={stepData[2] as SafeTransaction} />,
-  ]
-
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep}>
-        {steps.map((label) => {
+        {steps.map(({ label }) => {
           const stepProps: { completed?: boolean } = {}
 
           return (
@@ -60,7 +50,7 @@ const TxStepper = (): ReactElement => {
         })}
       </Stepper>
 
-      {stepComponents[activeStep]()}
+      {steps[activeStep].render(onSubmit, stepData[activeStep])}
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
         {activeStep === steps.length - 1 ? (

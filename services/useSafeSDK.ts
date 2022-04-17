@@ -4,7 +4,7 @@ import { useAppSelector } from 'store'
 import { selectSafeInfo } from 'store/safeInfoSlice'
 import useSafeAddress from 'services/useSafeAddress'
 
-const useWalletAddress = (): string | undefined => {
+export const useWalletAddress = (): string | undefined => {
   const [walletAddress, setWalletAddress] = useState<string>()
 
   useEffect(() => {

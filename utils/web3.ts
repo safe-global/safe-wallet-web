@@ -44,7 +44,7 @@ export const setSafeSDK = async (
 ): Promise<void> => {
   const ethAdapter = getWeb3Adapter(signerAddress)
 
-  let isL1SafeMasterCopy = chainId === chains.eth || chainId === chains.rin
+  let isL1SafeMasterCopy = chainId === chains.eth
 
   // Legacy Safe contracts
   if (semverSatisfies(safeVersion, LEGACY_VERSION)) {

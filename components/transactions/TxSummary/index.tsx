@@ -1,9 +1,11 @@
 import { type ReactElement } from 'react'
-import type { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import { MultisigExecutionInfo, Transaction, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Grid, Paper } from '@mui/material'
 import DateTime from 'components/common/DateTime'
 import css from './styles.module.css'
 import TxInfo from '../TxInfo'
+import { useWalletAddress } from 'services/useSafeSDK'
+import SignTxButton from '../SignTxButton'
 
 type TxSummaryProps = {
   item: Transaction
@@ -16,6 +18,10 @@ const dateOptions = {
 
 const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
+  const walletAddress = useWalletAddress()
+
+  const missingSigners = (item.transaction?.executionInfo as MultisigExecutionInfo)?.missingSigners
+  const signaturePending = missingSigners?.some((item) => item.value.toLowerCase() === walletAddress?.toLowerCase())
 
   return (
     <Paper>
@@ -29,13 +35,23 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
             <DateTime value={tx.timestamp} options={dateOptions} />
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             {tx.txInfo.type}
           </Grid>
 
           <Grid item xs>
             <TxInfo info={tx.txInfo} />
           </Grid>
+
+          {tx.txStatus !== TransactionStatus.SUCCESS && (
+            <>
+              <Grid item xs={3}>
+                {tx.txStatus}
+              </Grid>
+
+              {signaturePending && <SignTxButton txSummary={item.transaction} />}
+            </>
+          )}
         </Grid>
       </div>
     </Paper>
