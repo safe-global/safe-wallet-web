@@ -13,8 +13,10 @@ import useTxQueue from 'services/useTxQueue'
 import { useWeb3 } from 'services/useWeb3'
 import { useSafeSDK } from 'services/useSafeSDK'
 import { useWeb3ReadOnly } from 'services/useWeb3ReadOnly'
+import usePathRewrite from 'services/usePathRewrite'
 
 const InitApp = (): null => {
+  usePathRewrite()
   useChains()
   useSafeInfo()
   useBalances()
