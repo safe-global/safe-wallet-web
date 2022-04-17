@@ -20,67 +20,67 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     label: 'Assets',
-    href: '/balances',
+    href: '/safe/balances',
     items: [
       {
         label: 'Coins',
-        href: '/balances',
+        href: '/safe/balances',
       },
       {
         label: 'NFTs',
-        href: '/balances/nfts',
+        href: '/safe/balances/nfts',
       },
     ],
   },
   {
     label: 'Transactions',
-    href: '/transactions/history',
+    href: '/safe/transactions/history',
     items: [
       {
         label: 'Queue',
-        href: '/transactions/queue',
+        href: '/safe/transactions/queue',
       },
       {
         label: 'History',
-        href: '/transactions/history',
+        href: '/safe/transactions/history',
       },
     ],
   },
   {
     label: 'Address Book',
-    href: '/address-book',
+    href: '/safe/address-book',
   },
   {
     label: 'Apps',
-    href: '/apps',
+    href: '/safe/apps',
   },
   {
     label: 'Settings',
-    href: '/settings/details',
+    href: '/safe/settings/details',
     items: [
       {
         label: 'Safe Details',
-        href: '/settings/details',
+        href: '/safe/settings/details',
       },
       {
         label: 'Appearance',
-        href: '/settings/appearance',
+        href: '/safe/settings/appearance',
       },
       {
         label: 'Owners',
-        href: '/settings/owners',
+        href: '/safe/settings/owners',
       },
       {
         label: 'Policies',
-        href: '/settings/policies',
+        href: '/safe/settings/policies',
       },
       {
         label: 'Spending Limit',
-        href: '/settings/spending-limit',
+        href: '/safe/settings/spending-limit',
       },
       {
         label: 'Advanced',
-        href: '/settings/advanced',
+        href: '/safe/settings/advanced',
       },
     ],
   },
@@ -90,6 +90,7 @@ const Navigation = () => {
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const { address, chainId } = useSafeAddress()
   const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
+  const query = `?safe=${shortName}:${address}`
 
   const toggleOpen = (item: NavItem) => {
     setOpen((prev) => ({ [item.href]: !prev[item.href] }))
@@ -102,21 +103,21 @@ const Navigation = () => {
           <MultiLevel
             key={item.href}
             item={item}
-            baseUrl={`/${shortName}:${address}`}
+            query={query}
             open={open[item.href]}
             toggleOpen={() => toggleOpen(item)}
           />
         ) : (
-          <SingleLevel item={item} baseUrl={`/${shortName}:${address}`} key={item.href} />
+          <SingleLevel item={item} query={query} key={item.href} />
         ),
       )}
     </List>
   )
 }
 
-const SingleLevel = ({ item, baseUrl }: { item: NavItem; baseUrl: string }): ReactElement => {
+const SingleLevel = ({ item, query }: { item: NavItem; query: string }): ReactElement => {
   const router = useRouter()
-  const destination = `${baseUrl}${item.href}`
+  const destination = `${item.href}${query}`
   const selected = router.asPath === destination
 
   return (
@@ -130,16 +131,16 @@ const SingleLevel = ({ item, baseUrl }: { item: NavItem; baseUrl: string }): Rea
 
 const MultiLevel = ({
   item,
-  baseUrl,
+  query,
   open,
   toggleOpen,
 }: {
   item: NavItem
-  baseUrl: string
+  query: string
   open: boolean
   toggleOpen: () => void
 }): ReactElement => {
-  const destination = `${baseUrl}${item.href}`
+  const destination = `${item.href}${query}`
   const router = useRouter()
 
   return (
@@ -153,7 +154,7 @@ const MultiLevel = ({
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="nav">
           {item.items?.map((subItem) => {
-            const subItemDestination = `${baseUrl}${subItem.href}`
+            const subItemDestination = `${subItem.href}${query}`
             const selected = router.asPath === subItemDestination
 
             return (

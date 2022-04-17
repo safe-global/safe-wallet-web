@@ -27,29 +27,31 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
     <Paper>
       <div className={css.container} id={tx.id}>
         <Grid container>
-          <Grid item xs={1}>
+          <Grid item md={1}>
             {tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''}
           </Grid>
 
-          <Grid item xs={3}>
+          <Grid item md={3}>
             <DateTime value={tx.timestamp} options={dateOptions} />
           </Grid>
 
-          <Grid item xs={3}>
+          <Grid item md={2}>
             {tx.txInfo.type}
           </Grid>
 
-          <Grid item xs>
+          <Grid item md>
             <TxInfo info={tx.txInfo} />
           </Grid>
 
           {tx.txStatus !== TransactionStatus.SUCCESS && (
             <>
-              <Grid item xs={3}>
+              <Grid item md={3}>
                 {tx.txStatus}
               </Grid>
 
-              {signaturePending && <SignTxButton txSummary={item.transaction} />}
+              <Grid item md={1}>
+                {signaturePending && <SignTxButton txSummary={item.transaction} />}
+              </Grid>
             </>
           )}
         </Grid>
