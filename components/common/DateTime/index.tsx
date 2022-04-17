@@ -1,7 +1,13 @@
 import { ReactElement, useMemo } from 'react'
 import useBrowserLocale from 'services/useBrowserLocale'
 
-const DateTime = ({ value, options }: { value: string | number; options?: any /* FIXME: DateTimeFormatOptions */ }): ReactElement => {
+const DateTime = ({
+  value,
+  options,
+}: {
+  value: string | number
+  options?: any /* FIXME: DateTimeFormatOptions */
+}): ReactElement => {
   const locale = useBrowserLocale()
 
   const formatter = useMemo(() => {

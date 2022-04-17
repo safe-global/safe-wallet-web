@@ -97,16 +97,17 @@ const Navigation = () => {
 
   return (
     <List component="nav">
-      {navItems.map((item, index) =>
+      {navItems.map((item) =>
         item.items ? (
           <MultiLevel
+            key={item.href}
             item={item}
             baseUrl={`/${shortName}:${address}`}
             open={open[item.href]}
             toggleOpen={() => toggleOpen(item)}
           />
         ) : (
-          <SingleLevel item={item} baseUrl={`/${shortName}:${address}`} />
+          <SingleLevel item={item} baseUrl={`/${shortName}:${address}`} key={item.href} />
         ),
       )}
     </List>
