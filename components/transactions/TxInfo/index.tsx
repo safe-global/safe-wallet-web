@@ -8,15 +8,12 @@ import {
   TransactionInfo,
   TransferDirection,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useAppSelector } from '@/store'
-import { selectChainById } from '@/store/chainsSlice'
-import useSafeAddress from '@/services/useSafeAddress'
 import TokenAmount from '@/components/common/TokenAmount'
 import { shortenAddress } from '@/services/formatters'
+import { useCurrentChain } from '@/services/useChains'
 
 const TransferTx = ({ info }: { info: Transfer }): ReactElement => {
-  const { chainId } = useSafeAddress()
-  const chainConfig = useAppSelector((state) => selectChainById(state, chainId))
+  const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
   const transfer = info.transferInfo
 

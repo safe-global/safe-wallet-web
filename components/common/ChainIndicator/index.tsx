@@ -1,11 +1,8 @@
 import { ReactElement, useMemo } from 'react'
-import useSafeAddress from '@/services/useSafeAddress'
-import { useAppSelector } from '@/store'
-import { selectChainById } from '@/store/chainsSlice'
+import { useCurrentChain } from '@/services/useChains'
 
 const ChainIndicator = (): ReactElement => {
-  const { chainId } = useSafeAddress()
-  const chainConfig = useAppSelector((state) => selectChainById(state, chainId))
+  const chainConfig = useCurrentChain()
 
   const style = useMemo(() => {
     if (!chainConfig) return

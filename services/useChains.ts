@@ -1,10 +1,11 @@
-import { getChainsConfig, type ChainListResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { ChainInfo, getChainsConfig, type ChainListResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { GATEWAY_URL } from '@/config/constants'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectChains, setChains } from '@/store/chainsSlice'
+import { selectChainById, selectChains, setChains } from '@/store/chainsSlice'
 import { Errors, logError } from './exceptions'
 import useAsync from './useAsync'
+import useSafeAddress from './useSafeAddress'
 
 const getChains = (): Promise<ChainListResponse> => {
   return getChainsConfig(GATEWAY_URL)
@@ -36,3 +37,10 @@ const useChains = () => {
 }
 
 export default useChains
+
+export const useCurrentChain = (): ChainInfo | undefined => {
+  const { chainId } = useSafeAddress()
+  const chains = useAppSelector(selectChains)
+  const chainConfig = useAppSelector((state) => selectChainById(state, chainId))
+  return chainConfig
+}
