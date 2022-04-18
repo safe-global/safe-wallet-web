@@ -1,12 +1,12 @@
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Typography } from '@mui/material'
-import ErrorToast from 'components/common/ErrorToast'
-import { GATEWAY_URL } from 'config/constants'
+import ErrorToast from '@/components/common/ErrorToast'
+import { GATEWAY_URL } from '@/config/constants'
 import { ReactElement, useState } from 'react'
-import { createTransaction, signTransaction } from 'services/createTransaction'
-import extractTxInfo from 'services/extractTxInfo'
-import useSafeAddress from 'services/useSafeAddress'
+import { createTransaction, signTransaction } from '@/services/createTransaction'
+import extractTxInfo from '@/services/extractTxInfo'
+import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
 
 const getTxDetails = async (chainId: string, id: string) => {
@@ -44,12 +44,8 @@ const SignProposedTx = ({
     <div className={css.container}>
       <Typography variant="h6">Confirm transaction</Typography>
 
-      <div>
-        Transaction id
-      </div>
-      <pre style={{ overflow: 'auto', width: '100%' }}>
-        {txSummary.id}
-      </pre>
+      <div>Transaction id</div>
+      <pre style={{ overflow: 'auto', width: '100%' }}>{txSummary.id}</pre>
 
       <div className={css.submit}>
         <Button variant="contained" onClick={onSign}>

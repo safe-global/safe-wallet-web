@@ -1,5 +1,5 @@
 import { ReactElement, useMemo } from 'react'
-import useBrowserLocale from 'services/useBrowserLocale'
+import useBrowserLocale from '@/services/useBrowserLocale'
 
 const DateTime = ({
   value,

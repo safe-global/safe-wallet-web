@@ -1,6 +1,6 @@
 import { type MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 import { Operation, postSafeGasEstimation, type SafeTransactionEstimation } from '@gnosis.pm/safe-react-gateway-sdk'
-import { GATEWAY_URL } from 'config/constants'
+import { GATEWAY_URL } from '@/config/constants'
 import useAsync from './useAsync'
 import useSafeAddress from './useSafeAddress'
 

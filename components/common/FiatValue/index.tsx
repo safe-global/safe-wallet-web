@@ -1,7 +1,7 @@
 import { ReactElement, useMemo } from 'react'
-import useBrowserLocale from 'services/useBrowserLocale'
+import useBrowserLocale from '@/services/useBrowserLocale'
 import { useAppSelector } from 'store'
-import { selectCurrency } from 'store/currencySlice'
+import { selectCurrency } from '@/store/currencySlice'
 
 const FiatValue = ({ value }: { value: string | number }): ReactElement => {
   const locale = useBrowserLocale()

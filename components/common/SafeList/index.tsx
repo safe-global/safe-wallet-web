@@ -1,13 +1,13 @@
 import { getOwnedSafes, OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
 import Web3 from 'web3'
-import { GATEWAY_URL } from 'config/constants'
+import { GATEWAY_URL } from '@/config/constants'
 import { ReactElement } from 'react'
-import useAsync from 'services/useAsync'
+import useAsync from '@/services/useAsync'
 import css from './styles.module.css'
 import Link from 'next/link'
-import chains from 'config/chains'
-import useSafeAddress from 'services/useSafeAddress'
-import { shortenAddress } from 'services/formatters'
+import chains from '@/config/chains'
+import useSafeAddress from '@/services/useSafeAddress'
+import { shortenAddress } from '@/services/formatters'
 
 const getOwned = (chainId: string, walletAddress: string): Promise<OwnedSafes> => {
   return getOwnedSafes(GATEWAY_URL, chainId, walletAddress)

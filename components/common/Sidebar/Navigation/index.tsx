@@ -7,8 +7,8 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import List from '@mui/material/List'
 
-import useSafeAddress from 'services/useSafeAddress'
-import chains from 'config/chains'
+import useSafeAddress from '@/services/useSafeAddress'
+import chains from '@/config/chains'
 import { useRouter } from 'next/router'
 
 type NavItem = {

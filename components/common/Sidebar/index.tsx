@@ -2,14 +2,14 @@ import { ReactElement, useState } from 'react'
 import { Button } from '@mui/material'
 
 import { useAppSelector } from 'store'
-import { selectSafeInfo } from 'store/safeInfoSlice'
+import { selectSafeInfo } from '@/store/safeInfoSlice'
 import ChainIndicator from '../ChainIndicator'
 import SafeHeader from '../SafeHeader'
 import SafeList from '../SafeList'
 import ErrorToast from '../ErrorToast'
 import css from './styles.module.css'
-import TxModal from 'components/tx/TxModal'
-import Navigation from 'components/common/Sidebar/Navigation'
+import TxModal from '@/components/tx/TxModal'
+import Navigation from '@/components/common/Sidebar/Navigation'
 
 const Sidebar = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)

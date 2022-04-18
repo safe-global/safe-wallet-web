@@ -1,5 +1,5 @@
 import { DateLabel } from '@gnosis.pm/safe-react-gateway-sdk'
-import DateTime from 'components/common/DateTime'
+import DateTime from '@/components/common/DateTime'
 import { ReactElement } from 'react'
 import css from './styles.module.css'
 

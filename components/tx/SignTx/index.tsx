@@ -1,8 +1,8 @@
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Typography } from '@mui/material'
-import ErrorToast from 'components/common/ErrorToast'
+import ErrorToast from '@/components/common/ErrorToast'
 import { ReactElement, useState } from 'react'
-import { signTransaction } from 'services/createTransaction'
+import { signTransaction } from '@/services/createTransaction'
 import css from './styles.module.css'
 
 const SignTx = ({ tx, onSubmit }: { tx: SafeTransaction; onSubmit: (tx: SafeTransaction) => void }): ReactElement => {

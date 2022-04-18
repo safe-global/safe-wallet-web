@@ -5,8 +5,8 @@ import Web3Adapter from '@gnosis.pm/safe-web3-lib'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import { RPC_AUTHENTICATION, RpcUri } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { INFURA_TOKEN } from 'config/constants'
-import chains from 'config/chains'
+import { INFURA_TOKEN } from '@/config/constants'
+import chains from '@/config/chains'
 
 const LEGACY_VERSION = '<1.3.0'
 

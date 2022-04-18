@@ -1,5 +1,5 @@
 import { type MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
-import { getWeb3ReadOnly } from 'utils/web3'
+import { getWeb3ReadOnly } from '@/services/web3'
 import useAsync from './useAsync'
 
 const useBaseGas = (

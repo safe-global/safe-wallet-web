@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import chains from 'config/chains'
+import chains from '@/config/chains'
 
 const useSafeAddress = (): { address: string; chainId: string } => {
   const router = useRouter()

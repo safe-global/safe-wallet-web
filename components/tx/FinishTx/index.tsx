@@ -1,9 +1,9 @@
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Typography } from '@mui/material'
-import ErrorToast from 'components/common/ErrorToast'
+import ErrorToast from '@/components/common/ErrorToast'
 import { useEffect, useState, type ReactElement } from 'react'
-import proposeTx from 'services/proposeTransaction'
-import useSafeAddress from 'services/useSafeAddress'
+import proposeTx from '@/services/proposeTransaction'
+import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
 
 const FinishTx = ({ tx }: { tx: SafeTransaction }): ReactElement => {

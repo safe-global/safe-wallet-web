@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { getWeb3, setSafeSDK } from 'utils/web3'
+import { getWeb3, setSafeSDK } from '@/services/web3'
 import { useAppSelector } from 'store'
-import { selectSafeInfo } from 'store/safeInfoSlice'
-import useSafeAddress from 'services/useSafeAddress'
+import { selectSafeInfo } from '@/store/safeInfoSlice'
+import useSafeAddress from '@/services/useSafeAddress'
 
 export const useWalletAddress = (): string | undefined => {
   const [walletAddress, setWalletAddress] = useState<string>()

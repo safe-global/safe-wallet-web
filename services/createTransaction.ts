@@ -1,5 +1,5 @@
 import type { SafeTransaction, SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types'
-import { getSafeSDK, getWeb3ReadOnly } from 'utils/web3'
+import { getSafeSDK, getWeb3ReadOnly } from '@/services/web3'
 import { erc20Transfer } from './abi'
 import { toDecimals } from './formatters'
 

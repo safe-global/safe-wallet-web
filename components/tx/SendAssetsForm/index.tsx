@@ -4,10 +4,10 @@ import { useForm, type FieldValues } from 'react-hook-form'
 
 import css from './styles.module.css'
 import { useAppSelector } from 'store'
-import { selectBalances } from 'store/balancesSlice'
-import TokenAmount, { TokenIcon } from 'components/common/TokenAmount'
-import { formatDecimals, toDecimals } from 'services/formatters'
-import { validateAddress } from 'services/validation'
+import { selectBalances } from '@/store/balancesSlice'
+import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
+import { formatDecimals, toDecimals } from '@/services/formatters'
+import { validateAddress } from '@/services/validation'
 
 export type SendAssetsFormData = {
   recepient: string

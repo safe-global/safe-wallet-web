@@ -1,10 +1,10 @@
 import { type ReactElement } from 'react'
 import { MultisigExecutionInfo, Transaction, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Grid, Paper } from '@mui/material'
-import DateTime from 'components/common/DateTime'
+import DateTime from '@/components/common/DateTime'
 import css from './styles.module.css'
 import TxInfo from '../TxInfo'
-import { useWalletAddress } from 'services/useSafeSDK'
+import { useWalletAddress } from '@/services/useSafeSDK'
 import SignTxButton from '../SignTxButton'
 
 type TxSummaryProps = {

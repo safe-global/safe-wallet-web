@@ -5,11 +5,11 @@ import {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'store'
-import { selectSafeInfo } from 'store/safeInfoSlice'
-import { GATEWAY_URL } from 'config/constants'
+import { selectSafeInfo } from '@/store/safeInfoSlice'
+import { GATEWAY_URL } from '@/config/constants'
 import useAsync from './useAsync'
 import { Errors, logError } from './exceptions'
-import { selectTxQueue, setQueuePage, setPageUrl } from 'store/txQueueSlice'
+import { selectTxQueue, setQueuePage, setPageUrl } from '@/store/txQueueSlice'
 
 const loadTxQueue = (chainId: string, address: string, pageUrl?: string) => {
   return getTransactionQueue(GATEWAY_URL, chainId, address, pageUrl)

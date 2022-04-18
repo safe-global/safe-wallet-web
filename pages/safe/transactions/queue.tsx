@@ -1,7 +1,7 @@
-import TxList from 'components/transactions/TxList'
+import TxList from '@/components/transactions/TxList'
 import type { NextPage } from 'next'
 import { useAppDispatch, useAppSelector } from 'store'
-import { selectTxQueue, setPageUrl } from 'store/txQueueSlice'
+import { selectTxQueue, setPageUrl } from '@/store/txQueueSlice'
 
 const preventDefault = (fn: () => void): ((e: React.SyntheticEvent) => void) => {
   return (e) => {

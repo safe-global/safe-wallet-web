@@ -1,6 +1,6 @@
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button } from '@mui/material'
-import TxModal from 'components/tx/TxModal'
+import TxModal from '@/components/tx/TxModal'
 import { useState, type ReactElement } from 'react'
 import css from './styles.module.css'
 

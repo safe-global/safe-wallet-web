@@ -9,10 +9,10 @@ import {
   TransferDirection,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from 'store'
-import { selectChainById } from 'store/chainsSlice'
-import useSafeAddress from 'services/useSafeAddress'
-import TokenAmount from 'components/common/TokenAmount'
-import { shortenAddress } from 'services/formatters'
+import { selectChainById } from '@/store/chainsSlice'
+import useSafeAddress from '@/services/useSafeAddress'
+import TokenAmount from '@/components/common/TokenAmount'
+import { shortenAddress } from '@/services/formatters'
 
 const TransferTx = ({ info }: { info: Transfer }): ReactElement => {
   const { chainId } = useSafeAddress()

@@ -1,7 +1,7 @@
 import { ReactElement, useMemo } from 'react'
-import useSafeAddress from 'services/useSafeAddress'
+import useSafeAddress from '@/services/useSafeAddress'
 import { useAppSelector } from 'store'
-import { selectChainById } from 'store/chainsSlice'
+import { selectChainById } from '@/store/chainsSlice'
 
 const ChainIndicator = (): ReactElement => {
   const { chainId } = useSafeAddress()
