@@ -42,13 +42,18 @@ const SignProposedTx = ({
 
   return (
     <div className={css.container}>
-      <Typography variant="h6">Needs your signature</Typography>
+      <Typography variant="h6">Confirm transaction</Typography>
 
-      <p>Transaction id {txSummary.id}</p>
+      <div>
+        Transaction id
+      </div>
+      <pre style={{ overflow: 'auto', width: '100%' }}>
+        {txSummary.id}
+      </pre>
 
       <div className={css.submit}>
         <Button variant="contained" onClick={onSign}>
-          Sign transaction
+          Sign
         </Button>
       </div>
 

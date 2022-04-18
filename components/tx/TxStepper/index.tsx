@@ -25,10 +25,6 @@ const TxStepper = ({ steps, initialStepData }: TxStepperProps): ReactElement => 
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
   }
 
-  const handleReset = () => {
-    setActiveStep(0)
-  }
-
   const onSubmit = (data: unknown) => {
     const allData = [...stepData]
     allData[activeStep + 1] = data
@@ -53,12 +49,7 @@ const TxStepper = ({ steps, initialStepData }: TxStepperProps): ReactElement => 
       {steps[activeStep].render(onSubmit, stepData[activeStep])}
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-        {activeStep === steps.length - 1 ? (
-          <>
-            <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleReset}>Create another transaction</Button>
-          </>
-        ) : (
+        {activeStep < steps.length - 1 && (
           <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
             Back
           </Button>

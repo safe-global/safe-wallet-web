@@ -16,6 +16,8 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 600,
+  maxWidth: '100vw',
+  maxHeight: '90vh',
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
@@ -59,9 +61,11 @@ type TxModalProps = {
 const TxModal = ({ onClose, txSummary }: TxModalProps) => {
   const steps = txSummary ? signTxSteps : tokenTransferSteps
 
+  const onClick = (e: React.MouseEvent) => e.stopPropagation()
+
   return (
     <Modal open onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description">
-      <Box sx={style}>
+      <Box sx={style} onClick={onClick}>
         <TxStepper steps={steps} initialStepData={[txSummary]} />
       </Box>
     </Modal>
