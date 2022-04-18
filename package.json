@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier -w './**/*.{ts,tsx}'",
-    "test": "jest --watchAll",
+    "test": "jest",
     "cmp": "./scripts/cmp.sh"
   },
   "dependencies": {
@@ -40,6 +40,7 @@
     "@gnosis.pm/safe-react-gateway-sdk": "^2.10.2",
     "@sentry/types": "^6.19.6",
     "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react-hooks": "^8.0.0",
     "@testing-library/user-event": "^14.1.1",
     "@types/jest": "^27.4.1",
     "@types/node": "17.0.23",

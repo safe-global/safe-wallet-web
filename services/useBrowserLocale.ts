@@ -2,14 +2,11 @@ import { useEffect, useState } from 'react'
 
 const defaultLocale = 'en-US'
 
-let cachedLocale = ''
 const getLocale = () => {
-  if (!cachedLocale) {
-    if (typeof navigator !== 'undefined' && navigator.language) {
-      cachedLocale = navigator.language
-    }
+  if (typeof navigator !== 'undefined' && navigator.language) {
+    return navigator.language
   }
-  return cachedLocale || defaultLocale
+  return defaultLocale
 }
 
 const useBrowserLocale = (): NavigatorLanguage['language'] => {
