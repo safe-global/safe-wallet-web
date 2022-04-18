@@ -1,0 +1,45 @@
+name: Unit tests
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Yarn cache
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Yarn install
+        run: |
+          mkdir .yarncache
+          yarn install --cache-folder ./.yarncache --frozen-lockfile
+          rm -rf .yarncache
+          yarn cache clean
+
+      - name: Run tests
+        run: 'yarn test:ci'
+
+      - name: Comment in failing tests
+        uses: mattallty/jest-github-action@v1.0.3
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          test-command: 'echo unit tests already executed'
+          coverage-comment: false

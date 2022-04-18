@@ -9,6 +9,7 @@
     "lint": "next lint",
     "prettier": "prettier -w './**/*.{ts,tsx}'",
     "test": "jest",
+    "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh"
   },
   "dependencies": {
