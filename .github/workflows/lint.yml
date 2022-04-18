@@ -1,0 +1,9 @@
+name: 'ESLint check'
+on: [pull_request]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gnosis/safe-react-eslint-plus-action@v3.5.0
