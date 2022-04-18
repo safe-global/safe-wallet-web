@@ -6,12 +6,11 @@ import { Button, FormControl, TextField, Typography } from '@mui/material'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams, createTransaction } from '@/services/createTransaction'
 import { shortenAddress } from '@/services/formatters'
-import { useAppSelector } from 'store'
-import { selectBalances } from '@/store/balancesSlice'
 import { useForm, type FieldValues } from 'react-hook-form'
 import css from './styles.module.css'
 import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
+import useBalances from '@/services/useBalances'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -32,7 +31,7 @@ const ReviewTx = ({
   params: SendAssetsFormData
   onSubmit: (tx: SafeTransaction) => void
 }): ReactElement => {
-  const balances = useAppSelector(selectBalances)
+  const balances = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const tokenInfo = token?.tokenInfo
   const txParams = tokenInfo

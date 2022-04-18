@@ -1,6 +1,6 @@
+import { type ReactElement } from 'react'
 import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-import { ReactElement } from 'react'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
 

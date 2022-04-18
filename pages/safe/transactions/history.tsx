@@ -1,7 +1,8 @@
 import TxList from '@/components/transactions/TxList'
 import type { NextPage } from 'next'
-import { useAppDispatch, useAppSelector } from 'store'
-import { selectTxHistory, setPageUrl } from '@/store/txHistorySlice'
+import { useAppDispatch } from 'store'
+import { setPageUrl } from '@/store/txHistorySlice'
+import useTxHistory from '@/services/useTxHistory'
 
 const preventDefault = (fn: () => void): ((e: React.SyntheticEvent) => void) => {
   return (e) => {
@@ -11,7 +12,7 @@ const preventDefault = (fn: () => void): ((e: React.SyntheticEvent) => void) => 
 }
 
 const History: NextPage = () => {
-  const { page, pageUrl } = useAppSelector(selectTxHistory)
+  const { page, pageUrl } = useTxHistory()
   const dispatch = useAppDispatch()
 
   const onPageChange = (url?: string) => {

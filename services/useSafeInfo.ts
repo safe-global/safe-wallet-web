@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useAppDispatch } from 'store'
-import { setSafeError, setSafeInfo, setSafeLoading } from '@/store/safeInfoSlice'
+import { useAppDispatch, useAppSelector } from 'store'
+import { selectSafeInfo, setSafeError, setSafeInfo, setSafeLoading } from '@/store/safeInfoSlice'
 import useSafeAddress from './useSafeAddress'
 import { GATEWAY_URL, POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from './exceptions'
@@ -11,7 +11,7 @@ const fetchSafeInfo = (chainId: string, address: string): Promise<SafeInfo> => {
 }
 
 // Poll & dispatch the Safe Info into the store
-const useSafeInfo = (): void => {
+export const useInitSafeInfo = (): void => {
   const { address, chainId } = useSafeAddress()
   const dispatch = useAppDispatch()
 
@@ -80,6 +80,10 @@ const useSafeInfo = (): void => {
       timer && clearTimeout(timer)
     }
   }, [chainId, address])
+}
+
+const useSafeInfo = () => {
+  return useAppSelector(selectSafeInfo)
 }
 
 export default useSafeInfo

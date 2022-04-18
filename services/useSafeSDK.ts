@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getWeb3, setSafeSDK } from '@/services/web3'
-import { useAppSelector } from 'store'
-import { selectSafeInfo } from '@/store/safeInfoSlice'
 import useSafeAddress from '@/services/useSafeAddress'
+import useSafeInfo from './useSafeInfo'
 
 export const useWalletAddress = (): string | undefined => {
   const [walletAddress, setWalletAddress] = useState<string>()
@@ -16,15 +15,16 @@ export const useWalletAddress = (): string | undefined => {
   return walletAddress
 }
 
-export const useSafeSDK = () => {
-  const { safe } = useAppSelector(selectSafeInfo)
+export const useInitSafeSDK = () => {
   const { address, chainId } = useSafeAddress()
+  const { safe } = useSafeInfo()
+  const { version } = safe
   const walletAddress = useWalletAddress()
   const web3 = getWeb3()
 
   useEffect(() => {
     if (!web3 || !walletAddress) return
 
-    setSafeSDK(walletAddress, chainId, address, safe.version)
-  }, [walletAddress, chainId, address, safe.version, web3])
+    setSafeSDK(walletAddress, chainId, address, version)
+  }, [walletAddress, chainId, address, version, web3])
 }

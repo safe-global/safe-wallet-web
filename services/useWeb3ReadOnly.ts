@@ -5,7 +5,7 @@ import { useAppSelector } from 'store'
 import useSafeAddress from '@/services/useSafeAddress'
 import { selectChainById } from '@/store/chainsSlice'
 
-export const useWeb3ReadOnly = () => {
+export const useInitWeb3ReadOnly = () => {
   const { chainId } = useSafeAddress()
   const chainConfig = useAppSelector((state) => selectChainById(state, chainId))
 

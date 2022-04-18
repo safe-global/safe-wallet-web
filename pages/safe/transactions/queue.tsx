@@ -1,7 +1,8 @@
 import TxList from '@/components/transactions/TxList'
 import type { NextPage } from 'next'
-import { useAppDispatch, useAppSelector } from 'store'
-import { selectTxQueue, setPageUrl } from '@/store/txQueueSlice'
+import { useAppDispatch } from 'store'
+import { setPageUrl } from '@/store/txQueueSlice'
+import useTxQueue from '@/services/useTxQueue'
 
 const preventDefault = (fn: () => void): ((e: React.SyntheticEvent) => void) => {
   return (e) => {
@@ -11,7 +12,7 @@ const preventDefault = (fn: () => void): ((e: React.SyntheticEvent) => void) => 
 }
 
 const Queue: NextPage = () => {
-  const { page, pageUrl } = useAppSelector(selectTxQueue)
+  const { page, pageUrl } = useTxQueue()
   const dispatch = useAppDispatch()
 
   const onPageChange = (url?: string) => {

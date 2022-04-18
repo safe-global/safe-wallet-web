@@ -3,11 +3,10 @@ import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@m
 import { useForm, type FieldValues } from 'react-hook-form'
 
 import css from './styles.module.css'
-import { useAppSelector } from 'store'
-import { selectBalances } from '@/store/balancesSlice'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
 import { formatDecimals, toDecimals } from '@/services/formatters'
 import { validateAddress } from '@/services/validation'
+import useBalances from '@/services/useBalances'
 
 export type SendAssetsFormData = {
   recepient: string
@@ -16,7 +15,7 @@ export type SendAssetsFormData = {
 }
 
 const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData) => void }): ReactElement => {
-  const balances = useAppSelector(selectBalances)
+  const balances = useBalances()
 
   const {
     register,

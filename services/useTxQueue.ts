@@ -1,23 +1,19 @@
-import {
-  getTransactionQueue,
-  type TransactionListItem,
-  type TransactionListPage,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+import { getTransactionQueue, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'store'
-import { selectSafeInfo } from '@/store/safeInfoSlice'
 import { GATEWAY_URL } from '@/config/constants'
 import useAsync from './useAsync'
 import { Errors, logError } from './exceptions'
 import { selectTxQueue, setQueuePage, setPageUrl } from '@/store/txQueueSlice'
+import useSafeInfo from './useSafeInfo'
 
 const loadTxQueue = (chainId: string, address: string, pageUrl?: string) => {
   return getTransactionQueue(GATEWAY_URL, chainId, address, pageUrl)
 }
 
-const useTxQueue = (): void => {
-  const { safe } = useAppSelector(selectSafeInfo)
-  const { pageUrl } = useAppSelector(selectTxQueue)
+export const useInitTxQueue = (): void => {
+  const { safe } = useSafeInfo()
+  const { pageUrl } = useTxQueue()
   const dispatch = useAppDispatch()
   const { chainId, txQueuedTag } = safe
   const address = safe.address.value
@@ -45,6 +41,11 @@ const useTxQueue = (): void => {
     if (!error) return
     logError(Errors._602, error.message)
   }, [error])
+}
+
+const useTxQueue = () => {
+  const txQueue = useAppSelector(selectTxQueue)
+  return txQueue
 }
 
 export default useTxQueue

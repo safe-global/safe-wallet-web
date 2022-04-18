@@ -5,26 +5,26 @@ import { Provider } from 'react-redux'
 import '../styles/globals.css'
 import { store } from 'store'
 import PageLayout from '@/components/common/PageLayout'
-import useChains from '@/services/useChains'
-import useSafeInfo from '@/services/useSafeInfo'
-import useBalances from '@/services/useBalances'
-import useTxHistory from '@/services/useTxHistory'
-import useTxQueue from '@/services/useTxQueue'
-import { useWeb3 } from '@/services/useWeb3'
-import { useSafeSDK } from '@/services/useSafeSDK'
-import { useWeb3ReadOnly } from '@/services/useWeb3ReadOnly'
+import { useInitChains } from '@/services/useChains'
+import { useInitSafeInfo } from '@/services/useSafeInfo'
+import { useInitBalances } from '@/services/useBalances'
+import { useInitTxHistory } from '@/services/useTxHistory'
+import { useInitTxQueue } from '@/services/useTxQueue'
+import { useInitWeb3 } from '@/services/useWeb3'
+import { useInitSafeSDK } from '@/services/useSafeSDK'
+import { useInitWeb3ReadOnly } from '@/services/useWeb3ReadOnly'
 import usePathRewrite from '@/services/usePathRewrite'
 
 const InitApp = (): null => {
   usePathRewrite()
-  useChains()
-  useSafeInfo()
-  useBalances()
-  useTxHistory()
-  useTxQueue()
-  useWeb3()
-  useWeb3ReadOnly()
-  useSafeSDK()
+  useInitChains()
+  useInitSafeInfo()
+  useInitBalances()
+  useInitTxHistory()
+  useInitTxQueue()
+  useInitWeb3()
+  useInitWeb3ReadOnly()
+  useInitSafeSDK()
 
   return null
 }
@@ -33,7 +33,7 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
   return (
     <Provider store={store}>
       <Head>
-        <title>Safe</title>
+        <title>Safe 🌭</title>
         <meta name="description" content="Safe app" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

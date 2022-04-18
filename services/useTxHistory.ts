@@ -1,19 +1,19 @@
 import { getTransactionHistory, TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'store'
-import { selectSafeInfo } from '@/store/safeInfoSlice'
 import { GATEWAY_URL } from '@/config/constants'
 import useAsync from './useAsync'
 import { Errors, logError } from './exceptions'
 import { selectTxHistory, setHistoryPage, setPageUrl } from '@/store/txHistorySlice'
+import useSafeInfo from './useSafeInfo'
 
 const loadTxHistory = (chainId: string, address: string, pageUrl?: string) => {
   return getTransactionHistory(GATEWAY_URL, chainId, address, pageUrl)
 }
 
-const useTxHistory = (): void => {
-  const { safe } = useAppSelector(selectSafeInfo)
-  const { pageUrl } = useAppSelector(selectTxHistory)
+export const useInitTxHistory = (): void => {
+  const { safe } = useSafeInfo()
+  const { pageUrl } = useTxHistory()
   const dispatch = useAppDispatch()
   const { chainId, txHistoryTag } = safe
   const address = safe.address.value
@@ -41,6 +41,11 @@ const useTxHistory = (): void => {
     if (!error) return
     logError(Errors._602, error.message)
   }, [error])
+}
+
+const useTxHistory = () => {
+  const txHistory = useAppSelector(selectTxHistory)
+  return txHistory
 }
 
 export default useTxHistory
