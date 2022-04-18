@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { setWeb3 } from '@/services/web3'
 import Web3 from 'web3'
-import { useAppSelector } from 'store'
+import { useAppSelector } from '@/store'
 import useSafeAddress from '@/services/useSafeAddress'
 import { selectChainById } from '@/store/chainsSlice'
 

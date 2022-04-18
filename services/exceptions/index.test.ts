@@ -1,23 +1,24 @@
 import { Errors, logError, trackError, CodedException } from '.'
-import * as constants from 'src/utils/constants'
+import * as constants from '@/config/constants'
 import * as Sentry from '@sentry/react'
 
 describe('CodedException', () => {
   beforeAll(() => {
     jest.mock('@sentry/react')
-    jest.mock('src/utils/constants')
-    ;(constants as any).IS_PRODUCTION = false
+    jest.mock('@/config/constants', () => ({
+      IS_PRODUCTION: false,
+    }))
     console.error = jest.fn()
     // @ts-ignore
     Sentry.captureException = jest.fn()
   })
 
   afterAll(() => {
-    jest.unmock('console')
-    jest.unmock('@sentry/react')
+    jest.clearAllMocks()
   })
 
   afterEach(() => {
+    jest.clearAllMocks()
     ;(constants as any).IS_PRODUCTION = false
   })
 
@@ -101,7 +102,6 @@ describe('CodedException', () => {
     })
 
     it('does not track using Sentry in non-production envs', () => {
-      ;(constants as any).IS_PRODUCTION = false
       const err = trackError(Errors._100)
       expect(Sentry.captureException).not.toHaveBeenCalled()
       expect(console.error).toHaveBeenCalledWith(err)

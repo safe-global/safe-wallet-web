@@ -1,9 +1,10 @@
-import { ReactElement } from 'react'
-import type { AppProps } from 'next/app'
+import Sentry from '@/services/sentry' // needs to be imported first
+import { type ReactElement } from 'react'
+import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import { Provider } from 'react-redux'
 import '../styles/globals.css'
-import { store } from 'store'
+import { store } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import { useInitChains } from '@/services/useChains'
 import { useInitSafeInfo } from '@/services/useSafeInfo'
@@ -40,9 +41,12 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
 
       <InitApp />
 
-      <PageLayout>
-        <Component {...pageProps} />
-      </PageLayout>
+      {/* @ts-expect-error - Temporary Fix */}
+      <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
+        <PageLayout>
+          <Component {...pageProps} />
+        </PageLayout>
+      </Sentry.ErrorBoundary>
     </Provider>
   )
 }

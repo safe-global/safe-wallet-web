@@ -1,6 +1,6 @@
 import { getBalances, SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from 'store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { GATEWAY_URL } from '@/config/constants'
 import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'

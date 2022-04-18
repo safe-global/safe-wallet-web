@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useAppDispatch, useAppSelector } from 'store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSafeInfo, setSafeError, setSafeInfo, setSafeLoading } from '@/store/safeInfoSlice'
 import useSafeAddress from './useSafeAddress'
 import { GATEWAY_URL, POLLING_INTERVAL } from '@/config/constants'

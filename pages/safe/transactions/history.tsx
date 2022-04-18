@@ -1,6 +1,6 @@
 import TxList from '@/components/transactions/TxList'
 import type { NextPage } from 'next'
-import { useAppDispatch } from 'store'
+import { useAppDispatch } from '@/store'
 import { setPageUrl } from '@/store/txHistorySlice'
 import useTxHistory from '@/services/useTxHistory'
 

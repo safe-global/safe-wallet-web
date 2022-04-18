@@ -1,7 +1,7 @@
 import { getChainsConfig, type ChainListResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { GATEWAY_URL } from '@/config/constants'
 import { useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from 'store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { selectChains, setChains } from '@/store/chainsSlice'
 import { Errors, logError } from './exceptions'
 import useAsync from './useAsync'

@@ -8,7 +8,7 @@ import {
   TransactionInfo,
   TransferDirection,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useAppSelector } from 'store'
+import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import useSafeAddress from '@/services/useSafeAddress'
 import TokenAmount from '@/components/common/TokenAmount'
