@@ -9,6 +9,7 @@ import PageLayout from '@/components/common/PageLayout'
 import { useInitChains } from '@/services/useChains'
 import { useInitSafeInfo } from '@/services/useSafeInfo'
 import { useInitBalances } from '@/services/useBalances'
+import { useInitCollectibles } from '@/services/useCollectibles'
 import { useInitTxHistory } from '@/services/useTxHistory'
 import { useInitTxQueue } from '@/services/useTxQueue'
 import { useInitWeb3 } from '@/services/useWeb3'
@@ -21,6 +22,7 @@ const InitApp = (): null => {
   useInitChains()
   useInitSafeInfo()
   useInitBalances()
+  useInitCollectibles()
   useInitTxHistory()
   useInitTxQueue()
   useInitWeb3()
