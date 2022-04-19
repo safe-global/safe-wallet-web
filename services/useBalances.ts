@@ -1,15 +1,10 @@
 import { getBalances, SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { GATEWAY_URL } from '@/config/constants'
 import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import { Errors, logError } from './exceptions'
 import { selectBalances, setBalances } from '@/store/balancesSlice'
-
-const loadBalances = (chainId: string, address: string) => {
-  return getBalances(GATEWAY_URL, chainId, address)
-}
 
 export const useInitBalances = (): void => {
   const { safe } = useSafeInfo()
@@ -18,7 +13,7 @@ export const useInitBalances = (): void => {
   // Re-fetch assets when the entire SafeInfo updates
   const [data, error] = useAsync<SafeBalanceResponse | undefined>(async () => {
     if (!safe.address.value) return
-    return loadBalances(safe.chainId, safe.address.value)
+    return getBalances(safe.chainId, safe.address.value)
   }, [safe])
 
   // Clear the old Balances when Safe address is changed

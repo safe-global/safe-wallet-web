@@ -1,15 +1,10 @@
 import { getTransactionHistory, TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { GATEWAY_URL } from '@/config/constants'
 import useAsync from './useAsync'
 import { Errors, logError } from './exceptions'
 import { selectTxHistory, setHistoryPage, setPageUrl } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
-
-const loadTxHistory = (chainId: string, address: string, pageUrl?: string) => {
-  return getTransactionHistory(GATEWAY_URL, chainId, address, pageUrl)
-}
 
 export const useInitTxHistory = (): void => {
   const { safe } = useSafeInfo()
@@ -21,7 +16,7 @@ export const useInitTxHistory = (): void => {
   // Re-fetch assets when pageUrl, chainId/address, or txHistoryTag change
   const [data, error] = useAsync<TransactionListPage | undefined>(async () => {
     if (chainId && address) {
-      return loadTxHistory(chainId, address, pageUrl)
+      return getTransactionHistory(chainId, address, pageUrl)
     }
   }, [txHistoryTag, chainId, address, pageUrl])
 

@@ -1,6 +1,5 @@
 import { getOwnedSafes, OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
 import Web3 from 'web3'
-import { GATEWAY_URL } from '@/config/constants'
 import { ReactElement } from 'react'
 import useAsync from '@/services/useAsync'
 import css from './styles.module.css'
@@ -8,10 +7,6 @@ import Link from 'next/link'
 import chains from '@/config/chains'
 import useSafeAddress from '@/services/useSafeAddress'
 import { shortenAddress } from '@/services/formatters'
-
-const getOwned = (chainId: string, walletAddress: string): Promise<OwnedSafes> => {
-  return getOwnedSafes(GATEWAY_URL, chainId, walletAddress)
-}
 
 const OwnedSafes = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
   const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
@@ -37,7 +32,7 @@ const SafeList = (): ReactElement => {
     const walletAddress = typeof window !== 'undefined' ? (window as any).ethereum?.selectedAddress || '' : ''
     if (!walletAddress || !chainId) return
 
-    return getOwned(chainId, Web3.utils.toChecksumAddress(walletAddress))
+    return getOwnedSafes(chainId, Web3.utils.toChecksumAddress(walletAddress))
   }, [chainId])
 
   return (

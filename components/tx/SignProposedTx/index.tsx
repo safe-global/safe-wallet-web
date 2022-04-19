@@ -2,7 +2,6 @@ import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Typography } from '@mui/material'
 import ErrorToast from '@/components/common/ErrorToast'
-import { GATEWAY_URL } from '@/config/constants'
 import { ReactElement, useState } from 'react'
 import { createTransaction, signTransaction } from '@/services/createTransaction'
 import extractTxInfo from '@/services/extractTxInfo'
@@ -10,7 +9,7 @@ import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
 
 const getTxDetails = async (chainId: string, id: string) => {
-  return getTransactionDetails(GATEWAY_URL, chainId, id)
+  return getTransactionDetails(chainId, id)
 }
 
 const SignProposedTx = ({

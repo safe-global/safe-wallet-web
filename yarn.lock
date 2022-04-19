@@ -1186,10 +1186,10 @@
     react-media "^1.10.0"
     web3-utils "^1.6.0"
 
-"@gnosis.pm/safe-react-gateway-sdk@^2.10.2":
-  version "2.10.3"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-2.10.3.tgz#4537442a78eb0508c483aabcac19296335a77ac3"
-  integrity sha512-ukaLACozdJQb2YGSAZgBUkF4CT9iKVjpnKFCKUnGGghXqp+Yyn9jpdcfFK0VYQJ6ZSwAm40tHtQaN3K9817Bcg==
+"@gnosis.pm/safe-react-gateway-sdk@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.0.0.tgz#42426aa84184955f46850bbcd644d722b5ff88b8"
+  integrity sha512-KIRV55HqVQNk1CnRnEMnF3KHd0IWrPEoosNXjYjS3pb2BOOBxYSuQREUaUt6yUXd/2jM9rq2nXYqjp7ifu8SXw==
   dependencies:
     cross-fetch "^3.1.5"
 

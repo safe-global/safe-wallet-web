@@ -1,17 +1,15 @@
 import { ReactElement, useMemo } from 'react'
-import useBrowserLocale from '@/services/useBrowserLocale'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/currencySlice'
 
 const FiatValue = ({ value }: { value: string | number }): ReactElement => {
-  const locale = useBrowserLocale()
   const currency = useAppSelector(selectCurrency)
 
   const formatter = useMemo(() => {
-    return new Intl.NumberFormat(locale, { style: 'currency', currency })
-  }, [currency, locale])
+    return new Intl.NumberFormat([], { style: 'currency', currency })
+  }, [currency])
 
-  return <>{formatter.format(Number(value))}</>
+  return <span suppressHydrationWarning>{formatter.format(Number(value))}</span>
 }
 
 export default FiatValue

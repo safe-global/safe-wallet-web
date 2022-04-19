@@ -16,8 +16,14 @@ import { useInitWeb3 } from '@/services/useWeb3'
 import { useInitSafeSDK } from '@/services/useSafeSDK'
 import { useInitWeb3ReadOnly } from '@/services/useWeb3ReadOnly'
 import usePathRewrite from '@/services/usePathRewrite'
+import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
+import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
 
 const InitApp = (): null => {
+  if (!IS_PRODUCTION) {
+    setBaseUrl(STAGING_GATEWAY_URL)
+  }
+
   usePathRewrite()
   useInitChains()
   useInitSafeInfo()

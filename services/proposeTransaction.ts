@@ -1,7 +1,6 @@
 import Web3 from 'web3'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Operation, proposeTransaction } from '@gnosis.pm/safe-react-gateway-sdk'
-import { GATEWAY_URL } from '@/config/constants'
 import { getSafeSDK } from '@/services/web3'
 
 const proposeTx = async (chainId: string, safeAddress: string, tx: SafeTransaction) => {
@@ -9,7 +8,7 @@ const proposeTx = async (chainId: string, safeAddress: string, tx: SafeTransacti
 
   const safeTxHash = await getSafeSDK().getTransactionHash(tx)
 
-  return await proposeTransaction(GATEWAY_URL, chainId, safeAddress, {
+  return await proposeTransaction(chainId, safeAddress, {
     ...tx.data,
     safeTxHash,
     sender,

@@ -5,7 +5,7 @@ import { erc20Transfer } from './abi'
 import { toDecimals } from './formatters'
 
 const encodeTokenTransferData = (to: string, value: string): string => {
-  return (new Web3()).eth.abi.encodeFunctionCall(erc20Transfer, [to, value])
+  return new Web3().eth.abi.encodeFunctionCall(erc20Transfer, [to, value])
 }
 
 export const createTokenTransferParams = (

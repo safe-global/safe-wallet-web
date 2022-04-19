@@ -26,7 +26,7 @@ export const useQueryRewrite = (): boolean => {
   useEffect(() => {
     if (typeof location === 'undefined') return
 
-    const [_, pathSafe] = location.pathname.match(/^\/([^\/]+)/) || []
+    const [_, pathSafe] = location.pathname.match(/^\/([^\/]+?:0x[0-9a-fA-F]{40})/) || []
 
     if (pathSafe) {
       const newPath = location.pathname.replace(pathSafe, 'safe')
