@@ -91,7 +91,7 @@ export const useOnboard = (): OnboardAPI | null => {
     return () => {
       subscription.unsubscribe()
     }
-  }, [chainId, address, safe.version])
+  }, [chainId, address, safe.version, onboard])
 
   return onboard
 }
