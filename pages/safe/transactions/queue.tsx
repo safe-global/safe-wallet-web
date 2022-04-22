@@ -1,15 +1,9 @@
+import { type SyntheticEvent } from 'react'
 import TxList from '@/components/transactions/TxList'
 import type { NextPage } from 'next'
 import { useAppDispatch } from '@/store'
 import { setPageUrl } from '@/store/txQueueSlice'
 import useTxQueue from '@/services/useTxQueue'
-
-const preventDefault = (fn: () => void): ((e: React.SyntheticEvent) => void) => {
-  return (e) => {
-    e.preventDefault()
-    fn()
-  }
-}
 
 const Queue: NextPage = () => {
   const { page, pageUrl } = useTxQueue()
@@ -19,17 +13,20 @@ const Queue: NextPage = () => {
     dispatch(setPageUrl(url))
   }
 
-  const onNext = preventDefault(() => {
+  const onNext = (e: SyntheticEvent) => {
+    e.preventDefault()
     onPageChange(page.next)
-  })
+  }
 
-  const onPrev = preventDefault(() => {
+  const onPrev = (e: SyntheticEvent) => {
+    e.preventDefault()
     onPageChange(page.previous)
-  })
+  }
 
-  const onFirst = preventDefault(() => {
+  const onFirst = (e: SyntheticEvent) => {
+    e.preventDefault()
     onPageChange(undefined)
-  })
+  }
 
   return (
     <main>

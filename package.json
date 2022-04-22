@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ./**/*.{ts,tsx}",
+    "lint": "next lint",
     "prettier": "prettier -w './**/*.{ts,tsx}'",
     "test": "jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
