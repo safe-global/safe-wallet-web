@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useSyncExternalStore } from 'react'
 import Web3 from 'web3'
 import Onboard, { type OnboardAPI, type WalletState } from '@web3-onboard/core'
 import type { Account, AppState } from '@web3-onboard/core/dist/types'
@@ -47,8 +47,6 @@ export const useInitOnboard = (): void => {
       return
     }
 
-    console.log('init onboard')
-
     const initOnboard = async () => {
       _onboardInstance = Onboard({
         wallets: await getDefaultWallets(),
@@ -59,6 +57,9 @@ export const useInitOnboard = (): void => {
           token: nativeCurrency.symbol,
           color: theme.backgroundColor,
         })),
+        accountCenter: {
+          desktop: { position: 'bottomRight' },
+        },
         appMetadata: {
           name: 'Gnosis Safe',
           icon: Safe.toString(),
@@ -112,8 +113,7 @@ export const useOnboardState: {
 }
 
 const useOnboard = () => {
-  const onboard = useMemo(() => _onboardInstance, [_onboardInstance])
-  return onboard
+  return _onboardInstance
 }
 
 export default useOnboard
