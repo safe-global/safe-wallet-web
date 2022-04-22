@@ -24,7 +24,7 @@ export const useInitTxQueue = (): void => {
   useEffect(() => {
     dispatch(setQueuePage(undefined))
     dispatch(setPageUrl(undefined))
-  }, [address, chainId])
+  }, [address, chainId, dispatch])
 
   // Save the TxQueue in the store
   useEffect(() => {

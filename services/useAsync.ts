@@ -7,6 +7,7 @@ const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[]): Asyn
   const [error, setError] = useState<Error>()
   const [loading, setLoading] = useState<boolean>(true)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const callback = useCallback(asyncCall, dependencies)
 
   useEffect(() => {
