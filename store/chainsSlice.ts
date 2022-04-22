@@ -2,9 +2,17 @@ import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '.'
 
-type ChainsState = ChainInfo[]
+type ChainsState = {
+  configs: ChainInfo[]
+  error?: Error
+  loading: boolean
+}
 
-const initialState: ChainsState = []
+const initialState: ChainsState = {
+  configs: [],
+  error: undefined,
+  loading: true,
+}
 
 export const chainsSlice = createSlice({
   name: 'chains',
@@ -25,6 +33,6 @@ export const selectChains = (state: RootState): ChainsState => {
 export const selectChainById = createSelector(
   [selectChains, (_: RootState, chainId: string) => chainId],
   (chains, chainId) => {
-    return chains.find((item: ChainInfo) => item.chainId === chainId)
+    return chains.configs.find((item: ChainInfo) => item.chainId === chainId)
   },
 )

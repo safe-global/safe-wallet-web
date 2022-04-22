@@ -6,29 +6,30 @@ import { Errors, logError } from './exceptions'
 import useAsync from './useAsync'
 import useSafeAddress from './useSafeAddress'
 
-export const useInitChains = (): { error?: Error; loading: boolean } => {
+export const useInitChains = (): void => {
   const dispatch = useAppDispatch()
 
   const [data, error, loading] = useAsync<ChainListResponse>(getChainsConfig, [])
 
   useEffect(() => {
-    if (data) {
-      dispatch(setChains(data.results))
-    }
-  }, [data, dispatch])
+    dispatch(
+      setChains({
+        configs: data?.results || [],
+        error,
+        loading,
+      }),
+    )
+  }, [data, error, loading, dispatch])
 
   useEffect(() => {
     if (error) {
       logError(Errors._904, error.message)
     }
   }, [error])
-
-  return { error, loading }
 }
 
 const useChains = () => {
-  const chains = useAppSelector(selectChains)
-  return chains
+  return useAppSelector(selectChains)
 }
 
 export default useChains
