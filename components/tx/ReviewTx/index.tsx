@@ -1,16 +1,17 @@
 import { useState, type ReactElement } from 'react'
-import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { type SendAssetsFormData } from '../SendAssetsForm'
 import { Button, FormControl, TextField, Typography } from '@mui/material'
+import { useForm } from 'react-hook-form'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams, createTransaction } from '@/services/createTransaction'
 import { shortenAddress } from '@/services/formatters'
-import { useForm, type FieldValues } from 'react-hook-form'
-import css from './styles.module.css'
 import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
 import useBalances from '@/services/useBalances'
+import { type SendAssetsFormData } from '@/components/tx/SendAssetsForm'
+import css from '@/components/tx/ReviewTx/styles.module.css'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -22,6 +23,10 @@ const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData
       {shortenAddress(params.recepient)}
     </p>
   )
+}
+
+type ReviewTxForm = {
+  nonce: number
 }
 
 const ReviewTx = ({
@@ -46,9 +51,11 @@ const ReviewTx = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm()
+  } = useForm<ReviewTxForm>({
+    defaultValues: { nonce: safeGas?.recommendedNonce || 0 },
+  })
 
-  const onFormSubmit = async (data: FieldValues) => {
+  const onFormSubmit = async (data: ReviewTxForm) => {
     if (!txParams) return
 
     const editedTxParams = {
@@ -66,8 +73,8 @@ const ReviewTx = ({
     }
   }
 
-  const validateNonce = (userNonce: string) => {
-    if (!/^[0-9]+$/.test(userNonce)) {
+  const validateNonce = (userNonce: number) => {
+    if (!Number.isInteger(userNonce)) {
       return 'Nonce must be a number'
     }
   }
@@ -80,12 +87,16 @@ const ReviewTx = ({
 
       <FormControl fullWidth>
         <TextField
-          key={safeGas?.recommendedNonce}
-          defaultValue={safeGas?.recommendedNonce}
           disabled={safeGasLoading}
           label="Nonce"
+          error={!!errors.nonce}
           helperText={errors.nonce?.message}
-          {...register('nonce', { validate: validateNonce, required: true })}
+          type="number"
+          {...register('nonce', {
+            valueAsNumber: true, // Set field to number type to auto parseInt
+            validate: validateNonce,
+            required: true,
+          })}
         />
       </FormControl>
 
