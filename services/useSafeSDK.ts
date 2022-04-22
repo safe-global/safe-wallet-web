@@ -7,7 +7,7 @@ export const useWalletAddress = (): string | undefined => {
   const [walletAddress, setWalletAddress] = useState<string>()
 
   useEffect(() => {
-    if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
       setWalletAddress((window as any).ethereum?.selectedAddress)
     }
   }, [])

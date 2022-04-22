@@ -7,5 +7,3 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: Maggi64/eslint-plus-action@master
-      with:
-        configFile: .eslintrc.json

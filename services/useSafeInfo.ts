@@ -43,7 +43,7 @@ export const useInitSafeInfo = (): void => {
 
   useEffect(() => {
     let isCurrent = true
-    let timer: NodeJS.Timeout | null = null
+    let timer: ReturnType<typeof setTimeout> | undefined
 
     // Stop polling on unmount
     const onUnmount = () => {
@@ -81,7 +81,7 @@ export const useInitSafeInfo = (): void => {
     loadSafe(true)
 
     return onUnmount
-  }, [chainId, address])
+  }, [chainId, address, onData, onError, onLoading])
 }
 
 const useSafeInfo = () => {

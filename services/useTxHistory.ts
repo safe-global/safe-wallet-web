@@ -24,7 +24,7 @@ export const useInitTxHistory = (): void => {
   useEffect(() => {
     dispatch(setHistoryPage(undefined))
     dispatch(setPageUrl(undefined))
-  }, [address, chainId])
+  }, [address, chainId, dispatch])
 
   // Save the TxHistory in the store
   useEffect(() => {
