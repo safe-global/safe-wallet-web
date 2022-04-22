@@ -27,11 +27,13 @@ describe('useInitChains hook', () => {
 
   it('should fetch the chains when the hook is called', async () => {
     // Render the hook and check that the loading state is true
-    const { result } = renderHook(() => useInitChains(), { wrapper: TestProviderWrapper })
+    renderHook(() => useInitChains(), { wrapper: TestProviderWrapper })
+    const { result } = renderHook(() => useChains(), { wrapper: TestProviderWrapper })
 
     // Check that the loading state is true
     expect(result.current.loading).toBe(true)
     expect(result.current.error).toBe(undefined)
+    expect(result.current.configs).toEqual([])
 
     // Check that the loading state is false after the promise resolves
     await act(async () => {
@@ -42,8 +44,7 @@ describe('useInitChains hook', () => {
     expect(result.current.error).toBe(undefined)
 
     // Check that the store contains the chains
-    const { result: selectorResult } = renderHook(() => useChains(), { wrapper: TestProviderWrapper })
-    expect(selectorResult.current).toEqual([
+    expect(result.current.configs).toEqual([
       {
         chainId: '4',
       },
@@ -55,7 +56,8 @@ describe('useInitChains hook', () => {
     ;(getChainsConfig as any).mockImplementation(() => Promise.reject('Something went wrong'))
 
     // Render the hook and check that the loading state is true
-    const { result } = renderHook(() => useInitChains(), { wrapper: TestProviderWrapper })
+    renderHook(() => useInitChains(), { wrapper: TestProviderWrapper })
+    const { result } = renderHook(() => useChains(), { wrapper: TestProviderWrapper })
 
     // Check that the loading state is true
     expect(result.current.loading).toBe(true)
@@ -70,7 +72,6 @@ describe('useInitChains hook', () => {
     expect(result.current.error).toBe('Something went wrong')
 
     // Check that the store does not contain the chains
-    const { result: selectorResult } = renderHook(() => useChains(), { wrapper: TestProviderWrapper })
-    expect(selectorResult.current).toEqual([])
+    expect(result.current.configs).toEqual([])
   })
 })
