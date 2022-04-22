@@ -20,16 +20,18 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     formState: { errors },
-  } = useForm()
-
-  const onFormSubmit = async (data: FieldValues) => {
-    onSubmit(data as SendAssetsFormData)
-  }
+  } = useForm<SendAssetsFormData>({
+    defaultValues: {
+      recepient: '',
+      tokenAddress: '',
+      amount: '',
+    },
+  })
 
   const validateAmount = (amount: string) => {
-    const tokenAddress = watch('tokenAddress')
+    const tokenAddress = getValues('tokenAddress')
     const token = tokenAddress && balances.items.find((item) => item.tokenInfo.address === tokenAddress)
 
     if (!token) return
@@ -39,14 +41,25 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
     }
   }
 
+  // We must destructure the ref in order to focus MUI fields on error
+  const { ref: recipientFieldRef, ...recepientField } = {
+    ...register('recepient', {
+      validate: validateAddress,
+      required: true,
+    }),
+  }
+
+  const { ref: amountFieldRef, ...amountField } = register('amount', { required: true, validate: validateAmount })
+
   return (
-    <form className={css.container} onSubmit={handleSubmit(onFormSubmit)}>
+    <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
       <FormControl fullWidth>
         <TextField
-          required
           label="Recepient"
+          error={!!errors.recepient}
           helperText={errors.recepient?.message}
-          {...register('recepient', { required: true, validate: validateAddress })}
+          inputRef={recipientFieldRef}
+          {...recepientField}
         />
       </FormControl>
 
@@ -69,10 +82,11 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
 
       <FormControl fullWidth>
         <TextField
-          required
           label="Amount"
+          error={!!errors.amount}
           helperText={errors.amount?.message}
-          {...register('amount', { required: true, validate: validateAmount })}
+          inputRef={amountFieldRef}
+          {...amountField}
         />
       </FormControl>
 
