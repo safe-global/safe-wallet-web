@@ -1,14 +1,13 @@
 import Web3 from 'web3'
-import { useWallets } from '@web3-onboard/react'
-import { getOwnedSafes, type OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { ReactElement } from 'react'
+import { getOwnedSafes, type OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import useAsync from '@/services/useAsync'
 import Link from 'next/link'
 import chains from '@/config/chains'
 import useSafeAddress from '@/services/useSafeAddress'
 import { shortenAddress } from '@/services/formatters'
-import { getPrimaryAccount } from '@/services/onboard'
+import { getPrimaryAccount, useWallets } from '@/services/onboard'
 import css from '@/components/common/SafeList/styles.module.css'
 
 const OwnedSafes = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {

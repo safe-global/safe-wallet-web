@@ -1,7 +1,6 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Web3 from 'web3'
-import { init } from '@web3-onboard/react'
-import { web3Onboard } from '@web3-onboard/react'
+import init, { WalletState } from '@web3-onboard/core'
 import { Subscription } from 'rxjs'
 
 import { getRecommendedInjectedWallets, getSupportedWalletModules } from '@/config/wallets'
@@ -9,9 +8,16 @@ import useSafeAddress from '@/services/useSafeAddress'
 import useChains from '@/services/useChains'
 import useSafeInfo from '@/services/useSafeInfo'
 import { setSafeSDK, setWeb3 } from '@/services/web3'
-import { getPrimaryAccount } from '@/services/onboard'
+import {
+  getOnboardInstance,
+  getPrimaryAccount,
+  setOnboardInstance,
+  _getOnboardState,
+  _onboardInstance,
+} from '@/services/onboard'
 import { formatRpcServiceUrl } from '@/config/chains'
 import { INFURA_TOKEN } from '@/config/constants'
+import connect from '@web3-onboard/core/dist/connect'
 
 const useInitOnboard = (): void => {
   const { configs, loading } = useChains()
@@ -19,7 +25,7 @@ const useInitOnboard = (): void => {
   const { safe } = useSafeInfo()
 
   useEffect(() => {
-    if (configs.length === 0 || loading) {
+    if (loading || configs.length === _getOnboardState()?.chains.length) {
       return
     }
 
@@ -49,12 +55,14 @@ const useInitOnboard = (): void => {
         setWeb3(wallets)
         setSafeSDK(getPrimaryAccount(wallets).address, chainId, address, safe.version)
       })
+
+      setOnboardInstance(onboard)
     })()
 
     return () => {
       subscription?.unsubscribe?.()
     }
-  }, [web3Onboard, configs, loading, chainId, address])
+  }, [configs, loading, chainId, address])
 }
 
 export default useInitOnboard
