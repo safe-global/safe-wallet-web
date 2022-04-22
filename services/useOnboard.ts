@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Web3 from 'web3'
 import Onboard, { type OnboardAPI, type WalletState } from '@web3-onboard/core'
-import type { AppState } from '@web3-onboard/core/dist/types'
 
 import SafeLogoNoText from '@/public/safeLogoNoText.svg'
 import { getDefaultWallets, getRecommendedInjectedWallets } from '@/services/wallets'
@@ -68,6 +67,8 @@ export const useOnboard = (): OnboardAPI | null => {
             recommendedInjectedWallets: getRecommendedInjectedWallets(),
           },
         }))())
+
+      console.log('onboardInstance', onboardInstance)
 
       setOnboard(onboardInstance)
 
