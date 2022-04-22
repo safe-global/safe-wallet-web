@@ -42,11 +42,18 @@ export const useInitSafeInfo = (): void => {
   )
 
   useEffect(() => {
-    if (!chainId || !address) return
-
     let isCurrent = true
-    let timer: NodeJS.Timeout | null = null
+    let timer: ReturnType<typeof setTimeout> | undefined
 
+    // Stop polling on unmount
+    const onUnmount = () => {
+      isCurrent = false
+      timer && clearTimeout(timer)
+    }
+
+    if (!chainId || !address) return onUnmount
+
+    // Poll the Safe Info
     const loadSafe = async (isFirst = false) => {
       if (!isCurrent) return
 
@@ -68,14 +75,13 @@ export const useInitSafeInfo = (): void => {
       }
     }
 
-    // First load
+    // Start the loop.
+    // We pass true to indicate that this is the first load. Subsequent loads will pass false.
+    // This is important to ignore errors on subsequent polling requests.
     loadSafe(true)
 
-    return () => {
-      isCurrent = false
-      timer && clearTimeout(timer)
-    }
-  }, [chainId, address])
+    return onUnmount
+  }, [chainId, address, onData, onError, onLoading])
 }
 
 const useSafeInfo = () => {

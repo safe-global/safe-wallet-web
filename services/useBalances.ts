@@ -19,7 +19,7 @@ export const useInitBalances = (): void => {
   // Clear the old Balances when Safe address is changed
   useEffect(() => {
     dispatch(setBalances(undefined))
-  }, [safe.address.value, safe.chainId])
+  }, [safe.address.value, safe.chainId, dispatch])
 
   // Save the Balances in the store
   useEffect(() => {

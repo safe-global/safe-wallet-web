@@ -8,7 +8,7 @@ import chains from '@/config/chains'
 import useSafeAddress from '@/services/useSafeAddress'
 import { shortenAddress } from '@/services/formatters'
 
-const OwnedSafes = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
+const OwnedSafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
   const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
 
   return (
@@ -44,7 +44,7 @@ const SafeList = (): ReactElement => {
       {!loading && error && `Error loading owned Safes: ${error.message}`}
 
       {!loading && !error && (
-        <OwnedSafes safes={ownedSafes ? ownedSafes.safes : []} chainId={chainId} safeAddress={address} />
+        <OwnedSafesList safes={ownedSafes ? ownedSafes.safes : []} chainId={chainId} safeAddress={address} />
       )}
     </div>
   )
