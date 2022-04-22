@@ -1,9 +1,10 @@
+import { ReactElement, useState } from 'react'
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material'
+
 import ErrorToast from '@/components/common/ErrorToast'
-import { ReactElement, useState } from 'react'
-import { createTransaction, signTransaction, executeTransaction } from '@/services/createTransaction'
+import { createTransaction, executeTransaction, signTransaction } from '@/services/createTransaction'
 import extractTxInfo from '@/services/extractTxInfo'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
@@ -24,7 +25,6 @@ const SignProposedTx = ({
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
 
   const onSign = async () => {
-    console.log('onSign')
     try {
       const txDetails = await getTxDetails(chainId, txSummary.id)
       const { txParams, signatures } = extractTxInfo(txSummary, txDetails)
@@ -35,27 +35,19 @@ const SignProposedTx = ({
       })
 
       const signedTx = await signTransaction(safeTx)
-      // await executeTransaction(safeTx)
-      // onSubmit(signedTx)
+      onSubmit(signedTx)
     } catch (err) {
       setError(err as Error)
     }
   }
 
-  const onSignAndExecute = async () => {
-    console.log('onSignAndExecute')
+  const onExecute = async () => {
     try {
       const txDetails = await getTxDetails(chainId, txSummary.id)
-      const { txParams, signatures } = extractTxInfo(txSummary, txDetails)
+      const { txParams } = extractTxInfo(txSummary, txDetails)
 
       const safeTx = await createTransaction(txParams)
-      Object.entries(signatures).forEach(([signer, data]) => {
-        safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
-      })
-
-      const signedTx = await signTransaction(safeTx)
       await executeTransaction(safeTx)
-      // onSubmit(signedTx)
     } catch (err) {
       setError(err as Error)
     }
@@ -76,7 +68,7 @@ const SignProposedTx = ({
       <pre style={{ overflow: 'auto', width: '100%' }}>{txSummary.id}</pre>
 
       <div className={css.submit}>
-        <Button variant="contained" onClick={shouldExecute ? onSignAndExecute : onSign}>
+        <Button variant="contained" onClick={shouldExecute ? onExecute : onSign}>
           Sign
         </Button>
       </div>
