@@ -101,5 +101,17 @@ export default useOnboard
 
 export const useWalletAddress = (): string => {
   const onboard = useOnboard()
-  return onboard ? getConnectedWalletAddress(onboard.state.get().wallets) : ''
+  const [walletAddress, setWalletAddress] = useState<string>('')
+
+  useEffect(() => {
+    const subscription = onboard?.state.select('wallets').subscribe((wallets) => {
+      setWalletAddress(wallets.length > 0 ? getConnectedWalletAddress(wallets) : '')
+    })
+
+    return () => {
+      subscription?.unsubscribe()
+    }
+  }, [onboard])
+
+  return walletAddress
 }
