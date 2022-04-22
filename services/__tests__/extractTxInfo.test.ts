@@ -35,9 +35,7 @@ describe('extractTxInfo', () => {
           type: 'Address',
           value: '0x1234567890123456789012345678901234567890',
         },
-        confirmations: [
-          { signer: { value: '0x1234567890123456789012345678901234567890' }, signature: '0x123' },
-        ]
+        confirmations: [{ signer: { value: '0x1234567890123456789012345678901234567890' }, signature: '0x123' }],
       },
     } as unknown as TransactionDetails
 
@@ -55,7 +53,7 @@ describe('extractTxInfo', () => {
         operation: 'CALL',
       },
       signatures: {
-        '0x1234567890123456789012345678901234567890': '0x123'
+        '0x1234567890123456789012345678901234567890': '0x123',
       },
     })
   })
@@ -95,9 +93,7 @@ describe('extractTxInfo', () => {
           type: 'Address',
           value: '0x1234567890123456789012345678901234567890',
         },
-        confirmations: [
-          { signer: { value: '0x1234567890123456789012345678901234567890' }, signature: '0x123' },
-        ]
+        confirmations: [{ signer: { value: '0x1234567890123456789012345678901234567890' }, signature: '0x123' }],
       },
     } as unknown as TransactionDetails
 
@@ -115,7 +111,7 @@ describe('extractTxInfo', () => {
         operation: 'CALL',
       },
       signatures: {
-        '0x1234567890123456789012345678901234567890': '0x123'
+        '0x1234567890123456789012345678901234567890': '0x123',
       },
     })
   })
