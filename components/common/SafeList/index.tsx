@@ -1,12 +1,15 @@
-import { getOwnedSafes, OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
 import Web3 from 'web3'
-import { ReactElement } from 'react'
+import { useWallets } from '@web3-onboard/react'
+import { getOwnedSafes, type OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ReactElement } from 'react'
+
 import useAsync from '@/services/useAsync'
-import css from './styles.module.css'
 import Link from 'next/link'
 import chains from '@/config/chains'
 import useSafeAddress from '@/services/useSafeAddress'
 import { shortenAddress } from '@/services/formatters'
+import { getPrimaryAccount } from '@/services/onboard'
+import css from '@/components/common/SafeList/styles.module.css'
 
 const OwnedSafes = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
   const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
@@ -26,14 +29,15 @@ const OwnedSafes = ({ safes, chainId, safeAddress }: { safes: string[]; chainId:
 
 const SafeList = (): ReactElement => {
   const { chainId, address } = useSafeAddress()
+  const wallets = useWallets()
 
   const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(async () => {
-    // @FIXME
-    const walletAddress = typeof window !== 'undefined' ? (window as any).ethereum?.selectedAddress || '' : ''
-    if (!walletAddress || !chainId) return
+    if (!wallets.length || !chainId) return
+
+    const { address: walletAddress } = getPrimaryAccount(wallets)
 
     return getOwnedSafes(chainId, Web3.utils.toChecksumAddress(walletAddress))
-  }, [chainId])
+  }, [chainId, wallets])
 
   return (
     <div className={css.container}>

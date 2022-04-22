@@ -1,17 +1,19 @@
-import Web3 from 'web3'
+import { proposeTransaction, type Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Operation, proposeTransaction } from '@gnosis.pm/safe-react-gateway-sdk'
+
 import { getSafeSDK } from '@/services/web3'
+import { getPrimaryAccount, _getOnboardState } from '@/services/onboard'
 
 const proposeTx = async (chainId: string, safeAddress: string, tx: SafeTransaction) => {
-  const sender = Web3.utils.toChecksumAddress(Web3.givenProvider.selectedAddress)
-
   const safeTxHash = await getSafeSDK().getTransactionHash(tx)
+
+  const state = _getOnboardState()
+  const { address } = getPrimaryAccount(state.wallets)
 
   return await proposeTransaction(chainId, safeAddress, {
     ...tx.data,
     safeTxHash,
-    sender,
+    sender: address,
     value: parseInt(tx.data.value, 16).toString(),
     operation: tx.data.operation as unknown as Operation,
     nonce: tx.data.nonce.toString(),
