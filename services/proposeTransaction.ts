@@ -2,17 +2,15 @@ import { proposeTransaction, type Operation } from '@gnosis.pm/safe-react-gatewa
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import { getSafeSDK } from '@/services/web3'
-import { getOnboardState, getPrimaryWalletAddress } from '@/services/useOnboard'
+import { getConnectedWalletAddress } from '@/services/useOnboard'
 
 const proposeTx = async (chainId: string, safeAddress: string, tx: SafeTransaction) => {
   const safeTxHash = await getSafeSDK().getTransactionHash(tx)
 
-  const { wallets } = getOnboardState()
-
   return await proposeTransaction(chainId, safeAddress, {
     ...tx.data,
     safeTxHash,
-    sender: getPrimaryWalletAddress(wallets),
+    sender: getConnectedWalletAddress(),
     value: parseInt(tx.data.value, 16).toString(),
     operation: tx.data.operation as unknown as Operation,
     nonce: tx.data.nonce.toString(),

@@ -15,8 +15,8 @@ import { useInitTxHistory } from '@/services/useTxHistory'
 import { useInitTxQueue } from '@/services/useTxQueue'
 import usePathRewrite from '@/services/usePathRewrite'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
-import { useInitOnboard } from '@/services/useOnboard'
-import { useInitSafeSDK } from '@/services/useSafeSDK'
+import useOnboard from '@/services/useOnboard'
+import { useInitWeb3ReadOnly } from '@/services/useWeb3ReadOnly'
 import '@/styles/globals.css'
 
 const InitApp = (): null => {
@@ -31,8 +31,8 @@ const InitApp = (): null => {
   useInitCollectibles()
   useInitTxHistory()
   useInitTxQueue()
-  useInitOnboard()
-  useInitSafeSDK()
+  useInitWeb3ReadOnly()
+  useOnboard()
 
   return null
 }

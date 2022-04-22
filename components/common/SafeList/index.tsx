@@ -7,7 +7,7 @@ import Link from 'next/link'
 import chains from '@/config/chains'
 import useSafeAddress from '@/services/useSafeAddress'
 import { shortenAddress } from '@/services/formatters'
-import { useOnboardState, getPrimaryWalletAddress } from '@/services/useOnboard'
+import { useWalletAddress } from '@/services/useOnboard'
 import css from '@/components/common/SafeList/styles.module.css'
 
 const OwnedSafes = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
@@ -28,15 +28,12 @@ const OwnedSafes = ({ safes, chainId, safeAddress }: { safes: string[]; chainId:
 
 const SafeList = (): ReactElement => {
   const { chainId, address } = useSafeAddress()
-  const wallets = useOnboardState('wallets')
+  const walletAddress = useWalletAddress()
 
   const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(async () => {
-    if (!wallets?.length || !chainId) return
-
-    const walletAddress = getPrimaryWalletAddress(wallets)
-
+    if (!walletAddress || !chainId) return
     return getOwnedSafes(chainId, Web3.utils.toChecksumAddress(walletAddress))
-  }, [chainId, wallets])
+  }, [chainId, walletAddress])
 
   return (
     <div className={css.container}>
