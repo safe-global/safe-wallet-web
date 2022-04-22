@@ -33,6 +33,9 @@ export const getConnectedWalletAddress = (wallets: WalletState[] = getOnboardSta
   return primaryAccount.address
 }
 
+// We must cache the initialization as useOnboard is used in multiple places
+let promise: Promise<OnboardAPI> | null = null
+
 export const useOnboard = (): OnboardAPI | null => {
   const [onboard, setOnboard] = useState<OnboardAPI | null>(onboardSingleton)
 
@@ -40,40 +43,39 @@ export const useOnboard = (): OnboardAPI | null => {
   const { configs } = useChains()
   const { safe } = useSafeInfo()
 
-  // This will only initialize the once, using the singleton in other instances of the hook
   useEffect(() => {
     if (configs.length === 0 || onboardSingleton) {
       return
     }
 
-    console.log('init', configs.length === 0, onboardSingleton)
+    const init = async () => {
+      const onboardInstance = await (promise ||= (async () =>
+        Onboard({
+          wallets: await getDefaultWallets(),
+          chains: configs.map(({ chainId, chainName, nativeCurrency, rpcUri, theme }) => ({
+            id: Web3.utils.numberToHex(chainId),
+            label: chainName,
+            rpcUrl: getRpcServiceUrl(rpcUri),
+            token: nativeCurrency.symbol,
+            color: theme.backgroundColor,
+          })),
+          accountCenter: {
+            desktop: { enabled: false },
+          },
+          appMetadata: {
+            name: 'Gnosis Safe',
+            icon: SafeLogoNoText.toString(),
+            description: 'Please select a wallet to connect to Gnosis Safe',
+            recommendedInjectedWallets: getRecommendedInjectedWallets(),
+          },
+        }))())
 
-    const initOnboard = async () => {
-      const onboardInstance = Onboard({
-        wallets: await getDefaultWallets(),
-        chains: configs.map(({ chainId, chainName, nativeCurrency, rpcUri, theme }) => ({
-          id: Web3.utils.numberToHex(chainId),
-          label: chainName,
-          rpcUrl: getRpcServiceUrl(rpcUri),
-          token: nativeCurrency.symbol,
-          color: theme.backgroundColor,
-        })),
-        accountCenter: {
-          desktop: { enabled: false },
-        },
-        appMetadata: {
-          name: 'Gnosis Safe',
-          icon: SafeLogoNoText.toString(),
-          description: 'Please select a wallet to connect to Gnosis Safe',
-          recommendedInjectedWallets: getRecommendedInjectedWallets(),
-        },
-      })
       setOnboard(onboardInstance)
 
       onboardSingleton = onboardInstance
     }
 
-    initOnboard()
+    init()
   }, [configs])
 
   // Sync Web3 and Safe SDK with the current wallet state
