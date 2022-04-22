@@ -68,8 +68,6 @@ export const useOnboard = (): OnboardAPI | null => {
           },
         }))())
 
-      console.log('onboardInstance', onboardInstance)
-
       setOnboard(onboardInstance)
 
       onboardSingleton = onboardInstance

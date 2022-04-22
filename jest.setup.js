@@ -9,11 +9,7 @@ const mockOnboardState = {
   chains: [],
   walletModules: [],
   wallets: [],
-  accountCenter: {
-    enabled: false,
-    position: 'topRight',
-    expanded: false,
-  },
+  accountCenter: {},
 }
 
 jest.mock('@web3-onboard/core', () => () => ({
@@ -21,7 +17,15 @@ jest.mock('@web3-onboard/core', () => () => ({
   disconnectWallet: jest.fn(),
   setChain: jest.fn(),
   state: {
-    select: () => ({ subscribe: () => ({ unsubscribe: jest.fn() }) }),
+    select: (key) => ({
+      subscribe: (next) => {
+        next(mockOnboardState[key])
+
+        return {
+          unsubscribe: jest.fn(),
+        }
+      },
+    }),
     get: () => mockOnboardState,
   },
 }))

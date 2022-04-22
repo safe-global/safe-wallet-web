@@ -1,7 +1,7 @@
 import type { RecommendedInjectedWallets, WalletInit } from '@web3-onboard/common/dist/types.d'
 import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { WC_BRIDGE } from 'config/constants'
+import { WC_BRIDGE } from '@/config/constants'
 
 const enum WALLET_KEYS {
   INJECTED = 'INJECTED',
