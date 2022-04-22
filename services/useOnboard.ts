@@ -17,18 +17,17 @@ export const getConnectedWallet = (wallets: WalletState[]) => {
   return wallets[0]
 }
 
-const getOnboardState = (): AppState => {
-  if (!onboardSingleton) {
-    throw new Error('@web3-onboard is not initialized')
+export const getConnectedWalletAddress = (wallets = onboardSingleton?.state.get().wallets): string => {
+  if (!wallets) {
+    return ''
   }
-  return onboardSingleton.state.get()
-}
 
-export const getConnectedWalletAddress = (wallets: WalletState[] = getOnboardState().wallets): string => {
   const primaryWallet = getConnectedWallet(wallets)
+
   if (!primaryWallet) {
     return ''
   }
+
   const primaryAccount = primaryWallet.accounts[0]
   return primaryAccount.address
 }
