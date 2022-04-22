@@ -8,6 +8,6 @@ export const toDecimals = (value: string, decimals = 18): BigNumber => {
   return new BigNumber(value).div(`1e-${decimals}`)
 }
 
-export const shortenAddress = (address: string): string => {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`
+export const shortenAddress = (address: string, length = 4): string => {
+  return `${address.slice(0, length + 2)}...${address.slice(-length)}`
 }
