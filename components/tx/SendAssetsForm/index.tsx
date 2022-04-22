@@ -41,16 +41,6 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
     }
   }
 
-  // We must destructure the ref in order to focus MUI fields on error
-  const { ref: recipientFieldRef, ...recepientField } = {
-    ...register('recepient', {
-      validate: validateAddress,
-      required: true,
-    }),
-  }
-
-  const { ref: amountFieldRef, ...amountField } = register('amount', { required: true, validate: validateAmount })
-
   return (
     <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
       <FormControl fullWidth>
@@ -58,8 +48,10 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
           label="Recepient"
           error={!!errors.recepient}
           helperText={errors.recepient?.message}
-          inputRef={recipientFieldRef}
-          {...recepientField}
+          {...register('recepient', {
+            validate: validateAddress,
+            required: true,
+          })}
         />
       </FormControl>
 
@@ -85,8 +77,7 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
           label="Amount"
           error={!!errors.amount}
           helperText={errors.amount?.message}
-          inputRef={amountFieldRef}
-          {...amountField}
+          {...register('amount', { required: true, validate: validateAmount })}
         />
       </FormControl>
 

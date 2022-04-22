@@ -79,15 +79,6 @@ const ReviewTx = ({
     }
   }
 
-  // We must destructure the ref in order to focus MUI fields on error
-  const { ref: nonceFieldRef, ...nonceField } = {
-    ...register('nonce', {
-      valueAsNumber: true, // Set field to number type to auto parseInt
-      validate: validateNonce,
-      required: true,
-    }),
-  }
-
   return (
     <form className={css.container} onSubmit={handleSubmit(onFormSubmit)}>
       <Typography variant="h6">Review transaction</Typography>
@@ -100,9 +91,12 @@ const ReviewTx = ({
           label="Nonce"
           error={!!errors.nonce}
           helperText={errors.nonce?.message}
-          inputRef={nonceFieldRef}
           type="number"
-          {...nonceField}
+          {...register('nonce', {
+            valueAsNumber: true, // Set field to number type to auto parseInt
+            validate: validateNonce,
+            required: true,
+          })}
         />
       </FormControl>
 
