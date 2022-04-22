@@ -26,8 +26,11 @@ const getOnboardState = (): AppState => {
 
 export const getConnectedWalletAddress = (wallets: WalletState[] = getOnboardState().wallets): string => {
   const primaryWallet = getConnectedWallet(wallets)
+  if (!primaryWallet) {
+    return ''
+  }
   const primaryAccount = primaryWallet.accounts[0]
-  return primaryAccount.address || ''
+  return primaryAccount.address
 }
 
 export const useOnboard = (): OnboardAPI | null => {
@@ -42,6 +45,8 @@ export const useOnboard = (): OnboardAPI | null => {
     if (configs.length === 0 || onboardSingleton) {
       return
     }
+
+    console.log('init', configs.length === 0, onboardSingleton)
 
     const initOnboard = async () => {
       const onboardInstance = Onboard({

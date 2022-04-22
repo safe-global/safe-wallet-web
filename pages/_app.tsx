@@ -16,7 +16,7 @@ import { useInitTxQueue } from '@/services/useTxQueue'
 import usePathRewrite from '@/services/usePathRewrite'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import useOnboard from '@/services/useOnboard'
-import { useInitWeb3ReadOnly } from '@/services/useWeb3ReadOnly'
+import useWeb3ReadOnly from '@/services/useWeb3ReadOnly'
 import '@/styles/globals.css'
 
 const InitApp = (): null => {
@@ -31,7 +31,7 @@ const InitApp = (): null => {
   useInitCollectibles()
   useInitTxHistory()
   useInitTxQueue()
-  useInitWeb3ReadOnly()
+  useWeb3ReadOnly()
   useOnboard()
 
   return null
