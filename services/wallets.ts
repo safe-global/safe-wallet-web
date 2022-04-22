@@ -14,15 +14,20 @@ const CGW_NAMES: { [key in WALLET_KEYS]: string } = {
   [WALLET_KEYS.WALLETCONNECT]: 'walletConnect',
 }
 
-export const getSupportedWalletModules = async (chains: ChainInfo[], chainId: string): Promise<WalletInit[]> => {
+const getWalletModules = async (): Promise<{ [key in WALLET_KEYS]: WalletInit }> => {
   const WALLET_MODULES: { [key in WALLET_KEYS]: WalletInit } = {
     INJECTED: (await import('@web3-onboard/injected-wallets')).default(),
     WALLETCONNECT: (await import('@web3-onboard/walletconnect')).default({ bridge: WC_BRIDGE }),
   }
 
-  const chain = chains.find((chain) => chain.chainId === chainId)
+  return WALLET_MODULES
+}
 
-  return Object.entries(WALLET_MODULES).reduce<WalletInit[]>((acc, [key, wallet]) => {
+const _getSupportedWalletModules = async (chains: ChainInfo[], chainId: string): Promise<WalletInit[]> => {
+  const chain = chains.find((chain) => chain.chainId === chainId)
+  const modules = await getWalletModules()
+
+  return Object.entries(modules).reduce<WalletInit[]>((acc, [key, wallet]) => {
     const cgwName = CGW_NAMES?.[key as WALLET_KEYS] ?? ''
     const isWalletDisabled = chain?.disabledWallets.includes(cgwName) ?? false
     if (!isWalletDisabled) {
@@ -30,6 +35,11 @@ export const getSupportedWalletModules = async (chains: ChainInfo[], chainId: st
     }
     return acc
   }, [])
+}
+
+export const getDefaultWallets = async (): Promise<WalletInit[]> => {
+  const modules = await getWalletModules()
+  return Object.values(modules).reduce<WalletInit[]>((acc, wallet) => [...acc, wallet], [])
 }
 
 export const getRecommendedInjectedWallets = (): RecommendedInjectedWallets[] => {

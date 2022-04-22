@@ -5,11 +5,12 @@ import Web3Adapter from '@gnosis.pm/safe-web3-lib'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import type { provider } from 'web3-core'
 
-import { CHAIN_ID, formatRpcServiceUrl } from '@/config/chains'
+import { CHAIN_ID } from '@/config/chains'
 import { store } from '@/store'
 import { selectChains } from '@/store/chainsSlice'
 import { INFURA_TOKEN } from '@/config/constants'
-import { _getOnboardState, getPrimaryWallet } from '@/services/onboard'
+import { getOnboardState, getPrimaryWallet } from '@/services/useOnboard'
+import { formatRpcServiceUrl } from '@/services/chains'
 
 const LEGACY_VERSION = '<1.3.0'
 
@@ -28,8 +29,8 @@ export const getWeb3 = (wallet: string): Web3 => {
 const _web3ReadOnly: { [chainId: string]: Web3 } = {}
 
 export const getWeb3ReadOnly = (chainId: string): Web3 => {
-  const chains = selectChains(store.getState())
-  const chain = chains.find((chain) => chain.chainId === chainId)
+  const { configs } = selectChains(store.getState())
+  const chain = configs.find((chain) => chain.chainId === chainId)
 
   if (!chain) {
     throw new Error(`Chain ${chainId} not found.`)
@@ -47,7 +48,7 @@ export const getWeb3ReadOnly = (chainId: string): Web3 => {
 }
 
 export const getWeb3Adapter = (signerAddress: string): Web3Adapter => {
-  const { wallets } = _getOnboardState()
+  const { wallets } = getOnboardState()
   const { label } = getPrimaryWallet(wallets)
   return new Web3Adapter({
     web3: getWeb3(label),

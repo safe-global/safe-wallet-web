@@ -1,39 +1,57 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import Web3 from 'web3'
-import init, { WalletState } from '@web3-onboard/core'
-import { Subscription } from 'rxjs'
+import Onboard, { type OnboardAPI, type WalletState } from '@web3-onboard/core'
+import type { Account, AppState } from '@web3-onboard/core/dist/types'
 
-import { getRecommendedInjectedWallets, getSupportedWalletModules } from '@/config/wallets'
+import Safe from '@/public/safe.svg'
+import { getDefaultWallets, getRecommendedInjectedWallets } from '@/services/wallets'
 import useSafeAddress from '@/services/useSafeAddress'
 import useChains from '@/services/useChains'
 import useSafeInfo from '@/services/useSafeInfo'
 import { setSafeSDK, setWeb3 } from '@/services/web3'
-import {
-  getOnboardInstance,
-  getPrimaryAccount,
-  setOnboardInstance,
-  _getOnboardState,
-  _onboardInstance,
-} from '@/services/onboard'
-import { formatRpcServiceUrl } from '@/config/chains'
 import { INFURA_TOKEN } from '@/config/constants'
-import connect from '@web3-onboard/core/dist/connect'
+import { formatRpcServiceUrl } from '@/services/chains'
 
-const useInitOnboard = (): void => {
-  const { configs, loading } = useChains()
+let _onboardInstance: OnboardAPI | null = null
+
+const getOnboardInstance = (): OnboardAPI => {
+  if (!_onboardInstance) {
+    throw new Error('@web3-onboard is not initialized')
+  }
+  return _onboardInstance
+}
+
+export const getPrimaryWallet = (wallets: WalletState[]): WalletState => {
+  return wallets[0]
+}
+
+const getPrimaryAccount = (wallets: WalletState[]): Account => {
+  return getPrimaryWallet(wallets)?.accounts[0] || undefined
+}
+
+export const getPrimaryWalletAddress = (wallets: WalletState[]): string => {
+  return getPrimaryAccount(wallets)?.address || ''
+}
+
+export const getOnboardState = (): AppState => {
+  return getOnboardInstance().state.get()
+}
+
+export const useInitOnboard = (): void => {
+  const { configs, loading, error } = useChains()
   const { address, chainId } = useSafeAddress()
   const { safe } = useSafeInfo()
 
   useEffect(() => {
-    if (loading || configs.length === _getOnboardState()?.chains.length) {
+    if (configs.length === 0 || loading || error || _onboardInstance) {
       return
     }
 
-    let subscription: Subscription | null = null
+    console.log('init onboard')
 
-    ;(async () => {
-      const onboard = init({
-        wallets: await getSupportedWalletModules(configs, chainId),
+    const initOnboard = async () => {
+      _onboardInstance = Onboard({
+        wallets: await getDefaultWallets(),
         chains: configs.map(({ chainId, chainName, nativeCurrency, rpcUri, theme }) => ({
           id: Web3.utils.numberToHex(chainId),
           label: chainName,
@@ -43,26 +61,59 @@ const useInitOnboard = (): void => {
         })),
         appMetadata: {
           name: 'Gnosis Safe',
-          icon: `<svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
-                   <path d="M137,9.84A128.75,128.75,0,1,0,265.7,138.59,128.76,128.76,0,0,0,137,9.84Zm94.23,135.78H171.44a36.38,36.38,0,1,1,.28-12.66h59.46a6.33,6.33,0,0,1,0,12.66Z" stroke="#fff" />
-                 </svg>`,
+          icon: Safe.toString(),
           description: 'Please select a wallet to connect to Gnosis Safe',
           recommendedInjectedWallets: getRecommendedInjectedWallets(),
         },
       })
+    }
 
-      subscription = onboard.state.select('wallets').subscribe((wallets) => {
-        setWeb3(wallets)
-        setSafeSDK(getPrimaryAccount(wallets).address, chainId, address, safe.version)
-      })
+    initOnboard()
+  }, [loading, error, configs, chainId, _onboardInstance])
 
-      setOnboardInstance(onboard)
-    })()
+  useEffect(() => {
+    if (!_onboardInstance) {
+      return
+    }
+
+    const subscription = _onboardInstance.state.select('wallets').subscribe((wallets) => {
+      setWeb3(wallets)
+      setSafeSDK(getPrimaryWalletAddress(wallets), chainId, address, safe.version)
+    })
 
     return () => {
-      subscription?.unsubscribe?.()
+      subscription.unsubscribe()
     }
-  }, [configs, loading, chainId, address])
+  }, [_onboardInstance, chainId, chainId, address, safe.version])
 }
 
-export default useInitOnboard
+export const useOnboardState: {
+  (): AppState | undefined
+  <K extends keyof AppState>(stateKey?: K): AppState[K] | undefined
+} = (stateKey = undefined) => {
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      const select = _onboardInstance?.state.select
+      const subscription = stateKey ? select?.(stateKey).subscribe(onStoreChange) : select?.().subscribe(onStoreChange)
+
+      return () => {
+        subscription?.unsubscribe()
+      }
+    },
+    [_onboardInstance, stateKey],
+  )
+
+  const getSnapshot = useCallback(() => {
+    const snapshot = _onboardInstance?.state.get()
+    return stateKey ? snapshot?.[stateKey] : snapshot
+  }, [_onboardInstance, stateKey])
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
+}
+
+const useOnboard = () => {
+  const onboard = useMemo(() => _onboardInstance, [_onboardInstance])
+  return onboard
+}
+
+export default useOnboard

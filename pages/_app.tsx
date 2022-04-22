@@ -15,7 +15,8 @@ import { useInitTxHistory } from '@/services/useTxHistory'
 import { useInitTxQueue } from '@/services/useTxQueue'
 import usePathRewrite from '@/services/usePathRewrite'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
-import useInitOnboard from '@/services/useOnboard'
+import { useInitOnboard } from '@/services/useOnboard'
+import { useInitSafeSDK } from '@/services/useSafeSDK'
 import '@/styles/globals.css'
 
 const InitApp = (): null => {
@@ -31,6 +32,7 @@ const InitApp = (): null => {
   useInitTxHistory()
   useInitTxQueue()
   useInitOnboard()
+  useInitSafeSDK()
 
   return null
 }
