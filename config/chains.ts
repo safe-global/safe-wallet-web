@@ -1,7 +1,3 @@
-export const enum CHAIN_ID {
-  MAINNET = '1',
-}
-
 const chains: Record<string, string> = {
   '420': '2020',
   eth: '1',
