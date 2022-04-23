@@ -51,9 +51,7 @@ const ReviewTx = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ReviewTxForm>({
-    defaultValues: { nonce: safeGas?.recommendedNonce || 0 },
-  })
+  } = useForm<ReviewTxForm>()
 
   const onFormSubmit = async (data: ReviewTxForm) => {
     if (!txParams) return
@@ -73,12 +71,6 @@ const ReviewTx = ({
     }
   }
 
-  const validateNonce = (userNonce: number) => {
-    if (!Number.isInteger(userNonce)) {
-      return 'Nonce must be a number'
-    }
-  }
-
   return (
     <form className={css.container} onSubmit={handleSubmit(onFormSubmit)}>
       <Typography variant="h6">Review transaction</Typography>
@@ -92,9 +84,10 @@ const ReviewTx = ({
           error={!!errors.nonce}
           helperText={errors.nonce?.message}
           type="number"
+          key={safeGas?.recommendedNonce}
+          defaultValue={safeGas?.recommendedNonce}
           {...register('nonce', {
             valueAsNumber: true, // Set field to number type to auto parseInt
-            validate: validateNonce,
             required: true,
           })}
         />
