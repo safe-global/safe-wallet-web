@@ -12,6 +12,7 @@ import { INFURA_TOKEN } from '@/config/constants'
 
 const LEGACY_VERSION = '<1.3.0'
 
+// Web3
 let _web3ReadOnly: Web3
 
 export const setWeb3ReadOnly = ({ rpcUri }: ChainInfo): void => {
@@ -24,13 +25,14 @@ export const setWeb3ReadOnly = ({ rpcUri }: ChainInfo): void => {
 
 export const getWeb3ReadOnly = (): Web3 => _web3ReadOnly
 
-const _web3Cache: { [walletLabel: string]: Web3 } = {}
 let _web3: Web3
+let _web3Cache: { [walletLabel: string]: Web3 } = {}
 
 export const setWeb3 = (wallets: WalletState[]): void => {
-  for (const { label, provider } of Object.values(wallets)) {
-    _web3Cache[label] = new Web3(provider as unknown as provider)
-  }
+  _web3Cache = Object.values(wallets).reduce<typeof _web3Cache>((cache, { label, provider }) => {
+    cache[label] = new Web3(provider as unknown as provider)
+    return cache
+  }, {})
 
   const { label } = getConnectedWallet(wallets)
 
@@ -39,7 +41,7 @@ export const setWeb3 = (wallets: WalletState[]): void => {
 
 export const getWeb3 = (): Web3 => _web3
 
-export const getWeb3Adapter = (signerAddress: string): Web3Adapter => {
+const getWeb3Adapter = (signerAddress: string): Web3Adapter => {
   return new Web3Adapter({
     web3: getWeb3(),
     signerAddress,

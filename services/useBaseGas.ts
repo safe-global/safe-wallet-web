@@ -1,7 +1,7 @@
 import { type MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 
 import useAsync from '@/services/useAsync'
-import useWeb3ReadOnly from '@/services/useWeb3ReadOnly'
+import { getWeb3ReadOnly } from '@/services/web3'
 
 const useBaseGas = (
   txParams?: MetaTransactionData,
@@ -11,7 +11,7 @@ const useBaseGas = (
   loading: boolean
 } => {
   const serializedParams = JSON.stringify(txParams)
-  const web3ReadOnly = useWeb3ReadOnly()
+  const web3ReadOnly = getWeb3ReadOnly()
 
   const [gasLimit, error, loading] = useAsync<any>(async () => {
     if (!txParams || !web3ReadOnly) return undefined

@@ -4,7 +4,7 @@ import { getWeb3ReadOnly, setWeb3ReadOnly } from '@/services/web3'
 import { useEffect } from 'react'
 import { useCurrentChain } from '@/services/useChains'
 
-const useWeb3ReadOnly = (): Web3 => {
+export const useInitWeb3ReadOnly = (): Web3 => {
   const chain = useCurrentChain()
 
   useEffect(() => {
@@ -16,5 +16,3 @@ const useWeb3ReadOnly = (): Web3 => {
 
   return getWeb3ReadOnly()
 }
-
-export default useWeb3ReadOnly

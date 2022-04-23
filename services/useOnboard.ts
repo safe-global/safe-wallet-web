@@ -36,10 +36,7 @@ let promise: Promise<OnboardAPI> | null = null
 
 export const useOnboard = (): OnboardAPI | null => {
   const [onboard, setOnboard] = useState<OnboardAPI | null>(onboardSingleton)
-
-  const { address, chainId } = useSafeAddress()
   const { configs } = useChains()
-  const { safe } = useSafeInfo()
 
   useEffect(() => {
     if (configs.length === 0 || onboardSingleton) {
@@ -76,14 +73,25 @@ export const useOnboard = (): OnboardAPI | null => {
     init()
   }, [configs])
 
+  return onboard
+}
+
+export default useOnboard
+
+export const useInitOnboard = (): void => {
+  const onboard = useOnboard()
+  const { chainId, address } = useSafeAddress()
+  const { safe } = useSafeInfo()
+
   // Sync Web3 and Safe SDK with the current wallet state
   useEffect(() => {
-    if (!onboard) {
+    if (!onboard || !chainId || !address || !safe.version) {
       return
     }
 
     const subscription = onboard.state.select('wallets').subscribe((wallets) => {
       setWeb3(wallets)
+      // Safe SDK must be initialised after Web3
       setSafeSDK(getConnectedWalletAddress(wallets), chainId, address, safe.version)
     })
 
@@ -91,11 +99,7 @@ export const useOnboard = (): OnboardAPI | null => {
       subscription.unsubscribe()
     }
   }, [chainId, address, safe.version, onboard])
-
-  return onboard
 }
-
-export default useOnboard
 
 export const useWalletAddress = (): string => {
   const onboard = useOnboard()
