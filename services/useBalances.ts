@@ -12,14 +12,14 @@ export const useInitBalances = (): void => {
 
   // Re-fetch assets when the entire SafeInfo updates
   const [data, error] = useAsync<SafeBalanceResponse | undefined>(async () => {
-    if (!safe.address.value) return
+    if (!safe) return
     return getBalances(safe.chainId, safe.address.value)
   }, [safe])
 
   // Clear the old Balances when Safe address is changed
   useEffect(() => {
     dispatch(setBalances(undefined))
-  }, [safe.address.value, safe.chainId, dispatch])
+  }, [safe?.address.value, safe?.chainId, dispatch])
 
   // Save the Balances in the store
   useEffect(() => {

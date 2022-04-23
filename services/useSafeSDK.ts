@@ -18,12 +18,12 @@ export const useWalletAddress = (): string | undefined => {
 export const useInitSafeSDK = () => {
   const { address, chainId } = useSafeAddress()
   const { safe } = useSafeInfo()
-  const { version } = safe
+  const { version } = safe || {}
   const walletAddress = useWalletAddress()
   const web3 = getWeb3()
 
   useEffect(() => {
-    if (!web3 || !walletAddress) return
+    if (!web3 || !walletAddress || !version) return
 
     setSafeSDK(walletAddress, chainId, address, version)
   }, [walletAddress, chainId, address, version, web3])

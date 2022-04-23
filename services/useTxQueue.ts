@@ -10,8 +10,8 @@ export const useInitTxQueue = (): void => {
   const { safe } = useSafeInfo()
   const { pageUrl } = useTxQueue()
   const dispatch = useAppDispatch()
-  const { chainId, txQueuedTag } = safe
-  const address = safe.address.value
+  const { chainId, txQueuedTag } = safe || {}
+  const address = safe?.address.value
 
   // Re-fetch assets when pageUrl, chainId/address, or txQueueTag change
   const [data, error] = useAsync<TransactionListPage | undefined>(async () => {
