@@ -14,7 +14,12 @@ export type SendAssetsFormData = {
   amount: string
 }
 
-const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData) => void }): ReactElement => {
+type SendAssetsFormProps = {
+  formData?: SendAssetsFormData
+  onSubmit: (formData: SendAssetsFormData) => void
+}
+
+const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
   const balances = useBalances()
 
   const {
@@ -23,11 +28,7 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
     getValues,
     formState: { errors },
   } = useForm<SendAssetsFormData>({
-    defaultValues: {
-      recepient: '',
-      tokenAddress: '',
-      amount: '',
-    },
+    defaultValues: formData,
   })
 
   const validateAmount = (amount: string) => {
@@ -60,7 +61,7 @@ const SendAssetsForm = ({ onSubmit }: { onSubmit: (formData: SendAssetsFormData)
         <Select
           labelId="asset-label"
           label="Select an asset"
-          defaultValue=""
+          defaultValue={formData?.tokenAddress || ''}
           {...register('tokenAddress', { required: true })}
         >
           {balances.items.map((item) => (

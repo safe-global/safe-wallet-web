@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 export type TxStepperProps = {
   steps: Array<{
     label: string
-    render: (onSubmit: (data: unknown) => void, data: unknown) => ReactElement
+    render: (data: unknown, onSubmit: (data: unknown) => void) => ReactElement
   }>
   initialStepData?: unknown[]
 }
@@ -27,7 +27,7 @@ const TxStepper = ({ steps, initialStepData }: TxStepperProps): ReactElement => 
 
   const onSubmit = (data: unknown) => {
     const allData = [...stepData]
-    allData[activeStep + 1] = data
+    allData[activeStep] = data
     setStepData(allData)
     handleNext()
   }
@@ -46,7 +46,7 @@ const TxStepper = ({ steps, initialStepData }: TxStepperProps): ReactElement => 
         })}
       </Stepper>
 
-      {steps[activeStep].render(onSubmit, stepData[activeStep])}
+      {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit)}
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
         {activeStep < steps.length - 1 && (

@@ -26,30 +26,30 @@ const style = {
 const tokenTransferSteps: TxStepperProps['steps'] = [
   {
     label: 'Create transaction',
-    render: (onSubmit) => <SendAssetsForm onSubmit={onSubmit} />,
+    render: (data, onSubmit) => <SendAssetsForm onSubmit={onSubmit} formData={data as SendAssetsFormData} />,
   },
   {
     label: 'Review',
-    render: (onSubmit, data) => <ReviewTx params={data as SendAssetsFormData} onSubmit={onSubmit} />,
+    render: (data, onSubmit) => <ReviewTx params={data as SendAssetsFormData} onSubmit={onSubmit} />,
   },
   {
     label: 'Sign',
-    render: (onSubmit, data) => <SignTx tx={data as SafeTransaction} onSubmit={onSubmit} />,
+    render: (data, onSubmit) => <SignTx tx={data as SafeTransaction} onSubmit={onSubmit} />,
   },
   {
     label: 'Done',
-    render: (_, data) => <FinishTx tx={data as SafeTransaction} />,
+    render: (data) => <FinishTx tx={data as SafeTransaction} />,
   },
 ]
 
 const signTxSteps: TxStepperProps['steps'] = [
   {
     label: 'Sign transaction',
-    render: (onSubmit, data) => <SignProposedTx txSummary={data as TransactionSummary} onSubmit={onSubmit} />,
+    render: (data, onSubmit) => <SignProposedTx txSummary={data as TransactionSummary} onSubmit={onSubmit} />,
   },
   {
     label: 'Done',
-    render: (_, data) => <FinishTx tx={data as SafeTransaction} />,
+    render: (data) => <FinishTx tx={data as SafeTransaction} />,
   },
 ]
 
