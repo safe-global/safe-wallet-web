@@ -10,7 +10,6 @@ const Balances: NextPage = () => {
   return (
     <main>
       <h2>Balances</h2>
-
       <CurrencySelect />
 
       <AssetsTable items={balances?.items} />
