@@ -7,7 +7,7 @@ type AddressBook = Record<
   string // name
 >
 
-type AddressBookState = Record<
+export type AddressBookState = Record<
   string, // chainId
   AddressBook
 >
@@ -41,7 +41,7 @@ export const addressBookSlice = createSlice({
   },
 })
 
-export const { setAddressBook } = addressBookSlice.actions
+export const { setAddressBook, upsertAddressBookEntry, removeAddressBookEntry } = addressBookSlice.actions
 
 export const selectAllAddressBooks = (state: RootState): AddressBookState => {
   return state[addressBookSlice.name]
@@ -51,6 +51,6 @@ export const selectAddressBook = createSelector(
   [selectAllAddressBooks, selectSafeInfo],
   (allAddressBooks, safeInfo): AddressBook => {
     const chainId = safeInfo.safe?.chainId
-    return chainId ? allAddressBooks[chainId] : {}
+    return chainId ? allAddressBooks[chainId] || {} : {}
   },
 )

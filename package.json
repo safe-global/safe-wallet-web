@@ -21,6 +21,7 @@
     "@gnosis.pm/safe-web3-lib": "^1.1.0",
     "@mui/icons-material": "^5.6.1",
     "@mui/material": "^5.6.1",
+    "@mui/x-data-grid": "^5.9.0",
     "@reduxjs/toolkit": "^1.8.1",
     "@sentry/react": "^6.19.6",
     "@sentry/tracing": "^6.19.6",

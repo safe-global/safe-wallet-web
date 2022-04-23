@@ -18,6 +18,7 @@ import { useInitWeb3ReadOnly } from '@/services/useWeb3ReadOnly'
 import usePathRewrite from '@/services/usePathRewrite'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
+import { useInitAddressBook } from '@/services/useAddressBook'
 
 const InitApp = (): null => {
   if (!IS_PRODUCTION) {
@@ -34,6 +35,7 @@ const InitApp = (): null => {
   useInitWeb3()
   useInitWeb3ReadOnly()
   useInitSafeSDK()
+  useInitAddressBook()
 
   return null
 }

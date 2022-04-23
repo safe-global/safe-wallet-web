@@ -12,9 +12,9 @@ const DEFAULT_PREFIX = `${LS_NAMESPACE}${LS_SEPARATOR}`
 
 class Storage {
   private prefix: string
-  private storage: BrowserStorage
+  private storage?: BrowserStorage
 
-  constructor(storage: BrowserStorage, prefix = DEFAULT_PREFIX) {
+  constructor(storage?: BrowserStorage, prefix = DEFAULT_PREFIX) {
     this.prefix = prefix
     this.storage = storage
   }
@@ -27,7 +27,7 @@ class Storage {
     const fullKey = this.prefixKey(key)
     let saved: string | null = null
     try {
-      saved = this.storage.getItem(fullKey)
+      saved = this.storage?.getItem(fullKey) || null
     } catch (err) {
       logError(Errors._700, `key ${key} – ${(err as Error).message}`)
     }
@@ -44,7 +44,7 @@ class Storage {
   public setItem = <T>(key: string, item: T): void => {
     const fullKey = this.prefixKey(key)
     try {
-      this.storage.setItem(fullKey, JSON.stringify(item))
+      this.storage?.setItem(fullKey, JSON.stringify(item))
     } catch (err) {
       logError(Errors._701, `key ${key} – ${(err as Error).message}`)
     }
@@ -53,16 +53,16 @@ class Storage {
   public removeItem = (key: string): void => {
     const fullKey = this.prefixKey(key)
     try {
-      this.storage.removeItem(fullKey)
+      this.storage?.removeItem(fullKey)
     } catch (err) {
       logError(Errors._702, `key ${key} – ${(err as Error).message}`)
     }
   }
 
   public removeMatching = (pattern: RegExp): void => {
-    Object.keys(this.storage)
+    Object.keys(this.storage || {})
       .filter((key) => pattern.test(key))
-      .forEach((key) => this.storage.removeItem(key))
+      .forEach((key) => this.storage?.removeItem(key))
   }
 
   public setWithExpiry = <T>(key: string, item: T, expiry: number): void => {
