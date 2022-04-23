@@ -1,16 +1,19 @@
-import { type SyntheticEvent } from 'react'
-import TxList from '@/components/transactions/TxList'
+import type { SyntheticEvent } from 'react'
 import type { NextPage } from 'next'
+
+import TxList from '@/components/transactions/TxList'
 import { useAppDispatch } from '@/store'
-import { setPageUrl } from '@/store/txQueueSlice'
+import { fetchTxQueue } from '@/store/txQueueSlice'
 import useTxQueue from '@/services/useTxQueue'
+import useSafeAddress from '@/services/useSafeAddress'
 
 const Queue: NextPage = () => {
-  const { page, pageUrl } = useTxQueue()
+  const { page } = useTxQueue()
+  const { chainId, address } = useSafeAddress()
   const dispatch = useAppDispatch()
 
-  const onPageChange = (url?: string) => {
-    dispatch(setPageUrl(url))
+  const onPageChange = (pageUrl?: string) => {
+    dispatch(fetchTxQueue({ chainId, address, pageUrl }))
   }
 
   const onNext = (e: SyntheticEvent) => {
@@ -32,7 +35,7 @@ const Queue: NextPage = () => {
     <main>
       <h2>Transaction Queue</h2>
 
-      <button onClick={onFirst} disabled={!pageUrl}>
+      <button onClick={onFirst} disabled={!page.previous && !page.next}>
         Go to first page
       </button>
       <button onClick={onPrev} disabled={!page.previous}>

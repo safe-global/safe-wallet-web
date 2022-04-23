@@ -17,7 +17,6 @@
     "@emotion/styled": "^11.8.1",
     "@gnosis.pm/safe-core-sdk": "^2.1.0",
     "@gnosis.pm/safe-core-sdk-types": "^1.1.0",
-    "@gnosis.pm/safe-react-components": "^1.1.2",
     "@gnosis.pm/safe-web3-lib": "^1.1.0",
     "@mui/icons-material": "^5.6.1",
     "@mui/material": "^5.6.1",
@@ -40,7 +39,7 @@
     "web3-utils": "^1.7.3"
   },
   "devDependencies": {
-    "@gnosis.pm/safe-react-gateway-sdk": "^3.0.0",
+    "@gnosis.pm/safe-react-gateway-sdk": "gnosis/safe-react-gateway-sdk#abort-signal",
     "@sentry/types": "^6.19.6",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react-hooks": "^8.0.0",

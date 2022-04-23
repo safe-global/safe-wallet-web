@@ -1,56 +1,51 @@
-import { AddressEx, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '.'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { getSafeInfo, type SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
-const emptyAddressEx: AddressEx = {
-  value: '',
-  name: null,
-  logoUri: null,
-}
+import { logError, Errors } from '@/services/exceptions'
+import { initialFetchState, LOADING_STATUS, type FetchState } from '@/store/fetchThunkState'
+import type { RootState } from '@/store'
 
 type SafeInfoState = {
-  safe: SafeInfo
-  loading: boolean
-  error?: Error
-}
+  safe?: SafeInfo
+} & FetchState
 
 const initialState: SafeInfoState = {
-  safe: {
-    address: emptyAddressEx,
-    chainId: '',
-    nonce: 0,
-    threshold: 0,
-    owners: [],
-    implementation: emptyAddressEx,
-    modules: [],
-    guard: emptyAddressEx,
-    fallbackHandler: emptyAddressEx,
-    version: '',
-    collectiblesTag: '',
-    txQueuedTag: '',
-    txHistoryTag: '',
-  },
-  loading: true,
-  error: undefined,
+  safe: undefined,
+  ...initialFetchState,
 }
 
 export const safeInfoSlice = createSlice({
   name: 'safeInfo',
   initialState,
-  reducers: {
-    setSafeInfo: (state, action: PayloadAction<SafeInfo | undefined>) => {
-      return { ...state, safe: action.payload || initialState.safe }
-    },
-    setSafeError: (state, action: PayloadAction<Error>) => {
-      return { ...state, error: action.payload }
-    },
-    setSafeLoading: (state, action: PayloadAction<boolean>) => {
-      return { ...state, loading: action.payload }
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchSafeInfo.pending, (state) => {
+      state.status = LOADING_STATUS.PENDING
+      state.error = undefined
+    })
+    builder.addCase(fetchSafeInfo.fulfilled, (state, { payload }) => {
+      state.status = LOADING_STATUS.SUCCEEDED
+      state.safe = payload
+    })
+    builder.addCase(fetchSafeInfo.rejected, (state, { error, meta }) => {
+      if (meta.aborted) {
+        return
+      }
+
+      state.status = LOADING_STATUS.FAILED
+      state.error = error
+
+      logError(Errors._605, error.message)
+    })
   },
 })
 
-export const { setSafeInfo, setSafeError, setSafeLoading } = safeInfoSlice.actions
+export const fetchSafeInfo = createAsyncThunk(
+  `${safeInfoSlice.name}/fetchSafeInfo`,
+  async ({ chainId, address }: { chainId: string; address: string }, { signal }) => {
+    return await getSafeInfo(chainId, address, undefined, signal)
+  },
+)
 
 export const selectSafeInfo = (state: RootState): SafeInfoState => {
   return state[safeInfoSlice.name]

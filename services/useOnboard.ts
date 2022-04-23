@@ -85,7 +85,7 @@ export const useInitOnboard = (): void => {
 
   // Sync Web3 and Safe SDK with the current wallet state
   useEffect(() => {
-    if (!onboard || !chainId || !address || !safe.version) {
+    if (!onboard || !chainId || !address || !safe?.version) {
       return
     }
 
@@ -98,7 +98,7 @@ export const useInitOnboard = (): void => {
     return () => {
       subscription.unsubscribe()
     }
-  }, [chainId, address, safe.version, onboard])
+  }, [chainId, address, safe?.version, onboard])
 }
 
 export const useWalletAddress = (): string => {

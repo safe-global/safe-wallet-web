@@ -1,87 +1,41 @@
-import { useCallback, useEffect } from 'react'
-import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { useEffect } from 'react'
+
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSafeInfo, setSafeError, setSafeInfo, setSafeLoading } from '@/store/safeInfoSlice'
-import useSafeAddress from './useSafeAddress'
+import { fetchSafeInfo, selectSafeInfo } from '@/store/safeInfoSlice'
+import useSafeAddress from '@/services/useSafeAddress'
 import { POLLING_INTERVAL } from '@/config/constants'
-import { Errors, logError } from './exceptions'
 
 // Poll & dispatch the Safe Info into the store
 export const useInitSafeInfo = (): void => {
   const { address, chainId } = useSafeAddress()
   const dispatch = useAppDispatch()
 
-  const onError = useCallback(
-    (error: Error, isFirst: boolean) => {
-      logError(Errors._605, error.message)
-
-      // Pass the error to the store only on first request
-      if (isFirst) {
-        dispatch(setSafeError(error))
-      }
-    },
-    [dispatch],
-  )
-
-  const onLoading = useCallback(
-    (loading: boolean, isFirst: boolean) => {
-      if (isFirst) {
-        dispatch(setSafeLoading(loading))
-      }
-    },
-    [dispatch],
-  )
-
-  const onData = useCallback(
-    (data: SafeInfo | undefined, isFirst: boolean) => {
-      if (data || isFirst) {
-        dispatch(setSafeInfo(data))
-      }
-    },
-    [dispatch],
-  )
-
   useEffect(() => {
+    if (!chainId || !address) {
+      return
+    }
+
     let isCurrent = true
-    let timer: ReturnType<typeof setTimeout> | undefined
+    let timer: NodeJS.Timeout | undefined
 
-    // Stop polling on unmount
-    const onUnmount = () => {
-      isCurrent = false
-      timer && clearTimeout(timer)
-    }
+    let promise = dispatch(fetchSafeInfo({ chainId, address }))
 
-    if (!chainId || !address) return onUnmount
-
-    // Poll the Safe Info
-    const loadSafe = async (isFirst = false) => {
-      if (!isCurrent) return
-
-      onData(undefined, isFirst)
-      onLoading(true, isFirst)
-
-      try {
-        const data = await getSafeInfo(chainId, address)
-        isCurrent && onData(data, isFirst)
-      } catch (err) {
-        isCurrent && onError(err as Error, isFirst)
-      } finally {
-        isCurrent && onLoading(false, isFirst)
-      }
-
-      // Set a timer to fetch Safe Info again
+    promise.finally(() => {
       if (isCurrent) {
-        timer = setTimeout(() => loadSafe(), POLLING_INTERVAL)
+        timer = setTimeout(() => {
+          promise = dispatch(fetchSafeInfo({ chainId, address }))
+        }, POLLING_INTERVAL)
+      }
+    })
+
+    return () => {
+      isCurrent = false
+      promise.abort()
+      if (timer) {
+        clearTimeout(timer)
       }
     }
-
-    // Start the loop.
-    // We pass true to indicate that this is the first load. Subsequent loads will pass false.
-    // This is important to ignore errors on subsequent polling requests.
-    loadSafe(true)
-
-    return onUnmount
-  }, [chainId, address, onData, onError, onLoading])
+  }, [chainId, address])
 }
 
 const useSafeInfo = () => {
