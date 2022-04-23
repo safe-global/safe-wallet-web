@@ -6,6 +6,7 @@ import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
 import useWallet from '@/services/wallets/useWallet'
+import { useTransactionType } from '@/services/useTransactionType'
 import css from './styles.module.css'
 
 type TxSummaryProps = {
@@ -21,8 +22,9 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
   const walletAddress = wallet?.address
+  const type = useTransactionType(tx)
 
-  const missingSigners = (item.transaction?.executionInfo as MultisigExecutionInfo)?.missingSigners
+  const missingSigners = (tx?.executionInfo as MultisigExecutionInfo)?.missingSigners
   const signaturePending = missingSigners?.some((item) => item.value.toLowerCase() === walletAddress?.toLowerCase())
 
   return (
@@ -34,28 +36,27 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
           </Grid>
 
           <Grid item md={3}>
-            <DateTime value={tx.timestamp} options={dateOptions} />
-          </Grid>
-
-          <Grid item md={2}>
-            {tx.txInfo.type}
+            <img src={type.icon} alt="transaction type" width={16} height={16} className={css.txTypeIcon} />
+            {type.text}
           </Grid>
 
           <Grid item md>
             <TxInfo info={tx.txInfo} />
           </Grid>
 
-          {tx.txStatus !== TransactionStatus.SUCCESS && (
-            <>
-              <Grid item md={3}>
-                {tx.txStatus}
-              </Grid>
+          <Grid item md={2}>
+            <DateTime value={tx.timestamp} options={dateOptions} />
+          </Grid>
 
-              <Grid item md={1}>
-                {signaturePending && <SignTxButton txSummary={item.transaction} />}
-              </Grid>
-            </>
-          )}
+          <Grid item md={3}>
+            {tx.txStatus !== TransactionStatus.SUCCESS && tx.txStatus}
+          </Grid>
+
+          <Grid item md={1}>
+            {tx.txStatus !== TransactionStatus.SUCCESS && signaturePending && (
+              <SignTxButton txSummary={item.transaction} />
+            )}
+          </Grid>
         </Grid>
       </div>
     </Paper>
