@@ -19,7 +19,7 @@ export const useInitTxHistory = (): void => {
 
     const promise = dispatch(fetchTxHistory({ chainId, address }))
     return promise.abort
-  }, [safe?.txHistoryTag, chainId, address])
+  }, [safe?.txHistoryTag, chainId, address, dispatch])
 }
 
 const useTxHistory = () => {

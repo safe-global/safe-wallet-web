@@ -1211,7 +1211,7 @@
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.12.0.tgz#aabad66f5467821b9a965411f9747016811d7554"
   integrity sha512-fNwQqTdBushxlkqp8WpgXVP9HTePa/VFWM9VYPzbSsdqYqSUnXYDDOMyHH3H6eNltwRV8RVp/cxqUZLrvQ3YPg==
 
-"@gnosis.pm/safe-react-gateway-sdk@gnosis/safe-react-gateway-sdk#abort-signal":
+"@gnosis.pm/safe-react-gateway-sdk@gnosis/safe-react-gateway-sdk#5e425dbfac7641f56772298389b71e7281f60603":
   version "3.0.0"
   resolved "https://codeload.github.com/gnosis/safe-react-gateway-sdk/tar.gz/5e425dbfac7641f56772298389b71e7281f60603"
   dependencies:

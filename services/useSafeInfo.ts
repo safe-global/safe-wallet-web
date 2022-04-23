@@ -35,7 +35,7 @@ export const useInitSafeInfo = (): void => {
         clearTimeout(timer)
       }
     }
-  }, [chainId, address])
+  }, [chainId, address, dispatch])
 }
 
 const useSafeInfo = () => {

@@ -14,7 +14,7 @@ export const useInitCollectibles = (): void => {
     }
     const promise = dispatch(fetchCollectibles({ chainId: safe.chainId, address: safe.address.value }))
     return promise.abort
-  }, [safe])
+  }, [safe, dispatch])
 }
 
 const useCollectibles = () => {

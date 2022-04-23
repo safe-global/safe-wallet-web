@@ -11,7 +11,7 @@ export const useInitChains = (): void => {
   useEffect(() => {
     const promise = dispatch(fetchChains())
     return promise.abort
-  }, [])
+  }, [dispatch])
 }
 
 const useChains = () => {

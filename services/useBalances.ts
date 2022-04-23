@@ -14,7 +14,7 @@ export const useInitBalances = (): void => {
     }
     const promise = dispatch(fetchBalances({ chainId: safe.chainId, address: safe.address.value }))
     return promise.abort
-  }, [safe])
+  }, [safe, dispatch])
 }
 
 const useBalances = () => {

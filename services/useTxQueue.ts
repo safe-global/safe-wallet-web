@@ -19,7 +19,7 @@ export const useInitTxQueue = (): void => {
 
     const promise = dispatch(fetchTxQueue({ chainId, address }))
     return promise.abort
-  }, [safe?.txQueuedTag, chainId, address])
+  }, [safe?.txQueuedTag, chainId, address, dispatch])
 }
 
 const useTxQueue = () => {
