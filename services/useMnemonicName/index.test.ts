@@ -1,6 +1,13 @@
 import { getRandomName, useMnemonicName, useMnemonicSafeName } from '.'
 import { renderHook } from '@testing-library/react-hooks'
 
+// Mock useCurrentChain hook
+jest.mock('@/services/useChains', () => ({
+  useCurrentChain: () => ({
+    chainName: 'rinkeby',
+  }),
+}))
+
 describe('useMnemonicName tests', () => {
   it('should generate a random name', () => {
     expect(getRandomName()).toMatch(/^[a-z-]+-[a-z]+$/)
