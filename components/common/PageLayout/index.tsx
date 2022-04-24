@@ -2,7 +2,7 @@ import { useState, type ReactElement, type MouseEvent } from 'react'
 import { Button } from '@mui/material'
 
 import Sidebar from '@/components/common/Sidebar'
-import useOnboard from '@/services/useOnboard'
+import useOnboard from '@/services/wallets/useOnboard'
 import css from '@/components/common/PageLayout/styles.module.css'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {

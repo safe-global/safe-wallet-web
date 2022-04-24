@@ -1,7 +1,6 @@
 import Web3 from 'web3'
-
-import { getWeb3ReadOnly, setWeb3ReadOnly } from '@/services/web3'
 import { useEffect } from 'react'
+import { getWeb3ReadOnly, setWeb3ReadOnly } from '@/services/wallets/web3'
 import { useCurrentChain } from '@/services/useChains'
 
 export const useInitWeb3ReadOnly = (): Web3 => {

@@ -1,5 +1,5 @@
 import type { EIP1193Provider, WalletState } from '@web3-onboard/core'
-import { getConnectedWallet, getConnectedWalletAddress } from '../useOnboard'
+import { getConnectedWallet, getConnectedWalletAddress } from '../wallets/useOnboard'
 
 describe('getConnectedWallet', () => {
   it('returns the first wallet', () => {

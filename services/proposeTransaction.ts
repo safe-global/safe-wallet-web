@@ -1,16 +1,17 @@
 import { proposeTransaction, type Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-
-import { getSafeSDK } from '@/services/web3'
-import { getConnectedWalletAddress } from '@/services/useOnboard'
+import { getSafeSDK } from '@/services/wallets/safeCoreSDK'
+import { getConnectedWallet } from '@/services/wallets/useOnboard'
 
 const proposeTx = async (chainId: string, safeAddress: string, tx: SafeTransaction) => {
+  const wallet = getConnectedWallet()
+  if (!wallet) return
   const safeTxHash = await getSafeSDK().getTransactionHash(tx)
 
   return await proposeTransaction(chainId, safeAddress, {
     ...tx.data,
     safeTxHash,
-    sender: getConnectedWalletAddress(),
+    sender: wallet.address,
     value: parseInt(tx.data.value, 16).toString(),
     operation: tx.data.operation as unknown as Operation,
     nonce: tx.data.nonce.toString(),
