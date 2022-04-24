@@ -1,4 +1,3 @@
-import Web3 from 'web3'
 import type { ReactElement } from 'react'
 import { getOwnedSafes, type OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -32,7 +31,7 @@ const SafeList = (): ReactElement => {
 
   const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(async () => {
     if (!wallet?.address || !chainId) return
-    return getOwnedSafes(chainId, Web3.utils.toChecksumAddress(wallet.address))
+    return getOwnedSafes(chainId, wallet.address)
   }, [chainId, wallet?.address])
 
   return (

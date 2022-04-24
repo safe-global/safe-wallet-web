@@ -57,10 +57,13 @@ const initOnboardSingleton = async (chainConfigs: ChainInfo[]): Promise<OnboardA
 // Get the most recently connected wallet address
 export const getConnectedWallet = (wallets = onboardSingleton?.state.get().wallets): ConnectedWallet | null => {
   if (!wallets) return null
+
   const primaryWallet = wallets[0]
   if (!primaryWallet) return null
+
   const account = primaryWallet?.accounts[0]
   if (!account) return null
+
   return {
     address: Web3.utils.toChecksumAddress(account.address),
     ens: account.ens?.name,
@@ -82,9 +85,7 @@ export const useOnboard = (): OnboardAPI | null => {
     }
 
     if (onboardPromise) {
-      onboardPromise.then(() => {
-        setOnboard(onboardSingleton)
-      })
+      onboardPromise.then((onb) => setOnboard(onb))
       return
     }
 
