@@ -4,10 +4,7 @@ import { selectSafeInfo } from './safeInfoSlice'
 
 type AddressBook = { [address: string]: string }
 
-export type AddressBookState = Record<
-  string, // chainId
-  AddressBook
->
+export type AddressBookState = { [chainId: string]: AddressBook }
 
 const initialState: AddressBookState = {}
 
