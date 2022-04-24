@@ -16,7 +16,7 @@ const OwnedSafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chai
     <ul className={css.ownedSafes}>
       {safes.map((address) => (
         <li key={address} className={address === safeAddress ? css.selected : undefined}>
-          <Link href={`/${shortName}:${address}/balances`}>
+          <Link href={`/safe/balances?safe=${shortName}:${address}`}>
             <a>{shortenAddress(address)}</a>
           </Link>
         </li>

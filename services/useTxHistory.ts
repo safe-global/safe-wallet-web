@@ -10,8 +10,8 @@ export const useInitTxHistory = (): void => {
   const { safe } = useSafeInfo()
   const { pageUrl } = useTxHistory()
   const dispatch = useAppDispatch()
-  const { chainId, txHistoryTag } = safe
-  const address = safe.address.value
+  const { chainId, txHistoryTag } = safe || {}
+  const address = safe?.address.value
 
   // Re-fetch assets when pageUrl, chainId/address, or txHistoryTag change
   const [data, error] = useAsync<TransactionListPage | undefined>(async () => {

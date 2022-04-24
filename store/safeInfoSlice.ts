@@ -9,27 +9,13 @@ const emptyAddressEx: AddressEx = {
 }
 
 type SafeInfoState = {
-  safe: SafeInfo
+  safe?: SafeInfo
   loading: boolean
   error?: Error
 }
 
 const initialState: SafeInfoState = {
-  safe: {
-    address: emptyAddressEx,
-    chainId: '',
-    nonce: 0,
-    threshold: 0,
-    owners: [],
-    implementation: emptyAddressEx,
-    modules: [],
-    guard: emptyAddressEx,
-    fallbackHandler: emptyAddressEx,
-    version: '',
-    collectiblesTag: '',
-    txQueuedTag: '',
-    txHistoryTag: '',
-  },
+  safe: undefined,
   loading: true,
   error: undefined,
 }
@@ -39,7 +25,7 @@ export const safeInfoSlice = createSlice({
   initialState,
   reducers: {
     setSafeInfo: (state, action: PayloadAction<SafeInfo | undefined>) => {
-      return { ...state, safe: action.payload || initialState.safe }
+      return { ...state, safe: action.payload }
     },
     setSafeError: (state, action: PayloadAction<Error>) => {
       return { ...state, error: action.payload }

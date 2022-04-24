@@ -1,12 +1,23 @@
 import { ReactElement } from 'react'
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
-import { useForm, type FieldValues } from 'react-hook-form'
+import {
+  Autocomplete,
+  Box,
+  Button,
+  createFilterOptions,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material'
+import { useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
 import { formatDecimals, toDecimals } from '@/services/formatters'
 import { validateAddress } from '@/services/validation'
 import useBalances from '@/services/useBalances'
+import useAddressBook from '@/services/useAddressBook'
 
 export type SendAssetsFormData = {
   recepient: string
@@ -19,8 +30,18 @@ type SendAssetsFormProps = {
   onSubmit: (formData: SendAssetsFormData) => void
 }
 
+const abFilterOptions = createFilterOptions({
+  stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
+})
+
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
   const balances = useBalances()
+  const addressBook = useAddressBook()
+
+  const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
+    label: address,
+    name,
+  }))
 
   const {
     register,
@@ -45,14 +66,32 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   return (
     <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
       <FormControl fullWidth>
-        <TextField
-          label="Recepient"
-          error={!!errors.recepient}
-          helperText={errors.recepient?.message}
-          {...register('recepient', {
-            validate: validateAddress,
-            required: true,
-          })}
+        <Autocomplete
+          defaultValue={formData?.recepient}
+          freeSolo
+          disablePortal
+          options={addressBookEntries}
+          filterOptions={abFilterOptions}
+          renderOption={(props, option) => (
+            <Box component="li" {...props}>
+              {option.name}
+              <br />
+              {option.label}
+            </Box>
+          )}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              autoComplete="off"
+              label="Recepient"
+              error={!!errors.recepient}
+              helperText={errors.recepient?.message}
+              {...register('recepient', {
+                validate: validateAddress,
+                required: true,
+              })}
+            />
+          )}
         />
       </FormControl>
 

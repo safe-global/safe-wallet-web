@@ -8,20 +8,21 @@ import { selectCollectibles, setCollectibles } from '@/store/collectiblesSlice'
 
 export const useInitCollectibles = (): void => {
   const { safe } = useSafeInfo()
-  const { chainId, collectiblesTag, address } = safe
+  const { chainId, collectiblesTag } = safe || {}
+  const address = safe?.address.value
   const dispatch = useAppDispatch()
 
   // Re-fetch assets when the Safe address or the collectibes tag updates
   const [data, error] = useAsync<SafeCollectibleResponse[] | undefined>(async () => {
-    if (!address.value) return
+    if (!address || !chainId) return
 
-    return getCollectibles(chainId, address.value)
-  }, [address.value, chainId, collectiblesTag])
+    return getCollectibles(chainId, address)
+  }, [address, chainId, collectiblesTag])
 
   // Clear the old Collectibles when Safe address is changed
   useEffect(() => {
     dispatch(setCollectibles(undefined))
-  }, [safe.address.value, safe.chainId, dispatch])
+  }, [address, chainId, dispatch])
 
   // Save the Collectibles in the store
   useEffect(() => {

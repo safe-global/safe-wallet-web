@@ -1,9 +1,7 @@
-import { ReactElement } from 'react'
-import { connect } from 'react-redux'
+import { type ReactElement } from 'react'
 import { shortenAddress } from '@/services/formatters'
-import { selectBalances } from '@/store/balancesSlice'
-import { selectSafeInfo } from '@/store/safeInfoSlice'
-import { RootState } from '../../../store'
+import useSafeInfo from '@/services/useSafeInfo'
+import useBalances from '@/services/useBalances'
 import FiatValue from '../FiatValue'
 import Identicon from '../Identicon'
 import css from './styles.module.css'
@@ -15,8 +13,12 @@ interface SafeHeaderProps {
   fiatTotal: string
 }
 
-export const SafeHeader = (props: SafeHeaderProps): ReactElement => {
-  const { address } = props
+const SafeHeader = (): ReactElement => {
+  const { safe } = useSafeInfo()
+  const { fiatTotal } = useBalances()
+
+  const address = safe?.address.value || ''
+  const { threshold, owners } = safe || {}
 
   return (
     <div className={css.container}>
@@ -24,7 +26,7 @@ export const SafeHeader = (props: SafeHeaderProps): ReactElement => {
         <Identicon address={address} />
 
         <div className={css.threshold}>
-          {props.threshold}/{props.owners}
+          {threshold || ''}/{owners?.length || ''}
         </div>
       </div>
 
@@ -32,22 +34,10 @@ export const SafeHeader = (props: SafeHeaderProps): ReactElement => {
 
       <div className={css.totalValue}>
         <span>Total value</span>
-        <FiatValue value={props.fiatTotal} />
+        <FiatValue value={fiatTotal} />
       </div>
     </div>
   )
 }
 
-const mapStateToProps = (state: RootState): SafeHeaderProps => {
-  const { safe } = selectSafeInfo(state)
-  const { fiatTotal } = selectBalances(state)
-
-  return {
-    address: safe.address.value,
-    threshold: safe.threshold,
-    owners: safe.owners.length,
-    fiatTotal,
-  }
-}
-
-export default connect(mapStateToProps)(SafeHeader)
+export default SafeHeader
