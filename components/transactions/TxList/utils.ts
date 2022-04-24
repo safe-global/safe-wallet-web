@@ -8,20 +8,3 @@ export const isTxQueued = (value: TransactionStatus): boolean => {
     TransactionStatus.WILL_BE_REPLACED,
   ].includes(value)
 }
-
-export const getTxTo = (txInfo: TransactionSummary['txInfo']): AddressEx | undefined => {
-  switch (txInfo.type) {
-    case 'Transfer': {
-      return txInfo.recipient
-    }
-    case 'SettingsChange': {
-      return undefined
-    }
-    case 'Custom': {
-      return txInfo.to
-    }
-    case 'Creation': {
-      return txInfo.factory || undefined
-    }
-  }
-}

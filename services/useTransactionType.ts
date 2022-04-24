@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import { AddressEx, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isTxQueued } from '@/components/transactions/TxList/utils'
 
-export type TxTypeProps = {
+type TxTypeProps = {
   icon?: string
   fallbackIcon?: string
   text?: string
 }
 
-export const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
+const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
     case 'Transfer': {
       return txInfo.recipient
