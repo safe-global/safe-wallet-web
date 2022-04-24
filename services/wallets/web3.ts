@@ -1,6 +1,8 @@
 import Web3 from 'web3'
 import { RPC_AUTHENTICATION, type ChainInfo, type RpcUri } from '@gnosis.pm/safe-react-gateway-sdk'
 import { INFURA_TOKEN } from '@/config/constants'
+import { EIP1193Provider } from '@web3-onboard/core'
+import { provider } from 'web3-core'
 
 // RPC helpers
 const formatRpcServiceUrl = ({ authentication, value }: RpcUri, TOKEN: string): string => {
@@ -23,4 +25,13 @@ export const setWeb3ReadOnly = ({ rpcUri }: ChainInfo): void => {
       timeout: 10_000,
     }),
   )
+}
+
+// Regualar web3
+let _web3: Web3
+
+export const getWeb3 = (): Web3 => _web3
+
+export const setWeb3 = (walletProvider: EIP1193Provider): void => {
+  _web3 = new Web3(walletProvider as unknown as provider)
 }

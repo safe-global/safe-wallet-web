@@ -1,9 +1,10 @@
 import Web3 from 'web3'
+import { useEffect, useState } from 'react'
 import Onboard, { EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getDefaultWallets, getRecommendedInjectedWallets } from '@/services/wallets/wallets'
 import { getRpcServiceUrl } from '@/services/wallets/web3'
-import { useEffect, useState } from 'react'
+//import SafeLogo from '@/public/logo-no-text.svg'
 import useChains from '../useChains'
 import { Errors, logError } from '../exceptions'
 
@@ -67,7 +68,7 @@ export const getConnectedWallet = (wallets = onboardSingleton?.state.get().walle
   return {
     address: Web3.utils.toChecksumAddress(account.address),
     ens: account.ens?.name,
-    chainId: parseInt(primaryWallet.chains[0].id, 16).toString(10),
+    chainId: Web3.utils.hexToNumberString(primaryWallet.chains[0].id),
     provider: primaryWallet.provider,
   }
 }

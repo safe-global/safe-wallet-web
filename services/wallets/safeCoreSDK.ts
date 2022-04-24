@@ -1,14 +1,14 @@
+import Web3 from 'web3'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import Web3Adapter from '@gnosis.pm/safe-web3-lib'
 import semverSatisfies from 'semver/functions/satisfies'
 import chains from '@/config/chains'
-import Web3 from 'web3'
+import { getWeb3 } from './web3'
 
 const LEGACY_VERSION = '<1.3.0'
 
 // Safe Core SDK
 const initSafeSDK = async (
-  walletProvider: any,
   signerAddress: string,
   chainId: string,
   safeAddress: string,
@@ -16,7 +16,7 @@ const initSafeSDK = async (
 ): Promise<Safe> => {
   const ethAdapter = new Web3Adapter({
     signerAddress,
-    web3: new Web3(walletProvider),
+    web3: getWeb3(),
   })
 
   let isL1SafeMasterCopy = chainId === chains.eth
