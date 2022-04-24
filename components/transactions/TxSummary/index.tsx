@@ -5,7 +5,7 @@ import { TransactionStatus, type MultisigExecutionInfo, type Transaction } from 
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
-import { useWalletAddress } from '@/services/useOnboard'
+import useWallet from '@/services/wallets/useWallet'
 import css from './styles.module.css'
 
 type TxSummaryProps = {
@@ -19,7 +19,8 @@ const dateOptions = {
 
 const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
-  const walletAddress = useWalletAddress()
+  const wallet = useWallet()
+  const walletAddress = wallet?.address
 
   const missingSigners = (item.transaction?.executionInfo as MultisigExecutionInfo)?.missingSigners
   const signaturePending = missingSigners?.some((item) => item.value.toLowerCase() === walletAddress?.toLowerCase())

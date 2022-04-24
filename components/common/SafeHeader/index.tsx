@@ -13,8 +13,8 @@ export const SafeHeader = (): ReactElement => {
   const { fiatTotal } = useBalances()
 
   const address = safe?.address?.value || ''
-  const threshold = safe?.threshold || 0
-  const owners = safe?.owners.length || 0
+  const threshold = safe?.threshold || ''
+  const owners = safe?.owners.length || ''
 
   return (
     <div className={css.container}>

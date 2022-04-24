@@ -1,4 +1,3 @@
-import Web3 from 'web3'
 import type { ReactElement } from 'react'
 import { getOwnedSafes, type OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -7,7 +6,7 @@ import Link from 'next/link'
 import chains from '@/config/chains'
 import useSafeAddress from '@/services/useSafeAddress'
 import { shortenAddress } from '@/services/formatters'
-import { useWalletAddress } from '@/services/useOnboard'
+import useWallet from '@/services/wallets/useWallet'
 import css from '@/components/common/SafeList/styles.module.css'
 
 const OwnedSafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
@@ -17,7 +16,7 @@ const OwnedSafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chai
     <ul className={css.ownedSafes}>
       {safes.map((address) => (
         <li key={address} className={address === safeAddress ? css.selected : undefined}>
-          <Link href={`/${shortName}:${address}/balances`}>
+          <Link href={`/safe/balances?safe=${shortName}:${address}`}>
             <a>{shortenAddress(address)}</a>
           </Link>
         </li>
@@ -28,12 +27,12 @@ const OwnedSafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chai
 
 const SafeList = (): ReactElement => {
   const { chainId, address } = useSafeAddress()
-  const walletAddress = useWalletAddress()
+  const wallet = useWallet()
 
   const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(async () => {
-    if (!walletAddress || !chainId) return
-    return getOwnedSafes(chainId, Web3.utils.toChecksumAddress(walletAddress))
-  }, [chainId, walletAddress])
+    if (!wallet?.address || !chainId) return
+    return getOwnedSafes(chainId, wallet.address)
+  }, [chainId, wallet?.address])
 
   return (
     <div className={css.container}>
