@@ -40,7 +40,7 @@ export const txHistorySlice = createSlice({
       if (!isRaceCondition(state, action)) {
         return {
           ...getFulfilledState(state, action),
-          ...action.payload,
+          page: action.payload,
         }
       }
     })

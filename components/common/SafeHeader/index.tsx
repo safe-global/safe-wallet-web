@@ -14,16 +14,14 @@ export const SafeHeader = (): ReactElement => {
 
   const address = safe?.address?.value || ''
   const threshold = safe?.threshold || 0
-  const owners = safe?.owners || 0
+  const owners = safe?.owners.length || 0
 
   return (
     <div className={css.container}>
       <div className={css.icon}>
         <Identicon address={address} />
 
-        <div className={css.threshold}>
-          {threshold}/{owners}
-        </div>
+        <div className={css.threshold}>{`${threshold}/${owners}`}</div>
       </div>
 
       {shortenAddress(address)}

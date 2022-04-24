@@ -17,9 +17,11 @@ type CurrencyState = {
   selectedCurrency: string
 } & ThunkState
 
+const DEFAULT_CURRENCY = 'usd'
+
 const initialState: CurrencyState = {
-  currencies: [],
-  selectedCurrency: 'usd',
+  currencies: [DEFAULT_CURRENCY],
+  selectedCurrency: DEFAULT_CURRENCY,
   ...initialThunkState,
 }
 

@@ -17,6 +17,7 @@ import usePathRewrite from '@/services/usePathRewrite'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { useInitOnboard } from '@/services/useOnboard'
 import { useInitWeb3ReadOnly } from '@/services/useWeb3ReadOnly'
+import { useInitCurriencies } from '@/services/useCurrencies'
 import '@/styles/globals.css'
 
 const InitApp = (): null => {
@@ -26,6 +27,7 @@ const InitApp = (): null => {
 
   usePathRewrite()
   useInitChains()
+  useInitCurriencies()
   useInitSafeInfo()
   useInitBalances()
   useInitCollectibles()
