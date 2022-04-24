@@ -1,5 +1,5 @@
-import { getFiatCurrencies, type FiatCurrencies } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { getFiatCurrencies, type FiatCurrencies } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { logError, Errors } from '@/services/exceptions'
 import {
@@ -35,31 +35,25 @@ export const currencySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCurrencies.pending, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        state = getPendingState(initialState, action)
-      }
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchCurrencies.fulfilled, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        return {
-          ...getFulfilledState(state, action),
-          currencies: action.payload,
-        }
-      }
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getFulfilledState(action), { currencies: action.payload })
     })
     builder.addCase(fetchCurrencies.rejected, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        state = getRejectedState(state, action)
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getRejectedState(action))
 
-        logError(Errors._607, action.error.message)
-      }
+      logError(Errors._607, action.error.message)
     })
   },
 })
 
 export const { setCurrency } = currencySlice.actions
 
-export const fetchCurrencies = createAsyncThunk(`${currencySlice.name}/fetchCurrencies`, async () => {
+export const fetchCurrencies = createAsyncThunk<FiatCurrencies>(`${currencySlice.name}/fetchCurrencies`, async () => {
   return await getFiatCurrencies()
 })
 

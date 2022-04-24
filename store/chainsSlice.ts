@@ -1,5 +1,5 @@
-import { getChainsConfig, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { getChainsConfig, type ChainInfo, type ChainListResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { logError, Errors } from '@/services/exceptions'
 import {
@@ -9,7 +9,7 @@ import {
   initialThunkState,
   isRaceCondition,
   type ThunkState,
-} from './thunkState'
+} from '@/store/thunkState'
 import type { RootState } from '@/store'
 
 type ChainsState = {
@@ -27,27 +27,23 @@ export const chainsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchChains.pending, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        state = getPendingState(state, action)
-      }
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchChains.fulfilled, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        state = getFulfilledState(state, action)
-        state.configs = action.payload.results
-      }
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getFulfilledState(action), { configs: action.payload.results })
     })
     builder.addCase(fetchChains.rejected, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        state = getRejectedState(state, action)
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getRejectedState(action))
 
-        logError(Errors._904, action.error.message)
-      }
+      logError(Errors._904, action.error.message)
     })
   },
 })
 
-export const fetchChains = createAsyncThunk(`${chainsSlice.name}/fetchChains`, async () => {
+export const fetchChains = createAsyncThunk<ChainListResponse>(`${chainsSlice.name}/fetchChains`, async () => {
   return await getChainsConfig()
 })
 

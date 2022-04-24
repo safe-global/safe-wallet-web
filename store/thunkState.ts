@@ -29,39 +29,27 @@ export const isRaceCondition = <T extends Record<string, unknown>>(
   state: WritableDraft<T>,
   { meta }: PendingAction | FulfilledAction | RejectedAction,
 ) => {
-  const isInitialFetch = state.requestStatus === 'idle'
-  return isInitialFetch ? false : state.requestId !== meta.requestId
+  const isInitialDispatch = state.requestStatus === 'idle'
+  if (isInitialDispatch) {
+    return false
+  }
+  return state.requestId ? state.requestId !== meta.requestId : false
 }
 
-export const getPendingState = <T extends Record<string, unknown>>(state: WritableDraft<T>, action: PendingAction) => {
-  const { requestStatus, requestId } = action.meta
-  return {
-    ...state,
-    requestStatus,
-    requestId,
-    error: undefined,
-  }
-}
+export const getPendingState = ({ meta }: PendingAction): ThunkState => ({
+  requestId: meta.requestId,
+  requestStatus: meta.requestStatus,
+  error: undefined,
+})
 
-export const getFulfilledState = <T extends Record<string, unknown>>(
-  state: WritableDraft<T>,
-  action: FulfilledAction,
-) => {
-  return {
-    ...state,
-    requestStatus: action.meta.requestStatus,
-    requestId: undefined,
-    error: undefined,
-  }
-}
-export const getRejectedState = <T extends Record<string, unknown>>(
-  state: WritableDraft<T>,
-  { meta, error }: RejectedAction,
-) => {
-  return {
-    ...state,
-    requestStatus: meta.requestStatus,
-    requestId: undefined,
-    error,
-  }
-}
+export const getFulfilledState = ({ meta }: FulfilledAction): ThunkState => ({
+  requestId: undefined,
+  requestStatus: meta.requestStatus,
+  error: undefined,
+})
+
+export const getRejectedState = ({ meta, error }: RejectedAction): ThunkState => ({
+  requestId: undefined,
+  requestStatus: meta.requestStatus,
+  error,
+})

@@ -31,35 +31,28 @@ export const txHistorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchTxHistory.pending, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        state = getPendingState(state, action)
-      }
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getPendingState(action))
     })
-    // @ts-ignore - "Type instantiation is excessively deep and possibly infinite"
     builder.addCase(fetchTxHistory.fulfilled, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        return {
-          ...getFulfilledState(state, action),
-          page: action.payload,
-        }
-      }
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getFulfilledState(action), { page: action.payload })
     })
     builder.addCase(fetchTxHistory.rejected, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        state = getRejectedState(state, action)
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getRejectedState(action))
 
-        logError(Errors._602, action.error.message)
-      }
+      logError(Errors._602, action.error.message)
     })
   },
 })
 
-export const fetchTxHistory = createAsyncThunk(
-  `${txHistorySlice.name}/fetchTxHistory`,
-  async ({ chainId, address, pageUrl }: { chainId: string; address: string; pageUrl?: string }) => {
-    return await getTransactionHistory(chainId, address, pageUrl)
-  },
-)
+export const fetchTxHistory = createAsyncThunk<
+  TransactionListPage,
+  { chainId: string; address: string; pageUrl?: string }
+>(`${txHistorySlice.name}/fetchTxHistory`, async ({ chainId, address, pageUrl }) => {
+  return await getTransactionHistory(chainId, address, pageUrl)
+})
 
 export const selectTxHistory = (state: RootState): TxHistoryState => {
   return state[txHistorySlice.name]

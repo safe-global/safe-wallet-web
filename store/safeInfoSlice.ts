@@ -27,31 +27,25 @@ export const safeInfoSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchSafeInfo.pending, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        state = getPendingState(state, action)
-      }
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchSafeInfo.fulfilled, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        return {
-          ...getFulfilledState(state, action),
-          safe: action.payload,
-        }
-      }
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getFulfilledState(action), { safe: action.payload })
     })
     builder.addCase(fetchSafeInfo.rejected, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        state = getRejectedState(state, action)
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getRejectedState(action))
 
-        logError(Errors._605, action.error.message)
-      }
+      logError(Errors._605, action.error.message)
     })
   },
 })
 
-export const fetchSafeInfo = createAsyncThunk(
+export const fetchSafeInfo = createAsyncThunk<SafeInfo, { chainId: string; address: string }>(
   `${safeInfoSlice.name}/fetchSafeInfo`,
-  async ({ chainId, address }: { chainId: string; address: string }) => {
+  async ({ chainId, address }) => {
     return await getSafeInfo(chainId, address)
   },
 )

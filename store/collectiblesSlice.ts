@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getCollectibles, SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getCollectibles, type SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { logError, Errors } from '@/services/exceptions'
 import {
@@ -27,32 +27,26 @@ export const collectiblesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchCollectibles.pending, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        // Reset collectibles when fetching as it's a new Safe
-        state = getPendingState(initialState, action)
-      }
+      if (isRaceCondition(state, action)) return
+      // Reset collectibles when fetching as it's a new Safe
+      Object.assign(state, initialState, getPendingState(action))
     })
     builder.addCase(fetchCollectibles.fulfilled, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        return {
-          ...getFulfilledState(state, action),
-          ...action.payload,
-        }
-      }
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getFulfilledState(action), { items: action.payload })
     })
     builder.addCase(fetchCollectibles.rejected, (state, action) => {
-      if (!isRaceCondition(state, action)) {
-        state = getRejectedState(state, action)
+      if (isRaceCondition(state, action)) return
+      Object.assign(state, getRejectedState(action))
 
-        logError(Errors._601, action.error.message)
-      }
+      logError(Errors._601, action.error.message)
     })
   },
 })
 
-export const fetchCollectibles = createAsyncThunk(
+export const fetchCollectibles = createAsyncThunk<SafeCollectibleResponse[], { chainId: string; address: string }>(
   `${collectiblesSlice.name}/fetchCollectibles`,
-  async ({ chainId, address }: { chainId: string; address: string }) => {
+  async ({ chainId, address }) => {
     return await getCollectibles(chainId, address)
   },
 )
