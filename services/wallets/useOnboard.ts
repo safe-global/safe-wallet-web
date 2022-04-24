@@ -101,22 +101,3 @@ export const useOnboard = (): OnboardAPI | null => {
 }
 
 export default useOnboard
-
-export const useWallet = (): ConnectedWallet | null => {
-  const onboard = useOnboard()
-  const [wallet, setWallet] = useState<ConnectedWallet | null>(null)
-
-  useEffect(() => {
-    if (!onboard) return
-
-    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
-      setWallet(getConnectedWallet(wallets))
-    })
-
-    return () => {
-      walletSubscription.unsubscribe()
-    }
-  }, [onboard])
-
-  return wallet
-}

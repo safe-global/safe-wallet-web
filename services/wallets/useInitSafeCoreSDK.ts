@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useCurrentChain } from '@/services/useChains'
-import { useWallet } from './useOnboard'
+import useWallet from './useWallet'
 import useSafeInfo from '../useSafeInfo'
 import { setSafeSDK } from './safeCoreSDK'
 

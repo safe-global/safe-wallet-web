@@ -6,7 +6,7 @@ import Link from 'next/link'
 import chains from '@/config/chains'
 import useSafeAddress from '@/services/useSafeAddress'
 import { shortenAddress } from '@/services/formatters'
-import { useWallet } from '@/services/wallets/useOnboard'
+import useWallet from '@/services/wallets/useWallet'
 import css from '@/components/common/SafeList/styles.module.css'
 
 const OwnedSafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {

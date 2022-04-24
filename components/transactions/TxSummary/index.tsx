@@ -5,7 +5,7 @@ import { TransactionStatus, type MultisigExecutionInfo, type Transaction } from 
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
-import { useWallet } from '@/services/wallets/useOnboard'
+import useWallet from '@/services/wallets/useWallet'
 import css from './styles.module.css'
 
 type TxSummaryProps = {
