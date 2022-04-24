@@ -1,15 +1,18 @@
-import { useEffect } from 'react'
-import { getRpcServiceUrl, setWeb3ReadOnly } from '@/services/web3'
 import Web3 from 'web3'
-import { useCurrentChain } from './useChains'
 
-export const useInitWeb3ReadOnly = () => {
-  const chainConfig = useCurrentChain()
+import { getWeb3ReadOnly, setWeb3ReadOnly } from '@/services/web3'
+import { useEffect } from 'react'
+import { useCurrentChain } from '@/services/useChains'
+
+export const useInitWeb3ReadOnly = (): Web3 => {
+  const chain = useCurrentChain()
 
   useEffect(() => {
-    if (!chainConfig) return
+    if (!chain) {
+      return
+    }
+    setWeb3ReadOnly(chain)
+  }, [chain])
 
-    const provider = new Web3.providers.HttpProvider(getRpcServiceUrl(chainConfig.rpcUri))
-    setWeb3ReadOnly(provider)
-  }, [chainConfig])
+  return getWeb3ReadOnly()
 }

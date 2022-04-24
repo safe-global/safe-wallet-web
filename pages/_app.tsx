@@ -3,7 +3,9 @@ import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import { Provider } from 'react-redux'
-import '../styles/globals.css'
+import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
+
+import '@/styles/globals.css'
 import { store } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import { useInitChains } from '@/services/useChains'
@@ -12,12 +14,10 @@ import { useInitBalances } from '@/services/useBalances'
 import { useInitCollectibles } from '@/services/useCollectibles'
 import { useInitTxHistory } from '@/services/useTxHistory'
 import { useInitTxQueue } from '@/services/useTxQueue'
-import { useInitWeb3 } from '@/services/useWeb3'
-import { useInitSafeSDK } from '@/services/useSafeSDK'
-import { useInitWeb3ReadOnly } from '@/services/useWeb3ReadOnly'
 import usePathRewrite from '@/services/usePathRewrite'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
-import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
+import { useInitOnboard } from '@/services/useOnboard'
+import { useInitWeb3ReadOnly } from '@/services/useWeb3ReadOnly'
 import { useInitAddressBook } from '@/services/useAddressBook'
 
 const InitApp = (): null => {
@@ -32,9 +32,8 @@ const InitApp = (): null => {
   useInitCollectibles()
   useInitTxHistory()
   useInitTxQueue()
-  useInitWeb3()
   useInitWeb3ReadOnly()
-  useInitSafeSDK()
+  useInitOnboard()
   useInitAddressBook()
 
   return null
