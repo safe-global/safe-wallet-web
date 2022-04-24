@@ -13,15 +13,7 @@ export const useInitBalances = (): void => {
       return
     }
 
-    let isCurrent = true
-
-    if (isCurrent) {
-      dispatch(fetchBalances({ chainId: safe.chainId, address: safe.address.value }))
-    }
-
-    return () => {
-      isCurrent = false
-    }
+    dispatch(fetchBalances({ chainId: safe.chainId, address: safe.address.value }))
   }, [safe, dispatch])
 }
 

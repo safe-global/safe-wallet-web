@@ -7,15 +7,7 @@ export const useInitCurriencies = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    let isCurrent = true
-
-    if (isCurrent) {
-      dispatch(fetchCurrencies())
-    }
-
-    return () => {
-      isCurrent = false
-    }
+    dispatch(fetchCurrencies())
   }, [dispatch])
 }
 

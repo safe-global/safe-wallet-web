@@ -11,21 +11,12 @@ export const useInitTxHistory = (): void => {
   const chainId = safe?.chainId
   const address = safe?.address?.value
 
-  // Re-fetch assets when pageUrl, chainId/address, or txHistoryTag change
+  // Re-fetch assets when chainId/address, or txHistoryTag change
   useEffect(() => {
     if (!chainId || !address) {
       return
     }
-
-    let isCurrent = true
-
-    if (isCurrent) {
-      dispatch(fetchTxHistory({ chainId, address }))
-    }
-
-    return () => {
-      isCurrent = false
-    }
+    dispatch(fetchTxHistory({ chainId, address }))
   }, [safe?.txHistoryTag, chainId, address, dispatch])
 }
 

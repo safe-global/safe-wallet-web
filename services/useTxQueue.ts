@@ -11,21 +11,12 @@ export const useInitTxQueue = (): void => {
   const chainId = safe?.chainId
   const address = safe?.address?.value
 
-  // Re-fetch assets when pageUrl, chainId/address, or txQueueTag change
+  // Re-fetch assets when chainId/address, or txQueueTag change
   useEffect(() => {
     if (!chainId || !address) {
       return
     }
-
-    let isCurrent = true
-
-    if (isCurrent) {
-      dispatch(fetchTxQueue({ chainId, address }))
-    }
-
-    return () => {
-      isCurrent = false
-    }
+    dispatch(fetchTxQueue({ chainId, address }))
   }, [safe?.txQueuedTag, chainId, address, dispatch])
 }
 

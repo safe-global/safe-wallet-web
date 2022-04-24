@@ -7,7 +7,6 @@ import {
   getPendingState,
   getRejectedState,
   initialThunkState,
-  isRaceCondition,
   type ThunkState,
 } from '@/store/thunkState'
 import type { RootState } from '@/store'
@@ -31,11 +30,9 @@ export const collectiblesSlice = createSlice({
       Object.assign(state, initialState, getPendingState(action))
     })
     builder.addCase(fetchCollectibles.fulfilled, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getFulfilledState(action), { items: action.payload })
     })
     builder.addCase(fetchCollectibles.rejected, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getRejectedState(action))
 
       logError(Errors._601, action.error.message)

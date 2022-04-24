@@ -15,16 +15,7 @@ export const useInitCollectibles = (): void => {
     if (!chainId || !address) {
       return
     }
-
-    let isCurrent = true
-
-    if (isCurrent) {
-      dispatch(fetchCollectibles({ chainId, address }))
-    }
-
-    return () => {
-      isCurrent = false
-    }
+    dispatch(fetchCollectibles({ chainId, address }))
   }, [dispatch, chainId, address, safe?.collectiblesTag])
 }
 

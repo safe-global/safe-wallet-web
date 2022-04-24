@@ -7,7 +7,6 @@ import {
   getPendingState,
   getRejectedState,
   initialThunkState,
-  isRaceCondition,
   type ThunkState,
 } from '@/store/thunkState'
 import type { RootState } from '@/store'
@@ -30,11 +29,9 @@ export const safeInfoSlice = createSlice({
       Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchSafeInfo.fulfilled, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getFulfilledState(action), { safe: action.payload })
     })
     builder.addCase(fetchSafeInfo.rejected, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getRejectedState(action))
 
       logError(Errors._605, action.error.message)

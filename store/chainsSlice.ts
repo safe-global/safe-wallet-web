@@ -7,7 +7,6 @@ import {
   getPendingState,
   getRejectedState,
   initialThunkState,
-  isRaceCondition,
   type ThunkState,
 } from '@/store/thunkState'
 import type { RootState } from '@/store'
@@ -30,11 +29,9 @@ export const chainsSlice = createSlice({
       Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchChains.fulfilled, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getFulfilledState(action), { configs: action.payload.results })
     })
     builder.addCase(fetchChains.rejected, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getRejectedState(action))
 
       logError(Errors._904, action.error.message)

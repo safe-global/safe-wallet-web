@@ -7,7 +7,6 @@ import {
   getPendingState,
   getRejectedState,
   initialThunkState,
-  isRaceCondition,
   type ThunkState,
 } from '@/store/thunkState'
 import type { RootState } from '@/store'
@@ -34,11 +33,9 @@ export const txQueueSlice = createSlice({
       Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchTxQueue.fulfilled, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getFulfilledState(action), { page: action.payload })
     })
     builder.addCase(fetchTxQueue.rejected, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getRejectedState(action))
 
       logError(Errors._603, action.error.message)

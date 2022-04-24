@@ -3,14 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import { logError, Errors } from '@/services/exceptions'
 import { selectCurrency } from '@/store/currencySlice'
-import {
-  getFulfilledState,
-  getPendingState,
-  getRejectedState,
-  initialThunkState,
-  isRaceCondition,
-  type ThunkState,
-} from './thunkState'
+import { getFulfilledState, getPendingState, getRejectedState, initialThunkState, type ThunkState } from './thunkState'
 import type { RootState } from '@/store'
 
 type BalancesState = SafeBalanceResponse & ThunkState
@@ -31,11 +24,9 @@ export const balancesSlice = createSlice({
       Object.assign(state, initialState, getPendingState(action))
     })
     builder.addCase(fetchBalances.fulfilled, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getFulfilledState(action), action.payload)
     })
     builder.addCase(fetchBalances.rejected, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getRejectedState(action))
 
       logError(Errors._601, action.error.message)

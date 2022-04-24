@@ -7,7 +7,6 @@ import {
   getPendingState,
   getRejectedState,
   initialThunkState,
-  isRaceCondition,
   type ThunkState,
 } from '@/store/thunkState'
 import type { RootState } from '@/store'
@@ -34,11 +33,9 @@ export const txHistorySlice = createSlice({
       Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchTxHistory.fulfilled, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getFulfilledState(action), { page: action.payload })
     })
     builder.addCase(fetchTxHistory.rejected, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getRejectedState(action))
 
       logError(Errors._602, action.error.message)

@@ -1,20 +1,21 @@
 import { ReactElement, useState } from 'react'
 import { Button } from '@mui/material'
 
-import css from './styles.module.css'
 import useSafeInfo from '@/services/useSafeInfo'
-import ChainIndicator from '../ChainIndicator'
-import SafeHeader from '../SafeHeader'
-import SafeList from '../SafeList'
-import ErrorToast from '../ErrorToast'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import SafeHeader from '@/components/common/SafeHeader'
+import SafeList from '@/components/common/SafeList'
+import ErrorToast from '@/components/common/ErrorToast'
 import TxModal from '@/components/tx/TxModal'
 import Navigation from '@/components/common/Sidebar/Navigation'
 
+import css from './styles.module.css'
+
 const Sidebar = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)
-  const { error, requestStatus } = useSafeInfo()
+  const { error, requestStatus, safe } = useSafeInfo()
 
-  const loading = requestStatus === 'pending'
+  const loading = !safe && requestStatus === 'pending'
 
   return (
     <div className={css.container}>
