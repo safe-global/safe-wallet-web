@@ -1,13 +1,20 @@
-import { getTransactionQueue, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { getTransactionQueue, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { logError, Errors } from '@/services/exceptions'
-import { initialFetchState, LOADING_STATUS, type FetchState } from '@/store/fetchThunkState'
+import {
+  getFulfilledState,
+  getPendingState,
+  getRejectedState,
+  initialThunkState,
+  isRaceCondition,
+  type ThunkState,
+} from '@/store/thunkState'
 import type { RootState } from '@/store'
 
 type TxQueueState = {
   page: TransactionListPage
-} & FetchState
+} & ThunkState
 
 const initialState: TxQueueState = {
   page: {
@@ -15,7 +22,7 @@ const initialState: TxQueueState = {
     next: '',
     previous: '',
   },
-  ...initialFetchState,
+  ...initialThunkState,
 }
 
 export const txQueueSlice = createSlice({
@@ -23,31 +30,34 @@ export const txQueueSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchTxQueue.pending, (state) => {
-      state.status = LOADING_STATUS.PENDING
-      state.error = undefined
-    })
-    builder.addCase(fetchTxQueue.fulfilled, (state, { payload }) => {
-      state.status = LOADING_STATUS.SUCCEEDED
-      Object.assign(state, payload)
-    })
-    builder.addCase(fetchTxQueue.rejected, (state, { error, meta }) => {
-      if (meta.aborted) {
-        return
+    builder.addCase(fetchTxQueue.pending, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getPendingState(state, action)
       }
+    })
+    // @ts-ignore - "Type instantiation is excessively deep and possibly infinite"
+    builder.addCase(fetchTxQueue.fulfilled, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        return {
+          ...getFulfilledState(state, action),
+          ...action.payload,
+        }
+      }
+    })
+    builder.addCase(fetchTxQueue.rejected, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getRejectedState(state, action)
 
-      state.status = LOADING_STATUS.FAILED
-      state.error = error
-
-      logError(Errors._603, error.message)
+        logError(Errors._603, action.error.message)
+      }
     })
   },
 })
 
 export const fetchTxQueue = createAsyncThunk(
   `${txQueueSlice.name}/fetchTxQueue`,
-  async ({ chainId, address, pageUrl }: { chainId: string; address: string; pageUrl?: string }, { signal }) => {
-    return await getTransactionQueue(chainId, address, pageUrl, signal)
+  async ({ chainId, address, pageUrl }: { chainId: string; address: string; pageUrl?: string }) => {
+    return await getTransactionQueue(chainId, address, pageUrl)
   },
 )
 

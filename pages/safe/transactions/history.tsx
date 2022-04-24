@@ -12,6 +12,8 @@ const History: NextPage = () => {
   const { chainId, address } = useSafeAddress()
   const dispatch = useAppDispatch()
 
+  const isFirstPage = !page.previous && !page.next
+
   const onPageChange = (pageUrl?: string) => {
     dispatch(fetchTxHistory({ chainId, address, pageUrl }))
   }
@@ -35,7 +37,7 @@ const History: NextPage = () => {
     <main>
       <h2>Transaction History</h2>
 
-      <button onClick={onFirst} disabled={!page.previous && !page.next}>
+      <button onClick={onFirst} disabled={isFirstPage}>
         Go to first page
       </button>
       <button onClick={onPrev} disabled={!page.previous}>

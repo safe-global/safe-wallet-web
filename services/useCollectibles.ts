@@ -8,13 +8,24 @@ export const useInitCollectibles = (): void => {
   const { safe } = useSafeInfo()
   const dispatch = useAppDispatch()
 
+  const chainId = safe?.chainId
+  const address = safe?.address.value
+
   useEffect(() => {
-    if (!safe) {
+    if (!chainId || !address) {
       return
     }
-    const promise = dispatch(fetchCollectibles({ chainId: safe.chainId, address: safe.address.value }))
-    return promise.abort
-  }, [safe, dispatch])
+
+    let isCurrent = true
+
+    if (isCurrent) {
+      dispatch(fetchCollectibles({ chainId, address }))
+    }
+
+    return () => {
+      isCurrent = false
+    }
+  }, [safe, dispatch, chainId, address, safe?.collectiblesTag])
 }
 
 const useCollectibles = () => {

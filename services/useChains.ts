@@ -9,8 +9,15 @@ export const useInitChains = (): void => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    const promise = dispatch(fetchChains())
-    return promise.abort
+    let isCurrent = true
+
+    if (isCurrent) {
+      dispatch(fetchChains())
+    }
+
+    return () => {
+      isCurrent = false
+    }
   }, [dispatch])
 }
 

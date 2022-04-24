@@ -1,17 +1,24 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getCollectibles, SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import type { RootState } from '@/store'
-import { initialFetchState, LOADING_STATUS, type FetchState } from '@/store/fetchThunkState'
 import { logError, Errors } from '@/services/exceptions'
+import {
+  getFulfilledState,
+  getPendingState,
+  getRejectedState,
+  initialThunkState,
+  isRaceCondition,
+  type ThunkState,
+} from '@/store/thunkState'
+import type { RootState } from '@/store'
 
 type CollectiblesState = {
   items: SafeCollectibleResponse[]
-} & FetchState
+} & ThunkState
 
 const initialState: CollectiblesState = {
   items: [],
-  ...initialFetchState,
+  ...initialThunkState,
 }
 
 export const collectiblesSlice = createSlice({
@@ -19,33 +26,34 @@ export const collectiblesSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchCollectibles.pending, () => ({
-      ...initialState, // Reset balance when fetching as it's a new Safe
-      status: LOADING_STATUS.PENDING,
-      error: undefined,
-    }))
-    builder.addCase(fetchCollectibles.fulfilled, (state, { payload }) => ({
-      ...state,
-      ...payload,
-      status: LOADING_STATUS.SUCCEEDED,
-    }))
-    builder.addCase(fetchCollectibles.rejected, (state, { error, meta }) => {
-      if (meta.aborted) {
-        return
+    builder.addCase(fetchCollectibles.pending, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        // Reset collectibles when fetching as it's a new Safe
+        state = getPendingState(initialState, action)
       }
+    })
+    builder.addCase(fetchCollectibles.fulfilled, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        return {
+          ...getFulfilledState(state, action),
+          ...action.payload,
+        }
+      }
+    })
+    builder.addCase(fetchCollectibles.rejected, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getRejectedState(state, action)
 
-      state.status = LOADING_STATUS.FAILED
-      state.error = error
-
-      logError(Errors._604, error.message)
+        logError(Errors._601, action.error.message)
+      }
     })
   },
 })
 
 export const fetchCollectibles = createAsyncThunk(
   `${collectiblesSlice.name}/fetchCollectibles`,
-  async ({ chainId, address }: { chainId: string; address: string }, { signal }) => {
-    return await getCollectibles(chainId, address, undefined, signal)
+  async ({ chainId, address }: { chainId: string; address: string }) => {
+    return await getCollectibles(chainId, address)
   },
 )
 

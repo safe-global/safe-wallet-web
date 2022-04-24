@@ -1,13 +1,20 @@
-import { getTransactionHistory, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { getTransactionHistory, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { logError, Errors } from '@/services/exceptions'
+import {
+  getFulfilledState,
+  getPendingState,
+  getRejectedState,
+  initialThunkState,
+  isRaceCondition,
+  type ThunkState,
+} from '@/store/thunkState'
 import type { RootState } from '@/store'
-import { initialFetchState, LOADING_STATUS, type FetchState } from '@/store/fetchThunkState'
 
 type TxHistoryState = {
   page: TransactionListPage
-} & FetchState
+} & ThunkState
 
 const initialState: TxHistoryState = {
   page: {
@@ -15,7 +22,7 @@ const initialState: TxHistoryState = {
     next: '',
     previous: '',
   },
-  ...initialFetchState,
+  ...initialThunkState,
 }
 
 export const txHistorySlice = createSlice({
@@ -23,31 +30,34 @@ export const txHistorySlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchTxHistory.pending, (state) => {
-      state.status = LOADING_STATUS.PENDING
-      state.error = undefined
-    })
-    builder.addCase(fetchTxHistory.fulfilled, (state, { payload }) => {
-      state.status = LOADING_STATUS.SUCCEEDED
-      Object.assign(state, payload)
-    })
-    builder.addCase(fetchTxHistory.rejected, (state, { error, meta }) => {
-      if (meta.aborted) {
-        return
+    builder.addCase(fetchTxHistory.pending, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getPendingState(state, action)
       }
+    })
+    // @ts-ignore - "Type instantiation is excessively deep and possibly infinite"
+    builder.addCase(fetchTxHistory.fulfilled, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        return {
+          ...getFulfilledState(state, action),
+          ...action.payload,
+        }
+      }
+    })
+    builder.addCase(fetchTxHistory.rejected, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getRejectedState(state, action)
 
-      state.status = LOADING_STATUS.FAILED
-      state.error = error
-
-      logError(Errors._602, error.message)
+        logError(Errors._602, action.error.message)
+      }
     })
   },
 })
 
 export const fetchTxHistory = createAsyncThunk(
   `${txHistorySlice.name}/fetchTxHistory`,
-  async ({ chainId, address, pageUrl }: { chainId: string; address: string; pageUrl?: string }, { signal }) => {
-    return await getTransactionHistory(chainId, address, pageUrl, signal)
+  async ({ chainId, address, pageUrl }: { chainId: string; address: string; pageUrl?: string }) => {
+    return await getTransactionHistory(chainId, address, pageUrl)
   },
 )
 

@@ -12,8 +12,16 @@ export const useInitBalances = (): void => {
     if (!safe) {
       return
     }
-    const promise = dispatch(fetchBalances({ chainId: safe.chainId, address: safe.address.value }))
-    return promise.abort
+
+    let isCurrent = true
+
+    if (isCurrent) {
+      dispatch(fetchBalances({ chainId: safe.chainId, address: safe.address.value }))
+    }
+
+    return () => {
+      isCurrent = false
+    }
   }, [safe, dispatch])
 }
 

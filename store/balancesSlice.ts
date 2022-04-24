@@ -2,15 +2,22 @@ import { getBalances, type SafeBalanceResponse } from '@gnosis.pm/safe-react-gat
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import { logError, Errors } from '@/services/exceptions'
-import { initialFetchState, LOADING_STATUS, type FetchState } from './fetchThunkState'
+import {
+  getFulfilledState,
+  getPendingState,
+  getRejectedState,
+  initialThunkState,
+  isRaceCondition,
+  type ThunkState,
+} from './thunkState'
 import type { RootState } from '@/store'
 
-type BalancesState = SafeBalanceResponse & FetchState
+type BalancesState = SafeBalanceResponse & ThunkState
 
 const initialState: BalancesState = {
   fiatTotal: '0',
   items: [],
-  ...initialFetchState,
+  ...initialThunkState,
 }
 
 export const balancesSlice = createSlice({
@@ -18,34 +25,34 @@ export const balancesSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchBalances.pending, () => ({
-      ...initialState, // Reset balance when fetching as it's a new Safe
-      status: LOADING_STATUS.PENDING,
-      error: undefined,
-    }))
-    builder.addCase(fetchBalances.fulfilled, (state, { payload }) => ({
-      ...state,
-      ...payload,
-      status: LOADING_STATUS.SUCCEEDED,
-    }))
-    builder.addCase(fetchBalances.rejected, (state, { error, meta }) => {
-      if (meta.aborted) {
-        return
+    builder.addCase(fetchBalances.pending, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        // Reset balance when fetching as it's a new Safe
+        state = getPendingState(initialState, action)
       }
+    })
+    builder.addCase(fetchBalances.fulfilled, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        return {
+          ...getFulfilledState(state, action),
+          ...action.payload,
+        }
+      }
+    })
+    builder.addCase(fetchBalances.rejected, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getRejectedState(state, action)
 
-      state.status = LOADING_STATUS.FAILED
-      state.error = error
-
-      logError(Errors._601, error.message)
+        logError(Errors._601, action.error.message)
+      }
     })
   },
 })
 
 export const fetchBalances = createAsyncThunk(
   `${balancesSlice.name}/fetchBalances`,
-  async ({ chainId, address }: { chainId: string; address: string }, { signal }) => {
-    // TODO: Fetching in the selected currency
-    return await getBalances(chainId, address, undefined, undefined, signal)
+  async ({ chainId, address }: { chainId: string; address: string }) => {
+    return await getBalances(chainId, address)
   },
 )
 

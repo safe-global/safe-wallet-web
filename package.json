@@ -39,7 +39,7 @@
     "web3-utils": "^1.7.3"
   },
   "devDependencies": {
-    "@gnosis.pm/safe-react-gateway-sdk": "https://github.com/gnosis/safe-react-gateway-sdk#abort-signal",
+    "@gnosis.pm/safe-react-gateway-sdk": "^3.0.0",
     "@sentry/types": "^6.19.6",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react-hooks": "^8.0.0",

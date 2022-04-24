@@ -17,8 +17,15 @@ export const useInitTxQueue = (): void => {
       return
     }
 
-    const promise = dispatch(fetchTxQueue({ chainId, address }))
-    return promise.abort
+    let isCurrent = true
+
+    if (isCurrent) {
+      dispatch(fetchTxQueue({ chainId, address }))
+    }
+
+    return () => {
+      isCurrent = false
+    }
   }, [safe?.txQueuedTag, chainId, address, dispatch])
 }
 

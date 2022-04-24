@@ -2,16 +2,23 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getSafeInfo, type SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { logError, Errors } from '@/services/exceptions'
-import { initialFetchState, LOADING_STATUS, type FetchState } from '@/store/fetchThunkState'
+import {
+  getFulfilledState,
+  getPendingState,
+  getRejectedState,
+  initialThunkState,
+  isRaceCondition,
+  type ThunkState,
+} from '@/store/thunkState'
 import type { RootState } from '@/store'
 
 type SafeInfoState = {
   safe?: SafeInfo
-} & FetchState
+} & ThunkState
 
 const initialState: SafeInfoState = {
   safe: undefined,
-  ...initialFetchState,
+  ...initialThunkState,
 }
 
 export const safeInfoSlice = createSlice({
@@ -19,31 +26,33 @@ export const safeInfoSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchSafeInfo.pending, (state) => {
-      state.status = LOADING_STATUS.PENDING
-      state.error = undefined
-    })
-    builder.addCase(fetchSafeInfo.fulfilled, (state, { payload }) => {
-      state.status = LOADING_STATUS.SUCCEEDED
-      state.safe = payload
-    })
-    builder.addCase(fetchSafeInfo.rejected, (state, { error, meta }) => {
-      if (meta.aborted) {
-        return
+    builder.addCase(fetchSafeInfo.pending, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getPendingState(state, action)
       }
+    })
+    builder.addCase(fetchSafeInfo.fulfilled, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        return {
+          ...getFulfilledState(state, action),
+          safe: action.payload,
+        }
+      }
+    })
+    builder.addCase(fetchSafeInfo.rejected, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getRejectedState(state, action)
 
-      state.status = LOADING_STATUS.FAILED
-      state.error = error
-
-      logError(Errors._605, error.message)
+        logError(Errors._605, action.error.message)
+      }
     })
   },
 })
 
 export const fetchSafeInfo = createAsyncThunk(
   `${safeInfoSlice.name}/fetchSafeInfo`,
-  async ({ chainId, address }: { chainId: string; address: string }, { signal }) => {
-    return await getSafeInfo(chainId, address, undefined, signal)
+  async ({ chainId, address }: { chainId: string; address: string }) => {
+    return await getSafeInfo(chainId, address)
   },
 )
 

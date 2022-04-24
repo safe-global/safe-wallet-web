@@ -2,16 +2,23 @@ import { getChainsConfig, type ChainInfo } from '@gnosis.pm/safe-react-gateway-s
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 
 import { logError, Errors } from '@/services/exceptions'
-import { initialFetchState, LOADING_STATUS, type FetchState } from './fetchThunkState'
+import {
+  getFulfilledState,
+  getPendingState,
+  getRejectedState,
+  initialThunkState,
+  isRaceCondition,
+  type ThunkState,
+} from './thunkState'
 import type { RootState } from '@/store'
 
 type ChainsState = {
   configs: ChainInfo[]
-} & FetchState
+} & ThunkState
 
 const initialState: ChainsState = {
   configs: [],
-  ...initialFetchState,
+  ...initialThunkState,
 }
 
 export const chainsSlice = createSlice({
@@ -19,29 +26,29 @@ export const chainsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchChains.pending, (state) => {
-      state.status = LOADING_STATUS.PENDING
-      state.error = undefined
-    })
-    builder.addCase(fetchChains.fulfilled, (state, { payload }) => {
-      state.status = LOADING_STATUS.SUCCEEDED
-      state.configs = payload.results
-    })
-    builder.addCase(fetchChains.rejected, (state, { error, meta }) => {
-      if (meta.aborted) {
-        return
+    builder.addCase(fetchChains.pending, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getPendingState(state, action)
       }
+    })
+    builder.addCase(fetchChains.fulfilled, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getFulfilledState(state, action)
+        state.configs = action.payload.results
+      }
+    })
+    builder.addCase(fetchChains.rejected, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getRejectedState(state, action)
 
-      state.status = LOADING_STATUS.FAILED
-      state.error = error
-
-      logError(Errors._904, error.message)
+        logError(Errors._904, action.error.message)
+      }
     })
   },
 })
 
-export const fetchChains = createAsyncThunk(`${chainsSlice.name}/fetchChains`, async (_, { signal }) => {
-  return await getChainsConfig(undefined, signal)
+export const fetchChains = createAsyncThunk(`${chainsSlice.name}/fetchChains`, async () => {
+  return await getChainsConfig()
 })
 
 export const selectChains = (state: RootState): ChainsState => {

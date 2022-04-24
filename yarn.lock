@@ -1211,9 +1211,10 @@
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.12.0.tgz#aabad66f5467821b9a965411f9747016811d7554"
   integrity sha512-fNwQqTdBushxlkqp8WpgXVP9HTePa/VFWM9VYPzbSsdqYqSUnXYDDOMyHH3H6eNltwRV8RVp/cxqUZLrvQ3YPg==
 
-"@gnosis.pm/safe-react-gateway-sdk@gnosis/safe-react-gateway-sdk#5e425dbfac7641f56772298389b71e7281f60603":
+"@gnosis.pm/safe-react-gateway-sdk@^3.0.0":
   version "3.0.0"
-  resolved "https://codeload.github.com/gnosis/safe-react-gateway-sdk/tar.gz/5e425dbfac7641f56772298389b71e7281f60603"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.0.0.tgz#42426aa84184955f46850bbcd644d722b5ff88b8"
+  integrity sha512-KIRV55HqVQNk1CnRnEMnF3KHd0IWrPEoosNXjYjS3pb2BOOBxYSuQREUaUt6yUXd/2jM9rq2nXYqjp7ifu8SXw==
   dependencies:
     cross-fetch "^3.1.5"
 

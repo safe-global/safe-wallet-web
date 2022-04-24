@@ -17,8 +17,15 @@ export const useInitTxHistory = (): void => {
       return
     }
 
-    const promise = dispatch(fetchTxHistory({ chainId, address }))
-    return promise.abort
+    let isCurrent = true
+
+    if (isCurrent) {
+      dispatch(fetchTxHistory({ chainId, address }))
+    }
+
+    return () => {
+      isCurrent = false
+    }
   }, [safe?.txHistoryTag, chainId, address, dispatch])
 }
 

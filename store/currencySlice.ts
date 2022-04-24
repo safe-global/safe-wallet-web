@@ -2,18 +2,25 @@ import { getFiatCurrencies, type FiatCurrencies } from '@gnosis.pm/safe-react-ga
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 import { logError, Errors } from '@/services/exceptions'
-import { initialFetchState, LOADING_STATUS, type FetchState } from '@/store/fetchThunkState'
+import {
+  getFulfilledState,
+  getPendingState,
+  getRejectedState,
+  initialThunkState,
+  isRaceCondition,
+  type ThunkState,
+} from '@/store/thunkState'
 import type { RootState } from '@/store'
 
 type CurrencyState = {
   currencies: FiatCurrencies
   selectedCurrency: string
-} & FetchState
+} & ThunkState
 
 const initialState: CurrencyState = {
   currencies: [],
   selectedCurrency: 'usd',
-  ...initialFetchState,
+  ...initialThunkState,
 }
 
 export const currencySlice = createSlice({
@@ -25,31 +32,33 @@ export const currencySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchCurrencies.pending, (state) => {
-      state.status = LOADING_STATUS.PENDING
-      state.error = undefined
-    })
-    builder.addCase(fetchCurrencies.fulfilled, (state, { payload }) => {
-      state.status = LOADING_STATUS.SUCCEEDED
-      state.currencies = payload
-    })
-    builder.addCase(fetchCurrencies.rejected, (state, { error, meta }) => {
-      if (meta.aborted) {
-        return
+    builder.addCase(fetchCurrencies.pending, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getPendingState(initialState, action)
       }
+    })
+    builder.addCase(fetchCurrencies.fulfilled, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        return {
+          ...getFulfilledState(state, action),
+          currencies: action.payload,
+        }
+      }
+    })
+    builder.addCase(fetchCurrencies.rejected, (state, action) => {
+      if (!isRaceCondition(state, action)) {
+        state = getRejectedState(state, action)
 
-      state.status = LOADING_STATUS.FAILED
-      state.error = error
-
-      logError(Errors._607, error.message)
+        logError(Errors._607, action.error.message)
+      }
     })
   },
 })
 
 export const { setCurrency } = currencySlice.actions
 
-export const fetchCurrencies = createAsyncThunk(`${currencySlice.name}/fetchCurrencies`, async (_, { signal }) => {
-  return await getFiatCurrencies(signal)
+export const fetchCurrencies = createAsyncThunk(`${currencySlice.name}/fetchCurrencies`, async () => {
+  return await getFiatCurrencies()
 })
 
 export const selectCurrency = (state: RootState): CurrencyState => {
