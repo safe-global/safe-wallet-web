@@ -55,8 +55,7 @@ const initOnboardSingleton = async (chainConfigs: ChainInfo[]): Promise<OnboardA
 }
 
 // Get the most recently connected wallet address
-export const getConnectedWallet = (): ConnectedWallet | null => {
-  const wallets = onboardSingleton?.state.get().wallets
+export const getConnectedWallet = (wallets = onboardSingleton?.state.get().wallets): ConnectedWallet | null => {
   if (!wallets) return null
   const primaryWallet = wallets[0]
   if (!primaryWallet) return null
@@ -108,8 +107,8 @@ export const useWallet = (): ConnectedWallet | null => {
   useEffect(() => {
     if (!onboard) return
 
-    const subscription = onboard.state.select('wallets').subscribe(() => {
-      setWallet(getConnectedWallet())
+    const subscription = onboard.state.select('wallets').subscribe((wallets) => {
+      setWallet(getConnectedWallet(wallets))
     })
 
     return () => {

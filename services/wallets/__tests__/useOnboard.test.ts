@@ -1,0 +1,41 @@
+import type { EIP1193Provider, WalletState } from '@web3-onboard/core'
+import { getConnectedWallet } from '../useOnboard'
+
+describe('getConnectedWallet', () => {
+  it('returns the connected wallet', () => {
+    const wallets = [
+      {
+        label: 'Wallet 1',
+        icon: '',
+        provider: null as unknown as EIP1193Provider,
+        chains: [{ id: '0x4' }],
+        accounts: [
+          {
+            address: '0x1234567890123456789012345678901234567890',
+            ens: null,
+            balance: null,
+          },
+        ],
+      },
+      {
+        label: 'Wallet 2',
+        icon: '',
+        provider: null as unknown as EIP1193Provider,
+        chains: [{ id: '0x100' }],
+        accounts: [
+          {
+            address: '0x2',
+            ens: null,
+            balance: null,
+          },
+        ],
+      },
+    ] as WalletState[]
+
+    expect(getConnectedWallet(wallets)).toEqual({
+      address: '0x1234567890123456789012345678901234567890',
+      provider: wallets[0].provider,
+      chainId: '4',
+    })
+  })
+})
