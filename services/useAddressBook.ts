@@ -21,11 +21,11 @@ export const useInitAddressBook = (): void => {
     if (Array.isArray(legacyAb)) {
       local.setItem<AddressBookState>(
         ADDRESS_BOOK_KEY,
-        legacyAb.reduce((acc, { address, name, chainId }) => {
+        legacyAb.reduce<AddressBookState>((acc, { address, name, chainId }) => {
           acc[chainId] = acc[chainId] || {}
           acc[chainId][address] = name
           return acc
-        }, {} as AddressBookState),
+        }, {}),
       )
       // Remove legacy address book
       local.removeItem(LEGACY_ADDRESS_BOOK_KEY)
