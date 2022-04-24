@@ -16,7 +16,7 @@ export const useInitSafeInfo = (): void => {
     }
 
     let isCurrent = true
-    let timer: NodeJS.Timeout | undefined
+    let timer: NodeJS.Timer | undefined
 
     if (!isCurrent) {
       return
@@ -24,7 +24,7 @@ export const useInitSafeInfo = (): void => {
 
     dispatch(fetchSafeInfo({ chainId, address })).finally(() => {
       if (isCurrent) {
-        timer = setTimeout(() => {
+        timer = setInterval(() => {
           dispatch(fetchSafeInfo({ chainId, address }))
         }, POLLING_INTERVAL)
       }
@@ -33,7 +33,7 @@ export const useInitSafeInfo = (): void => {
     return () => {
       isCurrent = false
       if (timer) {
-        clearTimeout(timer)
+        clearInterval(timer)
       }
     }
   }, [chainId, address, dispatch])
