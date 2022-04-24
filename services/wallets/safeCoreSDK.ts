@@ -12,7 +12,7 @@ const LEGACY_VERSION = '<1.3.0'
 const initSafeSDK = async (
   provider: EIP1193Provider,
   signerAddress: string,
-  chainId: string,
+  walletChainId: string,
   safeAddress: string,
   safeVersion: string,
 ): Promise<Safe> => {
@@ -21,7 +21,7 @@ const initSafeSDK = async (
     web3: new Web3(provider as unknown as provider),
   })
 
-  let isL1SafeMasterCopy = chainId === chains.eth
+  let isL1SafeMasterCopy = walletChainId === chains.eth
   // Legacy Safe contracts
   if (semverSatisfies(safeVersion, LEGACY_VERSION)) {
     isL1SafeMasterCopy = true
