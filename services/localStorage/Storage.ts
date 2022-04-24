@@ -1,4 +1,4 @@
-import { LS_NAMESPACE, LS_SEPARATOR } from '@/config/constants'
+import { LS_NAMESPACE } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
 
 type BrowserStorage = typeof localStorage | typeof sessionStorage
@@ -8,13 +8,11 @@ type ItemWithExpiry<T> = {
   expiry: number
 }
 
-const DEFAULT_PREFIX = `${LS_NAMESPACE}${LS_SEPARATOR}`
-
 class Storage {
   private prefix: string
   private storage?: BrowserStorage
 
-  constructor(storage?: BrowserStorage, prefix = DEFAULT_PREFIX) {
+  constructor(storage?: BrowserStorage, prefix = LS_NAMESPACE) {
     this.prefix = prefix
     this.storage = storage
   }

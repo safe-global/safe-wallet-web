@@ -12,11 +12,9 @@ const AddressBookTable = () => {
   const rows = Object.entries(addressBook).map(([id, name]) => ({ id, name }))
 
   return (
-    <>
-      <div style={{ height: 631, width: '100%' }}>
-        <DataGrid columns={columns} rows={rows} pageSize={10} disableSelectionOnClick />
-      </div>
-    </>
+    <div style={{ height: 631, width: '100%' }}>
+      <DataGrid columns={columns} rows={rows} pageSize={10} disableSelectionOnClick />
+    </div>
   )
 }
 
