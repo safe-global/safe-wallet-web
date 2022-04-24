@@ -11,7 +11,6 @@ enum ErrorCodes {
   _102 = '102: Error getting an address checksum',
   _300 = '300: Error switching the wallet network',
   _301 = '301: Error adding a new wallet network',
-  _302 = '302: Failed to initialize web3-onboard',
   _600 = '600: Error fetching token list',
   _601 = '601: Error fetching balances',
   _602 = '602: Error fetching history txs',

@@ -6,7 +6,6 @@ import { getDefaultWallets, getRecommendedInjectedWallets } from '@/services/wal
 import { getRpcServiceUrl } from '@/services/wallets/web3'
 //import SafeLogo from '@/public/logo-no-text.svg'
 import useChains from '../useChains'
-import { Errors, logError } from '../exceptions'
 
 export type ConnectedWallet = {
   chainId: string
@@ -15,8 +14,8 @@ export type ConnectedWallet = {
   provider: EIP1193Provider
 }
 
-const createOnboard = async (chainConfigs: ChainInfo[]): Promise<OnboardAPI> => {
-  const wallets = await getDefaultWallets()
+const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
+  const wallets = getDefaultWallets()
 
   return Onboard({
     wallets,
@@ -40,19 +39,12 @@ const createOnboard = async (chainConfigs: ChainInfo[]): Promise<OnboardAPI> => 
 }
 
 let onboardSingleton: OnboardAPI | null = null
-let onboardPromise: Promise<OnboardAPI> | null = null
 
-const initOnboardSingleton = async (chainConfigs: ChainInfo[]): Promise<OnboardAPI> => {
-  if (onboardSingleton) {
-    return onboardSingleton
+const initOnboardSingleton = (chainConfigs: ChainInfo[]): OnboardAPI => {
+  if (!onboardSingleton) {
+    onboardSingleton = createOnboard(chainConfigs)
   }
-  if (onboardPromise) {
-    return onboardPromise
-  }
-  onboardPromise = createOnboard(chainConfigs)
-  onboardPromise.then((onboard) => (onboardSingleton = onboard))
-  onboardPromise.finally(() => (onboardPromise = null))
-  return onboardPromise
+  return onboardSingleton
 }
 
 // Get the most recently connected wallet address
@@ -80,21 +72,9 @@ export const useOnboard = (): OnboardAPI | null => {
   const { configs } = useChains()
 
   useEffect(() => {
-    if (onboardSingleton) {
-      setOnboard(onboardSingleton)
-      return
-    }
-
-    if (onboardPromise) {
-      onboardPromise.then((onb) => setOnboard(onb))
-      return
-    }
-
     if (!configs.length) return
 
-    initOnboardSingleton(configs)
-      .then(setOnboard)
-      .catch((e) => logError(Errors._302, (e as Error).message))
+    setOnboard((prev) => prev || initOnboardSingleton(configs))
   }, [configs])
 
   return onboard
