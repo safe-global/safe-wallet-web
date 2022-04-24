@@ -25,7 +25,7 @@ export const useInitCollectibles = (): void => {
     return () => {
       isCurrent = false
     }
-  }, [safe, dispatch, chainId, address, safe?.collectiblesTag])
+  }, [dispatch, chainId, address, safe?.collectiblesTag])
 }
 
 const useCollectibles = () => {
