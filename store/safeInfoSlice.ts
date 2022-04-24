@@ -27,7 +27,6 @@ export const safeInfoSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchSafeInfo.pending, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchSafeInfo.fulfilled, (state, action) => {

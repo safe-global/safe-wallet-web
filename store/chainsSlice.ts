@@ -27,7 +27,6 @@ export const chainsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchChains.pending, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchChains.fulfilled, (state, action) => {

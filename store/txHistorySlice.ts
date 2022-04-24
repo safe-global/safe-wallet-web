@@ -31,7 +31,6 @@ export const txHistorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchTxHistory.pending, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchTxHistory.fulfilled, (state, action) => {

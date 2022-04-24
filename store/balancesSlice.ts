@@ -27,7 +27,6 @@ export const balancesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchBalances.pending, (state, action) => {
-      if (isRaceCondition(state, action)) return
       // Reset balance when fetching as it's a new Safe
       Object.assign(state, initialState, getPendingState(action))
     })

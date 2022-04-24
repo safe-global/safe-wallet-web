@@ -31,7 +31,6 @@ export const txQueueSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchTxQueue.pending, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchTxQueue.fulfilled, (state, action) => {

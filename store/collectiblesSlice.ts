@@ -27,7 +27,6 @@ export const collectiblesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchCollectibles.pending, (state, action) => {
-      if (isRaceCondition(state, action)) return
       // Reset collectibles when fetching as it's a new Safe
       Object.assign(state, initialState, getPendingState(action))
     })

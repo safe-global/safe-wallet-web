@@ -35,7 +35,6 @@ export const currencySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCurrencies.pending, (state, action) => {
-      if (isRaceCondition(state, action)) return
       Object.assign(state, getPendingState(action))
     })
     builder.addCase(fetchCurrencies.fulfilled, (state, action) => {
