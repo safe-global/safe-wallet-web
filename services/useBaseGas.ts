@@ -1,7 +1,7 @@
 import { type MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 
 import useAsync from '@/services/useAsync'
-import { getWeb3ReadOnly } from '@/services/web3'
+import { getWeb3ReadOnly } from '@/services/wallets/web3'
 
 const useBaseGas = (
   txParams?: MetaTransactionData,
