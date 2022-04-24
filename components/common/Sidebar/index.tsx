@@ -12,7 +12,9 @@ import Navigation from '@/components/common/Sidebar/Navigation'
 
 const Sidebar = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)
-  const { error, loading } = useSafeInfo()
+  const { error, requestStatus } = useSafeInfo()
+
+  const loading = requestStatus === 'pending'
 
   return (
     <div className={css.container}>

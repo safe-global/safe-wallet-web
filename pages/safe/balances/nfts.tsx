@@ -4,12 +4,12 @@ import useCollectibles from '@/services/useCollectibles'
 import { NftGrid } from '@/components/nfts'
 
 const NFTs: NextPage = () => {
-  const collectibles = useCollectibles()
+  const { items } = useCollectibles()
 
   return (
     <main>
       <h2>NFTs</h2>
-      <NftGrid collectibles={collectibles} />
+      <NftGrid collectibles={items} />
     </main>
   )
 }
