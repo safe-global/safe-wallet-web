@@ -28,7 +28,10 @@ export const initialThunkState: ThunkState = {
 export const isRaceCondition = <T extends Record<string, unknown>>(
   state: WritableDraft<T>,
   { meta }: PendingAction | FulfilledAction | RejectedAction,
-) => state.requestId && state.requestId !== meta.requestId
+) => {
+  const isInitialFetch = state.requestStatus === 'idle'
+  return isInitialFetch ? false : state.requestId !== meta.requestId
+}
 
 export const getPendingState = <T extends Record<string, unknown>>(state: WritableDraft<T>, action: PendingAction) => {
   const { requestStatus, requestId } = action.meta
