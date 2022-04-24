@@ -1,3 +1,4 @@
+import { WC_BRIDGE } from '@/config/constants'
 import type { RecommendedInjectedWallets, WalletInit } from '@web3-onboard/common/dist/types.d'
 import walletInjected from '@web3-onboard/injected-wallets'
 import walletConnect from '@web3-onboard/walletconnect'
@@ -9,7 +10,7 @@ const enum WALLET_KEYS {
 
 const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.INJECTED]: walletInjected,
-  [WALLET_KEYS.WALLETCONNECT]: walletConnect,
+  [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ bridge: WC_BRIDGE }),
 }
 
 const DEFAULT_MODULES = [WALLET_KEYS.INJECTED, WALLET_KEYS.WALLETCONNECT]
