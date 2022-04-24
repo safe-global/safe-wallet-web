@@ -30,18 +30,18 @@ describe('useInitChains hook', () => {
     renderHook(() => useInitChains(), { wrapper: TestProviderWrapper })
     const { result } = renderHook(() => useChains(), { wrapper: TestProviderWrapper })
 
-    // Check that the loading state is true
-    expect(result.current.loading).toBe(true)
+    // Check that the requestStatus is pending
+    expect(result.current.requestStatus).toBe('pending')
     expect(result.current.error).toBe(undefined)
     expect(result.current.configs).toEqual([])
 
-    // Check that the loading state is false after the promise resolves
+    // Check that the requestStatus is 'fulfilled' after the promise resolves
     await act(async () => {
       await Promise.resolve()
     })
 
-    expect(result.current.loading).toBe(false)
-    expect(result.current.error).toBe(undefined)
+    expect(result.current.requestStatus).toBe('fulfilled')
+    expect(result.current.error?.message).toBe(undefined)
 
     // Check that the store contains the chains
     expect(result.current.configs).toEqual([
@@ -59,17 +59,17 @@ describe('useInitChains hook', () => {
     renderHook(() => useInitChains(), { wrapper: TestProviderWrapper })
     const { result } = renderHook(() => useChains(), { wrapper: TestProviderWrapper })
 
-    // Check that the loading state is true
-    expect(result.current.loading).toBe(true)
+    // Check that the requestStatus is 'pending'
+    expect(result.current.requestStatus).toBe('pending')
     expect(result.current.error).toBe(undefined)
 
-    // Check that the loading state is false after the promise resolves
+    // Check that the requestStatus is 'rejected' after the promise resolves
     await act(async () => {
       await Promise.resolve()
     })
 
-    expect(result.current.loading).toBe(false)
-    expect(result.current.error).toBe('Something went wrong')
+    expect(result.current.requestStatus).toBe('rejected')
+    expect(result.current.error?.message).toBe('Something went wrong')
 
     // Check that the store does not contain the chains
     expect(result.current.configs).toEqual([])
