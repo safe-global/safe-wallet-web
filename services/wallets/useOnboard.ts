@@ -108,12 +108,12 @@ export const useWallet = (): ConnectedWallet | null => {
   useEffect(() => {
     if (!onboard) return
 
-    const subscription = onboard.state.select('wallets').subscribe((wallets) => {
+    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
       setWallet(getConnectedWallet(wallets))
     })
 
     return () => {
-      subscription?.unsubscribe()
+      walletSubscription.unsubscribe()
     }
   }, [onboard])
 
