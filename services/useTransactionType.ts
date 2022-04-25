@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { AddressEx, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isTxQueued } from '@/components/transactions/TxList/utils'
+import { AddressEx, TransactionSummary, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
+import { isTxQueued, SettingsInfoType } from '@/components/transactions/TxList/utils'
 
 type TxTypeProps = {
   icon?: string
@@ -39,7 +39,7 @@ export const useTransactionType = (tx: TransactionSummary): TxTypeProps => {
         break
       }
       case 'Transfer': {
-        const isSendTx = tx.txInfo.direction === 'OUTGOING'
+        const isSendTx = tx.txInfo.direction === TransferDirection.OUTGOING
 
         setType({
           icon: isSendTx ? '/images/outgoing.svg' : '/images/incoming.svg',
@@ -50,7 +50,7 @@ export const useTransactionType = (tx: TransactionSummary): TxTypeProps => {
       case 'SettingsChange': {
         // deleteGuard doesn't exist in Solidity
         // It is decoded as 'setGuard' with a settingsInfo.type of 'DELETE_GUARD'
-        const isDeleteGuard = tx.txInfo.settingsInfo?.type === 'DELETE_GUARD'
+        const isDeleteGuard = tx.txInfo.settingsInfo?.type === SettingsInfoType.DELETE_GUARD
         setType({ icon: '/images/settings.svg', text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.dataDecoded.method })
         break
       }
