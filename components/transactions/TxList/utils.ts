@@ -1,4 +1,4 @@
-import { TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import { MultisigExecutionInfo, TransactionStatus, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
 // Todo: remove when safe-react-gateway-sdk exports SettingsInfoType
 export enum SettingsInfoType {
@@ -22,3 +22,6 @@ export const isTxQueued = (value: TransactionStatus): boolean => {
     TransactionStatus.WILL_BE_REPLACED,
   ].includes(value)
 }
+
+export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>
+  value?.type === 'MULTISIG'

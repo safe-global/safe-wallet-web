@@ -1,12 +1,13 @@
 import { Grid, Paper } from '@mui/material'
 import type { ReactElement } from 'react'
-import { TransactionStatus, type MultisigExecutionInfo, type Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionStatus, type Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
 import useWallet from '@/services/wallets/useWallet'
 import { useTransactionType } from '@/services/useTransactionType'
+import { isMultisigExecutionInfo } from '@/components/transactions/TxList/utils'
 import css from './styles.module.css'
 
 type TxSummaryProps = {
@@ -24,7 +25,7 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const walletAddress = wallet?.address
   const type = useTransactionType(tx)
 
-  const missingSigners = (tx?.executionInfo as MultisigExecutionInfo)?.missingSigners
+  const missingSigners = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.missingSigners : null
   const signaturePending = missingSigners?.some((item) => item.value.toLowerCase() === walletAddress?.toLowerCase())
 
   return (
