@@ -4,6 +4,7 @@ import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import { Provider } from 'react-redux'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SnackbarProvider } from 'notistack'
 
 import '@/styles/globals.css'
 import { store } from '@/store'
@@ -20,6 +21,7 @@ import { useOnboard } from '@/services/wallets/useOnboard'
 import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/wallets/useInitSafeCoreSDK'
 import { useInitAddressBook } from '@/services/useAddressBook'
+import useNotifier from '@/services/useNotifier'
 
 const InitApp = (): null => {
   if (!IS_PRODUCTION) {
@@ -37,6 +39,7 @@ const InitApp = (): null => {
   useOnboard()
   useInitSafeCoreSDK()
   useInitAddressBook()
+  useNotifier()
 
   return null
 }
@@ -44,20 +47,22 @@ const InitApp = (): null => {
 const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
   return (
     <Provider store={store}>
-      <Head>
-        <title>Safe 🌭</title>
-        <meta name="description" content="Safe app" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <Head>
+          <title>Safe 🌭</title>
+          <meta name="description" content="Safe app" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-      <InitApp />
+        <InitApp />
 
-      {/* @ts-expect-error - Temporary Fix */}
-      <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
-        <PageLayout>
-          <Component {...pageProps} />
-        </PageLayout>
-      </Sentry.ErrorBoundary>
+        {/* @ts-expect-error - Temporary Fix */}
+        <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
+          <PageLayout>
+            <Component {...pageProps} />
+          </PageLayout>
+        </Sentry.ErrorBoundary>
+      </SnackbarProvider>
     </Provider>
   )
 }
