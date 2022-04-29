@@ -53,11 +53,10 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <InitApp />
-
       {/* @ts-expect-error - Temporary Fix */}
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
         <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          <InitApp />
           <PageLayout>
             <Component {...pageProps} />
           </PageLayout>
