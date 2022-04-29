@@ -3,6 +3,10 @@
   padding: 12px 16px;
 }
 
+.gridContainer {
+  align-items: center;
+}
+
 .txTypeIcon {
   height: 1.1em;
   width: auto;

@@ -31,7 +31,7 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   return (
     <Paper>
       <div className={css.container} id={tx.id}>
-        <Grid container>
+        <Grid container className={css.gridContainer}>
           <Grid item md={1}>
             {tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''}
           </Grid>
@@ -54,7 +54,7 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
           </Grid>
 
           <Grid item md={1}>
-            {tx.txStatus !== TransactionStatus.SUCCESS && signaturePending && (
+            {tx.txStatus === TransactionStatus.AWAITING_CONFIRMATIONS && signaturePending && (
               <SignTxButton txSummary={item.transaction} />
             )}
           </Grid>
