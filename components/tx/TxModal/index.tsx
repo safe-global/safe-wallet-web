@@ -43,17 +43,6 @@ export const tokenTransferSteps: TxStepperProps['steps'] = [
   },
 ]
 
-export const signTxSteps: TxStepperProps['steps'] = [
-  {
-    label: 'Sign transaction',
-    render: (data, onSubmit) => <SignProposedTx txSummary={data as TransactionSummary} onSubmit={onSubmit} />,
-  },
-  {
-    label: 'Done',
-    render: (data) => <FinishTx tx={data as SafeTransaction} />,
-  },
-]
-
 type TxModalProps = {
   onClose: () => void
   steps: TxStepperProps['steps']
