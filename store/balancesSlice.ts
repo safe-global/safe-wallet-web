@@ -1,20 +1,27 @@
 import { type SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
+import { Loadable } from './common'
 
-type BalancesState = SafeBalanceResponse
+interface BalancesState extends Loadable {
+  balances: SafeBalanceResponse
+}
 
-const initialState: BalancesState = {
-  fiatTotal: '0',
-  items: [],
+export const initialState: BalancesState = {
+  loading: true,
+  error: undefined,
+  balances: {
+    fiatTotal: '0',
+    items: [],
+  },
 }
 
 export const balancesSlice = createSlice({
   name: 'balances',
   initialState,
   reducers: {
-    setBalances: (_, action: PayloadAction<SafeBalanceResponse | undefined>): BalancesState => {
-      return action.payload || initialState
+    setBalances: (_, action: PayloadAction<BalancesState>): BalancesState => {
+      return action.payload
     },
   },
 })

@@ -1,11 +1,10 @@
 import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '.'
+import { Loadable } from './common'
 
-type ChainsState = {
+interface ChainsState extends Loadable {
   configs: ChainInfo[]
-  error?: Error
-  loading: boolean
 }
 
 const initialState: ChainsState = {
@@ -27,7 +26,7 @@ export const chainsSlice = createSlice({
 export const { setChains } = chainsSlice.actions
 
 export const selectChains = (state: RootState): ChainsState => {
-  return state.chains
+  return state[chainsSlice.name]
 }
 
 export const selectChainById = createSelector(

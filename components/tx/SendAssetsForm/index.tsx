@@ -35,7 +35,7 @@ const abFilterOptions = createFilterOptions({
 })
 
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
-  const balances = useBalances()
+  const { balances } = useBalances()
   const addressBook = useAddressBook()
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({

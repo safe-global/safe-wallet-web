@@ -15,7 +15,7 @@ interface SafeHeaderProps {
 
 const SafeHeader = (): ReactElement => {
   const { safe } = useSafeInfo()
-  const { fiatTotal } = useBalances()
+  const { balances } = useBalances()
 
   const address = safe?.address.value || ''
   const { threshold, owners } = safe || {}
@@ -34,7 +34,7 @@ const SafeHeader = (): ReactElement => {
 
       <div className={css.totalValue}>
         <span>Total value</span>
-        <FiatValue value={fiatTotal} />
+        <FiatValue value={balances.fiatTotal} />
       </div>
     </div>
   )

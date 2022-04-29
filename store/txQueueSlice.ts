@@ -1,18 +1,22 @@
 import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
+import { Loadable } from './common'
 
-type TxQueueState = {
+interface TxQueueState extends Loadable {
   page: TransactionListPage
   pageUrl?: string
 }
 
 const initialState: TxQueueState = {
+  error: undefined,
+  loading: true,
   page: {
     results: [],
     next: '',
     previous: '',
   },
+  pageUrl: '',
 }
 
 export const txQueueSlice = createSlice({
@@ -20,6 +24,7 @@ export const txQueueSlice = createSlice({
   initialState,
   reducers: {
     setQueuePage: (state, action: PayloadAction<TransactionListPage | undefined>) => {
+      // @ts-ignore: Type instantiation is excessively deep and possibly infinite.
       state.page = action.payload || initialState.page
     },
 
