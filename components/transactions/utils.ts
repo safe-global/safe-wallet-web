@@ -1,4 +1,10 @@
-import { MultisigExecutionInfo, TransactionStatus, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  DetailedExecutionInfo,
+  MultisigExecutionDetails,
+  MultisigExecutionInfo,
+  TransactionStatus,
+  TransactionSummary,
+} from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [
@@ -7,6 +13,10 @@ export const isTxQueued = (value: TransactionStatus): boolean => {
     TransactionStatus.AWAITING_EXECUTION,
     TransactionStatus.WILL_BE_REPLACED,
   ].includes(value)
+}
+
+export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null): value is MultisigExecutionDetails => {
+  return !!value
 }
 
 export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>
