@@ -1,6 +1,7 @@
 .icon {
-  display: block;
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  background-color: #eee;
+  background-size: cover;
 }

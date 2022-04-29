@@ -11,15 +11,24 @@ export const useInitBalances = (): void => {
   const dispatch = useAppDispatch()
 
   // Re-fetch assets when the entire SafeInfo updates
-  const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(async () => {
+  const [data, error] = useAsync<SafeBalanceResponse | undefined>(async () => {
     if (!safe) return
     return getBalances(safe.chainId, safe.address.value)
   }, [safe])
 
   // Clear the old Balances when Safe address is changed
   useEffect(() => {
-    dispatch(setBalances({ balances: data || initialState.balances, loading, error }))
-  }, [dispatch, data, loading, error])
+    if (!safe) {
+      dispatch(setBalances({ balances: initialState.balances, loading: true }))
+    }
+  }, [dispatch, safe])
+
+  // Set new balances
+  useEffect(() => {
+    if (data || error) {
+      dispatch(setBalances({ balances: data || initialState.balances, error, loading: false }))
+    }
+  }, [dispatch, data, error])
 
   // Log errors
   useEffect(() => {
