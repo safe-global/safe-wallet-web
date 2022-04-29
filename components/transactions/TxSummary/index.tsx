@@ -1,11 +1,13 @@
 import { Grid, Paper } from '@mui/material'
 import type { ReactElement } from 'react'
-import { TransactionStatus, type MultisigExecutionInfo, type Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionStatus, type Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
 import useWallet from '@/services/wallets/useWallet'
+import { useTransactionType } from '@/services/useTransactionType'
+import { isMultisigExecutionInfo } from '@/components/transactions/utils'
 import css from './styles.module.css'
 
 type TxSummaryProps = {
@@ -21,41 +23,41 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
   const walletAddress = wallet?.address
+  const type = useTransactionType(tx)
 
-  const missingSigners = (item.transaction?.executionInfo as MultisigExecutionInfo)?.missingSigners
+  const missingSigners = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.missingSigners : null
   const signaturePending = missingSigners?.some((item) => item.value.toLowerCase() === walletAddress?.toLowerCase())
 
   return (
     <Paper>
       <div className={css.container} id={tx.id}>
-        <Grid container>
+        <Grid container className={css.gridContainer}>
           <Grid item md={1}>
             {tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''}
           </Grid>
 
           <Grid item md={3}>
-            <DateTime value={tx.timestamp} options={dateOptions} />
-          </Grid>
-
-          <Grid item md={2}>
-            {tx.txInfo.type}
+            <img src={type.icon} alt="transaction type" width={16} height={16} className={css.txTypeIcon} />
+            {type.text}
           </Grid>
 
           <Grid item md>
             <TxInfo info={tx.txInfo} />
           </Grid>
 
-          {tx.txStatus !== TransactionStatus.SUCCESS && (
-            <>
-              <Grid item md={3}>
-                {tx.txStatus}
-              </Grid>
+          <Grid item md={2}>
+            <DateTime value={tx.timestamp} options={dateOptions} />
+          </Grid>
 
-              <Grid item md={1}>
-                {signaturePending && <SignTxButton txSummary={item.transaction} />}
-              </Grid>
-            </>
-          )}
+          <Grid item md={3}>
+            {tx.txStatus !== TransactionStatus.SUCCESS && tx.txStatus}
+          </Grid>
+
+          <Grid item md={1}>
+            {tx.txStatus === TransactionStatus.AWAITING_CONFIRMATIONS && signaturePending && (
+              <SignTxButton txSummary={item.transaction} />
+            )}
+          </Grid>
         </Grid>
       </div>
     </Paper>
