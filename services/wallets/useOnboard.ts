@@ -125,8 +125,6 @@ export const useInitOnboard = () => {
       walletSubscription.unsubscribe()
     }
   }, [onboard])
-
-  return onboard
 }
 
 export default useOnboard
