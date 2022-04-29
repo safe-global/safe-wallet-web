@@ -8,6 +8,7 @@ import { getRpcServiceUrl } from '@/services/wallets/web3'
 import useChains from '../useChains'
 
 export type ConnectedWallet = {
+  label: string
   chainId: string
   address: string
   ens?: string
@@ -58,6 +59,7 @@ export const getConnectedWallet = (wallets = onboardSingleton?.state.get().walle
   if (!account) return null
 
   return {
+    label: primaryWallet.label,
     address: Web3.utils.toChecksumAddress(account.address),
     ens: account.ens?.name,
     chainId: Web3.utils.hexToNumberString(primaryWallet.chains[0].id),
