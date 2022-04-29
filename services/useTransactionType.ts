@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { AddressEx, TransactionSummary, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isTxQueued, SettingsInfoType } from '@/components/transactions/TxList/utils'
+import { AddressEx, SettingsInfoType, TransactionSummary, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
+import { isTxQueued } from '@/components/transactions/utils'
 
 type TxTypeProps = {
   icon?: string

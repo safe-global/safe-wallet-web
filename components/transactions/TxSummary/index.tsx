@@ -7,7 +7,7 @@ import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
 import useWallet from '@/services/wallets/useWallet'
 import { useTransactionType } from '@/services/useTransactionType'
-import { isMultisigExecutionInfo } from '@/components/transactions/TxList/utils'
+import { isMultisigExecutionInfo } from '@/components/transactions/utils'
 import css from './styles.module.css'
 
 type TxSummaryProps = {
