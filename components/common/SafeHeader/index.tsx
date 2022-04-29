@@ -26,11 +26,11 @@ const SafeHeader = (): ReactElement => {
         <Identicon address={address} />
 
         <div className={css.threshold}>
-          {threshold || ''}/{owners?.length || ''}
+          {threshold || '0'}/{owners?.length || '0'}
         </div>
       </div>
 
-      {shortenAddress(address)}
+      {address ? shortenAddress(address) : '...'}
 
       <div className={css.totalValue}>
         <span>Total value</span>

@@ -9,10 +9,16 @@ import SafeList from '../SafeList'
 import ErrorToast from '../ErrorToast'
 import TxModal from '@/components/tx/TxModal'
 import Navigation from '@/components/common/Sidebar/Navigation'
+import useSafeAddress from '@/services/useSafeAddress'
+import useWallet from '@/services/wallets/useWallet'
 
 const Sidebar = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)
-  const { error, loading } = useSafeInfo()
+  const { address, chainId } = useSafeAddress()
+  const { error, loading, safe } = useSafeInfo()
+  const wallet = useWallet()
+  const isOwner = wallet && safe?.owners.some((item) => item.value.toLowerCase() === wallet.address.toLocaleLowerCase())
+  const wrongChain = wallet && wallet.chainId !== chainId
 
   return (
     <div className={css.container}>
@@ -22,13 +28,15 @@ const Sidebar = (): ReactElement => {
 
       {!error && <SafeHeader />}
 
-      <Button onClick={() => setTxOpen(true)} variant="contained" sx={{ margin: '20px 0' }}>
-        New Transaction
-      </Button>
+      <div className={css.newTxButton}>
+        <Button onClick={() => setTxOpen(true)} variant="contained" disabled={!wallet || !isOwner}>
+          {isOwner ? 'New Transaction' : !wallet ? 'Not connected' : wrongChain ? 'Wrong wallet chain' : 'Read only'}
+        </Button>
 
-      {txOpen && <TxModal onClose={() => setTxOpen(false)} />}
+        {txOpen && <TxModal onClose={() => setTxOpen(false)} />}
+      </div>
 
-      <Navigation />
+      {address && <Navigation />}
 
       {!error && <SafeList />}
 

@@ -8,7 +8,7 @@ interface SafeInfoState extends Loadable {
 }
 
 const initialState: SafeInfoState = {
-  loading: true,
+  loading: false,
   error: undefined,
   safe: undefined,
 }

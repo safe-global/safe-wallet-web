@@ -51,7 +51,10 @@ export const useInitSafeInfo = (): void => {
       timer && clearTimeout(timer)
     }
 
-    if (!chainId || !address) return onUnmount
+    if (!chainId || !address) {
+      onData(undefined, true)
+      return onUnmount
+    }
 
     // Poll the Safe Info
     const loadSafe = async (isFirst = false) => {
