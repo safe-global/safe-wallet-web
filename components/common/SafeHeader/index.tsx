@@ -26,7 +26,7 @@ const SafeHeader = (): ReactElement => {
         <Identicon address={address} />
 
         <div className={css.threshold}>
-          {threshold || '0'}/{owners?.length || '0'}
+          {threshold || ''}/{owners?.length || ''}
         </div>
       </div>
 
