@@ -1,5 +1,5 @@
 import { useAppDispatch } from '@/store'
-import { closeAllNotifications, closeNotification, enqueueNotification } from '@/store/notificationsSlice'
+import { closeAllNotifications, closeNotification, showNotification } from '@/store/notificationsSlice'
 import type { NextPage } from 'next'
 import { SnackbarKey } from 'notistack'
 import { useState } from 'react'
@@ -9,13 +9,12 @@ const Home: NextPage = () => {
   const dispatch = useAppDispatch()
 
   const defaultNotification = () => {
-    console.log('test')
-    dispatch(enqueueNotification({ message: 'Default notification' }))
+    dispatch(showNotification({ message: 'Default notification' }))
   }
 
   const persistentNotification = () => {
     const key = dispatch(
-      enqueueNotification({
+      showNotification({
         message: 'Persistent notification, returning key',
         options: { variant: 'warning', persist: true },
       }),

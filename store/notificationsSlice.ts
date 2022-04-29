@@ -18,7 +18,7 @@ export const notificationsSlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {
-    enqueueNotification: (state, { payload }: PayloadAction<Notification>): NotificationState => {
+    showNotification: (state, { payload }: PayloadAction<Notification>): NotificationState => {
       return [...state, payload]
     },
     closeNotification: (state, { payload }: PayloadAction<{ key: SnackbarKey }>): NotificationState => {
@@ -42,7 +42,7 @@ export const { closeNotification, closeAllNotifications, deleteNotification, del
   notificationsSlice.actions
 
 // Custom thunk that returns the key in case it was auto-generated
-export const enqueueNotification = (payload: Omit<Notification, 'key' | 'dismissed'> & { key?: SnackbarKey }) => {
+export const showNotification = (payload: Omit<Notification, 'key' | 'dismissed'> & { key?: SnackbarKey }) => {
   return (dispatch: AppDispatch): SnackbarKey => {
     {
       const key = payload.options?.key || new Date().getTime() + Math.random()
@@ -53,7 +53,7 @@ export const enqueueNotification = (payload: Omit<Notification, 'key' | 'dismiss
         options: { ...payload.options, key },
       }
 
-      dispatch(notificationsSlice.actions.enqueueNotification(notification))
+      dispatch(notificationsSlice.actions.showNotification(notification))
 
       return key
     }

@@ -4,7 +4,7 @@ import { useSnackbar, type SnackbarKey } from 'notistack'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { closeNotification, selectNotifications } from '@/store/notificationsSlice'
 
-let enqueuedKeys: SnackbarKey[] = []
+let onScreenKeys: SnackbarKey[] = []
 
 const useNotifier = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
@@ -12,36 +12,36 @@ const useNotifier = () => {
   const notifications = useAppSelector(selectNotifications)
 
   useEffect(() => {
-    for (const { key, message, options = {}, dismissed = false } of notifications) {
+    for (const notification of notifications) {
       // Dismiss the notification via Notistack
-      if (dismissed) {
-        closeSnackbar(key)
+      if (notification.dismissed) {
+        closeSnackbar(notification.key)
         continue
       }
 
-      // If enqueued, do nothing
-      if (enqueuedKeys.includes(key)) {
+      // If on screen, do nothing
+      if (onScreenKeys.includes(notification.key)) {
         continue
       }
 
       // Display the notification via Notistack
-      enqueueSnackbar(message, {
-        key,
-        ...options,
-        onClose: (event, reason, myKey) => {
-          if (options.onClose) {
-            options?.onClose(event, reason, myKey)
+      enqueueSnackbar(notification.message, {
+        key: notification.key,
+        ...notification.options,
+        onClose: (event, reason, key) => {
+          if (notification.options?.onClose) {
+            notification.options.onClose(event, reason, key)
           }
         },
-        onExited: (_, myKey) => {
+        onExited: (_, key) => {
           // Cleanup store/cache on notification close
-          dispatch(closeNotification({ key: myKey }))
-          enqueuedKeys = [...enqueuedKeys.filter((enqueuedKey) => enqueuedKey !== key)]
+          dispatch(closeNotification({ key }))
+          onScreenKeys = onScreenKeys.filter((onScreenKey) => onScreenKey !== notification.key)
         },
       })
 
       // Cache the notification key of displayed notifications
-      enqueuedKeys = [...enqueuedKeys, key]
+      onScreenKeys = [...onScreenKeys, notification.key]
     }
   }, [notifications, closeSnackbar, enqueueSnackbar, dispatch])
 }
