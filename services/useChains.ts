@@ -11,6 +11,7 @@ export const useInitChains = (): void => {
 
   const [data, error, loading] = useAsync<ChainListResponse>(getChainsConfig, [])
 
+  // Update data
   useEffect(() => {
     dispatch(
       setChains({
@@ -19,8 +20,9 @@ export const useInitChains = (): void => {
         loading,
       }),
     )
-  }, [data, error, loading, dispatch])
+  }, [dispatch, data, error, loading])
 
+  // Log errors
   useEffect(() => {
     if (error) {
       logError(Errors._904, error.message)

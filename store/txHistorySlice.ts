@@ -1,18 +1,22 @@
 import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
+import { Loadable } from './common'
 
-type TxHistoryState = {
+interface TxHistoryState extends Loadable {
   page: TransactionListPage
   pageUrl?: string
 }
 
 const initialState: TxHistoryState = {
+  error: undefined,
+  loading: true,
   page: {
     results: [],
     next: '',
     previous: '',
   },
+  pageUrl: '',
 }
 
 export const txHistorySlice = createSlice({

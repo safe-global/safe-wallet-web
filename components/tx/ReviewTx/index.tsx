@@ -36,7 +36,7 @@ const ReviewTx = ({
   params: SendAssetsFormData
   onSubmit: (tx: SafeTransaction) => void
 }): ReactElement => {
-  const balances = useBalances()
+  const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const tokenInfo = token?.tokenInfo
   const txParams = tokenInfo

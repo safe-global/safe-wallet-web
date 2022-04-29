@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSafeInfo, setSafeError, setSafeInfo, setSafeLoading } from '@/store/safeInfoSlice'
+import { selectSafeInfo, setSafeInfo } from '@/store/safeInfoSlice'
 import useSafeAddress from './useSafeAddress'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from './exceptions'
@@ -17,16 +17,16 @@ export const useInitSafeInfo = (): void => {
 
       // Pass the error to the store only on first request
       if (isFirst) {
-        dispatch(setSafeError(error))
+        dispatch(setSafeInfo({ error, loading: false }))
       }
     },
     [dispatch],
   )
 
   const onLoading = useCallback(
-    (loading: boolean, isFirst: boolean) => {
+    (isFirst: boolean) => {
       if (isFirst) {
-        dispatch(setSafeLoading(loading))
+        dispatch(setSafeInfo({ loading: true }))
       }
     },
     [dispatch],
@@ -35,7 +35,7 @@ export const useInitSafeInfo = (): void => {
   const onData = useCallback(
     (data: SafeInfo | undefined, isFirst: boolean) => {
       if (data || isFirst) {
-        dispatch(setSafeInfo(data))
+        dispatch(setSafeInfo({ safe: data, loading: false }))
       }
     },
     [dispatch],
@@ -57,16 +57,13 @@ export const useInitSafeInfo = (): void => {
     const loadSafe = async (isFirst = false) => {
       if (!isCurrent) return
 
-      onData(undefined, isFirst)
-      onLoading(true, isFirst)
+      onLoading(isFirst)
 
       try {
         const data = await getSafeInfo(chainId, address)
         isCurrent && onData(data, isFirst)
       } catch (err) {
         isCurrent && onError(err as Error, isFirst)
-      } finally {
-        isCurrent && onLoading(false, isFirst)
       }
 
       // Set a timer to fetch Safe Info again

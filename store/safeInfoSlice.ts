@@ -1,42 +1,29 @@
 import { AddressEx, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '.'
+import { Loadable } from './common'
 
-const emptyAddressEx: AddressEx = {
-  value: '',
-  name: null,
-  logoUri: null,
-}
-
-type SafeInfoState = {
+interface SafeInfoState extends Loadable {
   safe?: SafeInfo
-  loading: boolean
-  error?: Error
 }
 
 const initialState: SafeInfoState = {
-  safe: undefined,
   loading: true,
   error: undefined,
+  safe: undefined,
 }
 
 export const safeInfoSlice = createSlice({
   name: 'safeInfo',
   initialState,
   reducers: {
-    setSafeInfo: (state, action: PayloadAction<SafeInfo | undefined>) => {
-      return { ...state, safe: action.payload }
-    },
-    setSafeError: (state, action: PayloadAction<Error>) => {
-      return { ...state, error: action.payload }
-    },
-    setSafeLoading: (state, action: PayloadAction<boolean>) => {
-      return { ...state, loading: action.payload }
+    setSafeInfo: (state, action: PayloadAction<SafeInfoState>) => {
+      return action.payload
     },
   },
 })
 
-export const { setSafeInfo, setSafeError, setSafeLoading } = safeInfoSlice.actions
+export const { setSafeInfo } = safeInfoSlice.actions
 
 export const selectSafeInfo = (state: RootState): SafeInfoState => {
   return state[safeInfoSlice.name]
