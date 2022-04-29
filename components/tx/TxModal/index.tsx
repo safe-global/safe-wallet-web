@@ -23,7 +23,7 @@ const style = {
   p: 4,
 }
 
-const tokenTransferSteps: TxStepperProps['steps'] = [
+export const tokenTransferSteps: TxStepperProps['steps'] = [
   {
     label: 'Create transaction',
     render: (data, onSubmit) => <SendAssetsForm onSubmit={onSubmit} formData={data as SendAssetsFormData} />,
@@ -42,7 +42,7 @@ const tokenTransferSteps: TxStepperProps['steps'] = [
   },
 ]
 
-const signTxSteps: TxStepperProps['steps'] = [
+export const signTxSteps: TxStepperProps['steps'] = [
   {
     label: 'Sign transaction',
     render: (data, onSubmit) => <SignProposedTx txSummary={data as TransactionSummary} onSubmit={onSubmit} />,
@@ -55,18 +55,17 @@ const signTxSteps: TxStepperProps['steps'] = [
 
 type TxModalProps = {
   onClose: () => void
-  txSummary?: TransactionSummary
+  steps: TxStepperProps['steps']
+  initialData?: TxStepperProps['initialData']
 }
 
-const TxModal = ({ onClose, txSummary }: TxModalProps) => {
-  const steps = txSummary ? signTxSteps : tokenTransferSteps
-
+const TxModal = ({ onClose, steps, initialData }: TxModalProps) => {
   const onClick = (e: React.MouseEvent) => e.stopPropagation()
 
   return (
     <Modal open onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description">
       <Box sx={style} onClick={onClick}>
-        <TxStepper steps={steps} initialStepData={[txSummary]} />
+        <TxStepper steps={steps} initialData={initialData} />
       </Box>
     </Modal>
   )

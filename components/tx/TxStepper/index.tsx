@@ -5,17 +5,19 @@ import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
 
-export type TxStepperProps = {
-  steps: Array<{
-    label: string
-    render: (data: unknown, onSubmit: (data: unknown) => void) => ReactElement
-  }>
-  initialStepData?: unknown[]
+type Step = {
+  label: string
+  render: (data: unknown, onSubmit: (data: unknown) => void) => ReactElement
 }
 
-const TxStepper = ({ steps, initialStepData }: TxStepperProps): ReactElement => {
+export type TxStepperProps = {
+  steps: Array<Step>
+  initialData?: unknown[]
+}
+
+const TxStepper = ({ steps, initialData }: TxStepperProps): ReactElement => {
   const [activeStep, setActiveStep] = useState<number>(0)
-  const [stepData, setStepData] = useState<Array<unknown>>(initialStepData || [])
+  const [stepData, setStepData] = useState<Array<unknown>>(initialData || [])
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
