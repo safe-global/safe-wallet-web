@@ -39,6 +39,7 @@ describe('getConnectedWallet', () => {
     ] as WalletState[]
 
     expect(getConnectedWallet(wallets)).toEqual({
+      label: 'Wallet 1',
       address: '0x1234567890123456789012345678901234567890',
       provider: wallets[0].provider,
       chainId: '4',
