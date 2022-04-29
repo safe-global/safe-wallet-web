@@ -47,22 +47,22 @@ const InitApp = (): null => {
 const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
   return (
     <Provider store={store}>
-      <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        <Head>
-          <title>Safe 🌭</title>
-          <meta name="description" content="Safe app" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
+      <Head>
+        <title>Safe 🌭</title>
+        <meta name="description" content="Safe app" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-        <InitApp />
+      <InitApp />
 
-        {/* @ts-expect-error - Temporary Fix */}
-        <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
+      {/* @ts-expect-error - Temporary Fix */}
+      <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
+        <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
           <PageLayout>
             <Component {...pageProps} />
           </PageLayout>
-        </Sentry.ErrorBoundary>
-      </SnackbarProvider>
+        </SnackbarProvider>
+      </Sentry.ErrorBoundary>
     </Provider>
   )
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect } from 'react'
 import { useSnackbar, type SnackbarKey } from 'notistack'
 
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -11,7 +11,7 @@ const useNotifier = () => {
   const dispatch = useAppDispatch()
   const notifications = useAppSelector(selectNotifications)
 
-  React.useEffect(() => {
+  useEffect(() => {
     for (const { key, message, options = {}, dismissed = false } of notifications) {
       // Dismiss the notification via Notistack
       if (dismissed) {
