@@ -8,6 +8,7 @@ import { currencySlice } from './currencySlice'
 import { txHistorySlice } from './txHistorySlice'
 import { txQueueSlice } from './txQueueSlice'
 import { addressBookSlice } from './addressBookSlice'
+import { notificationsSlice } from './notificationsSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -18,13 +19,14 @@ const rootReducer = combineReducers({
   [txHistorySlice.name]: txHistorySlice.reducer,
   [txQueueSlice.name]: txQueueSlice.reducer,
   [addressBookSlice.name]: addressBookSlice.reducer,
+  [notificationsSlice.name]: notificationsSlice.reducer,
 })
 
 export const store = configureStore({
   reducer: rootReducer,
 })
 
-type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof rootReducer>
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>
