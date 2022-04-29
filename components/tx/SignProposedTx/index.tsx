@@ -69,7 +69,7 @@ const SignProposedTx = ({
 
       <div className={css.submit}>
         <Button variant="contained" onClick={shouldExecute ? onExecute : onSign}>
-          Sign
+          Submit
         </Button>
       </div>
 

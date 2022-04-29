@@ -1,3 +1,4 @@
+import React from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import Box from '@mui/material/Box'
