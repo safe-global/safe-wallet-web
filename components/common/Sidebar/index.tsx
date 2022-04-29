@@ -8,7 +8,7 @@ import SafeHeader from '../SafeHeader'
 import SafeList from '../SafeList'
 import ErrorToast from '../ErrorToast'
 import TxModal from '@/components/tx/TxModal'
-import Navigation from '@/components/common/Sidebar/Navigation'
+import Navigation from '@/components/common/Navigation'
 import useSafeAddress from '@/services/useSafeAddress'
 import useWallet from '@/services/wallets/useWallet'
 
@@ -26,23 +26,36 @@ const Sidebar = (): ReactElement => {
         <ChainIndicator />
       </div>
 
-      {!error && <SafeHeader />}
+      {/* For routes with a Safe address */}
+      {address ? (
+        <>
+          {!error && <SafeHeader />}
 
-      <div className={css.newTxButton}>
-        <Button onClick={() => setTxOpen(true)} variant="contained" disabled={!wallet || !isOwner}>
-          {isOwner ? 'New Transaction' : !wallet ? 'Not connected' : wrongChain ? 'Wrong wallet chain' : 'Read only'}
-        </Button>
+          <div className={css.newTxButton}>
+            <Button onClick={() => setTxOpen(true)} variant="contained" disabled={!wallet || !isOwner}>
+              {isOwner
+                ? 'New Transaction'
+                : !wallet
+                ? 'Not connected'
+                : wrongChain
+                ? 'Wrong wallet chain'
+                : 'Read only'}
+            </Button>
 
-        {txOpen && <TxModal onClose={() => setTxOpen(false)} />}
-      </div>
+            {txOpen && <TxModal onClose={() => setTxOpen(false)} />}
+          </div>
 
-      {address && <Navigation />}
+          <Navigation />
 
-      {!error && <SafeList />}
+          {loading && 'Loading Safe info...'}
 
-      {loading && 'Loading Safe info...'}
+          {error && <ErrorToast message="Failed loading the Safe" />}
+        </>
+      ) : (
+        <div className={css.noSafeSidebar} />
+      )}
 
-      {error && <ErrorToast message="Failed loading the Safe" />}
+      {wallet && <SafeList />}
     </div>
   )
 }

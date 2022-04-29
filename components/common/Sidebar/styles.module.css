@@ -17,3 +17,8 @@
   margin: 20px 0;
   text-align: center;
 }
+
+.noSafeSidebar {
+  background: url('/keyhole.svg') center 0 no-repeat;
+  min-height: 100px;
+}

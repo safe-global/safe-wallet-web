@@ -25,14 +25,16 @@ const OwnedSafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chai
   )
 }
 
-const SafeList = (): ReactElement => {
-  const { chainId, address } = useSafeAddress()
+const SafeList = (): ReactElement | null => {
+  const { address } = useSafeAddress()
   const wallet = useWallet()
 
   const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(async () => {
-    if (!wallet?.address || !chainId) return
-    return getOwnedSafes(chainId, wallet.address)
-  }, [chainId, wallet?.address])
+    if (!wallet) return
+    return getOwnedSafes(wallet.chainId, wallet.address)
+  }, [wallet?.chainId, wallet?.address])
+
+  if (!wallet) return null
 
   return (
     <div className={css.container}>
@@ -43,7 +45,7 @@ const SafeList = (): ReactElement => {
       {!loading && error && `Error loading owned Safes: ${error.message}`}
 
       {!loading && !error && (
-        <OwnedSafesList safes={ownedSafes ? ownedSafes.safes : []} chainId={chainId} safeAddress={address} />
+        <OwnedSafesList safes={ownedSafes ? ownedSafes.safes : []} chainId={wallet.chainId} safeAddress={address} />
       )}
     </div>
   )
