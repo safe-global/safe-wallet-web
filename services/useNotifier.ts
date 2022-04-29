@@ -14,16 +14,16 @@ const useNotifier = () => {
   useEffect(() => {
     for (const notification of notifications) {
       if (notification.dismissed) {
-        closeSnackbar(notification.key)
+        closeSnackbar(notification.options?.key)
         continue
       }
 
-      if (onScreenKeys.includes(notification.key)) {
+      if (notification.options?.key && onScreenKeys.includes(notification.options.key)) {
         continue
       }
 
-      enqueueSnackbar(notification.message, {
-        key: notification.key,
+      const key = enqueueSnackbar(notification.message, {
+        key: notification.options?.key,
         ...notification.options,
         // Run callback when notification is closing
         onClose: (event, reason, key) => {
@@ -34,11 +34,11 @@ const useNotifier = () => {
         onExited: (_, key) => {
           // Cleanup store/cache when notification has unmounted
           dispatch(closeNotification({ key }))
-          onScreenKeys = onScreenKeys.filter((onScreenKey) => onScreenKey !== notification.key)
+          onScreenKeys = onScreenKeys.filter((onScreenKey) => onScreenKey !== notification.options?.key)
         },
       })
 
-      onScreenKeys = [...onScreenKeys, notification.key]
+      onScreenKeys = [...onScreenKeys, key]
     }
   }, [notifications, closeSnackbar, enqueueSnackbar, dispatch])
 }

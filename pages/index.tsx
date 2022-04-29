@@ -4,12 +4,18 @@ import type { NextPage } from 'next'
 import { SnackbarKey } from 'notistack'
 import { useState } from 'react'
 
+const EXAMPLE_KEY = 'testNotificationkey'
+
 const Home: NextPage = () => {
   const [persistentKey, setPersistentKey] = useState<SnackbarKey>('')
   const dispatch = useAppDispatch()
 
   const defaultNotification = () => {
     dispatch(showNotification({ message: 'Default notification' }))
+  }
+
+  const keyDefinedNotification = () => {
+    dispatch(showNotification({ message: 'We set the key of this notification', options: { key: EXAMPLE_KEY } }))
   }
 
   const persistentNotification = () => {
@@ -24,8 +30,8 @@ const Home: NextPage = () => {
     setPersistentKey(key)
   }
 
-  const closePersistent = () => {
-    dispatch(closeNotification({ key: persistentKey }))
+  const closeKey = (key: SnackbarKey) => {
+    dispatch(closeNotification({ key }))
   }
 
   const closeAll = () => {
@@ -43,9 +49,13 @@ const Home: NextPage = () => {
       <h3>Notification demo:</h3>
       <button onClick={defaultNotification}>Show default notification</button>
       <br />
+      <button onClick={keyDefinedNotification}>Show key-defined notification</button>
+      <br />
+      <button onClick={() => closeKey(EXAMPLE_KEY)}>Close key-defined notification</button>
+      <br />
       <button onClick={persistentNotification}>Show persistent notification</button>
       <br />
-      <button onClick={closePersistent}>Close persistent notification</button>
+      <button onClick={() => closeKey(persistentKey)}>Close persistent notification</button>
       <br />
       <button onClick={closeAll}>Close all notifications</button>
       <br />

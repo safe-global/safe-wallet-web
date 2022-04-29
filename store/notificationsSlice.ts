@@ -5,7 +5,6 @@ import type { AppDispatch, RootState } from '@/store'
 
 type Notification = {
   message: SnackbarMessage
-  key: SnackbarKey
   dismissed?: boolean
   options?: OptionsObject
 }
@@ -18,19 +17,19 @@ export const notificationsSlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {
-    showNotification: (state, { payload }: PayloadAction<Notification>): NotificationState => {
+    enqueueNotification: (state, { payload }: PayloadAction<Notification>): NotificationState => {
       return [...state, payload]
     },
     closeNotification: (state, { payload }: PayloadAction<{ key: SnackbarKey }>): NotificationState => {
       return state.map((notification) => {
-        return notification.key === payload.key ? { ...notification, dismissed: true } : notification
+        return notification.options?.key === payload.key ? { ...notification, dismissed: true } : notification
       })
     },
     closeAllNotifications: (state): NotificationState => {
       return state.map((notification) => ({ ...notification, dismissed: true }))
     },
     deleteNotification: (state, { payload }: PayloadAction<{ key: SnackbarKey }>) => {
-      return state.filter((notification) => notification.key !== payload.key)
+      return state.filter((notification) => notification.options?.key !== payload.key)
     },
     deleteAllNotifications: (): NotificationState => {
       return []
@@ -42,18 +41,17 @@ export const { closeNotification, closeAllNotifications, deleteNotification, del
   notificationsSlice.actions
 
 // Custom thunk that returns the key in case it was auto-generated
-export const showNotification = (payload: Omit<Notification, 'key' | 'dismissed'> & { key?: SnackbarKey }) => {
+export const showNotification = (payload: Pick<Notification, 'message' | 'options'>) => {
   return (dispatch: AppDispatch): SnackbarKey => {
     {
       const key = payload.options?.key || new Date().getTime() + Math.random()
 
-      const notification = {
+      const notification: Notification = {
         ...payload,
-        key,
         options: { ...payload.options, key },
       }
 
-      dispatch(notificationsSlice.actions.showNotification(notification))
+      dispatch(notificationsSlice.actions.enqueueNotification(notification))
 
       return key
     }
