@@ -2,10 +2,15 @@ import Web3 from 'web3'
 import { useEffect, useState } from 'react'
 import Onboard, { EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getDefaultWallets, getRecommendedInjectedWallets } from '@/services/wallets/wallets'
+import {
+  getDefaultWallets,
+  getRecommendedInjectedWallets,
+  getSupportedWallets,
+  isWalletSupported,
+} from '@/services/wallets/wallets'
 import { getRpcServiceUrl } from '@/services/wallets/web3'
-//import SafeLogo from '@/public/logo-no-text.svg'
-import useChains from '../useChains'
+import useChains, { useCurrentChain } from '../useChains'
+import local from '../localStorage/local'
 
 export type ConnectedWallet = {
   label: string
@@ -78,6 +83,48 @@ export const useOnboard = (): OnboardAPI | null => {
 
     setOnboard((prev) => prev || initOnboardSingleton(configs))
   }, [configs])
+
+  return onboard
+}
+
+const LAST_USED_WALLET_KEY = 'lastUsedWallet'
+
+// Disable/enable wallets according to chain and cache the last used wallet
+export const useInitOnboard = () => {
+  const onboard = useOnboard()
+  const chain = useCurrentChain()
+
+  useEffect(() => {
+    if (!onboard || !chain?.disabledWallets) {
+      return
+    }
+
+    const supportedModules = getSupportedWallets(chain.disabledWallets)
+    // @ts-expect-error types aren't correct
+    onboard.state.actions.setWalletModules(supportedModules)
+  }, [onboard, chain?.disabledWallets])
+
+  useEffect(() => {
+    if (!onboard) {
+      return
+    }
+
+    const lastUsedWallet = local.getItem<string>(LAST_USED_WALLET_KEY)
+    if (lastUsedWallet) {
+      onboard.connectWallet({ autoSelect: { disableModals: true, label: lastUsedWallet } })
+    }
+
+    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
+      const connectedWallet = getConnectedWallet(wallets)
+      if (connectedWallet) {
+        local.setItem(LAST_USED_WALLET_KEY, connectedWallet.label)
+      }
+    })
+
+    return () => {
+      walletSubscription.unsubscribe()
+    }
+  }, [onboard])
 
   return onboard
 }

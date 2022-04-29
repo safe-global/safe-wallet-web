@@ -1,44 +1,80 @@
-import { WC_BRIDGE } from '@/config/constants'
+import { FORTMATIC_KEY, PORTIS_KEY, TREZOR_APP_URL, TREZOR_EMAIL, WC_BRIDGE } from '@/config/constants'
 import type { RecommendedInjectedWallets, WalletInit } from '@web3-onboard/common/dist/types.d'
-import walletInjected from '@web3-onboard/injected-wallets'
+
+import coinbaseModule from '@web3-onboard/coinbase'
+import fortmaticModule from '@web3-onboard/fortmatic'
+import injectedWalletModule from '@web3-onboard/injected-wallets'
+import keepkeyModule from '@web3-onboard/keepkey'
+import keystoneModule from '@web3-onboard/keystone'
+import ledgerModule from '@web3-onboard/ledger'
+import mewModule from '@web3-onboard/mew'
+import portisModule from '@web3-onboard/portis'
+import torusModule from '@web3-onboard/torus'
+import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 
 const enum WALLET_KEYS {
+  COINBASE = 'COINBASE',
+  FORTMATIC = 'FORTMATIC',
   INJECTED = 'INJECTED',
+  KEEPKEY = 'KEEPKEY',
+  KEYSTONE = 'KEYSTONE',
+  LEDGER = 'LEDGER',
+  // MAGIC = 'MAGIC', // Magic requires an API key
+  MEW = 'MEW',
+  PORTIS = 'PORTIS',
+  TORUS = 'TORUS',
+  TREZOR = 'TREZOR',
   WALLETCONNECT = 'WALLETCONNECT',
 }
 
+const CGW_NAMES: { [key in WALLET_KEYS]: string } = {
+  [WALLET_KEYS.COINBASE]: 'coinbase',
+  [WALLET_KEYS.FORTMATIC]: 'fortmatic',
+  [WALLET_KEYS.INJECTED]: 'detectedwallet',
+  [WALLET_KEYS.KEEPKEY]: '',
+  [WALLET_KEYS.KEYSTONE]: 'keystone',
+  [WALLET_KEYS.LEDGER]: 'ledger',
+  [WALLET_KEYS.MEW]: '',
+  [WALLET_KEYS.PORTIS]: 'portis',
+  [WALLET_KEYS.TORUS]: 'torus',
+  [WALLET_KEYS.TREZOR]: 'trezor',
+  [WALLET_KEYS.WALLETCONNECT]: 'walletConnect',
+}
+
 const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
-  [WALLET_KEYS.INJECTED]: walletInjected,
+  [WALLET_KEYS.COINBASE]: () =>
+    coinbaseModule({ darkMode: !!window?.matchMedia('(prefers-color-scheme: dark)')?.matches }),
+  [WALLET_KEYS.FORTMATIC]: () => fortmaticModule({ apiKey: FORTMATIC_KEY }),
+  [WALLET_KEYS.INJECTED]: injectedWalletModule,
+  [WALLET_KEYS.KEEPKEY]: keepkeyModule,
+  [WALLET_KEYS.KEYSTONE]: keystoneModule,
+  [WALLET_KEYS.LEDGER]: ledgerModule,
+  [WALLET_KEYS.MEW]: mewModule,
+  [WALLET_KEYS.PORTIS]: () => portisModule({ apiKey: PORTIS_KEY }),
+  [WALLET_KEYS.TORUS]: torusModule,
+  [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
   [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ bridge: WC_BRIDGE }),
 }
 
-const DEFAULT_MODULES = [WALLET_KEYS.INJECTED, WALLET_KEYS.WALLETCONNECT]
-
 export const getDefaultWallets = (): WalletInit[] => {
-  return DEFAULT_MODULES.map((key) => WALLET_MODULES[key]())
+  return Object.values(WALLET_MODULES).map((module) => module())
 }
 
 export const getRecommendedInjectedWallets = (): RecommendedInjectedWallets[] => {
   return [{ name: 'MetaMask', url: 'https://metamask.io' }]
 }
 
-// Must be object as enums do not allow for computer values
-// const CGW_NAMES: { [key in WALLET_KEYS]: string } = {
-//   [WALLET_KEYS.INJECTED]: 'detectedwallet',
-//   [WALLET_KEYS.WALLETCONNECT]: 'walletConnect',
-// }
+export const isWalletSupported = (disabledWallets: string[], walletLabel: string): boolean => {
+  const legacyWalletName = CGW_NAMES?.[walletLabel.toUpperCase() as WALLET_KEYS]
+  return !disabledWallets.includes(legacyWalletName || walletLabel)
+}
 
-// const _getSupportedWalletModules = (chains: ChainInfo[], chainId: string): WalletInit[] => {
-//   const chain = chains.find((chain) => chain.chainId === chainId)
-//   const modules = getWalletModules()
-
-//   return Object.entries(modules).reduce<WalletInit[]>((acc, [key, wallet]) => {
-//     const cgwName = CGW_NAMES?.[key as WALLET_KEYS] ?? ''
-//     const isWalletDisabled = chain?.disabledWallets.includes(cgwName) ?? false
-//     if (!isWalletDisabled) {
-//       acc.push(wallet)
-//     }
-//     return acc
-//   }, [])
-// }
+export const getSupportedWallets = (disabledWallets: string[]): WalletInit[] => {
+  return Object.entries(WALLET_MODULES).reduce<WalletInit[]>((acc, [key, module]) => {
+    if (isWalletSupported(disabledWallets, key)) {
+      acc.push(module())
+    }
+    return acc
+  }, [])
+}
