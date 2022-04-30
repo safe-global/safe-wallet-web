@@ -28,14 +28,14 @@ const enum WALLET_KEYS {
   WALLETCONNECT = 'WALLETCONNECT',
 }
 
-const CGW_NAMES: { [key in WALLET_KEYS]: string } = {
+const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.COINBASE]: 'coinbase',
   [WALLET_KEYS.FORTMATIC]: 'fortmatic',
   [WALLET_KEYS.INJECTED]: 'detectedwallet',
-  [WALLET_KEYS.KEEPKEY]: '',
+  [WALLET_KEYS.KEEPKEY]: undefined,
   [WALLET_KEYS.KEYSTONE]: 'keystone',
   [WALLET_KEYS.LEDGER]: 'ledger',
-  [WALLET_KEYS.MEW]: '',
+  [WALLET_KEYS.MEW]: undefined,
   [WALLET_KEYS.PORTIS]: 'portis',
   [WALLET_KEYS.TORUS]: 'torus',
   [WALLET_KEYS.TREZOR]: 'trezor',
@@ -57,7 +57,7 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ bridge: WC_BRIDGE }),
 }
 
-export const getDefaultWallets = (): WalletInit[] => {
+export const getAllWallets = (): WalletInit[] => {
   return Object.values(WALLET_MODULES).map((module) => module())
 }
 
@@ -71,10 +71,7 @@ export const isWalletSupported = (disabledWallets: string[], walletLabel: string
 }
 
 export const getSupportedWallets = (disabledWallets: string[]): WalletInit[] => {
-  return Object.entries(WALLET_MODULES).reduce<WalletInit[]>((acc, [key, module]) => {
-    if (isWalletSupported(disabledWallets, key)) {
-      acc.push(module())
-    }
-    return acc
-  }, [])
+  return Object.entries(WALLET_MODULES)
+    .filter(([key]) => isWalletSupported(disabledWallets, key))
+    .map(([, module]) => module())
 }

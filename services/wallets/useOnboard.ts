@@ -2,12 +2,7 @@ import Web3 from 'web3'
 import { useEffect, useState } from 'react'
 import Onboard, { EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import {
-  getDefaultWallets,
-  getRecommendedInjectedWallets,
-  getSupportedWallets,
-  isWalletSupported,
-} from '@/services/wallets/wallets'
+import { getAllWallets, getRecommendedInjectedWallets, getSupportedWallets } from '@/services/wallets/wallets'
 import { getRpcServiceUrl } from '@/services/wallets/web3'
 import useChains, { useCurrentChain } from '../useChains'
 import local from '../localStorage/local'
@@ -21,7 +16,7 @@ export type ConnectedWallet = {
 }
 
 const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
-  const wallets = getDefaultWallets()
+  const wallets = getAllWallets()
 
   return Onboard({
     wallets,
