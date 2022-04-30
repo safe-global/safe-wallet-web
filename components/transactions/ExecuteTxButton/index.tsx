@@ -5,6 +5,8 @@ import React, { useState, type ReactElement } from 'react'
 import css from './styles.module.css'
 import { TxStepperProps } from '@/components/tx/TxStepper'
 import ExecuteProposedTx from '@/components/tx/ExecuteProposedTx'
+import useSafeInfo from '@/services/useSafeInfo'
+import { isMultisigExecutionInfo, isPending } from '@/components/transactions/utils'
 
 const executeTxSteps: TxStepperProps['steps'] = [
   {
@@ -15,14 +17,23 @@ const executeTxSteps: TxStepperProps['steps'] = [
 
 const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
+  const { safe } = useSafeInfo()
+  const safeNonce = safe?.nonce
+  const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
+
+  const isNext = txNonce === safeNonce
 
   const onClick = () => {
     setOpen(true)
   }
 
+  const isDisabled = !isNext || isPending(txSummary.txStatus)
+
   return (
     <div className={css.container}>
-      <Button onClick={onClick}>Execute</Button>
+      <Button onClick={onClick} disabled={isDisabled}>
+        Execute
+      </Button>
 
       {open && <TxModal onClose={() => setOpen(false)} steps={executeTxSteps} initialData={[txSummary]} />}
     </div>

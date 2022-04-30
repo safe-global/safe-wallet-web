@@ -8,24 +8,38 @@ import { createTransaction, executeTransaction, signTransaction } from '@/servic
 import extractTxInfo from '@/services/extractTxInfo'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
+import { CodedException, Errors, logError } from '@/services/exceptions'
+import { useAppDispatch } from '@/store'
+import { showNotification } from '@/store/notificationsSlice'
 
 const getTxDetails = async (chainId: string, id: string) => {
   return getTransactionDetails(chainId, id)
 }
 
+export const executeTx = async (chainId: string, txSummary: TransactionSummary): Promise<void> => {
+  try {
+    const txDetails = await getTxDetails(chainId, txSummary.id)
+    const { txParams, signatures } = extractTxInfo(txSummary, txDetails)
+
+    const safeTx = await createTransaction(txParams)
+    Object.entries(signatures).forEach(([signer, data]) => {
+      safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
+    })
+    await executeTransaction(safeTx)
+  } catch (err) {
+    throw new CodedException(Errors._804, (err as Error).message)
+  }
+}
+
 const ExecuteProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const { chainId } = useSafeAddress()
-  const [error, setError] = useState<Error>()
+  const dispatch = useAppDispatch()
 
   const onExecute = async () => {
     try {
-      const txDetails = await getTxDetails(chainId, txSummary.id)
-      const { txParams } = extractTxInfo(txSummary, txDetails)
-
-      const safeTx = await createTransaction(txParams)
-      await executeTransaction(safeTx)
+      await executeTx(chainId, txSummary)
     } catch (err) {
-      setError(err as Error)
+      dispatch(showNotification({ message: (err as Error).message }))
     }
   }
 
@@ -41,8 +55,6 @@ const ExecuteProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): Re
           Submit
         </Button>
       </div>
-
-      {error && <ErrorToast message={error.message} />}
     </div>
   )
 }

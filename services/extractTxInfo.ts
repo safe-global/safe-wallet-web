@@ -5,7 +5,6 @@ import {
   MultisigExecutionInfo,
   Operation,
   TransactionDetails,
-  TransactionStatus,
   TransactionSummary,
   TransactionTokenType,
 } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -13,13 +12,6 @@ import { isMultisigExecutionDetails } from '@/components/transactions/utils'
 
 const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000'
 const EMPTY_DATA: string = '0x'
-
-export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo => {
-  return value?.type === 'MULTISIG'
-}
-
-export const isAwaitingExecution = (txStatus: TransactionStatus): boolean =>
-  TransactionStatus.AWAITING_EXECUTION === txStatus
 
 const extractTxInfo = (
   txSummary: TransactionSummary,

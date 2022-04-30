@@ -7,6 +7,9 @@ import { TxStepperProps } from '@/components/tx/TxStepper'
 import SignProposedTx from '@/components/tx/SignProposedTx'
 import FinishTx from '@/components/tx/FinishTx'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { isOwner, isSignaturePending } from '@/components/transactions/utils'
+import useWallet from '@/services/wallets/useWallet'
+import useSafeInfo from '@/services/useSafeInfo'
 
 const signTxSteps: TxStepperProps['steps'] = [
   {
@@ -21,14 +24,22 @@ const signTxSteps: TxStepperProps['steps'] = [
 
 const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
+  const { safe } = useSafeInfo()
+  const wallet = useWallet()
+  const signaturePending = isSignaturePending(txSummary, wallet?.address)
+  const granted = isOwner(safe?.owners, wallet?.address)
 
   const onClick = () => {
     setOpen(true)
   }
 
+  const isDisabled = !signaturePending || !granted
+
   return (
     <div className={css.container}>
-      <Button onClick={onClick}>Sign</Button>
+      <Button onClick={onClick} disabled={isDisabled}>
+        Sign
+      </Button>
 
       {open && <TxModal onClose={() => setOpen(false)} steps={signTxSteps} initialData={[txSummary]} />}
     </div>

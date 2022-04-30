@@ -7,8 +7,16 @@ import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
 import { useTransactionType } from '@/services/useTransactionType'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
-import { isAwaitingExecution } from '@/services/extractTxInfo'
 import css from './styles.module.css'
+import useSafeInfo from '@/services/useSafeInfo'
+import useWallet from '@/services/wallets/useWallet'
+import {
+  isAwaitingExecution,
+  isMultisigExecutionInfo,
+  isOwner,
+  isSignaturePending,
+  signaturePending,
+} from '@/components/transactions/utils'
 
 type TxSummaryProps = {
   item: Transaction
@@ -22,6 +30,9 @@ const dateOptions = {
 const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const type = useTransactionType(tx)
+  const wallet = useWallet()
+
+  console.log(item)
 
   const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
 
@@ -50,13 +61,15 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
             {tx.txStatus !== TransactionStatus.SUCCESS && tx.txStatus}
           </Grid>
 
-          <Grid item md={1}>
-            {awaitingExecution ? (
-              <ExecuteTxButton txSummary={item.transaction} />
-            ) : (
-              <SignTxButton txSummary={item.transaction} />
-            )}
-          </Grid>
+          {wallet && (
+            <Grid item md={1}>
+              {awaitingExecution ? (
+                <ExecuteTxButton txSummary={item.transaction} />
+              ) : (
+                <SignTxButton txSummary={item.transaction} />
+              )}
+            </Grid>
+          )}
         </Grid>
       </div>
     </Paper>

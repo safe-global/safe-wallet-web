@@ -8,6 +8,9 @@ import { createTransaction, executeTransaction, signTransaction } from '@/servic
 import extractTxInfo from '@/services/extractTxInfo'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
+import { executeTx } from '@/components/tx/ExecuteProposedTx'
+import { showNotification } from '@/store/notificationsSlice'
+import { useAppDispatch } from '@/store'
 
 const getTxDetails = async (chainId: string, id: string) => {
   return getTransactionDetails(chainId, id)
@@ -21,7 +24,7 @@ const SignProposedTx = ({
   onSubmit: (tx: SafeTransaction) => void
 }): ReactElement => {
   const { chainId } = useSafeAddress()
-  const [error, setError] = useState<Error>()
+  const dispatch = useAppDispatch()
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
 
   const onSign = async () => {
@@ -37,21 +40,19 @@ const SignProposedTx = ({
       const signedTx = await signTransaction(safeTx)
       onSubmit(signedTx)
     } catch (err) {
-      setError(err as Error)
+      dispatch(showNotification({ message: (err as Error).message }))
     }
   }
 
   const onExecute = async () => {
     try {
-      const txDetails = await getTxDetails(chainId, txSummary.id)
-      const { txParams } = extractTxInfo(txSummary, txDetails)
-
-      const safeTx = await createTransaction(txParams)
-      await executeTransaction(safeTx)
+      await executeTx(chainId, txSummary)
     } catch (err) {
-      setError(err as Error)
+      dispatch(showNotification({ message: (err as Error).message }))
     }
   }
+
+  const handleSubmit = shouldExecute ? onExecute : onSign
 
   return (
     <div className={css.container}>
@@ -68,12 +69,10 @@ const SignProposedTx = ({
       <pre style={{ overflow: 'auto', width: '100%' }}>{txSummary.id}</pre>
 
       <div className={css.submit}>
-        <Button variant="contained" onClick={shouldExecute ? onExecute : onSign}>
+        <Button variant="contained" onClick={handleSubmit}>
           Submit
         </Button>
       </div>
-
-      {error && <ErrorToast message={error.message} />}
     </div>
   )
 }
