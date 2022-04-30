@@ -1,6 +1,5 @@
 import { Middleware } from '@reduxjs/toolkit'
 
-import { LS_NAMESPACE } from '@/config/constants'
 import local from '@/services/localStorage/local'
 import { RootState } from '@/store'
 
