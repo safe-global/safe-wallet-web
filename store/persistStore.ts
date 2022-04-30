@@ -1,7 +1,7 @@
-import { Middleware } from '@reduxjs/toolkit'
+import type { Middleware } from '@reduxjs/toolkit'
 
 import local from '@/services/localStorage/local'
-import { RootState } from '@/store'
+import type { RootState } from '@/store'
 
 export const preloadState = (slices: (keyof RootState)[]) => {
   const preloadedState: Record<string, unknown> = {}
