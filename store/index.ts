@@ -1,4 +1,4 @@
-import { configureStore, combineReducers, type ThunkAction, type Action } from '@reduxjs/toolkit'
+import { configureStore, combineReducers, type ThunkAction, type Action, type PreloadedState } from '@reduxjs/toolkit'
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
 import { chainsSlice } from './chainsSlice'
 import { safeInfoSlice } from './safeInfoSlice'
@@ -23,7 +23,7 @@ const rootReducer = combineReducers({
   [notificationsSlice.name]: notificationsSlice.reducer,
 })
 
-const persistedSlices = [currencySlice.name, addressBookSlice.name]
+const persistedSlices: (keyof PreloadedState<RootState>)[] = [currencySlice.name, addressBookSlice.name]
 
 export const store = configureStore({
   reducer: rootReducer,

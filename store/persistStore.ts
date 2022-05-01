@@ -6,17 +6,15 @@ import type { RootState } from '@/store'
 type PreloadedRootState = PreloadedState<RootState>
 
 export const preloadState = <K extends keyof PreloadedRootState>(sliceNames: K[]): PreloadedRootState => {
-  const preloadedState: PreloadedRootState = {}
-
-  for (const sliceName of sliceNames) {
+  return sliceNames.reduce<PreloadedRootState>((preloadedState, sliceName) => {
     const sliceState = local.getItem<PreloadedRootState[K]>(sliceName)
 
     if (sliceState) {
       preloadedState[sliceName] = sliceState
     }
-  }
 
-  return preloadedState
+    return preloadedState
+  }, {})
 }
 
 export const persistState = <K extends keyof PreloadedRootState>(sliceNames: K[]): Middleware<{}, RootState> => {
