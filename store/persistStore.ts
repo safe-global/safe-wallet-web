@@ -1,45 +1,37 @@
-import type { Middleware } from '@reduxjs/toolkit'
+import type { Middleware, PreloadedState } from '@reduxjs/toolkit'
 
 import local from '@/services/localStorage/local'
 import type { RootState } from '@/store'
 
-export const preloadState = (slices: (keyof RootState)[]) => {
-  const preloadedState: Record<string, unknown> = {}
+type PreloadedRootState = PreloadedState<RootState>
 
-  for (const slice of slices) {
-    // Filter typeof $CombinedState
-    if (typeof slice !== 'string') {
-      continue
-    }
+export const preloadState = <K extends keyof PreloadedRootState>(sliceNames: K[]): PreloadedRootState => {
+  const preloadedState: PreloadedRootState = {}
 
-    const state = local.getItem(slice)
+  for (const sliceName of sliceNames) {
+    const sliceState = local.getItem<PreloadedRootState[K]>(sliceName)
 
-    if (state) {
-      preloadedState[slice] = state
+    if (sliceState) {
+      preloadedState[sliceName] = sliceState
     }
   }
 
   return preloadedState
 }
 
-export const persistState = (slices: (keyof RootState)[]): Middleware<{}, RootState> => {
+export const persistState = <K extends keyof PreloadedRootState>(sliceNames: K[]): Middleware<{}, RootState> => {
   return (store) => (next) => (action) => {
     const result = next(action)
 
-    const _state = store.getState()
+    const state = store.getState()
 
-    for (const slice of slices) {
-      // Filter typeof $CombinedState
-      if (typeof slice !== 'string') {
-        continue
-      }
+    for (const sliceName of sliceNames) {
+      const sliceState = state[sliceName]
 
-      const state = _state[slice]
-
-      if (state) {
-        local.setItem(slice, state)
+      if (sliceState) {
+        local.setItem(sliceName, sliceState)
       } else {
-        local.removeItem(slice)
+        local.removeItem(sliceName)
       }
     }
 
