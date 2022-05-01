@@ -11,34 +11,36 @@ import css from './styles.module.css'
 import { executeTx } from '@/components/tx/ExecuteProposedTx'
 import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
+import { CodedException, Errors } from '@/services/exceptions'
 
 const getTxDetails = async (chainId: string, id: string) => {
   return getTransactionDetails(chainId, id)
 }
 
-const SignProposedTx = ({
-  txSummary,
-  onSubmit,
-}: {
-  txSummary: TransactionSummary
-  onSubmit: (tx: SafeTransaction) => void
-}): ReactElement => {
+export const signTx = async (chainId: string, txSummary: TransactionSummary) => {
+  try {
+    const txDetails = await getTxDetails(chainId, txSummary.id)
+    const { txParams, signatures } = extractTxInfo(txSummary, txDetails)
+
+    const safeTx = await createTransaction(txParams)
+    Object.entries(signatures).forEach(([signer, data]) => {
+      safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
+    })
+
+    await signTransaction(safeTx)
+  } catch (err) {
+    throw new CodedException(Errors._814, (err as Error).message)
+  }
+}
+
+const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const { chainId } = useSafeAddress()
   const dispatch = useAppDispatch()
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
 
   const onSign = async () => {
     try {
-      const txDetails = await getTxDetails(chainId, txSummary.id)
-      const { txParams, signatures } = extractTxInfo(txSummary, txDetails)
-
-      const safeTx = await createTransaction(txParams)
-      Object.entries(signatures).forEach(([signer, data]) => {
-        safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
-      })
-
-      const signedTx = await signTransaction(safeTx)
-      onSubmit(signedTx)
+      await signTx(chainId, txSummary)
     } catch (err) {
       dispatch(showNotification({ message: (err as Error).message }))
     }

@@ -13,9 +13,10 @@ type Step = {
 export type TxStepperProps = {
   steps: Array<Step>
   initialData?: unknown[]
+  onClose: () => void
 }
 
-const TxStepper = ({ steps, initialData }: TxStepperProps): ReactElement => {
+const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElement => {
   const [activeStep, setActiveStep] = useState<number>(0)
   const [stepData, setStepData] = useState<Array<unknown>>(initialData || [])
 
@@ -34,6 +35,8 @@ const TxStepper = ({ steps, initialData }: TxStepperProps): ReactElement => {
     handleNext()
   }
 
+  const firstStep = activeStep === 0
+
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep}>
@@ -51,11 +54,9 @@ const TxStepper = ({ steps, initialData }: TxStepperProps): ReactElement => {
       {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit)}
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-        {activeStep < steps.length - 1 && (
-          <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
-            Back
-          </Button>
-        )}
+        <Button color="inherit" onClick={firstStep ? onClose : handleBack} sx={{ mr: 1 }}>
+          {firstStep ? 'Cancel' : 'Back'}
+        </Button>
       </Box>
     </Box>
   )

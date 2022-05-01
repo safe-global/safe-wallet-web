@@ -1,17 +1,18 @@
-import { useState, type ReactElement } from 'react'
+import { type ReactElement } from 'react'
 import { Button, FormControl, TextField, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
-import { createTokenTransferParams, createTransaction } from '@/services/createTransaction'
+import { createTokenTransferParams, createTransaction, signTransaction } from '@/services/createTransaction'
 import { shortenAddress } from '@/services/formatters'
 import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
 import useBalances from '@/services/useBalances'
 import { type SendAssetsFormData } from '@/components/tx/SendAssetsForm'
 import css from '@/components/tx/ReviewTx/styles.module.css'
+import { showNotification } from '@/store/notificationsSlice'
+import { useAppDispatch } from '@/store'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -29,23 +30,17 @@ type ReviewTxForm = {
   nonce: number
 }
 
-const ReviewTx = ({
-  params,
-  onSubmit,
-}: {
-  params: SendAssetsFormData
-  onSubmit: (tx: SafeTransaction) => void
-}): ReactElement => {
+const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
   const { balances } = useBalances()
+  const dispatch = useAppDispatch()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const tokenInfo = token?.tokenInfo
   const txParams = tokenInfo
     ? createTokenTransferParams(params.recepient, params.amount, tokenInfo.decimals, tokenInfo.address)
     : undefined
-  const [creationError, setCreationError] = useState<Error>()
   const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
 
-  const anyError = creationError || safeGasError
+  const anyError = safeGasError
 
   const {
     register,
@@ -65,9 +60,9 @@ const ReviewTx = ({
 
     try {
       const tx = await createTransaction(editedTxParams)
-      onSubmit(tx)
+      await signTransaction(tx)
     } catch (err) {
-      setCreationError(err as Error)
+      dispatch(showNotification({ message: (err as Error).message }))
     }
   }
 
@@ -95,7 +90,7 @@ const ReviewTx = ({
 
       <div className={css.submit}>
         <Button variant="contained" type="submit">
-          Create transaction
+          Submit
         </Button>
       </div>
 

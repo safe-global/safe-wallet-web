@@ -1,14 +1,12 @@
-import { ReactElement, useState } from 'react'
-import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { ReactElement } from 'react'
 import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Button, Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 
-import ErrorToast from '@/components/common/ErrorToast'
-import { createTransaction, executeTransaction, signTransaction } from '@/services/createTransaction'
+import { createTransaction, executeTransaction } from '@/services/createTransaction'
 import extractTxInfo from '@/services/extractTxInfo'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
-import { CodedException, Errors, logError } from '@/services/exceptions'
+import { CodedException, Errors } from '@/services/exceptions'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 
