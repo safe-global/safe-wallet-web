@@ -5,7 +5,7 @@ import type { RootState } from '@/store'
 
 type PreloadedRootState = PreloadedState<RootState>
 
-export const preloadState = <K extends keyof PreloadedRootState>(sliceNames: K[]): PreloadedRootState => {
+export const getPreloadedState = <K extends keyof PreloadedRootState>(sliceNames: K[]): PreloadedRootState => {
   return sliceNames.reduce<PreloadedRootState>((preloadedState, sliceName) => {
     const sliceState = local.getItem<PreloadedRootState[K]>(sliceName)
 
