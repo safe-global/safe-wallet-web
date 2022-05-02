@@ -5,7 +5,7 @@ import Modal from '@mui/material/Modal'
 import TxStepper, { TxStepperProps } from '../TxStepper'
 import css from './styles.module.css'
 
-type TxModalProps = {
+export type TxModalProps = {
   onClose: () => void
   steps: TxStepperProps['steps']
   initialData?: TxStepperProps['initialData']

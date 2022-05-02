@@ -3,7 +3,7 @@ import React from 'react'
 import { TxStepperProps } from '@/components/tx/TxStepper'
 import SendAssetsForm, { SendAssetsFormData } from '@/components/tx/SendAssetsForm'
 import ReviewTx from '@/components/tx/ReviewTx'
-import TxModal from '@/components/tx/TxModal'
+import TxModal, { TxModalProps } from '@/components/tx/TxModal'
 
 export const TokenTransferSteps: TxStepperProps['steps'] = [
   {
@@ -16,8 +16,8 @@ export const TokenTransferSteps: TxStepperProps['steps'] = [
   },
 ]
 
-const TokenTransferModal = ({ onClose }: { onClose: () => void }) => {
-  return <TxModal onClose={onClose} steps={TokenTransferSteps} />
+const TokenTransferModal = ({ ...props }: Omit<TxModalProps, 'steps'>) => {
+  return <TxModal {...props} steps={TokenTransferSteps} />
 }
 
 export default TokenTransferModal
