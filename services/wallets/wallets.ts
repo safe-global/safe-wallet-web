@@ -4,7 +4,6 @@ import type { RecommendedInjectedWallets, WalletInit } from '@web3-onboard/commo
 import coinbaseModule from '@web3-onboard/coinbase'
 import fortmaticModule from '@web3-onboard/fortmatic'
 import injectedWalletModule from '@web3-onboard/injected-wallets'
-import keepkeyModule from '@web3-onboard/keepkey'
 import keystoneModule from '@web3-onboard/keystone'
 import ledgerModule from '@web3-onboard/ledger'
 import mewModule from '@web3-onboard/mew'
@@ -17,7 +16,7 @@ const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
   FORTMATIC = 'FORTMATIC',
   INJECTED = 'INJECTED',
-  KEEPKEY = 'KEEPKEY',
+  // KEEPKEY = 'KEEPKEY', // Keepkey fails tests: "The engine "node" is incompatible with this module. Expected version ">=16". Got "14.19.1""
   KEYSTONE = 'KEYSTONE',
   LEDGER = 'LEDGER',
   // MAGIC = 'MAGIC', // Magic requires an API key
@@ -32,7 +31,6 @@ const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.COINBASE]: 'coinbase',
   [WALLET_KEYS.FORTMATIC]: 'fortmatic',
   [WALLET_KEYS.INJECTED]: 'detectedwallet',
-  [WALLET_KEYS.KEEPKEY]: undefined,
   [WALLET_KEYS.KEYSTONE]: 'keystone',
   [WALLET_KEYS.LEDGER]: 'ledger',
   [WALLET_KEYS.MEW]: undefined,
@@ -47,7 +45,6 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
     coinbaseModule({ darkMode: !!window?.matchMedia('(prefers-color-scheme: dark)')?.matches }),
   [WALLET_KEYS.FORTMATIC]: () => fortmaticModule({ apiKey: FORTMATIC_KEY }),
   [WALLET_KEYS.INJECTED]: injectedWalletModule,
-  [WALLET_KEYS.KEEPKEY]: keepkeyModule,
   [WALLET_KEYS.KEYSTONE]: keystoneModule,
   [WALLET_KEYS.LEDGER]: ledgerModule,
   [WALLET_KEYS.MEW]: mewModule,
