@@ -7,7 +7,8 @@ interface IdenticonProps {
 }
 
 const Identicon = ({ address }: IdenticonProps): ReactElement => {
-  const iconSrc = useMemo(() => {
+  const iconSrc = useMemo<string>(() => {
+    if (!address) return ''
     try {
       return makeBlockie(address)
     } catch (e) {
@@ -15,7 +16,7 @@ const Identicon = ({ address }: IdenticonProps): ReactElement => {
     }
   }, [address])
 
-  return <img src={iconSrc} alt={address} className={css.icon} />
+  return <div className={css.icon} style={{ backgroundImage: `url(${iconSrc})` }} />
 }
 
 export default Identicon

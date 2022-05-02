@@ -13,15 +13,24 @@ export const useInitCollectibles = (): void => {
   const dispatch = useAppDispatch()
 
   // Re-fetch assets when the Safe address or the collectibes tag updates
-  const [data, error, loading] = useAsync<SafeCollectibleResponse[] | undefined>(async () => {
+  const [data, error] = useAsync<SafeCollectibleResponse[] | undefined>(async () => {
     if (!address || !chainId) return
     return getCollectibles(chainId, address)
   }, [address, chainId, collectiblesTag])
 
+  // Clear the old Collectibles when Safe address is changed
+  useEffect(() => {
+    if (!safe) {
+      dispatch(setCollectibles({ collectibles: [], loading: true }))
+    }
+  }, [dispatch, safe])
+
   // Save the Collectibles in the store
   useEffect(() => {
-    dispatch(setCollectibles({ collectibles: data || [], error, loading }))
-  }, [dispatch, data, error, loading])
+    if (data || error) {
+      dispatch(setCollectibles({ collectibles: data || [], error, loading: false }))
+    }
+  }, [dispatch, data, error])
 
   // Log errors
   useEffect(() => {

@@ -5,80 +5,32 @@ import { selectSafeInfo, setSafeInfo } from '@/store/safeInfoSlice'
 import useSafeAddress from './useSafeAddress'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from './exceptions'
+import useIntervalCounter from './useIntervalCounter'
+import useAsync from './useAsync'
 
 // Poll & dispatch the Safe Info into the store
 export const useInitSafeInfo = (): void => {
   const { address, chainId } = useSafeAddress()
+  const [counter, resetCounter] = useIntervalCounter(POLLING_INTERVAL)
   const dispatch = useAppDispatch()
 
-  const onError = useCallback(
-    (error: Error, isFirst: boolean) => {
-      logError(Errors._605, error.message)
+  const [data, error, loading] = useAsync<SafeInfo | undefined>(async () => {
+    if (!chainId || !address) return
+    return await getSafeInfo(chainId, address)
+  }, [chainId, address, counter])
 
-      // Pass the error to the store only on first request
-      if (isFirst) {
-        dispatch(setSafeInfo({ error, loading: false }))
-      }
-    },
-    [dispatch],
-  )
-
-  const onLoading = useCallback(
-    (isFirst: boolean) => {
-      if (isFirst) {
-        dispatch(setSafeInfo({ loading: true }))
-      }
-    },
-    [dispatch],
-  )
-
-  const onData = useCallback(
-    (data: SafeInfo | undefined, isFirst: boolean) => {
-      if (data || isFirst) {
-        dispatch(setSafeInfo({ safe: data, loading: false }))
-      }
-    },
-    [dispatch],
-  )
-
+  // Reset the counter when safe address/chainId changes
   useEffect(() => {
-    let isCurrent = true
-    let timer: ReturnType<typeof setTimeout> | undefined
+    resetCounter()
+  }, [dispatch, resetCounter, address, chainId])
 
-    // Stop polling on unmount
-    const onUnmount = () => {
-      isCurrent = false
-      timer && clearTimeout(timer)
+  // Update the store when the Safe Info is fetched
+  useEffect(() => {
+    // Take errors and loading state into account only for initial requests when counter is 0
+    if (data || counter === 0) {
+      dispatch(setSafeInfo({ safe: data, error, loading }))
     }
-
-    if (!chainId || !address) return onUnmount
-
-    // Poll the Safe Info
-    const loadSafe = async (isFirst = false) => {
-      if (!isCurrent) return
-
-      onLoading(isFirst)
-
-      try {
-        const data = await getSafeInfo(chainId, address)
-        isCurrent && onData(data, isFirst)
-      } catch (err) {
-        isCurrent && onError(err as Error, isFirst)
-      }
-
-      // Set a timer to fetch Safe Info again
-      if (isCurrent) {
-        timer = setTimeout(() => loadSafe(), POLLING_INTERVAL)
-      }
-    }
-
-    // Start the loop.
-    // We pass true to indicate that this is the first load. Subsequent loads will pass false.
-    // This is important to ignore errors on subsequent polling requests.
-    loadSafe(true)
-
-    return onUnmount
-  }, [chainId, address, onData, onError, onLoading])
+  }, [dispatch, counter, data, error, loading])
 }
 
 const useSafeInfo = () => {
