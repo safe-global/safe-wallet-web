@@ -67,15 +67,15 @@ const SafeWebCore = ({
       {/* @ts-expect-error - Temporary Fix */}
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
         <CacheProvider value={emotionCache}>
-          <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-            <ThemeProvider theme={safeTheme}>
+          <ThemeProvider theme={safeTheme}>
+            <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
               <CssBaseline />
               <InitApp />
               <PageLayout>
                 <Component {...pageProps} />
               </PageLayout>
-            </ThemeProvider>
-          </SnackbarProvider>
+            </SnackbarProvider>
+          </ThemeProvider>
         </CacheProvider>
       </Sentry.ErrorBoundary>
     </Provider>
