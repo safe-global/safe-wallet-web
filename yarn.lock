@@ -1473,9 +1473,9 @@
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.12.0.tgz#aabad66f5467821b9a965411f9747016811d7554"
   integrity sha512-fNwQqTdBushxlkqp8WpgXVP9HTePa/VFWM9VYPzbSsdqYqSUnXYDDOMyHH3H6eNltwRV8RVp/cxqUZLrvQ3YPg==
 
-"@gnosis.pm/safe-react-components@safe-global/safe-react-components#revamp-safe-react-components":
+"@gnosis.pm/safe-react-components@git+https://github.com/safe-global/safe-react-components.git#revamp-safe-react-components":
   version "2.0.0"
-  resolved "https://codeload.github.com/safe-global/safe-react-components/tar.gz/cf944620ddf90db2e153bf631281e25581111201"
+  resolved "git+https://github.com/safe-global/safe-react-components.git#44ad8b727ca61b4a3ece8914d03fdb97d9d0a4ea"
   dependencies:
     "@emotion/react" "^11.9.0"
     "@emotion/styled" "^11.8.1"
