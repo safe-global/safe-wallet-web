@@ -3,7 +3,10 @@ import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import { Provider } from 'react-redux'
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import { CacheProvider, EmotionCache } from '@emotion/react'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
+import { safeTheme, useThemeMode } from '@gnosis.pm/safe-react-components'
 
 import '@/styles/globals.css'
 import { store } from '@/store'
@@ -20,6 +23,7 @@ import { useOnboard } from '@/services/wallets/useOnboard'
 import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/wallets/useInitSafeCoreSDK'
 import { useInitAddressBook } from '@/services/useAddressBook'
+import createEmotionCache from '@/services/createEmotionCache'
 
 const InitApp = (): null => {
   if (!IS_PRODUCTION) {
@@ -41,24 +45,35 @@ const InitApp = (): null => {
   return null
 }
 
-const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache()
+
+const SafeWebCore = ({
+  Component,
+  pageProps,
+  emotionCache = clientSideEmotionCache,
+}: AppProps & { emotionCache: EmotionCache }): ReactElement => {
   return (
-    <Provider store={store}>
-      <Head>
-        <title>Safe 🌭</title>
-        <meta name="description" content="Safe app" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <CacheProvider value={emotionCache}>
+      <Provider store={store}>
+        <Head>
+          <title>Safe 🌭</title>
+          <meta name="description" content="Safe app" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-      <InitApp />
-
-      {/* @ts-expect-error - Temporary Fix */}
-      <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
-        <PageLayout>
-          <Component {...pageProps} />
-        </PageLayout>
-      </Sentry.ErrorBoundary>
-    </Provider>
+        <ThemeProvider theme={safeTheme}>
+          <CssBaseline />
+          <InitApp />
+          {/* @ts-expect-error - Temporary Fix */}
+          <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
+            <PageLayout>
+              <Component {...pageProps} />
+            </PageLayout>
+          </Sentry.ErrorBoundary>
+        </ThemeProvider>
+      </Provider>
+    </CacheProvider>
   )
 }
 
