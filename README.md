@@ -34,3 +34,8 @@ Unit tests:
 ```
 yarn test --watch
 ```
+
+To test the production build locally:
+```
+yarn build
+```
