@@ -64,7 +64,7 @@ const SafeWebCore = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* @ts-expect-error - Temporary Fix */}
+      {/* @ts-ignore - Temporary Fix */}
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
         <CacheProvider value={emotionCache}>
           <ThemeProvider theme={safeTheme}>
