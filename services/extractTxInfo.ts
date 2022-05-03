@@ -2,20 +2,16 @@ import { OperationType, type SafeTransactionData } from '@gnosis.pm/safe-core-sd
 import {
   Erc20Transfer,
   Erc721Transfer,
-  MultisigExecutionDetails,
   MultisigExecutionInfo,
   Operation,
   TransactionDetails,
   TransactionSummary,
   TransactionTokenType,
 } from '@gnosis.pm/safe-react-gateway-sdk'
+import { isMultisigExecutionDetails } from '@/components/transactions/utils'
 
 const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000'
 const EMPTY_DATA: string = '0x'
-
-export const isMultisig = (value: any): value is MultisigExecutionDetails => {
-  return !!value
-}
 
 const extractTxInfo = (
   txSummary: TransactionSummary,
@@ -23,7 +19,7 @@ const extractTxInfo = (
 ): { txParams: SafeTransactionData; signatures: Record<string, string> } => {
   // Format signatures into a map
   let signatures: Record<string, string> = {}
-  if (isMultisig(txDetails.detailedExecutionInfo)) {
+  if (isMultisigExecutionDetails(txDetails.detailedExecutionInfo)) {
     signatures = txDetails.detailedExecutionInfo.confirmations.reduce((result, item) => {
       result[item.signer.value] = item.signature || ''
       return result
@@ -38,17 +34,25 @@ const extractTxInfo = (
 
   const data = txDetails.txData?.hexData ?? EMPTY_DATA
 
-  const baseGas = isMultisig(txDetails.detailedExecutionInfo) ? Number(txDetails.detailedExecutionInfo.baseGas) : 0
+  const baseGas = isMultisigExecutionDetails(txDetails.detailedExecutionInfo)
+    ? Number(txDetails.detailedExecutionInfo.baseGas)
+    : 0
 
-  const gasPrice = isMultisig(txDetails.detailedExecutionInfo) ? Number(txDetails.detailedExecutionInfo.gasPrice) : 0
+  const gasPrice = isMultisigExecutionDetails(txDetails.detailedExecutionInfo)
+    ? Number(txDetails.detailedExecutionInfo.gasPrice)
+    : 0
 
-  const safeTxGas = isMultisig(txDetails.detailedExecutionInfo) ? Number(txDetails.detailedExecutionInfo.safeTxGas) : 0
+  const safeTxGas = isMultisigExecutionDetails(txDetails.detailedExecutionInfo)
+    ? Number(txDetails.detailedExecutionInfo.safeTxGas)
+    : 0
 
-  const gasToken = isMultisig(txDetails.detailedExecutionInfo) ? txDetails.detailedExecutionInfo.gasToken : ZERO_ADDRESS
+  const gasToken = isMultisigExecutionDetails(txDetails.detailedExecutionInfo)
+    ? txDetails.detailedExecutionInfo.gasToken
+    : ZERO_ADDRESS
 
   const nonce = (txSummary.executionInfo as MultisigExecutionInfo)?.nonce ?? 0
 
-  const refundReceiver = isMultisig(txDetails.detailedExecutionInfo)
+  const refundReceiver = isMultisigExecutionDetails(txDetails.detailedExecutionInfo)
     ? txDetails.detailedExecutionInfo.refundReceiver.value
     : ZERO_ADDRESS
 

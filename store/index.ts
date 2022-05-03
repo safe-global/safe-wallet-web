@@ -1,4 +1,4 @@
-import { configureStore, combineReducers, type ThunkAction, type Action } from '@reduxjs/toolkit'
+import { configureStore, combineReducers, type ThunkAction, type Action, type PreloadedState } from '@reduxjs/toolkit'
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
 import { chainsSlice } from './chainsSlice'
 import { safeInfoSlice } from './safeInfoSlice'
@@ -8,6 +8,8 @@ import { currencySlice } from './currencySlice'
 import { txHistorySlice } from './txHistorySlice'
 import { txQueueSlice } from './txQueueSlice'
 import { addressBookSlice } from './addressBookSlice'
+import { notificationsSlice } from './notificationsSlice'
+import { getPreloadedState, persistState } from './persistStore'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -18,13 +20,18 @@ const rootReducer = combineReducers({
   [txHistorySlice.name]: txHistorySlice.reducer,
   [txQueueSlice.name]: txQueueSlice.reducer,
   [addressBookSlice.name]: addressBookSlice.reducer,
+  [notificationsSlice.name]: notificationsSlice.reducer,
 })
+
+const persistedSlices: (keyof PreloadedState<RootState>)[] = [currencySlice.name, addressBookSlice.name]
 
 export const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(persistState(persistedSlices)),
+  preloadedState: getPreloadedState(persistedSlices),
 })
 
-type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof rootReducer>
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>

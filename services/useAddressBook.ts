@@ -17,6 +17,8 @@ export const useInitAddressBook = (): void => {
 
   // Migrate legacy address book
   useEffect(() => {
+    if (local.getItem<AddressBookState>(ADDRESS_BOOK_KEY)) return // @FIXME: can be removed later
+
     const legacyAb = local.getItem<Array<{ address: string; name: string; chainId: string }>>(LEGACY_ADDRESS_BOOK_KEY)
     if (Array.isArray(legacyAb)) {
       local.setItem<AddressBookState>(
@@ -27,6 +29,7 @@ export const useInitAddressBook = (): void => {
           return acc
         }, {}),
       )
+
       // Remove legacy address book
       local.removeItem(LEGACY_ADDRESS_BOOK_KEY)
     }

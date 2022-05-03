@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SnackbarProvider } from 'notistack'
 import { safeTheme, useThemeMode } from '@gnosis.pm/safe-react-components'
 
 import '@/styles/globals.css'
@@ -19,10 +20,11 @@ import { useInitTxHistory } from '@/services/useTxHistory'
 import { useInitTxQueue } from '@/services/useTxQueue'
 import usePathRewrite from '@/services/usePathRewrite'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
-import { useOnboard } from '@/services/wallets/useOnboard'
+import { useInitOnboard } from '@/services/wallets/useOnboard'
 import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/wallets/useInitSafeCoreSDK'
 import { useInitAddressBook } from '@/services/useAddressBook'
+import useNotifier from '@/services/useNotifier'
 import createEmotionCache from '@/services/createEmotionCache'
 
 const InitApp = (): null => {
@@ -38,9 +40,10 @@ const InitApp = (): null => {
   useInitTxHistory()
   useInitTxQueue()
   useInitWeb3()
-  useOnboard()
+  useInitOnboard()
   useInitSafeCoreSDK()
   useInitAddressBook()
+  useNotifier()
 
   return null
 }
@@ -54,26 +57,28 @@ const SafeWebCore = ({
   emotionCache = clientSideEmotionCache,
 }: AppProps & { emotionCache: EmotionCache }): ReactElement => {
   return (
-    <CacheProvider value={emotionCache}>
-      <Provider store={store}>
-        <Head>
-          <title>Safe 🌭</title>
-          <meta name="description" content="Safe app" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
+    <Provider store={store}>
+      <Head>
+        <title>Safe 🌭</title>
+        <meta name="description" content="Safe app" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-        <ThemeProvider theme={safeTheme}>
-          <CssBaseline />
-          <InitApp />
-          {/* @ts-expect-error - Temporary Fix */}
-          <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
-            <PageLayout>
-              <Component {...pageProps} />
-            </PageLayout>
-          </Sentry.ErrorBoundary>
-        </ThemeProvider>
-      </Provider>
-    </CacheProvider>
+      {/* @ts-expect-error - Temporary Fix */}
+      <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
+        <CacheProvider value={emotionCache}>
+          <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+            <ThemeProvider theme={safeTheme}>
+              <CssBaseline />
+              <InitApp />
+              <PageLayout>
+                <Component {...pageProps} />
+              </PageLayout>
+            </ThemeProvider>
+          </SnackbarProvider>
+        </CacheProvider>
+      </Sentry.ErrorBoundary>
+    </Provider>
   )
 }
 

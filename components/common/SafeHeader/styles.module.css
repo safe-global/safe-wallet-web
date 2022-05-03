@@ -21,6 +21,13 @@
   border-radius: 100%;
   background: #ddd;
   font-size: 11px;
+  min-width: 25px;
+  min-height: 25px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .totalValue {

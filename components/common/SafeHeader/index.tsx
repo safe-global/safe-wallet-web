@@ -6,13 +6,6 @@ import FiatValue from '../FiatValue'
 import Identicon from '../Identicon'
 import css from './styles.module.css'
 
-interface SafeHeaderProps {
-  address: string
-  threshold: number
-  owners: number
-  fiatTotal: string
-}
-
 const SafeHeader = (): ReactElement => {
   const { safe } = useSafeInfo()
   const { balances } = useBalances()
@@ -30,7 +23,7 @@ const SafeHeader = (): ReactElement => {
         </div>
       </div>
 
-      {shortenAddress(address)}
+      {address ? shortenAddress(address) : '...'}
 
       <div className={css.totalValue}>
         <span>Total value</span>

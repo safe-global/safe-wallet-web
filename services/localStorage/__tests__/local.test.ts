@@ -14,7 +14,7 @@ describe('local storage', () => {
   describe('getItem', () => {
     it('returns a parsed value', () => {
       const stringifiedValue = JSON.stringify({ test: 'value' })
-      window.localStorage.setItem('SAFE__test', stringifiedValue)
+      window.localStorage.setItem('SAFE_v2__test', stringifiedValue)
 
       expect(getItem('test')).toStrictEqual({ test: 'value' })
     })
@@ -27,7 +27,7 @@ describe('local storage', () => {
     it('saves a stringified value', () => {
       setItem('test', true)
       expect(getItem('test')).toBe(true)
-      expect(window.localStorage.getItem('SAFE__test')).toBe('true')
+      expect(window.localStorage.getItem('SAFE_v2__test')).toBe('true')
     })
   })
 
@@ -35,7 +35,7 @@ describe('local storage', () => {
     it('saves ands reads undefined', () => {
       setItem('test_undefined', undefined)
       expect(getItem('test_undefined')).toBe(undefined)
-      expect(window.localStorage.getItem('SAFE__test_undefined')).toBe('undefined')
+      expect(window.localStorage.getItem('SAFE_v2__test_undefined')).toBe('undefined')
     })
   })
 })
