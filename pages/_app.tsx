@@ -7,7 +7,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SnackbarProvider } from 'notistack'
-import { safeTheme, useThemeMode } from '@gnosis.pm/safe-react-components'
+import { safeTheme } from '@gnosis.pm/safe-react-components'
 
 import '@/styles/globals.css'
 import { store } from '@/store'
