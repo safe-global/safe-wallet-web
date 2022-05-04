@@ -1,0 +1,13 @@
+.container {
+  padding: 1rem;
+}
+
+.actions {
+  visibility: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.row:hover .actions {
+  visibility: initial;
+}

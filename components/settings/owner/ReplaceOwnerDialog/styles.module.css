@@ -1,0 +1,28 @@
+.content {
+  padding: 1rem;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.light {
+  font-weight: lighter;
+  font-size: small;
+}
+
+.newOwner {
+  display: flex;
+  padding-top: 1rem;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dialogFooter {
+  justify-content: center;
+  gap: 2rem;
+}
