@@ -26,3 +26,57 @@
   justify-content: center;
   gap: 2rem;
 }
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+  padding: 0rem;
+}
+
+.flexRowInner {
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+}
+
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.large {
+  font-size: large;
+}
+
+.detailsBlock {
+  border-right: solid 1px #e8e7e6;
+  padding-top: 0rem;
+  padding-right: 1rem;
+}
+
+.detailField {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.detailField p {
+  margin: 0rem;
+}
+
+.removedOwner {
+  background-color: #ffe6ea;
+}
+
+.info {
+  background-color: #f6f7f8;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.overline {
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 1px;
+  align-self: center;
+}

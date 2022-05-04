@@ -36,7 +36,7 @@ export const ReplaceOwnerDialog = ({ address, chainId }: { address: string; chai
       <Button variant="text" onClick={() => setOpen(true)}>
         Replace
       </Button>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} maxWidth={'lg'}>
         <DialogTitle className={css.title}>
           <div>
             Replace owner <span className={css.light}>Step {step} of 2</span>
@@ -51,7 +51,9 @@ export const ReplaceOwnerDialog = ({ address, chainId }: { address: string; chai
             initialOwner={newOwner}
           />
         )}
-        {step === 2 && <SubmitOwnerTxStep onBack={goBack} />}
+        {step === 2 && newOwner && (
+          <SubmitOwnerTxStep newOwner={{ ...newOwner }} removeOwner={{ address }} onBack={goBack} />
+        )}
       </Dialog>
     </div>
   )
