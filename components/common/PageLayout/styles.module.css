@@ -19,6 +19,12 @@
 .drawer {
   grid-area: sidebar;
   height: 100vh;
+}
+
+.drawer > * {
+  width: 220px;
+  overflow: hidden;
+  border: none;
   box-shadow: rgb(40 54 61 / 8%) 1px 2px 12px;
 }
 

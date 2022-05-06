@@ -34,8 +34,9 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
         <Box sx={{ flexGrow: 1 }} />
 
         {wallet ? (
-          <div>
+          <Box sx={{ color: 'text.primary' }}>
             {wallet.ens || shortenAddress(wallet.address)}
+
             <Button
               onClick={() =>
                 onboard?.disconnectWallet({
@@ -45,7 +46,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
             >
               Disconnect
             </Button>
-          </div>
+          </Box>
         ) : (
           <Button onClick={() => onboard?.connectWallet()} variant="contained">
             Connect Wallet

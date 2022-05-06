@@ -12,14 +12,19 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
     setIsMobileDrawerOpen((prev) => !prev)
   }
 
+  const sidebar = (
+    <Sidebar>
+      <Toolbar className={css.toolbar} />
+    </Sidebar>
+  )
+
   return (
     <div className={css.container}>
       <Header onMenuToggle={onMenuToggle} />
 
       {/* Desktop sidebar */}
       <Drawer variant="permanent" anchor="left" className={css.drawer}>
-        <Toolbar className={css.toolbar} />
-        <Sidebar />
+        {sidebar}
       </Drawer>
 
       {/* Mobile sidebar */}
@@ -30,8 +35,7 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
         open={isMobileDrawerOpen}
         onClose={onMenuToggle}
       >
-        <Toolbar className={css.toolbar} />
-        <Sidebar />
+        {sidebar}
       </Drawer>
 
       <Box className={css.main}>

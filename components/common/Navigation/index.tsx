@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import Collapse from '@mui/material/Collapse'
@@ -9,7 +10,6 @@ import List from '@mui/material/List'
 
 import useSafeAddress from '@/services/useSafeAddress'
 import chains from '@/config/chains'
-import { useRouter } from 'next/router'
 
 type NavItem = {
   label: string
