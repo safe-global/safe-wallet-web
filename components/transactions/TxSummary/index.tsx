@@ -5,10 +5,11 @@ import { TransactionStatus, type Transaction } from '@gnosis.pm/safe-react-gatew
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
-import useWallet from '@/services/wallets/useWallet'
 import { useTransactionType } from '@/services/useTransactionType'
-import { isMultisigExecutionInfo } from '@/components/transactions/utils'
+import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import css from './styles.module.css'
+import useWallet from '@/services/wallets/useWallet'
+import { isAwaitingExecution } from '@/components/transactions/utils'
 
 type TxSummaryProps = {
   item: Transaction
@@ -21,12 +22,10 @@ const dateOptions = {
 
 const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
-  const wallet = useWallet()
-  const walletAddress = wallet?.address
   const type = useTransactionType(tx)
+  const wallet = useWallet()
 
-  const missingSigners = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.missingSigners : null
-  const signaturePending = missingSigners?.some((item) => item.value.toLowerCase() === walletAddress?.toLowerCase())
+  const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
 
   return (
     <Paper>
@@ -53,11 +52,15 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
             {tx.txStatus !== TransactionStatus.SUCCESS && tx.txStatus}
           </Grid>
 
-          <Grid item md={1}>
-            {tx.txStatus === TransactionStatus.AWAITING_CONFIRMATIONS && signaturePending && (
-              <SignTxButton txSummary={item.transaction} />
-            )}
-          </Grid>
+          {wallet && (
+            <Grid item md={1}>
+              {awaitingExecution ? (
+                <ExecuteTxButton txSummary={item.transaction} />
+              ) : (
+                <SignTxButton txSummary={item.transaction} />
+              )}
+            </Grid>
+          )}
         </Grid>
       </div>
     </Paper>

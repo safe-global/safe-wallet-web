@@ -7,10 +7,10 @@ import ChainIndicator from '../ChainIndicator'
 import SafeHeader from '../SafeHeader'
 import SafeList from '../SafeList'
 import ErrorToast from '../ErrorToast'
-import TxModal from '@/components/tx/TxModal'
 import Navigation from '@/components/common/Navigation'
 import useSafeAddress from '@/services/useSafeAddress'
 import useWallet from '@/services/wallets/useWallet'
+import TokenTransferModal from '@/components/tx/TokenTransferModal'
 
 const Sidebar = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)
@@ -42,7 +42,7 @@ const Sidebar = (): ReactElement => {
                 : 'Read only'}
             </Button>
 
-            {txOpen && <TxModal onClose={() => setTxOpen(false)} />}
+            {txOpen && <TokenTransferModal onClose={() => setTxOpen(false)} />}
           </div>
 
           <Navigation />
