@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 import { getWeb3 } from '@/services/wallets/web3'
+import { SetHistoryPageAction, txHistorySlice } from './txHistorySlice'
+import { isTransaction } from '@/components/transactions/utils'
 import type { RootState } from '@/store'
 
 interface PendingTxsState {
@@ -48,6 +50,32 @@ export const pendingTxsSlice = createSlice({
         [chainId]: newChainState,
       }
     },
+  },
+  extraReducers: (builder) => {
+    // Remove any pending transactions that are now historical
+    builder.addMatcher(
+      ({ type }) => type === txHistorySlice.actions.setHistoryPage.type,
+      (state, action: SetHistoryPageAction) => {
+        if (!action.payload) {
+          return
+        }
+
+        const pendingChainIds = Object.keys(state)
+
+        for (const result of action.payload.results) {
+          if (!isTransaction(result)) {
+            continue
+          }
+          const { id } = result.transaction
+
+          const chainId = pendingChainIds.find((chainId) => state[chainId][id])
+
+          if (chainId) {
+            delete state[chainId][id]
+          }
+        }
+      },
+    )
   },
 })
 
