@@ -10,10 +10,10 @@ import { CodedException, Errors } from '@/services/exceptions'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 
-export const executeTx = async (chainId: string, txSummary: TransactionSummary): Promise<void> => {
+export const executeTx = async (chainId: string, txSummary: TransactionSummary, safeAddress: string): Promise<void> => {
   try {
     const txDetails = await getTransactionDetails(chainId, txSummary.id)
-    const { txParams, signatures } = extractTxInfo(txSummary, txDetails)
+    const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
 
     const safeTx = await createTransaction(txParams)
     Object.entries(signatures).forEach(([signer, data]) => {
@@ -26,12 +26,12 @@ export const executeTx = async (chainId: string, txSummary: TransactionSummary):
 }
 
 const ExecuteProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
-  const { chainId } = useSafeAddress()
+  const { chainId, address } = useSafeAddress()
   const dispatch = useAppDispatch()
 
   const onExecute = async () => {
     try {
-      await executeTx(chainId, txSummary)
+      await executeTx(chainId, txSummary, address)
     } catch (err) {
       dispatch(showNotification({ message: (err as Error).message }))
     }

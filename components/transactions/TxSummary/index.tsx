@@ -10,6 +10,8 @@ import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import css from './styles.module.css'
 import useWallet from '@/services/wallets/useWallet'
 import { isAwaitingExecution } from '@/components/transactions/utils'
+import RejectTxButton from '@/components/transactions/RejectTxButton'
+import Box from '@mui/material/Box'
 
 type TxSummaryProps = {
   item: Transaction
@@ -54,11 +56,14 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
 
           {wallet && (
             <Grid item md={1}>
-              {awaitingExecution ? (
-                <ExecuteTxButton txSummary={item.transaction} />
-              ) : (
-                <SignTxButton txSummary={item.transaction} />
-              )}
+              <Box display="flex" alignItems="center">
+                {awaitingExecution ? (
+                  <ExecuteTxButton txSummary={item.transaction} />
+                ) : (
+                  <SignTxButton txSummary={item.transaction} />
+                )}
+                <RejectTxButton txSummary={item.transaction} />
+              </Box>
             </Grid>
           )}
         </Grid>

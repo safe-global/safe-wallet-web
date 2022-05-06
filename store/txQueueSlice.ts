@@ -1,4 +1,9 @@
-import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  TransactionListPage,
+  Transaction,
+  TransactionListItem,
+  MultisigExecutionInfo,
+} from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 import { Loadable } from './common'
@@ -38,4 +43,16 @@ export const { setQueuePage, setPageUrl } = txQueueSlice.actions
 
 export const selectTxQueue = (state: RootState): TxQueueState => {
   return state[txQueueSlice.name]
+}
+
+export const selectQueuedTransactions = (state: RootState): TransactionListItem[] => {
+  return state[txQueueSlice.name].page.results.filter((item) => item.type === 'TRANSACTION')
+}
+
+export const selectQueuedTransactionsByNonce = (state: RootState, nonce: number): TransactionListItem[] | undefined => {
+  return state[txQueueSlice.name].page.results.filter(
+    (item) =>
+      item.type === 'TRANSACTION' &&
+      ((item as Transaction).transaction.executionInfo as MultisigExecutionInfo).nonce === nonce,
+  )
 }

@@ -1,6 +1,7 @@
 import React, { useState, type ReactElement } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Button } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
 
 import css from './styles.module.css'
 import { isOwner, isSignaturePending } from '@/components/transactions/utils'
@@ -23,9 +24,13 @@ const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactEl
 
   return (
     <div className={css.container}>
-      <Button onClick={onClick} disabled={isDisabled}>
-        Sign
-      </Button>
+      <Tooltip title="Sign" arrow placement="top">
+        <span>
+          <Button onClick={onClick} disabled={isDisabled}>
+            <CheckIcon />
+          </Button>
+        </span>
+      </Tooltip>
 
       {open && <SignTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </div>

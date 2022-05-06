@@ -1,6 +1,7 @@
 import React, { useState, type ReactElement } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Button } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 
 import css from './styles.module.css'
 import useSafeInfo from '@/services/useSafeInfo'
@@ -22,9 +23,13 @@ const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): Reac
 
   return (
     <div className={css.container}>
-      <Button onClick={onClick} disabled={isDisabled}>
-        Execute
-      </Button>
+      <Tooltip title="Execute" arrow placement="top">
+        <span>
+          <Button onClick={onClick} disabled={isDisabled}>
+            <RocketLaunchIcon />
+          </Button>
+        </span>
+      </Tooltip>
 
       {open && <ExecuteTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </div>
