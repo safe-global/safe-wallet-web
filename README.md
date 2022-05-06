@@ -39,3 +39,10 @@ To test the production build locally:
 ```
 yarn build
 ```
+
+## Development
+
+To create a new component in the root folder:
+```
+yarn cmp MyNewComponent
+```

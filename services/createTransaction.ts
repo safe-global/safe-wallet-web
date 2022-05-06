@@ -19,7 +19,7 @@ export const createTokenTransferParams = (
   const value = toDecimals(amount, decimals).toFixed()
   const isNativeToken = parseInt(tokenAddress, 16) === 0
 
-  const txParams = isNativeToken
+  return isNativeToken
     ? {
         to: recepient,
         value,
@@ -30,8 +30,6 @@ export const createTokenTransferParams = (
         value: '0x0',
         data: encodeTokenTransferData(recepient, value),
       }
-
-  return txParams
 }
 
 export const createTransaction = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
@@ -48,6 +46,15 @@ export const signTransaction = async (tx: SafeTransaction): Promise<SafeTransact
   await safeSdk.signTransaction(tx)
 
   console.log('Signed tx', tx)
+
+  return tx
+}
+
+export const rejectTransaction = async (nonce: number): Promise<SafeTransaction> => {
+  const safeSdk = getSafeSDK()
+  const tx = await safeSdk.createRejectionTransaction(nonce)
+
+  console.log('Reject tx', tx)
 
   return tx
 }

@@ -1,4 +1,5 @@
 import Sentry from '@/services/sentry' // needs to be imported first
+import '@/services/localStorage/migrateStorage' // needs to be imported second
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
@@ -26,6 +27,9 @@ import { useInitSafeCoreSDK } from '@/services/safe-core/useInitSafeCoreSDK'
 import useNotifier from '@/services/useNotifier'
 import createEmotionCache from '@/services/createEmotionCache'
 
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache()
+
 const InitApp = (): null => {
   if (!IS_PRODUCTION) {
     setBaseUrl(STAGING_GATEWAY_URL)
@@ -45,9 +49,6 @@ const InitApp = (): null => {
 
   return null
 }
-
-// Client-side cache, shared for the whole session of the user in the browser.
-const clientSideEmotionCache = createEmotionCache()
 
 const SafeWebCore = ({
   Component,
