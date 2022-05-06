@@ -19,7 +19,7 @@ export const executeTx = async (chainId: string, txSummary: TransactionSummary):
     Object.entries(signatures).forEach(([signer, data]) => {
       safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
     })
-    await executeTransaction(safeTx)
+    await executeTransaction(chainId, txDetails.txId, safeTx)
   } catch (err) {
     throw new CodedException(Errors._804, (err as Error).message)
   }

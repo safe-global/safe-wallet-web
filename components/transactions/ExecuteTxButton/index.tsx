@@ -4,17 +4,19 @@ import { Button } from '@mui/material'
 
 import css from './styles.module.css'
 import useSafeInfo from '@/services/useSafeInfo'
-import { isMultisigExecutionInfo, isPending } from '@/components/transactions/utils'
+import { isMultisigExecutionInfo } from '@/components/transactions/utils'
 import ExecuteTxModal from '@/components/tx/ExecuteTxModal'
+import useIsPending from '@/components/transactions/useIsPending'
 
 const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
   const { safe } = useSafeInfo()
   const safeNonce = safe?.nonce
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
+  const isPending = !!useIsPending({ txId: txSummary.id })
 
   const isNext = !!txNonce && !!safeNonce && txNonce === safeNonce
-  const isDisabled = !isNext || isPending(txSummary.txStatus)
+  const isDisabled = !isNext || isPending
 
   const onClick = () => {
     setOpen(true)

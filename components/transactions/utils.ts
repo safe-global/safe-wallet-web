@@ -9,7 +9,6 @@ import {
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [
-    TransactionStatus.PENDING,
     TransactionStatus.AWAITING_CONFIRMATIONS,
     TransactionStatus.AWAITING_EXECUTION,
     TransactionStatus.WILL_BE_REPLACED,
@@ -18,8 +17,6 @@ export const isTxQueued = (value: TransactionStatus): boolean => {
 
 export const isAwaitingExecution = (txStatus: TransactionStatus): boolean =>
   TransactionStatus.AWAITING_EXECUTION === txStatus
-
-export const isPending = (txStatus: TransactionStatus): boolean => TransactionStatus.PENDING === txStatus
 
 export const isSignaturePending = (tx: TransactionSummary, walletAddress: string | undefined): boolean => {
   const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined

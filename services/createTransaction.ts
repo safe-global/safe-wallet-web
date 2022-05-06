@@ -3,6 +3,8 @@ import Web3 from 'web3'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { erc20Transfer } from './abi'
 import { toDecimals } from './formatters'
+import { setPendingTx } from '@/store/pendingTxsSlice'
+import { store } from '@/store'
 
 const encodeTokenTransferData = (to: string, value: string): string => {
   return new Web3().eth.abi.encodeFunctionCall(erc20Transfer, [to, value])
@@ -50,8 +52,12 @@ export const signTransaction = async (tx: SafeTransaction): Promise<SafeTransact
   return tx
 }
 
-export const executeTransaction = async (tx: SafeTransaction) => {
+export const executeTransaction = async (chainId: string, txId: string, tx: SafeTransaction) => {
   const safeSdk = getSafeSDK()
-  const executeTxResponse = await safeSdk.executeTransaction(tx)
-  return await executeTxResponse.transactionResponse?.wait()
+
+  const { hash, transactionResponse } = await safeSdk.executeTransaction(tx)
+
+  store.dispatch(setPendingTx({ chainId, txId, txHash: hash }))
+
+  return await transactionResponse?.wait()
 }

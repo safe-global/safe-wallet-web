@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-import type { RootState } from '@/store'
 import { getWeb3 } from '@/services/wallets/web3'
+import type { RootState } from '@/store'
 
 interface PendingTxsState {
   [chainId: string]: {
@@ -73,6 +73,14 @@ export const setPendingTx = createAsyncThunk<void, { chainId: string; txId: stri
   },
 )
 
-export const selectSafeInfo = (state: RootState): PendingTxsState => {
+export const selectPendingTxs = (state: RootState): PendingTxsState => {
   return state[pendingTxsSlice.name]
 }
+
+export const selectPendingTx = createSelector(
+  selectPendingTxs,
+  (_: RootState, details: { chainId: string; txId: string }) => details,
+  (pendingTxs, { chainId, txId }) => {
+    return pendingTxs[chainId]?.[txId]
+  },
+)
