@@ -1,5 +1,5 @@
 import Sentry from '@/services/sentry' // needs to be imported first
-import '@/services/migrateStorage' // needs to be imported second
+import '@/services/localStorage/migrateStorage' // needs to be imported second
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
