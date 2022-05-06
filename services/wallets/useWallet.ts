@@ -3,7 +3,7 @@ import useOnboard, { ConnectedWallet, getConnectedWallet } from './useOnboard'
 
 const useWallet = (): ConnectedWallet | null => {
   const onboard = useOnboard()
-  const [wallet, setWallet] = useState<ConnectedWallet | null>(null)
+  const [wallet, setWallet] = useState<ConnectedWallet | null>(getConnectedWallet())
 
   useEffect(() => {
     if (!onboard) return
