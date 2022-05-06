@@ -1,4 +1,5 @@
 import Sentry from '@/services/sentry' // needs to be imported first
+import '@/services/migrateStorage' // needs to be imported second
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
@@ -25,7 +26,9 @@ import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/safe-core/useInitSafeCoreSDK'
 import useNotifier from '@/services/useNotifier'
 import createEmotionCache from '@/services/createEmotionCache'
-import useMigrateStorage from '@/services/useMigrateStorage'
+
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache()
 
 const InitApp = (): null => {
   if (!IS_PRODUCTION) {
@@ -47,17 +50,11 @@ const InitApp = (): null => {
   return null
 }
 
-// Client-side cache, shared for the whole session of the user in the browser.
-const clientSideEmotionCache = createEmotionCache()
-
 const SafeWebCore = ({
   Component,
   pageProps,
   emotionCache = clientSideEmotionCache,
 }: AppProps & { emotionCache: EmotionCache }): ReactElement => {
-  // Before anything else, migrate the old localStorage
-  useMigrateStorage()
-
   return (
     <Provider store={store}>
       <Head>
