@@ -33,7 +33,7 @@ const RejectTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElemen
 
       <Typography>
         Transaction nonce <br />
-        {isMultisigExecutionInfo(txSummary.executionInfo) && txSummary.executionInfo.nonce}
+        {txNonce}
       </Typography>
 
       <Typography>

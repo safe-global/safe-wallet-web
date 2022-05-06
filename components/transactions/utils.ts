@@ -45,6 +45,6 @@ export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
   return value.type === 'Custom'
 }
 
-export const isTransactionSummary = (value: TransactionListItem): value is Transaction => {
+export const isTransaction = (value: TransactionListItem): value is Transaction => {
   return value.type === 'TRANSACTION'
 }

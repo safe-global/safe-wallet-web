@@ -1,7 +1,8 @@
 import React, { useState, type ReactElement } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Button, Tooltip } from '@mui/material'
+import { Tooltip } from '@mui/material'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
+import IconButton from '@mui/material/IconButton'
 
 import css from './styles.module.css'
 import useSafeInfo from '@/services/useSafeInfo'
@@ -25,9 +26,9 @@ const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): Reac
     <div className={css.container}>
       <Tooltip title="Execute" arrow placement="top">
         <span>
-          <Button onClick={onClick} disabled={isDisabled}>
+          <IconButton onClick={onClick} disabled={isDisabled}>
             <RocketLaunchIcon />
-          </Button>
+          </IconButton>
         </span>
       </Tooltip>
 

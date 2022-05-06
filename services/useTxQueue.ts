@@ -42,7 +42,7 @@ const useTxQueue = () => {
   return useAppSelector(selectTxQueue)
 }
 
-export const useQueuedTxByNonce = (nonce: number) => {
+export const useQueuedTxByNonce = (nonce?: number) => {
   return useAppSelector((state) => selectQueuedTransactionsByNonce(state, nonce))
 }
 
