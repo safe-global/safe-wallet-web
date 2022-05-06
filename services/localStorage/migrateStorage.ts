@@ -3,15 +3,17 @@ import newStorage from '@/services/localStorage/local'
 import { addressBookSlice, AddressBookState } from '@/store/addressBookSlice'
 import { currencySlice } from '@/store/currencySlice'
 
-// A localStorage reader w/o any prefix
-const oldStorage = new Storage(typeof window !== 'undefined' ? window.localStorage : undefined, '')
-
 // Legacy keys
 const LEGACY_PREFIX = 'SAFE__'
 const IMMORTAL_PREFIX = '_immortal|v2_'
 
 // Migrate legacy localStorage data to the new format and keys
 const migrateStorage = () => {
+  if (typeof window === 'undefined') return
+
+  // A localStorage reader w/o any prefix
+  const oldStorage = new Storage(window.localStorage, '')
+
   // Address Book
   ;(() => {
     const oldKey = LEGACY_PREFIX + 'addressBook'
