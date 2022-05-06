@@ -40,13 +40,7 @@ const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): React
     }
   }
 
-  const onExecute = async () => {
-    try {
-      await executeTx(chainId, txSummary, address)
-    } catch (err) {
-      dispatch(showNotification({ message: (err as Error).message }))
-    }
-  }
+  const onExecute = () => dispatch(executeTx(chainId, txSummary, address))
 
   const handleSubmit = shouldExecute ? onExecute : onSign
 
