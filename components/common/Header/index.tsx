@@ -1,11 +1,16 @@
 import { type ReactElement } from 'react'
-import { AppBar, Button, Grid, Toolbar } from '@mui/material'
+import { AppBar, Box, Button, Grid, IconButton, Toolbar } from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu'
 import useOnboard from '@/services/wallets/useOnboard'
 import useWallet from '@/services/wallets/useWallet'
 import { shortenAddress } from '@/services/formatters'
 import css from './styles.module.css'
 
-const Header = (): ReactElement => {
+type HeaderProps = {
+  onMenuToggle: () => void
+}
+
+const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const onboard = useOnboard()
   const wallet = useWallet()
 
@@ -17,34 +22,35 @@ const Header = (): ReactElement => {
         background: (theme) => theme.palette.background.paper,
       }}
     >
-      <Toolbar>
-        <Grid container>
-          <Grid item xs={3}>
-            <img src="/logo.svg" alt="Safe" className={css.logo} />
-          </Grid>
+      <Toolbar className={css.toolbar}>
+        <div className={css.menuButton}>
+          <IconButton onClick={onMenuToggle} size="large" edge="start" color="default" aria-label="menu" sx={{ mr: 2 }}>
+            <MenuIcon />
+          </IconButton>
+        </div>
 
-          <Grid item xs />
+        <img src="/logo.svg" alt="Safe" className={css.logo} />
 
-          <Grid item xs />
-          {wallet ? (
-            <div>
-              {wallet.ens || shortenAddress(wallet.address)}
-              <Button
-                onClick={() =>
-                  onboard?.disconnectWallet({
-                    label: wallet.label,
-                  })
-                }
-              >
-                Disconnect
-              </Button>
-            </div>
-          ) : (
-            <Button onClick={() => onboard?.connectWallet()} variant="contained">
-              Connect Wallet
+        <Box sx={{ flexGrow: 1 }} />
+
+        {wallet ? (
+          <div>
+            {wallet.ens || shortenAddress(wallet.address)}
+            <Button
+              onClick={() =>
+                onboard?.disconnectWallet({
+                  label: wallet.label,
+                })
+              }
+            >
+              Disconnect
             </Button>
-          )}
-        </Grid>
+          </div>
+        ) : (
+          <Button onClick={() => onboard?.connectWallet()} variant="contained">
+            Connect Wallet
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   )

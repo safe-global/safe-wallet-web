@@ -1,5 +1,23 @@
+.toolbar {
+  max-height: 52px;
+  min-height: 52px;
+}
+
 .logo {
   height: 29px;
   width: auto;
   display: block;
+}
+
+.menuButton {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .logo {
+    display: none;
+  }
+  .menuButton {
+    display: block;
+  }
 }
