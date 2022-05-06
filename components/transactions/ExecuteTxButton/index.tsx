@@ -13,7 +13,7 @@ const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): Reac
   const { safe } = useSafeInfo()
   const safeNonce = safe?.nonce
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
-  const isPending = !!useIsPending({ txId: txSummary.id })
+  const isPending = useIsPending({ txId: txSummary.id })
 
   const isNext = !!txNonce && !!safeNonce && txNonce === safeNonce
   const isDisabled = !isNext || isPending

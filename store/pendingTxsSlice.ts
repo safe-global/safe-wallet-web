@@ -32,7 +32,7 @@ export const pendingTxsSlice = createSlice({
       // Omit txId from the pending txs on current chain
       const { [txId]: _, ...newChainState } = state[chainId] || {}
 
-      if (Object.keys(newChainState || {}).length === 0) {
+      if (Object.keys(newChainState).length === 0) {
         // Omit chainId from the pending txs if no pending txs on chain
         const { [chainId]: _, ...newState } = state
         return newState
