@@ -16,6 +16,7 @@ const EMPTY_DATA: string = '0x'
 const extractTxInfo = (
   txSummary: TransactionSummary,
   txDetails: TransactionDetails,
+  safeAddress: string,
 ): { txParams: SafeTransactionData; signatures: Record<string, string> } => {
   // Format signatures into a map
   let signatures: Record<string, string> = {}
@@ -86,7 +87,7 @@ const extractTxInfo = (
       case 'Creation':
       case 'SettingsChange':
       default:
-        return ''
+        return safeAddress
     }
   })()
 

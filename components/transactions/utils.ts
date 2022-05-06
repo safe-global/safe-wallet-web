@@ -1,8 +1,12 @@
 import {
   AddressEx,
+  Custom,
   DetailedExecutionInfo,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
+  Transaction,
+  TransactionInfo,
+  TransactionListItem,
   TransactionStatus,
   TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -36,3 +40,11 @@ export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null):
 
 export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>
   value?.type === 'MULTISIG'
+
+export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
+  return value.type === 'Custom'
+}
+
+export const isTransaction = (value: TransactionListItem): value is Transaction => {
+  return value.type === 'TRANSACTION'
+}
