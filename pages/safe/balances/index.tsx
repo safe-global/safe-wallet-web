@@ -11,13 +11,11 @@ const Balances: NextPage = () => {
   return (
     <main>
       <Grid container spacing={2}>
-        <Grid item>
+        <Grid item xs>
           <h2 style={{ margin: 0 }}>Balances</h2>
         </Grid>
 
-        <Grid item xs />
-
-        <Grid item xs>
+        <Grid item>
           <CurrencySelect />
         </Grid>
       </Grid>
