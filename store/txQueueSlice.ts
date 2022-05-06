@@ -1,12 +1,8 @@
-import {
-  TransactionListPage,
-  Transaction,
-  TransactionListItem,
-  MultisigExecutionInfo,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionListPage, Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 import { Loadable } from './common'
+import { isMultisigExecutionInfo, isTransactionSummary } from '@/components/transactions/utils'
 
 interface TxQueueState extends Loadable {
   page: TransactionListPage
@@ -49,10 +45,11 @@ export const selectQueuedTransactions = (state: RootState): TransactionListItem[
   return state[txQueueSlice.name].page.results.filter((item) => item.type === 'TRANSACTION')
 }
 
-export const selectQueuedTransactionsByNonce = (state: RootState, nonce: number): TransactionListItem[] | undefined => {
+export const selectQueuedTransactionsByNonce = (state: RootState, nonce: number): Transaction[] | undefined => {
   return state[txQueueSlice.name].page.results.filter(
     (item) =>
-      item.type === 'TRANSACTION' &&
-      ((item as Transaction).transaction.executionInfo as MultisigExecutionInfo).nonce === nonce,
-  )
+      isTransactionSummary(item) &&
+      isMultisigExecutionInfo(item.transaction.executionInfo) &&
+      item.transaction.executionInfo.nonce === nonce,
+  ) as Transaction[]
 }
