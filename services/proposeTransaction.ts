@@ -1,6 +1,6 @@
 import { proposeTransaction, type Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { getSafeSDK } from '@/services/wallets/safeCoreSDK'
+import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { getConnectedWallet } from '@/services/wallets/useOnboard'
 
 const proposeTx = async (chainId: string, safeAddress: string, tx: SafeTransaction) => {
