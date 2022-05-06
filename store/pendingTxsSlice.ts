@@ -1,16 +1,12 @@
-import { createAsyncThunk, createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-import { getWeb3 } from '@/services/wallets/web3'
 import { SetHistoryPageAction, txHistorySlice } from './txHistorySlice'
 import { isTransaction } from '@/components/transactions/utils'
 import type { RootState } from '@/store'
 
 interface PendingTxsState {
   [chainId: string]: {
-    [txId: string]: {
-      txHash: string
-      block?: number
-    }
+    [txId: string]: string // txHash
   }
 }
 
@@ -20,16 +16,13 @@ export const pendingTxsSlice = createSlice({
   name: 'pendingTxs',
   initialState,
   reducers: {
-    addPendingTx: (state, action: PayloadAction<{ chainId: string; txId: string; txHash: string; block?: number }>) => {
-      const { chainId, txId, txHash, block } = action.payload
+    setPendingTx: (state, action: PayloadAction<{ chainId: string; txId: string; txHash: string }>) => {
+      const { chainId, txId, txHash } = action.payload
       return {
         ...state,
         [chainId]: {
           ...state[chainId],
-          [txId]: {
-            txHash,
-            block,
-          },
+          [txId]: txHash,
         },
       }
     },
@@ -66,40 +59,29 @@ export const pendingTxsSlice = createSlice({
           if (!isTransaction(result)) {
             continue
           }
+
           const { id } = result.transaction
 
           const chainId = pendingChainIds.find((chainId) => state[chainId][id])
 
-          if (chainId) {
-            delete state[chainId][id]
+          if (!chainId) {
+            continue
           }
+
+          delete state[chainId][id]
+
+          if (Object.keys(state[chainId]).length > 0) {
+            continue
+          }
+
+          delete state[chainId]
         }
       },
     )
   },
 })
 
-export const { removePendingTx } = pendingTxsSlice.actions
-
-export const setPendingTx = createAsyncThunk<void, { chainId: string; txId: string; txHash: string }>(
-  `${pendingTxsSlice.name}/setPendingTx`,
-  async (details, { dispatch }) => {
-    let block: number | undefined
-
-    try {
-      block = await getWeb3().eth.getBlockNumber()
-    } catch {
-      // ignore
-    }
-
-    dispatch(
-      pendingTxsSlice.actions.addPendingTx({
-        ...details,
-        block,
-      }),
-    )
-  },
-)
+export const { setPendingTx, removePendingTx } = pendingTxsSlice.actions
 
 export const selectPendingTxs = (state: RootState): PendingTxsState => {
   return state[pendingTxsSlice.name]
