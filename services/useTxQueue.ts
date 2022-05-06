@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { Errors, logError } from './exceptions'
-import { selectTxQueue, setQueuePage, setPageUrl } from '@/store/txQueueSlice'
+import { selectTxQueue, setQueuePage, setPageUrl, selectQueuedTransactionsByNonce } from '@/store/txQueueSlice'
 import useSafeInfo from './useSafeInfo'
 
 export const useInitTxQueue = (): void => {
@@ -39,8 +39,11 @@ export const useInitTxQueue = (): void => {
 }
 
 const useTxQueue = () => {
-  const txQueue = useAppSelector(selectTxQueue)
-  return txQueue
+  return useAppSelector(selectTxQueue)
+}
+
+export const useQueuedTxByNonce = (nonce?: number) => {
+  return useAppSelector((state) => selectQueuedTransactionsByNonce(state, nonce))
 }
 
 export default useTxQueue

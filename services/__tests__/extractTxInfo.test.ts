@@ -26,6 +26,7 @@ describe('extractTxInfo', () => {
         data: '0x1234567890123456789012345678901234567890',
       },
       detailedExecutionInfo: {
+        type: 'MULTISIG',
         baseGas: 21000,
         gasPrice: '10000000000',
         safeTxGas: 11000,
@@ -39,7 +40,9 @@ describe('extractTxInfo', () => {
       },
     } as unknown as TransactionDetails
 
-    expect(extractTxInfo(txSummary, txDetails)).toEqual({
+    const safeAddress = '0x1234567890123456789012345678901234567890'
+
+    expect(extractTxInfo(txSummary, txDetails, safeAddress)).toEqual({
       txParams: {
         data: '0x',
         baseGas: 21000,
@@ -84,6 +87,7 @@ describe('extractTxInfo', () => {
         data: '0x1234567890123456789012345678901234567890',
       },
       detailedExecutionInfo: {
+        type: 'MULTISIG',
         baseGas: 21000,
         gasPrice: '10000000000',
         safeTxGas: 11000,
@@ -97,7 +101,9 @@ describe('extractTxInfo', () => {
       },
     } as unknown as TransactionDetails
 
-    expect(extractTxInfo(txSummary, txDetails)).toEqual({
+    const safeAddress = '0x1234567890123456789012345678901234567890'
+
+    expect(extractTxInfo(txSummary, txDetails, safeAddress)).toEqual({
       txParams: {
         data: '0x546785',
         baseGas: 21000,

@@ -11,10 +11,10 @@ import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import { CodedException, Errors } from '@/services/exceptions'
 
-export const signTx = async (chainId: string, txSummary: TransactionSummary) => {
+export const signTx = async (chainId: string, txSummary: TransactionSummary, safeAddress: string) => {
   try {
     const txDetails = await getTransactionDetails(chainId, txSummary.id)
-    const { txParams, signatures } = extractTxInfo(txSummary, txDetails)
+    const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
 
     const safeTx = await createTransaction(txParams)
     Object.entries(signatures).forEach(([signer, data]) => {
@@ -28,13 +28,13 @@ export const signTx = async (chainId: string, txSummary: TransactionSummary) => 
 }
 
 const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
-  const { chainId } = useSafeAddress()
+  const { chainId, address } = useSafeAddress()
   const dispatch = useAppDispatch()
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
 
   const onSign = async () => {
     try {
-      await signTx(chainId, txSummary)
+      await signTx(chainId, txSummary, address)
     } catch (err) {
       dispatch(showNotification({ message: (err as Error).message }))
     }
@@ -42,7 +42,7 @@ const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): React
 
   const onExecute = async () => {
     try {
-      await executeTx(chainId, txSummary)
+      await executeTx(chainId, txSummary, address)
     } catch (err) {
       dispatch(showNotification({ message: (err as Error).message }))
     }
