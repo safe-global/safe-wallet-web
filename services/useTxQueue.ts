@@ -34,7 +34,7 @@ export const useInitTxQueue = (): void => {
   // Log errors
   useEffect(() => {
     if (!error) return
-    logError(Errors._602, error.message)
+    logError(Errors._603, error.message)
   }, [error])
 }
 
