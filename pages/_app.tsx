@@ -22,7 +22,7 @@ import usePathRewrite from '@/services/usePathRewrite'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { useInitOnboard } from '@/services/wallets/useOnboard'
 import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
-import { useInitSafeCoreSDK } from '@/services/wallets/useInitSafeCoreSDK'
+import { useInitSafeCoreSDK } from '@/services/safe-core/useInitSafeCoreSDK'
 import useNotifier from '@/services/useNotifier'
 import createEmotionCache from '@/services/createEmotionCache'
 

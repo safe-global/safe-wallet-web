@@ -1,6 +1,6 @@
 import type { SafeTransaction, SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types'
 import Web3 from 'web3'
-import { getSafeSDK } from '@/services/wallets/safeCoreSDK'
+import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { erc20Transfer } from './abi'
 import { toDecimals } from './formatters'
 
