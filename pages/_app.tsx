@@ -25,6 +25,7 @@ import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/safe-core/useInitSafeCoreSDK'
 import useNotifier from '@/services/useNotifier'
 import createEmotionCache from '@/services/createEmotionCache'
+import useMigrateStorage from '@/services/useMigrateStorage'
 
 const InitApp = (): null => {
   if (!IS_PRODUCTION) {
@@ -54,6 +55,9 @@ const SafeWebCore = ({
   pageProps,
   emotionCache = clientSideEmotionCache,
 }: AppProps & { emotionCache: EmotionCache }): ReactElement => {
+  // Before anything else, migrate the old localStorage
+  useMigrateStorage()
+
   return (
     <Provider store={store}>
       <Head>
