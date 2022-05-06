@@ -23,7 +23,6 @@ import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { useInitOnboard } from '@/services/wallets/useOnboard'
 import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/wallets/useInitSafeCoreSDK'
-import { useInitAddressBook } from '@/services/useAddressBook'
 import useNotifier from '@/services/useNotifier'
 import createEmotionCache from '@/services/createEmotionCache'
 
@@ -42,7 +41,6 @@ const InitApp = (): null => {
   useInitWeb3()
   useInitOnboard()
   useInitSafeCoreSDK()
-  useInitAddressBook()
   useNotifier()
 
   return null
