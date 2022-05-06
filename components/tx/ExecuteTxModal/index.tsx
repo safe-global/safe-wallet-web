@@ -13,7 +13,7 @@ export const ExecuteTxSteps: TxStepperProps['steps'] = [
   },
 ]
 
-const ExecuteTxModal = ({ ...props }: Omit<TxModalProps, 'steps'>) => {
+const ExecuteTxModal = (props: Omit<TxModalProps, 'steps'>) => {
   return <TxModal {...props} steps={ExecuteTxSteps} />
 }
 

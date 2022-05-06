@@ -21,9 +21,9 @@ export const isAwaitingExecution = (txStatus: TransactionStatus): boolean =>
 
 export const isPending = (txStatus: TransactionStatus): boolean => TransactionStatus.PENDING === txStatus
 
-export const isSignaturePending = (tx: TransactionSummary, walletAddress: string | undefined) => {
+export const isSignaturePending = (tx: TransactionSummary, walletAddress: string | undefined): boolean => {
   const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
-  return executionInfo?.missingSigners?.some((address) => address.value === walletAddress)
+  return !!executionInfo?.missingSigners?.some((address) => address.value === walletAddress)
 }
 
 export const isOwner = (safeOwners: AddressEx[] | undefined, walletAddress: string | undefined) => {
@@ -31,7 +31,7 @@ export const isOwner = (safeOwners: AddressEx[] | undefined, walletAddress: stri
 }
 
 export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null): value is MultisigExecutionDetails => {
-  return !!value
+  return value?.type === 'MULTISIG'
 }
 
 export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>

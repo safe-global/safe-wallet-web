@@ -10,13 +10,9 @@ import { CodedException, Errors } from '@/services/exceptions'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 
-const getTxDetails = async (chainId: string, id: string) => {
-  return getTransactionDetails(chainId, id)
-}
-
 export const executeTx = async (chainId: string, txSummary: TransactionSummary): Promise<void> => {
   try {
-    const txDetails = await getTxDetails(chainId, txSummary.id)
+    const txDetails = await getTransactionDetails(chainId, txSummary.id)
     const { txParams, signatures } = extractTxInfo(txSummary, txDetails)
 
     const safeTx = await createTransaction(txParams)

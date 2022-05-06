@@ -1,10 +1,8 @@
 import { ReactElement, useState } from 'react'
-import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material'
 
-import ErrorToast from '@/components/common/ErrorToast'
-import { createTransaction, executeTransaction, signTransaction } from '@/services/createTransaction'
+import { createTransaction, signTransaction } from '@/services/createTransaction'
 import extractTxInfo from '@/services/extractTxInfo'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
@@ -13,13 +11,9 @@ import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import { CodedException, Errors } from '@/services/exceptions'
 
-const getTxDetails = async (chainId: string, id: string) => {
-  return getTransactionDetails(chainId, id)
-}
-
 export const signTx = async (chainId: string, txSummary: TransactionSummary) => {
   try {
-    const txDetails = await getTxDetails(chainId, txSummary.id)
+    const txDetails = await getTransactionDetails(chainId, txSummary.id)
     const { txParams, signatures } = extractTxInfo(txSummary, txDetails)
 
     const safeTx = await createTransaction(txParams)

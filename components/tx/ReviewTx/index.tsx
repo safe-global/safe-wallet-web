@@ -40,8 +40,6 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
     : undefined
   const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
 
-  const anyError = safeGasError
-
   const {
     register,
     handleSubmit,
@@ -94,7 +92,7 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
         </Button>
       </div>
 
-      {anyError && <ErrorToast message={anyError.message} />}
+      {safeGasError && <ErrorToast message={safeGasError.message} />}
     </form>
   )
 }

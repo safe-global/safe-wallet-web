@@ -12,7 +12,7 @@ export const SignTxSteps: TxStepperProps['steps'] = [
   },
 ]
 
-const SignTxModal = ({ ...props }: Omit<TxModalProps, 'steps'>) => {
+const SignTxModal = (props: Omit<TxModalProps, 'steps'>) => {
   return <TxModal {...props} steps={SignTxSteps} />
 }
 

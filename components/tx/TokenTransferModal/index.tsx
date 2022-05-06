@@ -16,7 +16,7 @@ export const TokenTransferSteps: TxStepperProps['steps'] = [
   },
 ]
 
-const TokenTransferModal = ({ ...props }: Omit<TxModalProps, 'steps'>) => {
+const TokenTransferModal = (props: Omit<TxModalProps, 'steps'>) => {
   return <TxModal {...props} steps={TokenTransferSteps} />
 }
 
