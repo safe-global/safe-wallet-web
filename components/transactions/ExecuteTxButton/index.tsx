@@ -26,7 +26,7 @@ const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): Reac
     <div className={css.container}>
       <Tooltip title="Execute" arrow placement="top">
         <span>
-          <IconButton onClick={onClick} disabled={isDisabled}>
+          <IconButton onClick={onClick} disabled={isDisabled} color="primary">
             <RocketLaunchIcon />
           </IconButton>
         </span>
