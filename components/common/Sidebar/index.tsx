@@ -1,5 +1,4 @@
-import { ReactElement, useState } from 'react'
-import { Button } from '@mui/material'
+import { type ReactElement } from 'react'
 
 import css from './styles.module.css'
 import useSafeInfo from '@/services/useSafeInfo'
@@ -10,15 +9,12 @@ import ErrorToast from '../ErrorToast'
 import Navigation from '@/components/common/Navigation'
 import useSafeAddress from '@/services/useSafeAddress'
 import useWallet from '@/services/wallets/useWallet'
-import TokenTransferModal from '@/components/tx/TokenTransferModal'
+import NewTxButton from '../NewTxButton'
 
 const Sidebar = (): ReactElement => {
-  const [txOpen, setTxOpen] = useState<boolean>(false)
-  const { address, chainId } = useSafeAddress()
-  const { error, loading, safe } = useSafeInfo()
+  const { address } = useSafeAddress()
+  const { error, loading } = useSafeInfo()
   const wallet = useWallet()
-  const isOwner = wallet && safe?.owners.some((item) => item.value.toLowerCase() === wallet.address.toLocaleLowerCase())
-  const wrongChain = wallet && wallet.chainId !== chainId
 
   return (
     <div className={css.container}>
@@ -32,17 +28,7 @@ const Sidebar = (): ReactElement => {
           {!error && <SafeHeader />}
 
           <div className={css.newTxButton}>
-            <Button onClick={() => setTxOpen(true)} variant="contained" disabled={!wallet || !isOwner}>
-              {isOwner
-                ? 'New Transaction'
-                : !wallet
-                ? 'Not connected'
-                : wrongChain
-                ? 'Wrong wallet chain'
-                : 'Read only'}
-            </Button>
-
-            {txOpen && <TokenTransferModal onClose={() => setTxOpen(false)} />}
+            <NewTxButton />
           </div>
 
           <Navigation />

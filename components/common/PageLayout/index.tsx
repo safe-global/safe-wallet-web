@@ -1,25 +1,24 @@
-import { useState, type ReactElement, type MouseEvent } from 'react'
+import { type ReactElement } from 'react'
+import { Box, Drawer, Toolbar } from '@mui/material'
+
 import Sidebar from '@/components/common/Sidebar'
 import Header from '@/components/common//Header'
 import css from './styles.module.css'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
-  const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(false)
-
-  const onSidebarToggle = (e: MouseEvent<HTMLElement>) => {
-    e.stopPropagation()
-    setSidebarExpanded((prev: boolean) => !prev)
-  }
-
   return (
-    <div className={css.container} onClick={() => setSidebarExpanded(false)}>
+    <div className={css.container}>
       <Header />
 
-      <aside className={sidebarExpanded ? css.sidebarExpanded : ''} onClick={onSidebarToggle}>
+      <Drawer variant="permanent" anchor="left" className={css.drawer}>
+        <Toolbar />
         <Sidebar />
-      </aside>
+      </Drawer>
 
-      <div className={css.main}>{children}</div>
+      <Box className={css.main} sx={{ backgroundColor: (theme) => theme.palette.background }}>
+        <Toolbar />
+        {children}
+      </Box>
     </div>
   )
 }
