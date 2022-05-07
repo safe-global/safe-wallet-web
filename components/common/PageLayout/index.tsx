@@ -1,25 +1,47 @@
-import { useState, type ReactElement, type MouseEvent } from 'react'
+import { useState, type ReactElement } from 'react'
+import { Box, Drawer, Toolbar } from '@mui/material'
+
 import Sidebar from '@/components/common/Sidebar'
 import Header from '@/components/common//Header'
 import css from './styles.module.css'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
-  const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(false)
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false)
 
-  const onSidebarToggle = (e: MouseEvent<HTMLElement>) => {
-    e.stopPropagation()
-    setSidebarExpanded((prev: boolean) => !prev)
+  const onMenuToggle = (): void => {
+    setIsMobileDrawerOpen((prev) => !prev)
   }
 
+  const sidebar = (
+    <Sidebar>
+      <Toolbar className={css.toolbar} />
+    </Sidebar>
+  )
+
   return (
-    <div className={css.container} onClick={() => setSidebarExpanded(false)}>
-      <Header />
+    <div className={css.container}>
+      <Header onMenuToggle={onMenuToggle} />
 
-      <aside className={sidebarExpanded ? css.sidebarExpanded : ''} onClick={onSidebarToggle}>
-        <Sidebar />
-      </aside>
+      {/* Desktop sidebar */}
+      <Drawer variant="permanent" anchor="left" className={css.drawer}>
+        {sidebar}
+      </Drawer>
 
-      <div className={css.main}>{children}</div>
+      {/* Mobile sidebar */}
+      <Drawer
+        variant="temporary"
+        anchor="left"
+        className={css.mobileDrawer}
+        open={isMobileDrawerOpen}
+        onClose={onMenuToggle}
+      >
+        {sidebar}
+      </Drawer>
+
+      <Box className={css.main}>
+        <Toolbar className={css.toolbar} />
+        {children}
+      </Box>
     </div>
   )
 }

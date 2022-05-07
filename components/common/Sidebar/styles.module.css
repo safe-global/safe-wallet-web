@@ -1,6 +1,14 @@
+.drawer,
 .container {
+  width: 220px;
+  padding: 20px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.drawer {
   padding: 20px;
-  height: 100%;
+  text-align: center;
 }
 
 .chain {
@@ -21,4 +29,21 @@
 .noSafeSidebar {
   background: url('/keyhole.svg') center 0 no-repeat;
   min-height: 100px;
+}
+
+.drawerButton {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  transform: translateX(50%);
+  top: 90px;
+  background-color: #F6F7F8; /* @TODO: move to the theme */
+}
+
+.drawerButton svg {
+  transform: translateX(-25%);
+}
+
+.menu {
+  padding: 20px;
 }
