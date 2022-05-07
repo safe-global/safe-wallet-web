@@ -14,7 +14,7 @@ export const useInitTxHistory = (): void => {
   const address = safe?.address.value
 
   // Re-fetch assets when pageUrl, chainId/address, or txHistoryTag change
-  const [data, error, loading] = useAsync<TransactionListPage | undefined>(async () => {
+  const [data, error] = useAsync<TransactionListPage | undefined>(async () => {
     if (chainId && address) {
       return getTransactionHistory(chainId, address, pageUrl)
     }
