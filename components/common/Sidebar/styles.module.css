@@ -1,14 +1,22 @@
-.drawer,
-.container {
+.container,
+.drawer {
   width: 220px;
-  padding: 20px 0;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  position: relative;
+}
+
+.container {
+  padding: 20px 0;
+  overflow: hidden;
+  border: none;
+  box-shadow: rgb(40 54 61 / 8%) 1px 2px 12px;
 }
 
 .drawer {
-  padding: 20px;
   text-align: center;
+  padding: 74px 20px 20px;
 }
 
 .chain {
@@ -46,4 +54,10 @@
 
 .menu {
   padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-top: 74px;
+  }
 }

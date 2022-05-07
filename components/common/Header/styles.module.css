@@ -1,6 +1,14 @@
-.toolbar {
-  max-height: 52px;
+.container {
   min-height: 52px;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  box-shadow: rgb(40 54 61 / 18%) 0px 2px 4px 0px;
 }
 
 .logo {

@@ -1,5 +1,5 @@
 import { useState, type ReactElement } from 'react'
-import { Box, Drawer, Toolbar } from '@mui/material'
+import { Box, Drawer } from '@mui/material'
 
 import Sidebar from '@/components/common/Sidebar'
 import Header from '@/components/common//Header'
@@ -12,36 +12,23 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
     setIsMobileDrawerOpen((prev) => !prev)
   }
 
-  const sidebar = (
-    <Sidebar>
-      <Toolbar className={css.toolbar} />
-    </Sidebar>
-  )
+  const sidebar = <Sidebar />
 
   return (
     <div className={css.container}>
-      <Header onMenuToggle={onMenuToggle} />
+      <header>
+        <Header onMenuToggle={onMenuToggle} />
+      </header>
 
       {/* Desktop sidebar */}
-      <Drawer variant="permanent" anchor="left" className={css.drawer}>
-        {sidebar}
-      </Drawer>
+      <aside className={css.sidebar}>{sidebar}</aside>
 
       {/* Mobile sidebar */}
-      <Drawer
-        variant="temporary"
-        anchor="left"
-        className={css.mobileDrawer}
-        open={isMobileDrawerOpen}
-        onClose={onMenuToggle}
-      >
+      <Drawer variant="temporary" anchor="left" open={isMobileDrawerOpen} onClose={onMenuToggle}>
         {sidebar}
       </Drawer>
 
-      <Box className={css.main}>
-        <Toolbar className={css.toolbar} />
-        {children}
-      </Box>
+      <Box className={css.main}>{children}</Box>
     </div>
   )
 }
