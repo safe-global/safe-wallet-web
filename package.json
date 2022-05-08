@@ -34,7 +34,6 @@
     "@web3-onboard/keepkey": "^2.0.3",
     "@web3-onboard/keystone": "^2.0.3",
     "@web3-onboard/ledger": "^2.0.3",
-    "@web3-onboard/mew": "^2.0.0",
     "@web3-onboard/portis": "^2.0.0",
     "@web3-onboard/torus": "^2.0.1",
     "@web3-onboard/trezor": "^2.0.5",

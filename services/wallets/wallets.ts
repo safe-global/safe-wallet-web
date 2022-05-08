@@ -7,7 +7,6 @@ import injectedWalletModule from '@web3-onboard/injected-wallets'
 import keepkeyModule from '@web3-onboard/keepkey'
 import keystoneModule from '@web3-onboard/keystone'
 import ledgerModule from '@web3-onboard/ledger'
-import mewModule from '@web3-onboard/mew'
 import portisModule from '@web3-onboard/portis'
 import torusModule from '@web3-onboard/torus'
 import trezorModule from '@web3-onboard/trezor'
@@ -21,7 +20,6 @@ const enum WALLET_KEYS {
   KEYSTONE = 'KEYSTONE',
   LEDGER = 'LEDGER',
   // MAGIC = 'MAGIC', // Magic requires an API key
-  MEW = 'MEW',
   PORTIS = 'PORTIS',
   TORUS = 'TORUS',
   TREZOR = 'TREZOR',
@@ -35,7 +33,6 @@ const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.KEEPKEY]: undefined,
   [WALLET_KEYS.KEYSTONE]: 'keystone',
   [WALLET_KEYS.LEDGER]: 'ledger',
-  [WALLET_KEYS.MEW]: undefined,
   [WALLET_KEYS.PORTIS]: 'portis',
   [WALLET_KEYS.TORUS]: 'torus',
   [WALLET_KEYS.TREZOR]: 'trezor',
@@ -50,7 +47,6 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.KEEPKEY]: keepkeyModule,
   [WALLET_KEYS.KEYSTONE]: keystoneModule,
   [WALLET_KEYS.LEDGER]: ledgerModule,
-  [WALLET_KEYS.MEW]: mewModule,
   [WALLET_KEYS.PORTIS]: () => portisModule({ apiKey: PORTIS_KEY }),
   [WALLET_KEYS.TORUS]: torusModule,
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),

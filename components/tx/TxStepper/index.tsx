@@ -1,9 +1,10 @@
 import { ReactElement, useState } from 'react'
 import Box from '@mui/material/Box'
-import Stepper from '@mui/material/Stepper'
+import Stepper, { Orientation } from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
+import { StepContent } from '@mui/material'
 
 type Step = {
   label: string
@@ -14,9 +15,10 @@ export type TxStepperProps = {
   steps: Array<Step>
   initialData?: unknown[]
   onClose: () => void
+  orientation?: Orientation
 }
 
-const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElement => {
+const TxStepper = ({ steps, initialData, onClose, orientation = 'horizontal' }: TxStepperProps): ReactElement => {
   const [activeStep, setActiveStep] = useState<number>(0)
   const [stepData, setStepData] = useState<Array<unknown>>(initialData || [])
 
@@ -39,19 +41,22 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={activeStep}>
+      <Stepper activeStep={activeStep} orientation={orientation}>
         {steps.map(({ label }) => {
           const stepProps: { completed?: boolean } = {}
 
           return (
             <Step key={label} {...stepProps}>
               <StepLabel>{label}</StepLabel>
+              {orientation === 'vertical' && (
+                <StepContent>{steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit)}</StepContent>
+              )}
             </Step>
           )
         })}
       </Stepper>
 
-      {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit)}
+      {orientation === 'horizontal' && steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit)}
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
         <Button color="inherit" onClick={firstStep ? onClose : handleBack} sx={{ mr: 1 }}>

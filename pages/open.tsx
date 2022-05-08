@@ -1,7 +1,8 @@
 import type { NextPage } from 'next'
+import CreateSafe from '@/components/open'
 
 const Open: NextPage = () => {
-  return <main>Create new Safe</main>
+  return <CreateSafe />
 }
 
 export default Open
