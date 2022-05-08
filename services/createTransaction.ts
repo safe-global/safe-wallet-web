@@ -9,7 +9,7 @@ const encodeTokenTransferData = (to: string, value: string): string => {
 }
 
 export const createTokenTransferParams = (
-  recepient: string,
+  recipient: string,
   amount: string,
   decimals: number,
   tokenAddress: string,
@@ -19,14 +19,14 @@ export const createTokenTransferParams = (
 
   return isNativeToken
     ? {
-        to: recepient,
+        to: recipient,
         value,
         data: '0x',
       }
     : {
         to: tokenAddress,
         value: '0x0',
-        data: encodeTokenTransferData(recepient, value),
+        data: encodeTokenTransferData(recipient, value),
       }
 }
 
