@@ -83,7 +83,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             <TextField
               {...params}
               autoComplete="off"
-              label="recipient"
+              label="Recipient"
               error={!!errors.recipient}
               helperText={errors.recipient?.message}
               {...register('recipient', {
