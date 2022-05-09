@@ -7,21 +7,30 @@ import extractTxInfo from '@/services/extractTxInfo'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
 import { CodedException, Errors } from '@/services/exceptions'
-import { useAppDispatch } from '@/store'
+import { AppDispatch, useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
+import { removePendingTx, setPendingTx } from '@/store/pendingTxsSlice'
 
-export const executeTx = async (chainId: string, txSummary: TransactionSummary, safeAddress: string): Promise<void> => {
-  try {
-    const txDetails = await getTransactionDetails(chainId, txSummary.id)
-    const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
+export const executeTx = (chainId: string, txSummary: TransactionSummary, safeAddress: string) => {
+  return async (dispatch: AppDispatch) => {
+    const txId = txSummary.id
 
-    const safeTx = await createTransaction(txParams)
-    Object.entries(signatures).forEach(([signer, data]) => {
-      safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
-    })
-    await executeTransaction(safeTx)
-  } catch (err) {
-    throw new CodedException(Errors._804, (err as Error).message)
+    dispatch(setPendingTx({ txId }))
+    try {
+      const txDetails = await getTransactionDetails(chainId, txId)
+      const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
+
+      const safeTx = await createTransaction(txParams)
+      Object.entries(signatures).forEach(([signer, data]) => {
+        safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
+      })
+      await executeTransaction(safeTx)
+    } catch (err) {
+      const { message } = new CodedException(Errors._804, (err as Error).message)
+
+      dispatch(showNotification({ message }))
+      dispatch(removePendingTx({ txId }))
+    }
   }
 }
 
@@ -29,13 +38,7 @@ const ExecuteProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): Re
   const { chainId, address } = useSafeAddress()
   const dispatch = useAppDispatch()
 
-  const onExecute = async () => {
-    try {
-      await executeTx(chainId, txSummary, address)
-    } catch (err) {
-      dispatch(showNotification({ message: (err as Error).message }))
-    }
-  }
+  const onExecute = async () => dispatch(executeTx(chainId, txSummary, address))
 
   return (
     <div className={css.container}>
