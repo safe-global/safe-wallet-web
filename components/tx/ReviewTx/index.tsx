@@ -21,7 +21,7 @@ const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData
       {params.amount}
       {tokenInfo.symbol}
       {' to '}
-      {shortenAddress(params.recepient)}
+      {shortenAddress(params.recipient)}
     </p>
   )
 }
@@ -36,7 +36,7 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const tokenInfo = token?.tokenInfo
   const txParams = tokenInfo
-    ? createTokenTransferParams(params.recepient, params.amount, tokenInfo.decimals, tokenInfo.address)
+    ? createTokenTransferParams(params.recipient, params.amount, tokenInfo.decimals, tokenInfo.address)
     : undefined
   const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
 
