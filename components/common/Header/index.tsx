@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { AppBar, Box, Button, Grid, IconButton, Toolbar } from '@mui/material'
+import { Box, Button, IconButton } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import useOnboard from '@/services/wallets/useOnboard'
 import useWallet from '@/services/wallets/useWallet'
@@ -15,45 +15,37 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const wallet = useWallet()
 
   return (
-    <AppBar
-      position="fixed"
-      sx={{
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-        background: (theme) => theme.palette.background.paper,
-      }}
-    >
-      <Toolbar className={css.toolbar}>
-        <div className={css.menuButton}>
-          <IconButton onClick={onMenuToggle} size="large" edge="start" color="default" aria-label="menu" sx={{ mr: 2 }}>
-            <MenuIcon />
-          </IconButton>
-        </div>
+    <Box className={css.container} sx={{ backgroundColor: 'background.paper' }}>
+      <div className={css.menuButton}>
+        <IconButton onClick={onMenuToggle} size="large" edge="start" color="default" aria-label="menu" sx={{ mr: 2 }}>
+          <MenuIcon />
+        </IconButton>
+      </div>
 
-        <img src="/logo.svg" alt="Safe" className={css.logo} />
+      <img src="/logo.svg" alt="Safe" className={css.logo} />
 
-        <Box sx={{ flexGrow: 1 }} />
+      <Box sx={{ flexGrow: 1 }} />
 
-        {wallet ? (
-          <Box sx={{ color: 'text.primary' }}>
-            {wallet.ens || shortenAddress(wallet.address)}
+      {wallet ? (
+        <Box sx={{ color: 'text.primary' }}>
+          {wallet.ens || shortenAddress(wallet.address)}
 
-            <Button
-              onClick={() =>
-                onboard?.disconnectWallet({
-                  label: wallet.label,
-                })
-              }
-            >
-              Disconnect
-            </Button>
-          </Box>
-        ) : (
-          <Button onClick={() => onboard?.connectWallet()} variant="contained">
-            Connect Wallet
+          <Button
+            onClick={() =>
+              onboard?.disconnectWallet({
+                label: wallet.label,
+              })
+            }
+          >
+            Disconnect
           </Button>
-        )}
-      </Toolbar>
-    </AppBar>
+        </Box>
+      ) : (
+        <Button onClick={() => onboard?.connectWallet()} variant="contained">
+          Connect Wallet
+        </Button>
+      )}
+    </Box>
   )
 }
 
