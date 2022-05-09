@@ -35,7 +35,7 @@
 }
 
 .noSafeSidebar {
-  background: url('/keyhole.svg') center 0 no-repeat;
+  background: url('/keyhole.svg') center 10px no-repeat;
   min-height: 100px;
 }
 
@@ -44,7 +44,7 @@
   z-index: 2;
   right: 0;
   transform: translateX(50%);
-  top: 90px;
+  top: 40px;
   background-color: #F6F7F8; /* @TODO: move to the theme */
 }
 
