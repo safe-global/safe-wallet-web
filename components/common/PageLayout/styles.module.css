@@ -19,7 +19,7 @@
   grid-area: main;
   padding: 25px;
   overflow: auto;
-  height: 100vh;
+  height: calc(100vh - 52px);
 }
 
 .sidebar {
@@ -27,17 +27,12 @@
   height: 100vh;
 }
 
-.toolbar {
-  max-height: 52px;
-  min-height: 52px;
-}
-
 @media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
     grid-template-areas: 'header' 'main';
   }
-    
+
   .sidebar {
     display: none;
   }
