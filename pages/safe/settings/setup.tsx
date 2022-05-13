@@ -21,7 +21,7 @@ const Setup: NextPage = () => {
   return (
     <main>
       <h2>Settings / Setup</h2>
-      <Grid container spacing={2} xs>
+      <Grid container spacing={2}>
         <Grid item xs={8}>
           <Paper>
             <Grid item>

@@ -1,8 +1,19 @@
 import { AddressInfo } from '@/components/common/AddressInfo'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, TextField } from '@mui/material'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  TextField,
+  Tooltip,
+} from '@mui/material'
 import { ChangeEvent, useState } from 'react'
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import css from './styles.module.css'
 
 export const EditOwnerDialog = ({
@@ -40,9 +51,11 @@ export const EditOwnerDialog = ({
 
   return (
     <div>
-      <Button variant="text" onClick={() => setOpen(true)}>
-        Edit
-      </Button>
+      <Tooltip title="Edit owner">
+        <IconButton onClick={() => setOpen(true)}>
+          <EditOutlinedIcon />
+        </IconButton>
+      </Tooltip>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit owner name</DialogTitle>
         <DialogContent>

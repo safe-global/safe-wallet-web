@@ -5,11 +5,23 @@ import useSafeInfo from '@/services/useSafeInfo'
 import { addressIsNotCurrentSafe, uniqueAddress, validateAddress } from '@/services/validation'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, TextField } from '@mui/material'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  TextField,
+  Tooltip,
+} from '@mui/material'
 import { stringify } from 'querystring'
 import { ChangeEvent, useState } from 'react'
 import { SubmitOwnerTxStep } from './SubmitOwnerTxStep'
 import { ChooseOwnerStep } from './ChooseOwnerStep'
+import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined'
+
 import css from './styles.module.css'
 
 export const ReplaceOwnerDialog = ({ address, chainId }: { address: string; chainId: string }) => {
@@ -18,7 +30,6 @@ export const ReplaceOwnerDialog = ({ address, chainId }: { address: string; chai
   const [newOwner, setNewOwner] = useState<{ address: string; name: string } | undefined>(undefined)
 
   const [step, setStep] = useState<1 | 2>(1)
-  const dispatch = useAppDispatch()
 
   const handleClose = () => setOpen(false)
 
@@ -33,9 +44,11 @@ export const ReplaceOwnerDialog = ({ address, chainId }: { address: string; chai
 
   return (
     <div>
-      <Button variant="text" onClick={() => setOpen(true)}>
-        Replace
-      </Button>
+      <Tooltip title="Replace owner">
+        <IconButton onClick={() => setOpen(true)}>
+          <ChangeCircleOutlinedIcon />
+        </IconButton>
+      </Tooltip>
       <Dialog open={open} onClose={handleClose} maxWidth={'lg'}>
         <DialogTitle className={css.title}>
           <div>
