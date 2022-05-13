@@ -3,10 +3,10 @@ import Box from '@mui/material/Box'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
-import Button from '@mui/material/Button'
+import { StepContent } from '@mui/material'
 import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
 
-const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElement => {
+const VerticalTxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElement => {
   const { handleBack, onSubmit, activeStep, stepData } = useTxStepper(initialData)
 
   const firstStep = activeStep === 0
@@ -15,27 +15,22 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={activeStep}>
+      <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map(({ label }) => {
           const stepProps: { completed?: boolean } = {}
 
           return (
             <Step key={label} {...stepProps}>
               <StepLabel>{label}</StepLabel>
+              <StepContent>
+                {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onBack)}
+              </StepContent>
             </Step>
           )
         })}
       </Stepper>
-
-      {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onBack)}
-
-      <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-        <Button color="inherit" onClick={onBack} sx={{ mr: 1 }}>
-          {firstStep ? 'Cancel' : 'Back'}
-        </Button>
-      </Box>
     </Box>
   )
 }
 
-export default TxStepper
+export default VerticalTxStepper

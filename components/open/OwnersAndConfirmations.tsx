@@ -18,8 +18,15 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { CreateSafeFormData } from '@/components/open/index'
 import useWallet from '@/services/wallets/useWallet'
 import { validateAddress } from '@/services/validation'
+import { StepRenderProps } from '@/components/tx/TxStepper'
 
-const OwnersAndConfirmations = ({ params, onSubmit }: { params: CreateSafeFormData; onSubmit: any }) => {
+type Props = {
+  params: CreateSafeFormData
+  onSubmit: StepRenderProps['onSubmit']
+  onBack: StepRenderProps['onBack']
+}
+
+const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
   const wallet = useWallet()
   const defaultOwner = {
     name: '',
@@ -123,7 +130,7 @@ const OwnersAndConfirmations = ({ params, onSubmit }: { params: CreateSafeFormDa
           </Box>
           <Grid container alignItems="center" justifyContent="center" spacing={3}>
             <Grid item>
-              <Button>Back</Button>
+              <Button onClick={onBack}>Back</Button>
             </Grid>
             <Grid item>
               <Button variant="contained" type="submit">

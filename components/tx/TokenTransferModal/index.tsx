@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { TxStepperProps } from '@/components/tx/TxStepper'
+import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import SendAssetsForm, { SendAssetsFormData } from '@/components/tx/SendAssetsForm'
 import ReviewTx from '@/components/tx/ReviewTx'
 import TxModal, { TxModalProps } from '@/components/tx/TxModal'

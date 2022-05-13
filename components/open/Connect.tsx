@@ -1,7 +1,13 @@
 import React from 'react'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
+import { StepRenderProps } from '@/components/tx/TxStepper'
 
-const Connect = ({ onSubmit }: { onSubmit: (data: unknown) => void }) => {
+type Props = {
+  onSubmit: StepRenderProps['onSubmit']
+  onBack: StepRenderProps['onBack']
+}
+
+const Connect = ({ onSubmit, onBack }: Props) => {
   return (
     <Paper>
       <Box padding={3}>
@@ -14,7 +20,7 @@ const Connect = ({ onSubmit }: { onSubmit: (data: unknown) => void }) => {
       <Box padding={3}>
         <Grid container alignItems="center" justifyContent="center" spacing={3}>
           <Grid item>
-            <Button>Cancel</Button>
+            <Button onClick={onBack}>Cancel</Button>
           </Grid>
           <Grid item>
             <Button variant="contained" onClick={onSubmit}>

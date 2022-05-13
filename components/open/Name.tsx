@@ -3,8 +3,14 @@ import { Box, Button, Divider, FormControl, Grid, Paper, TextField, Typography }
 import { useForm } from 'react-hook-form'
 import { CreateSafeFormData } from '@/components/open/index'
 import { useMnemonicSafeName } from '@/services/useMnemonicName'
+import { StepRenderProps } from '@/components/tx/TxStepper'
 
-const Name = ({ onSubmit }: { onSubmit: (data: CreateSafeFormData) => unknown }) => {
+type Props = {
+  onSubmit: StepRenderProps['onSubmit']
+  onBack: StepRenderProps['onBack']
+}
+
+const Name = ({ onSubmit, onBack }: Props) => {
   const fallbackName = useMnemonicSafeName()
   const { register, handleSubmit } = useForm<CreateSafeFormData>({ defaultValues: { name: fallbackName } })
 
@@ -34,7 +40,7 @@ const Name = ({ onSubmit }: { onSubmit: (data: CreateSafeFormData) => unknown })
         <Box padding={3}>
           <Grid container alignItems="center" justifyContent="center" spacing={3}>
             <Grid item>
-              <Button>Back</Button>
+              <Button onClick={onBack}>Back</Button>
             </Grid>
             <Grid item>
               <Button variant="contained" type="submit">

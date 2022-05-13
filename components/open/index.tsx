@@ -1,10 +1,12 @@
 import React from 'react'
 
-import TxStepper, { TxStepperProps } from '@/components/tx/TxStepper'
 import Connect from '@/components/open/Connect'
 import Name from '@/components/open/Name'
 import OwnersAndConfirmations from '@/components/open/OwnersAndConfirmations'
 import Review from '@/components/open/Review'
+import { useRouter } from 'next/router'
+import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 
 type Owner = {
   name: string
@@ -20,24 +22,28 @@ export type CreateSafeFormData = {
 export const CreateSafeSteps: TxStepperProps['steps'] = [
   {
     label: 'Connect wallet & select network',
-    render: (data, onSubmit) => <Connect onSubmit={onSubmit} />,
+    render: (data, onSubmit, onBack) => <Connect onSubmit={onSubmit} onBack={onBack} />,
   },
   {
     label: 'Name',
-    render: (data, onSubmit) => <Name onSubmit={onSubmit} />,
+    render: (data, onSubmit, onBack) => <Name onSubmit={onSubmit} onBack={onBack} />,
   },
   {
     label: 'Owners and Confirmations',
-    render: (data, onSubmit) => <OwnersAndConfirmations params={data as CreateSafeFormData} onSubmit={onSubmit} />,
+    render: (data, onSubmit, onBack) => (
+      <OwnersAndConfirmations params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+    ),
   },
   {
     label: 'Review',
-    render: (data) => <Review params={data as CreateSafeFormData} />,
+    render: (data, _, onBack) => <Review params={data as CreateSafeFormData} onBack={onBack} />,
   },
 ]
 
 const CreateSafe = () => {
-  return <TxStepper steps={CreateSafeSteps} onClose={() => {}} orientation="vertical" />
+  const router = useRouter()
+
+  return <VerticalTxStepper steps={CreateSafeSteps} onClose={() => router.push('/welcome')} />
 }
 
 export default CreateSafe

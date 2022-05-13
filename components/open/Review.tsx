@@ -2,8 +2,14 @@ import React from 'react'
 import { CreateSafeFormData } from '@/components/open/index'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { EthHashInfo } from '@gnosis.pm/safe-react-components'
+import { StepRenderProps } from '@/components/tx/TxStepper'
 
-const Review = ({ params }: { params: CreateSafeFormData }) => {
+type Props = {
+  params: CreateSafeFormData
+  onBack: StepRenderProps['onBack']
+}
+
+const Review = ({ params, onBack }: Props) => {
   const createSafe = () => {}
   return (
     <Paper>
@@ -43,7 +49,7 @@ const Review = ({ params }: { params: CreateSafeFormData }) => {
       <Box padding={3}>
         <Grid container alignItems="center" justifyContent="center" spacing={3}>
           <Grid item>
-            <Button>Cancel</Button>
+            <Button onClick={onBack}>Back</Button>
           </Grid>
           <Grid item>
             <Button variant="contained" onClick={createSafe}>
