@@ -6,7 +6,10 @@ import Web3Adapter from '@gnosis.pm/safe-web3-lib'
 import semverSatisfies from 'semver/functions/satisfies'
 import chains from '@/config/chains'
 
-const LEGACY_VERSION = '<1.3.0'
+const isLegacyVersion = (safeVersion: string): boolean => {
+  const LEGACY_VERSION = '<1.3.0'
+  return semverSatisfies(safeVersion, LEGACY_VERSION)
+}
 
 // Safe Core SDK
 const initSafeSDK = async (
@@ -23,7 +26,7 @@ const initSafeSDK = async (
 
   let isL1SafeMasterCopy = walletChainId === chains.eth
   // Legacy Safe contracts
-  if (semverSatisfies(safeVersion, LEGACY_VERSION)) {
+  if (isLegacyVersion(safeVersion)) {
     isL1SafeMasterCopy = true
   }
 
