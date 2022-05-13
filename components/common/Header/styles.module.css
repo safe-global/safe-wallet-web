@@ -1,16 +1,31 @@
 .container {
-  grid-area: header;
-  width: 100%;
+  min-height: 52px;
+  padding: 0 20px;
   display: flex;
-  justify-content: space-between;
-  padding: 12px 16px;
-  box-shadow: rgb(40 54 61 / 18%) 0px 2px 4px 0px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
   position: relative;
   z-index: 2;
+  box-shadow: rgb(40 54 61 / 18%) 0px 2px 4px 0px;
 }
 
-.container img {
+.logo {
   height: 29px;
   width: auto;
   display: block;
+}
+
+.menuButton {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .logo {
+    display: none;
+  }
+  .menuButton {
+    display: block;
+  }
 }

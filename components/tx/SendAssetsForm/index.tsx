@@ -20,7 +20,7 @@ import useBalances from '@/services/useBalances'
 import useAddressBook from '@/services/useAddressBook'
 
 export type SendAssetsFormData = {
-  recepient: string
+  recipient: string
   tokenAddress: string
   amount: string
 }
@@ -67,7 +67,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
       <FormControl fullWidth>
         <Autocomplete
-          defaultValue={formData?.recepient}
+          defaultValue={formData?.recipient}
           freeSolo
           disablePortal
           options={addressBookEntries}
@@ -83,10 +83,10 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             <TextField
               {...params}
               autoComplete="off"
-              label="Recepient"
-              error={!!errors.recepient}
-              helperText={errors.recepient?.message}
-              {...register('recepient', {
+              label="Recipient"
+              error={!!errors.recipient}
+              helperText={errors.recipient?.message}
+              {...register('recipient', {
                 validate: validateAddress,
                 required: true,
               })}

@@ -5,10 +5,14 @@ import { TransactionStatus, type Transaction } from '@gnosis.pm/safe-react-gatew
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
-import useWallet from '@/services/wallets/useWallet'
 import { useTransactionType } from '@/services/useTransactionType'
-import { isMultisigExecutionInfo } from '@/components/transactions/utils'
+import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import css from './styles.module.css'
+import useWallet from '@/services/wallets/useWallet'
+import { isAwaitingExecution } from '@/components/transactions/utils'
+import RejectTxButton from '@/components/transactions/RejectTxButton'
+import Box from '@mui/material/Box'
+import { useRouter } from 'next/router'
 
 type TxSummaryProps = {
   item: Transaction
@@ -21,12 +25,12 @@ const dateOptions = {
 
 const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
-  const wallet = useWallet()
-  const walletAddress = wallet?.address
   const type = useTransactionType(tx)
+  const wallet = useWallet()
+  const router = useRouter()
+  const isQueue = router.pathname.includes('queue')
 
-  const missingSigners = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.missingSigners : null
-  const signaturePending = missingSigners?.some((item) => item.value.toLowerCase() === walletAddress?.toLowerCase())
+  const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
 
   return (
     <Paper>
@@ -53,11 +57,18 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
             {tx.txStatus !== TransactionStatus.SUCCESS && tx.txStatus}
           </Grid>
 
-          <Grid item md={1}>
-            {tx.txStatus === TransactionStatus.AWAITING_CONFIRMATIONS && signaturePending && (
-              <SignTxButton txSummary={item.transaction} />
-            )}
-          </Grid>
+          {wallet && isQueue && (
+            <Grid item md={1}>
+              <Box display="flex" alignItems="center">
+                {awaitingExecution ? (
+                  <ExecuteTxButton txSummary={item.transaction} />
+                ) : (
+                  <SignTxButton txSummary={item.transaction} />
+                )}
+                <RejectTxButton txSummary={item.transaction} />
+              </Box>
+            </Grid>
+          )}
         </Grid>
       </div>
     </Paper>

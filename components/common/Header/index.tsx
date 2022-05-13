@@ -1,21 +1,35 @@
 import { type ReactElement } from 'react'
-import { Button } from '@mui/material'
-import css from './styles.module.css'
+import { Box, Button, IconButton } from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu'
 import useOnboard from '@/services/wallets/useOnboard'
 import useWallet from '@/services/wallets/useWallet'
 import { shortenAddress } from '@/services/formatters'
+import css from './styles.module.css'
 
-const Header = (): ReactElement => {
+type HeaderProps = {
+  onMenuToggle: () => void
+}
+
+const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const onboard = useOnboard()
   const wallet = useWallet()
 
   return (
-    <header className={css.container}>
-      <img src="/logo.svg" alt="Safe" />
+    <Box className={css.container} sx={{ backgroundColor: 'background.paper' }}>
+      <div className={css.menuButton}>
+        <IconButton onClick={onMenuToggle} size="large" edge="start" color="default" aria-label="menu" sx={{ mr: 2 }}>
+          <MenuIcon />
+        </IconButton>
+      </div>
+
+      <img src="/logo.svg" alt="Safe" className={css.logo} />
+
+      <Box sx={{ flexGrow: 1 }} />
 
       {wallet ? (
-        <div>
+        <Box sx={{ color: 'text.primary' }}>
           {wallet.ens || shortenAddress(wallet.address)}
+
           <Button
             onClick={() =>
               onboard?.disconnectWallet({
@@ -25,13 +39,13 @@ const Header = (): ReactElement => {
           >
             Disconnect
           </Button>
-        </div>
+        </Box>
       ) : (
         <Button onClick={() => onboard?.connectWallet()} variant="contained">
           Connect Wallet
         </Button>
       )}
-    </header>
+    </Box>
   )
 }
 

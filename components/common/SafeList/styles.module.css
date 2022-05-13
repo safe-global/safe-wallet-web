@@ -1,4 +1,12 @@
 .container {
+  text-align: left;
+  margin-left: 40px;
+}
+
+.ownedSafes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .ownedSafes li:not(.selected) a {
@@ -8,4 +16,6 @@
 
 .ownedSafes li {
   margin-bottom: 0.2em;
+  margin: 0;
+  padding: 0;
 }
