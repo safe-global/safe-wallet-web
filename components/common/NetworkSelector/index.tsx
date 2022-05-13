@@ -1,24 +1,23 @@
 import React from 'react'
-import { setCurrentChainId } from '@/store/currentSessionSlice'
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
-import { useAppDispatch } from '@/store'
 import useChains from '@/services/useChains'
-import { useCurrentChainId } from '@/services/useCurrentSession'
+import { useRouter } from 'next/router'
+import { useCurrentNetwork } from '@/services/useCurrentNetwork'
 
 const NetworkSelector = () => {
-  const dispatch = useAppDispatch()
   const { configs } = useChains()
-  const chainId = useCurrentChainId()
+  const chain = useCurrentNetwork()
+  const router = useRouter()
 
   const handleNetworkSwitch = (event: SelectChangeEvent) => {
-    dispatch(setCurrentChainId(event.target.value))
+    router.replace({ pathname: router.pathname, query: { ...router.query, chain: event.target.value } })
   }
 
   return (
-    <Select value={chainId} onChange={handleNetworkSwitch}>
+    <Select value={chain} onChange={handleNetworkSwitch}>
       {configs.map((chain) => {
         return (
-          <MenuItem key={chain.chainId} value={chain.chainId}>
+          <MenuItem key={chain.chainId} value={chain.shortName}>
             {chain.chainName}
           </MenuItem>
         )
