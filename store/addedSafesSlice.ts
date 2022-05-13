@@ -11,19 +11,17 @@ export const addedSafesSlice = createSlice({
   name: 'addedSafes',
   initialState,
   reducers: {
-    addSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>): AddedSafesState => {
+    addSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
       state[payload.chainId] ??= []
       state[payload.chainId].push(payload.address)
-      return state
     },
-    removeSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>): AddedSafesState => {
+    removeSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
       state[payload.chainId] = (state[payload.chainId] || []).filter((address) => address !== payload.address)
-      return state
     },
   },
 })
 
-export const { addSafe } = addedSafesSlice.actions
+export const { addSafe, removeSafe } = addedSafesSlice.actions
 
 const selectAllAddedSafes = (state: RootState): AddedSafesState => {
   return state[addedSafesSlice.name]
