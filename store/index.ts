@@ -11,6 +11,7 @@ import { addressBookSlice } from './addressBookSlice'
 import { notificationsSlice } from './notificationsSlice'
 import { getPreloadedState, persistState } from './persistStore'
 import { pendingTxsSlice } from './pendingTxsSlice'
+import { addedSafesSlice } from './addedSafesSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -23,12 +24,14 @@ const rootReducer = combineReducers({
   [addressBookSlice.name]: addressBookSlice.reducer,
   [notificationsSlice.name]: notificationsSlice.reducer,
   [pendingTxsSlice.name]: pendingTxsSlice.reducer,
+  [addedSafesSlice.name]: addedSafesSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   currencySlice.name,
   addressBookSlice.name,
   pendingTxsSlice.name,
+  addedSafesSlice.name,
 ]
 
 export const store = configureStore({
