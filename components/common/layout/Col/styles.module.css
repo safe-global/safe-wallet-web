@@ -1,0 +1,8 @@
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+.noMargin {
+  margin: 0rem;
+}

@@ -1,5 +1,8 @@
 import { AddressInfo } from '@/components/common/AddressInfo'
 import Hairline from '@/components/common/Hairline'
+import { Col } from '@/components/common/layout/Col'
+import { Row } from '@/components/common/layout/Row'
+import { createSwapOwnerTransaction } from '@/services/createTransaction'
 import useSafeInfo from '@/services/useSafeInfo'
 import { Button, DialogActions, DialogContent } from '@mui/material'
 import css from './styles.module.css'
@@ -15,13 +18,18 @@ export const SubmitOwnerTxStep = ({
 }) => {
   const { safe } = useSafeInfo()
 
+  createSwapOwnerTransaction({
+    newOwnerAddress: newOwner.address,
+    oldOwnerAddress: removeOwner.address,
+  })
+
   return (
     <>
       <DialogContent>
         <Hairline />
         <div>
-          <div className={css.flexRow}>
-            <div className={`${css.flexColumn} ${css.detailsBlock}`}>
+          <Row>
+            <Col className={`${css.detailsBlock}`}>
               <p className={css.large}>Details</p>
               <div className={css.detailField}>
                 <p className={css.light}>Safe name:</p>
@@ -30,32 +38,41 @@ export const SubmitOwnerTxStep = ({
               </div>
               <div className={css.detailField}>
                 <p className={css.light}>Any transaction requires the confirmation of:</p>
-                {/* TODO: SafeName */}
                 <p>
                   <b>{safe?.threshold}</b> out of <b>{safe?.owners.length}</b> owners
                 </p>
               </div>
-            </div>
-            <div className={css.flexColumn}>
-              <p>{safe?.owners.length ?? 0} Safe owner(s)</p>
+            </Col>
+            <Col>
+              <p style={{ paddingLeft: '1rem' }}>{safe?.owners.length ?? 0} Safe owner(s)</p>
               <Hairline />
+              {safe?.owners
+                .filter((owner) => owner.value !== removeOwner.address)
+                .map((owner) => (
+                  <>
+                    <Row className={css.padding} key={owner.value}>
+                      <AddressInfo address={owner.value} />
+                    </Row>
+                    <Hairline />
+                  </>
+                ))}
               <div className={css.info}>
                 <p className={css.overline}>REMOVING OWNER &darr;</p>
               </div>
               <Hairline />
-              <div className={`${css.flexRowInner} ${css.removedOwner}`}>
+              <Row className={`${css.padding} ${css.removedOwner}`}>
                 <AddressInfo address={removeOwner.address} />
-              </div>
+              </Row>
               <Hairline />
               <div className={css.info}>
                 <p className={css.overline}>ADDING NEW OWNER &darr;</p>
               </div>
               <Hairline />
-              <div className={css.flexRowInner}>
+              <Row className={css.padding}>
                 <AddressInfo address={newOwner.address} />
-              </div>
-            </div>
-          </div>
+              </Row>
+            </Col>
+          </Row>
           <Hairline />
         </div>
       </DialogContent>

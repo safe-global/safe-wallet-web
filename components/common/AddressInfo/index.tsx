@@ -2,6 +2,9 @@ import { shortenAddress as shorten } from '@/services/formatters'
 import Identicon from '../Identicon'
 import css from './styles.module.css'
 
+/**
+ *  Temporary component until revamped safe components are done
+ */
 export const AddressInfo = ({
   address,
   chainShortName,

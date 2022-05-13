@@ -3,6 +3,7 @@ import Web3 from 'web3'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { erc20Transfer } from './abi'
 import { toDecimals } from './formatters'
+import { SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 
 const encodeTokenTransferData = (to: string, value: string): string => {
   return new Web3().eth.abi.encodeFunctionCall(erc20Transfer, [to, value])
@@ -61,4 +62,13 @@ export const executeTransaction = async (tx: SafeTransaction) => {
   const safeSdk = getSafeSDK()
   const executeTxResponse = await safeSdk.executeTransaction(tx)
   return await executeTxResponse.transactionResponse?.wait()
+}
+
+export const createSwapOwnerTransaction = async (txParams: SwapOwnerTxParams) => {
+  const safeSdk = getSafeSDK()
+  const tx = await safeSdk.getSwapOwnerTx(txParams)
+
+  console.log('Created tx', tx)
+
+  return tx
 }

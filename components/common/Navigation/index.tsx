@@ -63,28 +63,16 @@ const navItems: NavItem[] = [
     href: '/safe/settings/details',
     items: [
       {
-        label: 'Safe Details',
-        href: '/safe/settings/details',
+        label: 'Setup',
+        href: '/safe/settings/setup',
+      },
+      {
+        label: 'Modules',
+        href: '/safe/settings/modules',
       },
       {
         label: 'Appearance',
         href: '/safe/settings/appearance',
-      },
-      {
-        label: 'Owners',
-        href: '/safe/settings/owners',
-      },
-      {
-        label: 'Policies',
-        href: '/safe/settings/policies',
-      },
-      {
-        label: 'Spending Limit',
-        href: '/safe/settings/spending-limit',
-      },
-      {
-        label: 'Advanced',
-        href: '/safe/settings/advanced',
       },
     ],
   },

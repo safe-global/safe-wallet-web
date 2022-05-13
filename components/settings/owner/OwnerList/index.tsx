@@ -1,6 +1,6 @@
 import { AddressInfo } from '@/components/common/AddressInfo'
 import { AddressEx } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { EditOwnerDialog } from '../EditOwnerDialog'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import css from './styles.module.css'
@@ -36,7 +36,7 @@ export const OwnerList = ({
   }
 
   return (
-    <Paper elevation={1} className={css.container}>
+    <div className={css.container}>
       <h3>Manage Safe Owners</h3>
       <p>
         Add, remove and replace owners or rename existing owners. Owner names are only stored locally and never shared
@@ -55,6 +55,9 @@ export const OwnerList = ({
           <TableBody>{owners.map((owner) => OwnerRow(owner))}</TableBody>
         </Table>
       </TableContainer>
-    </Paper>
+      <div>
+        <Button variant="contained">Add New Owner</Button>
+      </div>
+    </div>
   )
 }

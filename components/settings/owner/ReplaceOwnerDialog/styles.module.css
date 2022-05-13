@@ -27,15 +27,7 @@
   gap: 2rem;
 }
 
-.flexRow {
-  display: flex;
-  flex-direction: row;
-  padding: 0rem;
-}
-
-.flexRowInner {
-  display: flex;
-  flex-direction: row;
+.padding {
   padding: 1rem;
 }
 
