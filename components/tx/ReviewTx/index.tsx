@@ -52,8 +52,8 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
     const editedTxParams = {
       ...txParams,
       nonce: data.nonce,
-      // @TODO: Safes <1.3.0 need safeTxGas
-      //safeTxGas: Number(safeGas?.safeTxGas || 0)
+      // Core SDK will ignore safeTxGas for 1.3.0+ Safes
+      safeTxGas: Number(safeGas?.safeTxGas || 0),
     }
 
     try {
