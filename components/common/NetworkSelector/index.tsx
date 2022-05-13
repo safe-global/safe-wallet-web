@@ -14,7 +14,7 @@ const NetworkSelector = () => {
     <Select value={chainId} onChange={(event) => dispatch(setCurrentChainId(event.target.value))}>
       {configs.map((chain) => {
         return (
-          <MenuItem key={chain.chainName} value={chain.chainId}>
+          <MenuItem key={chain.chainId} value={chain.chainId}>
             {chain.chainName}
           </MenuItem>
         )

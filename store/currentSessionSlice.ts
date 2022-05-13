@@ -1,13 +1,14 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '.'
 import { IS_PRODUCTION } from '@/config/constants'
+import chains from '@/config/chains'
 
 interface CurrentSessionState {
   chainId: string
 }
 
 const initialState: CurrentSessionState = {
-  chainId: IS_PRODUCTION ? '1' : '4',
+  chainId: IS_PRODUCTION ? chains.eth : chains.rin,
 }
 
 export const currentSessionSlice = createSlice({
@@ -30,6 +31,6 @@ export const selectCurrentSession = (state: RootState): CurrentSessionState => {
   return state[currentSessionSlice.name]
 }
 
-export const selectCurrentChainId = (state: RootState): CurrentSessionState['chainId'] => {
-  return state[currentSessionSlice.name].chainId
-}
+export const selectCurrentChainId = createSelector(selectCurrentSession, (currentSession) => {
+  return currentSession.chainId
+})
