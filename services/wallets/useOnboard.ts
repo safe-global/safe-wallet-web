@@ -5,7 +5,7 @@ import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getAllWallets, getRecommendedInjectedWallets, getSupportedWallets } from '@/services/wallets/wallets'
 import { getRpcServiceUrl } from '@/services/wallets/web3'
 import useChains, { useCurrentChain } from '../useChains'
-import local from '../localStorage/local'
+import useLocalStorage from '../localStorage/useLocalStorage'
 
 export type ConnectedWallet = {
   label: string
@@ -88,6 +88,7 @@ const LAST_USED_WALLET_KEY = 'lastUsedWallet'
 export const useInitOnboard = () => {
   const onboard = useOnboard()
   const chain = useCurrentChain()
+  const [lastUsedWallet, setLastUsedWallet] = useLocalStorage<string>(LAST_USED_WALLET_KEY)
 
   useEffect(() => {
     if (!onboard || !chain?.disabledWallets) {
@@ -104,7 +105,6 @@ export const useInitOnboard = () => {
       return
     }
 
-    const lastUsedWallet = local.getItem<string>(LAST_USED_WALLET_KEY)
     if (lastUsedWallet) {
       onboard.connectWallet({ autoSelect: { disableModals: true, label: lastUsedWallet } })
     }
@@ -112,14 +112,16 @@ export const useInitOnboard = () => {
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
       const connectedWallet = getConnectedWallet(wallets)
       if (connectedWallet) {
-        local.setItem(LAST_USED_WALLET_KEY, connectedWallet.label)
+        setLastUsedWallet(connectedWallet.label)
+      } else {
+        setLastUsedWallet('')
       }
     })
 
     return () => {
       walletSubscription.unsubscribe()
     }
-  }, [onboard])
+  }, [onboard, lastUsedWallet, setLastUsedWallet])
 }
 
 export default useOnboard
