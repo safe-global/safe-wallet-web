@@ -5,6 +5,7 @@ import useOnboard from '@/services/wallets/useOnboard'
 import useWallet from '@/services/wallets/useWallet'
 import { shortenAddress } from '@/services/formatters'
 import css from './styles.module.css'
+import NetworkSelector from '@/components/common/NetworkSelector'
 
 type HeaderProps = {
   onMenuToggle: () => void
@@ -45,6 +46,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
           Connect Wallet
         </Button>
       )}
+      <NetworkSelector />
     </Box>
   )
 }
