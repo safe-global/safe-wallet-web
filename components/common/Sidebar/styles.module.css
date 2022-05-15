@@ -1,14 +1,21 @@
-.drawer,
-.container {
+.container,
+.drawer {
   width: 220px;
-  padding: 20px 0;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  position: relative;
+}
+
+.container {
+  padding: 20px 0;
+  border: none;
+  box-shadow: rgb(40 54 61 / 8%) 1px 2px 12px;
 }
 
 .drawer {
-  padding: 20px;
   text-align: center;
+  padding: 74px 20px 20px;
 }
 
 .chain {
@@ -27,7 +34,7 @@
 }
 
 .noSafeSidebar {
-  background: url('/keyhole.svg') center 0 no-repeat;
+  background: url('/keyhole.svg') center 10px no-repeat;
   min-height: 100px;
 }
 
@@ -36,7 +43,7 @@
   z-index: 2;
   right: 0;
   transform: translateX(50%);
-  top: 90px;
+  top: 40px;
   background-color: #F6F7F8; /* @TODO: move to the theme */
 }
 
@@ -46,4 +53,10 @@
 
 .menu {
   padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-top: 74px;
+  }
 }

@@ -19,11 +19,13 @@ const initialState: TxHistoryState = {
   pageUrl: '',
 }
 
+export type SetHistoryPageAction = PayloadAction<TransactionListPage | undefined>
+
 export const txHistorySlice = createSlice({
   name: 'txHistory',
   initialState,
   reducers: {
-    setHistoryPage: (state, action: PayloadAction<TransactionListPage | undefined>) => {
+    setHistoryPage: (state, action: SetHistoryPageAction) => {
       // @ts-ignore: Type instantiation is excessively deep and possibly infinite.
       state.page = action.payload || initialState.page
     },

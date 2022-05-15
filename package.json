@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "start": "next dev",
     "build": "next build",
-    "start": "next start",
     "lint": "next lint",
     "prettier": "prettier -w './**/*.{ts,tsx}'",
     "test": "jest",
