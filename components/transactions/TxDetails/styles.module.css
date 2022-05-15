@@ -1,0 +1,31 @@
+.container {
+  background-color: #E8E7E6;
+  display: grid;
+  gap: 2px;
+  grid-template-columns: 2fr 1fr;
+  width: 100%;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.txData {
+  background: white;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 100%;
+  border-bottom-left-radius: 8px
+}
+
+.txInfoDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.txSigners {
+  background: white;
+  border-bottom-right-radius: 8px
+}

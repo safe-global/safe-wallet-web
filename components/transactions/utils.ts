@@ -1,15 +1,21 @@
 import {
   AddressEx,
+  ConflictHeader,
+  Creation,
   Custom,
   DateLabel,
   DetailedExecutionInfo,
+  Label,
+  MultiSend,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
+  SettingsChange,
   Transaction,
   TransactionInfo,
   TransactionListItem,
   TransactionStatus,
   TransactionSummary,
+  Transfer,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
@@ -34,12 +40,41 @@ export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null):
 export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>
   value?.type === 'MULTISIG'
 
+export const isTransaction = (value: TransactionListItem): value is Transaction => {
+  return value.type === 'TRANSACTION'
+}
+
+// TransactionInfo type guards
+export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
+  return value.type === 'Transfer'
+}
+
+export const isSettingsChangeTxInfo = (value: TransactionInfo): value is SettingsChange => {
+  return value.type === 'SettingsChange'
+}
+
 export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
   return value.type === 'Custom'
 }
 
-export const isTransaction = (value: TransactionListItem): value is Transaction => {
+export const isMultisendTxInfo = (value: TransactionInfo): value is MultiSend => {
+  return value.type === 'Custom' && value.methodName === 'multiSend'
+}
+
+export const isCreationTxInfo = (value: TransactionInfo): value is Creation => {
+  return value.type === 'Creation'
+}
+
+// TxListItem type guards
+export const isTransactionListItem = (value: TransactionListItem): value is Transaction => {
   return value.type === 'TRANSACTION'
+}
+
+export const isLabelListItem = (value: TransactionListItem): value is Label => {
+  return value.type === 'LABEL'
+}
+export const isConflictHeaderListItem = (value: TransactionListItem): value is ConflictHeader => {
+  return value.type === 'CONFLICT_HEADER'
 }
 
 // @ts-expect-error @TODO: Add DateLabel to TransactionListItem type in SDK types

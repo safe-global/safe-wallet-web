@@ -9,10 +9,16 @@ import {
   TransferDirection,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
+import {
+  isCreationTxInfo,
+  isCustomTxInfo,
+  isSettingsChangeTxInfo,
+  isTransferTxInfo,
+} from '@/components/transactions/utils'
 import { shortenAddress } from '@/services/formatters'
 import { useCurrentChain } from '@/services/useChains'
 
-const TransferTx = ({ info }: { info: Transfer }): ReactElement => {
+export const TransferTx = ({ info, withLogo = true }: { info: Transfer; withLogo?: boolean }): ReactElement => {
   const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
   const transfer = info.transferInfo
@@ -25,11 +31,11 @@ const TransferTx = ({ info }: { info: Transfer }): ReactElement => {
           value={transfer.value}
           decimals={nativeCurrency?.decimals}
           tokenSymbol={nativeCurrency?.symbol}
-          logoUri={nativeCurrency?.logoUri}
+          logoUri={withLogo ? nativeCurrency?.logoUri : null}
         />
       )
     case TransactionTokenType.ERC20:
-      return <TokenAmount direction={info.direction} {...transfer} />
+      return <TokenAmount {...transfer} direction={info.direction} logoUri={withLogo ? transfer?.logoUri : null} />
     case TransactionTokenType.ERC721:
       return (
         <>
@@ -41,6 +47,7 @@ const TransferTx = ({ info }: { info: Transfer }): ReactElement => {
   }
 }
 
+// TODO: ask in the PR if should show anything
 const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
   return <>{info.settingsInfo?.type}</>
 }
@@ -53,19 +60,18 @@ const CreationTx = ({ info }: { info: Creation }): ReactElement => {
   return <>Safe created by {shortenAddress(info.creator.value)}</>
 }
 
-const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => {
-  switch (info.type) {
-    case 'Transfer':
-      return <TransferTx info={info as Transfer} />
-    case 'SettingsChange':
-      return <SettingsChangeTx info={info as SettingsChange} />
-    case 'Custom':
-      return <CustomTx info={info as Custom} />
-    case 'Creation':
-      return <CreationTx info={info as Creation} />
-    default:
-      return <>Unknown transaction</>
-  }
-}
+const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => (
+  <>
+    {isTransferTxInfo(info) ? (
+      <TransferTx info={info} />
+    ) : isSettingsChangeTxInfo(info) ? (
+      <SettingsChangeTx info={info} />
+    ) : isCustomTxInfo(info) ? (
+      <CustomTx info={info} />
+    ) : isCreationTxInfo(info) ? (
+      <CreationTx info={info} />
+    ) : null}
+  </>
+) 
 
 export default TxInfo

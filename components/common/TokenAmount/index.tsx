@@ -19,7 +19,7 @@ const TokenAmount = (props: {
 
   return (
     <span className={css.container}>
-      <TokenIcon logoUri={props.logoUri} tokenSymbol={props.tokenSymbol} />
+      {props.logoUri && <TokenIcon logoUri={props.logoUri} tokenSymbol={props.tokenSymbol} />}
       {sign}
       {formatDecimals(props.value, props.decimals || undefined)} {props.tokenSymbol}
     </span>
