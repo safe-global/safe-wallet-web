@@ -10,6 +10,7 @@ import { executeTx } from '@/components/tx/ExecuteProposedTx'
 import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import { CodedException, Errors } from '@/services/exceptions'
+import { useChainId } from '@/services/useChainId'
 
 export const signTx = async (chainId: string, txSummary: TransactionSummary, safeAddress: string) => {
   try {
@@ -28,7 +29,8 @@ export const signTx = async (chainId: string, txSummary: TransactionSummary, saf
 }
 
 const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
-  const { chainId, address } = useSafeAddress()
+  const address = useSafeAddress()
+  const chainId = useChainId()
   const dispatch = useAppDispatch()
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
 

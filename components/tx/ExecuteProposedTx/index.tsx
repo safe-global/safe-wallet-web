@@ -10,6 +10,7 @@ import { CodedException, Errors } from '@/services/exceptions'
 import { AppDispatch, useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 import { removePendingTx, setPendingTx } from '@/store/pendingTxsSlice'
+import { useChainId } from '@/services/useChainId'
 
 export const executeTx = (chainId: string, txSummary: TransactionSummary, safeAddress: string) => {
   return async (dispatch: AppDispatch) => {
@@ -35,7 +36,8 @@ export const executeTx = (chainId: string, txSummary: TransactionSummary, safeAd
 }
 
 const ExecuteProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
-  const { chainId, address } = useSafeAddress()
+  const address = useSafeAddress()
+  const chainId = useChainId()
   const dispatch = useAppDispatch()
 
   const onExecute = async () => dispatch(executeTx(chainId, txSummary, address))
