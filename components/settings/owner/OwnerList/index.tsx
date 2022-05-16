@@ -26,7 +26,7 @@ export const OwnerList = ({
             {chainId && <EditOwnerDialog address={row.address} name={row.name} chainId={chainId} />}
             {chainId && isGranted && (
               <>
-                <ReplaceOwnerDialog address={row.address} chainId={chainId} />
+                <ReplaceOwnerDialog address={row.address} />
               </>
             )}
           </div>

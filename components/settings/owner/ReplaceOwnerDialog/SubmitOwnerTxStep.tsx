@@ -2,23 +2,18 @@ import { AddressInfo } from '@/components/common/AddressInfo'
 import Hairline from '@/components/common/Hairline'
 import useSafeInfo from '@/services/useSafeInfo'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Button, DialogActions, DialogContent, Grid } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import { useEffect, useState } from 'react'
 import proposeTx from '@/services/proposeTransaction'
 
 import css from './styles.module.css'
 import { createSwapOwnerTransaction, signTransaction } from '@/services/createTransaction'
+import { ReplaceOwnerData } from '@/components/settings/owner/ReplaceOwnerDialog/ChooseOwnerStep'
 
-export const SubmitOwnerTxStep = ({
-  onBack,
-  removeOwner,
-  newOwner,
-}: {
-  onBack: () => void
-  removeOwner: { address: string; name?: string }
-  newOwner: { address: string; name?: string }
-}) => {
+export const SubmitOwnerTxStep = ({ data }: { data: ReplaceOwnerData }) => {
   const { safe } = useSafeInfo()
+
+  const { newOwner, removedOwner } = data
 
   const [swapTx, setSwapTx] = useState<SafeTransaction>()
 
@@ -27,7 +22,7 @@ export const SubmitOwnerTxStep = ({
     const createTx = async () => {
       const tx = await createSwapOwnerTransaction({
         newOwnerAddress: newOwner.address,
-        oldOwnerAddress: removeOwner.address,
+        oldOwnerAddress: removedOwner.address,
       })
       if (isMounted) {
         setSwapTx(tx)
@@ -39,7 +34,7 @@ export const SubmitOwnerTxStep = ({
     return () => {
       isMounted = false
     }
-  }, [newOwner.address, removeOwner.address])
+  }, [newOwner.address, removedOwner.address])
 
   const onSubmit = async () => {
     if (swapTx && safe) {
@@ -49,11 +44,11 @@ export const SubmitOwnerTxStep = ({
   }
 
   return (
-    <>
-      <DialogContent style={{ padding: 0 }}>
+    <div className={css.container}>
+      <div className={css.noPadding}>
         <Hairline />
         <Grid container spacing={2} style={{ paddingLeft: '24px', paddingTop: '20px' }}>
-          <Grid direction="column" item className={`${css.detailsBlock}`}>
+          <Grid direction="column" xs item className={`${css.detailsBlock}`}>
             <p className={css.large}>Details</p>
             <div className={css.detailField}>
               <p className={css.light}>Safe name:</p>
@@ -71,21 +66,21 @@ export const SubmitOwnerTxStep = ({
             <p style={{ paddingLeft: '1rem' }}>{safe?.owners.length ?? 0} Safe owner(s)</p>
             <Hairline />
             {safe?.owners
-              .filter((owner) => owner.value !== removeOwner.address)
+              .filter((owner) => owner.value !== removedOwner.address)
               .map((owner) => (
-                <>
+                <div key={owner.value}>
                   <div className={css.padding} key={owner.value}>
                     <AddressInfo address={owner.value} />
                   </div>
                   <Hairline />
-                </>
+                </div>
               ))}
             <div className={css.info}>
               <p className={css.overline}>REMOVING OWNER &darr;</p>
             </div>
             <Hairline />
             <div className={`${css.padding} ${css.removedOwner}`}>
-              <AddressInfo address={removeOwner.address} />
+              <AddressInfo address={removedOwner.address} />
             </div>
             <Hairline />
             <div className={css.info}>
@@ -98,13 +93,12 @@ export const SubmitOwnerTxStep = ({
           </Grid>
         </Grid>
         <Hairline />
-      </DialogContent>
-      <DialogActions className={css.dialogFooter}>
-        <Button onClick={onBack}>Back</Button>
+      </div>
+      <div className={css.submit}>
         <Button onClick={onSubmit} disabled={!swapTx} variant="contained">
           Submit
         </Button>
-      </DialogActions>
-    </>
+      </div>
+    </div>
   )
 }

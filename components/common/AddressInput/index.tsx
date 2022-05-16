@@ -26,9 +26,7 @@ export const AddressInput = ({
     const newAddress = event.target.value
     setValidationError(validate(newAddress))
     setInputAddress(newAddress)
-    if (!validationError) {
-      onAddressChange(newAddress)
-    }
+    onAddressChange(newAddress)
   }
 
   const validate = (address: string) => {

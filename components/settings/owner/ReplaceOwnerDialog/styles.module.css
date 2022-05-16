@@ -1,15 +1,3 @@
-.content {
-  padding: 1rem;
-}
-
-.title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
 .light {
   font-weight: lighter;
   font-size: small;
@@ -22,18 +10,12 @@
   gap: 1rem;
 }
 
-.dialogFooter {
-  justify-content: center;
-  gap: 2rem;
-}
-
 .padding {
   padding: 1rem;
 }
 
-.flexColumn {
-  display: flex;
-  flex-direction: column;
+.noPadding {
+  padding: 1rem;
 }
 
 .large {
@@ -71,4 +53,19 @@
   line-height: 14px;
   letter-spacing: 1px;
   align-self: center;
+}
+
+.submit {
+  position: absolute;
+  bottom: -54px;
+  right: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 50px 0 40px;
+  position: relative;
 }
