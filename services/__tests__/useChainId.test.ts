@@ -36,12 +36,12 @@ describe('useChainId hook', () => {
   it('should return the chainId from the safe address', () => {
     ;(useRouter as any).mockImplementation(() => ({
       query: {
-        safe: 'rin:0x0000000000000000000000000000000000000000',
+        safe: 'matic:0x0000000000000000000000000000000000000000',
       },
     }))
 
     const { result } = renderHook(() => useChainId())
-    expect(result.current).toBe('4')
+    expect(result.current).toBe('137')
   })
 
   it('should throw when the chain query is invalid', () => {
