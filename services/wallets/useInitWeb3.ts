@@ -1,10 +1,10 @@
-import Web3 from 'web3'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { useEffect } from 'react'
 import { getWeb3ReadOnly, setWeb3, setWeb3ReadOnly } from '@/services/wallets/web3'
 import { useCurrentChain } from '@/services/useChains'
 import useWallet from './useWallet'
 
-export const useInitWeb3 = (): Web3 => {
+export const useInitWeb3 = (): JsonRpcProvider => {
   const chain = useCurrentChain()
   const wallet = useWallet()
 

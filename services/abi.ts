@@ -1,6 +1,6 @@
-import { type AbiItem } from 'web3-utils'
+import { JsonFragment } from '@ethersproject/abi'
 
-export const erc20Transfer: AbiItem = {
+export const erc20Transfer: JsonFragment = {
   name: 'transfer',
   type: 'function',
   inputs: [
