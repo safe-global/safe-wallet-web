@@ -1,10 +1,10 @@
 import { ChainInfo, getChainsConfig, type ChainListResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectChains, setChains } from '@/store/chainsSlice'
+import { selectChainById, selectChains, setChains } from '@/store/chainsSlice'
 import { Errors, logError } from './exceptions'
 import useAsync from './useAsync'
-import { useCurrentNetwork } from './useCurrentNetwork'
+import { useChainId } from './useChainId'
 
 export const useInitChains = (): void => {
   const dispatch = useAppDispatch()
@@ -37,7 +37,6 @@ const useChains = () => {
 export default useChains
 
 export const useCurrentChain = (): ChainInfo | undefined => {
-  const shortName = useCurrentNetwork()
-  const chainConfigs = useAppSelector(selectChains).configs
-  return chainConfigs.find((item) => item.shortName === shortName)
+  const chainId = useChainId()
+  return useAppSelector((state) => selectChainById(state, chainId))
 }

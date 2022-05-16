@@ -7,10 +7,12 @@ import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from './exceptions'
 import useIntervalCounter from './useIntervalCounter'
 import useAsync from './useAsync'
+import { useChainId } from './useChainId'
 
 // Poll & dispatch the Safe Info into the store
 export const useInitSafeInfo = (): void => {
-  const { address, chainId } = useSafeAddress()
+  const address = useSafeAddress()
+  const chainId = useChainId()
   const [counter, resetCounter] = useIntervalCounter(POLLING_INTERVAL)
   const dispatch = useAppDispatch()
 

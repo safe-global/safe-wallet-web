@@ -5,9 +5,11 @@ import { useEffect, useState, type ReactElement } from 'react'
 import proposeTx from '@/services/proposeTransaction'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
+import { useChainId } from '@/services/useChainId'
 
 const FinishTx = ({ tx }: { tx: SafeTransaction }): ReactElement => {
-  const { address, chainId } = useSafeAddress()
+  const address = useSafeAddress()
+  const chainId = useChainId()
   const [error, setError] = useState<Error>()
 
   useEffect(() => {
