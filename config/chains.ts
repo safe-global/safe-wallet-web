@@ -243,7 +243,6 @@ const chains: Record<string, string> = {
   alfa: '44787',
   rei: '47805',
   tnrg: '49797',
-  rei: '55555',
   trei: '55556',
   'tkm-test0': '60000',
   'tkm-test1': '60001',
