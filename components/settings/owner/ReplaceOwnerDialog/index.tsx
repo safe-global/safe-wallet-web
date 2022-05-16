@@ -1,23 +1,7 @@
-import { AddressInfo } from '@/components/common/AddressInfo'
-import { AddressInput } from '@/components/common/AddressInput'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import useSafeInfo from '@/services/useSafeInfo'
-import { addressIsNotCurrentSafe, uniqueAddress, validateAddress } from '@/services/validation'
-import { useAppDispatch } from '@/store'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  IconButton,
-  TextField,
-  Tooltip,
-} from '@mui/material'
-import { stringify } from 'querystring'
-import { ChangeEvent, useState } from 'react'
+import { validateAddress } from '@/services/validation'
+import { Dialog, DialogTitle, IconButton, Tooltip } from '@mui/material'
+import { useState } from 'react'
 import { SubmitOwnerTxStep } from './SubmitOwnerTxStep'
 import { ChooseOwnerStep } from './ChooseOwnerStep'
 import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined'

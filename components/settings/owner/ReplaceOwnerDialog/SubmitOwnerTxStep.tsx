@@ -2,12 +2,12 @@ import { AddressInfo } from '@/components/common/AddressInfo'
 import Hairline from '@/components/common/Hairline'
 import useSafeInfo from '@/services/useSafeInfo'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Button, DialogActions, DialogContent, Grid, Skeleton } from '@mui/material'
+import { Button, DialogActions, DialogContent, Grid } from '@mui/material'
 import { useEffect, useState } from 'react'
 import proposeTx from '@/services/proposeTransaction'
 
 import css from './styles.module.css'
-import { createSwapOwnerTransaction } from '@/services/createTransaction'
+import { createSwapOwnerTransaction, signTransaction } from '@/services/createTransaction'
 
 export const SubmitOwnerTxStep = ({
   onBack,
@@ -43,7 +43,8 @@ export const SubmitOwnerTxStep = ({
 
   const onSubmit = async () => {
     if (swapTx && safe) {
-      proposeTx(safe.chainId, safe.address.value, swapTx)
+      const signedTx = await signTransaction(swapTx)
+      proposeTx(safe.chainId, safe.address.value, signedTx)
     }
   }
 
