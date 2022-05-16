@@ -10,7 +10,15 @@ export const useChainId = (): string => {
   const fallbackChainId = IS_PRODUCTION ? chains.eth : chains.rin
   const currentShortName = chain || shortName
 
-  return currentShortName
-    ? Object.entries(chains).find(([key]) => key === currentShortName)?.[1] || ''
-    : fallbackChainId
+  if (currentShortName) {
+    const chainId = Object.entries(chains).find(([key]) => key === currentShortName)?.[1]
+    if (chainId == null) {
+      throw Error('Invalid chain short name in the URL')
+    }
+    return chainId
+  }
+
+  return fallbackChainId
 }
+
+export default useChainId
