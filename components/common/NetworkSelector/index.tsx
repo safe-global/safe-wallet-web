@@ -14,11 +14,14 @@ const NetworkSelector = () => {
 
   const handleNetworkSwitch = (event: SelectChangeEvent) => {
     const selectedChainId = event.target.value
+    const newShortName = Object.entries(chains).find(([, val]) => val === selectedChainId)?.[0]
+
+    if (!newShortName) return
 
     router.replace({
       pathname: '/',
       query: {
-        chain: chains[selectedChainId],
+        chain: newShortName,
       },
     })
   }
