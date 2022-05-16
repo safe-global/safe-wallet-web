@@ -46,6 +46,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
           Connect Wallet
         </Button>
       )}
+
       <NetworkSelector />
     </Box>
   )

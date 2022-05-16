@@ -11,6 +11,7 @@ import css from '@/components/common/SafeList/styles.module.css'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import useAddressBook from '@/services/useAddressBook'
+import { useCurrentChain } from '@/services/useChains'
 
 const SafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
   const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
@@ -33,7 +34,8 @@ const SafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: 
 }
 
 const AllSafes = (): ReactElement | null => {
-  const { address, chainId } = useSafeAddress()
+  const { address } = useSafeAddress()
+  const { chainId = '' } = useCurrentChain() || {}
   const wallet = useWallet()
   const walletAddress = wallet?.address
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
