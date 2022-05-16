@@ -18,10 +18,10 @@ export interface OwnerData {
 
 export const ChooseOwnerStep = ({
   data,
-  onOwnerChosen,
+  onSubmit,
 }: {
   data: ReplaceOwnerData
-  onOwnerChosen: (data: ReplaceOwnerData) => void
+  onSubmit: (data: ReplaceOwnerData) => void
 }) => {
   const { safe } = useSafeInfo()
   const { address } = data.removedOwner
@@ -37,8 +37,8 @@ export const ChooseOwnerStep = ({
     setOwnerName(event.target.value)
   }
 
-  const onSubmit = () => {
-    onOwnerChosen({ ...data, newOwner: { address: ownerAddress, name: ownerName } })
+  const onSubmitHandler = () => {
+    onSubmit({ ...data, newOwner: { address: ownerAddress, name: ownerName } })
   }
 
   return (
@@ -71,7 +71,7 @@ export const ChooseOwnerStep = ({
         />
       </div>
       <div className={css.submit}>
-        <Button variant="contained" onClick={onSubmit}>
+        <Button variant="contained" onClick={onSubmitHandler}>
           Next
         </Button>
       </div>

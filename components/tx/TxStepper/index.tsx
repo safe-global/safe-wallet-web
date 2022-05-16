@@ -36,6 +36,7 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
   }
 
   const firstStep = activeStep === 0
+  console.log('Active Step: ' + activeStep)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -50,9 +51,7 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
           )
         })}
       </Stepper>
-
       {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit)}
-
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
         <Button color="inherit" onClick={firstStep ? onClose : handleBack} sx={{ mr: 1 }}>
           {firstStep ? 'Cancel' : 'Back'}
