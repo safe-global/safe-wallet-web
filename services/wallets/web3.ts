@@ -19,10 +19,10 @@ let _web3ReadOnly: JsonRpcProvider
 export const getWeb3ReadOnly = (): JsonRpcProvider => _web3ReadOnly
 
 export const setWeb3ReadOnly = ({ rpcUri }: ChainInfo): void => {
-  _web3ReadOnly = new JsonRpcProvider(getRpcServiceUrl(rpcUri))
+  _web3ReadOnly = new JsonRpcProvider({ url: getRpcServiceUrl(rpcUri), timeout: 10_000 })
 }
 
-// Regualar web3
+// Regular web3
 let _web3: Web3Provider
 
 export const getWeb3 = (): Web3Provider => _web3
