@@ -7,7 +7,7 @@ import Button from '@mui/material/Button'
 
 type Step = {
   label: string
-  render: (data: unknown, onSubmit: (data: unknown) => void) => ReactElement
+  render: (data: unknown, onSubmit: (data: unknown) => void, onClose: () => void) => ReactElement
 }
 
 export type TxStepperProps = {
@@ -51,7 +51,7 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
           )
         })}
       </Stepper>
-      {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit)}
+      {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onClose)}
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
         <Button color="inherit" onClick={firstStep ? onClose : handleBack} sx={{ mr: 1 }}>
           {firstStep ? 'Cancel' : 'Back'}

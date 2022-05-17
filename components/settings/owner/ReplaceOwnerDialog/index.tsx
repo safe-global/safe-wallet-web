@@ -14,7 +14,7 @@ const ReplaceOwnerSteps: TxStepperProps['steps'] = [
   },
   {
     label: 'Submit',
-    render: (data) => <SubmitOwnerTxStep data={data as ReplaceOwnerData} />,
+    render: (data, onSubmit, onClose) => <SubmitOwnerTxStep data={data as ReplaceOwnerData} onClose={onClose} />,
   },
 ]
 

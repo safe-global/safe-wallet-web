@@ -7,20 +7,30 @@ import proposeTx from '@/services/proposeTransaction'
 import css from './styles.module.css'
 import { createSwapOwnerTransaction, signTransaction } from '@/services/createTransaction'
 import { ReplaceOwnerData } from '@/components/settings/owner/ReplaceOwnerDialog/ChooseOwnerStep'
+import { useDispatch } from 'react-redux'
+import { showNotification } from '@/store/notificationsSlice'
+import { CodedException, Errors } from '@/services/exceptions'
 
-export const SubmitOwnerTxStep = ({ data }: { data: ReplaceOwnerData }) => {
+export const SubmitOwnerTxStep = ({ data, onClose }: { data: ReplaceOwnerData; onClose: () => void }) => {
   const { safe } = useSafeInfo()
+  const dispatch = useDispatch()
 
   const { newOwner, removedOwner } = data
 
   const onSubmit = async () => {
     if (safe) {
-      let swapTx = await createSwapOwnerTransaction({
-        newOwnerAddress: newOwner.address,
-        oldOwnerAddress: removedOwner.address,
-      })
-      swapTx = await signTransaction(swapTx)
-      proposeTx(safe.chainId, safe.address.value, swapTx)
+      try {
+        let swapTx = await createSwapOwnerTransaction({
+          newOwnerAddress: newOwner.address,
+          oldOwnerAddress: removedOwner.address,
+        })
+        swapTx = await signTransaction(swapTx)
+        proposeTx(safe.chainId, safe.address.value, swapTx)
+      } catch (err) {
+        const { message } = new CodedException(Errors._804, (err as Error).message)
+        dispatch(showNotification({ message }))
+      }
+      onClose()
     }
   }
 
