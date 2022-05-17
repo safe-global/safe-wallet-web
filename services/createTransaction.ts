@@ -5,7 +5,7 @@ import { toDecimals } from './formatters'
 import { Interface } from '@ethersproject/abi'
 
 const encodeTokenTransferData = (to: string, value: string): string => {
-  const contractInterface = new Interface([erc20Transfer])
+  const contractInterface = new Interface(erc20Transfer)
   return contractInterface.encodeFunctionData('transfer', [to, value])
 }
 
