@@ -1,7 +1,8 @@
-import Web3 from 'web3'
 import { useEffect, useState } from 'react'
 import Onboard, { EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { hexValue } from '@ethersproject/bytes'
+import { getAddress } from '@ethersproject/address'
 import { getAllWallets, getRecommendedInjectedWallets, getSupportedWallets } from '@/services/wallets/wallets'
 import { getRpcServiceUrl } from '@/services/wallets/web3'
 import useChains, { useCurrentChain } from '../useChains'
@@ -21,7 +22,7 @@ const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
   return Onboard({
     wallets,
     chains: chainConfigs.map((cfg) => ({
-      id: Web3.utils.numberToHex(cfg.chainId),
+      id: hexValue(parseInt(cfg.chainId)),
       label: cfg.chainName,
       rpcUrl: getRpcServiceUrl(cfg.rpcUri),
       token: cfg.nativeCurrency.symbol,
@@ -60,9 +61,9 @@ export const getConnectedWallet = (wallets = onboardSingleton?.state.get().walle
 
   return {
     label: primaryWallet.label,
-    address: Web3.utils.toChecksumAddress(account.address),
+    address: getAddress(account.address),
     ens: account.ens?.name,
-    chainId: Web3.utils.hexToNumberString(primaryWallet.chains[0].id),
+    chainId: Number(primaryWallet.chains[0].id).toString(10),
     provider: primaryWallet.provider,
   }
 }

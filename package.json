@@ -20,8 +20,8 @@
     "@emotion/styled": "^11.8.1",
     "@gnosis.pm/safe-core-sdk": "^2.1.0",
     "@gnosis.pm/safe-core-sdk-types": "^1.1.0",
+    "@gnosis.pm/safe-ethers-lib": "^1.1.0",
     "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
-    "@gnosis.pm/safe-web3-lib": "^1.1.0",
     "@mui/icons-material": "^5.6.1",
     "@mui/material": "^5.6.1",
     "@mui/x-data-grid": "^5.9.0",
@@ -41,16 +41,14 @@
     "@web3-onboard/walletconnect": "^2.0.1",
     "bignumber.js": "^9.0.2",
     "ethereum-blockies-base64": "^1.0.2",
+    "ethers": "^5.5.0",
     "next": "12.1.5",
     "notistack": "^2.0.4",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-hook-form": "^7.29.0",
     "react-redux": "^7.2.8",
-    "semver": "^7.3.7",
-    "web3": "^1.7.3",
-    "web3-core": "^1.7.3",
-    "web3-utils": "^1.7.3"
+    "semver": "^7.3.7"
   },
   "devDependencies": {
     "@gnosis.pm/safe-react-gateway-sdk": "^3.0.1",
