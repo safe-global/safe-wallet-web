@@ -32,12 +32,6 @@ export const pendingTxsSlice = createSlice({
   name: 'pendingTxs',
   initialState,
   reducers: {
-    setTxSigningFailed: (state, action: PayloadAction<{ error: Error }>) => {
-      return state
-    },
-    setTxProposalFailed: (state, action: PayloadAction<{ error: Error }>) => {
-      return state
-    },
     setTxSubmitting: (state, action: PayloadAction<{ txId: string }>) => {
       const { txId } = action.payload
 
@@ -76,15 +70,7 @@ export const pendingTxsSlice = createSlice({
   },
 })
 
-export const {
-  setTxSigningFailed,
-  setTxProposalFailed,
-  setTxSubmitting,
-  setTxMining,
-  setTxMined,
-  setTxFailed,
-  removePendingTx,
-} = pendingTxsSlice.actions
+export const { setTxSubmitting, setTxMining, setTxMined, setTxFailed, removePendingTx } = pendingTxsSlice.actions
 
 export const selectPendingTxs = (state: RootState): PendingTxsState => {
   return state[pendingTxsSlice.name]
