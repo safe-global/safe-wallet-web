@@ -6,7 +6,7 @@ import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 
 /**
- * Prepare a SafeTransaction from txSummary and txDetails
+ * Prepare a SafeTransaction from Client Gateway / Tx Queue
  */
 export const prepareTx = async (
   chainId: string,
