@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ChangeEvent, ChangeEventHandler } from 'react'
 import {
   Box,
   Button,
@@ -18,7 +18,10 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { CreateSafeFormData } from '@/components/open/index'
 import useWallet from '@/services/wallets/useWallet'
 import { validateAddress } from '@/services/validation'
-import { StepRenderProps } from '@/components/tx/TxStepper'
+import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import { useCurrentNetwork } from '@/services/useCurrentNetwork'
+import { ethers } from 'ethers'
+import { getWeb3ReadOnly } from '@/services/wallets/web3'
 
 type Props = {
   params: CreateSafeFormData
@@ -27,6 +30,7 @@ type Props = {
 }
 
 const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
+  const chain = useCurrentNetwork()
   const wallet = useWallet()
   const defaultOwner = {
     name: '',
@@ -49,6 +53,12 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
     append({ name: '', address: '' })
   }
 
+  const getENS = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value)
+
+    web3ReadOnly
+  }
+
   return (
     <Paper>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -60,7 +70,7 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
           <Typography>
             Add additional owners (e.g. wallets of your teammates) and specify how many of them have to confirm a
             transaction before it gets executed. In general, the more confirmations required, the more secure your Safe
-            is.Learn about which Safe setup to use. The new Safe will ONLY be available on NETWORK_NAME
+            is.Learn about which Safe setup to use. The new Safe will ONLY be available on {chain}
           </Typography>
         </Box>
         <Divider />
@@ -97,6 +107,7 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
                         validate: validateAddress,
                         required: true,
                       })}
+                      onChange={getENS}
                     />
                   </FormControl>
                 </Grid>

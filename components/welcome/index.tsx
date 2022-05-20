@@ -17,7 +17,7 @@ const Welcome = () => {
         <Grid container>
           <Grid item md={6}>
             <Typography variant="h2">Create Safe</Typography>
-            <Typography variant="body1">
+            <Typography>
               Create a new Safe that is controlled by one or multiple owners. You will be required to pay a network fee
               for creating your new Safe.
             </Typography>

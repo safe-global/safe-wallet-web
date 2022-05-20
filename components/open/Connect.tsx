@@ -1,6 +1,9 @@
-import React from 'react'
-import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
-import { StepRenderProps } from '@/components/tx/TxStepper'
+import React, { FormEvent, MouseEvent, MouseEventHandler, useState } from 'react'
+import { Box, Button, Divider, Grid, Paper, Typography, Menu, MenuItem } from '@mui/material'
+import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import { useCurrentNetwork } from '@/services/useCurrentNetwork'
+import useChains from '@/services/useChains'
+import { useRouter } from 'next/router'
 
 type Props = {
   onSubmit: StepRenderProps['onSubmit']
@@ -8,13 +11,48 @@ type Props = {
 }
 
 const Connect = ({ onSubmit, onBack }: Props) => {
+  const router = useRouter()
+  const { configs } = useChains()
+  const chain = useCurrentNetwork()
+  const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(null)
+
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorElement(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorElement(null)
+  }
+
+  const handleNetworkSwitch = (event: MouseEvent<HTMLLIElement>) => {
+    router.replace({ pathname: router.pathname, query: { ...router.query, chain: event.currentTarget.dataset.chain } })
+    handleClose()
+  }
+
   return (
     <Paper>
       <Box padding={3}>
         <Typography variant="body1">
-          Select network on which to create your Safe. The app is currently pointing to NETWORK_NAME
+          Select network on which to create your Safe. The app is currently pointing to {chain}
         </Typography>
-        <Button>Switch network</Button>
+        <Button onClick={handleClick}>Switch network</Button>
+        <Menu
+          open={Boolean(anchorElement)}
+          anchorEl={anchorElement}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          {configs.map((chain) => {
+            return (
+              <MenuItem key={chain.chainId} data-chain={chain.shortName} onClick={handleNetworkSwitch}>
+                {chain.chainName}
+              </MenuItem>
+            )
+          })}
+        </Menu>
       </Box>
       <Divider />
       <Box padding={3}>
