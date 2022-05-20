@@ -1,53 +1,39 @@
 import { ReactElement, useState } from 'react'
-import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material'
 
-import { createTransaction, signTransaction } from '@/services/createTransaction'
-import extractTxInfo from '@/services/extractTxInfo'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
-import { showNotification } from '@/store/notificationsSlice'
-import { useAppDispatch } from '@/store'
-import { CodedException, Errors } from '@/services/exceptions'
 import { useChainId } from '@/services/useChainId'
-import { dispatchTxExecution } from '@/services/txSender'
-
-export const signTx = async (chainId: string, txSummary: TransactionSummary, safeAddress: string) => {
-  try {
-    const txDetails = await getTransactionDetails(chainId, txSummary.id)
-    const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
-
-    const safeTx = await createTransaction(txParams)
-    Object.entries(signatures).forEach(([signer, data]) => {
-      safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
-    })
-
-    await signTransaction(safeTx)
-  } catch (err) {
-    throw new CodedException(Errors._814, (err as Error).message)
-  }
-}
+import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, prepareTx } from '@/services/txSender'
+import useWallet from '@/services/wallets/useWallet'
 
 const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
-  const address = useSafeAddress()
+  const safeAddress = useSafeAddress()
   const chainId = useChainId()
-  const dispatch = useAppDispatch()
+  const wallet = useWallet()
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
-  // Todo: move to txSender
   const onSign = async () => {
+    if (!wallet) return
+
     try {
-      await signTx(chainId, txSummary, address)
+      const safeTx = await prepareTx(chainId, safeAddress, txSummary)
+      const signedTx = await dispatchTxSigning(safeTx, txSummary.id)
+      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     } catch (err) {
-      dispatch(showNotification({ message: (err as Error).message }))
+      // do something
     }
   }
 
   const onExecute = async () => {
+    if (!wallet) return
+
     setIsSubmittable(false)
     try {
-      await dispatchTxExecution(chainId, address, txSummary)
+      const safeTx = await prepareTx(chainId, safeAddress, txSummary)
+      await dispatchTxExecution(safeTx, txSummary.id)
     } catch {
       setIsSubmittable(true)
     }

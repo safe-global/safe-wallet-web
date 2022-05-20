@@ -14,6 +14,7 @@ const encodeTokenTransferData = (to: string, value: string): string => {
   return contractInterface.encodeFunctionData('transfer', [to, value])
 }
 
+// TODO: move some place else
 export const createTokenTransferParams = (
   recipient: string,
   amount: string,
@@ -39,27 +40,18 @@ export const createTokenTransferParams = (
 export const createTransaction = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
   const safeSdk = getSafeSDK()
   const tx = await safeSdk.createTransaction(txParams)
-
-  console.log('Created tx', tx)
-
   return tx
 }
 
 export const signTransaction = async (tx: SafeTransaction): Promise<SafeTransaction> => {
   const safeSdk = getSafeSDK()
   await safeSdk.signTransaction(tx)
-
-  console.log('Signed tx', tx)
-
   return tx
 }
 
 export const rejectTransaction = async (nonce: number): Promise<SafeTransaction> => {
   const safeSdk = getSafeSDK()
   const tx = await safeSdk.createRejectionTransaction(nonce)
-
-  console.log('Reject tx', tx)
-
   return tx
 }
 
@@ -69,6 +61,5 @@ export const executeTransaction = async (
 ): Promise<TransactionResult> => {
   const safeSdk = getSafeSDK()
   const executeTxResponse = safeSdk.executeTransaction(tx, options)
-
   return executeTxResponse
 }

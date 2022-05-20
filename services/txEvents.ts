@@ -17,14 +17,14 @@ export enum TxEvent {
 
 interface TxEvents {
   [TxEvent.CREATED]: { tx: SafeTransaction }
-  [TxEvent.SIGNED]: { tx: SafeTransaction }
-  [TxEvent.SIGN_FAILED]: { tx: SafeTransaction; error: Error }
+  [TxEvent.SIGNED]: { txId: string; tx: SafeTransaction }
+  [TxEvent.SIGN_FAILED]: { txId: string; tx: SafeTransaction; error: Error }
   [TxEvent.PROPOSE_FAILED]: { tx: SafeTransaction; error: Error }
   [TxEvent.PROPOSED]: { txId: string }
   [TxEvent.EXECUTING]: { txId: string }
   [TxEvent.MINING]: { txId: string; txHash: string }
   [TxEvent.MINED]: { txId: string; receipt: TransactionReceipt }
-  [TxEvent.REVERTED]: { txId: string; error: Error, receipt: TransactionReceipt }
+  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: TransactionReceipt }
   [TxEvent.FAILED]: { txId: string; error: Error }
   [TxEvent.SUCCESS]: { txId: string }
 }
