@@ -38,10 +38,11 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   pendingTxsSlice.name,
 ]
 
+const middleware = [persistState(persistedSlices), notificationsMiddleware]
+
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(persistState(persistedSlices), notificationsMiddleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
   preloadedState: getPreloadedState(persistedSlices),
 })
 
