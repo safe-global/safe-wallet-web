@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import RefreshIcon from '@mui/icons-material/Refresh'
+import QrCodeIcon from '@mui/icons-material/QrCode'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { useFieldArray, useForm } from 'react-hook-form'
 
@@ -74,6 +75,8 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
 
     update(index, { name: ensName || '', address: event.target.value, resolving: false })
   }
+
+  const scanQR = () => {}
 
   return (
     <Paper>
@@ -139,11 +142,16 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
                     />
                   </FormControl>
                 </Grid>
-                <Grid item xs={1} display="flex" alignItems="center">
+                <Grid item xs={1} display="flex" alignItems="center" flexShrink={0}>
                   {index > 0 && (
-                    <IconButton onClick={() => remove(index)}>
-                      <DeleteOutlineOutlinedIcon />
-                    </IconButton>
+                    <>
+                      <IconButton onClick={scanQR}>
+                        <QrCodeIcon />
+                      </IconButton>
+                      <IconButton onClick={() => remove(index)}>
+                        <DeleteOutlineOutlinedIcon />
+                      </IconButton>
+                    </>
                   )}
                 </Grid>
               </Grid>
