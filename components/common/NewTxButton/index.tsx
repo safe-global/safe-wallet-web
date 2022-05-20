@@ -2,7 +2,7 @@ import { useState, type ReactElement } from 'react'
 import { Button } from '@mui/material'
 import useSafeInfo from '@/services/useSafeInfo'
 import useWallet from '@/services/wallets/useWallet'
-import TokenTransferModal from '@/components/tx/TokenTransferModal'
+import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import { isOwner } from '@/components/transactions/utils'
 
 const NewTxButton = (): ReactElement => {

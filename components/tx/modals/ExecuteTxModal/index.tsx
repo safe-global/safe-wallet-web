@@ -3,7 +3,7 @@ import React from 'react'
 import { TxStepperProps } from '@/components/tx/TxStepper'
 import TxModal, { TxModalProps } from '@/components/tx/TxModal'
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import ExecuteProposedTx from '@/components/tx/ExecuteProposedTx'
+import ExecuteProposedTx from '@/components/tx/steps/ExecuteProposedTx'
 
 export const ExecuteTxSteps: TxStepperProps['steps'] = [
   {
