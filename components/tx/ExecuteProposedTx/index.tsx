@@ -7,16 +7,14 @@ import extractTxInfo from '@/services/extractTxInfo'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
 import { CodedException, Errors } from '@/services/exceptions'
-import { AppDispatch, useAppDispatch } from '@/store'
-import { showNotification } from '@/store/notificationsSlice'
-import { removePendingTx, setPendingTx } from '@/store/pendingTxsSlice'
+import { AppThunk, useAppDispatch } from '@/store'
+import { setTxFailed, setTxMined, setTxMining, setTxSubmitting } from '@/store/pendingTxsSlice'
 import { useChainId } from '@/services/useChainId'
 
-export const executeTx = (chainId: string, txSummary: TransactionSummary, safeAddress: string) => {
-  return async (dispatch: AppDispatch) => {
+export const executeTx = (chainId: string, txSummary: TransactionSummary, safeAddress: string): AppThunk => {
+  return async (dispatch) => {
     const txId = txSummary.id
 
-    dispatch(setPendingTx({ txId }))
     try {
       const txDetails = await getTransactionDetails(chainId, txId)
       const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
@@ -25,12 +23,25 @@ export const executeTx = (chainId: string, txSummary: TransactionSummary, safeAd
       Object.entries(signatures).forEach(([signer, data]) => {
         safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
       })
-      await executeTransaction(safeTx)
-    } catch (err) {
-      const { message } = new CodedException(Errors._804, (err as Error).message)
 
-      dispatch(showNotification({ message }))
-      dispatch(removePendingTx({ txId }))
+      const { promiEvent } = await executeTransaction(safeTx)
+
+      dispatch(setTxSubmitting({ txId }))
+
+      promiEvent
+        ?.once('transactionHash', (txHash) => {
+          dispatch(setTxMining({ txId, txHash }))
+        })
+        ?.once('receipt', (receipt) => {
+          dispatch(setTxMined({ txId, receipt }))
+        })
+        ?.once('error', (error) => {
+          dispatch(setTxFailed({ txId, error }))
+        })
+    } catch (err) {
+      const error = new CodedException(Errors._804, (err as Error).message)
+
+      dispatch(setTxFailed({ txId, error }))
     }
   }
 }

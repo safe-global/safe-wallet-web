@@ -1,4 +1,9 @@
-import type { SafeTransaction, SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types'
+import type {
+  SafeTransaction,
+  SafeTransactionDataPartial,
+  TransactionOptions,
+  TransactionResult,
+} from '@gnosis.pm/safe-core-sdk-types'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { erc20Transfer } from './abi'
 import { toDecimals } from './formatters'
@@ -58,8 +63,12 @@ export const rejectTransaction = async (nonce: number): Promise<SafeTransaction>
   return tx
 }
 
-export const executeTransaction = async (tx: SafeTransaction) => {
+export const executeTransaction = async (
+  tx: SafeTransaction,
+  options?: TransactionOptions,
+): Promise<TransactionResult> => {
   const safeSdk = getSafeSDK()
-  const executeTxResponse = await safeSdk.executeTransaction(tx)
-  return await executeTxResponse.transactionResponse?.wait()
+  const executeTxResponse = await safeSdk.executeTransaction(tx, options)
+
+  return executeTxResponse
 }
