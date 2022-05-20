@@ -2,7 +2,6 @@ import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@
 import { SafeTransaction, SafeTransactionDataPartial, TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
 import { createTransaction, executeTransaction, signTransaction } from '@/services/createTransaction'
 import extractTxInfo from '@/services/extractTxInfo'
-import { PromiEvent, TransactionReceipt } from 'web3-core'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 
@@ -36,7 +35,6 @@ export const dispatchTxCreation = async (
     txDispatch(TxEvent.PROPOSE_FAILED, { tx: signedTx, error: error as Error })
     throw error
   }
-
   txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId })
 
   return proposedTx
@@ -48,25 +46,31 @@ export const dispatchTxExecution = async (
   txSummary: TransactionSummary,
 ): Promise<string> => {
   const txId = txSummary.id
-
   let result: TransactionResult | undefined
 
   txDispatch(TxEvent.EXECUTING, { txId })
+
   try {
+    // Get the tx details from the backend
     const txDetails = await getTransactionDetails(chainId, txId)
+
+    // Convert them to the Core SDK tx params
     const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
 
+    // Create a tx and add pre-approved signatures
     const safeTx = await createTransaction(txParams)
     Object.entries(signatures).forEach(([signer, data]) => {
       safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
     })
 
+    // Execute the tx
     result = await executeTransaction(safeTx)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, error: error as Error })
     throw error
   }
 
+  // Subscribe to eth tx events
   result.promiEvent
     ?.once('transactionHash', (txHash) => {
       txDispatch(TxEvent.MINING, { txId, txHash })
