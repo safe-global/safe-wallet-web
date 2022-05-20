@@ -1,5 +1,5 @@
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { TransactionReceipt } from 'web3-core'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { ContractReceipt } from 'ethers/lib/ethers'
 
 export enum TxEvent {
   CREATED = 'CREATED',
@@ -23,8 +23,8 @@ interface TxEvents {
   [TxEvent.PROPOSED]: { txId: string }
   [TxEvent.EXECUTING]: { txId: string }
   [TxEvent.MINING]: { txId: string; txHash: string }
-  [TxEvent.MINED]: { txId: string; receipt: TransactionReceipt }
-  [TxEvent.REVERTED]: { txId: string; error: Error, receipt: TransactionReceipt }
+  [TxEvent.MINED]: { txId: string; receipt: ContractReceipt }
+  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: ContractReceipt }
   [TxEvent.FAILED]: { txId: string; error: Error }
   [TxEvent.SUCCESS]: { txId: string }
 }

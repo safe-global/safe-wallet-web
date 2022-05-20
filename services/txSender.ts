@@ -1,9 +1,14 @@
-import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SafeTransaction, SafeTransactionDataPartial, TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
+import {
+  getTransactionDetails,
+  type TransactionDetails,
+  type TransactionSummary,
+} from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeTransaction, SafeTransactionDataPartial, TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
 import { createTransaction, executeTransaction, signTransaction } from '@/services/createTransaction'
 import extractTxInfo from '@/services/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
+import type { ContractReceipt } from 'ethers/lib/ethers'
 
 export const dispatchTxCreation = async (
   chainId: string,
@@ -70,22 +75,22 @@ export const dispatchTxExecution = async (
     throw error
   }
 
-  // Subscribe to eth tx events
-  result.promiEvent
-    ?.once('transactionHash', (txHash) => {
-      txDispatch(TxEvent.MINING, { txId, txHash })
-    })
-    ?.once('receipt', (receipt) => {
-      const didRevert = receipt.status === false
-      if (didRevert) {
-        txDispatch(TxEvent.REVERTED, { txId, receipt, error: new Error('Transaction reverted by EVM') })
-      } else {
-        txDispatch(TxEvent.MINED, { txId, receipt })
-      }
-    })
-    ?.once('error', (error) => {
-      txDispatch(TxEvent.FAILED, { txId, error })
-    })
+  txDispatch(TxEvent.MINING, { txId, txHash: result.hash })
+
+  try {
+    // Await for tx to be mined
+    const receipt = (await result.transactionResponse?.wait()) as ContractReceipt
+
+    const didRevert = receipt.status === 0
+    if (didRevert) {
+      txDispatch(TxEvent.REVERTED, { txId, receipt, error: new Error('Transaction reverted by EVM') })
+    } else {
+      txDispatch(TxEvent.MINED, { txId, receipt })
+    }
+  } catch (error) {
+    txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+    throw error
+  }
 
   return result.hash
 }

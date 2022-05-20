@@ -35,7 +35,7 @@ const useTxPendingStatuses = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub?.())
     }
-  }, [dispatch])
+  }, [dispatch, chainId])
 }
 
 export default useTxPendingStatuses
