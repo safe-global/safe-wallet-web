@@ -2,7 +2,7 @@ import type { SafeTransaction, SafeTransactionDataPartial } from '@gnosis.pm/saf
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { erc20Transfer } from './abi'
 import { toDecimals } from './formatters'
-import { SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
+import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 import { Interface } from '@ethersproject/abi'
 import { dispatch } from '@web3-onboard/core/dist/store'
 
@@ -69,5 +69,17 @@ export const executeTransaction = async (tx: SafeTransaction) => {
 export const createSwapOwnerTransaction = async (txParams: SwapOwnerTxParams) => {
   const safeSdk = getSafeSDK()
   const tx = await safeSdk.getSwapOwnerTx(txParams)
+  return tx
+}
+
+export const createAddOwnerTransaction = async (txParams: AddOwnerTxParams) => {
+  const safeSdk = getSafeSDK()
+  const tx = await safeSdk.getAddOwnerTx(txParams)
+  return tx
+}
+
+export const createChangeThresholdTransaction = async (threshold: number) => {
+  const safeSdk = getSafeSDK()
+  const tx = await safeSdk.getChangeThresholdTx(threshold)
   return tx
 }

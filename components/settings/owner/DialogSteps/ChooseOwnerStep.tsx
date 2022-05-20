@@ -1,5 +1,6 @@
 import { AddressInfo } from '@/components/common/AddressInfo'
 import { AddressInput } from '@/components/common/AddressInput'
+import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 import useSafeInfo from '@/services/useSafeInfo'
 import { uniqueAddress, addressIsNotCurrentSafe } from '@/services/validation'
 import { TextField, Button } from '@mui/material'
@@ -7,31 +8,24 @@ import { useState, ChangeEvent } from 'react'
 
 import css from './styles.module.css'
 
-export interface ReplaceOwnerData {
-  removedOwner: OwnerData
-  newOwner: OwnerData
-}
-export interface OwnerData {
-  address: string
-  name?: string
-}
-
 export const ChooseOwnerStep = ({
   data,
   onSubmit,
 }: {
-  data: ReplaceOwnerData
-  onSubmit: (data: ReplaceOwnerData) => void
+  data: ChangeOwnerData
+  onSubmit: (data: ChangeOwnerData) => void
 }) => {
   const { safe } = useSafeInfo()
-  const { address } = data.removedOwner
+  const { removedOwner, newOwner } = data
   const owners = safe?.owners
+
+  const isReplace = Boolean(removedOwner)
 
   const notAlreadyOwner = uniqueAddress(owners?.map((owner) => owner.value))
   const notCurrentSafe = addressIsNotCurrentSafe(safe?.address.value ?? '')
 
-  const [ownerName, setOwnerName] = useState(data.newOwner.name ?? '')
-  const [ownerAddress, setOwnerAddress] = useState(data.newOwner.address ?? '')
+  const [ownerName, setOwnerName] = useState(newOwner.name ?? '')
+  const [ownerAddress, setOwnerAddress] = useState(newOwner.address ?? '')
 
   const onNameChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     setOwnerName(event.target.value)
@@ -44,13 +38,16 @@ export const ChooseOwnerStep = ({
   return (
     <div className={css.container}>
       <p>
-        Review the owner you want to replace from the active Safe. Then specify the new owner you want to replace it
-        with:
+        {isReplace
+          ? 'Review the owner you want to replace from the active Safe. Then specify the new owner you want to replace it with:'
+          : 'Add a new owner to the active Safe.'}
       </p>
-      <div>
-        <span>Current owner</span>
-        <AddressInfo address={address} copyToClipboard />
-      </div>
+      {removedOwner && (
+        <div>
+          <span>Current owner</span>
+          <AddressInfo address={removedOwner.address} copyToClipboard />
+        </div>
+      )}
       <div className={css.newOwner}>
         <span>New owner</span>
         <TextField

@@ -1,18 +1,22 @@
-import { IconButton, Tooltip } from '@mui/material'
+import { Button } from '@mui/material'
 import { useState } from 'react'
 import { ChooseOwnerStep } from '../DialogSteps/ChooseOwnerStep'
-import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined'
 
 import TxModal from '@/components/tx/TxModal'
 import { TxStepperProps } from '@/components/tx/TxStepper'
 import useSafeInfo from '@/services/useSafeInfo'
 import { ReviewOwnerTxStep } from '@/components/settings/owner/DialogSteps/ReviewOwnerTxStep'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
+import { SetThresholdStep } from '@/components/settings/owner/DialogSteps/SetThresholdStep'
 
-const ReplaceOwnerSteps: TxStepperProps['steps'] = [
+const AddOwnerSteps: TxStepperProps['steps'] = [
   {
     label: 'Choose new owner',
     render: (data, onSubmit) => <ChooseOwnerStep data={data as ChangeOwnerData} onSubmit={onSubmit} />,
+  },
+  {
+    label: 'Set threshold',
+    render: (data, onSubmit) => <SetThresholdStep data={data as ChangeOwnerData} onSubmit={onSubmit} />,
   },
   {
     label: 'Review',
@@ -20,25 +24,23 @@ const ReplaceOwnerSteps: TxStepperProps['steps'] = [
   },
 ]
 
-export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
+export const AddOwnerDialog = () => {
   const [open, setOpen] = useState(false)
-
-  const handleClose = () => setOpen(false)
 
   const { safe } = useSafeInfo()
 
-  const initialModalData: [ChangeOwnerData] = [
-    { removedOwner: { address }, newOwner: { address: '', name: '' }, threshold: safe?.threshold },
-  ]
+  const handleClose = () => setOpen(false)
+
+  const initialModalData: [ChangeOwnerData] = [{ newOwner: { address: '', name: '' }, threshold: safe?.threshold }]
 
   return (
     <div>
-      <Tooltip title="Replace owner">
-        <IconButton onClick={() => setOpen(true)}>
-          <ChangeCircleOutlinedIcon />
-        </IconButton>
-      </Tooltip>
-      {open && <TxModal onClose={handleClose} steps={ReplaceOwnerSteps} initialData={initialModalData} />}
+      <div>
+        <Button onClick={() => setOpen(true)} variant="contained">
+          Add New Owner
+        </Button>
+      </div>
+      {open && <TxModal onClose={handleClose} steps={AddOwnerSteps} initialData={initialModalData} />}
     </div>
   )
 }

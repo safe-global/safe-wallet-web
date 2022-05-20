@@ -1,3 +1,4 @@
+import { ChangeThresholdDialog } from '@/components/settings/owner/ChangeThresholdDialog'
 import { Button, Paper } from '@mui/material'
 import css from './styles.module.css'
 
@@ -9,7 +10,7 @@ export const RequiredConfirmation = ({ threshold, owners }: { threshold: number;
       <p className={css.lightParagraph}>
         <b>{threshold}</b> out of <b>{owners}</b> owners.
       </p>
-      <Button variant="contained">Change</Button>
+      <ChangeThresholdDialog />
     </div>
   )
 }

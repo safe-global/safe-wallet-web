@@ -1,6 +1,6 @@
 import { AddressInfo } from '@/components/common/AddressInfo'
-import { AddressEx } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { EditOwnerDialog } from '../EditOwnerDialog'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import css from './styles.module.css'
@@ -55,9 +55,7 @@ export const OwnerList = ({
           <TableBody>{owners.map((owner) => OwnerRow(owner))}</TableBody>
         </Table>
       </TableContainer>
-      <div>
-        <Button variant="contained">Add New Owner</Button>
-      </div>
+      <AddOwnerDialog />
     </div>
   )
 }

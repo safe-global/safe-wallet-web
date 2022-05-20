@@ -5,27 +5,37 @@ import { Button, Grid } from '@mui/material'
 import proposeTx from '@/services/proposeTransaction'
 
 import css from './styles.module.css'
-import { createSwapOwnerTransaction, signTransaction } from '@/services/createTransaction'
-import { ReplaceOwnerData } from '@/components/settings/owner/ReplaceOwnerDialog/ChooseOwnerStep'
+import { createAddOwnerTransaction, createSwapOwnerTransaction, signTransaction } from '@/services/createTransaction'
 import { useDispatch } from 'react-redux'
 import { showNotification } from '@/store/notificationsSlice'
 import { CodedException, Errors } from '@/services/exceptions'
+import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 
-export const SubmitOwnerTxStep = ({ data, onClose }: { data: ReplaceOwnerData; onClose: () => void }) => {
+export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; onClose: () => void }) => {
   const { safe } = useSafeInfo()
   const dispatch = useDispatch()
 
-  const { newOwner, removedOwner } = data
+  const { newOwner, removedOwner, threshold } = data
+
+  const isReplace = Boolean(removedOwner)
 
   const onSubmit = async () => {
     if (safe) {
       try {
-        let swapTx = await createSwapOwnerTransaction({
-          newOwnerAddress: newOwner.address,
-          oldOwnerAddress: removedOwner.address,
-        })
-        swapTx = await signTransaction(swapTx)
-        proposeTx(safe.chainId, safe.address.value, swapTx)
+        let changeOwnerTx
+        if (removedOwner) {
+          changeOwnerTx = await createSwapOwnerTransaction({
+            newOwnerAddress: newOwner.address,
+            oldOwnerAddress: removedOwner.address,
+          })
+        } else {
+          changeOwnerTx = await createAddOwnerTransaction({
+            ownerAddress: newOwner.address,
+            threshold,
+          })
+        }
+        changeOwnerTx = await signTransaction(changeOwnerTx)
+        proposeTx(safe.chainId, safe.address.value, changeOwnerTx)
       } catch (err) {
         const { message } = new CodedException(Errors._804, (err as Error).message)
         dispatch(showNotification({ message }))
@@ -49,7 +59,7 @@ export const SubmitOwnerTxStep = ({ data, onClose }: { data: ReplaceOwnerData; o
             <div className={css.detailField}>
               <p>Any transaction requires the confirmation of:</p>
               <p>
-                <b>{safe?.threshold}</b> out of <b>{safe?.owners.length}</b> owners
+                <b>{threshold}</b> out of <b>{(safe?.owners.length ?? 0) + (isReplace ? 0 : 1)}</b> owners
               </p>
             </div>
           </Grid>
@@ -57,7 +67,7 @@ export const SubmitOwnerTxStep = ({ data, onClose }: { data: ReplaceOwnerData; o
             <p style={{ paddingLeft: '1rem' }}>{safe?.owners.length ?? 0} Safe owner(s)</p>
             <Hairline />
             {safe?.owners
-              .filter((owner) => owner.value !== removedOwner.address)
+              .filter((owner) => !removedOwner || owner.value !== removedOwner.address)
               .map((owner) => (
                 <div key={owner.value}>
                   <div className={css.padding} key={owner.value}>
@@ -66,14 +76,18 @@ export const SubmitOwnerTxStep = ({ data, onClose }: { data: ReplaceOwnerData; o
                   <Hairline />
                 </div>
               ))}
-            <div className={css.info}>
-              <p className={css.overline}>REMOVING OWNER &darr;</p>
-            </div>
-            <Hairline />
-            <div className={`${css.padding} ${css.removedOwner}`}>
-              <AddressInfo address={removedOwner.address} />
-            </div>
-            <Hairline />
+            {removedOwner && (
+              <>
+                <div className={css.info}>
+                  <p className={css.overline}>REMOVING OWNER &darr;</p>
+                </div>
+                <Hairline />
+                <div className={`${css.padding} ${css.removedOwner}`}>
+                  <AddressInfo address={removedOwner.address} />
+                </div>
+                <Hairline />
+              </>
+            )}
             <div className={css.info}>
               <p className={css.overline}>ADDING NEW OWNER &darr;</p>
             </div>
