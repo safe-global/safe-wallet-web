@@ -17,15 +17,15 @@ export enum TxEvent {
 
 interface TxEvents {
   [TxEvent.CREATED]: { tx: SafeTransaction }
-  [TxEvent.SIGNED]: { tx: SafeTransaction }
-  [TxEvent.SIGN_FAILED]: { tx: SafeTransaction; error: Error }
+  [TxEvent.SIGNED]: { txId?: string; tx: SafeTransaction }
+  [TxEvent.SIGN_FAILED]: { txId?: string; tx: SafeTransaction; error: Error }
   [TxEvent.PROPOSE_FAILED]: { tx: SafeTransaction; error: Error }
-  [TxEvent.PROPOSED]: { txId: string }
-  [TxEvent.EXECUTING]: { txId: string }
-  [TxEvent.MINING]: { txId: string; txHash: string }
-  [TxEvent.MINED]: { txId: string; receipt: ContractReceipt }
-  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: ContractReceipt }
-  [TxEvent.FAILED]: { txId: string; error: Error }
+  [TxEvent.PROPOSED]: { txId: string; tx: SafeTransaction }
+  [TxEvent.EXECUTING]: { txId: string; tx: SafeTransaction }
+  [TxEvent.MINING]: { txId: string; txHash: string; tx: SafeTransaction }
+  [TxEvent.MINED]: { txId: string; receipt: ContractReceipt; tx: SafeTransaction }
+  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: ContractReceipt; tx: SafeTransaction }
+  [TxEvent.FAILED]: { txId: string; error: Error; tx: SafeTransaction }
   [TxEvent.SUCCESS]: { txId: string }
 }
 
@@ -39,7 +39,7 @@ export const txDispatch = <T extends TxEvent>(eventType: T, detail: TxEvents[T])
 export const txSubscribe = <T extends TxEvent>(eventType: T, callback: (detail: TxEvents[T]) => void) => {
   const handler = (e: Event) => {
     if (e instanceof CustomEvent) {
-      callback(e.detail as TxEvents[T])
+      callback(e.detail)
     }
   }
   txEventBus.addEventListener(eventType, handler)

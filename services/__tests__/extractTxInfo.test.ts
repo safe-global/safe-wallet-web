@@ -1,5 +1,5 @@
 import type { TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import extractTxInfo from '../extractTxInfo'
+import extractTxInfo from '../tx/extractTxInfo'
 
 describe('extractTxInfo', () => {
   it('should extract tx info for an ETH transfer', () => {

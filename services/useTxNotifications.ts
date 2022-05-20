@@ -1,11 +1,9 @@
 import { useEffect } from 'react'
 import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
-import { TxEvent, txSubscribe } from './txEvents'
+import { TxEvent, txSubscribe } from './tx/txEvents'
 
-const TxNotifications: Record<TxEvent, string> = {
-  [TxEvent.CREATED]: '',
-  [TxEvent.SIGNED]: '',
+const TxNotifications: Partial<Record<TxEvent, string>> = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
   [TxEvent.PROPOSED]: 'Your transaction was successfully proposed.',
   [TxEvent.PROPOSE_FAILED]: 'Proposal failed. Please try again.',
@@ -40,9 +38,9 @@ const useTxNotifications = (): void => {
             showNotification({
               message,
               options: {
-                // For the key, use either the txId if available, or the entire serialized tx
+                // For the key, use the entire serialized tx
                 // This will stack notifications if multiple txs are sent at once
-                key: 'txId' in detail ? detail.txId : JSON.stringify(detail.tx),
+                key: 'tx' in detail ? JSON.stringify(detail.tx) : '',
                 variant: isError ? Variant.ERROR : Variant.SUCCESS,
               },
             }),

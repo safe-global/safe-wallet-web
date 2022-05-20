@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import type { TokenInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
-import { createTokenTransferParams } from '@/services/createTransaction'
+import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import { shortenAddress } from '@/services/formatters'
 import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
@@ -13,7 +13,7 @@ import { type SendAssetsFormData } from '@/components/tx/steps/SendAssetsForm'
 import css from './styles.module.css'
 import useChainId from '@/services/useChainId'
 import useSafeAddress from '@/services/useSafeAddress'
-import { dispatchTxCreation } from '@/services/txSender'
+import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/services/wallets/useWallet'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
@@ -32,7 +32,7 @@ type ReviewTxForm = {
   nonce: number
 }
 
-const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
+const ReviewNewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
   const { balances } = useBalances()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
@@ -63,15 +63,18 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
       safeTxGas: Number(safeGas?.safeTxGas || 0),
     }
 
-    let createdTx: TransactionDetails | undefined
+    setIsSubmittable(false)
+
+    let proposedTx: TransactionDetails | undefined
     try {
-      setIsSubmittable(false)
-      createdTx = await dispatchTxCreation(chainId, safeAddress, wallet.address, editedTxParams)
+      const safeTx = await createTx(editedTxParams)
+      const signedTx = await dispatchTxSigning(safeTx)
+      proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     } catch {
       setIsSubmittable(true)
     }
 
-    if (createdTx) setTxDetails(createdTx)
+    if (proposedTx) setTxDetails(proposedTx)
   }
 
   return (
@@ -96,7 +99,7 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
         />
       </FormControl>
 
-      <pre>{JSON.stringify(txDetails, null, 2)}</pre>
+      <pre>{JSON.stringify(txDetails)}</pre>
 
       <div className={css.submit}>
         <Button variant="contained" type="submit" disabled={!isSubmittable}>
@@ -109,4 +112,4 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
   )
 }
 
-export default ReviewTx
+export default ReviewNewTx

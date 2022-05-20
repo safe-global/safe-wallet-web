@@ -1,7 +1,7 @@
 import { useAppDispatch } from '@/store'
 import { setPendingTx } from '@/store/pendingTxsSlice'
 import { useEffect } from 'react'
-import { TxEvent, txSubscribe } from './txEvents'
+import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useChainId from './useChainId'
 
 const pendingStatuses: Partial<Record<TxEvent, string>> = {
@@ -18,7 +18,7 @@ const useTxPendingStatuses = (): void => {
     const unsubFns = Object.entries(pendingStatuses)
       .map(([event, status]) =>
         txSubscribe(event as TxEvent, (detail) => {
-          if (!('txId' in detail)) return
+          if (!('txId' in detail) || !detail.txId) return
 
           dispatch(
             setPendingTx({

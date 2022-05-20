@@ -1,4 +1,4 @@
-import { createTokenTransferParams } from '../createTransaction'
+import { createTokenTransferParams } from '../tx/tokenTransferParams'
 
 // Test createTokenTransferParams
 describe('createTokenTransferParams', () => {

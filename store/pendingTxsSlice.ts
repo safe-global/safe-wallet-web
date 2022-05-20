@@ -3,7 +3,7 @@ import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolki
 import type { RootState } from '@/store'
 import { SetHistoryPageAction, txHistorySlice } from './txHistorySlice'
 import { isTransaction } from '@/components/transactions/utils'
-import { txDispatch, TxEvent } from '@/services/txEvents'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 interface PendingTxsState {
   [txId: string]: {
