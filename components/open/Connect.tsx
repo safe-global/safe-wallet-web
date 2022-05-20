@@ -1,8 +1,7 @@
-import React, { FormEvent, MouseEvent, MouseEventHandler, useState } from 'react'
+import React, { MouseEvent, useState } from 'react'
 import { Box, Button, Divider, Grid, Paper, Typography, Menu, MenuItem } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import { useCurrentNetwork } from '@/services/useCurrentNetwork'
-import useChains from '@/services/useChains'
+import useChains, { useCurrentChain } from '@/services/useChains'
 import { useRouter } from 'next/router'
 
 type Props = {
@@ -13,7 +12,7 @@ type Props = {
 const Connect = ({ onSubmit, onBack }: Props) => {
   const router = useRouter()
   const { configs } = useChains()
-  const chain = useCurrentNetwork()
+  const currentChain = useCurrentChain()
   const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -33,7 +32,7 @@ const Connect = ({ onSubmit, onBack }: Props) => {
     <Paper>
       <Box padding={3}>
         <Typography variant="body1">
-          Select network on which to create your Safe. The app is currently pointing to {chain}
+          Select network on which to create your Safe. The app is currently pointing to {currentChain?.chainName}
         </Typography>
         <Button onClick={handleClick}>Switch network</Button>
         <Menu

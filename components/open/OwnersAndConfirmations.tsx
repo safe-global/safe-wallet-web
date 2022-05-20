@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ChangeEventHandler } from 'react'
+import React, { ChangeEvent } from 'react'
 import {
   Box,
   Button,
@@ -12,16 +12,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import InputAdornment from '@mui/material/InputAdornment'
+import RefreshIcon from '@mui/icons-material/Refresh'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { useFieldArray, useForm } from 'react-hook-form'
 
+import css from './styles.module.css'
 import { CreateSafeFormData } from '@/components/open/index'
 import useWallet from '@/services/wallets/useWallet'
 import { validateAddress } from '@/services/validation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import { useCurrentNetwork } from '@/services/useCurrentNetwork'
-import { ethers } from 'ethers'
-import { getWeb3ReadOnly } from '@/services/wallets/web3'
+import { useCurrentChain } from '@/services/useChains'
+import { getWeb3 } from '@/services/wallets/web3'
 
 type Props = {
   params: CreateSafeFormData
@@ -30,33 +32,47 @@ type Props = {
 }
 
 const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
-  const chain = useCurrentNetwork()
+  const currentChain = useCurrentChain()
   const wallet = useWallet()
+
   const defaultOwner = {
-    name: '',
-    address: wallet?.address,
+    name: wallet?.ens || '',
+    address: wallet?.address || '',
+    resolving: false,
   }
+
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
+    getFieldState,
+    watch,
   } = useForm<CreateSafeFormData>({
+    mode: 'all',
     defaultValues: { name: params.name, owners: [defaultOwner], threshold: 1 },
   })
-  const { fields, append, remove } = useFieldArray({
+
+  const { fields, append, remove, update } = useFieldArray({
     control,
     name: 'owners',
   })
 
+  const owners = watch('owners')
+
   const addOwner = () => {
-    append({ name: '', address: '' })
+    append({ name: '', address: '', resolving: false })
   }
 
-  const getENS = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
+  const getENS = async (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
+    if (owners[index].name) return
 
-    web3ReadOnly
+    update(index, { ...owners[index], resolving: true })
+
+    const ethersProvider = getWeb3()
+    const ensName = await ethersProvider.lookupAddress(event.target.value)
+
+    update(index, { name: ensName || '', address: event.target.value, resolving: false })
   }
 
   return (
@@ -70,7 +86,7 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
           <Typography>
             Add additional owners (e.g. wallets of your teammates) and specify how many of them have to confirm a
             transaction before it gets executed. In general, the more confirmations required, the more secure your Safe
-            is.Learn about which Safe setup to use. The new Safe will ONLY be available on {chain}
+            is.Learn about which Safe setup to use. The new Safe will ONLY be available on {currentChain?.chainName}
           </Typography>
         </Box>
         <Divider />
@@ -85,6 +101,10 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
         <Divider />
         <Box padding={3}>
           {fields.map((field, index) => {
+            const addressRegister = register(`owners.${index}.address`, {
+              validate: validateAddress,
+              required: true,
+            })
             return (
               <Grid container key={field.id} gap={3} marginBottom={3} flexWrap="nowrap">
                 <Grid item xs={12} md={4}>
@@ -93,6 +113,13 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
                       label="Owner name"
                       InputLabelProps={{ shrink: true }}
                       {...register(`owners.${index}.name`)}
+                      InputProps={{
+                        endAdornment: owners[index].resolving ? (
+                          <InputAdornment position="end">
+                            <RefreshIcon className={css.spinner} />
+                          </InputAdornment>
+                        ) : null,
+                      }}
                     />
                   </FormControl>
                 </Grid>
@@ -103,11 +130,12 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
                       InputLabelProps={{ shrink: true }}
                       error={!!errors.owners?.[index]}
                       helperText={errors.owners?.[index]?.address?.message}
-                      {...register(`owners.${index}.address`, {
-                        validate: validateAddress,
-                        required: true,
-                      })}
-                      onChange={getENS}
+                      {...addressRegister}
+                      onChange={async (event) => {
+                        await addressRegister.onChange(event)
+                        const { error } = getFieldState(`owners.${index}.address`)
+                        !error && getENS(event, index)
+                      }}
                     />
                   </FormControl>
                 </Grid>

@@ -11,6 +11,7 @@ import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 type Owner = {
   name: string
   address: string
+  resolving: boolean
 }
 
 export type CreateSafeFormData = {

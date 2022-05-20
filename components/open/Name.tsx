@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { CreateSafeFormData } from '@/components/open/index'
 import { useMnemonicSafeName } from '@/services/useMnemonicName'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import { useCurrentNetwork } from '@/services/useCurrentNetwork'
+import { useCurrentChain } from '@/services/useChains'
 
 type Props = {
   onSubmit: StepRenderProps['onSubmit']
@@ -12,7 +12,7 @@ type Props = {
 }
 
 const Name = ({ onSubmit, onBack }: Props) => {
-  const chain = useCurrentNetwork()
+  const currentChain = useCurrentChain()
   const fallbackName = useMnemonicSafeName()
   const { register, handleSubmit } = useForm<CreateSafeFormData>({ defaultValues: { name: fallbackName } })
 
@@ -23,7 +23,7 @@ const Name = ({ onSubmit, onBack }: Props) => {
           <Typography variant="body1">
             You are about to create a new Gnosis Safe wallet with one or more owners. First, let&apos;s give your new
             wallet a name. This name is only stored locally and will never be shared with Gnosis or any third parties.
-            The new Safe will ONLY be available on {chain}
+            The new Safe will ONLY be available on {currentChain?.chainName}
           </Typography>
           <FormControl>
             <Typography>Name of the new Safe</Typography>
