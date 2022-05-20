@@ -1,76 +1,61 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/store'
-import { TransactionReceipt } from 'web3-core'
-
-export enum PENDING_STATE {
-  SUBMITTING = 'SUBMITTING',
-  MINING = 'MINING',
-  MINED = 'MINED',
-  FAILED = 'FAILED',
-}
+import { SetHistoryPageAction, txHistorySlice } from './txHistorySlice'
+import { isTransaction } from '@/components/transactions/utils'
+import { txDispatch, TxEvent } from '@/services/txEvents'
 
 interface PendingTxsState {
   [txId: string]: {
     chainId: string
-    state?: PENDING_STATE
+    status: string
     txHash?: string
-    error?: Error
   }
 }
 
 const initialState: PendingTxsState = {}
 
-const getPendingTx = (pendingTx: PendingTxsState[string], state: PENDING_STATE) => {
-  return {
-    ...(pendingTx || {}),
-    state,
-  }
-}
-
 export const pendingTxsSlice = createSlice({
   name: 'pendingTxs',
   initialState,
   reducers: {
-    setTxSubmitting: (state, action: PayloadAction<{ txId: string }>) => {
-      const { txId } = action.payload
+    setPendingTx: (
+      state,
+      action: PayloadAction<{ chainId: string; txId: string; txHash?: string; status: string }>,
+    ) => {
+      const { txId, ...pendingTx } = action.payload
 
-      delete state[txId]?.error
-
-      state[txId] = getPendingTx(state[txId], PENDING_STATE.SUBMITTING)
+      state[txId] = pendingTx
     },
-    setTxMining: (state, action: PayloadAction<{ txId: string; txHash: string; block?: number }>) => {
-      const { txId, txHash } = action.payload
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      // Remove pending transaction when it is loaded in the history list
+      (action) => action.type === txHistorySlice.actions.setHistoryPage.type,
+      (state, action: SetHistoryPageAction) => {
+        if (!action.payload) {
+          return
+        }
 
-      state[txId] = {
-        ...getPendingTx(state[txId], PENDING_STATE.MINING),
-        txHash,
-      }
-    },
-    setTxMined: (state, action: PayloadAction<{ txId: string; receipt: TransactionReceipt }>) => {
-      const { txId } = action.payload
+        for (const result of action.payload.results) {
+          if (!isTransaction(result)) {
+            continue
+          }
 
-      delete state[txId]?.txHash
+          const { id } = result.transaction
 
-      state[txId] = getPendingTx(state[txId], PENDING_STATE.MINED)
-    },
-    setTxFailed: (state, action: PayloadAction<{ txId: string; error: Error }>) => {
-      const { txId, error } = action.payload
-
-      state[txId] = {
-        ...getPendingTx(state[txId], PENDING_STATE.FAILED),
-        error,
-      }
-    },
-    removePendingTx: (state, action: PayloadAction<{ txId: string }>) => {
-      const { txId } = action.payload
-
-      delete state[txId]
-    },
+          const pendingTx = state[id]
+          if (pendingTx) {
+            delete state[id]
+            txDispatch(TxEvent.SUCCESS, { txId: id })
+          }
+        }
+      },
+    )
   },
 })
 
-export const { setTxSubmitting, setTxMining, setTxMined, setTxFailed, removePendingTx } = pendingTxsSlice.actions
+export const { setPendingTx } = pendingTxsSlice.actions
 
 export const selectPendingTxs = (state: RootState): PendingTxsState => {
   return state[pendingTxsSlice.name]

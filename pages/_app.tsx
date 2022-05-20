@@ -27,6 +27,7 @@ import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/safe-core/useInitSafeCoreSDK'
 import useNotifier from '@/services/useNotifier'
 import useTxNotifications from '@/services/useTxNotifications'
+import useTxPendingStatuses from '@/services/useTxPendingStatuses'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
@@ -48,6 +49,7 @@ const InitApp = (): null => {
   useInitSafeCoreSDK()
   useNotifier()
   useTxNotifications()
+  useTxPendingStatuses()
 
   return null
 }
