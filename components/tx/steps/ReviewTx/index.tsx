@@ -1,18 +1,20 @@
-import { type ReactElement } from 'react'
+import { useState, type ReactElement } from 'react'
 import { Button, FormControl, TextField, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TokenInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
-import { createTokenTransferParams, createTransaction, signTransaction } from '@/services/createTransaction'
+import { createTokenTransferParams } from '@/services/createTransaction'
 import { shortenAddress } from '@/services/formatters'
 import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
 import useBalances from '@/services/useBalances'
-import { type SendAssetsFormData } from '@/components/tx/SendAssetsForm'
-import css from '@/components/tx/ReviewTx/styles.module.css'
-import { showNotification } from '@/store/notificationsSlice'
+import { type SendAssetsFormData } from '@/components/tx/steps/SendAssetsForm'
+import css from './styles.module.css'
 import { useAppDispatch } from '@/store'
+import useChainId from '@/services/useChainId'
+import useSafeAddress from '@/services/useSafeAddress'
+import { dispatchTxCreation } from '@/services/txSender'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -32,7 +34,11 @@ type ReviewTxForm = {
 
 const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
   const { balances } = useBalances()
+  const safeAddress = useSafeAddress()
+  const chainId = useChainId()
   const dispatch = useAppDispatch()
+  const [txDetails, setTxDetails] = useState<TransactionDetails>()
+
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const tokenInfo = token?.tokenInfo
   const txParams = tokenInfo
@@ -56,12 +62,9 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
       safeTxGas: Number(safeGas?.safeTxGas || 0),
     }
 
-    try {
-      const tx = await createTransaction(editedTxParams)
-      await signTransaction(tx)
-    } catch (err) {
-      dispatch(showNotification({ message: (err as Error).message }))
-    }
+    const createdTx = await dispatch(dispatchTxCreation(chainId, safeAddress, editedTxParams))
+
+    if (createdTx) setTxDetails(createdTx)
   }
 
   return (
@@ -85,6 +88,8 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
           })}
         />
       </FormControl>
+
+      <pre>{JSON.stringify(txDetails, null, 2)}</pre>
 
       <div className={css.submit}>
         <Button variant="contained" type="submit">

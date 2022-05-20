@@ -4,9 +4,6 @@ import type { RootState } from '@/store'
 import { TransactionReceipt } from 'web3-core'
 
 export enum PENDING_STATE {
-  CREATED = 'CREATED',
-  SIGNED = 'SIGNED',
-  PROPOSED = 'PROPOSED',
   SUBMITTING = 'SUBMITTING',
   MINING = 'MINING',
   MINED = 'MINED',
@@ -18,7 +15,7 @@ interface PendingTxsState {
     chainId: string
     state?: PENDING_STATE
     txHash?: string
-    error?: string
+    error?: Error
   }
 }
 
@@ -35,24 +32,12 @@ export const pendingTxsSlice = createSlice({
   name: 'pendingTxs',
   initialState,
   reducers: {
-    // setTxCreated: (state, action: PayloadAction<{ chainId: string }>) => {
-    //   const { chainId } = action.payload
-
-    //   state[generatedId] = {
-    //     chainId,
-    //     pendingState: PENDING_STATE.CREATED,
-    //   }
-    // },
-    // setTxSigned: (state, action: PayloadAction<never>) => {
-    //   state[generatedId].state = PENDING_STATE.SIGNED
-    // },
-    // setTxProposed: (state, action: PayloadAction<{ txId: string }>) => {
-    //   const { chainId, txId } = action.payload
-
-    //   state[txId] = getPendingTx(state[txId], PENDING_STATE.PROPOSED)
-
-    //   delete state[generatedId]
-    // },
+    setTxSigningFailed: (state, action: PayloadAction<{ error: Error }>) => {
+      return state
+    },
+    setTxProposalFailed: (state, action: PayloadAction<{ error: Error }>) => {
+      return state
+    },
     setTxSubmitting: (state, action: PayloadAction<{ txId: string }>) => {
       const { txId } = action.payload
 
@@ -80,7 +65,7 @@ export const pendingTxsSlice = createSlice({
 
       state[txId] = {
         ...getPendingTx(state[txId], PENDING_STATE.FAILED),
-        error: error.message,
+        error,
       }
     },
     removePendingTx: (state, action: PayloadAction<{ txId: string }>) => {
@@ -92,9 +77,8 @@ export const pendingTxsSlice = createSlice({
 })
 
 export const {
-  // setTxCreated,
-  // setTxSigned,
-  // setTxProposed,
+  setTxSigningFailed,
+  setTxProposalFailed,
   setTxSubmitting,
   setTxMining,
   setTxMined,
