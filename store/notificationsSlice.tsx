@@ -1,7 +1,9 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { IconButton } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 import type { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack'
 
-import type { AppDispatch, RootState } from '@/store'
+import type { AppThunk, RootState } from '@/store'
 
 type Notification = {
   message: SnackbarMessage
@@ -41,20 +43,26 @@ export const { closeNotification, closeAllNotifications, deleteNotification, del
   notificationsSlice.actions
 
 // Custom thunk that returns the key in case it was auto-generated
-export const showNotification = (payload: Pick<Notification, 'message' | 'options'>) => {
-  return (dispatch: AppDispatch): SnackbarKey => {
-    {
-      const key = payload.options?.key || new Date().getTime() + Math.random()
+export const showNotification = (payload: Pick<Notification, 'message' | 'options'>): AppThunk<SnackbarKey> => {
+  return (dispatch) => {
+    const key = payload.options?.key || new Date().getTime() + Math.random()
 
-      const notification: Notification = {
-        ...payload,
-        options: { ...payload.options, key },
-      }
-
-      dispatch(notificationsSlice.actions.enqueueNotification(notification))
-
-      return key
+    const notification: Notification = {
+      ...payload,
+      options: {
+        action: (
+          <IconButton onClick={() => dispatch(closeNotification({ key }))}>
+            <CloseIcon />
+          </IconButton>
+        ),
+        ...payload.options,
+        key,
+      },
     }
+
+    dispatch(notificationsSlice.actions.enqueueNotification(notification))
+
+    return key
   }
 }
 

@@ -8,7 +8,7 @@ import css from './styles.module.css'
 import { isOwner, isSignaturePending } from '@/components/transactions/utils'
 import useWallet from '@/services/wallets/useWallet'
 import useSafeInfo from '@/services/useSafeInfo'
-import SignTxModal from '@/components/tx/SignTxModal'
+import SignTxModal from '@/components/tx/modals/SignTxModal'
 
 const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)

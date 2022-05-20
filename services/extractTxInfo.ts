@@ -13,6 +13,9 @@ import { isMultisigExecutionDetails } from '@/components/transactions/utils'
 const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000'
 const EMPTY_DATA: string = '0x'
 
+/**
+ * Convert the CGW tx type to a Safe Core SDK tx
+ */
 const extractTxInfo = (
   txSummary: TransactionSummary,
   txDetails: TransactionDetails,

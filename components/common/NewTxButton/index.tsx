@@ -1,18 +1,16 @@
 import { useState, type ReactElement } from 'react'
 import { Button } from '@mui/material'
-import useSafeAddress from '@/services/useSafeAddress'
 import useSafeInfo from '@/services/useSafeInfo'
 import useWallet from '@/services/wallets/useWallet'
-import TokenTransferModal from '@/components/tx/TokenTransferModal'
+import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import { isOwner } from '@/components/transactions/utils'
 
 const NewTxButton = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)
-  const { chainId } = useSafeAddress()
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const isSafeOwner = wallet && isOwner(safe?.owners, wallet.address)
-  const wrongChain = wallet && wallet.chainId !== chainId
+  const wrongChain = wallet && wallet.chainId !== safe?.chainId
 
   return (
     <>

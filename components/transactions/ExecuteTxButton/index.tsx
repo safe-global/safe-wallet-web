@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import css from './styles.module.css'
 import useSafeInfo from '@/services/useSafeInfo'
 import { isMultisigExecutionInfo } from '@/components/transactions/utils'
-import ExecuteTxModal from '@/components/tx/ExecuteTxModal'
+import ExecuteTxModal from '@/components/tx/modals/ExecuteTxModal'
 import useIsPending from '@/components/transactions/useIsPending'
 
 const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {

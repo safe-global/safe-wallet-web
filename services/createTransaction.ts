@@ -1,11 +1,17 @@
-import type { SafeTransaction, SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types'
-import Web3 from 'web3'
+import type {
+  SafeTransaction,
+  SafeTransactionDataPartial,
+  TransactionOptions,
+  TransactionResult,
+} from '@gnosis.pm/safe-core-sdk-types'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { erc20Transfer } from './abi'
 import { toDecimals } from './formatters'
+import { Interface } from '@ethersproject/abi'
 
 const encodeTokenTransferData = (to: string, value: string): string => {
-  return new Web3().eth.abi.encodeFunctionCall(erc20Transfer, [to, value])
+  const contractInterface = new Interface(erc20Transfer)
+  return contractInterface.encodeFunctionData('transfer', [to, value])
 }
 
 export const createTokenTransferParams = (
@@ -57,8 +63,12 @@ export const rejectTransaction = async (nonce: number): Promise<SafeTransaction>
   return tx
 }
 
-export const executeTransaction = async (tx: SafeTransaction) => {
+export const executeTransaction = async (
+  tx: SafeTransaction,
+  options?: TransactionOptions,
+): Promise<TransactionResult> => {
   const safeSdk = getSafeSDK()
-  const executeTxResponse = await safeSdk.executeTransaction(tx)
-  return await executeTxResponse.transactionResponse?.wait()
+  const executeTxResponse = await safeSdk.executeTransaction(tx, options)
+
+  return executeTxResponse
 }

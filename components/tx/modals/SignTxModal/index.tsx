@@ -2,7 +2,7 @@ import React from 'react'
 
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import TxModal, { TxModalProps } from '@/components/tx/TxModal'
-import SignProposedTx from '@/components/tx/SignProposedTx'
+import SignProposedTx from '@/components/tx/steps/SignProposedTx'
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const SignTxSteps: TxStepperProps['steps'] = [
