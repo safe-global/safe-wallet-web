@@ -11,10 +11,10 @@ import useSafeTxGas from '@/services/useSafeTxGas'
 import useBalances from '@/services/useBalances'
 import { type SendAssetsFormData } from '@/components/tx/steps/SendAssetsForm'
 import css from './styles.module.css'
-import { useAppDispatch } from '@/store'
 import useChainId from '@/services/useChainId'
 import useSafeAddress from '@/services/useSafeAddress'
 import { dispatchTxCreation } from '@/services/txSender'
+import useWallet from '@/services/wallets/useWallet'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -36,8 +36,9 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
   const { balances } = useBalances()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
-  const dispatch = useAppDispatch()
   const [txDetails, setTxDetails] = useState<TransactionDetails>()
+  const wallet = useWallet()
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const tokenInfo = token?.tokenInfo
@@ -53,7 +54,7 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
   } = useForm<ReviewTxForm>()
 
   const onFormSubmit = async (data: ReviewTxForm) => {
-    if (!txParams) return
+    if (!txParams || !wallet?.address) return
 
     const editedTxParams = {
       ...txParams,
@@ -62,7 +63,13 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
       safeTxGas: Number(safeGas?.safeTxGas || 0),
     }
 
-    const createdTx = await dispatch(dispatchTxCreation(chainId, safeAddress, editedTxParams))
+    let createdTx: TransactionDetails | undefined
+    try {
+      setIsSubmittable(false)
+      createdTx = await dispatchTxCreation(chainId, safeAddress, wallet.address, editedTxParams)
+    } catch {
+      setIsSubmittable(true)
+    }
 
     if (createdTx) setTxDetails(createdTx)
   }
@@ -92,7 +99,7 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
       <pre>{JSON.stringify(txDetails, null, 2)}</pre>
 
       <div className={css.submit}>
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" disabled={!isSubmittable}>
           Submit
         </Button>
       </div>
