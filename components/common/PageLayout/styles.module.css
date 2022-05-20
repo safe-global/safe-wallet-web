@@ -20,11 +20,12 @@
   padding: 25px;
   overflow: auto;
   height: calc(100vh - 52px);
+  position: relative;
 }
 
 .sidebar {
   grid-area: sidebar;
-  height: 100vh;
+  height: calc(100vh - 52px);
 }
 
 @media (max-width: 768px) {

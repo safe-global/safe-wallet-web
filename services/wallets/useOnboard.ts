@@ -1,11 +1,12 @@
-import Web3 from 'web3'
 import { useEffect, useState } from 'react'
 import Onboard, { EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { hexValue } from '@ethersproject/bytes'
+import { getAddress } from '@ethersproject/address'
 import { getAllWallets, getRecommendedInjectedWallets, getSupportedWallets } from '@/services/wallets/wallets'
 import { getRpcServiceUrl } from '@/services/wallets/web3'
 import useChains, { useCurrentChain } from '../useChains'
-import local from '../localStorage/local'
+import useLocalStorage from '../localStorage/useLocalStorage'
 
 export type ConnectedWallet = {
   label: string
@@ -21,7 +22,7 @@ const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
   return Onboard({
     wallets,
     chains: chainConfigs.map((cfg) => ({
-      id: Web3.utils.numberToHex(cfg.chainId),
+      id: hexValue(parseInt(cfg.chainId)),
       label: cfg.chainName,
       rpcUrl: getRpcServiceUrl(cfg.rpcUri),
       token: cfg.nativeCurrency.symbol,
@@ -60,9 +61,9 @@ export const getConnectedWallet = (wallets = onboardSingleton?.state.get().walle
 
   return {
     label: primaryWallet.label,
-    address: Web3.utils.toChecksumAddress(account.address),
+    address: getAddress(account.address),
     ens: account.ens?.name,
-    chainId: Web3.utils.hexToNumberString(primaryWallet.chains[0].id),
+    chainId: Number(primaryWallet.chains[0].id).toString(10),
     provider: primaryWallet.provider,
   }
 }
@@ -88,6 +89,7 @@ const LAST_USED_WALLET_KEY = 'lastUsedWallet'
 export const useInitOnboard = () => {
   const onboard = useOnboard()
   const chain = useCurrentChain()
+  const [lastUsedWallet, setLastUsedWallet] = useLocalStorage<string>(LAST_USED_WALLET_KEY)
 
   useEffect(() => {
     if (!onboard || !chain?.disabledWallets) {
@@ -104,7 +106,6 @@ export const useInitOnboard = () => {
       return
     }
 
-    const lastUsedWallet = local.getItem<string>(LAST_USED_WALLET_KEY)
     if (lastUsedWallet) {
       onboard.connectWallet({ autoSelect: { disableModals: true, label: lastUsedWallet } })
     }
@@ -112,14 +113,16 @@ export const useInitOnboard = () => {
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
       const connectedWallet = getConnectedWallet(wallets)
       if (connectedWallet) {
-        local.setItem(LAST_USED_WALLET_KEY, connectedWallet.label)
+        setLastUsedWallet(connectedWallet.label)
+      } else {
+        setLastUsedWallet('')
       }
     })
 
     return () => {
       walletSubscription.unsubscribe()
     }
-  }, [onboard])
+  }, [onboard, lastUsedWallet, setLastUsedWallet])
 }
 
 export default useOnboard

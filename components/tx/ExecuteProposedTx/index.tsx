@@ -9,6 +9,7 @@ import css from './styles.module.css'
 import { CodedException, Errors } from '@/services/exceptions'
 import { AppThunk, useAppDispatch } from '@/store'
 import { setTxFailed, setTxMined, setTxMining, setTxSubmitting } from '@/store/pendingTxsSlice'
+import { useChainId } from '@/services/useChainId'
 
 export const executeTx = (chainId: string, txSummary: TransactionSummary, safeAddress: string): AppThunk => {
   return async (dispatch) => {
@@ -46,7 +47,8 @@ export const executeTx = (chainId: string, txSummary: TransactionSummary, safeAd
 }
 
 const ExecuteProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
-  const { chainId, address } = useSafeAddress()
+  const address = useSafeAddress()
+  const chainId = useChainId()
   const dispatch = useAppDispatch()
 
   const onExecute = async () => dispatch(executeTx(chainId, txSummary, address))

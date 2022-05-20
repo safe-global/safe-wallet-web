@@ -8,16 +8,24 @@ import useSafeAddress from '@/services/useSafeAddress'
 import { shortenAddress } from '@/services/formatters'
 import useWallet from '@/services/wallets/useWallet'
 import css from '@/components/common/SafeList/styles.module.css'
+import { useAppSelector } from '@/store'
+import { selectAddedSafes } from '@/store/addedSafesSlice'
+import useAddressBook from '@/services/useAddressBook'
+import { useChainId } from '@/services/useChainId'
 
-const OwnedSafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
+const SafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
   const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
+  const addressBook = useAddressBook()
 
   return (
     <ul className={css.ownedSafes}>
       {safes.map((address) => (
         <li key={address} className={address === safeAddress ? css.selected : undefined}>
           <Link href={`/safe/balances?safe=${shortName}:${address}`}>
-            <a>{shortenAddress(address)}</a>
+            <a>
+              {addressBook[address] ? <div>{addressBook[address]}</div> : null}
+              {shortenAddress(address)}
+            </a>
           </Link>
         </li>
       ))}
@@ -25,30 +33,39 @@ const OwnedSafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chai
   )
 }
 
-const SafeList = (): ReactElement | null => {
-  const { address } = useSafeAddress()
+const AllSafes = (): ReactElement | null => {
+  const address = useSafeAddress()
+  const chainId = useChainId()
   const wallet = useWallet()
+  const walletAddress = wallet?.address
+  const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
 
   const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(async () => {
-    if (!wallet) return
-    return getOwnedSafes(wallet.chainId, wallet.address)
-  }, [wallet?.chainId, wallet?.address])
-
-  if (!wallet) return null
+    if (!walletAddress || !chainId) return
+    return getOwnedSafes(chainId, walletAddress)
+  }, [chainId, walletAddress])
 
   return (
     <div className={css.container}>
-      <h4>Owned Safes</h4>
+      <h4>Added Safes</h4>
 
-      {loading && 'Loading owned Safes...'}
+      <SafesList safes={addedSafes} chainId={chainId} safeAddress={address} />
 
-      {!loading && error && `Error loading owned Safes: ${error.message}`}
+      {wallet && (
+        <>
+          <h4>Owned Safes</h4>
 
-      {!loading && !error && (
-        <OwnedSafesList safes={ownedSafes ? ownedSafes.safes : []} chainId={wallet.chainId} safeAddress={address} />
+          {loading && 'Loading owned Safes...'}
+
+          {!loading && error && `Error loading owned Safes: ${error.message}`}
+
+          {!loading && !error && (
+            <SafesList safes={ownedSafes ? ownedSafes.safes : []} chainId={chainId} safeAddress={address} />
+          )}
+        </>
       )}
     </div>
   )
 }
 
-export default SafeList
+export default AllSafes

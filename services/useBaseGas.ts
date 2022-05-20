@@ -16,7 +16,7 @@ const useBaseGas = (
   const [gasLimit, error, loading] = useAsync<any>(async () => {
     if (!txParams || !web3ReadOnly) return undefined
 
-    return await web3ReadOnly.eth.estimateGas({
+    return await web3ReadOnly.estimateGas({
       to: txParams.to,
       value: txParams.value,
       data: txParams.data,
