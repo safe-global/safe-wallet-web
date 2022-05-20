@@ -45,7 +45,7 @@ export const dispatchTxProposal = async (
     txDispatch(TxEvent.PROPOSE_FAILED, { tx: safeTx, error: error as Error })
     throw error
   }
-  txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId })
+  txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
   return proposedTx
 }
 
@@ -75,31 +75,31 @@ export const dispatchTxExecution = async (safeTx: SafeTransaction, id?: string):
 
   let result: TransactionResult | undefined
 
-  txDispatch(TxEvent.EXECUTING, { txId })
+  txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
 
   try {
     // Execute the tx
     result = await executeTransaction(safeTx)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+    txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
   }
 
   // Subscribe to eth tx events
   result.promiEvent
     ?.once('transactionHash', (txHash) => {
-      txDispatch(TxEvent.MINING, { txId, txHash })
+      txDispatch(TxEvent.MINING, { txId, txHash, tx: safeTx })
     })
     ?.once('receipt', (receipt) => {
       const didRevert = receipt.status === false
       if (didRevert) {
-        txDispatch(TxEvent.REVERTED, { txId, receipt, error: new Error('Transaction reverted by EVM') })
+        txDispatch(TxEvent.REVERTED, { txId, tx: safeTx, receipt, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.MINED, { txId, receipt })
+        txDispatch(TxEvent.MINED, { txId, receipt, tx: safeTx })
       }
     })
     ?.once('error', (error) => {
-      txDispatch(TxEvent.FAILED, { txId, error })
+      txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error })
     })
 
   return result.hash

@@ -40,9 +40,9 @@ const useTxNotifications = (): void => {
             showNotification({
               message,
               options: {
-                // For the key, use either the txId if available, or the entire serialized tx
+                // For the key, use the entire serialized tx
                 // This will stack notifications if multiple txs are sent at once
-                key: 'txId' in detail ? detail.txId : JSON.stringify(detail.tx),
+                key: 'tx' in detail ? JSON.stringify(detail.tx) : '',
                 variant: isError ? Variant.ERROR : Variant.SUCCESS,
               },
             }),
