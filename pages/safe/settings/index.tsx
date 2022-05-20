@@ -1,3 +1,3 @@
-import DetailsPage from './details'
+import SetupPage from './setup'
 
-export default DetailsPage
+export default SetupPage

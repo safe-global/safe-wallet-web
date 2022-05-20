@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { selectChainById, selectChains, setChains } from '@/store/chainsSlice'
 import { Errors, logError } from './exceptions'
 import useAsync from './useAsync'
-import useSafeAddress from './useSafeAddress'
+import { useChainId } from './useChainId'
 
 export const useInitChains = (): void => {
   const dispatch = useAppDispatch()
@@ -37,7 +37,6 @@ const useChains = () => {
 export default useChains
 
 export const useCurrentChain = (): ChainInfo | undefined => {
-  const { chainId } = useSafeAddress()
-  const chainConfig = useAppSelector((state) => selectChainById(state, chainId))
-  return chainConfig
+  const chainId = useChainId()
+  return useAppSelector((state) => selectChainById(state, chainId))
 }

@@ -1,6 +1,7 @@
 import { type MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 import { Operation, postSafeGasEstimation, type SafeTransactionEstimation } from '@gnosis.pm/safe-react-gateway-sdk'
 import useAsync from './useAsync'
+import { useChainId } from './useChainId'
 import useSafeAddress from './useSafeAddress'
 
 const estimateGas = async (
@@ -23,7 +24,8 @@ const useSafeTxGas = (
   safeGasError?: Error
   safeGasLoading: boolean
 } => {
-  const { address, chainId } = useSafeAddress()
+  const address = useSafeAddress()
+  const chainId = useChainId()
   const serializedParams = JSON.stringify(txParams)
 
   const [safeGas, safeGasError, safeGasLoading] = useAsync<SafeTransactionEstimation | undefined>(async () => {

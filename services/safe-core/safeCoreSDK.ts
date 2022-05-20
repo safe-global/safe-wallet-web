@@ -1,29 +1,32 @@
-import { type EIP1193Provider } from '@web3-onboard/core'
-import { type provider } from 'web3-core'
-import Web3 from 'web3'
+import { EIP1193Provider } from '@web3-onboard/core'
 import Safe from '@gnosis.pm/safe-core-sdk'
-import Web3Adapter from '@gnosis.pm/safe-web3-lib'
+import { ethers } from 'ethers'
+import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 import semverSatisfies from 'semver/functions/satisfies'
 import chains from '@/config/chains'
 
-const LEGACY_VERSION = '<1.3.0'
+const isLegacyVersion = (safeVersion: string): boolean => {
+  const LEGACY_VERSION = '<1.3.0'
+  return semverSatisfies(safeVersion, LEGACY_VERSION)
+}
 
 // Safe Core SDK
 const initSafeSDK = async (
   provider: EIP1193Provider,
-  signerAddress: string,
   walletChainId: string,
   safeAddress: string,
   safeVersion: string,
 ): Promise<Safe> => {
-  const ethAdapter = new Web3Adapter({
-    signerAddress,
-    web3: new Web3(provider as unknown as provider),
+  const ethersProvider = new ethers.providers.Web3Provider(provider)
+  const signer = ethersProvider.getSigner(0)
+  const ethAdapter = new EthersAdapter({
+    ethers,
+    signer,
   })
 
   let isL1SafeMasterCopy = walletChainId === chains.eth
   // Legacy Safe contracts
-  if (semverSatisfies(safeVersion, LEGACY_VERSION)) {
+  if (isLegacyVersion(safeVersion)) {
     isL1SafeMasterCopy = true
   }
 

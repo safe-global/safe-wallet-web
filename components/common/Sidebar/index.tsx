@@ -14,7 +14,7 @@ import Navigation from '@/components/common/Navigation'
 import useSafeAddress from '@/services/useSafeAddress'
 
 const Sidebar = (): ReactElement => {
-  const { address } = useSafeAddress()
+  const address = useSafeAddress()
   const { error, loading } = useSafeInfo()
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 

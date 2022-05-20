@@ -8,9 +8,6 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import List from '@mui/material/List'
 
-import useSafeAddress from '@/services/useSafeAddress'
-import chains from '@/config/chains'
-
 type NavItem = {
   label: string
   href: string
@@ -60,7 +57,7 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Settings',
-    href: '/safe/settings/details',
+    href: '/safe/settings',
     items: [
       {
         label: 'Setup',
@@ -80,9 +77,6 @@ const navItems: NavItem[] = [
 
 const Navigation = () => {
   const [open, setOpen] = useState<Record<string, boolean>>({})
-  const { address, chainId } = useSafeAddress()
-  const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
-  const query = `?safe=${shortName}:${address}`
 
   const toggleOpen = (item: NavItem) => {
     setOpen((prev) => ({ [item.href]: !prev[item.href] }))
@@ -92,28 +86,21 @@ const Navigation = () => {
     <List component="nav">
       {navItems.map((item) =>
         item.items ? (
-          <MultiLevel
-            key={item.href}
-            item={item}
-            query={query}
-            open={open[item.href]}
-            toggleOpen={() => toggleOpen(item)}
-          />
+          <MultiLevel key={item.href} item={item} open={open[item.href]} toggleOpen={() => toggleOpen(item)} />
         ) : (
-          <SingleLevel item={item} query={query} key={item.href} />
+          <SingleLevel item={item} key={item.href} />
         ),
       )}
     </List>
   )
 }
 
-const SingleLevel = ({ item, query }: { item: NavItem; query: string }): ReactElement => {
+const SingleLevel = ({ item }: { item: NavItem }): ReactElement => {
   const router = useRouter()
-  const destination = `${item.href}${query}`
-  const selected = router.asPath === destination
+  const selected = router.pathname === item.href
 
   return (
-    <Link href={destination} passHref>
+    <Link href={{ pathname: item.href, query: router.query }} passHref>
       <ListItemButton component="a" selected={selected}>
         <ListItemText>{item.label}</ListItemText>
       </ListItemButton>
@@ -123,21 +110,18 @@ const SingleLevel = ({ item, query }: { item: NavItem; query: string }): ReactEl
 
 const MultiLevel = ({
   item,
-  query,
   open,
   toggleOpen,
 }: {
   item: NavItem
-  query: string
   open: boolean
   toggleOpen: () => void
 }): ReactElement => {
-  const destination = `${item.href}${query}`
   const router = useRouter()
 
   return (
     <>
-      <Link href={destination} passHref>
+      <Link href={{ pathname: item.href, query: router.query }} passHref>
         <ListItemButton component="a" onClick={toggleOpen}>
           <ListItemText>{item.label}</ListItemText>
           {open ? <ExpandLess /> : <ExpandMore />}
@@ -146,11 +130,10 @@ const MultiLevel = ({
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="nav">
           {item.items?.map((subItem) => {
-            const subItemDestination = `${subItem.href}${query}`
-            const selected = router.asPath === subItemDestination
+            const selected = router.pathname === subItem.href
 
             return (
-              <Link href={subItemDestination} passHref key={subItem.label}>
+              <Link href={{ pathname: subItem.href, query: router.query }} passHref key={subItem.label}>
                 <ListItemButton component="a" selected={selected}>
                   <ListItemText>{subItem.label}</ListItemText>
                 </ListItemButton>

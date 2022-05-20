@@ -1,0 +1,13 @@
+.select:after,
+.select:before {
+  display: none;
+}
+
+.indicator {
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: 5px 0;
+  min-width: 70px;
+  font-size: 11px;
+  text-align: center;
+}

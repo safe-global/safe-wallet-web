@@ -1,3 +1,4 @@
+import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
 import useAddressBook from '@/services/useAddressBook'
@@ -11,7 +12,6 @@ const Setup: NextPage = () => {
   const nonce = safe?.nonce
   const ownerLength = safe?.owners.length ?? 0
   const threshold = safe?.threshold ?? 0
-
   const addressBook = useAddressBook()
   const namedOwners = safe?.owners.map((owner) => ({
     address: owner.value,
@@ -38,8 +38,7 @@ const Setup: NextPage = () => {
             <Typography>Current Nonce: {nonce}</Typography>
           </Grid>
           <Grid item xs>
-            <h3>Contract Version</h3>
-            <Typography>{version}</Typography>
+            <ContractVersion />
           </Grid>
         </Grid>
       </Grid>

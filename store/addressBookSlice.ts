@@ -16,21 +16,16 @@ export const addressBookSlice = createSlice({
       return action.payload
     },
 
-    upsertAddressBookEntry: (
-      state,
-      action: PayloadAction<{ chainId: string; address: string; name: string }>,
-    ): AddressBookState => {
+    upsertAddressBookEntry: (state, action: PayloadAction<{ chainId: string; address: string; name: string }>) => {
       const { chainId, address, name } = action.payload
       if (!state[chainId]) state[chainId] = {}
       state[chainId][address] = name
-      return state
     },
 
-    removeAddressBookEntry: (state, action: PayloadAction<{ chainId: string; address: string }>): AddressBookState => {
+    removeAddressBookEntry: (state, action: PayloadAction<{ chainId: string; address: string }>) => {
       const { chainId, address } = action.payload
       if (!state[chainId]) return state
       delete state[chainId][address]
-      return state
     },
   },
 })
