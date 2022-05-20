@@ -2,24 +2,28 @@ import { ReactElement } from 'react'
 import { Button, Typography } from '@mui/material'
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { rejectTransaction, signTransaction } from '@/services/createTransaction'
 import css from './styles.module.css'
 import { isMultisigExecutionInfo } from '@/components/transactions/utils'
-import { showNotification } from '@/store/notificationsSlice'
-import { useAppDispatch } from '@/store'
+import { createRejectTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
+import useWallet from '@/services/wallets/useWallet'
+import useChainId from '@/services/useChainId'
+import useSafeAddress from '@/services/useSafeAddress'
 
 const RejectTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
-  const dispatch = useAppDispatch()
+  const chainId = useChainId()
+  const safeAddress = useSafeAddress()
+  const wallet = useWallet()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
 
   const onReject = async () => {
-    if (!txNonce) return
+    if (!txNonce || !wallet?.address) return
 
     try {
-      const rejectTx = await rejectTransaction(txNonce)
-      await signTransaction(rejectTx)
+      const rejectTx = await createRejectTx(txNonce)
+      const signedTx = await dispatchTxSigning(rejectTx)
+      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     } catch (err) {
-      dispatch(showNotification({ message: (err as Error).message }))
+      // do something
     }
   }
 
