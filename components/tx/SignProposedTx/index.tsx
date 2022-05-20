@@ -6,11 +6,11 @@ import { createTransaction, signTransaction } from '@/services/createTransaction
 import extractTxInfo from '@/services/extractTxInfo'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
-import { executeTx } from '@/components/tx/ExecuteProposedTx'
 import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import { CodedException, Errors } from '@/services/exceptions'
 import { useChainId } from '@/services/useChainId'
+import { dispatchTxExecution } from '@/services/txSender'
 
 export const signTx = async (chainId: string, txSummary: TransactionSummary, safeAddress: string) => {
   try {
@@ -34,6 +34,7 @@ const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): React
   const dispatch = useAppDispatch()
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
 
+  // Todo: move to txSender
   const onSign = async () => {
     try {
       await signTx(chainId, txSummary, address)
@@ -42,7 +43,7 @@ const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): React
     }
   }
 
-  const onExecute = () => dispatch(executeTx(chainId, txSummary, address))
+  const onExecute = () => dispatch(dispatchTxExecution(chainId, address, txSummary))
 
   const handleSubmit = shouldExecute ? onExecute : onSign
 

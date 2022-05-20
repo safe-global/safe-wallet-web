@@ -8,6 +8,8 @@ import {
   setTxSubmitting,
   removePendingTx,
   selectPendingTxById,
+  setTxProposalFailed,
+  setTxSigningFailed,
 } from '@/store/pendingTxsSlice'
 import { showNotification } from '@/store/notificationsSlice'
 import { isTransaction } from '@/components/transactions/utils'
@@ -21,15 +23,24 @@ export const notificationsMiddleware: ThunkMiddleware<RootState> =
     const state = getState()
 
     switch (action.type) {
-      // case setTxCreated.type: {
-      //     break
-      // }
-      // case setTxSigned.type: {
-      //     break
-      // }
-      // case setTxProposed.type: {
-      //     break
-      // }
+      case setTxSigningFailed.type: {
+        dispatch(
+          showNotification({
+            message: `Failed to sign the transaction. ${action.payload.error.message}`,
+            options: { persist: true, variant: 'error' },
+          }),
+        )
+        break
+      }
+      case setTxProposalFailed.type: {
+        dispatch(
+          showNotification({
+            message: `Transaction proposal failed. ${action.payload.error.message}`,
+            options: { persist: true, variant: 'error' },
+          }),
+        )
+        break
+      }
       case setTxSubmitting.type: {
         dispatch(
           showNotification({
