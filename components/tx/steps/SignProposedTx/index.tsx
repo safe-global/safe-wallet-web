@@ -33,6 +33,7 @@ const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): React
   const chainId = useChainId()
   const dispatch = useAppDispatch()
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
   // Todo: move to txSender
   const onSign = async () => {
@@ -43,7 +44,14 @@ const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): React
     }
   }
 
-  const onExecute = () => dispatch(dispatchTxExecution(chainId, address, txSummary))
+  const onExecute = async () => {
+    setIsSubmittable(false)
+    try {
+      await dispatchTxExecution(chainId, address, txSummary)
+    } catch {
+      setIsSubmittable(true)
+    }
+  }
 
   const handleSubmit = shouldExecute ? onExecute : onSign
 
@@ -62,7 +70,7 @@ const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): React
       <pre style={{ overflow: 'auto', width: '100%' }}>{txSummary.id}</pre>
 
       <div className={css.submit}>
-        <Button variant="contained" onClick={handleSubmit}>
+        <Button variant="contained" onClick={handleSubmit} disabled={isSubmittable}>
           Submit
         </Button>
       </div>

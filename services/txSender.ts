@@ -1,74 +1,87 @@
 import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SafeTransaction, SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types'
+import { SafeTransaction, SafeTransactionDataPartial, TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
 import { createTransaction, executeTransaction, signTransaction } from '@/services/createTransaction'
 import extractTxInfo from '@/services/extractTxInfo'
-import { CodedException, Errors } from '@/services/exceptions'
-import { AppThunk } from '@/store'
-import {
-  setTxFailed,
-  setTxMined,
-  setTxMining,
-  setTxProposalFailed,
-  setTxSigningFailed,
-  setTxSubmitting,
-} from '@/store/pendingTxsSlice'
+import { PromiEvent, TransactionReceipt } from 'web3-core'
 import proposeTx from './proposeTransaction'
+import { txDispatch, TxEvent } from './txEvents'
 
-export const dispatchTxCreation = (
+export const dispatchTxCreation = async (
   chainId: string,
   safeAddress: string,
+  sender: string,
   txParams: SafeTransactionDataPartial,
-): AppThunk<Promise<TransactionDetails | undefined>> => {
-  return async (dispatch) => {
-    let signedTx: SafeTransaction | undefined
-    try {
-      const tx = await createTransaction(txParams)
-      signedTx = await signTransaction(tx)
-    } catch (err) {
-      dispatch(setTxSigningFailed({ error: err as Error }))
-    }
-
-    if (!signedTx) return
-
-    try {
-      return await proposeTx(chainId, safeAddress, signedTx)
-    } catch (err) {
-      dispatch(setTxProposalFailed({ error: err as Error }))
-    }
+): Promise<TransactionDetails | undefined> => {
+  let tx: SafeTransaction | undefined
+  try {
+    tx = await createTransaction(txParams)
+  } catch (error) {
+    throw error
   }
+  txDispatch(TxEvent.CREATED, { tx })
+
+  let signedTx: SafeTransaction | undefined
+  try {
+    signedTx = await signTransaction(tx)
+  } catch (error) {
+    txDispatch(TxEvent.SIGN_FAILED, { tx, error: error as Error })
+    throw error
+  }
+  txDispatch(TxEvent.SIGNED, { tx: signedTx })
+
+  let proposedTx: TransactionDetails | undefined
+  try {
+    proposedTx = await proposeTx(chainId, safeAddress, sender, signedTx)
+  } catch (error) {
+    txDispatch(TxEvent.PROPOSE_FAILED, { tx: signedTx, error: error as Error })
+    throw error
+  }
+
+  txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId })
+
+  return proposedTx
 }
 
-export const dispatchTxExecution = (chainId: string, safeAddress: string, txSummary: TransactionSummary): AppThunk => {
-  return async (dispatch) => {
-    const txId = txSummary.id
+export const dispatchTxExecution = async (
+  chainId: string,
+  safeAddress: string,
+  txSummary: TransactionSummary,
+): Promise<string> => {
+  const txId = txSummary.id
 
-    try {
-      const txDetails = await getTransactionDetails(chainId, txId)
-      const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
+  let result: TransactionResult | undefined
 
-      const safeTx = await createTransaction(txParams)
-      Object.entries(signatures).forEach(([signer, data]) => {
-        safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
-      })
+  txDispatch(TxEvent.EXECUTING, { txId })
+  try {
+    const txDetails = await getTransactionDetails(chainId, txId)
+    const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
 
-      const { promiEvent } = await executeTransaction(safeTx)
+    const safeTx = await createTransaction(txParams)
+    Object.entries(signatures).forEach(([signer, data]) => {
+      safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
+    })
 
-      dispatch(setTxSubmitting({ txId }))
-
-      promiEvent
-        ?.once('transactionHash', (txHash) => {
-          dispatch(setTxMining({ txId, txHash }))
-        })
-        ?.once('receipt', (receipt) => {
-          dispatch(setTxMined({ txId, receipt }))
-        })
-        ?.once('error', (error) => {
-          dispatch(setTxFailed({ txId, error }))
-        })
-    } catch (err) {
-      const error = new CodedException(Errors._804, (err as Error).message)
-
-      dispatch(setTxFailed({ txId, error }))
-    }
+    result = await executeTransaction(safeTx)
+  } catch (error) {
+    txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+    throw error
   }
+
+  result.promiEvent
+    ?.once('transactionHash', (txHash) => {
+      txDispatch(TxEvent.MINING, { txId, txHash })
+    })
+    ?.once('receipt', (receipt) => {
+      const didRevert = receipt.status === false
+      if (didRevert) {
+        txDispatch(TxEvent.REVERTED, { txId, receipt })
+      } else {
+        txDispatch(TxEvent.MINED, { txId, receipt })
+      }
+    })
+    ?.once('error', (error) => {
+      txDispatch(TxEvent.FAILED, { txId, error })
+    })
+
+  return result.hash
 }

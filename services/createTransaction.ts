@@ -68,7 +68,7 @@ export const executeTransaction = async (
   options?: TransactionOptions,
 ): Promise<TransactionResult> => {
   const safeSdk = getSafeSDK()
-  const executeTxResponse = await safeSdk.executeTransaction(tx, options)
+  const executeTxResponse = safeSdk.executeTransaction(tx, options)
 
   return executeTxResponse
 }

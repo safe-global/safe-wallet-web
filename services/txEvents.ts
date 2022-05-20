@@ -1,4 +1,5 @@
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { TransactionReceipt } from 'web3-core'
 
 export enum TxEvent {
   CREATED = 'CREATED',
@@ -17,13 +18,13 @@ export enum TxEvent {
 interface TxEvents {
   [TxEvent.CREATED]: { tx: SafeTransaction }
   [TxEvent.SIGNED]: { tx: SafeTransaction }
-  [TxEvent.SIGN_FAILED]: { tx: SafeTransaction }
+  [TxEvent.SIGN_FAILED]: { tx: SafeTransaction; error: Error }
   [TxEvent.PROPOSE_FAILED]: { tx: SafeTransaction; error: Error }
   [TxEvent.PROPOSED]: { txId: string }
   [TxEvent.EXECUTING]: { txId: string }
-  [TxEvent.MINING]: { txId: string }
-  [TxEvent.MINED]: { txId: string }
-  [TxEvent.REVERTED]: { txId: string; error: Error }
+  [TxEvent.MINING]: { txId: string; txHash: string }
+  [TxEvent.MINED]: { txId: string; receipt: TransactionReceipt }
+  [TxEvent.REVERTED]: { txId: string; receipt: TransactionReceipt }
   [TxEvent.FAILED]: { txId: string; error: Error }
   [TxEvent.SUCCESS]: { txId: string }
 }
