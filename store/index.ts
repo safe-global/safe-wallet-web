@@ -17,7 +17,7 @@ import { addressBookSlice } from './addressBookSlice'
 import { notificationsSlice } from './notificationsSlice'
 import { getPreloadedState, persistState } from './persistStore'
 import { pendingTxsSlice } from './pendingTxsSlice'
-import { pendingTxsMiddleware } from './pendingTxsMiddleware'
+import { notificationsMiddleware } from './notificationsMiddleware'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -41,7 +41,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(persistState(persistedSlices), pendingTxsMiddleware),
+    getDefaultMiddleware().concat(persistState(persistedSlices), notificationsMiddleware),
   preloadedState: getPreloadedState(persistedSlices),
 })
 

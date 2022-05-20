@@ -11,10 +11,9 @@ import {
 } from '@/store/pendingTxsSlice'
 import { showNotification } from '@/store/notificationsSlice'
 import { isTransaction } from '@/components/transactions/utils'
-import { state } from '@web3-onboard/core/dist/store'
 import { setHistoryPage } from './txHistorySlice'
 
-export const pendingTxsMiddleware: ThunkMiddleware<RootState> =
+export const notificationsMiddleware: ThunkMiddleware<RootState> =
   ({ dispatch, getState }) =>
   (next) =>
   (action) => {
@@ -48,12 +47,19 @@ export const pendingTxsMiddleware: ThunkMiddleware<RootState> =
         break
       }
       case setTxMined.type: {
-        dispatch(
-          showNotification({
-            message: 'Your transaction was succesfully mined! It is now being indexed by our transaction service.',
-            options: { variant: 'success' },
-          }),
-        )
+        const didRevert = action.payload.receipt.status === false
+
+        const notification: Parameters<typeof showNotification>[0] = didRevert
+          ? {
+              message: 'Your transaction was reverted by the EVM.',
+              options: { variant: 'error' },
+            }
+          : {
+              message: 'Your transaction was succesfully mined! It is now being indexed by our transaction service.',
+              options: { variant: 'success' },
+            }
+
+        dispatch(showNotification(notification))
         break
       }
       // Transaction was loaded into historical list
@@ -74,7 +80,6 @@ export const pendingTxsMiddleware: ThunkMiddleware<RootState> =
             continue
           }
 
-          dispatch(removePendingTx({ txId: id }))
           dispatch(
             showNotification({
               message:
@@ -82,6 +87,9 @@ export const pendingTxsMiddleware: ThunkMiddleware<RootState> =
               options: { variant: 'success' },
             }),
           )
+
+          // TODO: This needs to be moved
+          dispatch(removePendingTx({ txId: id }))
         }
         break
       }

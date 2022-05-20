@@ -1,4 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { IconButton } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 import type { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack'
 
 import type { AppThunk, RootState } from '@/store'
@@ -47,7 +49,15 @@ export const showNotification = (payload: Pick<Notification, 'message' | 'option
 
     const notification: Notification = {
       ...payload,
-      options: { ...payload.options, key },
+      options: {
+        action: (
+          <IconButton onClick={() => dispatch(closeNotification({ key }))}>
+            <CloseIcon />
+          </IconButton>
+        ),
+        ...payload.options,
+        key,
+      },
     }
 
     dispatch(notificationsSlice.actions.enqueueNotification(notification))

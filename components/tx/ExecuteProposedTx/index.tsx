@@ -32,7 +32,7 @@ export const executeTx = (chainId: string, txSummary: TransactionSummary, safeAd
           dispatch(setTxMining({ txId, txHash }))
         })
         ?.once('receipt', (receipt) => {
-          dispatch(setTxMined({ txId }))
+          dispatch(setTxMined({ txId, receipt }))
         })
         ?.once('error', (error) => {
           dispatch(setTxFailed({ txId, error }))
