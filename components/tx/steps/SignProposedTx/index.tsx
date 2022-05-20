@@ -5,7 +5,7 @@ import { Button, Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
 import { useChainId } from '@/services/useChainId'
-import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, prepareTx } from '@/services/txSender'
+import { createExistingTx, dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/services/wallets/useWallet'
 
 const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
@@ -19,7 +19,7 @@ const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): React
     if (!wallet) return
 
     try {
-      const safeTx = await prepareTx(chainId, safeAddress, txSummary)
+      const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
       const signedTx = await dispatchTxSigning(safeTx, txSummary.id)
       await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     } catch (err) {
@@ -32,7 +32,7 @@ const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): React
 
     setIsSubmittable(false)
     try {
-      const safeTx = await prepareTx(chainId, safeAddress, txSummary)
+      const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
       await dispatchTxExecution(safeTx, txSummary.id)
     } catch {
       setIsSubmittable(true)

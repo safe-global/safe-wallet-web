@@ -20,13 +20,13 @@ interface TxEvents {
   [TxEvent.SIGNED]: { txId: string; tx: SafeTransaction }
   [TxEvent.SIGN_FAILED]: { txId: string; tx: SafeTransaction; error: Error }
   [TxEvent.PROPOSE_FAILED]: { tx: SafeTransaction; error: Error }
-  [TxEvent.PROPOSED]: { txId: string, tx: SafeTransaction }
-  [TxEvent.EXECUTING]: { txId: string, tx: SafeTransaction }
-  [TxEvent.MINING]: { txId: string; txHash: string, tx: SafeTransaction }
-  [TxEvent.MINED]: { txId: string; receipt: TransactionReceipt, tx: SafeTransaction }
-  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: TransactionReceipt, tx: SafeTransaction }
-  [TxEvent.FAILED]: { txId: string; error: Error, tx: SafeTransaction }
-  [TxEvent.SUCCESS]: { txId: string, tx: SafeTransaction }
+  [TxEvent.PROPOSED]: { txId: string; tx: SafeTransaction }
+  [TxEvent.EXECUTING]: { txId: string; tx: SafeTransaction }
+  [TxEvent.MINING]: { txId: string; txHash: string; tx: SafeTransaction }
+  [TxEvent.MINED]: { txId: string; receipt: TransactionReceipt; tx: SafeTransaction }
+  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: TransactionReceipt; tx: SafeTransaction }
+  [TxEvent.FAILED]: { txId: string; error: Error; tx: SafeTransaction }
+  [TxEvent.SUCCESS]: { txId: string; tx: SafeTransaction }
 }
 
 const txEventBus = new EventTarget()

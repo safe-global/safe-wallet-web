@@ -5,7 +5,7 @@ import { Button, Typography } from '@mui/material'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
 import { useChainId } from '@/services/useChainId'
-import { dispatchTxExecution, prepareTx } from '@/services/txSender'
+import { createExistingTx, dispatchTxExecution } from '@/services/tx/txSender'
 
 const ExecuteProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const safeAddress = useSafeAddress()
@@ -15,7 +15,7 @@ const ExecuteProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): Re
   const onExecute = async () => {
     setIsSubmittable(false)
     try {
-      const safeTx = await prepareTx(chainId, safeAddress, txSummary)
+      const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
       await dispatchTxExecution(safeTx, txSummary.id)
     } catch {
       setIsSubmittable(true)

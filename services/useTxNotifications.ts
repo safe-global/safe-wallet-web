@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
-import { TxEvent, txSubscribe } from './txEvents'
+import { TxEvent, txSubscribe } from './tx/txEvents'
 
 const TxNotifications: Record<TxEvent, string> = {
   [TxEvent.CREATED]: '',

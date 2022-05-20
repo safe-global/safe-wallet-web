@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import type { TokenInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
-import { createTokenTransferParams, createTransaction } from '@/services/createTransaction'
+import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import { shortenAddress } from '@/services/formatters'
 import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
@@ -13,7 +13,7 @@ import { type SendAssetsFormData } from '@/components/tx/steps/SendAssetsForm'
 import css from './styles.module.css'
 import useChainId from '@/services/useChainId'
 import useSafeAddress from '@/services/useSafeAddress'
-import { dispatchTxProposal, dispatchTxSigning, prepareTx } from '@/services/txSender'
+import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/services/wallets/useWallet'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
@@ -67,9 +67,9 @@ const ReviewNewTx = ({ params }: { params: SendAssetsFormData }): ReactElement =
 
     let proposedTx: TransactionDetails | undefined
     try {
-      const safeTx = await createTransaction(editedTxParams)
+      const safeTx = await createTx(editedTxParams)
       const signedTx = await dispatchTxSigning(safeTx)
-      proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet.address, safeTx)
+      proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     } catch {
       setIsSubmittable(true)
     }

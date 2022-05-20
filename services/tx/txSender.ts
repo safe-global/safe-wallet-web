@@ -1,14 +1,30 @@
 import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SafeTransaction, TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
-import { createTransaction, executeTransaction, signTransaction } from '@/services/createTransaction'
-import extractTxInfo from '@/services/extractTxInfo'
+import { SafeTransaction, SafeTransactionDataPartial, TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
+import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
+import { getSafeSDK } from '../safe-core/safeCoreSDK'
+
+/**
+ * Create a transaction from raw params
+ */
+export const createTx = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
+  const safeSDK = getSafeSDK()
+  return await safeSDK.createTransaction(txParams)
+}
+
+/**
+ * Create a rejection tx
+ */
+export const createRejectTx = async (nonce: number): Promise<SafeTransaction> => {
+  const safeSDK = getSafeSDK()
+  return await safeSDK.createRejectionTransaction(nonce)
+}
 
 /**
  * Prepare a SafeTransaction from Client Gateway / Tx Queue
  */
-export const prepareTx = async (
+export const createExistingTx = async (
   chainId: string,
   safeAddress: string,
   txSummary: TransactionSummary,
@@ -21,7 +37,7 @@ export const prepareTx = async (
   const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
 
   // Create a tx and add pre-approved signatures
-  const safeTx = await createTransaction(txParams)
+  const safeTx = await createTx(txParams)
   Object.entries(signatures).forEach(([signer, data]) => {
     safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
   })
@@ -46,6 +62,7 @@ export const dispatchTxProposal = async (
     throw error
   }
   txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
+
   return proposedTx
 }
 
@@ -54,17 +71,18 @@ export const dispatchTxProposal = async (
  */
 export const dispatchTxSigning = async (safeTx: SafeTransaction, id?: string): Promise<SafeTransaction> => {
   const txId = id || JSON.stringify(safeTx)
+  const sdk = getSafeSDK()
 
-  let signedTx: SafeTransaction | undefined
   try {
-    signedTx = await signTransaction(safeTx)
+    // Adds signatures to safeTx
+    await sdk.signTransaction(safeTx)
   } catch (error) {
     txDispatch(TxEvent.SIGN_FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
   }
-  txDispatch(TxEvent.SIGNED, { txId, tx: signedTx })
+  txDispatch(TxEvent.SIGNED, { txId, tx: safeTx })
 
-  return signedTx
+  return safeTx
 }
 
 /**
@@ -72,14 +90,14 @@ export const dispatchTxSigning = async (safeTx: SafeTransaction, id?: string): P
  */
 export const dispatchTxExecution = async (safeTx: SafeTransaction, id?: string): Promise<string> => {
   const txId = id || JSON.stringify(safeTx)
-
-  let result: TransactionResult | undefined
+  const sdk = getSafeSDK()
 
   txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
 
+  let result: TransactionResult | undefined
   try {
     // Execute the tx
-    result = await executeTransaction(safeTx)
+    result = await sdk.executeTransaction(safeTx)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
