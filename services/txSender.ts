@@ -78,7 +78,7 @@ export const dispatchTxExecution = async (
     ?.once('receipt', (receipt) => {
       const didRevert = receipt.status === false
       if (didRevert) {
-        txDispatch(TxEvent.REVERTED, { txId, receipt })
+        txDispatch(TxEvent.REVERTED, { txId, receipt, error: new Error('Transaction reverted by EVM') })
       } else {
         txDispatch(TxEvent.MINED, { txId, receipt })
       }

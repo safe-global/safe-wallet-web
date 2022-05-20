@@ -12,7 +12,7 @@ const TxNotifications: Record<TxEvent, string> = {
   [TxEvent.PROPOSE_FAILED]: 'Propose failed. Please try again.',
   [TxEvent.MINED]: 'Your transaction was succesfully mined! It is now being indexed by our transaction service.',
   [TxEvent.FAILED]: 'Your transaction was unsuccessful.',
-  [TxEvent.REVERTED]: 'Your transaction was reverted by the EVM.',
+  [TxEvent.REVERTED]: 'Please check your gas settings.',
   [TxEvent.SUCCESS]:
     'Your transaction was successfully indexed! It is now viewable in the historical transaction list.',
   [TxEvent.PROPOSED]: 'Your transaction was successfully proposed.',
@@ -39,6 +39,8 @@ const useTxNotifications = (): void => {
           showNotification({
             message,
             options: {
+              // For the key, use either the txId if available, or the entire serialized tx
+              // This will stack notifications if multiple txs are sent at once
               key: 'txId' in detail ? detail.txId : JSON.stringify(detail.tx),
               variant: isError ? Variant.ERROR : Variant.SUCCESS,
             },
