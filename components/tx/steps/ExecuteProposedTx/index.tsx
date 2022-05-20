@@ -29,7 +29,7 @@ const ExecuteProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): Re
       <pre style={{ overflow: 'auto', width: '100%' }}>{txSummary.id}</pre>
 
       <div className={css.submit}>
-        <Button variant="contained" onClick={onExecute} disabled={isSubmittable}>
+        <Button variant="contained" onClick={onExecute} disabled={!isSubmittable}>
           Submit
         </Button>
       </div>

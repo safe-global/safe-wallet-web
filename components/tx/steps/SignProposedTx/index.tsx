@@ -70,7 +70,7 @@ const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): React
       <pre style={{ overflow: 'auto', width: '100%' }}>{txSummary.id}</pre>
 
       <div className={css.submit}>
-        <Button variant="contained" onClick={handleSubmit} disabled={isSubmittable}>
+        <Button variant="contained" onClick={handleSubmit} disabled={!isSubmittable}>
           Submit
         </Button>
       </div>

@@ -38,7 +38,7 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
   const chainId = useChainId()
   const [txDetails, setTxDetails] = useState<TransactionDetails>()
   const wallet = useWallet()
-  const [isSubmittable, setIsSubmittable] = useState(true)
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const tokenInfo = token?.tokenInfo
@@ -99,7 +99,7 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
       <pre>{JSON.stringify(txDetails, null, 2)}</pre>
 
       <div className={css.submit}>
-        <Button variant="contained" type="submit" disabled={isSubmittable}>
+        <Button variant="contained" type="submit" disabled={!isSubmittable}>
           Submit
         </Button>
       </div>
