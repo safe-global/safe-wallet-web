@@ -69,8 +69,7 @@ export const dispatchTxProposal = async (
 /**
  * Sign a transaction
  */
-export const dispatchTxSigning = async (safeTx: SafeTransaction, id?: string): Promise<SafeTransaction> => {
-  const txId = id || JSON.stringify(safeTx)
+export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string): Promise<SafeTransaction> => {
   const sdk = getSafeSDK()
 
   try {
@@ -88,8 +87,7 @@ export const dispatchTxSigning = async (safeTx: SafeTransaction, id?: string): P
 /**
  * Execute a transaction
  */
-export const dispatchTxExecution = async (safeTx: SafeTransaction, id?: string): Promise<string> => {
-  const txId = id || JSON.stringify(safeTx)
+export const dispatchTxExecution = async (safeTx: SafeTransaction, txId?: string): Promise<string> => {
   const sdk = getSafeSDK()
 
   txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
