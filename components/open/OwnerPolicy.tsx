@@ -32,7 +32,7 @@ type Props = {
   onBack: StepRenderProps['onBack']
 }
 
-const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
+const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
   const currentChain = useCurrentChain()
   const wallet = useWallet()
 
@@ -163,7 +163,7 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
           </Typography>
           <Box display="flex" alignItems="center" gap={2}>
             <FormControl>
-              <Select {...register('threshold')} defaultValue={1}>
+              <Select {...register('threshold')}>
                 {fields.map((field, index) => {
                   return (
                     <MenuItem key={field.id} value={index + 1}>
@@ -191,4 +191,4 @@ const OwnersAndConfirmations = ({ params, onSubmit, onBack }: Props) => {
   )
 }
 
-export default OwnersAndConfirmations
+export default OwnerPolicy

@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
-const Welcome = () => {
+const NewSafe = () => {
   const router = useRouter()
 
   return (
@@ -42,4 +42,4 @@ const Welcome = () => {
   )
 }
 
-export default Welcome
+export default NewSafe

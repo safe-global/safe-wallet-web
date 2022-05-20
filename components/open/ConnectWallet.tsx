@@ -9,7 +9,7 @@ type Props = {
   onBack: StepRenderProps['onBack']
 }
 
-const Connect = ({ onSubmit, onBack }: Props) => {
+const ConnectWallet = ({ onSubmit, onBack }: Props) => {
   const router = useRouter()
   const { configs } = useChains()
   const currentChain = useCurrentChain()
@@ -70,4 +70,4 @@ const Connect = ({ onSubmit, onBack }: Props) => {
   )
 }
 
-export default Connect
+export default ConnectWallet

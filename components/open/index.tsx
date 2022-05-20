@@ -1,8 +1,8 @@
 import React from 'react'
 
-import Connect from '@/components/open/Connect'
-import Name from '@/components/open/Name'
-import OwnersAndConfirmations from '@/components/open/OwnersAndConfirmations'
+import ConnectWallet from '@/components/open/ConnectWallet'
+import SetName from '@/components/open/SetName'
+import OwnerPolicy from '@/components/open/OwnerPolicy'
 import Review from '@/components/open/Review'
 import { useRouter } from 'next/router'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -23,16 +23,16 @@ export type CreateSafeFormData = {
 export const CreateSafeSteps: TxStepperProps['steps'] = [
   {
     label: 'Connect wallet & select network',
-    render: (data, onSubmit, onBack) => <Connect onSubmit={onSubmit} onBack={onBack} />,
+    render: (data, onSubmit, onBack) => <ConnectWallet onSubmit={onSubmit} onBack={onBack} />,
   },
   {
     label: 'Name',
-    render: (data, onSubmit, onBack) => <Name onSubmit={onSubmit} onBack={onBack} />,
+    render: (data, onSubmit, onBack) => <SetName onSubmit={onSubmit} onBack={onBack} />,
   },
   {
     label: 'Owners and Confirmations',
     render: (data, onSubmit, onBack) => (
-      <OwnersAndConfirmations params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+      <OwnerPolicy params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} />
     ),
   },
   {

@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
-import LoadSafe from '@/components/welcome'
+import NewSafe from '@/components/welcome'
 
 const Welcome: NextPage = () => {
-  return <LoadSafe />
+  return <NewSafe />
 }
 
 export default Welcome

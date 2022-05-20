@@ -11,7 +11,7 @@ type Props = {
   onBack: StepRenderProps['onBack']
 }
 
-const Name = ({ onSubmit, onBack }: Props) => {
+const SetName = ({ onSubmit, onBack }: Props) => {
   const currentChain = useCurrentChain()
   const fallbackName = useMnemonicSafeName()
   const { register, handleSubmit } = useForm<CreateSafeFormData>({ defaultValues: { name: fallbackName } })
@@ -56,4 +56,4 @@ const Name = ({ onSubmit, onBack }: Props) => {
   )
 }
 
-export default Name
+export default SetName

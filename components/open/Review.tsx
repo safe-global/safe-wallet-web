@@ -24,9 +24,7 @@ export const createNewSafe = async (
   })
 
   const safeFactory = await SafeFactory.create({ ethAdapter })
-  const safeSdk: Safe = await safeFactory.deploySafe({ safeAccountConfig: txParams })
-  console.log(safeSdk)
-  return safeSdk
+  return await safeFactory.deploySafe({ safeAccountConfig: txParams })
 }
 
 type Props = {
@@ -37,6 +35,7 @@ type Props = {
 const Review = ({ params, onBack }: Props) => {
   const wallet = useWallet()
   const currentChain = useCurrentChain()
+
   const createSafe = async () => {
     if (!wallet) return
 
