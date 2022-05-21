@@ -20,7 +20,8 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const isWrongChain = wallet && chain && wallet.chainId !== chain.chainId
 
   const handleChainSwitch = () => {
-    const chainId = hexValue(parseInt(chain!.chainId))
+    if (!chain) return
+    const chainId = hexValue(parseInt(chain.chainId))
     onboard?.setChain({ chainId })
   }
 
