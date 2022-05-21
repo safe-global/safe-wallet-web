@@ -51,6 +51,6 @@ export const txSubscribe = <T extends TxEvent>(eventType: T, callback: (detail: 
 // Log all events
 Object.values(TxEvent).forEach((event: TxEvent) => {
   txSubscribe<TxEvent>(event, (detail) => {
-    console.info(`${event} event received: ${detail}`)
+    console.info(`${event} event received`, detail)
   })
 })
