@@ -10,12 +10,18 @@ const NewTxButton = (): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const isSafeOwner = wallet && isOwner(safe?.owners, wallet.address)
-  const wrongChain = wallet && wallet.chainId !== safe?.chainId
+  const isWrongChain = wallet?.chainId !== safe?.chainId
 
   return (
     <>
-      <Button onClick={() => setTxOpen(true)} variant="contained" disabled={!wallet || !isSafeOwner}>
-        {isSafeOwner ? 'New Transaction' : !wallet ? 'Not connected' : wrongChain ? 'Wrong wallet chain' : 'Read only'}
+      <Button onClick={() => setTxOpen(true)} variant="contained" disabled={!wallet || !isSafeOwner || isWrongChain}>
+        {!wallet
+          ? 'Not connected'
+          : isWrongChain
+          ? 'Wrong wallet chain'
+          : isSafeOwner
+          ? 'New transaction'
+          : 'Read only'}
       </Button>
 
       {txOpen && <TokenTransferModal onClose={() => setTxOpen(false)} />}
