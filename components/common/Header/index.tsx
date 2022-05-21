@@ -1,9 +1,9 @@
 import { type ReactElement } from 'react'
-import { Box, Button, IconButton } from '@mui/material'
+import { Box, Button, IconButton, useIsFocusVisible } from '@mui/material'
 import css from './styles.module.css'
 import MenuIcon from '@mui/icons-material/Menu'
 import useOnboard from '@/services/wallets/useOnboard'
-import useWallet from '@/services/wallets/useWallet'
+import useWallet, { useIsWrongChain } from '@/services/wallets/useWallet'
 import { shortenAddress } from '@/services/formatters'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import { useCurrentChain } from '@/services/useChains'
@@ -17,12 +17,24 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const chain = useCurrentChain()
   const onboard = useOnboard()
   const wallet = useWallet()
-  const isWrongChain = wallet && chain && wallet.chainId !== chain.chainId
+  const isWrongChain = useIsWrongChain()
 
   const handleChainSwitch = () => {
     if (!chain) return
     const chainId = hexValue(parseInt(chain.chainId))
     onboard?.setChain({ chainId })
+  }
+
+  const handleConnect = () => {
+    onboard?.connectWallet()
+  }
+
+  const handleDisconnect = () => {
+    if (!wallet) return
+
+    onboard?.disconnectWallet({
+      label: wallet.label,
+    })
   }
 
   return (
@@ -47,18 +59,10 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
         <Box sx={{ color: 'text.primary' }}>
           {wallet.ens || shortenAddress(wallet.address)}
 
-          <Button
-            onClick={() =>
-              onboard?.disconnectWallet({
-                label: wallet.label,
-              })
-            }
-          >
-            Disconnect
-          </Button>
+          <Button onClick={handleDisconnect}>Disconnect</Button>
         </Box>
       ) : (
-        <Button onClick={() => onboard?.connectWallet()} variant="contained">
+        <Button onClick={handleConnect} variant="contained">
           Connect Wallet
         </Button>
       )}
