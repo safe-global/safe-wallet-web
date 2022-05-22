@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { Box, Button, IconButton, useIsFocusVisible } from '@mui/material'
+import { Box, Button, IconButton } from '@mui/material'
 import css from './styles.module.css'
 import MenuIcon from '@mui/icons-material/Menu'
 import useOnboard from '@/services/wallets/useOnboard'

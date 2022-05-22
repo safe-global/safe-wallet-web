@@ -1,4 +1,4 @@
-import { AddressEx, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '.'
 import { Loadable } from './common'
