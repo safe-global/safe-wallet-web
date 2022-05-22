@@ -3,6 +3,8 @@ import { Box, Button, Divider, Grid, Paper, Typography, Menu, MenuItem } from '@
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useChains, { useCurrentChain } from '@/services/useChains'
 import { useRouter } from 'next/router'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import css from '@/components/common/NetworkSelector/styles.module.css'
 
 type Props = {
   onSubmit: StepRenderProps['onSubmit']
@@ -47,7 +49,7 @@ const ConnectWallet = ({ onSubmit, onBack }: Props) => {
           {configs.map((chain) => {
             return (
               <MenuItem key={chain.chainId} data-chain={chain.shortName} onClick={handleNetworkSwitch}>
-                {chain.chainName}
+                <ChainIndicator chainId={chain.chainId} className={css.indicator} />
               </MenuItem>
             )
           })}
