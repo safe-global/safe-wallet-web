@@ -25,6 +25,7 @@ import { validateAddress } from '@/services/validation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import { useCurrentChain } from '@/services/useChains'
 import { getWeb3 } from '@/services/wallets/web3'
+import { ScanQRButton } from '@/components/common/ScanQRModal/ScanQRButton'
 
 type Props = {
   params: CreateSafeFormData
@@ -33,6 +34,7 @@ type Props = {
 }
 
 const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
+  const ethersProvider = getWeb3()
   const currentChain = useCurrentChain()
   const wallet = useWallet()
 
@@ -69,14 +71,17 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
     if (owners[index].name) return
 
     update(index, { ...owners[index], resolving: true })
-
-    const ethersProvider = getWeb3()
     const ensName = await ethersProvider.lookupAddress(event.target.value)
-
     update(index, { name: ensName || '', address: event.target.value, resolving: false })
   }
 
-  const scanQR = () => {}
+  const handleQRScan = async (address: string, closeQrModal: () => void, index: number): Promise<void> => {
+    closeQrModal()
+    const scannedAddress = address.startsWith('ethereum:') ? address.replace('ethereum:', '') : address
+    update(index, { name: '', address: scannedAddress, resolving: true })
+    const ensName = await ethersProvider.lookupAddress(scannedAddress)
+    update(index, { name: ensName || '', address: scannedAddress, resolving: false })
+  }
 
   return (
     <Paper>
@@ -145,9 +150,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
                 <Grid item xs={1} display="flex" alignItems="center" flexShrink={0}>
                   {index > 0 && (
                     <>
-                      <IconButton onClick={scanQR}>
-                        <QrCodeIcon />
-                      </IconButton>
+                      <ScanQRButton handleScan={(...args) => handleQRScan(...args, index)} />
                       <IconButton onClick={() => remove(index)}>
                         <DeleteOutlineOutlinedIcon />
                       </IconButton>
@@ -163,7 +166,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
           </Typography>
           <Box display="flex" alignItems="center" gap={2}>
             <FormControl>
-              <Select {...register('threshold')}>
+              <Select {...register('threshold')} defaultValue={1}>
                 {fields.map((field, index) => {
                   return (
                     <MenuItem key={field.id} value={index + 1}>
