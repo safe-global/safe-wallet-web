@@ -11,7 +11,7 @@ export const formatDecimals = (value: string, decimals = 18): string => {
   return formatter.format(Number(formatUnits(value, decimals)))
 }
 
-export const toDecimals = (value: string, decimals = 18): BigNumber  => {
+export const toDecimals = (value: string, decimals = 18): BigNumber => {
   return parseUnits(value, decimals)
 }
 
