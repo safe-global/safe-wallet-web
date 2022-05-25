@@ -5,17 +5,12 @@ import { EthHashInfo } from '@gnosis.pm/safe-react-components'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/services/wallets/useWallet'
-import { EIP1193Provider } from '@web3-onboard/core'
 import { useCurrentChain } from '@/services/useChains'
 import { ethers } from 'ethers'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 import { getWeb3 } from '@/services/wallets/web3'
 
-export const createNewSafe = async (
-  provider: EIP1193Provider,
-  signerAddress: string,
-  txParams: SafeAccountConfig,
-): Promise<Safe> => {
+export const createNewSafe = async (txParams: SafeAccountConfig): Promise<Safe> => {
   const ethersProvider = getWeb3()
   const signer = ethersProvider.getSigner(0)
   const ethAdapter = new EthersAdapter({
@@ -39,7 +34,7 @@ const Review = ({ params, onBack }: Props) => {
   const createSafe = async () => {
     if (!wallet) return
 
-    await createNewSafe(wallet.provider, wallet.address, {
+    await createNewSafe({
       threshold: params.threshold,
       owners: params.owners.map((owner) => owner.address),
     })
