@@ -43,7 +43,7 @@
     "@web3-onboard/trezor": "^2.0.5",
     "@web3-onboard/walletconnect": "^2.0.1",
     "ethereum-blockies-base64": "^1.0.2",
-    "ethers": "^5.5.0",
+    "ethers": "^5.6.8",
     "next": "12.1.5",
     "notistack": "^2.0.4",
     "react": "18.0.0",
