@@ -3,10 +3,6 @@ import type { DateLabel, TransactionListItem, TransactionListPage } from '@gnosi
 import { isDateLabel, isTransaction } from '@/components/transactions/utils'
 
 export const _hasInitialDateLabel = (results: TransactionListItem[]): boolean => {
-  if (!results) {
-    return false
-  }
-
   const firstDateLabelIndex = results.findIndex(isDateLabel)
   const firstTxIndex = results.findIndex(isTransaction)
 
