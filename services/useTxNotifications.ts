@@ -3,19 +3,17 @@ import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import { TxEvent, txSubscribe } from './tx/txEvents'
 
-const TxNotifications: Record<TxEvent, string> = {
-  [TxEvent.CREATED]: '',
-  [TxEvent.SIGNED]: '',
-  [TxEvent.MINING]: 'Your transaction is mining',
-  [TxEvent.EXECUTING]: 'Please confirm the execution in your wallet',
+const TxNotifications: Partial<Record<TxEvent, string>> = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
-  [TxEvent.PROPOSE_FAILED]: 'Propose failed. Please try again.',
+  [TxEvent.PROPOSED]: 'Your transaction was successfully proposed.',
+  [TxEvent.PROPOSE_FAILED]: 'Proposal failed. Please try again.',
+  [TxEvent.EXECUTING]: 'Please confirm the execution in your wallet',
+  [TxEvent.MINING]: 'Your transaction is mining',
   [TxEvent.MINED]: 'Your transaction was succesfully mined! It is now being indexed by our transaction service.',
-  [TxEvent.FAILED]: 'Your transaction was unsuccessful.',
   [TxEvent.REVERTED]: 'Please check your gas settings.',
   [TxEvent.SUCCESS]:
     'Your transaction was successfully indexed! It is now viewable in the historical transaction list.',
-  [TxEvent.PROPOSED]: 'Your transaction was successfully proposed.',
+  [TxEvent.FAILED]: 'Your transaction was unsuccessful.',
 }
 
 enum Variant {
