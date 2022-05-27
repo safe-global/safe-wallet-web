@@ -61,6 +61,11 @@ export const isMultisendTxInfo = (value: TransactionInfo): value is MultiSend =>
   return value.type === 'Custom' && value.methodName === 'multiSend'
 }
 
+// TODO: worth exporting Cancellation as a TransactionInfo type in the SDK?
+export const isCancelTxInfo = (value: TransactionInfo): boolean => {
+  return isCustomTxInfo(value) && value.isCancellation
+}
+
 export const isCreationTxInfo = (value: TransactionInfo): value is Creation => {
   return value.type === 'Creation'
 }

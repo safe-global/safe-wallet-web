@@ -2,9 +2,7 @@ import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 
-type TxDetailsState = {
-  [txId: string]: TransactionDetails
-}
+type TxDetailsState = { [chainId: string]: { [txId: string]: TransactionDetails } }
 
 const initialState: TxDetailsState = {}
 
@@ -12,9 +10,12 @@ export const txDetailsSlice = createSlice({
   name: 'txDetails',
   initialState,
   reducers: {
-    setTxDetails: (state, action: PayloadAction<TransactionDetails>) => {
+    setTxDetails: (state, action: PayloadAction<{ chainId: string; txDetails: TransactionDetails }>) => {
+      const { chainId, txDetails } = action.payload
+
+      state[chainId] ??= {}
       // @ts-ignore: Type instantiation is excessively deep and possibly infinite.
-      state[action.payload.id] = action.payload
+      state[chainId][txDetails.txId] = txDetails
     },
   },
 })
@@ -26,8 +27,8 @@ const selectTxDetailsState = (state: RootState): TxDetailsState => {
 }
 
 export const selectTxDetails = createSelector(
-  [selectTxDetailsState, (_: RootState, txId: string) => txId],
-  (txDetails, txId) => {
-    return txDetails?.[txId]
+  [selectTxDetailsState, (_: RootState, details: { chainId: string; txId: string }) => details],
+  (txDetails, { chainId, txId }) => {
+    return txDetails?.[chainId]?.[txId]
   },
 )
