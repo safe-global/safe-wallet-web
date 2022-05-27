@@ -18,7 +18,15 @@ import {
 import { shortenAddress } from '@/services/formatters'
 import { useCurrentChain } from '@/services/useChains'
 
-export const TransferTx = ({ info, withLogo = true }: { info: Transfer; withLogo?: boolean }): ReactElement => {
+export const TransferTx = ({
+  info,
+  omitSign = false,
+  withLogo = true,
+}: {
+  info: Transfer
+  omitSign?: boolean
+  withLogo?: boolean
+}): ReactElement => {
   const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
   const transfer = info.transferInfo
@@ -32,10 +40,18 @@ export const TransferTx = ({ info, withLogo = true }: { info: Transfer; withLogo
           decimals={nativeCurrency?.decimals}
           tokenSymbol={nativeCurrency?.symbol}
           logoUri={withLogo ? nativeCurrency?.logoUri : null}
+          omitSign={omitSign}
         />
       )
     case TransactionTokenType.ERC20:
-      return <TokenAmount {...transfer} direction={info.direction} logoUri={withLogo ? transfer?.logoUri : null} />
+      return (
+        <TokenAmount
+          {...transfer}
+          direction={info.direction}
+          logoUri={withLogo ? transfer?.logoUri : null}
+          omitSign={omitSign}
+        />
+      )
     case TransactionTokenType.ERC721:
       return (
         <>
@@ -72,6 +88,6 @@ const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => (
       <CreationTx info={info} />
     ) : null}
   </>
-) 
+)
 
 export default TxInfo

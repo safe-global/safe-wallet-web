@@ -29,3 +29,7 @@
   background: white;
   border-bottom-right-radius: 8px
 }
+
+.bold {
+  font-weight: bold;
+}

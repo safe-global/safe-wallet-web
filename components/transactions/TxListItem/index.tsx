@@ -68,6 +68,8 @@ const TxListItem = ({ item }: TxListItemProps): ReactElement => {
   ) : isConflictHeaderListItem(item) ? (
     <></> // ignore ConflictHeader
   ) : (
+    // TODO: The default should not be DATE_LABEL.
+    // We need to add the type guard for it after updating TransactionListItem type in the Client GW SDK
     <TxDateLabel item={item} />
   )
 }

@@ -10,7 +10,17 @@ type Props = {
 }
 
 const TransferTxInfoSummary = ({ txInfo }: { txInfo: Transfer }) => {
-  return <TransferTx info={txInfo} withLogo={false} />
+  const { direction } = txInfo
+  return (
+    <span>
+      {/* Copy should be 'Send' if is a pending transaction */}
+      {direction === TransferDirection.INCOMING ? 'Received' : 'Sent'}{' '}
+      <span className={css.bold}>
+        <TransferTx info={txInfo} withLogo={false} omitSign />
+      </span>
+      {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
+    </span>
+  )
 }
 
 const TxData = ({ txDetails }: Props): ReactElement => {
