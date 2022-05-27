@@ -1,7 +1,6 @@
 import { useMemo, type ReactElement } from 'react'
 import { DateLabel, Transaction, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
-import TxDateLabel from '../TxDateLabel'
 import { isDateLabel, isTransaction } from '../utils'
 
 type TxListProps = {
@@ -10,6 +9,8 @@ type TxListProps = {
 
 const TxList = ({ items }: TxListProps): ReactElement => {
   const list = useMemo(() => {
+    // List items can be a next/queue label, date label, conflict header or transaction
+    // so we cannot directly check index [0] for date label existence
     const firstDateLabelIndex = items.findIndex(isDateLabel)
     const firstTxIndex = items.findIndex(isTransaction)
     const shouldPrependDateLabel =
