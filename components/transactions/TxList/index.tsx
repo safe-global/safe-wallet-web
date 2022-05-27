@@ -8,9 +8,8 @@ type TxListProps = {
 }
 
 const TxList = ({ items }: TxListProps): ReactElement => {
+  // Ensure list always starts with a date label
   const list = useMemo(() => {
-    // List items can be a next/queue label, date label, conflict header or transaction
-    // so we cannot directly check index [0] for date label existence
     const firstDateLabelIndex = items.findIndex(isDateLabel)
     const firstTxIndex = items.findIndex(isTransaction)
     const shouldPrependDateLabel =
