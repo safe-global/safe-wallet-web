@@ -2,6 +2,7 @@ import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 import { Loadable } from './common'
+import { formatTxSlicePayload } from './txSliceUtils'
 
 interface TxHistoryState extends Loadable {
   page: TransactionListPage
@@ -27,7 +28,7 @@ export const txHistorySlice = createSlice({
   reducers: {
     setHistoryPage: (state, action: SetHistoryPageAction) => {
       // @ts-ignore: Type instantiation is excessively deep and possibly infinite.
-      state.page = action.payload || initialState.page
+      state.page = action.payload ? formatTxSlicePayload(action.payload) : initialState.page
     },
 
     setPageUrl: (state, action: PayloadAction<string | undefined>) => {

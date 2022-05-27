@@ -1,6 +1,7 @@
 import {
   AddressEx,
   Custom,
+  DateLabel,
   DetailedExecutionInfo,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
@@ -44,4 +45,10 @@ export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
 
 export const isTransaction = (value: TransactionListItem): value is Transaction => {
   return value.type === 'TRANSACTION'
+}
+
+// @ts-expect-error @TODO: Add DateLabel to TransactionListItem type in SDK types
+export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
+  // @ts-ignore as above
+  return value.type === 'DATE_LABEL'
 }

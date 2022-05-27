@@ -3,6 +3,7 @@ import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolki
 import type { RootState } from '@/store'
 import { Loadable } from './common'
 import { isMultisigExecutionInfo, isTransaction } from '@/components/transactions/utils'
+import { formatTxSlicePayload } from './txSliceUtils'
 
 interface TxQueueState extends Loadable {
   page: TransactionListPage
@@ -26,7 +27,7 @@ export const txQueueSlice = createSlice({
   reducers: {
     setQueuePage: (state, action: PayloadAction<TransactionListPage | undefined>) => {
       // @ts-ignore: Type instantiation is excessively deep and possibly infinite.
-      state.page = action.payload || initialState.page
+      state.page = action.payload ? formatTxSlicePayload(action.payload) : initialState.page
     },
 
     setPageUrl: (state, action: PayloadAction<string | undefined>) => {
