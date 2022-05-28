@@ -10,6 +10,7 @@ describe('txEvents', () => {
     const event = TxEvent.MINING
 
     const detail = {
+      txId: '123',
       txHash: '0x123',
       tx,
     }
@@ -23,6 +24,7 @@ describe('txEvents', () => {
     expect(callback).toHaveBeenCalledWith(detail)
 
     const detail2 = {
+      txId: '123',
       txHash: '0x456',
       tx,
     }

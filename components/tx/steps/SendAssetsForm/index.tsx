@@ -117,6 +117,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
           label="Amount"
           error={!!errors.amount}
           helperText={errors.amount?.message}
+          autoComplete="off"
           {...register('amount', { required: true, validate: validateAmount })}
         />
       </FormControl>

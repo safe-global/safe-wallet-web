@@ -8,7 +8,7 @@ import ExecuteProposedTx from '@/components/tx/steps/ExecuteProposedTx'
 export const ExecuteTxSteps: TxStepperProps['steps'] = [
   {
     label: 'Execute transaction',
-    render: (data) => <ExecuteProposedTx txSummary={data as TransactionSummary} />,
+    render: (data, onSubmit) => <ExecuteProposedTx txSummary={data as TransactionSummary} onSubmit={onSubmit} />,
   },
 ]
 

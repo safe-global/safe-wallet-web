@@ -1,7 +1,7 @@
 import { useState, type ReactElement } from 'react'
 import { Button, FormControl, TextField, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import type { TokenInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
@@ -20,8 +20,7 @@ const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData
   return (
     <p>
       Send <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
-      {params.amount}
-      {tokenInfo.symbol}
+      {params.amount} {tokenInfo.symbol}
       {' to '}
       {shortenAddress(params.recipient)}
     </p>
@@ -32,11 +31,15 @@ type ReviewTxForm = {
   nonce: number
 }
 
-const ReviewNewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
+type ReviewNewTxProps = {
+  params: SendAssetsFormData
+  onSubmit: (data: null) => void
+}
+
+const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   const { balances } = useBalances()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
-  const [txDetails, setTxDetails] = useState<TransactionDetails>()
   const wallet = useWallet()
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
@@ -65,16 +68,16 @@ const ReviewNewTx = ({ params }: { params: SendAssetsFormData }): ReactElement =
 
     setIsSubmittable(false)
 
-    let proposedTx: TransactionDetails | undefined
     try {
       const safeTx = await createTx(editedTxParams)
       const signedTx = await dispatchTxSigning(safeTx)
-      proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
+      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     } catch {
       setIsSubmittable(true)
+      return
     }
 
-    if (proposedTx) setTxDetails(proposedTx)
+    onSubmit(null)
   }
 
   return (
@@ -98,8 +101,6 @@ const ReviewNewTx = ({ params }: { params: SendAssetsFormData }): ReactElement =
           })}
         />
       </FormControl>
-
-      <pre>{JSON.stringify(txDetails)}</pre>
 
       <div className={css.submit}>
         <Button variant="contained" type="submit" disabled={!isSubmittable}>

@@ -1,5 +1,5 @@
 import { useAppDispatch } from '@/store'
-import { setPendingTx } from '@/store/pendingTxsSlice'
+import { clearPendingTx, setPendingTx } from '@/store/pendingTxsSlice'
 import { useEffect } from 'react'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useChainId from './useChainId'
@@ -10,10 +10,17 @@ const pendingStatuses: Partial<Record<TxEvent, string>> = {
   [TxEvent.MINED]: 'Indexing',
 }
 
+const finishedStatuses: Partial<Record<TxEvent, string>> = {
+  [TxEvent.SUCCESS]: 'Success',
+  [TxEvent.REVERTED]: 'Reverted',
+  [TxEvent.FAILED]: 'Failed',
+}
+
 const useTxPendingStatuses = (): void => {
   const dispatch = useAppDispatch()
   const chainId = useChainId()
 
+  // Subscribe to pending statuses
   useEffect(() => {
     const unsubFns = Object.entries(pendingStatuses)
       .map(([event, status]) =>
@@ -36,6 +43,27 @@ const useTxPendingStatuses = (): void => {
       unsubFns.forEach((unsub) => unsub?.())
     }
   }, [dispatch, chainId])
+
+  // Subscribe to finished statuses
+  useEffect(() => {
+    const unsubFns = Object.entries(finishedStatuses)
+      .map(([event]) =>
+        txSubscribe(event as TxEvent, (detail) => {
+          if (!('txId' in detail) || !detail.txId) return
+
+          dispatch(
+            clearPendingTx({
+              txId: detail.txId,
+            }),
+          )
+        }),
+      )
+      .filter(Boolean)
+
+    return () => {
+      unsubFns.forEach((unsub) => unsub?.())
+    }
+  }, [dispatch])
 }
 
 export default useTxPendingStatuses
