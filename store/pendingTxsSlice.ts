@@ -1,9 +1,6 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/store'
-import { SetHistoryPageAction, txHistorySlice } from './txHistorySlice'
-import { isTransaction } from '@/components/transactions/utils'
-import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 interface PendingTxsState {
   [txId: string]: {
@@ -29,32 +26,6 @@ export const pendingTxsSlice = createSlice({
     clearPendingTx: (state, action: PayloadAction<{ txId: string }>) => {
       delete state[action.payload.txId]
     },
-  },
-
-  extraReducers: (builder) => {
-    builder.addMatcher(
-      // Remove pending transaction when it is loaded in the history list
-      (action) => action.type === txHistorySlice.actions.setHistoryPage.type,
-      (state, action: SetHistoryPageAction) => {
-        if (!action.payload) {
-          return
-        }
-
-        for (const result of action.payload.results) {
-          if (!isTransaction(result)) {
-            continue
-          }
-          const { id } = result.transaction
-          const pendingTx = state[id]
-          if (pendingTx) {
-            // A small timeout to avoid triggering triggering another reducer immediately
-            setTimeout(() => {
-              txDispatch(TxEvent.SUCCESS, { txId: id })
-            }, 100)
-          }
-        }
-      },
-    )
   },
 })
 

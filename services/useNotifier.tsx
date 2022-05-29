@@ -15,32 +15,26 @@ const useNotifier = () => {
 
   useEffect(() => {
     for (const notification of notifications) {
-      const key = notification.options?.key ?? ''
+      // Unspecified keys are automatically generated in `showNotification`
+      const key = notification.options!.key!
 
       if (notification.dismissed) {
         closeSnackbar(key)
         continue
       }
 
-      if (key && onScreenKeys.includes(key)) {
+      if (onScreenKeys.includes(key)) {
         continue
       }
 
       enqueueSnackbar(notification.message, {
-        key,
+        ...notification.options,
         action: (
           <IconButton onClick={() => dispatch(closeNotification({ key }))}>
             <CloseIcon />
           </IconButton>
         ),
-        ...notification.options,
-        // Run callback when notification is closing
-        onClose: (event, reason, key) => {
-          if (notification.options?.onClose) {
-            notification.options.onClose(event, reason, key)
-          }
-        },
-        onExited: (_, key) => {
+        onExited: () => {
           // Cleanup store/cache when notification has unmounted
           dispatch(closeNotification({ key }))
           onScreenKeys = onScreenKeys.filter((onScreenKey) => onScreenKey !== key)

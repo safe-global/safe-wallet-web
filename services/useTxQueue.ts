@@ -44,15 +44,9 @@ export const useInitTxQueue = (): void => {
     // Don't reload the queue if we're not on the first page
     if (pageUrl) return
 
-    const reloadQueue = () => setReloadCount((prev) => prev + 1)
-
-    const unsubscribePropose = txSubscribe(TxEvent.PROPOSED, reloadQueue)
-    const unsubscribeSuccess = txSubscribe(TxEvent.SUCCESS, reloadQueue)
-
-    return () => {
-      unsubscribePropose()
-      unsubscribeSuccess()
-    }
+    return txSubscribe(TxEvent.PROPOSED, () => {
+      setReloadCount((prev) => prev + 1)
+    })
   }, [pageUrl])
 }
 
