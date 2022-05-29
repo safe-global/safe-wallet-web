@@ -27,10 +27,7 @@ export const pendingTxsSlice = createSlice({
       state[txId] = pendingTx
     },
     clearPendingTx: (state, action: PayloadAction<{ txId: string }>) => {
-      const { txId } = action.payload
-      if (state[txId]) {
-        delete state[txId]
-      }
+      delete state[action.payload.txId]
     },
   },
 
