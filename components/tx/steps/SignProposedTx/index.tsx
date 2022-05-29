@@ -21,7 +21,6 @@ const SignProposedTx = ({ txSummary, onSubmit }: ReviewNewTxProps): ReactElement
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
   const onFinish = async (actionFn: () => Promise<void>) => {
-    if (!wallet) return
     setIsSubmittable(false)
     try {
       await actionFn()
@@ -33,10 +32,12 @@ const SignProposedTx = ({ txSummary, onSubmit }: ReviewNewTxProps): ReactElement
   }
 
   const onSign = async () => {
+    if (!wallet) return
+
     onFinish(async () => {
       const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
       const signedTx = await dispatchTxSigning(safeTx, txSummary.id)
-      await dispatchTxProposal(chainId, safeAddress, wallet!.address, signedTx)
+      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     })
   }
 
