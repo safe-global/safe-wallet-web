@@ -50,7 +50,10 @@ export const pendingTxsSlice = createSlice({
           const { id } = result.transaction
           const pendingTx = state[id]
           if (pendingTx) {
-            txDispatch(TxEvent.SUCCESS, { txId: id })
+            // A small timeout to avoid triggering triggering another reducer immediately
+            setTimeout(() => {
+              txDispatch(TxEvent.SUCCESS, { txId: id })
+            }, 100)
           }
         }
       },

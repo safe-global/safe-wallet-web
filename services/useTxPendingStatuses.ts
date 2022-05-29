@@ -4,16 +4,13 @@ import { useEffect } from 'react'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useChainId from './useChainId'
 
-const pendingStatuses: Partial<Record<TxEvent, string>> = {
+const pendingStatuses: Partial<Record<TxEvent, string | null>> = {
   [TxEvent.EXECUTING]: 'Submitting',
   [TxEvent.MINING]: 'Mining',
   [TxEvent.MINED]: 'Indexing',
-}
-
-const finishedStatuses: Partial<Record<TxEvent, string>> = {
-  [TxEvent.SUCCESS]: 'Success',
-  [TxEvent.REVERTED]: 'Reverted',
-  [TxEvent.FAILED]: 'Failed',
+  [TxEvent.SUCCESS]: null,
+  [TxEvent.REVERTED]: null,
+  [TxEvent.FAILED]: null,
 }
 
 const useTxPendingStatuses = (): void => {
@@ -22,48 +19,33 @@ const useTxPendingStatuses = (): void => {
 
   // Subscribe to pending statuses
   useEffect(() => {
-    const unsubFns = Object.entries(pendingStatuses)
-      .map(([event, status]) =>
-        txSubscribe(event as TxEvent, (detail) => {
-          if (!('txId' in detail) || !detail.txId) return
+    const unsubFns = Object.entries(pendingStatuses).map(([event, status]) =>
+      txSubscribe(event as TxEvent, (detail) => {
+        // All pending txns should have a txId
+        const txId = 'txId' in detail && detail.txId
+        if (!txId) return
 
+        // Clear the pending status if the tx is no longer pending
+        if (status === null) {
+          dispatch(clearPendingTx({ txId }))
+        } else {
+          // Or set a new status
           dispatch(
             setPendingTx({
               chainId,
-              txId: detail.txId,
+              txId,
               status,
               txHash: 'txHash' in detail ? detail.txHash : undefined,
             }),
           )
-        }),
-      )
-      .filter(Boolean)
+        }
+      }),
+    )
 
     return () => {
-      unsubFns.forEach((unsub) => unsub?.())
+      unsubFns.forEach((unsub) => unsub())
     }
   }, [dispatch, chainId])
-
-  // Subscribe to finished statuses
-  useEffect(() => {
-    const unsubFns = Object.entries(finishedStatuses)
-      .map(([event]) =>
-        txSubscribe(event as TxEvent, (detail) => {
-          if (!('txId' in detail) || !detail.txId) return
-
-          dispatch(
-            clearPendingTx({
-              txId: detail.txId,
-            }),
-          )
-        }),
-      )
-      .filter(Boolean)
-
-    return () => {
-      unsubFns.forEach((unsub) => unsub?.())
-    }
-  }, [dispatch])
 }
 
 export default useTxPendingStatuses
