@@ -30,14 +30,14 @@ const useTxNotifications = (): void => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
         const message = isError ? `${baseMessage} ${detail.error.message}` : baseMessage
+        const txId = 'txId' in detail && detail.txId
 
         dispatch(
           showNotification({
             message,
             options: {
-              // For the key, use the entire serialized tx
-              // This will stack notifications if multiple txs are sent at once
-              key: 'tx' in detail ? JSON.stringify(detail.tx) : detail.txId || '',
+              // The key will stack notifications with the same txId if multiple txs are sent at once
+              key: txId || '',
               variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
             },
           }),
