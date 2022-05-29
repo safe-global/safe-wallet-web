@@ -8,35 +8,44 @@ import { useChainId } from '@/services/useChainId'
 import { createExistingTx, dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/services/wallets/useWallet'
 
-const SignProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
+type ReviewNewTxProps = {
+  txSummary: TransactionSummary
+  onSubmit: (data: null) => void
+}
+
+const SignProposedTx = ({ txSummary, onSubmit }: ReviewNewTxProps): ReactElement => {
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const wallet = useWallet()
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
+  const onFinish = async (actionFn: () => Promise<void>) => {
+    setIsSubmittable(false)
+    try {
+      await actionFn()
+    } catch (err) {
+      setIsSubmittable(true)
+      return
+    }
+    onSubmit(null)
+  }
+
   const onSign = async () => {
     if (!wallet) return
 
-    try {
+    onFinish(async () => {
       const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
       const signedTx = await dispatchTxSigning(safeTx, txSummary.id)
       await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
-    } catch (err) {
-      // do something
-    }
+    })
   }
 
   const onExecute = async () => {
-    if (!wallet) return
-
-    setIsSubmittable(false)
-    try {
+    onFinish(async () => {
       const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
       await dispatchTxExecution(safeTx, txSummary.id)
-    } catch {
-      setIsSubmittable(true)
-    }
+    })
   }
 
   const handleSubmit = shouldExecute ? onExecute : onSign

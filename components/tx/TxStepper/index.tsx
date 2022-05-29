@@ -29,6 +29,10 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
   }
 
   const onSubmit = (data: unknown) => {
+    if (activeStep === steps.length - 1) {
+      onClose()
+      return
+    }
     const allData = [...stepData]
     allData[activeStep] = data
     setStepData(allData)

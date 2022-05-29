@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, useState } from 'react'
 import { Button, Typography } from '@mui/material'
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -9,22 +9,31 @@ import useWallet from '@/services/wallets/useWallet'
 import useChainId from '@/services/useChainId'
 import useSafeAddress from '@/services/useSafeAddress'
 
-const RejectTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
+type RejectTxProps = {
+  txSummary: TransactionSummary
+  onSubmit: (data: null) => void
+}
+
+const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
   const wallet = useWallet()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
   const onReject = async () => {
     if (!txNonce || !wallet?.address) return
 
+    setIsSubmittable(false)
     try {
       const rejectTx = await createRejectTx(txNonce)
       const signedTx = await dispatchTxSigning(rejectTx)
       await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     } catch (err) {
-      // do something
+      setIsSubmittable(true)
+      return
     }
+    onSubmit(null)
   }
 
   return (
@@ -46,7 +55,7 @@ const RejectTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElemen
       </Typography>
 
       <div className={css.submit}>
-        <Button variant="contained" onClick={onReject}>
+        <Button variant="contained" onClick={onReject} disabled={!isSubmittable}>
           Reject transaction
         </Button>
       </div>

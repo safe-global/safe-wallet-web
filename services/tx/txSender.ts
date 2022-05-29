@@ -93,9 +93,9 @@ export const dispatchTxExecution = async (safeTx: SafeTransaction, txId: string)
 
   txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
 
+  // Execute the tx
   let result: TransactionResult | undefined
   try {
-    // Execute the tx
     result = await sdk.executeTransaction(safeTx)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
@@ -104,20 +104,20 @@ export const dispatchTxExecution = async (safeTx: SafeTransaction, txId: string)
 
   txDispatch(TxEvent.MINING, { txId, txHash: result.hash, tx: safeTx })
 
-  try {
-    // Await for tx to be mined
-    const receipt = (await result.transactionResponse?.wait()) as ContractReceipt
-
-    const didRevert = receipt.status === 0
-    if (didRevert) {
-      txDispatch(TxEvent.REVERTED, { txId, receipt, tx: safeTx, error: new Error('Transaction reverted by EVM') })
-    } else {
-      txDispatch(TxEvent.MINED, { txId, tx: safeTx, receipt })
-    }
-  } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
-    throw error
-  }
+  // Asynchronously watch the tx to be mined
+  result.transactionResponse
+    ?.wait()
+    .then((receipt: ContractReceipt) => {
+      const didRevert = receipt.status === 0
+      if (didRevert) {
+        txDispatch(TxEvent.REVERTED, { txId, receipt, tx: safeTx, error: new Error('Transaction reverted by EVM') })
+      } else {
+        txDispatch(TxEvent.MINED, { txId, tx: safeTx, receipt })
+      }
+    })
+    .catch((error) => {
+      txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
+    })
 
   return result.hash
 }

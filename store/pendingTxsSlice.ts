@@ -24,10 +24,13 @@ export const pendingTxsSlice = createSlice({
       action: PayloadAction<{ chainId: string; txId: string; txHash?: string; status: string }>,
     ) => {
       const { txId, ...pendingTx } = action.payload
-
       state[txId] = pendingTx
     },
+    clearPendingTx: (state, action: PayloadAction<{ txId: string }>) => {
+      delete state[action.payload.txId]
+    },
   },
+
   extraReducers: (builder) => {
     builder.addMatcher(
       // Remove pending transaction when it is loaded in the history list
@@ -41,13 +44,13 @@ export const pendingTxsSlice = createSlice({
           if (!isTransaction(result)) {
             continue
           }
-
           const { id } = result.transaction
-
           const pendingTx = state[id]
           if (pendingTx) {
-            delete state[id]
-            txDispatch(TxEvent.SUCCESS, { txId: id })
+            // A small timeout to avoid triggering triggering another reducer immediately
+            setTimeout(() => {
+              txDispatch(TxEvent.SUCCESS, { txId: id })
+            }, 100)
           }
         }
       },
@@ -55,7 +58,7 @@ export const pendingTxsSlice = createSlice({
   },
 })
 
-export const { setPendingTx } = pendingTxsSlice.actions
+export const { setPendingTx, clearPendingTx } = pendingTxsSlice.actions
 
 export const selectPendingTxs = (state: RootState): PendingTxsState => {
   return state[pendingTxsSlice.name]

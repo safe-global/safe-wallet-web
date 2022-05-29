@@ -12,7 +12,7 @@ export const TokenTransferSteps: TxStepperProps['steps'] = [
   },
   {
     label: 'Review',
-    render: (data) => <ReviewNewTx params={data as SendAssetsFormData} />,
+    render: (data, onSubmit) => <ReviewNewTx params={data as SendAssetsFormData} onSubmit={onSubmit} />,
   },
 ]
 
