@@ -1,7 +1,10 @@
 import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '@/store'
+import type { AppThunk, RootState } from '@/store'
 import { Loadable } from './common'
+import { isTransaction } from '@/components/transactions/utils'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { selectPendingTxs } from './pendingTxsSlice'
 
 interface TxHistoryState extends Loadable {
   page: TransactionListPage
@@ -36,7 +39,33 @@ export const txHistorySlice = createSlice({
   },
 })
 
-export const { setHistoryPage, setPageUrl } = txHistorySlice.actions
+export const setHistoryPage = (payload: TransactionListPage | undefined): AppThunk => {
+  return (dispatch, getState) => {
+    if (payload?.results) {
+      const pendingTxs = selectPendingTxs(getState())
+
+      if (Object.keys(pendingTxs).length === 0) {
+        return
+      }
+
+      for (const result of payload.results) {
+        if (!isTransaction(result)) {
+          continue
+        }
+
+        const { id } = result.transaction
+
+        if (pendingTxs[id]) {
+          txDispatch(TxEvent.SUCCESS, { txId: id })
+        }
+      }
+    }
+
+    return dispatch(txHistorySlice.actions.setHistoryPage(payload))
+  }
+}
+
+export const { setPageUrl } = txHistorySlice.actions
 
 export const selectTxHistory = (state: RootState): TxHistoryState => {
   return state[txHistorySlice.name]
