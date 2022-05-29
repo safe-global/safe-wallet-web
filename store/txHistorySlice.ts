@@ -41,27 +41,29 @@ export const txHistorySlice = createSlice({
 
 export const setHistoryPage = (payload: TransactionListPage | undefined): AppThunk => {
   return (dispatch, getState) => {
-    if (payload?.results) {
-      const pendingTxs = selectPendingTxs(getState())
+    dispatch(txHistorySlice.actions.setHistoryPage(payload))
 
-      if (Object.keys(pendingTxs).length === 0) {
-        return
-      }
-
-      for (const result of payload.results) {
-        if (!isTransaction(result)) {
-          continue
-        }
-
-        const { id } = result.transaction
-
-        if (pendingTxs[id]) {
-          txDispatch(TxEvent.SUCCESS, { txId: id })
-        }
-      }
+    if (!payload?.results) {
+      return
     }
 
-    return dispatch(txHistorySlice.actions.setHistoryPage(payload))
+    const pendingTxs = selectPendingTxs(getState())
+
+    if (Object.keys(pendingTxs).length === 0) {
+      return
+    }
+
+    for (const result of payload.results) {
+      if (!isTransaction(result)) {
+        continue
+      }
+
+      const { id } = result.transaction
+
+      if (pendingTxs[id]) {
+        txDispatch(TxEvent.SUCCESS, { txId: id })
+      }
+    }
   }
 }
 
