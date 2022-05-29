@@ -1,7 +1,7 @@
 import React, { MouseEvent, useState } from 'react'
 import { Box, Button, Divider, Grid, Paper, Typography, Menu, MenuItem } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import useChains, { useCurrentChain } from '@/services/useChains'
+import useChains from '@/services/useChains'
 import { useRouter } from 'next/router'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import css from '@/components/common/NetworkSelector/styles.module.css'
@@ -14,7 +14,6 @@ type Props = {
 const ConnectWallet = ({ onSubmit, onBack }: Props) => {
   const router = useRouter()
   const { configs } = useChains()
-  const currentChain = useCurrentChain()
   const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -34,7 +33,8 @@ const ConnectWallet = ({ onSubmit, onBack }: Props) => {
     <Paper>
       <Box padding={3}>
         <Typography variant="body1">
-          Select network on which to create your Safe. The app is currently pointing to {currentChain?.chainName}
+          Select network on which to create your Safe. The app is currently pointing to{' '}
+          <ChainIndicator className={css.inlineIndicator} />
         </Typography>
         <Button onClick={handleClick}>Switch network</Button>
         <Menu

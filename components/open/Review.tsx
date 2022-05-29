@@ -5,10 +5,11 @@ import { EthHashInfo } from '@gnosis.pm/safe-react-components'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/services/wallets/useWallet'
-import { useCurrentChain } from '@/services/useChains'
 import { ethers } from 'ethers'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 import { getWeb3 } from '@/services/wallets/web3'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import css from '@/components/common/NetworkSelector/styles.module.css'
 
 export const createNewSafe = async (txParams: SafeAccountConfig): Promise<Safe> => {
   const ethersProvider = getWeb3()
@@ -29,7 +30,6 @@ type Props = {
 
 const Review = ({ params, onBack }: Props) => {
   const wallet = useWallet()
-  const currentChain = useCurrentChain()
 
   const createSafe = async () => {
     if (!wallet) return
@@ -45,16 +45,16 @@ const Review = ({ params, onBack }: Props) => {
       <Grid container>
         <Grid item md={4}>
           <Box padding={3}>
-            <Typography variant="body1">Details</Typography>
-            <Typography>
+            <Typography mb={3}>Details</Typography>
+            <Typography variant="caption" color="text.secondary">
               Name of the new Safe
-              <br />
-              {params.name}
             </Typography>
-            <Typography>
+            <Typography mb={3}>{params.name}</Typography>
+            <Typography variant="caption" color="text.secondary">
               Any transaction requires the confirmation of:
-              <br />
-              {params.threshold}
+            </Typography>
+            <Typography mb={3}>
+              {params.threshold} out of {params.owners.length}
             </Typography>
           </Box>
         </Grid>
@@ -69,9 +69,9 @@ const Review = ({ params, onBack }: Props) => {
       </Grid>
       <Box padding={3} bgcolor={(theme) => theme.palette.grey.A100}>
         <Typography textAlign="center">
-          You are about to create a new Safe on {currentChain?.chainName} and will have to confirm a transaction with
-          your currently connected wallet. The creation will cost approximately GAS_ESTIMATION. The exact amount will be
-          determined by your wallet.
+          You are about to create a new Safe on <ChainIndicator className={css.inlineIndicator} /> and will have to
+          confirm a transaction with your currently connected wallet. The creation will cost approximately
+          GAS_ESTIMATION. The exact amount will be determined by your wallet.
         </Typography>
       </Box>
       <Divider />

@@ -14,18 +14,18 @@ import {
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import RefreshIcon from '@mui/icons-material/Refresh'
-import QrCodeIcon from '@mui/icons-material/QrCode'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { useFieldArray, useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
+import indicatorCss from '@/components/common/NetworkSelector/styles.module.css'
 import { CreateSafeFormData } from '@/components/open/index'
 import useWallet from '@/services/wallets/useWallet'
 import { validateAddress } from '@/services/validation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import { useCurrentChain } from '@/services/useChains'
 import { getWeb3 } from '@/services/wallets/web3'
 import { ScanQRButton } from '@/components/common/ScanQRModal/ScanQRButton'
+import ChainIndicator from '@/components/common/ChainIndicator'
 
 type Props = {
   params: CreateSafeFormData
@@ -35,7 +35,6 @@ type Props = {
 
 const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
   const ethersProvider = getWeb3()
-  const currentChain = useCurrentChain()
   const wallet = useWallet()
 
   const defaultOwner = {
@@ -87,14 +86,15 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
     <Paper>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box padding={3}>
-          <Typography variant="body1">
+          <Typography mb={2}>
             Your Safe will have one or more owners. We have prefilled the first owner with your connected wallet
             details, but you are free to change this to a different owner.
           </Typography>
           <Typography>
             Add additional owners (e.g. wallets of your teammates) and specify how many of them have to confirm a
             transaction before it gets executed. In general, the more confirmations required, the more secure your Safe
-            is.Learn about which Safe setup to use. The new Safe will ONLY be available on {currentChain?.chainName}
+            is.Learn about which Safe setup to use. The new Safe will ONLY be available on{' '}
+            <ChainIndicator className={indicatorCss.inlineIndicator} />
           </Typography>
         </Box>
         <Divider />
