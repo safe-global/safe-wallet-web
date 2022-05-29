@@ -26,19 +26,21 @@ const useTxPendingStatuses = (): void => {
         if (!txId) return
 
         // Clear the pending status if the tx is no longer pending
-        if (status === null) {
+        const isFinished = status === null
+        if (isFinished) {
           dispatch(clearPendingTx({ txId }))
-        } else {
-          // Or set a new status
-          dispatch(
-            setPendingTx({
-              chainId,
-              txId,
-              status,
-              txHash: 'txHash' in detail ? detail.txHash : undefined,
-            }),
-          )
+          return
         }
+
+        // Or set a new status
+        dispatch(
+          setPendingTx({
+            chainId,
+            txId,
+            status,
+            txHash: 'txHash' in detail ? detail.txHash : undefined,
+          }),
+        )
       }),
     )
 
