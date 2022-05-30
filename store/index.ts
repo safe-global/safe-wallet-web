@@ -11,7 +11,7 @@ import { safeInfoSlice } from './safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { collectiblesSlice } from './collectiblesSlice'
 import { currencySlice } from './currencySlice'
-import { txHistorySlice } from './txHistorySlice'
+import { txHistorySlice, txHistoryMiddleware } from './txHistorySlice'
 import { txQueueSlice } from './txQueueSlice'
 import { addressBookSlice } from './addressBookSlice'
 import { notificationsSlice } from './notificationsSlice'
@@ -40,7 +40,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   addedSafesSlice.name,
 ]
 
-const middleware = [persistState(persistedSlices)]
+const middleware = [persistState(persistedSlices), txHistoryMiddleware]
 
 export const store = configureStore({
   reducer: rootReducer,
