@@ -22,12 +22,10 @@ const usePathRewrite = () => {
 
     // Add the rest of the query params if any
     if (Object.keys(restQuery).length) {
-      const qPairs = Object.entries(restQuery)
-        .map(([key, values]) => {
-          if (!(values instanceof Array)) values = [ values || '' ]
-          return `${key}=${values.map(encodeURIComponent).join(',')}`
-        })
-        console.log(qPairs)
+      const qPairs = Object.entries(restQuery).map(([key, values]) => {
+        if (!(values instanceof Array)) values = [values || '']
+        return `${key}=${values.map(encodeURIComponent).join(',')}`
+      })
       newPath += `?${qPairs.join('&')}`
     }
 
