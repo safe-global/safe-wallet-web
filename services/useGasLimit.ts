@@ -1,9 +1,9 @@
-import { type MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
+import type { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 
 import useAsync from '@/services/useAsync'
-import { getWeb3ReadOnly } from '@/services/wallets/web3'
+import { useWeb3ReadOnly } from '@/services/wallets/Web3Provider'
 
-const useBaseGas = (
+const useGasLimit = (
   txParams?: MetaTransactionData,
 ): {
   gasLimit?: number
@@ -11,7 +11,7 @@ const useBaseGas = (
   loading: boolean
 } => {
   const serializedParams = JSON.stringify(txParams)
-  const web3ReadOnly = getWeb3ReadOnly()
+  const web3ReadOnly = useWeb3ReadOnly()
 
   const [gasLimit, error, loading] = useAsync<any>(async () => {
     if (!txParams || !web3ReadOnly) return undefined
@@ -26,4 +26,4 @@ const useBaseGas = (
   return { gasLimit, error, loading }
 }
 
-export default useBaseGas
+export default useGasLimit
