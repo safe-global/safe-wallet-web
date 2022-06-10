@@ -5,7 +5,6 @@ import { CreateSafeFormData } from '@/components/open/index'
 import { useMnemonicSafeName } from '@/services/useMnemonicName'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import css from '@/components/common/NetworkSelector/styles.module.css'
 
 type Props = {
   onSubmit: StepRenderProps['onSubmit']
@@ -23,7 +22,7 @@ const SetName = ({ onSubmit, onBack }: Props) => {
           <Typography variant="body1" mb={2}>
             You are about to create a new Gnosis Safe wallet with one or more owners. First, let&apos;s give your new
             wallet a name. This name is only stored locally and will never be shared with Gnosis or any third parties.
-            The new Safe will ONLY be available on <ChainIndicator className={css.inlineIndicator} />
+            The new Safe will ONLY be available on <ChainIndicator inline />
           </Typography>
           <FormControl>
             <TextField

@@ -4,7 +4,6 @@ import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useChains from '@/services/useChains'
 import { useRouter } from 'next/router'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import css from '@/components/common/NetworkSelector/styles.module.css'
 
 type Props = {
   onSubmit: StepRenderProps['onSubmit']
@@ -33,8 +32,7 @@ const ConnectWallet = ({ onSubmit, onBack }: Props) => {
     <Paper>
       <Box padding={3}>
         <Typography variant="body1">
-          Select network on which to create your Safe. The app is currently pointing to{' '}
-          <ChainIndicator className={css.inlineIndicator} />
+          Select network on which to create your Safe. The app is currently pointing to <ChainIndicator inline />
         </Typography>
         <Button onClick={handleClick}>Switch network</Button>
         <Menu
@@ -49,7 +47,7 @@ const ConnectWallet = ({ onSubmit, onBack }: Props) => {
           {configs.map((chain) => {
             return (
               <MenuItem key={chain.chainId} data-chain={chain.shortName} onClick={handleNetworkSwitch}>
-                <ChainIndicator chainId={chain.chainId} className={css.indicator} />
+                <ChainIndicator chainId={chain.chainId} inline />
               </MenuItem>
             )
           })}

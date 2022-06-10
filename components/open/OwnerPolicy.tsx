@@ -18,7 +18,6 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import { useFieldArray, useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
-import indicatorCss from '@/components/common/NetworkSelector/styles.module.css'
 import { CreateSafeFormData, Owner } from '@/components/open/index'
 import useWallet from '@/services/wallets/useWallet'
 import { validateAddress } from '@/services/validation'
@@ -94,8 +93,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
           <Typography>
             Add additional owners (e.g. wallets of your teammates) and specify how many of them have to confirm a
             transaction before it gets executed. In general, the more confirmations required, the more secure your Safe
-            is. Learn about which Safe setup to use. The new Safe will ONLY be available on{' '}
-            <ChainIndicator className={indicatorCss.inlineIndicator} />
+            is. Learn about which Safe setup to use. The new Safe will ONLY be available on <ChainIndicator inline />
           </Typography>
         </Box>
         <Divider />

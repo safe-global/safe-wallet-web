@@ -7,7 +7,6 @@ import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/services/wallets/useWallet'
 import { getWeb3 } from '@/services/wallets/web3'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import css from '@/components/common/NetworkSelector/styles.module.css'
 import { getEthersAdapter } from '@/services/safe-core/safeCoreSDK'
 
 export const createNewSafe = async (txParams: SafeAccountConfig): Promise<Safe> => {
@@ -64,9 +63,9 @@ const Review = ({ params, onBack }: Props) => {
       </Grid>
       <Box padding={3} bgcolor={(theme) => theme.palette.grey.A100}>
         <Typography textAlign="center">
-          You are about to create a new Safe on <ChainIndicator className={css.inlineIndicator} /> and will have to
-          confirm a transaction with your currently connected wallet. The creation will cost approximately
-          GAS_ESTIMATION. The exact amount will be determined by your wallet.
+          You are about to create a new Safe on <ChainIndicator inline /> and will have to confirm a transaction with
+          your currently connected wallet. The creation will cost approximately GAS_ESTIMATION. The exact amount will be
+          determined by your wallet.
         </Typography>
       </Box>
       <Divider />
