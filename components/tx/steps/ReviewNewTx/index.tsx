@@ -1,10 +1,10 @@
 import { useState, type ReactElement } from 'react'
 import { Button, FormControl, TextField, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import type { TokenInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
-import { createTokenTransferParams } from '@/services/createTransaction'
+import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import { shortenAddress } from '@/services/formatters'
 import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
@@ -13,15 +13,14 @@ import { type SendAssetsFormData } from '@/components/tx/steps/SendAssetsForm'
 import css from './styles.module.css'
 import useChainId from '@/services/useChainId'
 import useSafeAddress from '@/services/useSafeAddress'
-import { dispatchTxCreation } from '@/services/txSender'
+import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/services/wallets/useWallet'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
     <p>
       Send <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
-      {params.amount}
-      {tokenInfo.symbol}
+      {params.amount} {tokenInfo.symbol}
       {' to '}
       {shortenAddress(params.recipient)}
     </p>
@@ -32,11 +31,15 @@ type ReviewTxForm = {
   nonce: number
 }
 
-const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
+type ReviewNewTxProps = {
+  params: SendAssetsFormData
+  onSubmit: (data: null) => void
+}
+
+const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   const { balances } = useBalances()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
-  const [txDetails, setTxDetails] = useState<TransactionDetails>()
   const wallet = useWallet()
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
@@ -63,15 +66,18 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
       safeTxGas: Number(safeGas?.safeTxGas || 0),
     }
 
-    let createdTx: TransactionDetails | undefined
+    setIsSubmittable(false)
+
     try {
-      setIsSubmittable(false)
-      createdTx = await dispatchTxCreation(chainId, safeAddress, wallet.address, editedTxParams)
+      const safeTx = await createTx(editedTxParams)
+      const signedTx = await dispatchTxSigning(safeTx)
+      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     } catch {
       setIsSubmittable(true)
+      return
     }
 
-    if (createdTx) setTxDetails(createdTx)
+    onSubmit(null)
   }
 
   return (
@@ -96,8 +102,6 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
         />
       </FormControl>
 
-      <pre>{JSON.stringify(txDetails, null, 2)}</pre>
-
       <div className={css.submit}>
         <Button variant="contained" type="submit" disabled={!isSubmittable}>
           Submit
@@ -109,4 +113,4 @@ const ReviewTx = ({ params }: { params: SendAssetsFormData }): ReactElement => {
   )
 }
 
-export default ReviewTx
+export default ReviewNewTx

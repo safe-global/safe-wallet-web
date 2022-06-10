@@ -13,6 +13,9 @@
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh"
   },
+  "pre-push": [
+    "lint:fix"
+  ],
   "dependencies": {
     "@emotion/cache": "^11.7.1",
     "@emotion/react": "^11.9.0",
@@ -39,9 +42,8 @@
     "@web3-onboard/torus": "^2.0.1",
     "@web3-onboard/trezor": "^2.0.5",
     "@web3-onboard/walletconnect": "^2.0.1",
-    "bignumber.js": "^9.0.2",
     "ethereum-blockies-base64": "^1.0.2",
-    "ethers": "^5.5.0",
+    "ethers": "^5.6.8",
     "next": "12.1.5",
     "notistack": "^2.0.4",
     "react": "18.0.0",
@@ -66,7 +68,10 @@
     "eslint": "8.13.0",
     "eslint-config-next": "12.1.5",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "jest": "^27.5.1",
+    "pre-push": "^0.1.2",
     "prettier": "^2.6.2",
     "react-testing-library": "^8.0.1",
     "typescript": "4.6.3"

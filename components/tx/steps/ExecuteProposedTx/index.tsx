@@ -5,20 +5,30 @@ import { Button, Typography } from '@mui/material'
 import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
 import { useChainId } from '@/services/useChainId'
-import { dispatchTxExecution } from '@/services/txSender'
+import { createExistingTx, dispatchTxExecution } from '@/services/tx/txSender'
 
-const ExecuteProposedTx = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
-  const address = useSafeAddress()
+type ReviewNewTxProps = {
+  txSummary: TransactionSummary
+  onSubmit: (data: null) => void
+}
+
+const ExecuteProposedTx = ({ txSummary, onSubmit }: ReviewNewTxProps): ReactElement => {
+  const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
   const onExecute = async () => {
     setIsSubmittable(false)
+
     try {
-      await dispatchTxExecution(chainId, address, txSummary)
+      const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
+      await dispatchTxExecution(safeTx, txSummary.id)
     } catch {
       setIsSubmittable(true)
+      return
     }
+
+    onSubmit(null)
   }
 
   return (

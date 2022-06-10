@@ -8,7 +8,7 @@ import RejectTx from '@/components/tx/steps/RejectTx'
 export const RejectTxSteps: TxStepperProps['steps'] = [
   {
     label: 'Reject transaction',
-    render: (data) => <RejectTx txSummary={data as TransactionSummary} />,
+    render: (data, onSubmit) => <RejectTx txSummary={data as TransactionSummary} onSubmit={onSubmit} />,
   },
 ]
 

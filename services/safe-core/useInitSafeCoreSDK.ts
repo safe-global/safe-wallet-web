@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useCurrentChain } from '@/services/useChains'
 import useWallet from '../wallets/useWallet'
 import useSafeInfo from '../useSafeInfo'
-import { setSafeSDK } from './safeCoreSDK'
+import { initSafeSDK, setSafeSDK } from './safeCoreSDK'
 
 export const useInitSafeCoreSDK = (): Error | null => {
   const chain = useCurrentChain()
@@ -15,7 +15,9 @@ export const useInitSafeCoreSDK = (): Error | null => {
       return
     }
 
-    setSafeSDK(wallet.provider, wallet.chainId, safe.address.value, safe.version).catch(setError)
+    const safeSdk = initSafeSDK(wallet.provider, wallet.chainId, safe.address.value, safe.version)
+      .then(setSafeSDK)
+      .catch(setError)
   }, [chain, wallet, safe])
 
   return error
