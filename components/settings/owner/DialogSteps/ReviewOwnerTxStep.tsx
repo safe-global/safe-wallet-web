@@ -53,8 +53,8 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
           nonce: data.nonce,
           safeTxGas: data.safeTxGas,
         }
-        let editedOwnerTx = await createTx(editedOwnerTxData)
-        let signedTx = await dispatchTxSigning(editedOwnerTx)
+        const editedOwnerTx = await createTx(editedOwnerTxData)
+        const signedTx = await dispatchTxSigning(editedOwnerTx)
         await dispatchTxProposal(safe.chainId, safe.address.value, connectedWallet.address, signedTx)
         if (typeof newOwner.name !== 'undefined') {
           dispatch(
