@@ -7,11 +7,7 @@ import Button from '@mui/material/Button'
 import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
 
 const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElement => {
-  const { handleBack, onSubmit, activeStep, stepData } = useTxStepper(initialData)
-
-  const firstStep = activeStep === 0
-
-  const onBack = firstStep ? onClose : handleBack
+  const { onBack, onSubmit, activeStep, stepData, firstStep } = useTxStepper({ steps, initialData, onClose })
 
   return (
     <Box sx={{ width: '100%' }}>

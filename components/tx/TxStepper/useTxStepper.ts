@@ -21,7 +21,7 @@ export type TxStepperProps = {
   onClose: () => void
 }
 
-export const useTxStepper = (initialData?: unknown[]) => {
+export const useTxStepper = ({ steps, initialData, onClose }: TxStepperProps) => {
   const [activeStep, setActiveStep] = useState<number>(0)
   const [stepData, setStepData] = useState<Array<unknown>>(initialData || [])
 
@@ -33,7 +33,15 @@ export const useTxStepper = (initialData?: unknown[]) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
   }
 
+  const firstStep = activeStep === 0
+
+  const onBack = firstStep ? onClose : handleBack
+
   const onSubmit = (data: unknown) => {
+    if (activeStep === steps.length - 1) {
+      onClose()
+      return
+    }
     const allData = [...stepData]
     allData[activeStep] = data
     setStepData(allData)
@@ -41,9 +49,10 @@ export const useTxStepper = (initialData?: unknown[]) => {
   }
 
   return {
-    handleBack,
+    onBack,
     onSubmit,
     activeStep,
     stepData,
+    firstStep,
   }
 }
