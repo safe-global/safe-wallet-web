@@ -1,6 +1,7 @@
 import { useAppSelector } from '@/store'
-import { selectPendingTxById } from '@/store/pendingTxsSlice'
+import { selectPendingTxsByChainId } from '@/store/pendingTxsSlice'
 import { TransactionSummary, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import useChainId from '@/services/useChainId'
 
 const BACKEND_STATUS_LABELS: { [key in TransactionStatus]: string } = {
   [TransactionStatus.AWAITING_CONFIRMATIONS]: 'Awaiting Confirmations',
@@ -13,6 +14,7 @@ const BACKEND_STATUS_LABELS: { [key in TransactionStatus]: string } = {
 }
 
 export const useTransactionStatus = ({ txStatus, id }: TransactionSummary): TransactionStatus | string => {
-  const pendingTx = useAppSelector((state) => selectPendingTxById(state, id))
-  return pendingTx?.status || BACKEND_STATUS_LABELS[txStatus]
+  const chainId = useChainId()
+  const pendingTxOnChain = useAppSelector((state) => selectPendingTxsByChainId(state, chainId))
+  return pendingTxOnChain?.[id]?.status || BACKEND_STATUS_LABELS[txStatus]
 }

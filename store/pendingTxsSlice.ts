@@ -2,13 +2,16 @@ import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolki
 
 import type { RootState } from '@/store'
 
-interface PendingTxsState {
-  [txId: string]: {
-    chainId: string
-    status: string
-    txHash?: string
-  }
-}
+type PendingTxsState =
+  | {
+      [chainId: string]: {
+        [txId: string]: {
+          status: string
+          txHash?: string
+        }
+      }
+    }
+  | Record<string, never>
 
 const initialState: PendingTxsState = {}
 
@@ -20,11 +23,16 @@ export const pendingTxsSlice = createSlice({
       state,
       action: PayloadAction<{ chainId: string; txId: string; txHash?: string; status: string }>,
     ) => {
-      const { txId, ...pendingTx } = action.payload
-      state[txId] = pendingTx
+      const { chainId, txId, ...pendingTx } = action.payload
+      state[chainId] ??= {}
+      state[chainId][txId] = state[chainId][txId] ? { ...state[chainId][txId], ...pendingTx } : pendingTx
     },
-    clearPendingTx: (state, action: PayloadAction<{ txId: string }>) => {
-      delete state[action.payload.txId]
+    clearPendingTx: (state, action: PayloadAction<{ chainId: string; txId: string }>) => {
+      const { chainId, txId } = action.payload
+      delete state[chainId]?.[txId]
+      if (Object.keys(state[chainId]).length === 0) {
+        delete state[chainId]
+      }
     },
   },
 })
@@ -35,7 +43,7 @@ export const selectPendingTxs = (state: RootState): PendingTxsState => {
   return state[pendingTxsSlice.name]
 }
 
-export const selectPendingTxById = createSelector(
-  [selectPendingTxs, (_, txId: string) => txId],
-  (state, txId) => state[txId],
+export const selectPendingTxsByChainId = createSelector(
+  [selectPendingTxs, (_: RootState, chainId: string) => chainId],
+  (pendingTxs, chainId) => pendingTxs?.[chainId],
 )

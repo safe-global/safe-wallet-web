@@ -1,8 +1,10 @@
-import { useAppDispatch } from '@/store'
-import { clearPendingTx, setPendingTx } from '@/store/pendingTxsSlice'
-import { useEffect } from 'react'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { clearPendingTx, setPendingTx, selectPendingTxsByChainId } from '@/store/pendingTxsSlice'
+import { useEffect, useRef } from 'react'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useChainId from './useChainId'
+import { waitForTx } from '@/services/tx/txMonitor'
+import { getWeb3ReadOnly } from '@/services/wallets/web3'
 
 const pendingStatuses: Partial<Record<TxEvent, string | null>> = {
   [TxEvent.EXECUTING]: 'Submitting',
@@ -28,7 +30,7 @@ const useTxPendingStatuses = (): void => {
         // Clear the pending status if the tx is no longer pending
         const isFinished = status === null
         if (isFinished) {
-          dispatch(clearPendingTx({ txId }))
+          dispatch(clearPendingTx({ chainId, txId }))
           return
         }
 
@@ -48,6 +50,35 @@ const useTxPendingStatuses = (): void => {
       unsubFns.forEach((unsub) => unsub())
     }
   }, [dispatch, chainId])
+}
+
+export const useMonitorTxs = (): void => {
+  const chainId = useChainId()
+  const pendingTxsOnChain = useAppSelector((state) => selectPendingTxsByChainId(state, chainId))
+  const provider = getWeb3ReadOnly()
+
+  // Prevent `waitForTx` from monitoring the same tx more than once
+  const monitoredTxs = useRef<{ [txId: string]: boolean }>({})
+
+  // Monitor pending transaction mining progress
+  useEffect(() => {
+    if (!provider || !pendingTxsOnChain) {
+      return
+    }
+
+    Promise.all(
+      Object.entries(pendingTxsOnChain).map(([txId, { txHash, status }]) => {
+        const isMining = status === pendingStatuses[TxEvent.MINING]
+        const isMonitored = monitoredTxs.current[txId]
+
+        if (txHash && isMining && !isMonitored) {
+          monitoredTxs.current[txId] = true
+          return waitForTx(provider, txId, txHash)
+        }
+      }),
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider])
 }
 
 export default useTxPendingStatuses
