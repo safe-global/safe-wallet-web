@@ -14,14 +14,24 @@ const usePathRewrite = () => {
   const router = useRouter()
 
   useEffect(() => {
-    let { safe = '' } = router.query
+    let { safe = '', ...restQuery } = router.query
     if (Array.isArray(safe)) safe = safe[0]
     if (!safe) return
 
-    let newPath = router.asPath
-      .replace(/[?]safe=.*?\&/, '?') // Remove the `?safe=` query parameter but leave the ?
-      .replace(/[?&]safe=.*?(?=&|$)/, '') // Remove the `&safe=` query parameter
-      .replace(/\/safe(?=\/)?/, `/${safe}`) // Copy the Safe address to the path
+    // Move the Safe address to the path
+    let newPath = router.pathname.replace(/\/safe(?=\/)?/, `/${safe}`)
+
+    // Preserve other query params
+    if (Object.keys(restQuery).length) {
+      const searchParams = new URLSearchParams()
+      // Convert Next.js query params to URLSearchParams
+      Object.entries(restQuery).forEach(([key, values]) => {
+        if (!Array.isArray(values)) values = [values || '']
+        values.forEach((val) => searchParams.append(key, val))
+      })
+      // Serialize the query
+      newPath += `?${searchParams.toString()}`
+    }
 
     if (newPath !== router.asPath) {
       // This just changes what you see in the URL bar w/o triggering any rendering or route change
