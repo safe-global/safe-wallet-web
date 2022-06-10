@@ -49,6 +49,7 @@ const Web3Provider = ({ children }: { children: ReactElement }): ReactElement =>
     }
 
     updateWeb3ReadOnly()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chain])
 
   return <Web3Context.Provider value={{ web3, web3ReadOnly }}>{children}</Web3Context.Provider>
