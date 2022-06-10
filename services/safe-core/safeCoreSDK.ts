@@ -11,7 +11,7 @@ const isLegacyVersion = (safeVersion: string): boolean => {
 }
 
 // Safe Core SDK
-const initSafeSDK = async (
+export const initSafeSDK = async (
   provider: EIP1193Provider,
   walletChainId: string,
   safeAddress: string,
@@ -39,4 +39,6 @@ const initSafeSDK = async (
 
 let safeSDK: Safe
 export const getSafeSDK = (): Safe => safeSDK
-export const setSafeSDK: typeof initSafeSDK = (...args) => initSafeSDK(...args).then((safe) => (safeSDK = safe))
+export const setSafeSDK = (sdkInstance: Safe) => {
+  safeSDK = sdkInstance
+}

@@ -1,11 +1,13 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-import { SetHistoryPageAction, txHistorySlice } from './txHistorySlice'
-import { isTransaction } from '@/components/transactions/utils'
 import type { RootState } from '@/store'
 
 interface PendingTxsState {
-  [txId: string]: true
+  [txId: string]: {
+    chainId: string
+    status: string
+    txHash?: string
+  }
 }
 
 const initialState: PendingTxsState = {}
@@ -14,42 +16,26 @@ export const pendingTxsSlice = createSlice({
   name: 'pendingTxs',
   initialState,
   reducers: {
-    setPendingTx: (state, action: PayloadAction<{ txId: string }>) => {
-      const { txId } = action.payload
-
-      state[txId] = true
+    setPendingTx: (
+      state,
+      action: PayloadAction<{ chainId: string; txId: string; txHash?: string; status: string }>,
+    ) => {
+      const { txId, ...pendingTx } = action.payload
+      state[txId] = pendingTx
     },
-    removePendingTx: (state, action: PayloadAction<{ txId: string }>) => {
-      const { txId } = action.payload
-
-      delete state[txId]
+    clearPendingTx: (state, action: PayloadAction<{ txId: string }>) => {
+      delete state[action.payload.txId]
     },
-  },
-  extraReducers: (builder) => {
-    // Remove any pending transactions that are now historical
-    builder.addMatcher(
-      ({ type }) => type === txHistorySlice.actions.setHistoryPage.type,
-      (state, action: SetHistoryPageAction) => {
-        if (!action.payload) {
-          return
-        }
-
-        for (const result of action.payload.results) {
-          if (!isTransaction(result)) {
-            continue
-          }
-
-          const { id } = result.transaction
-
-          delete state[id]
-        }
-      },
-    )
   },
 })
 
-export const { setPendingTx, removePendingTx } = pendingTxsSlice.actions
+export const { setPendingTx, clearPendingTx } = pendingTxsSlice.actions
 
 export const selectPendingTxs = (state: RootState): PendingTxsState => {
   return state[pendingTxsSlice.name]
 }
+
+export const selectPendingTxById = createSelector(
+  [selectPendingTxs, (_, txId: string) => txId],
+  (state, txId) => state[txId],
+)

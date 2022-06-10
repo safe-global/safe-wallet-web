@@ -1,6 +1,6 @@
 import React from 'react'
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
-import useChains, { useCurrentChain } from '@/services/useChains'
+import useChains from '@/services/useChains'
 import { useRouter } from 'next/router'
 import ChainIndicator from '../ChainIndicator'
 import css from './styles.module.css'

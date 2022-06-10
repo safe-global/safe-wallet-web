@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import { useSnackbar, type SnackbarKey } from 'notistack'
+import { IconButton } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 
 import { useAppDispatch, useAppSelector } from '@/store'
 import { closeNotification, selectNotifications } from '@/store/notificationsSlice'
@@ -13,28 +15,29 @@ const useNotifier = () => {
 
   useEffect(() => {
     for (const notification of notifications) {
+      // Unspecified keys are automatically generated in `showNotification`
+      const key = notification.options!.key!
+
       if (notification.dismissed) {
-        closeSnackbar(notification.options?.key)
+        closeSnackbar(key)
         continue
       }
 
-      if (notification.options?.key && onScreenKeys.includes(notification.options.key)) {
+      if (onScreenKeys.includes(key)) {
         continue
       }
 
-      const key = enqueueSnackbar(notification.message, {
-        key: notification.options?.key,
+      enqueueSnackbar(notification.message, {
         ...notification.options,
-        // Run callback when notification is closing
-        onClose: (event, reason, key) => {
-          if (notification.options?.onClose) {
-            notification.options.onClose(event, reason, key)
-          }
-        },
-        onExited: (_, key) => {
+        action: (
+          <IconButton onClick={() => dispatch(closeNotification({ key }))}>
+            <CloseIcon />
+          </IconButton>
+        ),
+        onExited: () => {
           // Cleanup store/cache when notification has unmounted
           dispatch(closeNotification({ key }))
-          onScreenKeys = onScreenKeys.filter((onScreenKey) => onScreenKey !== notification.options?.key)
+          onScreenKeys = onScreenKeys.filter((onScreenKey) => onScreenKey !== key)
         },
       })
 

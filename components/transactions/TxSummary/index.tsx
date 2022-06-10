@@ -13,6 +13,7 @@ import { isAwaitingExecution } from '@/components/transactions/utils'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import Box from '@mui/material/Box'
 import { useRouter } from 'next/router'
+import { useTransactionStatus } from '@/services/useTransactionStatus'
 
 type TxSummaryProps = {
   item: Transaction
@@ -29,6 +30,7 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const wallet = useWallet()
   const router = useRouter()
   const isQueue = router.pathname.includes('queue')
+  const txStatus = useTransactionStatus(tx)
 
   const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
 
@@ -54,7 +56,7 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
           </Grid>
 
           <Grid item md={3}>
-            {tx.txStatus !== TransactionStatus.SUCCESS && tx.txStatus}
+            {txStatus !== TransactionStatus.SUCCESS && txStatus}
           </Grid>
 
           {wallet && isQueue && (

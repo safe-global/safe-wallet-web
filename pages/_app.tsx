@@ -11,8 +11,10 @@ import { SnackbarProvider } from 'notistack'
 import { safeTheme } from '@gnosis.pm/safe-react-components'
 
 import '@/styles/globals.css'
+import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { store } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
+import createEmotionCache from '@/services/createEmotionCache'
 import { useInitChains } from '@/services/useChains'
 import { useInitSafeInfo } from '@/services/useSafeInfo'
 import { useInitBalances } from '@/services/useBalances'
@@ -20,12 +22,12 @@ import { useInitCollectibles } from '@/services/useCollectibles'
 import { useInitTxHistory } from '@/services/useTxHistory'
 import { useInitTxQueue } from '@/services/useTxQueue'
 import usePathRewrite from '@/services/usePathRewrite'
-import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { useInitOnboard } from '@/services/wallets/useOnboard'
 import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/safe-core/useInitSafeCoreSDK'
 import useNotifier from '@/services/useNotifier'
-import createEmotionCache from '@/services/createEmotionCache'
+import useTxNotifications from '@/services/useTxNotifications'
+import useTxPendingStatuses from '@/services/useTxPendingStatuses'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
@@ -46,6 +48,8 @@ const InitApp = (): null => {
   useInitOnboard()
   useInitSafeCoreSDK()
   useNotifier()
+  useTxNotifications()
+  useTxPendingStatuses()
 
   return null
 }
@@ -67,7 +71,7 @@ const SafeWebCore = ({
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
         <CacheProvider value={emotionCache}>
           <ThemeProvider theme={safeTheme}>
-            <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+            <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={5}>
               <CssBaseline />
               <InitApp />
               <PageLayout>

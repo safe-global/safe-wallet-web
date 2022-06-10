@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton'
 import { useState, type ReactElement } from 'react'
 import { useQueuedTxByNonce } from '@/services/useTxQueue'
 import { isCustomTxInfo, isMultisigExecutionInfo } from '@/components/transactions/utils'
-import RejectTxModal from '@/components/tx/RejectTxModal'
+import RejectTxModal from '@/components/tx/modals/RejectTxModal'
 
 const RejectTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement | null => {
   const [open, setOpen] = useState<boolean>(false)
