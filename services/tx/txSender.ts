@@ -4,7 +4,7 @@ import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '../safe-core/safeCoreSDK'
-import { ContractReceipt } from 'ethers/lib/ethers'
+import { didRevert } from '@/services/tx/utils'
 
 /**
  * Create a transaction from raw params
@@ -107,9 +107,8 @@ export const dispatchTxExecution = async (safeTx: SafeTransaction, txId: string)
   // Asynchronously watch the tx to be mined
   result.transactionResponse
     ?.wait()
-    .then((receipt: ContractReceipt) => {
-      const didRevert = receipt.status === 0
-      if (didRevert) {
+    .then((receipt) => {
+      if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { txId, receipt, tx: safeTx, error: new Error('Transaction reverted by EVM') })
       } else {
         txDispatch(TxEvent.MINED, { txId, tx: safeTx, receipt })

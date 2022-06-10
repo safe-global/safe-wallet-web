@@ -24,8 +24,8 @@ interface TxEvents {
   [TxEvent.EXECUTING]: { txId: string; tx: SafeTransaction }
   [TxEvent.MINING]: { txId: string; txHash: string; tx: SafeTransaction }
   [TxEvent.MINED]: { txId: string; receipt: ContractReceipt; tx: SafeTransaction }
-  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: ContractReceipt; tx: SafeTransaction }
-  [TxEvent.FAILED]: { txId: string; error: Error; tx: SafeTransaction }
+  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: ContractReceipt; tx?: SafeTransaction }
+  [TxEvent.FAILED]: { txId: string; error: Error; tx?: SafeTransaction }
   [TxEvent.SUCCESS]: { txId: string }
 }
 

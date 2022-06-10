@@ -2,13 +2,15 @@ import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolki
 
 import type { RootState } from '@/store'
 
-interface PendingTxsState {
-  [txId: string]: {
-    chainId: string
-    status: string
-    txHash?: string
-  }
-}
+type PendingTxsState =
+  | {
+      [txId: string]: {
+        chainId: string
+        status: string
+        txHash?: string
+      }
+    }
+  | Record<string, never>
 
 const initialState: PendingTxsState = {}
 
@@ -36,6 +38,6 @@ export const selectPendingTxs = (state: RootState): PendingTxsState => {
 }
 
 export const selectPendingTxById = createSelector(
-  [selectPendingTxs, (_, txId: string) => txId],
-  (state, txId) => state[txId],
+  [selectPendingTxs, (_: RootState, txId: string) => txId],
+  (pendingTxs, txId) => pendingTxs[txId],
 )
