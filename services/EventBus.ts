@@ -11,7 +11,7 @@ class EventBus<EventTypes extends GeneralEventTypes> {
     this.eventTarget = new EventTarget()
   }
 
-  dispatch<T extends string>(eventType: T, detail: EventTypes[T]): void {
+  dispatch<T extends keyof EventTypes>(eventType: T, detail: EventTypes[T]): void {
     const e = new CustomEvent(eventType, { detail })
     this.eventTarget.dispatchEvent(e)
   }
