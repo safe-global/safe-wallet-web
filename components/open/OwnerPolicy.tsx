@@ -23,7 +23,6 @@ import useWallet from '@/services/wallets/useWallet'
 import { validateAddress } from '@/services/validation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import { getWeb3 } from '@/services/wallets/web3'
-import { ScanQRButton } from '@/components/common/ScanQRModal/ScanQRButton'
 import ChainIndicator from '@/components/common/ChainIndicator'
 
 type Props = {
@@ -72,14 +71,6 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
     setValue(`owners.${index}.resolving`, true)
     const ensName = await ethersProvider.lookupAddress(event.target.value)
     update(index, { name: ensName || '', address: event.target.value, resolving: false })
-  }
-
-  const handleQRScan = async (address: string, closeQrModal: () => void, index: number): Promise<void> => {
-    closeQrModal()
-    const scannedAddress = address.startsWith('ethereum:') ? address.replace('ethereum:', '') : address
-    update(index, { name: '', address: scannedAddress, resolving: true })
-    const ensName = await ethersProvider.lookupAddress(scannedAddress)
-    update(index, { name: ensName || '', address: scannedAddress, resolving: false })
   }
 
   return (
@@ -149,7 +140,6 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
                 <Grid item xs={1} display="flex" alignItems="center" flexShrink={0}>
                   {index > 0 && (
                     <>
-                      <ScanQRButton handleScan={(...args) => handleQRScan(...args, index)} />
                       <IconButton onClick={() => remove(index)}>
                         <DeleteOutlineOutlinedIcon />
                       </IconButton>
