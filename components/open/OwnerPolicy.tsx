@@ -22,8 +22,8 @@ import { CreateSafeFormData, Owner } from '@/components/open/index'
 import useWallet from '@/services/wallets/useWallet'
 import { validateAddress } from '@/services/validation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import { getWeb3 } from '@/services/wallets/web3'
 import ChainIndicator from '@/components/common/ChainIndicator'
+import { useWeb3 } from '@/services/wallets/Web3Provider'
 
 type Props = {
   params: CreateSafeFormData
@@ -32,7 +32,7 @@ type Props = {
 }
 
 const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
-  const ethersProvider = getWeb3()
+  const ethersProvider = useWeb3()
   const wallet = useWallet()
 
   const defaultOwner: Owner = {
@@ -66,7 +66,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
   }
 
   const getENS = async (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
-    if (owners[index].name) return
+    if (owners[index].name || !ethersProvider) return
 
     setValue(`owners.${index}.resolving`, true)
     const ensName = await ethersProvider.lookupAddress(event.target.value)

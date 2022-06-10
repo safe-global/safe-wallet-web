@@ -6,6 +6,10 @@ import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
 import { useChainId } from '@/services/useChainId'
 import { createExistingTx, dispatchTxExecution } from '@/services/tx/txSender'
+import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import useAsync from '@/services/useAsync'
+import useGasLimit from '@/services/useGasLimit'
+import ErrorToast from '@/components/common/ErrorToast'
 
 type ReviewNewTxProps = {
   txSummary: TransactionSummary
@@ -17,12 +21,19 @@ const ExecuteProposedTx = ({ txSummary, onSubmit }: ReviewNewTxProps): ReactElem
   const chainId = useChainId()
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
+  const [safeTx, safeTxError, safeTxLoading] = useAsync<SafeTransaction>(() => {
+    return createExistingTx(chainId, safeAddress, txSummary)
+  }, [txSummary, safeAddress, chainId])
+
+  const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(safeTx?.data)
+
   const onExecute = async () => {
+    if (!safeTx) return
+
     setIsSubmittable(false)
 
     try {
-      const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
-      await dispatchTxExecution(safeTx, txSummary.id)
+      await dispatchTxExecution(txSummary.id, safeTx, { gasLimit })
     } catch {
       setIsSubmittable(true)
       return
@@ -35,14 +46,20 @@ const ExecuteProposedTx = ({ txSummary, onSubmit }: ReviewNewTxProps): ReactElem
     <div className={css.container}>
       <Typography variant="h6">Execute transaction</Typography>
 
-      <div>Transaction id</div>
-      <pre style={{ overflow: 'auto', width: '100%' }}>{txSummary.id}</pre>
+      <label>
+        <div>Gas limit</div>
+        <input readOnly disabled={safeTxLoading || gasLimitLoading} value={gasLimit || ''} />
+      </label>
 
       <div className={css.submit}>
         <Button variant="contained" onClick={onExecute} disabled={!isSubmittable}>
           Submit
         </Button>
       </div>
+
+      {safeTxError || gasLimitError ? (
+        <ErrorToast message={(safeTxError || gasLimitError)!.message.slice(0, 300)} />
+      ) : null}
     </div>
   )
 }
