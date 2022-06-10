@@ -1,6 +1,6 @@
 import { AddressInfo } from '@/components/common/AddressInfo'
 import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { EditOwnerDialog } from '../EditOwnerDialog'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import css from './styles.module.css'
@@ -37,11 +37,11 @@ export const OwnerList = ({
 
   return (
     <div className={css.container}>
-      <h3>Manage Safe Owners</h3>
-      <p>
+      <Typography variant="h3">Manage Safe Owners</Typography>
+      <Typography>
         Add, remove and replace owners or rename existing owners. Owner names are only stored locally and never shared
         with Gnosis or any third parties.
-      </p>
+      </Typography>
       <TableContainer>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>

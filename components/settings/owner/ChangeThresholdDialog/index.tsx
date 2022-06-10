@@ -1,4 +1,4 @@
-import { Button, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { Button, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 
 import TxModal from '@/components/tx/TxModal'
@@ -14,6 +14,8 @@ import { dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/services/wallets/useWallet'
 import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
 import useAsync from '@/services/useAsync'
+
+import css from './styles.module.css'
 
 interface ChangeThresholdData {
   threshold: number
@@ -79,20 +81,19 @@ const ChangeThresholdStep = ({ data, onClose }: { data: ChangeThresholdData; onC
     }
   }
   return (
-    <ReviewTxForm showHeader={false} onFormSubmit={onSubmitHandler} txParams={tx?.data}>
-      <>
-        <span>Any transaction requires the confirmation of:</span>
-        <span>
-          <Select value={selectedThreshold} onChange={handleChange}>
-            {options.map((option) => (
-              <MenuItem key={option + 1} value={option + 1}>
-                {option + 1}
-              </MenuItem>
-            ))}
-          </Select>{' '}
-          out of {safe?.owners.length ?? 0} owner(s)
-        </span>
-      </>
-    </ReviewTxForm>
+    <div className={css.container}>
+      <Typography>Any transaction requires the confirmation of:</Typography>
+      <span>
+        <Select value={selectedThreshold} onChange={handleChange}>
+          {options.map((option) => (
+            <MenuItem key={option + 1} value={option + 1}>
+              {option + 1}
+            </MenuItem>
+          ))}
+        </Select>{' '}
+        <Typography>out of {safe?.owners.length ?? 0} owner(s)</Typography>
+      </span>
+      <ReviewTxForm onFormSubmit={onSubmitHandler} txParams={tx?.data} />
+    </div>
   )
 }

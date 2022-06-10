@@ -3,8 +3,8 @@ import { sameAddress } from '@/services/addresses'
 import { safeNeedsUpdate } from '@/services/safeVersion'
 import { MasterCopy, MasterCopyDeployer, useMasterCopies } from '@/services/useMasterCopies'
 import useSafeInfo from '@/services/useSafeInfo'
-import { IconButton, Link, Typography } from '@mui/material'
-import { useEffect, useState, version } from 'react'
+import { Link, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
 import OpenInNewRounded from '@mui/icons-material/OpenInNewRounded'
 
 export const ContractVersion = () => {
@@ -39,7 +39,7 @@ export const ContractVersion = () => {
   }
   return (
     <div>
-      <h3>Contract Version</h3>
+      <Typography variant="h3">Contract Version</Typography>
       <Link rel="noreferrer noopener" href={safeMasterCopy?.deployerRepoUrl} target="_blank">
         {safe?.version}
         {getSafeVersionUpdate()}

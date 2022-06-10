@@ -5,27 +5,10 @@
   gap: 1rem;
 }
 
-.padding {
-  padding: 1rem;
-}
-
-.noPadding {
-  padding: 1rem;
-}
-
 .detailsBlock {
   border-right: solid 1px #e8e7e6;
   padding-top: 0rem;
   padding-right: 1rem;
-}
-
-.detailField {
-  display: block;
-  margin-bottom: 1rem;
-}
-
-.detailField p {
-  margin: 0rem;
 }
 
 .removedOwner {
@@ -46,12 +29,6 @@
   align-self: center;
 }
 
-.submit {
-  position: absolute;
-  bottom: -54px;
-  right: 0;
-}
-
 .container {
   display: flex;
   flex-direction: column;
@@ -59,4 +36,10 @@
   gap: 20px;
   padding: 50px 0 40px;
   position: relative;
+}
+
+.submit {
+  position: absolute;
+  bottom: -54px;
+  right: 0;
 }

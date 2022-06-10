@@ -11,6 +11,9 @@ import useSafeAddress from '@/services/useSafeAddress'
 import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/services/wallets/useWallet'
 import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
+import { Typography } from '@mui/material'
+
+import css from './styles.module.css'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -62,9 +65,11 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   }
 
   return (
-    <ReviewTxForm onFormSubmit={onFormSubmit} txParams={txParams}>
+    <div className={css.container}>
+      <Typography variant="h6">Review transaction</Typography>
       {tokenInfo ? <TokenTransferReview params={params} tokenInfo={tokenInfo} /> : null}
-    </ReviewTxForm>
+      <ReviewTxForm onFormSubmit={onFormSubmit} txParams={txParams} />
+    </div>
   )
 }
 

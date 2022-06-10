@@ -3,7 +3,7 @@ import { AddressInput } from '@/components/common/AddressInput'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 import useSafeInfo from '@/services/useSafeInfo'
 import { uniqueAddress, addressIsNotCurrentSafe } from '@/services/validation'
-import { TextField, Button } from '@mui/material'
+import { TextField, Button, Typography } from '@mui/material'
 import { useState, ChangeEvent } from 'react'
 
 import css from './styles.module.css'
@@ -44,12 +44,12 @@ export const ChooseOwnerStep = ({
       </p>
       {removedOwner && (
         <div>
-          <span>Current owner</span>
+          <Typography>Current owner</Typography>
           <AddressInfo address={removedOwner.address} copyToClipboard />
         </div>
       )}
       <div className={css.newOwner}>
-        <span>New owner</span>
+        <Typography>New owner</Typography>
         <TextField
           autoFocus
           id="ownerName"

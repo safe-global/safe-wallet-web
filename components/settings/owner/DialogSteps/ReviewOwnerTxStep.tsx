@@ -1,7 +1,7 @@
 import { AddressInfo } from '@/components/common/AddressInfo'
 import Hairline from '@/components/common/Hairline'
 import useSafeInfo from '@/services/useSafeInfo'
-import { Grid } from '@mui/material'
+import { Box, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { useDispatch } from 'react-redux'
 import { showNotification } from '@/store/notificationsSlice'
@@ -62,56 +62,58 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
   }
 
   return (
-    <ReviewTxForm onFormSubmit={onSubmit} txParams={changeOwnerTx?.data}>
+    <div className={css.container}>
+      <Typography variant="h6">Review transaction</Typography>
       <Grid container spacing={2} style={{ paddingLeft: '24px', paddingTop: '20px' }}>
         <Grid direction="column" xs item className={`${css.detailsBlock}`}>
-          <p>Details</p>
-          <div className={css.detailField}>
-            <p>Safe name:</p>
+          <Typography>Details</Typography>
+          <Box marginBottom={2}>
+            <Typography>Safe name:</Typography>
             {/* TODO: SafeName */}
-            <p>Name Placeholder</p>
-          </div>
-          <div className={css.detailField}>
-            <p>Any transaction requires the confirmation of:</p>
-            <p>
+            <Typography>Name Placeholder</Typography>
+          </Box>
+          <Box marginBottom={2}>
+            <Typography>Any transaction requires the confirmation of:</Typography>
+            <Typography>
               <b>{threshold}</b> out of <b>{(safe?.owners.length ?? 0) + (isReplace ? 0 : 1)}</b> owners
-            </p>
-          </div>
+            </Typography>
+          </Box>
         </Grid>
         <Grid direction="column">
-          <p style={{ paddingLeft: '1rem' }}>{safe?.owners.length ?? 0} Safe owner(s)</p>
+          <Typography style={{ paddingLeft: '1rem' }}>{safe?.owners.length ?? 0} Safe owner(s)</Typography>
           <Hairline />
           {safe?.owners
             .filter((owner) => !removedOwner || owner.value !== removedOwner.address)
             .map((owner) => (
               <div key={owner.value}>
-                <div className={css.padding} key={owner.value}>
+                <Box padding="1rem" key={owner.value}>
                   <AddressInfo address={owner.value} />
-                </div>
+                </Box>
                 <Hairline />
               </div>
             ))}
           {removedOwner && (
             <>
               <div className={css.info}>
-                <p className={css.overline}>REMOVING OWNER &darr;</p>
+                <Typography className={css.overline}>REMOVING OWNER &darr;</Typography>
               </div>
               <Hairline />
-              <div className={`${css.padding} ${css.removedOwner}`}>
+              <Box className={css.removedOwner} padding="1rem">
                 <AddressInfo address={removedOwner.address} />
-              </div>
+              </Box>
               <Hairline />
             </>
           )}
           <div className={css.info}>
-            <p className={css.overline}>ADDING NEW OWNER &darr;</p>
+            <Typography className={css.overline}>ADDING NEW OWNER &darr;</Typography>
           </div>
           <Hairline />
-          <div className={css.padding}>
+          <Box padding={'1rem'}>
             <AddressInfo address={newOwner.address} />
-          </div>
+          </Box>
         </Grid>
       </Grid>
-    </ReviewTxForm>
+      <ReviewTxForm onFormSubmit={onSubmit} txParams={changeOwnerTx?.data} />
+    </div>
   )
 }

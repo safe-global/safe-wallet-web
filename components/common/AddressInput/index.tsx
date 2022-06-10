@@ -1,7 +1,6 @@
 import { validateAddress } from '@/services/validation'
 import { TextField } from '@mui/material'
 import { ChangeEvent, useState } from 'react'
-import css from './styles.module.css'
 
 /**
  *  Temporary component until revamped safe components are done

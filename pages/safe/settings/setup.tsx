@@ -20,7 +20,7 @@ const Setup: NextPage = () => {
 
   return (
     <main>
-      <h2>Settings / Setup</h2>
+      <Typography variant="h2">Settings / Setup</Typography>
       <Grid container spacing={2}>
         <Grid item xs={8}>
           <Paper>
@@ -34,7 +34,7 @@ const Setup: NextPage = () => {
         </Grid>
         <Grid item>
           <Grid item xs>
-            <h3>Safe Nonce</h3>
+            <Typography variant="h3">Safe Nonce</Typography>
             <Typography>Current Nonce: {nonce}</Typography>
           </Grid>
           <Grid item xs>

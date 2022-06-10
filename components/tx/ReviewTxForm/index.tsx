@@ -1,8 +1,7 @@
 import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
 import { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
-import { SafeTransactionEstimation } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Typography, FormControl, TextField, Button } from '@mui/material'
+import { FormControl, TextField, Button } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -15,18 +14,12 @@ export type ReviewTxFormData = {
 
 type ReviewTxFormProps = {
   txParams?: MetaTransactionData
-  children: React.ReactElement | null
   onFormSubmit: (data: ReviewTxFormData) => void
-  showHeader?: boolean
 }
 
-export const ReviewTxForm = ({ txParams, children, onFormSubmit, showHeader }: ReviewTxFormProps) => {
+export const ReviewTxForm = ({ txParams, onFormSubmit }: ReviewTxFormProps) => {
   const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
   const [isSubmittable, setIsSubmittable] = useState(true)
-
-  if (typeof showHeader === 'undefined') {
-    showHeader = true
-  }
 
   const {
     register,
@@ -39,17 +32,12 @@ export const ReviewTxForm = ({ txParams, children, onFormSubmit, showHeader }: R
 
   return (
     <form
-      className={css.container}
       onSubmit={() => {
         setIsSubmittable(false)
         handleSubmit(onFormSubmit)
         setIsSubmittable(true)
       }}
     >
-      {showHeader && <Typography variant="h6">Review transaction</Typography>}
-
-      {children}
-
       <FormControl fullWidth>
         <TextField
           disabled={safeGasLoading}
