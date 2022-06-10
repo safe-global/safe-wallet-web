@@ -22,7 +22,7 @@ export const useWeb3ReadOnly = (): JsonRpcProvider => {
     }
     const web3ReadOnly = createWeb3ReadOnly(chain)
     setWeb3ReadOnlyProvider(web3ReadOnly)
-  }, [chain])
+  }, [chain, wallet])
 
   return web3ReadOnlyProvider
 }
@@ -43,7 +43,7 @@ export const useWeb3 = (): Web3Provider => {
   return web3Provider
 }
 
-export const useInitWeb3 = (): JsonRpcProvider => {
+export const useInitWeb3 = (): void => {
   const web3 = useWeb3()
   const web3ReadOnly = useWeb3ReadOnly()
 
@@ -54,6 +54,4 @@ export const useInitWeb3 = (): JsonRpcProvider => {
   useEffect(() => {
     setWeb3ReadOnly(web3ReadOnly)
   }, [web3ReadOnly])
-
-  return web3ReadOnly
 }
