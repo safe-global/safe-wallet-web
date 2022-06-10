@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useChainId from './useChainId'
 import { waitForTx } from '@/services/tx/txMonitor'
-import { getWeb3ReadOnly } from '@/services/wallets/web3'
+import { useInitWeb3 } from './wallets/useInitWeb3'
 
 const pendingStatuses: Partial<Record<TxEvent, string | null>> = {
   [TxEvent.EXECUTING]: 'Submitting',
@@ -55,7 +55,7 @@ const useTxPendingStatuses = (): void => {
 export const useTxMonitor = (): void => {
   const chainId = useChainId()
   const pendingTxsOnChain = useAppSelector((state) => selectPendingTxsByChainId(state, chainId))
-  const provider = getWeb3ReadOnly()
+  const provider = useInitWeb3()
 
   // Prevent `waitForTx` from monitoring the same tx more than once
   const monitoredTxs = useRef<{ [txId: string]: boolean }>({})
@@ -66,17 +66,18 @@ export const useTxMonitor = (): void => {
       return
     }
 
-    Promise.all(
-      Object.entries(pendingTxsOnChain).map(([txId, { txHash, status }]) => {
-        const isMining = status === pendingStatuses[TxEvent.MINING]
-        const isMonitored = monitoredTxs.current[txId]
+    for (const [txId, { txHash, status }] of Object.entries(pendingTxsOnChain)) {
+      const isMining = status === pendingStatuses[TxEvent.MINING]
+      const isMonitored = monitoredTxs.current[txId]
 
-        if (txHash && isMining && !isMonitored) {
-          monitoredTxs.current[txId] = true
-          return waitForTx(provider, txId, txHash)
-        }
-      }),
-    )
+      if (!txHash || !isMining || isMonitored) {
+        continue
+      }
+
+      monitoredTxs.current[txId] = true
+
+      waitForTx(provider, txId, txHash)
+    }
     // `provider` is updated when switching chains, re-running this effect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider])
