@@ -14,33 +14,33 @@ import useWallet from './useWallet'
 export const useWeb3ReadOnly = (): JsonRpcProvider => {
   const chain = useCurrentChain()
   const wallet = useWallet()
-  const [web3ReadOnlyState, setWeb3ReadOnlyState] = useState<JsonRpcProvider>(getWeb3ReadOnly())
+  const [web3ReadOnlyProvider, setWeb3ReadOnlyProvider] = useState<JsonRpcProvider>(getWeb3ReadOnly())
 
   useEffect(() => {
     if (!chain || !wallet || chain.chainId !== wallet.chainId) {
       return
     }
     const web3ReadOnly = createWeb3ReadOnly(chain)
-    setWeb3ReadOnlyState(web3ReadOnly)
+    setWeb3ReadOnlyProvider(web3ReadOnly)
   }, [chain])
 
-  return web3ReadOnlyState
+  return web3ReadOnlyProvider
 }
 
 export const useWeb3 = (): Web3Provider => {
   const chain = useCurrentChain()
   const wallet = useWallet()
-  const [web3State, setWeb3State] = useState<Web3Provider>(getWeb3())
+  const [web3Provider, setWeb3Provider] = useState<Web3Provider>(getWeb3())
 
   useEffect(() => {
     if (!chain || !wallet || chain.chainId !== wallet.chainId) {
       return
     }
     const web3 = createWeb3(wallet.provider)
-    setWeb3State(web3)
+    setWeb3Provider(web3)
   }, [chain, wallet])
 
-  return web3State
+  return web3Provider
 }
 
 export const useInitWeb3 = (): JsonRpcProvider => {
