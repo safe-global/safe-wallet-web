@@ -13,12 +13,12 @@ jest.mock('next/router', () => ({
 
 // Tests for the useSafeAddress hook
 describe('useSafeAddress hook', () => {
-  it('should return the safe address and chainId', () => {
+  it('should return the safe address', () => {
     const { result } = renderHook(() => useSafeAddress())
     expect(result.current).toBe('0x0000000000000000000000000000000000000000')
   })
 
-  it('should not return the safe address and chainId when the safe address is not in the query', () => {
+  it('should not return the safe address when it is not in the query', () => {
     ;(useRouter as any).mockImplementation(() => ({
       query: {
         safe: undefined,
