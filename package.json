@@ -49,6 +49,7 @@
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-hook-form": "^7.29.0",
+    "react-qr-reader": "^2.2.1",
     "react-redux": "^7.2.8",
     "semver": "^7.3.7"
   },
@@ -62,6 +63,7 @@
     "@types/node": "17.0.23",
     "@types/react": "18.0.3",
     "@types/react-dom": "18.0.0",
+    "@types/react-qr-reader": "^2.1.4",
     "@types/semver": "^7.3.9",
     "eslint": "8.13.0",
     "eslint-config-next": "12.1.5",
