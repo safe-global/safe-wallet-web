@@ -7,7 +7,6 @@ import useSafeInfo from '@/services/useSafeInfo'
 
 import { showNotification } from '@/store/notificationsSlice'
 import { CodedException, Errors } from '@/services/exceptions'
-import { useDispatch } from 'react-redux'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/services/wallets/useWallet'
@@ -15,6 +14,7 @@ import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
 import useAsync from '@/services/useAsync'
 
 import css from './styles.module.css'
+import { useAppDispatch } from '@/store'
 
 interface ChangeThresholdData {
   threshold: number
@@ -51,7 +51,7 @@ export const ChangeThresholdDialog = () => {
 const ChangeThresholdStep = ({ data, onClose }: { data: ChangeThresholdData; onClose: () => void }) => {
   const { safe } = useSafeInfo()
   const connectedWallet = useWallet()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const sdk = getSafeSDK()
 
   const [options, setOptions] = useState<number[]>([0])
@@ -76,7 +76,7 @@ const ChangeThresholdStep = ({ data, onClose }: { data: ChangeThresholdData; onC
         onClose()
       } catch (err) {
         const { message } = new CodedException(Errors._804, (err as Error).message)
-        dispatch(showNotification({ message }))
+        dispatch(showNotification({ message, options: { variant: 'error' } }))
       }
     }
   }
