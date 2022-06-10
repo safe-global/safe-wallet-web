@@ -13,13 +13,13 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
     const receipt = await provider.waitForTransaction(txHash, undefined, TIMEOUT_MINUTES * 60_000)
 
     if (!receipt) {
-      throw new Error(`Transaction not mined in ${TIMEOUT_MINUTES} minutes. Be aware that it might still be.`)
+      throw new Error(`Transaction not mined in ${TIMEOUT_MINUTES} minutes. Be aware that it might still be mined.`)
     }
 
     if (didRevert(receipt)) {
       txDispatch(TxEvent.REVERTED, {
         txId,
-        error: new Error(`Transaction reverted by EVM`),
+        error: new Error(`Transaction reverted by EVM.`),
         receipt,
       })
     }

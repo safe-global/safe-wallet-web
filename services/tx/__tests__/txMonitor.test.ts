@@ -57,7 +57,22 @@ describe('txMonitor', () => {
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error) })
     })
-    it('emits a FAILED event if the tx reverted', async () => {
+    it('emits a FAILED event if the tx mining timed out', async () => {
+      web3ReadOnlySpy.mockImplementationOnce(
+        () =>
+          ({ waitForTransaction: () => Promise.resolve(null) } as unknown as ReturnType<typeof web3.getWeb3ReadOnly>),
+      )
+
+      const provider = web3.getWeb3ReadOnly()
+
+      await waitForTx(provider, '0x0', '0x0')
+
+      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+        txId: '0x0',
+        error: new Error('Transaction not mined in 6.5 minutes. Be aware that it might still be mined.'),
+      })
+    })
+    it('emits a REVERTED event if the tx reverted', async () => {
       const receipt = {
         status: 0,
       } as TransactionReceipt
@@ -73,9 +88,10 @@ describe('txMonitor', () => {
 
       await waitForTx(provider, '0x0', '0x0')
 
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+      expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
         txId: '0x0',
-        error: new Error('Transaction not mined in 6.5 minutes. Be aware that it might still be mined.'),
+        error: new Error('Transaction reverted by EVM.'),
+        receipt,
       })
     })
     it('emits a FAILED event if waitForTransaction times out', async () => {
