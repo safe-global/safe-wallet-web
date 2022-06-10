@@ -4,11 +4,10 @@ import type { RootState } from '@/store'
 
 type PendingTxsState =
   | {
-      [chainId: string]: {
-        [txId: string]: {
-          status: string
-          txHash?: string
-        }
+      [txId: string]: {
+        chainId: string
+        status: string
+        txHash?: string
       }
     }
   | Record<string, never>
@@ -23,16 +22,11 @@ export const pendingTxsSlice = createSlice({
       state,
       action: PayloadAction<{ chainId: string; txId: string; txHash?: string; status: string }>,
     ) => {
-      const { chainId, txId, ...pendingTx } = action.payload
-      state[chainId] ??= {}
-      state[chainId][txId] = state[chainId][txId] ? { ...state[chainId][txId], ...pendingTx } : pendingTx
+      const { txId, ...pendingTx } = action.payload
+      state[txId] = pendingTx
     },
-    clearPendingTx: (state, action: PayloadAction<{ chainId: string; txId: string }>) => {
-      const { chainId, txId } = action.payload
-      delete state[chainId]?.[txId]
-      if (Object.keys(state[chainId]).length === 0) {
-        delete state[chainId]
-      }
+    clearPendingTx: (state, action: PayloadAction<{ txId: string }>) => {
+      delete state[action.payload.txId]
     },
   },
 })
@@ -43,7 +37,7 @@ export const selectPendingTxs = (state: RootState): PendingTxsState => {
   return state[pendingTxsSlice.name]
 }
 
-export const selectPendingTxsByChainId = createSelector(
-  [selectPendingTxs, (_: RootState, chainId: string) => chainId],
-  (pendingTxs, chainId) => pendingTxs?.[chainId],
+export const selectPendingTxById = createSelector(
+  [selectPendingTxs, (_: RootState, txId: string) => txId],
+  (pendingTxs, txId) => pendingTxs[txId],
 )

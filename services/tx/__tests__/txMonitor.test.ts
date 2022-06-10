@@ -38,6 +38,7 @@ describe('txMonitor', () => {
 
       expect(txDispatchSpy).not.toHaveBeenCalled()
     })
+
     // Not mined:
     it("emits a FAILED event if waitForTransaction isn't blocking and no receipt was returned", async () => {
       // Can return null if waitForTransaction is non-blocking:
@@ -57,6 +58,7 @@ describe('txMonitor', () => {
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error) })
     })
+
     it('emits a FAILED event if the tx mining timed out', async () => {
       web3ReadOnlySpy.mockImplementationOnce(
         () =>
@@ -72,6 +74,7 @@ describe('txMonitor', () => {
         error: new Error('Transaction not mined in 6.5 minutes. Be aware that it might still be mined.'),
       })
     })
+
     it('emits a REVERTED event if the tx reverted', async () => {
       const receipt = {
         status: 0,
@@ -94,6 +97,7 @@ describe('txMonitor', () => {
         receipt,
       })
     })
+
     it('emits a FAILED event if waitForTransaction times out', async () => {
       web3ReadOnlySpy.mockImplementationOnce(
         () =>
@@ -111,6 +115,7 @@ describe('txMonitor', () => {
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error) })
     })
+
     it('emits a FAILED event if waitForTransaction throws', async () => {
       web3ReadOnlySpy.mockImplementationOnce(
         () =>
