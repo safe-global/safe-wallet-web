@@ -21,7 +21,8 @@ const Web3Context = createContext<Web3ContextType>({
 })
 
 const Web3Provider = ({ children }: { children: ReactElement }): ReactElement => {
-  const [providers, setProviders] = useState<Web3ContextType>(initialWeb3Context)
+  const [web3, setWeb3] = useState<Web3ProviderType>()
+  const [web3ReadOnly, setWeb3ReadOnly] = useState<JsonRpcProvider>()
 
   const chain = useCurrentChain()
   const wallet = useWallet()
@@ -30,13 +31,27 @@ const Web3Provider = ({ children }: { children: ReactElement }): ReactElement =>
     if (!chain || !wallet || chain.chainId !== wallet.chainId) {
       return
     }
-    setProviders({
-      web3: createWeb3Provider(wallet.provider),
-      web3ReadOnly: createWeb3ReadOnlyProvider(chain),
-    })
+    setWeb3(createWeb3Provider(wallet.provider))
   }, [chain, wallet])
 
-  return <Web3Context.Provider value={providers}>{children}</Web3Context.Provider>
+  useEffect(() => {
+    if (!chain) {
+      return
+    }
+
+    const updateWeb3ReadOnly = async () => {
+      const network = await web3ReadOnly?.getNetwork()
+      const isInitialized = network && network.chainId.toString() === chain.chainId
+      if (isInitialized) {
+        return
+      }
+      setWeb3ReadOnly(createWeb3ReadOnlyProvider(chain))
+    }
+
+    updateWeb3ReadOnly()
+  }, [chain])
+
+  return <Web3Context.Provider value={{ web3, web3ReadOnly }}>{children}</Web3Context.Provider>
 }
 
 export const useWeb3 = (): Web3ContextType['web3'] => {
