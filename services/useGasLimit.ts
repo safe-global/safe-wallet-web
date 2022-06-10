@@ -7,13 +7,13 @@ const useGasLimit = (
   txParams?: MetaTransactionData,
 ): {
   gasLimit?: number
-  error?: Error
-  loading: boolean
+  gasLimitError?: Error
+  gasLimitLoading: boolean
 } => {
   const serializedParams = JSON.stringify(txParams)
   const web3ReadOnly = useWeb3ReadOnly()
 
-  const [gasLimit, error, loading] = useAsync<any>(async () => {
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<any>(async () => {
     if (!txParams || !web3ReadOnly) return undefined
 
     return await web3ReadOnly.estimateGas({
@@ -23,7 +23,7 @@ const useGasLimit = (
     })
   }, [serializedParams, web3ReadOnly])
 
-  return { gasLimit, error, loading }
+  return { gasLimit, gasLimitError, gasLimitLoading }
 }
 
 export default useGasLimit

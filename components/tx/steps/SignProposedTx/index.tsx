@@ -44,7 +44,7 @@ const SignProposedTx = ({ txSummary, onSubmit }: ReviewNewTxProps): ReactElement
   const onExecute = async () => {
     onFinish(async () => {
       const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
-      await dispatchTxExecution(safeTx, txSummary.id)
+      await dispatchTxExecution(txSummary.id, safeTx)
     })
   }
 

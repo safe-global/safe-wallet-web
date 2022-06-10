@@ -1,5 +1,10 @@
 import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SafeTransaction, SafeTransactionDataPartial, TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
+import {
+  SafeTransaction,
+  SafeTransactionDataPartial,
+  TransactionOptions,
+  TransactionResult,
+} from '@gnosis.pm/safe-core-sdk-types'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
@@ -88,7 +93,11 @@ export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string):
 /**
  * Execute a transaction
  */
-export const dispatchTxExecution = async (safeTx: SafeTransaction, txId: string): Promise<string> => {
+export const dispatchTxExecution = async (
+  txId: string,
+  safeTx: SafeTransaction,
+  txOptions?: TransactionOptions,
+): Promise<string> => {
   const sdk = getSafeSDK()
 
   txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
@@ -96,7 +105,7 @@ export const dispatchTxExecution = async (safeTx: SafeTransaction, txId: string)
   // Execute the tx
   let result: TransactionResult | undefined
   try {
-    result = await sdk.executeTransaction(safeTx)
+    result = await sdk.executeTransaction(safeTx, txOptions)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
     throw error

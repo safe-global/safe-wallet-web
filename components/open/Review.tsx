@@ -1,16 +1,16 @@
 import React from 'react'
+import type { Web3Provider } from '@ethersproject/providers'
 import { CreateSafeFormData } from '@/components/open/index'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { EthHashInfo } from '@gnosis.pm/safe-react-components'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/services/wallets/useWallet'
-import { getWeb3 } from '@/services/wallets/web3'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { getEthersAdapter } from '@/services/safe-core/safeCoreSDK'
+import { useWeb3 } from '@/services/wallets/Web3Provider'
 
-export const createNewSafe = async (txParams: SafeAccountConfig): Promise<Safe> => {
-  const ethersProvider = getWeb3()
+const createNewSafe = async (ethersProvider: Web3Provider, txParams: SafeAccountConfig): Promise<Safe> => {
   const ethAdapter = getEthersAdapter(ethersProvider)
 
   const safeFactory = await SafeFactory.create({ ethAdapter })
@@ -24,11 +24,12 @@ type Props = {
 
 const Review = ({ params, onBack }: Props) => {
   const wallet = useWallet()
+  const ethersProvider = useWeb3()
 
   const createSafe = async () => {
-    if (!wallet) return
+    if (!wallet || !ethersProvider) return
 
-    await createNewSafe({
+    await createNewSafe(ethersProvider, {
       threshold: params.threshold,
       owners: params.owners.map((owner) => owner.address),
     })
