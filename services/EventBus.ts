@@ -1,7 +1,7 @@
 interface GeneralEventTypes {
   // the name of the event and the data it dispatches with
   // e.g. 'entryCreated': { count: 1 }
-  [eventType: string]: any
+  [eventType: string]: Record<string, unknown>
 }
 
 class EventBus<EventTypes extends GeneralEventTypes> {
