@@ -16,7 +16,7 @@ class EventBus<EventTypes extends GeneralEventTypes> {
     this.eventTarget.dispatchEvent(e)
   }
 
-  subscribe<T extends string>(eventType: T, callback: (detail: EventTypes[T]) => void): () => void {
+  subscribe<T extends keyof EventTypes>(eventType: T, callback: (detail: EventTypes[T]) => void): () => void {
     const handler = (e: Event) => {
       if (e instanceof CustomEvent) {
         callback(e.detail)
