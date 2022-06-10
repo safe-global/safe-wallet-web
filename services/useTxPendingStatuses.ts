@@ -77,6 +77,7 @@ export const useMonitorTxs = (): void => {
         }
       }),
     )
+    // `provider` is updated when switching chains, re-running this effect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider])
 }
