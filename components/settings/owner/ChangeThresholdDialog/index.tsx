@@ -4,13 +4,12 @@ import { useEffect, useState } from 'react'
 import TxModal from '@/components/tx/TxModal'
 import { TxStepperProps } from '@/components/tx/TxStepper'
 import useSafeInfo from '@/services/useSafeInfo'
-import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 
 import { showNotification } from '@/store/notificationsSlice'
 import { CodedException, Errors } from '@/services/exceptions'
 import { useDispatch } from 'react-redux'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
-import { dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
+import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/services/wallets/useWallet'
 import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
 import useAsync from '@/services/useAsync'
@@ -21,7 +20,7 @@ interface ChangeThresholdData {
   threshold: number
 }
 
-const AddOwnerSteps: TxStepperProps['steps'] = [
+const ChangeThresholdSteps: TxStepperProps['steps'] = [
   {
     label: 'Change Threshold',
     render: (data, onSubmit, onClose) => <ChangeThresholdStep data={data as ChangeThresholdData} onClose={onClose} />,
@@ -35,7 +34,7 @@ export const ChangeThresholdDialog = () => {
 
   const handleClose = () => setOpen(false)
 
-  const initialModalData: [ChangeOwnerData] = [{ newOwner: { address: '', name: '' }, threshold: safe?.threshold }]
+  const initialModalData: ChangeThresholdData = { threshold: safe?.threshold || 1 }
 
   return (
     <div>
@@ -44,7 +43,7 @@ export const ChangeThresholdDialog = () => {
           Change
         </Button>
       </div>
-      {open && <TxModal onClose={handleClose} steps={AddOwnerSteps} initialData={initialModalData} />}
+      {open && <TxModal onClose={handleClose} steps={ChangeThresholdSteps} initialData={[initialModalData]} />}
     </div>
   )
 }
@@ -70,8 +69,9 @@ const ChangeThresholdStep = ({ data, onClose }: { data: ChangeThresholdData; onC
   const onSubmitHandler = async (data: ReviewTxFormData) => {
     if (safe && connectedWallet && tx) {
       try {
-        const editedTx = { ...tx, data: { ...tx.data, nonce: data.nonce, safeTxGas: data.safeTxGas } }
-        const signedTx = await dispatchTxSigning(editedTx)
+        const editedTx = { ...tx.data, nonce: data.nonce, safeTxGas: data.safeTxGas }
+        const createdTx = await createTx(editedTx)
+        const signedTx = await dispatchTxSigning(createdTx)
         await dispatchTxProposal(safe.chainId, safe.address.value, connectedWallet.address, signedTx)
         onClose()
       } catch (err) {

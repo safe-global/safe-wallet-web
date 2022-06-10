@@ -8,7 +8,6 @@ import type { NextPage } from 'next'
 
 const Setup: NextPage = () => {
   const { safe } = useSafeInfo()
-  const version = safe?.version
   const nonce = safe?.nonce
   const ownerLength = safe?.owners.length ?? 0
   const threshold = safe?.threshold ?? 0

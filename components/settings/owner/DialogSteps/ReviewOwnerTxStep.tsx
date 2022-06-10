@@ -9,10 +9,11 @@ import { CodedException, Errors } from '@/services/exceptions'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 import useWallet from '@/services/wallets/useWallet'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
-import { dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
+import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useAsync from '@/services/useAsync'
 import { useCallback } from 'react'
 import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 
 export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; onClose: () => void }) => {
   const { safe } = useSafeInfo()
@@ -33,7 +34,7 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
             ownerAddress: newOwner.address,
             threshold,
           }),
-    [removedOwner, newOwner, threshold],
+    [removedOwner, newOwner, threshold, sdk],
   )
   const [changeOwnerTx, error, loading] = useAsync(createChangeOwnerTx, [createChangeOwnerTx])
   if (error) {
@@ -47,12 +48,23 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
     if (safe && connectedWallet && changeOwnerTx) {
       try {
         // overwrite nonce and safeTxGas
-        const editedOwnerTx = {
-          ...changeOwnerTx,
-          data: { ...changeOwnerTx.data, nonce: data.nonce, safeTxGas: data.safeTxGas },
+        const editedOwnerTxData = {
+          ...changeOwnerTx.data,
+          nonce: data.nonce,
+          safeTxGas: data.safeTxGas,
         }
+        let editedOwnerTx = await createTx(editedOwnerTxData)
         let signedTx = await dispatchTxSigning(editedOwnerTx)
-        dispatchTxProposal(safe.chainId, safe.address.value, connectedWallet.address, signedTx)
+        await dispatchTxProposal(safe.chainId, safe.address.value, connectedWallet.address, signedTx)
+        if (typeof newOwner.name !== 'undefined') {
+          dispatch(
+            upsertAddressBookEntry({
+              chainId: safe.chainId,
+              address: newOwner.address,
+              name: newOwner.name,
+            }),
+          )
+        }
       } catch (err) {
         const { message } = new CodedException(Errors._804, (err as Error).message)
         dispatch(showNotification({ message }))

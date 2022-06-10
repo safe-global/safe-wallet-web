@@ -31,7 +31,7 @@ export const AddOwnerDialog = () => {
 
   const handleClose = () => setOpen(false)
 
-  const initialModalData: [ChangeOwnerData] = [{ newOwner: { address: '', name: '' }, threshold: safe?.threshold }]
+  const initialModalData: ChangeOwnerData = { newOwner: { address: '', name: '' }, threshold: safe?.threshold }
 
   return (
     <div>
@@ -40,7 +40,7 @@ export const AddOwnerDialog = () => {
           Add New Owner
         </Button>
       </div>
-      {open && <TxModal onClose={handleClose} steps={AddOwnerSteps} initialData={initialModalData} />}
+      {open && <TxModal onClose={handleClose} steps={AddOwnerSteps} initialData={[initialModalData]} />}
     </div>
   )
 }

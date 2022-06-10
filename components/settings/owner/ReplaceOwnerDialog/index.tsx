@@ -27,9 +27,11 @@ export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
 
   const { safe } = useSafeInfo()
 
-  const initialModalData: [ChangeOwnerData] = [
-    { removedOwner: { address }, newOwner: { address: '', name: '' }, threshold: safe?.threshold },
-  ]
+  const initialModalData: ChangeOwnerData = {
+    removedOwner: { address },
+    newOwner: { address: '', name: '' },
+    threshold: safe?.threshold,
+  }
 
   return (
     <div>
@@ -38,7 +40,7 @@ export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
           <ChangeCircleOutlinedIcon />
         </IconButton>
       </Tooltip>
-      {open && <TxModal onClose={handleClose} steps={ReplaceOwnerSteps} initialData={initialModalData} />}
+      {open && <TxModal onClose={handleClose} steps={ReplaceOwnerSteps} initialData={[initialModalData]} />}
     </div>
   )
 }

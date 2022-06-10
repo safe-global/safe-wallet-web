@@ -2,7 +2,7 @@ import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
 import { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 import { FormControl, TextField, Button } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
@@ -28,16 +28,12 @@ export const ReviewTxForm = ({ txParams, onFormSubmit }: ReviewTxFormProps) => {
   } = useForm<ReviewTxFormData>()
 
   // Always include safeTxGas although not editable
-  register('safeTxGas', { value: Number(safeGas?.safeTxGas || 0) })
+  useEffect(() => {
+    register('safeTxGas', { value: Number(safeGas?.safeTxGas || 0) })
+  }, [])
 
   return (
-    <form
-      onSubmit={() => {
-        setIsSubmittable(false)
-        handleSubmit(onFormSubmit)
-        setIsSubmittable(true)
-      }}
-    >
+    <form onSubmit={handleSubmit(onFormSubmit)}>
       <FormControl fullWidth>
         <TextField
           disabled={safeGasLoading}
