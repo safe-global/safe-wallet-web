@@ -1803,9 +1803,9 @@
     "@gnosis.pm/safe-core-sdk-types" "^1.1.0"
     "@gnosis.pm/safe-core-sdk-utils" "^1.1.0"
 
-"@gnosis.pm/safe-react-components@git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components":
-  version "2.0.0"
-  resolved "git+https://github.com/safe-global/safe-react-components#44ad8b727ca61b4a3ece8914d03fdb97d9d0a4ea"
+"@gnosis.pm/safe-react-components@git+https://github.com/safe-global/safe-react-components#4cbe12dffa718f962ccf229438c3b0ea20e5ccf2":
+  version "2.0.1"
+  resolved "git+https://github.com/safe-global/safe-react-components#4cbe12dffa718f962ccf229438c3b0ea20e5ccf2"
   dependencies:
     "@emotion/react" "^11.9.0"
     "@emotion/styled" "^11.8.1"

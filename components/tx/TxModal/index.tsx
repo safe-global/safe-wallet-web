@@ -2,8 +2,9 @@ import React from 'react'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 
-import TxStepper, { TxStepperProps } from '../TxStepper'
+import TxStepper from '../TxStepper'
 import css from './styles.module.css'
+import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 
 export type TxModalProps = {
   onClose: () => void

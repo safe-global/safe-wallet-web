@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { useCurrentChain } from '../useChains'
 import { animalsDict, adjectivesDict } from './dict'
 
@@ -15,13 +15,7 @@ export const getRandomName = (noun = getRandomItem<string>(animals)): string => 
 }
 
 export const useMnemonicName = (noun?: string): string => {
-  const [name, setName] = useState<string>('')
-
-  useEffect(() => {
-    setName(getRandomName(noun))
-  }, [noun])
-
-  return name
+  return useMemo(() => getRandomName(noun), [noun])
 }
 
 export const useMnemonicSafeName = (): string => {
