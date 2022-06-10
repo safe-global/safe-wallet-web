@@ -1,9 +1,3 @@
-.submit {
-  position: absolute;
-  bottom: -54px;
-  right: 0;
-}
-
 .container {
   display: flex;
   flex-direction: column;
@@ -11,4 +5,10 @@
   gap: 20px;
   padding: 50px 0 40px;
   position: relative;
+}
+
+.submit {
+  position: absolute;
+  bottom: -54px;
+  right: 0;
 }

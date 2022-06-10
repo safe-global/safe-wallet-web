@@ -1,4 +1,4 @@
-import { Button, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { Button, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { useEffect, useState } from 'react'
 
 import TxModal from '@/components/tx/TxModal'
@@ -6,12 +6,14 @@ import { TxStepperProps } from '@/components/tx/TxStepper'
 import useSafeInfo from '@/services/useSafeInfo'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 
-import css from './styles.module.css'
-import { signTransaction, createChangeThresholdTransaction } from '@/services/createTransaction'
-import proposeTx from '@/services/proposeTransaction'
 import { showNotification } from '@/store/notificationsSlice'
 import { CodedException, Errors } from '@/services/exceptions'
 import { useDispatch } from 'react-redux'
+import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
+import { dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
+import useWallet from '@/services/wallets/useWallet'
+import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
+import useAsync from '@/services/useAsync'
 
 interface ChangeThresholdData {
   threshold: number
@@ -47,7 +49,9 @@ export const ChangeThresholdDialog = () => {
 
 const ChangeThresholdStep = ({ data, onClose }: { data: ChangeThresholdData; onClose: () => void }) => {
   const { safe } = useSafeInfo()
+  const connectedWallet = useWallet()
   const dispatch = useDispatch()
+  const sdk = getSafeSDK()
 
   const [options, setOptions] = useState<number[]>([0])
   const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
@@ -55,16 +59,18 @@ const ChangeThresholdStep = ({ data, onClose }: { data: ChangeThresholdData; onC
     setOptions(Array.from(Array(safe?.owners.length ?? 0).keys()))
   }, [safe])
 
+  const [tx, error, loading] = useAsync(() => sdk.getChangeThresholdTx(selectedThreshold), [sdk, selectedThreshold])
+
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedThreshold(parseInt(event.target.value.toString()))
   }
 
-  const onSubmitHandler = async () => {
-    if (safe) {
+  const onSubmitHandler = async (data: ReviewTxFormData) => {
+    if (safe && connectedWallet && tx) {
       try {
-        let tx = await createChangeThresholdTransaction(selectedThreshold)
-        tx = await signTransaction(tx)
-        const proposedTx = await proposeTx(safe.chainId, safe.address.value, tx)
+        const editedTx = { ...tx, data: { ...tx.data, nonce: data.nonce, safeTxGas: data.safeTxGas } }
+        const signedTx = await dispatchTxSigning(editedTx)
+        await dispatchTxProposal(safe.chainId, safe.address.value, connectedWallet.address, signedTx)
         onClose()
       } catch (err) {
         const { message } = new CodedException(Errors._804, (err as Error).message)
@@ -73,23 +79,20 @@ const ChangeThresholdStep = ({ data, onClose }: { data: ChangeThresholdData; onC
     }
   }
   return (
-    <div className={css.container}>
-      <span>Any transaction requires the confirmation of:</span>
-      <span>
-        <Select value={selectedThreshold} onChange={handleChange}>
-          {options.map((option) => (
-            <MenuItem key={option + 1} value={option + 1}>
-              {option + 1}
-            </MenuItem>
-          ))}
-        </Select>{' '}
-        out of {safe?.owners.length ?? 0} owner(s)
-      </span>
-      <div className={css.submit}>
-        <Button variant="contained" onClick={onSubmitHandler}>
-          Submit
-        </Button>
-      </div>
-    </div>
+    <ReviewTxForm showHeader={false} onFormSubmit={onSubmitHandler} txParams={tx?.data}>
+      <>
+        <span>Any transaction requires the confirmation of:</span>
+        <span>
+          <Select value={selectedThreshold} onChange={handleChange}>
+            {options.map((option) => (
+              <MenuItem key={option + 1} value={option + 1}>
+                {option + 1}
+              </MenuItem>
+            ))}
+          </Select>{' '}
+          out of {safe?.owners.length ?? 0} owner(s)
+        </span>
+      </>
+    </ReviewTxForm>
   )
 }
