@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 
-type Owner = {
+export type Owner = {
   name: string
   address: string
   resolving: boolean

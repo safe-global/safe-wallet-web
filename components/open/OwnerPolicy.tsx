@@ -19,7 +19,7 @@ import { useFieldArray, useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
 import indicatorCss from '@/components/common/NetworkSelector/styles.module.css'
-import { CreateSafeFormData } from '@/components/open/index'
+import { CreateSafeFormData, Owner } from '@/components/open/index'
 import useWallet from '@/services/wallets/useWallet'
 import { validateAddress } from '@/services/validation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -37,7 +37,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
   const ethersProvider = getWeb3()
   const wallet = useWallet()
 
-  const defaultOwner = {
+  const defaultOwner: Owner = {
     name: wallet?.ens || '',
     address: wallet?.address || '',
     resolving: false,
@@ -50,6 +50,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
     formState: { errors },
     getFieldState,
     watch,
+    setValue,
   } = useForm<CreateSafeFormData>({
     mode: 'all',
     defaultValues: { name: params.name, owners: [defaultOwner], threshold: 1 },
@@ -69,7 +70,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
   const getENS = async (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
     if (owners[index].name) return
 
-    update(index, { ...owners[index], resolving: true })
+    setValue(`owners.${index}.resolving`, true)
     const ensName = await ethersProvider.lookupAddress(event.target.value)
     update(index, { name: ensName || '', address: event.target.value, resolving: false })
   }
@@ -93,7 +94,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
           <Typography>
             Add additional owners (e.g. wallets of your teammates) and specify how many of them have to confirm a
             transaction before it gets executed. In general, the more confirmations required, the more secure your Safe
-            is.Learn about which Safe setup to use. The new Safe will ONLY be available on{' '}
+            is. Learn about which Safe setup to use. The new Safe will ONLY be available on{' '}
             <ChainIndicator className={indicatorCss.inlineIndicator} />
           </Typography>
         </Box>

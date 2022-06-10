@@ -5,19 +5,14 @@ import { EthHashInfo } from '@gnosis.pm/safe-react-components'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/services/wallets/useWallet'
-import { ethers } from 'ethers'
-import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 import { getWeb3 } from '@/services/wallets/web3'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import css from '@/components/common/NetworkSelector/styles.module.css'
+import { getEthersAdapter } from '@/services/safe-core/safeCoreSDK'
 
 export const createNewSafe = async (txParams: SafeAccountConfig): Promise<Safe> => {
   const ethersProvider = getWeb3()
-  const signer = ethersProvider.getSigner(0)
-  const ethAdapter = new EthersAdapter({
-    ethers,
-    signer,
-  })
+  const ethAdapter = getEthersAdapter(ethersProvider)
 
   const safeFactory = await SafeFactory.create({ ethAdapter })
   return await safeFactory.deploySafe({ safeAccountConfig: txParams })
