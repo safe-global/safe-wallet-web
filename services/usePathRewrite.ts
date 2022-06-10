@@ -12,20 +12,30 @@ import { useEffect, useState } from 'react'
 // Next.js doesn't care because dynamic path params are internally represented as query params anyway.
 const usePathRewrite = () => {
   const router = useRouter()
-  let { safe = '', chain = '' } = router.query
+  let { safe = '', ...restQuery } = router.query
   if (Array.isArray(safe)) safe = safe[0]
+  safe = decodeURIComponent(safe)
 
   useEffect(() => {
     if (!safe) return
-    let newPath = router.pathname.replace(/\/safe\//, `/${safe}/`)
-    if (chain) {
-      newPath += `?chain=${chain}`
+    let newPath = router.pathname.replace(/\/safe\/?/, `/${safe}/`)
+
+    // Add the rest of the query params if any
+    if (Object.keys(restQuery).length) {
+      const qPairs = Object.entries(restQuery)
+        .map(([key, values]) => {
+          if (!(values instanceof Array)) values = [ values || '' ]
+          return `${key}=${values.map(encodeURIComponent).join(',')}`
+        })
+        console.log(qPairs)
+      newPath += `?${qPairs.join('&')}`
     }
+
     if (newPath !== router.pathname) {
       // This just changes what you see in the URL bar w/o triggering any rendering or route change
       history.replaceState(history.state, '', newPath)
     }
-  }, [safe, router.pathname, chain])
+  }, [safe, router.pathname, restQuery])
 }
 
 export default usePathRewrite
