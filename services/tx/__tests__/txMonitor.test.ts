@@ -1,21 +1,23 @@
+import { JsonRpcProvider } from '@ethersproject/providers'
 import * as txEvents from '@/services/tx/txEvents'
 import * as txMonitor from '@/services/tx/txMonitor'
-import * as web3 from '@/services/wallets/web3'
 
 import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
 
 const { waitForTx } = txMonitor
 
+const provider = new JsonRpcProvider()
+
 describe('txMonitor', () => {
   let txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
-  let web3ReadOnlySpy = jest.spyOn(web3, 'getWeb3ReadOnly')
+  let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
 
   beforeEach(() => {
     jest.useFakeTimers()
     jest.resetAllMocks()
 
     txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
-    web3ReadOnlySpy = jest.spyOn(web3, 'getWeb3ReadOnly')
+    waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
   })
 
   describe('waitForTx', () => {
@@ -25,14 +27,7 @@ describe('txMonitor', () => {
         status: 1,
       } as TransactionReceipt
 
-      web3ReadOnlySpy.mockImplementationOnce(
-        () =>
-          ({
-            waitForTransaction: () => Promise.resolve(receipt),
-          } as unknown as ReturnType<typeof web3.getWeb3ReadOnly>),
-      )
-
-      const provider = web3.getWeb3ReadOnly()
+      waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
       await waitForTx(provider, '0x0', '0x0')
 
@@ -45,14 +40,7 @@ describe('txMonitor', () => {
       // https://docs.ethers.io/v5/single-page/#/v5/api/providers/provider/-%23-Provider-waitForTransaction
       const receipt = null as unknown as TransactionReceipt
 
-      web3ReadOnlySpy.mockImplementationOnce(
-        () =>
-          ({
-            waitForTransaction: () => Promise.resolve(receipt),
-          } as unknown as ReturnType<typeof web3.getWeb3ReadOnly>),
-      )
-
-      const provider = web3.getWeb3ReadOnly()
+      waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
       await waitForTx(provider, '0x0', '0x0')
 
@@ -60,12 +48,9 @@ describe('txMonitor', () => {
     })
 
     it('emits a FAILED event if the tx mining timed out', async () => {
-      web3ReadOnlySpy.mockImplementationOnce(
-        () =>
-          ({ waitForTransaction: () => Promise.resolve(null) } as unknown as ReturnType<typeof web3.getWeb3ReadOnly>),
+      waitForTxSpy.mockImplementationOnce(
+        () => Promise.resolve(null) as unknown as ReturnType<typeof provider.waitForTransaction>,
       )
-
-      const provider = web3.getWeb3ReadOnly()
 
       await waitForTx(provider, '0x0', '0x0')
 
@@ -80,14 +65,7 @@ describe('txMonitor', () => {
         status: 0,
       } as TransactionReceipt
 
-      web3ReadOnlySpy.mockImplementationOnce(
-        () =>
-          ({ waitForTransaction: () => Promise.resolve(receipt) } as unknown as ReturnType<
-            typeof web3.getWeb3ReadOnly
-          >),
-      )
-
-      const provider = web3.getWeb3ReadOnly()
+      waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
       await waitForTx(provider, '0x0', '0x0')
 
@@ -99,14 +77,7 @@ describe('txMonitor', () => {
     })
 
     it('emits a FAILED event if waitForTransaction times out', async () => {
-      web3ReadOnlySpy.mockImplementationOnce(
-        () =>
-          ({
-            waitForTransaction: () => Promise.reject(new Error('Test error.')),
-          } as unknown as ReturnType<typeof web3.getWeb3ReadOnly>),
-      )
-
-      const provider = web3.getWeb3ReadOnly()
+      waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error('Test error.')))
 
       await waitForTx(provider, '0x0', '0x0')
 
@@ -117,14 +88,7 @@ describe('txMonitor', () => {
     })
 
     it('emits a FAILED event if waitForTransaction throws', async () => {
-      web3ReadOnlySpy.mockImplementationOnce(
-        () =>
-          ({
-            waitForTransaction: () => Promise.reject(new Error('Test error.')),
-          } as unknown as ReturnType<typeof web3.getWeb3ReadOnly>),
-      )
-
-      const provider = web3.getWeb3ReadOnly()
+      waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error('Test error.')))
 
       await waitForTx(provider, '0x0', '0x0')
 
