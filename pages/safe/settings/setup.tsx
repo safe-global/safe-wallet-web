@@ -1,8 +1,11 @@
 import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
+import { sameAddress } from '@/services/addresses'
 import useAddressBook from '@/services/useAddressBook'
+import useChainId from '@/services/useChainId'
 import useSafeInfo from '@/services/useSafeInfo'
+import useWallet from '@/services/wallets/useWallet'
 import { Grid, Paper, Typography } from '@mui/material'
 import type { NextPage } from 'next'
 
@@ -12,6 +15,15 @@ const Setup: NextPage = () => {
   const ownerLength = safe?.owners.length ?? 0
   const threshold = safe?.threshold ?? 0
   const addressBook = useAddressBook()
+
+  const wallet = useWallet()
+  const chainId = useChainId()
+
+  const isOwner =
+    Boolean(wallet?.address) && Boolean(safe?.owners.some((owner) => sameAddress(owner.value, wallet?.address)))
+  const isCorrectChain = chainId === safe?.chainId
+  const isGranted = isOwner && isCorrectChain
+
   const namedOwners = safe?.owners.map((owner) => ({
     address: owner.value,
     name: addressBook[owner.value],
@@ -24,10 +36,10 @@ const Setup: NextPage = () => {
         <Grid item xs={8}>
           <Paper>
             <Grid item>
-              <OwnerList owners={namedOwners ?? []} isGranted={true} chainId={safe?.chainId} />
+              <OwnerList owners={namedOwners ?? []} isGranted={isGranted} chainId={safe?.chainId} />
             </Grid>
             <Grid item xs>
-              <RequiredConfirmation threshold={threshold} owners={ownerLength} />
+              <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />
             </Grid>
           </Paper>
         </Grid>

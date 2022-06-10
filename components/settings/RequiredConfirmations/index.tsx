@@ -2,7 +2,15 @@ import { ChangeThresholdDialog } from '@/components/settings/owner/ChangeThresho
 import { Typography } from '@mui/material'
 import css from './styles.module.css'
 
-export const RequiredConfirmation = ({ threshold, owners }: { threshold: number; owners: number }) => {
+export const RequiredConfirmation = ({
+  threshold,
+  owners,
+  isGranted,
+}: {
+  threshold: number
+  owners: number
+  isGranted: boolean
+}) => {
   return (
     <div className={css.container}>
       <Typography variant="h3">Required Confirmations</Typography>
@@ -10,7 +18,7 @@ export const RequiredConfirmation = ({ threshold, owners }: { threshold: number;
       <Typography className={css.lightParagraph}>
         <b>{threshold}</b> out of <b>{owners}</b> owners.
       </Typography>
-      <ChangeThresholdDialog />
+      {isGranted && <ChangeThresholdDialog />}
     </div>
   )
 }

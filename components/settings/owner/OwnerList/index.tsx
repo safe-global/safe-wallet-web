@@ -55,7 +55,7 @@ export const OwnerList = ({
           <TableBody>{owners.map((owner) => OwnerRow(owner))}</TableBody>
         </Table>
       </TableContainer>
-      <AddOwnerDialog />
+      {isGranted && <AddOwnerDialog />}
     </div>
   )
 }
