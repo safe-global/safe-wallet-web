@@ -18,7 +18,7 @@ const usePathRewrite = () => {
 
   useEffect(() => {
     if (!safe) return
-    let newPath = router.pathname.replace(/\/safe\/?/, `/${safe}/`)
+    let newPath = router.pathname.replace(/\/safe(?=\/)?/, `/${safe}`)
 
     // Add the rest of the query params if any
     if (Object.keys(restQuery).length) {
