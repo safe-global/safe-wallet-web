@@ -52,7 +52,7 @@ const useTxPendingStatuses = (): void => {
   }, [dispatch, chainId])
 }
 
-export const useMonitorTxs = (): void => {
+export const useTxMonitor = (): void => {
   const chainId = useChainId()
   const pendingTxsOnChain = useAppSelector((state) => selectPendingTxsByChainId(state, chainId))
   const provider = getWeb3ReadOnly()
