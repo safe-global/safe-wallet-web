@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Button, Divider, FormControl, Grid, Paper, TextField, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { CreateSafeFormData } from '@/components/open/index'
+import { CreateSafeFormData } from '@/components/create-safe/index'
 import { useMnemonicSafeName } from '@/services/useMnemonicName'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
