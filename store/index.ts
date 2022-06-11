@@ -10,7 +10,7 @@ import { chainsSlice } from './chainsSlice'
 import { safeInfoSlice } from './safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { collectiblesSlice } from './collectiblesSlice'
-import { currencySlice } from './currencySlice'
+import { sessionSlice } from './sessionSlice'
 import { txHistorySlice, txHistoryMiddleware } from './txHistorySlice'
 import { txQueueSlice } from './txQueueSlice'
 import { addressBookSlice } from './addressBookSlice'
@@ -24,7 +24,7 @@ const rootReducer = combineReducers({
   [safeInfoSlice.name]: safeInfoSlice.reducer,
   [balancesSlice.name]: balancesSlice.reducer,
   [collectiblesSlice.name]: collectiblesSlice.reducer,
-  [currencySlice.name]: currencySlice.reducer,
+  [sessionSlice.name]: sessionSlice.reducer,
   [txHistorySlice.name]: txHistorySlice.reducer,
   [txQueueSlice.name]: txQueueSlice.reducer,
   [addressBookSlice.name]: addressBookSlice.reducer,
@@ -34,7 +34,7 @@ const rootReducer = combineReducers({
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
-  currencySlice.name,
+  sessionSlice.name,
   addressBookSlice.name,
   pendingTxsSlice.name,
   addedSafesSlice.name,
