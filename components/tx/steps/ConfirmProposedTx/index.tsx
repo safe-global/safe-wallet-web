@@ -28,7 +28,7 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
     <div>
       <Typography variant="h6">Confirm transaction</Typography>
 
-      {safeTx && <SignOrExecuteForm safeTx={safeTx} txId={txId} onSubmit={onSubmit} />}
+      <SignOrExecuteForm safeTx={safeTx} txId={txId} onSubmit={onSubmit} />
 
       {safeTxError ? <ErrorToast message={safeTxError!.message.slice(0, 300)} /> : null}
     </div>

@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Button, Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material'
+import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material'
 
 import css from './styles.module.css'
 
@@ -12,7 +12,7 @@ import useGasLimit from '@/services/useGasLimit'
 import ErrorToast from '@/components/common/ErrorToast'
 
 type SignOrExecuteProps = {
-  safeTx: SafeTransaction
+  safeTx?: SafeTransaction
   txId?: string
   onSubmit: (data: null) => void
 }
@@ -24,7 +24,16 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
-  const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(shouldExecute ? safeTx?.data : undefined)
+  const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(
+    shouldExecute && safeTx && wallet
+      ? {
+          to: safeTx.data.to,
+          value: safeTx.data.value,
+          data: safeTx.data.data,
+          from: wallet.address,
+        }
+      : undefined,
+  )
 
   const onFinish = async (actionFn: () => Promise<void>) => {
     if (!wallet || !safeTx) return
@@ -48,9 +57,13 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
 
   const onExecute = async () => {
     onFinish(async () => {
-      // @FIXME
-      // const proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet!.address, safeTx)
-      await dispatchTxExecution(safeTx!, { gasLimit }, txId)
+      let id = txId
+      // If no txId was provided, it's an immediate execution of a new tx
+      if (!id) {
+        const proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet!.address, safeTx!)
+        id = proposedTx.txId
+      }
+      await dispatchTxExecution(id, safeTx!, { gasLimit })
     })
   }
 
@@ -58,8 +71,6 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
 
   return (
     <div className={css.container}>
-      <Typography variant="h6">Confirm transaction</Typography>
-
       <FormGroup>
         <FormControlLabel
           control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}

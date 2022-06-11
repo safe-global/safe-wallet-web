@@ -67,7 +67,11 @@ export const dispatchTxProposal = async (
     txDispatch(TxEvent.PROPOSE_FAILED, { tx: safeTx, error: error as Error })
     throw error
   }
-  txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
+
+  // Proposals w/o signatures won't appear in the queue, but they are needed for immedialyely executed txs
+  if (safeTx.signatures.size) {
+    txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
+  }
 
   return proposedTx
 }
@@ -94,9 +98,9 @@ export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string):
  * Execute a transaction
  */
 export const dispatchTxExecution = async (
+  txId: string,
   safeTx: SafeTransaction,
   txOptions?: TransactionOptions,
-  txId?: string,
 ): Promise<string> => {
   const sdk = getSafeSDK()
 
