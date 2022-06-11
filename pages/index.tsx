@@ -1,11 +1,3 @@
-import type { NextPage } from 'next'
+import WelcomePage from './welcome'
 
-const Home: NextPage = () => {
-  return (
-    <main>
-      <h1>Hello web-core</h1>
-    </main>
-  )
-}
-
-export default Home
+export default WelcomePage

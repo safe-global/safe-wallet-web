@@ -18,7 +18,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import { useFieldArray, useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
-import { CreateSafeFormData, Owner } from '@/components/open/index'
+import { CreateSafeFormData, Owner } from '@/components/create-safe/index'
 import useWallet from '@/services/wallets/useWallet'
 import { validateAddress } from '@/services/validation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'

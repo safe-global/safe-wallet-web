@@ -1,6 +1,6 @@
 import React from 'react'
 import type { Web3Provider } from '@ethersproject/providers'
-import { CreateSafeFormData } from '@/components/open/index'
+import { CreateSafeFormData } from '@/components/create-safe/index'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { EthHashInfo } from '@gnosis.pm/safe-react-components'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'

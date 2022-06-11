@@ -1,9 +1,9 @@
 import React from 'react'
 
-import ConnectWallet from '@/components/open/ConnectWallet'
-import SetName from '@/components/open/SetName'
-import OwnerPolicy from '@/components/open/OwnerPolicy'
-import Review from '@/components/open/Review'
+import ConnectWallet from '@/components/create-safe/ConnectWallet'
+import SetName from '@/components/create-safe/SetName'
+import OwnerPolicy from '@/components/create-safe/OwnerPolicy'
+import Review from '@/components/create-safe/Review'
 import { useRouter } from 'next/router'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
