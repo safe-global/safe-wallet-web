@@ -94,9 +94,9 @@ export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string):
  * Execute a transaction
  */
 export const dispatchTxExecution = async (
-  txId: string,
   safeTx: SafeTransaction,
   txOptions?: TransactionOptions,
+  txId?: string,
 ): Promise<string> => {
   const sdk = getSafeSDK()
 

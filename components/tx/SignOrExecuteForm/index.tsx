@@ -1,26 +1,34 @@
 import { ReactElement, useState } from 'react'
-import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material'
 
-import useSafeAddress from '@/services/useSafeAddress'
 import css from './styles.module.css'
-import { useChainId } from '@/services/useChainId'
-import { createExistingTx, dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
-import useWallet from '@/services/wallets/useWallet'
 
-type ReviewNewTxProps = {
-  txSummary: TransactionSummary
+import useSafeAddress from '@/services/useSafeAddress'
+import { useChainId } from '@/services/useChainId'
+import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
+import useWallet from '@/services/wallets/useWallet'
+import useGasLimit from '@/services/useGasLimit'
+import ErrorToast from '@/components/common/ErrorToast'
+
+type SignOrExecuteProps = {
+  safeTx: SafeTransaction
+  txId?: string
   onSubmit: (data: null) => void
 }
 
-const SignProposedTx = ({ txSummary, onSubmit }: ReviewNewTxProps): ReactElement => {
+const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): ReactElement => {
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const wallet = useWallet()
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
+  const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(shouldExecute ? safeTx?.data : undefined)
+
   const onFinish = async (actionFn: () => Promise<void>) => {
+    if (!wallet || !safeTx) return
+
     setIsSubmittable(false)
     try {
       await actionFn()
@@ -32,19 +40,17 @@ const SignProposedTx = ({ txSummary, onSubmit }: ReviewNewTxProps): ReactElement
   }
 
   const onSign = async () => {
-    if (!wallet) return
-
     onFinish(async () => {
-      const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
-      const signedTx = await dispatchTxSigning(safeTx, txSummary.id)
-      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
+      const signedTx = await dispatchTxSigning(safeTx!, txId)
+      await dispatchTxProposal(chainId, safeAddress, wallet!.address, signedTx)
     })
   }
 
   const onExecute = async () => {
     onFinish(async () => {
-      const safeTx = await createExistingTx(chainId, safeAddress, txSummary)
-      await dispatchTxExecution(txSummary.id, safeTx)
+      // @FIXME
+      // const proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet!.address, safeTx)
+      await dispatchTxExecution(safeTx!, { gasLimit }, txId)
     })
   }
 
@@ -61,16 +67,22 @@ const SignProposedTx = ({ txSummary, onSubmit }: ReviewNewTxProps): ReactElement
         />
       </FormGroup>
 
-      <div>Transaction id</div>
-      <pre style={{ overflow: 'auto', width: '100%' }}>{txSummary.id}</pre>
+      {shouldExecute && (
+        <label>
+          <div>Gas limit</div>
+          <input readOnly disabled={gasLimitLoading} value={gasLimit || ''} />
+        </label>
+      )}
 
       <div className={css.submit}>
         <Button variant="contained" onClick={handleSubmit} disabled={!isSubmittable}>
           Submit
         </Button>
       </div>
+
+      {gasLimitError ? <ErrorToast message={gasLimitError!.message.slice(0, 300)} /> : null}
     </div>
   )
 }
 
-export default SignProposedTx
+export default SignOrExecuteForm

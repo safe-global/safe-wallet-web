@@ -29,7 +29,7 @@ const useTxNotifications = (): void => {
       txSubscribe(event as TxEvent, (detail) => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
-        const message = isError ? `${baseMessage} ${detail.error.message}` : baseMessage
+        const message = isError ? `${baseMessage} ${detail.error.message.slice(0, 300)}` : baseMessage
         const txId = 'txId' in detail && detail.txId
 
         dispatch(

@@ -15,8 +15,8 @@ const proposeTx = async (chainId: string, safeAddress: string, sender: string, t
     safeTxGas: tx.data.safeTxGas.toString(),
     baseGas: tx.data.baseGas.toString(),
     gasPrice: tx.data.gasPrice.toString(),
-    signature: tx.encodedSignatures(),
-    origin: null,
+    signature: tx.signatures.size ? tx.encodedSignatures() : undefined,
+    origin: 'https://gnosis-safe.io',
   })
 }
 
