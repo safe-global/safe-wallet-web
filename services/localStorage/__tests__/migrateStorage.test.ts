@@ -7,7 +7,6 @@ const oldStorage = {
     { address: '0x789', name: 'Charlie', chainId: '4' },
     { address: '0xabc', name: 'Dave', chainId: '4' },
   ],
-  'SAFE__currencyValues.selectedCurrency': 'USD',
 }
 
 describe('migrateStorage', () => {
@@ -33,12 +32,5 @@ describe('migrateStorage', () => {
         },
       }),
     )
-  })
-
-  it('should migrate the currency preference', () => {
-    migrateStorage()
-
-    expect(localStorage.getItem('SAFE__currencyValues.selectedCurrency')).toBe(null)
-    expect(localStorage.getItem('SAFE_v2__currency')).toBe('"USD"')
   })
 })
