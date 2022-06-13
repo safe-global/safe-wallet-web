@@ -1,16 +1,18 @@
+import chains from '@/config/chains'
+import useChainId from '@/services/useChainId'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '.'
+import { RootState, useAppSelector } from '.'
 
 type SessionState = {
   currency: string
   lastChainId: string
-  lastSafeAddress: string
+  lastSafeAddress: Record<string, string>
 }
 
 const initialState: SessionState = {
   currency: 'usd',
   lastChainId: '',
-  lastSafeAddress: '',
+  lastSafeAddress: {},
 }
 
 export const sessionSlice = createSlice({
@@ -23,8 +25,15 @@ export const sessionSlice = createSlice({
     setLastChainId: (state, action: PayloadAction<SessionState['lastChainId']>) => {
       state.lastChainId = action.payload
     },
-    setLastSafeAddress: (state, action: PayloadAction<SessionState['lastSafeAddress']>) => {
-      state.lastSafeAddress = action.payload
+    setLastSafeAddress: (
+      state,
+      action: PayloadAction<{
+        chainId: string
+        safeAddress: string
+      }>,
+    ) => {
+      const { chainId, safeAddress } = action.payload
+      state.lastSafeAddress[chainId] = safeAddress
     },
   },
 })
@@ -37,4 +46,11 @@ export const selectSession = (state: RootState): SessionState => {
 
 export const selectCurrency = (state: RootState): SessionState['currency'] => {
   return state[sessionSlice.name].currency
+}
+
+export const useLastSafeAddress = (): string | undefined => {
+  const chainId = useChainId()
+  const safeAddress = useAppSelector((state: RootState) => state[sessionSlice.name].lastSafeAddress[chainId])
+  const prefix = Object.entries(chains).find(([, id]) => chainId === id)?.[0]
+  return prefix && safeAddress ? `${prefix}:${safeAddress}` : undefined
 }
