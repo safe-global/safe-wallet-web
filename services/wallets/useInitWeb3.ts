@@ -1,18 +1,8 @@
 import { useState, useEffect } from 'react'
-import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 
 import { useCurrentChain } from '@/services/useChains'
 import useWallet from '@/services/wallets/useWallet'
-import { createWeb3, createWeb3ReadOnly } from '@/services/wallets/web3'
-import ExternalStore from '@/services/ExternalStore'
-
-export const { getStore: getWeb3, setStore: setWeb3, useStore: useWeb3 } = new ExternalStore<Web3Provider>()
-
-export const {
-  getStore: getWeb3ReadOnly,
-  setStore: setWeb3ReadOnly,
-  useStore: useWeb3ReadOnly,
-} = new ExternalStore<JsonRpcProvider>()
+import { createWeb3, createWeb3ReadOnly, setWeb3, setWeb3ReadOnly } from '@/services/wallets/web3'
 
 export const useInitWeb3 = () => {
   const [readOnlyChainId, setReadOnlyChainId] = useState<string>()

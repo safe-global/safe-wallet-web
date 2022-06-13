@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useChainId from './useChainId'
 import { waitForTx } from '@/services/tx/txMonitor'
-import { useWeb3ReadOnly } from '@/services/wallets/useInitWeb3'
+import { useWeb3ReadOnly } from '@/services/wallets/web3'
 
 const pendingStatuses: Partial<Record<TxEvent, string | null>> = {
   [TxEvent.EXECUTING]: 'Submitting',

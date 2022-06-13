@@ -8,7 +8,7 @@ import {
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
-import { getSafeSDK } from '../safe-core/useInitSafeCoreSDK'
+import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { didRevert } from '@/services/tx/utils'
 
 /**

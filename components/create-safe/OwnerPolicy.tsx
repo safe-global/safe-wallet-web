@@ -23,7 +23,7 @@ import useWallet from '@/services/wallets/useWallet'
 import { validateAddress } from '@/services/validation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { useWeb3 } from '@/services/wallets/useInitWeb3'
+import { useWeb3 } from '@/services/wallets/web3'
 
 type Props = {
   params: CreateSafeFormData

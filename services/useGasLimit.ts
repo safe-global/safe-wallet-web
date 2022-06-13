@@ -1,5 +1,5 @@
 import useAsync from '@/services/useAsync'
-import { useWeb3ReadOnly } from '@/services/wallets/useInitWeb3'
+import { useWeb3ReadOnly } from '@/services/wallets/web3'
 
 export type GasEstimationParams = {
   to: string

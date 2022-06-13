@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react'
 import { useCurrentChain } from '@/services/useChains'
 import useWallet from '../wallets/useWallet'
 import useSafeInfo from '../useSafeInfo'
-import Safe from '@gnosis.pm/safe-core-sdk'
-import ExternalStore from '@/services/ExternalStore'
-import { initSafeSDK } from '@/services/safe-core/safeCoreSDK'
-
-export const { getStore: getSafeSDK, setStore: setSafeSDK, useStore: useSafeSDK } = new ExternalStore<Safe>()
+import { initSafeSDK, setSafeSDK } from '@/services/safe-core/safeCoreSDK'
 
 export const useInitSafeCoreSDK = (): Error | null => {
   const chain = useCurrentChain()

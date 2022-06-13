@@ -1,4 +1,4 @@
-import { setSafeSDK } from '@/services/safe-core/useInitSafeCoreSDK'
+import { setSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import extractTxInfo from '../extractTxInfo'
