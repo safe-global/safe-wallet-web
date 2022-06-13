@@ -23,7 +23,9 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
         })}
       </Stepper>
 
-      {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onBack)}
+      <Box sx={{ paddingTop: '20px' }}>
+        {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onBack)}
+      </Box>
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
         <Button color="inherit" onClick={onBack} sx={{ mr: 1 }}>

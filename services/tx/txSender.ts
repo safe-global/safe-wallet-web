@@ -67,6 +67,8 @@ export const dispatchTxProposal = async (
     txDispatch(TxEvent.PROPOSE_FAILED, { tx: safeTx, error: error as Error })
     throw error
   }
+
+  // N.B.: proposals w/o signatures (i.e. immediate execution in 1/1 Safes) won't appear in the queue
   txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
 
   return proposedTx

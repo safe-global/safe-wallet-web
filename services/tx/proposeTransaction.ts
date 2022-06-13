@@ -15,7 +15,7 @@ const proposeTx = async (chainId: string, safeAddress: string, sender: string, t
     safeTxGas: tx.data.safeTxGas.toString(),
     baseGas: tx.data.baseGas.toString(),
     gasPrice: tx.data.gasPrice.toString(),
-    signature: tx.encodedSignatures(),
+    signature: tx.signatures.size ? tx.encodedSignatures() : undefined,
     origin: null,
   })
 }

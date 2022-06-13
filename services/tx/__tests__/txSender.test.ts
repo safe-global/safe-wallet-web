@@ -35,6 +35,7 @@ jest.mock('../proposeTransaction', () => ({
 // Mock Safe SDK
 const mockSafeSDK = {
   createTransaction: jest.fn(() => ({
+    signatures: new Map(),
     addSignature: jest.fn(),
   })),
   createRejectionTransaction: jest.fn(() => ({

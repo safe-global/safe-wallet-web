@@ -8,7 +8,7 @@ import css from './styles.module.css'
 import { isOwner, isSignaturePending } from '@/components/transactions/utils'
 import useWallet from '@/services/wallets/useWallet'
 import useSafeInfo from '@/services/useSafeInfo'
-import SignTxModal from '@/components/tx/modals/SignTxModal'
+import ConfirmTxModal from '@/components/tx/modals/ConfirmTxModal'
 
 const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
@@ -33,7 +33,7 @@ const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactEl
         </span>
       </Tooltip>
 
-      {open && <SignTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
+      {open && <ConfirmTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </div>
   )
 }
