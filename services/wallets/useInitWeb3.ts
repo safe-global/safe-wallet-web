@@ -4,15 +4,15 @@ import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { useCurrentChain } from '@/services/useChains'
 import useWallet from '@/services/wallets/useWallet'
 import { createWeb3, createWeb3ReadOnly } from '@/services/wallets/web3'
-import createExternalStore from '@/services/createExternalStore'
+import ExternalStore from '@/services/ExternalStore'
 
-export const { getStore: getWeb3, setStore: setWeb3, useStore: useWeb3 } = createExternalStore<Web3Provider>()
+export const { getStore: getWeb3, setStore: setWeb3, useStore: useWeb3 } = new ExternalStore<Web3Provider>()
 
 export const {
   getStore: getWeb3ReadOnly,
   setStore: setWeb3ReadOnly,
   useStore: useWeb3ReadOnly,
-} = createExternalStore<JsonRpcProvider>()
+} = new ExternalStore<JsonRpcProvider>()
 
 export const useInitWeb3 = () => {
   const [readOnlyChainId, setReadOnlyChainId] = useState<string>()
