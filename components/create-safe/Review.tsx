@@ -8,7 +8,7 @@ import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/services/wallets/useWallet'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { getEthersAdapter } from '@/services/safe-core/safeCoreSDK'
-import { useWeb3 } from '@/services/wallets/Web3Provider'
+import { useWeb3 } from '@/services/wallets/web3'
 
 const createNewSafe = async (ethersProvider: Web3Provider, txParams: SafeAccountConfig): Promise<Safe> => {
   const ethAdapter = getEthersAdapter(ethersProvider)
