@@ -85,6 +85,9 @@ export const dispatchTxProposal = async (
  */
 export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string): Promise<SafeTransaction> => {
   const sdk = getSafeSDK()
+  if (!sdk) {
+    throw new Error('Safe SDK not initialized')
+  }
 
   try {
     // Adds signatures to safeTx
@@ -107,6 +110,9 @@ export const dispatchTxExecution = async (
   txOptions?: TransactionOptions,
 ): Promise<string> => {
   const sdk = getSafeSDK()
+  if (!sdk) {
+    throw new Error('Safe SDK not initialized')
+  }
 
   txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
 
