@@ -1,6 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks'
 import { useRouter } from 'next/router'
+import TestProviderWrapper from '@/mocks/TestProviderWrapper'
 import useChainId from '../useChainId'
+import { useAppDispatch } from '@/store'
+import { setLastChainId } from '@/store/sessionSlice'
 
 // mock useRouter
 jest.mock('next/router', () => ({
@@ -18,7 +21,7 @@ describe('useChainId hook', () => {
   })
 
   it('should return the default chainId if no query params', () => {
-    const { result } = renderHook(() => useChainId())
+    const { result } = renderHook(() => useChainId(), { wrapper: TestProviderWrapper })
     expect(result.current).toBe('4')
   })
 
@@ -29,7 +32,7 @@ describe('useChainId hook', () => {
       },
     }))
 
-    const { result } = renderHook(() => useChainId())
+    const { result } = renderHook(() => useChainId(), { wrapper: TestProviderWrapper })
     expect(result.current).toBe('100')
   })
 
@@ -40,7 +43,7 @@ describe('useChainId hook', () => {
       },
     }))
 
-    const { result } = renderHook(() => useChainId())
+    const { result } = renderHook(() => useChainId(), { wrapper: TestProviderWrapper })
     expect(result.current).toBe('137')
   })
 
@@ -51,7 +54,18 @@ describe('useChainId hook', () => {
       },
     }))
 
-    const { result } = renderHook(() => useChainId())
+    const { result } = renderHook(() => useChainId(), { wrapper: TestProviderWrapper })
     expect(result.error).toBeTruthy()
+  })
+
+  it('should return the last used chain id if no chain in the URL', () => {
+    ;(useRouter as any).mockImplementation(() => ({
+      query: {},
+    }))
+
+    renderHook(() => useAppDispatch()(setLastChainId('100')), { wrapper: TestProviderWrapper })
+
+    const { result } = renderHook(() => useChainId(), { wrapper: TestProviderWrapper })
+    expect(result.current).toBe('100')
   })
 })

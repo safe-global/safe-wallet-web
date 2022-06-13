@@ -1,3 +1,18 @@
-import WelcomePage from './welcome'
+import { useEffect } from 'react'
+import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
+import { useLastSafeAddress } from '@/store/sessionSlice'
 
-export default WelcomePage
+const IndexPage: NextPage = () => {
+  const router = useRouter()
+  const { chain } = router.query
+  const lastSafeAddress = useLastSafeAddress()
+
+  useEffect(() => {
+    router.push(lastSafeAddress ? `/${lastSafeAddress}` : chain ? `/welcome?chain=${chain}` : `/welcome`)
+  }, [router, lastSafeAddress, chain])
+
+  return <></>
+}
+
+export default IndexPage

@@ -1,7 +1,6 @@
 import Storage from '@/services/localStorage/Storage'
 import newStorage from '@/services/localStorage/local'
 import { addressBookSlice, AddressBookState } from '@/store/addressBookSlice'
-import { currencySlice } from '@/store/currencySlice'
 
 // Legacy keys
 const LEGACY_PREFIX = 'SAFE__'
@@ -29,17 +28,6 @@ const migrateStorage = () => {
       }, {})
 
       newStorage.setItem<AddressBookState>(addressBookSlice.name, newAb)
-      oldStorage.removeItem(oldKey)
-    }
-  })()
-
-  // Currency
-  ;(() => {
-    const oldKey = LEGACY_PREFIX + 'currencyValues.selectedCurrency'
-    const legacyCurrency = oldStorage.getItem<string>(oldKey)
-    if (legacyCurrency) {
-      console.log('Migrating the currency preference')
-      newStorage.setItem<string>(currencySlice.name, legacyCurrency)
       oldStorage.removeItem(oldKey)
     }
   })()

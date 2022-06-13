@@ -28,6 +28,7 @@ import { useInitSafeCoreSDK } from '@/services/safe-core/useInitSafeCoreSDK'
 import useNotifier from '@/services/useNotifier'
 import useTxNotifications from '@/services/useTxNotifications'
 import useTxPendingStatuses, { useTxMonitor } from '@/services/useTxPendingStatuses'
+import { useInitSession } from '@/services/useInitSession'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
@@ -39,6 +40,7 @@ const InitApp = (): null => {
 
   usePathRewrite()
   useInitChains()
+  useInitSession()
   useInitSafeInfo()
   useInitBalances()
   useInitCollectibles()
