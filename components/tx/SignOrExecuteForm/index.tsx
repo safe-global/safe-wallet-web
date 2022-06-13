@@ -9,7 +9,8 @@ import { useChainId } from '@/services/useChainId'
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/services/wallets/useWallet'
 import useGasLimit from '@/services/useGasLimit'
-import ErrorToast from '@/components/common/ErrorToast'
+import useGasPrice from '@/services/useGasPrice'
+import GasParams from '../GasParams'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -24,16 +25,16 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
-  const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(
+  const { gasLimit, gasLimitError } = useGasLimit(
     shouldExecute && safeTx && wallet
       ? {
-          to: safeTx.data.to,
-          value: safeTx.data.value,
-          data: safeTx.data.data,
+          ...safeTx.data,
           from: wallet.address,
         }
       : undefined,
   )
+
+  const { gasPrice, gasPriceError } = useGasPrice()
 
   const onFinish = async (actionFn: () => Promise<void>) => {
     if (!wallet || !safeTx) return
@@ -78,20 +79,13 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
         />
       </FormGroup>
 
-      {shouldExecute && (
-        <label>
-          <div>Gas limit</div>
-          <input readOnly disabled={gasLimitLoading} value={gasLimit || ''} />
-        </label>
-      )}
+      {shouldExecute && <GasParams gasLimit={gasLimit?.toString()} gasPrice={gasPrice} />}
 
       <div className={css.submit}>
         <Button variant="contained" onClick={handleSubmit} disabled={!isSubmittable}>
           Submit
         </Button>
       </div>
-
-      {gasLimitError ? <ErrorToast message={gasLimitError!.message.slice(0, 300)} /> : null}
     </div>
   )
 }
