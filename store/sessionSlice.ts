@@ -4,7 +4,7 @@ import { RootState } from '.'
 type SessionState = {
   currency: string
   lastChainId: string
-  lastSafeAddress: Record<string, string>
+  lastSafeAddress: { [chainId: string]: string }
   lastWallet: string
 }
 
