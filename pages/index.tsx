@@ -10,7 +10,7 @@ const IndexPage: NextPage = () => {
 
   useEffect(() => {
     router.push(lastSafeAddress ? `/${lastSafeAddress}` : chain ? `/welcome?chain=${chain}` : `/welcome`)
-  }, [router, lastSafeAddress])
+  }, [router, lastSafeAddress, chain])
 
   return <></>
 }

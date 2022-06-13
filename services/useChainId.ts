@@ -9,8 +9,8 @@ const defaultChainId = IS_PRODUCTION ? chains.eth : chains.rin
 export const useChainId = (): string => {
   const router = useRouter()
   const session = useAppSelector(selectSession)
-  const chain = (router.query.chain as string) || ''
-  const safe = (router.query.safe as string) || ''
+  const chain = Array.isArray(router.query.chain) ? router.query.chain[0] : router.query.chain || ''
+  const safe = Array.isArray(router.query.safe) ? router.query.safe[0] : router.query.safe || ''
   const shortName = safe.split(':')[0] || chain
 
   if (shortName) {
