@@ -23,7 +23,7 @@ import { useInitTxHistory } from '@/services/useTxHistory'
 import { useInitTxQueue } from '@/services/useTxQueue'
 import usePathRewrite from '@/services/usePathRewrite'
 import { useInitOnboard } from '@/services/wallets/useOnboard'
-import Web3Provider from '@/services/wallets/Web3Provider'
+import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/safe-core/useInitSafeCoreSDK'
 import useNotifier from '@/services/useNotifier'
 import useTxNotifications from '@/services/useTxNotifications'
@@ -45,6 +45,7 @@ const InitApp = (): null => {
   useInitTxHistory()
   useInitTxQueue()
   useInitOnboard()
+  useInitWeb3()
   useInitSafeCoreSDK()
   useNotifier()
   useTxNotifications()
@@ -69,19 +70,17 @@ const SafeWebCore = ({
 
       {/* @ts-ignore - Temporary Fix */}
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
-        <Web3Provider>
-          <CacheProvider value={emotionCache}>
-            <ThemeProvider theme={safeTheme}>
-              <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={5}>
-                <CssBaseline />
-                <InitApp />
-                <PageLayout>
-                  <Component {...pageProps} />
-                </PageLayout>
-              </SnackbarProvider>
-            </ThemeProvider>
-          </CacheProvider>
-        </Web3Provider>
+        <CacheProvider value={emotionCache}>
+          <ThemeProvider theme={safeTheme}>
+            <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={5}>
+              <CssBaseline />
+              <InitApp />
+              <PageLayout>
+                <Component {...pageProps} />
+              </PageLayout>
+            </SnackbarProvider>
+          </ThemeProvider>
+        </CacheProvider>
       </Sentry.ErrorBoundary>
     </Provider>
   )

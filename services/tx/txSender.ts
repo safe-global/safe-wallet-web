@@ -8,7 +8,7 @@ import {
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
-import { getSafeSDK } from '../safe-core/safeCoreSDK'
+import { getSafeSDK } from '../safe-core/useInitSafeCoreSDK'
 import { didRevert } from '@/services/tx/utils'
 
 /**
@@ -16,6 +16,9 @@ import { didRevert } from '@/services/tx/utils'
  */
 export const createTx = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
   const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not initialized')
+  }
   return await safeSDK.createTransaction(txParams)
 }
 
@@ -24,6 +27,9 @@ export const createTx = async (txParams: SafeTransactionDataPartial): Promise<Sa
  */
 export const createRejectTx = async (nonce: number): Promise<SafeTransaction> => {
   const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not initialized')
+  }
   return await safeSDK.createRejectionTransaction(nonce)
 }
 

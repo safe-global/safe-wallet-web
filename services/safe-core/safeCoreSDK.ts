@@ -39,9 +39,3 @@ export const initSafeSDK = async (
     isL1SafeMasterCopy,
   })
 }
-
-let safeSDK: Safe
-export const getSafeSDK = (): Safe => safeSDK
-export const setSafeSDK = (sdkInstance: Safe) => {
-  safeSDK = sdkInstance
-}
