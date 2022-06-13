@@ -68,10 +68,8 @@ export const dispatchTxProposal = async (
     throw error
   }
 
-  // Proposals w/o signatures won't appear in the queue, but they are needed for immedialyely executed txs
-  if (safeTx.signatures.size) {
-    txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
-  }
+  // N.B.: proposals w/o signatures (i.e. immediate execution in 1/1 Safes) won't appear in the queue
+  txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
 
   return proposedTx
 }
