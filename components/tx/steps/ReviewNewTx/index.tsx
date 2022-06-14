@@ -101,7 +101,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
             validate: (val) => {
               if (parseInt(val.toString()) !== val) {
                 return 'Nonce must be an integer'
-              } else if (val < (safe?.nonce || 0)) {
+              } else if (val <= (safe?.nonce || 0)) {
                 return 'Nonce must be greater than the current nonce'
               }
             },
