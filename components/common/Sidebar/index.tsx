@@ -8,7 +8,6 @@ import useSafeInfo from '@/services/useSafeInfo'
 import ChainIndicator from '../ChainIndicator'
 import SafeHeader from '../SafeHeader'
 import SafeList from '../SafeList'
-import ErrorToast from '../ErrorToast'
 import NewTxButton from '../NewTxButton'
 import Navigation from '@/components/common/Navigation'
 import useSafeAddress from '@/services/useSafeAddress'
@@ -53,7 +52,7 @@ const Sidebar = (): ReactElement => {
 
           {loading && 'Loading Safe info...'}
 
-          {error && <ErrorToast message="Failed loading the Safe" />}
+          {error && 'Failed loading the Safe'}
         </>
       ) : (
         <div className={css.noSafeSidebar} />

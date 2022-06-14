@@ -52,3 +52,11 @@ export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
   // @ts-ignore as above
   return value.type === 'DATE_LABEL'
 }
+
+export const isExecutable = (txSummary: TransactionSummary) => {
+  return (
+    !txSummary.executionInfo ||
+    !isMultisigExecutionInfo(txSummary.executionInfo) ||
+    txSummary.executionInfo.confirmationsRequired <= 1
+  )
+}

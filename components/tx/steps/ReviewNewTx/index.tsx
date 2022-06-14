@@ -9,11 +9,12 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import { shortenAddress } from '@/services/formatters'
-import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
 import useBalances from '@/services/useBalances'
 import useAsync from '@/services/useAsync'
 import { createTx } from '@/services/tx/txSender'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import useSafeInfo from '@/services/useSafeInfo'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -38,6 +39,8 @@ type ReviewNewTxProps = {
 const NONCE_FIELD = 'nonce'
 
 const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
+  const { safe } = useSafeInfo()
+
   // Find the token info for the token we're sending
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
@@ -72,7 +75,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   }, [editableNonce, txParams, safeGas?.safeTxGas])
 
   // All errors
-  const error = safeTxError || safeGasError
+  const txError = safeTxError || safeGasError
 
   return (
     <div>
@@ -82,23 +85,38 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
 
       <FormControl fullWidth>
         <TextField
-          disabled={safeGasLoading}
           label="Nonce"
-          error={!!errors.nonce}
-          helperText={errors.nonce?.message}
           type="number"
+          autoComplete="off"
           key={safeGas?.recommendedNonce}
           defaultValue={safeGas?.recommendedNonce}
+          disabled={safeGasLoading}
+          error={!!errors[NONCE_FIELD]}
+          helperText={errors[NONCE_FIELD]?.message}
           {...register(NONCE_FIELD, {
-            valueAsNumber: true, // Set field to number type to auto parseInt
             required: true,
+            valueAsNumber: true,
+            min: safe?.nonce || 0,
+            max: Number.MAX_SAFE_INTEGER,
+            validate: (val) => {
+              if (parseInt(val.toString()) !== val) {
+                return 'Nonce must be an integer'
+              } else if (val < (safe?.nonce || 0)) {
+                return 'Nonce must be greater than the current nonce'
+              }
+            },
           })}
         />
       </FormControl>
 
       <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} />
 
-      {error && <ErrorToast message={error.message} />}
+      {txError && (
+        <ErrorMessage>
+          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+          <p>{txError.message}</p>
+        </ErrorMessage>
+      )}
     </div>
   )
 }

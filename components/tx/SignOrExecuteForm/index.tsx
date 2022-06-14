@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material'
+import { Button, Checkbox, FormControlLabel } from '@mui/material'
 
 import css from './styles.module.css'
 
@@ -10,19 +10,25 @@ import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/se
 import useWallet from '@/services/wallets/useWallet'
 import useGasLimit from '@/services/useGasLimit'
 import useGasPrice from '@/services/useGasPrice'
-import GasParams from '../GasParams'
+import useSafeInfo from '@/services/useSafeInfo'
+import GasParams from '@/components/tx/GasParams'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
+  isExecutable?: boolean
   onSubmit: (data: null) => void
 }
 
-const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): ReactElement => {
+const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onSubmit }: SignOrExecuteProps): ReactElement => {
+  const { safe } = useSafeInfo()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const wallet = useWallet()
-  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  // @TODO: also check the tx nonce
+  const showExecuteCheckbox = isExecutable ?? safe?.threshold === 1
+  const [shouldExecute, setShouldExecute] = useState<boolean>(showExecuteCheckbox)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
   const { gasLimit, gasLimitError } = useGasLimit(
@@ -34,7 +40,7 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
       : undefined,
   )
 
-  const { maxFeePerGas, maxPriorityFeePerGas, gasPriceError } = useGasPrice()
+  const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
 
   const onFinish = async (actionFn: () => Promise<void>) => {
     if (!wallet || !safeTx) return
@@ -65,7 +71,7 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
         id = proposedTx.txId
       }
 
-      // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas
+      // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
       await dispatchTxExecution(id, safeTx!, {
         gasLimit,
         gasPrice: maxFeePerGas?.toString(),
@@ -77,15 +83,22 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
 
   return (
     <div className={css.container}>
-      <FormGroup>
+      {showExecuteCheckbox && (
         <FormControlLabel
           control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
           label="Execute Transaction"
         />
-      </FormGroup>
+      )}
 
       {shouldExecute && (
         <GasParams gasLimit={gasLimit} maxFeePerGas={maxFeePerGas} maxPriorityFeePerGas={maxPriorityFeePerGas} />
+      )}
+
+      {shouldExecute && gasLimitError && (
+        <ErrorMessage>
+          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+          <p>{gasLimitError.message}</p>
+        </ErrorMessage>
       )}
 
       <div className={css.submit}>

@@ -7,8 +7,9 @@ import useSafeAddress from '@/services/useSafeAddress'
 import { useChainId } from '@/services/useChainId'
 import { createExistingTx } from '@/services/tx/txSender'
 import useAsync from '@/services/useAsync'
-import ErrorToast from '@/components/common/ErrorToast'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import { isExecutable } from '@/components/transactions/utils'
+import ErrorMessage from '../../ErrorMessage'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
@@ -19,6 +20,7 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const txId = txSummary.id
+  const canExecute = isExecutable(txSummary)
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createExistingTx(chainId, safeAddress, txSummary)
@@ -28,9 +30,9 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
     <div>
       <Typography variant="h6">Confirm transaction</Typography>
 
-      <SignOrExecuteForm safeTx={safeTx} txId={txId} onSubmit={onSubmit} />
+      <SignOrExecuteForm safeTx={safeTx} txId={txId} onSubmit={onSubmit} isExecutable={canExecute} />
 
-      {safeTxError ? <ErrorToast message={safeTxError!.message.slice(0, 300)} /> : null}
+      <ErrorMessage>{safeTxError?.message}</ErrorMessage>
     </div>
   )
 }

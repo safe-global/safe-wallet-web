@@ -6,6 +6,7 @@ import { formatUnits } from 'ethers/lib/utils'
 import { useCurrentChain } from '@/services/useChains'
 
 type GasParamsProps = {
+  nonce?: string
   gasLimit?: number
   maxFeePerGas?: BigNumber
   maxPriorityFeePerGas?: BigNumber
