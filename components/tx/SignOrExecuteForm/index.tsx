@@ -18,17 +18,19 @@ type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
   isExecutable?: boolean
+  onlyExecute?: boolean
   onSubmit: (data: null) => void
 }
 
-const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onSubmit }: SignOrExecuteProps): ReactElement => {
+const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }: SignOrExecuteProps): ReactElement => {
   const { safe } = useSafeInfo()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const wallet = useWallet()
+
   // @TODO: also check the tx nonce
-  const showExecuteCheckbox = isExecutable ?? safe?.threshold === 1
-  const [shouldExecute, setShouldExecute] = useState<boolean>(showExecuteCheckbox)
+  const canExecute = isExecutable ?? safe?.threshold === 1
+  const [shouldExecute, setShouldExecute] = useState<boolean>(canExecute)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
   const { gasLimit, gasLimitError } = useGasLimit(
@@ -83,7 +85,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onSubmit }: SignOrExecu
 
   return (
     <div className={css.container}>
-      {showExecuteCheckbox && (
+      {canExecute && !onlyExecute && (
         <FormControlLabel
           control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
           label="Execute Transaction"

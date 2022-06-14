@@ -23,11 +23,6 @@ export const isTxQueued = (value: TransactionStatus): boolean => {
 export const isAwaitingExecution = (txStatus: TransactionStatus): boolean =>
   TransactionStatus.AWAITING_EXECUTION === txStatus
 
-export const isSignaturePending = (tx: TransactionSummary, walletAddress: string | undefined): boolean => {
-  const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
-  return !!executionInfo?.missingSigners?.some((address) => address.value === walletAddress)
-}
-
 export const isOwner = (safeOwners: AddressEx[] | undefined, walletAddress: string | undefined) => {
   return safeOwners?.some((owner) => owner.value.toLowerCase() === walletAddress?.toLowerCase())
 }
@@ -51,6 +46,11 @@ export const isTransaction = (value: TransactionListItem): value is Transaction 
 export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
   // @ts-ignore as above
   return value.type === 'DATE_LABEL'
+}
+
+export const isSignableBy = (tx: TransactionSummary, walletAddress: string | undefined): boolean => {
+  const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
+  return !!executionInfo?.missingSigners?.some((address) => address.value === walletAddress)
 }
 
 export const isExecutable = (txSummary: TransactionSummary) => {

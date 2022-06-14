@@ -25,13 +25,12 @@ const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
     <div>
       <Typography variant="h6">Reject Transaction</Typography>
 
-      <Typography>
+      <Typography sx={{ margin: '20px 0' }}>
         This action will reject this transaction. A separate transaction will be performed to submit the rejection.
       </Typography>
 
-      <Typography>
-        Transaction nonce <br />
-        {txNonce}
+      <Typography sx={{ margin: '20px 0' }}>
+        Transaction nonce: <b>{txNonce}</b>
       </Typography>
 
       <Typography>

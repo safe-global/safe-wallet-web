@@ -4,10 +4,11 @@
   flex-wrap: wrap;
   gap: 20px;
   position: relative;
+  padding-top: 20px;
 }
 
 .submit {
   position: absolute;
-  bottom: -54px;
+  bottom: -84px;
   right: 0;
 }
