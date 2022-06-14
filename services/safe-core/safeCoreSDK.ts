@@ -5,6 +5,7 @@ import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 import semverSatisfies from 'semver/functions/satisfies'
 import chains from '@/config/chains'
 import { Web3Provider } from '@ethersproject/providers'
+import ExternalStore from '@/services/ExternalStore'
 
 const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
@@ -40,8 +41,4 @@ export const initSafeSDK = async (
   })
 }
 
-let safeSDK: Safe
-export const getSafeSDK = (): Safe => safeSDK
-export const setSafeSDK = (sdkInstance: Safe) => {
-  safeSDK = sdkInstance
-}
+export const { getStore: getSafeSDK, setStore: setSafeSDK, useStore: useSafeSDK } = new ExternalStore<Safe>()

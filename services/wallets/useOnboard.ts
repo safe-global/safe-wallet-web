@@ -6,7 +6,8 @@ import { getAddress } from '@ethersproject/address'
 import { getAllWallets, getRecommendedInjectedWallets, getSupportedWallets } from '@/services/wallets/wallets'
 import { getRpcServiceUrl } from '@/services/wallets/web3'
 import useChains, { useCurrentChain } from '../useChains'
-import useLocalStorage from '../localStorage/useLocalStorage'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectSession, setLastWallet } from '@/store/sessionSlice'
 
 export type ConnectedWallet = {
   label: string
@@ -83,13 +84,12 @@ export const useOnboard = (): OnboardAPI | null => {
   return onboard
 }
 
-const LAST_USED_WALLET_KEY = 'lastUsedWallet'
-
 // Disable/enable wallets according to chain and cache the last used wallet
 export const useInitOnboard = () => {
   const onboard = useOnboard()
   const chain = useCurrentChain()
-  const [lastUsedWallet, setLastUsedWallet] = useLocalStorage<string>(LAST_USED_WALLET_KEY)
+  const { lastWallet } = useAppSelector(selectSession)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (!onboard || !chain?.disabledWallets) {
@@ -106,23 +106,19 @@ export const useInitOnboard = () => {
       return
     }
 
-    if (lastUsedWallet) {
-      onboard.connectWallet({ autoSelect: { disableModals: true, label: lastUsedWallet } })
+    if (lastWallet) {
+      onboard.connectWallet({ autoSelect: { disableModals: true, label: lastWallet } })
     }
 
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
       const connectedWallet = getConnectedWallet(wallets)
-      if (connectedWallet) {
-        setLastUsedWallet(connectedWallet.label)
-      } else {
-        setLastUsedWallet('')
-      }
+      dispatch(setLastWallet(connectedWallet?.label || ''))
     })
 
     return () => {
       walletSubscription.unsubscribe()
     }
-  }, [onboard, lastUsedWallet, setLastUsedWallet])
+  }, [onboard, lastWallet, dispatch])
 }
 
 export default useOnboard
