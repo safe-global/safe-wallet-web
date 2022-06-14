@@ -34,7 +34,7 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
       : undefined,
   )
 
-  const { gasPrice, gasPriceError } = useGasPrice()
+  const { maxFeePerGas, maxPriorityFeePerGas, gasPriceError } = useGasPrice()
 
   const onFinish = async (actionFn: () => Promise<void>) => {
     if (!wallet || !safeTx) return
@@ -64,7 +64,12 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
         const proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet!.address, safeTx!)
         id = proposedTx.txId
       }
-      await dispatchTxExecution(id, safeTx!, { gasLimit })
+
+      // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas
+      await dispatchTxExecution(id, safeTx!, {
+        gasLimit,
+        gasPrice: maxFeePerGas?.toString(),
+      })
     })
   }
 
@@ -79,7 +84,9 @@ const SignOrExecuteForm = ({ safeTx, txId, onSubmit }: SignOrExecuteProps): Reac
         />
       </FormGroup>
 
-      {shouldExecute && <GasParams gasLimit={gasLimit?.toString()} gasPrice={gasPrice} />}
+      {shouldExecute && (
+        <GasParams gasLimit={gasLimit} maxFeePerGas={maxFeePerGas} maxPriorityFeePerGas={maxPriorityFeePerGas} />
+      )}
 
       <div className={css.submit}>
         <Button variant="contained" onClick={handleSubmit} disabled={!isSubmittable}>

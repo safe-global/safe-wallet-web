@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 type AsyncResult<T> = [result: T | undefined, error: Error | undefined, loading: boolean]
 
 const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[]): AsyncResult<T> => {
-  const [result, setResult] = useState<T>()
+  const [result, setResult] = useState<T | undefined>()
   const [error, setError] = useState<Error>()
   const [loading, setLoading] = useState<boolean>(true)
 
