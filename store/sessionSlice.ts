@@ -1,18 +1,18 @@
-import chains from '@/config/chains'
-import useChainId from '@/services/useChainId'
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { RootState, useAppSelector } from '.'
+import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { RootState } from '.'
 
 type SessionState = {
   currency: string
   lastChainId: string
-  lastSafeAddress: Record<string, string>
+  lastSafeAddress: { [chainId: string]: string }
+  lastWallet: string
 }
 
 const initialState: SessionState = {
   currency: 'usd',
   lastChainId: '',
   lastSafeAddress: {},
+  lastWallet: '',
 }
 
 export const sessionSlice = createSlice({
@@ -21,6 +21,9 @@ export const sessionSlice = createSlice({
   reducers: {
     setCurrency: (state, action: PayloadAction<SessionState['currency']>) => {
       state.currency = action.payload
+    },
+    setLastWallet: (state, action: PayloadAction<SessionState['lastWallet']>) => {
+      state.lastWallet = action.payload
     },
     setLastChainId: (state, action: PayloadAction<SessionState['lastChainId']>) => {
       state.lastChainId = action.payload
@@ -38,7 +41,7 @@ export const sessionSlice = createSlice({
   },
 })
 
-export const { setCurrency, setLastChainId, setLastSafeAddress } = sessionSlice.actions
+export const { setCurrency, setLastChainId, setLastSafeAddress, setLastWallet } = sessionSlice.actions
 
 export const selectSession = (state: RootState): SessionState => {
   return state[sessionSlice.name]
@@ -48,9 +51,9 @@ export const selectCurrency = (state: RootState): SessionState['currency'] => {
   return state[sessionSlice.name].currency
 }
 
-export const useLastSafeAddress = (): string | undefined => {
-  const chainId = useChainId()
-  const safeAddress = useAppSelector((state: RootState) => state[sessionSlice.name].lastSafeAddress[chainId])
-  const prefix = Object.entries(chains).find(([, id]) => chainId === id)?.[0]
-  return prefix && safeAddress ? `${prefix}:${safeAddress}` : undefined
-}
+export const selectLastSafeAddress = createSelector(
+  [selectSession, (_, chainId: string) => chainId],
+  (session, chainId): string | undefined => {
+    return session.lastSafeAddress[chainId]
+  },
+)
