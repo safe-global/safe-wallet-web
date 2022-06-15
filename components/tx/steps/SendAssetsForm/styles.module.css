@@ -3,11 +3,10 @@
   flex-direction: column;
   flex-wrap: wrap;
   gap: 20px;
-  position: relative;
 }
 
 .submit {
   position: absolute;
-  bottom: -84px;
+  bottom: -51px;
   right: 0;
 }

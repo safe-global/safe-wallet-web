@@ -54,13 +54,15 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
 
   // Estimate safeTxGas
   const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
+  const safeNonce = safe?.nonce || 0
+  const recommendedNonce = safeGas?.recommendedNonce || 0
 
   // Watch the advanced params form (nonce)
   const {
     register,
     watch,
     formState: { errors },
-  } = useForm<ReviewTxForm>()
+  } = useForm<ReviewTxForm>({ mode: 'onChange' })
   const editableNonce = watch(NONCE_FIELD)
 
   // Create a safeTx
@@ -77,6 +79,10 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   // All errors
   const txError = safeTxError || safeGasError
 
+  // Warn about a higher nince
+  const nonceWarning =
+    editableNonce > recommendedNonce ? `Your nonce is higher than the recommended one: ${recommendedNonce}` : ''
+
   return (
     <div>
       <Typography variant="h6">Review transaction</Typography>
@@ -88,21 +94,19 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
           label="Nonce"
           type="number"
           autoComplete="off"
-          key={safeGas?.recommendedNonce}
-          defaultValue={safeGas?.recommendedNonce}
+          key={recommendedNonce}
+          defaultValue={recommendedNonce}
           disabled={safeGasLoading}
           error={!!errors[NONCE_FIELD]}
-          helperText={errors[NONCE_FIELD]?.message}
+          helperText={errors[NONCE_FIELD]?.message || nonceWarning || ' '}
           {...register(NONCE_FIELD, {
             required: true,
             valueAsNumber: true,
-            min: safe?.nonce || 0,
-            max: Number.MAX_SAFE_INTEGER,
             validate: (val) => {
-              if (parseInt(val.toString()) !== val) {
+              if (!Number.isInteger(val)) {
                 return 'Nonce must be an integer'
-              } else if (val <= (safe?.nonce || 0)) {
-                return 'Nonce must be greater than the current nonce'
+              } else if (val <= safeNonce) {
+                return `Nonce must be greater than the current Safe nonce: ${safeNonce}`
               }
             },
           })}
