@@ -29,7 +29,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
   const wallet = useWallet()
 
   // Check that the transaction is executable
-  const canExecute = isExecutable && safeTx && safeTx.data.nonce === safe?.nonce
+  const canExecute = isExecutable && !!safeTx && safeTx.data.nonce === safe?.nonce
 
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -85,6 +85,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
   // If checkbox is checked and the transaction is executable, execute it
   // Otherwise only sign
   const willExecute = shouldExecute && canExecute
+  const isEstimating = willExecute && (gasLimitLoading || gasPriceLoading)
   const handleSubmit = willExecute ? onExecute : onSign
 
   return (
@@ -98,7 +99,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
 
       {willExecute && (
         <GasParams
-          isLoading={gasLimitLoading || gasPriceLoading}
+          isLoading={isEstimating}
           gasLimit={gasLimit}
           maxFeePerGas={maxFeePerGas}
           maxPriorityFeePerGas={maxPriorityFeePerGas}
@@ -113,12 +114,8 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
       )}
 
       <div className={css.submit}>
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={!isSubmittable || gasLimitLoading || gasPriceLoading}
-        >
-          Submit
+        <Button variant="contained" onClick={handleSubmit} disabled={!isSubmittable || isEstimating}>
+          {isEstimating ? 'Estimating...' : 'Submit'}
         </Button>
       </div>
     </div>
