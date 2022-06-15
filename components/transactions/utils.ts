@@ -54,11 +54,12 @@ export const isSignableBy = (txSummary: TransactionSummary, walletAddress: strin
 }
 
 export const isExecutable = (txSummary: TransactionSummary, walletAddress: string): boolean => {
+  if (!txSummary.executionInfo || !isMultisigExecutionInfo(txSummary.executionInfo)) {
+    return false
+  }
+  const { confirmationsRequired, confirmationsSubmitted } = txSummary.executionInfo
   return (
-    !txSummary.executionInfo ||
-    !isMultisigExecutionInfo(txSummary.executionInfo) ||
-    txSummary.executionInfo.confirmationsSubmitted === txSummary.executionInfo.confirmationsRequired ||
-    (txSummary.executionInfo.confirmationsSubmitted === txSummary.executionInfo.confirmationsRequired - 1 &&
-      isSignableBy(txSummary, walletAddress))
+    confirmationsSubmitted === confirmationsRequired ||
+    (confirmationsSubmitted === confirmationsRequired - 1 && isSignableBy(txSummary, walletAddress))
   )
 }
