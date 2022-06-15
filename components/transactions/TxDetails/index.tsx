@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { TransactionDetails, TransactionSummary, Transfer } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionDetails, Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { TransferTx } from '@/components/transactions/TxInfo'
 import TxSigners from '@/components/transactions/TxSigners'
 import { isTransferTxInfo } from '@/components/transactions/utils'

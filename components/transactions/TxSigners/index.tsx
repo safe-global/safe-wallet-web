@@ -1,4 +1,4 @@
-import Step from '@mui/material/Step'
+import Step, { StepProps } from '@mui/material/Step'
 import StepConnector from '@mui/material/StepConnector'
 import StepContent from '@mui/material/StepContent'
 import StepLabel from '@mui/material/StepLabel'
@@ -8,7 +8,6 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUncheckedOutlined'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
-import { styled } from '@mui/material/styles'
 import { useState, type ReactElement } from 'react'
 import type { AddressEx, DetailedExecutionInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -35,51 +34,42 @@ const CheckIcon = () => <CheckCircleIcon className={css.icon} />
 const CircleIcon = () => (
   <RadioButtonUncheckedOutlinedIcon className={css.icon} sx={{ stroke: 'currentColor', strokeWidth: '1px' }} />
 )
-const DotIcon = () => (
-  <FiberManualRecordIcon className={css.icon} sx={{ height: '14px', width: '14px', marginLeft: '5px' }} />
-)
-
-const StyledStepConnector = styled(StepConnector)`
-  padding: 3px 0;
-
-  .MuiStepConnector-line {
-    margin-left: -1px;
-    border-color: ${gray500};
-    border-left-width: 2px;
-    min-height: 14px;
-  }
-`
+const DotIcon = () => <FiberManualRecordIcon className={css.icon} sx={{ height: '14px', width: '14px' }} />
 
 type StepState = 'confirmed' | 'active' | 'disabled' | 'error'
 const getStepColor = (state: StepState): string => {
-  switch (state) {
-    case 'confirmed':
-      return primary400
-    case 'active':
-      return orange500
-    case 'disabled':
-      return black300
-    case 'error':
-      return red400
+  const colors = {
+    confirmed: primary400,
+    active: orange500,
+    disabled: black300,
+    error: red400,
   }
+  return colors[state]
 }
 
 type StyledStepProps = {
   $bold?: boolean
-  state: StepState
+  $state: StepState
 }
-const StyledStep = styled(Step)<StyledStepProps>`
-  .MuiStepLabel-label {
-    font-weight: ${({ $bold = false }) => ($bold ? 'bold' : 'normal')};
-    font-size: 16px;
-    color: ${({ state }) => getStepColor(state)};
-  }
-
-  .MuiStepLabel-iconContainer {
-    color: ${({ state }) => getStepColor(state)};
-    align-items: center;
-  }
-`
+const StyledStep = ({ $bold, $state, children, sx, ...rest }: StyledStepProps & StepProps) => (
+  <Step
+    sx={{
+      '.MuiStepLabel-label': {
+        fontWeight: `${$bold ? 'bold' : 'normal'} !important`,
+        fontSize: '16px !important',
+        color: `${getStepColor($state)} !important`,
+      },
+      '.MuiStepLabel-iconContainer': {
+        color: getStepColor($state),
+        alignItems: 'center',
+      },
+      ...sx,
+    }}
+    {...rest}
+  >
+    {children}
+  </Step>
+)
 
 const shouldHideConfirmations = (detailedExecutionInfo: DetailedExecutionInfo | null): boolean => {
   if (!detailedExecutionInfo || !isMultisigExecutionDetails(detailedExecutionInfo)) {
@@ -93,13 +83,14 @@ const shouldHideConfirmations = (detailedExecutionInfo: DetailedExecutionInfo | 
   return isConfirmed || detailedExecutionInfo.confirmations.length > 3
 }
 
+// TODO: Create an AddressInfo component
 const AddressInfo = ({ address, name, avatarUrl, shortenHash }: any): ReactElement => <>{name || address}</>
 
 const getConfirmationStep = (
   { value, name, logoUri }: AddressEx,
   key: string | undefined = undefined,
 ): ReactElement => (
-  <StyledStep key={key} $bold state="confirmed">
+  <StyledStep key={key} $bold $state="confirmed">
     <StepLabel icon={<DotIcon />}>
       <AddressInfo address={value} name={name} avatarUrl={logoUri} shortenHash={4} />
     </StepLabel>
@@ -131,17 +122,34 @@ export const TxSigners = ({ txDetails }: { txDetails: TransactionDetails }): Rea
   const numberOfConfirmations = isImmediateExecution ? 1 : detailedExecutionInfo.confirmations.length
 
   return (
-    <Stepper orientation="vertical" nonLinear connector={<StyledStepConnector />} sx={{ padding: 0 }}>
+    <Stepper
+      orientation="vertical"
+      nonLinear
+      connector={
+        <StepConnector
+          sx={{
+            padding: '3px 0',
+            '.MuiStepConnector-line': {
+              marginLeft: '-3px',
+              borderColor: gray500,
+              borderLeftWidth: '2px',
+              minHeight: '14px',
+            },
+          }}
+        />
+      }
+      sx={{ padding: 0 }}
+    >
       {isCancelTxDetails(txInfo) ? (
-        <StyledStep $bold state="error">
+        <StyledStep $bold $state="error">
           <StepLabel icon={<TxRejectionIcon />}>On-chain rejection created</StepLabel>
         </StyledStep>
       ) : (
-        <StyledStep $bold state="confirmed">
+        <StyledStep $bold $state="confirmed">
           <StepLabel icon={<TxCreationIcon />}>Created</StepLabel>
         </StyledStep>
       )}
-      <StyledStep $bold state={isConfirmed ? 'confirmed' : 'active'}>
+      <StyledStep $bold $state={isConfirmed ? 'confirmed' : 'active'}>
         <StepLabel icon={isConfirmed ? <CheckIcon /> : <CircleIcon />}>
           Confirmations{' '}
           <span
@@ -159,7 +167,7 @@ export const TxSigners = ({ txDetails }: { txDetails: TransactionDetails }): Rea
           ? getConfirmationStep({ value: account, name, logoUri: null })
           : detailedExecutionInfo.confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value)))}
       {detailedExecutionInfo.confirmations.length > 0 && (
-        <StyledStep state="confirmed">
+        <StyledStep $state="confirmed">
           <StepLabel icon={<DotIcon />} onClick={toggleHide}>
             <span
               style={{
@@ -171,7 +179,7 @@ export const TxSigners = ({ txDetails }: { txDetails: TransactionDetails }): Rea
           </StepLabel>
         </StyledStep>
       )}
-      <StyledStep expanded $bold state={isExecuted ? 'confirmed' : 'disabled'}>
+      <StyledStep expanded $bold $state={isExecuted ? 'confirmed' : 'disabled'}>
         <StepLabel icon={isExecuted ? <CheckIcon /> : <CircleIcon />}>
           {isExecuted ? 'Executed' : isPending ? 'Executing' : 'Execution'}
         </StepLabel>
