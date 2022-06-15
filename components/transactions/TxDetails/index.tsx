@@ -1,12 +1,16 @@
 import { type ReactElement } from 'react'
-import { TransactionDetails, Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionDetails, TransactionSummary, Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { TransferTx } from '@/components/transactions/TxInfo'
 import TxSigners from '@/components/transactions/TxSigners'
 import { isTransferTxInfo } from '@/components/transactions/utils'
 import css from './styles.module.css'
+import useTxDetails from '@/components/transactions/useTxDetails'
 
+type TransactionSummaryWithDetails = TransactionSummary & {
+  txDetails?: TransactionDetails
+}
 type Props = {
-  txDetails: TransactionDetails
+  txWithDetails: TransactionSummaryWithDetails
 }
 
 const TransferTxInfoSummary = ({ txInfo }: { txInfo: Transfer }) => {
@@ -23,8 +27,8 @@ const TransferTxInfoSummary = ({ txInfo }: { txInfo: Transfer }) => {
   )
 }
 
-const TxData = ({ txDetails }: Props): ReactElement => {
-  const txInfo = txDetails.txInfo
+const TxData = ({ txWithDetails }: Props): ReactElement => {
+  const txInfo = txWithDetails.txInfo
   if (isTransferTxInfo(txInfo)) {
     return <TransferTxInfoSummary txInfo={txInfo} />
   }
@@ -36,12 +40,22 @@ const TxData = ({ txDetails }: Props): ReactElement => {
   )
 }
 
-const TxDetails = ({ txDetails }: Props): ReactElement => {
+const TxDetails = ({ txWithDetails }: Props): ReactElement => {
+  const { txDetails, loading } = useTxDetails({ txId: txWithDetails.id })
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (!txDetails) {
+    return <div>no data</div>
+  }
+
   return (
     <div className={css.container}>
       {/* /Details */}
       <div className={css.txData}>
-        <TxData txDetails={txDetails} />
+        <TxData txWithDetails={txWithDetails} />
       </div>
       {/* Signers */}
       <div className={css.txSigners}>

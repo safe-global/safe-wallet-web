@@ -23,7 +23,7 @@ const useTxDetails = ({
   useEffect(() => {
     if (!data || !chainId) return
     dispatch(setTxDetails({ chainId, txDetails: data }))
-  }, [data, chainId])
+  }, [data, chainId, dispatch])
 
   return { txDetails: data, error, loading }
 }

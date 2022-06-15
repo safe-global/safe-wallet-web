@@ -7,54 +7,51 @@ import TxSummary from '../TxSummary'
 import GroupLabel from '../GroupLabel'
 import TxDateLabel from '../TxDateLabel'
 import TxDetails from '../TxDetails'
-import useTxDetails from '../useTxDetails'
 
-const ExpandibleTransactionItem = ({ item }: { item: Transaction }) => {
-  const { txDetails, loading } = useTxDetails({ txId: item.transaction.id })
-  return (
-    <Accordion
+const ExpandibleTransactionItem = ({ item }: { item: Transaction }) => (
+  <Accordion
+    sx={{
+      border: '2px solid #EEEFF0',
+      borderRadius: '8px',
+      '& .MuiAccordionSummary-root': {
+        padding: '0px 16px',
+      },
+      '& .MuiAccordionSummary-root.Mui-expanded': {
+        borderBottom: '2px solid #E8E7E6',
+      },
+      boxShadow: 'unset',
+      '&::before': {
+        content: 'none',
+      },
+    }}
+    disableGutters
+    TransitionProps={{
+      mountOnEnter: false,
+      unmountOnExit: true,
+    }}
+  >
+    <AccordionSummary
+      expandIcon={<ExpandMoreIcon />}
       sx={{
-        border: '2px solid #EEEFF0',
-        'border-radius': '8px',
-        '& .MuiAccordionSummary-root': {
-          padding: '0px 16px',
+        '& .MuiAccordionSummary-content': {
+          margin: 0,
         },
-        '& .MuiAccordionSummary-root.Mui-expanded': {
-          'border-bottom': '2px solid #E8E7E6',
-        },
-        'box-shadow': 'unset',
-        '&::before': {
-          content: 'none',
-        },
-      }}
-      disableGutters
-      TransitionProps={{
-        mountOnEnter: false,
-        unmountOnExit: true,
       }}
     >
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        sx={{
-          '& .MuiAccordionSummary-content': {
-            margin: 0,
-          },
-        }}
-      >
-        <TxSummary item={item} />
-      </AccordionSummary>
-      <AccordionDetails
-        sx={{
-          padding: 0,
-          'border-bottom-left-radius': '8px',
-          'border-bottom-right-radius': '8px',
-        }}
-      >
-        {loading ? 'Loading...' : <TxDetails txDetails={txDetails} />}
-      </AccordionDetails>
-    </Accordion>
-  )
-}
+      <TxSummary item={item} />
+    </AccordionSummary>
+    <AccordionDetails
+      sx={{
+        padding: 0,
+        borderBottomLeftRadius: '8px',
+        borderBottomRightRadius: '8px',
+        minHeight: '200px',
+      }}
+    >
+      <TxDetails txWithDetails={item.transaction} />
+    </AccordionDetails>
+  </Accordion>
+)
 
 type TxListItemProps = {
   item: TransactionListItem
