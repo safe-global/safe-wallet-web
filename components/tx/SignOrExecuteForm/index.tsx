@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from 'react'
+import { ReactElement, useState } from 'react'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Checkbox, FormControlLabel } from '@mui/material'
 
@@ -29,7 +29,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
   const wallet = useWallet()
 
   // Check that the transaction is executable
-  const canExecute = isExecutable && (!safeTx || !safe || safeTx?.data.nonce === safe.nonce)
+  const canExecute = isExecutable && safeTx?.data.nonce === safe?.nonce
 
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -82,13 +82,10 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
     })
   }
 
-  // Safe nonce can change while the user is signing or executing a transaction,
-  // so we need to check if the transaction is still executable
-  useEffect(() => {
-    if (!canExecute && shouldExecute) {
-      setShouldExecute(false)
-    }
-  }, [canExecute, shouldExecute])
+  // If checkbox is checked and the transaction is executable, execute it
+  // Otherwise only sign
+  const willExecute = shouldExecute && canExecute
+  const handleSubmit = willExecute ? onExecute : onSign
 
   return (
     <div className={css.container}>
@@ -99,7 +96,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
         />
       )}
 
-      {shouldExecute && (
+      {willExecute && (
         <GasParams
           isLoading={gasLimitLoading || gasPriceLoading}
           gasLimit={gasLimit}
@@ -108,7 +105,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
         />
       )}
 
-      {shouldExecute && gasLimitError && (
+      {willExecute && gasLimitError && (
         <ErrorMessage>
           This transaction will most likely fail. To save gas costs, avoid creating the transaction.
           <p>{gasLimitError.message}</p>
@@ -116,7 +113,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
       )}
 
       <div className={css.submit}>
-        <Button variant="contained" onClick={shouldExecute ? onExecute : onSign} disabled={!isSubmittable}>
+        <Button variant="contained" onClick={handleSubmit} disabled={!isSubmittable}>
           Submit
         </Button>
       </div>
