@@ -11,6 +11,11 @@ import portisModule from '@web3-onboard/portis'
 import torusModule from '@web3-onboard/torus'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
+import dcentModule from '@web3-onboard/dcent'
+
+// Other wallet modules not installed as they require API keys:
+// @web3-onboard/mew
+// @web3-onboard/web3auth
 
 const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
@@ -19,11 +24,11 @@ const enum WALLET_KEYS {
   KEEPKEY = 'KEEPKEY',
   KEYSTONE = 'KEYSTONE',
   LEDGER = 'LEDGER',
-  // MAGIC = 'MAGIC', // Magic requires an API key
   PORTIS = 'PORTIS',
   TORUS = 'TORUS',
   TREZOR = 'TREZOR',
   WALLETCONNECT = 'WALLETCONNECT',
+  DCENT = 'DCENT',
 }
 
 const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
@@ -37,6 +42,7 @@ const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.TORUS]: 'torus',
   [WALLET_KEYS.TREZOR]: 'trezor',
   [WALLET_KEYS.WALLETCONNECT]: 'walletConnect',
+  [WALLET_KEYS.DCENT]: undefined,
 }
 
 const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
@@ -51,6 +57,7 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.TORUS]: torusModule,
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
   [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ bridge: WC_BRIDGE }),
+  [WALLET_KEYS.DCENT]: () => dcentModule(),
 }
 
 export const getAllWallets = (): WalletInit[] => {

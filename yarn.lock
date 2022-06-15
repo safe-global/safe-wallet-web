@@ -622,7 +622,7 @@
     crc-32 "^1.2.0"
     ethereumjs-util "^7.1.4"
 
-"@ethereumjs/common@^2.0.0", "@ethereumjs/common@^2.4.0", "@ethereumjs/common@^2.6.3", "@ethereumjs/common@^2.6.4":
+"@ethereumjs/common@^2.0.0", "@ethereumjs/common@^2.3.1", "@ethereumjs/common@^2.4.0", "@ethereumjs/common@^2.6.1", "@ethereumjs/common@^2.6.3", "@ethereumjs/common@^2.6.4":
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/@ethereumjs/common/-/common-2.6.4.tgz#1b3cdd3aa4ee3b0ca366756fc35e4a03022a01cc"
   integrity sha512-RDJh/R/EAr+B7ZRg5LfJ0BIpf/1LydFgYdvZEuTraojCbVypO2sQ+QnpP5u2wJf9DASyooKqu8O4FJEWUV6NXw==
@@ -637,6 +637,14 @@
   dependencies:
     "@ethereumjs/common" "^2.0.0"
     ethereumjs-util "^7.0.7"
+
+"@ethereumjs/tx@3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@ethereumjs/tx/-/tx-3.2.1.tgz#65f5f1c11541764f08377a94ba4b0dcbbd67739e"
+  integrity sha512-i9V39OtKvwWos1uVNZxdVhd7zFOyzFLjgt69CoiOY0EmXugS0HjO3uxpLBSglDKFMRriuGqw6ddKEv+RP1UNEw==
+  dependencies:
+    "@ethereumjs/common" "^2.3.1"
+    ethereumjs-util "^7.0.10"
 
 "@ethereumjs/tx@3.5.1":
   version "3.5.1"
@@ -3292,6 +3300,17 @@
     svelte "^3.46.4"
     svelte-i18n "^3.3.13"
 
+"@web3-onboard/dcent@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/dcent/-/dcent-2.0.1.tgz#b41b7e1069e0a033255ee403e12efd5ac79455e3"
+  integrity sha512-MailBF37/ZQ3aRRyA8FUdGqFoYttDq+WfCqHXYGRGU5+mMWGBmZb1Om7n3PF1zcnYLQwozkvntEoTh0wkuiXhg==
+  dependencies:
+    "@ethereumjs/common" "^2.6.1"
+    "@ethereumjs/tx" "^3.4.0"
+    "@ethersproject/providers" "^5.5.0"
+    "@web3-onboard/common" "^2.1.1"
+    eth-dcent-keyring "^0.2.2"
+
 "@web3-onboard/fortmatic@^2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@web3-onboard/fortmatic/-/fortmatic-2.0.3.tgz#970cb3955f8b195621a960de463b426b29167fe9"
@@ -4514,6 +4533,13 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
+dcent-web-connector@^0.11.2:
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/dcent-web-connector/-/dcent-web-connector-0.11.3.tgz#7decb528f4db16edfc199d0a45fd702920459ea7"
+  integrity sha512-5sXBLwthDWsieJeJa9zkqiP9aspybeD/fc1RLij1sfzR2vJjDeLDIfXJKyYc0Tqk73GijllrHpasgKxhO2qKEw==
+  dependencies:
+    events "^3.0.0"
+
 debug@=3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
@@ -5165,6 +5191,15 @@ eth-crypto@^2.1.0:
     ethers "5.6.4"
     secp256k1 "4.0.3"
 
+eth-dcent-keyring@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/eth-dcent-keyring/-/eth-dcent-keyring-0.2.2.tgz#4af7ccd9089411b0ca8366a7401a7c0d0acb6ef7"
+  integrity sha512-dPrR2Umx/OnOeycaoYx7O0Tzejzpya7dy0cx9+tjwsXTU8j1yIPfgUhfpHGX4k3xifK0u48OB47jyZdaGXNgVA==
+  dependencies:
+    "@ethereumjs/tx" "3.2.1"
+    dcent-web-connector "^0.11.2"
+    ethereumjs-util "7.0.9"
+
 eth-json-rpc-filters@4.2.2, eth-json-rpc-filters@^4.2.1:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-4.2.2.tgz#eb35e1dfe9357ace8a8908e7daee80b2cd60a10d"
@@ -5358,6 +5393,18 @@ ethereumjs-util@5.2.0:
     safe-buffer "^5.1.1"
     secp256k1 "^3.0.1"
 
+ethereumjs-util@7.0.9:
+  version "7.0.9"
+  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-7.0.9.tgz#2038baeb30f370a3e576ec175bd70bbbb6807d42"
+  integrity sha512-cRqvYYKJoitq6vMKMf8pXeVwvTrX+dRD0JwHaYqm8jvogK14tqIoCWH/KUHcRwnVxVXEYF/o6pup5jRG4V0xzg==
+  dependencies:
+    "@types/bn.js" "^5.1.0"
+    bn.js "^5.1.2"
+    create-hash "^1.1.2"
+    ethereum-cryptography "^0.1.3"
+    ethjs-util "0.1.6"
+    rlp "^2.2.4"
+
 ethereumjs-util@7.1.4:
   version "7.1.4"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-7.1.4.tgz#a6885bcdd92045b06f596c7626c3e89ab3312458"
@@ -5395,7 +5442,7 @@ ethereumjs-util@^6.0.0, ethereumjs-util@^6.2.1:
     ethjs-util "0.1.6"
     rlp "^2.2.3"
 
-ethereumjs-util@^7.0.7, ethereumjs-util@^7.0.8, ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.3, ethereumjs-util@^7.1.4, ethereumjs-util@^7.1.5:
+ethereumjs-util@^7.0.10, ethereumjs-util@^7.0.7, ethereumjs-util@^7.0.8, ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.3, ethereumjs-util@^7.1.4, ethereumjs-util@^7.1.5:
   version "7.1.5"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-7.1.5.tgz#9ecf04861e4fbbeed7465ece5f23317ad1129181"
   integrity sha512-SDl5kKrQAudFBUe5OJM9Ac6WmMyYmXX/6sTmLZ3ffG2eY6ZIGBes3pEDxNN6V72WyOw4CPD5RomKdsa8DAAwLg==
