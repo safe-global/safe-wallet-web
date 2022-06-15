@@ -5,6 +5,8 @@ import TxSigners from '@/components/transactions/TxSigners'
 import { isTransferTxInfo } from '@/components/transactions/utils'
 import css from './styles.module.css'
 import useTxDetails from '@/components/transactions/useTxDetails'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import { useCurrentChain } from '@/services/useChains'
 
 type TransactionSummaryWithDetails = TransactionSummary & {
   txDetails?: TransactionDetails
@@ -27,10 +29,31 @@ const TransferTxInfoSummary = ({ txInfo }: { txInfo: Transfer }) => {
   )
 }
 
+export const AddressInfo = ({ address, shortName }: { address: string | null; shortName?: string }): ReactElement => {
+  if (!address) {
+    return <></>
+  }
+
+  return (
+    <>
+      <EthHashInfo address={address} shortName={shortName} />
+    </>
+  )
+}
+
 const TxData = ({ txWithDetails }: Props): ReactElement => {
+  const currentChain = useCurrentChain()
+  const { shortName } = currentChain || {}
+
   const txInfo = txWithDetails.txInfo
+  console.log(txInfo)
   if (isTransferTxInfo(txInfo)) {
-    return <TransferTxInfoSummary txInfo={txInfo} />
+    return (
+      <>
+        <TransferTxInfoSummary txInfo={txInfo} />
+        <AddressInfo address={txInfo.recipient.value} shortName={shortName} />
+      </>
+    )
   }
   return (
     <>
@@ -47,10 +70,6 @@ const TxDetails = ({ txWithDetails }: Props): ReactElement => {
     return <div>Loading...</div>
   }
 
-  if (!txDetails) {
-    return <div>no data</div>
-  }
-
   return (
     <div className={css.container}>
       {/* /Details */}
@@ -58,9 +77,11 @@ const TxDetails = ({ txWithDetails }: Props): ReactElement => {
         <TxData txWithDetails={txWithDetails} />
       </div>
       {/* Signers */}
-      <div className={css.txSigners}>
-        <TxSigners txDetails={txDetails} />
-      </div>
+      {txDetails && (
+        <div className={css.txSigners}>
+          <TxSigners txDetails={txDetails} />
+        </div>
+      )}
     </div>
   )
 }

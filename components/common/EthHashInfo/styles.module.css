@@ -8,3 +8,7 @@
   width: 2.3em;
   height: 2.3em;
 }
+
+.bold {
+  font-weight: bold;
+}

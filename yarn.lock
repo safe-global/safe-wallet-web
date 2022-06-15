@@ -1780,7 +1780,7 @@
     "@gnosis.pm/safe-core-sdk-types" "^1.1.0"
     "@gnosis.pm/safe-core-sdk-utils" "^1.1.0"
 
-"@gnosis.pm/safe-react-components@git+https://github.com/safe-global/safe-react-components#4cbe12dffa718f962ccf229438c3b0ea20e5ccf2":
+"@gnosis.pm/safe-react-components@git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components":
   version "2.0.1"
   resolved "git+https://github.com/safe-global/safe-react-components#4cbe12dffa718f962ccf229438c3b0ea20e5ccf2"
   dependencies:
