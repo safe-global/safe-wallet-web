@@ -8,14 +8,25 @@
   border-bottom-right-radius: 8px;
 }
 
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .txData {
   background: white;
   padding: 20px 24px;
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.advancedDetails {
+  background: white;
+  padding: 20px 24px;
+  border-bottom-left-radius: 8px;
   height: 100%;
-  border-bottom-left-radius: 8px
 }
 
 .txInfoDetails {
@@ -26,6 +37,7 @@
 }
 
 .txSigners {
+  padding: 24px;
   background: white;
   border-bottom-right-radius: 8px
 }

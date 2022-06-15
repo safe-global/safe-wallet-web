@@ -48,11 +48,13 @@ const TxData = ({ txWithDetails }: Props): ReactElement => {
   const txInfo = txWithDetails.txInfo
   console.log(txInfo)
   if (isTransferTxInfo(txInfo)) {
+    const address =
+      txInfo.direction.toUpperCase() === TransferDirection.INCOMING ? txInfo.sender.value : txInfo.recipient.value
     return (
-      <>
+      <div>
         <TransferTxInfoSummary txInfo={txInfo} />
-        <AddressInfo address={txInfo.recipient.value} shortName={shortName} />
-      </>
+        <AddressInfo address={address} shortName={shortName} />
+      </div>
     )
   }
   return (
@@ -73,8 +75,13 @@ const TxDetails = ({ txWithDetails }: Props): ReactElement => {
   return (
     <div className={css.container}>
       {/* /Details */}
-      <div className={css.txData}>
-        <TxData txWithDetails={txWithDetails} />
+      <div className={css.details}>
+        <div className={css.txData}>
+          <TxData txWithDetails={txWithDetails} />
+        </div>
+        <div className={css.advancedDetails}>
+          <div>Details</div>
+        </div>
       </div>
       {/* Signers */}
       {txDetails && (
