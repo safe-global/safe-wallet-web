@@ -5,6 +5,7 @@ import {
   Button,
   createFilterOptions,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -58,6 +59,14 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
     if (!token) return
 
+    if (isNaN(parseFloat(amount))) {
+      return 'The amount must be a number'
+    }
+
+    if (parseFloat(amount) <= 0) {
+      return 'The amount must be greater than 0'
+    }
+
     if (toDecimals(amount, token.tokenInfo.decimals).gt(token.balance)) {
       return `Maximum value is ${formatDecimals(token.balance, token.tokenInfo.decimals)}`
     }
@@ -85,7 +94,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               autoComplete="off"
               label="Recipient"
               error={!!errors.recipient}
-              helperText={errors.recipient?.message}
+              helperText={errors.recipient?.message || ' '}
               {...register('recipient', {
                 validate: validateAddress,
                 required: true,
@@ -101,6 +110,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
           labelId="asset-label"
           label="Select an asset"
           defaultValue={formData?.tokenAddress || ''}
+          error={!!errors.tokenAddress}
           {...register('tokenAddress', { required: true })}
         >
           {balances.items.map((item) => (
@@ -110,13 +120,14 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             </MenuItem>
           ))}
         </Select>
+        <FormHelperText>{errors.tokenAddress?.message || ' '}</FormHelperText>
       </FormControl>
 
       <FormControl fullWidth>
         <TextField
           label="Amount"
           error={!!errors.amount}
-          helperText={errors.amount?.message}
+          helperText={errors.amount?.message || ' '}
           autoComplete="off"
           {...register('amount', { required: true, validate: validateAmount })}
         />

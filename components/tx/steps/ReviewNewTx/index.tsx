@@ -1,6 +1,5 @@
-import { useMemo, type ReactElement } from 'react'
-import { FormControl, TextField, Typography } from '@mui/material'
-import { useForm } from 'react-hook-form'
+import { useMemo, useState, type ReactElement } from 'react'
+import { Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
@@ -9,11 +8,13 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import { shortenAddress } from '@/services/formatters'
-import ErrorToast from '@/components/common/ErrorToast'
 import useSafeTxGas from '@/services/useSafeTxGas'
 import useBalances from '@/services/useBalances'
 import useAsync from '@/services/useAsync'
 import { createTx } from '@/services/tx/txSender'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import useSafeInfo from '@/services/useSafeInfo'
+import NonceForm from './NonceForm'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -26,18 +27,14 @@ const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData
   )
 }
 
-type ReviewTxForm = {
-  nonce: number
-}
-
 type ReviewNewTxProps = {
   params: SendAssetsFormData
   onSubmit: (data: null) => void
 }
 
-const NONCE_FIELD = 'nonce'
-
 const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
+  const { safe } = useSafeInfo()
+
   // Find the token info for the token we're sending
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
@@ -51,14 +48,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
 
   // Estimate safeTxGas
   const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
-
-  // Watch the advanced params form (nonce)
-  const {
-    register,
-    watch,
-    formState: { errors },
-  } = useForm<ReviewTxForm>()
-  const editableNonce = watch(NONCE_FIELD)
+  const [editableNonce, setEditableNonce] = useState<number>()
 
   // Create a safeTx
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
@@ -72,7 +62,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   }, [editableNonce, txParams, safeGas?.safeTxGas])
 
   // All errors
-  const error = safeTxError || safeGasError
+  const txError = safeTxError || safeGasError
 
   return (
     <div>
@@ -80,25 +70,16 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
 
       {token && <TokenTransferReview params={params} tokenInfo={token.tokenInfo} />}
 
-      <FormControl fullWidth>
-        <TextField
-          disabled={safeGasLoading}
-          label="Nonce"
-          error={!!errors.nonce}
-          helperText={errors.nonce?.message}
-          type="number"
-          key={safeGas?.recommendedNonce}
-          defaultValue={safeGas?.recommendedNonce}
-          {...register(NONCE_FIELD, {
-            valueAsNumber: true, // Set field to number type to auto parseInt
-            required: true,
-          })}
-        />
-      </FormControl>
+      <NonceForm recommendedNonce={safeGas?.recommendedNonce} safeNonce={safe?.nonce} onChange={setEditableNonce} />
 
-      <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} />
+      <SignOrExecuteForm safeTx={safeTx} isExecutable={safe?.threshold === 1} onSubmit={onSubmit} />
 
-      {error && <ErrorToast message={error.message} />}
+      {txError && (
+        <ErrorMessage>
+          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+          <p>{txError.message}</p>
+        </ErrorMessage>
+      )}
     </div>
   )
 }
