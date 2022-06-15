@@ -8,6 +8,7 @@ import { createRejectTx } from '@/services/tx/txSender'
 import useAsync from '@/services/useAsync'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import useSafeInfo from '@/services/useSafeInfo'
 
 type RejectTxProps = {
   txSummary: TransactionSummary
@@ -15,6 +16,7 @@ type RejectTxProps = {
 }
 
 const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
+  const { safe } = useSafeInfo()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
 
   const [rejectTx, rejectError] = useAsync<SafeTransaction | undefined>(async () => {
@@ -38,7 +40,12 @@ const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
         wallet.
       </Typography>
 
-      <SignOrExecuteForm safeTx={rejectTx} txId={txSummary.id} onSubmit={onSubmit} />
+      <SignOrExecuteForm
+        safeTx={rejectTx}
+        txId={txSummary.id}
+        isExecutable={safe?.threshold === 1}
+        onSubmit={onSubmit}
+      />
 
       <ErrorMessage>{rejectError?.message}</ErrorMessage>
     </div>

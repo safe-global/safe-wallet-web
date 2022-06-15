@@ -113,7 +113,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
         />
       </FormControl>
 
-      <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} />
+      <SignOrExecuteForm safeTx={safeTx} isExecutable={safe?.threshold === 1} onSubmit={onSubmit} />
 
       {txError && (
         <ErrorMessage>

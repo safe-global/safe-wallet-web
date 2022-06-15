@@ -17,7 +17,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
-  isExecutable?: boolean
+  isExecutable: boolean
   onlyExecute?: boolean
   onSubmit: (data: null) => void
 }
@@ -30,7 +30,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
   const wallet = useWallet()
 
   // Check that the transaction is executable
-  const canExecute = (isExecutable ?? safe?.threshold === 1) && safeTx?.data.nonce === safeNonce + 1
+  const canExecute = isExecutable && safeTx?.data.nonce === safeNonce + 1
 
   const [shouldExecute, setShouldExecute] = useState<boolean>(canExecute)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
