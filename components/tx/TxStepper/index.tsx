@@ -23,7 +23,7 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
         })}
       </Stepper>
 
-      <Box sx={{ padding: '30px 0', position: 'relative' }}>
+      <Box paddingX={1} paddingY={2} sx={{ position: 'relative' }}>
         {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onBack)}
       </Box>
 

@@ -113,7 +113,11 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
       )}
 
       <div className={css.submit}>
-        <Button variant="contained" onClick={handleSubmit} disabled={!isSubmittable}>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={!isSubmittable || gasLimitLoading || gasPriceLoading}
+        >
           Submit
         </Button>
       </div>
