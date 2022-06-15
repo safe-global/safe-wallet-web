@@ -34,7 +34,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
-  const { gasLimit, gasLimitError } = useGasLimit(
+  const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(
     shouldExecute && safeTx && wallet
       ? {
           ...safeTx.data,
@@ -43,7 +43,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
       : undefined,
   )
 
-  const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
+  const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
 
   const onFinish = async (actionFn: () => Promise<void>) => {
     if (!wallet || !safeTx) return
@@ -100,7 +100,12 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
       )}
 
       {shouldExecute && (
-        <GasParams gasLimit={gasLimit} maxFeePerGas={maxFeePerGas} maxPriorityFeePerGas={maxPriorityFeePerGas} />
+        <GasParams
+          isLoading={gasLimitLoading || gasPriceLoading}
+          gasLimit={gasLimit}
+          maxFeePerGas={maxFeePerGas}
+          maxPriorityFeePerGas={maxPriorityFeePerGas}
+        />
       )}
 
       {shouldExecute && gasLimitError && (

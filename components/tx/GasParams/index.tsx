@@ -6,10 +6,10 @@ import { formatUnits } from 'ethers/lib/utils'
 import { useCurrentChain } from '@/services/useChains'
 
 type GasParamsProps = {
-  nonce?: string
   gasLimit?: number
   maxFeePerGas?: BigNumber
   maxPriorityFeePerGas?: BigNumber
+  isLoading: boolean
 }
 
 const formatPrice = (value: BigNumberish, type?: string | number): string => {
@@ -21,12 +21,12 @@ const formatPrice = (value: BigNumberish, type?: string | number): string => {
   }
 }
 
-const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas }: GasParamsProps): ReactElement => {
+const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas, isLoading }: GasParamsProps): ReactElement => {
   const chain = useCurrentChain()
   const totalFee =
     gasLimit && maxFeePerGas && maxPriorityFeePerGas
       ? formatPrice(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
-      : ''
+      : '> 0.001'
   const maxFeePerGasGwei = maxFeePerGas ? formatPrice(maxFeePerGas, 'gwei') : ''
   const maxPrioGasGwei = maxPriorityFeePerGas ? formatPrice(maxPriorityFeePerGas, 'gwei') : ''
 
@@ -37,23 +37,23 @@ const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas }: GasParamsPr
       <Accordion>
         <AccordionSummary>
           <Typography>
-            Estimated fee {totalFee ? `${totalFee} ${chain?.nativeCurrency.symbol}` : valueSkeleton}
+            Estimated fee {isLoading ? valueSkeleton : `${totalFee} ${chain?.nativeCurrency.symbol}`}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div className={css.details}>
             <div className={css.label}>Gas limit</div>
-            <div className={css.value}>{gasLimit?.toString() || valueSkeleton}</div>
+            <div className={css.value}>{gasLimit ? gasLimit.toString() : isLoading ? valueSkeleton : '-'}</div>
           </div>
 
           <div className={css.details}>
             <div className={css.label}>Max priority fee (Gwei)</div>
-            <div className={css.value}>{maxPrioGasGwei || valueSkeleton}</div>
+            <div className={css.value}>{maxPrioGasGwei || (isLoading ? valueSkeleton : '-')}</div>
           </div>
 
           <div className={css.details}>
             <div className={css.label}>Max fee (Gwei)</div>
-            <div className={css.value}>{maxFeePerGasGwei || valueSkeleton}</div>
+            <div className={css.value}>{maxFeePerGasGwei || (isLoading ? valueSkeleton : '-')}</div>
           </div>
         </AccordionDetails>
       </Accordion>
