@@ -14,7 +14,7 @@ const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactEl
   const [open, setOpen] = useState<boolean>(false)
   const { safe } = useSafeInfo()
   const wallet = useWallet()
-  const signaturePending = isSignableBy(txSummary, wallet?.address)
+  const signaturePending = isSignableBy(txSummary, wallet?.address || '')
   const granted = isOwner(safe?.owners, wallet?.address)
 
   const onClick = () => {

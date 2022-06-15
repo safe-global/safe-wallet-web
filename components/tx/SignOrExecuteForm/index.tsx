@@ -24,12 +24,14 @@ type SignOrExecuteProps = {
 
 const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }: SignOrExecuteProps): ReactElement => {
   const { safe } = useSafeInfo()
+  const safeNonce = safe?.nonce || 0
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const wallet = useWallet()
 
-  // @TODO: also check the tx nonce
-  const canExecute = isExecutable ?? safe?.threshold === 1
+  // Check that the transaction is executable
+  const canExecute = (isExecutable ?? safe?.threshold === 1) && safeTx?.data.nonce === safeNonce + 1
+
   const [shouldExecute, setShouldExecute] = useState<boolean>(canExecute)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 

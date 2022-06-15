@@ -22,8 +22,8 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const txId = txSummary.id
-  const canExecute = isExecutable(txSummary)
-  const canSign = isSignableBy(txSummary, wallet?.address)
+  const canExecute = isExecutable(txSummary, wallet?.address || '')
+  const canSign = isSignableBy(txSummary, wallet?.address || '')
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createExistingTx(chainId, safeAddress, txSummary)

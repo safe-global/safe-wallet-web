@@ -48,15 +48,16 @@ export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
   return value.type === 'DATE_LABEL'
 }
 
-export const isSignableBy = (tx: TransactionSummary, walletAddress: string | undefined): boolean => {
-  const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
+export const isSignableBy = (txSummary: TransactionSummary, walletAddress: string): boolean => {
+  const executionInfo = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo : undefined
   return !!executionInfo?.missingSigners?.some((address) => address.value === walletAddress)
 }
 
-export const isExecutable = (txSummary: TransactionSummary) => {
+export const isExecutable = (txSummary: TransactionSummary, walletAddress: string): boolean => {
   return (
     !txSummary.executionInfo ||
     !isMultisigExecutionInfo(txSummary.executionInfo) ||
-    txSummary.executionInfo.confirmationsRequired <= 1
+    txSummary.executionInfo.confirmationsRequired === 0 ||
+    (txSummary.executionInfo.confirmationsRequired === 1 && isSignableBy(txSummary, walletAddress))
   )
 }
