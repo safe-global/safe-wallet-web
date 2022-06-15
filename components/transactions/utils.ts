@@ -57,7 +57,8 @@ export const isExecutable = (txSummary: TransactionSummary, walletAddress: strin
   return (
     !txSummary.executionInfo ||
     !isMultisigExecutionInfo(txSummary.executionInfo) ||
-    txSummary.executionInfo.confirmationsRequired === 0 ||
-    (txSummary.executionInfo.confirmationsRequired === 1 && isSignableBy(txSummary, walletAddress))
+    txSummary.executionInfo.confirmationsSubmitted === txSummary.executionInfo.confirmationsRequired ||
+    (txSummary.executionInfo.confirmationsSubmitted === txSummary.executionInfo.confirmationsRequired - 1 &&
+      isSignableBy(txSummary, walletAddress))
   )
 }

@@ -1,3 +1,7 @@
+.container {
+  margin-top: 20px;
+}
+
 .details {
   display: flex;
 }

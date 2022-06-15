@@ -33,29 +33,31 @@ const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas }: GasParamsPr
   const valueSkeleton = <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '5em' }} />
 
   return (
-    <Accordion>
-      <AccordionSummary>
-        <Typography>
-          Estimated fee {totalFee ? `${totalFee} ${chain?.nativeCurrency.symbol}` : valueSkeleton}
-        </Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <div className={css.details}>
-          <div className={css.label}>Gas limit</div>
-          <div className={css.value}>{gasLimit?.toString() || valueSkeleton}</div>
-        </div>
+    <div className={css.container}>
+      <Accordion>
+        <AccordionSummary>
+          <Typography>
+            Estimated fee {totalFee ? `${totalFee} ${chain?.nativeCurrency.symbol}` : valueSkeleton}
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <div className={css.details}>
+            <div className={css.label}>Gas limit</div>
+            <div className={css.value}>{gasLimit?.toString() || valueSkeleton}</div>
+          </div>
 
-        <div className={css.details}>
-          <div className={css.label}>Max priority fee (Gwei)</div>
-          <div className={css.value}>{maxPrioGasGwei || valueSkeleton}</div>
-        </div>
+          <div className={css.details}>
+            <div className={css.label}>Max priority fee (Gwei)</div>
+            <div className={css.value}>{maxPrioGasGwei || valueSkeleton}</div>
+          </div>
 
-        <div className={css.details}>
-          <div className={css.label}>Max fee (Gwei)</div>
-          <div className={css.value}>{maxFeePerGasGwei || valueSkeleton}</div>
-        </div>
-      </AccordionDetails>
-    </Accordion>
+          <div className={css.details}>
+            <div className={css.label}>Max fee (Gwei)</div>
+            <div className={css.value}>{maxFeePerGasGwei || valueSkeleton}</div>
+          </div>
+        </AccordionDetails>
+      </Accordion>
+    </div>
   )
 }
 

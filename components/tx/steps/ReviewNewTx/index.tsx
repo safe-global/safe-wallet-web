@@ -1,6 +1,5 @@
-import { useMemo, type ReactElement } from 'react'
-import { FormControl, TextField, Typography } from '@mui/material'
-import { useForm } from 'react-hook-form'
+import { useMemo, useState, type ReactElement } from 'react'
+import { Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
@@ -15,6 +14,7 @@ import useAsync from '@/services/useAsync'
 import { createTx } from '@/services/tx/txSender'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useSafeInfo from '@/services/useSafeInfo'
+import NonceForm from './NonceForm'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -27,16 +27,10 @@ const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData
   )
 }
 
-type ReviewTxForm = {
-  nonce: number
-}
-
 type ReviewNewTxProps = {
   params: SendAssetsFormData
   onSubmit: (data: null) => void
 }
-
-const NONCE_FIELD = 'nonce'
 
 const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   const { safe } = useSafeInfo()
@@ -54,16 +48,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
 
   // Estimate safeTxGas
   const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
-  const safeNonce = safe?.nonce || 0
-  const recommendedNonce = safeGas?.recommendedNonce || 0
-
-  // Watch the advanced params form (nonce)
-  const {
-    register,
-    watch,
-    formState: { errors },
-  } = useForm<ReviewTxForm>({ mode: 'onChange' })
-  const editableNonce = watch(NONCE_FIELD)
+  const [editableNonce, setEditableNonce] = useState<number>()
 
   // Create a safeTx
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
@@ -79,39 +64,13 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   // All errors
   const txError = safeTxError || safeGasError
 
-  // Warn about a higher nince
-  const nonceWarning =
-    editableNonce > recommendedNonce ? `Your nonce is higher than the recommended one: ${recommendedNonce}` : ''
-
   return (
     <div>
       <Typography variant="h6">Review transaction</Typography>
 
       {token && <TokenTransferReview params={params} tokenInfo={token.tokenInfo} />}
 
-      <FormControl fullWidth>
-        <TextField
-          label="Nonce"
-          type="number"
-          autoComplete="off"
-          key={recommendedNonce}
-          defaultValue={recommendedNonce}
-          disabled={safeGasLoading}
-          error={!!errors[NONCE_FIELD]}
-          helperText={errors[NONCE_FIELD]?.message || nonceWarning || ' '}
-          {...register(NONCE_FIELD, {
-            required: true,
-            valueAsNumber: true,
-            validate: (val) => {
-              if (!Number.isInteger(val)) {
-                return 'Nonce must be an integer'
-              } else if (val <= safeNonce) {
-                return `Nonce must be greater than the current Safe nonce: ${safeNonce}`
-              }
-            },
-          })}
-        />
-      </FormControl>
+      <NonceForm recommendedNonce={safeGas?.recommendedNonce} safeNonce={safe?.nonce} onChange={setEditableNonce} />
 
       <SignOrExecuteForm safeTx={safeTx} isExecutable={safe?.threshold === 1} onSubmit={onSubmit} />
 

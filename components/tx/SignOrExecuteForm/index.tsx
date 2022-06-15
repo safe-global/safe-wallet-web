@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Checkbox, FormControlLabel } from '@mui/material'
 
@@ -24,15 +24,14 @@ type SignOrExecuteProps = {
 
 const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }: SignOrExecuteProps): ReactElement => {
   const { safe } = useSafeInfo()
-  const safeNonce = safe?.nonce || 0
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const wallet = useWallet()
 
   // Check that the transaction is executable
-  const canExecute = isExecutable && safeTx?.data.nonce === safeNonce + 1
+  const canExecute = isExecutable && (!safeTx || !safe || safeTx?.data.nonce === safe.nonce)
 
-  const [shouldExecute, setShouldExecute] = useState<boolean>(canExecute)
+  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
 
   const { gasLimit, gasLimitError } = useGasLimit(
@@ -83,7 +82,13 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
     })
   }
 
-  const handleSubmit = shouldExecute ? onExecute : onSign
+  // Safe nonce can change while the user is signing or executing a transaction,
+  // so we need to check if the transaction is still executable
+  useEffect(() => {
+    if (!canExecute && shouldExecute) {
+      setShouldExecute(false)
+    }
+  }, [canExecute, shouldExecute])
 
   return (
     <div className={css.container}>
@@ -106,7 +111,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
       )}
 
       <div className={css.submit}>
-        <Button variant="contained" onClick={handleSubmit} disabled={!isSubmittable}>
+        <Button variant="contained" onClick={shouldExecute ? onExecute : onSign} disabled={!isSubmittable}>
           Submit
         </Button>
       </div>
