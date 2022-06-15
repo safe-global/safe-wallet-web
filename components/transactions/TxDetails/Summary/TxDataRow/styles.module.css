@@ -1,0 +1,22 @@
+.gridRow {
+  display: grid;
+  grid-template-columns: 1fr 2.5fr;
+  gap: 16px;
+  justify-content: flex-start;
+  max-width: 900px;
+}
+
+.gridRow > * {
+  flex-shrink: 0;
+}
+
+.rowTitle {
+  color: #5D6D74;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.valueWrapper {
+  min-width: 50%;
+  flex-shrink: 0;
+}

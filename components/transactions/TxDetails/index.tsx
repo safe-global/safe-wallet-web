@@ -7,6 +7,7 @@ import css from './styles.module.css'
 import useTxDetails from '@/components/transactions/useTxDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useCurrentChain } from '@/services/useChains'
+import Summary from '@/components/transactions/TxDetails/Summary'
 
 type TransactionSummaryWithDetails = TransactionSummary & {
   txDetails?: TransactionDetails
@@ -79,8 +80,8 @@ const TxDetails = ({ txWithDetails }: Props): ReactElement => {
         <div className={css.txData}>
           <TxData txWithDetails={txWithDetails} />
         </div>
-        <div className={css.advancedDetails}>
-          <div>Details</div>
+        <div className={css.txSummary}>
+          <Summary txDetails={txDetails} />
         </div>
       </div>
       {/* Signers */}

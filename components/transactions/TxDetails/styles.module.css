@@ -22,6 +22,13 @@
   gap: 2px;
 }
 
+.txSummary {
+  background: white;
+  padding: 20px 24px;
+  border-bottom-left-radius: 8px;
+  height: 100%;
+}
+
 .advancedDetails {
   background: white;
   padding: 20px 24px;
