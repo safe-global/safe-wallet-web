@@ -21,40 +21,51 @@ const formatPrice = (value: BigNumberish, type?: string | number): string => {
   }
 }
 
+const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
+  const valueSkeleton = <Skeleton variant="text" sx={{ minWidth: '5em' }} />
+
+  return (
+    <div className={css.details}>
+      <div className={css.label}>{name}</div>
+      <div className={css.value}>{value || (isLoading ? valueSkeleton : '-')}</div>
+    </div>
+  )
+}
+
 const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas, isLoading }: GasParamsProps): ReactElement => {
   const chain = useCurrentChain()
+
+  // Total gas cost
   const totalFee =
     gasLimit && maxFeePerGas && maxPriorityFeePerGas
       ? formatPrice(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
       : '> 0.001'
+
+  // Individual gas params
+  const gasLimitString = gasLimit?.toString() || ''
   const maxFeePerGasGwei = maxFeePerGas ? formatPrice(maxFeePerGas, 'gwei') : ''
   const maxPrioGasGwei = maxPriorityFeePerGas ? formatPrice(maxPriorityFeePerGas, 'gwei') : ''
-
-  const valueSkeleton = <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '5em' }} />
 
   return (
     <div className={css.container}>
       <Accordion>
         <AccordionSummary>
           <Typography>
-            Estimated fee {isLoading ? valueSkeleton : `${totalFee} ${chain?.nativeCurrency.symbol}`}
+            Estimated fee{' '}
+            {isLoading ? (
+              <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
+            ) : (
+              `${totalFee} ${chain?.nativeCurrency.symbol}`
+            )}
           </Typography>
         </AccordionSummary>
+
         <AccordionDetails>
-          <div className={css.details}>
-            <div className={css.label}>Gas limit</div>
-            <div className={css.value}>{gasLimit ? gasLimit.toString() : isLoading ? valueSkeleton : '-'}</div>
-          </div>
+          <GasDetail isLoading={isLoading} name="Gas limit" value={gasLimitString} />
 
-          <div className={css.details}>
-            <div className={css.label}>Max priority fee (Gwei)</div>
-            <div className={css.value}>{maxPrioGasGwei || (isLoading ? valueSkeleton : '-')}</div>
-          </div>
+          <GasDetail isLoading={isLoading} name="Max priority fee (Gwei)" value={maxPrioGasGwei} />
 
-          <div className={css.details}>
-            <div className={css.label}>Max fee (Gwei)</div>
-            <div className={css.value}>{maxFeePerGasGwei || (isLoading ? valueSkeleton : '-')}</div>
-          </div>
+          <GasDetail isLoading={isLoading} name="Max fee (Gwei)" value={maxFeePerGasGwei} />
         </AccordionDetails>
       </Accordion>
     </div>
