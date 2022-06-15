@@ -19,7 +19,7 @@ const NonceForm = ({ recommendedNonce, safeNonce, onChange }: NonceFormProps): R
 
   const editableNonce = watch(NONCE_FIELD)
 
-  // Warn about a higher nince
+  // Warn about a higher nonce
   const nonceWarning =
     recommendedNonce != null && editableNonce > recommendedNonce
       ? `Your nonce is higher than the recommended one: ${recommendedNonce}`
