@@ -5,7 +5,7 @@ const ErrorMessage = ({ children }: { children?: ReactNode }): ReactElement | nu
   if (!children) return null
 
   return (
-    <Typography color="error" sx={{ padding: '2em 0' }}>
+    <Typography color="error" paddingY={4}>
       {children}
     </Typography>
   )
