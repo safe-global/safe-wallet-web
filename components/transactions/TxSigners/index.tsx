@@ -15,7 +15,7 @@ import useSafeInfo from '@/services/useSafeInfo'
 import useWallet from '@/services/wallets/useWallet'
 import useAddressBook from '@/services/useAddressBook'
 import useIsPending from '@/components/transactions/useIsPending'
-import { isCancelTxDetails, isMultisigExecutionDetails } from '@/components/transactions/utils'
+import { isCancellationTxInfo, isMultisigExecutionDetails } from '@/components/transactions/utils'
 
 import css from './styles.module.css'
 
@@ -140,7 +140,7 @@ export const TxSigners = ({ txDetails }: { txDetails: TransactionDetails }): Rea
       }
       sx={{ padding: 0 }}
     >
-      {isCancelTxDetails(txInfo) ? (
+      {isCancellationTxInfo(txInfo) ? (
         <StyledStep $bold $state="error">
           <StepLabel icon={<TxRejectionIcon />}>On-chain rejection created</StepLabel>
         </StyledStep>
