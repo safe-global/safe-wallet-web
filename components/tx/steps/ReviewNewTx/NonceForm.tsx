@@ -15,7 +15,7 @@ const NonceForm = ({ recommendedNonce, safeNonce, onChange }: NonceFormProps): R
     register,
     watch,
     formState: { errors },
-  } = useForm<{ nonce: number }>({ mode: 'onChange' })
+  } = useForm<{ [NONCE_FIELD]: number }>({ mode: 'onChange' })
 
   const editableNonce = watch(NONCE_FIELD)
 
