@@ -29,7 +29,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
   const wallet = useWallet()
 
   // Check that the transaction is executable
-  const canExecute = isExecutable && safeTx?.data.nonce === safe?.nonce
+  const canExecute = isExecutable && safeTx && safeTx.data.nonce === safe?.nonce
 
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
