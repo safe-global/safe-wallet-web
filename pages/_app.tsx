@@ -8,7 +8,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SnackbarProvider } from 'notistack'
-import { safeTheme } from '@gnosis.pm/safe-react-components'
+import theme from '@/styles/theme'
 
 import '@/styles/globals.css'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
@@ -73,7 +73,7 @@ const SafeWebCore = ({
       {/* @ts-ignore - Temporary Fix */}
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
         <CacheProvider value={emotionCache}>
-          <ThemeProvider theme={safeTheme}>
+          <ThemeProvider theme={theme}>
             <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={5}>
               <CssBaseline />
               <InitApp />
