@@ -1,4 +1,4 @@
-import { Color, createTheme, PaletteColor, PaletteColorOptions } from '@mui/material'
+import { Color, createTheme } from '@mui/material'
 
 import {
   black,

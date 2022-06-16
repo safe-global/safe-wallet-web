@@ -23,9 +23,11 @@ export const SidebarListItemButton = ({
       sx={({ palette }) => ({
         borderRadius: '6px',
         '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
+          // @ts-expect-error type '200' can't be used to index type 'PaletteColor'
           backgroundColor: `${palette.primary[200]} !important`,
           // TODO:
           img: {
+            // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
             fill: palette.primary[400],
           },
         },

@@ -1,8 +1,8 @@
 import * as React from 'react'
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document'
 import createEmotionServer from '@emotion/server/create-instance'
-import { safeTheme } from '@gnosis.pm/safe-react-components'
 import createEmotionCache from '@/services/createEmotionCache'
+import theme from '@/styles/theme'
 
 class SafeWebCoreDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -42,7 +42,7 @@ class SafeWebCoreDocument extends Document {
       <Html lang="en">
         <Head>
           {/* PWA primary color */}
-          <meta name="theme-color" content={safeTheme.palette.primary.main} />
+          <meta name="theme-color" content={theme.palette.primary.main} />
           <link rel="shortcut icon" href="/static/favicon.ico" />
           {/* @ts-ignore */}
           {this.props.emotionStyleTags}

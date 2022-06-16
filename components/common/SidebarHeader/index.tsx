@@ -49,7 +49,11 @@ const SafeHeader = (): ReactElement => {
       <div className={css.safe}>
         <Box
           className={css.threshold}
-          sx={({ palette }) => ({ background: palette.primaryGreen[200], color: palette.primary[400] })}
+          sx={({ palette }) => ({
+            background: palette.primaryGreen[200],
+            // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
+            color: palette.primary[400],
+          })}
         >
           {threshold || ''}/{owners?.length || ''}
         </Box>

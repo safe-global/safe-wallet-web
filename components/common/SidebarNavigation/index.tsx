@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import React, { Fragment, ReactElement, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -119,7 +119,11 @@ const Navigation = (): ReactElement => {
       {navItems.map((item) => {
         if (!item.items) {
           return (
-            <SidebarListItemButton selected={isSelected(item.href)} href={{ pathname: item.href, query: router.query }}>
+            <SidebarListItemButton
+              selected={isSelected(item.href)}
+              href={{ pathname: item.href, query: router.query }}
+              key={item.href}
+            >
               {item.icon && <SidebarListItemIcon>{item.icon}</SidebarListItemIcon>}
               <SidebarListItemText bold>{item.label}</SidebarListItemText>
             </SidebarListItemButton>
@@ -129,7 +133,7 @@ const Navigation = (): ReactElement => {
         const isExpanded = open[item.href]
 
         return (
-          <>
+          <Fragment key={item.href}>
             <SidebarListItemButton
               onClick={() => toggleOpen(item)}
               selected={router.pathname.includes(item.href)}
@@ -182,7 +186,7 @@ const Navigation = (): ReactElement => {
                 ))}
               </List>
             </Collapse>
-          </>
+          </Fragment>
         )
       })}
     </SidebarList>
