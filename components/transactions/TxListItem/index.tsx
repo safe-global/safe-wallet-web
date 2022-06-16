@@ -7,21 +7,17 @@ import TxSummary from '../TxSummary'
 import GroupLabel from '../GroupLabel'
 import TxDateLabel from '../TxDateLabel'
 import TxDetails from '../TxDetails'
+import css from './styles.module.css'
 
 const ExpandibleTransactionItem = ({ item }: { item: Transaction }) => (
   <Accordion
+    className={css.accordion}
     sx={{
-      border: '2px solid #EEEFF0',
-      borderRadius: '8px',
       '& .MuiAccordionSummary-root': {
         padding: '0px 16px',
       },
       '& .MuiAccordionSummary-root.Mui-expanded': {
         borderBottom: '2px solid #E8E7E6',
-      },
-      boxShadow: 'unset',
-      '&::before': {
-        content: 'none',
       },
     }}
     disableGutters
@@ -30,24 +26,10 @@ const ExpandibleTransactionItem = ({ item }: { item: Transaction }) => (
       unmountOnExit: true,
     }}
   >
-    <AccordionSummary
-      expandIcon={<ExpandMoreIcon />}
-      sx={{
-        '& .MuiAccordionSummary-content': {
-          margin: 0,
-        },
-      }}
-    >
+    <AccordionSummary className={css.accordionSummary} expandIcon={<ExpandMoreIcon />}>
       <TxSummary item={item} />
     </AccordionSummary>
-    <AccordionDetails
-      sx={{
-        padding: 0,
-        borderBottomLeftRadius: '8px',
-        borderBottomRightRadius: '8px',
-        minHeight: '200px',
-      }}
-    >
+    <AccordionDetails className={css.accordionDetails}>
       <TxDetails txWithDetails={item.transaction} />
     </AccordionDetails>
   </Accordion>
