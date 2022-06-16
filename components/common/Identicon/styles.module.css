@@ -1,7 +1,25 @@
+.threshold {
+  position: absolute;
+  margin-top: -8px;
+  margin-left: -8px;
+  left: 36px;
+  z-index: 1;
+  border-radius: 100%;
+  font-size: 12px;
+  min-width: 25px;
+  min-height: 25px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  line-height: 16px;
+  font-weight: 700;
+}
+
 .icon {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #eee;
   background-size: cover;
 }

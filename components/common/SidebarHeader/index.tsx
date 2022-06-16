@@ -4,7 +4,7 @@ import useSafeInfo from '@/services/useSafeInfo'
 import useBalances from '@/services/useBalances'
 import Identicon from '../Identicon'
 import css from './styles.module.css'
-import { Box, Divider, IconButton, IconButtonProps, Typography } from '@mui/material'
+import { Divider, IconButton, IconButtonProps, Typography } from '@mui/material'
 import BlockExplorer from './assets/BlockExplorer.svg'
 import Copy from './assets/Copy.svg'
 import QR from './assets/QR.svg'
@@ -47,18 +47,8 @@ const SafeHeader = (): ReactElement => {
       </div>
       <Divider flexItem />
       <div className={css.safe}>
-        <Box
-          className={css.threshold}
-          sx={({ palette }) => ({
-            background: palette.primaryGreen[200],
-            // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-            color: palette.primary[400],
-          })}
-        >
-          {threshold || ''}/{owners?.length || ''}
-        </Box>
         <div className={css.icon}>
-          <Identicon address={address} />
+          <Identicon address={address} threshold={threshold} owners={owners?.length} />
         </div>
         <div>
           <Typography variant="subtitle1">{address ? shortenAddress(address) : '...'}</Typography>

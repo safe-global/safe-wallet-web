@@ -1,19 +1,40 @@
-import { addSafe, removeSafe, addedSafesSlice } from '../addedSafesSlice'
+import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { addOrUpdateSafe, removeSafe, addedSafesSlice } from '../addedSafesSlice'
 
 describe('addedSafesSlice', () => {
   it('should add a Safe to the store', () => {
-    const state = addedSafesSlice.reducer(undefined, addSafe({ chainId: '1', address: '0x0' }))
-    expect(state).toEqual({ '1': ['0x0'] })
+    const safe0 = { address: { value: '0x0' } } as SafeInfo
+    const state = addedSafesSlice.reducer(undefined, addOrUpdateSafe({ chainId: '1', safe: safe0 }))
+    expect(state).toEqual({ '1': { ['0x0']: safe0 } })
 
-    const stateB = addedSafesSlice.reducer(state, addSafe({ chainId: '4', address: '0x1' }))
-    expect(stateB).toEqual({ '1': ['0x0'], '4': ['0x1'] })
+    const safe1 = { address: { value: '0x1' } } as SafeInfo
+    const stateB = addedSafesSlice.reducer(state, addOrUpdateSafe({ chainId: '4', safe: safe1 }))
+    expect(stateB).toEqual({ '1': { ['0x0']: safe0 }, '4': { ['0x1']: safe1 } })
 
-    const stateC = addedSafesSlice.reducer(stateB, addSafe({ chainId: '1', address: '0x2' }))
-    expect(stateC).toEqual({ '1': ['0x0', '0x2'], '4': ['0x1'] })
+    const safe2 = { address: { value: '0x2' } } as SafeInfo
+    const stateC = addedSafesSlice.reducer(stateB, addOrUpdateSafe({ chainId: '1', safe: safe2 }))
+    expect(stateC).toEqual({
+      '1': {
+        ['0x0']: safe0,
+        ['0x2']: safe2,
+      },
+      '4': { ['0x1']: safe1 },
+    })
   })
 
   it('should remove a Safe from the store', () => {
-    const state = addedSafesSlice.reducer({ '1': ['0x0'], '4': ['0x0'] }, removeSafe({ chainId: '1', address: '0x0' }))
-    expect(state).toEqual({ '4': ['0x0'], '1': [] })
+    const state = addedSafesSlice.reducer(
+      { '1': { ['0x0']: {} as SafeInfo, ['0x1']: {} as SafeInfo }, '4': { ['0x0']: {} as SafeInfo } },
+      removeSafe({ chainId: '1', address: '0x1' }),
+    )
+    expect(state).toEqual({ '1': { ['0x0']: {} as SafeInfo }, '4': { ['0x0']: {} as SafeInfo } })
+  })
+
+  it('should remove the chain from the store', () => {
+    const state = addedSafesSlice.reducer(
+      { '1': { ['0x0']: {} as SafeInfo }, '4': { ['0x0']: {} as SafeInfo } },
+      removeSafe({ chainId: '1', address: '0x0' }),
+    )
+    expect(state).toEqual({ '4': { ['0x0']: {} as SafeInfo } })
   })
 })

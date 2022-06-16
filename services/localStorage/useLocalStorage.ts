@@ -1,23 +1,19 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import local from './local'
 
-const useLocalStorage = <T>(key: string): [T | undefined, (val: T | undefined) => void] => {
+const useLocalStorage = <T>(key: string): [T | undefined, Dispatch<SetStateAction<T | undefined>>] => {
   const [cache, setCache] = useState<T>()
 
   useEffect(() => {
     const saved = local.getItem<T>(key)
     setCache(saved)
-  }, [key])
+  }, [key, setCache])
 
-  const setNewValue = useCallback(
-    (newVal: T | undefined) => {
-      setCache(newVal)
-      local.setItem<T | undefined>(key, newVal)
-    },
-    [setCache, key],
-  )
+  useEffect(() => {
+    local.setItem<T | undefined>(key, cache)
+  }, [key, cache])
 
-  return [cache, setNewValue]
+  return [cache, setCache]
 }
 
 export default useLocalStorage

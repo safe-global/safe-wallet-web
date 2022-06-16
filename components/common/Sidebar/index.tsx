@@ -1,13 +1,12 @@
 import { useState, type ReactElement } from 'react'
-import Link from 'next/link'
-import { Box, Button, Divider, Drawer, IconButton } from '@mui/material'
+import { Box, Divider, Drawer, IconButton } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
 
 import css from './styles.module.css'
 import useSafeInfo from '@/services/useSafeInfo'
 import ChainIndicator from '../ChainIndicator'
 import SidebarHeader from '../SidebarHeader'
-import SafeList from '../SafeList'
+import SafeList from '@/components/common/SafeList'
 import SidebarNavigation from '@/components/common/SidebarNavigation'
 import useSafeAddress from '@/services/useSafeAddress'
 import SidebarFooter from '../SidebarFooter'
@@ -19,10 +18,6 @@ const Sidebar = (): ReactElement => {
 
   const onDrawerToggle = () => {
     setIsDrawerOpen((prev) => !prev)
-  }
-
-  const onDrawerToggleDelayed = () => {
-    setTimeout(onDrawerToggle, 200)
   }
 
   return (
@@ -60,11 +55,7 @@ const Sidebar = (): ReactElement => {
       <SidebarFooter />
 
       <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
-        <div className={css.drawer} onClick={onDrawerToggleDelayed}>
-          <Link href="/welcome" passHref>
-            <Button variant="contained">+ Add Safe</Button>
-          </Link>
-
+        <div className={css.drawer}>
           <SafeList />
         </div>
       </Drawer>

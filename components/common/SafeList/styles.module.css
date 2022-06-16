@@ -1,20 +1,14 @@
-.container {
-  text-align: left;
-  margin-left: 40px;
-}
-
-.ownedSafes {
-  list-style: none;
-  margin: 0;
+.list {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 0;
 }
 
-.ownedSafes li:not(.selected) a {
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.ownedSafes li {
-  margin: 0 0 0.5em;
-  padding: 0;
+.dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
 }

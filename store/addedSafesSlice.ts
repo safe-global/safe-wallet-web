@@ -1,8 +1,11 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '.'
 
 type AddedSafesState = {
-  [chainId: string]: string[]
+  [chainId: string]: {
+    [safeAddress: string]: SafeInfo
+  }
 }
 
 const initialState: AddedSafesState = {}
@@ -11,25 +14,33 @@ export const addedSafesSlice = createSlice({
   name: 'addedSafes',
   initialState,
   reducers: {
-    addSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
-      state[payload.chainId] ??= []
-      state[payload.chainId].push(payload.address)
+    addOrUpdateSafe: (state, { payload }: PayloadAction<{ chainId: string; safe: SafeInfo }>) => {
+      const { chainId, safe } = payload
+
+      state[chainId] ??= {}
+      state[chainId][safe.address.value] = safe
     },
     removeSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
-      state[payload.chainId] = (state[payload.chainId] || []).filter((address) => address !== payload.address)
+      const { chainId, address } = payload
+
+      delete state[chainId][address]
+
+      if (Object.keys(state[chainId]).length === 0) {
+        delete state[chainId]
+      }
     },
   },
 })
 
-export const { addSafe, removeSafe } = addedSafesSlice.actions
+export const { addOrUpdateSafe, removeSafe } = addedSafesSlice.actions
 
-const selectAllAddedSafes = (state: RootState): AddedSafesState => {
+export const selectAllAddedSafes = (state: RootState): AddedSafesState => {
   return state[addedSafesSlice.name]
 }
 
 export const selectAddedSafes = createSelector(
   [selectAllAddedSafes, (_: RootState, chainId: string) => chainId],
-  (allAddedSafes, chainId): string[] => {
-    return allAddedSafes[chainId] || []
+  (allAddedSafes, chainId) => {
+    return allAddedSafes[chainId]
   },
 )

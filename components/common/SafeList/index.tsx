@@ -1,71 +1,151 @@
-import type { ReactElement } from 'react'
-import { getOwnedSafes, type OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
-
-import useAsync from '@/services/useAsync'
+import { Fragment, useState, type ReactElement } from 'react'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
-import chains from '@/config/chains'
-import useSafeAddress from '@/services/useSafeAddress'
-import { shortenAddress } from '@/services/formatters'
-import useWallet from '@/services/wallets/useWallet'
-import css from '@/components/common/SafeList/styles.module.css'
+import { useTheme } from '@mui/material/styles'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import Collapse from '@mui/material/Collapse'
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined'
+
+import useChains from '@/services/useChains'
+import useOwnedSafes from '@/services/useOwnedSafes'
+import useChainId from '@/services/useChainId'
 import { useAppSelector } from '@/store'
-import { selectAddedSafes } from '@/store/addedSafesSlice'
-import useAddressBook from '@/services/useAddressBook'
-import { useChainId } from '@/services/useChainId'
+import { selectAllAddedSafes } from '@/store/addedSafesSlice'
+import useSafeAddress from '@/services/useSafeAddress'
+import SafeListItem from '@/components/common/SafeListItem'
 
-const SafesList = ({ safes, chainId, safeAddress }: { safes: string[]; chainId: string; safeAddress: string }) => {
-  const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
-  const addressBook = useAddressBook()
+import css from './styles.module.css'
 
-  return (
-    <ul className={css.ownedSafes}>
-      {safes.map((address) => (
-        <li key={address} className={address === safeAddress ? css.selected : undefined}>
-          <Link href={`/safe/balances?safe=${shortName}:${address}`}>
-            <a>
-              {addressBook[address] ? <div>{addressBook[address]}</div> : null}
-              {shortenAddress(address)}
-            </a>
-          </Link>
-        </li>
-      ))}
-    </ul>
-  )
-}
+const MAX_EXPANDED_SAFES = 3
 
-const AllSafes = (): ReactElement | null => {
-  const address = useSafeAddress()
+const SafeList = (): ReactElement => {
+  const router = useRouter()
   const chainId = useChainId()
-  const wallet = useWallet()
-  const walletAddress = wallet?.address
-  const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
+  const safeAddress = useSafeAddress()
+  const { configs } = useChains()
+  const ownedSafes = useOwnedSafes()
+  const addedSafes = useAppSelector(selectAllAddedSafes)
+  const { palette } = useTheme()
 
-  const [ownedSafes, error, loading] = useAsync<OwnedSafes | undefined>(async () => {
-    if (!walletAddress || !chainId) return
-    return getOwnedSafes(chainId, walletAddress)
-  }, [chainId, walletAddress])
+  const [open, setOpen] = useState<Record<string, boolean>>({})
+  const toggleOpen = (chainId: string) => {
+    setOpen((prev) => ({ [chainId]: !prev[chainId] }))
+  }
 
   return (
-    <div className={css.container}>
-      <h4>Added Safes</h4>
+    <List className={css.list}>
+      <ListItem>
+        <ListItemIcon>
+          <IconButton>
+            <AddCircleOutlinedIcon sx={({ palette }) => ({ fill: palette.primary.main })} />
+          </IconButton>
+        </ListItemIcon>
+        <ListItemText>Add Safe</ListItemText>
+      </ListItem>
+      {configs.map((chain) => {
+        const isCurrentChain = chain.chainId === chainId
 
-      <SafesList safes={addedSafes} chainId={chainId} safeAddress={address} />
+        const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
 
-      {wallet && (
-        <>
-          <h4>Owned Safes</h4>
+        const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
+        const localSafesOnChain = Object.values(addedSafesOnChain).filter(
+          ({ address }) => address.value !== safeAddress,
+        )
 
-          {loading && 'Loading owned Safes...'}
+        if (!isCurrentChain && !ownedSafesOnChain.length && !localSafesOnChain.length) {
+          return null
+        }
 
-          {!loading && error && `Error loading owned Safes: ${error.message}`}
+        let intialExpand = false
+        if (
+          isCurrentChain &&
+          ownedSafesOnChain.some((address) => address.toLowerCase() === safeAddress.toLowerCase())
+        ) {
+          // Expand the Owned Safes if the current Safe is owned, but not added
+          intialExpand = !localSafesOnChain.some(
+            ({ address }) => address.value.toLowerCase() === safeAddress.toLowerCase(),
+          )
+        } else {
+          // Expand the Owned Safes if there are no added Safes
+          intialExpand = !localSafesOnChain.length && localSafesOnChain.length <= MAX_EXPANDED_SAFES
+        }
 
-          {!loading && !error && (
-            <SafesList safes={ownedSafes ? ownedSafes.safes : []} chainId={chainId} safeAddress={address} />
-          )}
-        </>
-      )}
-    </div>
+        const isOpen = open[chain.chainId]
+
+        return (
+          <Fragment key={chain.chainName}>
+            <ListItem selected sx={{ py: 0 }}>
+              <Box
+                component="span"
+                className={css.dot}
+                sx={{ color: chain.theme.textColor, backgroundColor: chain.theme.backgroundColor }}
+              />{' '}
+              <ListItemText primaryTypographyProps={{ variant: 'subtitle2', color: palette.black[400] }}>
+                {chain.chainName}
+              </ListItemText>
+            </ListItem>
+
+            {!localSafesOnChain.length && !ownedSafesOnChain.length && (
+              <Typography paddingY="22px" variant="subtitle2" sx={({ palette }) => ({ color: palette.black[400] })}>
+                <Link href={{ href: '/welcome', query: router.query }} passHref>
+                  Create or add
+                </Link>{' '}
+                an existing Safe on this network
+              </Typography>
+            )}
+
+            {localSafesOnChain.map(({ address, threshold, owners }) => (
+              <SafeListItem
+                key={address.value}
+                address={address.value}
+                threshold={threshold}
+                owners={owners.length}
+                shortName={chain.shortName}
+              />
+            ))}
+
+            {ownedSafesOnChain.length > 0 && (
+              <>
+                <ListItemButton
+                  onClick={() => {
+                    intialExpand = false
+                    toggleOpen(chainId)
+                  }}
+                  sx={{ '&:hover': { backgroundColor: 'unset' } }}
+                  disableRipple
+                >
+                  <ListItemText primaryTypographyProps={{ variant: 'subtitle2', color: palette.black[400] }}>
+                    Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
+                  </ListItemText>
+                  {isOpen ? (
+                    <ExpandLess sx={({ palette }) => ({ fill: palette.black[400] })} />
+                  ) : (
+                    <ExpandMore sx={({ palette }) => ({ fill: palette.black[400] })} />
+                  )}
+                </ListItemButton>
+                <Collapse key={chainId} in={intialExpand || isOpen}>
+                  <List>
+                    {ownedSafesOnChain.map((address) => (
+                      <SafeListItem key={address} address={address} shortName={chain.shortName} />
+                    ))}
+                  </List>
+                </Collapse>
+              </>
+            )}
+          </Fragment>
+        )
+      })}
+    </List>
   )
 }
 
-export default AllSafes
+export default SafeList
