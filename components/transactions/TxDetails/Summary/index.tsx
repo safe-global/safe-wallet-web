@@ -1,8 +1,8 @@
 import React, { ReactElement, useState } from 'react'
-import DateTime from '@/components/common/DateTime'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isMultisigExecutionDetails } from '@/components/transactions/utils'
 import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { dateString } from '@/services/formatters'
 import css from './styles.module.css'
 
 export const NOT_AVAILABLE = 'n/a'
@@ -41,44 +41,8 @@ const Summary = ({ txDetails }: Props): ReactElement => {
     <>
       <TxDataRow title="Transaction hash:" value={txHash} inlineType="hash" />
       <TxDataRow title="SafeTxHash:" value={safeTxHash} inlineType="hash" hasExplorer={false} />
-      <TxDataRow
-        title="Created:"
-        value={
-          typeof created === 'number' ? (
-            <DateTime
-              value={created}
-              options={{
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-              }}
-            />
-          ) : null
-        }
-      />
-      <TxDataRow
-        title="Executed:"
-        value={
-          executedAt ? (
-            <DateTime
-              value={executedAt}
-              options={{
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-              }}
-            />
-          ) : (
-            NOT_AVAILABLE
-          )
-        }
-      />
+      <TxDataRow title="Created:" value={typeof created === 'number' ? dateString(created) : null} />
+      <TxDataRow title="Executed:" value={executedAt ? dateString(executedAt) : NOT_AVAILABLE} />
 
       {/* Advanced TxData */}
       {txData && (
