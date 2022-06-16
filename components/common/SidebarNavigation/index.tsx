@@ -130,13 +130,13 @@ const Navigation = (): ReactElement => {
           )
         }
 
-        const isExpanded = open[item.href]
+        const isExpanded = open[item.href] || router.pathname.includes(item.href)
 
         return (
           <Fragment key={item.href}>
             <SidebarListItemButton
               onClick={() => toggleOpen(item)}
-              selected={router.pathname.includes(item.href)}
+              selected={isExpanded}
               href={{ pathname: item.href, query: router.query }}
             >
               {item.icon && <SidebarListItemIcon>{item.icon}</SidebarListItemIcon>}

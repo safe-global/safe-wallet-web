@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
@@ -10,53 +9,76 @@ import type { ReactElement } from 'react'
 
 import Identicon from '@/components/common/Identicon'
 import { shortenAddress } from '@/services/formatters'
-import useChainId from '@/services/useChainId'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import useSafeAddress from '@/services/useSafeAddress'
 
 import css from './styles.module.css'
+import useAddressBook from '@/services/useAddressBook'
+import { selectChainById } from '@/store/chainsSlice'
 
 const SafeListItem = ({
   address,
-  shortName,
+  chainId,
+  closeDrawer,
   ...rest
 }: {
   address: string
-  shortName: string
+  chainId: string
+  closeDrawer: () => void
   threshold?: string | number
   owners?: string | number
 }): ReactElement => {
   const router = useRouter()
-  const chainId = useChainId()
   const safeAddress = useSafeAddress()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
+  const chain = useAppSelector((state) => selectChainById(state, chainId))
+
+  const addressBook = useAddressBook()
+  const name = addressBook?.[address]
 
   const isAdded = Object.keys(addedSafes).some(
     (addedSafeAddress) => addedSafeAddress.toLowerCase() === address.toLowerCase(),
   )
+
+  const formattedAddress = (
+    <>
+      <b>{chain?.shortName}</b>:{shortenAddress(address)}
+    </>
+  )
+
+  const handleNavigate = (href: string) => {
+    router.push({ href, query: router.query })
+    closeDrawer()
+  }
+
+  const handleOpenSafe = () => {
+    handleNavigate(`/${chain?.shortName}:${address}`)
+  }
+  const handleAddSafe = () => {
+    handleNavigate('/welcome')
+  }
+
   return (
-    <ListItemButton key={address}>
-      <Link href={{ href: `/${shortName}:${address}`, query: router.query }} passHref>
-        <>
-          <ListItemIcon className={css.check}>
-            {address.toLowerCase() === safeAddress.toLowerCase() && (
-              <CheckIcon
-                sx={({ palette }) => ({
-                  // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-                  fill: palette.primary[400],
-                })}
-              />
-            )}
-          </ListItemIcon>
-          <ListItemIcon>
-            <Identicon address={address} {...rest} />
-          </ListItemIcon>
-          <ListItemText primaryTypographyProps={{ variant: 'subtitle2' }}>
-            <b>{shortName}</b>:{shortenAddress(address)}
-          </ListItemText>
-        </>
-      </Link>
+    <ListItemButton key={address} onClick={handleOpenSafe}>
+      <ListItemIcon className={css.check}>
+        {address.toLowerCase() === safeAddress.toLowerCase() && (
+          <CheckIcon
+            sx={({ palette }) => ({
+              // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
+              fill: palette.primary[400],
+            })}
+          />
+        )}
+      </ListItemIcon>
+      <ListItemIcon>
+        <Identicon address={address} {...rest} />
+      </ListItemIcon>
+      <ListItemText
+        primaryTypographyProps={{ variant: 'subtitle2' }}
+        primary={name ?? formattedAddress}
+        secondary={name && formattedAddress}
+      />
       {!isAdded && (
         <ListItemSecondaryAction>
           <Button
@@ -70,6 +92,10 @@ const SafeListItem = ({
             })}
             size="small"
             disableElevation
+            onClick={(e) => {
+              e.stopPropagation()
+              handleAddSafe()
+            }}
           >
             Add Safe
           </Button>

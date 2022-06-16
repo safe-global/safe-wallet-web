@@ -25,6 +25,7 @@ const NewTxButton = (): ReactElement => {
         sx={({ palette }) => ({
           '&.Mui-disabled': { backgroundColor: palette.secondaryBlack[300] },
         })}
+        disableElevation
       >
         {!wallet
           ? 'Not connected'

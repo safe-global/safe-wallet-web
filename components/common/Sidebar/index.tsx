@@ -56,7 +56,7 @@ const Sidebar = (): ReactElement => {
 
       <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
         <div className={css.drawer}>
-          <SafeList />
+          <SafeList closeDrawer={() => setIsDrawerOpen(false)} />
         </div>
       </Drawer>
     </Box>

@@ -27,7 +27,7 @@ import css from './styles.module.css'
 
 const MAX_EXPANDED_SAFES = 3
 
-const SafeList = (): ReactElement => {
+const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement => {
   const router = useRouter()
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
@@ -57,30 +57,27 @@ const SafeList = (): ReactElement => {
         const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
 
         const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
-        const localSafesOnChain = Object.values(addedSafesOnChain).filter(
-          ({ address }) => address.value !== safeAddress,
-        )
+        const localSafesOnChain = Object.values(addedSafesOnChain)
 
         if (!isCurrentChain && !ownedSafesOnChain.length && !localSafesOnChain.length) {
           return null
         }
 
-        let intialExpand = false
+        let initialExpand = false
         if (
           isCurrentChain &&
           ownedSafesOnChain.some((address) => address.toLowerCase() === safeAddress.toLowerCase())
         ) {
           // Expand the Owned Safes if the current Safe is owned, but not added
-          intialExpand = !localSafesOnChain.some(
+          initialExpand = !localSafesOnChain.some(
             ({ address }) => address.value.toLowerCase() === safeAddress.toLowerCase(),
           )
         } else {
           // Expand the Owned Safes if there are no added Safes
-          intialExpand = !localSafesOnChain.length && localSafesOnChain.length <= MAX_EXPANDED_SAFES
+          initialExpand = !localSafesOnChain.length && localSafesOnChain.length <= MAX_EXPANDED_SAFES
         }
 
         const isOpen = open[chain.chainId]
-
         return (
           <Fragment key={chain.chainName}>
             <ListItem selected sx={{ py: 0 }}>
@@ -109,7 +106,8 @@ const SafeList = (): ReactElement => {
                 address={address.value}
                 threshold={threshold}
                 owners={owners.length}
-                shortName={chain.shortName}
+                chainId={chain.chainId}
+                closeDrawer={closeDrawer}
               />
             ))}
 
@@ -117,13 +115,15 @@ const SafeList = (): ReactElement => {
               <>
                 <ListItemButton
                   onClick={() => {
-                    intialExpand = false
+                    initialExpand = false
                     toggleOpen(chainId)
                   }}
                   sx={{ '&:hover': { backgroundColor: 'unset' } }}
                   disableRipple
                 >
-                  <ListItemText primaryTypographyProps={{ variant: 'subtitle2', color: palette.black[400] }}>
+                  <ListItemText
+                    primaryTypographyProps={{ variant: 'subtitle2', color: palette.black[400], marginLeft: '40px' }}
+                  >
                     Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
                   </ListItemText>
                   {isOpen ? (
@@ -132,10 +132,10 @@ const SafeList = (): ReactElement => {
                     <ExpandMore sx={({ palette }) => ({ fill: palette.black[400] })} />
                   )}
                 </ListItemButton>
-                <Collapse key={chainId} in={intialExpand || isOpen}>
+                <Collapse key={chainId} in={initialExpand || isOpen}>
                   <List>
                     {ownedSafesOnChain.map((address) => (
-                      <SafeListItem key={address} address={address} shortName={chain.shortName} />
+                      <SafeListItem key={address} address={address} chainId={chainId} closeDrawer={closeDrawer} />
                     ))}
                   </List>
                 </Collapse>

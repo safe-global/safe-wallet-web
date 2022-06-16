@@ -1,27 +1,18 @@
-c.container {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  justify-content: flex-start;
-  text-align: left;
-}
-
-.name,
-.safe,
-.iconButtons {
+.container {
+  display: grid;
   padding: 8px 8px;
+  gap: 16px;
 }
 
 .safe {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  gap: 16px;
   text-align: left;
-  padding: 8px;
 }
 
 .icon {
-  padding: 8px 20px 8px 0;
+  padding-top: 8px;
+  padding-right: 8px;
 }
 
 .iconButtons {
@@ -32,10 +23,4 @@ c.container {
 .iconButton {
   border-radius: 4px;
   padding: 6px;
-}
-
-.newTxButton {
-  padding: 8px;
-  width: 100%;
-  text-align: center;
 }

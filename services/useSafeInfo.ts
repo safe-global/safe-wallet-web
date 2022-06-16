@@ -7,13 +7,11 @@ import { POLLING_INTERVAL } from '@/config/constants'
 import useIntervalCounter from './useIntervalCounter'
 import useAsync from './useAsync'
 import { useChainId } from './useChainId'
-import { addOrUpdateSafe, selectAddedSafes } from '@/store/addedSafesSlice'
 
 // Poll & dispatch the Safe Info into the store
 export const useInitSafeInfo = (): void => {
   const address = useSafeAddress()
   const chainId = useChainId()
-  const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const [counter, resetCounter] = useIntervalCounter(POLLING_INTERVAL)
   const dispatch = useAppDispatch()
 
@@ -32,13 +30,6 @@ export const useInitSafeInfo = (): void => {
     // Take errors and loading state into account only for initial requests when counter is 0
     if (data || counter === 0) {
       dispatch(setSafeInfo({ safe: data, error, loading }))
-    }
-    // TODO: Add flag to check that it's added first
-    // Update cached Safe info
-    const isSafeAdded = !!addedSafes?.[address]
-    if (data) {
-      // && isSafeAdded) {
-      dispatch(addOrUpdateSafe({ chainId, safe: data }))
     }
   }, [dispatch, counter, data, error, loading])
 }

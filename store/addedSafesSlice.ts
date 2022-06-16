@@ -1,6 +1,7 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '.'
+import { setSafeInfo, type SetSafeInfoPayload } from '@/store/safeInfoSlice'
 
 type AddedSafesState = {
   [chainId: string]: {
@@ -14,11 +15,11 @@ export const addedSafesSlice = createSlice({
   name: 'addedSafes',
   initialState,
   reducers: {
-    addOrUpdateSafe: (state, { payload }: PayloadAction<{ chainId: string; safe: SafeInfo }>) => {
-      const { chainId, safe } = payload
+    addOrUpdateSafe: (state, { payload }: PayloadAction<{ safe: SafeInfo }>) => {
+      const { chainId, address } = payload.safe
 
       state[chainId] ??= {}
-      state[chainId][safe.address.value] = safe
+      state[chainId][address.value] = payload.safe
     },
     removeSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
       const { chainId, address } = payload
@@ -29,6 +30,23 @@ export const addedSafesSlice = createSlice({
         delete state[chainId]
       }
     },
+  },
+  extraReducers(builder) {
+    builder.addCase(setSafeInfo.type, (state, { payload }: SetSafeInfoPayload) => {
+      if (!payload.safe) {
+        return
+      }
+
+      const { chainId, address } = payload.safe
+      const isAddedSafe = state[chainId]?.[address.value]
+
+      if (isAddedSafe) {
+        addedSafesSlice.caseReducers.addOrUpdateSafe(state, {
+          type: addOrUpdateSafe.type,
+          payload: { safe: payload.safe },
+        })
+      }
+    })
   },
 })
 
