@@ -76,13 +76,13 @@ const SafeHeader = (): ReactElement => {
       </div>
       <div className={css.iconButtons}>
         <HeaderIconButton>
-          <Image src={QR} />
+          <Image src={QR} alt="Address QR Code" />
         </HeaderIconButton>
         <HeaderIconButton>
-          <Image src={Copy} />
+          <Image src={Copy} alt="Copy Address" />
         </HeaderIconButton>
         <HeaderIconButton>
-          <Image src={BlockExplorer} />
+          <Image src={BlockExplorer} alt="Open Block Explorer" />
         </HeaderIconButton>
       </div>
       <div className={css.newTxButton}>

@@ -28,12 +28,12 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     label: 'Home',
-    icon: <Image src={Home} />,
+    icon: <Image src={Home} alt="Home" />,
     href: '/safe',
   },
   {
     label: 'Assets',
-    icon: <Image src={Assets} />,
+    icon: <Image src={Assets} alt="Assets" />,
     href: '/safe/balances',
     items: [
       {
@@ -48,7 +48,7 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Transactions',
-    icon: <Image src={Transactions} />,
+    icon: <Image src={Transactions} alt="Transactions" />,
     href: '/safe/transactions/history',
     items: [
       {
@@ -63,17 +63,17 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Address Book',
-    icon: <Image src={AddressBook} />,
+    icon: <Image src={AddressBook} alt="Address Book" />,
     href: '/safe/address-book',
   },
   {
     label: 'Apps',
-    icon: <Image src={Apps} />,
+    icon: <Image src={Apps} alt="Safe Apps" />,
     href: '/safe/apps',
   },
   {
     label: 'Settings',
-    icon: <Image src={Settings} />,
+    icon: <Image src={Settings} alt="Settings" />,
     href: '/safe/settings/details',
     items: [
       {
