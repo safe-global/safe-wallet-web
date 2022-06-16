@@ -21,7 +21,7 @@ import useChainId from '@/services/useChainId'
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import useSafeAddress from '@/services/useSafeAddress'
-import SafeListItem from '@/components/common/SafeListItem'
+import SafeListItem from '@/components/sidebar/SafeListItem'
 
 import css from './styles.module.css'
 

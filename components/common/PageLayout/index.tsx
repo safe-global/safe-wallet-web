@@ -1,7 +1,7 @@
 import { useState, type ReactElement } from 'react'
 import { Box, Drawer } from '@mui/material'
 
-import Sidebar from '@/components/common/Sidebar'
+import Sidebar from '@/components/sidebar/Sidebar'
 import Header from '@/components/common//Header'
 import css from './styles.module.css'
 

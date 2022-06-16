@@ -1,10 +1,14 @@
+import type { ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
-import type { ReactElement } from 'react'
 
+import {
+  SidebarList,
+  SidebarListItemButton,
+  SidebarListItemIcon,
+  SidebarListItemText,
+} from '@/components/sidebar/SidebarList'
 import HelpCenter from './assets/HelpCenter.svg'
-
-import { SidebarList, SidebarListItemButton, SidebarListItemIcon, SidebarListItemText } from '../SidebarList'
 
 const WHATS_NEW_PATH = ''
 const HELP_CENTER_PATH = ''
@@ -21,7 +25,7 @@ const SidebarFooter = (): ReactElement => {
         href={{ pathname: WHATS_NEW_PATH, query: router.query }}
       >
         <SidebarListItemIcon>{null}</SidebarListItemIcon>
-        <SidebarListItemText bold>What's new</SidebarListItemText>
+        <SidebarListItemText bold>What`&apos;`s new</SidebarListItemText>
       </SidebarListItemButton>
       <SidebarListItemButton
         selected={isSelected(HELP_CENTER_PATH)}

@@ -1,5 +1,6 @@
-import React, { Fragment, ReactElement, useState } from 'react'
+import React, { Fragment, useState, type ReactElement } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
 import Collapse from '@mui/material/Collapse'
@@ -7,14 +8,19 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import List from '@mui/material/List'
 import { ListItemIconProps } from '@mui/material'
+
+import {
+  SidebarList,
+  SidebarListItemButton,
+  SidebarListItemIcon,
+  SidebarListItemText,
+} from '@/components/sidebar/SidebarList'
 import Home from './assets/Home.svg'
 import Assets from './assets/Assets.svg'
 import Transactions from './assets/Transactions.svg'
 import AddressBook from './assets/AddressBook.svg'
 import Apps from './assets/Apps.svg'
 import Settings from './assets/Settings.svg'
-import Image from 'next/image'
-import { SidebarList, SidebarListItemButton, SidebarListItemIcon, SidebarListItemText } from '../SidebarList'
 
 import css from './styles.module.css'
 
@@ -161,7 +167,7 @@ const Navigation = (): ReactElement => {
                 })}
               >
                 {item.items.map((subItem) => (
-                  <Link href={{ pathname: subItem.href, query: router.query }} passHref>
+                  <Link href={{ pathname: subItem.href, query: router.query }} passHref key={subItem.href}>
                     <ListItemButton
                       onClick={() => toggleOpen(subItem)}
                       selected={isSelected(subItem.href)}

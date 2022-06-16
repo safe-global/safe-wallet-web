@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
@@ -5,17 +6,16 @@ import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import Button from '@mui/material/Button'
 import CheckIcon from '@mui/icons-material/Check'
-import type { ReactElement } from 'react'
 
 import Identicon from '@/components/common/Identicon'
 import { shortenAddress } from '@/services/formatters'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import useSafeAddress from '@/services/useSafeAddress'
-
-import css from './styles.module.css'
 import useAddressBook from '@/services/useAddressBook'
 import { selectChainById } from '@/store/chainsSlice'
+
+import css from './styles.module.css'
 
 const SafeListItem = ({
   address,

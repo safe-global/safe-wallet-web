@@ -3,16 +3,16 @@ import { addOrUpdateSafe, removeSafe, addedSafesSlice } from '../addedSafesSlice
 
 describe('addedSafesSlice', () => {
   it('should add a Safe to the store', () => {
-    const safe0 = { address: { value: '0x0' } } as SafeInfo
-    const state = addedSafesSlice.reducer(undefined, addOrUpdateSafe({ chainId: '1', safe: safe0 }))
+    const safe0 = { chainId: '1', address: { value: '0x0' } } as SafeInfo
+    const state = addedSafesSlice.reducer(undefined, addOrUpdateSafe({ safe: safe0 }))
     expect(state).toEqual({ '1': { ['0x0']: safe0 } })
 
-    const safe1 = { address: { value: '0x1' } } as SafeInfo
-    const stateB = addedSafesSlice.reducer(state, addOrUpdateSafe({ chainId: '4', safe: safe1 }))
+    const safe1 = { chainId: '4', address: { value: '0x1' } } as SafeInfo
+    const stateB = addedSafesSlice.reducer(state, addOrUpdateSafe({ safe: safe1 }))
     expect(stateB).toEqual({ '1': { ['0x0']: safe0 }, '4': { ['0x1']: safe1 } })
 
-    const safe2 = { address: { value: '0x2' } } as SafeInfo
-    const stateC = addedSafesSlice.reducer(stateB, addOrUpdateSafe({ chainId: '1', safe: safe2 }))
+    const safe2 = { chainId: '1', address: { value: '0x2' } } as SafeInfo
+    const stateC = addedSafesSlice.reducer(stateB, addOrUpdateSafe({ safe: safe2 }))
     expect(stateC).toEqual({
       '1': {
         ['0x0']: safe0,

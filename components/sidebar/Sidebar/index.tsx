@@ -2,14 +2,15 @@ import { useState, type ReactElement } from 'react'
 import { Box, Divider, Drawer, IconButton } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
 
-import css from './styles.module.css'
 import useSafeInfo from '@/services/useSafeInfo'
-import ChainIndicator from '../ChainIndicator'
-import SidebarHeader from '../SidebarHeader'
-import SafeList from '@/components/common/SafeList'
-import SidebarNavigation from '@/components/common/SidebarNavigation'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import SidebarHeader from '@/components/sidebar/SidebarHeader'
+import SafeList from '@/components/sidebar/SafeList'
+import SidebarNavigation from '@/components/sidebar/SidebarNavigation'
 import useSafeAddress from '@/services/useSafeAddress'
-import SidebarFooter from '../SidebarFooter'
+import SidebarFooter from '@/components/sidebar/SidebarFooter'
+
+import css from './styles.module.css'
 
 const Sidebar = (): ReactElement => {
   const address = useSafeAddress()

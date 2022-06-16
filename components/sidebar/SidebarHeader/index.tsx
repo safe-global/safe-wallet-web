@@ -1,43 +1,35 @@
-import { type ReactElement } from 'react'
+import type { ReactElement } from 'react'
+import Image from 'next/image'
+import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
+import IconButton, { IconButtonProps } from '@mui/material/IconButton'
+
 import { shortenAddress } from '@/services/formatters'
 import useSafeInfo from '@/services/useSafeInfo'
-import useBalances from '@/services/useBalances'
-import Identicon from '../Identicon'
-import css from './styles.module.css'
-import { Divider, IconButton, IconButtonProps, Typography } from '@mui/material'
+import Identicon from '@/components/common/Identicon'
+import NewTxButton from '@/components/sidebar/NewTxButton'
+import SidebarFiat from '@/components/sidebar/SidebarFiat'
+import useAddressBook from '@/services/useAddressBook'
 import BlockExplorer from './assets/BlockExplorer.svg'
 import Copy from './assets/Copy.svg'
 import QR from './assets/QR.svg'
-import NewTxButton from '../NewTxButton'
-import Image from 'next/image'
-import { useAppSelector } from '@/store'
-import { selectCurrency } from '@/store/sessionSlice'
-import useAddressBook from '@/services/useAddressBook'
+
+import css from './styles.module.css'
 
 const HeaderIconButton = ({ children }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
-  <IconButton
-    className={css.iconButton}
-    disableRipple
-    sx={({ palette }) => ({
-      backgroundColor: palette.gray[300],
-    })}
-  >
+  <IconButton className={css.iconButton} sx={({ palette }) => ({ backgroundColor: palette.gray[300] })}>
     {children}
   </IconButton>
 )
 
 const SafeHeader = (): ReactElement => {
   const { safe } = useSafeInfo()
-  const { balances } = useBalances()
-  const currency = useAppSelector(selectCurrency)
   const addressBook = useAddressBook()
 
   const address = safe?.address.value || ''
   const name = addressBook?.[address]
 
   const { threshold, owners } = safe || {}
-
-  const [wholeNumber, decimals] = balances.fiatTotal.split('.')
 
   return (
     <>
@@ -59,16 +51,7 @@ const SafeHeader = (): ReactElement => {
           </div>
           <div>
             <Typography variant="subtitle1">{address ? shortenAddress(address) : '...'}</Typography>
-            <Typography variant="subtitle1" display="inline">
-              {wholeNumber}
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              display="inline"
-              sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}
-            >
-              .{decimals} {currency.toUpperCase()}
-            </Typography>
+            <SidebarFiat />
           </div>
         </div>
         <div className={css.iconButtons}>
