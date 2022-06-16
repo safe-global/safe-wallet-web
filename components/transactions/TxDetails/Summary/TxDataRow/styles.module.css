@@ -20,3 +20,21 @@
   min-width: 50%;
   flex-shrink: 0;
 }
+
+/* For inlineType values */
+.inline {
+  display: inline-flex;
+}
+
+.inline span {
+  font-weight: bold;
+}
+
+.rawData {
+  display: flex;
+  align-items: center;
+}
+
+.rawData:nth-child(2) {
+  margin-left: 5px;
+}
