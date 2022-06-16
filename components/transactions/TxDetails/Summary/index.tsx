@@ -1,8 +1,9 @@
+import React, { ReactElement, useState } from 'react'
 import DateTime from '@/components/common/DateTime'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isMultisigExecutionDetails } from '@/components/transactions/utils'
-import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import React, { ReactElement } from 'react'
+import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import css from './styles.module.css'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -11,7 +12,13 @@ interface Props {
 }
 
 const Summary = ({ txDetails }: Props): ReactElement => {
+  const [expanded, setExpanded] = useState(false)
+
   if (!txDetails) return <></>
+
+  const toggleExpanded = () => {
+    setExpanded((val) => !val)
+  }
 
   const { txHash, detailedExecutionInfo, executedAt, txData, txInfo } = txDetails
 
@@ -72,8 +79,37 @@ const Summary = ({ txDetails }: Props): ReactElement => {
           )
         }
       />
-      {/* <TxDataRow title="Created:" value={typeof created === 'number' ? formatDateTime(created) : null} />
-      <TxDataRow title="Executed:" value={executedAt ? formatDateTime(executedAt) : NOT_AVAILABLE} /> */}
+
+      {/* Advanced TxData */}
+      {txData && (
+        <>
+          <button className={css.buttonLink} onClick={toggleExpanded}>
+            Advanced Details
+          </button>
+          <div className={`${css.collapsibleSection}${expanded ? 'Expanded' : ''}`}>
+            {txData?.operation !== undefined && (
+              <TxDataRow
+                title="Operation:"
+                value={`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}
+              />
+            )}
+            <TxDataRow title="safeTxGas:" value={safeTxGas} />
+            <TxDataRow title="baseGas:" value={baseGas} />
+            <TxDataRow title="gasPrice:" value={gasPrice} />
+            <TxDataRow title="gasToken:" value={gasToken} inlineType="hash" />
+            <TxDataRow title="refundReceiver:" value={refundReceiver} inlineType="hash" />
+            {confirmations?.map(({ signature }, index) => (
+              <TxDataRow
+                title={`Signature ${index + 1}:`}
+                key={`signature-${index}:`}
+                value={signature}
+                inlineType="rawData"
+              />
+            ))}
+            <TxDataRow title="Raw data:" value={txData.hexData} inlineType="rawData" />
+          </div>
+        </>
+      )}
     </>
   )
 }

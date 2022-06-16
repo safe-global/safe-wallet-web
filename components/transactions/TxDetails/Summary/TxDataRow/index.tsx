@@ -41,7 +41,7 @@ const generateInlineTypeValue = (
     case 'rawData':
       return (
         <div className={css.rawData}>
-          <p>{value ? hexDataLength(value) : 0} bytes</p>
+          <div>{value ? hexDataLength(value) : 0} bytes</div>
           {/* TODO: missing copy button */}
         </div>
       )
