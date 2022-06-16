@@ -1,0 +1,7 @@
+.sublist {
+  display: grid;
+  gap: 4px;
+  padding-left: 0;
+  margin-left: 10px;
+  padding: 0 0 0 10px;
+}

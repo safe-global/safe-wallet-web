@@ -1,0 +1,58 @@
+c.container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.name,
+.safe,
+.iconButtons {
+  padding: 8px 8px;
+}
+
+.safe {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 8px;
+}
+
+.icon {
+  padding: 8px 20px 8px 0;
+}
+
+.threshold {
+  position: absolute;
+  left: 36px;
+  z-index: 1;
+  border-radius: 100%;
+  font-size: 12px;
+  min-width: 25px;
+  min-height: 25px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  line-height: 16px;
+  font-weight: 700;
+}
+
+.iconButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.iconButton {
+  border-radius: 4px;
+  padding: 6px;
+}
+
+.newTxButton {
+  padding: 8px;
+  width: 100%;
+  text-align: center;
+}

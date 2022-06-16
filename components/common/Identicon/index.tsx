@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement, useMemo, CSSProperties } from 'react'
 import makeBlockie from 'ethereum-blockies-base64'
 import css from './styles.module.css'
 
@@ -7,16 +7,15 @@ interface IdenticonProps {
 }
 
 const Identicon = ({ address }: IdenticonProps): ReactElement => {
-  const iconSrc = useMemo<string>(() => {
-    if (!address) return ''
+  const style = useMemo<CSSProperties>(() => {
+    let blockie = ''
     try {
-      return makeBlockie(address)
-    } catch (e) {
-      return ''
-    }
+      blockie = makeBlockie(address)
+    } catch (e) {}
+    return { backgroundImage: `url(${blockie})` }
   }, [address])
 
-  return <div className={css.icon} style={{ backgroundImage: `url(${iconSrc})` }} />
+  return <div className={css.icon} style={style} />
 }
 
 export default Identicon

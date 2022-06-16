@@ -6,11 +6,11 @@ import { ChevronRight } from '@mui/icons-material'
 import css from './styles.module.css'
 import useSafeInfo from '@/services/useSafeInfo'
 import ChainIndicator from '../ChainIndicator'
-import SafeHeader from '../SafeHeader'
+import SidebarHeader from '../SidebarHeader'
 import SafeList from '../SafeList'
-import NewTxButton from '../NewTxButton'
-import Navigation from '@/components/common/Navigation'
+import SidebarNavigation from '@/components/common/SidebarNavigation'
 import useSafeAddress from '@/services/useSafeAddress'
+import SidebarFooter from '../SidebarFooter'
 
 const Sidebar = (): ReactElement => {
   const address = useSafeAddress()
@@ -30,25 +30,21 @@ const Sidebar = (): ReactElement => {
       <div className={css.chain}>
         <ChainIndicator />
       </div>
-
-      <IconButton className={css.drawerButton} onClick={onDrawerToggle}>
+      <IconButton
+        className={css.drawerButton}
+        onClick={onDrawerToggle}
+        sx={(theme) => ({ backgroundColor: theme.palette.gray[500] })}
+      >
         <ChevronRight />
       </IconButton>
-
       {/* For routes with a Safe address */}
       {address ? (
         <>
-          {!error && <SafeHeader />}
-
-          <div className={css.newTxButton}>
-            <NewTxButton />
-          </div>
+          {!error && <SidebarHeader />}
 
           <Divider />
 
-          <div className={css.menu}>
-            <Navigation />
-          </div>
+          <SidebarNavigation />
 
           {loading && 'Loading Safe info...'}
 
@@ -57,6 +53,11 @@ const Sidebar = (): ReactElement => {
       ) : (
         <div className={css.noSafeSidebar} />
       )}
+      <div style={{ flexGrow: 1 }} />
+
+      <Divider flexItem />
+
+      <SidebarFooter />
 
       <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
         <div className={css.drawer} onClick={onDrawerToggleDelayed}>

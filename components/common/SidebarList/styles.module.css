@@ -1,0 +1,11 @@
+.list {
+  display: grid;
+  gap: 4px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.icon {
+  min-width: unset;
+  margin-right: 14px;
+}

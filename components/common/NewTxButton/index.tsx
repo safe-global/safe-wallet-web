@@ -5,6 +5,8 @@ import useWallet from '@/services/wallets/useWallet'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import { isOwner } from '@/components/transactions/utils'
 
+import css from './styles.module.css'
+
 const NewTxButton = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)
   const { safe } = useSafeInfo()
@@ -14,7 +16,16 @@ const NewTxButton = (): ReactElement => {
 
   return (
     <>
-      <Button onClick={() => setTxOpen(true)} variant="contained" disabled={!wallet || !isSafeOwner || isWrongChain}>
+      <Button
+        onClick={() => setTxOpen(true)}
+        variant="contained"
+        disabled={!wallet || !isSafeOwner || isWrongChain}
+        fullWidth
+        className={css.button}
+        sx={({ palette }) => ({
+          '&.Mui-disabled': { backgroundColor: palette.secondaryBlack[300] },
+        })}
+      >
         {!wallet
           ? 'Not connected'
           : isWrongChain

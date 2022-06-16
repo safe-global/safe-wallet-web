@@ -1,6 +1,18 @@
-import { Color, createTheme } from '@mui/material'
+import { Color, createTheme, PaletteColor, PaletteColorOptions } from '@mui/material'
 
-import { black, error, gray, green, orange, primary, primaryBlack, red, secondaryBlack, warning } from '@/styles/colors'
+import {
+  black,
+  error,
+  gray,
+  green,
+  orange,
+  primary,
+  primaryBlack,
+  primaryGreen,
+  red,
+  secondaryBlack,
+  warning,
+} from '@/styles/colors'
 
 interface ThemeColors {
   black: Pick<Color, 300 | 400 | 500 | 600>
@@ -11,6 +23,7 @@ interface ThemeColors {
   // Not listed in colour scheme but present in wireframes
   secondaryBlack: Pick<Color, 300>
   primaryBlack: Pick<Color, 500>
+  primaryGreen: Pick<Color, 200>
 }
 
 declare module '@mui/material/styles' {
@@ -72,6 +85,9 @@ const theme = createTheme({
     },
     primaryBlack: {
       500: primaryBlack[500],
+    },
+    primaryGreen: {
+      200: primaryGreen[200],
     },
   },
   typography: {
