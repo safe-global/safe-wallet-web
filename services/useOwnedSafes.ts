@@ -18,7 +18,7 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const wallet = useWallet()
   const walletAddress = wallet?.address
 
-  const [ownedSafesCache = {}, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY)
+  const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY, {})
 
   useEffect(() => {
     if (!walletAddress) {
@@ -35,9 +35,7 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
           return
         }
 
-        console.log(safes)
-
-        setOwnedSafesCache((prev = {}) => ({
+        setOwnedSafesCache((prev) => ({
           ...prev,
           [walletAddress]: {
             ...(prev[walletAddress] || {}),
