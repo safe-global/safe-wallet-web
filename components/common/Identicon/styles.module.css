@@ -3,6 +3,8 @@
   height: 100%;
   max-width: 40px;
   max-height: 40px;
+  min-width: 20px;
+  min-height: 20px;
   border-radius: 50%;
   background-color: #eee;
   background-size: cover;
