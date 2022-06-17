@@ -1,4 +1,4 @@
-import { EthHashInfo } from '@/components/common/AddressInfo'
+import { EthHashInfo } from '@/components/common/EthHashInfo'
 import { AddressInput } from '@/components/common/AddressInput'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 import useSafeInfo from '@/services/useSafeInfo'

@@ -1,4 +1,4 @@
-import { EthHashInfo } from '@/components/common/AddressInfo'
+import { EthHashInfo } from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/services/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'

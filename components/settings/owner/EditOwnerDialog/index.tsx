@@ -1,4 +1,4 @@
-import { EthHashInfo } from '@/components/common/AddressInfo'
+import { EthHashInfo } from '@/components/common/EthHashInfo'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import {

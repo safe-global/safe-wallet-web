@@ -1,4 +1,4 @@
-import { EthHashInfo } from '@/components/common/AddressInfo'
+import { EthHashInfo } from '@/components/common/EthHashInfo'
 import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { EditOwnerDialog } from '../EditOwnerDialog'
