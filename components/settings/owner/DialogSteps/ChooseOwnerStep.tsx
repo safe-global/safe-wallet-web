@@ -29,12 +29,14 @@ export const ChooseOwnerStep = ({
   const notAlreadyOwner = uniqueAddress(owners?.map((owner) => owner.value))
   const notCurrentSafe = addressIsNotCurrentSafe(safe?.address.value ?? '')
 
+  const formData: ChooseOwnerFormData = { ownerAddress: newOwner.address, ownerName: newOwner.name }
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ChooseOwnerFormData>({
-    defaultValues: { ownerAddress: newOwner.address, ownerName: newOwner.name },
+    defaultValues: formData,
   })
 
   const onSubmitHandler = (formData: ChooseOwnerFormData) => {
@@ -67,6 +69,7 @@ export const ChooseOwnerStep = ({
         </FormControl>
         <FormControl fullWidth>
           <AddressInput
+            defaultValue={formData.ownerAddress}
             label="Owner address"
             error={errors.ownerAddress}
             textFieldProps={{

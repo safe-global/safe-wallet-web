@@ -2,7 +2,6 @@ import { EthHashInfo } from '@/components/common/AddressInfo'
 import useSafeInfo from '@/services/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { useDispatch } from 'react-redux'
 import { showNotification } from '@/store/notificationsSlice'
 import { CodedException, Errors } from '@/services/exceptions'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
@@ -12,11 +11,13 @@ import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/t
 import useAsync from '@/services/useAsync'
 import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { useEffect } from 'react'
+import { useAppDispatch } from '@/store'
 
 export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; onClose: () => void }) => {
   const { safe } = useSafeInfo()
   const connectedWallet = useWallet()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { newOwner, removedOwner, threshold } = data
 
   const sdk = getSafeSDK()
@@ -34,10 +35,13 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
       })
     }
   }, [removedOwner, newOwner])
-  if (error) {
-    const { message } = new CodedException(Errors._803, error.message)
-    dispatch(showNotification({ message }))
-  }
+
+  useEffect(() => {
+    if (error) {
+      const { message } = new CodedException(Errors._803, error.message)
+      dispatch(showNotification({ message, options: { variant: 'error' } }))
+    }
+  }, [error])
 
   const isReplace = Boolean(removedOwner)
 
