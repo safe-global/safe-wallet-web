@@ -52,7 +52,6 @@ const ChangeThresholdStep = ({ data, onClose }: { data: ChangeThresholdData; onC
   const { safe } = useSafeInfo()
   const connectedWallet = useWallet()
   const dispatch = useAppDispatch()
-  const sdk = getSafeSDK()
 
   const [options, setOptions] = useState<number[]>([0])
   const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
@@ -60,7 +59,10 @@ const ChangeThresholdStep = ({ data, onClose }: { data: ChangeThresholdData; onC
     setOptions(Array.from(Array(safe?.owners.length ?? 0).keys()))
   }, [safe])
 
-  const [tx, error, loading] = useAsync(() => sdk.getChangeThresholdTx(selectedThreshold), [sdk, selectedThreshold])
+  const [tx, error, loading] = useAsync(() => {
+    const sdk = getSafeSDK()
+    return sdk.getChangeThresholdTx(selectedThreshold)
+  }, [selectedThreshold])
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedThreshold(parseInt(event.target.value.toString()))

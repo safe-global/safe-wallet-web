@@ -20,9 +20,9 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
   const dispatch = useAppDispatch()
   const { newOwner, removedOwner, threshold } = data
 
-  const sdk = getSafeSDK()
-
   const [changeOwnerTx, error, loading] = useAsync(() => {
+    const sdk = getSafeSDK()
+
     if (removedOwner) {
       return sdk.getSwapOwnerTx({
         newOwnerAddress: newOwner.address,
@@ -41,7 +41,7 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
       const { message } = new CodedException(Errors._803, error.message)
       dispatch(showNotification({ message, options: { variant: 'error' } }))
     }
-  }, [error])
+  }, [error, dispatch])
 
   const isReplace = Boolean(removedOwner)
 
@@ -54,7 +54,6 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
       const editedOwnerTxData = {
         ...changeOwnerTx.data,
         nonce: data.nonce,
-        safeTxGas: data.safeTxGas,
       }
       const editedOwnerTx = await createTx(editedOwnerTxData)
       const signedTx = await dispatchTxSigning(editedOwnerTx)
@@ -94,13 +93,13 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
           </Box>
         </Grid>
         <Grid direction="column">
-          <Typography style={{ paddingLeft: '1rem' }}>{safe?.owners.length ?? 0} Safe owner(s)</Typography>
+          <Typography paddingLeft={2}>{safe?.owners.length ?? 0} Safe owner(s)</Typography>
           <Divider />
           {safe?.owners
             .filter((owner) => !removedOwner || owner.value !== removedOwner.address)
             .map((owner) => (
               <div key={owner.value}>
-                <Box padding="1rem" key={owner.value}>
+                <Box padding={2} key={owner.value}>
                   <EthHashInfo address={owner.value} />
                 </Box>
                 <Divider />
@@ -112,7 +111,7 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
                 <Typography className={css.overline}>REMOVING OWNER &darr;</Typography>
               </div>
               <Divider />
-              <Box className={css.removedOwner} padding="1rem">
+              <Box className={css.removedOwner} padding={2}>
                 <EthHashInfo address={removedOwner.address} />
               </Box>
               <Divider />
@@ -122,7 +121,7 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
             <Typography className={css.overline}>ADDING NEW OWNER &darr;</Typography>
           </div>
           <Divider />
-          <Box padding={'1rem'}>
+          <Box padding={2}>
             <EthHashInfo address={newOwner.address} />
           </Box>
         </Grid>

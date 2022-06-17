@@ -27,13 +27,18 @@ export const ReviewTxForm = ({ txParams, onFormSubmit }: ReviewTxFormProps) => {
     formState: { errors },
   } = useForm<ReviewTxFormData>()
 
+  const submitForm = (data: ReviewTxFormData) => {
+    setIsSubmittable(false)
+    onFormSubmit(data)
+  }
+
   // Always include safeTxGas although not editable
   useEffect(() => {
     register('safeTxGas', { value: Number(safeGas?.safeTxGas || 0) })
   }, [])
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)}>
+    <form onSubmit={handleSubmit(submitForm)}>
       <FormControl fullWidth>
         <TextField
           disabled={safeGasLoading}
