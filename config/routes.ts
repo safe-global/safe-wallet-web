@@ -1,10 +1,10 @@
 export const AppRoutes = {
-  'demo-theme': '/demo-theme',
-  index: '',
+  demoTheme: '/demo-theme',
+  index: '/',
   load: '/load',
   open: '/open',
   safe: {
-    'address-book': '/safe/address-book',
+    addressBook: '/safe/address-book',
     apps: '/safe/apps',
     balances: {
       index: '/safe/balances',
@@ -19,10 +19,10 @@ export const AppRoutes = {
       index: '/safe/settings',
       owners: '/safe/settings/owners',
       policies: '/safe/settings/policies',
-      'spending-limit': '/safe/settings/spending-limit',
+      spendingLimit: '/safe/settings/spending-limit',
     },
     transactions: {
-      '[txId]': '/safe/transactions/[txId]',
+      txId: '/safe/transactions/[txId]',
       history: '/safe/transactions/history',
       index: '/safe/transactions',
       queue: '/safe/transactions/queue',

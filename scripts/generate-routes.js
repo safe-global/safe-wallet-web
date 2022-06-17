@@ -8,7 +8,10 @@ const iterate = (folderName, parentRoute, root) => {
     if (item.endsWith('.tsx')) {
       const name = item.split('.')[0]
       const path = name === 'index' ? parentRoute : `${parentRoute}/${name}`
-      root[name] = path
+      const key = name
+        .replace(/-\w/g, (match) => match.replace(/-/g, '').toUpperCase()) // spending-limit -> spendingLimit
+        .replace(/\W/g, '') // [txId] -> txId
+      root[key] = path || '/'
       return
     }
 
