@@ -1,51 +1,56 @@
-import { validateAddress } from '@/services/validation'
-import { TextField } from '@mui/material'
-import { ChangeEvent, useState } from 'react'
+import useAddressBook from '@/services/useAddressBook'
+import { Autocomplete, Box, createFilterOptions, TextField } from '@mui/material'
+import { FieldError, UseFormRegisterReturn } from 'react-hook-form'
+
+const abFilterOptions = createFilterOptions({
+  stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
+})
 
 /**
  *  Temporary component until revamped safe components are done
  */
 export const AddressInput = ({
-  address,
-  onAddressChange,
-  name,
+  defaultValue,
+  error,
   label,
-  validators,
+  textFieldProps,
 }: {
-  address: string
-  onAddressChange: (address: string) => void
-  name: string
+  defaultValue?: string
+  error: FieldError | undefined
   label: string
-  validators?: ((address: string) => string | undefined)[]
+  textFieldProps: UseFormRegisterReturn
 }) => {
-  const [validationError, setValidationError] = useState<string | undefined>(undefined)
-  const [inputAddress, setInputAddress] = useState(address)
-  const combineValidators: ((address: string) => string | undefined)[] = [validateAddress, ...(validators ?? [])]
-  const onChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    const newAddress = event.target.value
-    setValidationError(validate(newAddress))
-    setInputAddress(newAddress)
-    onAddressChange(newAddress)
-  }
+  const addressBook = useAddressBook()
 
-  const validate = (address: string) => {
-    return combineValidators
-      .map((validator) => validator(address))
-      .filter(Boolean)
-      .find(() => true)
-  }
+  const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
+    label: address,
+    name,
+  }))
 
   return (
-    <TextField
-      autoFocus
-      id="ownerName"
-      label={label}
-      variant="outlined"
-      value={address}
-      fullWidth
-      onChange={onChange}
-      error={Boolean(validationError)}
-      helperText={validationError}
+    <Autocomplete
+      defaultValue={defaultValue}
+      freeSolo
+      disablePortal
+      options={addressBookEntries}
+      filterOptions={abFilterOptions}
+      renderOption={(props, option) => (
+        <Box component="li" {...props}>
+          {option.name}
+          <br />
+          {option.label}
+        </Box>
+      )}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          autoComplete="off"
+          label={label}
+          error={!!error}
+          helperText={error?.message}
+          {...textFieldProps}
+        />
+      )}
     />
   )
 }

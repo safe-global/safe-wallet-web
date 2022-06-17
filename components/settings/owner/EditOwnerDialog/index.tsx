@@ -1,4 +1,4 @@
-import { AddressInfo } from '@/components/common/AddressInfo'
+import { EthHashInfo } from '@/components/common/AddressInfo'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import {
@@ -68,7 +68,7 @@ export const EditOwnerDialog = ({
               fullWidth
               onChange={onNameChange}
             />
-            <AddressInfo address={address} copyToClipboard />
+            <EthHashInfo address={address} copyToClipboard />
           </div>
         </DialogContent>
         <DialogActions>

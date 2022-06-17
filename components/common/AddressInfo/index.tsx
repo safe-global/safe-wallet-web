@@ -3,9 +3,9 @@ import Identicon from '../Identicon'
 import css from './styles.module.css'
 
 /**
- *  Temporary component until revamped safe components are done
+ *  TODO: Remove once EthHashInfo from safe-react-components is implemented
  */
-export const AddressInfo = ({
+export const EthHashInfo = ({
   address,
   chainShortName,
   copyToClipboard,

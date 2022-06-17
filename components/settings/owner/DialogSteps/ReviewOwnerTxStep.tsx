@@ -1,7 +1,6 @@
-import { AddressInfo } from '@/components/common/AddressInfo'
-import Hairline from '@/components/common/Hairline'
+import { EthHashInfo } from '@/components/common/AddressInfo'
 import useSafeInfo from '@/services/useSafeInfo'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { useDispatch } from 'react-redux'
 import { showNotification } from '@/store/notificationsSlice'
@@ -11,7 +10,6 @@ import useWallet from '@/services/wallets/useWallet'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useAsync from '@/services/useAsync'
-import { useCallback } from 'react'
 import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 
@@ -22,21 +20,20 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
   const { newOwner, removedOwner, threshold } = data
 
   const sdk = getSafeSDK()
-  const createChangeOwnerTx = useCallback(
-    removedOwner
-      ? () =>
-          sdk.getSwapOwnerTx({
-            newOwnerAddress: newOwner.address,
-            oldOwnerAddress: removedOwner.address,
-          })
-      : () =>
-          sdk.getAddOwnerTx({
-            ownerAddress: newOwner.address,
-            threshold,
-          }),
-    [removedOwner, newOwner, threshold, sdk],
-  )
-  const [changeOwnerTx, error, loading] = useAsync(createChangeOwnerTx, [createChangeOwnerTx])
+
+  const [changeOwnerTx, error, loading] = useAsync(() => {
+    if (removedOwner) {
+      return sdk.getSwapOwnerTx({
+        newOwnerAddress: newOwner.address,
+        oldOwnerAddress: removedOwner.address,
+      })
+    } else {
+      return sdk.getAddOwnerTx({
+        ownerAddress: newOwner.address,
+        threshold,
+      })
+    }
+  }, [removedOwner, newOwner])
   if (error) {
     const { message } = new CodedException(Errors._803, error.message)
     dispatch(showNotification({ message }))
@@ -45,32 +42,33 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
   const isReplace = Boolean(removedOwner)
 
   const onSubmit = async (data: ReviewTxFormData) => {
-    if (safe && connectedWallet && changeOwnerTx) {
-      try {
-        // overwrite nonce and safeTxGas
-        const editedOwnerTxData = {
-          ...changeOwnerTx.data,
-          nonce: data.nonce,
-          safeTxGas: data.safeTxGas,
-        }
-        const editedOwnerTx = await createTx(editedOwnerTxData)
-        const signedTx = await dispatchTxSigning(editedOwnerTx)
-        await dispatchTxProposal(safe.chainId, safe.address.value, connectedWallet.address, signedTx)
-        if (typeof newOwner.name !== 'undefined') {
-          dispatch(
-            upsertAddressBookEntry({
-              chainId: safe.chainId,
-              address: newOwner.address,
-              name: newOwner.name,
-            }),
-          )
-        }
-      } catch (err) {
-        const { message } = new CodedException(Errors._804, (err as Error).message)
-        dispatch(showNotification({ message }))
-      }
-      onClose()
+    if (!safe || !connectedWallet || !changeOwnerTx) {
+      return
     }
+    try {
+      // overwrite nonce and safeTxGas
+      const editedOwnerTxData = {
+        ...changeOwnerTx.data,
+        nonce: data.nonce,
+        safeTxGas: data.safeTxGas,
+      }
+      const editedOwnerTx = await createTx(editedOwnerTxData)
+      const signedTx = await dispatchTxSigning(editedOwnerTx)
+      await dispatchTxProposal(safe.chainId, safe.address.value, connectedWallet.address, signedTx)
+      if (typeof newOwner.name !== 'undefined') {
+        dispatch(
+          upsertAddressBookEntry({
+            chainId: safe.chainId,
+            address: newOwner.address,
+            name: newOwner.name,
+          }),
+        )
+      }
+    } catch (err) {
+      const { message } = new CodedException(Errors._804, (err as Error).message)
+      dispatch(showNotification({ message }))
+    }
+    onClose()
   }
 
   return (
@@ -93,15 +91,15 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
         </Grid>
         <Grid direction="column">
           <Typography style={{ paddingLeft: '1rem' }}>{safe?.owners.length ?? 0} Safe owner(s)</Typography>
-          <Hairline />
+          <Divider />
           {safe?.owners
             .filter((owner) => !removedOwner || owner.value !== removedOwner.address)
             .map((owner) => (
               <div key={owner.value}>
                 <Box padding="1rem" key={owner.value}>
-                  <AddressInfo address={owner.value} />
+                  <EthHashInfo address={owner.value} />
                 </Box>
-                <Hairline />
+                <Divider />
               </div>
             ))}
           {removedOwner && (
@@ -109,19 +107,19 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
               <div className={css.info}>
                 <Typography className={css.overline}>REMOVING OWNER &darr;</Typography>
               </div>
-              <Hairline />
+              <Divider />
               <Box className={css.removedOwner} padding="1rem">
-                <AddressInfo address={removedOwner.address} />
+                <EthHashInfo address={removedOwner.address} />
               </Box>
-              <Hairline />
+              <Divider />
             </>
           )}
           <div className={css.info}>
             <Typography className={css.overline}>ADDING NEW OWNER &darr;</Typography>
           </div>
-          <Hairline />
+          <Divider />
           <Box padding={'1rem'}>
-            <AddressInfo address={newOwner.address} />
+            <EthHashInfo address={newOwner.address} />
           </Box>
         </Grid>
       </Grid>

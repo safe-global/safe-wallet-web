@@ -36,7 +36,7 @@ const Setup: NextPage = () => {
         <Grid item xs={8}>
           <Paper>
             <Grid item>
-              <OwnerList owners={namedOwners ?? []} isGranted={isGranted} chainId={safe?.chainId} />
+              <OwnerList owners={namedOwners ?? []} isGranted={isGranted} chainId={chainId} />
             </Grid>
             <Grid item xs>
               <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />

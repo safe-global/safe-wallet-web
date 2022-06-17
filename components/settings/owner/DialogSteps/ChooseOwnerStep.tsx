@@ -1,12 +1,17 @@
-import { AddressInfo } from '@/components/common/AddressInfo'
+import { EthHashInfo } from '@/components/common/AddressInfo'
 import { AddressInput } from '@/components/common/AddressInput'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 import useSafeInfo from '@/services/useSafeInfo'
-import { uniqueAddress, addressIsNotCurrentSafe } from '@/services/validation'
-import { TextField, Button, Typography } from '@mui/material'
-import { useState, ChangeEvent } from 'react'
+import { uniqueAddress, addressIsNotCurrentSafe, validateAddress } from '@/services/validation'
+import { TextField, Button, Typography, FormControl } from '@mui/material'
+import { useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
+
+type ChooseOwnerFormData = {
+  ownerName?: string
+  ownerAddress: string
+}
 
 export const ChooseOwnerStep = ({
   data,
@@ -24,19 +29,26 @@ export const ChooseOwnerStep = ({
   const notAlreadyOwner = uniqueAddress(owners?.map((owner) => owner.value))
   const notCurrentSafe = addressIsNotCurrentSafe(safe?.address.value ?? '')
 
-  const [ownerName, setOwnerName] = useState(newOwner.name ?? '')
-  const [ownerAddress, setOwnerAddress] = useState(newOwner.address ?? '')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ChooseOwnerFormData>({
+    defaultValues: { ownerAddress: newOwner.address, ownerName: newOwner.name },
+  })
 
-  const onNameChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    setOwnerName(event.target.value)
+  const onSubmitHandler = (formData: ChooseOwnerFormData) => {
+    onSubmit({ ...data, newOwner: { address: formData.ownerAddress, name: formData.ownerName } })
   }
 
-  const onSubmitHandler = () => {
-    onSubmit({ ...data, newOwner: { address: ownerAddress, name: ownerName } })
-  }
+  const combinedValidate = (address: string) =>
+    [validateAddress, notAlreadyOwner, notCurrentSafe]
+      .map((validate) => validate(address))
+      .filter(Boolean)
+      .find(() => true)
 
   return (
-    <div className={css.container}>
+    <form className={css.container} onSubmit={handleSubmit(onSubmitHandler)}>
       <p>
         {isReplace
           ? 'Review the owner you want to replace from the active Safe. Then specify the new owner you want to replace it with:'
@@ -45,33 +57,32 @@ export const ChooseOwnerStep = ({
       {removedOwner && (
         <div>
           <Typography>Current owner</Typography>
-          <AddressInfo address={removedOwner.address} copyToClipboard />
+          <EthHashInfo address={removedOwner.address} copyToClipboard />
         </div>
       )}
       <div className={css.newOwner}>
         <Typography>New owner</Typography>
-        <TextField
-          autoFocus
-          id="ownerName"
-          label="Owner name"
-          variant="outlined"
-          value={ownerName}
-          fullWidth
-          onChange={onNameChange}
-        />
-        <AddressInput
-          label="Owner address"
-          name="ownerAddress"
-          address={ownerAddress}
-          onAddressChange={setOwnerAddress}
-          validators={[notAlreadyOwner, notCurrentSafe]}
-        />
+        <FormControl fullWidth>
+          <TextField autoFocus label="Owner name" variant="outlined" fullWidth {...register('ownerName')} />
+        </FormControl>
+        <FormControl fullWidth>
+          <AddressInput
+            label="Owner address"
+            error={errors.ownerAddress}
+            textFieldProps={{
+              ...register('ownerAddress', {
+                required: true,
+                validate: { combinedValidate },
+              }),
+            }}
+          />
+        </FormControl>
       </div>
       <div className={css.submit}>
-        <Button variant="contained" onClick={onSubmitHandler}>
+        <Button variant="contained" type="submit">
           Next
         </Button>
       </div>
-    </div>
+    </form>
   )
 }
