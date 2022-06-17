@@ -3,7 +3,7 @@ import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '.'
 import { setSafeInfo, type SetSafeInfoPayload } from '@/store/safeInfoSlice'
 
-type AddedSafesState = {
+export type AddedSafesState = {
   [chainId: string]: {
     [safeAddress: string]: SafeInfo
   }

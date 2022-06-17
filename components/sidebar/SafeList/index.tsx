@@ -14,16 +14,61 @@ import Collapse from '@mui/material/Collapse'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined'
+import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import useChains from '@/services/useChains'
 import useOwnedSafes from '@/services/useOwnedSafes'
 import useChainId from '@/services/useChainId'
 import { useAppSelector } from '@/store'
-import { selectAllAddedSafes } from '@/store/addedSafesSlice'
+import { AddedSafesState, selectAllAddedSafes } from '@/store/addedSafesSlice'
 import useSafeAddress from '@/services/useSafeAddress'
 import SafeListItem from '@/components/sidebar/SafeListItem'
 
 import css from './styles.module.css'
+
+const getSafesOnChain = ({
+  chainId,
+  ownedSafes,
+  addedSafes,
+}: {
+  chainId: string
+  ownedSafes: ReturnType<typeof useOwnedSafes>
+  addedSafes: AddedSafesState
+}): {
+  ownedSafesOnChain: string[]
+  localSafesOnChain: SafeInfo[]
+} => {
+  const ownedSafesOnChain = ownedSafes[chainId] ?? []
+
+  const addedSafesOnChain = addedSafes[chainId] ?? {}
+  const localSafesOnChain = Object.values(addedSafesOnChain)
+
+  return { ownedSafesOnChain, localSafesOnChain }
+}
+
+const shouldExpandSafeList = ({
+  isCurrentChain,
+  safeAddress,
+  ownedSafesOnChain,
+  localSafesOnChain,
+}: {
+  isCurrentChain: boolean
+  safeAddress: string
+  ownedSafesOnChain: string[]
+  localSafesOnChain: SafeInfo[]
+}) => {
+  let shouldExpand = false
+
+  if (isCurrentChain && ownedSafesOnChain.some((address) => address.toLowerCase() === safeAddress.toLowerCase())) {
+    // Expand the Owned Safes if the current Safe is owned, but not added
+    shouldExpand = !localSafesOnChain.some(({ address }) => address.value.toLowerCase() === safeAddress.toLowerCase())
+  } else {
+    // Expand the Owned Safes if there are no added Safes
+    shouldExpand = !localSafesOnChain.length && localSafesOnChain.length <= MAX_EXPANDED_SAFES
+  }
+
+  return shouldExpand
+}
 
 const MAX_EXPANDED_SAFES = 3
 
@@ -52,30 +97,24 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
         <ListItemText>Add Safe</ListItemText>
       </ListItem>
       {configs.map((chain) => {
+        const { ownedSafesOnChain, localSafesOnChain } = getSafesOnChain({
+          chainId: chain.chainId,
+          ownedSafes,
+          addedSafes,
+        })
+
         const isCurrentChain = chain.chainId === chainId
-
-        const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
-
-        const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
-        const localSafesOnChain = Object.values(addedSafesOnChain)
 
         if (!isCurrentChain && !ownedSafesOnChain.length && !localSafesOnChain.length) {
           return null
         }
 
-        let initialExpand = false
-        if (
-          isCurrentChain &&
-          ownedSafesOnChain.some((address) => address.toLowerCase() === safeAddress.toLowerCase())
-        ) {
-          // Expand the Owned Safes if the current Safe is owned, but not added
-          initialExpand = !localSafesOnChain.some(
-            ({ address }) => address.value.toLowerCase() === safeAddress.toLowerCase(),
-          )
-        } else {
-          // Expand the Owned Safes if there are no added Safes
-          initialExpand = !localSafesOnChain.length && localSafesOnChain.length <= MAX_EXPANDED_SAFES
-        }
+        let initialExpand = shouldExpandSafeList({
+          isCurrentChain,
+          safeAddress,
+          ownedSafesOnChain,
+          localSafesOnChain,
+        })
 
         const isOpen = open[chain.chainId]
         return (
