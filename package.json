@@ -28,7 +28,6 @@
     "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#4cbe12dffa718f962ccf229438c3b0ea20e5ccf2",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.4",
-    "@mui/x-data-grid": "^5.12.1",
     "@reduxjs/toolkit": "^1.8.2",
     "@sentry/react": "^7.1.1",
     "@sentry/tracing": "^7.1.1",
