@@ -86,7 +86,9 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
           Sending from
         </Typography>
 
-        <EthHashInfo address={address} shortAddress={false} />
+        <Box fontSize={14}>
+          <EthHashInfo address={address} shortAddress={false} />
+        </Box>
 
         {nativeToken && (
           <Box className={css.balance} bgcolor={(theme) => theme.palette.grey.A100}>

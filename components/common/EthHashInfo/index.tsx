@@ -33,8 +33,8 @@ const SRCEthHashInfo = ({
       )}
 
       <div>
-        {props.name && <div className={css.name}>{props.name}</div>}
-        <div className={css.address}>
+        {props.name && <b>{props.name}</b>}
+        <div>
           {prefix && <b>{prefix}:</b>}
           {shortAddress ? shortenAddress(address) : address}
         </div>
