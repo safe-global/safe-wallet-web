@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactElement } from 'react'
-import { Typography } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
@@ -7,7 +7,6 @@ import type { SendAssetsFormData } from '@/components/tx/steps/SendAssetsForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
-import { shortenAddress } from '@/services/formatters'
 import useSafeTxGas from '@/services/useSafeTxGas'
 import useBalances from '@/services/useBalances'
 import useAsync from '@/services/useAsync'
@@ -15,15 +14,17 @@ import { createTx } from '@/services/tx/txSender'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useSafeInfo from '@/services/useSafeInfo'
 import NonceForm from './NonceForm'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
-    <p>
-      Send <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
-      {params.amount} {tokenInfo.symbol}
-      {' to '}
-      {shortenAddress(params.recipient)}
-    </p>
+    <Grid container sx={{ alignItems: 'center', gap: '1em', margin: '1em 0 2em' }}>
+      <div>
+        Send <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
+        {params.amount} {tokenInfo.symbol} to
+      </div>
+      <EthHashInfo address={params.recipient} shortAddress={false} />
+    </Grid>
   )
 }
 
