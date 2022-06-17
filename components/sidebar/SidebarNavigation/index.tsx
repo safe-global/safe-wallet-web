@@ -1,13 +1,13 @@
 import React, { Fragment, useState, type ReactElement } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
 import Collapse from '@mui/material/Collapse'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import List from '@mui/material/List'
-import { ListItemIconProps } from '@mui/material'
+import { ListItemIconProps } from '@mui/material/ListItemIcon'
+import SvgIcon from '@mui/material/SvgIcon'
 
 import {
   SidebarList,
@@ -34,12 +34,12 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     label: 'Home',
-    icon: <Image src={Home} alt="Home" />,
+    icon: <SvgIcon component={Home} inheritViewBox />,
     href: '/safe',
   },
   {
     label: 'Assets',
-    icon: <Image src={Assets} alt="Assets" />,
+    icon: <SvgIcon component={Assets} inheritViewBox />,
     href: '/safe/balances',
     items: [
       {
@@ -54,7 +54,7 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Transactions',
-    icon: <Image src={Transactions} alt="Transactions" />,
+    icon: <SvgIcon component={Transactions} inheritViewBox />,
     href: '/safe/transactions/history',
     items: [
       {
@@ -69,17 +69,17 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Address Book',
-    icon: <Image src={AddressBook} alt="Address Book" />,
+    icon: <SvgIcon component={AddressBook} inheritViewBox />,
     href: '/safe/address-book',
   },
   {
     label: 'Apps',
-    icon: <Image src={Apps} alt="Safe Apps" />,
+    icon: <SvgIcon component={Apps} inheritViewBox />,
     href: '/safe/apps',
   },
   {
     label: 'Settings',
-    icon: <Image src={Settings} alt="Settings" />,
+    icon: <SvgIcon component={Settings} inheritViewBox />,
     href: '/safe/settings/details',
     items: [
       {

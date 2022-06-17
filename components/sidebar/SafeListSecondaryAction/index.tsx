@@ -1,6 +1,6 @@
-import Image from 'next/image'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import SvgIcon from '@mui/material/SvgIcon'
 
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
@@ -53,7 +53,7 @@ const SafeListSecondaryAction = ({
   if (!isOwner) {
     return (
       <Typography variant="caption" display="flex" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
-        <Image src={Eye} alt="Read only" /> Read only
+        <SvgIcon component={Eye} inheritViewBox />, Read only
       </Typography>
     )
   }
