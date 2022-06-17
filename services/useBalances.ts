@@ -5,6 +5,7 @@ import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import { Errors, logError } from './exceptions'
 import { selectBalances, setBalances, initialState } from '@/store/balancesSlice'
+import { updateAddedSafeBalance } from '@/store/addedSafesSlice'
 
 export const useInitBalances = (): void => {
   const { safe } = useSafeInfo()
@@ -29,6 +30,13 @@ export const useInitBalances = (): void => {
       dispatch(setBalances({ balances: data || initialState.balances, error, loading: false }))
     }
   }, [dispatch, data, error])
+
+  // Update the added safes with the new balances
+  useEffect(() => {
+    if (data && safe) {
+      dispatch(updateAddedSafeBalance({ chainId: safe.chainId, address: safe.address.value, balances: data }))
+    }
+  }, [dispatch, data, safe])
 
   // Log errors
   useEffect(() => {

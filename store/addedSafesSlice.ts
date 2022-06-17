@@ -1,25 +1,55 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { SafeBalanceResponse, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { AddressEx, SafeBalanceResponse, SafeInfo, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '.'
 import { setSafeInfo, type SetSafeInfoPayload } from '@/store/safeInfoSlice'
 
-export type AddedSafesState = {
-  [chainId: string]: {
-    [safeAddress: string]: SafeInfo & Partial<SafeBalanceResponse>
+export type AddedSafesOnChain = {
+  [safeAddress: string]: {
+    owners: AddressEx[]
+    threshold: number
+    ethBalance?: string
   }
 }
 
+export type AddedSafesState = {
+  [chainId: string]: AddedSafesOnChain
+}
+
 const initialState: AddedSafesState = {}
+
+const isAddedSafe = (state: AddedSafesState, chainId: string, safeAddress: string) => {
+  return !!state[chainId]?.[safeAddress]
+}
 
 export const addedSafesSlice = createSlice({
   name: 'addedSafes',
   initialState,
   reducers: {
     addOrUpdateSafe: (state, { payload }: PayloadAction<{ safe: SafeInfo }>) => {
-      const { chainId, address } = payload.safe
+      const { chainId, address, owners, threshold } = payload.safe
 
       state[chainId] ??= {}
-      state[chainId][address.value] = payload.safe
+      state[chainId][address.value] = { owners, threshold }
+    },
+    updateAddedSafeBalance: (
+      state,
+      { payload }: PayloadAction<{ chainId: string; address: string; balances: SafeBalanceResponse }>,
+    ) => {
+      const { chainId, address, balances } = payload
+
+      if (!isAddedSafe(state, chainId, address)) {
+        return
+      }
+
+      for (const item of balances.items) {
+        if (item.tokenInfo.type !== TokenType.NATIVE_TOKEN) {
+          continue
+        }
+
+        state[chainId][address].ethBalance = item.balance
+
+        return
+      }
     },
     removeSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
       const { chainId, address } = payload
@@ -38,9 +68,8 @@ export const addedSafesSlice = createSlice({
       }
 
       const { chainId, address } = payload.safe
-      const isAddedSafe = state[chainId]?.[address.value]
 
-      if (isAddedSafe) {
+      if (isAddedSafe(state, chainId, address.value)) {
         addedSafesSlice.caseReducers.addOrUpdateSafe(state, {
           type: addOrUpdateSafe.type,
           payload: { safe: payload.safe },
@@ -50,7 +79,7 @@ export const addedSafesSlice = createSlice({
   },
 })
 
-export const { addOrUpdateSafe, removeSafe } = addedSafesSlice.actions
+export const { addOrUpdateSafe, updateAddedSafeBalance, removeSafe } = addedSafesSlice.actions
 
 export const selectAllAddedSafes = (state: RootState): AddedSafesState => {
   return state[addedSafesSlice.name]

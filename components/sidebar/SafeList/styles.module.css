@@ -1,3 +1,25 @@
+.addButton {
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.chainDivider {
+  padding: 0 0;
+  width: unset;
+  margin-left: 12px;
+  margin-right: 12px;
+  border-radius: 8px;
+}
+
+.ownedLabel {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.ownedLabel:hover {
+  background-color: unset;
+}
+
 .list {
   height: 100%;
   overflow-x: hidden;
