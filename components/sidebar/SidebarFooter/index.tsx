@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { useRouter } from 'next/router'
-import SvgIcon from '@mui/material/SvgIcon'
+import Image from 'next/image'
 
 import {
   SidebarList,
@@ -26,7 +26,7 @@ const SidebarFooter = (): ReactElement => {
         href={{ pathname: WHATS_NEW_PATH, query: router.query }}
       >
         <SidebarListItemIcon>
-          <SvgIcon component={WhatsNew} inheritViewBox />
+          <Image src={WhatsNew} alt="What's New" />
         </SidebarListItemIcon>
         <SidebarListItemText bold>What&apos;s new</SidebarListItemText>
       </SidebarListItemButton>
@@ -35,7 +35,7 @@ const SidebarFooter = (): ReactElement => {
         href={{ pathname: HELP_CENTER_PATH, query: router.query }}
       >
         <SidebarListItemIcon>
-          <SvgIcon component={HelpCenter} inheritViewBox />
+          <Image src={HelpCenter} alt="Help Center" />
         </SidebarListItemIcon>
         <SidebarListItemText bold>Help Center</SidebarListItemText>
       </SidebarListItemButton>

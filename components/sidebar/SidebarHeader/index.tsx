@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react'
+import Image from 'next/image'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
-import SvgIcon from '@mui/material/SvgIcon'
 
 import { shortenAddress } from '@/services/formatters'
 import useSafeInfo from '@/services/useSafeInfo'
@@ -56,13 +56,13 @@ const SafeHeader = (): ReactElement => {
         </div>
         <div className={css.iconButtons}>
           <HeaderIconButton>
-            <SvgIcon component={QR} inheritViewBox />
+            <Image src={QR} alt="Address QR Code" />
           </HeaderIconButton>
           <HeaderIconButton>
-            <SvgIcon component={Copy} inheritViewBox />
+            <Image src={Copy} alt="Copy Address" />
           </HeaderIconButton>
           <HeaderIconButton>
-            <SvgIcon component={BlockExplorer} inheritViewBox />
+            <Image src={BlockExplorer} alt="Open Block Explorer" />
           </HeaderIconButton>
         </div>
         <NewTxButton />
