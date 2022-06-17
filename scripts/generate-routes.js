@@ -7,7 +7,8 @@ const iterate = (folderName, parentRoute, root) => {
 
     if (item.endsWith('.tsx')) {
       const name = item.split('.')[0]
-      root[name] = `${parentRoute}/${name}`
+      const path = name === 'index' ? parentRoute : `${parentRoute}/${name}`
+      root[name] = path
       return
     }
 

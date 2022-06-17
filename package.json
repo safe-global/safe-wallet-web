@@ -12,7 +12,7 @@
     "test": "jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
-    "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts'"
+    "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts"
   },
   "pre-push": [
     "lint:fix"
