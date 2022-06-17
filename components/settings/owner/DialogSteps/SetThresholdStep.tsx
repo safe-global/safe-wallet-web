@@ -1,7 +1,7 @@
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 import useSafeInfo from '@/services/useSafeInfo'
-import { Button, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Button, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { useState } from 'react'
 
 import css from './styles.module.css'
 
@@ -13,11 +13,7 @@ export const SetThresholdStep = ({
   onSubmit: (data: ChangeOwnerData) => void
 }) => {
   const { safe } = useSafeInfo()
-  const [options, setOptions] = useState<number[]>([0])
   const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
-  useEffect(() => {
-    setOptions(Array.from(Array((safe?.owners.length ?? 0) + 1).keys()))
-  }, [safe])
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedThreshold(parseInt(event.target.value.toString()))
@@ -31,16 +27,20 @@ export const SetThresholdStep = ({
     <div className={css.container}>
       <Typography>Set the required owner confirmations:</Typography>
       <span>Any transaction requires the confirmation of:</span>
-      <span>
-        <Select value={selectedThreshold} onChange={handleChange}>
-          {options.map((option) => (
-            <MenuItem key={option + 1} value={option + 1}>
-              {option + 1}
-            </MenuItem>
-          ))}
-        </Select>{' '}
-        out of {(safe?.owners.length ?? 0) + 1} owner(s)
-      </span>
+      <Grid container direction="row" alignItems="center" gap={1}>
+        <Grid item xs={1.5}>
+          <Select value={selectedThreshold} onChange={handleChange} fullWidth>
+            {safe?.owners.map((_, idx) => (
+              <MenuItem key={idx + 1} value={idx + 1}>
+                {idx + 1}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item>
+          <Typography>out of {(safe?.owners.length ?? 0) + 1} owner(s)</Typography>
+        </Grid>
+      </Grid>
       <div className={css.submit}>
         <Button variant="contained" onClick={onSubmitHandler}>
           Next
