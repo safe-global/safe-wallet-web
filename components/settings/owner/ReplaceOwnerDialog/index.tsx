@@ -4,10 +4,10 @@ import { ChooseOwnerStep } from '../DialogSteps/ChooseOwnerStep'
 import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined'
 
 import TxModal from '@/components/tx/TxModal'
-import { TxStepperProps } from '@/components/tx/TxStepper'
 import useSafeInfo from '@/services/useSafeInfo'
 import { ReviewOwnerTxStep } from '@/components/settings/owner/DialogSteps/ReviewOwnerTxStep'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
+import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 
 const ReplaceOwnerSteps: TxStepperProps['steps'] = [
   {
@@ -16,7 +16,7 @@ const ReplaceOwnerSteps: TxStepperProps['steps'] = [
   },
   {
     label: 'Review',
-    render: (data, onSubmit, onClose) => <ReviewOwnerTxStep data={data as ChangeOwnerData} onClose={onClose} />,
+    render: (data, onSubmit) => <ReviewOwnerTxStep data={data as ChangeOwnerData} onSubmit={onSubmit} />,
   },
 ]
 

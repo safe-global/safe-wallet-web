@@ -1,0 +1,15 @@
+.container {
+  margin-top: 20px;
+}
+
+.details {
+  display: flex;
+}
+
+.label {
+  flex: 1;
+}
+
+.value {
+  text-align: right;
+}

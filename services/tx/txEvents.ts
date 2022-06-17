@@ -1,5 +1,6 @@
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import type { ContractReceipt } from 'ethers/lib/ethers'
+import EventBus from '@/services/EventBus'
 
 export enum TxEvent {
   CREATED = 'CREATED',
@@ -24,29 +25,16 @@ interface TxEvents {
   [TxEvent.EXECUTING]: { txId: string; tx: SafeTransaction }
   [TxEvent.MINING]: { txId: string; txHash: string; tx: SafeTransaction }
   [TxEvent.MINED]: { txId: string; receipt: ContractReceipt; tx: SafeTransaction }
-  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: ContractReceipt; tx: SafeTransaction }
-  [TxEvent.FAILED]: { txId: string; error: Error; tx: SafeTransaction }
+  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: ContractReceipt; tx?: SafeTransaction }
+  [TxEvent.FAILED]: { txId: string; error: Error; tx?: SafeTransaction }
   [TxEvent.SUCCESS]: { txId: string }
 }
 
-const txEventBus = new EventTarget()
+const txEventBus = new EventBus<TxEvents>()
 
-export const txDispatch = <T extends TxEvent>(eventType: T, detail: TxEvents[T]) => {
-  const e = new CustomEvent(eventType, { detail })
-  txEventBus.dispatchEvent(e)
-}
+export const txDispatch = txEventBus.dispatch.bind(txEventBus)
 
-export const txSubscribe = <T extends TxEvent>(eventType: T, callback: (detail: TxEvents[T]) => void) => {
-  const handler = (e: Event) => {
-    if (e instanceof CustomEvent) {
-      callback(e.detail)
-    }
-  }
-  txEventBus.addEventListener(eventType, handler)
-
-  // Return an unsubscribe function
-  return () => txEventBus.removeEventListener(eventType, handler)
-}
+export const txSubscribe = txEventBus.subscribe.bind(txEventBus)
 
 // Log all events
 Object.values(TxEvent).forEach((event: TxEvent) => {

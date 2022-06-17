@@ -1,19 +1,21 @@
-import { type ReactElement } from 'react'
+import { useMemo, useState, type ReactElement } from 'react'
+import { Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
+import type { SendAssetsFormData } from '@/components/tx/steps/SendAssetsForm'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import { shortenAddress } from '@/services/formatters'
-import useBalances from '@/services/useBalances'
-import { type SendAssetsFormData } from '@/components/tx/steps/SendAssetsForm'
-import useChainId from '@/services/useChainId'
-import useSafeAddress from '@/services/useSafeAddress'
-import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
-import useWallet from '@/services/wallets/useWallet'
-import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
-import { Typography } from '@mui/material'
 
-import css from './styles.module.css'
+import useSafeTxGas from '@/services/useSafeTxGas'
+import useBalances from '@/services/useBalances'
+import useAsync from '@/services/useAsync'
+import { createTx } from '@/services/tx/txSender'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import useSafeInfo from '@/services/useSafeInfo'
+import NonceForm from './NonceForm'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -32,43 +34,54 @@ type ReviewNewTxProps = {
 }
 
 const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
+  const { safe } = useSafeInfo()
+
+  // Find the token info for the token we're sending
   const { balances } = useBalances()
-  const safeAddress = useSafeAddress()
-  const chainId = useChainId()
-  const wallet = useWallet()
 
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
-  const tokenInfo = token?.tokenInfo
-  const txParams = tokenInfo
-    ? createTokenTransferParams(params.recipient, params.amount, tokenInfo.decimals, tokenInfo.address)
-    : undefined
+  const { decimals, address } = token?.tokenInfo || {}
 
-  const onFormSubmit = async (data: ReviewTxFormData) => {
-    if (!txParams || !wallet?.address) return
+  // Format safeTx params
+  const txParams = useMemo(() => {
+    if (!address || !decimals) return
+    return createTokenTransferParams(params.recipient, params.amount, decimals, address)
+  }, [params, decimals, address])
 
-    const editedTxParams = {
+  // Estimate safeTxGas
+  const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
+  const [editableNonce, setEditableNonce] = useState<number>()
+
+  // Create a safeTx
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+    if (!txParams) return
+
+    return createTx({
       ...txParams,
-      nonce: data.nonce,
-      // Core SDK will ignore safeTxGas for 1.3.0+ Safes
-      safeTxGas: data.safeTxGas,
-    }
+      nonce: editableNonce,
+      safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
+    })
+  }, [editableNonce, txParams, safeGas?.safeTxGas])
 
-    try {
-      const safeTx = await createTx(editedTxParams)
-      const signedTx = await dispatchTxSigning(safeTx)
-      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
-    } catch {
-      return
-    }
-
-    onSubmit(null)
-  }
+  // All errors
+  const txError = safeTxError || safeGasError
 
   return (
-    <div className={css.container}>
+    <div>
       <Typography variant="h6">Review transaction</Typography>
-      {tokenInfo ? <TokenTransferReview params={params} tokenInfo={tokenInfo} /> : null}
-      <ReviewTxForm onFormSubmit={onFormSubmit} txParams={txParams} />
+
+      {token && <TokenTransferReview params={params} tokenInfo={token.tokenInfo} />}
+
+      <NonceForm recommendedNonce={safeGas?.recommendedNonce} safeNonce={safe?.nonce} onChange={setEditableNonce} />
+
+      <SignOrExecuteForm safeTx={safeTx} isExecutable={safe?.threshold === 1} onSubmit={onSubmit} />
+
+      {txError && (
+        <ErrorMessage>
+          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+          <p>{txError.message}</p>
+        </ErrorMessage>
+      )}
     </div>
   )
 }

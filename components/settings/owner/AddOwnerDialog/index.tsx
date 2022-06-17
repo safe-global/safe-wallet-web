@@ -3,11 +3,11 @@ import { useState } from 'react'
 import { ChooseOwnerStep } from '../DialogSteps/ChooseOwnerStep'
 
 import TxModal from '@/components/tx/TxModal'
-import { TxStepperProps } from '@/components/tx/TxStepper'
 import useSafeInfo from '@/services/useSafeInfo'
 import { ReviewOwnerTxStep } from '@/components/settings/owner/DialogSteps/ReviewOwnerTxStep'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 import { SetThresholdStep } from '@/components/settings/owner/DialogSteps/SetThresholdStep'
+import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 
 const AddOwnerSteps: TxStepperProps['steps'] = [
   {
@@ -20,7 +20,7 @@ const AddOwnerSteps: TxStepperProps['steps'] = [
   },
   {
     label: 'Review',
-    render: (data, onSubmit, onClose) => <ReviewOwnerTxStep data={data as ChangeOwnerData} onClose={onClose} />,
+    render: (data, onSubmit) => <ReviewOwnerTxStep data={data as ChangeOwnerData} onSubmit={onSubmit} />,
   },
 ]
 

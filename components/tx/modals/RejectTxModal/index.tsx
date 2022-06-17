@@ -1,7 +1,7 @@
 import React from 'react'
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { TxStepperProps } from '@/components/tx/TxStepper'
+import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import TxModal, { TxModalProps } from '@/components/tx/TxModal'
 import RejectTx from '@/components/tx/steps/RejectTx'
 

@@ -2,6 +2,7 @@ import { RPC_AUTHENTICATION, type ChainInfo, type RpcUri } from '@gnosis.pm/safe
 import { INFURA_TOKEN } from '@/config/constants'
 import { EIP1193Provider } from '@web3-onboard/core'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import ExternalStore from '@/services/ExternalStore'
 
 // RPC helpers
 const formatRpcServiceUrl = ({ authentication, value }: RpcUri, TOKEN: string): string => {
@@ -13,20 +14,18 @@ export const getRpcServiceUrl = (rpcUri: RpcUri): string => {
   return formatRpcServiceUrl(rpcUri, INFURA_TOKEN)
 }
 
-// Web3 readonly
-let _web3ReadOnly: JsonRpcProvider
-
-export const getWeb3ReadOnly = (): JsonRpcProvider => _web3ReadOnly
-
-export const setWeb3ReadOnly = ({ rpcUri }: ChainInfo): void => {
-  _web3ReadOnly = new JsonRpcProvider({ url: getRpcServiceUrl(rpcUri), timeout: 10_000 })
+export const createWeb3ReadOnly = ({ rpcUri }: ChainInfo): JsonRpcProvider => {
+  return new JsonRpcProvider({ url: getRpcServiceUrl(rpcUri), timeout: 10_000 })
 }
 
-// Regular web3
-let _web3: Web3Provider
-
-export const getWeb3 = (): Web3Provider => _web3
-
-export const setWeb3 = (walletProvider: EIP1193Provider): void => {
-  _web3 = new Web3Provider(walletProvider)
+export const createWeb3 = (walletProvider: EIP1193Provider): Web3Provider => {
+  return new Web3Provider(walletProvider)
 }
+
+export const { getStore: getWeb3, setStore: setWeb3, useStore: useWeb3 } = new ExternalStore<Web3Provider>()
+
+export const {
+  getStore: getWeb3ReadOnly,
+  setStore: setWeb3ReadOnly,
+  useStore: useWeb3ReadOnly,
+} = new ExternalStore<JsonRpcProvider>()

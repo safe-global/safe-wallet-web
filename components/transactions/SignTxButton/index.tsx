@@ -5,16 +5,16 @@ import CheckIcon from '@mui/icons-material/Check'
 import IconButton from '@mui/material/IconButton'
 
 import css from './styles.module.css'
-import { isOwner, isSignaturePending } from '@/components/transactions/utils'
+import { isOwner, isSignableBy } from '@/components/transactions/utils'
 import useWallet from '@/services/wallets/useWallet'
 import useSafeInfo from '@/services/useSafeInfo'
-import SignTxModal from '@/components/tx/modals/SignTxModal'
+import ConfirmTxModal from '@/components/tx/modals/ConfirmTxModal'
 
 const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
   const { safe } = useSafeInfo()
   const wallet = useWallet()
-  const signaturePending = isSignaturePending(txSummary, wallet?.address)
+  const signaturePending = isSignableBy(txSummary, wallet?.address || '')
   const granted = isOwner(safe?.owners, wallet?.address)
 
   const onClick = () => {
@@ -33,7 +33,7 @@ const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactEl
         </span>
       </Tooltip>
 
-      {open && <SignTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
+      {open && <ConfirmTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </div>
   )
 }

@@ -1,16 +1,24 @@
 import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SafeTransaction, SafeTransactionDataPartial, TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
+import {
+  SafeTransaction,
+  SafeTransactionDataPartial,
+  TransactionOptions,
+  TransactionResult,
+} from '@gnosis.pm/safe-core-sdk-types'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
-import { getSafeSDK } from '../safe-core/safeCoreSDK'
-import { ContractReceipt } from 'ethers/lib/ethers'
+import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
+import { didRevert } from '@/services/tx/utils'
 
 /**
  * Create a transaction from raw params
  */
 export const createTx = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
   const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not initialized')
+  }
   return await safeSDK.createTransaction(txParams)
 }
 
@@ -19,6 +27,9 @@ export const createTx = async (txParams: SafeTransactionDataPartial): Promise<Sa
  */
 export const createRejectTx = async (nonce: number): Promise<SafeTransaction> => {
   const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not initialized')
+  }
   return await safeSDK.createRejectionTransaction(nonce)
 }
 
@@ -62,6 +73,8 @@ export const dispatchTxProposal = async (
     txDispatch(TxEvent.PROPOSE_FAILED, { tx: safeTx, error: error as Error })
     throw error
   }
+
+  // N.B.: proposals w/o signatures (i.e. immediate execution in 1/1 Safes) won't appear in the queue
   txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
 
   return proposedTx
@@ -72,6 +85,9 @@ export const dispatchTxProposal = async (
  */
 export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string): Promise<SafeTransaction> => {
   const sdk = getSafeSDK()
+  if (!sdk) {
+    throw new Error('Safe SDK not initialized')
+  }
 
   try {
     // Adds signatures to safeTx
@@ -88,15 +104,22 @@ export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string):
 /**
  * Execute a transaction
  */
-export const dispatchTxExecution = async (safeTx: SafeTransaction, txId: string): Promise<string> => {
+export const dispatchTxExecution = async (
+  txId: string,
+  safeTx: SafeTransaction,
+  txOptions?: TransactionOptions,
+): Promise<string> => {
   const sdk = getSafeSDK()
+  if (!sdk) {
+    throw new Error('Safe SDK not initialized')
+  }
 
   txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
 
   // Execute the tx
   let result: TransactionResult | undefined
   try {
-    result = await sdk.executeTransaction(safeTx)
+    result = await sdk.executeTransaction(safeTx, txOptions)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
@@ -107,9 +130,8 @@ export const dispatchTxExecution = async (safeTx: SafeTransaction, txId: string)
   // Asynchronously watch the tx to be mined
   result.transactionResponse
     ?.wait()
-    .then((receipt: ContractReceipt) => {
-      const didRevert = receipt.status === 0
-      if (didRevert) {
+    .then((receipt) => {
+      if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { txId, receipt, tx: safeTx, error: new Error('Transaction reverted by EVM') })
       } else {
         txDispatch(TxEvent.MINED, { txId, tx: safeTx, receipt })

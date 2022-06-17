@@ -8,7 +8,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SnackbarProvider } from 'notistack'
-import { safeTheme } from '@gnosis.pm/safe-react-components'
+import theme from '@/styles/theme'
 
 import '@/styles/globals.css'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
@@ -27,7 +27,8 @@ import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/safe-core/useInitSafeCoreSDK'
 import useNotifier from '@/services/useNotifier'
 import useTxNotifications from '@/services/useTxNotifications'
-import useTxPendingStatuses from '@/services/useTxPendingStatuses'
+import useTxPendingStatuses, { useTxMonitor } from '@/services/useTxPendingStatuses'
+import { useInitSession } from '@/services/useInitSession'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
@@ -39,17 +40,19 @@ const InitApp = (): null => {
 
   usePathRewrite()
   useInitChains()
+  useInitSession()
   useInitSafeInfo()
   useInitBalances()
   useInitCollectibles()
   useInitTxHistory()
   useInitTxQueue()
-  useInitWeb3()
   useInitOnboard()
+  useInitWeb3()
   useInitSafeCoreSDK()
   useNotifier()
   useTxNotifications()
   useTxPendingStatuses()
+  useTxMonitor()
 
   return null
 }
@@ -70,7 +73,7 @@ const SafeWebCore = ({
       {/* @ts-ignore - Temporary Fix */}
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
         <CacheProvider value={emotionCache}>
-          <ThemeProvider theme={safeTheme}>
+          <ThemeProvider theme={theme}>
             <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={5}>
               <CssBaseline />
               <InitApp />

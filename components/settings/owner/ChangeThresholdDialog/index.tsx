@@ -1,20 +1,20 @@
-import { Button, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Button, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { useState } from 'react'
 
 import TxModal from '@/components/tx/TxModal'
-import { TxStepperProps } from '@/components/tx/TxStepper'
 import useSafeInfo from '@/services/useSafeInfo'
 
-import { showNotification } from '@/store/notificationsSlice'
-import { CodedException, Errors } from '@/services/exceptions'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
-import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
-import useWallet from '@/services/wallets/useWallet'
-import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
+import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/services/useAsync'
 
 import css from './styles.module.css'
-import { useAppDispatch } from '@/store'
+import NonceForm from '@/components/tx/steps/ReviewNewTx/NonceForm'
+import useSafeTxGas from '@/services/useSafeTxGas'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 
 interface ChangeThresholdData {
   threshold: number
@@ -23,7 +23,7 @@ interface ChangeThresholdData {
 const ChangeThresholdSteps: TxStepperProps['steps'] = [
   {
     label: 'Change Threshold',
-    render: (data, onSubmit, onClose) => <ChangeThresholdStep data={data as ChangeThresholdData} onClose={onClose} />,
+    render: (data, onSubmit) => <ChangeThresholdStep data={data as ChangeThresholdData} onSubmit={onSubmit} />,
   },
 ]
 
@@ -48,54 +48,68 @@ export const ChangeThresholdDialog = () => {
   )
 }
 
-const ChangeThresholdStep = ({ data, onClose }: { data: ChangeThresholdData; onClose: () => void }) => {
+const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
-  const connectedWallet = useWallet()
-  const dispatch = useAppDispatch()
-
-  const [options, setOptions] = useState<number[]>([0])
   const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
-  useEffect(() => {
-    setOptions(Array.from(Array(safe?.owners.length ?? 0).keys()))
-  }, [safe])
+  const [editableNonce, setEditableNonce] = useState<number>()
 
-  const [tx, error, loading] = useAsync(() => {
-    const sdk = getSafeSDK()
-    return sdk.getChangeThresholdTx(selectedThreshold)
+  const [changeThresholdTx, createTxError, txLoading] = useAsync(() => {
+    const safeSDK = getSafeSDK()
+
+    if (!safeSDK) {
+      throw new Error('Safe SDK not initialized')
+    }
+    return safeSDK.getChangeThresholdTx(selectedThreshold)
   }, [selectedThreshold])
+
+  const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(changeThresholdTx?.data)
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedThreshold(parseInt(event.target.value.toString()))
   }
 
-  const onSubmitHandler = async (data: ReviewTxFormData) => {
-    if (safe && connectedWallet && tx) {
-      try {
-        const editedTx = { ...tx.data, nonce: data.nonce, safeTxGas: data.safeTxGas }
-        const createdTx = await createTx(editedTx)
-        const signedTx = await dispatchTxSigning(createdTx)
-        await dispatchTxProposal(safe.chainId, safe.address.value, connectedWallet.address, signedTx)
-        onClose()
-      } catch (err) {
-        const { message } = new CodedException(Errors._804, (err as Error).message)
-        dispatch(showNotification({ message, options: { variant: 'error' } }))
-      }
+  const [safeTx, safeTxError, safeTxLoading] = useAsync<SafeTransaction | undefined>(async () => {
+    if (changeThresholdTx) {
+      return await createTx({
+        ...changeThresholdTx.data,
+        nonce: editableNonce,
+        safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
+      })
     }
-  }
+  }, [editableNonce, changeThresholdTx, safeGas?.safeTxGas])
+
+  const txError = safeGasError || createTxError || safeTxError
+
   return (
     <div className={css.container}>
       <Typography>Any transaction requires the confirmation of:</Typography>
-      <span>
-        <Select value={selectedThreshold} onChange={handleChange}>
-          {options.map((option) => (
-            <MenuItem key={option + 1} value={option + 1}>
-              {option + 1}
-            </MenuItem>
-          ))}
-        </Select>{' '}
-        <Typography>out of {safe?.owners.length ?? 0} owner(s)</Typography>
-      </span>
-      <ReviewTxForm onFormSubmit={onSubmitHandler} txParams={tx?.data} />
+      <Grid container direction="row" gap={1} alignItems="center">
+        <Grid item xs={1}>
+          <Select value={selectedThreshold} onChange={handleChange} fullWidth>
+            {safe?.owners.map((_, idx) => (
+              <MenuItem key={idx + 1} value={idx + 1}>
+                {idx + 1}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item>
+          <Typography>out of {safe?.owners.length ?? 0} owner(s)</Typography>
+        </Grid>
+      </Grid>
+      <NonceForm
+        onChange={setEditableNonce}
+        recommendedNonce={safeGas?.recommendedNonce}
+        safeNonce={safeGas?.currentNonce}
+      />
+      <SignOrExecuteForm safeTx={safeTx} isExecutable={safe?.threshold === 1} onSubmit={onSubmit} />
+
+      {txError && (
+        <ErrorMessage>
+          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+          <p>{txError.message}</p>
+        </ErrorMessage>
+      )}
     </div>
   )
 }

@@ -8,4 +8,5 @@
   max-height: 90vh;
   background-color: white;
   padding: 24px; /* TODO: Use theme variables */
+  overflow: auto;
 }

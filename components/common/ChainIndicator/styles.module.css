@@ -1,0 +1,16 @@
+.indicator {
+  display: block;
+  min-width: 70px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.inlineIndicator {
+  display: inline-block;
+  min-width: 70px;
+  font-size: 11px;
+  line-height: normal;
+  text-align: center;
+  border-radius: 4px;
+  padding: 4px 8px;
+}

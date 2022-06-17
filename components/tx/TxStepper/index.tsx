@@ -1,46 +1,13 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement } from 'react'
 import Box from '@mui/material/Box'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
-
-type Step = {
-  label: string
-  render: (data: unknown, onSubmit: (data: unknown) => void, onClose: () => void) => ReactElement
-}
-
-export type TxStepperProps = {
-  steps: Array<Step>
-  initialData?: unknown[]
-  onClose: () => void
-}
+import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
 
 const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElement => {
-  const [activeStep, setActiveStep] = useState<number>(0)
-  const [stepData, setStepData] = useState<Array<unknown>>(initialData || [])
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1)
-  }
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1)
-  }
-
-  const onSubmit = (data: unknown) => {
-    if (activeStep === steps.length - 1) {
-      onClose()
-      return
-    }
-    const allData = [...stepData]
-    allData[activeStep] = data
-    setStepData(allData)
-    handleNext()
-  }
-
-  const firstStep = activeStep === 0
-  console.log('Active Step: ' + activeStep)
+  const { onBack, onSubmit, activeStep, stepData, firstStep } = useTxStepper({ steps, initialData, onClose })
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -55,9 +22,13 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
           )
         })}
       </Stepper>
-      {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onClose)}
+
+      <Box paddingX={1} paddingY={2} sx={{ position: 'relative' }}>
+        {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onBack)}
+      </Box>
+
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-        <Button color="inherit" onClick={firstStep ? onClose : handleBack} sx={{ mr: 1 }}>
+        <Button color="inherit" onClick={onBack} sx={{ mr: 1 }}>
           {firstStep ? 'Cancel' : 'Back'}
         </Button>
       </Box>

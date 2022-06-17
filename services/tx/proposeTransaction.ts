@@ -3,7 +3,13 @@ import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
 
 const proposeTx = async (chainId: string, safeAddress: string, sender: string, tx: SafeTransaction) => {
-  const safeTxHash = await getSafeSDK().getTransactionHash(tx)
+  const safeSDK = getSafeSDK()
+
+  if (!safeSDK) {
+    throw new Error('Safe SDK not initialized')
+  }
+
+  const safeTxHash = await safeSDK.getTransactionHash(tx)
 
   return await proposeTransaction(chainId, safeAddress, {
     ...tx.data,
@@ -15,7 +21,7 @@ const proposeTx = async (chainId: string, safeAddress: string, sender: string, t
     safeTxGas: tx.data.safeTxGas.toString(),
     baseGas: tx.data.baseGas.toString(),
     gasPrice: tx.data.gasPrice.toString(),
-    signature: tx.encodedSignatures(),
+    signature: tx.signatures.size ? tx.encodedSignatures() : undefined,
     origin: null,
   })
 }

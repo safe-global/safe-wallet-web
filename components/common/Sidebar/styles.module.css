@@ -19,7 +19,7 @@
 }
 
 .chain {
-  margin: -20px -20px 20px;
+  margin: -20px 0 20px;
   text-align: center;
   font-size: 11px;
 }
@@ -44,7 +44,7 @@
   right: 0;
   transform: translateX(50%);
   top: 40px;
-  background-color: #F6F7F8; /* @TODO: move to the theme */
+  background-color: #f6f7f8; /* @TODO: move to the theme */
 }
 
 .drawerButton svg {

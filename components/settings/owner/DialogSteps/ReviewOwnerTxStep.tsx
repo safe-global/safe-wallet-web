@@ -2,77 +2,77 @@ import { EthHashInfo } from '@/components/common/AddressInfo'
 import useSafeInfo from '@/services/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { showNotification } from '@/store/notificationsSlice'
-import { CodedException, Errors } from '@/services/exceptions'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
-import useWallet from '@/services/wallets/useWallet'
 import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
-import { createTx, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
+import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/services/useAsync'
-import { ReviewTxForm, ReviewTxFormData } from '@/components/tx/ReviewTxForm'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { useAppDispatch } from '@/store'
+import NonceForm from '@/components/tx/steps/ReviewNewTx/NonceForm'
+import useSafeTxGas from '@/services/useSafeTxGas'
+import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import useChainId from '@/services/useChainId'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 
-export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; onClose: () => void }) => {
+export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
-  const connectedWallet = useWallet()
+  const chainId = useChainId()
   const dispatch = useAppDispatch()
   const { newOwner, removedOwner, threshold } = data
 
-  const [changeOwnerTx, error, loading] = useAsync(() => {
-    const sdk = getSafeSDK()
+  const [editableNonce, setEditableNonce] = useState<number>()
 
+  const [changeOwnerTx, createTxError, loading] = useAsync(() => {
+    const safeSDK = getSafeSDK()
+
+    if (!safeSDK) {
+      throw new Error('Safe SDK not initialized')
+    }
     if (removedOwner) {
-      return sdk.getSwapOwnerTx({
+      return safeSDK.getSwapOwnerTx({
         newOwnerAddress: newOwner.address,
         oldOwnerAddress: removedOwner.address,
       })
     } else {
-      return sdk.getAddOwnerTx({
+      return safeSDK.getAddOwnerTx({
         ownerAddress: newOwner.address,
         threshold,
       })
     }
   }, [removedOwner, newOwner])
 
-  useEffect(() => {
-    if (error) {
-      const { message } = new CodedException(Errors._803, error.message)
-      dispatch(showNotification({ message, options: { variant: 'error' } }))
+  const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(changeOwnerTx?.data)
+
+  const [safeTx, safeTxError, safeTxLoading] = useAsync<SafeTransaction | undefined>(async () => {
+    if (changeOwnerTx) {
+      return await createTx({
+        ...changeOwnerTx.data,
+        nonce: editableNonce,
+        safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
+      })
     }
-  }, [error, dispatch])
+  }, [editableNonce, changeOwnerTx, safeGas?.safeTxGas])
 
   const isReplace = Boolean(removedOwner)
 
-  const onSubmit = async (data: ReviewTxFormData) => {
-    if (!safe || !connectedWallet || !changeOwnerTx) {
-      return
+  const addAddressBookEntryAndSubmit = (data: null) => {
+    if (typeof newOwner.name !== 'undefined') {
+      dispatch(
+        upsertAddressBookEntry({
+          chainId: chainId,
+          address: newOwner.address,
+          name: newOwner.name,
+        }),
+      )
     }
-    try {
-      // overwrite nonce and safeTxGas
-      const editedOwnerTxData = {
-        ...changeOwnerTx.data,
-        nonce: data.nonce,
-      }
-      const editedOwnerTx = await createTx(editedOwnerTxData)
-      const signedTx = await dispatchTxSigning(editedOwnerTx)
-      await dispatchTxProposal(safe.chainId, safe.address.value, connectedWallet.address, signedTx)
-      if (typeof newOwner.name !== 'undefined') {
-        dispatch(
-          upsertAddressBookEntry({
-            chainId: safe.chainId,
-            address: newOwner.address,
-            name: newOwner.name,
-          }),
-        )
-      }
-    } catch (err) {
-      const { message } = new CodedException(Errors._804, (err as Error).message)
-      dispatch(showNotification({ message }))
-    }
-    onClose()
+
+    onSubmit(data)
   }
+
+  // All errors
+  const txError = safeTxError || safeGasError || createTxError
 
   return (
     <div className={css.container}>
@@ -126,7 +126,20 @@ export const ReviewOwnerTxStep = ({ data, onClose }: { data: ChangeOwnerData; on
           </Box>
         </Grid>
       </Grid>
-      <ReviewTxForm onFormSubmit={onSubmit} txParams={changeOwnerTx?.data} />
+      <NonceForm
+        onChange={setEditableNonce}
+        recommendedNonce={safeGas?.recommendedNonce}
+        safeNonce={safeGas?.currentNonce}
+      />
+
+      <SignOrExecuteForm safeTx={safeTx} onSubmit={addAddressBookEntryAndSubmit} isExecutable={safe?.threshold === 1} />
+
+      {txError && (
+        <ErrorMessage>
+          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+          <p>{txError.message}</p>
+        </ErrorMessage>
+      )}
     </div>
   )
 }
