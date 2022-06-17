@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import { ReactElement, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
@@ -14,23 +14,35 @@ import useSafeAddress from '@/services/useSafeAddress'
 import useAddressBook from '@/services/useAddressBook'
 import { selectChainById } from '@/store/chainsSlice'
 import SafeListSecondaryAction from '@/components/sidebar/SafeListSecondaryAction'
+import useChainId from '@/services/useChainId'
 
-// TODO: Add scrolling to Safe on open
 const SafeListItem = ({
   address,
   chainId,
   closeDrawer,
+  shouldScrollToSafe,
   ...rest
 }: {
   address: string
   chainId: string
   closeDrawer: () => void
+  shouldScrollToSafe: boolean
   threshold?: string | number
   owners?: string | number
 }): ReactElement => {
   const router = useRouter()
+  const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()
   const chain = useAppSelector((state) => selectChainById(state, chainId))
+
+  const currChainId = useChainId()
+  const isCurrentSafe = currChainId === currChainId && safeAddress.toLowerCase() === address.toLowerCase()
+
+  useEffect(() => {
+    if (isCurrentSafe && shouldScrollToSafe) {
+      safeRef.current?.scrollIntoView({ block: 'center' })
+    }
+  }, [isCurrentSafe, shouldScrollToSafe])
 
   const addressBook = useAddressBook()
   const name = addressBook?.[address]
@@ -70,6 +82,7 @@ const SafeListItem = ({
           backgroundColor: palette.secondaryGray[300],
         },
       })}
+      ref={safeRef}
     >
       <ListItemIcon>
         <SafeIcon address={address} {...rest} />

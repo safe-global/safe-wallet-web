@@ -25,10 +25,11 @@ export const SidebarListItemButton = ({
         '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
           // @ts-expect-error type '200' can't be used to index type 'PaletteColor'
           backgroundColor: `${palette.primary[200]} !important`,
-          // TODO: Fill SVG when selected
           img: {
-            // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-            fill: rest.selected ? palette.primary[400] : undefined,
+            filter: rest.selected
+              ? // #008C73 - palette.primary[400]
+                'invert(30%) sepia(41%) saturate(4854%) hue-rotate(155deg) brightness(92%) contrast(102%)'
+              : undefined,
           },
         },
       })}

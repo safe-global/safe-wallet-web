@@ -160,6 +160,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                 owners={owners.length}
                 chainId={chain.chainId}
                 closeDrawer={closeDrawer}
+                shouldScrollToSafe
               />
             ))}
 
@@ -178,7 +179,13 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                 <Collapse key={chainId} in={isOpen}>
                   <List sx={{ py: 0 }}>
                     {ownedSafesOnChain.map((address) => (
-                      <SafeListItem key={address} address={address} chainId={chainId} closeDrawer={closeDrawer} />
+                      <SafeListItem
+                        key={address}
+                        address={address}
+                        chainId={chainId}
+                        closeDrawer={closeDrawer}
+                        shouldScrollToSafe={!addedSafesOnChain[address]}
+                      />
                     ))}
                   </List>
                 </Collapse>
