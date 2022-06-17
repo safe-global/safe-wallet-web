@@ -17,8 +17,6 @@ body {
   padding: 0;
   margin: 0;
   font-family: Averta, sans-serif;
-  background-color: #f6f7f8 !important; /* @TODO: move to the theme */
-  color: #001428;
 }
 
 a {

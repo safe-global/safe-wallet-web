@@ -10,7 +10,7 @@ const useLocalStorage = <T>(key: string, initialState: T): [T, Dispatch<SetState
       setCache(newVal)
       local.setItem(key, newVal)
     },
-    [setCache, key],
+    [setCache, key, cache],
   )
 
   return [cache, setNewValue]

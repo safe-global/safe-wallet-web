@@ -6,7 +6,7 @@ import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 
 import { shortenAddress } from '@/services/formatters'
 import useSafeInfo from '@/services/useSafeInfo'
-import Identicon from '@/components/common/Identicon'
+import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
 import SidebarFiat from '@/components/sidebar/SidebarFiat'
 import useAddressBook from '@/services/useAddressBook'
@@ -47,7 +47,7 @@ const SafeHeader = (): ReactElement => {
       <div className={css.container}>
         <div className={css.safe}>
           <div className={css.icon}>
-            <Identicon address={address} threshold={threshold} owners={owners?.length} />
+            <SafeIcon address={address} threshold={threshold} owners={owners?.length} />
           </div>
           <div>
             <Typography variant="subtitle1">{address ? shortenAddress(address) : '...'}</Typography>

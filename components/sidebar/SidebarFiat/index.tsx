@@ -9,7 +9,7 @@ const SidebarFiat = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
   const { balances } = useBalances()
 
-  const [wholeNumber, decimals] = useMemo(() => {
+  const { wholeNumber, decimal, decimals } = useMemo(() => {
     const STANDARD_DECIMAL = '.'
 
     // Intl.NumberFormat always returns the currency code or symbol so we must manually remove it
@@ -18,11 +18,14 @@ const SidebarFiat = (): ReactElement => {
     const parts = formatter.formatToParts(Number(balances.fiatTotal))
     const decimal = parts.find(({ type }) => type === 'decimal')?.value || STANDARD_DECIMAL
 
-    return parts
+    const [wholeNumber, decimals] = parts
       .filter(({ type }) => type !== 'currency') // Remove currency symbol
-      .reduce((acc, { value }) => acc + value, '') // Concatenate all parts
+      .map(({ value }) => value)
+      .join('') // Concatenate all parts
       .trim()
       .split(decimal)
+
+    return { wholeNumber, decimal, decimals }
   }, [currency, balances.fiatTotal])
   return (
     <>
@@ -30,7 +33,11 @@ const SidebarFiat = (): ReactElement => {
         {wholeNumber}
       </Typography>
       <Typography variant="subtitle1" display="inline" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
-        .{decimals} {currency.toUpperCase()}
+        {
+          // Some currencies do not have no decimals
+          decimals ? `${decimal}${decimals}` : ''
+        }{' '}
+        {currency.toUpperCase()}
       </Typography>
     </>
   )

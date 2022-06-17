@@ -7,7 +7,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Button from '@mui/material/Button'
 import CheckIcon from '@mui/icons-material/Check'
 
-import Identicon from '@/components/common/Identicon'
+import SafeIcon from '@/components/common/SafeIcon'
 import { shortenAddress } from '@/services/formatters'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
@@ -53,10 +53,10 @@ const SafeListItem = ({
   }
 
   const handleOpenSafe = () => {
-    handleNavigate(`/${chain?.shortName}:${address}`)
+    handleNavigate(`/safe/home?safe=${chain?.shortName}:${address}`)
   }
   const handleAddSafe = () => {
-    handleNavigate('/welcome')
+    handleNavigate(`/welcome?chain=${chain?.chainId}`)
   }
 
   return (
@@ -72,7 +72,7 @@ const SafeListItem = ({
         )}
       </ListItemIcon>
       <ListItemIcon>
-        <Identicon address={address} {...rest} />
+        <SafeIcon address={address} {...rest} />
       </ListItemIcon>
       <ListItemText
         primaryTypographyProps={{ variant: 'subtitle2' }}
