@@ -10,7 +10,8 @@ const useLocalStorage = <T>(key: string, initialState: T): [T, Dispatch<SetState
       setCache(newVal)
       local.setItem(key, newVal)
     },
-    [setCache, key, cache],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [setCache, key],
   )
 
   return [cache, setNewValue]

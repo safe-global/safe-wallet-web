@@ -4,16 +4,14 @@ import Link from 'next/link'
 import { useTheme } from '@mui/material/styles'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
+import Button from '@mui/material/Button'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined'
 import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import useChains from '@/services/useChains'
@@ -86,15 +84,20 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
     setOpen((prev) => ({ [chainId]: !prev[chainId] }))
   }
 
+  const handleAddSafe = () => {
+    router.push({ href: '/welcome', query: router.query })
+    closeDrawer()
+  }
+
   return (
     <List className={css.list}>
       <ListItem>
-        <ListItemIcon>
-          <IconButton>
-            <AddCircleOutlinedIcon sx={({ palette }) => ({ fill: palette.primary.main })} />
-          </IconButton>
-        </ListItemIcon>
-        <ListItemText>Add Safe</ListItemText>
+        <ListItemText primaryTypographyProps={{ variant: 'h6', fontWeight: 700 }}>My Safes</ListItemText>
+        <ListItemSecondaryAction>
+          <Button disableElevation size="small" variant="outlined" onClick={handleAddSafe}>
+            Add
+          </Button>
+        </ListItemSecondaryAction>
       </ListItem>
       {configs.map((chain) => {
         const { ownedSafesOnChain, localSafesOnChain } = getSafesOnChain({
@@ -119,13 +122,19 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
         const isOpen = open[chain.chainId]
         return (
           <Fragment key={chain.chainName}>
-            <ListItem selected sx={{ py: 0 }}>
-              <Box
-                component="span"
-                className={css.dot}
-                sx={{ color: chain.theme.textColor, backgroundColor: chain.theme.backgroundColor }}
-              />{' '}
-              <ListItemText primaryTypographyProps={{ variant: 'subtitle2', color: palette.black[400] }}>
+            <ListItem
+              selected
+              sx={{
+                p: 0,
+                width: 'unset',
+                mx: '12px',
+                borderRadius: '8px',
+                backgroundColor: `${chain.theme.backgroundColor} !important`,
+              }}
+            >
+              <ListItemText
+                primaryTypographyProps={{ variant: 'caption', textAlign: 'center', color: palette.black[400] }}
+              >
                 {chain.chainName}
               </ListItemText>
             </ListItem>
@@ -157,12 +166,13 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                     initialExpand = false
                     toggleOpen(chainId)
                   }}
-                  sx={{ '&:hover': { backgroundColor: 'unset' } }}
+                  sx={{
+                    py: 0,
+                    '&:hover': { backgroundColor: 'unset' },
+                  }}
                   disableRipple
                 >
-                  <ListItemText
-                    primaryTypographyProps={{ variant: 'subtitle2', color: palette.black[400], marginLeft: '40px' }}
-                  >
+                  <ListItemText primaryTypographyProps={{ variant: 'subtitle2', color: palette.black[400] }}>
                     Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
                   </ListItemText>
                   {isOpen ? (
@@ -172,7 +182,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                   )}
                 </ListItemButton>
                 <Collapse key={chainId} in={initialExpand || isOpen}>
-                  <List>
+                  <List sx={{ py: 0 }}>
                     {ownedSafesOnChain.map((address) => (
                       <SafeListItem key={address} address={address} chainId={chainId} closeDrawer={closeDrawer} />
                     ))}

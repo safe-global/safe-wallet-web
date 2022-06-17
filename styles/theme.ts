@@ -11,6 +11,7 @@ import {
   primaryGreen,
   red,
   secondaryBlack,
+  secondaryGray,
   warning,
 } from '@/styles/colors'
 
@@ -24,6 +25,7 @@ interface ThemeColors {
   secondaryBlack: Pick<Color, 300>
   primaryBlack: Pick<Color, 500>
   primaryGreen: Pick<Color, 200>
+  secondaryGray: Pick<Color, 300>
 }
 
 declare module '@mui/material/styles' {
@@ -88,6 +90,9 @@ const theme = createTheme({
     },
     primaryGreen: {
       200: primaryGreen[200],
+    },
+    secondaryGray: {
+      300: secondaryGray[300],
     },
   },
   typography: {

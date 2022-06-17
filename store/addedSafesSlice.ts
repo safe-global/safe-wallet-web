@@ -1,11 +1,11 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeBalanceResponse, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '.'
 import { setSafeInfo, type SetSafeInfoPayload } from '@/store/safeInfoSlice'
 
 export type AddedSafesState = {
   [chainId: string]: {
-    [safeAddress: string]: SafeInfo
+    [safeAddress: string]: SafeInfo & Partial<SafeBalanceResponse>
   }
 }
 

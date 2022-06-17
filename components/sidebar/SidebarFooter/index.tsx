@@ -9,6 +9,7 @@ import {
   SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
 import HelpCenter from './assets/HelpCenter.svg'
+import WhatsNew from './assets/WhatsNew.svg'
 
 const WHATS_NEW_PATH = ''
 const HELP_CENTER_PATH = ''
@@ -24,8 +25,10 @@ const SidebarFooter = (): ReactElement => {
         selected={isSelected(WHATS_NEW_PATH)}
         href={{ pathname: WHATS_NEW_PATH, query: router.query }}
       >
-        <SidebarListItemIcon>{null}</SidebarListItemIcon>
-        <SidebarListItemText bold>What`&apos;`s new</SidebarListItemText>
+        <SidebarListItemIcon>
+          <Image src={WhatsNew} alt="What's New" />
+        </SidebarListItemIcon>
+        <SidebarListItemText bold>What&apos;s new</SidebarListItemText>
       </SidebarListItemButton>
       <SidebarListItemButton
         selected={isSelected(HELP_CENTER_PATH)}
