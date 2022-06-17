@@ -10,3 +10,14 @@
   bottom: -51px;
   right: 0;
 }
+
+.balance {
+  font-size: 12px;
+  line-height: 1.08;
+  letter-spacing: -0.5px;
+  display: inline-block;
+  padding: 5px 10px;
+  margin-top: 4px;
+  margin-left: 40px;
+  border-radius: 3px;
+}

@@ -30,6 +30,7 @@ const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
       color: cfg.theme.backgroundColor,
     })),
     accountCenter: {
+      mobile: { enabled: true },
       desktop: { enabled: false },
     },
     appMetadata: {

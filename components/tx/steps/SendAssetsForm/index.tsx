@@ -10,6 +10,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
@@ -19,6 +20,8 @@ import { formatDecimals, toDecimals } from '@/services/formatters'
 import { validateAddress } from '@/services/validation'
 import useBalances from '@/services/useBalances'
 import useAddressBook from '@/services/useAddressBook'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import useSafeAddress from '@/services/useSafeAddress'
 
 export type SendAssetsFormData = {
   recipient: string
@@ -36,8 +39,12 @@ const abFilterOptions = createFilterOptions({
 })
 
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
+  const address = useSafeAddress()
   const { balances } = useBalances()
   const addressBook = useAddressBook()
+
+  const nativeToken = balances.items.find((item) => parseInt(item.tokenInfo.address, 16) === 0)
+  const nativeTokenBalance = nativeToken ? formatDecimals(nativeToken.balance, nativeToken.tokenInfo.decimals) : '0'
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
     label: address,
@@ -74,6 +81,25 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
   return (
     <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <Typography variant="subtitle1" pb={1}>
+          Sending from
+        </Typography>
+
+        <Box fontSize={14}>
+          <EthHashInfo address={address} shortAddress={false} />
+        </Box>
+
+        {nativeToken && (
+          <Box className={css.balance} bgcolor={(theme) => theme.palette.grey.A100}>
+            Balance:{' '}
+            <b>
+              {nativeTokenBalance} {nativeToken.tokenInfo.symbol}
+            </b>
+          </Box>
+        )}
+      </div>
+
       <FormControl fullWidth>
         <Autocomplete
           defaultValue={formData?.recipient}
