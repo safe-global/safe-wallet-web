@@ -98,8 +98,8 @@ const pageSizes = [5, 10, 25]
 function EnhancedTable({ rows, headCells }: EnhancedTableProps) {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
   const [orderBy, setOrderBy] = useState<string>('')
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(pageSizes[0])
+  const [page, setPage] = useState<number>(0)
+  const [rowsPerPage, setRowsPerPage] = useState<number>(pageSizes[1])
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc'
