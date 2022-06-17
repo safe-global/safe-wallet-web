@@ -23,7 +23,7 @@ import SafeListItem from '@/components/sidebar/SafeListItem'
 
 import css from './styles.module.css'
 
-const getSafesOnChain = ({
+export const _getSafesOnChain = ({
   chainId,
   ownedSafes,
   addedSafes,
@@ -41,7 +41,7 @@ const getSafesOnChain = ({
   return { ownedSafesOnChain, addedSafesOnChain }
 }
 
-const shouldExpandSafeList = ({
+export const _shouldExpandSafeList = ({
   isCurrentChain,
   safeAddress,
   ownedSafesOnChain,
@@ -108,7 +108,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
         </ListItemSecondaryAction>
       </ListItem>
       {configs.map((chain) => {
-        const { ownedSafesOnChain, addedSafesOnChain } = getSafesOnChain({
+        const { ownedSafesOnChain, addedSafesOnChain } = _getSafesOnChain({
           chainId: chain.chainId,
           ownedSafes,
           addedSafes,
@@ -122,7 +122,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
         }
 
         const isOpen =
-          shouldExpandSafeList({
+          _shouldExpandSafeList({
             isCurrentChain,
             safeAddress,
             ownedSafesOnChain,

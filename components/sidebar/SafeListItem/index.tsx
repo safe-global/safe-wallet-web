@@ -15,6 +15,7 @@ import useAddressBook from '@/services/useAddressBook'
 import { selectChainById } from '@/store/chainsSlice'
 import SafeListSecondaryAction from '@/components/sidebar/SafeListSecondaryAction'
 
+// TODO: Add scrolling to Safe on open
 const SafeListItem = ({
   address,
   chainId,
@@ -80,7 +81,8 @@ const SafeListItem = ({
       />
       <ListItemSecondaryAction sx={{ display: 'flex', alignItems: 'center' }}>
         <SafeListSecondaryAction chainId={chainId} address={address} handleAddSafe={handleAddSafe} />
-        {/* TODO: Add context menu for renaming/deleting */}
+        {/*
+        // TODO: Add context menu for renaming/deleting */}
         <IconButton
           edge="end"
           size="small"
