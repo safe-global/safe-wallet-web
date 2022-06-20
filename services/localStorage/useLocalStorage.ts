@@ -1,19 +1,16 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback, Dispatch, SetStateAction } from 'react'
 import local from './local'
 
-const useLocalStorage = <T>(key: string): [T | undefined, (val: T | undefined) => void] => {
-  const [cache, setCache] = useState<T>()
-
-  useEffect(() => {
-    const saved = local.getItem<T>(key)
-    setCache(saved)
-  }, [key])
+const useLocalStorage = <T>(key: string, initialState: T): [T, Dispatch<SetStateAction<T>>] => {
+  const [cache, setCache] = useState<T>(local.getItem<T>(key) ?? initialState)
 
   const setNewValue = useCallback(
-    (newVal: T | undefined) => {
+    (value: T | ((prevState: T) => T)) => {
+      const newVal = value instanceof Function ? value(cache) : value
       setCache(newVal)
-      local.setItem<T | undefined>(key, newVal)
+      local.setItem(key, newVal)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [setCache, key],
   )
 

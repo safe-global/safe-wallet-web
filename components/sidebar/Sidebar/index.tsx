@@ -1,16 +1,16 @@
 import { useState, type ReactElement } from 'react'
-import Link from 'next/link'
-import { Box, Button, Divider, Drawer, IconButton } from '@mui/material'
+import { Box, Divider, Drawer, IconButton } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
 
-import css from './styles.module.css'
 import useSafeInfo from '@/services/useSafeInfo'
-import ChainIndicator from '../ChainIndicator'
-import SafeHeader from '../SafeHeader'
-import SafeList from '../SafeList'
-import NewTxButton from '../NewTxButton'
-import Navigation from '@/components/common/Navigation'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import SidebarHeader from '@/components/sidebar/SidebarHeader'
+import SafeList from '@/components/sidebar/SafeList'
+import SidebarNavigation from '@/components/sidebar/SidebarNavigation'
 import useSafeAddress from '@/services/useSafeAddress'
+import SidebarFooter from '@/components/sidebar/SidebarFooter'
+
+import css from './styles.module.css'
 
 const Sidebar = (): ReactElement => {
   const address = useSafeAddress()
@@ -21,34 +21,26 @@ const Sidebar = (): ReactElement => {
     setIsDrawerOpen((prev) => !prev)
   }
 
-  const onDrawerToggleDelayed = () => {
-    setTimeout(onDrawerToggle, 200)
-  }
-
   return (
     <Box className={css.container} sx={{ backgroundColor: 'background.paper' }}>
       <div className={css.chain}>
         <ChainIndicator />
       </div>
-
-      <IconButton className={css.drawerButton} onClick={onDrawerToggle}>
+      <IconButton
+        className={css.drawerButton}
+        onClick={onDrawerToggle}
+        sx={(theme) => ({ backgroundColor: theme.palette.gray[500] })}
+      >
         <ChevronRight />
       </IconButton>
-
       {/* For routes with a Safe address */}
       {address ? (
         <>
-          {!error && <SafeHeader />}
-
-          <div className={css.newTxButton}>
-            <NewTxButton />
-          </div>
+          {!error && <SidebarHeader />}
 
           <Divider />
 
-          <div className={css.menu}>
-            <Navigation />
-          </div>
+          <SidebarNavigation />
 
           {loading && 'Loading Safe info...'}
 
@@ -57,14 +49,15 @@ const Sidebar = (): ReactElement => {
       ) : (
         <div className={css.noSafeSidebar} />
       )}
+      <div style={{ flexGrow: 1 }} />
+
+      <Divider flexItem />
+
+      <SidebarFooter />
 
       <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
-        <div className={css.drawer} onClick={onDrawerToggleDelayed}>
-          <Link href="/welcome" passHref>
-            <Button variant="contained">+ Add Safe</Button>
-          </Link>
-
-          <SafeList />
+        <div className={css.drawer}>
+          <SafeList closeDrawer={() => setIsDrawerOpen(false)} />
         </div>
       </Drawer>
     </Box>

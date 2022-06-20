@@ -13,11 +13,13 @@ const initialState: SafeInfoState = {
   safe: undefined,
 }
 
+export type SetSafeInfoPayload = PayloadAction<SafeInfoState>
+
 export const safeInfoSlice = createSlice({
   name: 'safeInfo',
   initialState,
   reducers: {
-    setSafeInfo: (state, action: PayloadAction<SafeInfoState>) => {
+    setSafeInfo: (_, action: SetSafeInfoPayload) => {
       return action.payload
     },
   },

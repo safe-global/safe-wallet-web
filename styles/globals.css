@@ -17,8 +17,6 @@ body {
   padding: 0;
   margin: 0;
   font-family: Averta, sans-serif;
-  background-color: #F6F7F8 !important; /* @TODO: move to the theme */
-  color: #001428;
 }
 
 a {
@@ -28,4 +26,8 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+:root {
+  --onboard-modal-z-index: 1201;
 }

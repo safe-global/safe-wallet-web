@@ -1,36 +1,32 @@
 .container,
 .drawer {
-  width: 220px;
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
-  padding: 20px 0;
+  width: 220px;
+  padding: 20px 0 0;
   border: none;
   box-shadow: rgb(40 54 61 / 8%) 1px 2px 12px;
 }
 
 .drawer {
+  width: 400px;
   text-align: center;
-  padding: 74px 20px 20px;
+  padding: 52px 0 0;
 }
 
 .chain {
-  margin: -20px 0 20px;
-  text-align: center;
-  font-size: 11px;
+  margin-top: -20px;
 }
 
 .chain > * {
   padding: 3px;
-}
-
-.newTxButton {
-  margin: 20px 0;
-  text-align: center;
 }
 
 .noSafeSidebar {
@@ -44,15 +40,10 @@
   right: 0;
   transform: translateX(50%);
   top: 40px;
-  background-color: #f6f7f8; /* @TODO: move to the theme */
 }
 
 .drawerButton svg {
   transform: translateX(-25%);
-}
-
-.menu {
-  padding: 20px;
 }
 
 @media (max-width: 768px) {
