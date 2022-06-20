@@ -7,10 +7,10 @@ const NewSafe = () => {
 
   return (
     <Box>
-      <Typography variant="h5" mb={2}>
+      <Typography variant="h1" mb={2}>
         Welcome to Gnosis Safe.
       </Typography>
-      <Typography variant="body1" mb={2}>
+      <Typography variant="h4" mb={2}>
         Gnosis Safe is the most trusted platform to manage digital assets.
         <br />
         Here is how to get started:
@@ -18,10 +18,10 @@ const NewSafe = () => {
       <Paper sx={{ padding: 3 }}>
         <Grid container>
           <Grid item md={6}>
-            <Typography variant="h5" mb={1}>
+            <Typography variant="h2" mb={1}>
               Create Safe
             </Typography>
-            <Typography variant="body1" mb={4}>
+            <Typography mb={4}>
               Create a new Safe that is controlled by one or multiple owners. You will be required to pay a network fee
               for creating your new Safe.
             </Typography>
@@ -31,7 +31,7 @@ const NewSafe = () => {
             <Divider orientation="vertical" flexItem />
           </Grid>
           <Grid item md>
-            <Typography variant="h5" mb={1}>
+            <Typography variant="h2" mb={1}>
               Load Existing Safe
             </Typography>
             <Typography variant="body1" mb={4}>

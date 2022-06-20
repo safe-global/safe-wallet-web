@@ -91,9 +91,6 @@ const theme = createTheme({
     },
   },
   typography: {
-    allVariants: {
-      color: primaryBlack[500],
-    },
     fontFamily: [
       'Averta',
       'Roboto',
@@ -109,18 +106,63 @@ const theme = createTheme({
       'BlinkMacSystemFont',
       'sans-serif',
     ].join(','),
-    button: {
-      textTransform: 'none',
+    allVariants: {
+      color: primaryBlack[500],
+    },
+    h1: {
+      fontSize: 32,
+      lineHeight: '36px',
+      fontWeight: 'bold',
+    },
+    h2: {
+      fontSize: 27,
+      lineHeight: '34px',
+      fontWeight: 'bold',
+    },
+    h3: {
+      fontSize: 24,
+      lineHeight: '30px',
+    },
+    h4: {
+      fontSize: 20,
+      lineHeight: '26px',
+    },
+    body1: {
+      fontSize: 16,
+      lineHeight: '22px',
+    },
+    body2: {
+      fontSize: 14,
+      lineHeight: '20px',
+    },
+    caption: {
+      fontSize: 12,
+      lineHeight: '16px',
+    },
+    overline: {
+      fontSize: 11,
+      lineHeight: '14px',
+      textTransform: 'uppercase',
     },
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: ({ theme }) => ({
+          borderRadius: '8px',
+          // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
+          borderColor: theme.palette.primary[400],
+          textTransform: 'none',
           '&.Mui-disabled': {
             backgroundColor: theme.palette.secondaryBlack[300],
           },
         }),
+        outlined: {
+          border: '2px solid',
+          '&:hover': {
+            border: '2px solid',
+          },
+        },
       },
     },
   },

@@ -94,15 +94,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
       <ListItem>
         <ListItemText primaryTypographyProps={{ variant: 'h6', fontWeight: 700 }}>My Safes</ListItemText>
         <ListItemSecondaryAction>
-          <Button
-            disableElevation
-            size="small"
-            variant="outlined"
-            onClick={handleAddSafe}
-            className={css.addButton}
-            // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-            sx={({ palette }) => ({ border: `2px solid ${palette.primary[400]} !important` })}
-          >
+          <Button disableElevation size="small" variant="outlined" onClick={handleAddSafe} className={css.addButton}>
             + Add
           </Button>
         </ListItemSecondaryAction>
