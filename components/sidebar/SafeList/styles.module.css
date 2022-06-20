@@ -1,3 +1,7 @@
+.container {
+  overflow-y: auto;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -38,8 +42,7 @@
 }
 
 .list {
-  height: 100%;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   padding: 0;
 }

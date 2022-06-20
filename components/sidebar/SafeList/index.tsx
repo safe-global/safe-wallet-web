@@ -87,7 +87,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
   }
 
   return (
-    <>
+    <div className={css.container}>
       <div className={css.header}>
         <Typography variant="h4" className={css.title} display="inline" fontWeight={700}>
           My Safes
@@ -187,7 +187,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
           </Fragment>
         )
       })}
-    </>
+    </div>
   )
 }
 
