@@ -8,8 +8,6 @@ import {
   SidebarListItemIcon,
   SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
-import HelpCenter from './assets/HelpCenter.svg'
-import WhatsNew from './assets/WhatsNew.svg'
 
 const WHATS_NEW_PATH = ''
 const HELP_CENTER_PATH = ''
@@ -26,7 +24,7 @@ const SidebarFooter = (): ReactElement => {
         href={{ pathname: WHATS_NEW_PATH, query: router.query }}
       >
         <SidebarListItemIcon>
-          <Image src={WhatsNew} alt="What's New" />
+          <Image src="/images/sidebar/whats-new.svg" alt="What's New" height="16px" width="16px" />
         </SidebarListItemIcon>
         <SidebarListItemText bold>What&apos;s new</SidebarListItemText>
       </SidebarListItemButton>
@@ -35,7 +33,7 @@ const SidebarFooter = (): ReactElement => {
         href={{ pathname: HELP_CENTER_PATH, query: router.query }}
       >
         <SidebarListItemIcon>
-          <Image src={HelpCenter} alt="Help Center" />
+          <Image src="/images/sidebar/help-center.svg" alt="Help Center" height="16px" width="16px" />
         </SidebarListItemIcon>
         <SidebarListItemText bold>Help Center</SidebarListItemText>
       </SidebarListItemButton>

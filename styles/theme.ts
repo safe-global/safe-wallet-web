@@ -113,6 +113,17 @@ const theme = createTheme({
       textTransform: 'none',
     },
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '&.Mui-disabled': {
+            backgroundColor: theme.palette.secondaryBlack[300],
+          },
+        }),
+      },
+    },
+  },
 })
 
 export default theme

@@ -108,9 +108,7 @@ export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next)
         break
       }
 
-      if (chainId && address) {
-        store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.balances }))
-      }
+      store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.balances }))
     }
   }
 

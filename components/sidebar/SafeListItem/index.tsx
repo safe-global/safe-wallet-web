@@ -1,91 +1,20 @@
-import { ReactElement, useEffect, useRef, useState, MouseEvent } from 'react'
+import { useEffect, useRef, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
-import Image from 'next/image'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 import ListItemIcon from '@mui/material/ListItemIcon'
-import IconButton from '@mui/material/IconButton'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 
 import SafeIcon from '@/components/common/SafeIcon'
 import { shortenAddress } from '@/services/formatters'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { useAppSelector } from '@/store'
 import useSafeAddress from '@/services/useSafeAddress'
 import useAddressBook from '@/services/useAddressBook'
 import { selectChainById } from '@/store/chainsSlice'
 import SafeListItemSecondaryAction from '@/components/sidebar/SafeListItemSecondaryAction'
 import useChainId from '@/services/useChainId'
-import Pencil from './assets/Pencil.svg'
-import Trash from './assets/Trash.svg'
-import { removeSafe } from '@/store/addedSafesSlice'
 import { AppRoutes } from '@/config/routes'
-
-// TODO: Abstract
-const ContextMenu = ({ chainId, address }: { chainId: string; address: string }) => {
-  const dispatch = useAppDispatch()
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
-
-  const handleClick = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
-    setAnchorEl(e.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(undefined)
-  }
-
-  const handleRemove = () => {
-    dispatch(removeSafe({ chainId, address }))
-  }
-  return (
-    <>
-      <IconButton
-        edge="end"
-        size="small"
-        sx={{
-          paddingRight: 0,
-          '&:hover': {
-            backgroundColor: 'unset',
-          },
-        }}
-        onClick={(e) => {
-          e.stopPropagation()
-          handleClick(e)
-        }}
-      >
-        <MoreVertIcon sx={({ palette }) => ({ color: palette.secondaryBlack[300] })} />
-      </IconButton>
-      <Menu
-        anchorEl={anchorEl}
-        open={!!anchorEl}
-        onClose={handleClose}
-        sx={({ palette }) => ({
-          '.MuiPaper-root': { borderRadius: '8px !important', width: '138px' },
-          '.MuiList-root': { py: 0 },
-          '.MuiMenuItem-root': {
-            // TODO: Hover
-            '&:hover': { backgroundColor: palette.gray[300] },
-          },
-        })}
-      >
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon sx={{ minWidth: '22px' }}>
-            <Image src={Pencil} alt="Rename" />
-          </ListItemIcon>{' '}
-          Rename
-        </MenuItem>
-        <MenuItem onClick={handleRemove}>
-          <ListItemIcon sx={{ minWidth: '22px' }}>
-            <Image src={Trash} alt="Remove" />
-          </ListItemIcon>{' '}
-          Remove
-        </MenuItem>
-      </Menu>
-    </>
-  )
-}
+import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
 
 const SafeListItem = ({
   address,
@@ -165,7 +94,7 @@ const SafeListItem = ({
       />
       <ListItemSecondaryAction sx={{ display: 'flex', alignItems: 'center' }}>
         <SafeListItemSecondaryAction chainId={chainId} address={address} handleAddSafe={handleAddSafe} />
-        <ContextMenu address={address} chainId={chainId} />
+        <SafeListContextMenu address={address} chainId={chainId} />
       </ListItemSecondaryAction>
     </ListItemButton>
   )

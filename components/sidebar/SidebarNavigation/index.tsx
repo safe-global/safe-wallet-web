@@ -7,7 +7,6 @@ import Collapse from '@mui/material/Collapse'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import List from '@mui/material/List'
-import { ListItemIconProps } from '@mui/material'
 
 import {
   SidebarList,
@@ -15,19 +14,13 @@ import {
   SidebarListItemIcon,
   SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
-import Home from './assets/Home.svg'
-import Assets from './assets/Assets.svg'
-import Transactions from './assets/Transactions.svg'
-import AddressBook from './assets/AddressBook.svg'
-import Apps from './assets/Apps.svg'
-import Settings from './assets/Settings.svg'
 
 import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
 
 type NavItem = {
   label: string
-  icon?: ListItemIconProps['children']
+  icon?: string
   href: string
   items?: NavItem[]
 }
@@ -35,12 +28,12 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     label: 'Home',
-    icon: <Image src={Home} alt="Home" />,
+    icon: '/images/sidebar/home.svg',
     href: AppRoutes.safe.home,
   },
   {
     label: 'Assets',
-    icon: <Image src={Assets} alt="Assets" />,
+    icon: '/images/sidebar/assets.svg',
     href: AppRoutes.safe.balances.index,
     items: [
       {
@@ -55,7 +48,7 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Transactions',
-    icon: <Image src={Transactions} alt="Transactions" />,
+    icon: '/images/sidebar/transactions.svg',
     href: AppRoutes.safe.transactions.index,
     items: [
       {
@@ -70,17 +63,17 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Address Book',
-    icon: <Image src={AddressBook} alt="Address Book" />,
+    icon: '/images/sidebar/address-book.svg',
     href: AppRoutes.safe.addressBook,
   },
   {
     label: 'Apps',
-    icon: <Image src={Apps} alt="Safe Apps" />,
+    icon: '/images/sidebar/apps.svg',
     href: AppRoutes.safe.apps,
   },
   {
     label: 'Settings',
-    icon: <Image src={Settings} alt="Settings" />,
+    icon: '/images/sidebar/settings.svg',
     href: AppRoutes.safe.settings.details,
     items: [
       {
@@ -131,7 +124,11 @@ const Navigation = (): ReactElement => {
               href={{ pathname: item.href, query: router.query }}
               key={item.href}
             >
-              {item.icon && <SidebarListItemIcon>{item.icon}</SidebarListItemIcon>}
+              {item.icon && (
+                <SidebarListItemIcon>
+                  <Image src={item.icon} alt={item.label} height="16px" width="16px" />
+                </SidebarListItemIcon>
+              )}
               <SidebarListItemText bold>{item.label}</SidebarListItemText>
             </SidebarListItemButton>
           )
@@ -146,7 +143,11 @@ const Navigation = (): ReactElement => {
               selected={isExpanded}
               href={{ pathname: item.href, query: router.query }}
             >
-              {item.icon && <SidebarListItemIcon>{item.icon}</SidebarListItemIcon>}
+              {item.icon && (
+                <SidebarListItemIcon>
+                  <Image src={item.icon} alt={item.label} height="16px" width="16px" />
+                </SidebarListItemIcon>
+              )}
               <SidebarListItemText bold>{item.label}</SidebarListItemText>
               {isExpanded ? <ExpandLess /> : <ExpandMore />}
             </SidebarListItemButton>

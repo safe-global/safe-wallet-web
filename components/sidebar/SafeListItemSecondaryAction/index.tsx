@@ -6,7 +6,6 @@ import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import useWallet from '@/services/wallets/useWallet'
 import useChains from '@/services/useChains'
-import Eye from './assets/Eye.svg'
 
 import css from './styles.module.css'
 
@@ -53,7 +52,7 @@ const SafeListItemSecondaryAction = ({
   if (!isOwner) {
     return (
       <Typography variant="caption" display="flex" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
-        <Image src={Eye} alt="Read only" /> Read only
+        <Image src="/images/sidebar/safe-list/eye.svg" alt="Read only" height="16px" width="16px" /> Read only
       </Typography>
     )
   }

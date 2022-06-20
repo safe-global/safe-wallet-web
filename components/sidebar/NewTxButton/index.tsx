@@ -22,9 +22,6 @@ const NewTxButton = (): ReactElement => {
         disabled={!wallet || !isSafeOwner || isWrongChain}
         fullWidth
         className={css.button}
-        sx={({ palette }) => ({
-          '&.Mui-disabled': { backgroundColor: palette.secondaryBlack[300] },
-        })}
         disableElevation
       >
         {!wallet

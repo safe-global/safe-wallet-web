@@ -10,9 +10,6 @@ import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
 import SidebarFiat from '@/components/sidebar/SidebarFiat'
 import useAddressBook from '@/services/useAddressBook'
-import BlockExplorer from './assets/BlockExplorer.svg'
-import Copy from './assets/Copy.svg'
-import QR from './assets/QR.svg'
 
 import css from './styles.module.css'
 
@@ -56,13 +53,13 @@ const SafeHeader = (): ReactElement => {
         </div>
         <div className={css.iconButtons}>
           <HeaderIconButton>
-            <Image src={QR} alt="Address QR Code" />
+            <Image src="/images/sidebar/qr.svg" alt="Address QR Code" height="16px" width="16px" />
           </HeaderIconButton>
           <HeaderIconButton>
-            <Image src={Copy} alt="Copy Address" />
+            <Image src="/images/sidebar/copy.svg" alt="Copy Address" height="16px" width="16px" />
           </HeaderIconButton>
           <HeaderIconButton>
-            <Image src={BlockExplorer} alt="Open Block Explorer" />
+            <Image src="/images/sidebar/block-explorer.svg" alt="Open Block Explorer" height="16px" width="16px" />
           </HeaderIconButton>
         </div>
         <NewTxButton />
