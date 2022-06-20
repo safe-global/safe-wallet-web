@@ -9,15 +9,20 @@ import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUnc
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
 import { useState, type ReactElement } from 'react'
-import type { AddressEx, DetailedExecutionInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type {
+  AddressEx,
+  DetailedExecutionInfo,
+  TransactionDetails,
+  TransactionSummary,
+} from '@gnosis.pm/safe-react-gateway-sdk'
 
-import useSafeInfo from '@/services/useSafeInfo'
 import useWallet from '@/services/wallets/useWallet'
 import useAddressBook from '@/services/useAddressBook'
 import useIsPending from '@/components/transactions/useIsPending'
-import { isCancellationTxInfo, isMultisigExecutionDetails } from '@/components/transactions/utils'
+import { isCancellationTxInfo, isExecutable, isMultisigExecutionDetails } from '@/components/transactions/utils'
 
 import css from './styles.module.css'
+import { AddressInfo } from '../TxDetails/TxData'
 
 const black300 = '#B2BBC0'
 const gray500 = '#E2E3E3'
@@ -83,25 +88,27 @@ const shouldHideConfirmations = (detailedExecutionInfo: DetailedExecutionInfo | 
   return isConfirmed || detailedExecutionInfo.confirmations.length > 3
 }
 
-// TODO: Create an AddressInfo component
-const AddressInfo = ({ address, name, avatarUrl, shortenHash }: any): ReactElement => <>{name || address}</>
-
 const getConfirmationStep = (
   { value, name, logoUri }: AddressEx,
   key: string | undefined = undefined,
 ): ReactElement => (
   <StyledStep key={key} $bold $state="confirmed">
     <StepLabel icon={<DotIcon />}>
-      <AddressInfo address={value} name={name} avatarUrl={logoUri} shortenHash={4} />
+      <AddressInfo address={value} name={name} avatarUrl={logoUri} />
     </StepLabel>
   </StyledStep>
 )
 
-export const TxSigners = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement | null => {
+export const TxSigners = ({
+  txDetails,
+  txSummary,
+}: {
+  txDetails: TransactionDetails
+  txSummary: TransactionSummary
+}): ReactElement | null => {
   const { detailedExecutionInfo, txInfo, txId } = txDetails
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(detailedExecutionInfo))
   const isPending = useIsPending({ txId })
-  const { safe } = useSafeInfo()
   const wallet = useWallet()
   const account = wallet?.address || ''
   const { [account]: name } = useAddressBook()
@@ -114,12 +121,11 @@ export const TxSigners = ({ txDetails }: { txDetails: TransactionDetails }): Rea
     return null
   }
 
-  const isImmediateExecution = isPending && safe?.threshold === 1
+  const canExecute = wallet?.address ? isExecutable(txSummary, wallet.address) : false
+  const numberOfConfirmations = detailedExecutionInfo.confirmations.length
   const confirmationsNeeded = detailedExecutionInfo.confirmationsRequired - detailedExecutionInfo.confirmations.length
-  const isConfirmed = confirmationsNeeded <= 0 || isImmediateExecution
+  const isConfirmed = confirmationsNeeded <= 0 || isPending || canExecute
   const isExecuted = !!detailedExecutionInfo.executor
-
-  const numberOfConfirmations = isImmediateExecution ? 1 : detailedExecutionInfo.confirmations.length
 
   return (
     <Stepper
@@ -163,7 +169,7 @@ export const TxSigners = ({ txDetails }: { txDetails: TransactionDetails }): Rea
         </StepLabel>
       </StyledStep>
       {!hideConfirmations &&
-        (isImmediateExecution
+        (canExecute || isPending
           ? getConfirmationStep({ value: account, name, logoUri: null })
           : detailedExecutionInfo.confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value)))}
       {detailedExecutionInfo.confirmations.length > 0 && (
@@ -189,12 +195,10 @@ export const TxSigners = ({ txDetails }: { txDetails: TransactionDetails }): Rea
               address={detailedExecutionInfo.executor.value}
               name={detailedExecutionInfo.executor.name}
               avatarUrl={detailedExecutionInfo.executor.logoUri}
-              shortenHash={4}
             />
           </StepContent>
         ) : (
-          !isConfirmed &&
-          !isPending && (
+          !isConfirmed && (
             <StepContent sx={{ color: black300 }}>Can be executed once the threshold is reached</StepContent>
           )
         )}

@@ -30,7 +30,7 @@ const ExpandibleTransactionItem = ({ item }: { item: Transaction }) => (
       <TxSummary item={item} />
     </AccordionSummary>
     <AccordionDetails className={css.accordionDetails}>
-      <TxDetails txWithDetails={item.transaction} />
+      <TxDetails txSummary={item.transaction} />
     </AccordionDetails>
   </Accordion>
 )

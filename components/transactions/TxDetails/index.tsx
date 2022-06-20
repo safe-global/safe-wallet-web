@@ -6,17 +6,10 @@ import Summary from '@/components/transactions/TxDetails/Summary'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import css from './styles.module.css'
 
-type TransactionSummaryWithDetails = TransactionSummary & {
-  txDetails?: TransactionDetails
-}
-export type TxDetailsProps = {
-  txWithDetails: TransactionSummaryWithDetails
-}
+const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
+  const { txDetails, loading } = useTxDetails({ txId: txSummary.id })
 
-const TxDetails = ({ txWithDetails }: TxDetailsProps): ReactElement => {
-  const { txDetails, loading } = useTxDetails({ txId: txWithDetails.id })
-
-  if (loading) {
+  if (loading || !txDetails) {
     return <div>Loading...</div>
   }
 
@@ -25,7 +18,7 @@ const TxDetails = ({ txWithDetails }: TxDetailsProps): ReactElement => {
       {/* /Details */}
       <div className={css.details}>
         <div className={css.txData}>
-          <TxData txWithDetails={txWithDetails} />
+          <TxData txDetails={txDetails} />
         </div>
         <div className={css.txSummary}>
           <Summary txDetails={txDetails} />
@@ -34,7 +27,7 @@ const TxDetails = ({ txWithDetails }: TxDetailsProps): ReactElement => {
       {/* Signers */}
       {txDetails && (
         <div className={css.txSigners}>
-          <TxSigners txDetails={txDetails} />
+          <TxSigners txDetails={txDetails} txSummary={txSummary} />
         </div>
       )}
     </div>

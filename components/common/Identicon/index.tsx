@@ -6,6 +6,7 @@ import css from './styles.module.css'
 
 export interface IdenticonProps {
   address: string
+  customBlockie?: string
 }
 
 const Identicon = ({ address }: IdenticonProps): ReactElement => {

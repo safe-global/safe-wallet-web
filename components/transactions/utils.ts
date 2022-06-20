@@ -99,7 +99,7 @@ export const isExecutable = (txSummary: TransactionSummary, walletAddress: strin
   }
   const { confirmationsRequired, confirmationsSubmitted } = txSummary.executionInfo
   return (
-    confirmationsSubmitted === confirmationsRequired ||
+    confirmationsSubmitted >= confirmationsRequired ||
     (confirmationsSubmitted === confirmationsRequired - 1 && isSignableBy(txSummary, walletAddress))
   )
 }
