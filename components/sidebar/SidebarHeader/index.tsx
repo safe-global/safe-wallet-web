@@ -32,10 +32,10 @@ const SafeHeader = (): ReactElement => {
     <>
       {name && (
         <>
-          <Typography variant="subtitle1" paddingX="8px" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
+          <Typography paddingX="8px" variant="body2" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
             Current Safe
           </Typography>
-          <Typography variant="h6" paddingX="8px" gutterBottom>
+          <Typography paddingX="8px" variant="body1" gutterBottom>
             {name}
           </Typography>
           <Divider />
@@ -47,7 +47,7 @@ const SafeHeader = (): ReactElement => {
             <SafeIcon address={address} threshold={threshold} owners={owners?.length} />
           </div>
           <div>
-            <Typography variant="subtitle1">{address ? shortenAddress(address) : '...'}</Typography>
+            <Typography variant="body2">{address ? shortenAddress(address) : '...'}</Typography>
             <SidebarFiat />
           </div>
         </div>

@@ -2,16 +2,13 @@ import { Fragment, useState, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useTheme } from '@mui/material/styles'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemText from '@mui/material/ListItemText'
 import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
 import Typography from '@mui/material/Typography'
 import Collapse from '@mui/material/Collapse'
-import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 import Button from '@mui/material/Button'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import IconButton from '@mui/material/IconButton'
 
 import useChains from '@/services/useChains'
 import useOwnedSafes from '@/services/useOwnedSafes'
@@ -20,9 +17,9 @@ import { useAppSelector } from '@/store'
 import { AddedSafesState, AddedSafesOnChain, selectAllAddedSafes } from '@/store/addedSafesSlice'
 import useSafeAddress from '@/services/useSafeAddress'
 import SafeListItem from '@/components/sidebar/SafeListItem'
+import { AppRoutes } from '@/config/routes'
 
 import css from './styles.module.css'
-import { AppRoutes } from '@/config/routes'
 
 export const _getSafesOnChain = ({
   chainId,
@@ -90,15 +87,15 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
   }
 
   return (
-    <List className={css.list}>
-      <ListItem>
-        <ListItemText primaryTypographyProps={{ variant: 'h6', fontWeight: 700 }}>My Safes</ListItemText>
-        <ListItemSecondaryAction>
-          <Button disableElevation size="small" variant="outlined" onClick={handleAddSafe} className={css.addButton}>
-            + Add
-          </Button>
-        </ListItemSecondaryAction>
-      </ListItem>
+    <>
+      <div className={css.header}>
+        <Typography variant="h4" className={css.title} display="inline" fontWeight={700}>
+          My Safes
+        </Typography>
+        <Button disableElevation size="small" variant="outlined" onClick={handleAddSafe} className={css.addButton}>
+          + Add
+        </Button>
+      </div>
       {configs.map((chain) => {
         const { ownedSafesOnChain, addedSafesOnChain } = _getSafesOnChain({
           chainId: chain.chainId,
@@ -113,70 +110,65 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
           return null
         }
 
-        let shouldInitiallyExpand = _shouldExpandSafeList({
-          isCurrentChain,
-          safeAddress,
-          ownedSafesOnChain,
-          addedSafesOnChain,
-        })
-
-        // TODO: Always open
-        const isOpen = shouldInitiallyExpand || open[chain.chainId]
+        const isOpen =
+          chain.chainId in open
+            ? open[chain.chainId]
+            : _shouldExpandSafeList({
+                isCurrentChain,
+                safeAddress,
+                ownedSafesOnChain,
+                addedSafesOnChain,
+              })
 
         return (
           <Fragment key={chain.chainName}>
-            <ListItem
-              selected
-              className={css.chainDivider}
-              sx={{ backgroundColor: `${chain.theme.backgroundColor} !important` }}
-            >
-              <ListItemText
-                primaryTypographyProps={{ variant: 'caption', textAlign: 'center', color: palette.black[400] }}
+            <div className={css.chainHeader}>
+              <Typography
+                variant="overline"
+                className={css.chainDivider}
+                sx={{
+                  backgroundColor: `${chain.theme.backgroundColor} !important`,
+                  color: palette.black[400],
+                }}
               >
                 {chain.chainName}
-              </ListItemText>
-            </ListItem>
-
-            {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
-              <Typography paddingY="22px" variant="subtitle2" sx={({ palette }) => ({ color: palette.black[400] })}>
-                <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
-                  Create or add
-                </Link>{' '}
-                an existing Safe on this network
               </Typography>
-            )}
 
-            {addedSafeEntriesOnChain.map(([address, { threshold, owners }]) => (
-              <SafeListItem
-                key={address}
-                address={address}
-                threshold={threshold}
-                owners={owners.length}
-                chainId={chain.chainId}
-                closeDrawer={closeDrawer}
-                shouldScrollToSafe
-              />
-            ))}
+              {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
+                <Typography paddingY="22px" variant="body2" sx={({ palette }) => ({ color: palette.black[400] })}>
+                  <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
+                    Create or add
+                  </Link>{' '}
+                  an existing Safe on this network
+                </Typography>
+              )}
 
-            {ownedSafesOnChain.length > 0 && (
-              <>
-                <ListItemButton
-                  onClick={() => {
-                    shouldInitiallyExpand = false
-                    toggleOpen(chain.chainId)
-                  }}
-                  className={css.ownedLabel}
-                  disableRipple
-                >
-                  <ListItemText primaryTypographyProps={{ variant: 'subtitle2', color: palette.black[400] }}>
+              {ownedSafesOnChain.length > 0 && (
+                <div onClick={() => toggleOpen(chain.chainId)} className={css.ownedLabel}>
+                  <Typography variant="body2" sx={({ palette }) => ({ color: palette.black[400] })} display="inline">
                     Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
-                  </ListItemText>
-                  {isOpen ? (
-                    <ExpandLess sx={({ palette }) => ({ fill: palette.black[400] })} />
-                  ) : (
-                    <ExpandMore sx={({ palette }) => ({ fill: palette.black[400] })} />
-                  )}
-                </ListItemButton>
+                  </Typography>
+                  <IconButton sx={({ palette }) => ({ fill: palette.black[400] })} disableRipple>
+                    {isOpen ? <ExpandLess /> : <ExpandMore />}
+                  </IconButton>
+                </div>
+              )}
+            </div>
+
+            <List className={css.list}>
+              {addedSafeEntriesOnChain.map(([address, { threshold, owners }]) => (
+                <SafeListItem
+                  key={address}
+                  address={address}
+                  threshold={threshold}
+                  owners={owners.length}
+                  chainId={chain.chainId}
+                  closeDrawer={closeDrawer}
+                  shouldScrollToSafe
+                />
+              ))}
+
+              {ownedSafesOnChain.length > 0 && (
                 <Collapse key={chainId} in={isOpen}>
                   <List sx={{ py: 0 }}>
                     {ownedSafesOnChain.map((address) => (
@@ -190,12 +182,12 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                     ))}
                   </List>
                 </Collapse>
-              </>
-            )}
+              )}
+            </List>
           </Fragment>
         )
       })}
-    </List>
+    </>
   )
 }
 

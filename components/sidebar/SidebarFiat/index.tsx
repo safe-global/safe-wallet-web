@@ -26,10 +26,10 @@ const SidebarFiat = (): ReactElement => {
 
   return (
     <>
-      <Typography variant="subtitle1" display="inline">
+      <Typography variant="body1" display="inline">
         {wholeNumber}
       </Typography>
-      <Typography variant="subtitle1" display="inline" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
+      <Typography variant="body1" display="inline" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
         {
           // Some currencies don't have decimals
           decimalSeparator && decimals ? `${decimalSeparator}${decimals}` : ''

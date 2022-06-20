@@ -51,7 +51,7 @@ const SafeListItemSecondaryAction = ({
 
   if (!isOwner) {
     return (
-      <Typography variant="caption" display="flex" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
+      <Typography variant="body2" display="flex" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
         <Image src="/images/sidebar/safe-list/eye.svg" alt="Read only" height="16px" width="16px" /> Read only
       </Typography>
     )
@@ -61,7 +61,7 @@ const SafeListItemSecondaryAction = ({
     const { nativeCurrency } = configs.find((chain) => chain.chainId === chainId) || {}
 
     return (
-      <Typography variant="subtitle2" fontWeight={700}>
+      <Typography variant="body2" fontWeight={700}>
         {addedSafes[address].ethBalance} {nativeCurrency?.symbol || 'ETH'}
       </Typography>
     )

@@ -1,0 +1,22 @@
+.openButton {
+  padding-right: 0;
+}
+
+.menu.MuiPaper-root {
+  border-radius: 8px !important;
+  width: 138px;
+  padding: 2px;
+}
+
+.menu.MuiList-root {
+  padding: 0 0;
+}
+
+.menu.MuiList-root:hover {
+  padding: 0 0;
+  border-radius: 8px !important;
+}
+
+.icon.MuiListItemIcon-root {
+  min-width: 28px;
+}

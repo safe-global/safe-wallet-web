@@ -88,7 +88,7 @@ const SafeListItem = ({
         <SafeIcon address={address} {...rest} />
       </ListItemIcon>
       <ListItemText
-        primaryTypographyProps={{ variant: 'subtitle2' }}
+        primaryTypographyProps={{ variant: 'body2' }}
         primary={name ?? formattedAddress}
         secondary={name && formattedAddress}
       />

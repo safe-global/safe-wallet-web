@@ -110,37 +110,37 @@ const theme = createTheme({
       color: primaryBlack[500],
     },
     h1: {
-      fontSize: 32,
+      fontSize: '32px',
       lineHeight: '36px',
-      fontWeight: 'bold',
+      fontWeight: 700,
     },
     h2: {
-      fontSize: 27,
+      fontSize: '27px',
       lineHeight: '34px',
-      fontWeight: 'bold',
+      fontWeight: 700,
     },
     h3: {
-      fontSize: 24,
+      fontSize: '24px',
       lineHeight: '30px',
     },
     h4: {
-      fontSize: 20,
+      fontSize: '20px',
       lineHeight: '26px',
     },
     body1: {
-      fontSize: 16,
+      fontSize: '16px',
       lineHeight: '22px',
     },
     body2: {
-      fontSize: 14,
+      fontSize: '14px',
       lineHeight: '20px',
     },
     caption: {
-      fontSize: 12,
+      fontSize: '12px',
       lineHeight: '16px',
     },
     overline: {
-      fontSize: 11,
+      fontSize: '11px',
       lineHeight: '14px',
       textTransform: 'uppercase',
     },
