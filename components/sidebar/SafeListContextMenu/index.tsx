@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import ListItemText from '@mui/material/ListItemText'
 
 import { useAppDispatch } from '@/store'
 import { removeSafe } from '@/store/addedSafesSlice'
@@ -44,26 +45,25 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
         anchorEl={anchorEl}
         open={!!anchorEl}
         onClose={handleClose}
-        className={css.menu}
         sx={({ palette }) => ({
-          // '.MuiPaper-root': { borderRadius: '8px !important', width: '138px', padding: '2px' },
-          // '.MuiList-root': { p: '4px' },
+          '.MuiPaper-root': { borderRadius: '8px !important', width: '138px', padding: '2px' },
+          '.MuiList-root': { p: '4px' },
           '.MuiMenuItem-root': {
-            '&:hover': { /*borderRadius: '8px !important',*/ backgroundColor: palette.gray[300] },
+            '&:hover': { borderRadius: '8px !important', backgroundColor: palette.gray[300] },
           },
         })}
       >
         <MenuItem onClick={handleClose}>
           <ListItemIcon className={css.icon}>
             <Image src="/images/sidebar/safe-list/pencil.svg" alt="Rename" height="16px" width="16px" />
-          </ListItemIcon>{' '}
-          Rename
+          </ListItemIcon>
+          <ListItemText>Rename</ListItemText>
         </MenuItem>
         <MenuItem onClick={handleRemove}>
           <ListItemIcon className={css.icon}>
             <Image src="/images/sidebar/safe-list/trash.svg" alt="Remove" height="16px" width="16px" />
-          </ListItemIcon>{' '}
-          Remove
+          </ListItemIcon>
+          <ListItemText>Remove</ListItemText>
         </MenuItem>
       </Menu>
     </>

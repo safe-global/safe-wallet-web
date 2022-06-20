@@ -42,7 +42,6 @@ const SafeListItemSecondaryAction = ({
           e.stopPropagation()
           handleAddSafe()
         }}
-        variant="text"
       >
         Add Safe
       </Button>
