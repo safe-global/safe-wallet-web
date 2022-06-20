@@ -1,20 +1,91 @@
-import { ReactElement, useEffect, useRef } from 'react'
+import { ReactElement, useEffect, useRef, useState, MouseEvent } from 'react'
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 
 import SafeIcon from '@/components/common/SafeIcon'
 import { shortenAddress } from '@/services/formatters'
-import { useAppSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import useSafeAddress from '@/services/useSafeAddress'
 import useAddressBook from '@/services/useAddressBook'
 import { selectChainById } from '@/store/chainsSlice'
-import SafeListSecondaryAction from '@/components/sidebar/SafeListSecondaryAction'
+import SafeListItemSecondaryAction from '@/components/sidebar/SafeListItemSecondaryAction'
 import useChainId from '@/services/useChainId'
+import Pencil from './assets/Pencil.svg'
+import Trash from './assets/Trash.svg'
+import { removeSafe } from '@/store/addedSafesSlice'
+import { AppRoutes } from '@/config/routes'
+
+// TODO: Abstract
+const ContextMenu = ({ chainId, address }: { chainId: string; address: string }) => {
+  const dispatch = useAppDispatch()
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
+
+  const handleClick = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+    setAnchorEl(e.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(undefined)
+  }
+
+  const handleRemove = () => {
+    dispatch(removeSafe({ chainId, address }))
+  }
+  return (
+    <>
+      <IconButton
+        edge="end"
+        size="small"
+        sx={{
+          paddingRight: 0,
+          '&:hover': {
+            backgroundColor: 'unset',
+          },
+        }}
+        onClick={(e) => {
+          e.stopPropagation()
+          handleClick(e)
+        }}
+      >
+        <MoreVertIcon sx={({ palette }) => ({ color: palette.secondaryBlack[300] })} />
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={!!anchorEl}
+        onClose={handleClose}
+        sx={({ palette }) => ({
+          '.MuiPaper-root': { borderRadius: '8px !important', width: '138px' },
+          '.MuiList-root': { py: 0 },
+          '.MuiMenuItem-root': {
+            // TODO: Hover
+            '&:hover': { backgroundColor: palette.gray[300] },
+          },
+        })}
+      >
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon sx={{ minWidth: '22px' }}>
+            <Image src={Pencil} alt="Rename" />
+          </ListItemIcon>{' '}
+          Rename
+        </MenuItem>
+        <MenuItem onClick={handleRemove}>
+          <ListItemIcon sx={{ minWidth: '22px' }}>
+            <Image src={Trash} alt="Remove" />
+          </ListItemIcon>{' '}
+          Remove
+        </MenuItem>
+      </Menu>
+    </>
+  )
+}
 
 const SafeListItem = ({
   address,
@@ -55,10 +126,10 @@ const SafeListItem = ({
   }
 
   const handleOpenSafe = () => {
-    handleNavigate(`/safe/home?safe=${chain?.shortName}:${address}`)
+    handleNavigate(`${AppRoutes.safe.home}?safe=${chain?.shortName}:${address}`)
   }
   const handleAddSafe = () => {
-    handleNavigate(`/welcome?chain=${chain?.shortName}`)
+    handleNavigate(`${AppRoutes.welcome}?chain=${chain?.shortName}`)
   }
 
   const formattedAddress = (
@@ -79,7 +150,7 @@ const SafeListItem = ({
         // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
         borderLeft: isOpen ? `6px solid ${palette.primary[400]}` : undefined,
         '&.Mui-selected': {
-          backgroundColor: palette.secondaryGray[300],
+          backgroundColor: palette.gray[300],
         },
       })}
       ref={safeRef}
@@ -93,21 +164,8 @@ const SafeListItem = ({
         secondary={name && formattedAddress}
       />
       <ListItemSecondaryAction sx={{ display: 'flex', alignItems: 'center' }}>
-        <SafeListSecondaryAction chainId={chainId} address={address} handleAddSafe={handleAddSafe} />
-        {/*
-        // TODO: Add context menu for renaming/deleting */}
-        <IconButton
-          edge="end"
-          size="small"
-          sx={{
-            paddingRight: 0,
-            '&:hover': {
-              backgroundColor: 'unset',
-            },
-          }}
-        >
-          <MoreVertIcon sx={({ palette }) => ({ color: palette.secondaryBlack[300] })} />
-        </IconButton>
+        <SafeListItemSecondaryAction chainId={chainId} address={address} handleAddSafe={handleAddSafe} />
+        <ContextMenu address={address} chainId={chainId} />
       </ListItemSecondaryAction>
     </ListItemButton>
   )

@@ -1,7 +1,8 @@
-import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, Middleware, type PayloadAction } from '@reduxjs/toolkit'
 import { AddressEx, SafeBalanceResponse, SafeInfo, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '.'
-import { setSafeInfo, type SetSafeInfoPayload } from '@/store/safeInfoSlice'
+import { selectSafeInfo, setSafeInfo, type SetSafeInfoPayload } from '@/store/safeInfoSlice'
+import { setBalances } from './balancesSlice'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {
@@ -91,3 +92,27 @@ export const selectAddedSafes = createSelector(
     return allAddedSafes[chainId]
   },
 )
+
+export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
+  const result = next(action)
+
+  switch (action.type) {
+    case setBalances.type: {
+      const state = store.getState()
+      const { safe } = selectSafeInfo(state)
+
+      const chainId = safe?.chainId
+      const address = safe?.address.value
+
+      if (!chainId || !address) {
+        break
+      }
+
+      if (chainId && address) {
+        store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.balances }))
+      }
+    }
+  }
+
+  return result
+}

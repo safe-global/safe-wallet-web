@@ -22,6 +22,7 @@ import useSafeAddress from '@/services/useSafeAddress'
 import SafeListItem from '@/components/sidebar/SafeListItem'
 
 import css from './styles.module.css'
+import { AppRoutes } from '@/config/routes'
 
 export const _getSafesOnChain = ({
   chainId,
@@ -84,7 +85,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
   }
 
   const handleAddSafe = () => {
-    router.push({ href: '/welcome', query: router.query })
+    router.push({ href: AppRoutes.welcome, query: router.query })
     closeDrawer()
   }
 
@@ -101,7 +102,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
             className={css.addButton}
             // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
             sx={({ palette }) => ({ border: `2px solid ${palette.primary[400]} !important` })}
-            disableRipple
           >
             + Add
           </Button>
@@ -121,13 +121,15 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
           return null
         }
 
-        const isOpen =
-          _shouldExpandSafeList({
-            isCurrentChain,
-            safeAddress,
-            ownedSafesOnChain,
-            addedSafesOnChain,
-          }) || open[chain.chainId]
+        let shouldInitiallyExpand = _shouldExpandSafeList({
+          isCurrentChain,
+          safeAddress,
+          ownedSafesOnChain,
+          addedSafesOnChain,
+        })
+
+        // TODO: Always open
+        const isOpen = shouldInitiallyExpand || open[chain.chainId]
 
         return (
           <Fragment key={chain.chainName}>
@@ -145,7 +147,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
 
             {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
               <Typography paddingY="22px" variant="subtitle2" sx={({ palette }) => ({ color: palette.black[400] })}>
-                <Link href={{ href: '/welcome', query: router.query }} passHref>
+                <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
                   Create or add
                 </Link>{' '}
                 an existing Safe on this network
@@ -166,7 +168,14 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
 
             {ownedSafesOnChain.length > 0 && (
               <>
-                <ListItemButton onClick={() => toggleOpen(chainId)} className={css.ownedLabel} disableRipple>
+                <ListItemButton
+                  onClick={() => {
+                    shouldInitiallyExpand = false
+                    toggleOpen(chain.chainId)
+                  }}
+                  className={css.ownedLabel}
+                  disableRipple
+                >
                   <ListItemText primaryTypographyProps={{ variant: 'subtitle2', color: palette.black[400] }}>
                     Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
                   </ListItemText>

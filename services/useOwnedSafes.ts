@@ -4,6 +4,7 @@ import { getOwnedSafes, type OwnedSafes } from '@gnosis.pm/safe-react-gateway-sd
 import useChainId from '@/services/useChainId'
 import useLocalStorage from '@/services/localStorage/useLocalStorage'
 import useWallet from '@/services/wallets/useWallet'
+import useAsync from './useAsync'
 
 const CACHE_KEY = 'ownedSafes'
 
@@ -18,43 +19,29 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const wallet = useWallet()
   const walletAddress = wallet?.address
 
+  const [ownedSafes] = useAsync<OwnedSafes | undefined>(async () => {
+    return !chainId || !walletAddress ? undefined : getOwnedSafes(chainId, walletAddress)
+  }, [chainId, walletAddress])
+
   const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY, {})
 
   useEffect(() => {
-    if (!walletAddress) {
+    if (!ownedSafes?.safes || !walletAddress || !chainId) {
       return
     }
 
-    let isCurrent = true
+    setOwnedSafesCache((prev) => ({
+      ...prev,
+      [walletAddress]: {
+        ...(prev[walletAddress] || {}),
+        [chainId]: ownedSafes.safes,
+      },
+    }))
 
-    const loadOwnedSafes = async () => {
-      try {
-        const { safes } = await getOwnedSafes(chainId, walletAddress)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ownedSafes])
 
-        if (!isCurrent) {
-          return
-        }
-
-        setOwnedSafesCache((prev) => ({
-          ...prev,
-          [walletAddress]: {
-            ...(prev[walletAddress] || {}),
-            [chainId]: safes,
-          },
-        }))
-      } catch (err) {
-        console.error('Error fetching owned Safes', err)
-      }
-    }
-
-    loadOwnedSafes()
-
-    return () => {
-      isCurrent = false
-    }
-  }, [chainId, walletAddress, setOwnedSafesCache])
-
-  return ownedSafesCache && walletAddress ? ownedSafesCache[walletAddress] ?? {} : {}
+  return walletAddress ? ownedSafesCache[walletAddress] ?? {} : {}
 }
 
 export default useOwnedSafes

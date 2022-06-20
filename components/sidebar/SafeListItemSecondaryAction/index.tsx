@@ -10,7 +10,7 @@ import Eye from './assets/Eye.svg'
 
 import css from './styles.module.css'
 
-const SafeListSecondaryAction = ({
+const SafeListItemSecondaryAction = ({
   chainId,
   address,
   handleAddSafe,
@@ -22,8 +22,8 @@ const SafeListSecondaryAction = ({
   const { configs } = useChains()
   const wallet = useWallet()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
-  const isAdded = !!addedSafes[address]
-  const isOwner = addedSafes[address]?.owners.some(
+  const isAdded = !!addedSafes?.[address]
+  const isOwner = addedSafes?.[address]?.owners.some(
     ({ value }) => value.toLowerCase() === wallet?.address?.toLowerCase(),
   )
 
@@ -32,7 +32,6 @@ const SafeListSecondaryAction = ({
       <Button
         className={css.addButton}
         sx={({ palette }) => ({
-          color: palette.primary.main,
           '&:hover': {
             // @ts-expect-error type '200' can't be used to index type 'PaletteColor'
             backgroundColor: palette.primary[200],
@@ -44,6 +43,7 @@ const SafeListSecondaryAction = ({
           e.stopPropagation()
           handleAddSafe()
         }}
+        variant="text"
       >
         Add Safe
       </Button>
@@ -58,7 +58,7 @@ const SafeListSecondaryAction = ({
     )
   }
 
-  if (addedSafes[address]?.ethBalance) {
+  if (addedSafes?.[address]?.ethBalance) {
     const { nativeCurrency } = configs.find((chain) => chain.chainId === chainId) || {}
 
     return (
@@ -71,4 +71,4 @@ const SafeListSecondaryAction = ({
   return null
 }
 
-export default SafeListSecondaryAction
+export default SafeListItemSecondaryAction

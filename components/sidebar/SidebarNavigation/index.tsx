@@ -23,6 +23,7 @@ import Apps from './assets/Apps.svg'
 import Settings from './assets/Settings.svg'
 
 import css from './styles.module.css'
+import { AppRoutes } from '@/config/routes'
 
 type NavItem = {
   label: string
@@ -35,76 +36,76 @@ const navItems: NavItem[] = [
   {
     label: 'Home',
     icon: <Image src={Home} alt="Home" />,
-    href: '/safe',
+    href: AppRoutes.safe.home,
   },
   {
     label: 'Assets',
     icon: <Image src={Assets} alt="Assets" />,
-    href: '/safe/balances',
+    href: AppRoutes.safe.balances.index,
     items: [
       {
         label: 'Coins',
-        href: '/safe/balances',
+        href: AppRoutes.safe.balances.index,
       },
       {
         label: 'NFTs',
-        href: '/safe/balances/nfts',
+        href: AppRoutes.safe.balances.nfts,
       },
     ],
   },
   {
     label: 'Transactions',
     icon: <Image src={Transactions} alt="Transactions" />,
-    href: '/safe/transactions/history',
+    href: AppRoutes.safe.transactions.index,
     items: [
       {
         label: 'Queue',
-        href: '/safe/transactions/queue',
+        href: AppRoutes.safe.transactions.queue,
       },
       {
         label: 'History',
-        href: '/safe/transactions/history',
+        href: AppRoutes.safe.transactions.history,
       },
     ],
   },
   {
     label: 'Address Book',
     icon: <Image src={AddressBook} alt="Address Book" />,
-    href: '/safe/address-book',
+    href: AppRoutes.safe.addressBook,
   },
   {
     label: 'Apps',
     icon: <Image src={Apps} alt="Safe Apps" />,
-    href: '/safe/apps',
+    href: AppRoutes.safe.apps,
   },
   {
     label: 'Settings',
     icon: <Image src={Settings} alt="Settings" />,
-    href: '/safe/settings/details',
+    href: AppRoutes.safe.settings.details,
     items: [
       {
         label: 'Safe Details',
-        href: '/safe/settings/details',
+        href: AppRoutes.safe.settings.details,
       },
       {
         label: 'Appearance',
-        href: '/safe/settings/appearance',
+        href: AppRoutes.safe.settings.appearance,
       },
       {
         label: 'Owners',
-        href: '/safe/settings/owners',
+        href: AppRoutes.safe.settings.owners,
       },
       {
         label: 'Policies',
-        href: '/safe/settings/policies',
+        href: AppRoutes.safe.settings.policies,
       },
       {
         label: 'Spending Limit',
-        href: '/safe/settings/spending-limit',
+        href: AppRoutes.safe.settings.spendingLimit,
       },
       {
         label: 'Advanced',
-        href: '/safe/settings/advanced',
+        href: AppRoutes.safe.settings.advanced,
       },
     ],
   },
