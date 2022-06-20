@@ -1,4 +1,4 @@
-import { EthHashInfo } from '@/components/common/EthHashInfo'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/services/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
@@ -100,7 +100,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
             .map((owner) => (
               <div key={owner.value}>
                 <Box padding={2} key={owner.value}>
-                  <EthHashInfo address={owner.value} />
+                  <EthHashInfo address={owner.value} shortAddress={false} />
                 </Box>
                 <Divider />
               </div>
@@ -112,7 +112,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
               </div>
               <Divider />
               <Box className={css.removedOwner} padding={2}>
-                <EthHashInfo address={removedOwner.address} />
+                <EthHashInfo address={removedOwner.address} shortAddress={false} />
               </Box>
               <Divider />
             </>
@@ -122,7 +122,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           </div>
           <Divider />
           <Box padding={2}>
-            <EthHashInfo address={newOwner.address} />
+            <EthHashInfo address={newOwner.address} shortAddress={false} />
           </Box>
         </Grid>
       </Grid>

@@ -1,9 +1,9 @@
-import { EthHashInfo } from '@/components/common/EthHashInfo'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import { AddressInput } from '@/components/common/AddressInput'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 import useSafeInfo from '@/services/useSafeInfo'
 import { uniqueAddress, addressIsNotCurrentSafe, validateAddress } from '@/services/validation'
-import { TextField, Button, Typography, FormControl } from '@mui/material'
+import { TextField, Button, Typography, FormControl, Box } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
@@ -59,10 +59,10 @@ export const ChooseOwnerStep = ({
       {removedOwner && (
         <div>
           <Typography>Current owner</Typography>
-          <EthHashInfo address={removedOwner.address} copyToClipboard />
+          <EthHashInfo address={removedOwner.address} showCopyButton shortAddress={false} />
         </div>
       )}
-      <div className={css.newOwner}>
+      <Box display="flex" flexDirection="column" gap={2} paddingTop={2}>
         <Typography>New owner</Typography>
         <FormControl fullWidth>
           <TextField autoFocus label="Owner name" variant="outlined" fullWidth {...register('ownerName')} />
@@ -80,7 +80,7 @@ export const ChooseOwnerStep = ({
             }}
           />
         </FormControl>
-      </div>
+      </Box>
       <div className={css.submit}>
         <Button variant="contained" type="submit">
           Next

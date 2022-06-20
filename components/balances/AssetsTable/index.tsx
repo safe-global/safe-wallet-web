@@ -1,47 +1,61 @@
 import { type ReactElement } from 'react'
 import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
+import EnhancedTable from '@/components/common/EnhancedTable'
 
 interface AssetsTableProps {
   items?: SafeBalanceResponse['items']
 }
 
+const headCells = [
+  {
+    id: 'asset',
+    label: 'Asset',
+  },
+  {
+    id: 'balance',
+    label: 'Balance',
+    width: '20%',
+  },
+  {
+    id: 'value',
+    label: 'Value',
+    width: '20%',
+  },
+  {
+    id: 'actions',
+    label: '',
+    width: '20%',
+  },
+]
+
 const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
-  return (
-    <TableContainer component={Paper}>
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Asset</TableCell>
-            <TableCell align="right">Balance</TableCell>
-            <TableCell align="right">Value</TableCell>
-          </TableRow>
-        </TableHead>
+  const rows = (items || []).map((item) => ({
+    asset: {
+      rawValue: item.tokenInfo.name,
+      content: (
+        <>
+          <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
+          {item.tokenInfo.name}
+        </>
+      ),
+    },
+    balance: {
+      rawValue: Number(item.balance) / 10 ** item.tokenInfo.decimals,
+      content: <TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} />,
+    },
+    value: {
+      rawValue: parseFloat(item.fiatBalance),
+      content: <FiatValue value={item.fiatBalance} />,
+    },
+    actions: {
+      rawValue: '',
+      content: '',
+    },
+  }))
 
-        <TableBody>
-          {items?.map((row) => (
-            <TableRow key={row.tokenInfo.name}>
-              <TableCell component="th" scope="row">
-                <TokenIcon logoUri={row.tokenInfo.logoUri} tokenSymbol={row.tokenInfo.symbol} />
-
-                {row.tokenInfo.name}
-              </TableCell>
-
-              <TableCell align="right">
-                <TokenAmount value={row.balance} decimals={row.tokenInfo.decimals} tokenSymbol={row.tokenInfo.symbol} />
-              </TableCell>
-
-              <TableCell align="right">
-                <FiatValue value={row.fiatBalance} />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  )
+  return <EnhancedTable rows={rows} headCells={headCells} />
 }
 
 export default AssetsTable

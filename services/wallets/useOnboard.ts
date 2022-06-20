@@ -30,8 +30,8 @@ const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
       color: cfg.theme.backgroundColor,
     })),
     accountCenter: {
-      desktop: { enabled: false },
       mobile: { enabled: true },
+      desktop: { enabled: false },
     },
     appMetadata: {
       name: 'Gnosis Safe',

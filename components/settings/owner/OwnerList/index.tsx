@@ -1,4 +1,4 @@
-import { EthHashInfo } from '@/components/common/EthHashInfo'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { EditOwnerDialog } from '../EditOwnerDialog'
@@ -19,7 +19,7 @@ export const OwnerList = ({
       <TableRow key={row.address} className={css.row}>
         <TableCell component="td">{row.name ?? ''}</TableCell>
         <TableCell component="td">
-          <EthHashInfo address={row.address} copyToClipboard />
+          <EthHashInfo address={row.address} showCopyButton shortAddress={false} />
         </TableCell>
         <TableCell>
           <div className={css.actions}>

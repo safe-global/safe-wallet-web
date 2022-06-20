@@ -21,7 +21,7 @@ const Setup: NextPage = () => {
 
   const isOwner =
     Boolean(wallet?.address) && Boolean(safe?.owners.some((owner) => sameAddress(owner.value, wallet?.address)))
-  const isCorrectChain = chainId === safe?.chainId
+  const isCorrectChain = chainId === safe?.chainId && chainId === wallet?.chainId
   const isGranted = isOwner && isCorrectChain
 
   const namedOwners = safe?.owners.map((owner) => ({
