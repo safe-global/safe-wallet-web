@@ -46,7 +46,7 @@ describe('addedSafesSlice', () => {
             name: '',
             logoUri: null,
           },
-          balance: '123',
+          balance: '8000000000000000000',
           fiatBalance: '',
           fiatConversion: '',
         },
@@ -59,7 +59,7 @@ describe('addedSafesSlice', () => {
             name: '',
             logoUri: null,
           },
-          balance: '456',
+          balance: '9000000000000000000',
           fiatBalance: '',
           fiatConversion: '',
         },
@@ -71,7 +71,7 @@ describe('addedSafesSlice', () => {
 
     const result = addedSafesSlice.reducer(state, updateAddedSafeBalance({ chainId: '4', address: '0x1', balances }))
     expect(result).toEqual({
-      '4': { ['0x1']: { threshold: 1, owners: [{ value: '0x456', name: null, logoUri: null }], ethBalance: '123' } },
+      '4': { ['0x1']: { threshold: 1, owners: [{ value: '0x456', name: null, logoUri: null }], ethBalance: '8' } },
     })
   })
 
