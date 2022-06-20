@@ -26,8 +26,7 @@ export const SidebarListItemButton = ({
       sx={({ palette }) => ({
         borderRadius: '6px',
         '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
-          // @ts-expect-error type '200' can't be used to index type 'PaletteColor'
-          backgroundColor: `${palette.primary[200]} !important`,
+          backgroundColor: `${palette.primaryGreen[200]} !important`,
           img: {
             filter: rest.selected
               ? // #008C73 - palette.primary[400]
@@ -54,7 +53,7 @@ export const SidebarListItemText = ({
   bold = false,
   ...rest
 }: ListItemTextProps & { bold?: boolean }): ReactElement => (
-  <ListItemText primaryTypographyProps={{ variant: 'body1', fontWeight: bold ? 700 : undefined }} {...rest}>
+  <ListItemText primaryTypographyProps={{ variant: 'body2', fontWeight: bold ? 700 : undefined }} {...rest}>
     {children}
   </ListItemText>
 )

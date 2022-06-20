@@ -124,10 +124,10 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
               <Typography
                 variant="overline"
                 className={css.chainDivider}
-                sx={({ palette }) => ({
+                sx={{
                   backgroundColor: `${chain.theme.backgroundColor} !important`,
-                  color: palette.black[400],
-                })}
+                  color: chain.theme.textColor,
+                }}
               >
                 {chain.chainName}
               </Typography>

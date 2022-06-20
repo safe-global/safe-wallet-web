@@ -56,7 +56,7 @@ export const addedSafesSlice = createSlice({
     removeSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
       const { chainId, address } = payload
 
-      delete state[chainId][address]
+      delete state[chainId]?.[address]
 
       if (Object.keys(state[chainId]).length === 0) {
         delete state[chainId]

@@ -154,6 +154,7 @@ const theme = createTheme({
           borderColor: theme.palette.primary[400],
           textTransform: 'none',
           '&.Mui-disabled': {
+            color: '#fff',
             backgroundColor: theme.palette.secondaryBlack[300],
           },
         }),
