@@ -1,5 +1,4 @@
 import React, { Fragment, useState, type ReactElement } from 'react'
-import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -169,28 +168,30 @@ const Navigation = (): ReactElement => {
                 })}
               >
                 {item.items.map((subItem) => (
-                  <Link href={{ pathname: subItem.href, query: router.query }} passHref key={subItem.href}>
-                    <ListItemButton
-                      onClick={() => toggleOpen(subItem)}
-                      selected={isSelected(subItem.href)}
-                      sx={({ palette }) => ({
-                        '::before': {
-                          content: '""',
-                          width: '6px',
-                          height: '1px',
-                          background: palette.gray[500],
-                          position: 'absolute',
-                          left: '-10px',
-                        },
-                        borderRadius: '6px',
-                        '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
-                          backgroundColor: `${palette.gray[300]} !important`,
-                        },
-                      })}
-                    >
-                      <SidebarListItemText>{subItem.label}</SidebarListItemText>
-                    </ListItemButton>
-                  </Link>
+                  <ListItemButton
+                    key={subItem.href}
+                    onClick={() => {
+                      toggleOpen(subItem)
+                      router.push({ pathname: subItem.href, query: router.query })
+                    }}
+                    selected={isSelected(subItem.href)}
+                    sx={({ palette }) => ({
+                      '::before': {
+                        content: '""',
+                        width: '6px',
+                        height: '1px',
+                        background: palette.gray[500],
+                        position: 'absolute',
+                        left: '-10px',
+                      },
+                      borderRadius: '6px',
+                      '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
+                        backgroundColor: `${palette.gray[300]} !important`,
+                      },
+                    })}
+                  >
+                    <SidebarListItemText>{subItem.label}</SidebarListItemText>
+                  </ListItemButton>
                 ))}
               </List>
             </Collapse>
