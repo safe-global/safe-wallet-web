@@ -3,6 +3,7 @@ import { AddressEx, SafeBalanceResponse, SafeInfo, TokenType } from '@gnosis.pm/
 import type { RootState } from '.'
 import { selectSafeInfo, setSafeInfo, type SetSafeInfoPayload } from '@/store/safeInfoSlice'
 import { setBalances } from './balancesSlice'
+import { formatDecimals } from '@/services/formatters'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {
@@ -47,7 +48,7 @@ export const addedSafesSlice = createSlice({
           continue
         }
 
-        state[chainId][address].ethBalance = item.balance
+        state[chainId][address].ethBalance = formatDecimals(item.balance, item.tokenInfo.decimals)
 
         return
       }
@@ -70,7 +71,7 @@ export const addedSafesSlice = createSlice({
 
       const { chainId, address } = payload.safe
 
-      if (!isAddedSafe(state, chainId, address.value)) {
+      if (isAddedSafe(state, chainId, address.value)) {
         addedSafesSlice.caseReducers.addOrUpdateSafe(state, {
           type: addOrUpdateSafe.type,
           payload: { safe: payload.safe },
