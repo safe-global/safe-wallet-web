@@ -70,7 +70,7 @@ export const addedSafesSlice = createSlice({
 
       const { chainId, address } = payload.safe
 
-      if (isAddedSafe(state, chainId, address.value)) {
+      if (!isAddedSafe(state, chainId, address.value)) {
         addedSafesSlice.caseReducers.addOrUpdateSafe(state, {
           type: addOrUpdateSafe.type,
           payload: { safe: payload.safe },

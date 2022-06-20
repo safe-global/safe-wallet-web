@@ -14,7 +14,16 @@ import useAddressBook from '@/services/useAddressBook'
 import css from './styles.module.css'
 
 const HeaderIconButton = ({ children }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
-  <IconButton className={css.iconButton} sx={({ palette }) => ({ backgroundColor: palette.gray[300] })}>
+  <IconButton
+    className={css.iconButton}
+    sx={({ palette }) => ({
+      backgroundColor: palette.gray[300],
+      '&:hover': {
+        // @ts-expect-error type '200' can't be used to index type 'PaletteColor'
+        backgroundColor: palette.primary[200],
+      },
+    })}
+  >
     {children}
   </IconButton>
 )

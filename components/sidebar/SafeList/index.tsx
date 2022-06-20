@@ -1,7 +1,6 @@
 import { Fragment, useState, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useTheme } from '@mui/material/styles'
 import List from '@mui/material/List'
 import Typography from '@mui/material/Typography'
 import Collapse from '@mui/material/Collapse'
@@ -21,7 +20,7 @@ import { AppRoutes } from '@/config/routes'
 
 import css from './styles.module.css'
 
-export const _getSafesOnChain = ({
+export const _extractSafesByChainId = ({
   chainId,
   ownedSafes,
   addedSafes,
@@ -74,7 +73,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  const { palette } = useTheme()
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const toggleOpen = (chainId: string) => {
@@ -89,7 +87,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
   return (
     <div className={css.container}>
       <div className={css.header}>
-        <Typography variant="h4" className={css.title} display="inline" fontWeight={700}>
+        <Typography variant="h4" display="inline" fontWeight={700}>
           My Safes
         </Typography>
         <Button disableElevation size="small" variant="outlined" onClick={handleAddSafe} className={css.addButton}>
@@ -97,7 +95,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
         </Button>
       </div>
       {configs.map((chain) => {
-        const { ownedSafesOnChain, addedSafesOnChain } = _getSafesOnChain({
+        const { ownedSafesOnChain, addedSafesOnChain } = _extractSafesByChainId({
           chainId: chain.chainId,
           ownedSafes,
           addedSafes,
@@ -126,32 +124,21 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
               <Typography
                 variant="overline"
                 className={css.chainDivider}
-                sx={{
+                sx={({ palette }) => ({
                   backgroundColor: `${chain.theme.backgroundColor} !important`,
                   color: palette.black[400],
-                }}
+                })}
               >
                 {chain.chainName}
               </Typography>
 
               {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
-                <Typography paddingY="22px" variant="body2" sx={({ palette }) => ({ color: palette.black[400] })}>
+                <Typography paddingTop="22px" variant="body2" sx={({ palette }) => ({ color: palette.black[400] })}>
                   <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
                     Create or add
                   </Link>{' '}
                   an existing Safe on this network
                 </Typography>
-              )}
-
-              {ownedSafesOnChain.length > 0 && (
-                <div onClick={() => toggleOpen(chain.chainId)} className={css.ownedLabel}>
-                  <Typography variant="body2" sx={({ palette }) => ({ color: palette.black[400] })} display="inline">
-                    Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
-                  </Typography>
-                  <IconButton sx={({ palette }) => ({ fill: palette.black[400] })} disableRipple>
-                    {isOpen ? <ExpandLess /> : <ExpandMore />}
-                  </IconButton>
-                </div>
               )}
             </div>
 
@@ -167,23 +154,37 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                   shouldScrollToSafe
                 />
               ))}
-
-              {ownedSafesOnChain.length > 0 && (
-                <Collapse key={chainId} in={isOpen}>
-                  <List sx={{ py: 0 }}>
-                    {ownedSafesOnChain.map((address) => (
-                      <SafeListItem
-                        key={address}
-                        address={address}
-                        chainId={chainId}
-                        closeDrawer={closeDrawer}
-                        shouldScrollToSafe={!addedSafesOnChain[address]}
-                      />
-                    ))}
-                  </List>
-                </Collapse>
-              )}
             </List>
+            {ownedSafesOnChain.length > 0 && (
+              <div onClick={() => toggleOpen(chain.chainId)} className={css.ownedLabel}>
+                <Typography
+                  variant="body2"
+                  sx={({ palette }) => ({ color: palette.black[400] })}
+                  display="inline"
+                  paddingTop={!addedSafeEntriesOnChain.length ? '22px' : undefined}
+                >
+                  Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
+                  <IconButton sx={({ palette }) => ({ fill: palette.black[400] })} disableRipple>
+                    {isOpen ? <ExpandLess /> : <ExpandMore />}
+                  </IconButton>
+                </Typography>
+              </div>
+            )}
+            {ownedSafesOnChain.length > 0 && (
+              <Collapse key={chainId} in={isOpen}>
+                <List sx={{ py: 0 }}>
+                  {ownedSafesOnChain.map((address) => (
+                    <SafeListItem
+                      key={address}
+                      address={address}
+                      chainId={chainId}
+                      closeDrawer={closeDrawer}
+                      shouldScrollToSafe={!addedSafesOnChain[address]}
+                    />
+                  ))}
+                </List>
+              </Collapse>
+            )}
           </Fragment>
         )
       })}

@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
-import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
+import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 
 import SafeIcon from '@/components/common/SafeIcon'
@@ -15,6 +15,7 @@ import SafeListItemSecondaryAction from '@/components/sidebar/SafeListItemSecond
 import useChainId from '@/services/useChainId'
 import { AppRoutes } from '@/config/routes'
 import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
+import Box from '@mui/material/Box'
 
 const SafeListItem = ({
   address,
@@ -68,35 +69,45 @@ const SafeListItem = ({
   )
 
   return (
-    <ListItemButton
-      key={address}
-      onClick={handleOpenSafe}
-      selected={isOpen}
-      sx={({ palette }) => ({
-        margin: isOpen ? '12px 12px 12px 6px' : '12px 12px',
-        borderRadius: '8px',
+    <ListItem
+      disablePadding
+      secondaryAction={
+        <Box display="flex" alignItems="center">
+          <SafeListItemSecondaryAction chainId={chainId} address={address} handleAddSafe={handleAddSafe} />
+          <SafeListContextMenu address={address} chainId={chainId} />
+        </Box>
+      }
+      sx={{
+        margin: '12px 12px',
         width: 'unset',
-        // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-        borderLeft: isOpen ? `6px solid ${palette.primary[400]}` : undefined,
-        '&.Mui-selected': {
-          backgroundColor: palette.gray[300],
-        },
-      })}
-      ref={safeRef}
+      }}
     >
-      <ListItemIcon>
-        <SafeIcon address={address} {...rest} />
-      </ListItemIcon>
-      <ListItemText
-        primaryTypographyProps={{ variant: 'body2' }}
-        primary={name ?? formattedAddress}
-        secondary={name && formattedAddress}
-      />
-      <ListItemSecondaryAction sx={{ display: 'flex', alignItems: 'center' }}>
-        <SafeListItemSecondaryAction chainId={chainId} address={address} handleAddSafe={handleAddSafe} />
-        <SafeListContextMenu address={address} chainId={chainId} />
-      </ListItemSecondaryAction>
-    </ListItemButton>
+      <ListItemButton
+        key={address}
+        onClick={handleOpenSafe}
+        selected={isOpen}
+        sx={({ palette }) => ({
+          borderRadius: '8px',
+          // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
+          borderLeft: isOpen ? `6px solid ${palette.primary[400]}` : undefined,
+          paddingLeft: '22px',
+          '&.Mui-selected': {
+            backgroundColor: palette.gray[300],
+            paddingLeft: '16px',
+          },
+        })}
+        ref={safeRef}
+      >
+        <ListItemIcon>
+          <SafeIcon address={address} {...rest} />
+        </ListItemIcon>
+        <ListItemText
+          primaryTypographyProps={{ variant: 'body2' }}
+          primary={name ?? formattedAddress}
+          secondary={name && formattedAddress}
+        />
+      </ListItemButton>
+    </ListItem>
   )
 }
 

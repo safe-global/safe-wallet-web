@@ -19,7 +19,7 @@ const NewTxButton = (): ReactElement => {
       <Button
         onClick={() => setTxOpen(true)}
         variant="contained"
-        disabled={!wallet || !isSafeOwner || isWrongChain}
+        disabled={!isSafeOwner || isWrongChain}
         fullWidth
         className={css.button}
         disableElevation

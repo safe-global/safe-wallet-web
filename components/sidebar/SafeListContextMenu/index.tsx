@@ -10,8 +10,6 @@ import ListItemText from '@mui/material/ListItemText'
 import { useAppDispatch } from '@/store'
 import { removeSafe } from '@/store/addedSafesSlice'
 
-import css from './styles.module.css'
-
 const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: string }): ReactElement => {
   const dispatch = useAppDispatch()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
@@ -32,12 +30,10 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
       <IconButton
         edge="end"
         size="small"
-        className={css.openButton}
         onClick={(e) => {
           e.stopPropagation()
           handleClick(e)
         }}
-        disableRipple
       >
         <MoreVertIcon sx={({ palette }) => ({ color: palette.secondaryBlack[300] })} />
       </IconButton>
@@ -46,7 +42,7 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
         open={!!anchorEl}
         onClose={handleClose}
         sx={({ palette }) => ({
-          '.MuiPaper-root': { borderRadius: '8px !important', width: '138px', padding: '2px' },
+          '.MuiPaper-root': { borderRadius: '8px !important', width: '138px' },
           '.MuiList-root': { p: '4px' },
           '.MuiMenuItem-root': {
             '&:hover': { borderRadius: '8px !important', backgroundColor: palette.gray[300] },
@@ -54,13 +50,13 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
         })}
       >
         <MenuItem onClick={handleClose}>
-          <ListItemIcon className={css.icon}>
+          <ListItemIcon>
             <Image src="/images/sidebar/safe-list/pencil.svg" alt="Rename" height="16px" width="16px" />
           </ListItemIcon>
           <ListItemText>Rename</ListItemText>
         </MenuItem>
         <MenuItem onClick={handleRemove}>
-          <ListItemIcon className={css.icon}>
+          <ListItemIcon>
             <Image src="/images/sidebar/safe-list/trash.svg" alt="Remove" height="16px" width="16px" />
           </ListItemIcon>
           <ListItemText>Remove</ListItemText>
