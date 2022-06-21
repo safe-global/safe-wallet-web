@@ -20,7 +20,7 @@ describe('createTokenTransferParams', () => {
     const tokenAddress = '0x0000000000000000000000000000000000000001'
     const txParams = createTokenTransferParams(recipient, amount, decimals, tokenAddress)
     expect(txParams.to).toBe(tokenAddress)
-    expect(txParams.value).toBe('0x0')
+    expect(txParams.value).toBe('0')
     expect(txParams.data).toBe(
       '0xa9059cbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000186a0',
     )
