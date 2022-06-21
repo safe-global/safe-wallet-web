@@ -1,6 +1,5 @@
 import type { ReactElement } from 'react'
 import { useRouter } from 'next/router'
-import Image from 'next/image'
 
 import {
   SidebarList,
@@ -24,7 +23,7 @@ const SidebarFooter = (): ReactElement => {
         href={{ pathname: WHATS_NEW_PATH, query: router.query }}
       >
         <SidebarListItemIcon>
-          <Image src="/images/sidebar/whats-new.svg" alt="What's New" height="16px" width="16px" />
+          <img src="/images/sidebar/whats-new.svg" alt="What's New" height="16px" width="16px" />
         </SidebarListItemIcon>
         <SidebarListItemText bold>What&apos;s new</SidebarListItemText>
       </SidebarListItemButton>
@@ -33,7 +32,7 @@ const SidebarFooter = (): ReactElement => {
         href={{ pathname: HELP_CENTER_PATH, query: router.query }}
       >
         <SidebarListItemIcon>
-          <Image src="/images/sidebar/help-center.svg" alt="Help Center" height="16px" width="16px" />
+          <img src="/images/sidebar/help-center.svg" alt="Help Center" height="16px" width="16px" />
         </SidebarListItemIcon>
         <SidebarListItemText bold>Help Center</SidebarListItemText>
       </SidebarListItemButton>

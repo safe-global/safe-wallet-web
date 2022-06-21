@@ -1,5 +1,4 @@
 import { useState, MouseEvent, type ReactElement } from 'react'
-import Image from 'next/image'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -51,13 +50,13 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
       >
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
-            <Image src="/images/sidebar/safe-list/pencil.svg" alt="Rename" height="16px" width="16px" />
+            <img src="/images/sidebar/safe-list/pencil.svg" alt="Rename" height="16px" width="16px" />
           </ListItemIcon>
           <ListItemText>Rename</ListItemText>
         </MenuItem>
         <MenuItem onClick={handleRemove}>
           <ListItemIcon>
-            <Image src="/images/sidebar/safe-list/trash.svg" alt="Remove" height="16px" width="16px" />
+            <img src="/images/sidebar/safe-list/trash.svg" alt="Remove" height="16px" width="16px" />
           </ListItemIcon>
           <ListItemText>Remove</ListItemText>
         </MenuItem>

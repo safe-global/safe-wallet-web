@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react'
-import Image from 'next/image'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
@@ -62,13 +61,13 @@ const SafeHeader = (): ReactElement => {
         </div>
         <div className={css.iconButtons}>
           <HeaderIconButton>
-            <Image src="/images/sidebar/qr.svg" alt="Address QR Code" height="16px" width="16px" />
+            <img src="/images/sidebar/qr.svg" alt="Address QR Code" height="16px" width="16px" />
           </HeaderIconButton>
           <HeaderIconButton>
-            <Image src="/images/sidebar/copy.svg" alt="Copy Address" height="16px" width="16px" />
+            <img src="/images/sidebar/copy.svg" alt="Copy Address" height="16px" width="16px" />
           </HeaderIconButton>
           <HeaderIconButton>
-            <Image src="/images/sidebar/block-explorer.svg" alt="Open Block Explorer" height="16px" width="16px" />
+            <img src="/images/sidebar/block-explorer.svg" alt="Open Block Explorer" height="16px" width="16px" />
           </HeaderIconButton>
         </div>
         <NewTxButton />
