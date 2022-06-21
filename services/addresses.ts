@@ -1,5 +1,7 @@
-import { sameString } from '@/utils/strings'
-
 export const sameAddress = (firstAddress: string | undefined, secondAddress: string | undefined): boolean => {
-  return sameString(firstAddress, secondAddress)
+  if (!firstAddress || !secondAddress) {
+    return false
+  }
+
+  return firstAddress.toLowerCase() === secondAddress.toLowerCase()
 }

@@ -14,7 +14,7 @@ export const ContractVersion = () => {
 
   useEffect(() => {
     let isMounted = true
-    const getMasterCopyInfo = async () => {
+    const getMasterCopyInfo = () => {
       const masterCopyAddress = safe?.implementation.value
       const masterCopy = masterCopies?.find((mc) => sameAddress(mc.address, masterCopyAddress))
       if (isMounted) {
@@ -39,7 +39,9 @@ export const ContractVersion = () => {
   }
   return (
     <div>
-      <Typography variant="h3">Contract Version</Typography>
+      <Typography variant="h4" fontWeight={700}>
+        Contract Version
+      </Typography>
       <Link rel="noreferrer noopener" href={safeMasterCopy?.deployerRepoUrl} target="_blank">
         {safe?.version}
         {getSafeVersionUpdate()}

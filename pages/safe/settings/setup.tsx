@@ -5,7 +5,7 @@ import { sameAddress } from '@/services/addresses'
 import useAddressBook from '@/services/useAddressBook'
 import useChainId from '@/services/useChainId'
 import useSafeInfo from '@/services/useSafeInfo'
-import useWallet from '@/services/wallets/useWallet'
+import useWallet, { useIsWrongChain } from '@/services/wallets/useWallet'
 import { Grid, Paper, Typography } from '@mui/material'
 import type { NextPage } from 'next'
 
@@ -18,11 +18,11 @@ const Setup: NextPage = () => {
 
   const wallet = useWallet()
   const chainId = useChainId()
+  const isWrongChain = useIsWrongChain()
 
   const isOwner =
     Boolean(wallet?.address) && Boolean(safe?.owners.some((owner) => sameAddress(owner.value, wallet?.address)))
-  const isCorrectChain = chainId === safe?.chainId && chainId === wallet?.chainId
-  const isGranted = isOwner && isCorrectChain
+  const isGranted = isOwner && !isWrongChain
 
   const namedOwners = safe?.owners.map((owner) => ({
     address: owner.value,
@@ -45,7 +45,9 @@ const Setup: NextPage = () => {
         </Grid>
         <Grid item>
           <Grid item xs>
-            <Typography variant="h3">Safe Nonce</Typography>
+            <Typography variant="h4" fontWeight={700}>
+              Safe Nonce
+            </Typography>
             <Typography>Current Nonce: {nonce}</Typography>
           </Grid>
           <Grid item xs>

@@ -31,7 +31,7 @@ export const AddOwnerDialog = () => {
 
   const handleClose = () => setOpen(false)
 
-  const initialModalData: ChangeOwnerData = { newOwner: { address: '', name: '' }, threshold: safe?.threshold }
+  const initialModalData: ChangeOwnerData = { newOwner: { address: '', name: '' }, threshold: safe?.threshold || 1 }
 
   return (
     <div>

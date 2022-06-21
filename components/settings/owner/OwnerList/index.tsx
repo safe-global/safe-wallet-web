@@ -37,7 +37,9 @@ export const OwnerList = ({
 
   return (
     <div className={css.container}>
-      <Typography variant="h3">Manage Safe Owners</Typography>
+      <Typography variant="h4" fontWeight={700}>
+        Manage Safe Owners
+      </Typography>
       <Typography>
         Add, remove and replace or rename existing owners. Owner names are only stored locally and never shared with
         Gnosis or any third parties.

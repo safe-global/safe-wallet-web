@@ -4,7 +4,7 @@ import { useState } from 'react'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/services/useSafeInfo'
 
-import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
+import { useSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/services/useAsync'
 
@@ -52,10 +52,9 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
   const { safe } = useSafeInfo()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
   const [editableNonce, setEditableNonce] = useState<number>()
+  const safeSDK = useSafeSDK()
 
   const [changeThresholdTx, createTxError, txLoading] = useAsync(() => {
-    const safeSDK = getSafeSDK()
-
     if (!safeSDK) {
       throw new Error('Safe SDK not initialized')
     }

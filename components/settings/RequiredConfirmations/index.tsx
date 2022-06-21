@@ -13,7 +13,9 @@ export const RequiredConfirmation = ({
 }) => {
   return (
     <div className={css.container}>
-      <Typography variant="h3">Required Confirmations</Typography>
+      <Typography variant="h4" fontWeight={700}>
+        Required Confirmations
+      </Typography>
       <Typography>Any transaction requires the confirmation of:</Typography>
       <Typography className={css.lightParagraph}>
         <b>{threshold}</b> out of <b>{owners}</b> owners.

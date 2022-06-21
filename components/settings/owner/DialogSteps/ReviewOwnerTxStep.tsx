@@ -3,7 +3,7 @@ import useSafeInfo from '@/services/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
-import { getSafeSDK } from '@/services/safe-core/safeCoreSDK'
+import { useSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/services/useAsync'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
@@ -15,18 +15,18 @@ import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useChainId from '@/services/useChainId'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { sameAddress } from '@/services/addresses'
 
 export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
   const chainId = useChainId()
   const dispatch = useAppDispatch()
+  const safeSDK = useSafeSDK()
   const { newOwner, removedOwner, threshold } = data
 
   const [editableNonce, setEditableNonce] = useState<number>()
 
   const [changeOwnerTx, createTxError, loading] = useAsync(() => {
-    const safeSDK = getSafeSDK()
-
     if (!safeSDK) {
       throw new Error('Safe SDK not initialized')
     }
@@ -96,7 +96,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           <Typography paddingLeft={2}>{safe?.owners.length ?? 0} Safe owner(s)</Typography>
           <Divider />
           {safe?.owners
-            .filter((owner) => !removedOwner || owner.value !== removedOwner.address)
+            .filter((owner) => !removedOwner || !sameAddress(owner.value, removedOwner.address))
             .map((owner) => (
               <div key={owner.value}>
                 <Box padding={2} key={owner.value}>
