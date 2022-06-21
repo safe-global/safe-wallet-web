@@ -1,5 +1,4 @@
 import React, { Fragment, useState, type ReactElement } from 'react'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
 import Collapse from '@mui/material/Collapse'
@@ -125,7 +124,7 @@ const Navigation = (): ReactElement => {
             >
               {item.icon && (
                 <SidebarListItemIcon>
-                  <Image src={item.icon} alt={item.label} height="16px" width="16px" />
+                  <img src={item.icon} alt={item.label} height="16px" width="16px" />
                 </SidebarListItemIcon>
               )}
               <SidebarListItemText bold>{item.label}</SidebarListItemText>
@@ -144,7 +143,7 @@ const Navigation = (): ReactElement => {
             >
               {item.icon && (
                 <SidebarListItemIcon>
-                  <Image src={item.icon} alt={item.label} height="16px" width="16px" />
+                  <img src={item.icon} alt={item.label} height="16px" width="16px" />
                 </SidebarListItemIcon>
               )}
               <SidebarListItemText bold>{item.label}</SidebarListItemText>

@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
@@ -51,7 +50,7 @@ const SafeListItemSecondaryAction = ({
   if (!isOwner) {
     return (
       <Typography variant="body2" display="flex" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
-        <Image src="/images/sidebar/safe-list/eye.svg" alt="Read only" height="16px" width="16px" /> Read only
+        <img src="/images/sidebar/safe-list/eye.svg" alt="Read only" height="16px" width="16px" /> Read only
       </Typography>
     )
   }
