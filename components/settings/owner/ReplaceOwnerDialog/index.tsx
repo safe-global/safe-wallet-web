@@ -40,7 +40,7 @@ export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
           <ChangeCircleOutlinedIcon />
         </IconButton>
       </Tooltip>
-      {open && <TxModal onClose={handleClose} steps={ReplaceOwnerSteps} initialData={[initialModalData]} />}
+      {open && <TxModal wide onClose={handleClose} steps={ReplaceOwnerSteps} initialData={[initialModalData]} />}
     </div>
   )
 }

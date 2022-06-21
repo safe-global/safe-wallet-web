@@ -40,7 +40,7 @@ export const AddOwnerDialog = () => {
           Add New Owner
         </Button>
       </div>
-      {open && <TxModal onClose={handleClose} steps={AddOwnerSteps} initialData={[initialModalData]} />}
+      {open && <TxModal wide onClose={handleClose} steps={AddOwnerSteps} initialData={[initialModalData]} />}
     </div>
   )
 }

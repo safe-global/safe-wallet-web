@@ -16,7 +16,7 @@ export const OwnerList = ({
 }) => {
   const OwnerRow = (row: { name: string | null; address: string }) => {
     return (
-      <TableRow key={row.address} className={css.row}>
+      <TableRow className={css.row}>
         <TableCell component="td">{row.name ?? ''}</TableCell>
         <TableCell component="td">
           <EthHashInfo address={row.address} showCopyButton shortAddress={false} />
@@ -39,8 +39,8 @@ export const OwnerList = ({
     <div className={css.container}>
       <Typography variant="h3">Manage Safe Owners</Typography>
       <Typography>
-        Add, remove and replace owners or rename existing owners. Owner names are only stored locally and never shared
-        with Gnosis or any third parties.
+        Add, remove and replace or rename existing owners. Owner names are only stored locally and never shared with
+        Gnosis or any third parties.
       </Typography>
       <TableContainer>
         <Table sx={{ minWidth: 650 }}>
@@ -52,7 +52,11 @@ export const OwnerList = ({
             </TableRow>
           </TableHead>
 
-          <TableBody>{owners.map((owner) => OwnerRow(owner))}</TableBody>
+          <TableBody>
+            {owners.map((owner) => (
+              <OwnerRow {...owner} key={owner.address} />
+            ))}
+          </TableBody>
         </Table>
       </TableContainer>
       {isGranted && <AddOwnerDialog />}

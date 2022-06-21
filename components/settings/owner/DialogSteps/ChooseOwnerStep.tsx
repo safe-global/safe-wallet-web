@@ -53,7 +53,7 @@ export const ChooseOwnerStep = ({
     <form className={css.container} onSubmit={handleSubmit(onSubmitHandler)}>
       <p>
         {isReplace
-          ? 'Review the owner you want to replace from the active Safe. Then specify the new owner you want to replace it with:'
+          ? 'Review the owner you want to replace in the active Safe, then specify the new owner you want to replace it with:'
           : 'Add a new owner to the active Safe.'}
       </p>
       {removedOwner && (
