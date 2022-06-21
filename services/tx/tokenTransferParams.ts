@@ -1,4 +1,4 @@
-import type { SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types'
+import { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 import { toDecimals } from '../formatters'
 import { Interface } from '@ethersproject/abi'
 
@@ -13,7 +13,7 @@ export const createTokenTransferParams = (
   amount: string,
   decimals: number,
   tokenAddress: string,
-): SafeTransactionDataPartial => {
+): MetaTransactionData => {
   const value = toDecimals(amount, decimals).toString()
   const isNativeToken = parseInt(tokenAddress, 16) === 0
 
@@ -25,7 +25,7 @@ export const createTokenTransferParams = (
       }
     : {
         to: tokenAddress,
-        value: '0x0',
+        value: '0',
         data: encodeTokenTransferData(recipient, value),
       }
 }
