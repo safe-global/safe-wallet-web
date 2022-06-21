@@ -4,14 +4,14 @@ import useAsync from './useAsync'
 import { useChainId } from './useChainId'
 import useSafeAddress from './useSafeAddress'
 
-const estimateGas = async (
+const estimateSafeTxGas = async (
   chainId: string,
   safeAddress: string,
   txParams: MetaTransactionData,
 ): Promise<SafeTransactionEstimation> => {
   return await postSafeGasEstimation(chainId, safeAddress, {
     to: txParams.to,
-    value: parseInt(txParams.value, 16).toString(),
+    value: txParams.value,
     data: txParams.data,
     operation: (txParams.operation as unknown as Operation) || Operation.CALL,
   })
@@ -29,7 +29,7 @@ const useSafeTxGas = (
   const serializedParams = JSON.stringify(txParams)
 
   const [safeGas, safeGasError, safeGasLoading] = useAsync<SafeTransactionEstimation | undefined>(async () => {
-    return txParams ? await estimateGas(chainId, address, txParams) : undefined
+    return txParams ? await estimateSafeTxGas(chainId, address, txParams) : undefined
   }, [chainId, address, serializedParams])
 
   return { safeGas, safeGasError, safeGasLoading }
