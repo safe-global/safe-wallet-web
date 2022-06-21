@@ -1,19 +1,131 @@
-import { addSafe, removeSafe, addedSafesSlice } from '../addedSafesSlice'
+import { SafeBalanceResponse, SafeInfo, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  addOrUpdateSafe,
+  removeSafe,
+  addedSafesSlice,
+  AddedSafesState,
+  updateAddedSafeBalance,
+} from '../addedSafesSlice'
 
 describe('addedSafesSlice', () => {
   it('should add a Safe to the store', () => {
-    const state = addedSafesSlice.reducer(undefined, addSafe({ chainId: '1', address: '0x0' }))
-    expect(state).toEqual({ '1': ['0x0'] })
+    const safe0 = { chainId: '1', address: { value: '0x0' }, threshold: 1, owners: [{ value: '0x123' }] } as SafeInfo
+    const state = addedSafesSlice.reducer(undefined, addOrUpdateSafe({ safe: safe0 }))
+    expect(state).toEqual({
+      '1': { ['0x0']: { owners: [{ value: '0x123' }], threshold: 1 } },
+    })
 
-    const stateB = addedSafesSlice.reducer(state, addSafe({ chainId: '4', address: '0x1' }))
-    expect(stateB).toEqual({ '1': ['0x0'], '4': ['0x1'] })
+    const safe1 = { chainId: '4', address: { value: '0x1' }, threshold: 1, owners: [{ value: '0x456' }] } as SafeInfo
+    const stateB = addedSafesSlice.reducer(state, addOrUpdateSafe({ safe: safe1 }))
+    expect(stateB).toEqual({
+      '1': { ['0x0']: { owners: [{ value: '0x123' }], threshold: 1 } },
+      '4': { ['0x1']: { threshold: 1, owners: [{ value: '0x456' }] } },
+    })
 
-    const stateC = addedSafesSlice.reducer(stateB, addSafe({ chainId: '1', address: '0x2' }))
-    expect(stateC).toEqual({ '1': ['0x0', '0x2'], '4': ['0x1'] })
+    const safe2 = { chainId: '1', address: { value: '0x2' }, threshold: 1, owners: [{ value: '0x789' }] } as SafeInfo
+    const stateC = addedSafesSlice.reducer(stateB, addOrUpdateSafe({ safe: safe2 }))
+    expect(stateC).toEqual({
+      '1': {
+        ['0x0']: { owners: [{ value: '0x123' }], threshold: 1 },
+        ['0x2']: { owners: [{ value: '0x789' }], threshold: 1 },
+      },
+      '4': { ['0x1']: { threshold: 1, owners: [{ value: '0x456' }] } },
+    })
+  })
+
+  it('should add the Safe balance to the store', () => {
+    const balances: SafeBalanceResponse = {
+      fiatTotal: '',
+      items: [
+        {
+          tokenInfo: {
+            type: 'NATIVE_TOKEN' as TokenType,
+            address: '',
+            decimals: 18,
+            symbol: '',
+            name: '',
+            logoUri: null,
+          },
+          balance: '8000000000000000000',
+          fiatBalance: '',
+          fiatConversion: '',
+        },
+        {
+          tokenInfo: {
+            type: 'ERC20' as TokenType,
+            address: '',
+            decimals: 18,
+            symbol: '',
+            name: '',
+            logoUri: null,
+          },
+          balance: '9000000000000000000',
+          fiatBalance: '',
+          fiatConversion: '',
+        },
+      ],
+    }
+    const state: AddedSafesState = {
+      '4': { ['0x1']: { threshold: 1, owners: [{ value: '0x456', name: null, logoUri: null }] } },
+    }
+
+    const result = addedSafesSlice.reducer(state, updateAddedSafeBalance({ chainId: '4', address: '0x1', balances }))
+    expect(result).toEqual({
+      '4': { ['0x1']: { threshold: 1, owners: [{ value: '0x456', name: null, logoUri: null }], ethBalance: '8' } },
+    })
+  })
+
+  it("shouldn't add the balance if the Safe isn't added", () => {
+    const balances: SafeBalanceResponse = {
+      fiatTotal: '',
+      items: [
+        {
+          tokenInfo: {
+            type: 'NATIVE_TOKEN' as TokenType,
+            address: '',
+            decimals: 18,
+            symbol: '',
+            name: '',
+            logoUri: null,
+          },
+          balance: '123',
+          fiatBalance: '',
+          fiatConversion: '',
+        },
+        {
+          tokenInfo: {
+            type: 'ERC20' as TokenType,
+            address: '',
+            decimals: 18,
+            symbol: '',
+            name: '',
+            logoUri: null,
+          },
+          balance: '456',
+          fiatBalance: '',
+          fiatConversion: '',
+        },
+      ],
+    }
+    const state: AddedSafesState = {}
+
+    const result = addedSafesSlice.reducer(state, updateAddedSafeBalance({ chainId: '4', address: '0x1', balances }))
+    expect(result).toStrictEqual({})
   })
 
   it('should remove a Safe from the store', () => {
-    const state = addedSafesSlice.reducer({ '1': ['0x0'], '4': ['0x0'] }, removeSafe({ chainId: '1', address: '0x0' }))
-    expect(state).toEqual({ '4': ['0x0'], '1': [] })
+    const state = addedSafesSlice.reducer(
+      { '1': { ['0x0']: {} as SafeInfo, ['0x1']: {} as SafeInfo }, '4': { ['0x0']: {} as SafeInfo } },
+      removeSafe({ chainId: '1', address: '0x1' }),
+    )
+    expect(state).toEqual({ '1': { ['0x0']: {} as SafeInfo }, '4': { ['0x0']: {} as SafeInfo } })
+  })
+
+  it('should remove the chain from the store', () => {
+    const state = addedSafesSlice.reducer(
+      { '1': { ['0x0']: {} as SafeInfo }, '4': { ['0x0']: {} as SafeInfo } },
+      removeSafe({ chainId: '1', address: '0x0' }),
+    )
+    expect(state).toEqual({ '4': { ['0x0']: {} as SafeInfo } })
   })
 })

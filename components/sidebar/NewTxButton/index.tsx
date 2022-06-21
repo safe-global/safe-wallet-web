@@ -1,9 +1,11 @@
 import { useState, type ReactElement } from 'react'
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
 import useSafeInfo from '@/services/useSafeInfo'
 import useWallet from '@/services/wallets/useWallet'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import { isOwner } from '@/components/transactions/utils'
+
+import css from './styles.module.css'
 
 const NewTxButton = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)
@@ -14,7 +16,14 @@ const NewTxButton = (): ReactElement => {
 
   return (
     <>
-      <Button onClick={() => setTxOpen(true)} variant="contained" disabled={!wallet || !isSafeOwner || isWrongChain}>
+      <Button
+        onClick={() => setTxOpen(true)}
+        variant="contained"
+        disabled={!isSafeOwner || isWrongChain}
+        fullWidth
+        className={css.button}
+        disableElevation
+      >
         {!wallet
           ? 'Not connected'
           : isWrongChain

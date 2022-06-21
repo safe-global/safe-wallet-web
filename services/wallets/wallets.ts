@@ -5,7 +5,8 @@ import coinbaseModule from '@web3-onboard/coinbase'
 import fortmaticModule from '@web3-onboard/fortmatic'
 import injectedWalletModule from '@web3-onboard/injected-wallets'
 import keepkeyModule from '@web3-onboard/keepkey'
-import keystoneModule from '@web3-onboard/keystone'
+// TODO: Breaking tests. Jest cannot find module when trying to mock
+// import keystoneModule from '@web3-onboard/keystone'
 import ledgerModule from '@web3-onboard/ledger'
 import portisModule from '@web3-onboard/portis'
 import torusModule from '@web3-onboard/torus'
@@ -17,7 +18,7 @@ const enum WALLET_KEYS {
   FORTMATIC = 'FORTMATIC',
   INJECTED = 'INJECTED',
   KEEPKEY = 'KEEPKEY',
-  KEYSTONE = 'KEYSTONE',
+  // KEYSTONE = 'KEYSTONE',
   LEDGER = 'LEDGER',
   // MAGIC = 'MAGIC', // Magic requires an API key
   PORTIS = 'PORTIS',
@@ -31,7 +32,7 @@ const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.FORTMATIC]: 'fortmatic',
   [WALLET_KEYS.INJECTED]: 'detectedwallet',
   [WALLET_KEYS.KEEPKEY]: undefined,
-  [WALLET_KEYS.KEYSTONE]: 'keystone',
+  // [WALLET_KEYS.KEYSTONE]: 'keystone',
   [WALLET_KEYS.LEDGER]: 'ledger',
   [WALLET_KEYS.PORTIS]: 'portis',
   [WALLET_KEYS.TORUS]: 'torus',
@@ -45,7 +46,7 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.FORTMATIC]: () => fortmaticModule({ apiKey: FORTMATIC_KEY }),
   [WALLET_KEYS.INJECTED]: injectedWalletModule,
   [WALLET_KEYS.KEEPKEY]: keepkeyModule,
-  [WALLET_KEYS.KEYSTONE]: keystoneModule,
+  // [WALLET_KEYS.KEYSTONE]: keystoneModule,
   [WALLET_KEYS.LEDGER]: ledgerModule,
   [WALLET_KEYS.PORTIS]: () => portisModule({ apiKey: PORTIS_KEY }),
   [WALLET_KEYS.TORUS]: torusModule,

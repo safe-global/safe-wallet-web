@@ -15,12 +15,11 @@ export const AppRoutes = {
     },
     settings: {
       spendingLimit: '/safe/settings/spending-limit',
-      policies: '/safe/settings/policies',
-      owners: '/safe/settings/owners',
+      setup: '/safe/settings/setup',
+      modules: '/safe/settings/modules',
       index: '/safe/settings',
       details: '/safe/settings/details',
       appearance: '/safe/settings/appearance',
-      advanced: '/safe/settings/advanced',
     },
     transactions: {
       queue: '/safe/transactions/queue',

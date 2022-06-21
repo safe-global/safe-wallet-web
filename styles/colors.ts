@@ -53,3 +53,7 @@ export const secondaryBlack = {
 export const primaryBlack = {
   500: '#162D45',
 }
+
+export const primaryGreen = {
+  200: '#EFFAF8',
+}

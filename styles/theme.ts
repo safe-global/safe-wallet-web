@@ -1,6 +1,18 @@
 import { Color, createTheme } from '@mui/material'
 
-import { black, error, gray, green, orange, primary, primaryBlack, red, secondaryBlack, warning } from '@/styles/colors'
+import {
+  black,
+  error,
+  gray,
+  green,
+  orange,
+  primary,
+  primaryBlack,
+  primaryGreen,
+  red,
+  secondaryBlack,
+  warning,
+} from '@/styles/colors'
 
 interface ThemeColors {
   black: Pick<Color, 300 | 400 | 500 | 600>
@@ -11,6 +23,7 @@ interface ThemeColors {
   // Not listed in colour scheme but present in wireframes
   secondaryBlack: Pick<Color, 300>
   primaryBlack: Pick<Color, 500>
+  primaryGreen: Pick<Color, 200>
 }
 
 declare module '@mui/material/styles' {
@@ -73,11 +86,11 @@ const theme = createTheme({
     primaryBlack: {
       500: primaryBlack[500],
     },
+    primaryGreen: {
+      200: primaryGreen[200],
+    },
   },
   typography: {
-    allVariants: {
-      color: primaryBlack[500],
-    },
     fontFamily: [
       'Averta',
       'Roboto',
@@ -93,8 +106,65 @@ const theme = createTheme({
       'BlinkMacSystemFont',
       'sans-serif',
     ].join(','),
-    button: {
-      textTransform: 'none',
+    allVariants: {
+      color: primaryBlack[500],
+    },
+    h1: {
+      fontSize: '32px',
+      lineHeight: '36px',
+      fontWeight: 700,
+    },
+    h2: {
+      fontSize: '27px',
+      lineHeight: '34px',
+      fontWeight: 700,
+    },
+    h3: {
+      fontSize: '24px',
+      lineHeight: '30px',
+    },
+    h4: {
+      fontSize: '20px',
+      lineHeight: '26px',
+    },
+    body1: {
+      fontSize: '16px',
+      lineHeight: '22px',
+    },
+    body2: {
+      fontSize: '14px',
+      lineHeight: '20px',
+    },
+    caption: {
+      fontSize: '12px',
+      lineHeight: '16px',
+    },
+    overline: {
+      fontSize: '11px',
+      lineHeight: '14px',
+      textTransform: 'uppercase',
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: '8px',
+          // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
+          borderColor: theme.palette.primary[400],
+          textTransform: 'none',
+          '&.Mui-disabled': {
+            color: '#fff',
+            backgroundColor: theme.palette.secondaryBlack[300],
+          },
+        }),
+        outlined: {
+          border: '2px solid',
+          '&:hover': {
+            border: '2px solid',
+          },
+        },
+      },
     },
   },
 })

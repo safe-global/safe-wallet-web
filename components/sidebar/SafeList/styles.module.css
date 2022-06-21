@@ -1,0 +1,48 @@
+.container {
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 22px 24px 18px;
+}
+
+.addButton {
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.chainDivider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0;
+  width: unset;
+  border-radius: 8px;
+  text-transform: none;
+  height: 27px;
+}
+
+.chainHeader {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.ownedLabel {
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ownedLabel:hover {
+  background-color: unset;
+}
+
+.list {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  padding: 0;
+}
