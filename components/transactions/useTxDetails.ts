@@ -25,7 +25,7 @@ const useTxDetails = ({
     dispatch(setTxDetails({ chainId, txDetails: data }))
   }, [data, chainId, dispatch])
 
-  return { txDetails: data, error, loading }
+  return { txDetails: txDetails || data, error, loading }
 }
 
 export default useTxDetails

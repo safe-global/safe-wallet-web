@@ -64,12 +64,9 @@ const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement 
   if (isSettingsChangeTxInfo(txInfo)) {
     return <SettingsChangeTxInfo settingsInfo={txInfo.settingsInfo} />
   }
-  return (
-    <>
-      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos commodi sit dolorum, ex quod vero necessitatibus
-      consequatur maiores cumque id deserunt iure dolor aspernatur?
-    </>
-  )
+
+  // TODO: handle missing TxInfo types
+  return <></>
 }
 
 export default TxData
