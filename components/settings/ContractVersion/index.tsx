@@ -8,23 +8,18 @@ import { useEffect, useState } from 'react'
 import OpenInNewRounded from '@mui/icons-material/OpenInNewRounded'
 
 export const ContractVersion = () => {
-  const [masterCopies, error, loading] = useMasterCopies()
+  const [masterCopies] = useMasterCopies()
   const [safeMasterCopy, setSafeMasterCopy] = useState<MasterCopy>()
   const { safe } = useSafeInfo()
 
   useEffect(() => {
-    let isMounted = true
     const getMasterCopyInfo = () => {
       const masterCopyAddress = safe?.implementation.value
       const masterCopy = masterCopies?.find((mc) => sameAddress(mc.address, masterCopyAddress))
-      if (isMounted) {
-        setSafeMasterCopy(masterCopy)
-      }
+
+      setSafeMasterCopy(masterCopy)
     }
     getMasterCopyInfo()
-    return () => {
-      isMounted = false
-    }
   }, [masterCopies, safe?.implementation.value])
 
   const needsUpdate = safeNeedsUpdate(safe?.version, LATEST_SAFE_VERSION)
