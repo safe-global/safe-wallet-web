@@ -1,6 +1,6 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { EditOwnerDialog } from '../EditOwnerDialog'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import css from './styles.module.css'
@@ -36,7 +36,7 @@ export const OwnerList = ({
   }
 
   return (
-    <div className={css.container}>
+    <Box display="flex" flexDirection="column" gap={2}>
       <Typography variant="h4" fontWeight={700}>
         Manage Safe Owners
       </Typography>
@@ -62,6 +62,6 @@ export const OwnerList = ({
         </Table>
       </TableContainer>
       {isGranted && <AddOwnerDialog />}
-    </div>
+    </Box>
   )
 }

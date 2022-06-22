@@ -1,4 +1,4 @@
-import { Button, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { Box, Button, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import { useState } from 'react'
 
 import TxModal from '@/components/tx/TxModal'
@@ -37,14 +37,14 @@ export const ChangeThresholdDialog = () => {
   const initialModalData: ChangeThresholdData = { threshold: safe?.threshold || 1 }
 
   return (
-    <div>
+    <Box paddingTop={2}>
       <div>
         <Button onClick={() => setOpen(true)} variant="contained">
           Change
         </Button>
       </div>
       {open && <TxModal onClose={handleClose} steps={ChangeThresholdSteps} initialData={[initialModalData]} />}
-    </div>
+    </Box>
   )
 }
 

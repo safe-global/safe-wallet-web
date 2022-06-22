@@ -32,14 +32,16 @@ const Setup: NextPage = () => {
   return (
     <main>
       <Typography variant="h2">Settings / Setup</Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={7}>
         <Grid item xs={8}>
           <Paper>
-            <Grid item>
-              <OwnerList owners={namedOwners ?? []} isGranted={isGranted} chainId={chainId} />
-            </Grid>
-            <Grid item xs>
-              <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />
+            <Grid container padding="40px 48px 32px 32px">
+              <Grid item xs={12}>
+                <OwnerList owners={namedOwners ?? []} isGranted={isGranted} chainId={chainId} />
+              </Grid>
+              <Grid item xs={12} marginTop={7}>
+                <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />
+              </Grid>
             </Grid>
           </Paper>
         </Grid>
@@ -50,7 +52,7 @@ const Setup: NextPage = () => {
             </Typography>
             <Typography>Current Nonce: {nonce}</Typography>
           </Grid>
-          <Grid item xs>
+          <Grid item xs marginTop="64px">
             <ContractVersion />
           </Grid>
         </Grid>

@@ -12,12 +12,12 @@ export const RequiredConfirmation = ({
   isGranted: boolean
 }) => {
   return (
-    <div className={css.container}>
+    <div>
       <Typography variant="h4" fontWeight={700}>
         Required Confirmations
       </Typography>
-      <Typography>Any transaction requires the confirmation of:</Typography>
-      <Typography className={css.lightParagraph}>
+      <Typography paddingTop={1}>Any transaction requires the confirmation of:</Typography>
+      <Typography paddingTop={3} className={css.lightParagraph}>
         <b>{threshold}</b> out of <b>{owners}</b> owners.
       </Typography>
       {isGranted && <ChangeThresholdDialog />}
