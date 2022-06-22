@@ -30,7 +30,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
 
   return (
     <div className={css.listContainer}>
-      {items.map((item, index) => (
+      {list.map((item, index) => (
         <TxListItem key={index} item={item} />
       ))}
     </div>
