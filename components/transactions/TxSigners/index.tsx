@@ -8,6 +8,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUncheckedOutlined'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
+import Box from '@mui/material/Box'
 import { useState, type ReactElement } from 'react'
 import type {
   AddressEx,
@@ -15,6 +16,7 @@ import type {
   TransactionDetails,
   TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
+import theme from '@/styles/theme'
 
 import useWallet from '@/services/wallets/useWallet'
 import useAddressBook from '@/services/useAddressBook'
@@ -23,12 +25,6 @@ import { isCancellationTxInfo, isExecutable, isMultisigExecutionDetails } from '
 
 import css from './styles.module.css'
 import { AddressInfo } from '../TxDetails/TxData'
-
-const black300 = '#B2BBC0'
-const gray500 = '#E2E3E3'
-const primary400 = '#008C73'
-const red400 = '#C31717'
-const orange500 = '#e8663d'
 
 // Icons
 
@@ -43,11 +39,14 @@ const DotIcon = () => <FiberManualRecordIcon className={css.icon} sx={{ height: 
 
 type StepState = 'confirmed' | 'active' | 'disabled' | 'error'
 const getStepColor = (state: StepState): string => {
+  const { palette } = theme
+
   const colors = {
-    confirmed: primary400,
-    active: orange500,
-    disabled: black300,
-    error: red400,
+    // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
+    confirmed: palette.primary[400],
+    active: palette.orange[500],
+    disabled: palette.black[300],
+    error: palette.red[400],
   }
   return colors[state]
 }
@@ -133,15 +132,15 @@ export const TxSigners = ({
       nonLinear
       connector={
         <StepConnector
-          sx={{
+          sx={({ palette }) => ({
             padding: '3px 0',
             '.MuiStepConnector-line': {
               marginLeft: '-3px',
-              borderColor: gray500,
+              borderColor: palette.gray[500],
               borderLeftWidth: '2px',
               minHeight: '14px',
             },
-          }}
+          })}
         />
       }
       sx={{ padding: 0 }}
@@ -158,14 +157,15 @@ export const TxSigners = ({
       <StyledStep $bold $state={isConfirmed ? 'confirmed' : 'active'}>
         <StepLabel icon={isConfirmed ? <CheckIcon /> : <CircleIcon />}>
           Confirmations{' '}
-          <span
-            style={{
-              color: black300,
+          <Box
+            sx={({ palette }) => ({
+              color: palette.black[300],
+              display: 'inline',
               fontWeight: 'normal',
-            }}
+            })}
           >
             ({`${numberOfConfirmations} of ${detailedExecutionInfo.confirmationsRequired}`})
-          </span>
+          </Box>
         </StepLabel>
       </StyledStep>
       {!hideConfirmations &&
@@ -199,7 +199,9 @@ export const TxSigners = ({
           </StepContent>
         ) : (
           !isConfirmed && (
-            <StepContent sx={{ color: black300 }}>Can be executed once the threshold is reached</StepContent>
+            <StepContent sx={({ palette }) => ({ color: palette.black[300] })}>
+              Can be executed once the threshold is reached
+            </StepContent>
           )
         )}
       </StyledStep>
