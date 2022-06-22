@@ -50,7 +50,7 @@ const Setup: NextPage = () => {
             <Typography variant="h4" fontWeight={700} paddingTop="48px">
               Safe Nonce
             </Typography>
-            <Typography>Current Nonce: {nonce}</Typography>
+            <Typography paddingTop={1}>Current Nonce: {nonce}</Typography>
           </Grid>
           <Grid item xs marginTop="64px">
             <ContractVersion />
