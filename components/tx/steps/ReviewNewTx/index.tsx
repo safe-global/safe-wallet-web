@@ -38,6 +38,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
 
   // Find the token info for the token we're sending
   const { balances } = useBalances()
+
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const { decimals, address } = token?.tokenInfo || {}
 

@@ -72,31 +72,23 @@ const navItems: NavItem[] = [
   {
     label: 'Settings',
     icon: '/images/sidebar/settings.svg',
-    href: AppRoutes.safe.settings.details,
+    href: AppRoutes.safe.settings.setup,
     items: [
       {
-        label: 'Safe Details',
-        href: AppRoutes.safe.settings.details,
+        label: 'Setup',
+        href: AppRoutes.safe.settings.setup,
       },
       {
         label: 'Appearance',
         href: AppRoutes.safe.settings.appearance,
       },
       {
-        label: 'Owners',
-        href: AppRoutes.safe.settings.owners,
-      },
-      {
-        label: 'Policies',
-        href: AppRoutes.safe.settings.policies,
-      },
-      {
         label: 'Spending Limit',
         href: AppRoutes.safe.settings.spendingLimit,
       },
       {
-        label: 'Advanced',
-        href: AppRoutes.safe.settings.advanced,
+        label: 'Modules',
+        href: AppRoutes.safe.settings.modules,
       },
     ],
   },

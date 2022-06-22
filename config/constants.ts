@@ -9,3 +9,4 @@ export const FORTMATIC_KEY = process.env.NEXT_PUBLIC_FORTMATIC_KEY || 'pk_test_C
 export const PORTIS_KEY = process.env.NEXT_PUBLIC_PORTIS_KEY || '852b763d-f28b-4463-80cb-846d7ec5806b'
 export const TREZOR_APP_URL = 'gnosis-safe.io'
 export const TREZOR_EMAIL = 'safe@gnosis.io'
+export const LATEST_SAFE_VERSION = process.env.REACT_APP_LATEST_SAFE_VERSION || '1.3.0'

@@ -1,14 +1,26 @@
-import { Paper } from '@mui/material'
+import { ChangeThresholdDialog } from '@/components/settings/owner/ChangeThresholdDialog'
+import { Typography } from '@mui/material'
 import css from './styles.module.css'
 
-export const RequiredConfirmation = ({ threshold, owners }: { threshold: number; owners: number }) => {
+export const RequiredConfirmation = ({
+  threshold,
+  owners,
+  isGranted,
+}: {
+  threshold: number
+  owners: number
+  isGranted: boolean
+}) => {
   return (
-    <Paper elevation={1} className={css.container}>
-      <h3>Required Confirmations</h3>
-      <p>Any transaction requires the confirmation of:</p>
-      <p className={css.lightParagraph}>
+    <div>
+      <Typography variant="h4" fontWeight={700}>
+        Required Confirmations
+      </Typography>
+      <Typography paddingTop={1}>Any transaction requires the confirmation of:</Typography>
+      <Typography paddingTop={3} className={css.lightParagraph}>
         <b>{threshold}</b> out of <b>{owners}</b> owners.
-      </p>
-    </Paper>
+      </Typography>
+      {isGranted && <ChangeThresholdDialog />}
+    </div>
   )
 }

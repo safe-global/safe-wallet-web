@@ -3,10 +3,17 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 600px;
   max-width: 100vw;
   max-height: 90vh;
   background-color: white;
   padding: 24px; /* TODO: Use theme variables */
   overflow: auto;
+}
+
+.narrow {
+  width: 600px;
+}
+
+.wide {
+  width: 775px;
 }
