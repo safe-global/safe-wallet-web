@@ -35,7 +35,7 @@ const TransferTxInfoSummary = ({ txInfo }: { txInfo: Transfer }) => {
   const { direction } = txInfo
   return (
     <span>
-      {/* Copy should be 'Send' if is a pending transaction */}
+      {/* TODO: copy should be 'Send' if is a pending transaction */}
       {direction === TransferDirection.INCOMING ? 'Received' : 'Sent'}{' '}
       <span className={css.bold}>
         <TransferTx info={txInfo} withLogo={false} omitSign />

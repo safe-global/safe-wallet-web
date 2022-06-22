@@ -12,14 +12,16 @@ type EthHashInfoProps = {
   name?: string
   showAvatar?: boolean
   showCopyButton?: boolean
-  prefix?: string
+  shortName?: string
   copyPrefix?: boolean
   shortAddress?: boolean
+  customBlockie?: string
 }
 
 const SRCEthHashInfo = ({
   address,
-  prefix,
+  customBlockie,
+  shortName,
   shortAddress = true,
   showAvatar = true,
   ...props
@@ -28,14 +30,14 @@ const SRCEthHashInfo = ({
     <div className={css.container}>
       {showAvatar && (
         <div className={css.avatar}>
-          <Identicon address={address} />
+          <Identicon address={address} customBlockie={customBlockie} />
         </div>
       )}
 
       <div>
         {props.name && <b>{props.name}</b>}
         <div>
-          {prefix && <b>{prefix}:</b>}
+          {shortName && <b>{shortName}:</b>}
           {shortAddress ? shortenAddress(address) : address}
         </div>
       </div>
@@ -49,9 +51,9 @@ const EthHashInfo = (props: EthHashInfoProps): ReactElement => {
   const chainId = useChainId()
   const addressBook = useAddressBook()
   const name = addressBook[props.address]
-  const prefix = Object.keys(chains).find((key) => chains[key] === chainId)
+  const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
 
-  return <SRCEthHashInfo {...props} prefix={prefix} name={name} />
+  return <SRCEthHashInfo {...props} shortName={shortName} name={name} />
 }
 
 export default EthHashInfo

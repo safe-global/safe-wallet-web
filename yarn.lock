@@ -1791,9 +1791,9 @@
     web3-utils "^1.6.0"
 
 "@gnosis.pm/safe-react-gateway-sdk@^3.1.2":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.1.1.tgz#e8968317d4684c4c796691b642212155a3858be8"
-  integrity sha512-Vw8efr9tgSsAYEAV5nMy+LRwP5CqdRMysyYEGcRlvzeKChggC0L0O6b8ucjhu8QhjpVLCNaaavLxZLUAr4tlhg==
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.1.2.tgz#071a52a10ba37aa56513c06f086671d0e1b6c898"
+  integrity sha512-/7TPxXqFyoK8PjbBm6YygTwx+VUUTNxFp8F3ceY3jmJhWdtek+Wrr4o20HzPN1nidO9qiKjgoyQLg1fgjSVopw==
   dependencies:
     cross-fetch "^3.1.5"
 
