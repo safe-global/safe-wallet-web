@@ -1,16 +1,10 @@
-.txInfoDetails {
+.container {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 16px
 }
 
-.txInfoDetails:last-of-type {
+.container:last-of-type {
   margin-bottom: 0;
-}
-
-.txInfoDetailsTitle {
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 22px;
 }

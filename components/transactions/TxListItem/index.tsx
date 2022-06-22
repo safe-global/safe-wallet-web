@@ -12,14 +12,15 @@ import css from './styles.module.css'
 const ExpandibleTransactionItem = ({ item }: { item: Transaction }) => (
   <Accordion
     className={css.accordion}
-    sx={{
+    sx={({ palette }) => ({
+      border: `2px solid ${palette.gray[500]}`,
       '& .MuiAccordionSummary-root': {
         padding: '0px 16px',
       },
       '& .MuiAccordionSummary-root.Mui-expanded': {
-        borderBottom: '2px solid #E8E7E6',
+        borderBottom: `2px solid ${palette.gray[500]}`,
       },
-    }}
+    })}
     disableGutters
     TransitionProps={{
       mountOnEnter: false,

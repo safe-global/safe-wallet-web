@@ -1,6 +1,7 @@
 import { ReactElement, ReactNode } from 'react'
-import { SettingsChange } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SettingsChange, SettingsInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
 import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
+import { Typography } from '@mui/material'
 import css from './styles.module.css'
 
 interface Props {
@@ -24,9 +25,11 @@ const ThresholdWarning = (): ReactElement => (
 )
 
 export const InfoDetails = ({ header, children, title }: InfoDetailsProps): ReactElement => (
-  <div className={css.txInfoDetails}>
+  <div className={css.container}>
     {header}
-    <span className={css.txInfoDetailsTitle}>{title}</span>
+    <Typography variant="body1">
+      <b>{title}</b>
+    </Typography>
     {children}
   </div>
 )
@@ -37,7 +40,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: Props): ReactElement | nu
   }
 
   switch (settingsInfo.type) {
-    case 'SET_FALLBACK_HANDLER': {
+    case SettingsInfoType.SET_FALLBACK_HANDLER: {
       return (
         <InfoDetails title="Set fallback handler:">
           <AddressInfo
@@ -48,9 +51,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: Props): ReactElement | nu
         </InfoDetails>
       )
     }
-    case 'ADD_OWNER':
-    case 'REMOVE_OWNER': {
-      const title = settingsInfo.type === 'ADD_OWNER' ? 'Add owner:' : 'Remove owner:'
+    case SettingsInfoType.ADD_OWNER:
+    case SettingsInfoType.REMOVE_OWNER: {
+      const title = settingsInfo.type === SettingsInfoType.ADD_OWNER ? 'Add owner:' : 'Remove owner:'
       return (
         <InfoDetails title={title} header={<ThresholdWarning />}>
           <AddressInfo
@@ -62,7 +65,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: Props): ReactElement | nu
         </InfoDetails>
       )
     }
-    // case 'SWAP_OWNER': {
+    // case SettingsInfoType.SWAP_OWNER: {
     //   return (
     //     <InfoDetails title="Swap owner:">
     //       <TxInfoDetails
@@ -80,14 +83,14 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: Props): ReactElement | nu
     //     </InfoDetails>
     //   )
     // }
-    case 'CHANGE_THRESHOLD': {
+    case SettingsInfoType.CHANGE_THRESHOLD: {
       return (
         <InfoDetails title="Increase/decrease confirmation policy to:" header={<ThresholdWarning />}>
           {settingsInfo.threshold}
         </InfoDetails>
       )
     }
-    // case 'CHANGE_IMPLEMENTATION': {
+    // case SettingsInfoType.CHANGE_IMPLEMENTATIO': {
     //   return (
     //     <InfoDetails title="Change implementation:">
     //       <AddressInfo
@@ -98,9 +101,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: Props): ReactElement | nu
     //     </InfoDetails>
     //   )
     // }
-    // case 'ENABLE_MODULE':
-    // case 'DISABLE_MODULE': {
-    //   const title = settingsInfo.type === 'ENABLE_MODULE' ? 'Enable module:' : 'Disable module:'
+    // case SettingsInfoType.ENABLE_MODULE:
+    // case SettingsInfoType.DISABLE_MODULE: {
+    //   const title = settingsInfo.type === SettingsInfoType.ENABLE_MODULE ? 'Enable module:' : 'Disable module:'
     //   return (
     //     <InfoDetails title={title}>
     //       <AddressInfo
@@ -111,7 +114,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: Props): ReactElement | nu
     //     </InfoDetails>
     //   )
     // }
-    // case 'SET_GUARD': {
+    // case SettingsInfoType.SET_GUARD: {
     //   return (
     //     <InfoDetails title="Set guard:">
     //       <AddressInfo
@@ -122,7 +125,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: Props): ReactElement | nu
     //     </InfoDetails>
     //   )
     // }
-    // case 'DELETE_GUARD': {
+    // case SettingsInfoType.DELETE_GUARD: {
     //   return <InfoDetails title="Delete guard">{null}</InfoDetails>
     // }
     default:

@@ -2,12 +2,9 @@
   margin-top: 8px;
   padding-left: 0;
   cursor: pointer;
-  color: #008C73;
   text-decoration: underline;
   background: transparent;
   border: none;
-  font-size: 16px;
-  line-height: 22px;
 }
 
 .collapsibleSection {

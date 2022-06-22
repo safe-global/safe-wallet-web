@@ -22,12 +22,12 @@ export const txDetailsSlice = createSlice({
 
 export const { setTxDetails } = txDetailsSlice.actions
 
-const selectTxDetailsState = (state: RootState): TxDetailsState => {
+const selectTxDetails = (state: RootState): TxDetailsState => {
   return state[txDetailsSlice.name]
 }
 
-export const selectTxDetails = createSelector(
-  [selectTxDetailsState, (_: RootState, details: { chainId: string; txId: string }) => details],
+export const selectTxDetailsById = createSelector(
+  [selectTxDetails, (_: RootState, details: { chainId: string; txId: string }) => details],
   (txDetails, { chainId, txId }) => {
     return txDetails?.[chainId]?.[txId]
   },

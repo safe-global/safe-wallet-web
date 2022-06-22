@@ -5,7 +5,6 @@ import { isSettingsChangeTxInfo, isTransferTxInfo } from '@/components/transacti
 import { useCurrentChain } from '@/services/useChains'
 import { TransactionDetails, Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { type ReactElement } from 'react'
-import css from './styles.module.css'
 
 export const AddressInfo = ({
   name,
@@ -26,7 +25,7 @@ export const AddressInfo = ({
     <>
       {/* TODO: Add these to EthHashInfo */}
       {name}
-      <EthHashInfo address={address} shortName={shortName} customBlockie={avatarUrl ? avatarUrl : undefined} />
+      <EthHashInfo address={address} prefix={shortName} customBlockie={avatarUrl ? avatarUrl : undefined} />
     </>
   )
 }
@@ -37,9 +36,9 @@ const TransferTxInfoSummary = ({ txInfo }: { txInfo: Transfer }) => {
     <span>
       {/* TODO: copy should be 'Send' if is a pending transaction */}
       {direction === TransferDirection.INCOMING ? 'Received' : 'Sent'}{' '}
-      <span className={css.bold}>
+      <b>
         <TransferTx info={txInfo} withLogo={false} omitSign />
-      </span>
+      </b>
       {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
     </span>
   )

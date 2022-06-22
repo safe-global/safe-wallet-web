@@ -46,20 +46,28 @@ export const isTransaction = (value: TransactionListItem): value is Transaction 
 }
 
 // TransactionInfo type guards
+// TODO: could be passed to Client GW SDK
+enum TransactionInfoType {
+  TRANSFER = 'Transfer',
+  SETTINGS_CHANGE = 'SettingsChange',
+  CUSTOM = 'Custom',
+  CREATION = 'Creation',
+}
+
 export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
-  return value.type === 'Transfer'
+  return value.type === TransactionInfoType.TRANSFER
 }
 
 export const isSettingsChangeTxInfo = (value: TransactionInfo): value is SettingsChange => {
-  return value.type === 'SettingsChange'
+  return value.type === TransactionInfoType.SETTINGS_CHANGE
 }
 
 export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
-  return value.type === 'Custom'
+  return value.type === TransactionInfoType.CUSTOM
 }
 
 export const isMultisendTxInfo = (value: TransactionInfo): value is MultiSend => {
-  return value.type === 'Custom' && value.methodName === 'multiSend'
+  return value.type === TransactionInfoType.CUSTOM && value.methodName === 'multiSend'
 }
 
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
@@ -67,24 +75,31 @@ export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellat
 }
 
 export const isCreationTxInfo = (value: TransactionInfo): value is Creation => {
-  return value.type === 'Creation'
+  return value.type === TransactionInfoType.CREATION
 }
 
 // TxListItem type guards
+// TODO: could be passed to Client GW SDK
+enum TransactionListItemType {
+  TRANSACTION = 'TRANSACTION',
+  LABEL = 'LABEL',
+  CONFLICT_HEADER = 'CONFLICT_HEADER',
+  DATE_LABEL = 'DATE_LABEL',
+}
 export const isTransactionListItem = (value: TransactionListItem): value is Transaction => {
-  return value.type === 'TRANSACTION'
+  return value.type === TransactionListItemType.TRANSACTION
 }
 
 export const isLabelListItem = (value: TransactionListItem): value is Label => {
-  return value.type === 'LABEL'
+  return value.type === TransactionListItemType.LABEL
 }
 
 export const isConflictHeaderListItem = (value: TransactionListItem): value is ConflictHeader => {
-  return value.type === 'CONFLICT_HEADER'
+  return value.type === TransactionListItemType.CONFLICT_HEADER
 }
 
 export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
-  return value.type === 'DATE_LABEL'
+  return value.type === TransactionListItemType.DATE_LABEL
 }
 
 export const isSignableBy = (txSummary: TransactionSummary, walletAddress: string): boolean => {

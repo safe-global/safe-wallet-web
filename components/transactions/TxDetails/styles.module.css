@@ -14,24 +14,20 @@
   gap: 2px;
 }
 
-.txData {
+.txData,
+.txSummary,
+.advancedDetails {
   background: white;
   padding: 20px 24px;
+}
+
+.txData {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-
-.txSummary {
-  background: white;
-  padding: 20px 24px;
-  border-bottom-left-radius: 8px;
-  height: 100%;
-}
-
+.txSummary,
 .advancedDetails {
-  background: white;
-  padding: 20px 24px;
   border-bottom-left-radius: 8px;
   height: 100%;
 }

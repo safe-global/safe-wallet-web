@@ -1,4 +1,5 @@
 import { shortenAddress } from '@/services/formatters'
+import { Box, Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
 import { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
@@ -16,7 +17,7 @@ interface Props {
 
 const generateInlineTypeValue = (
   type: Props['inlineType'],
-  value?: string,
+  value: string,
   hasExplorer?: boolean,
 ): ReactElement | null => {
   if (!value) return null
@@ -64,15 +65,21 @@ export const TxDataRow = ({
   if (value == undefined) return null
   return (
     <div className={css.gridRow}>
-      <span className={css.rowTitle}>{title}</span>
-      {isArray && value && method && paramType && (
+      <Box
+        sx={({ palette }) => ({
+          color: palette.black[400],
+        })}
+      >
+        <Typography variant="body1">{title}</Typography>
+      </Box>
+      {isArray && method && paramType && (
         <div className={css.valueWrapper}>
           {/* <Value method={method} type={paramType} value={value} /> */}
           {JSON.stringify(value)}
         </div>
       )}
       {!isArray && generateInlineTypeValue(inlineType, value, hasExplorer)}
-      {!isArray && !inlineType && value && <span>{value}</span>}
+      {!isArray && !inlineType && <span>{value}</span>}
       {children}
     </div>
   )

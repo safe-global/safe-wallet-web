@@ -10,12 +10,6 @@
   flex-shrink: 0;
 }
 
-.rowTitle {
-  color: #5D6D74;
-  font-size: 16px;
-  line-height: 22px;
-}
-
 .valueWrapper {
   min-width: 50%;
   flex-shrink: 0;
@@ -26,15 +20,7 @@
   display: inline-flex;
 }
 
-.inline span {
-  font-weight: bold;
-}
-
 .rawData {
   display: flex;
   align-items: center;
-}
-
-.rawData:nth-child(2) {
-  margin-left: 5px;
 }

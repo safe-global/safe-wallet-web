@@ -87,13 +87,10 @@ const shouldHideConfirmations = (detailedExecutionInfo: DetailedExecutionInfo | 
   return isConfirmed || detailedExecutionInfo.confirmations.length > 3
 }
 
-const getConfirmationStep = (
-  { value, name, logoUri }: AddressEx,
-  key: string | undefined = undefined,
-): ReactElement => (
+const getConfirmationStep = ({ value, name }: AddressEx, key: string | undefined = undefined): ReactElement => (
   <StyledStep key={key} $bold $state="confirmed">
     <StepLabel icon={<DotIcon />}>
-      <AddressInfo address={value} name={name} avatarUrl={logoUri} />
+      <AddressInfo address={value} name={name} />
     </StepLabel>
   </StyledStep>
 )
@@ -189,21 +186,24 @@ export const TxSigners = ({
         <StepLabel icon={isExecuted ? <CheckIcon /> : <CircleIcon />}>
           {isExecuted ? 'Executed' : isPending ? 'Executing' : 'Execution'}
         </StepLabel>
-        {detailedExecutionInfo.executor ? (
-          <StepContent>
-            <AddressInfo
-              address={detailedExecutionInfo.executor.value}
-              name={detailedExecutionInfo.executor.name}
-              avatarUrl={detailedExecutionInfo.executor.logoUri}
-            />
-          </StepContent>
-        ) : (
-          !isConfirmed && (
-            <StepContent sx={({ palette }) => ({ color: palette.black[300] })}>
-              Can be executed once the threshold is reached
+        {
+          // isExecuted
+          detailedExecutionInfo.executor ? (
+            <StepContent>
+              <AddressInfo
+                address={detailedExecutionInfo.executor.value}
+                name={detailedExecutionInfo.executor.name}
+                avatarUrl={detailedExecutionInfo.executor.logoUri}
+              />
             </StepContent>
+          ) : (
+            !isConfirmed && (
+              <StepContent sx={({ palette }) => ({ color: palette.black[300] })}>
+                Can be executed once the threshold is reached
+              </StepContent>
+            )
           )
-        )}
+        }
       </StyledStep>
     </Stepper>
   )

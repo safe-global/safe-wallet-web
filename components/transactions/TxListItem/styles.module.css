@@ -1,15 +1,10 @@
 .accordion {
-  border: 2px solid #EEEFF0;
   border-radius: 8px;
   box-shadow: unset;
 }
 
 .accordion::before {
   content: none;
-}
-
-.accordion .MuiAccordionSummary-root.Mui-expanded {
-  border-bottom: 2px solid #E8E7E6;
 }
 
 .accordionSummary > div {
