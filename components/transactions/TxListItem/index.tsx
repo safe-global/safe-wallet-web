@@ -2,7 +2,7 @@ import { type ReactElement } from 'react'
 import type { Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { isConflictHeaderListItem, isLabelListItem, isTransactionListItem } from '@/components/transactions/utils'
+import { isDateLabel, isLabelListItem, isTransactionListItem } from '@/components/transactions/utils'
 import TxSummary from '../TxSummary'
 import GroupLabel from '../GroupLabel'
 import TxDateLabel from '../TxDateLabel'
@@ -44,13 +44,11 @@ const TxListItem = ({ item }: TxListItemProps): ReactElement => {
     <GroupLabel item={item} />
   ) : isTransactionListItem(item) ? (
     <ExpandibleTransactionItem item={item} />
-  ) : isConflictHeaderListItem(item) ? (
-    <></> // ignore ConflictHeader
-  ) : (
-    // TODO: The default should not be DATE_LABEL.
-    // We need to add the type guard for it after updating TransactionListItem type in the Client GW SDK
+  ) : isDateLabel(item) ? (
     <TxDateLabel item={item} />
+  ) : (
+    // ignore ConflictHeader
+    <></>
   )
 }
-
 export default TxListItem

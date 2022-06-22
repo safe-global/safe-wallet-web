@@ -1,5 +1,6 @@
 import {
   AddressEx,
+  Cancellation,
   ConflictHeader,
   Creation,
   Custom,
@@ -61,8 +62,7 @@ export const isMultisendTxInfo = (value: TransactionInfo): value is MultiSend =>
   return value.type === 'Custom' && value.methodName === 'multiSend'
 }
 
-// TODO: worth exporting Cancellation as a TransactionInfo type in the SDK?
-export const isCancellationTxInfo = (value: TransactionInfo): boolean => {
+export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
   return isCustomTxInfo(value) && value.isCancellation
 }
 
@@ -78,13 +78,12 @@ export const isTransactionListItem = (value: TransactionListItem): value is Tran
 export const isLabelListItem = (value: TransactionListItem): value is Label => {
   return value.type === 'LABEL'
 }
+
 export const isConflictHeaderListItem = (value: TransactionListItem): value is ConflictHeader => {
   return value.type === 'CONFLICT_HEADER'
 }
 
-// @ts-expect-error @TODO: Add DateLabel to TransactionListItem type in SDK types
 export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
-  // @ts-ignore as above
   return value.type === 'DATE_LABEL'
 }
 
