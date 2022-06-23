@@ -40,11 +40,11 @@ export const TransferTx = ({
           value={transfer.value}
           decimals={nativeCurrency?.decimals}
           tokenSymbol={nativeCurrency?.symbol}
-          logoUri={withLogo ? nativeCurrency?.logoUri : null}
+          logoUri={withLogo ? nativeCurrency?.logoUri : undefined}
         />
       )
     case TransactionTokenType.ERC20:
-      return <TokenAmount {...transfer} direction={direction} logoUri={withLogo ? transfer?.logoUri : null} />
+      return <TokenAmount {...transfer} direction={direction} logoUri={withLogo ? transfer?.logoUri : undefined} />
     case TransactionTokenType.ERC721:
       return (
         <>

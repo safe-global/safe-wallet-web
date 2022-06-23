@@ -22,9 +22,10 @@ import useWallet from '@/services/wallets/useWallet'
 import useAddressBook from '@/services/useAddressBook'
 import useIsPending from '@/components/transactions/useIsPending'
 import { isCancellationTxInfo, isExecutable, isMultisigExecutionDetails } from '@/components/transactions/utils'
+import { Button, Typography } from '@mui/material'
+import { AddressInfo } from '../TxDetails/TxData'
 
 import css from './styles.module.css'
-import { AddressInfo } from '../TxDetails/TxData'
 
 // Icons
 
@@ -172,13 +173,17 @@ export const TxSigners = ({
       {detailedExecutionInfo.confirmations.length > 0 && (
         <StyledStep $state="confirmed">
           <StepLabel icon={<DotIcon />} onClick={toggleHide}>
-            <span
-              style={{
-                cursor: 'pointer',
-              }}
-            >
-              {hideConfirmations ? 'Show all' : 'Hide all'}
-            </span>
+            <Button variant="text">
+              <Typography
+                variant="body1"
+                sx={({ palette }) => ({
+                  // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
+                  color: palette.primary[400],
+                })}
+              >
+                {hideConfirmations ? 'Show all' : 'Hide all'}
+              </Typography>
+            </Button>
           </StepLabel>
         </StyledStep>
       )}

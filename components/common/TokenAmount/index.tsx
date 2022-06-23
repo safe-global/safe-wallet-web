@@ -11,6 +11,9 @@ export const TokenIcon = (props: { logoUri?: string | null; tokenSymbol?: string
 const TokenAmount = (props: {
   value: string
   decimals?: number | null
+  // TODO: update CLIENT GW SDK to not allow null
+  // see https://safe.global/safe-client-gateway/docs/routes/transactions/models/struct.Erc20Transfer.html
+  // and https://safe.global/safe-client-gateway/docs/routes/transactions/models/struct.Erc721Transfer.html
   logoUri?: string | null
   tokenSymbol?: string | null
   direction?: TransferDirection

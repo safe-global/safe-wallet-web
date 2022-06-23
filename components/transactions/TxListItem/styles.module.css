@@ -1,6 +1,5 @@
 .accordion {
   border-radius: 8px;
-  box-shadow: unset;
 }
 
 .accordion::before {
@@ -13,7 +12,5 @@
 
 .accordionDetails {
   padding: 0;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
   min-height: 200px;
 }

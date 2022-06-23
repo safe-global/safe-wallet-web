@@ -166,6 +166,22 @@ const theme = createTheme({
         },
       },
     },
+    MuiAccordion: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          border: `2px solid ${theme.palette.gray[500]}`,
+        }),
+      },
+    },
+    MuiAccordionSummary: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '&.Mui-expanded': {
+            borderBottom: `2px solid ${theme.palette.gray[500]}`,
+          },
+        }),
+      },
+    },
   },
 })
 

@@ -12,17 +12,12 @@ import css from './styles.module.css'
 const ExpandableTransactionItem = ({ item }: { item: Transaction }) => (
   <Accordion
     className={css.accordion}
-    sx={({ palette }) => ({
-      border: `2px solid ${palette.gray[500]}`,
-      '& .MuiAccordionSummary-root.Mui-expanded': {
-        borderBottom: `2px solid ${palette.gray[500]}`,
-      },
-    })}
     disableGutters
     TransitionProps={{
       mountOnEnter: false,
       unmountOnExit: true,
     }}
+    elevation={0}
   >
     <AccordionSummary className={css.accordionSummary} expandIcon={<ExpandMoreIcon />}>
       <TxSummary item={item} />

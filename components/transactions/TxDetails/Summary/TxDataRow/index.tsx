@@ -20,7 +20,6 @@ const generateInlineTypeValue = (
   value: string,
   hasExplorer?: boolean,
 ): ReactElement | null => {
-  if (!value) return null
   switch (type) {
     case 'address':
       return (
@@ -48,8 +47,9 @@ const generateInlineTypeValue = (
       )
     // case 'bytes':
     //   return <HexEncodedData limit={60} hexData={value} />
+    default:
+      return null
   }
-  return null
 }
 
 export const TxDataRow = ({

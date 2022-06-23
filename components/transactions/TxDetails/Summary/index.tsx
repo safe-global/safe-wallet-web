@@ -9,7 +9,7 @@ import css from './styles.module.css'
 export const NOT_AVAILABLE = 'n/a'
 
 interface Props {
-  txDetails?: TransactionDetails
+  txDetails: TransactionDetails
 }
 
 const Summary = ({ txDetails }: Props): ReactElement => {
@@ -40,8 +40,11 @@ const Summary = ({ txDetails }: Props): ReactElement => {
       {txData && (
         <>
           <button className={css.buttonLink} onClick={toggleExpanded}>
-            {/* @ts-expect-error type '400' can't be used to index type 'PaletteColor' */}
-            <Typography variant="body1" sx={({ palette }) => ({ color: palette.primary[400] })}>
+            <Typography
+              // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
+              sx={({ palette }) => ({ color: palette.primary[400], textDecoration: 'underline' })}
+              variant="body1"
+            >
               Advanced Details
             </Typography>
           </button>
