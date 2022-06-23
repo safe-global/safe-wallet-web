@@ -15,12 +15,12 @@ type EthHashInfoProps = {
   prefix?: string
   copyPrefix?: boolean
   shortAddress?: boolean
-  customBlockie?: string
+  customAvatar?: string
 }
 
 const SRCEthHashInfo = ({
   address,
-  customBlockie,
+  customAvatar,
   prefix,
   shortAddress = true,
   showAvatar = true,
@@ -30,7 +30,7 @@ const SRCEthHashInfo = ({
     <div className={css.container}>
       {showAvatar && (
         <div className={css.avatar}>
-          <Identicon address={address} customBlockie={customBlockie} />
+          {customAvatar ? <img src={customAvatar} alt={address} /> : <Identicon address={address} />}
         </div>
       )}
 
