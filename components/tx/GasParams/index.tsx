@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, SyntheticEvent } from 'react'
 import { BigNumber, BigNumberish } from 'ethers'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography } from '@mui/material'
 import css from './styles.module.css'
@@ -10,6 +10,7 @@ type GasParamsProps = {
   maxFeePerGas?: BigNumber
   maxPriorityFeePerGas?: BigNumber
   isLoading: boolean
+  onEdit: () => void
 }
 
 const formatPrice = (value: BigNumberish, type?: string | number): string => {
@@ -32,7 +33,13 @@ const GasDetail = ({ name, value, isLoading }: { name: string; value: string; is
   )
 }
 
-const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas, isLoading }: GasParamsProps): ReactElement => {
+const GasParams = ({
+  gasLimit,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+  isLoading,
+  onEdit,
+}: GasParamsProps): ReactElement => {
   const chain = useCurrentChain()
 
   // Total gas cost
@@ -45,6 +52,11 @@ const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas, isLoading }: 
   const gasLimitString = gasLimit?.toString() || ''
   const maxFeePerGasGwei = maxFeePerGas ? formatPrice(maxFeePerGas, 'gwei') : ''
   const maxPrioGasGwei = maxPriorityFeePerGas ? formatPrice(maxPriorityFeePerGas, 'gwei') : ''
+
+  const onEditClick = (e: SyntheticEvent) => {
+    e.preventDefault()
+    !isLoading && onEdit()
+  }
 
   return (
     <div className={css.container}>
@@ -66,6 +78,15 @@ const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas, isLoading }: 
           <GasDetail isLoading={isLoading} name="Max priority fee (Gwei)" value={maxPrioGasGwei} />
 
           <GasDetail isLoading={isLoading} name="Max fee (Gwei)" value={maxFeePerGasGwei} />
+
+          <Typography
+            className={css.buttonLink}
+            onClick={onEditClick}
+            sx={({ palette }) => ({ color: palette.primary.main })}
+            marginTop={1}
+          >
+            Edit
+          </Typography>
         </AccordionDetails>
       </Accordion>
     </div>

@@ -1,0 +1,5 @@
+.container {
+  position: relative;
+  z-index: 2;
+  margin: -2em 0 -69px; /* cover the modal title and bottom buttons */
+}

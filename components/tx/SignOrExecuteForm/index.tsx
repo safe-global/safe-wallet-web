@@ -13,6 +13,7 @@ import useGasPrice from '@/services/useGasPrice'
 import useSafeInfo from '@/services/useSafeInfo'
 import GasParams from '@/components/tx/GasParams'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import AdvancedParamsForm, { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -33,6 +34,8 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
 
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
+  const [isEditingGas, setEditingGas] = useState<boolean>(false)
+  const [manualParams, setManualParams] = useState<AdvancedParameters>()
 
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(
     shouldExecute && safeTx && wallet
@@ -44,6 +47,12 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
   )
 
   const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
+
+  const advancedParams: Partial<AdvancedParameters> = {
+    gasLimit: manualParams?.gasLimit || gasLimit,
+    maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
+    maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
+  }
 
   const onFinish = async (actionFn: () => Promise<void>) => {
     if (!wallet || !safeTx) return
@@ -76,10 +85,15 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
 
       // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
       await dispatchTxExecution(id, safeTx!, {
-        gasLimit,
-        gasPrice: maxFeePerGas?.toString(),
+        gasLimit: manualParams?.gasLimit || gasLimit,
+        gasPrice: (manualParams?.maxFeePerGas || maxFeePerGas)?.toString(),
       })
     })
+  }
+
+  const onGasSubmit = (data: AdvancedParameters) => {
+    setEditingGas(false)
+    setManualParams(data)
   }
 
   // If checkbox is checked and the transaction is executable, execute it
@@ -88,7 +102,14 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
   const isEstimating = willExecute && (gasLimitLoading || gasPriceLoading)
   const handleSubmit = willExecute ? onExecute : onSign
 
-  return (
+  return isEditingGas ? (
+    <AdvancedParamsForm
+      gasLimit={advancedParams.gasLimit!}
+      maxFeePerGas={advancedParams.maxFeePerGas!}
+      maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas!}
+      onSubmit={onGasSubmit}
+    />
+  ) : (
     <div className={css.container}>
       {canExecute && !onlyExecute && (
         <FormControlLabel
@@ -100,9 +121,10 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
       {willExecute && (
         <GasParams
           isLoading={isEstimating}
-          gasLimit={gasLimit}
-          maxFeePerGas={maxFeePerGas}
-          maxPriorityFeePerGas={maxPriorityFeePerGas}
+          gasLimit={advancedParams.gasLimit}
+          maxFeePerGas={advancedParams.maxFeePerGas}
+          maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
+          onEdit={() => setEditingGas(true)}
         />
       )}
 
