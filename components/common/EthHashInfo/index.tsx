@@ -1,10 +1,11 @@
 import { ReactElement } from 'react'
-import css from './styles.module.css'
 import chains from '@/config/chains'
 import { shortenAddress } from '@/services/formatters'
 import Identicon from '../Identicon'
 import useChainId from '@/services/useChainId'
 import useAddressBook from '@/services/useAddressBook'
+import { Typography } from '@mui/material'
+import css from './styles.module.css'
 
 type EthHashInfoProps = {
   address: string
@@ -34,13 +35,11 @@ const SRCEthHashInfo = ({
         </div>
       )}
 
-      <div>
-        {props.name && <b>{props.name}</b>}
-        <div>
-          {prefix && <b>{prefix}:</b>}
-          {shortAddress ? shortenAddress(address) : address}
-        </div>
-      </div>
+      {props.name && <b>{props.name}</b>}
+      <Typography>
+        {prefix && <b>{prefix}:</b>}
+        {shortAddress ? shortenAddress(address) : address}
+      </Typography>
 
       {props.showCopyButton && <div className={css.copy}>{/* TODO */}</div>}
     </div>

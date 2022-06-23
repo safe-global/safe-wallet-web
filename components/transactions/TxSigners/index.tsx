@@ -167,9 +167,7 @@ export const TxSigners = ({
         </StepLabel>
       </StyledStep>
       {!hideConfirmations &&
-        (canExecute || isPending
-          ? getConfirmationStep({ value: account, name, logoUri: null })
-          : detailedExecutionInfo.confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value)))}
+        detailedExecutionInfo.confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value))}
       {detailedExecutionInfo.confirmations.length > 0 && (
         <StyledStep $state="confirmed">
           <StepLabel icon={<DotIcon />}>
