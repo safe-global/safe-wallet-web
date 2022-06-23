@@ -14,9 +14,8 @@ const TokenAmount = (props: {
   logoUri?: string | null
   tokenSymbol?: string | null
   direction?: TransferDirection
-  omitSign?: boolean
 }): ReactElement => {
-  const sign = props.omitSign ? '' : props.direction === TransferDirection.OUTGOING ? '-' : ''
+  const sign = props.direction === TransferDirection.OUTGOING ? '-' : ''
 
   return (
     <span className={css.container}>

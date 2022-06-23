@@ -30,28 +30,21 @@ export const TransferTx = ({
   const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
   const transfer = info.transferInfo
+  const direction = omitSign ? undefined : info.direction
 
   switch (transfer.type) {
     case TransactionTokenType.NATIVE_COIN:
       return (
         <TokenAmount
-          direction={info.direction}
+          direction={direction}
           value={transfer.value}
           decimals={nativeCurrency?.decimals}
           tokenSymbol={nativeCurrency?.symbol}
           logoUri={withLogo ? nativeCurrency?.logoUri : null}
-          omitSign={omitSign}
         />
       )
     case TransactionTokenType.ERC20:
-      return (
-        <TokenAmount
-          {...transfer}
-          direction={info.direction}
-          logoUri={withLogo ? transfer?.logoUri : null}
-          omitSign={omitSign}
-        />
-      )
+      return <TokenAmount {...transfer} direction={direction} logoUri={withLogo ? transfer?.logoUri : null} />
     case TransactionTokenType.ERC721:
       return (
         <>
