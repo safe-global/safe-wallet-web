@@ -21,14 +21,12 @@ export const shortenAddress = (address: string, length = 4): string => {
 
 export const dateString = (date: number) => {
   const formatterOptions: Intl.DateTimeFormatOptions = {
-    month: 'long',
+    month: 'numeric',
     day: 'numeric',
     year: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
     second: 'numeric',
   }
-  const formatter = new Intl.DateTimeFormat('en-US', formatterOptions)
-
-  return formatter.format(new Date(date)).replace(',', '')
+  return new Intl.DateTimeFormat(undefined, formatterOptions).format(new Date(date))
 }
