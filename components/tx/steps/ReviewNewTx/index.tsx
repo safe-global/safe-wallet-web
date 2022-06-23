@@ -49,7 +49,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   }, [params, decimals, address])
 
   // Estimate safeTxGas
-  const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
+  const { safeGas, safeGasError } = useSafeTxGas(txParams)
   const [editableNonce, setEditableNonce] = useState<number>()
 
   // Create a safeTx
