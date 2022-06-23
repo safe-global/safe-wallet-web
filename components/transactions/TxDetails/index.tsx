@@ -1,13 +1,17 @@
 import { type ReactElement } from 'react'
-import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxSigners from '@/components/transactions/TxSigners'
-import useTxDetails from '@/components/transactions/useTxDetails'
 import Summary from '@/components/transactions/TxDetails/Summary'
 import TxData from '@/components/transactions/TxDetails/TxData'
+import useChainId from '@/services/useChainId'
+import useAsync from '@/services/useAsync'
 import css from './styles.module.css'
 
 const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
-  const { txDetails, loading } = useTxDetails({ txId: txSummary.id })
+  const chainId = useChainId()
+  const [txDetails, , loading] = useAsync(async () => {
+    return getTransactionDetails(chainId, txSummary.id)
+  }, [chainId, txSummary.id])
 
   if (loading || !txDetails) {
     return <div>Loading...</div>
