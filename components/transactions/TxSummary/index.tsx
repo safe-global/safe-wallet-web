@@ -36,7 +36,7 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
 
   return (
     <Paper className={css.paper}>
-      <div className={css.container} id={tx.id}>
+      <div id={tx.id}>
         <Grid container className={css.gridContainer}>
           <Grid item md={1}>
             {tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''}

@@ -15,25 +15,24 @@ interface Props {
 const Summary = ({ txDetails }: Props): ReactElement => {
   const [expanded, setExpanded] = useState(false)
 
-  if (!txDetails) return <></>
-
   const toggleExpanded = () => {
     setExpanded((val) => !val)
   }
 
-  const { txHash, detailedExecutionInfo, executedAt, txData, txInfo } = txDetails
+  const { txHash, detailedExecutionInfo, executedAt, txData } = txDetails
 
-  let submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, refundReceiver, safeTxGas
-  if (isMultisigExecutionDetails(detailedExecutionInfo)) {
-    ;({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo)
-    refundReceiver = detailedExecutionInfo.refundReceiver?.value
+  if (!isMultisigExecutionDetails(detailedExecutionInfo)) {
+    return <></>
   }
+
+  const { submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo
+  const refundReceiver = detailedExecutionInfo.refundReceiver?.value
 
   return (
     <>
       <TxDataRow title="Transaction hash:" value={txHash} inlineType="hash" />
       <TxDataRow title="SafeTxHash:" value={safeTxHash} inlineType="hash" hasExplorer={false} />
-      <TxDataRow title="Created:" value={typeof submittedAt === 'number' ? dateString(submittedAt) : null} />
+      <TxDataRow title="Created:" value={dateString(submittedAt)} />
       <TxDataRow title="Executed:" value={executedAt ? dateString(executedAt) : NOT_AVAILABLE} />
 
       {/* Advanced TxData */}
@@ -49,12 +48,10 @@ const Summary = ({ txDetails }: Props): ReactElement => {
             </Typography>
           </button>
           <div className={`${css.collapsibleSection}${expanded ? 'Expanded' : ''}`}>
-            {txData.operation !== undefined && (
-              <TxDataRow
-                title="Operation:"
-                value={`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}
-              />
-            )}
+            <TxDataRow
+              title="Operation:"
+              value={`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}
+            />
             <TxDataRow title="safeTxGas:" value={safeTxGas} />
             <TxDataRow title="baseGas:" value={baseGas} />
             <TxDataRow title="gasPrice:" value={gasPrice} />
