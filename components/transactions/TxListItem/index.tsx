@@ -9,14 +9,11 @@ import TxDateLabel from '../TxDateLabel'
 import TxDetails from '../TxDetails'
 import css from './styles.module.css'
 
-const ExpandibleTransactionItem = ({ item }: { item: Transaction }) => (
+const ExpandableTransactionItem = ({ item }: { item: Transaction }) => (
   <Accordion
     className={css.accordion}
     sx={({ palette }) => ({
       border: `2px solid ${palette.gray[500]}`,
-      '& .MuiAccordionSummary-root': {
-        padding: '0px 16px',
-      },
       '& .MuiAccordionSummary-root.Mui-expanded': {
         borderBottom: `2px solid ${palette.gray[500]}`,
       },
@@ -41,15 +38,16 @@ type TxListItemProps = {
 }
 
 const TxListItem = ({ item }: TxListItemProps): ReactElement => {
-  return isLabelListItem(item) ? (
-    <GroupLabel item={item} />
-  ) : isTransactionListItem(item) ? (
-    <ExpandibleTransactionItem item={item} />
-  ) : isDateLabel(item) ? (
-    <TxDateLabel item={item} />
-  ) : (
-    // ignore ConflictHeader
-    <></>
-  )
+  if (isLabelListItem(item)) {
+    return <GroupLabel item={item} />
+  }
+  if (isTransactionListItem(item)) {
+    return <ExpandableTransactionItem item={item} />
+  }
+  if (isDateLabel(item)) {
+    return <TxDateLabel item={item} />
+  }
+  // ignore ConflictHeader
+  return <></>
 }
 export default TxListItem

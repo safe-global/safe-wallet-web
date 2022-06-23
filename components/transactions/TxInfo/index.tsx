@@ -69,18 +69,20 @@ const CreationTx = ({ info }: { info: Creation }): ReactElement => {
   return <>Safe created by {shortenAddress(info.creator.value)}</>
 }
 
-const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => (
-  <>
-    {isTransferTxInfo(info) ? (
-      <TransferTx info={info} />
-    ) : isSettingsChangeTxInfo(info) ? (
-      <SettingsChangeTx info={info} />
-    ) : isCustomTxInfo(info) ? (
-      <CustomTx info={info} />
-    ) : isCreationTxInfo(info) ? (
-      <CreationTx info={info} />
-    ) : null}
-  </>
-)
+const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => {
+  if (isTransferTxInfo(info)) {
+    return <TransferTx info={info} />
+  }
+  if (isSettingsChangeTxInfo(info)) {
+    return <SettingsChangeTx info={info} />
+  }
+  if (isCustomTxInfo(info)) {
+    return <CustomTx info={info} />
+  }
+  if (isCreationTxInfo(info)) {
+    return <CreationTx info={info} />
+  }
+  return <></>
+}
 
 export default TxInfo
