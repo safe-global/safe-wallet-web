@@ -1,0 +1,16 @@
+.buttonLink {
+  margin-top: 8px;
+  padding-left: 0;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+.collapsibleSection {
+  max-height: 0px;
+  overflow: hidden;
+}
+
+.collapsibleSectionExpanded {
+  max-height: '500px';
+}

@@ -2,6 +2,7 @@ import { useMemo, type ReactElement } from 'react'
 import { DateLabel, Transaction, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
 import { isDateLabel, isTransaction } from '../utils'
+import css from './styles.module.css'
 
 type TxListProps = {
   items: TransactionListPage['results']
@@ -28,7 +29,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
   }, [items])
 
   return (
-    <div>
+    <div className={css.listContainer}>
       {list.map((item, index) => (
         <TxListItem key={index} item={item} />
       ))}

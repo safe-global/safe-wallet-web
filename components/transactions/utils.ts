@@ -1,15 +1,22 @@
 import {
   AddressEx,
+  Cancellation,
+  ConflictHeader,
+  Creation,
   Custom,
   DateLabel,
   DetailedExecutionInfo,
+  Label,
+  MultiSend,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
+  SettingsChange,
   Transaction,
   TransactionInfo,
   TransactionListItem,
   TransactionStatus,
   TransactionSummary,
+  Transfer,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
@@ -34,18 +41,65 @@ export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null):
 export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>
   value?.type === 'MULTISIG'
 
-export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
-  return value.type === 'Custom'
-}
-
 export const isTransaction = (value: TransactionListItem): value is Transaction => {
   return value.type === 'TRANSACTION'
 }
 
-// @ts-expect-error @TODO: Add DateLabel to TransactionListItem type in SDK types
+// TransactionInfo type guards
+// TODO: could be passed to Client GW SDK
+enum TransactionInfoType {
+  TRANSFER = 'Transfer',
+  SETTINGS_CHANGE = 'SettingsChange',
+  CUSTOM = 'Custom',
+  CREATION = 'Creation',
+}
+
+export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
+  return value.type === TransactionInfoType.TRANSFER
+}
+
+export const isSettingsChangeTxInfo = (value: TransactionInfo): value is SettingsChange => {
+  return value.type === TransactionInfoType.SETTINGS_CHANGE
+}
+
+export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
+  return value.type === TransactionInfoType.CUSTOM
+}
+
+export const isMultisendTxInfo = (value: TransactionInfo): value is MultiSend => {
+  return value.type === TransactionInfoType.CUSTOM && value.methodName === 'multiSend'
+}
+
+export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
+  return isCustomTxInfo(value) && value.isCancellation
+}
+
+export const isCreationTxInfo = (value: TransactionInfo): value is Creation => {
+  return value.type === TransactionInfoType.CREATION
+}
+
+// TxListItem type guards
+// TODO: could be passed to Client GW SDK
+enum TransactionListItemType {
+  TRANSACTION = 'TRANSACTION',
+  LABEL = 'LABEL',
+  CONFLICT_HEADER = 'CONFLICT_HEADER',
+  DATE_LABEL = 'DATE_LABEL',
+}
+export const isTransactionListItem = (value: TransactionListItem): value is Transaction => {
+  return value.type === TransactionListItemType.TRANSACTION
+}
+
+export const isLabelListItem = (value: TransactionListItem): value is Label => {
+  return value.type === TransactionListItemType.LABEL
+}
+
+export const isConflictHeaderListItem = (value: TransactionListItem): value is ConflictHeader => {
+  return value.type === TransactionListItemType.CONFLICT_HEADER
+}
+
 export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
-  // @ts-ignore as above
-  return value.type === 'DATE_LABEL'
+  return value.type === TransactionListItemType.DATE_LABEL
 }
 
 export const isSignableBy = (txSummary: TransactionSummary, walletAddress: string): boolean => {
@@ -59,7 +113,7 @@ export const isExecutable = (txSummary: TransactionSummary, walletAddress: strin
   }
   const { confirmationsRequired, confirmationsSubmitted } = txSummary.executionInfo
   return (
-    confirmationsSubmitted === confirmationsRequired ||
+    confirmationsSubmitted >= confirmationsRequired ||
     (confirmationsSubmitted === confirmationsRequired - 1 && isSignableBy(txSummary, walletAddress))
   )
 }

@@ -1,0 +1,26 @@
+.gridRow {
+  display: grid;
+  grid-template-columns: 1fr 2.5fr;
+  gap: 16px;
+  justify-content: flex-start;
+  max-width: 900px;
+}
+
+.gridRow > * {
+  flex-shrink: 0;
+}
+
+.valueWrapper {
+  min-width: 50%;
+  flex-shrink: 0;
+}
+
+/* For inlineType values */
+.inline {
+  display: inline-flex;
+}
+
+.rawData {
+  display: flex;
+  align-items: center;
+}

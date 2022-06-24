@@ -35,8 +35,8 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
 
   return (
-    <Paper>
-      <div className={css.container} id={tx.id}>
+    <Paper className={css.paper}>
+      <div id={tx.id}>
         <Grid container className={css.gridContainer}>
           <Grid item md={1}>
             {tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''}

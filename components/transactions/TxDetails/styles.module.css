@@ -1,0 +1,39 @@
+.container {
+  background-color: #E8E7E6;
+  display: grid;
+  gap: 2px;
+  grid-template-columns: 2fr 1fr;
+  width: 100%;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.txData,
+.txSummary,
+.advancedDetails {
+  background: white;
+  padding: 20px 24px;
+}
+
+.txData {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.txSummary,
+.advancedDetails {
+  border-bottom-left-radius: 8px;
+  height: 100%;
+}
+
+.txSigners {
+  padding: 24px;
+  background: white;
+  border-bottom-right-radius: 8px
+}
