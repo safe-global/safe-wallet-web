@@ -1,0 +1,13 @@
+.container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 2000;
+}
+
+.row {
+  max-width: 700px;
+  display: flex;
+  justify-content: flex-end;
+  word-break: break-all;
+}
