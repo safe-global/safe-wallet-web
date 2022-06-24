@@ -48,7 +48,7 @@ const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas, isLoading }: 
 
   return (
     <div className={css.container}>
-      <Accordion>
+      <Accordion elevation={0}>
         <AccordionSummary>
           <Typography>
             Estimated fee{' '}

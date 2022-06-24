@@ -185,14 +185,7 @@ const theme = createTheme({
             borderBottom: `2px solid ${theme.palette.gray[500]}`,
           },
         }),
-        content: { margin: '16px' },
-      },
-    },
-    MuiAccordionDetails: {
-      styleOverrides: {
-        root: {
-          padding: 0,
-        },
+        content: { margin: '16px 0px' },
       },
     },
   },
