@@ -2,11 +2,50 @@ import React, { ReactElement, useState } from 'react'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isMultisigExecutionDetails } from '@/components/transactions/utils'
 import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { dateString } from '@/services/formatters'
+import { dateString, shortenAddress } from '@/services/formatters'
 import { Typography } from '@mui/material'
+import { hexDataLength } from 'ethers/lib/utils'
 import css from './styles.module.css'
 
 export const NOT_AVAILABLE = 'n/a'
+
+const generateDataRowValue = (
+  value?: string | null,
+  type?: 'hash' | 'rawData' | 'address' | 'bytes',
+  hasExplorer?: boolean,
+): ReactElement | null => {
+  if (value == undefined) return null
+  switch (type) {
+    case 'address':
+      return (
+        <div className={css.inline}>
+          {/* TODO: missing the chain prefix */}
+          <p>{shortenAddress(value, 8)}</p>
+          {/* TODO: missing copy button */}
+          {/* TODO: missing block explorer button */}
+        </div>
+      )
+    case 'hash':
+      return (
+        <div className={css.inline}>
+          <div>{shortenAddress(value, 8)}</div>
+          {/* TODO: missing copy button */}
+          {/* TODO: missing block explorer button */}
+        </div>
+      )
+    case 'rawData':
+      return (
+        <div className={css.rawData}>
+          <div>{value ? hexDataLength(value) : 0} bytes</div>
+          {/* TODO: missing copy button */}
+        </div>
+      )
+    // case 'bytes':
+    //   return <HexEncodedData limit={60} hexData={value} />
+    default:
+      return null
+  }
+}
 
 interface Props {
   txDetails: TransactionDetails
@@ -30,10 +69,10 @@ const Summary = ({ txDetails }: Props): ReactElement => {
 
   return (
     <>
-      <TxDataRow title="Transaction hash:" value={txHash} inlineType="hash" />
-      <TxDataRow title="SafeTxHash:" value={safeTxHash} inlineType="hash" hasExplorer={false} />
-      <TxDataRow title="Created:" value={dateString(submittedAt)} />
-      <TxDataRow title="Executed:" value={executedAt ? dateString(executedAt) : NOT_AVAILABLE} />
+      <TxDataRow title="Transaction hash:">{generateDataRowValue(txHash, 'hash')}</TxDataRow>
+      <TxDataRow title="SafeTxHash:">{generateDataRowValue(safeTxHash, 'hash', false)}</TxDataRow>
+      <TxDataRow title="Created:">{dateString(submittedAt)}</TxDataRow>
+      <TxDataRow title="Executed:">{executedAt ? dateString(executedAt) : NOT_AVAILABLE}</TxDataRow>
 
       {/* Advanced TxData */}
       {txData && (
@@ -48,24 +87,20 @@ const Summary = ({ txDetails }: Props): ReactElement => {
             </Typography>
           </button>
           <div className={`${css.collapsibleSection}${expanded ? 'Expanded' : ''}`}>
-            <TxDataRow
-              title="Operation:"
-              value={`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}
-            />
-            <TxDataRow title="safeTxGas:" value={safeTxGas} />
-            <TxDataRow title="baseGas:" value={baseGas} />
-            <TxDataRow title="gasPrice:" value={gasPrice} />
-            <TxDataRow title="gasToken:" value={gasToken} inlineType="hash" />
-            <TxDataRow title="refundReceiver:" value={refundReceiver} inlineType="hash" />
+            <TxDataRow title="Operation:">
+              {`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}
+            </TxDataRow>
+            <TxDataRow title="safeTxGas:">{safeTxGas}</TxDataRow>
+            <TxDataRow title="baseGas:">{baseGas}</TxDataRow>
+            <TxDataRow title="gasPrice:">{gasPrice}</TxDataRow>
+            <TxDataRow title="gasToken:">{generateDataRowValue(gasToken, 'hash')}</TxDataRow>
+            <TxDataRow title="refundReceiver:">{generateDataRowValue(refundReceiver, 'hash')}</TxDataRow>
             {confirmations?.map(({ signature }, index) => (
-              <TxDataRow
-                title={`Signature ${index + 1}:`}
-                key={`signature-${index}:`}
-                value={signature}
-                inlineType="rawData"
-              />
+              <TxDataRow title={`Signature ${index + 1}:`} key={`signature-${index}:`}>
+                {generateDataRowValue(signature, 'rawData')}
+              </TxDataRow>
             ))}
-            <TxDataRow title="Raw data:" value={txData.hexData} inlineType="rawData" />
+            <TxDataRow title="Raw data:">{generateDataRowValue(txData.hexData, 'rawData')}</TxDataRow>
           </div>
         </>
       )}
