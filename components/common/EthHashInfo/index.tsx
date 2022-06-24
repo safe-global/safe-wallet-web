@@ -1,11 +1,11 @@
 import { ReactElement } from 'react'
+import css from './styles.module.css'
 import chains from '@/config/chains'
 import { shortenAddress } from '@/services/formatters'
 import Identicon from '../Identicon'
 import useChainId from '@/services/useChainId'
 import useAddressBook from '@/services/useAddressBook'
 import { Typography } from '@mui/material'
-import css from './styles.module.css'
 
 type EthHashInfoProps = {
   address: string
@@ -35,11 +35,13 @@ const SRCEthHashInfo = ({
         </div>
       )}
 
-      {props.name && <b>{props.name}</b>}
-      <Typography>
-        {prefix && <b>{prefix}:</b>}
-        {shortAddress ? shortenAddress(address) : address}
-      </Typography>
+      <div>
+        {props.name && <b>{props.name}</b>}
+        <Typography>
+          {prefix && <b>{prefix}:</b>}
+          {shortAddress ? shortenAddress(address) : address}
+        </Typography>
+      </div>
 
       {props.showCopyButton && <div className={css.copy}>{/* TODO */}</div>}
     </div>
@@ -50,9 +52,9 @@ const EthHashInfo = (props: EthHashInfoProps): ReactElement => {
   const chainId = useChainId()
   const addressBook = useAddressBook()
   const name = addressBook[props.address]
-  const shortName = Object.keys(chains).find((key) => chains[key] === chainId)
+  const prefix = Object.keys(chains).find((key) => chains[key] === chainId)
 
-  return <SRCEthHashInfo {...props} prefix={shortName} name={name} />
+  return <SRCEthHashInfo {...props} prefix={prefix} name={name} />
 }
 
 export default EthHashInfo
