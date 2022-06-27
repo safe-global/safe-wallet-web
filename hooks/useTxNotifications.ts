@@ -34,12 +34,10 @@ const useTxNotifications = (): void => {
 
         dispatch(
           showNotification({
+            id: '',
             message,
-            options: {
-              // The key will stack notifications with the same txId if multiple txs are sent at once
-              key: txId || '',
-              variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
-            },
+            groupKey: txId || '',
+            variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
           }),
         )
       }),
