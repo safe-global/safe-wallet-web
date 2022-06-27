@@ -4,7 +4,7 @@ import { useState } from 'react'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-import { useSafeSDK } from '@/hooks/safe-core/safeCoreSDK'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 

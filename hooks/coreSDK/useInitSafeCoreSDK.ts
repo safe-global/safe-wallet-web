@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '../wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { initSafeSDK, setSafeSDK } from '@/hooks/safe-core/safeCoreSDK'
+import { initSafeSDK, setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 
 export const useInitSafeCoreSDK = (): Error | null => {
   const chain = useCurrentChain()
