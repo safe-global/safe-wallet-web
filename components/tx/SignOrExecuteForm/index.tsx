@@ -140,7 +140,7 @@ const SignOrExecuteForm = ({
         {canExecute && !onlyExecute && (
           <FormControlLabel
             control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
-            label="Execute Transaction"
+            label="Execute transaction"
           />
         )}
 
