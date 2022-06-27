@@ -21,6 +21,7 @@ import useBalances from '@/hooks/useBalances'
 import useAddressBook from '@/hooks/useAddressBook'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import TxModalTitle from '../../TxModalTitle'
 
 export type SendAssetsFormData = {
   recipient: string
@@ -80,8 +81,10 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
   return (
     <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <Typography variant="subtitle1" pb={1}>
+      <TxModalTitle>Send funds</TxModalTitle>
+
+      <Box sx={{ borderBottom: ({ palette }) => `1px solid ${palette.divider}` }} paddingBottom={2} marginBottom={2}>
+        <Typography color={({ palette }) => palette.text.secondary} pb={1}>
           Sending from
         </Typography>
 
@@ -97,7 +100,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             </b>
           </Box>
         )}
-      </div>
+      </Box>
 
       <FormControl fullWidth>
         <Autocomplete
@@ -155,11 +158,9 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         />
       </FormControl>
 
-      <div className={css.submit}>
-        <Button variant="contained" type="submit">
-          Next
-        </Button>
-      </div>
+      <Button variant="contained" type="submit">
+        Next
+      </Button>
     </form>
   )
 }

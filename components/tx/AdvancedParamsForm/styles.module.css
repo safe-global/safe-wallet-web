@@ -1,5 +1,5 @@
 .container {
   position: relative;
   z-index: 2;
-  margin: 0 0 -69px; /* cover the stepper bottom buttons */
+  margin-bottom: -77px; /* cover the stepper bottom buttons */
 }

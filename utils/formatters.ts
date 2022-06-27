@@ -7,11 +7,11 @@ const formatter = new Intl.NumberFormat([], {
   maximumFractionDigits: 8,
 })
 
-export const formatDecimals = (value: string, decimals = 18): string => {
+export const formatDecimals = (value: BigNumberish, decimals?: number | string): string => {
   return formatter.format(Number(formatUnits(value, decimals)))
 }
 
-export const toDecimals = (value: string, decimals = 18): BigNumber => {
+export const toDecimals = (value: string, decimals?: number | string): BigNumber => {
   return parseUnits(value, decimals)
 }
 
@@ -19,7 +19,7 @@ const GWEI = 'gwei'
 
 export const safeFormatUnits = (value: BigNumberish, decimals: number | string = GWEI): string => {
   try {
-    return formatUnits(value, decimals)
+    return formatDecimals(value, decimals)
   } catch (err) {
     console.error('Error formatting units', err)
     return ''

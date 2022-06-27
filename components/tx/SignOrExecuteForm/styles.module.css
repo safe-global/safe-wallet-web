@@ -4,9 +4,3 @@
   flex-wrap: wrap;
   gap: 20px;
 }
-
-.submit {
-  position: absolute;
-  bottom: -51px;
-  right: 0;
-}
