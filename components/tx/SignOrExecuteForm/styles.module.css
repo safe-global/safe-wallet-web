@@ -5,8 +5,8 @@
   gap: 20px;
 }
 
-.submit {
-  position: absolute;
-  bottom: -51px;
-  right: 0;
+.container pre {
+  word-break: break-all;
+  width: 100%;
+  white-space: pre-line;
 }

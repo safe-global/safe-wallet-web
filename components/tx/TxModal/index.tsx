@@ -1,6 +1,5 @@
 import React from 'react'
-import Box from '@mui/material/Box'
-import Modal from '@mui/material/Modal'
+import { Paper, Modal, Box } from '@mui/material'
 
 import TxStepper from '../TxStepper'
 import css from './styles.module.css'
@@ -18,9 +17,11 @@ const TxModal = ({ onClose, steps, wide = false, initialData }: TxModalProps) =>
 
   return (
     <Modal open onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description">
-      <Box className={`${css.modal} ${wide ? css.wide : css.narrow}`} onClick={onClick}>
-        <TxStepper steps={steps} initialData={initialData} onClose={onClose} />
-      </Box>
+      <Paper className={`${css.modal} ${wide ? css.wide : css.narrow}`} onClick={onClick} elevation={2}>
+        <Box padding={2}>
+          <TxStepper steps={steps} initialData={initialData} onClose={onClose} />
+        </Box>
+      </Paper>
     </Modal>
   )
 }

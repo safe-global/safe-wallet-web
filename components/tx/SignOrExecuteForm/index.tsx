@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, SyntheticEvent, useState } from 'react'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Button, Checkbox, FormControlLabel, Typography } from '@mui/material'
+import { Button, Checkbox, FormControlLabel } from '@mui/material'
 
 import css from './styles.module.css'
 
@@ -14,6 +14,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import GasParams from '@/components/tx/GasParams'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParamsForm, { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
+import { BigNumber } from 'ethers'
+import TxModalTitle from '../TxModalTitle'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -41,9 +43,6 @@ const SignOrExecuteForm = ({
   const chainId = useChainId()
   const wallet = useWallet()
 
-  // Check that the transaction is executable
-  const canExecute = isExecutable && !!safeTx && safeTx.data.nonce === safe?.nonce
-
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [isEditingGas, setEditingGas] = useState<boolean>(false)
@@ -66,6 +65,9 @@ const SignOrExecuteForm = ({
     maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
     maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
   }
+
+  // Check that the transaction is executable
+  const canExecute = isExecutable && !!safeTx && safeTx.data.nonce === safe?.nonce
 
   const onFinish = async (actionFn: () => Promise<void>) => {
     if (!wallet || !safeTx) return
@@ -122,19 +124,15 @@ const SignOrExecuteForm = ({
   const handleSubmit = preventDefault(willExecute ? onExecute : onSign)
 
   return isEditingGas ? (
-    isEstimating ? (
-      <></>
-    ) : (
-      <AdvancedParamsForm
-        gasLimit={advancedParams.gasLimit!}
-        maxFeePerGas={advancedParams.maxFeePerGas!}
-        maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas!}
-        onSubmit={onGasSubmit}
-      />
-    )
+    <AdvancedParamsForm
+      gasLimit={advancedParams.gasLimit || 0}
+      maxFeePerGas={advancedParams.maxFeePerGas || BigNumber.from(0)}
+      maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas || BigNumber.from(0)}
+      onSubmit={onGasSubmit}
+    />
   ) : (
     <div className={css.container}>
-      {title && <Typography variant="h6">{title}</Typography>}
+      {title && <TxModalTitle>{title}</TxModalTitle>}
 
       {children}
 
@@ -142,7 +140,7 @@ const SignOrExecuteForm = ({
         {canExecute && !onlyExecute && (
           <FormControlLabel
             control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
-            label="Execute Transaction"
+            label="Execute transaction"
           />
         )}
 
@@ -159,15 +157,13 @@ const SignOrExecuteForm = ({
         {(gasLimitError || error) && (
           <ErrorMessage>
             This transaction will most likely fail. To save gas costs, avoid creating the transaction.
-            <p>{(gasLimitError || error)?.message}</p>
+            <pre>{(gasLimitError || error)?.message}</pre>
           </ErrorMessage>
         )}
 
-        <div className={css.submit}>
-          <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
-            {isEstimating ? 'Estimating...' : 'Submit'}
-          </Button>
-        </div>
+        <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
+          {isEstimating ? 'Estimating...' : 'Submit'}
+        </Button>
       </form>
     </div>
   )

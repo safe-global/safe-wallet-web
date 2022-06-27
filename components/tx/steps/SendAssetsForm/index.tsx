@@ -21,6 +21,7 @@ import useBalances from '@/hooks/useBalances'
 import useAddressBook from '@/hooks/useAddressBook'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import TxModalTitle from '../../TxModalTitle'
 
 export type SendAssetsFormData = {
   recipient: string
@@ -37,13 +38,37 @@ const abFilterOptions = createFilterOptions({
   stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
 })
 
-const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
+export const SendFromBlock = (): ReactElement => {
   const address = useSafeAddress()
   const { balances } = useBalances()
-  const addressBook = useAddressBook()
-
   const nativeToken = balances.items.find((item) => parseInt(item.tokenInfo.address, 16) === 0)
   const nativeTokenBalance = nativeToken ? formatDecimals(nativeToken.balance, nativeToken.tokenInfo.decimals) : '0'
+
+  return (
+    <Box sx={{ borderBottom: ({ palette }) => `1px solid ${palette.divider}` }} pb={2} mb={2}>
+      <Typography color={({ palette }) => palette.text.secondary} pb={1}>
+        Sending from
+      </Typography>
+
+      <Box>
+        <EthHashInfo address={address} shortAddress={false} />
+      </Box>
+
+      {nativeToken && (
+        <Box className={css.balance} bgcolor={(theme) => theme.palette.grey.A100}>
+          Balance:{' '}
+          <b>
+            {nativeTokenBalance} {nativeToken.tokenInfo.symbol}
+          </b>
+        </Box>
+      )}
+    </Box>
+  )
+}
+
+const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
+  const { balances } = useBalances()
+  const addressBook = useAddressBook()
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
     label: address,
@@ -80,24 +105,9 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
   return (
     <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <Typography variant="subtitle1" pb={1}>
-          Sending from
-        </Typography>
+      <TxModalTitle>Send funds</TxModalTitle>
 
-        <Box fontSize={14}>
-          <EthHashInfo address={address} shortAddress={false} />
-        </Box>
-
-        {nativeToken && (
-          <Box className={css.balance} bgcolor={(theme) => theme.palette.grey.A100}>
-            Balance:{' '}
-            <b>
-              {nativeTokenBalance} {nativeToken.tokenInfo.symbol}
-            </b>
-          </Box>
-        )}
-      </div>
+      <SendFromBlock />
 
       <FormControl fullWidth>
         <Autocomplete
@@ -155,11 +165,9 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         />
       </FormControl>
 
-      <div className={css.submit}>
-        <Button variant="contained" type="submit">
-          Next
-        </Button>
-      </div>
+      <Button variant="contained" type="submit">
+        Next
+      </Button>
     </form>
   )
 }

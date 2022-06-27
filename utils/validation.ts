@@ -28,3 +28,5 @@ export const addressIsNotCurrentSafe =
   (safeAddress: string) =>
   (address?: string): string | undefined =>
     sameAddress(safeAddress, address) ? OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR : undefined
+
+export const FLOAT_REGEX = /^[0-9]+([,.][0-9]+)?$/
