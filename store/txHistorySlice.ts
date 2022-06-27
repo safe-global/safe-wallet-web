@@ -2,7 +2,7 @@ import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type Middleware, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 import { Loadable } from './common'
-import { isTransaction } from '@/components/transactions/utils'
+import { isTransaction } from '@/utils/transaction-guards'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { selectPendingTxs } from './pendingTxsSlice'
 

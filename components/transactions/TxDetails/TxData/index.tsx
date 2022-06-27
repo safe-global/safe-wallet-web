@@ -1,8 +1,8 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import { TransferTx } from '@/components/transactions/TxInfo'
-import { isSettingsChangeTxInfo, isTransferTxInfo } from '@/components/transactions/utils'
-import { useCurrentChain } from '@/services/useChains'
+import { isSettingsChangeTxInfo, isTransferTxInfo } from '@/utils/transaction-guards'
+import { useCurrentChain } from '@/hooks/useChains'
 import { TransactionDetails, Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { type ReactElement } from 'react'
 

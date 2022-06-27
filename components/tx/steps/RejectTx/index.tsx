@@ -3,11 +3,11 @@ import { Typography } from '@mui/material'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { isMultisigExecutionInfo } from '@/components/transactions/utils'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { createRejectTx } from '@/services/tx/txSender'
-import useAsync from '@/services/useAsync'
+import useAsync from '@/hooks/useAsync'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import useSafeInfo from '@/services/useSafeInfo'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type RejectTxProps = {
   txSummary: TransactionSummary

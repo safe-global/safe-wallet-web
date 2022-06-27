@@ -3,8 +3,8 @@ import { Button } from '@mui/material'
 import { useAppDispatch } from '@/store'
 import { setPageUrl as setHistoryPageUrl } from '@/store/txHistorySlice'
 import { setPageUrl as setQueuePageUrl } from '@/store/txQueueSlice'
-import useTxHistory from '@/services/useTxHistory'
-import useTxQueue from '@/services/useTxQueue'
+import useTxHistory from '@/hooks/useTxHistory'
+import useTxQueue from '@/hooks/useTxQueue'
 
 type PaginationProps = {
   useTxns: typeof useTxHistory | typeof useTxQueue

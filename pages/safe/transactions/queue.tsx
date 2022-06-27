@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import TxList from '@/components/transactions/TxList'
 import { setPageUrl } from '@/store/txQueueSlice'
-import useTxQueue from '@/services/useTxQueue'
+import useTxQueue from '@/hooks/useTxQueue'
 import Pagination from '@/components/transactions/Pagination'
 
 const Queue: NextPage = () => {

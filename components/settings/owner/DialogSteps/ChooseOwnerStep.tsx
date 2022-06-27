@@ -1,8 +1,8 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AddressInput } from '@/components/common/AddressInput'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
-import useSafeInfo from '@/services/useSafeInfo'
-import { uniqueAddress, addressIsNotCurrentSafe, validateAddress } from '@/services/validation'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { uniqueAddress, addressIsNotCurrentSafe, validateAddress } from '@/utils/validation'
 import { TextField, Button, Typography, FormControl, Box } from '@mui/material'
 import { useForm } from 'react-hook-form'
 

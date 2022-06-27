@@ -3,7 +3,7 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { selectLastSafeAddress } from '@/store/sessionSlice'
 import { useAppSelector } from '@/store'
-import useChainId from '@/services/useChainId'
+import useChainId from '@/hooks/useChainId'
 import chains from '@/config/chains'
 
 const useLastSafe = (): string | undefined => {

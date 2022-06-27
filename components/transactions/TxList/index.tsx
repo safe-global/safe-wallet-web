@@ -1,7 +1,7 @@
 import { useMemo, type ReactElement } from 'react'
 import { DateLabel, Transaction, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
-import { isDateLabel, isTransaction } from '../utils'
+import { isDateLabel, isTransaction } from '@/utils/transaction-guards'
 import css from './styles.module.css'
 
 type TxListProps = {

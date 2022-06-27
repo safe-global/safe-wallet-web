@@ -5,10 +5,10 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import IconButton from '@mui/material/IconButton'
 
 import css from './styles.module.css'
-import useSafeInfo from '@/services/useSafeInfo'
-import { isMultisigExecutionInfo } from '@/components/transactions/utils'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import ExecuteTxModal from '@/components/tx/modals/ExecuteTxModal'
-import useIsPending from '@/components/transactions/useIsPending'
+import useIsPending from '@/hooks/useIsPending'
 
 const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)

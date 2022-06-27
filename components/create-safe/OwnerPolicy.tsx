@@ -19,11 +19,11 @@ import { useFieldArray, useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
 import { CreateSafeFormData, Owner } from '@/components/create-safe/index'
-import useWallet from '@/services/wallets/useWallet'
-import { validateAddress } from '@/services/validation'
+import useWallet from '@/hooks/wallets/useWallet'
+import { validateAddress } from '@/utils/validation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { useWeb3 } from '@/services/wallets/web3'
+import { useWeb3 } from '@/hooks/wallets/web3'
 
 type Props = {
   params: CreateSafeFormData

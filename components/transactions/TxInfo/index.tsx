@@ -9,14 +9,9 @@ import {
   TransferDirection,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
-import {
-  isCreationTxInfo,
-  isCustomTxInfo,
-  isSettingsChangeTxInfo,
-  isTransferTxInfo,
-} from '@/components/transactions/utils'
-import { shortenAddress } from '@/services/formatters'
-import { useCurrentChain } from '@/services/useChains'
+import { isCreationTxInfo, isCustomTxInfo, isSettingsChangeTxInfo, isTransferTxInfo } from '@/utils/transaction-guards'
+import { shortenAddress } from '@/utils/formatters'
+import { useCurrentChain } from '@/hooks/useChains'
 
 export const TransferTx = ({
   info,

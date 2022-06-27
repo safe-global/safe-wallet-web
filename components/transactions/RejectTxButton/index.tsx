@@ -4,8 +4,8 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import IconButton from '@mui/material/IconButton'
 
 import { useState, type ReactElement } from 'react'
-import { useQueuedTxByNonce } from '@/services/useTxQueue'
-import { isCustomTxInfo, isMultisigExecutionInfo } from '@/components/transactions/utils'
+import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
+import { isCustomTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import RejectTxModal from '@/components/tx/modals/RejectTxModal'
 
 const RejectTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement | null => {

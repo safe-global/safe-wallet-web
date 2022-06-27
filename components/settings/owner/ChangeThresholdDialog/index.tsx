@@ -2,14 +2,14 @@ import { Box, Button, Grid, MenuItem, Select, SelectChangeEvent, Typography } fr
 import { useState } from 'react'
 
 import TxModal from '@/components/tx/TxModal'
-import useSafeInfo from '@/services/useSafeInfo'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
-import { useSafeSDK } from '@/services/safe-core/safeCoreSDK'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { createTx } from '@/services/tx/txSender'
-import useAsync from '@/services/useAsync'
+import useAsync from '@/hooks/useAsync'
 
 import NonceForm from '@/components/tx/steps/ReviewNewTx/NonceForm'
-import useSafeTxGas from '@/services/useSafeTxGas'
+import useSafeTxGas from '@/hooks/useSafeTxGas'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'

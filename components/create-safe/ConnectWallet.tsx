@@ -1,7 +1,7 @@
 import React, { MouseEvent, useState } from 'react'
 import { Box, Button, Divider, Grid, Paper, Typography, Menu, MenuItem } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import useChains from '@/services/useChains'
+import useChains from '@/hooks/useChains'
 import { useRouter } from 'next/router'
 import ChainIndicator from '@/components/common/ChainIndicator'
 

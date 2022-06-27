@@ -1,9 +1,9 @@
 import { useState, type ReactElement } from 'react'
 import Button from '@mui/material/Button'
-import useSafeInfo from '@/services/useSafeInfo'
-import useWallet from '@/services/wallets/useWallet'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useWallet from '@/hooks/wallets/useWallet'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
-import { isOwner } from '@/components/transactions/utils'
+import { isOwner } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
 

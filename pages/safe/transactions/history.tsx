@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import TxList from '@/components/transactions/TxList'
 import { setPageUrl } from '@/store/txHistorySlice'
-import useTxHistory from '@/services/useTxHistory'
+import useTxHistory from '@/hooks/useTxHistory'
 import Pagination from '@/components/transactions/Pagination'
 
 const History: NextPage = () => {

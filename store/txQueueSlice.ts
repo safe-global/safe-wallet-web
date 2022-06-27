@@ -2,7 +2,7 @@ import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 import { Loadable } from './common'
-import { isMultisigExecutionInfo, isTransaction } from '@/components/transactions/utils'
+import { isMultisigExecutionInfo, isTransaction } from '@/utils/transaction-guards'
 
 interface TxQueueState extends Loadable {
   page: TransactionListPage

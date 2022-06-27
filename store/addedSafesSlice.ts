@@ -3,7 +3,7 @@ import { AddressEx, SafeBalanceResponse, SafeInfo, TokenType } from '@gnosis.pm/
 import type { RootState } from '.'
 import { selectSafeInfo, setSafeInfo, type SetSafeInfoPayload } from '@/store/safeInfoSlice'
 import { setBalances } from './balancesSlice'
-import { formatDecimals } from '@/services/formatters'
+import { formatDecimals } from '@/utils/formatters'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {

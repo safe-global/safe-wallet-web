@@ -18,10 +18,10 @@ import type {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import theme from '@/styles/theme'
 
-import useWallet from '@/services/wallets/useWallet'
-import useAddressBook from '@/services/useAddressBook'
-import useIsPending from '@/components/transactions/useIsPending'
-import { isCancellationTxInfo, isExecutable, isMultisigExecutionDetails } from '@/components/transactions/utils'
+import useWallet from '@/hooks/wallets/useWallet'
+import useAddressBook from '@/hooks/useAddressBook'
+import useIsPending from '@/hooks/useIsPending'
+import { isCancellationTxInfo, isExecutable, isMultisigExecutionDetails } from '@/utils/transaction-guards'
 import { Button } from '@mui/material'
 import { AddressInfo } from '../TxDetails/TxData'
 

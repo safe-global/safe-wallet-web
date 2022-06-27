@@ -1,7 +1,7 @@
-import { safeFormatUnits, safeParseUnits } from '@/services/formatters'
 import { Box, Button, FormControl, Grid, Paper, TextField, Typography } from '@mui/material'
 import { BigNumber } from 'ethers'
 import { useForm } from 'react-hook-form'
+import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 import css from './styles.module.css'
 
 export type AdvancedParameters = {

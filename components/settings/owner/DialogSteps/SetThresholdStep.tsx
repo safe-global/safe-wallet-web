@@ -1,5 +1,5 @@
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
-import useSafeInfo from '@/services/useSafeInfo'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { Button, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import { useState } from 'react'
 

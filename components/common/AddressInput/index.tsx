@@ -1,4 +1,4 @@
-import useAddressBook from '@/services/useAddressBook'
+import useAddressBook from '@/hooks/useAddressBook'
 import { Autocomplete, Box, createFilterOptions, TextField } from '@mui/material'
 import { FieldError, UseFormRegisterReturn } from 'react-hook-form'
 

@@ -1,5 +1,5 @@
 import { ReactElement, useMemo } from 'react'
-import { useCurrentChain } from '@/services/useChains'
+import { useCurrentChain } from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import css from './styles.module.css'

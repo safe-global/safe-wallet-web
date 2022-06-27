@@ -5,10 +5,10 @@ import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { EthHashInfo } from '@gnosis.pm/safe-react-components'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
-import useWallet from '@/services/wallets/useWallet'
+import useWallet from '@/hooks/wallets/useWallet'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { getEthersAdapter } from '@/services/safe-core/safeCoreSDK'
-import { useWeb3 } from '@/services/wallets/web3'
+import { getEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
+import { useWeb3 } from '@/hooks/wallets/web3'
 
 const createNewSafe = async (ethersProvider: Web3Provider, txParams: SafeAccountConfig): Promise<Safe> => {
   const ethAdapter = getEthersAdapter(ethersProvider)
