@@ -1,12 +1,13 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack'
 
 import type { AppThunk, RootState } from '@/store'
 
-type Notification = {
-  message: SnackbarMessage
+export type Notification = {
+  id: string
+  message: string
+  groupKey: string
+  variant?: string
   dismissed?: boolean
-  options?: OptionsObject
 }
 
 type NotificationState = Notification[]
@@ -20,16 +21,16 @@ export const notificationsSlice = createSlice({
     enqueueNotification: (state, { payload }: PayloadAction<Notification>): NotificationState => {
       return [...state, payload]
     },
-    closeNotification: (state, { payload }: PayloadAction<{ key: SnackbarKey }>): NotificationState => {
+    closeNotification: (state, { payload }: PayloadAction<Notification>): NotificationState => {
       return state.map((notification) => {
-        return notification.options?.key === payload.key ? { ...notification, dismissed: true } : notification
+        return notification.id === payload.id ? { ...notification, dismissed: true } : notification
       })
     },
     closeAllNotifications: (state): NotificationState => {
       return state.map((notification) => ({ ...notification, dismissed: true }))
     },
-    deleteNotification: (state, { payload }: PayloadAction<{ key: SnackbarKey }>) => {
-      return state.filter((notification) => notification.options?.key !== payload.key)
+    deleteNotification: (state, { payload }: PayloadAction<Notification>) => {
+      return state.filter((notification) => notification.id !== payload.id)
     },
     deleteAllNotifications: (): NotificationState => {
       return []
@@ -41,21 +42,18 @@ export const { closeNotification, closeAllNotifications, deleteNotification, del
   notificationsSlice.actions
 
 // Custom thunk that returns the key in case it was auto-generated
-export const showNotification = (payload: Pick<Notification, 'message' | 'options'>): AppThunk<SnackbarKey> => {
+export const showNotification = (payload: Notification): AppThunk<string> => {
   return (dispatch) => {
-    const key = payload.options?.key || Math.random().toString(32).slice(2)
+    const id = payload.id || Math.random().toString(32).slice(2)
 
     const notification: Notification = {
       ...payload,
-      options: {
-        ...payload.options,
-        key,
-      },
+      id,
     }
 
     dispatch(notificationsSlice.actions.enqueueNotification(notification))
 
-    return key
+    return id
   }
 }
 

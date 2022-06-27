@@ -6,7 +6,6 @@ import { Provider } from 'react-redux'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SnackbarProvider } from 'notistack'
 import theme from '@/styles/theme'
 
 import '@/styles/globals.css'
@@ -24,10 +23,10 @@ import usePathRewrite from '@/services/usePathRewrite'
 import { useInitOnboard } from '@/services/wallets/useOnboard'
 import { useInitWeb3 } from '@/services/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/services/safe-core/useInitSafeCoreSDK'
-import useNotifier from '@/services/useNotifier'
 import useTxNotifications from '@/services/useTxNotifications'
 import useTxPendingStatuses, { useTxMonitor } from '@/services/useTxPendingStatuses'
 import { useInitSession } from '@/services/useInitSession'
+import Notifications from '@/components/common/Notifications'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
@@ -48,7 +47,6 @@ const InitApp = (): null => {
   useInitOnboard()
   useInitWeb3()
   useInitSafeCoreSDK()
-  useNotifier()
   useTxNotifications()
   useTxPendingStatuses()
   useTxMonitor()
@@ -73,13 +71,13 @@ const SafeWebCore = ({
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
         <CacheProvider value={emotionCache}>
           <ThemeProvider theme={theme}>
-            <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={5}>
-              <CssBaseline />
-              <InitApp />
-              <PageLayout>
-                <Component {...pageProps} />
-              </PageLayout>
-            </SnackbarProvider>
+            <CssBaseline />
+            <InitApp />
+            <PageLayout>
+              <Component {...pageProps} />
+            </PageLayout>
+
+            <Notifications />
           </ThemeProvider>
         </CacheProvider>
       </Sentry.ErrorBoundary>
