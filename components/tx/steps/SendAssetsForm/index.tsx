@@ -45,7 +45,7 @@ export const SendFromBlock = (): ReactElement => {
   const nativeTokenBalance = nativeToken ? formatDecimals(nativeToken.balance, nativeToken.tokenInfo.decimals) : '0'
 
   return (
-    <Box sx={{ borderBottom: ({ palette }) => `1px solid ${palette.divider}` }} paddingBottom={2} marginBottom={2}>
+    <Box sx={{ borderBottom: ({ palette }) => `1px solid ${palette.divider}` }} pb={2} mb={2}>
       <Typography color={({ palette }) => palette.text.secondary} pb={1}>
         Sending from
       </Typography>
