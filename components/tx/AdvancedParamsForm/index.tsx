@@ -1,6 +1,6 @@
+import { safeFormatUnits, safeParseUnits } from '@/services/formatters'
 import { Box, Button, FormControl, Grid, Paper, TextField, Typography } from '@mui/material'
-import { BigNumber, BigNumberish } from 'ethers'
-import { formatUnits, parseUnits } from 'ethers/lib/utils'
+import { BigNumber } from 'ethers'
 import { useForm } from 'react-hook-form'
 import css from './styles.module.css'
 
@@ -20,26 +20,6 @@ type FormData = {
   maxPriorityFeePerGas: string
 }
 
-const GWEI = 'gwei'
-
-const formatGwei = (value: BigNumberish): string => {
-  try {
-    return formatUnits(value, GWEI)
-  } catch (err) {
-    console.error('Error formatting price', err)
-    return ''
-  }
-}
-
-const parseGwei = (value: string): BigNumber | undefined => {
-  try {
-    return parseUnits(value, GWEI)
-  } catch (err) {
-    console.error('Error parsing price', err)
-    return
-  }
-}
-
 const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
   const {
     register,
@@ -48,8 +28,8 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
   } = useForm<FormData>({
     defaultValues: {
       gasLimit: props.gasLimit.toString(),
-      maxFeePerGas: formatGwei(props.maxFeePerGas),
-      maxPriorityFeePerGas: formatGwei(props.maxPriorityFeePerGas),
+      maxFeePerGas: safeFormatUnits(props.maxFeePerGas),
+      maxPriorityFeePerGas: safeFormatUnits(props.maxPriorityFeePerGas),
     },
   })
 
@@ -64,8 +44,8 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
   const onSubmit = (data: FormData) => {
     props.onSubmit({
       gasLimit: parseInt(data.gasLimit),
-      maxFeePerGas: parseGwei(data.maxFeePerGas) || props.maxFeePerGas,
-      maxPriorityFeePerGas: parseGwei(data.maxPriorityFeePerGas) || props.maxPriorityFeePerGas,
+      maxFeePerGas: safeParseUnits(data.maxFeePerGas) || props.maxFeePerGas,
+      maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) || props.maxPriorityFeePerGas,
     })
   }
 

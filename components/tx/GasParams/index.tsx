@@ -1,9 +1,9 @@
 import { ReactElement, SyntheticEvent } from 'react'
-import { BigNumber, BigNumberish } from 'ethers'
+import { BigNumber } from 'ethers'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { formatUnits } from 'ethers/lib/utils'
 import { useCurrentChain } from '@/services/useChains'
+import { safeFormatUnits } from '@/services/formatters'
 
 type GasParamsProps = {
   gasLimit?: number
@@ -11,15 +11,6 @@ type GasParamsProps = {
   maxPriorityFeePerGas?: BigNumber
   isLoading: boolean
   onEdit: () => void
-}
-
-const formatPrice = (value: BigNumberish, type?: string | number): string => {
-  try {
-    return formatUnits(value, type)
-  } catch (err) {
-    console.error('Error formatting price', err)
-    return ''
-  }
 }
 
 const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
@@ -45,13 +36,13 @@ const GasParams = ({
   // Total gas cost
   const totalFee =
     gasLimit && maxFeePerGas && maxPriorityFeePerGas
-      ? formatPrice(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+      ? safeFormatUnits(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
       : '> 0.001'
 
   // Individual gas params
   const gasLimitString = gasLimit?.toString() || ''
-  const maxFeePerGasGwei = maxFeePerGas ? formatPrice(maxFeePerGas, 'gwei') : ''
-  const maxPrioGasGwei = maxPriorityFeePerGas ? formatPrice(maxPriorityFeePerGas, 'gwei') : ''
+  const maxFeePerGasGwei = maxFeePerGas ? safeFormatUnits(maxFeePerGas) : ''
+  const maxPrioGasGwei = maxPriorityFeePerGas ? safeFormatUnits(maxPriorityFeePerGas) : ''
 
   const onEditClick = (e: SyntheticEvent) => {
     e.preventDefault()
