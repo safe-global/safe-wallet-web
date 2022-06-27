@@ -1780,7 +1780,7 @@
     "@gnosis.pm/safe-core-sdk-types" "^1.1.0"
     "@gnosis.pm/safe-core-sdk-utils" "^1.1.0"
 
-"@gnosis.pm/safe-react-components@git+https://github.com/safe-global/safe-react-components#4cbe12dffa718f962ccf229438c3b0ea20e5ccf2":
+"@gnosis.pm/safe-react-components@git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components":
   version "2.0.1"
   resolved "git+https://github.com/safe-global/safe-react-components#4cbe12dffa718f962ccf229438c3b0ea20e5ccf2"
   dependencies:
@@ -1790,10 +1790,10 @@
     react-media "^1.10.0"
     web3-utils "^1.6.0"
 
-"@gnosis.pm/safe-react-gateway-sdk@^3.1.1":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.1.1.tgz#e8968317d4684c4c796691b642212155a3858be8"
-  integrity sha512-Vw8efr9tgSsAYEAV5nMy+LRwP5CqdRMysyYEGcRlvzeKChggC0L0O6b8ucjhu8QhjpVLCNaaavLxZLUAr4tlhg==
+"@gnosis.pm/safe-react-gateway-sdk@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.1.2.tgz#071a52a10ba37aa56513c06f086671d0e1b6c898"
+  integrity sha512-/7TPxXqFyoK8PjbBm6YygTwx+VUUTNxFp8F3ceY3jmJhWdtek+Wrr4o20HzPN1nidO9qiKjgoyQLg1fgjSVopw==
   dependencies:
     cross-fetch "^3.1.5"
 

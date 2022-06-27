@@ -18,3 +18,15 @@ export const toDecimals = (value: string, decimals = 18): BigNumber => {
 export const shortenAddress = (address: string, length = 4): string => {
   return `${address.slice(0, length + 2)}...${address.slice(-length)}`
 }
+
+export const dateString = (date: number) => {
+  const formatterOptions: Intl.DateTimeFormatOptions = {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  }
+  return new Intl.DateTimeFormat(undefined, formatterOptions).format(new Date(date))
+}

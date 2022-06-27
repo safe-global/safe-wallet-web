@@ -25,7 +25,7 @@
     "@gnosis.pm/safe-core-sdk": "^2.1.0",
     "@gnosis.pm/safe-core-sdk-types": "^1.1.0",
     "@gnosis.pm/safe-ethers-lib": "^1.1.0",
-    "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#4cbe12dffa718f962ccf229438c3b0ea20e5ccf2",
+    "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.4",
     "@reduxjs/toolkit": "^1.8.2",
@@ -53,7 +53,7 @@
     "semver": "^7.3.7"
   },
   "devDependencies": {
-    "@gnosis.pm/safe-react-gateway-sdk": "^3.1.1",
+    "@gnosis.pm/safe-react-gateway-sdk": "^3.1.2",
     "@sentry/types": "^7.1.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react-hooks": "^8.0.0",

@@ -60,7 +60,7 @@ const GasParams = ({
 
   return (
     <div className={css.container}>
-      <Accordion>
+      <Accordion elevation={0}>
         <AccordionSummary>
           <Typography>
             Estimated fee{' '}

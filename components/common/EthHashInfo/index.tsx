@@ -5,6 +5,7 @@ import { shortenAddress } from '@/services/formatters'
 import Identicon from '../Identicon'
 import useChainId from '@/services/useChainId'
 import useAddressBook from '@/services/useAddressBook'
+import { Typography } from '@mui/material'
 
 type EthHashInfoProps = {
   address: string
@@ -15,10 +16,12 @@ type EthHashInfoProps = {
   prefix?: string
   copyPrefix?: boolean
   shortAddress?: boolean
+  customAvatar?: string
 }
 
 const SRCEthHashInfo = ({
   address,
+  customAvatar,
   prefix,
   shortAddress = true,
   showAvatar = true,
@@ -28,16 +31,16 @@ const SRCEthHashInfo = ({
     <div className={css.container}>
       {showAvatar && (
         <div className={css.avatar}>
-          <Identicon address={address} />
+          {customAvatar ? <img src={customAvatar} alt={address} /> : <Identicon address={address} />}
         </div>
       )}
 
       <div>
         {props.name && <b>{props.name}</b>}
-        <div>
+        <Typography>
           {prefix && <b>{prefix}:</b>}
           {shortAddress ? shortenAddress(address) : address}
-        </div>
+        </Typography>
       </div>
 
       {props.showCopyButton && <div className={css.copy}>{/* TODO */}</div>}
