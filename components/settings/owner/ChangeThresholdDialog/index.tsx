@@ -8,13 +8,11 @@ import { useSafeSDK } from '@/services/safe-core/safeCoreSDK'
 import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/services/useAsync'
 
-import css from './styles.module.css'
 import NonceForm from '@/components/tx/steps/ReviewNewTx/NonceForm'
 import useSafeTxGas from '@/services/useSafeTxGas'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import ErrorMessage from '@/components/tx/ErrorMessage'
 
 interface ChangeThresholdData {
   threshold: number
@@ -80,8 +78,9 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
   const txError = safeGasError || createTxError || safeTxError
 
   return (
-    <div className={css.container}>
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe?.threshold === 1} onSubmit={onSubmit} error={txError}>
       <Typography>Any transaction requires the confirmation of:</Typography>
+
       <Grid container direction="row" gap={1} alignItems="center">
         <Grid item xs={1}>
           <Select value={selectedThreshold} onChange={handleChange} fullWidth>
@@ -96,19 +95,12 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
           <Typography>out of {safe?.owners.length ?? 0} owner(s)</Typography>
         </Grid>
       </Grid>
+
       <NonceForm
         onChange={setEditableNonce}
         recommendedNonce={safeGas?.recommendedNonce}
         safeNonce={safeGas?.currentNonce}
       />
-      <SignOrExecuteForm safeTx={safeTx} isExecutable={safe?.threshold === 1} onSubmit={onSubmit} />
-
-      {txError && (
-        <ErrorMessage>
-          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
-          <p>{txError.message}</p>
-        </ErrorMessage>
-      )}
-    </div>
+    </SignOrExecuteForm>
   )
 }

@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactElement } from 'react'
-import { Grid, Typography } from '@mui/material'
+import { Grid } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
@@ -11,7 +11,6 @@ import useSafeTxGas from '@/services/useSafeTxGas'
 import useBalances from '@/services/useBalances'
 import useAsync from '@/services/useAsync'
 import { createTx } from '@/services/tx/txSender'
-import ErrorMessage from '@/components/tx/ErrorMessage'
 import useSafeInfo from '@/services/useSafeInfo'
 import NonceForm from './NonceForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -49,7 +48,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   }, [params, decimals, address])
 
   // Estimate safeTxGas
-  const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(txParams)
+  const { safeGas, safeGasError } = useSafeTxGas(txParams)
   const [editableNonce, setEditableNonce] = useState<number>()
 
   // Create a safeTx
@@ -67,22 +66,17 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   const txError = safeTxError || safeGasError
 
   return (
-    <div>
-      <Typography variant="h6">Review transaction</Typography>
-
+    <SignOrExecuteForm
+      safeTx={safeTx}
+      isExecutable={safe?.threshold === 1}
+      onSubmit={onSubmit}
+      title="Review transaction"
+      error={txError}
+    >
       {token && <TokenTransferReview params={params} tokenInfo={token.tokenInfo} />}
 
       <NonceForm recommendedNonce={safeGas?.recommendedNonce} safeNonce={safe?.nonce} onChange={setEditableNonce} />
-
-      <SignOrExecuteForm safeTx={safeTx} isExecutable={safe?.threshold === 1} onSubmit={onSubmit} />
-
-      {txError && (
-        <ErrorMessage>
-          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
-          <p>{txError.message}</p>
-        </ErrorMessage>
-      )}
-    </div>
+    </SignOrExecuteForm>
   )
 }
 

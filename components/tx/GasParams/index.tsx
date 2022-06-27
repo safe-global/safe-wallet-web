@@ -1,24 +1,13 @@
-import { ReactElement } from 'react'
-import { BigNumber, BigNumberish } from 'ethers'
+import { ReactElement, SyntheticEvent } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { formatUnits } from 'ethers/lib/utils'
 import { useCurrentChain } from '@/services/useChains'
+import { safeFormatUnits } from '@/services/formatters'
+import { AdvancedParameters } from '../AdvancedParamsForm'
 
-type GasParamsProps = {
-  gasLimit?: number
-  maxFeePerGas?: BigNumber
-  maxPriorityFeePerGas?: BigNumber
+type GasParamsProps = Partial<AdvancedParameters> & {
   isLoading: boolean
-}
-
-const formatPrice = (value: BigNumberish, type?: string | number): string => {
-  try {
-    return formatUnits(value, type)
-  } catch (err) {
-    console.error('Error formatting price', err)
-    return ''
-  }
+  onEdit: () => void
 }
 
 const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
@@ -32,19 +21,30 @@ const GasDetail = ({ name, value, isLoading }: { name: string; value: string; is
   )
 }
 
-const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas, isLoading }: GasParamsProps): ReactElement => {
+const GasParams = ({
+  gasLimit,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+  isLoading,
+  onEdit,
+}: GasParamsProps): ReactElement => {
   const chain = useCurrentChain()
 
   // Total gas cost
   const totalFee =
     gasLimit && maxFeePerGas && maxPriorityFeePerGas
-      ? formatPrice(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+      ? safeFormatUnits(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
       : '> 0.001'
 
   // Individual gas params
   const gasLimitString = gasLimit?.toString() || ''
-  const maxFeePerGasGwei = maxFeePerGas ? formatPrice(maxFeePerGas, 'gwei') : ''
-  const maxPrioGasGwei = maxPriorityFeePerGas ? formatPrice(maxPriorityFeePerGas, 'gwei') : ''
+  const maxFeePerGasGwei = maxFeePerGas ? safeFormatUnits(maxFeePerGas) : ''
+  const maxPrioGasGwei = maxPriorityFeePerGas ? safeFormatUnits(maxPriorityFeePerGas) : ''
+
+  const onEditClick = (e: SyntheticEvent) => {
+    e.preventDefault()
+    !isLoading && onEdit()
+  }
 
   return (
     <div className={css.container}>
@@ -66,6 +66,15 @@ const GasParams = ({ gasLimit, maxFeePerGas, maxPriorityFeePerGas, isLoading }: 
           <GasDetail isLoading={isLoading} name="Max priority fee (Gwei)" value={maxPrioGasGwei} />
 
           <GasDetail isLoading={isLoading} name="Max fee (Gwei)" value={maxFeePerGasGwei} />
+
+          <Typography
+            className={css.buttonLink}
+            onClick={onEditClick}
+            sx={({ palette }) => ({ color: palette.primary.main })}
+            marginTop={1}
+          >
+            Edit
+          </Typography>
         </AccordionDetails>
       </Accordion>
     </div>

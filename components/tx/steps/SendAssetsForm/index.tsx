@@ -5,7 +5,6 @@ import {
   Button,
   createFilterOptions,
   FormControl,
-  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -66,7 +65,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
     if (!token) return
 
-    if (isNaN(parseFloat(amount))) {
+    if (isNaN(Number(amount))) {
       return 'The amount must be a number'
     }
 
@@ -118,9 +117,8 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             <TextField
               {...params}
               autoComplete="off"
-              label="Recipient"
+              label={errors.recipient?.message || 'Recipient'}
               error={!!errors.recipient}
-              helperText={errors.recipient?.message || ' '}
               {...register('recipient', {
                 validate: validateAddress,
                 required: true,
@@ -134,7 +132,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         <InputLabel id="asset-label">Select an asset</InputLabel>
         <Select
           labelId="asset-label"
-          label="Select an asset"
+          label={errors.tokenAddress?.message || 'Select an asset'}
           defaultValue={formData?.tokenAddress || ''}
           error={!!errors.tokenAddress}
           {...register('tokenAddress', { required: true })}
@@ -146,14 +144,12 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             </MenuItem>
           ))}
         </Select>
-        <FormHelperText>{errors.tokenAddress?.message || ' '}</FormHelperText>
       </FormControl>
 
       <FormControl fullWidth>
         <TextField
-          label="Amount"
+          label={errors.amount?.message || 'Amount'}
           error={!!errors.amount}
-          helperText={errors.amount?.message || ' '}
           autoComplete="off"
           {...register('amount', { required: true, validate: validateAmount })}
         />

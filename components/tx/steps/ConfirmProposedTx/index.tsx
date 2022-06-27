@@ -1,7 +1,6 @@
 import { ReactElement } from 'react'
 import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Typography } from '@mui/material'
 
 import useSafeAddress from '@/services/useSafeAddress'
 import { useChainId } from '@/services/useChainId'
@@ -10,7 +9,6 @@ import useAsync from '@/services/useAsync'
 import useWallet from '@/services/wallets/useWallet'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { isExecutable, isSignableBy } from '@/components/transactions/utils'
-import ErrorMessage from '../../ErrorMessage'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
@@ -30,19 +28,15 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
   }, [txSummary, safeAddress, chainId])
 
   return (
-    <div>
-      <Typography variant="h6">{canSign ? 'Confirm transaction' : 'Execute transaction'}</Typography>
-
-      <SignOrExecuteForm
-        safeTx={safeTx}
-        txId={txId}
-        onSubmit={onSubmit}
-        isExecutable={canExecute}
-        onlyExecute={!canSign}
-      />
-
-      <ErrorMessage>{safeTxError?.message}</ErrorMessage>
-    </div>
+    <SignOrExecuteForm
+      safeTx={safeTx}
+      txId={txId}
+      onSubmit={onSubmit}
+      isExecutable={canExecute}
+      onlyExecute={!canSign}
+      title={canSign ? 'Confirm transaction' : 'Execute transaction'}
+      error={safeTxError}
+    />
   )
 }
 
