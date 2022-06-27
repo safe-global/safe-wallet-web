@@ -4,3 +4,9 @@
   flex-wrap: wrap;
   gap: 20px;
 }
+
+.container pre {
+  word-break: break-all;
+  width: 100%;
+  white-space: pre-line;
+}

@@ -157,7 +157,7 @@ const SignOrExecuteForm = ({
         {(gasLimitError || error) && (
           <ErrorMessage>
             This transaction will most likely fail. To save gas costs, avoid creating the transaction.
-            <p>{(gasLimitError || error)?.message}</p>
+            <pre>{(gasLimitError || error)?.message}</pre>
           </ErrorMessage>
         )}
 
