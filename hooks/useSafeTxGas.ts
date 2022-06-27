@@ -26,11 +26,11 @@ const useSafeTxGas = (
 } => {
   const address = useSafeAddress()
   const chainId = useChainId()
-  const serializedParams = JSON.stringify(txParams)
 
   const [safeGas, safeGasError, safeGasLoading] = useAsync<SafeTransactionEstimation | undefined>(async () => {
-    return txParams ? await estimateSafeTxGas(chainId, address, txParams) : undefined
-  }, [chainId, address, serializedParams])
+    if (!txParams) return
+    return await estimateSafeTxGas(chainId, address, txParams)
+  }, [chainId, address, txParams, txParams?.to, txParams?.data, txParams?.value, txParams?.operation])
 
   return { safeGas, safeGasError, safeGasLoading }
 }

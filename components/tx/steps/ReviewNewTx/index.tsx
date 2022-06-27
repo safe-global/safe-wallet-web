@@ -53,7 +53,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
 
   // Create a safeTx
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!txParams) return
+    if (!txParams || editableNonce == null) return
 
     return createTx({
       ...txParams,
