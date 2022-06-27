@@ -1,6 +1,6 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, ReactNode, SyntheticEvent, useState } from 'react'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Button, Checkbox, FormControlLabel } from '@mui/material'
+import { Button, Checkbox, FormControlLabel, Typography } from '@mui/material'
 
 import css from './styles.module.css'
 
@@ -21,9 +21,21 @@ type SignOrExecuteProps = {
   isExecutable: boolean
   onlyExecute?: boolean
   onSubmit: (data: null) => void
+  children?: ReactNode
+  error?: Error
+  title?: string
 }
 
-const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }: SignOrExecuteProps): ReactElement => {
+const SignOrExecuteForm = ({
+  safeTx,
+  txId,
+  isExecutable,
+  onlyExecute,
+  onSubmit,
+  children,
+  error,
+  title,
+}: SignOrExecuteProps): ReactElement => {
   const { safe } = useSafeInfo()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
@@ -97,50 +109,66 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
     setManualParams(data)
   }
 
-  // If checkbox is checked and the transaction is executable, execute it
-  // Otherwise only sign
+  const preventDefault = (callback: () => unknown) => {
+    return (e: SyntheticEvent) => {
+      e.preventDefault()
+      callback()
+    }
+  }
+
+  // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = shouldExecute && canExecute
   const isEstimating = willExecute && (gasLimitLoading || gasPriceLoading)
-  const handleSubmit = willExecute ? onExecute : onSign
+  const handleSubmit = preventDefault(willExecute ? onExecute : onSign)
 
-  return isEditingGas ? isEstimating ? <></> : (
-    <AdvancedParamsForm
-      gasLimit={advancedParams.gasLimit!}
-      maxFeePerGas={advancedParams.maxFeePerGas!}
-      maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas!}
-      onSubmit={onGasSubmit}
-    />
+  return isEditingGas ? (
+    isEstimating ? (
+      <></>
+    ) : (
+      <AdvancedParamsForm
+        gasLimit={advancedParams.gasLimit!}
+        maxFeePerGas={advancedParams.maxFeePerGas!}
+        maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas!}
+        onSubmit={onGasSubmit}
+      />
+    )
   ) : (
     <div className={css.container}>
-      {canExecute && !onlyExecute && (
-        <FormControlLabel
-          control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
-          label="Execute Transaction"
-        />
-      )}
+      {title && <Typography variant="h6">{title}</Typography>}
 
-      {willExecute && (
-        <GasParams
-          isLoading={isEstimating}
-          gasLimit={advancedParams.gasLimit}
-          maxFeePerGas={advancedParams.maxFeePerGas}
-          maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
-          onEdit={() => setEditingGas(true)}
-        />
-      )}
+      {children}
 
-      {willExecute && gasLimitError && (
-        <ErrorMessage>
-          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
-          <p>{gasLimitError.message}</p>
-        </ErrorMessage>
-      )}
+      <form onSubmit={handleSubmit}>
+        {canExecute && !onlyExecute && (
+          <FormControlLabel
+            control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
+            label="Execute Transaction"
+          />
+        )}
 
-      <div className={css.submit}>
-        <Button variant="contained" onClick={handleSubmit} disabled={!isSubmittable || isEstimating}>
-          {isEstimating ? 'Estimating...' : 'Submit'}
-        </Button>
-      </div>
+        {willExecute && (
+          <GasParams
+            isLoading={isEstimating}
+            gasLimit={advancedParams.gasLimit}
+            maxFeePerGas={advancedParams.maxFeePerGas}
+            maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
+            onEdit={() => setEditingGas(true)}
+          />
+        )}
+
+        {(gasLimitError || error) && (
+          <ErrorMessage>
+            This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+            <p>{(gasLimitError || error)?.message}</p>
+          </ErrorMessage>
+        )}
+
+        <div className={css.submit}>
+          <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
+            {isEstimating ? 'Estimating...' : 'Submit'}
+          </Button>
+        </div>
+      </form>
     </div>
   )
 }

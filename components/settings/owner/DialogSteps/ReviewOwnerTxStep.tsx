@@ -14,7 +14,6 @@ import useSafeTxGas from '@/services/useSafeTxGas'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useChainId from '@/services/useChainId'
-import ErrorMessage from '@/components/tx/ErrorMessage'
 import { sameAddress } from '@/services/addresses'
 
 export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (data: null) => void }) => {
@@ -75,8 +74,13 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
   const txError = safeTxError || safeGasError || createTxError
 
   return (
-    <div className={css.container}>
-      <Typography variant="h6">Review transaction</Typography>
+    <SignOrExecuteForm
+      safeTx={safeTx}
+      onSubmit={addAddressBookEntryAndSubmit}
+      isExecutable={safe?.threshold === 1}
+      error={txError}
+      title="Review transaction"
+    >
       <Grid container spacing={2} style={{ paddingLeft: '24px', paddingTop: '20px' }}>
         <Grid direction="column" xs item className={`${css.detailsBlock}`}>
           <Typography>Details</Typography>
@@ -92,6 +96,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
             </Typography>
           </Box>
         </Grid>
+
         <Grid direction="column">
           <Typography paddingLeft={2}>{safe?.owners.length ?? 0} Safe owner(s)</Typography>
           <Divider />
@@ -126,20 +131,12 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           </Box>
         </Grid>
       </Grid>
+
       <NonceForm
         onChange={setEditableNonce}
         recommendedNonce={safeGas?.recommendedNonce}
         safeNonce={safeGas?.currentNonce}
       />
-
-      <SignOrExecuteForm safeTx={safeTx} onSubmit={addAddressBookEntryAndSubmit} isExecutable={safe?.threshold === 1} />
-
-      {txError && (
-        <ErrorMessage>
-          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
-          <p>{txError.message}</p>
-        </ErrorMessage>
-      )}
-    </div>
+    </SignOrExecuteForm>
   )
 }

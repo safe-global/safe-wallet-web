@@ -92,7 +92,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
         </Grid>
 
         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-          <Button color="inherit" onClick={onBack} sx={{ mr: 1 }}>
+          <Button color="inherit" onClick={onBack} sx={{ mr: 1, ml: -2 }}>
             Back
           </Button>
 
