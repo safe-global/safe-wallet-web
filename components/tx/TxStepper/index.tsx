@@ -11,7 +11,7 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
   return (
     <Box sx={{ mb: 1, mx: 1 }} className={css.container}>
       <Box py={1}>
-        <Box sx={{ position: 'absolute', right: 0, top: 0 }} px={1} py={1}>
+        <Box sx={{ position: 'absolute', right: 0, top: 0 }} p={1}>
           <Typography color={({ palette }) => palette.text.secondary}>
             Step {activeStep + 1} out of {steps.length}
           </Typography>
