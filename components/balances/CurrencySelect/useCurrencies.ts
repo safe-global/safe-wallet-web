@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { getFiatCurrencies, FiatCurrencies } from '@gnosis.pm/safe-react-gateway-sdk'
-import useAsync from '@/services/useAsync'
+import useAsync from '@/hooks/useAsync'
 import { Errors, logError } from '@/services/exceptions'
 
 const useCurriencies = (): FiatCurrencies | undefined => {

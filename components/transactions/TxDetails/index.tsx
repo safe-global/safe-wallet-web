@@ -3,8 +3,8 @@ import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react
 import TxSigners from '@/components/transactions/TxSigners'
 import Summary from '@/components/transactions/TxDetails/Summary'
 import TxData from '@/components/transactions/TxDetails/TxData'
-import useChainId from '@/services/useChainId'
-import useAsync from '@/services/useAsync'
+import useChainId from '@/hooks/useChainId'
+import useAsync from '@/hooks/useAsync'
 import css from './styles.module.css'
 
 const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {

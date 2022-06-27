@@ -1,10 +1,10 @@
 import { ReactElement } from 'react'
 import css from './styles.module.css'
 import chains from '@/config/chains'
-import { shortenAddress } from '@/services/formatters'
+import { shortenAddress } from '@/utils/formatters'
 import Identicon from '../Identicon'
-import useChainId from '@/services/useChainId'
-import useAddressBook from '@/services/useAddressBook'
+import useChainId from '@/hooks/useChainId'
+import useAddressBook from '@/hooks/useAddressBook'
 import { Typography } from '@mui/material'
 
 type EthHashInfoProps = {

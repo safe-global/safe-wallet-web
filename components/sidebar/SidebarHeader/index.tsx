@@ -3,12 +3,12 @@ import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 
-import { shortenAddress } from '@/services/formatters'
-import useSafeInfo from '@/services/useSafeInfo'
+import { shortenAddress } from '@/utils/formatters'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
 import SidebarFiat from '@/components/sidebar/SidebarFiat'
-import useAddressBook from '@/services/useAddressBook'
+import useAddressBook from '@/hooks/useAddressBook'
 
 import css from './styles.module.css'
 

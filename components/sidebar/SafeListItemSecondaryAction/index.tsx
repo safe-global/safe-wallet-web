@@ -3,8 +3,8 @@ import Typography from '@mui/material/Typography'
 
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
-import useWallet from '@/services/wallets/useWallet'
-import useChains from '@/services/useChains'
+import useWallet from '@/hooks/wallets/useWallet'
+import useChains from '@/hooks/useChains'
 
 import css from './styles.module.css'
 

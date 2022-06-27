@@ -1,5 +1,5 @@
 import { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
-import { toDecimals } from '../formatters'
+import { toDecimals } from '@/utils/formatters'
 import { Interface } from '@ethersproject/abi'
 
 const encodeTokenTransferData = (to: string, value: string): string => {

@@ -8,7 +8,7 @@ import {
   TransactionSummary,
   TransactionTokenType,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isMultisigExecutionDetails } from '@/components/transactions/utils'
+import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 
 const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000'
 const EMPTY_DATA: string = '0x'

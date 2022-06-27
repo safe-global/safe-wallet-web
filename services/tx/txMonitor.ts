@@ -1,4 +1,4 @@
-import { didRevert } from '@/services/tx/utils'
+import { didRevert } from '@/utils/ethers-utils'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 import type { JsonRpcProvider } from '@ethersproject/providers'

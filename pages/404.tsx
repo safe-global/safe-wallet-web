@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { useQueryRewrite } from '@/services/usePathRewrite'
+import { useQueryRewrite } from '@/hooks/usePathRewrite'
 
 const Custom404: NextPage = () => {
   const isRedirecting = useQueryRewrite()

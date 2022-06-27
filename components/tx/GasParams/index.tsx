@@ -1,8 +1,8 @@
 import { ReactElement, SyntheticEvent } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { useCurrentChain } from '@/services/useChains'
-import { safeFormatUnits } from '@/services/formatters'
+import { useCurrentChain } from '@/hooks/useChains'
+import { safeFormatUnits } from '@/utils/formatters'
 import { AdvancedParameters } from '../AdvancedParamsForm'
 
 type GasParamsProps = Partial<AdvancedParameters> & {

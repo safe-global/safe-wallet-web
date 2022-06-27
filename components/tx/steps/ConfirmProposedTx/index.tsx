@@ -2,13 +2,13 @@ import { ReactElement } from 'react'
 import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
-import useSafeAddress from '@/services/useSafeAddress'
-import { useChainId } from '@/services/useChainId'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import { useChainId } from '@/hooks/useChainId'
 import { createExistingTx } from '@/services/tx/txSender'
-import useAsync from '@/services/useAsync'
-import useWallet from '@/services/wallets/useWallet'
+import useAsync from '@/hooks/useAsync'
+import useWallet from '@/hooks/wallets/useWallet'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { isExecutable, isSignableBy } from '@/components/transactions/utils'
+import { isExecutable, isSignableBy } from '@/utils/transaction-guards'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary

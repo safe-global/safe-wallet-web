@@ -15,12 +15,12 @@ import { useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
-import { formatDecimals, toDecimals } from '@/services/formatters'
-import { validateAddress } from '@/services/validation'
-import useBalances from '@/services/useBalances'
-import useAddressBook from '@/services/useAddressBook'
+import { formatDecimals, toDecimals } from '@/utils/formatters'
+import { validateAddress } from '@/utils/validation'
+import useBalances from '@/hooks/useBalances'
+import useAddressBook from '@/hooks/useAddressBook'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import useSafeAddress from '@/services/useSafeAddress'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 export type SendAssetsFormData = {
   recipient: string

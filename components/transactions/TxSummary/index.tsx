@@ -5,15 +5,15 @@ import { TransactionStatus, type Transaction } from '@gnosis.pm/safe-react-gatew
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
-import { useTransactionType } from '@/services/useTransactionType'
+import { useTransactionType } from '@/hooks/useTransactionType'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import css from './styles.module.css'
-import useWallet from '@/services/wallets/useWallet'
-import { isAwaitingExecution } from '@/components/transactions/utils'
+import useWallet from '@/hooks/wallets/useWallet'
+import { isAwaitingExecution } from '@/utils/transaction-guards'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import Box from '@mui/material/Box'
 import { useRouter } from 'next/router'
-import { useTransactionStatus } from '@/services/useTransactionStatus'
+import { useTransactionStatus } from '@/hooks/useTransactionStatus'
 
 type TxSummaryProps = {
   item: Transaction

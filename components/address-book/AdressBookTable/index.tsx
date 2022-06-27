@@ -1,5 +1,5 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
-import useAddressBook from '@/services/useAddressBook'
+import useAddressBook from '@/hooks/useAddressBook'
 
 const headCells = [
   { id: 'name', label: 'Name' },

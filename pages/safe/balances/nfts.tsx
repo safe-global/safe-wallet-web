@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 
-import useCollectibles from '@/services/useCollectibles'
+import useCollectibles from '@/hooks/useCollectibles'
 import { NftGrid } from '@/components/nfts'
 
 const NFTs: NextPage = () => {

@@ -1,6 +1,6 @@
 import { useMemo, type ReactElement } from 'react'
 
-import useBalances from '@/services/useBalances'
+import useBalances from '@/hooks/useBalances'
 import { Typography } from '@mui/material'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/sessionSlice'

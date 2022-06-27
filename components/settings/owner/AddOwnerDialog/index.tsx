@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { ChooseOwnerStep } from '../DialogSteps/ChooseOwnerStep'
 
 import TxModal from '@/components/tx/TxModal'
-import useSafeInfo from '@/services/useSafeInfo'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { ReviewOwnerTxStep } from '@/components/settings/owner/DialogSteps/ReviewOwnerTxStep'
 import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
 import { SetThresholdStep } from '@/components/settings/owner/DialogSteps/SetThresholdStep'

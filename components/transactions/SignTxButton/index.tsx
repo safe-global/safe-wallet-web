@@ -5,9 +5,9 @@ import CheckIcon from '@mui/icons-material/Check'
 import IconButton from '@mui/material/IconButton'
 
 import css from './styles.module.css'
-import { isOwner, isSignableBy } from '@/components/transactions/utils'
-import useWallet from '@/services/wallets/useWallet'
-import useSafeInfo from '@/services/useSafeInfo'
+import { isOwner, isSignableBy } from '@/utils/transaction-guards'
+import useWallet from '@/hooks/wallets/useWallet'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import ConfirmTxModal from '@/components/tx/modals/ConfirmTxModal'
 
 const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
