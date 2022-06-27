@@ -4,7 +4,6 @@ import { Tooltip } from '@mui/material'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import IconButton from '@mui/material/IconButton'
 
-import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import ExecuteTxModal from '@/components/tx/modals/ExecuteTxModal'
@@ -25,17 +24,17 @@ const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): Reac
   }
 
   return (
-    <div className={css.container}>
+    <>
       <Tooltip title="Execute" arrow placement="top">
         <span>
-          <IconButton onClick={onClick} disabled={isDisabled} color="primary">
-            <RocketLaunchIcon />
+          <IconButton onClick={onClick} disabled={isDisabled} color="primary" size="small">
+            <RocketLaunchIcon fontSize="small" />
           </IconButton>
         </span>
       </Tooltip>
 
       {open && <ExecuteTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
-    </div>
+    </>
   )
 }
 
