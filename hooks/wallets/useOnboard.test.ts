@@ -2,7 +2,7 @@ import type { EIP1193Provider, WalletState } from '@web3-onboard/core'
 import { getConnectedWallet } from './useOnboard'
 
 // mock wallets
-jest.mock('@/services/wallets/wallets', () => ({
+jest.mock('@/hooks/wallets/wallets', () => ({
   getDefaultWallets: jest.fn(() => []),
   getRecommendedInjectedWallets: jest.fn(() => []),
 }))
