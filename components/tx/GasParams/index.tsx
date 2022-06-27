@@ -1,14 +1,11 @@
 import { ReactElement, SyntheticEvent } from 'react'
-import { BigNumber } from 'ethers'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { useCurrentChain } from '@/services/useChains'
 import { safeFormatUnits } from '@/services/formatters'
+import { AdvancedParameters } from '../AdvancedParamsForm'
 
-type GasParamsProps = {
-  gasLimit?: number
-  maxFeePerGas?: BigNumber
-  maxPriorityFeePerGas?: BigNumber
+type GasParamsProps = Partial<AdvancedParameters> & {
   isLoading: boolean
   onEdit: () => void
 }

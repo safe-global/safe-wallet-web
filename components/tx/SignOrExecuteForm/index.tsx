@@ -48,6 +48,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
 
   const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
 
+  // Manually set gas params or the estimated ones
   const advancedParams: Partial<AdvancedParameters> = {
     gasLimit: manualParams?.gasLimit || gasLimit,
     maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
@@ -85,8 +86,8 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
 
       // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
       await dispatchTxExecution(id, safeTx!, {
-        gasLimit: manualParams?.gasLimit || gasLimit,
-        gasPrice: (manualParams?.maxFeePerGas || maxFeePerGas)?.toString(),
+        gasLimit: advancedParams.gasLimit,
+        gasPrice: advancedParams.maxFeePerGas?.toString(),
       })
     })
   }
@@ -102,7 +103,7 @@ const SignOrExecuteForm = ({ safeTx, txId, isExecutable, onlyExecute, onSubmit }
   const isEstimating = willExecute && (gasLimitLoading || gasPriceLoading)
   const handleSubmit = willExecute ? onExecute : onSign
 
-  return isEditingGas ? (
+  return isEditingGas ? isEstimating ? <></> : (
     <AdvancedParamsForm
       gasLimit={advancedParams.gasLimit!}
       maxFeePerGas={advancedParams.maxFeePerGas!}
