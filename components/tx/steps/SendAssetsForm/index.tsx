@@ -38,13 +38,37 @@ const abFilterOptions = createFilterOptions({
   stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
 })
 
-const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
+export const SendFromBlock = (): ReactElement => {
   const address = useSafeAddress()
   const { balances } = useBalances()
-  const addressBook = useAddressBook()
-
   const nativeToken = balances.items.find((item) => parseInt(item.tokenInfo.address, 16) === 0)
   const nativeTokenBalance = nativeToken ? formatDecimals(nativeToken.balance, nativeToken.tokenInfo.decimals) : '0'
+
+  return (
+    <Box sx={{ borderBottom: ({ palette }) => `1px solid ${palette.divider}` }} paddingBottom={2} marginBottom={2}>
+      <Typography color={({ palette }) => palette.text.secondary} pb={1}>
+        Sending from
+      </Typography>
+
+      <Box>
+        <EthHashInfo address={address} shortAddress={false} />
+      </Box>
+
+      {nativeToken && (
+        <Box className={css.balance} bgcolor={(theme) => theme.palette.grey.A100}>
+          Balance:{' '}
+          <b>
+            {nativeTokenBalance} {nativeToken.tokenInfo.symbol}
+          </b>
+        </Box>
+      )}
+    </Box>
+  )
+}
+
+const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
+  const { balances } = useBalances()
+  const addressBook = useAddressBook()
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
     label: address,
@@ -83,24 +107,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
       <TxModalTitle>Send funds</TxModalTitle>
 
-      <Box sx={{ borderBottom: ({ palette }) => `1px solid ${palette.divider}` }} paddingBottom={2} marginBottom={2}>
-        <Typography color={({ palette }) => palette.text.secondary} pb={1}>
-          Sending from
-        </Typography>
-
-        <Box fontSize={14}>
-          <EthHashInfo address={address} shortAddress={false} />
-        </Box>
-
-        {nativeToken && (
-          <Box className={css.balance} bgcolor={(theme) => theme.palette.grey.A100}>
-            Balance:{' '}
-            <b>
-              {nativeTokenBalance} {nativeToken.tokenInfo.symbol}
-            </b>
-          </Box>
-        )}
-      </Box>
+      <SendFromBlock />
 
       <FormControl fullWidth>
         <Autocomplete

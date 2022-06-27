@@ -1,9 +1,9 @@
 import { useMemo, useState, type ReactElement } from 'react'
-import { Grid } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
-import type { SendAssetsFormData } from '@/components/tx/steps/SendAssetsForm'
+import { SendAssetsFormData, SendFromBlock } from '@/components/tx/steps/SendAssetsForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
@@ -17,13 +17,15 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
-    <Grid container sx={{ alignItems: 'center', gap: '1em', margin: '1em 0 2em' }}>
-      <div>
-        Send <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
-        {params.amount} {tokenInfo.symbol} to
-      </div>
-      <EthHashInfo address={params.recipient} shortAddress={false} />
-    </Grid>
+    <Box sx={{ textAlign: 'center' }}>
+      <Box fontSize={24}>
+        <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
+      </Box>
+
+      <Box mt={1} fontSize={20}>
+        {params.amount} {tokenInfo.symbol}
+      </Box>
+    </Box>
   )
 }
 
@@ -74,6 +76,18 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
       error={txError}
     >
       {token && <TokenTransferReview params={params} tokenInfo={token.tokenInfo} />}
+
+      <Box mb={3}>
+        <SendFromBlock />
+
+        <Typography color={({ palette }) => palette.text.secondary} pb={1}>
+          Recipient
+        </Typography>
+
+        <Box>
+          <EthHashInfo address={safeTx?.data.to || ''} shortAddress={false} />
+        </Box>
+      </Box>
 
       <NonceForm recommendedNonce={safeGas?.recommendedNonce} safeNonce={safe?.nonce} onChange={setEditableNonce} />
     </SignOrExecuteForm>
