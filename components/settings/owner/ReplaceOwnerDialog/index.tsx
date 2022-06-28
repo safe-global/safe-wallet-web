@@ -6,7 +6,7 @@ import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { ReviewOwnerTxStep } from '@/components/settings/owner/DialogSteps/ReviewOwnerTxStep'
-import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
+import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/types'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 
 const ReplaceOwnerSteps: TxStepperProps['steps'] = [

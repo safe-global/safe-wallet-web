@@ -17,8 +17,8 @@ export const OwnerList = ({
   const OwnerRow = (row: { name: string | null; address: string }) => {
     return (
       <TableRow className={css.row}>
-        <TableCell component="td">{row.name ?? ''}</TableCell>
-        <TableCell component="td">
+        <TableCell>{row.name ?? ''}</TableCell>
+        <TableCell>
           <EthHashInfo address={row.address} showCopyButton shortAddress={false} />
         </TableCell>
         <TableCell>
@@ -45,7 +45,7 @@ export const OwnerList = ({
         Gnosis or any third parties.
       </Typography>
       <TableContainer>
-        <Table sx={{ minWidth: 650 }}>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>

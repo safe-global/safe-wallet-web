@@ -5,7 +5,7 @@ import { ChooseOwnerStep } from '../DialogSteps/ChooseOwnerStep'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { ReviewOwnerTxStep } from '@/components/settings/owner/DialogSteps/ReviewOwnerTxStep'
-import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
+import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/types'
 import { SetThresholdStep } from '@/components/settings/owner/DialogSteps/SetThresholdStep'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 
