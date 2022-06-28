@@ -15,7 +15,6 @@ import css from './styles.module.css'
 
 const Sidebar = (): ReactElement => {
   const address = useSafeAddress()
-  const { error, loading } = useSafeInfo()
   const addressBook = useAddressBook()
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 
@@ -40,15 +39,11 @@ const Sidebar = (): ReactElement => {
       {/* For routes with a Safe address */}
       {address ? (
         <>
-          {!error && <SidebarHeader name={name} />}
+          <SidebarHeader name={name} />
 
           <Divider />
 
           <SidebarNavigation />
-
-          {loading && 'Loading Safe info...'}
-
-          {error && 'Failed loading the Safe'}
         </>
       ) : (
         <div className={css.noSafeSidebar} />
