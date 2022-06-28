@@ -9,12 +9,12 @@ import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
 
 const getPreValidatedSignature = (from: string): string => {
-  return `0x000000000000000000000000${
-    from.toLowerCase().replace('0x', '')
-  }000000000000000000000000000000000000000000000000000000000000000001`
+  return `0x000000000000000000000000${from
+    .toLowerCase()
+    .replace('0x', '')}000000000000000000000000000000000000000000000000000000000000000001`
 }
 
-const encodeSignatures = (safeTx: SafeTransaction, from: string): string => {
+export const _encodeSignatures = (safeTx: SafeTransaction, from: string): string => {
   const owner = from.toLowerCase()
   const needsOwnerSig = !safeTx.signatures.has(owner)
 
@@ -55,7 +55,7 @@ const estimateSafeTxGas = (safeSDK: Safe, safeTx: SafeTransaction, from: string)
       safeTx.data.gasPrice,
       safeTx.data.gasToken,
       safeTx.data.refundReceiver,
-      encodeSignatures(safeTx, from),
+      _encodeSignatures(safeTx, from),
     ])
 }
 
