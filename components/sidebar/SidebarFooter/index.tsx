@@ -1,5 +1,4 @@
-import type { ReactElement } from 'react'
-import { useRouter } from 'next/router'
+import { ReactElement, useEffect } from 'react'
 
 import {
   SidebarList,
@@ -7,35 +6,32 @@ import {
   SidebarListItemIcon,
   SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
+import { BEAMER_SELECTOR, loadBeamer } from '@/services/beamer'
 
-const WHATS_NEW_PATH = ''
-const HELP_CENTER_PATH = ''
+const WHATS_NEW_PATH = 'https://help.gnosis-safe.io/en/'
 
 const SidebarFooter = (): ReactElement => {
-  const router = useRouter()
-
-  const isSelected = (href: string) => router.pathname === href
+  useEffect(() => {
+    // TODO: Based on cookies, (un-)load Beamer
+    loadBeamer()
+  }, [])
 
   return (
     <SidebarList>
-      <SidebarListItemButton
-        selected={isSelected(WHATS_NEW_PATH)}
-        href={{ pathname: WHATS_NEW_PATH, query: router.query }}
-      >
+      <SidebarListItemButton id={BEAMER_SELECTOR}>
         <SidebarListItemIcon>
           <img src="/images/sidebar/whats-new.svg" alt="What's New" height="16px" width="16px" />
         </SidebarListItemIcon>
-        <SidebarListItemText bold>What&apos;s new</SidebarListItemText>
+        <SidebarListItemText bold>What&apos;s New</SidebarListItemText>
       </SidebarListItemButton>
-      <SidebarListItemButton
-        selected={isSelected(HELP_CENTER_PATH)}
-        href={{ pathname: HELP_CENTER_PATH, query: router.query }}
-      >
-        <SidebarListItemIcon>
-          <img src="/images/sidebar/help-center.svg" alt="Help Center" height="16px" width="16px" />
-        </SidebarListItemIcon>
-        <SidebarListItemText bold>Help Center</SidebarListItemText>
-      </SidebarListItemButton>
+      <a target="_blank" rel="noopener noreferrer" href={WHATS_NEW_PATH}>
+        <SidebarListItemButton>
+          <SidebarListItemIcon>
+            <img src="/images/sidebar/help-center.svg" alt="Help Center" height="16px" width="16px" />
+          </SidebarListItemIcon>
+          <SidebarListItemText bold>Need Help?</SidebarListItemText>
+        </SidebarListItemButton>
+      </a>
     </SidebarList>
   )
 }

@@ -18,11 +18,18 @@ export const SidebarListItemButton = ({
   href,
   children,
   ...rest
-}: Omit<ListItemButtonProps, 'sx'> & { href: LinkProps['href'] }): ReactElement => {
+}: Omit<ListItemButtonProps, 'sx'> & { href?: LinkProps['href'] }): ReactElement => {
   const router = useRouter()
+
+  const handleClick = () => {
+    if (href) {
+      router.push(href)
+    }
+  }
+
   return (
     <ListItemButton
-      onClick={() => router.push(href)}
+      onClick={handleClick}
       sx={({ palette }) => ({
         borderRadius: '6px',
         '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
@@ -33,6 +40,14 @@ export const SidebarListItemButton = ({
                 'invert(30%) sepia(41%) saturate(4854%) hue-rotate(155deg) brightness(92%) contrast(102%)'
               : undefined,
           },
+        },
+        '& .beamer_icon.active': {
+          top: 'auto',
+          left: '28px',
+          bottom: '10px',
+          width: '6px',
+          height: '6px',
+          color: 'transparent',
         },
       })}
       {...rest}

@@ -10,3 +10,4 @@ export const PORTIS_KEY = process.env.NEXT_PUBLIC_PORTIS_KEY || '852b763d-f28b-4
 export const TREZOR_APP_URL = 'gnosis-safe.io'
 export const TREZOR_EMAIL = 'safe@gnosis.io'
 export const LATEST_SAFE_VERSION = process.env.REACT_APP_LATEST_SAFE_VERSION || '1.3.0'
+export const BEAMER_ID = IS_PRODUCTION ? process.env.REACT_APP_BEAMER_ID : 'ehlRMhQi41258'
