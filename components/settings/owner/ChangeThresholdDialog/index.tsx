@@ -8,7 +8,7 @@ import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
-import NonceForm from '@/components/tx/steps/ReviewNewTx/NonceForm'
+import NonceForm from '@/components/tx/NonceForm'
 import useSafeTxGas from '@/hooks/useSafeTxGas'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -52,37 +52,44 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
   const [editableNonce, setEditableNonce] = useState<number>()
   const safeSDK = useSafeSDK()
 
-  const [changeThresholdTx, createTxError, txLoading] = useAsync(() => {
+  // @TODO: move to txSender, add events
+  const [changeThresholdTx, createTxError] = useAsync(() => {
     if (!safeSDK) {
       throw new Error('Safe SDK not initialized')
     }
     return safeSDK.getChangeThresholdTx(selectedThreshold)
   }, [selectedThreshold])
 
-  const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(changeThresholdTx?.data)
+  const { safeGas, safeGasError } = useSafeTxGas(changeThresholdTx?.data)
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedThreshold(parseInt(event.target.value.toString()))
   }
 
-  const [safeTx, safeTxError, safeTxLoading] = useAsync<SafeTransaction | undefined>(async () => {
-    if (changeThresholdTx) {
-      return await createTx({
-        ...changeThresholdTx.data,
-        nonce: editableNonce,
-        safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
-      })
-    }
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+    if (!changeThresholdTx || !editableNonce) return
+
+    return await createTx({
+      ...changeThresholdTx.data,
+      nonce: editableNonce,
+      safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
+    })
   }, [editableNonce, changeThresholdTx, safeGas?.safeTxGas])
 
   const txError = safeGasError || createTxError || safeTxError
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe?.threshold === 1} onSubmit={onSubmit} error={txError}>
+    <SignOrExecuteForm
+      safeTx={safeTx}
+      isExecutable={safe?.threshold === 1}
+      onSubmit={onSubmit}
+      error={txError}
+      title="Change threshold"
+    >
       <Typography>Any transaction requires the confirmation of:</Typography>
 
       <Grid container direction="row" gap={1} alignItems="center">
-        <Grid item xs={1}>
+        <Grid item xs={2}>
           <Select value={selectedThreshold} onChange={handleChange} fullWidth>
             {safe?.owners.map((_, idx) => (
               <MenuItem key={idx + 1} value={idx + 1}>

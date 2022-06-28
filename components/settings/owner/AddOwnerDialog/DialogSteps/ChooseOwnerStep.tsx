@@ -1,12 +1,11 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AddressInput } from '@/components/common/AddressInput'
-import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
+import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { uniqueAddress, addressIsNotCurrentSafe, validateAddress } from '@/utils/validation'
 import { TextField, Button, Typography, FormControl, Box } from '@mui/material'
 import { useForm } from 'react-hook-form'
-
-import css from './styles.module.css'
+import TxModalTitle from '@/components/tx/TxModalTitle'
 
 type ChooseOwnerFormData = {
   ownerName?: string
@@ -50,7 +49,9 @@ export const ChooseOwnerStep = ({
       .find(() => true)
 
   return (
-    <form className={css.container} onSubmit={handleSubmit(onSubmitHandler)}>
+    <form onSubmit={handleSubmit(onSubmitHandler)}>
+      <TxModalTitle>Add new owner</TxModalTitle>
+
       <p>
         {isReplace
           ? 'Review the owner you want to replace in the active Safe, then specify the new owner you want to replace it with:'
@@ -62,6 +63,7 @@ export const ChooseOwnerStep = ({
           <EthHashInfo address={removedOwner.address} showCopyButton shortAddress={false} />
         </div>
       )}
+
       <Box display="flex" flexDirection="column" gap={2} paddingTop={2}>
         <Typography>New owner</Typography>
         <FormControl fullWidth>
@@ -81,11 +83,10 @@ export const ChooseOwnerStep = ({
           />
         </FormControl>
       </Box>
-      <div className={css.submit}>
-        <Button variant="contained" type="submit">
-          Next
-        </Button>
-      </div>
+
+      <Button variant="contained" type="submit">
+        Next
+      </Button>
     </form>
   )
 }

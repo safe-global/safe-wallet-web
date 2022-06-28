@@ -2,19 +2,19 @@ import { SyntheticEvent, useCallback, useEffect } from 'react'
 import groupBy from 'lodash/groupBy'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { closeNotification, Notification, selectNotifications } from '@/store/notificationsSlice'
-import { Alert, AlertColor, Snackbar } from '@mui/material'
+import { Alert, AlertColor, Snackbar, SnackbarCloseReason } from '@mui/material'
 import css from './styles.module.css'
 
 const toastStyle = { position: 'static', margin: 1 }
 
 const Toast = ({ message, severity, onClose }: { message: string; severity: AlertColor; onClose: () => void }) => {
-  const handleClose = (_: Event | SyntheticEvent, reason?: string) => {
+  const handleClose = (_: Event | SyntheticEvent, reason?: SnackbarCloseReason) => {
     if (reason === 'clickaway') return
     onClose()
   }
 
   return (
-    <Snackbar open={true} onClose={handleClose} sx={toastStyle}>
+    <Snackbar open onClose={handleClose} sx={toastStyle}>
       <Alert severity={severity} onClose={handleClose}>
         {message}
       </Alert>
@@ -48,11 +48,7 @@ const Notifications = () => {
     <div className={css.container}>
       {visible.map((item) => (
         <div className={css.row} key={item.id}>
-          <Toast
-            message={item.message}
-            severity={(item.variant as AlertColor) || 'info'}
-            onClose={() => handleClose(item)}
-          />
+          <Toast message={item.message} severity={item.variant || 'info'} onClose={() => handleClose(item)} />
         </div>
       ))}
     </div>

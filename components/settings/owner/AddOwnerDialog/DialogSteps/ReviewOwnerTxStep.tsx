@@ -2,14 +2,14 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/data'
+import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useState } from 'react'
 import { useAppDispatch } from '@/store'
-import NonceForm from '@/components/tx/steps/ReviewNewTx/NonceForm'
+import NonceForm from '@/components/tx/NonceForm'
 import useSafeTxGas from '@/hooks/useSafeTxGas'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -25,6 +25,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
 
   const [editableNonce, setEditableNonce] = useState<number>()
 
+  // @TODO: move to txSender, add event dispatching
   const [changeOwnerTx, createTxError, loading] = useAsync(() => {
     if (!safeSDK) {
       throw new Error('Safe SDK not initialized')
@@ -42,16 +43,16 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
     }
   }, [removedOwner, newOwner])
 
-  const { safeGas, safeGasError, safeGasLoading } = useSafeTxGas(changeOwnerTx?.data)
+  const { safeGas, safeGasError } = useSafeTxGas(changeOwnerTx?.data)
 
-  const [safeTx, safeTxError, safeTxLoading] = useAsync<SafeTransaction | undefined>(async () => {
-    if (changeOwnerTx) {
-      return await createTx({
-        ...changeOwnerTx.data,
-        nonce: editableNonce,
-        safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
-      })
-    }
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+    if (!changeOwnerTx || !editableNonce) return
+
+    return await createTx({
+      ...changeOwnerTx.data,
+      nonce: editableNonce,
+      safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
+    })
   }, [editableNonce, changeOwnerTx, safeGas?.safeTxGas])
 
   const isReplace = Boolean(removedOwner)
@@ -79,9 +80,9 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
       onSubmit={addAddressBookEntryAndSubmit}
       isExecutable={safe?.threshold === 1}
       error={txError}
-      title="Review transaction"
+      title="Add new owner"
     >
-      <Grid container spacing={2} style={{ paddingLeft: '24px', paddingTop: '20px' }}>
+      <Grid container spacing={2} py={3}>
         <Grid direction="column" xs item className={`${css.detailsBlock}`}>
           <Typography>Details</Typography>
           <Box marginBottom={2}>
