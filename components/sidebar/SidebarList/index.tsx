@@ -27,7 +27,7 @@ export const SidebarListItemButton = ({
           img: {
             filter: rest.selected
               ? // #008C73 - palette.primary[400]
-                'invert(30%) sepia(41%) saturate(4854%) hue-rotate(155deg) brightness(92%) contrast(102%)'
+                'invert(33%) sepia(96%) saturate(625%) hue-rotate(127deg) brightness(99%) contrast(101%)'
               : undefined,
           },
         },
