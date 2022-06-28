@@ -8,7 +8,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
 import SidebarFiat from '@/components/sidebar/SidebarFiat'
-import useAddressBook from '@/hooks/useAddressBook'
 
 import css from './styles.module.css'
 
@@ -27,12 +26,10 @@ const HeaderIconButton = ({ children }: Omit<IconButtonProps, 'className' | 'dis
   </IconButton>
 )
 
-const SafeHeader = (): ReactElement => {
+const SafeHeader = ({ name }: { name: string }): ReactElement => {
   const { safe } = useSafeInfo()
-  const addressBook = useAddressBook()
 
   const address = safe?.address.value || ''
-  const name = addressBook?.[address]
 
   const { threshold, owners } = safe || {}
 

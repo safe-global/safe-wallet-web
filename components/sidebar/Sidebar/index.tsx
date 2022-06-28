@@ -9,13 +9,17 @@ import SafeList from '@/components/sidebar/SafeList'
 import SidebarNavigation from '@/components/sidebar/SidebarNavigation'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import SidebarFooter from '@/components/sidebar/SidebarFooter'
+import useAddressBook from '@/hooks/useAddressBook'
 
 import css from './styles.module.css'
 
 const Sidebar = (): ReactElement => {
   const address = useSafeAddress()
   const { error, loading } = useSafeInfo()
+  const addressBook = useAddressBook()
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+
+  const name = addressBook?.[address] || ''
 
   const onDrawerToggle = () => {
     setIsDrawerOpen((prev) => !prev)
@@ -29,14 +33,14 @@ const Sidebar = (): ReactElement => {
       <IconButton
         className={css.drawerButton}
         onClick={onDrawerToggle}
-        sx={(theme) => ({ backgroundColor: theme.palette.gray[500] })}
+        sx={(theme) => ({ backgroundColor: theme.palette.gray[500], top: name ? '88px' : '40px' })}
       >
         <ChevronRight />
       </IconButton>
       {/* For routes with a Safe address */}
       {address ? (
         <>
-          {!error && <SidebarHeader />}
+          {!error && <SidebarHeader name={name} />}
 
           <Divider />
 
