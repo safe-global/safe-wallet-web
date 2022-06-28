@@ -6,8 +6,7 @@ import { dateString, shortenAddress } from '@/utils/formatters'
 import { Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
 import css from './styles.module.css'
-
-export const NOT_AVAILABLE = 'n/a'
+import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
 
 const generateDataRowValue = (
   value?: string | null,

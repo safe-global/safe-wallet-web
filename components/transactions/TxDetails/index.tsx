@@ -7,6 +7,8 @@ import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import css from './styles.module.css'
 
+export const NOT_AVAILABLE = 'n/a'
+
 const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const chainId = useChainId()
   const [txDetails, , loading] = useAsync(async () => {
