@@ -7,11 +7,11 @@ import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { getEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
+import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { useWeb3 } from '@/hooks/wallets/web3'
 
 const createNewSafe = async (ethersProvider: Web3Provider, txParams: SafeAccountConfig): Promise<Safe> => {
-  const ethAdapter = getEthersAdapter(ethersProvider)
+  const ethAdapter = createEthersAdapter(ethersProvider)
 
   const safeFactory = await SafeFactory.create({ ethAdapter })
   return await safeFactory.deploySafe({ safeAccountConfig: txParams })
