@@ -41,10 +41,9 @@ export const notificationsSlice = createSlice({
 export const { closeNotification, closeAllNotifications, deleteNotification, deleteAllNotifications } =
   notificationsSlice.actions
 
-// Custom thunk that returns the key in case it was auto-generated
-export const showNotification = (payload: Notification): AppThunk<string> => {
+export const showNotification = (payload: Omit<Notification, 'id'>): AppThunk<string> => {
   return (dispatch) => {
-    const id = payload.id || Math.random().toString(32).slice(2)
+    const id = Math.random().toString(32).slice(2)
 
     const notification: Notification = {
       ...payload,
