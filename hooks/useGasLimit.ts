@@ -6,7 +6,7 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
-import { getSafeSDK } from './coreSDK/safeCoreSDK'
+import { useSafeSDK } from './coreSDK/safeCoreSDK'
 
 const estimateSafeTxGas = (safeSDK: Safe, safeTx: SafeTransaction): string => {
   const EXEC_TX_METHOD = 'execTransaction'
@@ -34,7 +34,7 @@ const useGasLimit = (
   gasLimitError?: Error
   gasLimitLoading: boolean
 } => {
-  const safeSDK = getSafeSDK()
+  const safeSDK = useSafeSDK()
   const web3ReadOnly = useWeb3ReadOnly()
   const safeAddress = useSafeAddress()
   const wallet = useWallet()
