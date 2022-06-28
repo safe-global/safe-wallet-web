@@ -1,14 +1,46 @@
 import { useMemo } from 'react'
 import { BigNumber } from 'ethers'
 import Safe from '@gnosis.pm/safe-core-sdk'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import useAsync from '@/hooks/useAsync'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
 
-const estimateSafeTxGas = (safeSDK: Safe, safeTx: SafeTransaction): string => {
+const getPreValidatedSignature = (from: string): string => {
+  return `0x000000000000000000000000${
+    from.toLowerCase().replace('0x', '')
+  }000000000000000000000000000000000000000000000000000000000000000001`
+}
+
+const encodeSignatures = (safeTx: SafeTransaction, from: string): string => {
+  const owner = from.toLowerCase()
+  const needsOwnerSig = !safeTx.signatures.has(owner)
+
+  // https://docs.gnosis.io/safe/docs/contracts_signatures/#pre-validated-signatures
+  if (needsOwnerSig) {
+    const ownerSig = getPreValidatedSignature(from)
+
+    safeTx.addSignature({
+      signer: owner,
+      data: ownerSig,
+      staticPart: () => ownerSig,
+      dynamicPart: () => '',
+    })
+  }
+
+  const encoded = safeTx.encodedSignatures()
+
+  // Remove the "fake" signature we added
+  if (needsOwnerSig) {
+    safeTx.signatures.delete(owner)
+  }
+
+  return encoded
+}
+
+const estimateSafeTxGas = (safeSDK: Safe, safeTx: SafeTransaction, from: string): string => {
   const EXEC_TX_METHOD = 'execTransaction'
 
   return safeSDK
@@ -23,7 +55,7 @@ const estimateSafeTxGas = (safeSDK: Safe, safeTx: SafeTransaction): string => {
       safeTx.data.gasPrice,
       safeTx.data.gasToken,
       safeTx.data.refundReceiver,
-      safeTx.encodedSignatures(),
+      encodeSignatures(safeTx, from),
     ])
 }
 
@@ -41,8 +73,11 @@ const useGasLimit = (
   const walletAddress = wallet?.address
 
   const encodedSafeTx = useMemo<string>(() => {
-    return safeTx && safeSDK ? estimateSafeTxGas(safeSDK, safeTx) : ''
-  }, [safeSDK, safeTx])
+    if (!safeTx || !safeSDK || !walletAddress) {
+      return ''
+    }
+    return estimateSafeTxGas(safeSDK, safeTx, walletAddress)
+  }, [safeSDK, safeTx, walletAddress])
 
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber | undefined>(async () => {
     if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return undefined
