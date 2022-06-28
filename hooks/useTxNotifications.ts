@@ -34,7 +34,6 @@ const useTxNotifications = (): void => {
 
         dispatch(
           showNotification({
-            id: '',
             message,
             groupKey: txId || '',
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
