@@ -7,6 +7,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
 import theme from '@/styles/theme'
+import dynamic from 'next/dynamic'
 
 import '@/styles/globals.css'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
@@ -85,4 +86,7 @@ const SafeWebCore = ({
   )
 }
 
-export default SafeWebCore
+//@ts-ignore
+const withNoSSR = (Component: any) => dynamic(() => Promise.resolve(Component), { ssr: false })
+
+export default withNoSSR(SafeWebCore)

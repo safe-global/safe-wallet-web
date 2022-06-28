@@ -5,6 +5,7 @@ import Collapse from '@mui/material/Collapse'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import List from '@mui/material/List'
+import Link from 'next/link'
 
 import {
   SidebarList,
@@ -159,30 +160,29 @@ const Navigation = (): ReactElement => {
                 })}
               >
                 {item.items.map((subItem) => (
-                  <ListItemButton
-                    key={subItem.href}
-                    onClick={() => {
-                      toggleOpen(subItem)
-                      router.push({ pathname: subItem.href, query: router.query })
-                    }}
-                    selected={isSelected(subItem.href)}
-                    sx={({ palette }) => ({
-                      '::before': {
-                        content: '""',
-                        width: '6px',
-                        height: '1px',
-                        background: palette.gray[500],
-                        position: 'absolute',
-                        left: '-10px',
-                      },
-                      borderRadius: '6px',
-                      '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
-                        backgroundColor: `${palette.gray[300]} !important`,
-                      },
-                    })}
-                  >
-                    <SidebarListItemText>{subItem.label}</SidebarListItemText>
-                  </ListItemButton>
+                  <Link href={{ pathname: subItem.href, query: router.query }} passHref>
+                    <ListItemButton
+                      key={subItem.href}
+                      onClick={() => toggleOpen(subItem)}
+                      selected={isSelected(subItem.href)}
+                      sx={({ palette }) => ({
+                        '::before': {
+                          content: '""',
+                          width: '6px',
+                          height: '1px',
+                          background: palette.gray[500],
+                          position: 'absolute',
+                          left: '-10px',
+                        },
+                        borderRadius: '6px',
+                        '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
+                          backgroundColor: `${palette.gray[300]} !important`,
+                        },
+                      })}
+                    >
+                      <SidebarListItemText>{subItem.label}</SidebarListItemText>
+                    </ListItemButton>
+                  </Link>
                 ))}
               </List>
             </Collapse>

@@ -79,20 +79,17 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
     setOpen((prev) => ({ [chainId]: !prev[chainId] }))
   }
 
-  const handleAddSafe = () => {
-    router.push({ href: AppRoutes.welcome, query: router.query })
-    closeDrawer()
-  }
-
   return (
     <div className={css.container}>
       <div className={css.header}>
         <Typography variant="h4" display="inline" fontWeight={700}>
           My Safes
         </Typography>
-        <Button disableElevation size="small" variant="outlined" onClick={handleAddSafe} className={css.addButton}>
-          + Add
-        </Button>
+        <Link href={{ pathname: AppRoutes.welcome, query: router.query }} passHref>
+          <Button disableElevation size="small" variant="outlined" onClick={closeDrawer} className={css.addButton}>
+            + Add
+          </Button>
+        </Link>
       </div>
       {configs.map((chain) => {
         const { ownedSafesOnChain, addedSafesOnChain } = _extractSafesByChainId({
@@ -177,7 +174,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                     <SafeListItem
                       key={address}
                       address={address}
-                      chainId={chainId}
+                      chainId={chain.chainId}
                       closeDrawer={closeDrawer}
                       shouldScrollToSafe={!addedSafesOnChain[address]}
                     />
