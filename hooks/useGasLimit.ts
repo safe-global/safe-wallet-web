@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers'
 import useAsync from '@/hooks/useAsync'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
@@ -11,14 +12,14 @@ export type GasEstimationParams = {
 const useGasLimit = (
   txParams?: GasEstimationParams,
 ): {
-  gasLimit?: number
+  gasLimit?: BigNumber
   gasLimitError?: Error
   gasLimitLoading: boolean
 } => {
   const web3ReadOnly = useWeb3ReadOnly()
   const { to, from, value, data } = txParams || {}
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<any>(async () => {
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber | undefined>(async () => {
     if (!to || !web3ReadOnly) return undefined
 
     return await web3ReadOnly.estimateGas({ to, from, value, data })

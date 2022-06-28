@@ -99,10 +99,11 @@ const SignOrExecuteForm = ({
       }
 
       // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
-      await dispatchTxExecution(id, safeTx!, {
-        gasLimit: advancedParams.gasLimit,
-        gasPrice: advancedParams.maxFeePerGas?.toString(),
-      })
+      // const params = {
+      //   gasLimit: advancedParams.gasLimit?.toString(),
+      //   gasPrice: advancedParams.maxFeePerGas?.toString(),
+      // }
+      await dispatchTxExecution(id, safeTx!)
     })
   }
 
@@ -125,7 +126,7 @@ const SignOrExecuteForm = ({
 
   return isEditingGas ? (
     <AdvancedParamsForm
-      gasLimit={advancedParams.gasLimit || 0}
+      gasLimit={advancedParams.gasLimit || BigNumber.from(0)}
       maxFeePerGas={advancedParams.maxFeePerGas || BigNumber.from(0)}
       maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas || BigNumber.from(0)}
       onSubmit={onGasSubmit}
