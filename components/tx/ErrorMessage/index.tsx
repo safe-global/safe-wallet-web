@@ -14,7 +14,12 @@ const ErrorMessage = ({
     <Typography color="error" paddingY={4}>
       {children}
 
-      {error && <pre>{error.reason || error.message.slice(0, 100)}</pre>}
+      {error && (
+        <code>
+          <br />
+          Error: {error.reason || error.message.slice(0, 100)}
+        </code>
+      )}
     </Typography>
   )
 }

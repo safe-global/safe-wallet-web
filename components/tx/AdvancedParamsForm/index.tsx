@@ -7,7 +7,7 @@ import { FLOAT_REGEX } from '@/utils/validation'
 import TxModalTitle from '../TxModalTitle'
 
 export type AdvancedParameters = {
-  gasLimit: number
+  gasLimit: BigNumber
   maxFeePerGas: BigNumber
   maxPriorityFeePerGas: BigNumber
 }
@@ -45,7 +45,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
 
   const onSubmit = (data: FormData) => {
     props.onSubmit({
-      gasLimit: parseInt(data.gasLimit),
+      gasLimit: BigNumber.from(data.gasLimit),
       maxFeePerGas: safeParseUnits(data.maxFeePerGas) || props.maxFeePerGas,
       maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) || props.maxPriorityFeePerGas,
     })

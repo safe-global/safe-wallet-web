@@ -12,7 +12,7 @@ const isLegacyVersion = (safeVersion: string): boolean => {
   return semverSatisfies(safeVersion, LEGACY_VERSION)
 }
 
-export const getEthersAdapter = (provider: Web3Provider) => {
+export const createEthersAdapter = (provider: Web3Provider) => {
   const signer = provider.getSigner(0)
   return new EthersAdapter({
     ethers,
@@ -35,7 +35,7 @@ export const initSafeSDK = async (
 
   const ethersProvider = new ethers.providers.Web3Provider(provider)
   return await Safe.create({
-    ethAdapter: getEthersAdapter(ethersProvider),
+    ethAdapter: createEthersAdapter(ethersProvider),
     safeAddress,
     isL1SafeMasterCopy,
   })

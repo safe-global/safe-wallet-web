@@ -48,26 +48,22 @@ const SignOrExecuteForm = ({
   const [isEditingGas, setEditingGas] = useState<boolean>(false)
   const [manualParams, setManualParams] = useState<AdvancedParameters>()
 
-  const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(
-    shouldExecute && safeTx && wallet
-      ? {
-          ...safeTx.data,
-          from: wallet.address,
-        }
-      : undefined,
-  )
+  // Check that the transaction is executable
+  const canExecute = isExecutable && !!safeTx && safeTx.data.nonce === safe?.nonce
+  const willExecute = shouldExecute && canExecute
 
+  // Estimate gas limit
+  const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? safeTx : undefined)
+
+  // Estimate gas price
   const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
 
-  // Manually set gas params or the estimated ones
+  // Take the manually set gas params or the estimated ones
   const advancedParams: Partial<AdvancedParameters> = {
     gasLimit: manualParams?.gasLimit || gasLimit,
     maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
     maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
   }
-
-  // Check that the transaction is executable
-  const canExecute = isExecutable && !!safeTx && safeTx.data.nonce === safe?.nonce
 
   const onFinish = async (actionFn: () => Promise<void>) => {
     if (!wallet || !safeTx) return
@@ -99,10 +95,11 @@ const SignOrExecuteForm = ({
       }
 
       // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
-      await dispatchTxExecution(id, safeTx!, {
-        gasLimit: advancedParams.gasLimit,
+      const txOptions = {
+        gasLimit: advancedParams.gasLimit?.toString(),
         gasPrice: advancedParams.maxFeePerGas?.toString(),
-      })
+      }
+      await dispatchTxExecution(id, safeTx!, txOptions)
     })
   }
 
@@ -119,13 +116,12 @@ const SignOrExecuteForm = ({
   }
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
-  const willExecute = shouldExecute && canExecute
   const isEstimating = willExecute && (gasLimitLoading || gasPriceLoading)
   const handleSubmit = preventDefault(willExecute ? onExecute : onSign)
 
   return isEditingGas ? (
     <AdvancedParamsForm
-      gasLimit={advancedParams.gasLimit || 0}
+      gasLimit={advancedParams.gasLimit || BigNumber.from(0)}
       maxFeePerGas={advancedParams.maxFeePerGas || BigNumber.from(0)}
       maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas || BigNumber.from(0)}
       onSubmit={onGasSubmit}
