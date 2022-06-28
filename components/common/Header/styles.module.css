@@ -1,5 +1,5 @@
 .container {
-  min-height: 52px;
+  height: 52px;
   padding: 0 20px;
   display: flex;
   gap: 20px;
