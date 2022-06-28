@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
+import Skeleton from '@mui/material/Skeleton'
 
 import { shortenAddress } from '@/utils/formatters'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -27,7 +28,7 @@ const HeaderIconButton = ({ children }: Omit<IconButtonProps, 'className' | 'dis
 )
 
 const SafeHeader = ({ name }: { name: string }): ReactElement => {
-  const { safe } = useSafeInfo()
+  const { safe, loading } = useSafeInfo()
 
   const address = safe?.address.value || ''
 
@@ -49,11 +50,19 @@ const SafeHeader = ({ name }: { name: string }): ReactElement => {
       <div className={css.container}>
         <div className={css.safe}>
           <div className={css.icon}>
-            <SafeIcon address={address} threshold={threshold} owners={owners?.length} />
+            {loading ? (
+              <Skeleton variant="circular" width={40} height={40} />
+            ) : (
+              <SafeIcon address={address} threshold={threshold} owners={owners?.length} />
+            )}
           </div>
           <div>
-            <Typography variant="body2">{address ? shortenAddress(address) : '...'}</Typography>
-            <SidebarFiat />
+            <Typography variant="body2">
+              {loading ? <Skeleton variant="text" width={86} /> : address ? shortenAddress(address) : '...'}
+            </Typography>
+            <Typography variant="body1">
+              {loading ? <Skeleton variant="text" width={60} /> : <SidebarFiat />}
+            </Typography>
           </div>
         </div>
         <div className={css.iconButtons}>

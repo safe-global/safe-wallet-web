@@ -2,7 +2,6 @@ import { useState, type ReactElement } from 'react'
 import { Box, Divider, Drawer, IconButton } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
 
-import useSafeInfo from '@/hooks/useSafeInfo'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SidebarHeader from '@/components/sidebar/SidebarHeader'
 import SafeList from '@/components/sidebar/SafeList'
