@@ -14,7 +14,7 @@ const Toast = ({ message, severity, onClose }: { message: string; severity: Aler
   }
 
   return (
-    <Snackbar open={true} onClose={handleClose} sx={toastStyle}>
+    <Snackbar open onClose={handleClose} sx={toastStyle}>
       <Alert severity={severity} onClose={handleClose}>
         {message}
       </Alert>
@@ -48,11 +48,7 @@ const Notifications = () => {
     <div className={css.container}>
       {visible.map((item) => (
         <div className={css.row} key={item.id}>
-          <Toast
-            message={item.message}
-            severity={(item.variant as AlertColor) || 'info'}
-            onClose={() => handleClose(item)}
-          />
+          <Toast message={item.message} severity={item.variant || 'info'} onClose={() => handleClose(item)} />
         </div>
       ))}
     </div>

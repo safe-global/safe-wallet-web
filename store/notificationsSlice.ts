@@ -1,12 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-
+import { AlertColor } from '@mui/material'
 import type { AppThunk, RootState } from '@/store'
 
 export type Notification = {
   id: string
   message: string
   groupKey: string
-  variant?: string
+  variant?: AlertColor
   dismissed?: boolean
 }
 
