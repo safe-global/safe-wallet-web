@@ -1,6 +1,6 @@
 import { Box, Button, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import { SyntheticEvent, useState } from 'react'
-import { ChangeOwnerData } from '@/components/settings/owner/DialogSteps/types'
+import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import TxModalTitle from '@/components/tx/TxModalTitle'
 import useSafeInfo from '@/hooks/useSafeInfo'
 

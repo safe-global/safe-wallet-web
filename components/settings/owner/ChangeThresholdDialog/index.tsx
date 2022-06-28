@@ -8,7 +8,7 @@ import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
-import NonceForm from '@/components/tx/steps/ReviewNewTx/NonceForm'
+import NonceForm from '@/components/tx/NonceForm'
 import useSafeTxGas from '@/hooks/useSafeTxGas'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'

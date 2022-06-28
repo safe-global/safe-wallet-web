@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import SendAssetsForm, { SendAssetsFormData } from '@/components/tx/steps/SendAssetsForm'
-import ReviewNewTx from '@/components/tx/steps/ReviewNewTx'
+import SendAssetsForm, { SendAssetsFormData } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import ReviewNewTx from '@/components/tx/modals/TokenTransferModal/ReviewNewTx'
 import TxModal, { TxModalProps } from '@/components/tx/TxModal'
 
 export const TokenTransferSteps: TxStepperProps['steps'] = [

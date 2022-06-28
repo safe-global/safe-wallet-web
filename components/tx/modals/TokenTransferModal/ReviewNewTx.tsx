@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
-import { SendAssetsFormData, SendFromBlock } from '@/components/tx/steps/SendAssetsForm'
+import { SendAssetsFormData, SendFromBlock } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
@@ -12,7 +12,7 @@ import useBalances from '@/hooks/useBalances'
 import useAsync from '@/hooks/useAsync'
 import { createTx } from '@/services/tx/txSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import NonceForm from './NonceForm'
+import NonceForm from '../../NonceForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
