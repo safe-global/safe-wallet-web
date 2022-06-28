@@ -11,22 +11,24 @@ import { getSafeSDK } from './coreSDK/safeCoreSDK'
 const estimateSafeTxGas = (safeSDK: Safe, safeTx: SafeTransaction): string => {
   const EXEC_TX_METHOD = 'execTransaction'
 
-  return safeSDK.getContractManager().safeContract.encode(EXEC_TX_METHOD, [
-    safeTx.data.to,
-    safeTx.data.value,
-    safeTx.data.data,
-    safeTx.data.operation,
-    safeTx.data.safeTxGas,
-    0,
-    safeTx.data.gasPrice,
-    safeTx.data.gasToken,
-    safeTx.data.refundReceiver,
-    safeTx.encodedSignatures(),
-  ])
+  return safeSDK
+    .getContractManager()
+    .safeContract.encode(EXEC_TX_METHOD, [
+      safeTx.data.to,
+      safeTx.data.value,
+      safeTx.data.data,
+      safeTx.data.operation,
+      safeTx.data.safeTxGas,
+      0,
+      safeTx.data.gasPrice,
+      safeTx.data.gasToken,
+      safeTx.data.refundReceiver,
+      safeTx.encodedSignatures(),
+    ])
 }
 
 const useGasLimit = (
-  safeTx?: SafeTransaction
+  safeTx?: SafeTransaction,
 ): {
   gasLimit?: BigNumber
   gasLimitError?: Error
