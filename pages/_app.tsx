@@ -5,6 +5,7 @@ import Head from 'next/head'
 import { Provider } from 'react-redux'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
+import { StyledEngineProvider } from '@mui/material/styles'
 import theme from '@/styles/theme'
 
 import '@/styles/globals.css'
@@ -60,15 +61,17 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
 
       {/* @ts-ignore - Temporary Fix */}
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <InitApp />
-          <PageLayout>
-            <Component {...pageProps} />
-          </PageLayout>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <InitApp />
+            <PageLayout>
+              <Component {...pageProps} />
+            </PageLayout>
 
-          <Notifications />
-        </ThemeProvider>
+            <Notifications />
+          </ThemeProvider>
+        </StyledEngineProvider>
       </Sentry.ErrorBoundary>
     </Provider>
   )
