@@ -1,0 +1,9 @@
+.encodedData {
+  line-break: anywhere;
+  word-break: break-all;
+}
+
+.linkText {
+  text-decoration: underline;
+  cursor: pointer;
+}

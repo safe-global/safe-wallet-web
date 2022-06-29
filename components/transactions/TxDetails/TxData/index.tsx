@@ -11,6 +11,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { TransactionDetails, Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { type ReactElement } from 'react'
 import RejectionTxInfo from '@/components/transactions/TxDetails/TxData/Rejection'
+import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 
 export const AddressInfo = ({
   name,
@@ -73,8 +74,7 @@ const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement 
     return <RejectionTxInfo nonce={txDetails.detailedExecutionInfo?.nonce} isTxExecuted={!!txDetails.executedAt} />
   }
 
-  // TODO: handle missing TxInfo types
-  return <></>
+  return <DecodedData txData={txDetails.txData} txInfo={txDetails.txInfo}></DecodedData>
 }
 
 export default TxData
