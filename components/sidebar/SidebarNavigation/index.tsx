@@ -175,6 +175,9 @@ const Navigation = (): ReactElement => {
                           left: '-10px',
                         },
                         borderRadius: '6px',
+                        '&.MuiListItemButton-root': {
+                          pl: '26px',
+                        },
                         '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
                           backgroundColor: `${palette.gray[300]} !important`,
                         },

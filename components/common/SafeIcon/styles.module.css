@@ -6,14 +6,14 @@
 
 .threshold {
   position: absolute;
-  margin-top: -8px;
-  margin-left: -8px;
+  margin-top: -6px;
+  margin-left: -16px;
   left: 36px;
   z-index: 1;
   border-radius: 100%;
   font-size: 12px;
-  min-width: 25px;
-  min-height: 25px;
+  min-width: 24px;
+  min-height: 24px;
   text-align: center;
   display: flex;
   flex-direction: column;

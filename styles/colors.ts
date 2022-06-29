@@ -57,3 +57,7 @@ export const primaryBlack = {
 export const primaryGreen = {
   200: '#EFFAF8',
 }
+
+export const primaryGray = {
+  400: '#EEEFF0',
+}
