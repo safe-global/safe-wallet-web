@@ -15,7 +15,7 @@ const OwnerRow = ({
   chainId,
   isGranted,
 }: {
-  name: string | null
+  name?: string
   address: string
   chainId: string
   isGranted: boolean
