@@ -2,9 +2,11 @@ import { ReactElement, ReactNode } from 'react'
 import { DataDecoded, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
 import CodeIcon from '@mui/icons-material/Code'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
+import css from './styles.module.css'
 
 interface Props {
   actionTitle: string
@@ -27,12 +29,25 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props
     isSetAllowance(transactionsValueDecoded?.method) || isDeleteAllowance(transactionsValueDecoded?.method)
 
   return (
-    <Accordion defaultExpanded={isDelegateCall || undefined}>
-      <AccordionSummary>
-        <CodeIcon />
-        <Typography ml="8px">
-          <b>{method}</b>
-        </Typography>
+    <Accordion
+      sx={({ palette }) => ({
+        border: 'none',
+        boxShadow: 0,
+        '&:not(:first-child)': {
+          borderRadius: 0,
+          borderTop: `2px solid ${palette.gray[500]}`,
+        },
+      })}
+      defaultExpanded={isDelegateCall || undefined}
+    >
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <div className={css.summary}>
+          <CodeIcon />
+          <Typography>{actionTitle}</Typography>
+          <Typography ml="8px">
+            <b>{method}</b>
+          </Typography>
+        </div>
       </AccordionSummary>
       <AccordionDetails sx={{ flexFlow: 'column' }}>
         {/* We always warn of nested delegate calls */}
