@@ -10,12 +10,12 @@ const createSafeTx = (): SafeTransaction => {
       operation: 0,
     },
     signatures: new Map([]),
-    addSignature: function (sig: SafeSignature) {
+    addSignature: function (sig: SafeSignature): void {
       this.signatures.set(sig.signer, sig)
     },
-    encodedSignatures: function () {
-      return Object.values(Object.fromEntries(this.signatures))
-        .map((sig: SafeSignature) => {
+    encodedSignatures: function (): string {
+      return Array.from(this.signatures)
+        .map(([, sig]) => {
           return [sig.signer, sig.data].join(' = ')
         })
         .join('; ')
