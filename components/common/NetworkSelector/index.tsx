@@ -1,4 +1,4 @@
-import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { MenuItem, Select, SelectChangeEvent, Skeleton } from '@mui/material'
 import useChains from '@/hooks/useChains'
 import { useRouter } from 'next/router'
 import ChainIndicator from '../ChainIndicator'
@@ -7,7 +7,7 @@ import { useChainId } from '@/hooks/useChainId'
 import chains from '@/config/chains'
 import { ReactElement } from 'react'
 
-const NetworkSelector = (): ReactElement | null => {
+const NetworkSelector = (): ReactElement => {
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
@@ -36,7 +36,9 @@ const NetworkSelector = (): ReactElement | null => {
         )
       })}
     </Select>
-  ) : null
+  ) : (
+    <Skeleton width={94} height={31} />
+  )
 }
 
 export default NetworkSelector

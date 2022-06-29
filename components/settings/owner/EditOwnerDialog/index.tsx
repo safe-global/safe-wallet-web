@@ -6,15 +6,7 @@ import { ChangeEvent, SyntheticEvent, useState } from 'react'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import ModalDialog from '@/components/common/ModalDialog'
 
-export const EditOwnerDialog = ({
-  chainId,
-  address,
-  name,
-}: {
-  chainId: string
-  address: string
-  name: string | null
-}) => {
+export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; address: string; name?: string }) => {
   const [open, setOpen] = useState(false)
   const [newName, setNewName] = useState(name ?? '')
 
