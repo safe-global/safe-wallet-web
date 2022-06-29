@@ -28,6 +28,7 @@ interface ThemeColors {
 
 declare module '@mui/material/styles' {
   interface Palette extends ThemeColors {}
+
   interface PaletteOptions extends ThemeColors {}
 }
 
@@ -127,13 +128,17 @@ const theme = createTheme({
       fontSize: '20px',
       lineHeight: '26px',
     },
+    h5: {
+      fontSize: '16px',
+      fontWeight: 700,
+    },
     body1: {
       fontSize: '16px',
       lineHeight: '22px',
     },
     body2: {
       fontSize: '14px',
-      lineHeight: '20px',
+      lineHeight: '22px',
     },
     caption: {
       fontSize: '12px',
@@ -186,6 +191,22 @@ const theme = createTheme({
           },
         }),
         content: { margin: '16px 0px' },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          boxShadow: 'none',
+          borderRadius: theme.spacing(1),
+          boxSizing: 'border-box',
+          border: '2px solid transparent',
+          transition: 'all 0.3s ease-in-out',
+          '&:hover': {
+            backgroundColor: theme.palette.primaryGreen[200],
+            // @ts-expect-error type '300' can't be used to index type 'PaletteColor'
+            border: `2px solid ${theme.palette.primary[300]}`,
+          },
+        }),
       },
     },
   },

@@ -1,8 +1,8 @@
-import { act, renderHook } from '@testing-library/react-hooks'
+import { act, renderHook } from '@testing-library/react'
 import useAsync from '@/hooks/useAsync'
 
 // Jest tests for the useAsync hook
-describe('useAsync hook', () => {
+describe.only('useAsync hook', () => {
   it('should return the correct state when the promise resolves', async () => {
     const { result } = renderHook(() => useAsync(() => Promise.resolve('test'), []))
 

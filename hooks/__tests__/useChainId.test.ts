@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react'
 import { useRouter } from 'next/router'
 import TestProviderWrapper from '@/mocks/TestProviderWrapper'
 import useChainId from '@/hooks/useChainId'
@@ -55,7 +55,7 @@ describe('useChainId hook', () => {
     }))
 
     const { result } = renderHook(() => useChainId(), { wrapper: TestProviderWrapper })
-    expect(result.error).toBeTruthy()
+    expect(result.current.error).toBeTruthy()
   })
 
   it('should return the last used chain id if no chain in the URL', () => {

@@ -59,7 +59,6 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* @ts-ignore - Temporary Fix */}
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>

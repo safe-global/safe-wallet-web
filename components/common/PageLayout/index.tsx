@@ -28,7 +28,9 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
         {sidebar}
       </Drawer>
 
-      <Box className={css.main}>{children}</Box>
+      <Box className={css.main} sx={({ palette }) => ({ backgroundColor: palette.gray[300] })}>
+        {children}
+      </Box>
     </div>
   )
 }
