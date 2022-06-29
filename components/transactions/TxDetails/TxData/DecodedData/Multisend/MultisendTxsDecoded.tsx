@@ -33,14 +33,21 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props
       sx={({ palette }) => ({
         border: 'none',
         boxShadow: 0,
-        '&:not(:first-child)': {
+        '&:not(:last-child)': {
           borderRadius: 0,
-          borderTop: `2px solid ${palette.gray[500]}`,
+          borderBottom: `2px solid ${palette.gray[500]}`,
         },
+        '&:last-of-type': {
+          borderBottomLeftRadius: '8px',
+        },
+        '&.Mui-expanded': { margin: 0 },
       })}
       defaultExpanded={isDelegateCall || undefined}
     >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary
+        sx={{ '&.Mui-expanded': { minHeight: '48px' }, '& .MuiAccordionSummary-content.Mui-expanded': { margin: '0' } }}
+        expandIcon={<ExpandMoreIcon />}
+      >
         <div className={css.summary}>
           <CodeIcon />
           <Typography>{actionTitle}</Typography>
