@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
-import { Typography } from '@mui/material'
+import { DialogActions, Typography } from '@mui/material'
 import css from './styles.module.css'
 
 const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElement => {
@@ -20,11 +20,11 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
         {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onBack)}
       </Box>
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', pt: 4 }}>
+      <DialogActions sx={{ m: -3, mt: 3 }}>
         <Button color="inherit" onClick={onBack}>
           {firstStep ? 'Cancel' : 'Back'}
         </Button>
-      </Box>
+      </DialogActions>
     </Box>
   )
 }

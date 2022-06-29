@@ -10,8 +10,10 @@ interface ModalDialogProps extends DialogProps {
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogActions-root': {
+    borderTop: `2px solid ${theme.palette.divider}`,
     padding: theme.spacing(3),
-    '& > :last-child': {
+
+    '& > :last-child:not(:first-child)': {
       order: 2,
     },
     '&:after': {
