@@ -13,7 +13,7 @@ export const RequiredConfirmation = ({
   return (
     <div>
       <Typography variant="h4" fontWeight={700}>
-        Required Confirmations
+        Required confirmations
       </Typography>
       <Typography paddingTop={1}>Any transaction requires the confirmation of:</Typography>
       <Typography paddingTop={3}>

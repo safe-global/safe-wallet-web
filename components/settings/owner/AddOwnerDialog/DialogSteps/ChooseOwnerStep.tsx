@@ -66,9 +66,11 @@ export const ChooseOwnerStep = ({
 
       <Box display="flex" flexDirection="column" gap={2} paddingTop={2}>
         <Typography>New owner</Typography>
+
         <FormControl fullWidth>
           <TextField autoFocus label="Owner name" variant="outlined" fullWidth {...register('ownerName')} />
         </FormControl>
+
         <FormControl fullWidth>
           <AddressInput
             defaultValue={formData.ownerAddress}

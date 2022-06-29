@@ -9,9 +9,9 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
   const { onBack, onSubmit, activeStep, stepData, firstStep } = useTxStepper({ steps, initialData, onClose })
 
   return (
-    <Box sx={{ mb: 1, mx: 1 }} className={css.container}>
+    <Box sx={{ m: 3 }} className={css.container}>
       <Box py={1}>
-        <Box sx={{ position: 'absolute', right: 0, top: 0 }} p={1}>
+        <Box className={css.stepIndicator} py={0.5}>
           <Typography color={({ palette }) => palette.text.secondary}>
             Step {activeStep + 1} out of {steps.length}
           </Typography>
@@ -21,7 +21,7 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
       </Box>
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 4 }}>
-        <Button color="inherit" onClick={onBack} sx={{ mr: 1 }}>
+        <Button color="inherit" onClick={onBack}>
           {firstStep ? 'Cancel' : 'Back'}
         </Button>
       </Box>

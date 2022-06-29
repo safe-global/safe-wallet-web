@@ -48,10 +48,10 @@ const SRCEthHashInfo = ({
   )
 }
 
-const EthHashInfo = (props: EthHashInfoProps): ReactElement => {
+const EthHashInfo = (props: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const chainId = useChainId()
   const addressBook = useAddressBook()
-  const name = addressBook[props.address]
+  const name = props.showName === false ? undefined : addressBook[props.address]
   const prefix = Object.keys(chains).find((key) => chains[key] === chainId)
 
   return <SRCEthHashInfo {...props} prefix={prefix} name={name} />

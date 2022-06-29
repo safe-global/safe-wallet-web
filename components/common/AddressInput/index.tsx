@@ -42,14 +42,7 @@ export const AddressInput = ({
         </Box>
       )}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          autoComplete="off"
-          label={label}
-          error={!!error}
-          helperText={error?.message}
-          {...textFieldProps}
-        />
+        <TextField {...params} autoComplete="off" label={error?.message || label} error={!!error} {...textFieldProps} />
       )}
     />
   )
