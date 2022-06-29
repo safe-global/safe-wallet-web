@@ -7,8 +7,10 @@ import { Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
 import css from './styles.module.css'
 import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
+import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 
-const generateDataRowValue = (
+// TODO: move this function out of this file
+export const generateDataRowValue = (
   value?: string | null,
   type?: 'hash' | 'rawData' | 'address' | 'bytes',
   hasExplorer?: boolean,
@@ -19,7 +21,7 @@ const generateDataRowValue = (
       return (
         <div className={css.inline}>
           {/* TODO: missing the chain prefix */}
-          <p>{shortenAddress(value, 8)}</p>
+          <Typography>{shortenAddress(value, 8)}</Typography>
           {/* TODO: missing copy button */}
           {/* TODO: missing block explorer button */}
         </div>
@@ -39,10 +41,10 @@ const generateDataRowValue = (
           {/* TODO: missing copy button */}
         </div>
       )
-    // case 'bytes':
-    //   return <HexEncodedData limit={60} hexData={value} />
+    case 'bytes':
+      return <HexEncodedData limit={60} hexData={value} />
     default:
-      return null
+      return <>{value}</>
   }
 }
 
