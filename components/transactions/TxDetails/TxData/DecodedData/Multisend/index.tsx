@@ -6,6 +6,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { Box, Typography } from '@mui/material'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary'
+import MultisendTxsDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend/MultisendTxsDecoded'
 
 export const MethodDetails = ({ data }: { data: DataDecoded }): React.ReactElement => {
   const isArrayParameter = (parameter: string): boolean => /(\[\d*])+$/.test(parameter)
@@ -52,10 +53,11 @@ export const Multisend = ({ txData }: Props): ReactElement | null => {
     <>
       {txData.dataDecoded?.parameters[0].valueDecoded?.map(({ dataDecoded, data, value, to, operation }, index) => {
         const actionTitle = `Action ${index + 1}`
-        const { method } = dataDecoded || {}
+        const method = dataDecoded?.method || ''
         const { decimals, symbol } = chain!.nativeCurrency
         const amount = value ? toDecimals(value, decimals) : 0
 
+        // TODO: move this chunk inside of MultisendTxsDecoded once it's working
         let details
         if (dataDecoded) {
           details = <MethodDetails data={dataDecoded} />
@@ -70,15 +72,14 @@ export const Multisend = ({ txData }: Props): ReactElement | null => {
 
         const title = `Interact with${Number(amount) === 0 && ` (and send ${amount} ${symbol} to)`}:`
         return (
-          <>{details}</>
-          // <MultiSendTxGroup
-          //   key={`${data ?? to}-${index}`}
-          //   actionTitle={actionTitle}
-          //   method={method}
-          //   txDetails={{ title, address: to, dataDecoded, name, avatarUrl, operation }}
-          // >
-          //   {details}
-          // </MultiSendTxGroup>
+          <MultisendTxsDecoded
+            key={`${data ?? to}-${index}`}
+            actionTitle={actionTitle}
+            method={method}
+            txDetails={{ title, address: to, dataDecoded, name, avatarUrl, operation }}
+          >
+            {details}
+          </MultisendTxsDecoded>
         )
       })}
     </>
