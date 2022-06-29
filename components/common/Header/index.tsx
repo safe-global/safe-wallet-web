@@ -18,9 +18,9 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => (
       </IconButton>
     </div>
 
-    <img src="/logo.svg" alt="Safe" className={css.logo} />
+    <img src="/logo.svg" alt="Safe" className={css.logo} height={29} />
 
-    <Box sx={{ flexGrow: 1 }} />
+    <Box flexGrow={1} />
 
     <ChainSwitcher />
 

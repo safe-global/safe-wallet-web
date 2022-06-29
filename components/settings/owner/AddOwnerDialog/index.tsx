@@ -37,7 +37,7 @@ export const AddOwnerDialog = () => {
     <div>
       <div>
         <Button onClick={() => setOpen(true)} variant="contained">
-          Add New Owner
+          Add new owner
         </Button>
       </div>
       {open && <TxModal wide onClose={handleClose} steps={AddOwnerSteps} initialData={[initialModalData]} />}

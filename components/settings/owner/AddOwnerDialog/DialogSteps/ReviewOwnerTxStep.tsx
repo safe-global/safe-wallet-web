@@ -15,12 +15,14 @@ import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
+import useAddressBook from '@/hooks/useAddressBook'
 
 export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
   const chainId = useChainId()
   const dispatch = useAppDispatch()
   const safeSDK = useSafeSDK()
+  const addressBook = useAddressBook()
   const { newOwner, removedOwner, threshold } = data
 
   const [editableNonce, setEditableNonce] = useState<number>()
@@ -85,10 +87,10 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
       <Grid container spacing={2} py={3}>
         <Grid direction="column" xs item className={`${css.detailsBlock}`}>
           <Typography>Details</Typography>
+
           <Box marginBottom={2}>
             <Typography>Safe name:</Typography>
-            {/* TODO: SafeName */}
-            <Typography>Name Placeholder</Typography>
+            <Typography>{safe ? addressBook[safe?.address.value] || 'No name' : ''}</Typography>
           </Box>
           <Box marginBottom={2}>
             <Typography>Any transaction requires the confirmation of:</Typography>

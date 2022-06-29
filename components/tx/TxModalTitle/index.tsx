@@ -1,19 +1,19 @@
-import { Typography } from '@mui/material'
+import { DialogTitle } from '@mui/material'
 import { ReactElement, ReactNode } from 'react'
 
 const TxModalTitle = ({ children }: { children: ReactNode }): ReactElement => {
   return (
-    <Typography
-      variant="h4"
+    <DialogTitle
       sx={{
-        borderBottom: ({ palette }) => `2px solid ${palette.divider}`,
+        marginY: -1,
         marginX: -3,
+        paddingY: 0,
         paddingX: 3,
         paddingBottom: 2,
       }}
     >
       {children}
-    </Typography>
+    </DialogTitle>
   )
 }
 
