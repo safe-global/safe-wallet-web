@@ -155,6 +155,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                   sx={({ palette }) => ({
                     color: palette.black[400],
                     mt: '8px',
+                    mb: '8px',
                   })}
                   display="inline"
                 >
