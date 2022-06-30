@@ -24,6 +24,8 @@ import { validateAddress } from '@/utils/validation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import { useCurrentChain } from '@/hooks/useChains'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 type Props = {
   params: CreateSafeFormData
@@ -34,6 +36,7 @@ type Props = {
 const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
   const ethersProvider = useWeb3()
   const wallet = useWallet()
+  const currentChain = useCurrentChain()
 
   const defaultOwner: Owner = {
     name: wallet?.ens || '',
@@ -69,13 +72,24 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
     if (owners[index].name || !ethersProvider) return
 
     setValue(`owners.${index}.resolving`, true)
-    const ensName = await ethersProvider.lookupAddress(event.target.value)
-    update(index, { name: ensName || '', address: event.target.value, resolving: false })
+    const { address } = parsePrefixedAddress(event.target.value)
+    const ensName = await ethersProvider.lookupAddress(address)
+    update(index, { name: ensName || '', address, resolving: false })
+  }
+
+  const onFormSubmit = (data: CreateSafeFormData) => {
+    onSubmit({
+      ...data,
+      owners: data.owners.map((owner) => ({
+        ...owner,
+        address: parsePrefixedAddress(owner.address).address,
+      })),
+    })
   }
 
   return (
     <Paper>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onFormSubmit)}>
         <Box padding={3}>
           <Typography mb={2}>
             Your Safe will have one or more owners. We have prefilled the first owner with your connected wallet
@@ -100,7 +114,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
         <Box padding={3}>
           {fields.map((field, index) => {
             const addressRegister = register(`owners.${index}.address`, {
-              validate: validateAddress,
+              validate: validateAddress(currentChain?.shortName),
               required: true,
             })
             return (

@@ -11,6 +11,8 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import TxModalTitle from '../../TxModalTitle'
 import AddressBookInput from '@/components/common/AddressBookInput'
+import { useCurrentChain } from '@/hooks/useChains'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 export type SendAssetsFormData = {
   recipient: string
@@ -53,6 +55,7 @@ export const SendFromBlock = (): ReactElement => {
 
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
   const { balances } = useBalances()
+  const currentChain = useCurrentChain()
 
   const {
     register,
@@ -69,8 +72,16 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
 
+  // On submit, pass an unprefixed address
+  const onFormSubmit = (data: SendAssetsFormData) => {
+    onSubmit({
+      ...data,
+      recipient: parsePrefixedAddress(data.recipient).address,
+    })
+  }
+
   return (
-    <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
+    <form className={css.container} onSubmit={handleSubmit(onFormSubmit)}>
       <TxModalTitle>Send funds</TxModalTitle>
 
       <SendFromBlock />
@@ -82,7 +93,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
           error={errors.recipient}
           textFieldProps={{
             ...register('recipient', {
-              validate: validateAddress,
+              validate: validateAddress(currentChain?.shortName),
               required: true,
             }),
           }}

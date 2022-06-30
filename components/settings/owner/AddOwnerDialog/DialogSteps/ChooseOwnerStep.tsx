@@ -1,11 +1,13 @@
+import { useForm } from 'react-hook-form'
+import { TextField, Button, Typography, FormControl, Box } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { useCurrentChain } from '@/hooks/useChains'
 import { uniqueAddress, addressIsNotCurrentSafe, validateAddress } from '@/utils/validation'
-import { TextField, Button, Typography, FormControl, Box } from '@mui/material'
-import { useForm } from 'react-hook-form'
 import TxModalTitle from '@/components/tx/TxModalTitle'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 type ChooseOwnerFormData = {
   ownerName?: string
@@ -20,6 +22,7 @@ export const ChooseOwnerStep = ({
   onSubmit: (data: ChangeOwnerData) => void
 }) => {
   const { safe } = useSafeInfo()
+  const currentChain = useCurrentChain()
   const { removedOwner, newOwner } = data
   const owners = safe?.owners
 
@@ -39,11 +42,12 @@ export const ChooseOwnerStep = ({
   })
 
   const onSubmitHandler = (formData: ChooseOwnerFormData) => {
-    onSubmit({ ...data, newOwner: { address: formData.ownerAddress, name: formData.ownerName } })
+    const { address } = parsePrefixedAddress(formData.ownerAddress)
+    onSubmit({ ...data, newOwner: { address, name: formData.ownerName } })
   }
 
   const combinedValidate = (address: string) =>
-    [validateAddress, notAlreadyOwner, notCurrentSafe]
+    [validateAddress(currentChain?.shortName), notAlreadyOwner, notCurrentSafe]
       .map((validate) => validate(address))
       .filter(Boolean)
       .find(() => true)
