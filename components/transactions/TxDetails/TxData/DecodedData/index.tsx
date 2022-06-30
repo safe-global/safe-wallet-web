@@ -1,7 +1,10 @@
 import { ReactElement } from 'react'
 import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isMultisendTxInfo } from '@/utils/transaction-guards'
-import { Multisend } from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import { isCustomTxInfo, isMultisendTxInfo } from '@/utils/transaction-guards'
+import { MethodDetails, Multisend } from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import { InfoDetails } from '@/components/transactions/TxDetails/TxData/SettingsChange'
+import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
+import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 
 interface Props {
   txData: TransactionDetails['txData']
@@ -14,12 +17,46 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
     return null
   }
 
+  // When not receiving decoded data, display it raw tx data
+  if (!txData.dataDecoded) {
+    if (!txData.hexData) {
+      return null
+    }
+
+    return (
+      <>
+        <InfoDetails title="Interact with:">
+          <AddressInfo
+            address={txData.to.value}
+            name={isCustomTxInfo(txInfo) ? txInfo.to.name : undefined}
+            avatarUrl={isCustomTxInfo(txInfo) ? txInfo.to.logoUri : undefined}
+          />
+        </InfoDetails>
+        <HexEncodedData title="Data (hex encoded)" hexData={txData.hexData} />
+      </>
+    )
+  }
+
   if (isMultisendTxInfo(txInfo)) {
     return <Multisend txData={txData} />
   }
 
   // TODO: we render the decoded data
   return <></>
+
+  // we render the decoded data
+  return (
+    <>
+      <InfoDetails title="Interact with:">
+        <AddressInfo
+          address={txData.to.value}
+          name={isCustomTxInfo(txInfo) ? txInfo.to.name : undefined}
+          avatarUrl={isCustomTxInfo(txInfo) ? txInfo.to.logoUri : undefined}
+        />
+      </InfoDetails>
+      <MethodDetails data={txData.dataDecoded} />
+    </>
+  )
 }
 
 export default DecodedData

@@ -21,7 +21,7 @@ export const generateDataRowValue = (
       return (
         <div className={css.inline}>
           {/* TODO: missing the chain prefix */}
-          <Typography>{shortenAddress(value, 8)}</Typography>
+          <Typography variant="body2">{shortenAddress(value, 8)}</Typography>
           {/* TODO: missing copy button */}
           {/* TODO: missing block explorer button */}
         </div>
@@ -44,7 +44,7 @@ export const generateDataRowValue = (
     case 'bytes':
       return <HexEncodedData limit={60} hexData={value} />
     default:
-      return <Typography>{value}</Typography>
+      return <Typography variant="body2">{value}</Typography>
   }
 }
 
