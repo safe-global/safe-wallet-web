@@ -1,19 +1,27 @@
+import { useState } from 'react'
 import type { NextPage } from 'next'
 import TxList from '@/components/transactions/TxList'
-import { setPageUrl } from '@/store/txHistorySlice'
 import useTxHistory from '@/hooks/useTxHistory'
 import Pagination from '@/components/transactions/Pagination'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 
 const History: NextPage = () => {
-  const { page } = useTxHistory()
+  const [pageUrl, setPageUrl] = useState<string | undefined>()
+  const { page, loading } = useTxHistory(pageUrl)
 
   return (
     <main>
-      <h2>Transaction History</h2>
+      <h2>Transaction history</h2>
 
-      <Pagination useTxns={useTxHistory} setPageUrl={setPageUrl} />
+      <Pagination page={pageUrl} nextPage={page?.next} prevPage={page?.previous} onPageChange={setPageUrl} />
 
-      <TxList items={page.results} />
+      {loading ? (
+        'Loading...'
+      ) : !page ? (
+        <ErrorMessage>Error loading the history</ErrorMessage>
+      ) : (
+        <TxList items={page?.results || []} />
+      )}
     </main>
   )
 }

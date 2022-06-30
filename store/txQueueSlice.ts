@@ -6,36 +6,28 @@ import { isMultisigExecutionInfo, isTransaction } from '@/utils/transaction-guar
 
 interface TxQueueState extends Loadable {
   page: TransactionListPage
-  pageUrl?: string
 }
 
 const initialState: TxQueueState = {
-  error: undefined,
   loading: true,
   page: {
     results: [],
     next: '',
     previous: '',
   },
-  pageUrl: '',
 }
 
 export const txQueueSlice = createSlice({
   name: 'txQueue',
   initialState,
   reducers: {
-    setQueuePage: (state, action: PayloadAction<TransactionListPage | undefined>) => {
-      // @ts-ignore: Type instantiation is excessively deep and possibly infinite.
-      state.page = action.payload || initialState.page
-    },
-
-    setPageUrl: (state, action: PayloadAction<string | undefined>) => {
-      state.pageUrl = action.payload
+    setQueue: (_, action: PayloadAction<TxQueueState | undefined>) => {
+      return action.payload || initialState
     },
   },
 })
 
-export const { setQueuePage, setPageUrl } = txQueueSlice.actions
+export const { setQueue } = txQueueSlice.actions
 
 export const selectTxQueue = (state: RootState): TxQueueState => {
   return state[txQueueSlice.name]
