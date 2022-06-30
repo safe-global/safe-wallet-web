@@ -39,6 +39,10 @@ export const shortenAddress = (address: string, length = 4): string => {
   return `${address.slice(0, length + 2)}...${address.slice(-length)}`
 }
 
+export const shortenText = (text: string, length = 10, separator = '...'): string => {
+  return `${text.slice(0, length)}${separator}`
+}
+
 export const dateString = (date: number) => {
   const formatterOptions: Intl.DateTimeFormatOptions = {
     month: 'numeric',
@@ -49,4 +53,11 @@ export const dateString = (date: number) => {
     second: 'numeric',
   }
   return new Intl.DateTimeFormat(undefined, formatterOptions).format(new Date(date))
+}
+
+export const camelCaseToSpaces = (str: string): string => {
+  return str
+    .replace(/([A-Z][a-z0-9]+)/g, ' $1 ')
+    .replace(/\s{2}/g, ' ')
+    .trim()
 }

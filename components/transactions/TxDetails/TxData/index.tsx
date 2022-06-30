@@ -1,10 +1,17 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import { TransferTx } from '@/components/transactions/TxInfo'
-import { isSettingsChangeTxInfo, isTransferTxInfo } from '@/utils/transaction-guards'
+import {
+  isCancellationTxInfo,
+  isMultisigExecutionDetails,
+  isSettingsChangeTxInfo,
+  isTransferTxInfo,
+} from '@/utils/transaction-guards'
 import { useCurrentChain } from '@/hooks/useChains'
 import { TransactionDetails, Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { type ReactElement } from 'react'
+import RejectionTxInfo from '@/components/transactions/TxDetails/TxData/Rejection'
+import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 
 export const AddressInfo = ({
   name,
@@ -34,7 +41,7 @@ const TransferTxInfoSummary = ({ txInfo }: { txInfo: Transfer }) => {
   const { direction } = txInfo
   return (
     <span>
-      {/* TODO: copy should be 'Send' if is a pending transaction */}
+      {/* TODO: copy should be 'Send' if is a queued tx */}
       {direction === TransferDirection.INCOMING ? 'Received' : 'Sent'}{' '}
       <b>
         <TransferTx info={txInfo} withLogo={false} omitSign />
@@ -63,9 +70,11 @@ const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement 
   if (isSettingsChangeTxInfo(txInfo)) {
     return <SettingsChangeTxInfo settingsInfo={txInfo.settingsInfo} />
   }
+  if (isCancellationTxInfo(txInfo) && isMultisigExecutionDetails(txDetails.detailedExecutionInfo)) {
+    return <RejectionTxInfo nonce={txDetails.detailedExecutionInfo?.nonce} isTxExecuted={!!txDetails.executedAt} />
+  }
 
-  // TODO: handle missing TxInfo types
-  return <></>
+  return <DecodedData txData={txDetails.txData} txInfo={txDetails.txInfo}></DecodedData>
 }
 
 export default TxData

@@ -3,13 +3,14 @@ import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow
 import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { dateString, shortenAddress } from '@/utils/formatters'
-import { Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
 import css from './styles.module.css'
+import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
+import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 
-export const NOT_AVAILABLE = 'n/a'
-
-const generateDataRowValue = (
+// TODO: move this function out of this file
+export const generateDataRowValue = (
   value?: string | null,
   type?: 'hash' | 'rawData' | 'address' | 'bytes',
   hasExplorer?: boolean,
@@ -20,7 +21,7 @@ const generateDataRowValue = (
       return (
         <div className={css.inline}>
           {/* TODO: missing the chain prefix */}
-          <p>{shortenAddress(value, 8)}</p>
+          <Typography>{shortenAddress(value, 8)}</Typography>
           {/* TODO: missing copy button */}
           {/* TODO: missing block explorer button */}
         </div>
@@ -40,10 +41,10 @@ const generateDataRowValue = (
           {/* TODO: missing copy button */}
         </div>
       )
-    // case 'bytes':
-    //   return <HexEncodedData limit={60} hexData={value} />
+    case 'bytes':
+      return <HexEncodedData limit={60} hexData={value} />
     default:
-      return null
+      return <Typography>{value}</Typography>
   }
 }
 
@@ -77,15 +78,15 @@ const Summary = ({ txDetails }: Props): ReactElement => {
       {/* Advanced TxData */}
       {txData && (
         <>
-          <button className={css.buttonLink} onClick={toggleExpanded}>
+          <Button className={css.buttonExpand} disableRipple onClick={toggleExpanded}>
             <Typography
               // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-              sx={({ palette }) => ({ color: palette.primary[400], textDecoration: 'underline' })}
+              sx={({ palette }) => ({ color: palette.primary[400], textDecoration: 'underline', cursor: 'pointer' })}
               variant="body1"
             >
               Advanced Details
             </Typography>
-          </button>
+          </Button>
           <div className={`${css.collapsibleSection}${expanded ? 'Expanded' : ''}`}>
             <TxDataRow title="Operation:">
               {`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}

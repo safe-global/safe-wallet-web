@@ -1,7 +1,6 @@
 import { type ReactElement } from 'react'
 import {
   Transfer,
-  SettingsChange,
   Custom,
   Creation,
   TransactionTokenType,
@@ -9,7 +8,7 @@ import {
   TransferDirection,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
-import { isCreationTxInfo, isCustomTxInfo, isSettingsChangeTxInfo, isTransferTxInfo } from '@/utils/transaction-guards'
+import { isCreationTxInfo, isCustomTxInfo, isTransferTxInfo } from '@/utils/transaction-guards'
 import { shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 
@@ -51,11 +50,6 @@ export const TransferTx = ({
   }
 }
 
-// TODO: ask in the PR if should show anything
-const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
-  return <>{info.settingsInfo?.type}</>
-}
-
 const CustomTx = ({ info }: { info: Custom }): ReactElement => {
   return <>{info.methodName}</>
 }
@@ -67,9 +61,6 @@ const CreationTx = ({ info }: { info: Creation }): ReactElement => {
 const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => {
   if (isTransferTxInfo(info)) {
     return <TransferTx info={info} />
-  }
-  if (isSettingsChangeTxInfo(info)) {
-    return <SettingsChangeTx info={info} />
   }
   if (isCustomTxInfo(info)) {
     return <CustomTx info={info} />

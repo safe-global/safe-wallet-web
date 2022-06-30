@@ -37,3 +37,19 @@
   background: white;
   border-bottom-right-radius: 8px;
 }
+
+.noPadding {
+  padding: 0;
+}
+
+.txSummary.multisend {
+  border-bottom-left-radius: 0;
+}
+
+.txData.multisend {
+  border-bottom-left-radius: 8px;
+}
+
+.txData.multisend:last-child {
+  border-bottom-left-radius: 8px;
+}

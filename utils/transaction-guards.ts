@@ -117,3 +117,19 @@ export const isExecutable = (txSummary: TransactionSummary, walletAddress: strin
     (confirmationsSubmitted === confirmationsRequired - 1 && isSignableBy(txSummary, walletAddress))
   )
 }
+
+// ? should stay in this file?
+enum SPENDING_LIMIT_METHODS_NAMES {
+  ADD_DELEGATE = 'addDelegate',
+  SET_ALLOWANCE = 'setAllowance',
+  EXECUTE_ALLOWANCE_TRANSFER = 'executeAllowanceTransfer',
+  DELETE_ALLOWANCE = 'deleteAllowance',
+}
+
+export const isSetAllowance = (method?: string): boolean => {
+  return method === SPENDING_LIMIT_METHODS_NAMES.SET_ALLOWANCE
+}
+
+export const isDeleteAllowance = (method?: string): boolean => {
+  return method === SPENDING_LIMIT_METHODS_NAMES.DELETE_ALLOWANCE
+}
