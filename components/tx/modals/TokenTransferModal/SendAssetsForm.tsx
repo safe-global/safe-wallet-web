@@ -1,23 +1,12 @@
 import { ReactElement } from 'react'
-import {
-  Box,
-  Button,
-  createFilterOptions,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
-import { formatDecimals, toDecimals } from '@/utils/formatters'
-import { validateAddress } from '@/utils/validation'
+import { formatDecimals } from '@/utils/formatters'
+import { validateAddress, validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
-import useAddressBook from '@/hooks/useAddressBook'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import TxModalTitle from '../../TxModalTitle'
@@ -33,10 +22,6 @@ type SendAssetsFormProps = {
   formData?: SendAssetsFormData
   onSubmit: (formData: SendAssetsFormData) => void
 }
-
-const abFilterOptions = createFilterOptions({
-  stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
-})
 
 export const SendFromBlock = (): ReactElement => {
   const address = useSafeAddress()
@@ -68,12 +53,6 @@ export const SendFromBlock = (): ReactElement => {
 
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
   const { balances } = useBalances()
-  const addressBook = useAddressBook()
-
-  const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
-    label: address,
-    name,
-  }))
 
   const {
     register,
@@ -84,24 +63,11 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     defaultValues: formData,
   })
 
-  const validateAmount = (amount: string) => {
-    const tokenAddress = getValues('tokenAddress')
-    const token = tokenAddress && balances.items.find((item) => item.tokenInfo.address === tokenAddress)
-
-    if (!token) return
-
-    if (isNaN(Number(amount))) {
-      return 'The amount must be a number'
-    }
-
-    if (parseFloat(amount) <= 0) {
-      return 'The amount must be greater than 0'
-    }
-
-    if (toDecimals(amount, token.tokenInfo.decimals).gt(token.balance)) {
-      return `Maximum value is ${formatDecimals(token.balance, token.tokenInfo.decimals)}`
-    }
-  }
+  // Selected token
+  const tokenAddress = getValues('tokenAddress')
+  const selectedToken = tokenAddress
+    ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
+    : undefined
 
   return (
     <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
@@ -146,7 +112,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
           label={errors.amount?.message || 'Amount'}
           error={!!errors.amount}
           autoComplete="off"
-          {...register('amount', { required: true, validate: validateAmount })}
+          {...register('amount', { required: true, validate: (val) => validateTokenAmount(val, selectedToken) })}
         />
       </FormControl>
 
