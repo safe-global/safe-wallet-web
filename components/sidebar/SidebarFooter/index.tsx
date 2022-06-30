@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from 'react'
+import { ReactElement, useCallback, useEffect } from 'react'
 
 import {
   SidebarList,
@@ -6,19 +6,34 @@ import {
   SidebarListItemIcon,
   SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
-import { BEAMER_SELECTOR, loadBeamer } from '@/services/beamer'
+import { BEAMER_SELECTOR, isBeamerLoaded, loadBeamer } from '@/services/beamer'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { openCookiesBanner, selectCookies, SUPPORT_COOKIE } from '@/store/cookiesSlice'
 
 const WHATS_NEW_PATH = 'https://help.gnosis-safe.io/en/'
 
 const SidebarFooter = (): ReactElement => {
+  const dispatch = useAppDispatch()
+  const { consent } = useAppSelector(selectCookies)
+
+  const hasBeamerConsent = useCallback(() => consent[SUPPORT_COOKIE], [consent])
+
   useEffect(() => {
-    // TODO: Based on cookies, (un-)load Beamer
-    loadBeamer()
-  }, [])
+    // Initialise Beamer when consent was previously given
+    if (hasBeamerConsent() && !isBeamerLoaded()) {
+      loadBeamer()
+    }
+  }, [hasBeamerConsent])
+
+  const handleBeamer = () => {
+    if (!hasBeamerConsent()) {
+      dispatch(openCookiesBanner({ consentWarning: 'supportAndCommunity' }))
+    }
+  }
 
   return (
     <SidebarList>
-      <SidebarListItemButton id={BEAMER_SELECTOR}>
+      <SidebarListItemButton id={BEAMER_SELECTOR} onClick={handleBeamer}>
         <SidebarListItemIcon>
           <img src="/images/sidebar/whats-new.svg" alt="What's New" height="16px" width="16px" />
         </SidebarListItemIcon>

@@ -1,10 +1,7 @@
 import { logError, Errors } from '@/services/exceptions'
 
 class Cookies {
-  public get(key: string): unknown | undefined {
-    if (typeof window === 'undefined') {
-      return
-    }
+  public readonly get = <T>(key: string): T | undefined => {
     const name = `${encodeURIComponent(key)}=`
 
     const startIndex = document.cookie.indexOf(name)
@@ -29,11 +26,11 @@ class Cookies {
     }
   }
 
-  public set<T>(
+  public readonly set = <T>(
     key: string,
     value: string | T,
     options?: { expires?: Date; path?: string; domain?: string; secure?: boolean },
-  ): void {
+  ): void => {
     const data = JSON.stringify(value)
 
     let cookie = `${encodeURIComponent(key)}=${encodeURIComponent(data)}`
@@ -57,7 +54,7 @@ class Cookies {
     document.cookie = cookie
   }
 
-  public remove(name: string): void {
+  public readonly remove = (name: string): void => {
     this.set(name, '', { expires: new Date(0) })
   }
 }
