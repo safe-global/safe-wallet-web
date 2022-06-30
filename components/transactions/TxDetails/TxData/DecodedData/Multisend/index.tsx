@@ -70,7 +70,7 @@ export const Multisend = ({ txData }: Props): ReactElement | null => {
         const name = addressInfo?.name || undefined
         const avatarUrl = addressInfo?.logoUri || undefined
 
-        const title = `Interact with${Number(amount) === 0 && ` (and send ${amount} ${symbol} to)`}:`
+        const title = `Interact with${Number(amount) !== 0 ? ` (and send ${amount} ${symbol} to)` : ''}:`
         return (
           <MultisendTxsDecoded
             key={`${data ?? to}-${index}`}
