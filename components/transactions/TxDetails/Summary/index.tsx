@@ -44,7 +44,7 @@ export const generateDataRowValue = (
     case 'bytes':
       return <HexEncodedData limit={60} hexData={value} />
     default:
-      return <>{value}</>
+      return <Typography>{value}</Typography>
   }
 }
 
@@ -81,7 +81,7 @@ const Summary = ({ txDetails }: Props): ReactElement => {
           <button className={css.buttonLink} onClick={toggleExpanded}>
             <Typography
               // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-              sx={({ palette }) => ({ color: palette.primary[400], textDecoration: 'underline' })}
+              sx={({ palette }) => ({ color: palette.primary[400], textDecoration: 'underline', cursor: 'pointer' })}
               variant="body1"
             >
               Advanced Details

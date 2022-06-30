@@ -1,5 +1,5 @@
 import { shortenText } from '@/utils/formatters'
-import { Box, Link, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { ReactElement, useState } from 'react'
 import css from './styles.module.css'
 
@@ -13,6 +13,10 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
   const [showTxData, setShowTxData] = useState(false)
   const showExpandBtn = hexData.length > limit
 
+  const toggleExpanded = () => {
+    setShowTxData((val) => !val)
+  }
+
   return (
     <Box data-testid="tx-hexData" className={css.encodedData}>
       {title && (
@@ -24,12 +28,7 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
         {showExpandBtn ? (
           <>
             {showTxData ? hexData : shortenText(hexData, 25)}{' '}
-            <Link
-              aria-label={`${showTxData ? 'Hide' : 'Show'} transaction details`}
-              onClick={() => setShowTxData(false)}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
+            <button className={css.buttonLink} onClick={toggleExpanded}>
               <Typography
                 className={css.linkText}
                 sx={({ palette }) => ({
@@ -40,7 +39,7 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
               >
                 Show {showTxData ? 'Less' : 'More'}
               </Typography>
-            </Link>
+            </button>
           </>
         ) : (
           hexData
