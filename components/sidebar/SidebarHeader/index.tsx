@@ -2,7 +2,6 @@ import type { ReactElement } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
-import useAddressBook from '@/hooks/useAddressBook'
 
 import { shortenAddress } from '@/utils/formatters'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -26,28 +25,10 @@ const HeaderIconButton = ({ children }: Omit<IconButtonProps, 'className' | 'dis
   </IconButton>
 )
 
-// TODO:
-// var opacity = 1
-// var change = -0.1
-// var blinky = document.getElementById('blinky')
-
-// setInterval(function () {
-//   blinky.style.color = 'hsla(210, 100%, 50%, ' + opacity + ')'
-//   if (opacity < -0.9) {
-//     change = 0.1
-//     opacity = 0
-//   } else if (opacity > 0.9) {
-//     change = -0.1
-//   }
-//   opacity = opacity + change
-// }, 100)
-
 const SafeHeader = (): ReactElement => {
   const { safe, loading } = useSafeInfo()
-  const addressBook = useAddressBook()
 
   const address = safe?.address.value || ''
-  const name = addressBook?.[address] || ''
 
   const { threshold, owners } = safe || {}
 

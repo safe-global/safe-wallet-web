@@ -27,7 +27,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     label: 'Home',
-    icon: '/images/sidebar/home.svg',
+    icon: '/images/sidebar/home.svg', // TODO: Include thick icon from design
     href: AppRoutes.safe.home,
   },
   {
@@ -160,9 +160,8 @@ const Navigation = (): ReactElement => {
                 })}
               >
                 {item.items.map((subItem) => (
-                  <Link href={{ pathname: subItem.href, query: router.query }} passHref>
+                  <Link href={{ pathname: subItem.href, query: router.query }} passHref key={subItem.href}>
                     <ListItemButton
-                      key={subItem.href}
                       onClick={() => toggleOpen(subItem)}
                       selected={isSelected(subItem.href)}
                       sx={({ palette }) => ({

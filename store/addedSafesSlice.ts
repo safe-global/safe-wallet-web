@@ -31,7 +31,12 @@ export const addedSafesSlice = createSlice({
       const { chainId, address, owners, threshold } = payload.safe
 
       state[chainId] ??= {}
-      state[chainId][address.value] = { owners, threshold }
+      state[chainId][address.value] = {
+        // Keep balance
+        ...(state[chainId][address.value] ?? {}),
+        owners,
+        threshold,
+      }
     },
     updateAddedSafeBalance: (
       state,

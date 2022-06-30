@@ -35,8 +35,7 @@ const SafeListItemSecondaryAction = ({
           className={css.addButton}
           sx={({ palette }) => ({
             '&:hover': {
-              // @ts-expect-error type '200' can't be used to index type 'PaletteColor'
-              backgroundColor: palette.primary[200],
+              backgroundColor: palette.primaryGreen[200],
             },
           })}
           size="small"

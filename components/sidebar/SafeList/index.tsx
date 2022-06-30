@@ -75,8 +75,8 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
   const addedSafes = useAppSelector(selectAllAddedSafes)
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
-  const toggleOpen = (chainId: string) => {
-    setOpen((prev) => ({ [chainId]: !prev[chainId] }))
+  const toggleOpen = (chainId: string, open: boolean) => {
+    setOpen((prev) => ({ ...prev, [chainId]: open }))
   }
 
   return (
@@ -117,7 +117,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
 
         return (
           <Fragment key={chain.chainName}>
-            <div className={css.chainHeader}>
+            <List className={css.list}>
               <Typography
                 variant="overline"
                 className={css.chainDivider}
@@ -128,18 +128,14 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
               >
                 {chain.chainName}
               </Typography>
-
               {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
-                <Typography paddingTop="22px" variant="body2" sx={({ palette }) => ({ color: palette.black[400] })}>
+                <Typography variant="body2" sx={({ palette }) => ({ color: palette.black[400] })}>
                   <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
                     Create or add
                   </Link>{' '}
                   an existing Safe on this network
                 </Typography>
               )}
-            </div>
-
-            <List className={css.list}>
               {addedSafeEntriesOnChain.map(([address, { threshold, owners }]) => (
                 <SafeListItem
                   key={address}
@@ -153,15 +149,17 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
               ))}
             </List>
             {ownedSafesOnChain.length > 0 && (
-              <div onClick={() => toggleOpen(chain.chainId)} className={css.ownedLabel}>
+              <div onClick={() => toggleOpen(chain.chainId, !isOpen)} className={css.ownedLabel}>
                 <Typography
                   variant="body2"
-                  sx={({ palette }) => ({ color: palette.black[400] })}
+                  sx={({ palette }) => ({
+                    color: palette.black[400],
+                    mt: '8px',
+                  })}
                   display="inline"
-                  paddingTop={!addedSafeEntriesOnChain.length ? '22px' : undefined}
                 >
                   Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
-                  <IconButton sx={({ palette }) => ({ fill: palette.black[400] })} disableRipple>
+                  <IconButton sx={({ palette }) => ({ fill: palette.black[400], py: 0 })} disableRipple>
                     {isOpen ? <ExpandLess /> : <ExpandMore />}
                   </IconButton>
                 </Typography>

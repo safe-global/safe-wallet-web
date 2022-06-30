@@ -70,10 +70,7 @@ const SafeListItem = ({
             <SafeListContextMenu address={address} chainId={chainId} />
           </Box>
         }
-        sx={{
-          margin: '12px 12px',
-          width: 'unset',
-        }}
+        sx={{ my: '8px', px: '8px' }}
       >
         <ListItemButton
           key={address}
@@ -87,6 +84,9 @@ const SafeListItem = ({
             '&.Mui-selected': {
               backgroundColor: palette.gray[300],
               paddingLeft: '16px',
+            },
+            '&:hover': {
+              backgroundColor: palette.primaryGreen[200],
             },
           })}
           ref={safeRef}
