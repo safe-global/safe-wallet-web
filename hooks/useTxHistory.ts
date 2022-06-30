@@ -3,33 +3,36 @@ import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { Errors, logError } from '@/services/exceptions'
-import { selectTxHistory, setHistoryPage, setPageUrl } from '@/store/txHistorySlice'
+import { selectTxHistory, setHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
 
 export const useInitTxHistory = (): void => {
   const { safe } = useSafeInfo()
-  const { pageUrl } = useTxHistory()
   const dispatch = useAppDispatch()
   const { chainId, txHistoryTag } = safe || {}
   const address = safe?.address.value
 
-  // Re-fetch assets when pageUrl, chainId/address, or txHistoryTag change
-  const [data, error] = useAsync<TransactionListPage | undefined>(async () => {
+  // Re-fetch assets when chainId/address, or txHistoryTag change
+  const [page, error] = useAsync<TransactionListPage | undefined>(async () => {
     if (chainId && address) {
-      return getTransactionHistory(chainId, address, pageUrl)
+      return getTransactionHistory(chainId, address)
     }
-  }, [txHistoryTag, chainId, address, pageUrl])
+  }, [txHistoryTag, chainId, address])
 
   // Clear the old TxHistory when Safe address is changed
   useEffect(() => {
-    dispatch(setHistoryPage(undefined))
-    dispatch(setPageUrl(undefined))
+    dispatch(setHistory(undefined))
   }, [address, chainId, dispatch])
 
   // Save the TxHistory in the store
   useEffect(() => {
-    if (data) dispatch(setHistoryPage(data))
-  }, [data, dispatch])
+    if (page) {
+      dispatch(setHistory({
+        page,
+        loading: false,
+      }))
+    }
+  }, [page, dispatch])
 
   // Log errors
   useEffect(() => {
@@ -38,9 +41,25 @@ export const useInitTxHistory = (): void => {
   }, [error])
 }
 
-const useTxHistory = () => {
-  const txHistory = useAppSelector(selectTxHistory)
-  return txHistory
+const useTxHistory = (pageUrl?: string): {
+  page?: TransactionListPage,
+  error?: Error,
+  loading: boolean,
+ } => {
+  const { safe } = useSafeInfo()
+  const [ chainId, address ] = [ safe?.chainId, safe?.address.value ]
+
+  // If pageUrl is passed, load a new history page from the API
+  const [page, error, loading] = useAsync<TransactionListPage | undefined>(async () => {
+    if (!pageUrl || !chainId || !address) return
+    return getTransactionHistory(chainId, address, pageUrl)
+  }, [chainId, address, pageUrl])
+
+  // The latest page of the history is always in the store
+  const historyState = useAppSelector(selectTxHistory)
+
+  // Return the new page or the stored page
+  return pageUrl ? { page, error, loading } : historyState
 }
 
 export default useTxHistory
