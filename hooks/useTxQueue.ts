@@ -29,10 +29,12 @@ export const useInitTxQueue = (): void => {
   // Save the TxQueue in the store
   useEffect(() => {
     if (page) {
-      dispatch(setQueue({
-        page,
-        loading: false
-      }))
+      dispatch(
+        setQueue({
+          page,
+          loading: false,
+        }),
+      )
     }
   }, [page, dispatch])
 
@@ -50,13 +52,15 @@ export const useInitTxQueue = (): void => {
   }, [])
 }
 
-const useTxQueue = (pageUrl?: string): {
-  page?: TransactionListPage,
-  error?: Error,
-  loading: boolean,
- } => {
+const useTxQueue = (
+  pageUrl?: string,
+): {
+  page?: TransactionListPage
+  error?: Error
+  loading: boolean
+} => {
   const { safe } = useSafeInfo()
-  const [ chainId, address ] = [ safe?.chainId, safe?.address.value ]
+  const [chainId, address] = [safe?.chainId, safe?.address.value]
 
   // If pageUrl is passed, load a new queue page from the API
   const [page, error, loading] = useAsync<TransactionListPage | undefined>(async () => {

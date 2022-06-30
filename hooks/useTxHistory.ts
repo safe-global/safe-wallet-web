@@ -27,10 +27,12 @@ export const useInitTxHistory = (): void => {
   // Save the TxHistory in the store
   useEffect(() => {
     if (page) {
-      dispatch(setHistory({
-        page,
-        loading: false,
-      }))
+      dispatch(
+        setHistory({
+          page,
+          loading: false,
+        }),
+      )
     }
   }, [page, dispatch])
 
@@ -41,13 +43,15 @@ export const useInitTxHistory = (): void => {
   }, [error])
 }
 
-const useTxHistory = (pageUrl?: string): {
-  page?: TransactionListPage,
-  error?: Error,
-  loading: boolean,
- } => {
+const useTxHistory = (
+  pageUrl?: string,
+): {
+  page?: TransactionListPage
+  error?: Error
+  loading: boolean
+} => {
   const { safe } = useSafeInfo()
-  const [ chainId, address ] = [ safe?.chainId, safe?.address.value ]
+  const [chainId, address] = [safe?.chainId, safe?.address.value]
 
   // If pageUrl is passed, load a new history page from the API
   const [page, error, loading] = useAsync<TransactionListPage | undefined>(async () => {
