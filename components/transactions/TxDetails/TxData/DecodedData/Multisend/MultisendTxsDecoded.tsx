@@ -15,8 +15,8 @@ interface Props {
   txDetails: {
     title: string
     address: string
-    name?: string | undefined
-    avatarUrl?: string | undefined
+    name?: string
+    avatarUrl?: string
     dataDecoded: DataDecoded | null
     operation: Operation
   }
@@ -24,9 +24,8 @@ interface Props {
 
 const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props): ReactElement => {
   const isDelegateCall = txDetails.operation === Operation.DELEGATE
-  const transactionsValueDecoded = txDetails.dataDecoded
   const isSpendingLimitMethod =
-    isSetAllowance(transactionsValueDecoded?.method) || isDeleteAllowance(transactionsValueDecoded?.method)
+    isSetAllowance(txDetails.dataDecoded?.method) || isDeleteAllowance(txDetails.dataDecoded?.method)
 
   return (
     <Accordion
@@ -42,7 +41,7 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props
         },
         '&.Mui-expanded': { margin: 0 },
       })}
-      defaultExpanded={isDelegateCall || undefined}
+      defaultExpanded={isDelegateCall}
     >
       <AccordionSummary
         sx={{ '&.Mui-expanded': { minHeight: '48px' }, '& .MuiAccordionSummary-content.Mui-expanded': { margin: '0' } }}

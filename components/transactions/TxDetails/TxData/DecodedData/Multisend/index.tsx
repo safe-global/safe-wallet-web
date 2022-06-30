@@ -61,9 +61,9 @@ export const Multisend = ({ txData }: Props): ReactElement | null => {
         let details
         if (dataDecoded) {
           details = <MethodDetails data={dataDecoded} />
-        } else {
+        } else if (data) {
           // If data is not decoded in the backend response
-          details = data && <HexEncodedData title="Data (hex encoded)" hexData={data} />
+          details = <HexEncodedData title="Data (hex encoded)" hexData={data} />
         }
 
         const addressInfo = txData.addressInfoIndex?.[to]
