@@ -1,10 +1,9 @@
-import { useMemo, type ReactElement } from 'react'
+import React, { useMemo, type ReactElement } from 'react'
+import Box from '@mui/material/Box'
 
 import useBalances from '@/hooks/useBalances'
-import { Typography } from '@mui/material'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/sessionSlice'
-import React from 'react'
 
 const SidebarFiat = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
@@ -26,16 +25,14 @@ const SidebarFiat = (): ReactElement => {
 
   return (
     <>
-      <Typography variant="body1" display="inline">
-        {wholeNumber}
-      </Typography>
-      <Typography variant="body1" display="inline" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
+      {wholeNumber}
+      <Box display="inline" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
         {
           // Some currencies don't have decimals
           decimalSeparator && decimals ? `${decimalSeparator}${decimals}` : ''
         }{' '}
         {currency.toUpperCase()}
-      </Typography>
+      </Box>
     </>
   )
 }

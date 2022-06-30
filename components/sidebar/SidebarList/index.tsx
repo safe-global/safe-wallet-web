@@ -3,8 +3,7 @@ import List, { type ListProps } from '@mui/material/List'
 import ListItemButton, { type ListItemButtonProps } from '@mui/material/ListItemButton'
 import ListItemIcon, { type ListItemIconProps } from '@mui/material/ListItemIcon'
 import ListItemText, { type ListItemTextProps } from '@mui/material/ListItemText'
-import { useRouter } from 'next/router'
-import { type LinkProps } from 'next/link'
+import Link, { type LinkProps } from 'next/link'
 
 import css from './styles.module.css'
 
@@ -19,17 +18,8 @@ export const SidebarListItemButton = ({
   children,
   ...rest
 }: Omit<ListItemButtonProps, 'sx'> & { href?: LinkProps['href'] }): ReactElement => {
-  const router = useRouter()
-
-  const handleClick = () => {
-    if (href) {
-      router.push(href)
-    }
-  }
-
-  return (
+  const button = (
     <ListItemButton
-      onClick={handleClick}
       sx={({ palette }) => ({
         borderRadius: '6px',
         '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
@@ -37,7 +27,7 @@ export const SidebarListItemButton = ({
           img: {
             filter: rest.selected
               ? // #008C73 - palette.primary[400]
-                'invert(30%) sepia(41%) saturate(4854%) hue-rotate(155deg) brightness(92%) contrast(102%)'
+                'invert(33%) sepia(96%) saturate(625%) hue-rotate(127deg) brightness(99%) contrast(101%)'
               : undefined,
           },
         },
@@ -54,6 +44,14 @@ export const SidebarListItemButton = ({
     >
       {children}
     </ListItemButton>
+  )
+
+  return href ? (
+    <Link href={href} passHref>
+      {button}
+    </Link>
+  ) : (
+    button
   )
 }
 

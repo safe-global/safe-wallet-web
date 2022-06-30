@@ -20,6 +20,8 @@ const SidebarFooter = (): ReactElement => {
     <SidebarList>
       <SidebarListItemButton id={BEAMER_SELECTOR}>
         <SidebarListItemIcon>
+          {/* 
+          // TODO: Include thick icon from design */}
           <img src="/images/sidebar/whats-new.svg" alt="What's New" height="16px" width="16px" />
         </SidebarListItemIcon>
         <SidebarListItemText bold>What&apos;s New</SidebarListItemText>
