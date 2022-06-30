@@ -1,5 +1,5 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { AddressInput } from '@/components/common/AddressInput'
+import AddressBookInput from '@/components/common/AddressBookInput'
 import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { uniqueAddress, addressIsNotCurrentSafe, validateAddress } from '@/utils/validation'
@@ -71,7 +71,7 @@ export const ChooseOwnerStep = ({
         </FormControl>
 
         <FormControl>
-          <AddressInput
+          <AddressBookInput
             defaultValue={formData.ownerAddress}
             label="Owner address"
             error={errors.ownerAddress}

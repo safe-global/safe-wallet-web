@@ -5,6 +5,6 @@
   margin-bottom: 10px;
 }
 
-.container > *:first-child {
+.container > *:first-of-type {
   width: 6em;
 }

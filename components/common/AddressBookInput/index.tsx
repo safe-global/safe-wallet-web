@@ -9,7 +9,7 @@ const abFilterOptions = createFilterOptions({
 /**
  *  Temporary component until revamped safe components are done
  */
-export const AddressInput = ({
+const AddressBookInput = ({
   defaultValue,
   error,
   label,
@@ -47,3 +47,5 @@ export const AddressInput = ({
     />
   )
 }
+
+export default AddressBookInput
