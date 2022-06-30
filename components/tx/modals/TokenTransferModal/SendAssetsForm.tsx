@@ -1,6 +1,5 @@
 import { ReactElement } from 'react'
 import {
-  Autocomplete,
   Box,
   Button,
   createFilterOptions,
@@ -22,6 +21,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import TxModalTitle from '../../TxModalTitle'
+import AddressBookInput from '@/components/common/AddressBookInput'
 
 export type SendAssetsFormData = {
   recipient: string
@@ -110,31 +110,16 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
       <SendFromBlock />
 
       <FormControl fullWidth>
-        <Autocomplete
+        <AddressBookInput
           defaultValue={formData?.recipient}
-          freeSolo
-          disablePortal
-          options={addressBookEntries}
-          filterOptions={abFilterOptions}
-          renderOption={(props, option) => (
-            <Box component="li" {...props}>
-              {option.name}
-              <br />
-              {option.label}
-            </Box>
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              autoComplete="off"
-              label={errors.recipient?.message || 'Recipient'}
-              error={!!errors.recipient}
-              {...register('recipient', {
-                validate: validateAddress,
-                required: true,
-              })}
-            />
-          )}
+          label="Recipient"
+          error={errors.recipient}
+          textFieldProps={{
+            ...register('recipient', {
+              validate: validateAddress,
+              required: true,
+            }),
+          }}
         />
       </FormControl>
 
