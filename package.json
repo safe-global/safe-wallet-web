@@ -8,14 +8,15 @@
     "build": "next build",
     "lint": "tsc && next lint",
     "lint:fix": "yarn lint --fix",
-    "prettier": "prettier -w './**/*.{ts,tsx}'",
+    "prettier": "prettier -w './**/*.{ts,tsx,css}'",
     "test": "jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
     "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts"
   },
   "pre-push": [
-    "lint:fix"
+    "lint:fix",
+    "prettier"
   ],
   "dependencies": {
     "@emotion/cache": "^11.9.3",
