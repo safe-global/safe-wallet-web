@@ -11,7 +11,7 @@ export const validateAddress =
 
     if (prefix) {
       if (!chains[prefix]) {
-        return `Invalid hain prefix "${prefix}"`
+        return `Invalid chain prefix "${prefix}"`
       }
       if (prefix !== chainShortName) {
         return `"${prefix}" doesn't match the current chain`
@@ -31,16 +31,18 @@ export const validateAddress =
 
 export const uniqueAddress =
   (addresses: string[] = []) =>
-  (address?: string): string | undefined => {
+  (value: string): string | undefined => {
     const ADDRESS_REPEATED_ERROR = 'Address already added'
+    const { address } = parsePrefixedAddress(value)
     const addressExists = addresses.some((addressFromList) => sameAddress(addressFromList, address))
     return addressExists ? ADDRESS_REPEATED_ERROR : undefined
   }
 
 export const addressIsNotCurrentSafe =
   (safeAddress: string) =>
-  (address?: string): string | undefined => {
+  (value: string): string | undefined => {
     const OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = 'Cannot use Safe itself as owner.'
+    const { address } = parsePrefixedAddress(value)
     return sameAddress(safeAddress, address) ? OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR : undefined
   }
 
