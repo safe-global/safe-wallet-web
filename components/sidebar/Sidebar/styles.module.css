@@ -35,7 +35,7 @@
 }
 
 .drawerButton {
-  position: absolute;
+  position: absolute !important;
   z-index: 2;
   right: 0;
   transform: translateX(50%);
