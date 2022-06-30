@@ -1,5 +1,5 @@
 import { shortenText } from '@/utils/formatters'
-import { Box, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { ReactElement, useState } from 'react'
 import css from './styles.module.css'
 
@@ -21,30 +21,28 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
     <Box data-testid="tx-hexData" className={css.encodedData}>
       {title && (
         <Typography variant="body1">
-          <b>{title}:&nbsp;</b>
+          <b>{title}:</b>
         </Typography>
       )}
-      <Typography paragraph variant="body2" sx={{ whiteSpace: 'normal', margin: '0' }}>
-        {showExpandBtn ? (
-          <>
-            {showTxData ? hexData : shortenText(hexData, 25)}{' '}
-            <button className={css.buttonLink} onClick={toggleExpanded}>
-              <Typography
-                className={css.linkText}
-                sx={({ palette }) => ({
-                  // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-                  color: palette.primary[400],
-                })}
-                variant="body1"
-              >
-                Show {showTxData ? 'Less' : 'More'}
-              </Typography>
-            </button>
-          </>
-        ) : (
-          hexData
-        )}
-      </Typography>
+      {showExpandBtn ? (
+        <>
+          {showTxData ? hexData : shortenText(hexData, 25)}{' '}
+          <Button disableRipple onClick={toggleExpanded}>
+            <Typography
+              sx={({ palette }) => ({
+                // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
+                color: palette.primary[400],
+                textDecoration: 'underline',
+              })}
+              variant="body1"
+            >
+              Show {showTxData ? 'Less' : 'More'}
+            </Typography>
+          </Button>
+        </>
+      ) : (
+        <Typography>{hexData}</Typography>
+      )}
     </Box>
   )
 }
