@@ -1,11 +1,12 @@
 import { ReactElement } from 'react'
 import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isCustomTxInfo, isMultisendTxInfo, isSetAllowance } from '@/utils/transaction-guards'
+import { isCustomTxInfo, isDeleteAllowance, isMultisendTxInfo, isSetAllowance } from '@/utils/transaction-guards'
 import { MethodDetails, Multisend } from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import { InfoDetails } from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { SetAllowance } from '@/components/transactions/TxDetails/TxData/SpendingLimits/SetAllowance'
+import DeleteAllowance from '@/components/transactions/TxDetails/TxData/SpendingLimits/DeleteAllowance'
 
 interface Props {
   txData: TransactionDetails['txData']
@@ -46,10 +47,9 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
     return <SetAllowance txData={txData} txInfo={txInfo} />
   }
 
-  // // FixMe: this way won't scale well
-  // if (isDeleteAllowance(txData.dataDecoded.method)) {
-  //   return <DeleteSpendingLimitDetails txData={txData} txInfo={txInfo} />
-  // }
+  if (isDeleteAllowance(txData.dataDecoded.method) && isCustomTxInfo(txInfo)) {
+    return <DeleteAllowance txData={txData} txInfo={txInfo} />
+  }
 
   // we render the decoded data
   return (
