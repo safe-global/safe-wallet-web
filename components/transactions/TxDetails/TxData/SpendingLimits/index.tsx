@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { ReactElement, useMemo } from 'react'
 import { Custom, TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Typography } from '@mui/material'
 import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
@@ -17,7 +17,7 @@ type SpendingLimitsProps = {
   type: SpendingLimitMethods
 }
 
-export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps) => {
+export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): ReactElement => {
   const chain = useCurrentChain()
   const tokens = useAppSelector(selectTokens)
   const isAllowance = useMemo(() => isSetAllowance(type), [type])
