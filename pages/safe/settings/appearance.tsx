@@ -9,15 +9,12 @@ const Appearance: NextPage = () => {
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
 
-  const handleShowShortName = (_: ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    dispatch(setShowShortName(checked))
+  const handleToggle = (action: typeof setCopyShortName | typeof setDarkMode | typeof setShowShortName) => {
+    return (_: ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      dispatch(action(checked))
+    }
   }
-  const handleCopyShortName = (_: ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    dispatch(setCopyShortName(checked))
-  }
-  const handleDarkMode = (_: ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    dispatch(setDarkMode(checked))
-  }
+
   return (
     <main>
       <Typography variant="h2">Settings / Appearance</Typography>
@@ -31,17 +28,17 @@ const Appearance: NextPage = () => {
       </Typography>
       <FormGroup>
         <FormControlLabel
-          control={<Checkbox checked={settings.shortName.show} onChange={handleShowShortName} />}
-          label="Prepend addresses with chain prefix"
+          control={<Checkbox checked={settings.shortName.show} onChange={handleToggle(setShowShortName)} />}
+          label="Prepend chain prefix to addresses"
         />
         <FormControlLabel
-          control={<Checkbox checked={settings.shortName.copy} onChange={handleCopyShortName} />}
+          control={<Checkbox checked={settings.shortName.copy} onChange={handleToggle(setCopyShortName)} />}
           label="Copy addresses with chain prefix"
         />
       </FormGroup>
       <Typography variant="h4">Theme</Typography>
       <FormControlLabel
-        control={<Checkbox checked={settings.theme.darkMode} onChange={handleDarkMode} disabled />}
+        control={<Checkbox checked={settings.theme.darkMode} onChange={handleToggle(setDarkMode)} disabled />}
         label="Dark mode"
       />
     </main>

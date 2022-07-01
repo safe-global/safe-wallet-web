@@ -7,8 +7,9 @@ const initialState = {
     show: true,
     copy: true,
   },
+  // TODO:
   theme: {
-    darkMode: !!window?.matchMedia('(prefers-color-scheme: dark)')?.matches,
+    darkMode: false,
   },
 }
 
