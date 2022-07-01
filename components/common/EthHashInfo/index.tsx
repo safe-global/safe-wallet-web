@@ -37,7 +37,7 @@ const SRCEthHashInfo = ({
 
       <div>
         {props.name && <b>{props.name}</b>}
-        <Typography>
+        <Typography variant="body2">
           {prefix && <b>{prefix}:</b>}
           {shortAddress ? shortenAddress(address) : address}
         </Typography>
