@@ -5,8 +5,7 @@ import { MethodDetails, Multisend } from '@/components/transactions/TxDetails/Tx
 import { InfoDetails } from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { SetAllowance } from '@/components/transactions/TxDetails/TxData/SpendingLimits/SetAllowance'
-import DeleteAllowance from '@/components/transactions/TxDetails/TxData/SpendingLimits/DeleteAllowance'
+import { SpendingLimits } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 
 interface Props {
   txData: TransactionDetails['txData']
@@ -43,12 +42,10 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
     return <Multisend txData={txData} />
   }
 
-  if (isSetAllowance(txData.dataDecoded.method) && isCustomTxInfo(txInfo)) {
-    return <SetAllowance txData={txData} txInfo={txInfo} />
-  }
-
-  if (isDeleteAllowance(txData.dataDecoded.method) && isCustomTxInfo(txInfo)) {
-    return <DeleteAllowance txData={txData} txInfo={txInfo} />
+  const method = txData.dataDecoded?.method
+  const isSpendingLimitMethod = isSetAllowance(method) || isDeleteAllowance(method)
+  if (isSpendingLimitMethod && isCustomTxInfo(txInfo)) {
+    return <SpendingLimits txData={txData} txInfo={txInfo} type={method} />
   }
 
   // we render the decoded data

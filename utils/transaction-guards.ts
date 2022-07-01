@@ -118,7 +118,7 @@ export const isExecutable = (txSummary: TransactionSummary, walletAddress: strin
   )
 }
 
-// ? should stay in this file?
+// Spending limits
 enum SPENDING_LIMIT_METHODS_NAMES {
   ADD_DELEGATE = 'addDelegate',
   SET_ALLOWANCE = 'setAllowance',
@@ -126,10 +126,12 @@ enum SPENDING_LIMIT_METHODS_NAMES {
   DELETE_ALLOWANCE = 'deleteAllowance',
 }
 
-export const isSetAllowance = (method?: string): boolean => {
+export type SpendingLimitMethods = 'setAllowance' | 'deleteAllowance'
+
+export const isSetAllowance = (method?: string): method is SpendingLimitMethods => {
   return method === SPENDING_LIMIT_METHODS_NAMES.SET_ALLOWANCE
 }
 
-export const isDeleteAllowance = (method?: string): boolean => {
+export const isDeleteAllowance = (method?: string): method is SpendingLimitMethods => {
   return method === SPENDING_LIMIT_METHODS_NAMES.DELETE_ALLOWANCE
 }
