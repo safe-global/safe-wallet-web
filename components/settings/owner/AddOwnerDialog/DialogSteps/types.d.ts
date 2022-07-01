@@ -5,6 +5,9 @@ export interface ChangeOwnerData {
 }
 
 export interface OwnerData {
-  address: string
+  address: {
+    address: string
+    prefix?: string
+  }
   name?: string
 }

@@ -46,7 +46,7 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   // Format safeTx params
   const txParams = useMemo(() => {
     if (!address || !decimals) return
-    return createTokenTransferParams(params.recipient, params.amount, decimals, address)
+    return createTokenTransferParams(params.recipient.address, params.amount, decimals, address)
   }, [params, decimals, address])
 
   // Estimate safeTxGas

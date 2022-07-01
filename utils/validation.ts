@@ -4,7 +4,19 @@ import { parsePrefixedAddress, sameAddress } from './addresses'
 import { formatDecimals, toDecimals } from './formatters'
 import chains from '@/config/chains'
 
-export const validateAddress =
+export const validateAddress = (address: string) => {
+  const ADDRESS_RE = /^0x[0-9a-zA-Z]{40}$/
+
+  if (!ADDRESS_RE.test(address)) {
+    return 'Invalid address format'
+  }
+
+  if (!isAddress(address)) {
+    return 'Invalid address checksum'
+  }
+}
+
+export const validatePrefixedAddress =
   (chainShortName?: string) =>
   (value: string): string | undefined => {
     const { prefix, address } = parsePrefixedAddress(value)
@@ -18,15 +30,7 @@ export const validateAddress =
       }
     }
 
-    const ADDRESS_RE = /^0x[0-9a-zA-Z]{40}$/
-
-    if (!ADDRESS_RE.test(address)) {
-      return 'Invalid address format'
-    }
-
-    if (!isAddress(address)) {
-      return 'Invalid address checksum'
-    }
+    return validateAddress(address)
   }
 
 export const uniqueAddress =

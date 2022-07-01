@@ -10,7 +10,11 @@ import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 
 export type Owner = {
   name: string
-  address: string
+  address: {
+    address: string
+    prefix?: string
+    toString: () => string
+  }
   resolving: boolean
 }
 

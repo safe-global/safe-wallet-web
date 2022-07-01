@@ -1,21 +1,22 @@
 import { ReactElement } from 'react'
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
-import { useForm } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
 
 import css from './styles.module.css'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
 import { formatDecimals } from '@/utils/formatters'
-import { validateAddress, validateTokenAmount } from '@/utils/validation'
+import { validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import TxModalTitle from '../../TxModalTitle'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import { useCurrentChain } from '@/hooks/useChains'
-import { parsePrefixedAddress } from '@/utils/addresses'
 
 export type SendAssetsFormData = {
-  recipient: string
+  recipient: {
+    address: string
+    prefix: string
+  }
   tokenAddress: string
   amount: string
 }
@@ -55,16 +56,16 @@ export const SendFromBlock = (): ReactElement => {
 
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
   const { balances } = useBalances()
-  const currentChain = useCurrentChain()
 
+  const formMethods = useForm<SendAssetsFormData>({
+    defaultValues: formData,
+  })
   const {
     register,
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm<SendAssetsFormData>({
-    defaultValues: formData,
-  })
+  } = formMethods
 
   // Selected token
   const tokenAddress = getValues('tokenAddress')
@@ -72,65 +73,49 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
 
-  // On submit, pass an unprefixed address
-  const onFormSubmit = (data: SendAssetsFormData) => {
-    onSubmit({
-      ...data,
-      recipient: parsePrefixedAddress(data.recipient).address,
-    })
-  }
-
   return (
-    <form className={css.container} onSubmit={handleSubmit(onFormSubmit)}>
-      <TxModalTitle>Send funds</TxModalTitle>
+    <FormProvider {...formMethods}>
+      <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
+        <TxModalTitle>Send funds</TxModalTitle>
 
-      <SendFromBlock />
+        <SendFromBlock />
 
-      <FormControl fullWidth>
-        <AddressBookInput
-          defaultValue={formData?.recipient}
-          label="Recipient"
-          error={errors.recipient}
-          textFieldProps={{
-            ...register('recipient', {
-              validate: validateAddress(currentChain?.shortName),
-              required: true,
-            }),
-          }}
-        />
-      </FormControl>
+        <FormControl fullWidth>
+          <AddressBookInput name="recipient" />
+        </FormControl>
 
-      <FormControl fullWidth>
-        <InputLabel id="asset-label">Select an asset</InputLabel>
-        <Select
-          labelId="asset-label"
-          label={errors.tokenAddress?.message || 'Select an asset'}
-          defaultValue={formData?.tokenAddress || ''}
-          error={!!errors.tokenAddress}
-          {...register('tokenAddress', { required: true })}
-        >
-          {balances.items.map((item) => (
-            <MenuItem value={item.tokenInfo.address} key={item.tokenInfo.address}>
-              <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
-              {item.tokenInfo.name} (<TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} />)
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+        <FormControl fullWidth>
+          <InputLabel id="asset-label">Select an asset</InputLabel>
+          <Select
+            labelId="asset-label"
+            label={errors.tokenAddress?.message || 'Select an asset'}
+            defaultValue={formData?.tokenAddress || ''}
+            error={!!errors.tokenAddress}
+            {...register('tokenAddress', { required: true })}
+          >
+            {balances.items.map((item) => (
+              <MenuItem value={item.tokenInfo.address} key={item.tokenInfo.address}>
+                <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
+                {item.tokenInfo.name} (<TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} />)
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-      <FormControl fullWidth>
-        <TextField
-          label={errors.amount?.message || 'Amount'}
-          error={!!errors.amount}
-          autoComplete="off"
-          {...register('amount', { required: true, validate: (val) => validateTokenAmount(val, selectedToken) })}
-        />
-      </FormControl>
+        <FormControl fullWidth>
+          <TextField
+            label={errors.amount?.message || 'Amount'}
+            error={!!errors.amount}
+            autoComplete="off"
+            {...register('amount', { required: true, validate: (val) => validateTokenAmount(val, selectedToken) })}
+          />
+        </FormControl>
 
-      <Button variant="contained" type="submit">
-        Next
-      </Button>
-    </form>
+        <Button variant="contained" type="submit">
+          Next
+        </Button>
+      </form>
+    </FormProvider>
   )
 }
 

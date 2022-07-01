@@ -34,12 +34,12 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
     }
     if (removedOwner) {
       return safeSDK.getSwapOwnerTx({
-        newOwnerAddress: newOwner.address,
-        oldOwnerAddress: removedOwner.address,
+        newOwnerAddress: newOwner.address.address,
+        oldOwnerAddress: removedOwner.address.address,
       })
     } else {
       return safeSDK.getAddOwnerTx({
-        ownerAddress: newOwner.address,
+        ownerAddress: newOwner.address.address,
         threshold,
       })
     }
@@ -64,7 +64,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
       dispatch(
         upsertAddressBookEntry({
           chainId: chainId,
-          address: newOwner.address,
+          address: newOwner.address.address,
           name: newOwner.name,
         }),
       )
@@ -85,7 +85,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
       title="Add new owner"
     >
       <Grid container spacing={2} py={3}>
-        <Grid direction="column" xs item className={`${css.detailsBlock}`}>
+        <Grid xs item className={`${css.detailsBlock}`}>
           <Typography>Details</Typography>
 
           <Box marginBottom={2}>
@@ -100,11 +100,11 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           </Box>
         </Grid>
 
-        <Grid direction="column">
+        <Grid>
           <Typography paddingLeft={2}>{safe?.owners.length ?? 0} Safe owner(s)</Typography>
           <Divider />
           {safe?.owners
-            .filter((owner) => !removedOwner || !sameAddress(owner.value, removedOwner.address))
+            .filter((owner) => !removedOwner || !sameAddress(owner.value, removedOwner.address.address))
             .map((owner) => (
               <div key={owner.value}>
                 <Box padding={2} key={owner.value}>
@@ -120,7 +120,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
               </div>
               <Divider />
               <Box className={css.removedOwner} padding={2}>
-                <EthHashInfo address={removedOwner.address} shortAddress={false} />
+                <EthHashInfo address={removedOwner.address.address} shortAddress={false} />
               </Box>
               <Divider />
             </>
@@ -130,7 +130,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           </div>
           <Divider />
           <Box padding={2}>
-            <EthHashInfo address={newOwner.address} shortAddress={false} />
+            <EthHashInfo address={newOwner.address.address} shortAddress={false} />
           </Box>
         </Grid>
       </Grid>

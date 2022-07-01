@@ -6,7 +6,12 @@ export const sameAddress = (firstAddress: string | undefined, secondAddress: str
   return firstAddress.toLowerCase() === secondAddress.toLowerCase()
 }
 
-export const parsePrefixedAddress = (value: string): { prefix?: string; address: string } => {
+export type PrefixedAddress = {
+  prefix?: string
+  address: string
+}
+
+export const parsePrefixedAddress = (value: string): PrefixedAddress => {
   const [prefix, address] = value.split(':')
   return {
     prefix: address ? prefix : undefined,

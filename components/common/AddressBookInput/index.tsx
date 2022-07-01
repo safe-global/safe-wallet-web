@@ -1,6 +1,8 @@
+import { ReactElement } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { Autocomplete, Box, createFilterOptions } from '@mui/material'
 import useAddressBook from '@/hooks/useAddressBook'
-import { Autocomplete, Box, createFilterOptions, TextField } from '@mui/material'
-import { FieldError, UseFormRegisterReturn } from 'react-hook-form'
+import AddressInput, { type AddressInputProps } from '../AddressInput'
 
 const abFilterOptions = createFilterOptions({
   stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
@@ -9,18 +11,9 @@ const abFilterOptions = createFilterOptions({
 /**
  *  Temporary component until revamped safe components are done
  */
-const AddressBookInput = ({
-  defaultValue,
-  error,
-  label,
-  textFieldProps,
-}: {
-  defaultValue?: string
-  error: FieldError | undefined
-  label: string
-  textFieldProps: UseFormRegisterReturn
-}) => {
+const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement => {
   const addressBook = useAddressBook()
+  const { getValues } = useFormContext()
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
     label: address,
@@ -29,7 +22,7 @@ const AddressBookInput = ({
 
   return (
     <Autocomplete
-      defaultValue={defaultValue}
+      value={getValues(name)?.toString() || ''}
       freeSolo
       disablePortal
       options={addressBookEntries}
@@ -41,9 +34,7 @@ const AddressBookInput = ({
           {option.label}
         </Box>
       )}
-      renderInput={(params) => (
-        <TextField {...params} autoComplete="off" label={error?.message || label} error={!!error} {...textFieldProps} />
-      )}
+      renderInput={(params) => <AddressInput {...params} {...props} name={name} />}
     />
   )
 }
