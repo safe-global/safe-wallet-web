@@ -8,7 +8,7 @@ import {
 } from '@/components/sidebar/SidebarList'
 import { BEAMER_SELECTOR, isBeamerLoaded, loadBeamer } from '@/services/beamer'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { openCookiesBanner, selectCookies, SUPPORT_COOKIE } from '@/store/cookiesSlice'
+import { openCookieBanner, selectCookies, SUPPORT_COOKIE } from '@/store/cookiesSlice'
 
 const WHATS_NEW_PATH = 'https://help.gnosis-safe.io/en/'
 
@@ -27,7 +27,7 @@ const SidebarFooter = (): ReactElement => {
 
   const handleBeamer = () => {
     if (!hasBeamerConsent()) {
-      dispatch(openCookiesBanner({ consentWarning: 'supportAndCommunity' }))
+      dispatch(openCookieBanner({ consentWarning: 'supportAndCommunity' }))
     }
   }
 

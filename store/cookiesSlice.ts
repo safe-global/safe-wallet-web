@@ -6,19 +6,19 @@ export const NECESSARY_COOKIE = 'necessary'
 export const SUPPORT_COOKIE = 'supportAndCommunity'
 export const ANALYTICS_COOKIE = 'analytics'
 
-export type CookiesConsent = {
+export type CookieConsent = {
   [NECESSARY_COOKIE]: boolean
   [SUPPORT_COOKIE]: boolean
   [ANALYTICS_COOKIE]: boolean
 }
 
-type CookiesBannerState = {
+type CookiesState = {
   open: boolean
-  consent: CookiesConsent
-  warningKey?: keyof CookiesConsent
+  consent: CookieConsent
+  warningKey?: keyof CookieConsent
 }
 
-const initialState: CookiesBannerState = {
+const initialState: CookiesState = {
   open: true,
   consent: {
     [NECESSARY_COOKIE]: true,
@@ -31,23 +31,23 @@ export const cookiesSlice = createSlice({
   name: 'cookies',
   initialState,
   reducers: {
-    closeCookiesBanner: (state) => {
+    closeCookieBanner: (state) => {
       state.open = false
       delete state.warningKey
     },
-    openCookiesBanner: (state, action?: PayloadAction<{ consentWarning: keyof CookiesConsent }>) => {
+    openCookieBanner: (state, action?: PayloadAction<{ consentWarning: keyof CookieConsent }>) => {
       state.open = true
       if (action?.payload.consentWarning) {
         state.warningKey = action.payload.consentWarning
       }
     },
-    saveCookiesConsent: (state, { payload }: PayloadAction<{ consent: CookiesConsent }>) => {
+    saveCookieConsent: (state, { payload }: PayloadAction<{ consent: CookieConsent }>) => {
       state.consent = payload.consent
     },
   },
 })
 
-export const { closeCookiesBanner, openCookiesBanner, saveCookiesConsent } = cookiesSlice.actions
+export const { closeCookieBanner, openCookieBanner, saveCookieConsent } = cookiesSlice.actions
 
 export const selectCookies = (state: RootState) => state[cookiesSlice.name]
 
@@ -55,7 +55,7 @@ export const cookiesMiddleware: Middleware<{}, RootState> = (store) => (next) =>
   const result = next(action)
 
   switch (action.type) {
-    case saveCookiesConsent.type: {
+    case saveCookieConsent.type: {
       const state = store.getState()
 
       if (state.cookies.consent.supportAndCommunity) {

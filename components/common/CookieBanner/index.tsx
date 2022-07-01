@@ -8,21 +8,21 @@ import {
   NECESSARY_COOKIE,
   SUPPORT_COOKIE,
   ANALYTICS_COOKIE,
-  closeCookiesBanner,
-  saveCookiesConsent,
-  CookiesConsent,
+  closeCookieBanner,
+  saveCookieConsent,
+  CookieConsent,
 } from '@/store/cookiesSlice'
 
 import css from './styles.module.css'
 
-const COOKIE_WARNING: Record<keyof CookiesConsent, string> = {
+const COOKIE_WARNING: Record<keyof CookieConsent, string> = {
   [NECESSARY_COOKIE]: '',
   [SUPPORT_COOKIE]:
     'You attempted to open the "Need Help?" section but need to accept the "Community Support & Updates" cookies first.',
   [ANALYTICS_COOKIE]: '',
 }
 
-const CookiesBanner = (): ReactElement | null => {
+const CookieBanner = (): ReactElement | null => {
   const dispatch = useAppDispatch()
   const cookies = useAppSelector(selectCookies)
   const [consent, setConsent] = useState(cookies.consent)
@@ -34,8 +34,8 @@ const CookiesBanner = (): ReactElement | null => {
 
   const handleSubmit = (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
-    dispatch(saveCookiesConsent({ consent }))
-    dispatch(closeCookiesBanner())
+    dispatch(saveCookieConsent({ consent }))
+    dispatch(closeCookieBanner())
   }
 
   const handleAcceptAll = () => {
@@ -65,6 +65,7 @@ const CookiesBanner = (): ReactElement | null => {
           {COOKIE_WARNING[cookies.warningKey]}
         </Typography>
       )}
+
       <Typography align="center">
         We use cookies to provide you with the best experience and to help improve our website and application. Please
         read our{' '}
@@ -74,6 +75,7 @@ const CookiesBanner = (): ReactElement | null => {
         for more information. By clicking &quot;Accept all&quot;, you agree to the storing of cookies on your device to
         enhance site navigation, analyze site usage and provide customer support.
       </Typography>
+
       <form onSubmit={handleSubmit} className={css.form}>
         <FormControlLabel control={<Checkbox defaultChecked name={NECESSARY_COOKIE} disabled />} label="Necessary" />
         <FormControlLabel
@@ -84,6 +86,7 @@ const CookiesBanner = (): ReactElement | null => {
           control={<Checkbox checked={consent[ANALYTICS_COOKIE]} name={ANALYTICS_COOKIE} onChange={handleChange} />}
           label="Analytics"
         />
+
         <Button type="submit" variant="outlined" disableElevation>
           Accept selection
         </Button>
@@ -95,4 +98,4 @@ const CookiesBanner = (): ReactElement | null => {
   )
 }
 
-export default CookiesBanner
+export default CookieBanner
