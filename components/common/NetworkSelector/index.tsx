@@ -1,13 +1,13 @@
-import React from 'react'
-import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { MenuItem, Select, SelectChangeEvent, Skeleton } from '@mui/material'
 import useChains from '@/hooks/useChains'
 import { useRouter } from 'next/router'
 import ChainIndicator from '../ChainIndicator'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
 import chains from '@/config/chains'
+import { ReactElement } from 'react'
 
-const NetworkSelector = () => {
+const NetworkSelector = (): ReactElement => {
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
@@ -26,7 +26,7 @@ const NetworkSelector = () => {
     })
   }
 
-  return (
+  return configs.length ? (
     <Select value={chainId} onChange={handleNetworkSwitch} size="small" className={css.select} variant="standard">
       {configs.map((chain) => {
         return (
@@ -36,7 +36,9 @@ const NetworkSelector = () => {
         )
       })}
     </Select>
+  ) : (
+    <Skeleton width={94} height={31} />
   )
 }
 
-export default React.memo(NetworkSelector)
+export default NetworkSelector

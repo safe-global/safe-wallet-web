@@ -1,49 +1,62 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
+import useAddressBook from '@/hooks/useAddressBook'
+import useChainId from '@/hooks/useChainId'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { ReactElement } from 'react'
 import { EditOwnerDialog } from '../EditOwnerDialog'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import css from './styles.module.css'
 
-export const OwnerList = ({
-  owners,
+const OwnerRow = ({
+  name,
+  address,
   chainId,
   isGranted,
 }: {
-  owners: { address: string; name: string }[]
-  chainId?: string
+  name?: string
+  address: string
+  chainId: string
   isGranted: boolean
-}) => {
-  const OwnerRow = (row: { name: string | null; address: string }) => {
-    return (
-      <TableRow className={css.row}>
-        <TableCell>{row.name ?? ''}</TableCell>
-        <TableCell>
-          <EthHashInfo address={row.address} showCopyButton shortAddress={false} />
-        </TableCell>
-        <TableCell>
+}): ReactElement => {
+  return (
+    <TableRow className={css.row}>
+      <TableCell>{name ?? ''}</TableCell>
+
+      <TableCell>
+        <EthHashInfo address={address} showCopyButton shortAddress={false} showName={false} />
+      </TableCell>
+
+      <TableCell>
+        {isGranted && (
           <div className={css.actions}>
-            {chainId && <EditOwnerDialog address={row.address} name={row.name} chainId={chainId} />}
-            {chainId && isGranted && (
-              <>
-                <ReplaceOwnerDialog address={row.address} />
-              </>
-            )}
+            <EditOwnerDialog address={address} name={name} chainId={chainId} />
+            <ReplaceOwnerDialog address={address} />
           </div>
-        </TableCell>
-      </TableRow>
-    )
-  }
+        )}
+      </TableCell>
+    </TableRow>
+  )
+}
+
+export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
+  const chainId = useChainId()
+  const addressBook = useAddressBook()
+  const { safe } = useSafeInfo()
+  const owners = (safe?.owners ?? []).map((item) => item.value)
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
       <Typography variant="h4" fontWeight={700}>
-        Manage Safe Owners
+        Manage Safe owners
       </Typography>
+
       <Typography>
         Add, remove and replace or rename existing owners. Owner names are only stored locally and never shared with
         Gnosis or any third parties.
       </Typography>
+
       <TableContainer>
         <Table>
           <TableHead>
@@ -56,7 +69,7 @@ export const OwnerList = ({
 
           <TableBody>
             {owners.map((owner) => (
-              <OwnerRow {...owner} key={owner.address} />
+              <OwnerRow key={owner} address={owner} name={addressBook[owner]} chainId={chainId} isGranted={isGranted} />
             ))}
           </TableBody>
         </Table>

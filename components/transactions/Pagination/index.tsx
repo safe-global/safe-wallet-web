@@ -1,32 +1,22 @@
 import { type ReactElement, type SyntheticEvent } from 'react'
 import { Button } from '@mui/material'
-import { useAppDispatch } from '@/store'
-import { setPageUrl as setHistoryPageUrl } from '@/store/txHistorySlice'
-import { setPageUrl as setQueuePageUrl } from '@/store/txQueueSlice'
-import useTxHistory from '@/hooks/useTxHistory'
-import useTxQueue from '@/hooks/useTxQueue'
 
 type PaginationProps = {
-  useTxns: typeof useTxHistory | typeof useTxQueue
-  setPageUrl: typeof setHistoryPageUrl | typeof setQueuePageUrl
+  page?: string
+  nextPage?: string | null
+  prevPage?: string | null
+  onPageChange: (url?: string) => void
 }
 
-const Pagination = ({ useTxns, setPageUrl }: PaginationProps): ReactElement => {
-  const { page, pageUrl } = useTxns()
-  const dispatch = useAppDispatch()
-
-  const onPageChange = (url?: string) => {
-    dispatch(setPageUrl(url))
-  }
-
+const Pagination = ({ page, nextPage, prevPage, onPageChange }: PaginationProps): ReactElement => {
   const onNext = (e: SyntheticEvent) => {
     e.preventDefault()
-    onPageChange(page.next)
+    onPageChange(nextPage || undefined)
   }
 
   const onPrev = (e: SyntheticEvent) => {
     e.preventDefault()
-    onPageChange(page.previous)
+    onPageChange(prevPage || undefined)
   }
 
   const onFirst = (e: SyntheticEvent) => {
@@ -34,15 +24,18 @@ const Pagination = ({ useTxns, setPageUrl }: PaginationProps): ReactElement => {
     onPageChange(undefined)
   }
 
+  const isFirstPage = !prevPage || page === prevPage
+  const isLastPage = !nextPage || page === nextPage
+
   return (
     <>
-      <Button onClick={onFirst} disabled={!page.previous || pageUrl === page.previous}>
+      <Button onClick={onFirst} disabled={isFirstPage}>
         Go to first page
       </Button>
-      <Button onClick={onPrev} disabled={!page.previous || pageUrl === page.previous}>
+      <Button onClick={onPrev} disabled={isFirstPage}>
         ← Previous page
       </Button>
-      <Button onClick={onNext} disabled={!page.next || pageUrl === page.next}>
+      <Button onClick={onNext} disabled={isLastPage}>
         Next page →
       </Button>
     </>

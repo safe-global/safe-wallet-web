@@ -5,8 +5,9 @@
   display: grid;
   grid-template-rows: min-content;
   grid-template-columns: 220px 1fr;
-  grid-template-areas: 'header header'
-                       'sidebar main';
+  grid-template-areas:
+    'header header'
+    'sidebar main';
 }
 
 .container header {

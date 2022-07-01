@@ -1,5 +1,5 @@
 .container {
-  background-color: #E8E7E6;
+  background-color: #e8e7e6;
   display: grid;
   gap: 2px;
   grid-template-columns: 2fr 1fr;
@@ -35,5 +35,21 @@
 .txSigners {
   padding: 24px;
   background: white;
-  border-bottom-right-radius: 8px
+  border-bottom-right-radius: 8px;
+}
+
+.noPadding {
+  padding: 0;
+}
+
+.txSummary.multisend {
+  border-bottom-left-radius: 0;
+}
+
+.txData.multisend {
+  border-bottom-left-radius: 8px;
+}
+
+.txData.multisend:last-child {
+  border-bottom-left-radius: 8px;
 }

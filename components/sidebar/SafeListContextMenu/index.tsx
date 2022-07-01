@@ -44,7 +44,12 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
           '.MuiPaper-root': { borderRadius: '8px !important', width: '138px' },
           '.MuiList-root': { p: '4px' },
           '.MuiMenuItem-root': {
-            '&:hover': { borderRadius: '8px !important', backgroundColor: palette.gray[300] },
+            paddingLeft: '12px',
+            minHeight: '40px',
+            '&:hover': { borderRadius: '8px !important', backgroundColor: palette.primaryGreen[200] },
+          },
+          '.MuiListItemIcon-root': {
+            minWidth: '26px',
           },
         })}
       >

@@ -1,5 +1,5 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { AddressInput } from '@/components/common/AddressInput'
+import AddressBookInput from '@/components/common/AddressBookInput'
 import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { uniqueAddress, addressIsNotCurrentSafe, validateAddress } from '@/utils/validation'
@@ -52,25 +52,26 @@ export const ChooseOwnerStep = ({
     <form onSubmit={handleSubmit(onSubmitHandler)}>
       <TxModalTitle>Add new owner</TxModalTitle>
 
-      <p>
+      <Box mt={4} mb={1}>
         {isReplace
           ? 'Review the owner you want to replace in the active Safe, then specify the new owner you want to replace it with:'
           : 'Add a new owner to the active Safe.'}
-      </p>
+      </Box>
+
       {removedOwner && (
-        <div>
-          <Typography>Current owner</Typography>
+        <Box my={2}>
+          <Typography mb={1}>Current owner</Typography>
           <EthHashInfo address={removedOwner.address} showCopyButton shortAddress={false} />
-        </div>
+        </Box>
       )}
 
       <Box display="flex" flexDirection="column" gap={2} paddingTop={2}>
-        <Typography>New owner</Typography>
-        <FormControl fullWidth>
+        <FormControl>
           <TextField autoFocus label="Owner name" variant="outlined" fullWidth {...register('ownerName')} />
         </FormControl>
-        <FormControl fullWidth>
-          <AddressInput
+
+        <FormControl>
+          <AddressBookInput
             defaultValue={formData.ownerAddress}
             label="Owner address"
             error={errors.ownerAddress}

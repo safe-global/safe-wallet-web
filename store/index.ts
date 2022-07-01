@@ -18,6 +18,7 @@ import { notificationsSlice } from './notificationsSlice'
 import { getPreloadedState, persistState } from './persistStore'
 import { pendingTxsSlice } from './pendingTxsSlice'
 import { addedSafesMiddleware, addedSafesSlice } from './addedSafesSlice'
+import { cookiesSlice, cookiesMiddleware } from './cookiesSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   [notificationsSlice.name]: notificationsSlice.reducer,
   [pendingTxsSlice.name]: pendingTxsSlice.reducer,
   [addedSafesSlice.name]: addedSafesSlice.reducer,
+  [cookiesSlice.name]: cookiesSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
@@ -38,9 +40,10 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   addressBookSlice.name,
   pendingTxsSlice.name,
   addedSafesSlice.name,
+  cookiesSlice.name,
 ]
 
-const middleware = [persistState(persistedSlices), txHistoryMiddleware, addedSafesMiddleware]
+const middleware = [persistState(persistedSlices), txHistoryMiddleware, addedSafesMiddleware, cookiesMiddleware]
 
 export const store = configureStore({
   reducer: rootReducer,

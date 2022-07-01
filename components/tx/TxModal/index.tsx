@@ -1,9 +1,7 @@
-import React from 'react'
-import { Paper, Modal, Box } from '@mui/material'
-
+import { ReactElement } from 'react'
 import TxStepper from '../TxStepper'
-import css from './styles.module.css'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import ModalDialog from '@/components/common/ModalDialog'
 
 export type TxModalProps = {
   onClose: () => void
@@ -12,17 +10,11 @@ export type TxModalProps = {
   initialData?: TxStepperProps['initialData']
 }
 
-const TxModal = ({ onClose, steps, wide = false, initialData }: TxModalProps) => {
-  const onClick = (e: React.MouseEvent) => e.stopPropagation()
-
+const TxModal = ({ onClose, steps, wide = false, initialData }: TxModalProps): ReactElement => {
   return (
-    <Modal open onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description">
-      <Paper className={`${css.modal} ${wide ? css.wide : css.narrow}`} onClick={onClick} elevation={2}>
-        <Box padding={2}>
-          <TxStepper steps={steps} initialData={initialData} onClose={onClose} />
-        </Box>
-      </Paper>
-    </Modal>
+    <ModalDialog open onClose={onClose} maxWidth={wide ? 'md' : 'sm'} fullWidth>
+      <TxStepper steps={steps} initialData={initialData} onClose={onClose} />
+    </ModalDialog>
   )
 }
 

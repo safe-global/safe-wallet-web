@@ -23,17 +23,17 @@ const RejectTxButton = ({ txSummary }: { txSummary: TransactionSummary }): React
   if (!canCancel) return null
 
   return (
-    <div>
+    <>
       <Tooltip title="Reject" arrow placement="top">
         <span>
-          <IconButton onClick={onClick} color="error">
-            <HighlightOffIcon />
+          <IconButton onClick={onClick} color="error" size="small">
+            <HighlightOffIcon fontSize="small" />
           </IconButton>
         </span>
       </Tooltip>
 
       {open && <RejectTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
-    </div>
+    </>
   )
 }
 

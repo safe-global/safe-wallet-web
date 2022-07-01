@@ -1,5 +1,6 @@
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import Link, { LinkProps } from 'next/link'
 
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
@@ -11,11 +12,13 @@ import css from './styles.module.css'
 const SafeListItemSecondaryAction = ({
   chainId,
   address,
-  handleAddSafe,
+  onClick,
+  href,
 }: {
   chainId: string
   address: string
-  handleAddSafe: () => void
+  onClick: () => void
+  href?: LinkProps['href']
 }) => {
   const { configs } = useChains()
   const wallet = useWallet()
@@ -25,25 +28,26 @@ const SafeListItemSecondaryAction = ({
     ({ value }) => value.toLowerCase() === wallet?.address?.toLowerCase(),
   )
 
-  if (!isAdded) {
+  if (!isAdded && href) {
     return (
-      <Button
-        className={css.addButton}
-        sx={({ palette }) => ({
-          '&:hover': {
-            // @ts-expect-error type '200' can't be used to index type 'PaletteColor'
-            backgroundColor: palette.primary[200],
-          },
-        })}
-        size="small"
-        disableElevation
-        onClick={(e) => {
-          e.stopPropagation()
-          handleAddSafe()
-        }}
-      >
-        Add Safe
-      </Button>
+      <Link href={href} passHref>
+        <Button
+          className={css.addButton}
+          sx={({ palette }) => ({
+            '&:hover': {
+              backgroundColor: palette.primaryGreen[200],
+            },
+          })}
+          size="small"
+          disableElevation
+          onClick={(e) => {
+            e.stopPropagation()
+            onClick()
+          }}
+        >
+          Add Safe
+        </Button>
+      </Link>
     )
   }
 

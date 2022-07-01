@@ -5,9 +5,9 @@ import Head from 'next/head'
 import { Provider } from 'react-redux'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
-import { StyledEngineProvider } from '@mui/material/styles'
+import { CacheProvider } from '@emotion/react'
+import createCache from '@emotion/cache'
 import theme from '@/styles/theme'
-
 import '@/styles/globals.css'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { store } from '@/store'
@@ -26,6 +26,12 @@ import useTxNotifications from '@/hooks/useTxNotifications'
 import useTxPendingStatuses, { useTxMonitor } from '@/hooks/useTxPendingStatuses'
 import { useInitSession } from '@/hooks/useInitSession'
 import Notifications from '@/components/common/Notifications'
+import CookieBanner from '@/components/common/CookieBanner'
+
+const cssCache = createCache({
+  key: 'css',
+  prepend: true,
+})
 
 const InitApp = (): null => {
   if (!IS_PRODUCTION) {
@@ -60,7 +66,7 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
       </Head>
 
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
-        <StyledEngineProvider injectFirst>
+        <CacheProvider value={cssCache}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <InitApp />
@@ -68,9 +74,11 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
               <Component {...pageProps} />
             </PageLayout>
 
+            <CookieBanner />
+
             <Notifications />
           </ThemeProvider>
-        </StyledEngineProvider>
+        </CacheProvider>
       </Sentry.ErrorBoundary>
     </Provider>
   )

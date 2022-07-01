@@ -35,7 +35,7 @@ export const ContractVersion = () => {
   return (
     <div>
       <Typography variant="h4" fontWeight={700} marginBottom={1}>
-        Contract Version
+        Contract version
       </Typography>
       <Link rel="noreferrer noopener" href={safeMasterCopy?.deployerRepoUrl} target="_blank">
         <Box display="flex" alignContent={'center'}>

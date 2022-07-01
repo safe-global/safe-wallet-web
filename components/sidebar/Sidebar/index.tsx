@@ -2,7 +2,6 @@ import { useState, type ReactElement } from 'react'
 import { Box, Divider, Drawer, IconButton } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
 
-import useSafeInfo from '@/hooks/useSafeInfo'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SidebarHeader from '@/components/sidebar/SidebarHeader'
 import SafeList from '@/components/sidebar/SafeList'
@@ -14,7 +13,6 @@ import css from './styles.module.css'
 
 const Sidebar = (): ReactElement => {
   const address = useSafeAddress()
-  const { error, loading } = useSafeInfo()
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 
   const onDrawerToggle = () => {
@@ -22,38 +20,47 @@ const Sidebar = (): ReactElement => {
   }
 
   return (
-    <Box className={css.container} sx={{ backgroundColor: 'background.paper' }}>
-      <div className={css.chain}>
-        <ChainIndicator />
+    <Box
+      className={css.container}
+      sx={({ palette }) => ({
+        backgroundColor: 'background.paper',
+        borderRight: `1px solid ${palette.primaryGray[400]}`,
+      })}
+    >
+      <div className={css.scroll}>
+        <div className={css.chain}>
+          <ChainIndicator />
+        </div>
+        <IconButton
+          className={css.drawerButton}
+          onClick={onDrawerToggle}
+          sx={({ palette }) => ({
+            backgroundColor: palette.primaryGray[400],
+            '&:hover': {
+              backgroundColor: palette.primaryGreen[200],
+            },
+          })}
+        >
+          <ChevronRight />
+        </IconButton>
+        {/* For routes with a Safe address */}
+        {address ? (
+          <>
+            <SidebarHeader />
+
+            <Divider sx={({ palette }) => ({ borderColor: palette.primaryGray[400] })} />
+
+            <SidebarNavigation />
+          </>
+        ) : (
+          <div className={css.noSafeSidebar} />
+        )}
+        <div style={{ flexGrow: 1 }} />
+
+        <Divider flexItem sx={({ palette }) => ({ borderColor: palette.primaryGray[400] })} />
+
+        <SidebarFooter />
       </div>
-      <IconButton
-        className={css.drawerButton}
-        onClick={onDrawerToggle}
-        sx={(theme) => ({ backgroundColor: theme.palette.gray[500] })}
-      >
-        <ChevronRight />
-      </IconButton>
-      {/* For routes with a Safe address */}
-      {address ? (
-        <>
-          {!error && <SidebarHeader />}
-
-          <Divider />
-
-          <SidebarNavigation />
-
-          {loading && 'Loading Safe info...'}
-
-          {error && 'Failed loading the Safe'}
-        </>
-      ) : (
-        <div className={css.noSafeSidebar} />
-      )}
-      <div style={{ flexGrow: 1 }} />
-
-      <Divider flexItem />
-
-      <SidebarFooter />
 
       <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
         <div className={css.drawer}>

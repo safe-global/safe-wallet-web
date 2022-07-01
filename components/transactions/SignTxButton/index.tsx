@@ -4,7 +4,6 @@ import { Tooltip } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import IconButton from '@mui/material/IconButton'
 
-import css from './styles.module.css'
 import { isOwner, isSignableBy } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -24,17 +23,17 @@ const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactEl
   const isDisabled = !signaturePending || !granted
 
   return (
-    <div className={css.container}>
+    <>
       <Tooltip title="Sign" arrow placement="top">
         <span>
-          <IconButton onClick={onClick} disabled={isDisabled}>
-            <CheckIcon />
+          <IconButton onClick={onClick} disabled={isDisabled} size="small">
+            <CheckIcon fontSize="small" />
           </IconButton>
         </span>
       </Tooltip>
 
       {open && <ConfirmTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
-    </div>
+    </>
   )
 }
 

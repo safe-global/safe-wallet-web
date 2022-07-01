@@ -1,51 +1,11 @@
 import React, { ReactElement, useState } from 'react'
-import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
+import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { dateString, shortenAddress } from '@/utils/formatters'
-import { Typography } from '@mui/material'
-import { hexDataLength } from 'ethers/lib/utils'
+import { dateString } from '@/utils/formatters'
+import { Button, Typography } from '@mui/material'
 import css from './styles.module.css'
-
-export const NOT_AVAILABLE = 'n/a'
-
-const generateDataRowValue = (
-  value?: string | null,
-  type?: 'hash' | 'rawData' | 'address' | 'bytes',
-  hasExplorer?: boolean,
-): ReactElement | null => {
-  if (value == undefined) return null
-  switch (type) {
-    case 'address':
-      return (
-        <div className={css.inline}>
-          {/* TODO: missing the chain prefix */}
-          <p>{shortenAddress(value, 8)}</p>
-          {/* TODO: missing copy button */}
-          {/* TODO: missing block explorer button */}
-        </div>
-      )
-    case 'hash':
-      return (
-        <div className={css.inline}>
-          <div>{shortenAddress(value, 8)}</div>
-          {/* TODO: missing copy button */}
-          {/* TODO: missing block explorer button */}
-        </div>
-      )
-    case 'rawData':
-      return (
-        <div className={css.rawData}>
-          <div>{value ? hexDataLength(value) : 0} bytes</div>
-          {/* TODO: missing copy button */}
-        </div>
-      )
-    // case 'bytes':
-    //   return <HexEncodedData limit={60} hexData={value} />
-    default:
-      return null
-  }
-}
+import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
 
 interface Props {
   txDetails: TransactionDetails
@@ -77,15 +37,15 @@ const Summary = ({ txDetails }: Props): ReactElement => {
       {/* Advanced TxData */}
       {txData && (
         <>
-          <button className={css.buttonLink} onClick={toggleExpanded}>
+          <Button className={css.buttonExpand} disableRipple onClick={toggleExpanded}>
             <Typography
               // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-              sx={({ palette }) => ({ color: palette.primary[400], textDecoration: 'underline' })}
+              sx={({ palette }) => ({ color: palette.primary[400], textDecoration: 'underline', cursor: 'pointer' })}
               variant="body1"
             >
               Advanced Details
             </Typography>
-          </button>
+          </Button>
           <div className={`${css.collapsibleSection}${expanded ? 'Expanded' : ''}`}>
             <TxDataRow title="Operation:">
               {`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}

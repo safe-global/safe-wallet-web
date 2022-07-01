@@ -1,5 +1,5 @@
-import { act, renderHook } from '@testing-library/react'
 import { BigNumber } from 'ethers'
+import { act, renderHook } from '@/tests/test-utils'
 import useGasPrice from '@/hooks/useGasPrice'
 
 // mock useWeb3Readonly
