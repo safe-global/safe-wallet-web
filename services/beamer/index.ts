@@ -1,5 +1,6 @@
+import Cookies from 'js-cookie'
+
 import { BEAMER_ID } from '@/config/constants'
-import cookies from '@/services/Cookies'
 import local from '@/services/localStorage/local'
 
 // Beamer script tag singleton
@@ -56,8 +57,10 @@ export const unloadBeamer = (): void => {
   scriptRef.remove()
   scriptRef = null
 
+  const domain = location.host.split('.').slice(-2).join('.')
+
   setTimeout(() => {
     local.removeMatching(BEAMER_LS_RE)
-    BEAMER_COOKIES.forEach(cookies.remove)
+    BEAMER_COOKIES.forEach((name) => Cookies.remove(name, { domain, path: '/' }))
   }, 100)
 }
