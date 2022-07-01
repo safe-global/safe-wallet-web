@@ -10,12 +10,12 @@ import { useAppSelector } from '@/store'
 import { sameAddress } from '@/utils/addresses'
 import { formatDecimals } from '@/utils/formatters'
 
-interface Props {
+type SetAllowanceProps = {
   txData: TransactionData
   txInfo: Custom
 }
 
-export const SetAllowance = ({ txData, txInfo }: Props) => {
+export const SetAllowance = ({ txData, txInfo }: SetAllowanceProps) => {
   const chain = useCurrentChain()
   const tokens = useAppSelector(selectTokens)
 
