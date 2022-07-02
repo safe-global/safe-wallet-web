@@ -1,52 +1,11 @@
 import React, { ReactElement, useState } from 'react'
-import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
+import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { dateString, shortenAddress } from '@/utils/formatters'
+import { dateString } from '@/utils/formatters'
 import { Button, Typography } from '@mui/material'
-import { hexDataLength } from 'ethers/lib/utils'
 import css from './styles.module.css'
 import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
-import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-
-// TODO: move this function out of this file
-export const generateDataRowValue = (
-  value?: string | null,
-  type?: 'hash' | 'rawData' | 'address' | 'bytes',
-  hasExplorer?: boolean,
-): ReactElement | null => {
-  if (value == undefined) return null
-  switch (type) {
-    case 'address':
-      return (
-        <div className={css.inline}>
-          {/* TODO: missing the chain prefix */}
-          <Typography>{shortenAddress(value, 8)}</Typography>
-          {/* TODO: missing copy button */}
-          {/* TODO: missing block explorer button */}
-        </div>
-      )
-    case 'hash':
-      return (
-        <div className={css.inline}>
-          <div>{shortenAddress(value, 8)}</div>
-          {/* TODO: missing copy button */}
-          {/* TODO: missing block explorer button */}
-        </div>
-      )
-    case 'rawData':
-      return (
-        <div className={css.rawData}>
-          <div>{value ? hexDataLength(value) : 0} bytes</div>
-          {/* TODO: missing copy button */}
-        </div>
-      )
-    case 'bytes':
-      return <HexEncodedData limit={60} hexData={value} />
-    default:
-      return <Typography>{value}</Typography>
-  }
-}
 
 interface Props {
   txDetails: TransactionDetails

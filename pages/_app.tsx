@@ -26,6 +26,7 @@ import useTxNotifications from '@/hooks/useTxNotifications'
 import useTxPendingStatuses, { useTxMonitor } from '@/hooks/useTxPendingStatuses'
 import { useInitSession } from '@/hooks/useInitSession'
 import Notifications from '@/components/common/Notifications'
+import CookieBanner from '@/components/common/CookieBanner'
 
 const cssCache = createCache({
   key: 'css',
@@ -73,6 +74,8 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
             <PageLayout>
               <Component {...pageProps} />
             </PageLayout>
+
+            <CookieBanner />
 
             <Notifications />
           </ThemeProvider>

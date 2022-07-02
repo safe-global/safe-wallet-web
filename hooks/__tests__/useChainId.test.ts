@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react'
 import { useRouter } from 'next/router'
 import TestProviderWrapper from '@/mocks/TestProviderWrapper'
 import useChainId from '@/hooks/useChainId'
@@ -54,8 +54,14 @@ describe('useChainId hook', () => {
       },
     }))
 
-    const { result } = renderHook(() => useChainId(), { wrapper: TestProviderWrapper })
-    expect(result.error).toBeTruthy()
+    // Mock console error because the hook will throw and show a huge error message in test output
+    const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation()
+    try {
+      renderHook(() => useChainId(), { wrapper: TestProviderWrapper })
+    } catch (error) {
+      expect((error as Error).message).toBe('Invalid chain short name in the URL')
+    }
+    consoleErrorMock.mockRestore()
   })
 
   it('should return the last used chain id if no chain in the URL', () => {

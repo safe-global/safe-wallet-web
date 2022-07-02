@@ -4,8 +4,7 @@ import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { camelCaseToSpaces, toDecimals } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 import { Box, Typography } from '@mui/material'
-import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary'
+import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import MultisendTxsDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend/MultisendTxsDecoded'
 
 export const MethodDetails = ({ data }: { data: DataDecoded }): React.ReactElement => {
@@ -40,7 +39,7 @@ interface Props {
 export const Multisend = ({ txData }: Props): ReactElement | null => {
   const chain = useCurrentChain()
 
-  // ? when can a multiSend call take no parameters? - maybe this condition does not make sense
+  // ? when can a multiSend call take no parameters?
   if (!txData.dataDecoded?.parameters) {
     if (txData.hexData) {
       return <HexEncodedData title="Data (hex encoded)" hexData={txData.hexData} />
@@ -48,7 +47,7 @@ export const Multisend = ({ txData }: Props): ReactElement | null => {
     return null
   }
 
-  // multiSend has one parameter `transactions` therefore `txData.dataDecoded.parameters[0]` is safe to be used here
+  // multiSend method receives one parameter `transactions`
   return (
     <>
       {txData.dataDecoded?.parameters[0].valueDecoded?.map(({ dataDecoded, data, value, to, operation }, index) => {

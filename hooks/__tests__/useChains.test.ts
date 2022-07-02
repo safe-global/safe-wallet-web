@@ -1,5 +1,5 @@
 import { getChainsConfig } from '@gnosis.pm/safe-react-gateway-sdk'
-import { act, renderHook } from '@testing-library/react-hooks'
+import { act, renderHook } from '@testing-library/react'
 import TestProviderWrapper from '@/mocks/TestProviderWrapper'
 import useChains, { useInitChains } from '@/hooks/useChains'
 
