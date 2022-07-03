@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react'
+import { act, renderHook } from '@/tests/test-utils'
 import useAsync from '@/hooks/useAsync'
 
 // Jest tests for the useAsync hook
