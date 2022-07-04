@@ -34,3 +34,60 @@ describe('toDecimals', () => {
     expect(formatters.toDecimals('3', 6)).toEqual(BigNumber.from('3000000'))
   })
 })
+
+describe('getNumberFormatterOptions', () => {
+  it('should only return `maximumFractionDigits` of 5 when number is < 1_000', () => {
+    expect(formatters._getNumberFormatterOptions(999.99)).toEqual({ maximumFractionDigits: 5 })
+  })
+
+  it('should only return `maximumFractionDigits` of 4 when number is < 10_000', () => {
+    expect(formatters._getNumberFormatterOptions(9_999.99)).toEqual({ maximumFractionDigits: 4 })
+  })
+
+  it('should only return `maximumFractionDigits` of 3 when number is < 100_000', () => {
+    expect(formatters._getNumberFormatterOptions(99_999.99)).toEqual({ maximumFractionDigits: 3 })
+  })
+
+  it('should only return `maximumFractionDigits` of 2 when number is < 1_000_000', () => {
+    expect(formatters._getNumberFormatterOptions(999_999.99)).toEqual({ maximumFractionDigits: 2 })
+  })
+
+  it('should only return `maximumFractionDigits` of 1 when number is < 10_000_000', () => {
+    expect(formatters._getNumberFormatterOptions(9_999_999.99)).toEqual({ maximumFractionDigits: 1 })
+  })
+
+  it('should only return `maximumFractionDigits` of 0 when number is < 100_000_000', () => {
+    expect(formatters._getNumberFormatterOptions(99_999_999.99)).toEqual({ maximumFractionDigits: 0 })
+  })
+
+  it("should only return 'compact' `maximumFractionDigits` of 3 when number is < 10 ** 15", () => {
+    expect(formatters._getNumberFormatterOptions(10 ** 14)).toEqual({ maximumFractionDigits: 3, notation: 'compact' })
+  })
+
+  it("should only return 'compact' for anything bigger", () => {
+    expect(formatters._getNumberFormatterOptions(10 ** 15)).toEqual({ notation: 'compact' })
+  })
+})
+
+describe('getCurrencyFormatterOptions', () => {
+  it('should return standard notation below 100_000_000', () => {
+    expect(formatters._getCurrencyFormatterOptions(99_999_999.99, 'USD')).toEqual({
+      style: 'currency',
+      currency: 'USD',
+      currencyDisplay: 'narrowSymbol',
+    })
+  })
+  it('should return compact notation above 100_000_000', () => {
+    expect(formatters._getCurrencyFormatterOptions(100_000_000.99, 'USD')).toEqual({
+      notation: 'compact',
+      style: 'currency',
+      currency: 'USD',
+      currencyDisplay: 'narrowSymbol',
+    })
+  })
+})
+
+// TODO: Instantiating Intl.NumberFormat programmatically does not pass in tests.
+describe.skip('formatAmount', () => {})
+
+describe.skip('formatCurrency', () => {})

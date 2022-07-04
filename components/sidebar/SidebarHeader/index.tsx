@@ -1,13 +1,15 @@
-import type { ReactElement } from 'react'
+import { ReactElement, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 
-import { shortenAddress } from '@/utils/formatters'
+import { formatCurrency, shortenAddress } from '@/utils/formatters'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
-import SidebarFiat from '@/components/sidebar/SidebarFiat'
+import useBalances from '@/hooks/useBalances'
+import { useAppSelector } from '@/store'
+import { selectCurrency } from '@/store/sessionSlice'
 
 import css from './styles.module.css'
 
@@ -26,11 +28,18 @@ const HeaderIconButton = ({ children }: Omit<IconButtonProps, 'className' | 'dis
 )
 
 const SafeHeader = (): ReactElement => {
+  const currency = useAppSelector(selectCurrency)
+  const { balances } = useBalances()
   const { safe, loading } = useSafeInfo()
 
   const address = safe?.address.value || ''
 
   const { threshold, owners } = safe || {}
+
+  // TODO: Format to parts w/ style
+  const fiat = useMemo(() => {
+    return formatCurrency(balances.fiatTotal, currency)
+  }, [currency, balances.fiatTotal])
 
   return (
     <div className={css.container}>
@@ -46,7 +55,7 @@ const SafeHeader = (): ReactElement => {
           <Typography variant="body2">
             {loading ? <Skeleton variant="text" width={86} /> : address ? shortenAddress(address) : '...'}
           </Typography>
-          <Typography variant="body1">{loading ? <Skeleton variant="text" width={60} /> : <SidebarFiat />}</Typography>
+          <Typography variant="body1">{loading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
         </div>
       </div>
       <div className={css.iconButtons}>
