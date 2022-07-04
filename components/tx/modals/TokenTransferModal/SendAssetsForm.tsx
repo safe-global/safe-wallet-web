@@ -106,7 +106,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
                 </Box>
 
                 <Grid item xs>
-                  <Typography fontSize={14}>{item.tokenInfo.name}</Typography>
+                  <Typography variant="body2">{item.tokenInfo.name}</Typography>
 
                   <Typography color={({ palette }) => palette.text.secondary} fontSize={12}>
                     <TokenAmount

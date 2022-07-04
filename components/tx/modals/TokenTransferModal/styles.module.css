@@ -15,3 +15,11 @@
   margin-left: 40px;
   border-radius: 3px;
 }
+
+.tokenPreview {
+  text-align: center;
+}
+
+.tokenPreview img {
+  margin: 0;
+}

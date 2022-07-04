@@ -3,8 +3,10 @@ import { Box, Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
+import css from './styles.module.css'
 import { SendAssetsFormData, SendFromBlock } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import useSafeTxGas from '@/hooks/useSafeTxGas'
 import useBalances from '@/hooks/useBalances'
@@ -13,12 +15,11 @@ import { createTx } from '@/services/tx/txSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import NonceForm from '../../NonceForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { TokenIcon } from '@/components/common/TokenAmount'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
-    <Box sx={{ textAlign: 'center', '& > img': { margin: 0 } }}>
-      <Box fontSize={24} sx={{ '& img': { margin: 0 } }}>
+    <Box className={css.tokenPreview}>
+      <Box fontSize={24}>
         <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
       </Box>
 
@@ -29,12 +30,12 @@ const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData
   )
 }
 
-type ReviewTokenTx = {
+type ReviewTokenTxProps = {
   params: SendAssetsFormData
   onSubmit: (data: null) => void
 }
 
-const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTx): ReactElement => {
+const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement => {
   const { safe } = useSafeInfo()
 
   // Find the token info for the token we're sending
