@@ -32,7 +32,7 @@ describe('useSafeAddress hook', () => {
   it('should cheksum the safe address', () => {
     ;(useRouter as any).mockImplementation(() => ({
       query: {
-        safe: 'eth:0x220866b1a2219f40e72f5c628b65d54268ca3a9d'
+        safe: 'eth:0x220866b1a2219f40e72f5c628b65d54268ca3a9d',
       },
     }))
 

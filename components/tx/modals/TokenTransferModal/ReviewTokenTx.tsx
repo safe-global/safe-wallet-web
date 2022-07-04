@@ -13,11 +13,14 @@ import { createTx } from '@/services/tx/txSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import NonceForm from '../../NonceForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { TokenIcon } from '@/components/common/TokenAmount'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
     <Box sx={{ textAlign: 'center', '& > img': { margin: 0 } }}>
-      {tokenInfo.logoUri && <img src={tokenInfo.logoUri} alt={tokenInfo.symbol} height="26" />}
+      <Box fontSize={24} sx={{ '& img': { margin: 0 } }}>
+        <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
+      </Box>
 
       <Box mt={1} fontSize={20}>
         {params.amount} {tokenInfo.symbol}
