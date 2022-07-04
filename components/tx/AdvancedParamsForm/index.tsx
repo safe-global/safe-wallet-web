@@ -1,12 +1,14 @@
-import { Box, Button, FormControl, Grid, Paper, TextField } from '@mui/material'
+import { Button, DialogActions, FormControl, Grid, Paper, TextField } from '@mui/material'
 import { BigNumber } from 'ethers'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 import css from './styles.module.css'
 import { FLOAT_REGEX } from '@/utils/validation'
 import TxModalTitle from '../TxModalTitle'
+import NonceForm from '../NonceForm'
 
 export type AdvancedParameters = {
+  nonce: number
   gasLimit: BigNumber
   maxFeePerGas: BigNumber
   maxPriorityFeePerGas: BigNumber
@@ -14,29 +16,35 @@ export type AdvancedParameters = {
 
 type AdvancedParamsFormProps = AdvancedParameters & {
   onSubmit: (params: AdvancedParameters) => void
+  isExecution: boolean
+  nonceReadonly?: boolean
 }
 
 type FormData = {
+  nonce: number
   gasLimit: string
   maxFeePerGas: string
   maxPriorityFeePerGas: string
 }
 
 const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
+  const formMethods = useForm<FormData>({
     defaultValues: {
+      nonce: props.nonce,
       gasLimit: props.gasLimit.toString(),
       maxFeePerGas: safeFormatUnits(props.maxFeePerGas),
       maxPriorityFeePerGas: safeFormatUnits(props.maxPriorityFeePerGas),
     },
   })
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = formMethods
 
   const onBack = () => {
     props.onSubmit({
+      nonce: props.nonce,
       gasLimit: props.gasLimit,
       maxFeePerGas: props.maxFeePerGas,
       maxPriorityFeePerGas: props.maxPriorityFeePerGas,
@@ -45,6 +53,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
 
   const onSubmit = (data: FormData) => {
     props.onSubmit({
+      nonce: data.nonce,
       gasLimit: BigNumber.from(data.gasLimit),
       maxFeePerGas: safeParseUnits(data.maxFeePerGas) || props.maxFeePerGas,
       maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) || props.maxPriorityFeePerGas,
@@ -53,59 +62,67 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
 
   return (
     <Paper className={css.container} elevation={0}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <TxModalTitle>Advanced parameters</TxModalTitle>
+      <FormProvider {...formMethods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <TxModalTitle>Advanced parameters</TxModalTitle>
 
-        <Grid container sx={{ marginTop: 4, marginBottom: 2, gap: 3 }}>
-          <Grid item>
-            <FormControl fullWidth>
-              <TextField
-                label={errors.gasLimit?.message || 'Gas limit'}
-                error={!!errors.gasLimit}
-                autoComplete="off"
-                type="number"
-                {...register('gasLimit', { required: true })}
-              />
-            </FormControl>
+          <Grid container sx={{ marginTop: 4, marginBottom: 2 }} spacing={2}>
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <NonceForm recommendedNonce={props.nonce} readonly={props.nonceReadonly} />
+              </FormControl>
+            </Grid>
+
+            {props.isExecution && (
+              <>
+                <Grid item xs={6}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label={errors.gasLimit?.message || 'Gas limit'}
+                      error={!!errors.gasLimit}
+                      autoComplete="off"
+                      type="number"
+                      {...register('gasLimit', { required: true })}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={6}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
+                      error={!!errors.maxPriorityFeePerGas}
+                      autoComplete="off"
+                      {...register('maxPriorityFeePerGas', { required: true, pattern: FLOAT_REGEX })}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={6}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label={errors.maxFeePerGas?.message || 'Max fee (Gwei)'}
+                      error={!!errors.maxFeePerGas}
+                      autoComplete="off"
+                      {...register('maxFeePerGas', { required: true, pattern: FLOAT_REGEX })}
+                    />
+                  </FormControl>
+                </Grid>
+              </>
+            )}
           </Grid>
 
-          <Grid item xs={6} />
+          <DialogActions sx={{ paddingLeft: '0 !important', paddingRight: '0 !important' }}>
+            <Button color="inherit" onClick={onBack}>
+              Back
+            </Button>
 
-          <Grid item>
-            <FormControl fullWidth>
-              <TextField
-                label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
-                error={!!errors.maxPriorityFeePerGas}
-                autoComplete="off"
-                {...register('maxPriorityFeePerGas', { required: true, pattern: FLOAT_REGEX })}
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid item>
-            <FormControl fullWidth>
-              <TextField
-                label={errors.maxFeePerGas?.message || 'Max fee (Gwei)'}
-                error={!!errors.maxFeePerGas}
-                autoComplete="off"
-                {...register('maxFeePerGas', { required: true, pattern: FLOAT_REGEX })}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
-
-        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-          <Button color="inherit" onClick={onBack} sx={{ mr: 1 }}>
-            Back
-          </Button>
-
-          <Box sx={{ flex: '1 1 auto' }} />
-
-          <Button variant="contained" type="submit">
-            Confirm
-          </Button>
-        </Box>
-      </form>
+            <Button variant="contained" type="submit">
+              Confirm
+            </Button>
+          </DialogActions>
+        </form>
+      </FormProvider>
     </Paper>
   )
 }

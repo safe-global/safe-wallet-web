@@ -7,6 +7,7 @@ import { AdvancedParameters } from '../AdvancedParamsForm'
 
 type GasParamsProps = Partial<AdvancedParameters> & {
   isLoading: boolean
+  isExecution: boolean
   onEdit: () => void
 }
 
@@ -22,10 +23,12 @@ const GasDetail = ({ name, value, isLoading }: { name: string; value: string; is
 }
 
 const GasParams = ({
+  nonce,
   gasLimit,
   maxFeePerGas,
   maxPriorityFeePerGas,
   isLoading,
+  isExecution,
   onEdit,
 }: GasParamsProps): ReactElement => {
   const chain = useCurrentChain()
@@ -50,22 +53,32 @@ const GasParams = ({
     <div className={css.container}>
       <Accordion elevation={0}>
         <AccordionSummary>
-          <Typography>
-            Estimated fee{' '}
-            {isLoading ? (
-              <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
-            ) : (
-              `${totalFee} ${chain?.nativeCurrency.symbol}`
-            )}
-          </Typography>
+          {isExecution ? (
+            <Typography>
+              Estimated fee{' '}
+              {isLoading ? (
+                <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
+              ) : (
+                `${totalFee} ${chain?.nativeCurrency.symbol}`
+              )}
+            </Typography>
+          ) : (
+            <Typography>Off-chain signature</Typography>
+          )}
         </AccordionSummary>
 
         <AccordionDetails>
-          <GasDetail isLoading={isLoading} name="Gas limit" value={gasLimitString} />
+          <GasDetail isLoading={nonce == null} name="Nonce" value={(nonce || '').toString()} />
 
-          <GasDetail isLoading={isLoading} name="Max priority fee (Gwei)" value={maxPrioGasGwei} />
+          {isExecution && (
+            <>
+              <GasDetail isLoading={isLoading} name="Gas limit" value={gasLimitString} />
 
-          <GasDetail isLoading={isLoading} name="Max fee (Gwei)" value={maxFeePerGasGwei} />
+              <GasDetail isLoading={isLoading} name="Max priority fee (Gwei)" value={maxPrioGasGwei} />
+
+              <GasDetail isLoading={isLoading} name="Max fee (Gwei)" value={maxFeePerGasGwei} />
+            </>
+          )}
 
           <Typography
             className={css.buttonLink}

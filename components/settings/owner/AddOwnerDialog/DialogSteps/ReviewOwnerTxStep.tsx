@@ -7,9 +7,7 @@ import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { useState } from 'react'
 import { useAppDispatch } from '@/store'
-import NonceForm from '@/components/tx/NonceForm'
 import useSafeTxGas from '@/hooks/useSafeTxGas'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -24,8 +22,6 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
   const safeSDK = useSafeSDK()
   const addressBook = useAddressBook()
   const { newOwner, removedOwner, threshold } = data
-
-  const [editableNonce, setEditableNonce] = useState<number>()
 
   // @TODO: move to txSender, add event dispatching
   const [changeOwnerTx, createTxError, loading] = useAsync(() => {
@@ -46,16 +42,17 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
   }, [removedOwner, newOwner])
 
   const { safeGas, safeGasError } = useSafeTxGas(changeOwnerTx?.data)
+  const { recommendedNonce = 0 } = safeGas || {}
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!changeOwnerTx || !editableNonce) return
+    if (!changeOwnerTx || !recommendedNonce) return
 
     return await createTx({
       ...changeOwnerTx.data,
-      nonce: editableNonce,
+      nonce: recommendedNonce,
       safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
     })
-  }, [editableNonce, changeOwnerTx, safeGas?.safeTxGas])
+  }, [recommendedNonce, changeOwnerTx, safeGas?.safeTxGas])
 
   const isReplace = Boolean(removedOwner)
 
@@ -134,12 +131,6 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           </Box>
         </Grid>
       </Grid>
-
-      <NonceForm
-        onChange={setEditableNonce}
-        recommendedNonce={safeGas?.recommendedNonce}
-        safeNonce={safeGas?.currentNonce}
-      />
     </SignOrExecuteForm>
   )
 }
