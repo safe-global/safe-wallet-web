@@ -6,7 +6,7 @@ const FiatValue = ({ value }: { value: string | number }): ReactElement => {
   const currency = useAppSelector(selectCurrency)
 
   const formatter = useMemo(() => {
-    return new Intl.NumberFormat([], { style: 'currency', currency })
+    return new Intl.NumberFormat([], { style: 'currency', currency, currencyDisplay: 'narrowSymbol' })
   }, [currency])
 
   return <span suppressHydrationWarning>{formatter.format(Number(value))}</span>
