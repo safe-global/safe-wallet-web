@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactElement } from 'react'
 import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
-import { formatDecimals } from '@/utils/formatters'
+import { formatAmount, formatDecimals } from '@/utils/formatters'
 import css from './styles.module.css'
 
 export const TokenIcon = (props: { logoUri?: string | null; tokenSymbol?: string | null }): ReactElement | null => {
@@ -23,12 +23,13 @@ const TokenAmount = (props: {
   direction?: TransferDirection
 }): ReactElement => {
   const sign = props.direction === TransferDirection.OUTGOING ? '-' : ''
+  const wholeNumber = formatDecimals(props.value, props.decimals || undefined)
 
   return (
     <span className={css.container}>
       {props.logoUri && <TokenIcon logoUri={props.logoUri} tokenSymbol={props.tokenSymbol} />}
       {sign}
-      {formatDecimals(props.value, props.decimals || undefined)} {props.tokenSymbol}
+      {formatAmount(wholeNumber)} {props.tokenSymbol}
     </span>
   )
 }
