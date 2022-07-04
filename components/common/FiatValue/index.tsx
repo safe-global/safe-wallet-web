@@ -8,7 +8,7 @@ const FiatValue = ({ value }: { value: string | number }): ReactElement => {
 
   const fiat = useMemo(() => {
     return formatCurrency(value, currency)
-  }, [currency])
+  }, [value, currency])
 
   return <span suppressHydrationWarning>{fiat}</span>
 }
