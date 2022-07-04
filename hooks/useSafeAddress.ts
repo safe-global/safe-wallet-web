@@ -1,18 +1,18 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { getAddress } from 'ethers/lib/utils'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 const useSafeAddress = (): string => {
   const router = useRouter()
   const { safe = '' } = router.query
   const fullAddress = Array.isArray(safe) ? safe[0] : safe
 
-  const address = useMemo(() => {
-    const bareAddress = fullAddress.split(':').pop()
-    return bareAddress ? getAddress(bareAddress) : ''
+  const checksummedAddress = useMemo(() => {
+    const { address } = parsePrefixedAddress(fullAddress)
+    return address
   }, [fullAddress])
 
-  return address
+  return checksummedAddress
 }
 
 export default useSafeAddress

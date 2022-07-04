@@ -2,13 +2,13 @@ import React from 'react'
 import type { Web3Provider } from '@ethersproject/providers'
 import { CreateSafeFormData } from '@/components/create-safe/index'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
-import { EthHashInfo } from '@gnosis.pm/safe-react-components'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import EthHashInfo from '../common/EthHashInfo'
 
 const createNewSafe = async (ethersProvider: Web3Provider, txParams: SafeAccountConfig): Promise<Safe> => {
   const ethAdapter = createEthersAdapter(ethersProvider)
@@ -57,7 +57,7 @@ const Review = ({ params, onBack }: Props) => {
           <Box padding={3}>{params.owners.length} Safe owners</Box>
           <Divider />
           {params.owners.map((owner) => {
-            return <EthHashInfo key={owner.address} />
+            return <EthHashInfo key={owner.address} address={owner.address} name={owner.name} shortAddress={false} />
           })}
           <Divider />
         </Grid>

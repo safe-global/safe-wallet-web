@@ -85,7 +85,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
       title="Add new owner"
     >
       <Grid container spacing={2} py={3}>
-        <Grid direction="column" xs item className={`${css.detailsBlock}`}>
+        <Grid xs item className={`${css.detailsBlock}`}>
           <Typography>Details</Typography>
 
           <Box marginBottom={2}>
@@ -100,7 +100,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           </Box>
         </Grid>
 
-        <Grid direction="column">
+        <Grid>
           <Typography paddingLeft={2}>{safe?.owners.length ?? 0} Safe owner(s)</Typography>
           <Divider />
           {safe?.owners
