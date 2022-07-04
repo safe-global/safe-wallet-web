@@ -2,10 +2,11 @@ import { type ReactElement } from 'react'
 import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxSigners from '@/components/transactions/TxSigners'
 import Summary from '@/components/transactions/TxDetails/Summary'
-import TxData from '@/components/transactions/TxDetails/TxData'
+import TxData, { AddressInfo } from '@/components/transactions/TxDetails/TxData'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
-import { isMultisendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { isModuleExecutionInfo, isMultisendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { InfoDetails } from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import css from './styles.module.css'
 
 export const NOT_AVAILABLE = 'n/a'
@@ -41,6 +42,16 @@ const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactEleme
             <div className={css.txData}>
               <TxData txDetails={txDetails} />
             </div>
+            {/* Module information*/}
+            {isModuleExecutionInfo(txSummary.executionInfo) ? (
+              <div className={css.txModule}>
+                <InfoDetails title="Module:">
+                  <AddressInfo address={txSummary.executionInfo.address.value} />
+                </InfoDetails>
+              </div>
+            ) : (
+              <></>
+            )}
             <div className={css.txSummary}>
               <Summary txDetails={txDetails} />
             </div>

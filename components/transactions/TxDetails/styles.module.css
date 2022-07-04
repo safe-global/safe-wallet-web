@@ -20,7 +20,8 @@
 
 .txData,
 .txSummary,
-.advancedDetails {
+.advancedDetails,
+.txModule {
   background: white;
   padding: 20px 24px;
 }

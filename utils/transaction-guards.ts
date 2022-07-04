@@ -7,6 +7,7 @@ import {
   DateLabel,
   DetailedExecutionInfo,
   Label,
+  ModuleExecutionInfo,
   MultiSend,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
@@ -38,8 +39,12 @@ export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null):
   return value?.type === 'MULTISIG'
 }
 
+// TODO: replace this type guard for the one guard above
 export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>
   value?.type === 'MULTISIG'
+
+export const isModuleExecutionInfo = (value: TransactionSummary['executionInfo']): value is ModuleExecutionInfo =>
+  value?.type === 'MODULE'
 
 export const isTransaction = (value: TransactionListItem): value is Transaction => {
   return value.type === 'TRANSACTION'
