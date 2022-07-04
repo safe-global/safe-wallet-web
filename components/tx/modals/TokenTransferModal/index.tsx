@@ -2,7 +2,7 @@ import React from 'react'
 
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import SendAssetsForm, { SendAssetsFormData } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
-import ReviewNewTx from '@/components/tx/modals/TokenTransferModal/ReviewNewTx'
+import ReviewTokenTx from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 import TxModal, { TxModalProps } from '@/components/tx/TxModal'
 
 export const TokenTransferSteps: TxStepperProps['steps'] = [
@@ -12,7 +12,7 @@ export const TokenTransferSteps: TxStepperProps['steps'] = [
   },
   {
     label: 'Review',
-    render: (data, onSubmit) => <ReviewNewTx params={data as SendAssetsFormData} onSubmit={onSubmit} />,
+    render: (data, onSubmit) => <ReviewTokenTx params={data as SendAssetsFormData} onSubmit={onSubmit} />,
   },
 ]
 
