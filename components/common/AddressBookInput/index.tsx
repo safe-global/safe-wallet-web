@@ -24,7 +24,7 @@ const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement =
 
   return (
     <Autocomplete
-      value={String(addressValue || '')}
+      value={addressValue || ''}
       freeSolo
       disablePortal
       options={addressBookEntries}
