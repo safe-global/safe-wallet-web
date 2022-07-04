@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { useForm, FormProvider } from 'react-hook-form'
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography, TextField } from '@mui/material'
+import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import css from './styles.module.css'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
@@ -12,17 +13,6 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import TxModalTitle from '../../TxModalTitle'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
-
-export type SendAssetsFormData = {
-  recipient: string
-  tokenAddress: string
-  amount: string
-}
-
-type SendAssetsFormProps = {
-  formData?: SendAssetsFormData
-  onSubmit: (formData: SendAssetsFormData) => void
-}
 
 export const SendFromBlock = (): ReactElement => {
   const address = useSafeAddress()
@@ -50,6 +40,35 @@ export const SendFromBlock = (): ReactElement => {
       )}
     </Box>
   )
+}
+
+const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
+  <MenuItem value={item.tokenInfo.address}>
+    <Grid container alignItems="center">
+      <Box fontSize={24}>
+        <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
+      </Box>
+
+      <Grid item xs>
+        <Typography variant="body2">{item.tokenInfo.name}</Typography>
+
+        <Typography variant="caption" color="text.secondary">
+          <TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} tokenSymbol={item.tokenInfo.symbol} />
+        </Typography>
+      </Grid>
+    </Grid>
+  </MenuItem>
+)
+
+export type SendAssetsFormData = {
+  recipient: string
+  tokenAddress: string
+  amount: string
+}
+
+type SendAssetsFormProps = {
+  formData?: SendAssetsFormData
+  onSubmit: (formData: SendAssetsFormData) => void
 }
 
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
@@ -99,10 +118,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             {...register('tokenAddress', { required: true })}
           >
             {balances.items.map((item) => (
-              <MenuItem value={item.tokenInfo.address} key={item.tokenInfo.address}>
-                <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
-                {item.tokenInfo.name} (<TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} />)
-              </MenuItem>
+              <AutocompleteItem key={item.tokenInfo.address} {...item} />
             ))}
           </Select>
         </FormControl>

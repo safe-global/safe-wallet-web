@@ -28,4 +28,15 @@ describe('useSafeAddress hook', () => {
     const { result } = renderHook(() => useSafeAddress())
     expect(result.current).toBe('')
   })
+
+  it('should cheksum the safe address', () => {
+    ;(useRouter as any).mockImplementation(() => ({
+      query: {
+        safe: 'eth:0x220866b1a2219f40e72f5c628b65d54268ca3a9d',
+      },
+    }))
+
+    const { result } = renderHook(() => useSafeAddress())
+    expect(result.current).toBe('0x220866B1A2219f40e72f5c628B65D54268cA3A9D')
+  })
 })

@@ -15,8 +15,9 @@ export type PrefixedAddress = {
 
 export const parsePrefixedAddress = (value: string): PrefixedAddress => {
   const [prefix, address] = value.split(':')
+
   return {
     prefix: address ? prefix : undefined,
-    address: getAddress(address || value),
+    address: address ? getAddress(address) : value,
   }
 }

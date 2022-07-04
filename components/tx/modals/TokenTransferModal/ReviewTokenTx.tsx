@@ -3,6 +3,7 @@ import { Box, Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
+import css from './styles.module.css'
 import { SendAssetsFormData, SendFromBlock } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
@@ -17,7 +18,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
-    <Box sx={{ textAlign: 'center' }}>
+    <Box className={css.tokenPreview}>
       <Box fontSize={24}>
         <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
       </Box>
@@ -29,12 +30,12 @@ const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData
   )
 }
 
-type ReviewNewTxProps = {
+type ReviewTokenTxProps = {
   params: SendAssetsFormData
   onSubmit: (data: null) => void
 }
 
-const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
+const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement => {
   const { safe } = useSafeInfo()
 
   // Find the token info for the token we're sending
@@ -94,4 +95,4 @@ const ReviewNewTx = ({ params, onSubmit }: ReviewNewTxProps): ReactElement => {
   )
 }
 
-export default ReviewNewTx
+export default ReviewTokenTx

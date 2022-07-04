@@ -1,4 +1,4 @@
-import { SyntheticEvent, useCallback, useEffect } from 'react'
+import { ReactElement, SyntheticEvent, useCallback, useEffect } from 'react'
 import groupBy from 'lodash/groupBy'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { closeNotification, Notification, selectNotifications } from '@/store/notificationsSlice'
@@ -22,7 +22,7 @@ const Toast = ({ message, severity, onClose }: { message: string; severity: Aler
   )
 }
 
-const Notifications = () => {
+const Notifications = (): ReactElement | null => {
   const notifications = useAppSelector(selectNotifications)
   const dispatch = useAppDispatch()
   const visible = notifications.filter((item) => !item.dismissed)
@@ -43,6 +43,10 @@ const Notifications = () => {
       previous.forEach(handleClose)
     })
   }, [notifications, handleClose])
+
+  if (!visible.length) {
+    return null
+  }
 
   return (
     <div className={css.container}>
