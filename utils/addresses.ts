@@ -1,4 +1,5 @@
 import { getAddress } from 'ethers/lib/utils'
+import { isAddress } from '@ethersproject/address'
 
 export const sameAddress = (firstAddress: string | undefined, secondAddress: string | undefined): boolean => {
   if (!firstAddress || !secondAddress) {
@@ -18,6 +19,6 @@ export const parsePrefixedAddress = (value: string): PrefixedAddress => {
 
   return {
     prefix: address ? prefix : undefined,
-    address: address ? getAddress(address) : value,
+    address: isAddress(address) ? getAddress(address) : value,
   }
 }

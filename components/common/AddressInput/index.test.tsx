@@ -87,11 +87,11 @@ describe('AddressInput tests', () => {
     utils.getByText('Submit').click()
     await act(() => Promise.resolve())
 
-    expect(utils.getByLabelText(`${TEST_ADDRESS_A} is wrong`)).toBeDefined()
+    expect(utils.getByLabelText(`rin:${TEST_ADDRESS_A} is wrong`)).toBeDefined()
 
     fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
     await act(() => Promise.resolve())
 
-    expect(utils.getByLabelText(`${TEST_ADDRESS_B} is wrong`)).toBeDefined()
+    expect(utils.getByLabelText(`rin:${TEST_ADDRESS_B} is wrong`)).toBeDefined()
   })
 })
