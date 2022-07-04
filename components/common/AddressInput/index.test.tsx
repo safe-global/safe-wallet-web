@@ -1,6 +1,6 @@
-import { render, act, fireEvent } from '@testing-library/react'
+import { act, fireEvent } from '@testing-library/react'
+import { render } from '@/tests/test-utils'
 import { useForm, FormProvider } from 'react-hook-form'
-import TestProviderWrapper from '@/mocks/TestProviderWrapper'
 import AddressInput, { type AddressInputProps } from '.'
 
 // mock useCurrentChain
@@ -57,11 +57,7 @@ const TestForm = ({
 }
 
 const setup = (address: string, prefix?: string, validate?: AddressInputProps['validate']) => {
-  const utils = render(
-    <TestProviderWrapper>
-      <TestForm address={address} prefix={prefix} validate={validate} />
-    </TestProviderWrapper>,
-  )
+  const utils = render(<TestForm address={address} prefix={prefix} validate={validate} />)
   const input = utils.getByLabelText('Recipient address')
   return {
     input: input as HTMLInputElement,
