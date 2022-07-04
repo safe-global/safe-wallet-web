@@ -10,7 +10,8 @@ type TxDataRowProps = {
   children?: ReactNode
 }
 
-export const TxDataRow = ({ title, children }: TxDataRowProps): ReactElement => {
+export const TxDataRow = ({ title, children }: TxDataRowProps): ReactElement | null => {
+  if (children == undefined) return null
   return (
     <div className={css.gridRow}>
       <Typography

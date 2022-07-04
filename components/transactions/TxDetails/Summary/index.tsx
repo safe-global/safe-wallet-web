@@ -20,18 +20,17 @@ const Summary = ({ txDetails }: Props): ReactElement => {
 
   const { txHash, detailedExecutionInfo, executedAt, txData } = txDetails
 
-  if (!isMultisigExecutionDetails(detailedExecutionInfo)) {
-    return <></>
+  let submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, refundReceiver, safeTxGas
+  if (isMultisigExecutionDetails(detailedExecutionInfo)) {
+    ;({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo)
+    refundReceiver = detailedExecutionInfo.refundReceiver?.value
   }
-
-  const { submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo
-  const refundReceiver = detailedExecutionInfo.refundReceiver?.value
 
   return (
     <>
       <TxDataRow title="Transaction hash:">{generateDataRowValue(txHash, 'hash')}</TxDataRow>
       <TxDataRow title="SafeTxHash:">{generateDataRowValue(safeTxHash, 'hash', false)}</TxDataRow>
-      <TxDataRow title="Created:">{dateString(submittedAt)}</TxDataRow>
+      <TxDataRow title="Created:">{submittedAt ? dateString(submittedAt) : null}</TxDataRow>
       <TxDataRow title="Executed:">{executedAt ? dateString(executedAt) : NOT_AVAILABLE}</TxDataRow>
 
       {/* Advanced TxData */}
