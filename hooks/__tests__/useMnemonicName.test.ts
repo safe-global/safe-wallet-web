@@ -1,5 +1,5 @@
 import { getRandomName, useMnemonicName, useMnemonicSafeName } from '../useMnemonicName'
-import { renderHook } from '@testing-library/react'
+import { renderHook } from '@/tests/test-utils'
 
 // Mock useCurrentChain hook
 jest.mock('@/hooks/useChains', () => ({
