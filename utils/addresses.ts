@@ -1,3 +1,5 @@
+import { getAddress } from 'ethers/lib/utils'
+
 export const sameAddress = (firstAddress: string | undefined, secondAddress: string | undefined): boolean => {
   if (!firstAddress || !secondAddress) {
     return false
@@ -15,6 +17,6 @@ export const parsePrefixedAddress = (value: string): PrefixedAddress => {
   const [prefix, address] = value.split(':')
   return {
     prefix: address ? prefix : undefined,
-    address: address || value,
+    address: getAddress(address || value),
   }
 }

@@ -31,7 +31,7 @@ const Review = ({ params, onBack }: Props) => {
 
     await createNewSafe(ethersProvider, {
       threshold: params.threshold,
-      owners: params.owners.map((owner) => owner.address.address),
+      owners: params.owners.map((owner) => owner.address),
     })
   }
 
@@ -57,14 +57,7 @@ const Review = ({ params, onBack }: Props) => {
           <Box padding={3}>{params.owners.length} Safe owners</Box>
           <Divider />
           {params.owners.map((owner) => {
-            return (
-              <EthHashInfo
-                key={owner.address.address}
-                address={owner.address.address}
-                name={owner.name}
-                shortAddress={false}
-              />
-            )
+            return <EthHashInfo key={owner.address} address={owner.address} name={owner.name} shortAddress={false} />
           })}
           <Divider />
         </Grid>

@@ -14,50 +14,29 @@ jest.mock('@/hooks/useChains', () => {
   }
 })
 
-const TestForm = ({
-  address,
-  prefix,
-  validate,
-}: {
-  address: string
-  prefix?: string
-  validate?: AddressInputProps['validate']
-}) => {
+const TestForm = ({ address, validate }: { address: string; validate?: AddressInputProps['validate'] }) => {
   const name = 'recipient'
 
   const methods = useForm<{
-    [name]: {
-      address: string
-      prefix?: string
-      toString: () => string
-    }
+    [name]: string
   }>({
     defaultValues: {
-      [name]: {
-        address,
-        prefix,
-        toString: () => (prefix ? `${prefix}:${address}` : address),
-      },
+      [name]: address,
     },
   })
-
-  const addressValue = methods.watch(name)
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(() => null)}>
         <AddressInput name={name} label="Recipient address" validate={validate} />
         <button type="submit">Submit</button>
-
-        {<span data-testid="prefix">{addressValue.prefix}</span>}
-        {<span data-testid="address">{addressValue.address}</span>}
       </form>
     </FormProvider>
   )
 }
 
-const setup = (address: string, prefix?: string, validate?: AddressInputProps['validate']) => {
-  const utils = render(<TestForm address={address} prefix={prefix} validate={validate} />)
+const setup = (address: string, validate?: AddressInputProps['validate']) => {
+  const utils = render(<TestForm address={address} validate={validate} />)
   const input = utils.getByLabelText('Recipient address')
   return {
     input: input as HTMLInputElement,
@@ -75,7 +54,7 @@ describe('AddressInput tests', () => {
   })
 
   it('should render with a default prefixed address value', () => {
-    const { input } = setup(TEST_ADDRESS_A, 'eth')
+    const { input } = setup(`eth:${TEST_ADDRESS_A}`)
     expect(input.value).toBe(`eth:${TEST_ADDRESS_A}`)
   })
 
@@ -101,7 +80,7 @@ describe('AddressInput tests', () => {
   })
 
   it('should accept a custom validate function', async () => {
-    const { input, utils } = setup('', undefined, (val) => `${val} is wrong`)
+    const { input, utils } = setup('', (val) => `${val} is wrong`)
 
     fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })
 
@@ -114,22 +93,5 @@ describe('AddressInput tests', () => {
     await act(() => Promise.resolve())
 
     expect(utils.getByLabelText(`${TEST_ADDRESS_B} is wrong`)).toBeDefined()
-  })
-
-  it('should pass a parsed address on submit', async () => {
-    const { input, utils } = setup('', undefined, (val) => `${val} is wrong`)
-
-    fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
-
-    utils.getByText('Submit').click()
-    await act(() => Promise.resolve())
-
-    expect(utils.getByTestId('prefix')).toHaveTextContent('eth')
-    expect(utils.getByTestId('address')).toHaveTextContent(TEST_ADDRESS_A)
-
-    fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
-    await act(() => Promise.resolve())
-    expect(utils.getByTestId('prefix')).toHaveTextContent('rin')
-    expect(utils.getByTestId('address')).toHaveTextContent(TEST_ADDRESS_B)
   })
 })

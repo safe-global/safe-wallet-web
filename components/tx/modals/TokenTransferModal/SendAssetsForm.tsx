@@ -11,12 +11,10 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import TxModalTitle from '../../TxModalTitle'
 import AddressBookInput from '@/components/common/AddressBookInput'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 export type SendAssetsFormData = {
-  recipient: {
-    address: string
-    prefix: string
-  }
+  recipient: string
   tokenAddress: string
   amount: string
 }
@@ -73,9 +71,16 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
 
+  const onFormSubmit = (data: SendAssetsFormData) => {
+    onSubmit({
+      ...data,
+      recipient: parsePrefixedAddress(data.recipient).address,
+    })
+  }
+
   return (
     <FormProvider {...formMethods}>
-      <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
+      <form className={css.container} onSubmit={handleSubmit(onFormSubmit)}>
         <TxModalTitle>Send funds</TxModalTitle>
 
         <SendFromBlock />

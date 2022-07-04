@@ -24,6 +24,7 @@ import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import AddressInput from '@/components/common/AddressInput'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 type Props = {
   params: CreateSafeFormData
@@ -37,7 +38,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
 
   const defaultOwner: Owner = {
     name: wallet?.ens || '',
-    address: { address: wallet?.address || '', toString: () => wallet?.address || '' },
+    address: wallet?.address || '',
     resolving: false,
   }
 
@@ -52,17 +53,26 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
     name: 'owners',
   })
 
-  const owners = watch('owners')
-
   const addOwner = () => {
-    append({ name: '', address: { address: '', toString: () => '' }, resolving: false })
+    append({ name: '', address: '', resolving: false })
+  }
+
+  const onFormSubmit = (data: CreateSafeFormData) => {
+    onSubmit({
+      ...data,
+      owners: data.owners.map((owner) => ({
+        ...owner,
+        address: parsePrefixedAddress(owner.address).address,
+      })),
+    })
   }
 
   const getENS = useCallback(
     async (owner: Owner, index: number) => {
       if (!ethersProvider) return
       setValue(`owners.${index}.resolving`, true)
-      const ensName = await ethersProvider.lookupAddress(owner.address.address)
+      const { address } = parsePrefixedAddress(owner.address)
+      const ensName = await ethersProvider.lookupAddress(address)
       if (!owner.name) {
         update(index, { ...owner, name: ensName || '', resolving: false })
       }
@@ -71,9 +81,10 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
   )
 
   // @FIXME: do it on change of address
+  const owners = watch('owners')
   useEffect(() => {
     owners.forEach((owner, index) => {
-      if (owner.address.address && !owner.name) {
+      if (owner.address && !owner.name) {
         getENS(owner, index)
       }
     })
@@ -82,7 +93,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props) => {
   return (
     <Paper>
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onFormSubmit)}>
           <Box padding={3}>
             <Typography mb={2}>
               Your Safe will have one or more owners. We have prefilled the first owner with your connected wallet

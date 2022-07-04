@@ -34,12 +34,12 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
     }
     if (removedOwner) {
       return safeSDK.getSwapOwnerTx({
-        newOwnerAddress: newOwner.address.address,
-        oldOwnerAddress: removedOwner.address.address,
+        newOwnerAddress: newOwner.address,
+        oldOwnerAddress: removedOwner.address,
       })
     } else {
       return safeSDK.getAddOwnerTx({
-        ownerAddress: newOwner.address.address,
+        ownerAddress: newOwner.address,
         threshold,
       })
     }
@@ -64,7 +64,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
       dispatch(
         upsertAddressBookEntry({
           chainId: chainId,
-          address: newOwner.address.address,
+          address: newOwner.address,
           name: newOwner.name,
         }),
       )
@@ -104,7 +104,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           <Typography paddingLeft={2}>{safe?.owners.length ?? 0} Safe owner(s)</Typography>
           <Divider />
           {safe?.owners
-            .filter((owner) => !removedOwner || !sameAddress(owner.value, removedOwner.address.address))
+            .filter((owner) => !removedOwner || !sameAddress(owner.value, removedOwner.address))
             .map((owner) => (
               <div key={owner.value}>
                 <Box padding={2} key={owner.value}>
@@ -120,7 +120,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
               </div>
               <Divider />
               <Box className={css.removedOwner} padding={2}>
-                <EthHashInfo address={removedOwner.address.address} shortAddress={false} />
+                <EthHashInfo address={removedOwner.address} shortAddress={false} />
               </Box>
               <Divider />
             </>
@@ -130,7 +130,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           </div>
           <Divider />
           <Box padding={2}>
-            <EthHashInfo address={newOwner.address.address} shortAddress={false} />
+            <EthHashInfo address={newOwner.address} shortAddress={false} />
           </Box>
         </Grid>
       </Grid>

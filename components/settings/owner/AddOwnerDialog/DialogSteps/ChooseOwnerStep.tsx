@@ -6,12 +6,11 @@ import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/Dial
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { uniqueAddress, addressIsNotCurrentSafe } from '@/utils/validation'
 import TxModalTitle from '@/components/tx/TxModalTitle'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 type ChooseOwnerFormData = {
   ownerName?: string
-  ownerAddress: {
-    address: string
-  }
+  ownerAddress: string
 }
 
 export const ChooseOwnerStep = ({
@@ -38,7 +37,13 @@ export const ChooseOwnerStep = ({
   const { register, handleSubmit } = formMethods
 
   const onSubmitHandler = (formData: ChooseOwnerFormData) => {
-    onSubmit({ ...data, newOwner: { address: formData.ownerAddress, name: formData.ownerName } })
+    onSubmit({
+      ...data,
+      newOwner: {
+        address: parsePrefixedAddress(formData.ownerAddress).address,
+        name: formData.ownerName,
+      },
+    })
   }
 
   const notAlreadyOwner = uniqueAddress(owners?.map((owner) => owner.value))
@@ -61,7 +66,7 @@ export const ChooseOwnerStep = ({
         {removedOwner && (
           <Box my={2}>
             <Typography mb={1}>Current owner</Typography>
-            <EthHashInfo address={removedOwner.address.address} showCopyButton shortAddress={false} />
+            <EthHashInfo address={removedOwner.address} showCopyButton shortAddress={false} />
           </Box>
         )}
 

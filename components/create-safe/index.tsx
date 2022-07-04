@@ -7,14 +7,11 @@ import Review from '@/components/create-safe/Review'
 import { useRouter } from 'next/router'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
+import { AppRoutes } from '@/config/routes'
 
 export type Owner = {
   name: string
-  address: {
-    address: string
-    prefix?: string
-    toString: () => string
-  }
+  address: string
   resolving: boolean
 }
 
@@ -48,7 +45,7 @@ export const CreateSafeSteps: TxStepperProps['steps'] = [
 const CreateSafe = () => {
   const router = useRouter()
 
-  return <VerticalTxStepper steps={CreateSafeSteps} onClose={() => router.push('/welcome')} />
+  return <VerticalTxStepper steps={CreateSafeSteps} onClose={() => router.push(AppRoutes.welcome)} />
 }
 
 export default CreateSafe
