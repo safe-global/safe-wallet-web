@@ -1,7 +1,7 @@
 import { ReactElement, useMemo } from 'react'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/sessionSlice'
-import { formatCurrency } from '@/utils/formatters'
+import { formatCurrency } from '@/utils/formatNumber'
 
 const FiatValue = ({ value }: { value: string | number }): ReactElement => {
   const currency = useAppSelector(selectCurrency)

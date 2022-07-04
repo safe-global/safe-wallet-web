@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactElement } from 'react'
 import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
-import { formatAmount, formatDecimals } from '@/utils/formatters'
+import { formatDecimals } from '@/utils/formatters'
+import { formatAmount } from '@/utils/formatNumber'
 import css from './styles.module.css'
 
 export const TokenIcon = (props: { logoUri?: string | null; tokenSymbol?: string | null }): ReactElement | null => {
