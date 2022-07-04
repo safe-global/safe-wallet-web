@@ -5,7 +5,7 @@ import Summary from '@/components/transactions/TxDetails/Summary'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
-import { isMultisendTxInfo } from '@/utils/transaction-guards'
+import { isMultisendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import css from './styles.module.css'
 
 export const NOT_AVAILABLE = 'n/a'
@@ -20,10 +20,13 @@ const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactEleme
     return <div>Loading...</div>
   }
 
+  // confirmations are in detailedExecutionInfo
+  const hasSigners = isMultisigExecutionInfo(txSummary.executionInfo) && txSummary.executionInfo.confirmationsRequired
+
   return (
     <div className={css.container}>
       {/* /Details */}
-      <div className={css.details}>
+      <div className={`${css.details} ${!hasSigners ? css.noSigners : ''}`}>
         {isMultisendTxInfo(txDetails.txInfo) ? (
           <>
             <div className={`${css.txSummary} ${css.multisend}`}>
@@ -45,7 +48,7 @@ const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactEleme
         )}
       </div>
       {/* Signers */}
-      {txDetails && (
+      {hasSigners && (
         <div className={css.txSigners}>
           <TxSigners txDetails={txDetails} txSummary={txSummary} />
         </div>
