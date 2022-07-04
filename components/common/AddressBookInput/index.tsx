@@ -13,7 +13,8 @@ const abFilterOptions = createFilterOptions({
  */
 const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement => {
   const addressBook = useAddressBook()
-  const { getValues } = useFormContext()
+  const { watch } = useFormContext()
+  const addressValue = watch(name)
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
     label: address,
@@ -22,7 +23,7 @@ const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement =
 
   return (
     <Autocomplete
-      value={getValues(name)?.toString() || ''}
+      value={String(addressValue || '')}
       freeSolo
       disablePortal
       options={addressBookEntries}

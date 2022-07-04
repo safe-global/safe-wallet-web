@@ -63,12 +63,12 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const {
     register,
     handleSubmit,
-    getValues,
+    watch,
     formState: { errors },
   } = formMethods
 
   // Selected token
-  const tokenAddress = getValues('tokenAddress')
+  const tokenAddress = watch('tokenAddress')
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined

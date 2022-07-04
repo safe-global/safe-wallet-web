@@ -41,14 +41,16 @@ const TestForm = ({
     },
   })
 
+  const addressValue = methods.watch(name)
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(() => null)}>
         <AddressInput name={name} label="Recipient address" validate={validate} />
         <button type="submit">Submit</button>
 
-        {<span data-testid="prefix">{methods.getValues(name).prefix}</span>}
-        {<span data-testid="address">{methods.getValues(name).address}</span>}
+        {<span data-testid="prefix">{addressValue.prefix}</span>}
+        {<span data-testid="address">{addressValue.address}</span>}
       </form>
     </FormProvider>
   )
