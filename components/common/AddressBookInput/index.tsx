@@ -1,8 +1,9 @@
 import { ReactElement } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { Autocomplete, Box, createFilterOptions } from '@mui/material'
+import { Autocomplete, Typography, createFilterOptions } from '@mui/material'
 import useAddressBook from '@/hooks/useAddressBook'
 import AddressInput, { type AddressInputProps } from '../AddressInput'
+import EthHashInfo from '../EthHashInfo'
 
 const abFilterOptions = createFilterOptions({
   stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
@@ -29,11 +30,9 @@ const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement =
       options={addressBookEntries}
       filterOptions={abFilterOptions}
       renderOption={(props, option) => (
-        <Box component="li" {...props}>
-          {option.name}
-          <br />
-          {option.label}
-        </Box>
+        <Typography component="li" variant="body2" {...props}>
+          <EthHashInfo address={option.label} name={option.name} shortAddress={false} />
+        </Typography>
       )}
       renderInput={(params) => <AddressInput {...params} {...props} name={name} />}
     />
