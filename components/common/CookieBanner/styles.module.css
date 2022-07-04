@@ -1,0 +1,14 @@
+.container {
+  left: 0;
+  bottom: 0;
+  position: fixed;
+  padding: 12px 96px !important;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  column-gap: 8px;
+  row-gap: 20px;
+  padding: 8px;
+}

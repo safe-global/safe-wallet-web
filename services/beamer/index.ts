@@ -1,12 +1,18 @@
+import Cookies from 'js-cookie'
+
 import { BEAMER_ID } from '@/config/constants'
+import local from '@/services/localStorage/local'
 
 // Beamer script tag singleton
 let scriptRef: HTMLScriptElement | null = null
 
+export const isBeamerLoaded = (): boolean => !!scriptRef
+
 export const BEAMER_SELECTOR = 'whats-new-button'
-const BEAMER_URL = 'https://app.getbeamer.com/js/beamer-embed.js'
 
 export const loadBeamer = async (): Promise<void> => {
+  const BEAMER_URL = 'https://app.getbeamer.com/js/beamer-embed.js'
+
   if (!BEAMER_ID) {
     console.warn('[Beamer] - In order to use Beamer you need to add a `product_id`')
     return
@@ -30,29 +36,31 @@ export const loadBeamer = async (): Promise<void> => {
   scriptRef.addEventListener('load', () => window.Beamer?.init(), { once: true })
 }
 
-// TODO: Unload Beamer when we implement cookies
-// const BEAMER_COOKIES = [
-//   '_BEAMER_LAST_POST_SHOWN_',
-//   '_BEAMER_DATE_',
-//   '_BEAMER_FIRST_VISIT_',
-//   '_BEAMER_USER_ID_',
-//   '_BEAMER_FILTER_BY_URL_',
-//   '_BEAMER_LAST_UPDATE_',
-//   '_BEAMER_BOOSTED_ANNOUNCEMENT_DATE_',
-// ]
+export const unloadBeamer = (): void => {
+  const BEAMER_LS_RE = /^_BEAMER_/
 
-// export const BEAMER_LS_RE = /^_BEAMER_/
-// const unloadBeamer = (): void => {
-//   if (!window?.Beamer || !scriptRef) {
-//     return
-//   }
+  const BEAMER_COOKIES = [
+    '_BEAMER_LAST_POST_SHOWN_',
+    '_BEAMER_DATE_',
+    '_BEAMER_FIRST_VISIT_',
+    '_BEAMER_USER_ID_',
+    '_BEAMER_FILTER_BY_URL_',
+    '_BEAMER_LAST_UPDATE_',
+    '_BEAMER_BOOSTED_ANNOUNCEMENT_DATE_',
+  ]
 
-//   window.Beamer.destroy()
-//   scriptRef.remove()
-//   scriptRef = null
+  if (!window?.Beamer || !scriptRef) {
+    return
+  }
 
-//   setTimeout(() => {
-//     local.removeMatching(BEAMER_LS_RE)
-//     removeCookies(BEAMER_COOKIES.map((prefix) => ({ path: '/', name: `${prefix}${BEAMER_ID}` })))
-//   }, 100)
-// }
+  window.Beamer.destroy()
+  scriptRef.remove()
+  scriptRef = null
+
+  const domain = location.host.split('.').slice(-2).join('.')
+
+  setTimeout(() => {
+    local.removeMatching(BEAMER_LS_RE)
+    BEAMER_COOKIES.forEach((name) => Cookies.remove(name, { domain, path: '/' }))
+  }, 100)
+}

@@ -1,7 +1,6 @@
 import { getChainsConfig } from '@gnosis.pm/safe-react-gateway-sdk'
-import { act, renderHook } from '@testing-library/react-hooks'
-import TestProviderWrapper from '@/mocks/TestProviderWrapper'
 import useChains, { useInitChains } from '@/hooks/useChains'
+import { act, renderHook } from '@/tests/test-utils'
 
 // Mock getChainsConfig
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => {
@@ -27,8 +26,8 @@ describe('useInitChains hook', () => {
 
   it('should fetch the chains when the hook is called', async () => {
     // Render the hook and check that the loading state is true
-    renderHook(() => useInitChains(), { wrapper: TestProviderWrapper })
-    const { result } = renderHook(() => useChains(), { wrapper: TestProviderWrapper })
+    renderHook(() => useInitChains())
+    const { result } = renderHook(() => useChains())
 
     // Check that the loading state is true
     expect(result.current.loading).toBe(true)
@@ -56,8 +55,8 @@ describe('useInitChains hook', () => {
     ;(getChainsConfig as jest.Mock).mockImplementation(() => Promise.reject('Something went wrong'))
 
     // Render the hook and check that the loading state is true
-    renderHook(() => useInitChains(), { wrapper: TestProviderWrapper })
-    const { result } = renderHook(() => useChains(), { wrapper: TestProviderWrapper })
+    renderHook(() => useInitChains())
+    const { result } = renderHook(() => useChains())
 
     // Check that the loading state is true
     expect(result.current.loading).toBe(true)

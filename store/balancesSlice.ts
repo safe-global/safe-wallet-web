@@ -1,4 +1,4 @@
-import { type SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TokenInfo, type SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 import { Loadable } from './common'
@@ -30,4 +30,8 @@ export const { setBalances } = balancesSlice.actions
 
 export const selectBalances = (state: RootState): BalancesState => {
   return state[balancesSlice.name]
+}
+
+export const selectTokens = (state: RootState): TokenInfo[] => {
+  return selectBalances(state).balances.items.map(({ tokenInfo }) => tokenInfo)
 }

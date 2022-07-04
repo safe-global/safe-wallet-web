@@ -33,6 +33,7 @@ enum ErrorCodes {
   _700 = '700: Failed to read from local/session storage',
   _701 = '701: Failed to write to local/session storage',
   _702 = '702: Failed to remove from local/session storage',
+  _703 = '703: Failed to parse cookie',
   _800 = '800: Safe creation tx failed',
   _801 = '801: Failed to send a tx with a spending limit',
   _802 = '802: Error submitting a transaction, safeAddress not found',

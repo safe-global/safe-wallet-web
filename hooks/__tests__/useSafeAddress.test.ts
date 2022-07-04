@@ -1,6 +1,6 @@
-import useSafeAddress from '@/hooks/useSafeAddress'
 import { useRouter } from 'next/router'
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@/tests/test-utils'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 // Mock useRouter
 jest.mock('next/router', () => ({

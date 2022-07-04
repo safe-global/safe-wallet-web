@@ -26,6 +26,7 @@ import useTxNotifications from '@/hooks/useTxNotifications'
 import useTxPendingStatuses, { useTxMonitor } from '@/hooks/useTxPendingStatuses'
 import { useInitSession } from '@/hooks/useInitSession'
 import Notifications from '@/components/common/Notifications'
+import CookieBanner from '@/components/common/CookieBanner'
 
 const cssCache = createCache({
   key: 'css',
@@ -64,7 +65,6 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* @ts-ignore - Temporary Fix */}
       <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
         <CacheProvider value={cssCache}>
           <ThemeProvider theme={theme}>
@@ -73,6 +73,8 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
             <PageLayout>
               <Component {...pageProps} />
             </PageLayout>
+
+            <CookieBanner />
 
             <Notifications />
           </ThemeProvider>
