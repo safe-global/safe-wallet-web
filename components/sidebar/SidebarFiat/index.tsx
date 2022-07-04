@@ -26,7 +26,7 @@ const SidebarFiat = (): ReactElement => {
   return (
     <>
       {wholeNumber}
-      <Box display="inline" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
+      <Box component="span" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
         {
           // Some currencies don't have decimals
           decimalSeparator && decimals ? `${decimalSeparator}${decimals}` : ''

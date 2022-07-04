@@ -6,8 +6,6 @@
   height: 1.1em;
   width: auto;
   vertical-align: middle;
-}
-
-.container .tokenIcon {
+  margin-top: -0.2em;
   margin-right: 0.3em;
 }

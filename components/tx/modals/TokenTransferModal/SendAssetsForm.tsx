@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
@@ -100,8 +100,23 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         >
           {balances.items.map((item) => (
             <MenuItem value={item.tokenInfo.address} key={item.tokenInfo.address}>
-              <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
-              {item.tokenInfo.name} (<TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} />)
+              <Grid container alignItems="center">
+                <Box fontSize={24}>
+                  <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
+                </Box>
+
+                <Grid item xs>
+                  <Typography variant="body2">{item.tokenInfo.name}</Typography>
+
+                  <Typography variant="caption" color="text.secondary">
+                    <TokenAmount
+                      value={item.balance}
+                      decimals={item.tokenInfo.decimals}
+                      tokenSymbol={item.tokenInfo.symbol}
+                    />
+                  </Typography>
+                </Grid>
+              </Grid>
             </MenuItem>
           ))}
         </Select>
