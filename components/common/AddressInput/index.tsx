@@ -23,7 +23,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
         required: true,
 
         validate: (val: string) => {
-          return validatePrefixedAddress(currentChain?.shortName)(val)
+          return validatePrefixedAddress(currentChain?.shortName)(val) || validate?.(val)
         },
       })}
     />

@@ -35,18 +35,16 @@ export const validatePrefixedAddress =
 
 export const uniqueAddress =
   (addresses: string[] = []) =>
-  (value: string): string | undefined => {
+  (address: string): string | undefined => {
     const ADDRESS_REPEATED_ERROR = 'Address already added'
-    const { address } = parsePrefixedAddress(value)
     const addressExists = addresses.some((addressFromList) => sameAddress(addressFromList, address))
     return addressExists ? ADDRESS_REPEATED_ERROR : undefined
   }
 
 export const addressIsNotCurrentSafe =
   (safeAddress: string) =>
-  (value: string): string | undefined => {
+  (address: string): string | undefined => {
     const OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = 'Cannot use Safe itself as owner.'
-    const { address } = parsePrefixedAddress(value)
     return sameAddress(safeAddress, address) ? OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR : undefined
   }
 

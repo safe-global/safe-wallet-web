@@ -48,9 +48,7 @@ export const ChooseOwnerStep = ({
 
   const notAlreadyOwner = uniqueAddress(owners?.map((owner) => owner.value))
   const notCurrentSafe = addressIsNotCurrentSafe(safe?.address.value ?? '')
-  const combinedValidate = (address: string) => {
-    return notAlreadyOwner(address) && notCurrentSafe(address)
-  }
+  const combinedValidate = (address: string) => notAlreadyOwner(address) || notCurrentSafe(address)
 
   return (
     <FormProvider {...formMethods}>
