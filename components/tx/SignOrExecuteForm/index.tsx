@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, SyntheticEvent, useState } from 'react'
+import { ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from 'react'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Checkbox, FormControlLabel } from '@mui/material'
 
@@ -6,7 +6,7 @@ import css from './styles.module.css'
 
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useChainId } from '@/hooks/useChainId'
-import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
+import { createTx, dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useGasPrice from '@/hooks/useGasPrice'
@@ -21,6 +21,7 @@ type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
   isExecutable: boolean
+  isRejection?: boolean
   onlyExecute?: boolean
   onSubmit: (data: null) => void
   children?: ReactNode
@@ -32,41 +33,47 @@ const SignOrExecuteForm = ({
   safeTx,
   txId,
   isExecutable,
+  isRejection,
   onlyExecute,
   onSubmit,
   children,
   error,
   title,
 }: SignOrExecuteProps): ReactElement => {
+  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
+  const [isEditingGas, setEditingGas] = useState<boolean>(false)
+  const [manualParams, setManualParams] = useState<AdvancedParameters>()
+  const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
+
+  useEffect(() => setTx(safeTx), [safeTx])
+
   const { safe } = useSafeInfo()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const wallet = useWallet()
 
-  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
-  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
-  const [isEditingGas, setEditingGas] = useState<boolean>(false)
-  const [manualParams, setManualParams] = useState<AdvancedParameters>()
-
   // Check that the transaction is executable
-  const canExecute = isExecutable && !!safeTx && safeTx.data.nonce === safe?.nonce
+  const canExecute = isExecutable && !!tx && tx.data.nonce === safe?.nonce
   const willExecute = shouldExecute && canExecute
+  const recommendedNonce = safeTx?.data.nonce
 
   // Estimate gas limit
-  const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? safeTx : undefined)
+  const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
   // Estimate gas price
   const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
 
   // Take the manually set gas params or the estimated ones
   const advancedParams: Partial<AdvancedParameters> = {
+    nonce: manualParams?.nonce || tx?.data.nonce,
     gasLimit: manualParams?.gasLimit || gasLimit,
     maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
     maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
   }
 
   const onFinish = async (actionFn: () => Promise<void>) => {
-    if (!wallet || !safeTx) return
+    if (!wallet || !tx) return
 
     setIsSubmittable(false)
     try {
@@ -80,7 +87,7 @@ const SignOrExecuteForm = ({
 
   const onSign = async () => {
     onFinish(async () => {
-      const signedTx = await dispatchTxSigning(safeTx!, txId)
+      const signedTx = await dispatchTxSigning(tx!, txId)
       await dispatchTxProposal(chainId, safeAddress, wallet!.address, signedTx)
     })
   }
@@ -90,7 +97,7 @@ const SignOrExecuteForm = ({
       let id = txId
       // If no txId was provided, it's an immediate execution of a new tx
       if (!id) {
-        const proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet!.address, safeTx!)
+        const proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet!.address, tx!)
         id = proposedTx.txId
       }
 
@@ -99,13 +106,23 @@ const SignOrExecuteForm = ({
         gasLimit: advancedParams.gasLimit?.toString(),
         gasPrice: advancedParams.maxFeePerGas?.toString(),
       }
-      await dispatchTxExecution(id, safeTx!, txOptions)
+      await dispatchTxExecution(id, tx!, txOptions)
     })
   }
 
-  const onGasSubmit = (data: AdvancedParameters) => {
+  const onAdvancedSubmit = async (data: AdvancedParameters) => {
     setEditingGas(false)
     setManualParams(data)
+
+    // Create a new tx with the new nonce
+    if (tx && data.nonce !== tx.data.nonce) {
+      try {
+        const newTx = await createTx({ ...tx.data, nonce: data.nonce })
+        setTx(newTx)
+      } catch (err) {
+        console.error('Could not set new nonce', err)
+      }
+    }
   }
 
   const preventDefault = (callback: () => unknown) => {
@@ -121,10 +138,14 @@ const SignOrExecuteForm = ({
 
   return isEditingGas ? (
     <AdvancedParamsForm
+      nonce={advancedParams.nonce || 0}
       gasLimit={advancedParams.gasLimit || BigNumber.from(0)}
       maxFeePerGas={advancedParams.maxFeePerGas || BigNumber.from(0)}
       maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas || BigNumber.from(0)}
-      onSubmit={onGasSubmit}
+      isExecution={willExecute}
+      recommendedNonce={recommendedNonce}
+      nonceReadonly={!!tx?.signatures.size || isRejection}
+      onSubmit={onAdvancedSubmit}
     />
   ) : (
     <div className={css.container}>
@@ -140,15 +161,15 @@ const SignOrExecuteForm = ({
           />
         )}
 
-        {willExecute && (
-          <GasParams
-            isLoading={isEstimating}
-            gasLimit={advancedParams.gasLimit}
-            maxFeePerGas={advancedParams.maxFeePerGas}
-            maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
-            onEdit={() => setEditingGas(true)}
-          />
-        )}
+        <GasParams
+          isExecution={willExecute}
+          isLoading={isEstimating}
+          nonce={advancedParams.nonce}
+          gasLimit={advancedParams.gasLimit}
+          maxFeePerGas={advancedParams.maxFeePerGas}
+          maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
+          onEdit={() => setEditingGas(true)}
+        />
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>

@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactElement } from 'react'
+import { useMemo, type ReactElement } from 'react'
 import { Box, Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
@@ -13,7 +13,6 @@ import useBalances from '@/hooks/useBalances'
 import useAsync from '@/hooks/useAsync'
 import { createTx } from '@/services/tx/txSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import NonceForm from '../../NonceForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
@@ -52,18 +51,18 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
 
   // Estimate safeTxGas
   const { safeGas, safeGasError } = useSafeTxGas(txParams)
-  const [editableNonce, setEditableNonce] = useState<number>()
+  const { recommendedNonce = 0 } = safeGas || {}
 
   // Create a safeTx
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!txParams || editableNonce == null) return
+    if (!txParams || recommendedNonce == null) return
 
     return createTx({
       ...txParams,
-      nonce: editableNonce,
+      nonce: recommendedNonce,
       safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
     })
-  }, [editableNonce, txParams, safeGas?.safeTxGas])
+  }, [recommendedNonce, txParams, safeGas?.safeTxGas])
 
   // All errors
   const txError = safeTxError || safeGasError
@@ -89,8 +88,6 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
           <EthHashInfo address={safeTx?.data.to || ''} shortAddress={false} />
         </Box>
       </Box>
-
-      <NonceForm recommendedNonce={safeGas?.recommendedNonce} safeNonce={safe?.nonce} onChange={setEditableNonce} />
     </SignOrExecuteForm>
   )
 }

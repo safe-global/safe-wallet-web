@@ -1,58 +1,46 @@
-import { ReactElement, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { FormControl, TextField } from '@mui/material'
-
-const NONCE_FIELD = 'nonce'
+import { ReactElement } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { TextField } from '@mui/material'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type NonceFormProps = {
+  name: string
+  nonce: number
   recommendedNonce?: number
-  safeNonce?: number
-  onChange: (nonce: number) => void
+  readonly?: boolean
 }
 
-const NonceForm = ({ recommendedNonce, safeNonce, onChange }: NonceFormProps): ReactElement => {
-  const {
-    register,
-    watch,
-    formState: { errors },
-  } = useForm<{ [NONCE_FIELD]: number }>({ mode: 'onChange' })
+const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps): ReactElement => {
+  const { safe } = useSafeInfo()
+  const safeNonce = safe?.nonce || 0
 
-  const editableNonce = watch(NONCE_FIELD)
+  const { register, watch, formState } = useFormContext() || {}
 
   // Warn about a higher nonce
+  const editableNonce = watch(name)
   const nonceWarning =
-    recommendedNonce != null && editableNonce > recommendedNonce
-      ? `Your nonce is higher than the recommended one: ${recommendedNonce}`
-      : ''
-
-  useEffect(() => {
-    onChange(editableNonce)
-  }, [editableNonce, onChange])
+    recommendedNonce != null && editableNonce > recommendedNonce ? `Recommended nonce is ${recommendedNonce}` : ''
 
   return (
-    <FormControl fullWidth>
-      <TextField
-        label="Nonce"
-        type="number"
-        autoComplete="off"
-        key={recommendedNonce || ''}
-        defaultValue={recommendedNonce || ''}
-        disabled={recommendedNonce == null}
-        error={!!errors[NONCE_FIELD]}
-        helperText={errors[NONCE_FIELD]?.message || nonceWarning || ' '}
-        {...register(NONCE_FIELD, {
-          required: true,
-          valueAsNumber: true,
-          validate: (val) => {
-            if (!Number.isInteger(val)) {
-              return 'Nonce must be an integer'
-            } else if (val < (safeNonce || 0)) {
-              return `Nonce must be equal or greater than the current Safe nonce: ${safeNonce || 0}`
-            }
-          },
-        })}
-      />
-    </FormControl>
+    <TextField
+      type="number"
+      autoComplete="off"
+      defaultValue={nonce || ''}
+      disabled={nonce == null || readonly}
+      error={!!formState?.errors[name]}
+      label={formState?.errors[name]?.message || nonceWarning || 'Nonce'}
+      {...register(name, {
+        required: true,
+        valueAsNumber: true,
+        validate: (val: number) => {
+          if (!Number.isInteger(val)) {
+            return 'Nonce must be an integer'
+          } else if (val < safeNonce) {
+            return `Nonce must be equal or greater than the current Safe nonce: ${safeNonce}`
+          }
+        },
+      })}
+    />
   )
 }
 
