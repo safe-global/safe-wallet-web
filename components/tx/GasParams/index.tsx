@@ -33,7 +33,6 @@ const GasParams = ({
   onEdit,
 }: GasParamsProps): ReactElement => {
   const chain = useCurrentChain()
-
   // Total gas cost
   const totalFee =
     gasLimit && maxFeePerGas && maxPriorityFeePerGas
