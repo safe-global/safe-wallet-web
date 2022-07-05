@@ -2,7 +2,7 @@ import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolki
 import type { RootState } from '.'
 import { selectSafeInfo } from './safeInfoSlice'
 
-type AddressBook = { [address: string]: string }
+export type AddressBook = { [address: string]: string }
 
 export type AddressBookState = { [chainId: string]: AddressBook }
 

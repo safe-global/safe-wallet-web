@@ -1,0 +1,11 @@
+.entryButtonWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.headerButtonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 8px;
+}
