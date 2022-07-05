@@ -5,9 +5,9 @@ import { useFormContext, type Validate } from 'react-hook-form'
 import css from './styles.module.css'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
-import { useWeb3 } from '@/hooks/wallets/web3'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useAsync from '@/hooks/useAsync'
-import { resolveDomain } from '@/services/ens'
+import { resolveName } from '@/services/domains'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
 
@@ -19,13 +19,13 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
     formState: { errors },
   } = useFormContext()
   const currentChain = useCurrentChain()
-  const ethersProvider = useWeb3()
+  const ethersProvider = useWeb3ReadOnly()
   const currentValue = watch(name)?.trim()
 
   // Fetch an ENS resolution for the current address
   const [ens, , ensResolving] = useAsync<{ name: string; address: string } | undefined>(async () => {
     if (!ethersProvider) return
-    const address = await resolveDomain(ethersProvider, currentValue)
+    const address = await resolveName(ethersProvider, currentValue)
     return address ? { address, name: currentValue } : undefined
   }, [currentValue, ethersProvider])
 
@@ -52,9 +52,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
       {...register(name, {
         required: true,
 
-        validate: (val: string) => {
-          return validatePrefixedAddress(currentChain?.shortName)(val) || validate?.(val)
-        },
+        validate: (val: string) => validatePrefixedAddress(currentChain?.shortName)(val) || validate?.(val),
       })}
     />
   )

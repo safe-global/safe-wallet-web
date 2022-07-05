@@ -22,10 +22,10 @@ import { CreateSafeFormData, Owner } from '@/components/create-safe/index'
 import useWallet from '@/hooks/wallets/useWallet'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { useWeb3 } from '@/hooks/wallets/web3'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import AddressInput from '../common/AddressInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
-import { lookupAddress } from '@/services/ens'
+import { lookupAddress } from '@/services/domains'
 
 type Props = {
   params: CreateSafeFormData
@@ -34,7 +34,7 @@ type Props = {
 }
 
 const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
-  const ethersProvider = useWeb3()
+  const ethersProvider = useWeb3ReadOnly()
   const wallet = useWallet()
 
   const defaultOwner: Owner = {

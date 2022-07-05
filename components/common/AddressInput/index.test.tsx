@@ -1,18 +1,26 @@
-import { act, fireEvent } from '@testing-library/react'
+import { act, fireEvent, waitFor } from '@testing-library/react'
 import { render } from '@/tests/test-utils'
 import { useForm, FormProvider } from 'react-hook-form'
 import AddressInput, { type AddressInputProps } from '.'
 
 // mock useCurrentChain
-jest.mock('@/hooks/useChains', () => {
-  return {
-    useCurrentChain: jest.fn(() => ({
-      shortName: 'rin',
-      chainId: '4',
-      chainName: 'Rinkeby',
-    })),
-  }
-})
+jest.mock('@/hooks/useChains', () => ({
+  useCurrentChain: jest.fn(() => ({
+    shortName: 'rin',
+    chainId: '4',
+    chainName: 'Rinkeby',
+  })),
+}))
+
+// mock useAsync
+jest.mock('@/hooks/useAsync', () => ({
+  __esModule: true,
+  default: jest.fn(() => [
+    { name: 'zero.eth', address: '0x0000000000000000000000000000000000000000' },
+    undefined,
+    false,
+  ]),
+}))
 
 const TestForm = ({ address, validate }: { address: string; validate?: AddressInputProps['validate'] }) => {
   const name = 'recipient'
@@ -61,37 +69,50 @@ describe('AddressInput tests', () => {
   it('should validate the address on input', async () => {
     const { input, utils } = setup('')
 
-    fireEvent.change(input, { target: { value: `xyz:${TEST_ADDRESS_A}` } })
+    await act(() => {
+      fireEvent.change(input, { target: { value: `xyz:${TEST_ADDRESS_A}` } })
+      utils.getByText('Submit').click()
+    })
 
-    utils.getByText('Submit').click()
-    await act(() => Promise.resolve())
+    await waitFor(() => expect(utils.getByLabelText('Invalid chain prefix "xyz"')).toBeDefined())
 
-    expect(utils.getByLabelText('Invalid chain prefix "xyz"')).toBeDefined()
+    await act(() => {
+      fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
+    })
 
-    fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
-    await act(() => Promise.resolve())
+    await waitFor(() => expect(utils.getByLabelText(`"eth" doesn't match the current chain`)).toBeDefined())
 
-    expect(utils.getByLabelText(`"eth" doesn't match the current chain`)).toBeDefined()
+    await act(() => {
+      fireEvent.change(input, { target: { value: 'rin:0x123' } })
+    })
 
-    fireEvent.change(input, { target: { value: 'rin:0x123' } })
-    await act(() => Promise.resolve())
-
-    expect(utils.getByLabelText(`Invalid address format`)).toBeDefined()
+    await waitFor(() => expect(utils.getByLabelText(`Invalid address format`)).toBeDefined())
   })
 
   it('should accept a custom validate function', async () => {
     const { input, utils } = setup('', (val) => `${val} is wrong`)
 
-    fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })
+    await act(() => {
+      fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })
+      utils.getByText('Submit').click()
+    })
 
-    utils.getByText('Submit').click()
-    await act(() => Promise.resolve())
+    await waitFor(() => expect(utils.getByLabelText(`rin:${TEST_ADDRESS_A} is wrong`)).toBeDefined())
 
-    expect(utils.getByLabelText(`rin:${TEST_ADDRESS_A} is wrong`)).toBeDefined()
+    await act(() => {
+      fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
+    })
 
-    fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
-    await act(() => Promise.resolve())
+    await waitFor(() => expect(utils.getByLabelText(`rin:${TEST_ADDRESS_B} is wrong`)).toBeDefined())
+  })
 
-    expect(utils.getByLabelText(`rin:${TEST_ADDRESS_B} is wrong`)).toBeDefined()
+  it('should resolve ENS names', async () => {
+    const { input } = setup('')
+
+    await act(() => {
+      fireEvent.change(input, { target: { value: `zero.eth` } })
+    })
+
+    await waitFor(() => expect(input.value).toBe('0x0000000000000000000000000000000000000000'))
   })
 })
