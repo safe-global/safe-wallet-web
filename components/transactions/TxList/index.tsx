@@ -13,8 +13,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
   const list = useMemo(() => {
     const firstDateLabelIndex = items.findIndex(isDateLabel)
     const firstTxIndex = items.findIndex(isTransaction)
-    const shouldPrependDateLabel =
-      firstTxIndex !== -1 && firstDateLabelIndex !== -1 && firstDateLabelIndex > firstTxIndex
+    const shouldPrependDateLabel = (firstDateLabelIndex === -1 || firstDateLabelIndex > firstTxIndex) && firstTxIndex !== -1
 
     if (!shouldPrependDateLabel) {
       return items
