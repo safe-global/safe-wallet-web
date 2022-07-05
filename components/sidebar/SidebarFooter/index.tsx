@@ -17,7 +17,7 @@ const SidebarFooter = (): ReactElement => {
   const dispatch = useAppDispatch()
   const cookies = useAppSelector(selectCookies)
 
-  const hasBeamerConsent = useCallback(() => cookies[CookieType.UPDATES_COOKIE], [cookies])
+  const hasBeamerConsent = useCallback(() => cookies[CookieType.UPDATES], [cookies])
 
   useEffect(() => {
     // Initialise Beamer when consent was previously given
@@ -28,7 +28,7 @@ const SidebarFooter = (): ReactElement => {
 
   const handleBeamer = () => {
     if (!hasBeamerConsent()) {
-      dispatch(openCookieBanner({ warningKey: CookieType.UPDATES_COOKIE }))
+      dispatch(openCookieBanner({ warningKey: CookieType.UPDATES }))
     }
   }
 

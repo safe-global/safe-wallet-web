@@ -3,25 +3,25 @@ import { createSlice, Middleware, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '.'
 
 export enum CookieType {
-  NECESSARY_COOKIE = 'necessary',
-  UPDATES_COOKIE = 'updates',
-  ANALYTICS_COOKIE = 'analytics',
+  NECESSARY = 'necessary',
+  UPDATES = 'updates',
+  ANALYTICS = 'analytics',
 }
 
 type CookiesState = Record<CookieType, boolean>
 
 const initialState: CookiesState = {
-  [CookieType.NECESSARY_COOKIE]: false,
-  [CookieType.UPDATES_COOKIE]: false,
-  [CookieType.ANALYTICS_COOKIE]: false,
+  [CookieType.NECESSARY]: false,
+  [CookieType.UPDATES]: false,
+  [CookieType.ANALYTICS]: false,
 }
 
 export const cookiesSlice = createSlice({
   name: 'cookies',
   initialState,
   reducers: {
-    saveCookieConsent: (state, { payload }: PayloadAction<{ consent: CookiesState }>) => {
-      return payload.consent
+    saveCookieConsent: (state, { payload }: PayloadAction<CookiesState>) => {
+      return payload
     },
   },
 })
@@ -37,7 +37,7 @@ export const cookiesMiddleware: Middleware<{}, RootState> = (store) => (next) =>
     case saveCookieConsent.type: {
       const state = store.getState()
 
-      if (state.cookies[CookieType.UPDATES_COOKIE]) {
+      if (state.cookies[CookieType.UPDATES]) {
         if (!isBeamerLoaded()) {
           loadBeamer()
         }
@@ -45,7 +45,7 @@ export const cookiesMiddleware: Middleware<{}, RootState> = (store) => (next) =>
         unloadBeamer()
       }
 
-      if (state.cookies[CookieType.ANALYTICS_COOKIE]) {
+      if (state.cookies[CookieType.ANALYTICS]) {
         // TODO: If Analytics isn't loaded, load
       } else {
         // TODO: Unload Analytics
