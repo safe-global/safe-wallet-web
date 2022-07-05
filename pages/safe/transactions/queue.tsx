@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { NextPage } from 'next'
+import { CircularProgress } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
 import useTxQueue from '@/hooks/useTxQueue'
 import Pagination from '@/components/transactions/Pagination'
@@ -16,7 +17,7 @@ const Queue: NextPage = () => {
       <Pagination page={pageUrl} nextPage={page?.next} prevPage={page?.previous} onPageChange={setPageUrl} />
 
       {loading ? (
-        'Loading...'
+        <CircularProgress size={20} sx={{ marginTop: 2 }} />
       ) : !page ? (
         <ErrorMessage>Error loading the history</ErrorMessage>
       ) : (
