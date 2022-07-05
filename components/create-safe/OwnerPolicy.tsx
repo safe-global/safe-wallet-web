@@ -11,20 +11,20 @@ import {
   Select,
   TextField,
   Typography,
+  CircularProgress,
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
-import RefreshIcon from '@mui/icons-material/Refresh'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
-import css from './styles.module.css'
 import { CreateSafeFormData, Owner } from '@/components/create-safe/index'
 import useWallet from '@/hooks/wallets/useWallet'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { useWeb3 } from '@/hooks/wallets/web3'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import AddressInput from '../common/AddressInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import { lookupAddress } from '@/services/domains'
 
 type Props = {
   params: CreateSafeFormData
@@ -33,7 +33,7 @@ type Props = {
 }
 
 const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
-  const ethersProvider = useWeb3()
+  const ethersProvider = useWeb3ReadOnly()
   const wallet = useWallet()
 
   const defaultOwner: Owner = {
@@ -82,7 +82,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
 
       setValue(`owners.${index}.resolving`, true)
       const { address } = parsePrefixedAddress(owner.address)
-      const ensName = await ethersProvider.lookupAddress(address)
+      const ensName = await lookupAddress(ethersProvider, address)
       update(index, { ...owner, name: ensName || owner.name, resolving: false })
     },
     [update, setValue, ethersProvider],
@@ -131,7 +131,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
                         InputProps={{
                           endAdornment: owners[index].resolving ? (
                             <InputAdornment position="end">
-                              <RefreshIcon className={css.spinner} />
+                              <CircularProgress size={20} />
                             </InputAdornment>
                           ) : null,
                         }}
