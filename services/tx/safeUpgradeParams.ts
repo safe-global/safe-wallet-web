@@ -1,5 +1,4 @@
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types'
 import { ethers } from 'ethers'
 import { encodeMultiSendCall } from './multisend'
@@ -17,10 +16,6 @@ export const createSafeUpgradeParams = (
   fallbackHandlerAddress: string,
 ): MetaTransactionData => {
   const safeSDK = getSafeSDK()
-  const provider = getWeb3ReadOnly()
-  if (!provider) {
-    throw Error('No RPC Provider available!')
-  }
 
   if (!safeSDK) {
     throw Error('No safe SDK available!')
