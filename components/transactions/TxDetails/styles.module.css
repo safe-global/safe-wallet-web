@@ -21,14 +21,21 @@
 .txData,
 .txSummary,
 .advancedDetails,
-.txModule,
-.multisendInfo {
+.txModule {
   background: white;
   padding: 20px 24px;
 }
 
-.multisendInfo {
+.multisendInfo,
+.delegateCall {
+  background: white;
+  padding: 20px 24px 0;
   margin-bottom: -2px; /* to cover the gap */
+}
+
+.delegateCall .alert {
+  width: fit-content;
+  padding: 0px 10px;
 }
 
 .txData {
