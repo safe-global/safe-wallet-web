@@ -36,7 +36,7 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
   const addressBook = useAddressBook()
   const length = Object.keys(addressBook).length
 
-  const { CSVDownloader, Type } = useCSVDownloader()
+  const { CSVDownloader } = useCSVDownloader()
 
   const filename = `${chain!.chainName.toLowerCase()}-address-book-${new Date().toISOString().slice(0, 10)}`
 
@@ -50,7 +50,7 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
 
   return (
     <ModalDialog open onClose={handleClose} title="Export address book">
-      <DialogContent>
+      <DialogContent sx={{ p: '24px !important' }}>
         <Typography>
           You&apos;re about to export a CSV file with{' '}
           <b>
@@ -70,20 +70,11 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-
-        <Button
-          variant="contained"
-          disableElevation
-          onClick={handleClose}
-          disabled={!chain?.chainId}
-          component={({ children, ...props }) => (
-            <CSVDownloader filename={filename} bom config={{ delimiter: ',' }} data={csvData} {...props}>
-              {children}
-            </CSVDownloader>
-          )}
-        >
-          Export
-        </Button>
+        <CSVDownloader filename={filename} bom config={{ delimiter: ',' }} data={csvData}>
+          <Button variant="contained" disableElevation onClick={handleClose} disabled={!chain?.chainId}>
+            Export
+          </Button>
+        </CSVDownloader>
       </DialogActions>
     </ModalDialog>
   )

@@ -46,6 +46,8 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
     for (const [address, name, chainId] of entries) {
       dispatch(upsertAddressBookEntry({ address, name, chainId }))
     }
+
+    handleClose()
   }
 
   return (

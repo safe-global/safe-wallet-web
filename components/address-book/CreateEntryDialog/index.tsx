@@ -10,33 +10,35 @@ import type { ReactElement } from 'react'
 import ModalDialog from '@/components/common/ModalDialog'
 import AddressInput from '@/components/common/AddressInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
-import { useCurrentChain } from '@/hooks/useChains'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import useChainId from '@/hooks/useChainId'
 
-type Entry = {
+export type AddressEntry = {
   name: string
   address: string
 }
 
-const CreateEntryDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
+const CreateEntryDialog = ({
+  handleClose,
+  defaultValues = {
+    name: '',
+    address: '',
+  },
+}: {
+  handleClose: () => void
+  defaultValues?: AddressEntry
+}): ReactElement => {
   const dispatch = useAppDispatch()
-  const chain = useCurrentChain()
+  const chainId = useChainId()
 
-  const methods = useForm<Entry>({
-    defaultValues: {
-      name: '',
-      address: '',
-    },
+  const methods = useForm<AddressEntry>({
+    defaultValues,
     mode: 'onChange',
   })
   const { register, handleSubmit, formState } = methods
 
-  const onSubmit = (data: Entry) => {
-    if (!chain?.chainId) {
-      return
-    }
-
+  const onSubmit = (data: AddressEntry) => {
     const { address } = parsePrefixedAddress(data.address)
 
     if (!isAddress) {
@@ -44,7 +46,7 @@ const CreateEntryDialog = ({ handleClose }: { handleClose: () => void }): ReactE
       return
     }
 
-    dispatch(upsertAddressBookEntry({ chainId: chain.chainId, name: data.name, address }))
+    dispatch(upsertAddressBookEntry({ chainId, name: data.name, address }))
 
     handleClose()
   }
