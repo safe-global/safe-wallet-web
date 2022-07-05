@@ -1,5 +1,9 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
 import useAddressBook from '@/hooks/useAddressBook'
+import { useState } from 'react'
+import CreateEntryDialog from '../CreateEntryDialog'
+import ExportDialog from '../ExportDialog'
+import ImportDialog from '../ImportDialog'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -7,9 +11,12 @@ const headCells = [
   { id: 'actions', label: '' },
 ]
 
+const defaultOpen = { export: false, import: false, createEntry: false }
+
 const AddressBookTable = () => {
   const addressBook = useAddressBook()
-  const rows = Object.entries(addressBook).map(([address, name]) => ({
+  const addressBookEntries = Object.entries(addressBook)
+  const rows = addressBookEntries.map(([address, name]) => ({
     name: {
       rawValue: name,
       content: name,
@@ -24,7 +31,29 @@ const AddressBookTable = () => {
     },
   }))
 
-  return <EnhancedTable rows={rows} headCells={headCells} />
+  const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
+
+  const handleOpen = (type: keyof typeof open) => () => {
+    setOpen((prev) => ({ ...prev, [type]: true }))
+  }
+
+  const handleClose = () => {
+    setOpen(defaultOpen)
+  }
+
+  return (
+    <>
+      <button onClick={handleOpen('export')} disabled={addressBookEntries.length === 0}>
+        Export
+      </button>
+      <button onClick={handleOpen('import')}>Import</button>
+      <button onClick={handleOpen('createEntry')}>Create entry</button>
+      <EnhancedTable rows={rows} headCells={headCells} />
+      {open.export && <ExportDialog handleClose={handleClose} />}
+      {open.import && <ImportDialog handleClose={handleClose} />}
+      {open.createEntry && <CreateEntryDialog handleClose={handleClose} />}
+    </>
+  )
 }
 
 export default AddressBookTable
