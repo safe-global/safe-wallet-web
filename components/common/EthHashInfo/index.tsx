@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, useState } from 'react'
 import css from './styles.module.css'
 import chains from '@/config/chains'
 import { shortenAddress } from '@/utils/formatters'
@@ -27,11 +27,17 @@ const SRCEthHashInfo = ({
   showAvatar = true,
   ...props
 }: EthHashInfoProps): ReactElement => {
+  const [fallbackToIdenticon, setFallbackToIdenticon] = useState(false)
+
   return (
     <div className={css.container}>
       {showAvatar && (
         <div className={css.avatar}>
-          {customAvatar ? <img src={customAvatar} alt={address} /> : <Identicon address={address} />}
+          {!fallbackToIdenticon && customAvatar ? (
+            <img src={customAvatar} alt={address} onError={() => setFallbackToIdenticon(true)} />
+          ) : (
+            <Identicon address={address} />
+          )}
         </div>
       )}
 

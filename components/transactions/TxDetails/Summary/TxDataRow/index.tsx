@@ -61,6 +61,10 @@ export const generateDataRowValue = (
     case 'bytes':
       return <HexEncodedData limit={60} hexData={value} />
     default:
-      return <Typography variant="body2">{value}</Typography>
+      return (
+        <Typography variant="body1" sx={{ wordBreak: 'break-all' }}>
+          {value}
+        </Typography>
+      )
   }
 }
