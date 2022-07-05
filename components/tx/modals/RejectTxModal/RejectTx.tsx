@@ -27,6 +27,7 @@ const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
       safeTx={rejectTx}
       txId={txSummary.id}
       isExecutable={safe?.threshold === 1}
+      isRejection
       onSubmit={onSubmit}
       title="Reject transaction"
       error={rejectError}

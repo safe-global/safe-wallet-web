@@ -16,6 +16,7 @@ export type AdvancedParameters = {
 
 type AdvancedParamsFormProps = AdvancedParameters & {
   onSubmit: (params: AdvancedParameters) => void
+  recommendedNonce?: number
   isExecution: boolean
   nonceReadonly?: boolean
 }
@@ -66,10 +67,15 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <TxModalTitle>Advanced parameters</TxModalTitle>
 
-          <Grid container sx={{ marginTop: 4, marginBottom: 2 }} spacing={2}>
+          <Grid container my={4} spacing={2}>
             <Grid item xs={6}>
               <FormControl fullWidth>
-                <NonceForm recommendedNonce={props.nonce} readonly={props.nonceReadonly} />
+                <NonceForm
+                  name="nonce"
+                  nonce={props.nonce}
+                  recommendedNonce={props.recommendedNonce}
+                  readonly={props.nonceReadonly}
+                />
               </FormControl>
             </Grid>
 

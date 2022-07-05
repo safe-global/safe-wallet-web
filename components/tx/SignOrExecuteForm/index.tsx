@@ -21,6 +21,7 @@ type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
   isExecutable: boolean
+  isRejection?: boolean
   onlyExecute?: boolean
   onSubmit: (data: null) => void
   children?: ReactNode
@@ -32,6 +33,7 @@ const SignOrExecuteForm = ({
   safeTx,
   txId,
   isExecutable,
+  isRejection,
   onlyExecute,
   onSubmit,
   children,
@@ -50,11 +52,11 @@ const SignOrExecuteForm = ({
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const wallet = useWallet()
-  const recommendedNonce = safeTx?.data.nonce
 
   // Check that the transaction is executable
   const canExecute = isExecutable && !!tx && tx.data.nonce === safe?.nonce
   const willExecute = shouldExecute && canExecute
+  const recommendedNonce = safeTx?.data.nonce
 
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
@@ -136,12 +138,13 @@ const SignOrExecuteForm = ({
 
   return isEditingGas ? (
     <AdvancedParamsForm
-      isExecution={willExecute}
-      nonce={recommendedNonce || 0}
+      nonce={advancedParams.nonce || 0}
       gasLimit={advancedParams.gasLimit || BigNumber.from(0)}
       maxFeePerGas={advancedParams.maxFeePerGas || BigNumber.from(0)}
       maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas || BigNumber.from(0)}
-      nonceReadonly={!!tx?.signatures.size}
+      isExecution={willExecute}
+      recommendedNonce={recommendedNonce}
+      nonceReadonly={!!tx?.signatures.size || isRejection}
       onSubmit={onAdvancedSubmit}
     />
   ) : (

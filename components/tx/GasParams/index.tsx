@@ -1,6 +1,5 @@
 import { ReactElement, SyntheticEvent } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography } from '@mui/material'
-import css from './styles.module.css'
+import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Link, Grid } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
 import { safeFormatUnits } from '@/utils/formatters'
 import { AdvancedParameters } from '../AdvancedParamsForm'
@@ -15,10 +14,12 @@ const GasDetail = ({ name, value, isLoading }: { name: string; value: string; is
   const valueSkeleton = <Skeleton variant="text" sx={{ minWidth: '5em' }} />
 
   return (
-    <div className={css.details}>
-      <div className={css.label}>{name}</div>
-      <div className={css.value}>{value || (isLoading ? valueSkeleton : '-')}</div>
-    </div>
+    <Grid container>
+      <Grid item xs>
+        {name}
+      </Grid>
+      <Grid item>{value || (isLoading ? valueSkeleton : '-')}</Grid>
+    </Grid>
   )
 }
 
@@ -50,47 +51,40 @@ const GasParams = ({
   }
 
   return (
-    <div className={css.container}>
-      <Accordion elevation={0}>
-        <AccordionSummary>
-          {isExecution ? (
-            <Typography>
-              Estimated fee{' '}
-              {isLoading ? (
-                <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
-              ) : (
-                `${totalFee} ${chain?.nativeCurrency.symbol}`
-              )}
-            </Typography>
-          ) : (
-            <Typography>Off-chain signature</Typography>
-          )}
-        </AccordionSummary>
-
-        <AccordionDetails>
-          <GasDetail isLoading={nonce == null} name="Nonce" value={(nonce || '').toString()} />
-
-          {isExecution && (
-            <>
-              <GasDetail isLoading={isLoading} name="Gas limit" value={gasLimitString} />
-
-              <GasDetail isLoading={isLoading} name="Max priority fee (Gwei)" value={maxPrioGasGwei} />
-
-              <GasDetail isLoading={isLoading} name="Max fee (Gwei)" value={maxFeePerGasGwei} />
-            </>
-          )}
-
-          <Typography
-            className={css.buttonLink}
-            onClick={onEditClick}
-            sx={({ palette }) => ({ color: palette.primary.main })}
-            marginTop={1}
-          >
-            Edit
+    <Accordion elevation={0}>
+      <AccordionSummary>
+        {isExecution ? (
+          <Typography>
+            Estimated fee{' '}
+            {isLoading ? (
+              <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
+            ) : (
+              `${totalFee} ${chain?.nativeCurrency.symbol}`
+            )}
           </Typography>
-        </AccordionDetails>
-      </Accordion>
-    </div>
+        ) : (
+          <Typography>Off-chain signature</Typography>
+        )}
+      </AccordionSummary>
+
+      <AccordionDetails>
+        <GasDetail isLoading={nonce == null} name="Nonce" value={(nonce || '').toString()} />
+
+        {isExecution && (
+          <>
+            <GasDetail isLoading={isLoading} name="Gas limit" value={gasLimitString} />
+
+            <GasDetail isLoading={isLoading} name="Max priority fee (Gwei)" value={maxPrioGasGwei} />
+
+            <GasDetail isLoading={isLoading} name="Max fee (Gwei)" value={maxFeePerGasGwei} />
+          </>
+        )}
+
+        <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
+          Edit
+        </Link>
+      </AccordionDetails>
+    </Accordion>
   )
 }
 
