@@ -21,9 +21,14 @@
 .txData,
 .txSummary,
 .advancedDetails,
-.txModule {
+.txModule,
+.multisendInfo {
   background: white;
   padding: 20px 24px;
+}
+
+.multisendInfo {
+  margin-bottom: -2px; /* to cover the gap */
 }
 
 .txData {

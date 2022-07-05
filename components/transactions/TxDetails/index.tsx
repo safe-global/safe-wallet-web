@@ -7,6 +7,7 @@ import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { isModuleExecutionInfo, isMultisendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/TxDetails/TxData/SettingsChange'
+import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import css from './styles.module.css'
 
 export const NOT_AVAILABLE = 'n/a'
@@ -30,6 +31,12 @@ const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactEleme
       <div className={`${css.details} ${!hasSigners ? css.noSigners : ''}`}>
         {isMultisendTxInfo(txDetails.txInfo) ? (
           <>
+            <div className={css.multisendInfo}>
+              <InfoDetails title="MultiSend contract:">
+                <AddressInfo address={txDetails.txInfo.to.value} />
+              </InfoDetails>
+              <TxDataRow title="Value:">{txDetails.txInfo.value}</TxDataRow>
+            </div>
             <div className={`${css.txSummary} ${css.multisend}`}>
               <Summary txDetails={txDetails} />
             </div>
