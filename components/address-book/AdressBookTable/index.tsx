@@ -66,6 +66,7 @@ const AddressBookTable = () => {
               <EditIcon />
             </IconButton>
           </Tooltip>
+
           <Tooltip title="Delete entry">
             <IconButton
               onClick={() => {
@@ -75,6 +76,7 @@ const AddressBookTable = () => {
               <DeleteIcon />
             </IconButton>
           </Tooltip>
+
           {/* TODO: */}
           <Button disableElevation disabled>
             Send
@@ -95,16 +97,22 @@ const AddressBookTable = () => {
         >
           Export
         </Button>
+
         <Button onClick={handleOpen('import')} variant="contained" disableElevation>
           Import
         </Button>
+
         <Button onClick={handleOpen('createEntry')} variant="contained" disableElevation>
           Create entry
         </Button>
       </div>
+
       <EnhancedTable rows={rows} headCells={headCells} />
+
       {open.export && <ExportDialog handleClose={handleClose} />}
+
       {open.import && <ImportDialog handleClose={handleClose} />}
+
       {open.createEntry && <CreateEntryDialog handleClose={handleClose} defaultValues={entryDefaultValues} />}
     </>
   )

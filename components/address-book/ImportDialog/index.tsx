@@ -13,6 +13,8 @@ import { useAppDispatch } from '@/store'
 import { Box } from '@mui/material'
 import { showNotification } from '@/store/notificationsSlice'
 
+import css from './styles.module.css'
+
 const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [zoneHover, setZoneHover] = useState<boolean>(false)
   const [csvData, setCsvData] = useState<ParseResult<['address', 'name', 'chainId']>>()
@@ -79,16 +81,11 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
             return (
               <Box
                 {...getRootProps()}
+                className={css.dropbox}
                 sx={{
-                  alignItems: 'center',
                   border: ({ palette }) => `2px dashed ${zoneHover ? palette.error.main : palette.primaryGray[400]}`,
-                  borderRadius: '8px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
                   py: '12px',
                   my: '24px',
-                  cursor: 'pointer',
                 }}
               >
                 {acceptedFile ? (
