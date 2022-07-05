@@ -1,4 +1,4 @@
-import { FormEvent, useState, ChangeEvent, ReactElement } from 'react'
+import { useState, ChangeEvent, ReactElement } from 'react'
 import { Box, Button, Checkbox, FormControlLabel, Link, Typography } from '@mui/material'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 
@@ -22,7 +22,7 @@ const COOKIE_WARNING: Record<keyof CookieConsent, string> = {
   [ANALYTICS_COOKIE]: '',
 }
 
-const CookieBanner = (): ReactElement | null => {
+const CookieBanner = (): ReactElement => {
   const dispatch = useAppDispatch()
   const cookies = useAppSelector(selectCookies)
   const [consent, setConsent] = useState(cookies.consent)
@@ -32,8 +32,7 @@ const CookieBanner = (): ReactElement | null => {
     setConsent((prev) => ({ ...prev, [name]: checked }))
   }
 
-  const handleSubmit = (e?: FormEvent<HTMLFormElement>) => {
-    e?.preventDefault()
+  const handleAccept = () => {
     dispatch(saveCookieConsent({ consent }))
     dispatch(closeCookieBanner())
   }
@@ -44,11 +43,7 @@ const CookieBanner = (): ReactElement | null => {
       [SUPPORT_COOKIE]: true,
       [ANALYTICS_COOKIE]: true,
     })
-    handleSubmit()
-  }
-
-  if (!cookies.open) {
-    return null
+    handleAccept()
   }
 
   return (
@@ -56,6 +51,8 @@ const CookieBanner = (): ReactElement | null => {
       sx={({ palette }) => ({
         backgroundColor: 'background.paper',
         borderTop: `1px solid ${palette.gray[500]}`,
+        // Rendering `null` causes hydration error
+        display: !cookies.open ? 'none' : undefined,
       })}
       className={css.container}
     >
@@ -76,7 +73,7 @@ const CookieBanner = (): ReactElement | null => {
         enhance site navigation, analyze site usage and provide customer support.
       </Typography>
 
-      <form onSubmit={handleSubmit} className={css.form}>
+      <form className={css.form}>
         <FormControlLabel control={<Checkbox defaultChecked name={NECESSARY_COOKIE} disabled />} label="Necessary" />
         <FormControlLabel
           control={<Checkbox checked={consent[SUPPORT_COOKIE]} name={SUPPORT_COOKIE} onChange={handleChange} />}
@@ -87,7 +84,7 @@ const CookieBanner = (): ReactElement | null => {
           label="Analytics"
         />
 
-        <Button type="submit" variant="outlined" disableElevation>
+        <Button onClick={handleAccept} variant="outlined" disableElevation>
           Accept selection
         </Button>
         <Button onClick={handleAcceptAll} variant="contained" disableElevation>
