@@ -29,11 +29,7 @@ export const AddressInfo = ({
   }
 
   return (
-    <>
-      {/* TODO: Add these to EthHashInfo */}
-      {name}
-      <EthHashInfo address={address} prefix={shortName} customAvatar={avatarUrl ? avatarUrl : undefined} />
-    </>
+    <EthHashInfo address={address} name={name} prefix={shortName} customAvatar={avatarUrl ? avatarUrl : undefined} />
   )
 }
 
