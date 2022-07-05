@@ -4,7 +4,6 @@ import DialogContent from '@mui/material/DialogContent'
 import TextField from '@mui/material/TextField'
 import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
-import { isAddress } from '@ethersproject/address'
 import type { ReactElement } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
@@ -40,11 +39,6 @@ const CreateEntryDialog = ({
 
   const onSubmit = (data: AddressEntry) => {
     const { address } = parsePrefixedAddress(data.address)
-
-    if (!isAddress) {
-      // TODO: Show error
-      return
-    }
 
     dispatch(upsertAddressBookEntry({ chainId, name: data.name, address }))
 

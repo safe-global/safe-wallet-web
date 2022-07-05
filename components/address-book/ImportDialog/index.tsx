@@ -11,6 +11,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
 import { Box } from '@mui/material'
+import { showNotification } from '@/store/notificationsSlice'
 
 const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [zoneHover, setZoneHover] = useState<boolean>(false)
@@ -25,8 +26,9 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
     }
 
     if (csvData.errors.length > 0) {
-      // TODO: show error message
       const { message } = csvData.errors[0]
+      dispatch(showNotification({ message, variant: 'error', groupKey: '' }))
+      return
     }
 
     if (csvData.data.length === 0) {
@@ -39,7 +41,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
       header.length === 3 && header[0] === 'address' && header[1] === 'name' && header[2] === 'chainId'
 
     if (!hasValidHeaders) {
-      // TODO: Invalid format
+      dispatch(showNotification({ message: 'Invalid or corrupt address book', variant: 'error', groupKey: '' }))
       return
     }
 

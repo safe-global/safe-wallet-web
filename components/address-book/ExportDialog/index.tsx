@@ -70,7 +70,7 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <CSVDownloader filename={filename} bom config={{ delimiter: ',' }} data={csvData}>
+        <CSVDownloader filename={filename} bom config={{ delimiter: ',' }} data={csvData} style={{ order: 2 }}>
           <Button variant="contained" disableElevation onClick={handleClose} disabled={!chain?.chainId}>
             Export
           </Button>

@@ -14,6 +14,8 @@ import { useAppDispatch } from '@/store'
 import { removeAddressBookEntry } from '@/store/addressBookSlice'
 import useChainId from '@/hooks/useChainId'
 
+import css from './styles.module.css'
+
 const headCells = [
   { id: 'name', label: 'Name' },
   { id: 'address', label: 'Address' },
@@ -53,12 +55,12 @@ const AddressBookTable = () => {
     actions: {
       rawValue: '',
       content: (
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <div className={css.entryButtonWrapper}>
           <Tooltip title="Edit entry">
             <IconButton
               onClick={() => {
                 setEntryDefaultValues({ address, name })
-                handleOpen('createEntry')
+                handleOpen('createEntry')()
               }}
             >
               <EditIcon />
@@ -73,8 +75,7 @@ const AddressBookTable = () => {
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-          {/*
-          TODO: */}
+          {/* TODO: */}
           <Button disableElevation disabled>
             Send
           </Button>
@@ -85,11 +86,22 @@ const AddressBookTable = () => {
 
   return (
     <>
-      <button onClick={handleOpen('export')} disabled={addressBookEntries.length === 0}>
-        Export
-      </button>
-      <button onClick={handleOpen('import')}>Import</button>
-      <button onClick={handleOpen('createEntry')}>Create entry</button>
+      <div className={css.headerButtonWrapper}>
+        <Button
+          onClick={handleOpen('export')}
+          disabled={addressBookEntries.length === 0}
+          variant="contained"
+          disableElevation
+        >
+          Export
+        </Button>
+        <Button onClick={handleOpen('import')} variant="contained" disableElevation>
+          Import
+        </Button>
+        <Button onClick={handleOpen('createEntry')} variant="contained" disableElevation>
+          Create entry
+        </Button>
+      </div>
       <EnhancedTable rows={rows} headCells={headCells} />
       {open.export && <ExportDialog handleClose={handleClose} />}
       {open.import && <ImportDialog handleClose={handleClose} />}
