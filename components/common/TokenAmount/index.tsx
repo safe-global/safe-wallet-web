@@ -1,8 +1,8 @@
 import { useEffect, useState, type ReactElement } from 'react'
 import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
-import { formatDecimals } from '@/utils/formatters'
 import { formatAmount } from '@/utils/formatNumber'
 import css from './styles.module.css'
+import { formatUnits } from 'ethers/lib/utils'
 
 export const TokenIcon = (props: { logoUri?: string | null; tokenSymbol?: string | null }): ReactElement | null => {
   const { logoUri, tokenSymbol } = props
@@ -13,7 +13,13 @@ export const TokenIcon = (props: { logoUri?: string | null; tokenSymbol?: string
   return src ? <img src={src} alt={tokenSymbol || ''} className={css.tokenIcon} onError={() => setSrc('')} /> : null
 }
 
-const TokenAmount = (props: {
+const TokenAmount = ({
+  value,
+  decimals,
+  logoUri,
+  tokenSymbol,
+  direction,
+}: {
   value: string
   decimals?: number | null
   // TODO: update CLIENT GW SDK to not allow null
@@ -23,14 +29,14 @@ const TokenAmount = (props: {
   tokenSymbol?: string | null
   direction?: TransferDirection
 }): ReactElement => {
-  const sign = props.direction === TransferDirection.OUTGOING ? '-' : ''
-  const wholeNumber = formatDecimals(props.value, props.decimals || undefined)
+  const sign = direction === TransferDirection.OUTGOING ? '-' : ''
+  const amount = decimals ? formatUnits(value, decimals) : value
 
   return (
     <span className={css.container}>
-      {props.logoUri && <TokenIcon logoUri={props.logoUri} tokenSymbol={props.tokenSymbol} />}
+      {logoUri && <TokenIcon logoUri={logoUri} tokenSymbol={tokenSymbol} />}
       {sign}
-      {formatAmount(wholeNumber)} {props.tokenSymbol}
+      {formatAmount(amount)} {tokenSymbol}
     </span>
   )
 }

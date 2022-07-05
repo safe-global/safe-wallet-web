@@ -1,4 +1,7 @@
-const LOWER_LIMIT = 0.001
+// These follow the guideline of "How to format amounts"
+// https://github.com/5afe/safe/wiki/How-to-format-amounts
+
+const LOWER_LIMIT = 0.00001
 const COMPACT_LIMIT = 100_000_000
 const UPPER_LIMIT = 10 ** 15
 
@@ -31,7 +34,7 @@ const getNumberFormatMaxFractionDigits = (float: number): Intl.NumberFormatOptio
     return 3
   }
 
-  return undefined
+  return 0
 }
 
 const getNumberFormatNotation = (float: number): Intl.NumberFormatOptions['notation'] => {
@@ -54,7 +57,10 @@ const getCurrencyFormatterOptions = (float: number, currency: string): Intl.Numb
   }
 }
 
+// TODO: Add signs in reference to final point of number formatting
 const formatNumber = (float: number, options: Intl.NumberFormatOptions): string => {
+  const VISIBLE_UPPER_LIMIT = 999 * 10 ** 12 // 999T
+
   const formatter = new Intl.NumberFormat(undefined, options)
 
   if (float === 0) {
@@ -69,7 +75,7 @@ const formatNumber = (float: number, options: Intl.NumberFormatOptions): string 
     return formatter.format(float)
   }
 
-  return `> ${formatter.format(UPPER_LIMIT)}`
+  return `> ${formatter.format(VISIBLE_UPPER_LIMIT)}`
 }
 
 export const formatAmount = (number: string | number): string => {
