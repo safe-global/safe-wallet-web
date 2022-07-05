@@ -14,7 +14,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
     const firstDateLabelIndex = items.findIndex(isDateLabel)
     const firstTxIndex = items.findIndex(isTransaction)
     const shouldPrependDateLabel =
-      firstTxIndex !== -1 && firstDateLabelIndex !== -1 && firstDateLabelIndex > firstTxIndex
+      (firstDateLabelIndex === -1 || firstDateLabelIndex > firstTxIndex) && firstTxIndex !== -1
 
     if (!shouldPrependDateLabel) {
       return items
