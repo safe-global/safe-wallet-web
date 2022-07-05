@@ -47,6 +47,7 @@ const SignOrExecuteForm = ({
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
 
   useEffect(() => setTx(safeTx), [safeTx])
+
   const { safe } = useSafeInfo()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
