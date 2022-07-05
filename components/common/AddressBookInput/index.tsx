@@ -1,6 +1,9 @@
+import { ReactElement } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { Autocomplete, Typography, createFilterOptions } from '@mui/material'
 import useAddressBook from '@/hooks/useAddressBook'
-import { Autocomplete, Box, createFilterOptions, TextField } from '@mui/material'
-import { FieldError, UseFormRegisterReturn } from 'react-hook-form'
+import AddressInput, { type AddressInputProps } from '../AddressInput'
+import EthHashInfo from '../EthHashInfo'
 
 const abFilterOptions = createFilterOptions({
   stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
@@ -9,18 +12,10 @@ const abFilterOptions = createFilterOptions({
 /**
  *  Temporary component until revamped safe components are done
  */
-const AddressBookInput = ({
-  defaultValue,
-  error,
-  label,
-  textFieldProps,
-}: {
-  defaultValue?: string
-  error: FieldError | undefined
-  label: string
-  textFieldProps: UseFormRegisterReturn
-}) => {
+const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement => {
   const addressBook = useAddressBook()
+  const { watch } = useFormContext()
+  const addressValue = watch(name)
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
     label: address,
@@ -29,21 +24,17 @@ const AddressBookInput = ({
 
   return (
     <Autocomplete
-      defaultValue={defaultValue}
+      value={addressValue || ''}
       freeSolo
       disablePortal
       options={addressBookEntries}
       filterOptions={abFilterOptions}
       renderOption={(props, option) => (
-        <Box component="li" {...props}>
-          {option.name}
-          <br />
-          {option.label}
-        </Box>
+        <Typography component="li" variant="body2" {...props}>
+          <EthHashInfo address={option.label} name={option.name} shortAddress={false} />
+        </Typography>
       )}
-      renderInput={(params) => (
-        <TextField {...params} autoComplete="off" label={error?.message || label} error={!!error} {...textFieldProps} />
-      )}
+      renderInput={(params) => <AddressInput {...params} {...props} name={name} />}
     />
   )
 }

@@ -1,27 +1,18 @@
 import { ReactElement } from 'react'
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
-import { useForm } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography, TextField } from '@mui/material'
+import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import css from './styles.module.css'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
 import { formatDecimals } from '@/utils/formatters'
-import { validateAddress, validateTokenAmount } from '@/utils/validation'
+import { validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import TxModalTitle from '../../TxModalTitle'
 import AddressBookInput from '@/components/common/AddressBookInput'
-
-export type SendAssetsFormData = {
-  recipient: string
-  tokenAddress: string
-  amount: string
-}
-
-type SendAssetsFormProps = {
-  formData?: SendAssetsFormData
-  onSubmit: (formData: SendAssetsFormData) => void
-}
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 export const SendFromBlock = (): ReactElement => {
   const address = useSafeAddress()
@@ -51,90 +42,101 @@ export const SendFromBlock = (): ReactElement => {
   )
 }
 
+const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
+  <Grid container alignItems="center">
+    <Box fontSize={24}>
+      <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
+    </Box>
+
+    <Grid item xs>
+      <Typography variant="body2">{item.tokenInfo.name}</Typography>
+
+      <Typography variant="caption" color="text.secondary">
+        <TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} tokenSymbol={item.tokenInfo.symbol} />
+      </Typography>
+    </Grid>
+  </Grid>
+)
+
+export type SendAssetsFormData = {
+  recipient: string
+  tokenAddress: string
+  amount: string
+}
+
+type SendAssetsFormProps = {
+  formData?: SendAssetsFormData
+  onSubmit: (formData: SendAssetsFormData) => void
+}
+
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
   const { balances } = useBalances()
 
+  const formMethods = useForm<SendAssetsFormData>({
+    defaultValues: formData,
+  })
   const {
     register,
     handleSubmit,
-    getValues,
+    watch,
     formState: { errors },
-  } = useForm<SendAssetsFormData>({
-    defaultValues: formData,
-  })
+  } = formMethods
 
   // Selected token
-  const tokenAddress = getValues('tokenAddress')
+  const tokenAddress = watch('tokenAddress')
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
 
+  const onFormSubmit = (data: SendAssetsFormData) => {
+    onSubmit({
+      ...data,
+      recipient: parsePrefixedAddress(data.recipient).address,
+    })
+  }
+
   return (
-    <form className={css.container} onSubmit={handleSubmit(onSubmit)}>
-      <TxModalTitle>Send funds</TxModalTitle>
+    <FormProvider {...formMethods}>
+      <form className={css.container} onSubmit={handleSubmit(onFormSubmit)}>
+        <TxModalTitle>Send funds</TxModalTitle>
 
-      <SendFromBlock />
+        <SendFromBlock />
 
-      <FormControl fullWidth>
-        <AddressBookInput
-          defaultValue={formData?.recipient}
-          label="Recipient"
-          error={errors.recipient}
-          textFieldProps={{
-            ...register('recipient', {
-              validate: validateAddress,
-              required: true,
-            }),
-          }}
-        />
-      </FormControl>
+        <FormControl fullWidth>
+          <AddressBookInput name="recipient" />
+        </FormControl>
 
-      <FormControl fullWidth>
-        <InputLabel id="asset-label">Select an asset</InputLabel>
-        <Select
-          labelId="asset-label"
-          label={errors.tokenAddress?.message || 'Select an asset'}
-          defaultValue={formData?.tokenAddress || ''}
-          error={!!errors.tokenAddress}
-          {...register('tokenAddress', { required: true })}
-        >
-          {balances.items.map((item) => (
-            <MenuItem value={item.tokenInfo.address} key={item.tokenInfo.address}>
-              <Grid container alignItems="center">
-                <Box fontSize={24}>
-                  <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
-                </Box>
+        <FormControl fullWidth>
+          <InputLabel id="asset-label">Select an asset</InputLabel>
+          <Select
+            labelId="asset-label"
+            label={errors.tokenAddress?.message || 'Select an asset'}
+            defaultValue={formData?.tokenAddress || ''}
+            error={!!errors.tokenAddress}
+            {...register('tokenAddress', { required: true })}
+          >
+            {balances.items.map((item) => (
+              <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
+                <AutocompleteItem {...item} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-                <Grid item xs>
-                  <Typography variant="body2">{item.tokenInfo.name}</Typography>
+        <FormControl fullWidth>
+          <TextField
+            label={errors.amount?.message || 'Amount'}
+            error={!!errors.amount}
+            autoComplete="off"
+            {...register('amount', { required: true, validate: (val) => validateTokenAmount(val, selectedToken) })}
+          />
+        </FormControl>
 
-                  <Typography variant="caption" color="text.secondary">
-                    <TokenAmount
-                      value={item.balance}
-                      decimals={item.tokenInfo.decimals}
-                      tokenSymbol={item.tokenInfo.symbol}
-                    />
-                  </Typography>
-                </Grid>
-              </Grid>
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <FormControl fullWidth>
-        <TextField
-          label={errors.amount?.message || 'Amount'}
-          error={!!errors.amount}
-          autoComplete="off"
-          {...register('amount', { required: true, validate: (val) => validateTokenAmount(val, selectedToken) })}
-        />
-      </FormControl>
-
-      <Button variant="contained" type="submit">
-        Next
-      </Button>
-    </form>
+        <Button variant="contained" type="submit">
+          Next
+        </Button>
+      </form>
+    </FormProvider>
   )
 }
 
