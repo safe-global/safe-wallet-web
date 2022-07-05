@@ -25,6 +25,7 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import AddressInput from '../common/AddressInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import { lookupAddress } from '@/services/ens'
 
 type Props = {
   params: CreateSafeFormData
@@ -82,7 +83,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
 
       setValue(`owners.${index}.resolving`, true)
       const { address } = parsePrefixedAddress(owner.address)
-      const ensName = await ethersProvider.lookupAddress(address)
+      const ensName = await lookupAddress(ethersProvider, address)
       update(index, { ...owner, name: ensName || owner.name, resolving: false })
     },
     [update, setValue, ethersProvider],
