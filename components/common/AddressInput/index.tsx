@@ -1,9 +1,8 @@
 import { ReactElement, useEffect } from 'react'
-import { InputAdornment, TextField, type TextFieldProps } from '@mui/material'
+import { InputAdornment, TextField, type TextFieldProps, CircularProgress } from '@mui/material'
 import { useFormContext, type Validate } from 'react-hook-form'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
-import RefreshSpinner from '@/components/common/RefreshSpinner'
 import useNameResolver from './useNameResolver'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
@@ -35,7 +34,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
       InputProps={{
         endAdornment: resolving && (
           <InputAdornment position="end">
-            <RefreshSpinner />
+            <CircularProgress size={20} />
           </InputAdornment>
         ),
       }}

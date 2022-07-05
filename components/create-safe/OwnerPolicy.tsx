@@ -11,6 +11,7 @@ import {
   Select,
   TextField,
   Typography,
+  CircularProgress,
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
@@ -24,7 +25,6 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import AddressInput from '../common/AddressInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import { lookupAddress } from '@/services/domains'
-import RefreshSpinner from '../common/RefreshSpinner'
 
 type Props = {
   params: CreateSafeFormData
@@ -131,7 +131,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
                         InputProps={{
                           endAdornment: owners[index].resolving ? (
                             <InputAdornment position="end">
-                              <RefreshSpinner />
+                              <CircularProgress size={20} />
                             </InputAdornment>
                           ) : null,
                         }}
