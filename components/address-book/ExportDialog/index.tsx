@@ -11,22 +11,20 @@ import useAddressBook from '@/hooks/useAddressBook'
 import { useCurrentChain } from '@/hooks/useChains'
 import { AddressBook } from '@/store/addressBookSlice'
 
-const getCsvData = (addressBook: AddressBook, chainId: string) => {
-  const COL_1 = 'address'
-  const COL_2 = 'name'
-  const COL_3 = 'chainId'
+const COL_1 = 'address'
+const COL_2 = 'name'
+const COL_3 = 'chainId'
 
-  const csvData = Object.entries(addressBook).reduce<{ [COL_1]: string; [COL_2]: string; [COL_3]: string }[]>(
-    (acc, [address, name]) => {
-      acc.push({
-        [COL_1]: address,
-        [COL_2]: name,
-        [COL_3]: chainId,
-      })
-      return acc
-    },
-    [],
-  )
+type CsvData = { [COL_1]: string; [COL_2]: string; [COL_3]: string }[]
+export const _getCsvData = (addressBook: AddressBook, chainId: string) => {
+  const csvData = Object.entries(addressBook).reduce<CsvData>((acc, [address, name]) => {
+    acc.push({
+      [COL_1]: address,
+      [COL_2]: name,
+      [COL_3]: chainId,
+    })
+    return acc
+  }, [])
 
   return csvData
 }
@@ -38,6 +36,7 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
 
   const { CSVDownloader } = useCSVDownloader()
 
+  // rinkeby-address-book-1970-01-01
   const filename = `${chain!.chainName.toLowerCase()}-address-book-${new Date().toISOString().slice(0, 10)}`
 
   const csvData = useMemo(() => {
@@ -45,7 +44,7 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
       return []
     }
 
-    return getCsvData(addressBook, chain.chainId)
+    return _getCsvData(addressBook, chain.chainId)
   }, [addressBook, chain])
 
   return (
