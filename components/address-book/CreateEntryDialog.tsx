@@ -8,7 +8,7 @@ import { isAddress } from '@ethersproject/address'
 import type { ReactElement } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
-import AddressInput from '../common/AddressInput'
+import AddressInput from '@/components/common/AddressInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import { useCurrentChain } from '@/hooks/useChains'
 import { useAppDispatch } from '@/store'

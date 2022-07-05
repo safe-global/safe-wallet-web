@@ -1,9 +1,9 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
 import useAddressBook from '@/hooks/useAddressBook'
 import { useState } from 'react'
-import CreateEntryDialog from '../CreateEntryDialog'
-import ExportDialog from '../ExportDialog'
-import ImportDialog from '../ImportDialog'
+import CreateEntryDialog from '@/components/address-book/CreateEntryDialog'
+import ExportDialog from '@/components/address-book/ExportDialog'
+import ImportDialog from '@/components/address-book/ImportDialog'
 
 const headCells = [
   { id: 'name', label: 'Name' },

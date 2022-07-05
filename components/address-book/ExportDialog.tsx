@@ -52,7 +52,7 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
     <ModalDialog open onClose={handleClose} title="Export address book">
       <DialogContent>
         <Typography>
-          You're about to export a CSV file with{' '}
+          You&apos;re about to export a CSV file with{' '}
           <b>
             {length} address book {length === 1 ? 'entry' : 'entries'}
           </b>
