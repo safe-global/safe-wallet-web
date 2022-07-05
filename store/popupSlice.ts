@@ -24,13 +24,13 @@ export const popupSlice = createSlice({
   initialState,
   reducers: {
     openCookieBanner: (state, { payload }: PayloadAction<{ warningKey?: CookieType }>) => {
-      state[PopupType.COOKIES].open = true
-      if (payload.warningKey) {
-        state[PopupType.COOKIES].warningKey = payload.warningKey
+      state[PopupType.COOKIES] = {
+        ...payload,
+        open: true,
       }
     },
     closeCookieBanner: (state) => {
-      state[PopupType.COOKIES].open = false
+      state[PopupType.COOKIES] = { open: false }
     },
   },
 })
