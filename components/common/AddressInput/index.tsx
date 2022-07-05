@@ -32,6 +32,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
       label={errors[name]?.message || props.label}
       error={!!errors[name]}
       InputProps={{
+        ...(props.InputProps || {}),
         endAdornment: resolving && (
           <InputAdornment position="end">
             <CircularProgress size={20} />
