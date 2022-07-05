@@ -1,13 +1,12 @@
 import { ReactElement, useEffect } from 'react'
 import { InputAdornment, TextField, type TextFieldProps } from '@mui/material'
-import RefreshIcon from '@mui/icons-material/Refresh'
 import { useFormContext, type Validate } from 'react-hook-form'
-import css from './styles.module.css'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useAsync from '@/hooks/useAsync'
 import { resolveName } from '@/services/domains'
+import RefreshSpinner from '@/components/common/RefreshSpinner'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
 
@@ -45,7 +44,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
       InputProps={{
         endAdornment: ensResolving && (
           <InputAdornment position="end">
-            <RefreshIcon className={css.spinner} />
+            <RefreshSpinner />
           </InputAdornment>
         ),
       }}

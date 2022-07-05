@@ -13,11 +13,9 @@ import {
   Typography,
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
-import RefreshIcon from '@mui/icons-material/Refresh'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
-import css from './styles.module.css'
 import { CreateSafeFormData, Owner } from '@/components/create-safe/index'
 import useWallet from '@/hooks/wallets/useWallet'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -26,6 +24,7 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import AddressInput from '../common/AddressInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import { lookupAddress } from '@/services/domains'
+import RefreshSpinner from '../common/RefreshSpinner'
 
 type Props = {
   params: CreateSafeFormData
@@ -132,7 +131,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
                         InputProps={{
                           endAdornment: owners[index].resolving ? (
                             <InputAdornment position="end">
-                              <RefreshIcon className={css.spinner} />
+                              <RefreshSpinner />
                             </InputAdornment>
                           ) : null,
                         }}
