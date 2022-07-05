@@ -20,6 +20,7 @@ import { pendingTxsSlice } from './pendingTxsSlice'
 import { addedSafesMiddleware, addedSafesSlice } from './addedSafesSlice'
 import { settingsSlice } from './settingsSlice'
 import { cookiesSlice, cookiesMiddleware } from './cookiesSlice'
+import { popupSlice } from './popupSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   [addedSafesSlice.name]: addedSafesSlice.reducer,
   [settingsSlice.name]: settingsSlice.reducer,
   [cookiesSlice.name]: cookiesSlice.reducer,
+  [popupSlice.name]: popupSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
