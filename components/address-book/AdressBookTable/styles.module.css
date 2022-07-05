@@ -6,6 +6,6 @@
 .headerButtonWrapper {
   display: flex;
   justify-content: flex-end;
-  grid: 8px;
+  gap: 8px;
   margin-bottom: 8px;
 }
