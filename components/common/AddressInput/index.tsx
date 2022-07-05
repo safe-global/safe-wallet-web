@@ -3,10 +3,8 @@ import { InputAdornment, TextField, type TextFieldProps } from '@mui/material'
 import { useFormContext, type Validate } from 'react-hook-form'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import useAsync from '@/hooks/useAsync'
-import { resolveName } from '@/services/domains'
 import RefreshSpinner from '@/components/common/RefreshSpinner'
+import useNameResolver from './useNameResolver'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
 
@@ -18,22 +16,15 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
     formState: { errors },
   } = useFormContext()
   const currentChain = useCurrentChain()
-  const ethersProvider = useWeb3ReadOnly()
   const currentValue = watch(name)?.trim()
 
   // Fetch an ENS resolution for the current address
-  const [ens, , ensResolving] = useAsync<{ name: string; address: string } | undefined>(async () => {
-    if (!ethersProvider) return
-    const address = await resolveName(ethersProvider, currentValue)
-    return address ? { address, name: currentValue } : undefined
-  }, [currentValue, ethersProvider])
+  const { address, resolving } = useNameResolver(currentValue)
 
   // Update the input value with the resolved ENS name
   useEffect(() => {
-    if (ens && ens.name === currentValue && currentValue !== ens.address) {
-      setValue(name, ens.address)
-    }
-  }, [name, currentValue, ens, setValue])
+    if (address) setValue(name, address)
+  }, [address, name, setValue])
 
   return (
     <TextField
@@ -42,7 +33,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
       label={errors[name]?.message || props.label}
       error={!!errors[name]}
       InputProps={{
-        endAdornment: ensResolving && (
+        endAdornment: resolving && (
           <InputAdornment position="end">
             <RefreshSpinner />
           </InputAdornment>
