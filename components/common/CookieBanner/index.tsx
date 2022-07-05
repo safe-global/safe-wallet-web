@@ -1,48 +1,36 @@
-import { useState, ChangeEvent, ReactElement } from 'react'
+import { useEffect, ReactElement } from 'react'
 import { Box, Button, Checkbox, FormControlLabel, Link, Typography } from '@mui/material'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
+import { useForm } from 'react-hook-form'
 
 import { useAppDispatch, useAppSelector } from '@/store'
-import {
-  selectCookies,
-  NECESSARY_COOKIE,
-  SUPPORT_COOKIE,
-  ANALYTICS_COOKIE,
-  closeCookieBanner,
-  saveCookieConsent,
-  CookieConsent,
-} from '@/store/cookiesSlice'
+import { selectCookies, CookieType, saveCookieConsent } from '@/store/cookiesSlice'
+import { selectCookieBanner, openCookieBanner, closeCookieBanner } from '@/store/popupSlice'
 
 import css from './styles.module.css'
 
-const COOKIE_WARNING: Record<keyof CookieConsent, string> = {
-  [NECESSARY_COOKIE]: '',
-  [SUPPORT_COOKIE]:
-    'You attempted to open the "Need Help?" section but need to accept the "Community Support & Updates" cookies first.',
-  [ANALYTICS_COOKIE]: '',
+const COOKIE_WARNING: Record<CookieType, string> = {
+  [CookieType.NECESSARY]: '',
+  [CookieType.UPDATES]: `You attempted to open the "What's New" section but need to accept the "Updates & Feedback" cookies first.`,
+  [CookieType.ANALYTICS]: '',
 }
 
-const CookieBanner = (): ReactElement => {
+const CookieBannerPopup = ({ warning }: { warning?: string }): ReactElement => {
   const dispatch = useAppDispatch()
   const cookies = useAppSelector(selectCookies)
-  const [consent, setConsent] = useState(cookies.consent)
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = event.target
-    setConsent((prev) => ({ ...prev, [name]: checked }))
-  }
+  const { register, getValues, setValue } = useForm({
+    defaultValues: cookies,
+  })
 
   const handleAccept = () => {
-    dispatch(saveCookieConsent({ consent }))
+    setValue(CookieType.NECESSARY, true)
+    dispatch(saveCookieConsent(getValues()))
     dispatch(closeCookieBanner())
   }
 
   const handleAcceptAll = () => {
-    setConsent({
-      [NECESSARY_COOKIE]: true,
-      [SUPPORT_COOKIE]: true,
-      [ANALYTICS_COOKIE]: true,
-    })
+    setValue(CookieType.UPDATES, true)
+    setValue(CookieType.ANALYTICS, true)
     handleAccept()
   }
 
@@ -52,14 +40,12 @@ const CookieBanner = (): ReactElement => {
         backgroundColor: 'background.paper',
         borderTop: `1px solid ${palette.gray[500]}`,
         // Rendering `null` causes hydration error
-        display: !cookies.open ? 'none' : undefined,
       })}
       className={css.container}
     >
-      {cookies.warningKey && COOKIE_WARNING[cookies.warningKey] && (
+      {warning && (
         <Typography align="center" paddingBottom="8px">
-          <WarningAmberIcon fontSize="small" sx={({ palette }) => ({ fill: palette.error.main })} />{' '}
-          {COOKIE_WARNING[cookies.warningKey]}
+          <WarningAmberIcon fontSize="small" sx={({ palette }) => ({ fill: palette.error.main })} /> {warning}
         </Typography>
       )}
 
@@ -74,15 +60,14 @@ const CookieBanner = (): ReactElement => {
       </Typography>
 
       <form className={css.form}>
-        <FormControlLabel control={<Checkbox defaultChecked name={NECESSARY_COOKIE} disabled />} label="Necessary" />
         <FormControlLabel
-          control={<Checkbox checked={consent[SUPPORT_COOKIE]} name={SUPPORT_COOKIE} onChange={handleChange} />}
-          label="Community Support & Updates"
+          control={<Checkbox defaultChecked disabled {...register(CookieType.NECESSARY)} />}
+          label="Necessary"
         />
-        <FormControlLabel
-          control={<Checkbox checked={consent[ANALYTICS_COOKIE]} name={ANALYTICS_COOKIE} onChange={handleChange} />}
-          label="Analytics"
-        />
+
+        <FormControlLabel control={<Checkbox {...register(CookieType.UPDATES)} />} label="Updates & Feedback" />
+
+        <FormControlLabel control={<Checkbox {...register(CookieType.ANALYTICS)} />} label="Analytics" />
 
         <Button onClick={handleAccept} variant="outlined" disableElevation>
           Accept selection
@@ -93,6 +78,24 @@ const CookieBanner = (): ReactElement => {
       </form>
     </Box>
   )
+}
+
+const CookieBanner = (): ReactElement | null => {
+  const cookiePopup = useAppSelector(selectCookieBanner)
+  const cookies = useAppSelector(selectCookies)
+  const dispatch = useAppDispatch()
+
+  // Open the banner if "necessary" cookies haven't been accepted
+  const shouldOpen = !cookies[CookieType.NECESSARY]
+  useEffect(() => {
+    if (shouldOpen) {
+      dispatch(openCookieBanner({}))
+    }
+  }, [dispatch, shouldOpen])
+
+  const warning = cookiePopup.warningKey && COOKIE_WARNING[cookiePopup.warningKey]
+
+  return cookiePopup?.open ? <CookieBannerPopup warning={warning} /> : null
 }
 
 export default CookieBanner
