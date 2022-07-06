@@ -13,11 +13,12 @@
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
     "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts",
+    "typechain": "typechain --target=ethers-v5 --out-dir types/contracts",
     "generate-types": "yarn generate-types:spendingLimit && yarn generate-types:safeDeployments && yarn generate-types:erc20 && yarn generate-types:erc721",
-    "generate-types:safeDeployments": "typechain --target=ethers-v5 --out-dir types/contracts ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json",
-    "generate-types:spendingLimit": "typechain --target=ethers-v5 --out-dir types/contracts ./node_modules/@gnosis.pm/safe-modules-deployments/dist/assets/**/*.json",
-    "generate-types:erc20": "typechain --target=ethers-v5 --out-dir types/contracts './node_modules/@openzeppelin/contracts/build/contracts/ERC20.json'",
-    "generate-types:erc721": "typechain --target=ethers-v5 --out-dir types/contracts './node_modules/@openzeppelin/contracts/build/contracts/ERC721.json'",
+    "generate-types:safeDeployments": "yarn typechain ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json",
+    "generate-types:spendingLimit": "yarn typechain ./node_modules/@gnosis.pm/safe-modules-deployments/dist/assets/**/*.json",
+    "generate-types:erc20": "yarn typechain './node_modules/@openzeppelin/contracts/build/contracts/ERC20.json'",
+    "generate-types:erc721": "yarn typechain './node_modules/@openzeppelin/contracts/build/contracts/ERC721.json'",
     "postinstall": "yarn generate-types"
   },
   "pre-push": [
