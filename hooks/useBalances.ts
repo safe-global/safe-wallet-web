@@ -28,7 +28,7 @@ export const useInitBalances = (): void => {
   // Set new balances
   useEffect(() => {
     if (data || error) {
-      dispatch(balancesSlice.actions.set({ data, error, loading: false }))
+      dispatch(balancesSlice.actions.set({ data, error: error?.message, loading: false }))
     }
   }, [dispatch, data, error])
 

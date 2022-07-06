@@ -4,7 +4,7 @@ import { RootState } from '.'
 export type Loadable<T> = {
   data: T
   loading: boolean
-  error?: Error
+  error?: string
 }
 
 export const makeLoadableSlice = <T>(name: string, data?: T) => {

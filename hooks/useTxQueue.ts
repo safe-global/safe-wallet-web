@@ -56,7 +56,7 @@ const useTxQueue = (
   pageUrl?: string,
 ): {
   page?: TransactionListPage
-  error?: Error
+  error?: string
   loading: boolean
 } => {
   const { safe } = useSafeInfo()
@@ -73,7 +73,10 @@ const useTxQueue = (
 
   // Return the new page or the stored page
   return pageUrl
-    ? { page, error, loading }
+    ? {
+      page,
+      error: error?.message,
+      loading }
     : {
         page: queueState.data,
         error: queueState.error,

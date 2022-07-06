@@ -28,7 +28,7 @@ export const useInitCollectibles = (): void => {
   // Save the Collectibles in the store
   useEffect(() => {
     if (data || error) {
-      dispatch(collectiblesSlice.actions.set({ data: data, error, loading: false }))
+      dispatch(collectiblesSlice.actions.set({ data: data, error: error?.message, loading: false }))
     }
   }, [dispatch, data, error])
 

@@ -29,7 +29,7 @@ export const usePollSafeInfo = (): void => {
   useEffect(() => {
     // Take errors and loading state into account only for initial requests when counter is 0
     if (data || counter === 0) {
-      dispatch(safeInfoSlice.actions.set({ data, error, loading }))
+      dispatch(safeInfoSlice.actions.set({ data, error: error?.message, loading }))
     }
   }, [dispatch, counter, data, error, loading])
 }

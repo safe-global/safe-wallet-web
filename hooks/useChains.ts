@@ -20,7 +20,7 @@ export const useInitChains = (): void => {
     dispatch(
       chainsSlice.actions.set({
         data,
-        error,
+        error: error?.message,
         loading,
       }),
     )
