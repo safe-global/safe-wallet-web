@@ -39,7 +39,7 @@ export const selectAllAddressBooks = (state: RootState): AddressBookState => {
 export const selectAddressBook = createSelector(
   [selectAllAddressBooks, selectSafeInfo],
   (allAddressBooks, safeInfo): AddressBook => {
-    const chainId = safeInfo.safe?.chainId
+    const chainId = safeInfo.data?.chainId
     return chainId ? allAddressBooks[chainId] || {} : {}
   },
 )

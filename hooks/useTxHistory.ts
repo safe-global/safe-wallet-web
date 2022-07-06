@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { Errors, logError } from '@/services/exceptions'
-import { selectTxHistory, setHistory } from '@/store/txHistorySlice'
+import { selectTxHistory, txHistorySlice } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
 
 export const useInitTxHistory = (): void => {
@@ -13,7 +13,7 @@ export const useInitTxHistory = (): void => {
   const address = safe?.address.value
 
   // Re-fetch assets when chainId/address, or txHistoryTag change
-  const [page, error] = useAsync<TransactionListPage | undefined>(async () => {
+  const [data, error] = useAsync<TransactionListPage | undefined>(async () => {
     if (chainId && address) {
       return getTransactionHistory(chainId, address)
     }
@@ -21,20 +21,18 @@ export const useInitTxHistory = (): void => {
 
   // Clear the old TxHistory when Safe address is changed
   useEffect(() => {
-    dispatch(setHistory(undefined))
+    dispatch(txHistorySlice.actions.set({ data: undefined, loading: true }))
   }, [address, chainId, dispatch])
 
   // Save the TxHistory in the store
   useEffect(() => {
-    if (page) {
+    if (data) {
       dispatch(
-        setHistory({
-          page,
-          loading: false,
-        }),
+        // @ts-expect-error
+        txHistorySlice.actions.set({ data, loading: false }),
       )
     }
-  }, [page, dispatch])
+  }, [data, dispatch])
 
   // Log errors
   useEffect(() => {
@@ -63,7 +61,13 @@ const useTxHistory = (
   const historyState = useAppSelector(selectTxHistory)
 
   // Return the new page or the stored page
-  return pageUrl ? { page, error, loading } : historyState
+  return pageUrl
+    ? { page, error, loading }
+    : {
+        page: historyState.data,
+        error: historyState.error,
+        loading: historyState.loading,
+      }
 }
 
 export default useTxHistory

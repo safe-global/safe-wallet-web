@@ -1,37 +1,38 @@
-import { ChainInfo, getChainsConfig, type ChainListResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect } from 'react'
+import { ChainInfo, getChainsConfig } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectChainById, selectChains, setChains } from '@/store/chainsSlice'
-import { Errors, logError } from '@/services/exceptions'
-import useAsync from './useAsync'
+import { selectChainById, selectChains, chainsSlice } from '@/store/chainsSlice'
 import { useChainId } from './useChainId'
+import useAsync from './useAsync'
+
+const getConfigs = async (): Promise<ChainInfo[]> => {
+  const data = await getChainsConfig()
+  return data.results || []
+}
 
 export const useInitChains = (): void => {
   const dispatch = useAppDispatch()
 
-  const [data, error, loading] = useAsync<ChainListResponse>(getChainsConfig, [])
+  const [data, error, loading] = useAsync<ChainInfo[]>(getConfigs, [])
 
-  // Update data
   useEffect(() => {
     dispatch(
-      setChains({
-        configs: data?.results || [],
+      chainsSlice.actions.set({
+        data,
         error,
         loading,
       }),
     )
   }, [dispatch, data, error, loading])
-
-  // Log errors
-  useEffect(() => {
-    if (error) {
-      logError(Errors._904, error.message)
-    }
-  }, [error])
 }
 
 const useChains = () => {
-  return useAppSelector(selectChains)
+  const state = useAppSelector(selectChains)
+  return {
+    configs: state.data || [],
+    error: state.error,
+    loading: state.loading,
+  }
 }
 
 export default useChains

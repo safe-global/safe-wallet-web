@@ -7,7 +7,7 @@ type PreloadedRootState = PreloadedState<RootState>
 
 export const getPreloadedState = <K extends keyof PreloadedRootState>(sliceNames: K[]): PreloadedRootState => {
   return sliceNames.reduce<PreloadedRootState>((preloadedState, sliceName) => {
-    const sliceState = local.getItem<PreloadedRootState[K]>(sliceName)
+    const sliceState = local.getItem<PreloadedRootState[K]>(String(sliceName))
 
     if (sliceState) {
       preloadedState[sliceName] = sliceState
@@ -27,9 +27,9 @@ export const persistState = <K extends keyof PreloadedRootState>(sliceNames: K[]
       const sliceState = state[sliceName]
 
       if (sliceState) {
-        local.setItem(sliceName, sliceState)
+        local.setItem(String(sliceName), sliceState)
       } else {
-        local.removeItem(sliceName)
+        local.removeItem(String(sliceName))
       }
     }
 

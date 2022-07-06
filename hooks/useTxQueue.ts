@@ -3,7 +3,7 @@ import { getTransactionQueue, type TransactionListPage } from '@gnosis.pm/safe-r
 import { useAppDispatch, useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { Errors, logError } from '@/services/exceptions'
-import { selectTxQueue, setQueue, selectQueuedTransactionsByNonce } from '@/store/txQueueSlice'
+import { selectTxQueue, txQueueSlice, selectQueuedTransactionsByNonce } from '@/store/txQueueSlice'
 import useSafeInfo from './useSafeInfo'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 
@@ -15,7 +15,7 @@ export const useInitTxQueue = (): void => {
   const address = safe?.address.value
 
   // Re-fetch assets when chainId/address, or txQueueTag change
-  const [page, error] = useAsync<TransactionListPage | undefined>(async () => {
+  const [data, error] = useAsync<TransactionListPage | undefined>(async () => {
     if (chainId && address) {
       return getTransactionQueue(chainId, address)
     }
@@ -23,20 +23,20 @@ export const useInitTxQueue = (): void => {
 
   // Clear the old TxQueue when Safe address is changed
   useEffect(() => {
-    dispatch(setQueue(undefined))
+    dispatch(txQueueSlice.actions.set({ data: undefined, loading: true }))
   }, [address, chainId, dispatch])
 
   // Save the TxQueue in the store
   useEffect(() => {
-    if (page) {
+    if (data) {
       dispatch(
-        setQueue({
-          page,
+        txQueueSlice.actions.set({
+          data,
           loading: false,
         }),
       )
     }
-  }, [page, dispatch])
+  }, [data, dispatch])
 
   // Log errors
   useEffect(() => {
@@ -72,7 +72,13 @@ const useTxQueue = (
   const queueState = useAppSelector(selectTxQueue)
 
   // Return the new page or the stored page
-  return pageUrl ? { page, error, loading } : queueState
+  return pageUrl
+    ? { page, error, loading }
+    : {
+        page: queueState.data,
+        error: queueState.error,
+        loading: queueState.loading,
+      }
 }
 
 export const useQueuedTxByNonce = (nonce?: number) => {

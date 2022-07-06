@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
-import { selectCollectibles, setCollectibles } from '@/store/collectiblesSlice'
+import { selectCollectibles, collectiblesSlice } from '@/store/collectiblesSlice'
 
 export const useInitCollectibles = (): void => {
   const { safe } = useSafeInfo()
@@ -21,14 +21,14 @@ export const useInitCollectibles = (): void => {
   // Clear the old Collectibles when Safe address is changed
   useEffect(() => {
     if (!safe) {
-      dispatch(setCollectibles({ collectibles: [], loading: true }))
+      dispatch(collectiblesSlice.actions.set({ data: [], loading: true }))
     }
   }, [dispatch, safe])
 
   // Save the Collectibles in the store
   useEffect(() => {
     if (data || error) {
-      dispatch(setCollectibles({ collectibles: data || [], error, loading: false }))
+      dispatch(collectiblesSlice.actions.set({ data: data || [], error, loading: false }))
     }
   }, [dispatch, data, error])
 

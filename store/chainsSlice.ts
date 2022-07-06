@@ -1,37 +1,16 @@
 import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createSelector } from '@reduxjs/toolkit'
 import type { RootState } from '.'
-import { Loadable } from './common'
+import { makeLoadableSlice, makeSliceSelector } from './common'
 
-interface ChainsState extends Loadable {
-  configs: ChainInfo[]
-}
+type ChainsData = ChainInfo[]
 
-const initialState: ChainsState = {
-  configs: [],
-  error: undefined,
-  loading: true,
-}
-
-export const chainsSlice = createSlice({
-  name: 'chains',
-  initialState,
-  reducers: {
-    setChains: (_, action: PayloadAction<ChainsState>): ChainsState => {
-      return action.payload
-    },
-  },
-})
-
-export const { setChains } = chainsSlice.actions
-
-export const selectChains = (state: RootState): ChainsState => {
-  return state[chainsSlice.name]
-}
+export const chainsSlice = makeLoadableSlice<ChainsData>('chains', [])
+export const selectChains = makeSliceSelector<ChainsData>(chainsSlice)
 
 export const selectChainById = createSelector(
   [selectChains, (_: RootState, chainId: string) => chainId],
   (chains, chainId) => {
-    return chains.configs.find((item: ChainInfo) => item.chainId === chainId)
+    return (chains.data || []).find((item: ChainInfo) => item.chainId === chainId)
   },
 )

@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
-import { selectBalances, setBalances, initialState } from '@/store/balancesSlice'
+import { selectBalances, balancesSlice } from '@/store/balancesSlice'
 import { selectCurrency } from '@/store/sessionSlice'
 
 export const useInitBalances = (): void => {
@@ -21,14 +21,14 @@ export const useInitBalances = (): void => {
   // Clear the old Balances when Safe address is changed
   useEffect(() => {
     if (!safe) {
-      dispatch(setBalances({ balances: initialState.balances, loading: true }))
+      dispatch(balancesSlice.actions.set({ data: undefined, loading: true }))
     }
   }, [dispatch, safe])
 
   // Set new balances
   useEffect(() => {
     if (data || error) {
-      dispatch(setBalances({ balances: data || initialState.balances, error, loading: false }))
+      dispatch(balancesSlice.actions.set({ data, error, loading: false }))
     }
   }, [dispatch, data, error])
 
@@ -41,8 +41,15 @@ export const useInitBalances = (): void => {
 }
 
 const useBalances = () => {
-  const balances = useAppSelector(selectBalances)
-  return balances
+  const state = useAppSelector(selectBalances)
+  return {
+    balances: state.data || {
+      fiatTotal: '',
+      items: [],
+    },
+    loading: state.loading,
+    error: state.error,
+  }
 }
 
 export default useBalances

@@ -1,37 +1,13 @@
-import { TokenInfo, type SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '@/store'
-import { Loadable } from './common'
+import { type TokenInfo, type SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { createSelector } from '@reduxjs/toolkit'
+import { makeLoadableSlice, makeSliceSelector } from './common'
 
-interface BalancesState extends Loadable {
-  balances: SafeBalanceResponse
-}
-
-export const initialState: BalancesState = {
-  loading: true,
-  error: undefined,
-  balances: {
-    fiatTotal: '0',
-    items: [],
-  },
-}
-
-export const balancesSlice = createSlice({
-  name: 'balances',
-  initialState,
-  reducers: {
-    setBalances: (_, action: PayloadAction<BalancesState>): BalancesState => {
-      return action.payload
-    },
-  },
+export const balancesSlice = makeLoadableSlice<SafeBalanceResponse>('balances', {
+  fiatTotal: '',
+  items: [],
 })
+export const selectBalances = makeSliceSelector<SafeBalanceResponse>(balancesSlice)
 
-export const { setBalances } = balancesSlice.actions
-
-export const selectBalances = (state: RootState): BalancesState => {
-  return state[balancesSlice.name]
-}
-
-export const selectTokens = (state: RootState): TokenInfo[] => {
-  return selectBalances(state).balances.items.map(({ tokenInfo }) => tokenInfo)
-}
+export const selectTokens = createSelector(selectBalances, (balancesState): TokenInfo[] =>
+  (balancesState.data?.items || []).map(({ tokenInfo }) => tokenInfo),
+)

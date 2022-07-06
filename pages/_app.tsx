@@ -13,11 +13,7 @@ import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { store } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import { useInitChains } from '@/hooks/useChains'
-import { useInitSafeInfo } from '@/hooks/useSafeInfo'
-import { useInitBalances } from '@/hooks/useBalances'
-import { useInitCollectibles } from '@/hooks/useCollectibles'
-import { useInitTxHistory } from '@/hooks/useTxHistory'
-import { useInitTxQueue } from '@/hooks/useTxQueue'
+import { usePollSafeInfo } from '@/hooks/usePollSafeInfo'
 import usePathRewrite from '@/hooks/usePathRewrite'
 import { useInitOnboard } from '@/hooks/wallets/useOnboard'
 import { useInitWeb3 } from '@/hooks/wallets/useInitWeb3'
@@ -41,11 +37,7 @@ const InitApp = (): null => {
   usePathRewrite()
   useInitChains()
   useInitSession()
-  useInitSafeInfo()
-  useInitBalances()
-  useInitCollectibles()
-  useInitTxHistory()
-  useInitTxQueue()
+  usePollSafeInfo()
   useInitOnboard()
   useInitWeb3()
   useInitSafeCoreSDK()
