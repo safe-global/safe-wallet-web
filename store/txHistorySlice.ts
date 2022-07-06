@@ -4,10 +4,16 @@ import type { RootState } from '@/store'
 import { isTransaction } from '@/utils/transaction-guards'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { selectPendingTxs } from './pendingTxsSlice'
-import { makeLoadableSlice, makeSliceSelector } from './common'
+import { makeLoadableSlice } from './common'
 
-export const txHistorySlice = makeLoadableSlice<TransactionListPage>('txHistory')
-export const selectTxHistory = makeSliceSelector<TransactionListPage>(txHistorySlice)
+const { slice, selector } = makeLoadableSlice('txHistory', {
+  results: [],
+  next: '',
+  previous: '',
+} as TransactionListPage)
+
+export const txHistorySlice = slice
+export const selectTxHistory = selector
 
 export const txHistoryMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
   const result = next(action)
@@ -15,10 +21,6 @@ export const txHistoryMiddleware: Middleware<{}, RootState> = (store) => (next) 
   switch (action.type) {
     // Dispatch SUCCESS event when pending transaction is in history payload
     case txHistorySlice.actions.set.type: {
-      if (!action.payload?.page) {
-        break
-      }
-
       const state = store.getState()
       const pendingTxs = selectPendingTxs(state)
 

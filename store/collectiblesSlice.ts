@@ -1,7 +1,7 @@
 import { type SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { makeLoadableSlice, makeSliceSelector } from './common'
+import { makeLoadableSlice } from './common'
 
-type CollectiblesData = SafeCollectibleResponse[]
+const { slice, selector } = makeLoadableSlice('collectibles', [] as SafeCollectibleResponse[])
 
-export const collectiblesSlice = makeLoadableSlice<CollectiblesData>('collectibles', [])
-export const selectCollectibles = makeSliceSelector<CollectiblesData>(collectiblesSlice)
+export const collectiblesSlice = slice
+export const selectCollectibles = selector

@@ -1,5 +1,4 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from '.'
 
 export type Loadable<T> = {
   data: T
@@ -7,22 +6,29 @@ export type Loadable<T> = {
   error?: string
 }
 
-export const makeLoadableSlice = <T>(name: string, data?: T) => {
-  return createSlice({
+export const makeLoadableSlice = <N extends string, T>(name: N, data: T) => {
+  type SliceState = Loadable<T>
+
+  const initialState: SliceState = {
+    data,
+    loading: false,
+  }
+
+  const slice = createSlice({
     name,
-    initialState: {
-      data,
-      loading: false,
-    },
+    initialState,
     reducers: {
-      set: (_, { payload }: PayloadAction<Loadable<T | undefined>>) => ({
+      set: (_, { payload }: PayloadAction<Loadable<T | undefined>>): SliceState => ({
         ...payload,
-        data: payload.data ?? data, // fallback to initialState.data
+        data: payload.data ?? initialState.data, // fallback to initialState.data
       }),
     },
   })
-}
 
-export const makeSliceSelector = <T>(slice: ReturnType<typeof makeLoadableSlice<T>>) => {
-  return (state: RootState): Loadable<T> => state[slice.name]
+  const selector = (state: Record<N, SliceState>): SliceState => state[name]
+
+  return {
+    slice,
+    selector,
+  }
 }
