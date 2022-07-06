@@ -60,7 +60,7 @@ const AddressBookTable = () => {
             <IconButton
               onClick={() => {
                 setEntryDefaultValues({ address, name })
-                handleOpen('createEntry')()
+                handleOpen('entry')()
               }}
             >
               <EditIcon />
@@ -102,7 +102,7 @@ const AddressBookTable = () => {
           Import
         </Button>
 
-        <Button onClick={handleOpen('createEntry')} variant="contained" disableElevation>
+        <Button onClick={handleOpen('entry')} variant="contained" disableElevation>
           Create entry
         </Button>
       </div>
