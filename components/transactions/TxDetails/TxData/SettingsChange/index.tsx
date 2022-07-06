@@ -1,38 +1,12 @@
 import { ReactElement } from 'react'
 import { SettingsChange, SettingsInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { Alert, Tooltip } from '@mui/material'
-import css from './styles.module.css'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
+import { ThresholdWarning } from '@/components/transactions/Warning'
 
 type SettingsChangeTxInfoProps = {
   settingsInfo: SettingsChange['settingsInfo']
 }
-
-const ThresholdWarning = (): ReactElement => (
-  <Tooltip
-    title="This transaction potentially alters the number of confirmations required to execute a transaction."
-    placement="top-start"
-    arrow
-  >
-    <Alert
-      className={css.alert}
-      sx={({ palette }) => ({
-        color: palette.secondary.main,
-        background: palette.warning.background,
-        borderLeft: `3px solid ${palette.warning.dark}`,
-
-        '&.MuiAlert-standardInfo .MuiAlert-icon': {
-          marginRight: '8px',
-          color: palette.warning.dark,
-        },
-      })}
-      severity="info"
-    >
-      <b>Confirmation policy change</b>
-    </Alert>
-  </Tooltip>
-)
 
 export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps): ReactElement | null => {
   if (!settingsInfo) {

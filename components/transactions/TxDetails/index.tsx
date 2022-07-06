@@ -8,36 +8,11 @@ import useAsync from '@/hooks/useAsync'
 import { isModuleExecutionInfo, isMultisendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import { Alert, Tooltip } from '@mui/material'
+import { DelegateCallWarning } from '@/components/transactions/Warning'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
 
 export const NOT_AVAILABLE = 'n/a'
-
-const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): ReactElement => (
-  <Tooltip
-    title="This transaction calls a smart contract that will be able to modify your Safe."
-    placement="top-start"
-    arrow
-  >
-    <Alert
-      className={css.alert}
-      sx={({ palette }) => ({
-        color: palette.black[500],
-        backgroundColor: `${showWarning ? palette.orange[200] : palette.green[200]}`,
-        borderLeft: `3px solid ${showWarning ? palette.orange[500] : palette.green[400]}`,
-
-        '&.MuiAlert-standardInfo .MuiAlert-icon': {
-          marginRight: '8px',
-          color: `${showWarning ? palette.orange[500] : palette.green[400]}`,
-        },
-      })}
-      severity="info"
-    >
-      <b>{showWarning ? 'Unexpected Delegate Call' : 'Delegate Call'}</b>
-    </Alert>
-  </Tooltip>
-)
 
 const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const chainId = useChainId()

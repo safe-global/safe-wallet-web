@@ -6,9 +6,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { DelegateCallWarning } from '@/components/transactions/Warning'
 import css from './styles.module.css'
 
-interface Props {
+type MultisendTxsDecodedProps = {
   actionTitle: string
   method: string
   children: ReactNode
@@ -22,7 +23,7 @@ interface Props {
   }
 }
 
-const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props): ReactElement => {
+const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: MultisendTxsDecodedProps): ReactElement => {
   const isDelegateCall = txDetails.operation === Operation.DELEGATE
   const isSpendingLimitMethod =
     isSetAllowance(txDetails.dataDecoded?.method) || isDeleteAllowance(txDetails.dataDecoded?.method)
@@ -57,14 +58,11 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props
       </AccordionSummary>
       <AccordionDetails sx={{ flexFlow: 'column' }}>
         {/* We always warn of nested delegate calls */}
-        {/* TODO: move the warnings to a separate file */}
-        {/* {isDelegateCall && <DelegateCallWarning showWarning={isDelegateCall} />} */}
+        {isDelegateCall && <DelegateCallWarning showWarning={isDelegateCall} />}
         {!isSpendingLimitMethod && (
-          <>
-            <InfoDetails title={txDetails.title}>
-              <EthHashInfo address={txDetails.address} name={txDetails.name} customAvatar={txDetails.avatarUrl} />
-            </InfoDetails>
-          </>
+          <InfoDetails title={txDetails.title}>
+            <EthHashInfo address={txDetails.address} name={txDetails.name} customAvatar={txDetails.avatarUrl} />
+          </InfoDetails>
         )}
         {children}
       </AccordionDetails>
