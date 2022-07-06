@@ -5,7 +5,6 @@ import { isAddress, isArrayParameter, isByte } from '@/utils/transaction-guards'
 import { DataDecoded } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Typography } from '@mui/material'
 import { Value } from '@/components/transactions/TxDetails/TxData/DecodedData/ValueArray'
-import css from './styles.module.css'
 
 type MethodDetailsProps = {
   data: DataDecoded
@@ -15,7 +14,7 @@ export const MethodDetails = ({ data }: MethodDetailsProps): ReactElement => {
   const methodName = camelCaseToSpaces(data.method)
   return (
     <Box py="8px">
-      <Typography className={css.methodName} sx={({ palette }) => ({ color: `${palette.black[300]}` })}>
+      <Typography variant="overline" sx={({ palette }) => ({ color: `${palette.black[300]}` })}>
         <b>{methodName}</b>
       </Typography>
 
