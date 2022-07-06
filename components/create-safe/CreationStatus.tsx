@@ -27,21 +27,21 @@ const getStep = (status: SafeCreationStatus) => {
   switch (status) {
     case SafeCreationStatus.PENDING:
       return {
-        image: <Image src={SafeCreationPending} alt="" width={111} height={91} />,
+        image: <Image src={SafeCreationPending} alt="Image of a vault that is loading" width={111} height={91} />,
         description: 'Transaction is pending.',
         instruction: 'Please do not leave the page.',
       }
     case SafeCreationStatus.ERROR:
       return {
-        image: <Image src={SafeCreationError} alt="" />,
+        image: <Image src={SafeCreationError} alt="Image of a vault with a red error sign" />,
         description: 'There was an error.',
-        instruction: 'You can Cancel or Retry the Safe creation process.',
+        instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.SUCCESS:
       return {
-        image: <Image src={SafeCreationWaiting} alt="" />,
-        description: 'Your safe was successfully created!',
-        instruction: 'Press continue to get to your dashboard.',
+        image: <Image src={SafeCreationWaiting} alt="Image of a vault" />,
+        description: 'Your Safe was successfully created!',
+        instruction: 'Press continue to get to your Dashboard.',
       }
   }
 }
@@ -61,7 +61,7 @@ export const CreationStatus = ({ onClose }: Props) => {
     if (!ethersProvider || !pendingSafe) return
 
     const callback = (txHash: string) => {
-      setPendingSafe({ ...pendingSafe, txHash })
+      setPendingSafe((prev) => prev && { ...prev, txHash })
     }
 
     setStatus(SafeCreationStatus.PENDING)
@@ -103,16 +103,13 @@ export const CreationStatus = ({ onClose }: Props) => {
         setPendingSafe(undefined)
       } catch (error) {
         setStatus(SafeCreationStatus.ERROR)
-        setPendingSafe({
-          ...pendingSafe,
-          txHash: undefined,
-        })
+        setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
         console.log(error)
       }
     }
 
     resolveSafeCreation()
-  }, [creationPromise, setPendingSafe])
+  }, [creationPromise, pendingSafe, setPendingSafe])
 
   const stepInfo = getStep(status)
 
