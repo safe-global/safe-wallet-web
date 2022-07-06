@@ -12,7 +12,13 @@
     "test": "jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
-    "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts"
+    "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts",
+    "generate-types": "yarn generate-types:spendingLimit && yarn generate-types:safeDeployments && yarn generate-types:erc20 && yarn generate-types:erc721",
+    "generate-types:safeDeployments": "typechain --target=ethers-v5 --out-dir types/contracts ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json",
+    "generate-types:spendingLimit": "typechain --target=ethers-v5 --out-dir types/contracts ./node_modules/@gnosis.pm/safe-modules-deployments/dist/assets/**/*.json",
+    "generate-types:erc20": "typechain --target=ethers-v5 --out-dir types/contracts './node_modules/@openzeppelin/contracts/build/contracts/ERC20.json'",
+    "generate-types:erc721": "typechain --target=ethers-v5 --out-dir types/contracts './node_modules/@openzeppelin/contracts/build/contracts/ERC721.json'",
+    "postinstall": "yarn generate-types"
   },
   "pre-push": [
     "lint:fix",
@@ -26,9 +32,11 @@
     "@gnosis.pm/safe-core-sdk": "^2.1.0",
     "@gnosis.pm/safe-core-sdk-types": "^1.1.0",
     "@gnosis.pm/safe-ethers-lib": "^1.1.0",
+    "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.6",
+    "@openzeppelin/contracts": "^4.7.0",
     "@reduxjs/toolkit": "^1.8.2",
     "@sentry/react": "^7.1.1",
     "@sentry/tracing": "^7.1.1",
@@ -62,6 +70,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.1",
+    "@typechain/ethers-v5": "^10.1.0",
     "@types/jest": "^28.1.4",
     "@types/js-cookie": "^3.0.2",
     "@types/lodash": "^4.14.182",
@@ -78,6 +87,7 @@
     "jest-environment-jsdom": "^28.1.2",
     "pre-push": "^0.1.2",
     "prettier": "^2.7.0",
+    "typechain": "^8.1.0",
     "typescript": "4.7.3"
   }
 }
