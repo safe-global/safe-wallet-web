@@ -10,18 +10,10 @@ declare module '@mui/material/styles' {
   }
   // Custom color palettes
   interface Palette {
-    gray: Palette['primary']
-    black: {
-      300: string
-      500: string
-    }
+    border: Palette['primary']
   }
   interface PaletteOptions {
-    gray: PaletteOptions['primary']
-    black: {
-      300: string
-      500: string
-    }
+    border: PaletteOptions['primary']
   }
 }
 
@@ -36,8 +28,8 @@ const palette = {
     main: '#162D45',
     light: '#566976',
   },
-  gray: {
-    main: '#B2BBC0',
+  border: {
+    main: '#ACBAC3',
     light: '#EEEFF0',
     background: '#F6F7F8',
   },
@@ -63,11 +55,6 @@ const palette = {
     main: '#FFC05F',
     light: '#FBE5C5',
     background: '#FFF4E3',
-  },
-  // Will be adjusted further by design
-  black: {
-    300: '#ACBAC3',
-    500: '#383E42',
   },
 }
 
@@ -141,7 +128,7 @@ const theme = createTheme({
           textTransform: 'none',
           '&.Mui-disabled': {
             color: '#fff',
-            backgroundColor: theme.palette.gray.main,
+            backgroundColor: theme.palette.border.main,
           },
         }),
         outlined: {
@@ -157,7 +144,7 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           borderRadius: '8px',
-          border: `2px solid ${theme.palette.gray.light}`,
+          border: `2px solid ${theme.palette.border.light}`,
           '&::before': {
             content: 'none',
           },
@@ -168,7 +155,7 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           '&.Mui-expanded': {
-            borderBottom: `2px solid ${theme.palette.gray.light}`,
+            borderBottom: `2px solid ${theme.palette.border.light}`,
           },
         }),
         content: { margin: '0px' },

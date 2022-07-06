@@ -81,7 +81,7 @@ const SafeListItem = ({
             borderLeft: isOpen ? `6px solid ${palette.primary.main}` : undefined,
             paddingLeft: '22px',
             '&.Mui-selected': {
-              backgroundColor: palette.gray.background,
+              backgroundColor: palette.border.background,
               paddingLeft: '16px',
             },
             '&:hover': {

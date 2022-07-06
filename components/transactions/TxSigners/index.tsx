@@ -45,7 +45,7 @@ const getStepColor = (state: StepState): string => {
   const colors = {
     confirmed: palette.primary.main,
     active: palette.warning.dark,
-    disabled: palette.gray.main,
+    disabled: palette.border.main,
     error: palette.error.main,
   }
   return colors[state]
@@ -133,7 +133,7 @@ export const TxSigners = ({
             padding: '3px 0',
             '.MuiStepConnector-line': {
               marginLeft: '-3px',
-              borderColor: palette.gray.light,
+              borderColor: palette.border.light,
               borderLeftWidth: '2px',
               minHeight: '14px',
             },
@@ -156,7 +156,7 @@ export const TxSigners = ({
           Confirmations{' '}
           <Box
             sx={({ palette }) => ({
-              color: palette.black[300],
+              color: palette.border.main,
               display: 'inline',
               fontWeight: 'normal',
             })}
@@ -192,7 +192,7 @@ export const TxSigners = ({
             </StepContent>
           ) : (
             !isConfirmed && (
-              <StepContent sx={({ palette }) => ({ color: palette.black[300] })}>
+              <StepContent sx={({ palette }) => ({ color: palette.border.main })}>
                 Can be executed once the threshold is reached
               </StepContent>
             )
