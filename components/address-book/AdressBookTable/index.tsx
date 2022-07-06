@@ -1,7 +1,7 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
 import useAddressBook from '@/hooks/useAddressBook'
 import { useState } from 'react'
-import CreateEntryDialog, { AddressEntry } from '@/components/address-book/CreateEntryDialog'
+import EntryDialog, { AddressEntry } from '@/components/address-book/EntryDialog'
 import ExportDialog from '@/components/address-book/ExportDialog'
 import ImportDialog from '@/components/address-book/ImportDialog'
 import EditIcon from '@mui/icons-material/Edit'
@@ -22,7 +22,13 @@ const headCells = [
   { id: 'actions', label: '' },
 ]
 
-const defaultOpen = { export: false, import: false, createEntry: false }
+enum ModalType {
+  EXPORT = 'export',
+  IMPORT = 'import',
+  ENTRY = 'entry',
+}
+
+const defaultOpen = { [ModalType.EXPORT]: false, [ModalType.IMPORT]: false, [ModalType.ENTRY]: false }
 
 const AddressBookTable = () => {
   const dispatch = useAppDispatch()
@@ -60,7 +66,7 @@ const AddressBookTable = () => {
             <IconButton
               onClick={() => {
                 setEntryDefaultValues({ address, name })
-                handleOpen('createEntry')()
+                handleOpen(ModalType.ENTRY)()
               }}
             >
               <EditIcon />
@@ -90,7 +96,7 @@ const AddressBookTable = () => {
     <>
       <div className={css.headerButtonWrapper}>
         <Button
-          onClick={handleOpen('export')}
+          onClick={handleOpen(ModalType.EXPORT)}
           disabled={addressBookEntries.length === 0}
           variant="contained"
           disableElevation
@@ -98,11 +104,11 @@ const AddressBookTable = () => {
           Export
         </Button>
 
-        <Button onClick={handleOpen('import')} variant="contained" disableElevation>
+        <Button onClick={handleOpen(ModalType.IMPORT)} variant="contained" disableElevation>
           Import
         </Button>
 
-        <Button onClick={handleOpen('createEntry')} variant="contained" disableElevation>
+        <Button onClick={handleOpen(ModalType.ENTRY)} variant="contained" disableElevation>
           Create entry
         </Button>
       </div>
@@ -113,7 +119,7 @@ const AddressBookTable = () => {
 
       {open.import && <ImportDialog handleClose={handleClose} />}
 
-      {open.createEntry && <CreateEntryDialog handleClose={handleClose} defaultValues={entryDefaultValues} />}
+      {open.entry && <EntryDialog handleClose={handleClose} defaultValues={entryDefaultValues} />}
     </>
   )
 }

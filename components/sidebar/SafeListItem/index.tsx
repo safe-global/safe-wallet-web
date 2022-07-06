@@ -56,22 +56,22 @@ const SafeListItem = ({
   )
 
   return (
-    <Link href={`${AppRoutes.safe.home}?safe=${chain?.shortName}:${address}`} passHref>
-      <ListItem
-        disablePadding
-        secondaryAction={
-          <Box display="flex" alignItems="center">
-            <SafeListItemSecondaryAction
-              chainId={chainId}
-              address={address}
-              onClick={closeDrawer}
-              href={`${AppRoutes.welcome}?chain=${chain?.shortName}`}
-            />
-            <SafeListContextMenu address={address} chainId={chainId} />
-          </Box>
-        }
-        sx={{ my: '8px', px: '8px' }}
-      >
+    <ListItem
+      disablePadding
+      secondaryAction={
+        <Box display="flex" alignItems="center">
+          <SafeListItemSecondaryAction
+            chainId={chainId}
+            address={address}
+            onClick={closeDrawer}
+            href={`${AppRoutes.welcome}?chain=${chain?.shortName}`}
+          />
+          <SafeListContextMenu address={address} chainId={chainId} />
+        </Box>
+      }
+      sx={{ my: '8px', px: '8px' }}
+    >
+      <Link href={`${AppRoutes.safe.home}?safe=${chain?.shortName}:${address}`} passHref>
         <ListItemButton
           key={address}
           onClick={closeDrawer}
@@ -99,8 +99,8 @@ const SafeListItem = ({
             secondary={name && formattedAddress}
           />
         </ListItemButton>
-      </ListItem>
-    </Link>
+      </Link>
+    </ListItem>
   )
 }
 
