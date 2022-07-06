@@ -18,15 +18,17 @@ export type AddressEntry = {
   address: string
 }
 
-const CreateEntryDialog = ({
+const EntryDialog = ({
   handleClose,
   defaultValues = {
     name: '',
     address: '',
   },
+  disableAddressInput = false,
 }: {
   handleClose: () => void
   defaultValues?: AddressEntry
+  disableAddressInput?: boolean
 }): ReactElement => {
   const dispatch = useAppDispatch()
   const chainId = useChainId()
@@ -62,7 +64,14 @@ const CreateEntryDialog = ({
             </Box>
 
             <Box py={2}>
-              <AddressInput name="address" label="Address" variant="outlined" fullWidth required />
+              <AddressInput
+                name="address"
+                label="Address"
+                variant="outlined"
+                fullWidth
+                required
+                disabled={disableAddressInput}
+              />
             </Box>
           </DialogContent>
 
@@ -78,4 +87,4 @@ const CreateEntryDialog = ({
   )
 }
 
-export default CreateEntryDialog
+export default EntryDialog

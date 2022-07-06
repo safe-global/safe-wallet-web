@@ -1,7 +1,7 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
 import useAddressBook from '@/hooks/useAddressBook'
 import { useState } from 'react'
-import CreateEntryDialog, { AddressEntry } from '@/components/address-book/CreateEntryDialog'
+import EntryDialog, { AddressEntry } from '@/components/address-book/EntryDialog'
 import ExportDialog from '@/components/address-book/ExportDialog'
 import ImportDialog from '@/components/address-book/ImportDialog'
 import EditIcon from '@mui/icons-material/Edit'
@@ -22,7 +22,7 @@ const headCells = [
   { id: 'actions', label: '' },
 ]
 
-const defaultOpen = { export: false, import: false, createEntry: false }
+const defaultOpen = { export: false, import: false, entry: false }
 
 const AddressBookTable = () => {
   const dispatch = useAppDispatch()
@@ -113,7 +113,7 @@ const AddressBookTable = () => {
 
       {open.import && <ImportDialog handleClose={handleClose} />}
 
-      {open.createEntry && <CreateEntryDialog handleClose={handleClose} defaultValues={entryDefaultValues} />}
+      {open.entry && <EntryDialog handleClose={handleClose} defaultValues={entryDefaultValues} />}
     </>
   )
 }
