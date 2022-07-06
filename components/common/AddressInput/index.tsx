@@ -24,8 +24,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
   // Update the input value with the resolved ENS name
   useEffect(() => {
     if (address) {
-      setValue(name, address)
-      trigger(name) // trigger validation
+      setValue(name, address, { shouldValidate: true })
     }
   }, [address, name, setValue, trigger])
 
