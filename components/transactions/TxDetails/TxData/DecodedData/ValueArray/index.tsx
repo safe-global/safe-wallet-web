@@ -29,14 +29,7 @@ export const Value = ({ type, ...props }: ValueArrayProps): ReactElement => {
               }
               return <Value {...newProps} />
             }
-            return (
-              <EthHashInfo
-                key={`${address}_${key}`}
-                address={address}
-                showAvatar={false}
-                // explorerUrl={explorerUrl}
-              />
-            )
+            return <EthHashInfo key={`${address}_${key}`} address={address} showAvatar={false} />
           })}
         </div>
         ]
@@ -50,22 +43,22 @@ export const Value = ({ type, ...props }: ValueArrayProps): ReactElement => {
 const GenericValue = ({ method, type, value }: ValueArrayProps): React.ReactElement => {
   const getTextValue = (value: string, key?: string) => <HexEncodedData limit={60} hexData={value} key={key} />
 
-  const getArrayValue = (parentId: string, value: string[] | string) => (
+  const getArrayValue = (parentId: string, value: string[] | string, separator?: boolean) => (
     <Box>
       [
       <div className={css.nestedWrapper}>
         {(value as string[]).map((currentValue, index, values) => {
           const key = `${parentId}-value-${index}`
+          const hasSeparator = index < values.length - 1
+
           return Array.isArray(currentValue) ? (
-            <>
-              <Typography key={key}>{getArrayValue(key, currentValue)}</Typography>
-            </>
+            <Typography key={key}>{getArrayValue(key, currentValue, hasSeparator)}</Typography>
           ) : (
             getTextValue(currentValue, key)
           )
         })}
       </div>
-      ]
+      ]{separator ? <>,</> : null}
     </Box>
   )
 
