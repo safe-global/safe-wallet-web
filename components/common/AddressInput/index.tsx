@@ -11,6 +11,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
   const {
     register,
     setValue,
+    trigger,
     watch,
     formState: { errors },
   } = useFormContext()
@@ -22,8 +23,10 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
 
   // Update the input value with the resolved ENS name
   useEffect(() => {
-    if (address) setValue(name, address)
-  }, [address, name, setValue])
+    if (address) {
+      setValue(name, address, { shouldValidate: true })
+    }
+  }, [address, name, setValue, trigger])
 
   return (
     <TextField
