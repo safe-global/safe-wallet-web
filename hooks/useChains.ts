@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { selectChainById, selectChains, chainsSlice } from '@/store/chainsSlice'
 import { useChainId } from './useChainId'
 import useAsync from './useAsync'
+import { logError, Errors } from '@/services/exceptions'
 
 const getConfigs = async (): Promise<ChainInfo[]> => {
   const data = await getChainsConfig()
@@ -24,6 +25,13 @@ export const useInitChains = (): void => {
       }),
     )
   }, [dispatch, data, error, loading])
+
+  // Log errors
+  useEffect(() => {
+    if (error) {
+      logError(Errors._904, error.message)
+    }
+  }, [error])
 }
 
 const useChains = () => {
