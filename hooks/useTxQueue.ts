@@ -74,9 +74,10 @@ const useTxQueue = (
   // Return the new page or the stored page
   return pageUrl
     ? {
-      page,
-      error: error?.message,
-      loading }
+        page,
+        error: error?.message,
+        loading,
+      }
     : {
         page: queueState.data,
         error: queueState.error,

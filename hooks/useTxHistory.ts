@@ -60,9 +60,10 @@ const useTxHistory = (
   // Return the new page or the stored page
   return pageUrl
     ? {
-      page,
-      error: error?.message,
-      loading }
+        page,
+        error: error?.message,
+        loading,
+      }
     : {
         page: historyState.data,
         error: historyState.error,

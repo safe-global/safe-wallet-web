@@ -52,7 +52,7 @@ describe('useInitChains hook', () => {
 
   it('should set the error state when the promise rejects', async () => {
     // Change the getChainsConfig mock to reject
-    ;(getChainsConfig as jest.Mock).mockImplementation(() => Promise.reject('Something went wrong'))
+    ;(getChainsConfig as jest.Mock).mockImplementation(() => Promise.reject(new Error('Something went wrong')))
 
     // Render the hook and check that the loading state is true
     renderHook(() => useInitChains())
