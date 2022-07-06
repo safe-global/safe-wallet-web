@@ -58,7 +58,7 @@ const GenericValue = ({ method, type, value }: ValueArrayProps): React.ReactElem
           )
         })}
       </div>
-      ]{separator ? <>,</> : null}
+      ]{separator ? ',' : null}
     </Box>
   )
 

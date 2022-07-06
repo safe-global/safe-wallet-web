@@ -6,7 +6,11 @@ import { Box } from '@mui/material'
 import { useState } from 'react'
 import css from './styles.module.css'
 
-const TxType = ({ tx }: { tx: TransactionSummary }) => {
+type TxTypeProps = {
+  tx: TransactionSummary
+}
+
+const TxType = ({ tx }: TxTypeProps) => {
   const [fallbackToIdenticon, setFallbackToIdenticon] = useState(false)
   const type = useTransactionType(tx)
 
