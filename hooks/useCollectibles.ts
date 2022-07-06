@@ -21,14 +21,14 @@ export const useInitCollectibles = (): void => {
   // Clear the old Collectibles when Safe address is changed
   useEffect(() => {
     if (!safe) {
-      dispatch(collectiblesSlice.actions.set({ data: [], loading: true }))
+      dispatch(collectiblesSlice.actions.set({ data: undefined, loading: true }))
     }
   }, [dispatch, safe])
 
   // Save the Collectibles in the store
   useEffect(() => {
     if (data || error) {
-      dispatch(collectiblesSlice.actions.set({ data: data || [], error, loading: false }))
+      dispatch(collectiblesSlice.actions.set({ data: data, error, loading: false }))
     }
   }, [dispatch, data, error])
 

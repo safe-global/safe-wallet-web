@@ -37,7 +37,7 @@ export const useInitChains = (): void => {
 const useChains = () => {
   const state = useAppSelector(selectChains)
   return {
-    configs: state.data || [],
+    configs: state.data,
     error: state.error,
     loading: state.loading,
   }

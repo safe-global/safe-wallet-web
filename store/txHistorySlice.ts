@@ -15,7 +15,7 @@ export const txHistoryMiddleware: Middleware<{}, RootState> = (store) => (next) 
   switch (action.type) {
     // Dispatch SUCCESS event when pending transaction is in history payload
     case txHistorySlice.actions.set.type: {
-      if (!action.payload) {
+      if (!action.payload?.page) {
         break
       }
 

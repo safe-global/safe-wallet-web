@@ -43,10 +43,7 @@ export const useInitBalances = (): void => {
 const useBalances = () => {
   const state = useAppSelector(selectBalances)
   return {
-    balances: state.data || {
-      fiatTotal: '',
-      items: [],
-    },
+    balances: state.data,
     loading: state.loading,
     error: state.error,
   }

@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '.'
 
 export type Loadable<T> = {
-  data: T | undefined
+  data: T
   loading: boolean
   error?: Error
 }
@@ -15,7 +15,10 @@ export const makeLoadableSlice = <T>(name: string, data?: T) => {
       loading: false,
     },
     reducers: {
-      set: (_, { payload }: PayloadAction<Loadable<T | undefined>>) => payload,
+      set: (_, { payload }: PayloadAction<Loadable<T | undefined>>) => ({
+        ...payload,
+        data: payload.data ?? data, // fallback to initialState.data
+      }),
     },
   })
 }
