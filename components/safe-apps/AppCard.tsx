@@ -17,16 +17,16 @@ const AppCard = ({ safeApp }: Props) => {
 
   return (
     <Card
-      sx={{
+      sx={({ palette }) => ({
         maxWidth: 345,
         height: 190,
         transition: 'all 0.3s ease-in-out',
         '&:hover': {
-          backgroundColor: theme.palette.primaryGreen[200],
+          backgroundColor: palette.primaryGreen[200],
           // @ts-expect-error type '300' can't be used to index type 'PaletteColor'
-          border: `2px solid ${theme.palette.primary[300]}`,
+          border: `2px solid ${palette.primary[300]}`,
         },
-      }}
+      })}
     >
       <CardHeader
         avatar={
