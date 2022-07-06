@@ -11,7 +11,6 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
   const {
     register,
     setValue,
-    trigger,
     watch,
     formState: { errors },
   } = useFormContext()
@@ -26,7 +25,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
     if (address) {
       setValue(name, address, { shouldValidate: true })
     }
-  }, [address, name, setValue, trigger])
+  }, [address, name, setValue])
 
   return (
     <TextField
