@@ -34,7 +34,7 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
           handleClick(e)
         }}
       >
-        <MoreVertIcon sx={({ palette }) => ({ color: palette.secondaryBlack[300] })} />
+        <MoreVertIcon sx={({ palette }) => ({ color: palette.gray.main })} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -46,7 +46,7 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
           '.MuiMenuItem-root': {
             paddingLeft: '12px',
             minHeight: '40px',
-            '&:hover': { borderRadius: '8px !important', backgroundColor: palette.primaryGreen[200] },
+            '&:hover': { borderRadius: '8px !important', backgroundColor: palette.primary.background },
           },
           '.MuiListItemIcon-root': {
             minWidth: '26px',

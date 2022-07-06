@@ -1,101 +1,78 @@
-import { Color, createTheme } from '@mui/material'
-
-import {
-  black,
-  error,
-  gray,
-  green,
-  orange,
-  primary,
-  primaryBlack,
-  primaryGreen,
-  red,
-  secondaryBlack,
-  warning,
-  primaryGray,
-} from '@/styles/colors'
-
-interface ThemeColors {
-  black: Pick<Color, 300 | 400 | 500 | 600>
-  gray: Pick<Color, 300 | 400 | 500>
-  red: Pick<Color, 200 | 300 | 400>
-  green: Pick<Color, 200 | 400>
-  orange: Pick<Color, 200 | 300 | 400 | 500>
-  // Not listed in colour scheme but present in wireframes
-  secondaryBlack: Pick<Color, 300>
-  primaryBlack: Pick<Color, 500>
-  primaryGreen: Pick<Color, 200>
-  primaryGray: Pick<Color, 400>
-}
+import { createTheme } from '@mui/material'
 
 declare module '@mui/material/styles' {
-  interface Palette extends ThemeColors {}
+  // Custom color properties
+  interface PaletteColor {
+    background?: string
+  }
+  interface SimplePaletteColorOptions {
+    background?: string
+  }
+  // Custom color palettes
+  interface Palette {
+    gray: Palette['primary']
+    black: {
+      300: string
+      500: string
+    }
+  }
+  interface PaletteOptions {
+    gray: PaletteOptions['primary']
+    black: {
+      300: string
+      500: string
+    }
+  }
+}
 
-  interface PaletteOptions extends ThemeColors {}
+const palette = {
+  primary: {
+    dark: '#0E7361',
+    main: '#008C73',
+    light: '#92C9BE',
+    background: '#EFFAF8',
+  },
+  secondary: {
+    main: '#162D45',
+    light: '#566976',
+  },
+  gray: {
+    main: '#B2BBC0',
+    light: '#EEEFF0',
+    background: '#F6F7F8',
+  },
+  error: {
+    dark: '#C31717',
+    main: '#F02525',
+    light: '#FFCED6',
+    background: '#FFF3F5',
+  },
+  success: {
+    dark: '#027128',
+    main: '#008C30',
+    light: '#99CDAB',
+  },
+  info: {
+    dark: '#247CB7',
+    main: '#3BA2E7',
+    light: '#A6D0EC',
+    background: '#EBF7FF',
+  },
+  warning: {
+    dark: '#E8663D',
+    main: '#FFC05F',
+    light: '#FBE5C5',
+    background: '#FFF4E3',
+  },
+  // Will be adjusted further by design
+  black: {
+    300: '#ACBAC3',
+    500: '#383E42',
+  },
 }
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: primary[400],
-      //
-      200: primary[200],
-      300: primary[300],
-      400: primary[400],
-      500: primary[500],
-      600: primary[600],
-    },
-    error: {
-      main: red[400],
-      //
-      600: error[600],
-    },
-    warning: {
-      main: orange[400],
-      //
-      600: warning[600],
-    },
-    // Custom colors
-    black: {
-      300: black[300],
-      400: black[400],
-      500: black[500],
-      600: black[600],
-    },
-    gray: {
-      300: gray[300],
-      400: gray[400],
-      500: gray[500],
-    },
-    red: {
-      200: red[200],
-      300: red[300],
-      400: red[400],
-    },
-    green: {
-      200: green[200],
-      400: green[400],
-    },
-    orange: {
-      200: orange[200],
-      300: orange[300],
-      400: orange[400],
-      500: orange[500],
-    },
-    // Not listed in colour scheme but present in wireframes
-    secondaryBlack: {
-      300: secondaryBlack[300],
-    },
-    primaryBlack: {
-      500: primaryBlack[500],
-    },
-    primaryGreen: {
-      200: primaryGreen[200],
-    },
-    primaryGray: {
-      400: primaryGray[400],
-    },
-  },
+  palette,
   typography: {
     fontFamily: [
       'Averta',
@@ -113,7 +90,7 @@ const theme = createTheme({
       'sans-serif',
     ].join(','),
     allVariants: {
-      color: primaryBlack[500],
+      color: palette.secondary.main,
     },
     h1: {
       fontSize: '32px',
@@ -160,12 +137,11 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           borderRadius: '8px',
-          // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-          borderColor: theme.palette.primary[400],
+          borderColor: theme.palette.primary.main,
           textTransform: 'none',
           '&.Mui-disabled': {
             color: '#fff',
-            backgroundColor: theme.palette.secondaryBlack[300],
+            backgroundColor: theme.palette.gray.main,
           },
         }),
         outlined: {
@@ -181,7 +157,7 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           borderRadius: '8px',
-          border: `2px solid ${theme.palette.gray[500]}`,
+          border: `2px solid ${theme.palette.gray.light}`,
           '&::before': {
             content: 'none',
           },
@@ -192,7 +168,7 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           '&.Mui-expanded': {
-            borderBottom: `2px solid ${theme.palette.gray[500]}`,
+            borderBottom: `2px solid ${theme.palette.gray.light}`,
           },
         }),
         content: { margin: '0px' },

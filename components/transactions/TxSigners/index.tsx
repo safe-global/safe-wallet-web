@@ -43,11 +43,10 @@ const getStepColor = (state: StepState): string => {
   const { palette } = theme
 
   const colors = {
-    // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-    confirmed: palette.primary[400],
-    active: palette.orange[500],
-    disabled: palette.black[300],
-    error: palette.red[400],
+    confirmed: palette.primary.main,
+    active: palette.warning.dark,
+    disabled: palette.gray.main,
+    error: palette.error.main,
   }
   return colors[state]
 }
@@ -134,7 +133,7 @@ export const TxSigners = ({
             padding: '3px 0',
             '.MuiStepConnector-line': {
               marginLeft: '-3px',
-              borderColor: palette.gray[500],
+              borderColor: palette.gray.light,
               borderLeftWidth: '2px',
               minHeight: '14px',
             },

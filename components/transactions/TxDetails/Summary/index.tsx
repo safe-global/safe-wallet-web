@@ -38,11 +38,7 @@ const Summary = ({ txDetails }: Props): ReactElement => {
       {txData && (
         <>
           <Button className={css.buttonExpand} disableRipple onClick={toggleExpanded}>
-            <Typography
-              // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-              sx={({ palette }) => ({ color: palette.primary[400], textDecoration: 'underline', cursor: 'pointer' })}
-              variant="body1"
-            >
+            <Typography sx={{ textDecoration: 'underline', cursor: 'pointer' }} variant="body1">
               Advanced Details
             </Typography>
           </Button>

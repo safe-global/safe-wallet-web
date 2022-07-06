@@ -147,7 +147,7 @@ const Navigation = (): ReactElement => {
                 component="nav"
                 className={css.sublist}
                 sx={({ palette }) => ({
-                  borderLeft: `solid 1px ${palette.gray[500]}`,
+                  borderLeft: `solid 1px ${palette.gray.light}`,
                   '::after': {
                     content: '""',
                     height: '23px',
@@ -169,7 +169,7 @@ const Navigation = (): ReactElement => {
                           content: '""',
                           width: '6px',
                           height: '1px',
-                          background: palette.gray[500],
+                          background: palette.gray.light,
                           position: 'absolute',
                           left: '-10px',
                         },
@@ -178,7 +178,7 @@ const Navigation = (): ReactElement => {
                           pl: '26px',
                         },
                         '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
-                          backgroundColor: `${palette.gray[300]} !important`,
+                          backgroundColor: `${palette.gray.background} !important`,
                         },
                       })}
                     >

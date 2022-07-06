@@ -18,9 +18,9 @@ const HeaderIconButton = ({ children }: Omit<IconButtonProps, 'className' | 'dis
   <IconButton
     className={css.iconButton}
     sx={({ palette }) => ({
-      backgroundColor: palette.gray[300],
+      backgroundColor: palette.gray.background,
       '&:hover': {
-        backgroundColor: palette.primaryGreen[200],
+        backgroundColor: palette.primary.background,
       },
     })}
   >

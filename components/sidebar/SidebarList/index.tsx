@@ -23,10 +23,10 @@ export const SidebarListItemButton = ({
       sx={({ palette }) => ({
         borderRadius: '6px',
         '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
-          backgroundColor: `${palette.primaryGreen[200]} !important`,
+          backgroundColor: `${palette.primary.background} !important`,
           img: {
             filter: rest.selected
-              ? // #008C73 - palette.primary[400]
+              ? // #008C73 - palette.primary.main
                 'invert(33%) sepia(96%) saturate(625%) hue-rotate(127deg) brightness(99%) contrast(101%)'
               : undefined,
           },
