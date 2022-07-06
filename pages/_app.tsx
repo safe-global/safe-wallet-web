@@ -14,6 +14,10 @@ import { store } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import { useInitChains } from '@/hooks/useChains'
 import { usePollSafeInfo } from '@/hooks/usePollSafeInfo'
+import { useInitBalances } from '@/hooks/useBalances'
+ import { useInitCollectibles } from '@/hooks/useCollectibles'
+ import { useInitTxHistory } from '@/hooks/useTxHistory'
+ import { useInitTxQueue } from '@/hooks/useTxQueue'
 import usePathRewrite from '@/hooks/usePathRewrite'
 import { useInitOnboard } from '@/hooks/wallets/useOnboard'
 import { useInitWeb3 } from '@/hooks/wallets/useInitWeb3'
@@ -38,6 +42,10 @@ const InitApp = (): null => {
   useInitChains()
   useInitSession()
   usePollSafeInfo()
+  useInitBalances()
+  useInitCollectibles()
+  useInitTxHistory()
+  useInitTxQueue()
   useInitOnboard()
   useInitWeb3()
   useInitSafeCoreSDK()
