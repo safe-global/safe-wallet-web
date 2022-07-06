@@ -10,14 +10,10 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { createSafeUpgradeParams } from '@/services/tx/safeUpgradeParams'
-import { useMasterCopies } from '@/hooks/useMasterCopies'
-import { eq } from 'semver'
 
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import useSafeInfo from '@/hooks/useSafeInfo'
-
-// TODO: Remove hardcoded fallback handler address
-const LATEST_FALLBACK_HANDLER_ADDRESS = '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4'
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeTxGas from '@/hooks/useSafeTxGas'
 
 const UpdateSafeSteps: TxStepperProps['steps'] = [
   {
@@ -45,24 +41,27 @@ export const UpdateSafeDialog = () => {
 
 const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
-  const [masterCopies] = useMasterCopies()
+  const chain = useCurrentChain()
 
-  // @TODO: move to txSender, add events
   const updateSafeTx = useMemo(() => {
-    const latestMasterCopy = masterCopies?.find((mc) => eq(LATEST_SAFE_VERSION, mc.version))
-    if (safe && latestMasterCopy) {
-      return createSafeUpgradeParams(safe.address.value, latestMasterCopy.address, LATEST_FALLBACK_HANDLER_ADDRESS)
-    } else {
-      return undefined
-    }
-  }, [masterCopies, safe])
+    if (!safe || !chain) return undefined
+    return createSafeUpgradeParams(safe.address.value, safe.version, chain)
+  }, [chain, safe])
+
+  // Estimate safeTxGas
+  const { safeGas, safeGasError } = useSafeTxGas(updateSafeTx)
+  const { recommendedNonce = 0 } = safeGas || {}
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!updateSafeTx) return
-    return await createTx(updateSafeTx)
-  }, [updateSafeTx])
+    return await createTx({
+      ...updateSafeTx,
+      nonce: recommendedNonce,
+      safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
+    })
+  }, [recommendedNonce, updateSafeTx, safeGas?.safeTxGas])
 
-  const txError = safeTxError
+  const txError = safeTxError || safeGasError
 
   return (
     <SignOrExecuteForm

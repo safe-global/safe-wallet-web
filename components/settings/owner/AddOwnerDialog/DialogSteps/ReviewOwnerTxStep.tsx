@@ -8,12 +8,12 @@ import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
-import useSafeTxGas from '@/hooks/useSafeTxGas'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
+import useSafeTxGas from '@/hooks/useSafeTxGas'
 
 export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
@@ -41,11 +41,12 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
     }
   }, [removedOwner, newOwner])
 
+  // Estimate safeTxGas
   const { safeGas, safeGasError } = useSafeTxGas(changeOwnerTx?.data)
   const { recommendedNonce = 0 } = safeGas || {}
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!changeOwnerTx || !recommendedNonce) return
+    if (!changeOwnerTx) return
 
     return await createTx({
       ...changeOwnerTx.data,

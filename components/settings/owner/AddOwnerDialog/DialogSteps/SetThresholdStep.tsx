@@ -40,6 +40,9 @@ export const SetThresholdStep = ({
                   {idx + 1}
                 </MenuItem>
               ))}
+              <MenuItem key={(safe?.owners.length ?? 0) + 1} value={(safe?.owners.length ?? 0) + 1}>
+                {(safe?.owners.length ?? 0) + 1}
+              </MenuItem>
             </Select>
           </Grid>
           <Grid item>
