@@ -16,7 +16,7 @@ export const TxDataRow = ({ title, children }: TxDataRowProps): ReactElement => 
       <Typography
         variant="body1"
         sx={({ palette }) => ({
-          color: palette.black[400],
+          color: palette.secondary.light,
         })}
       >
         {title}

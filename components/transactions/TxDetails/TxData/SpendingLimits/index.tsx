@@ -41,7 +41,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
         <b>{`${isAllowance ? 'Modify' : 'Delete'} spending limit:`}</b>
       </Typography>
       <Box className={css.group}>
-        <Typography sx={({ palette }) => ({ color: palette.black[400] })}>Beneficiary</Typography>
+        <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
         <AddressInfo
           address={(beneficiary as string) || txTo?.value || '0x'}
           name={txTo.name || undefined}
@@ -50,7 +50,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
       </Box>
       {tokenInfo && (
         <Box className={css.group}>
-          <Typography sx={({ palette }) => ({ color: palette.black[400] })}>
+          <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>
             {isAllowance ? 'Amount' : 'Token'}
           </Typography>
           <Box className={css.inline}>
@@ -67,10 +67,10 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
       )}
       {isAllowance && (
         <Box className={css.group}>
-          <Typography sx={({ palette }) => ({ color: palette.black[400] })}>Reset time</Typography>
+          <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Reset time</Typography>
           {resetTimeLabel ? (
             <Box className={css.inline}>
-              <SpeedIcon sx={({ palette }) => ({ color: palette.secondaryBlack[300] })} />
+              <SpeedIcon sx={({ palette }) => ({ color: palette.gray.main })} />
               <Typography variant="body2">{resetTimeLabel}</Typography>
             </Box>
           ) : (

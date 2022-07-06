@@ -38,8 +38,7 @@ const CookieBannerPopup = ({ warning }: { warning?: string }): ReactElement => {
     <Box
       sx={({ palette }) => ({
         backgroundColor: 'background.paper',
-        borderTop: `1px solid ${palette.gray[500]}`,
-        // Rendering `null` causes hydration error
+        borderTop: `1px solid ${palette.gray.light}`,
       })}
       className={css.container}
     >

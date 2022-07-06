@@ -35,7 +35,7 @@ const SafeListItemSecondaryAction = ({
           className={css.addButton}
           sx={({ palette }) => ({
             '&:hover': {
-              backgroundColor: palette.primaryGreen[200],
+              backgroundColor: palette.primary.background,
             },
           })}
           size="small"
@@ -53,7 +53,7 @@ const SafeListItemSecondaryAction = ({
 
   if (!isOwner) {
     return (
-      <Typography variant="body2" display="flex" sx={({ palette }) => ({ color: palette.secondaryBlack[300] })}>
+      <Typography variant="body2" display="flex" sx={({ palette }) => ({ color: palette.gray.main })}>
         <img src="/images/sidebar/safe-list/eye.svg" alt="Read only" height="16px" width="16px" /> Read only
       </Typography>
     )

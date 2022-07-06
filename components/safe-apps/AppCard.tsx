@@ -22,9 +22,8 @@ const AppCard = ({ safeApp }: Props) => {
         height: 190,
         transition: 'all 0.3s ease-in-out',
         '&:hover': {
-          backgroundColor: palette.primaryGreen[200],
-          // @ts-expect-error type '300' can't be used to index type 'PaletteColor'
-          border: `2px solid ${palette.primary[300]}`,
+          backgroundColor: palette.primary.background,
+          border: `2px solid ${palette.primary.light}`,
         },
       })}
     >

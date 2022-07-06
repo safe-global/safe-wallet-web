@@ -30,11 +30,7 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
             title="Why do I need to pay for rejecting a transaction?"
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Typography
-                // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-                sx={({ palette }) => ({ color: palette.primary[400], textDecoration: 'underline' })}
-                variant="body1"
-              >
+              <Typography sx={{ textDecoration: 'underline' }} variant="body1">
                 Why do I need to pay for rejecting a transaction?
               </Typography>
               <LinkIcon />

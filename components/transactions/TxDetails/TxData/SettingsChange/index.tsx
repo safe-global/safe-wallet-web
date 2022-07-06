@@ -23,12 +23,12 @@ const ThresholdWarning = (): ReactElement => (
       className={css.alert}
       sx={({ palette }) => ({
         color: palette.black[500],
-        background: palette.orange[200],
-        borderLeft: `3px solid ${palette.orange[500]}`,
+        background: palette.warning.background,
+        borderLeft: `3px solid ${palette.warning.dark}`,
 
         '&.MuiAlert-standardInfo .MuiAlert-icon': {
           marginRight: '8px',
-          color: palette.orange[500],
+          color: palette.warning.dark,
         },
       })}
       severity="info"

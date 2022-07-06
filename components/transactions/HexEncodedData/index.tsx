@@ -30,8 +30,7 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
           <Button disableRipple onClick={toggleExpanded}>
             <Typography
               sx={({ palette }) => ({
-                // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-                color: palette.primary[400],
+                color: palette.primary.main,
                 textDecoration: 'underline',
               })}
               variant="body1"
