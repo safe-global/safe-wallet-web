@@ -8,7 +8,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 
 const History: NextPage = () => {
   const [pageUrl, setPageUrl] = useState<string | undefined>()
-  const { page, loading } = useTxHistory(pageUrl)
+  const { isError, isLoading, data: page } = useTxHistory({ pageUrl })
 
   return (
     <main>
@@ -16,9 +16,9 @@ const History: NextPage = () => {
 
       <Pagination page={pageUrl} nextPage={page?.next} prevPage={page?.previous} onPageChange={setPageUrl} />
 
-      {loading ? (
+      {isLoading ? (
         <CircularProgress size={20} sx={{ marginTop: 2 }} />
-      ) : !page ? (
+      ) : isError ? (
         <ErrorMessage>Error loading the history</ErrorMessage>
       ) : (
         <TxList items={page?.results || []} />

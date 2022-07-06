@@ -7,10 +7,9 @@ import Link from 'next/link'
 
 import SafeIcon from '@/components/common/SafeIcon'
 import { shortenAddress } from '@/utils/formatters'
-import { useAppSelector } from '@/store'
+import { useChainById } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useAddressBook from '@/hooks/useAddressBook'
-import { selectChainById } from '@/store/chainsSlice'
 import SafeListItemSecondaryAction from '@/components/sidebar/SafeListItemSecondaryAction'
 import useChainId from '@/hooks/useChainId'
 import { AppRoutes } from '@/config/routes'
@@ -33,7 +32,7 @@ const SafeListItem = ({
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()
-  const chain = useAppSelector((state) => selectChainById(state, chainId))
+  const chain = useChainById(chainId)
 
   const currChainId = useChainId()
   const isCurrentSafe = currChainId === currChainId && safeAddress.toLowerCase() === address.toLowerCase()

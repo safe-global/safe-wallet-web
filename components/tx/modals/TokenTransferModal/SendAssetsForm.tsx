@@ -16,8 +16,8 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 
 export const SendFromBlock = (): ReactElement => {
   const address = useSafeAddress()
-  const { balances } = useBalances()
-  const nativeToken = balances.items.find((item) => parseInt(item.tokenInfo.address, 16) === 0)
+  const { data: balances } = useBalances()
+  const nativeToken = balances?.items.find((item) => parseInt(item.tokenInfo.address, 16) === 0)
   const nativeTokenBalance = nativeToken ? formatDecimals(nativeToken.balance, nativeToken.tokenInfo.decimals) : '0'
 
   return (
@@ -70,7 +70,7 @@ type SendAssetsFormProps = {
 }
 
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
-  const { balances } = useBalances()
+  const { data: balances } = useBalances()
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: formData,
@@ -85,7 +85,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   // Selected token
   const tokenAddress = watch('tokenAddress')
   const selectedToken = tokenAddress
-    ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
+    ? balances?.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
 
   const onFormSubmit = (data: SendAssetsFormData) => {
@@ -115,7 +115,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             error={!!errors.tokenAddress}
             {...register('tokenAddress', { required: true })}
           >
-            {balances.items.map((item) => (
+            {balances?.items.map((item) => (
               <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
                 <AutocompleteItem {...item} />
               </MenuItem>

@@ -7,7 +7,7 @@ import { initSafeSDK, setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 export const useInitSafeCoreSDK = (): Error | null => {
   const chain = useCurrentChain()
   const wallet = useWallet()
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
 
   const [error, setError] = useState<Error | null>(null)
 

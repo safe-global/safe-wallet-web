@@ -6,30 +6,20 @@ import {
   type AnyAction,
 } from '@reduxjs/toolkit'
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
-import { chainsSlice } from './chainsSlice'
-import { safeInfoSlice } from './safeInfoSlice'
-import { balancesSlice } from './balancesSlice'
-import { collectiblesSlice } from './collectiblesSlice'
 import { sessionSlice } from './sessionSlice'
-import { txHistorySlice, txHistoryMiddleware } from './txHistorySlice'
-import { txQueueSlice } from './txQueueSlice'
 import { addressBookSlice } from './addressBookSlice'
 import { notificationsSlice } from './notificationsSlice'
 import { getPreloadedState, persistState } from './persistStore'
 import { pendingTxsSlice } from './pendingTxsSlice'
-import { addedSafesMiddleware, addedSafesSlice } from './addedSafesSlice'
+import { addedSafesSlice } from './addedSafesSlice'
 import { settingsSlice } from './settingsSlice'
 import { cookiesSlice, cookiesMiddleware } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
+import { gatewayApi } from './gatewayApi'
 
 const rootReducer = combineReducers({
-  [chainsSlice.name]: chainsSlice.reducer,
-  [safeInfoSlice.name]: safeInfoSlice.reducer,
-  [balancesSlice.name]: balancesSlice.reducer,
-  [collectiblesSlice.name]: collectiblesSlice.reducer,
+  [gatewayApi.reducerPath]: gatewayApi.reducer,
   [sessionSlice.name]: sessionSlice.reducer,
-  [txHistorySlice.name]: txHistorySlice.reducer,
-  [txQueueSlice.name]: txQueueSlice.reducer,
   [addressBookSlice.name]: addressBookSlice.reducer,
   [notificationsSlice.name]: notificationsSlice.reducer,
   [pendingTxsSlice.name]: pendingTxsSlice.reducer,
@@ -48,7 +38,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   cookiesSlice.name,
 ]
 
-const middleware = [persistState(persistedSlices), txHistoryMiddleware, addedSafesMiddleware, cookiesMiddleware]
+const middleware = [persistState(persistedSlices), gatewayApi.middleware, cookiesMiddleware]
 
 export const store = configureStore({
   reducer: rootReducer,

@@ -20,7 +20,7 @@ export const ChooseOwnerStep = ({
   data: ChangeOwnerData
   onSubmit: (data: ChangeOwnerData) => void
 }) => {
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
   const { removedOwner, newOwner } = data
   const owners = safe?.owners
 

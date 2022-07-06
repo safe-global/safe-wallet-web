@@ -20,7 +20,7 @@ const SafeListItemSecondaryAction = ({
   onClick: () => void
   href?: LinkProps['href']
 }) => {
-  const { configs } = useChains()
+  const { data: configs } = useChains()
   const wallet = useWallet()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const isAdded = !!addedSafes?.[address]
@@ -60,7 +60,7 @@ const SafeListItemSecondaryAction = ({
   }
 
   if (addedSafes?.[address]?.ethBalance) {
-    const { nativeCurrency } = configs.find((chain) => chain.chainId === chainId) || {}
+    const { nativeCurrency } = configs?.results.find((chain) => chain.chainId === chainId) || {}
 
     return (
       <Typography variant="body2" fontWeight={700}>

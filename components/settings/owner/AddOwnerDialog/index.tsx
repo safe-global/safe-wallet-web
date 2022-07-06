@@ -27,7 +27,7 @@ const AddOwnerSteps: TxStepperProps['steps'] = [
 export const AddOwnerDialog = () => {
   const [open, setOpen] = useState(false)
 
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
 
   const handleClose = () => setOpen(false)
 

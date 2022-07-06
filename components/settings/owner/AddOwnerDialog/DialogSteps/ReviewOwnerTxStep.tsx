@@ -16,7 +16,7 @@ import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
 
 export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (data: null) => void }) => {
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
   const chainId = useChainId()
   const dispatch = useAppDispatch()
   const safeSDK = useSafeSDK()

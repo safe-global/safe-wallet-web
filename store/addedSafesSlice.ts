@@ -1,8 +1,7 @@
-import { createSelector, createSlice, Middleware, type PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { AddressEx, SafeBalanceResponse, SafeInfo, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '.'
-import { selectSafeInfo, setSafeInfo, type SetSafeInfoPayload } from '@/store/safeInfoSlice'
-import { setBalances } from './balancesSlice'
+import { gatewayApi } from '@/store/gatewayApi'
 import { formatDecimals } from '@/utils/formatters'
 
 export type AddedSafesOnChain = {
@@ -69,19 +68,19 @@ export const addedSafesSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(setSafeInfo.type, (state, { payload }: SetSafeInfoPayload) => {
-      if (!payload.safe) {
-        return
-      }
+    builder.addMatcher(gatewayApi.endpoints.getSafeInfo.matchFulfilled, (state, { payload }) => {
+      addedSafesSlice.caseReducers.addOrUpdateSafe(state, {
+        type: addOrUpdateSafe.type,
+        payload: { safe: payload },
+      })
+    })
+    builder.addMatcher(gatewayApi.endpoints.getBalances.matchFulfilled, (state, { payload, meta }) => {
+      const { chainId, address } = meta.arg.originalArgs
 
-      const { chainId, address } = payload.safe
-
-      if (isAddedSafe(state, chainId, address.value)) {
-        addedSafesSlice.caseReducers.addOrUpdateSafe(state, {
-          type: addOrUpdateSafe.type,
-          payload: { safe: payload.safe },
-        })
-      }
+      addedSafesSlice.caseReducers.updateAddedSafeBalance(state, {
+        type: updateAddedSafeBalance.type,
+        payload: { chainId, address, balances: payload },
+      })
     })
   },
 })
@@ -98,25 +97,3 @@ export const selectAddedSafes = createSelector(
     return allAddedSafes[chainId]
   },
 )
-
-export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
-  const result = next(action)
-
-  switch (action.type) {
-    case setBalances.type: {
-      const state = store.getState()
-      const { safe } = selectSafeInfo(state)
-
-      const chainId = safe?.chainId
-      const address = safe?.address.value
-
-      if (!chainId || !address) {
-        break
-      }
-
-      store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.balances }))
-    }
-  }
-
-  return result
-}

@@ -10,7 +10,7 @@ import OpenInNewRounded from '@mui/icons-material/OpenInNewRounded'
 export const ContractVersion = () => {
   const [masterCopies] = useMasterCopies()
   const [safeMasterCopy, setSafeMasterCopy] = useState<MasterCopy>()
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
 
   useEffect(() => {
     const getMasterCopyInfo = () => {

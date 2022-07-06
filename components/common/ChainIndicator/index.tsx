@@ -1,6 +1,5 @@
 import { ReactElement, useMemo } from 'react'
-import { useAppSelector } from '@/store'
-import { selectChainById } from '@/store/chainsSlice'
+import { useChainById } from '@/hooks/useChains'
 import css from './styles.module.css'
 import useChainId from '@/hooks/useChainId'
 
@@ -12,7 +11,7 @@ type ChainIndicatorProps = {
 const ChainIndicator = ({ chainId, inline = false }: ChainIndicatorProps): ReactElement => {
   const currentChainId = useChainId()
   const id = chainId || currentChainId
-  const chainConfig = useAppSelector((state) => selectChainById(state, id))
+  const chainConfig = useChainById(id)
 
   const style = useMemo(() => {
     if (!chainConfig) return

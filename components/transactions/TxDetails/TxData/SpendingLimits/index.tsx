@@ -4,8 +4,7 @@ import { Box, Typography } from '@mui/material'
 import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
 import SpeedIcon from '@mui/icons-material/Speed'
 import { useCurrentChain } from '@/hooks/useChains'
-import { selectTokens } from '@/store/balancesSlice'
-import { useAppSelector } from '@/store'
+import useBalances from '@/hooks/useBalances'
 import { sameAddress } from '@/utils/addresses'
 import { formatDecimals } from '@/utils/formatters'
 import { isSetAllowance, SpendingLimitMethods } from '@/utils/transaction-guards'
@@ -19,7 +18,8 @@ type SpendingLimitsProps = {
 
 export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): ReactElement => {
   const chain = useCurrentChain()
-  const tokens = useAppSelector(selectTokens)
+  const { data: balances } = useBalances()
+  const tokens = balances?.items.map(({ tokenInfo }) => tokenInfo)
   const isAllowance = useMemo(() => isSetAllowance(type), [type])
 
   const [beneficiary, tokenAddress, amount, resetTimeMin] =
@@ -30,7 +30,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
     [chain?.chainName, resetTimeMin],
   )
   const tokenInfo = useMemo(
-    () => tokens.find(({ address }) => sameAddress(address, tokenAddress as string)),
+    () => tokens?.find(({ address }) => sameAddress(address, tokenAddress as string)),
     [tokenAddress, tokens],
   )
   const txTo = txInfo.to

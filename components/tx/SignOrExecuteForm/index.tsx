@@ -48,7 +48,7 @@ const SignOrExecuteForm = ({
 
   useEffect(() => setTx(safeTx), [safeTx])
 
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const wallet = useWallet()

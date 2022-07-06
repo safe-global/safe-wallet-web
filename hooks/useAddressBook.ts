@@ -1,6 +1,12 @@
 import { useAppSelector } from '@/store'
-import { selectAddressBook } from '@/store/addressBookSlice'
+import { selectAllAddressBooks } from '@/store/addressBookSlice'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
-const useAddressBook = () => useAppSelector(selectAddressBook)
+const useAddressBook = () => {
+  const { data: safe } = useSafeInfo()
+  const allAddressBooks = useAppSelector(selectAllAddressBooks)
+  const chainId = safe?.chainId
+  return chainId ? allAddressBooks[chainId] || {} : {}
+}
 
 export default useAddressBook

@@ -1,6 +1,8 @@
-export const STAGING_GATEWAY_URL = 'https://safe-client.staging.gnosisdev.com'
-export const POLLING_INTERVAL = 15_000
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION
+export const PROD_GATEWAY_URL = 'https://safe-client.gnosis.io'
+export const STAGING_GATEWAY_URL = 'https://safe-client.staging.gnosisdev.com'
+export const GATEWAY_URL = IS_PRODUCTION ? PROD_GATEWAY_URL : STAGING_GATEWAY_URL
+export const POLLING_INTERVAL = 15_000
 export const LS_NAMESPACE = 'SAFE_v2__'
 export const INFURA_TOKEN = process.env.NEXT_PUBLIC_INFURA_TOKEN || '0ebf4dd05d6740f482938b8a80860d13'
 export const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN || ''

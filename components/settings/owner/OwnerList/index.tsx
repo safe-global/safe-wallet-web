@@ -43,7 +43,7 @@ const OwnerRow = ({
 export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
   const chainId = useChainId()
   const addressBook = useAddressBook()
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
   const owners = (safe?.owners ?? []).map((item) => item.value)
 
   return (

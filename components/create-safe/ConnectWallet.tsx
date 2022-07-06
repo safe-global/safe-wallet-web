@@ -12,7 +12,7 @@ type Props = {
 
 const ConnectWallet = ({ onSubmit, onBack }: Props) => {
   const router = useRouter()
-  const { configs } = useChains()
+  const { data: configs } = useChains()
   const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -44,7 +44,7 @@ const ConnectWallet = ({ onSubmit, onBack }: Props) => {
             horizontal: 'left',
           }}
         >
-          {configs.map((chain) => {
+          {configs?.results.map((chain) => {
             return (
               <MenuItem key={chain.chainId} data-chain={chain.shortName} onClick={handleNetworkSwitch}>
                 <ChainIndicator chainId={chain.chainId} inline />

@@ -74,12 +74,12 @@ export const getConnectedWallet = (wallets = onboardSingleton?.state.get().walle
 // Return a cached singleton if already initialized
 export const useOnboard = (): OnboardAPI | null => {
   const [onboard, setOnboard] = useState<OnboardAPI | null>(null)
-  const { configs } = useChains()
+  const { data: configs } = useChains()
 
   useEffect(() => {
-    if (!configs.length) return
+    if (!configs?.results.length) return
 
-    setOnboard((prev) => prev || initOnboardSingleton(configs))
+    setOnboard((prev) => prev || initOnboardSingleton(configs.results))
   }, [configs])
 
   return onboard

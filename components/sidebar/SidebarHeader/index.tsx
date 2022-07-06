@@ -30,8 +30,8 @@ const HeaderIconButton = ({ children }: Omit<IconButtonProps, 'className' | 'dis
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
-  const { balances } = useBalances()
-  const { safe, loading } = useSafeInfo()
+  const { data: balances } = useBalances()
+  const { isLoading, data: safe } = useSafeInfo()
 
   const address = safe?.address.value || ''
 
@@ -39,14 +39,14 @@ const SafeHeader = (): ReactElement => {
 
   // TODO: Format to parts w/ style
   const fiat = useMemo(() => {
-    return formatCurrency(balances.fiatTotal, currency)
-  }, [currency, balances.fiatTotal])
+    return balances ? formatCurrency(balances.fiatTotal, currency) : ''
+  }, [currency, balances])
 
   return (
     <div className={css.container}>
       <div className={css.safe}>
         <div className={css.icon}>
-          {loading ? (
+          {isLoading ? (
             <Skeleton variant="circular" width={40} height={40} />
           ) : (
             <SafeIcon address={address} threshold={threshold} owners={owners?.length} />
@@ -54,9 +54,9 @@ const SafeHeader = (): ReactElement => {
         </div>
         <div>
           <Typography variant="body2">
-            {loading ? <Skeleton variant="text" width={86} /> : address ? shortenAddress(address) : '...'}
+            {isLoading ? <Skeleton variant="text" width={86} /> : address ? shortenAddress(address) : '...'}
           </Typography>
-          <Typography variant="body1">{loading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
+          <Typography variant="body1">{isLoading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
         </div>
       </div>
       <div className={css.iconButtons}>

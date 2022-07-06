@@ -25,7 +25,7 @@ export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
 
   const handleClose = () => setOpen(false)
 
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
 
   const initialModalData: Partial<ChangeOwnerData> = {
     removedOwner: { address },

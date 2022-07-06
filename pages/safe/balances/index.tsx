@@ -6,7 +6,7 @@ import CurrencySelect from '@/components/balances/CurrencySelect'
 import useBalances from '@/hooks/useBalances'
 
 const Balances: NextPage = () => {
-  const { balances } = useBalances()
+  const { data: balances } = useBalances()
 
   return (
     <main>

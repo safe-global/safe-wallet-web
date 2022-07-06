@@ -8,7 +8,7 @@ import chains from '@/config/chains'
 import { ReactElement } from 'react'
 
 const NetworkSelector = (): ReactElement => {
-  const { configs } = useChains()
+  const { data: configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
 
@@ -26,9 +26,9 @@ const NetworkSelector = (): ReactElement => {
     })
   }
 
-  return configs.length ? (
+  return configs?.results.length ? (
     <Select value={chainId} onChange={handleNetworkSwitch} size="small" className={css.select} variant="standard">
-      {configs.map((chain) => {
+      {configs?.results.map((chain) => {
         return (
           <MenuItem key={chain.chainId} value={chain.chainId}>
             <ChainIndicator chainId={chain.chainId} inline />

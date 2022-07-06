@@ -27,7 +27,7 @@ const ChangeThresholdSteps: TxStepperProps['steps'] = [
 export const ChangeThresholdDialog = () => {
   const [open, setOpen] = useState(false)
 
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
 
   const handleClose = () => setOpen(false)
 
@@ -46,7 +46,7 @@ export const ChangeThresholdDialog = () => {
 }
 
 const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (data: null) => void }) => {
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
   const [editableNonce, setEditableNonce] = useState<number>()
   const safeSDK = useSafeSDK()

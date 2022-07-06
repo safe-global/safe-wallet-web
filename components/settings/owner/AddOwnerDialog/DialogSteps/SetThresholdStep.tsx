@@ -11,7 +11,7 @@ export const SetThresholdStep = ({
   data: ChangeOwnerData
   onSubmit: (data: ChangeOwnerData) => void
 }) => {
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
 
   const handleChange = (event: SelectChangeEvent<number>) => {

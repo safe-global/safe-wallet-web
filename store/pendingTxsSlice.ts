@@ -1,6 +1,9 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/store'
+import { gatewayApi } from '@/store/gatewayApi'
+import { isTransaction } from '@/utils/transaction-guards'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 type PendingTxsState =
   | {
@@ -28,6 +31,21 @@ export const pendingTxsSlice = createSlice({
     clearPendingTx: (state, action: PayloadAction<{ txId: string }>) => {
       delete state[action.payload.txId]
     },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(gatewayApi.endpoints.getTxHistory.matchFulfilled, (state, { payload }) => {
+      for (const result of payload.results) {
+        if (!isTransaction(result)) {
+          continue
+        }
+
+        const { id } = result.transaction
+
+        if (state[id]) {
+          txDispatch(TxEvent.SUCCESS, { txId: id })
+        }
+      }
+    })
   },
 })
 

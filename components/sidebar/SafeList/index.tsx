@@ -70,7 +70,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
   const router = useRouter()
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
-  const { configs } = useChains()
+  const { data: configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
 
@@ -91,7 +91,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
           </Button>
         </Link>
       </div>
-      {configs.map((chain) => {
+      {configs?.results.map((chain) => {
         const { ownedSafesOnChain, addedSafesOnChain } = _extractSafesByChainId({
           chainId: chain.chainId,
           ownedSafes,

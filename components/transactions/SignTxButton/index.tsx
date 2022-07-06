@@ -11,7 +11,7 @@ import ConfirmTxModal from '@/components/tx/modals/ConfirmTxModal'
 
 const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
   const wallet = useWallet()
   const signaturePending = isSignableBy(txSummary, wallet?.address || '')
   const granted = isOwner(safe?.owners, wallet?.address)

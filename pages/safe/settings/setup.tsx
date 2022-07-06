@@ -8,7 +8,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet, { useIsWrongChain } from '@/hooks/wallets/useWallet'
 
 const Setup: NextPage = () => {
-  const { safe } = useSafeInfo()
+  const { data: safe } = useSafeInfo()
   const nonce = safe?.nonce
   const ownerLength = safe?.owners.length ?? 0
   const threshold = safe?.threshold ?? 0
