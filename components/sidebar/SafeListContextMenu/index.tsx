@@ -34,7 +34,7 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
           handleClick(e)
         }}
       >
-        <MoreVertIcon sx={({ palette }) => ({ color: palette.gray.main })} />
+        <MoreVertIcon sx={({ palette }) => ({ color: palette.border.main })} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}

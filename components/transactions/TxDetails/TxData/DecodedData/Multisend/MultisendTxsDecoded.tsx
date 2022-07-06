@@ -34,7 +34,7 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props
         boxShadow: 0,
         '&:not(:last-child)': {
           borderRadius: 0,
-          borderBottom: `2px solid ${palette.gray.light}`,
+          borderBottom: `2px solid ${palette.border.light}`,
         },
         '&:last-of-type': {
           borderBottomLeftRadius: '8px',

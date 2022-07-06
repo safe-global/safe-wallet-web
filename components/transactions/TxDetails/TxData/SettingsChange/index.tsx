@@ -22,7 +22,7 @@ const ThresholdWarning = (): ReactElement => (
     <Alert
       className={css.alert}
       sx={({ palette }) => ({
-        color: palette.black[500],
+        color: palette.secondary.main,
         background: palette.warning.background,
         borderLeft: `3px solid ${palette.warning.dark}`,
 

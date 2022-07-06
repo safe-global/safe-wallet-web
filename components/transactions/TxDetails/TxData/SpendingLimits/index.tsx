@@ -70,7 +70,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
           <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Reset time</Typography>
           {resetTimeLabel ? (
             <Box className={css.inline}>
-              <SpeedIcon sx={({ palette }) => ({ color: palette.gray.main })} />
+              <SpeedIcon sx={({ palette }) => ({ color: palette.border.main })} />
               <Typography variant="body2">{resetTimeLabel}</Typography>
             </Box>
           ) : (
