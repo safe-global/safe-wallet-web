@@ -4,6 +4,7 @@ import type { RootState } from '.'
 import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { formatDecimals } from '@/utils/formatters'
+import { Loadable } from './common'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {
@@ -69,18 +70,17 @@ export const addedSafesSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    // @FIXME: payload type is not correct
-    builder.addCase(safeInfoSlice.actions.set.type, (state, action: any) => {
-      if (!action.payload.data) {
+    builder.addCase(safeInfoSlice.actions.set.type, (state, { payload }: PayloadAction<Loadable<SafeInfo>>) => {
+      if (!payload.data) {
         return
       }
 
-      const { chainId, address } = action.payload.data
+      const { chainId, address } = payload.data
 
       if (isAddedSafe(state, chainId, address.value)) {
         addedSafesSlice.caseReducers.addOrUpdateSafe(state, {
           type: addOrUpdateSafe.type,
-          payload: { safe: action.payload.data },
+          payload: { safe: payload.data },
         })
       }
     })

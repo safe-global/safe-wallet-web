@@ -1,4 +1,4 @@
-import { createSlice, type Draft, type PayloadAction, type Slice } from '@reduxjs/toolkit'
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '.'
 
 export type Loadable<T> = {
@@ -15,11 +15,11 @@ export const makeLoadableSlice = <T>(name: string, data?: T) => {
       loading: false,
     },
     reducers: {
-      set: (_, { payload }: PayloadAction<Loadable<Draft<T> | undefined>>) => payload,
+      set: (_, { payload }: PayloadAction<Loadable<T | undefined>>) => payload,
     },
   })
 }
 
-export const makeSliceSelector = <T>(slice: Slice) => {
+export const makeSliceSelector = <T>(slice: ReturnType<typeof makeLoadableSlice<T>>) => {
   return (state: RootState): Loadable<T> => state[slice.name]
 }

@@ -27,10 +27,7 @@ export const useInitTxHistory = (): void => {
   // Save the TxHistory in the store
   useEffect(() => {
     if (data) {
-      dispatch(
-        // @ts-expect-error
-        txHistorySlice.actions.set({ data, loading: false }),
-      )
+      dispatch(txHistorySlice.actions.set({ data, loading: false }))
     }
   }, [data, dispatch])
 
