@@ -4,6 +4,7 @@ import { camelCaseToSpaces } from '@/utils/formatters'
 import { isAddress, isArrayParameter, isByte } from '@/utils/transaction-guards'
 import { DataDecoded } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Typography } from '@mui/material'
+import { Value } from '@/components/transactions/TxDetails/TxData/DecodedData/ValueArray'
 
 type MethodDetailsProps = {
   data: DataDecoded
@@ -21,9 +22,14 @@ export const MethodDetails = ({ data }: MethodDetailsProps): ReactElement => {
         const isArrayValueParam = isArrayParameter(param.type) || Array.isArray(param.value)
         const inlineType = isAddress(param.type) ? 'address' : isByte(param.type) ? 'bytes' : undefined
         const value = `${param.value}`
+
         return (
           <TxDataRow key={`${data.method}_param-${index}`} title={`${param.name}(${param.type}):`}>
-            {generateDataRowValue(value, inlineType)}
+            {isArrayValueParam ? (
+              <Value method={methodName} type={param.type} value={param.value as string} />
+            ) : (
+              generateDataRowValue(value, inlineType)
+            )}
           </TxDataRow>
         )
       })}
