@@ -1,42 +1,16 @@
 import { ReactElement } from 'react'
-import { DataDecoded, TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { camelCaseToSpaces, toDecimals } from '@/utils/formatters'
+import { toDecimals } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
-import { Box, Typography } from '@mui/material'
-import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import MultisendTxsDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend/MultisendTxsDecoded'
+import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 
-export const MethodDetails = ({ data }: { data: DataDecoded }): React.ReactElement => {
-  const isArrayParameter = (parameter: string): boolean => /(\[\d*])+$/.test(parameter)
-  const isAddress = (type: string): boolean => type.indexOf('address') === 0
-  const isByte = (type: string): boolean => type.indexOf('byte') === 0
-  const methodName = camelCaseToSpaces(data.method)
-  return (
-    <Box py="8px">
-      <Typography variant="body2" sx={{ textTransform: 'uppercase', letterSpacing: '1px', color: 'rgb(93, 109, 116)' }}>
-        <b>{methodName}</b>
-      </Typography>
-
-      {data.parameters?.map((param, index) => {
-        const isArrayValueParam = isArrayParameter(param.type) || Array.isArray(param.value)
-        const inlineType = isAddress(param.type) ? 'address' : isByte(param.type) ? 'bytes' : undefined
-        const value = `${param.value}`
-        return (
-          <TxDataRow key={`${data.method}_param-${index}`} title={`${param.name}(${param.type}):`}>
-            {generateDataRowValue(value, inlineType)}
-          </TxDataRow>
-        )
-      })}
-    </Box>
-  )
-}
-
-interface Props {
+type MultisendProps = {
   txData: TransactionData
 }
 
-export const Multisend = ({ txData }: Props): ReactElement | null => {
+export const Multisend = ({ txData }: MultisendProps): ReactElement | null => {
   const chain = useCurrentChain()
 
   // ? when can a multiSend call take no parameters?

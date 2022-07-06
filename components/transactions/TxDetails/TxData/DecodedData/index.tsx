@@ -1,11 +1,12 @@
 import { ReactElement } from 'react'
 import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isCustomTxInfo, isDeleteAllowance, isMultisendTxInfo, isSetAllowance } from '@/utils/transaction-guards'
-import { MethodDetails, Multisend } from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import { Multisend } from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import { InfoDetails } from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { SpendingLimits } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
+import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 
 interface Props {
   txData: TransactionDetails['txData']

@@ -140,3 +140,8 @@ export const isSetAllowance = (method?: string): method is SpendingLimitMethods 
 export const isDeleteAllowance = (method?: string): method is SpendingLimitMethods => {
   return method === SPENDING_LIMIT_METHODS_NAMES.DELETE_ALLOWANCE
 }
+
+// Method parameter types
+export const isArrayParameter = (parameter: string): boolean => /(\[\d*])+$/.test(parameter)
+export const isAddress = (type: string): boolean => type.indexOf('address') === 0
+export const isByte = (type: string): boolean => type.indexOf('byte') === 0
