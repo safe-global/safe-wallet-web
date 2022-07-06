@@ -2,13 +2,14 @@ import { type ReactElement } from 'react'
 import { getTransactionDetails, Operation, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxSigners from '@/components/transactions/TxSigners'
 import Summary from '@/components/transactions/TxDetails/Summary'
-import TxData, { AddressInfo } from '@/components/transactions/TxDetails/TxData'
+import TxData from '@/components/transactions/TxDetails/TxData'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { isModuleExecutionInfo, isMultisendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { Alert, Tooltip } from '@mui/material'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
 
 export const NOT_AVAILABLE = 'n/a'
@@ -64,7 +65,7 @@ const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactEleme
             )}
             <div className={css.multisendInfo}>
               <InfoDetails title="MultiSend contract:">
-                <AddressInfo address={txDetails.txInfo.to.value} />
+                <EthHashInfo address={txDetails.txInfo.to.value} />
               </InfoDetails>
               <TxDataRow title="Value:">{txDetails.txInfo.value}</TxDataRow>
             </div>
@@ -84,7 +85,7 @@ const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactEleme
             {isModuleExecutionInfo(txSummary.executionInfo) ? (
               <div className={css.txModule}>
                 <InfoDetails title="Module:">
-                  <AddressInfo address={txSummary.executionInfo.address.value} />
+                  <EthHashInfo address={txSummary.executionInfo.address.value} />
                 </InfoDetails>
               </div>
             ) : (

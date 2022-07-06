@@ -3,7 +3,7 @@ import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isCustomTxInfo, isDeleteAllowance, isMultisendTxInfo, isSetAllowance } from '@/utils/transaction-guards'
 import { Multisend } from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
-import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { SpendingLimits } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
@@ -28,10 +28,10 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
     return (
       <>
         <InfoDetails title="Interact with:">
-          <AddressInfo
+          <EthHashInfo
             address={txData.to.value}
             name={isCustomTxInfo(txInfo) ? txInfo.to.name : undefined}
-            avatarUrl={isCustomTxInfo(txInfo) ? txInfo.to.logoUri : undefined}
+            customAvatar={isCustomTxInfo(txInfo) ? txInfo.to.logoUri || undefined : undefined}
           />
         </InfoDetails>
         <HexEncodedData title="Data (hex encoded)" hexData={txData.hexData} />
@@ -53,10 +53,10 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
   return (
     <>
       <InfoDetails title="Interact with:">
-        <AddressInfo
+        <EthHashInfo
           address={txData.to.value}
           name={isCustomTxInfo(txInfo) ? txInfo.to.name : undefined}
-          avatarUrl={isCustomTxInfo(txInfo) ? txInfo.to.logoUri : undefined}
+          customAvatar={isCustomTxInfo(txInfo) ? txInfo.to.logoUri || undefined : undefined}
         />
       </InfoDetails>
       <MethodDetails data={txData.dataDecoded} />

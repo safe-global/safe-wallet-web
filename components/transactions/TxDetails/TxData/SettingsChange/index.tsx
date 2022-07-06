@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 import { SettingsChange, SettingsInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
-import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import { Alert, Tooltip } from '@mui/material'
 import css from './styles.module.css'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
@@ -43,10 +43,10 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
     case SettingsInfoType.SET_FALLBACK_HANDLER: {
       return (
         <InfoDetails title="Set fallback handler:">
-          <AddressInfo
+          <EthHashInfo
             address={settingsInfo.handler.value}
             name={settingsInfo.handler?.name || undefined}
-            avatarUrl={settingsInfo.handler?.logoUri || undefined}
+            customAvatar={settingsInfo.handler?.logoUri || undefined}
           />
         </InfoDetails>
       )
@@ -58,10 +58,10 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
         <>
           <ThresholdWarning />
           <InfoDetails title={title}>
-            <AddressInfo
+            <EthHashInfo
               address={settingsInfo.owner.value}
               name={settingsInfo.owner?.name || undefined}
-              avatarUrl={settingsInfo.owner?.logoUri || undefined}
+              customAvatar={settingsInfo.owner?.logoUri || undefined}
             />
             <InfoDetails title="Increase/decrease confirmation policy to:">{settingsInfo.threshold}</InfoDetails>
           </InfoDetails>
@@ -72,17 +72,17 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
       return (
         <InfoDetails title="Swap owner:">
           <InfoDetails title="Old owner">
-            <AddressInfo
+            <EthHashInfo
               address={settingsInfo.oldOwner.value}
               name={settingsInfo.oldOwner?.name || undefined}
-              avatarUrl={settingsInfo.oldOwner?.logoUri || undefined}
+              customAvatar={settingsInfo.oldOwner?.logoUri || undefined}
             />
           </InfoDetails>
           <InfoDetails title="New owner">
-            <AddressInfo
+            <EthHashInfo
               address={settingsInfo.newOwner.value}
               name={settingsInfo.newOwner?.name || undefined}
-              avatarUrl={settingsInfo.newOwner?.logoUri || undefined}
+              customAvatar={settingsInfo.newOwner?.logoUri || undefined}
             />
           </InfoDetails>
         </InfoDetails>
@@ -99,10 +99,10 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
     case SettingsInfoType.CHANGE_IMPLEMENTATION: {
       return (
         <InfoDetails title="Change implementation:">
-          <AddressInfo
+          <EthHashInfo
             address={settingsInfo.implementation.value}
             name={settingsInfo.implementation?.name || undefined}
-            avatarUrl={settingsInfo.implementation?.logoUri || undefined}
+            customAvatar={settingsInfo.implementation?.logoUri || undefined}
           />
         </InfoDetails>
       )
@@ -112,10 +112,10 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
       const title = settingsInfo.type === SettingsInfoType.ENABLE_MODULE ? 'Enable module:' : 'Disable module:'
       return (
         <InfoDetails title={title}>
-          <AddressInfo
+          <EthHashInfo
             address={settingsInfo.module.value}
             name={settingsInfo.module?.name || undefined}
-            avatarUrl={settingsInfo.module?.logoUri || undefined}
+            customAvatar={settingsInfo.module?.logoUri || undefined}
           />
         </InfoDetails>
       )
@@ -123,10 +123,10 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
     case SettingsInfoType.SET_GUARD: {
       return (
         <InfoDetails title="Set guard:">
-          <AddressInfo
+          <EthHashInfo
             address={settingsInfo.guard.value}
             name={settingsInfo.guard?.name || undefined}
-            avatarUrl={settingsInfo.guard?.logoUri || undefined}
+            customAvatar={settingsInfo.guard?.logoUri || undefined}
           />
         </InfoDetails>
       )

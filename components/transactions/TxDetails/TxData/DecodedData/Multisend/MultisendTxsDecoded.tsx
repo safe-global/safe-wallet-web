@@ -5,7 +5,7 @@ import CodeIcon from '@mui/icons-material/Code'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
-import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
 
 interface Props {
@@ -62,7 +62,7 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props
         {!isSpendingLimitMethod && (
           <>
             <InfoDetails title={txDetails.title}>
-              <AddressInfo address={txDetails.address} name={txDetails.name} avatarUrl={txDetails.avatarUrl} />
+              <EthHashInfo address={txDetails.address} name={txDetails.name} customAvatar={txDetails.avatarUrl} />
             </InfoDetails>
           </>
         )}
