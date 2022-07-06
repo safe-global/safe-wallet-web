@@ -1,38 +1,40 @@
 import React from 'react'
 import type { Web3Provider } from '@ethersproject/providers'
-import { CreateSafeFormData } from '@/components/create-safe/index'
+import { CreateSafeFormData, PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/create-safe/index'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
+import Safe, { DeploySafeProps, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import EthHashInfo from '../common/EthHashInfo'
+import local from '@/services/localStorage/local'
 
-const createNewSafe = async (ethersProvider: Web3Provider, txParams: SafeAccountConfig): Promise<Safe> => {
+export const createNewSafe = async (ethersProvider: Web3Provider, props: DeploySafeProps): Promise<Safe> => {
   const ethAdapter = createEthersAdapter(ethersProvider)
 
   const safeFactory = await SafeFactory.create({ ethAdapter })
-  return await safeFactory.deploySafe({ safeAccountConfig: txParams })
+  return safeFactory.deploySafe(props)
 }
 
 type Props = {
   params: CreateSafeFormData
+  onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
 }
 
-const Review = ({ params, onBack }: Props) => {
+const Review = ({ params, onSubmit, onBack }: Props) => {
   const wallet = useWallet()
   const ethersProvider = useWeb3()
 
   const createSafe = async () => {
     if (!wallet || !ethersProvider) return
 
-    await createNewSafe(ethersProvider, {
-      threshold: params.threshold,
-      owners: params.owners.map((owner) => owner.address),
-    })
+    const saltNonce = Date.now()
+
+    local.setItem<PendingSafeData>(SAFE_PENDING_CREATION_STORAGE_KEY, { ...params, saltNonce })
+    onSubmit(params)
   }
 
   return (

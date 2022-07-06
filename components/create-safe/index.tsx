@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import ConnectWallet from '@/components/create-safe/ConnectWallet'
 import SetName from '@/components/create-safe/SetName'
@@ -8,6 +8,10 @@ import { useRouter } from 'next/router'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 import { AppRoutes } from '@/config/routes'
+import { CreationStatus } from '@/components/create-safe/CreationStatus'
+import useLocalStorage from '@/services/localStorage/useLocalStorage'
+
+export const SAFE_PENDING_CREATION_STORAGE_KEY = 'NEW_SAFE_PENDING_CREATION_STORAGE_KEY'
 
 export type Owner = {
   name: string
@@ -20,6 +24,8 @@ export type CreateSafeFormData = {
   threshold: number
   owners: Owner[]
 }
+
+export type PendingSafeData = CreateSafeFormData & { txHash?: string; saltNonce: number }
 
 export const CreateSafeSteps: TxStepperProps['steps'] = [
   {
@@ -38,14 +44,38 @@ export const CreateSafeSteps: TxStepperProps['steps'] = [
   },
   {
     label: 'Review',
-    render: (data, _, onBack) => <Review params={data as CreateSafeFormData} onBack={onBack} />,
+    render: (data, onSubmit, onBack) => (
+      <Review params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+    ),
   },
 ]
 
 const CreateSafe = () => {
+  const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(
+    SAFE_PENDING_CREATION_STORAGE_KEY,
+    undefined,
+  )
+  const [safeCreationPending, setSafeCreationPending] = useState<boolean>(false)
   const router = useRouter()
 
-  return <VerticalTxStepper steps={CreateSafeSteps} onClose={() => router.push(AppRoutes.welcome)} />
+  useEffect(() => {
+    setSafeCreationPending(!!pendingSafe)
+  }, [pendingSafe])
+
+  const onFinish = () => {
+    setSafeCreationPending(true)
+  }
+
+  const onClose = () => {
+    setPendingSafe(undefined)
+    router.push(AppRoutes.welcome)
+  }
+
+  return safeCreationPending ? (
+    <CreationStatus onClose={onClose} />
+  ) : (
+    <VerticalTxStepper steps={CreateSafeSteps} onClose={onClose} onFinish={onFinish} />
+  )
 }
 
 export default CreateSafe
