@@ -205,12 +205,6 @@ const theme = createTheme({
           borderRadius: theme.spacing(1),
           boxSizing: 'border-box',
           border: '2px solid transparent',
-          transition: 'all 0.3s ease-in-out',
-          '&:hover': {
-            backgroundColor: theme.palette.primaryGreen[200],
-            // @ts-expect-error type '300' can't be used to index type 'PaletteColor'
-            border: `2px solid ${theme.palette.primary[300]}`,
-          },
         }),
       },
     },

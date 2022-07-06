@@ -17,7 +17,12 @@ const ChainSwitcher = (): ReactElement | null => {
   }
 
   return isWrongChain ? (
-    <Button onClick={handleChainSwitch} variant="outlined" color="secondary" size="small">
+    <Button
+      onClick={handleChainSwitch}
+      variant="outlined"
+      size="small"
+      sx={{ borderColor: chain?.theme?.backgroundColor }}
+    >
       Switch to {chain?.chainName}
     </Button>
   ) : null
