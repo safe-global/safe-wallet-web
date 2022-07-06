@@ -8,7 +8,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 
 const Queue: NextPage = () => {
   const [pageUrl, setPageUrl] = useState<string | undefined>()
-  const { page, loading } = useTxQueue(pageUrl)
+  const { page, error, loading } = useTxQueue(pageUrl)
 
   return (
     <main>
@@ -18,7 +18,7 @@ const Queue: NextPage = () => {
 
       {loading ? (
         <CircularProgress size={20} sx={{ marginTop: 2 }} />
-      ) : !page ? (
+      ) : error ? (
         <ErrorMessage>Error loading the history</ErrorMessage>
       ) : (
         <TxList items={page?.results || []} />

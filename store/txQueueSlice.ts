@@ -14,7 +14,7 @@ export const txQueueSlice = slice
 export const selectTxQueue = selector
 
 export const selectQueuedTransactions = createSelector(selectTxQueue, (txQueue) => {
-  return (txQueue.data?.results || []).filter(isTransaction)
+  return txQueue.data.results.filter(isTransaction)
 })
 
 export const selectQueuedTransactionsByNonce = createSelector(
