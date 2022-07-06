@@ -1,16 +1,12 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement } from 'react'
 import { SettingsChange, SettingsInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
 import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
-import { Alert, Tooltip, Typography } from '@mui/material'
+import { Alert, Tooltip } from '@mui/material'
 import css from './styles.module.css'
+import { InfoDetails } from '@/components/transactions/InfoDetails'
 
-interface Props {
+type SettingsChangeTxInfoProps = {
   settingsInfo: SettingsChange['settingsInfo']
-}
-
-type InfoDetailsProps = {
-  children?: ReactNode
-  title: string | ReactElement
 }
 
 const ThresholdWarning = (): ReactElement => (
@@ -38,16 +34,7 @@ const ThresholdWarning = (): ReactElement => (
   </Tooltip>
 )
 
-export const InfoDetails = ({ children, title }: InfoDetailsProps): ReactElement => (
-  <div className={css.container}>
-    <Typography variant="body1" fontWeight="bold">
-      {title}
-    </Typography>
-    {children}
-  </div>
-)
-
-export const SettingsChangeTxInfo = ({ settingsInfo }: Props): ReactElement | null => {
+export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps): ReactElement | null => {
   if (!settingsInfo) {
     return null
   }

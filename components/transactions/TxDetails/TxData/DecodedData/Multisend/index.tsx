@@ -30,7 +30,6 @@ export const Multisend = ({ txData }: MultisendProps): ReactElement | null => {
         const { decimals, symbol } = chain!.nativeCurrency
         const amount = value ? toDecimals(value, decimals) : 0
 
-        // TODO: move this chunk inside of MultisendTxsDecoded once it's working
         let details
         if (dataDecoded) {
           details = <MethodDetails data={dataDecoded} />

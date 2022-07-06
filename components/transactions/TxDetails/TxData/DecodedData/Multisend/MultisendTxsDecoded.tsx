@@ -4,7 +4,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/
 import CodeIcon from '@mui/icons-material/Code'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
-import { InfoDetails } from '@/components/transactions/TxDetails/TxData/SettingsChange'
+import { InfoDetails } from '@/components/transactions/InfoDetails'
 import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
 import css from './styles.module.css'
 
@@ -57,10 +57,10 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props
       </AccordionSummary>
       <AccordionDetails sx={{ flexFlow: 'column' }}>
         {/* We always warn of nested delegate calls */}
+        {/* TODO: move the warnings to a separate file */}
         {/* {isDelegateCall && <DelegateCallWarning showWarning={isDelegateCall} />} */}
         {!isSpendingLimitMethod && (
           <>
-            {/* TODO: these 2 components should not belong in SettingsChange */}
             <InfoDetails title={txDetails.title}>
               <AddressInfo address={txDetails.address} name={txDetails.name} avatarUrl={txDetails.avatarUrl} />
             </InfoDetails>

@@ -1,14 +1,3 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.container:last-of-type {
-  margin-bottom: 0;
-}
-
 .alert {
   align-self: start;
   padding: 0px 10px;
