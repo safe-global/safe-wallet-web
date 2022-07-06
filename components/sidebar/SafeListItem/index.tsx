@@ -78,15 +78,14 @@ const SafeListItem = ({
           selected={isOpen}
           sx={({ palette }) => ({
             borderRadius: '8px',
-            // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-            borderLeft: isOpen ? `6px solid ${palette.primary[400]}` : undefined,
+            borderLeft: isOpen ? `6px solid ${palette.primary.main}` : undefined,
             paddingLeft: '22px',
             '&.Mui-selected': {
-              backgroundColor: palette.gray[300],
+              backgroundColor: palette.gray.background,
               paddingLeft: '16px',
             },
             '&:hover': {
-              backgroundColor: palette.primaryGreen[200],
+              backgroundColor: palette.primary.background,
             },
           })}
           ref={safeRef}

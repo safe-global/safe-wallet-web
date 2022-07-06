@@ -24,7 +24,7 @@ const Sidebar = (): ReactElement => {
       className={css.container}
       sx={({ palette }) => ({
         backgroundColor: 'background.paper',
-        borderRight: `1px solid ${palette.primaryGray[400]}`,
+        borderRight: `1px solid ${palette.gray.light}`,
       })}
     >
       <div className={css.scroll}>
@@ -35,9 +35,9 @@ const Sidebar = (): ReactElement => {
           className={css.drawerButton}
           onClick={onDrawerToggle}
           sx={({ palette }) => ({
-            backgroundColor: palette.primaryGray[400],
+            backgroundColor: palette.gray.light,
             '&:hover': {
-              backgroundColor: palette.primaryGreen[200],
+              backgroundColor: palette.primary.background,
             },
           })}
         >
@@ -48,7 +48,7 @@ const Sidebar = (): ReactElement => {
           <>
             <SidebarHeader />
 
-            <Divider sx={({ palette }) => ({ borderColor: palette.primaryGray[400] })} />
+            <Divider sx={({ palette }) => ({ borderColor: palette.gray.light })} />
 
             <SidebarNavigation />
           </>
@@ -57,7 +57,7 @@ const Sidebar = (): ReactElement => {
         )}
         <div style={{ flexGrow: 1 }} />
 
-        <Divider flexItem sx={({ palette }) => ({ borderColor: palette.primaryGray[400] })} />
+        <Divider flexItem sx={({ palette }) => ({ borderColor: palette.gray.light })} />
 
         <SidebarFooter />
       </div>

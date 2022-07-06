@@ -12,9 +12,8 @@ const Threshold = ({ threshold, owners }: ThresholdProps): ReactElement => (
   <Box
     className={css.threshold}
     sx={({ palette }) => ({
-      background: palette.primaryGreen[200],
-      // @ts-expect-error type '400' can't be used to index type 'PaletteColor'
-      color: palette.primary[400],
+      background: palette.primary.background,
+      color: palette.primary.main,
     })}
   >
     {threshold}/{owners}
