@@ -1,15 +1,14 @@
 import type { NextPage } from 'next'
-import { useAppSelector } from '@/store'
-import { selectCollectibles } from '@/store/collectiblesSlice'
+import useCollectibles from '@/hooks/useCollectibles'
 import { NftGrid } from '@/components/nfts'
 
 const NFTs: NextPage = () => {
-  const { data } = useAppSelector(selectCollectibles)
+  const { collectibles } = useCollectibles()
 
   return (
     <main>
       <h2>NFTs</h2>
-      <NftGrid collectibles={data} />
+      <NftGrid collectibles={collectibles} />
     </main>
   )
 }
