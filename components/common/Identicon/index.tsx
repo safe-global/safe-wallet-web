@@ -4,7 +4,7 @@ import Skeleton from '@mui/material/Skeleton'
 
 import css from './styles.module.css'
 
-type IdenticonProps = {
+export interface IdenticonProps {
   address: string
 }
 
