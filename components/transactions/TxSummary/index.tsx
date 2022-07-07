@@ -1,11 +1,10 @@
 import { Grid, Paper } from '@mui/material'
-import type { ReactElement } from 'react'
+import { ReactElement } from 'react'
 import { TransactionStatus, type Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
-import { useTransactionType } from '@/hooks/useTransactionType'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -14,6 +13,7 @@ import RejectTxButton from '@/components/transactions/RejectTxButton'
 import Box from '@mui/material/Box'
 import { useRouter } from 'next/router'
 import { useTransactionStatus } from '@/hooks/useTransactionStatus'
+import TxType from '@/components/transactions/TxType'
 
 type TxSummaryProps = {
   item: Transaction
@@ -26,7 +26,6 @@ const dateOptions = {
 
 const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
-  const type = useTransactionType(tx)
   const wallet = useWallet()
   const router = useRouter()
   const isQueue = router.pathname.includes('queue')
@@ -43,8 +42,7 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
           </Grid>
 
           <Grid item md={3}>
-            <img src={type.icon} alt="transaction type" width={16} height={16} className={css.txTypeIcon} />
-            {type.text}
+            <TxType tx={tx} />
           </Grid>
 
           <Grid item md>

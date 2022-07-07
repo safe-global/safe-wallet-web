@@ -7,6 +7,7 @@ import {
   DateLabel,
   DetailedExecutionInfo,
   Label,
+  ModuleExecutionInfo,
   MultiSend,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
@@ -38,11 +39,16 @@ export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null):
   return value?.type === 'MULTISIG'
 }
 
+// TODO: replace this type guard for the one guard above
 export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>
-  value?.type === 'MULTISIG'
+  value?.type === EXECUTION_INFO_TYPES.MULTISIG
 
-export const isTransaction = (value: TransactionListItem): value is Transaction => {
-  return value.type === 'TRANSACTION'
+export const isModuleExecutionInfo = (value: TransactionSummary['executionInfo']): value is ModuleExecutionInfo =>
+  value?.type === EXECUTION_INFO_TYPES.MODULE
+
+enum EXECUTION_INFO_TYPES {
+  MULTISIG = 'MULTISIG',
+  MODULE = 'MODULE',
 }
 
 // TransactionInfo type guards
@@ -135,3 +141,8 @@ export const isSetAllowance = (method?: string): method is SpendingLimitMethods 
 export const isDeleteAllowance = (method?: string): method is SpendingLimitMethods => {
   return method === SPENDING_LIMIT_METHODS_NAMES.DELETE_ALLOWANCE
 }
+
+// Method parameter types
+export const isArrayParameter = (parameter: string): boolean => /(\[\d*])+$/.test(parameter)
+export const isAddress = (type: string): boolean => type.indexOf('address') === 0
+export const isByte = (type: string): boolean => type.indexOf('byte') === 0

@@ -23,7 +23,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import useIsPending from '@/hooks/useIsPending'
 import { isCancellationTxInfo, isExecutable, isMultisigExecutionDetails } from '@/utils/transaction-guards'
 import { Button } from '@mui/material'
-import { AddressInfo } from '../TxDetails/TxData'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 import css from './styles.module.css'
 
@@ -90,7 +90,7 @@ const shouldHideConfirmations = (detailedExecutionInfo: DetailedExecutionInfo | 
 const getConfirmationStep = ({ value, name }: AddressEx, key: string | undefined = undefined): ReactElement => (
   <StyledStep key={key} $bold $state="confirmed">
     <StepLabel icon={<DotIcon />}>
-      <AddressInfo address={value} name={name} />
+      <EthHashInfo address={value} name={name} />
     </StepLabel>
   </StyledStep>
 )
@@ -184,10 +184,10 @@ export const TxSigners = ({
           // isExecuted
           detailedExecutionInfo.executor ? (
             <StepContent>
-              <AddressInfo
+              <EthHashInfo
                 address={detailedExecutionInfo.executor.value}
                 name={detailedExecutionInfo.executor.name}
-                avatarUrl={detailedExecutionInfo.executor.logoUri}
+                customAvatar={detailedExecutionInfo.executor.logoUri || undefined}
               />
             </StepContent>
           ) : (

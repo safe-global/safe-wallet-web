@@ -14,11 +14,28 @@
   gap: 2px;
 }
 
+.details.noSigners {
+  grid-column: 1 / 3;
+}
+
 .txData,
 .txSummary,
-.advancedDetails {
+.advancedDetails,
+.txModule {
   background: white;
   padding: 20px 24px;
+}
+
+.multisendInfo,
+.delegateCall {
+  background: white;
+  padding: 20px 24px 0;
+  margin-bottom: -2px; /* to cover the gap */
+}
+
+.delegateCall .alert {
+  width: fit-content;
+  padding: 0px 10px;
 }
 
 .txData {

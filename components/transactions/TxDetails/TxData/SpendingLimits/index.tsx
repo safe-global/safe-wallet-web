@@ -1,7 +1,7 @@
 import React, { ReactElement, useMemo } from 'react'
 import { Custom, TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Typography } from '@mui/material'
-import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import SpeedIcon from '@mui/icons-material/Speed'
 import { useCurrentChain } from '@/hooks/useChains'
 import { selectTokens } from '@/store/balancesSlice'
@@ -42,10 +42,10 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
       </Typography>
       <Box className={css.group}>
         <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
-        <AddressInfo
+        <EthHashInfo
           address={(beneficiary as string) || txTo?.value || '0x'}
           name={txTo.name || undefined}
-          avatarUrl={txTo.logoUri || undefined}
+          customAvatar={txTo.logoUri || undefined}
         />
       </Box>
       {tokenInfo && (

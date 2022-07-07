@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, useState } from 'react'
 import css from './styles.module.css'
 import chains from '@/config/chains'
 import { shortenAddress } from '@/utils/formatters'
@@ -10,7 +10,7 @@ import { Typography } from '@mui/material'
 type EthHashInfoProps = {
   address: string
   chainId?: string
-  name?: string
+  name?: string | null
   showAvatar?: boolean
   showCopyButton?: boolean
   prefix?: string
@@ -27,16 +27,22 @@ const SRCEthHashInfo = ({
   showAvatar = true,
   ...props
 }: EthHashInfoProps): ReactElement => {
+  const [fallbackToIdenticon, setFallbackToIdenticon] = useState(false)
+
   return (
     <div className={css.container}>
       {showAvatar && (
         <div className={css.avatar}>
-          {customAvatar ? <img src={customAvatar} alt={address} /> : <Identicon address={address} />}
+          {!fallbackToIdenticon && customAvatar ? (
+            <img src={customAvatar} alt={address} onError={() => setFallbackToIdenticon(true)} />
+          ) : (
+            <Identicon address={address} />
+          )}
         </div>
       )}
 
       <div>
-        {props.name && <b>{props.name}</b>}
+        <Typography variant="body2">{props.name}</Typography>
         <Typography variant="body2">
           {prefix && <b>{prefix}:</b>}
           {shortAddress ? shortenAddress(address) : address}
@@ -51,7 +57,8 @@ const SRCEthHashInfo = ({
 const EthHashInfo = (props: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const chainId = useChainId()
   const addressBook = useAddressBook()
-  const name = props.showName === false ? undefined : addressBook[props.address]
+  // prefer address book name
+  const name = props.showName === false ? undefined : addressBook[props.address] || props.name
   const prefix = Object.keys(chains).find((key) => chains[key] === chainId)
 
   return <SRCEthHashInfo {...props} prefix={prefix} name={name} />

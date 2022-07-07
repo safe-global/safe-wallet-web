@@ -4,7 +4,8 @@
   gap: 8px;
 }
 
-.avatar {
+.avatar,
+.avatar img {
   width: 2.3em;
   height: 2.3em;
 }

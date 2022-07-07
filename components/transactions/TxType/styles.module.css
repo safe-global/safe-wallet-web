@@ -1,0 +1,10 @@
+.txType {
+  display: flex;
+  gap: 0.3em;
+}
+
+.txTypeIcon {
+  height: 1.1em;
+  width: auto;
+  vertical-align: middle;
+}

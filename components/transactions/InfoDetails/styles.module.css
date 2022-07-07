@@ -8,9 +8,3 @@
 .container:last-of-type {
   margin-bottom: 0;
 }
-
-.alert {
-  align-self: start;
-  padding: 0px 10px;
-  margin-bottom: 10px;
-}

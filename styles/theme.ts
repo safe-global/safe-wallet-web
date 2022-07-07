@@ -117,6 +117,7 @@ const theme = createTheme({
       fontSize: '11px',
       lineHeight: '14px',
       textTransform: 'uppercase',
+      letterSpacing: '1px',
     },
   },
   components: {

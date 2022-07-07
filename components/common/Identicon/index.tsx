@@ -10,10 +10,6 @@ export interface IdenticonProps {
 
 const Identicon = ({ address }: IdenticonProps): ReactElement => {
   const style = useMemo<CSSProperties | null>(() => {
-    if (!address) {
-      return null
-    }
-
     let blockie = ''
     try {
       blockie = makeBlockie(address)
