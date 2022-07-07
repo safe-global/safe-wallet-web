@@ -1,40 +1,22 @@
+import { createSelector } from '@reduxjs/toolkit'
 import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
-import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
-import { Loadable } from './common'
 import { isMultisigExecutionInfo, isTransaction } from '@/utils/transaction-guards'
+import { makeLoadableSlice } from './common'
 
-interface TxQueueState extends Loadable {
-  page: TransactionListPage
+const initialState: TransactionListPage = {
+  results: [],
+  next: '',
+  previous: '',
 }
 
-const initialState: TxQueueState = {
-  loading: true,
-  page: {
-    results: [],
-    next: '',
-    previous: '',
-  },
-}
+const { slice, selector } = makeLoadableSlice('txQueue', initialState)
 
-export const txQueueSlice = createSlice({
-  name: 'txQueue',
-  initialState,
-  reducers: {
-    setQueue: (_, action: PayloadAction<TxQueueState | undefined>) => {
-      return action.payload || initialState
-    },
-  },
-})
-
-export const { setQueue } = txQueueSlice.actions
-
-export const selectTxQueue = (state: RootState): TxQueueState => {
-  return state[txQueueSlice.name]
-}
+export const txQueueSlice = slice
+export const selectTxQueue = selector
 
 export const selectQueuedTransactions = createSelector(selectTxQueue, (txQueue) => {
-  return txQueue.page.results.filter(isTransaction)
+  return txQueue.data.results.filter(isTransaction)
 })
 
 export const selectQueuedTransactionsByNonce = createSelector(

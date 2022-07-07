@@ -1,9 +1,10 @@
 import { createSelector, createSlice, Middleware, type PayloadAction } from '@reduxjs/toolkit'
 import { AddressEx, SafeBalanceResponse, SafeInfo, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '.'
-import { selectSafeInfo, setSafeInfo, type SetSafeInfoPayload } from '@/store/safeInfoSlice'
-import { setBalances } from './balancesSlice'
+import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
+import { balancesSlice } from './balancesSlice'
 import { formatDecimals } from '@/utils/formatters'
+import { Loadable } from './common'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {
@@ -69,17 +70,17 @@ export const addedSafesSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(setSafeInfo.type, (state, { payload }: SetSafeInfoPayload) => {
-      if (!payload.safe) {
+    builder.addCase(safeInfoSlice.actions.set.type, (state, { payload }: PayloadAction<Loadable<SafeInfo>>) => {
+      if (!payload.data) {
         return
       }
 
-      const { chainId, address } = payload.safe
+      const { chainId, address } = payload.data
 
       if (isAddedSafe(state, chainId, address.value)) {
         addedSafesSlice.caseReducers.addOrUpdateSafe(state, {
           type: addOrUpdateSafe.type,
-          payload: { safe: payload.safe },
+          payload: { safe: payload.data },
         })
       }
     })
@@ -103,12 +104,12 @@ export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next)
   const result = next(action)
 
   switch (action.type) {
-    case setBalances.type: {
+    case balancesSlice.actions.set.type: {
       const state = store.getState()
-      const { safe } = selectSafeInfo(state)
+      const { data } = selectSafeInfo(state)
 
-      const chainId = safe?.chainId
-      const address = safe?.address.value
+      const chainId = data?.chainId
+      const address = data?.address.value
 
       if (!chainId || !address) {
         break

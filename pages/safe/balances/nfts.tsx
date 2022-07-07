@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-
 import useCollectibles from '@/hooks/useCollectibles'
 import { NftGrid } from '@/components/nfts'
 

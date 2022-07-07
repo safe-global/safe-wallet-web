@@ -1,53 +1,14 @@
 import { getTransactionHistory, TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
-import { Errors, logError } from '@/services/exceptions'
-import { selectTxHistory, setHistory } from '@/store/txHistorySlice'
+import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
-
-export const useInitTxHistory = (): void => {
-  const { safe } = useSafeInfo()
-  const dispatch = useAppDispatch()
-  const { chainId, txHistoryTag } = safe || {}
-  const address = safe?.address.value
-
-  // Re-fetch assets when chainId/address, or txHistoryTag change
-  const [page, error] = useAsync<TransactionListPage | undefined>(async () => {
-    if (chainId && address) {
-      return getTransactionHistory(chainId, address)
-    }
-  }, [txHistoryTag, chainId, address])
-
-  // Clear the old TxHistory when Safe address is changed
-  useEffect(() => {
-    dispatch(setHistory(undefined))
-  }, [address, chainId, dispatch])
-
-  // Save the TxHistory in the store
-  useEffect(() => {
-    if (page) {
-      dispatch(
-        setHistory({
-          page,
-          loading: false,
-        }),
-      )
-    }
-  }, [page, dispatch])
-
-  // Log errors
-  useEffect(() => {
-    if (!error) return
-    logError(Errors._602, error.message)
-  }, [error])
-}
 
 const useTxHistory = (
   pageUrl?: string,
 ): {
   page?: TransactionListPage
-  error?: Error
+  error?: string
   loading: boolean
 } => {
   const { safe } = useSafeInfo()
@@ -63,7 +24,17 @@ const useTxHistory = (
   const historyState = useAppSelector(selectTxHistory)
 
   // Return the new page or the stored page
-  return pageUrl ? { page, error, loading } : historyState
+  return pageUrl
+    ? {
+        page,
+        error: error?.message,
+        loading,
+      }
+    : {
+        page: historyState.data,
+        error: historyState.error,
+        loading: historyState.loading,
+      }
 }
 
 export default useTxHistory

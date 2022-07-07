@@ -8,8 +8,8 @@ const useIntervalCounter = (interval: number): [number, () => void] => {
   }, [setCounter])
 
   useEffect(() => {
-    const intervalId = setInterval(() => setCounter(counter + 1), interval)
-    return () => clearInterval(intervalId)
+    const timerId = setTimeout(() => setCounter(counter + 1), interval)
+    return () => clearTimeout(timerId)
   }, [counter, interval])
 
   return [counter, resetCounter]

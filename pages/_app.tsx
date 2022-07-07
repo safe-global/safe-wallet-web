@@ -12,12 +12,8 @@ import '@/styles/globals.css'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { store } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
-import { useInitChains } from '@/hooks/useChains'
-import { useInitSafeInfo } from '@/hooks/useSafeInfo'
-import { useInitBalances } from '@/hooks/useBalances'
-import { useInitCollectibles } from '@/hooks/useCollectibles'
-import { useInitTxHistory } from '@/hooks/useTxHistory'
-import { useInitTxQueue } from '@/hooks/useTxQueue'
+import useLoadChains from '@/hooks/loadables/useLoadChains'
+import useLoadableStores from '@/hooks/useLoadableStores'
 import usePathRewrite from '@/hooks/usePathRewrite'
 import { useInitOnboard } from '@/hooks/wallets/useOnboard'
 import { useInitWeb3 } from '@/hooks/wallets/useInitWeb3'
@@ -39,13 +35,9 @@ const InitApp = (): null => {
   }
 
   usePathRewrite()
-  useInitChains()
+  useLoadChains()
   useInitSession()
-  useInitSafeInfo()
-  useInitBalances()
-  useInitCollectibles()
-  useInitTxHistory()
-  useInitTxQueue()
+  useLoadableStores()
   useInitOnboard()
   useInitWeb3()
   useInitSafeCoreSDK()
