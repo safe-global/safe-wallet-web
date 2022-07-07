@@ -4,11 +4,13 @@ import type { RootState } from '@/store'
 import { isMultisigExecutionInfo, isTransaction } from '@/utils/transaction-guards'
 import { makeLoadableSlice } from './common'
 
-const { slice, selector } = makeLoadableSlice('txQueue', {
+const initialState: TransactionListPage = {
   results: [],
   next: '',
   previous: '',
-} as TransactionListPage)
+}
+
+const { slice, selector } = makeLoadableSlice('txQueue', initialState)
 
 export const txQueueSlice = slice
 export const selectTxQueue = selector

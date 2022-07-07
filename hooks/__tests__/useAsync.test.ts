@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { act, renderHook, waitFor } from '@/tests/test-utils'
+import { act, renderHook } from '@/tests/test-utils'
 import useAsync from '@/hooks/useAsync'
 
 // Jest tests for the useAsync hook

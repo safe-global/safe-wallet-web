@@ -2,10 +2,12 @@ import { type TokenInfo, type SafeBalanceResponse } from '@gnosis.pm/safe-react-
 import { createSelector } from '@reduxjs/toolkit'
 import { makeLoadableSlice } from './common'
 
-const { slice, selector } = makeLoadableSlice('balances', {
+const initialState: SafeBalanceResponse = {
   items: [],
   fiatTotal: '',
-} as SafeBalanceResponse)
+}
+
+const { slice, selector } = makeLoadableSlice('balances', initialState)
 
 export const balancesSlice = slice
 export const selectBalances = selector

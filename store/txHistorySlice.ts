@@ -6,11 +6,13 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { selectPendingTxs } from './pendingTxsSlice'
 import { makeLoadableSlice } from './common'
 
-const { slice, selector } = makeLoadableSlice('txHistory', {
+const initialState: TransactionListPage = {
   results: [],
   next: '',
   previous: '',
-} as TransactionListPage)
+}
+
+const { slice, selector } = makeLoadableSlice('txHistory', initialState)
 
 export const txHistorySlice = slice
 export const selectTxHistory = selector
