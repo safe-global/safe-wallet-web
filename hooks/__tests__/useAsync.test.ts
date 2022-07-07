@@ -16,7 +16,7 @@ describe('useAsync hook', () => {
     expect(result.current).toEqual(['test', undefined, false])
   })
 
-  it('should with the same with clearData = false', async () => {
+  it('should return the same with clearData = false', async () => {
     const { result } = renderHook(() => useAsync(() => Promise.resolve('test'), [], false))
 
     expect(result.current).toEqual([undefined, undefined, true])
