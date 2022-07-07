@@ -23,8 +23,11 @@ export const txHistoryMiddleware: Middleware<{}, RootState> = (store) => (next) 
     case txHistorySlice.actions.set.type: {
       const state = store.getState()
       const pendingTxs = selectPendingTxs(state)
+      const { payload } = action as ReturnType<typeof txHistorySlice.actions.set>
 
-      for (const result of action.payload.page.results) {
+      if (!payload.data) return
+
+      for (const result of payload.data.results) {
         if (!isTransaction(result)) {
           continue
         }

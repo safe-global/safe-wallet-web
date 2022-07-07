@@ -1,42 +1,8 @@
 import { getTransactionHistory, TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
-import { Errors, logError } from '@/services/exceptions'
-import { selectTxHistory, txHistorySlice } from '@/store/txHistorySlice'
+import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
-
-export const useInitTxHistory = (): void => {
-  const { safe } = useSafeInfo()
-  const dispatch = useAppDispatch()
-  const { chainId, txHistoryTag } = safe || {}
-  const address = safe?.address.value
-
-  // Re-fetch assets when chainId/address, or txHistoryTag change
-  const [data, error] = useAsync<TransactionListPage | undefined>(async () => {
-    if (chainId && address) {
-      return getTransactionHistory(chainId, address)
-    }
-  }, [txHistoryTag, chainId, address])
-
-  // Clear the old TxHistory when Safe address is changed
-  useEffect(() => {
-    dispatch(txHistorySlice.actions.set({ data: undefined, loading: true }))
-  }, [address, chainId, dispatch])
-
-  // Save the TxHistory in the store
-  useEffect(() => {
-    if (data) {
-      dispatch(txHistorySlice.actions.set({ data, loading: false }))
-    }
-  }, [data, dispatch])
-
-  // Log errors
-  useEffect(() => {
-    if (!error) return
-    logError(Errors._602, error.message)
-  }, [error])
-}
 
 const useTxHistory = (
   pageUrl?: string,

@@ -46,7 +46,7 @@ const SafeHeader = (): ReactElement => {
     <div className={css.container}>
       <div className={css.safe}>
         <div className={css.icon}>
-          {loading ? (
+          {!safe && loading ? (
             <Skeleton variant="circular" width={40} height={40} />
           ) : (
             <SafeIcon address={address} threshold={threshold} owners={owners?.length} />
