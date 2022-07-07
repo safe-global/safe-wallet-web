@@ -6,18 +6,23 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ListItemText from '@mui/material/ListItemText'
 
-import { useAppDispatch } from '@/store'
-import { removeSafe } from '@/store/addedSafesSlice'
 import useAddressBook from '@/hooks/useAddressBook'
 import EntryDialog from '@/components/address-book/EntryDialog'
+import SafeListRemoveDialog from '@/components/sidebar/SafeListRemoveDialog'
 
-const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: string }): ReactElement => {
-  const dispatch = useAppDispatch()
+enum ModalType {
+  RENAME = 'rename',
+  REMOVE = 'remove',
+}
+
+const defaultOpen = { [ModalType.RENAME]: false, [ModalType.REMOVE]: false }
+
+const SafeListContextMenu = ({ address }: { address: string }): ReactElement => {
   const addressBook = useAddressBook()
   const name = addressBook?.[address]
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
-  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
 
   const handleOpenContextMenu = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
     setAnchorEl(e.currentTarget)
@@ -27,19 +32,18 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
     setAnchorEl(undefined)
   }
 
-  const handleRemoveSafe = () => {
-    dispatch(removeSafe({ chainId, address }))
+  const handleOpenModal = (type: keyof typeof open) => () => {
+    setOpen((prev) => ({ ...prev, [type]: true }))
   }
 
-  const handleOpenRenameModal = (open: boolean) => () => {
-    handleCloseContextMenu()
-    setOpenModal(open)
+  const handleCloseModal = () => {
+    setOpen(defaultOpen)
   }
 
   return (
     <>
       <IconButton edge="end" size="small" onClick={handleOpenContextMenu}>
-        <MoreVertIcon sx={({ palette }) => ({ color: palette.gray.main })} />
+        <MoreVertIcon sx={({ palette }) => ({ color: palette.border.main })} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -58,22 +62,26 @@ const SafeListContextMenu = ({ chainId, address }: { chainId: string; address: s
           },
         })}
       >
-        <MenuItem onClick={handleOpenRenameModal(true)}>
+        <MenuItem onClick={handleOpenModal(ModalType.RENAME)}>
           <ListItemIcon>
             <img src="/images/sidebar/safe-list/pencil.svg" alt="Rename" height="16px" width="16px" />
           </ListItemIcon>
           <ListItemText>Rename</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleRemoveSafe}>
+
+        <MenuItem onClick={handleOpenModal(ModalType.REMOVE)}>
           <ListItemIcon>
             <img src="/images/sidebar/safe-list/trash.svg" alt="Remove" height="16px" width="16px" />
           </ListItemIcon>
           <ListItemText>Remove</ListItemText>
         </MenuItem>
       </Menu>
-      {openModal && (
-        <EntryDialog handleClose={handleOpenRenameModal(false)} defaultValues={{ name, address }} disableAddressInput />
+
+      {open[ModalType.RENAME] && (
+        <EntryDialog handleClose={handleCloseModal} defaultValues={{ name, address }} disableAddressInput />
       )}
+
+      {open[ModalType.REMOVE] && <SafeListRemoveDialog handleClose={handleCloseModal} address={address} />}
     </>
   )
 }

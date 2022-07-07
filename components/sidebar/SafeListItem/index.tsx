@@ -66,7 +66,7 @@ const SafeListItem = ({
             onClick={closeDrawer}
             href={`${AppRoutes.welcome}?chain=${chain?.shortName}`}
           />
-          <SafeListContextMenu address={address} chainId={chainId} />
+          <SafeListContextMenu address={address} />
         </Box>
       }
       sx={{ my: '8px', px: '8px' }}
