@@ -69,7 +69,7 @@ export const useSafeCreation = () => {
       .then((safe) => {
         setStatus(SafeCreationStatus.SUCCESS)
         setPendingSafe(undefined)
-        router.push({ pathname: AppRoutes.safe.home, query: { safe: safe.getAddress() } })
+        router.push({ pathname: AppRoutes.safe.home, query: { safe: safe.getAddress(), new: 1 } })
       })
       .catch((error: Error) => {
         setStatus(SafeCreationStatus.ERROR)
