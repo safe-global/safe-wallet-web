@@ -11,19 +11,19 @@ import { POLLING_INTERVAL } from '@/config/constants'
 export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
   const address = useSafeAddress()
   const chainId = useChainId()
-  const [counter, resetCounter] = useIntervalCounter(POLLING_INTERVAL)
+  const [pollCount, resetPolling] = useIntervalCounter(POLLING_INTERVAL)
   const { safe } = useSafeInfo()
-  const isStoredSafeValid = safe?.address.value === address
+  const isStoredSafeValid = safe?.chainId === chainId && safe?.address.value === address
 
   const [data, error, loading] = useAsync<SafeInfo | undefined>(async () => {
     if (!chainId || !address) return
     return await getSafeInfo(chainId, address)
-  }, [chainId, address, counter])
+  }, [chainId, address, pollCount])
 
   // Reset the counter when safe address/chainId changes
   useEffect(() => {
-    resetCounter()
-  }, [resetCounter, address, chainId])
+    resetPolling()
+  }, [resetPolling, address, chainId])
 
   // Log errors
   useEffect(() => {
