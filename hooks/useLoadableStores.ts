@@ -3,7 +3,7 @@ import { type Slice } from '@reduxjs/toolkit'
 import { useAppDispatch } from '@/store'
 import { type AsyncResult } from './useAsync'
 
-// import all the loadable hooks
+// Import all the loadable hooks
 import useLoadChains from './loadables/useLoadChains'
 import useLoadSafeInfo from './loadables/useLoadSafeInfo'
 import useLoadBalances from './loadables/useLoadBalances'
@@ -11,7 +11,7 @@ import useLoadCollectibles from './loadables/useLoadCollectibles'
 import useLoadTxHistory from './loadables/useLoadTxHistory'
 import useLoadTxQueue from './loadables/useLoadTxQueue'
 
-// import all the loadable slices
+// Import all the loadable slices
 import { chainsSlice } from '../store/chainsSlice'
 import { safeInfoSlice } from '../store/safeInfoSlice'
 import { balancesSlice } from '../store/balancesSlice'
@@ -26,11 +26,13 @@ const useUpdateStore = (slice: Slice, useLoadHook: () => AsyncResult<unknown>): 
   const setAction = slice.actions.set
 
   useEffect(() => {
-    dispatch(setAction({
-      data,
-      error: data ? undefined : error?.message,
-      loading: loading && !data,
-    }))
+    dispatch(
+      setAction({
+        data,
+        error: data ? undefined : error?.message,
+        loading: loading && !data,
+      }),
+    )
   }, [dispatch, setAction, data, error, loading])
 }
 
