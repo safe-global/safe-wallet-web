@@ -10,7 +10,7 @@ type Props = {
   onScan: (value: string) => void
 }
 
-export const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElement => {
+const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElement => {
   const [fileUploadModalOpen, setFileUploadModalOpen] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [cameraBlocked, setCameraBlocked] = useState<boolean>(false)
@@ -102,3 +102,5 @@ export const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElem
     </Dialog>
   )
 }
+
+export default ScanQRModal

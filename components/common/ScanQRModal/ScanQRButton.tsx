@@ -1,14 +1,14 @@
-import React, { ReactElement, useState } from 'react'
-
-import { ScanQRModal } from './index'
+import React, { ReactElement, useState, lazy, Suspense } from 'react'
 import QrCodeIcon from '@mui/icons-material/QrCode'
 import { IconButton } from '@mui/material'
+
+const ScanQRModal = lazy(() => import('.'))
 
 type Props = {
   onScan: (value: string) => void
 }
 
-export const ScanQRButton = ({ onScan }: Props): ReactElement => {
+const ScanQRButton = ({ onScan }: Props): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
 
   const openQrModal = () => {
@@ -29,7 +29,14 @@ export const ScanQRButton = ({ onScan }: Props): ReactElement => {
       <IconButton onClick={openQrModal}>
         <QrCodeIcon />
       </IconButton>
-      {open && <ScanQRModal isOpen={open} onClose={closeQrModal} onScan={onScanFinished} />}
+
+      {open && (
+        <Suspense>
+          <ScanQRModal isOpen={open} onClose={closeQrModal} onScan={onScanFinished} />
+        </Suspense>
+      )}
     </>
   )
 }
+
+export default ScanQRButton

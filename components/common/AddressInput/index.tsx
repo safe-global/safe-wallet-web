@@ -4,7 +4,7 @@ import { useFormContext, type Validate } from 'react-hook-form'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
 import useNameResolver from './useNameResolver'
-import { ScanQRButton } from '../ScanQRModal/ScanQRButton'
+import ScanQRButton from '../ScanQRModal/ScanQRButton'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
 
