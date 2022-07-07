@@ -33,6 +33,7 @@ const SafeListContextMenu = ({ address }: { address: string }): ReactElement => 
   }
 
   const handleOpenModal = (type: keyof typeof open) => () => {
+    handleCloseContextMenu()
     setOpen((prev) => ({ ...prev, [type]: true }))
   }
 
