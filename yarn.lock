@@ -3061,7 +3061,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-qr-reader@^2.2.1":
+"@types/react-qr-reader@^2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@types/react-qr-reader/-/react-qr-reader-2.1.4.tgz#a36f0b83b4402e26c4217d0e8af6b5e2887fc749"
   integrity sha512-2Hq+UNfsO2TVqxbFlOE0gGhQr/+C4wdgNDaaLV8K93mK/Z7Vw2D3YbMlnJAaSzM45fUtYJs0vc48wV04+OEkiA==
