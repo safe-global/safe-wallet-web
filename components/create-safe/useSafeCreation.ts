@@ -1,0 +1,85 @@
+import { useCallback, useEffect, useState } from 'react'
+import Safe from '@gnosis.pm/safe-core-sdk'
+import { useWeb3 } from '@/hooks/wallets/web3'
+import { useRouter } from 'next/router'
+import useLocalStorage from '@/services/localStorage/useLocalStorage'
+import { PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/create-safe/index'
+import { createNewSafe } from '@/components/create-safe/Review'
+import { AppRoutes } from '@/config/routes'
+import { Errors, logError } from '@/services/exceptions'
+
+export enum SafeCreationStatus {
+  PENDING = 'PENDING',
+  ERROR = 'ERROR',
+  SUCCESS = 'SUCCESS',
+}
+
+const getSafeDeployProps = (pendingSafe: PendingSafeData, callback: (txHash: string) => void) => {
+  return {
+    safeAccountConfig: {
+      threshold: pendingSafe.threshold,
+      owners: pendingSafe.owners.map((owner) => owner.address),
+    },
+    safeDeploymentConfig: {
+      saltNonce: pendingSafe.saltNonce,
+    },
+    callback,
+  }
+}
+
+export const useSafeCreation = () => {
+  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.PENDING)
+  const [creationPromise, setCreationPromise] = useState<Promise<Safe>>()
+  const ethersProvider = useWeb3()
+  const router = useRouter()
+
+  const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(
+    SAFE_PENDING_CREATION_STORAGE_KEY,
+    undefined,
+  )
+
+  const createSafe = useCallback(() => {
+    if (!ethersProvider || !pendingSafe) return
+
+    const callback = (txHash: string) => {
+      setPendingSafe((prev) => prev && { ...prev, txHash })
+    }
+
+    setStatus(SafeCreationStatus.PENDING)
+    setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, callback)))
+  }, [ethersProvider, pendingSafe, setPendingSafe])
+
+  useEffect(() => {
+    if (pendingSafe?.txHash) {
+      setStatus(SafeCreationStatus.PENDING)
+      // TODO: monitor existing tx
+    }
+  }, [pendingSafe])
+
+  useEffect(() => {
+    if (creationPromise || pendingSafe?.txHash) return
+
+    createSafe()
+  }, [creationPromise, pendingSafe, createSafe])
+
+  useEffect(() => {
+    if (!creationPromise || !pendingSafe) return
+
+    creationPromise
+      .then((safe) => {
+        setStatus(SafeCreationStatus.SUCCESS)
+        setPendingSafe(undefined)
+        router.push({ pathname: AppRoutes.safe.home, query: { safe: safe.getAddress() } })
+      })
+      .catch((error: Error) => {
+        setStatus(SafeCreationStatus.ERROR)
+        setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
+        logError(Errors._800, error.message)
+      })
+  }, [creationPromise, pendingSafe, router, setPendingSafe])
+
+  return {
+    status,
+    createSafe,
+  }
+}
