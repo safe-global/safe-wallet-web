@@ -26,8 +26,10 @@ const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
       id: hexValue(parseInt(cfg.chainId)),
       label: cfg.chainName,
       rpcUrl: getRpcServiceUrl(cfg.rpcUri),
+      publicRpcUrl: cfg.publicRpcUri.value,
       token: cfg.nativeCurrency.symbol,
       color: cfg.theme.backgroundColor,
+      // TODO: add block explorer URL
     })),
     accountCenter: {
       mobile: { enabled: true },
@@ -98,7 +100,6 @@ export const useInitOnboard = () => {
     }
 
     const supportedModules = getSupportedWallets(chain.disabledWallets)
-    // @ts-expect-error types aren't correct
     onboard.state.actions.setWalletModules(supportedModules)
   }, [onboard, chain?.disabledWallets])
 
