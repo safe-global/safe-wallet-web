@@ -34,13 +34,14 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
   }, [address, name, setAddressValue])
 
   return (
-    <Grid container alignItems="center">
-      <Grid item xs>
+    <Grid container alignItems="center" gap={1}>
+      <Grid item flexGrow={1}>
         <TextField
           {...props}
           autoComplete="off"
-          label={errors[name]?.message || props.label}
+          label={<>{errors[name]?.message || props.label}</>}
           error={!!errors[name]}
+          fullWidth
           InputProps={{
             ...(props.InputProps || {}),
             endAdornment: resolving && (
