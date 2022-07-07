@@ -14,7 +14,7 @@ export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
     if (chainId && address) {
       return getTransactionHistory(chainId, address)
     }
-  }, [chainId, address, txHistoryTag])
+  }, [chainId, address, txHistoryTag], false)
 
   // Log errors
   useEffect(() => {

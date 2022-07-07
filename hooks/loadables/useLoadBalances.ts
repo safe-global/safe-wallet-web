@@ -14,7 +14,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(async () => {
     if (!safe) return
     return getBalances(safe.chainId, safe.address.value, currency)
-  }, [safe, currency])
+  }, [safe, currency], false)
 
   // Log errors
   useEffect(() => {

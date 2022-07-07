@@ -5,8 +5,8 @@ const useBalances = () => {
   const state = useAppSelector(selectBalances)
   return {
     balances: state.data,
-    loading: state.loading,
-    error: state.error,
+    loading: state.loading && !state.data,
+    error: state.data ? undefined : state.error,
   }
 }
 

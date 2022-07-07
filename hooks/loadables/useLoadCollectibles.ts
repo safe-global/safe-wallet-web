@@ -13,7 +13,7 @@ export const useLoadCollectibles = (): AsyncResult<SafeCollectibleResponse[]> =>
   const [data, error, loading] = useAsync<SafeCollectibleResponse[] | undefined>(async () => {
     if (!address || !chainId) return
     return getCollectibles(chainId, address)
-  }, [address, chainId, collectiblesTag])
+  }, [address, chainId, collectiblesTag], false)
 
   // Log errors
   useEffect(() => {

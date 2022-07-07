@@ -14,7 +14,7 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
     if (chainId && address) {
       return getTransactionQueue(chainId, address)
     }
-  }, [chainId, address, txQueuedTag])
+  }, [chainId, address, txQueuedTag], false)
 
   // Log errors
   useEffect(() => {
