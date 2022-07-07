@@ -5,11 +5,11 @@ import QrCodeIcon from '@mui/icons-material/QrCode'
 import { IconButton } from '@mui/material'
 
 type Props = {
-  handleScan: (dataResult: string, closeQrModal: () => void) => void
+  onScan: (value: string) => void
 }
 
-export const ScanQRButton = ({ handleScan }: Props): ReactElement => {
-  const [open, setOpen] = useState(false)
+export const ScanQRButton = ({ onScan }: Props): ReactElement => {
+  const [open, setOpen] = useState<boolean>(false)
 
   const openQrModal = () => {
     setOpen(true)
@@ -20,7 +20,8 @@ export const ScanQRButton = ({ handleScan }: Props): ReactElement => {
   }
 
   const onScanFinished = (value: string) => {
-    handleScan(value, closeQrModal)
+    onScan(value)
+    closeQrModal()
   }
 
   return (

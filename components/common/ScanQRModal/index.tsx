@@ -1,8 +1,8 @@
-import { useCallback, useEffect, createRef, useState, lazy, Suspense } from 'react'
+import { useCallback, useEffect, createRef, useState } from 'react'
 import { Box, Dialog, DialogTitle, IconButton, Button, Divider, Alert } from '@mui/material'
+import QrReader from 'react-qr-reader'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
-const QrReader = lazy(() => import('react-qr-reader'))
 
 type Props = {
   isOpen: boolean
@@ -12,7 +12,7 @@ type Props = {
 
 export const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElement => {
   const [fileUploadModalOpen, setFileUploadModalOpen] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string>('')
   const [cameraBlocked, setCameraBlocked] = useState<boolean>(false)
   const scannerRef = createRef<QrReader>()
   const openImageDialog = useCallback(() => {
@@ -43,6 +43,7 @@ export const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElem
       return
     }
 
+    setError('')
     onScan(successData)
   }
 
@@ -64,21 +65,24 @@ export const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElem
           </IconButton>
         ) : null}
       </DialogTitle>
+
       <Divider />
+
       <Box>
         {error && <Alert severity="error">{error}</Alert>}
-        <Suspense fallback={<div>Loading...</div>}>
-          <QrReader
-            legacyMode={cameraBlocked}
-            onError={(err: Error) => onFileScannedError(err)}
-            onScan={(data) => onFileScannedResolve(data)}
-            ref={scannerRef}
-            style={{ width: '400px', height: '400px' }}
-            facingMode="user"
-          />
-        </Suspense>
+
+        <QrReader
+          legacyMode={cameraBlocked}
+          onError={onFileScannedError}
+          onScan={onFileScannedResolve}
+          ref={scannerRef}
+          style={{ width: '400px', height: '400px' }}
+          facingMode="user"
+        />
       </Box>
+
       <Divider />
+
       <Box display="flex" alignItems="center" justifyContent="center" padding={3} gap={2}>
         <Button variant="text" color="secondary" onClick={onClose}>
           Close
@@ -88,7 +92,7 @@ export const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElem
           color="primary"
           onClick={() => {
             setCameraBlocked(true)
-            setError(null)
+            setError('')
             setFileUploadModalOpen(false)
           }}
         >
