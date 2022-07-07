@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import { isAddress, isArrayParameter } from '@/utils/transaction-guards'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import css from './styles.module.css'
 
 type ValueArrayProps = {
@@ -52,7 +52,7 @@ const GenericValue = ({ method, type, value }: ValueArrayProps): React.ReactElem
           const hasSeparator = index < values.length - 1
 
           return Array.isArray(currentValue) ? (
-            <Typography key={key}>{getArrayValue(key, currentValue, hasSeparator)}</Typography>
+            <Box key={key}>{getArrayValue(key, currentValue, hasSeparator)}</Box>
           ) : (
             getTextValue(currentValue, key)
           )

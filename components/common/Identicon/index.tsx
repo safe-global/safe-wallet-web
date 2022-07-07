@@ -4,16 +4,12 @@ import Skeleton from '@mui/material/Skeleton'
 
 import css from './styles.module.css'
 
-export interface IdenticonProps {
+type IdenticonProps = {
   address: string
 }
 
 const Identicon = ({ address }: IdenticonProps): ReactElement => {
   const style = useMemo<CSSProperties | null>(() => {
-    if (!address) {
-      return null
-    }
-
     let blockie = ''
     try {
       blockie = makeBlockie(address)

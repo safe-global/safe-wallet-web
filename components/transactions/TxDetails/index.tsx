@@ -57,14 +57,12 @@ const TxDetails = ({ txSummary }: { txSummary: TransactionSummary }): ReactEleme
               <TxData txDetails={txDetails} />
             </div>
             {/* Module information*/}
-            {isModuleExecutionInfo(txSummary.executionInfo) ? (
+            {isModuleExecutionInfo(txSummary.executionInfo) && (
               <div className={css.txModule}>
                 <InfoDetails title="Module:">
                   <EthHashInfo address={txSummary.executionInfo.address.value} />
                 </InfoDetails>
               </div>
-            ) : (
-              <></>
             )}
             <div className={css.txSummary}>
               <Summary txDetails={txDetails} />

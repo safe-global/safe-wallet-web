@@ -41,13 +41,14 @@ export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null):
 
 // TODO: replace this type guard for the one guard above
 export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>
-  value?.type === 'MULTISIG'
+  value?.type === EXECUTION_INFO_TYPES.MULTISIG
 
 export const isModuleExecutionInfo = (value: TransactionSummary['executionInfo']): value is ModuleExecutionInfo =>
-  value?.type === 'MODULE'
+  value?.type === EXECUTION_INFO_TYPES.MODULE
 
-export const isTransaction = (value: TransactionListItem): value is Transaction => {
-  return value.type === 'TRANSACTION'
+enum EXECUTION_INFO_TYPES {
+  MULTISIG = 'MULTISIG',
+  MODULE = 'MODULE',
 }
 
 // TransactionInfo type guards
