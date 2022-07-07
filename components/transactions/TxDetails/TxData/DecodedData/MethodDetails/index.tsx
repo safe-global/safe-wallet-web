@@ -13,7 +13,7 @@ type MethodDetailsProps = {
 export const MethodDetails = ({ data }: MethodDetailsProps): ReactElement => {
   const methodName = camelCaseToSpaces(data.method)
   return (
-    <Box py="8px">
+    <Box py={1}>
       <Typography variant="overline" sx={({ palette }) => ({ color: `${palette.black[300]}` })}>
         <b>{methodName}</b>
       </Typography>

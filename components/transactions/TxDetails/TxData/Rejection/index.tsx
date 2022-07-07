@@ -30,7 +30,7 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
             title="Why do I need to pay for rejecting a transaction?"
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Typography sx={{ textDecoration: 'underline' }} variant="body1">
+              <Typography sx={{ textDecoration: 'underline' }}>
                 Why do I need to pay for rejecting a transaction?
               </Typography>
               <LinkIcon />

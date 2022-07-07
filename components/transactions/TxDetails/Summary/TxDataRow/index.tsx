@@ -15,7 +15,6 @@ export const TxDataRow = ({ title, children }: TxDataRowProps): ReactElement | n
   return (
     <div className={css.gridRow}>
       <Typography
-        variant="body1"
         sx={({ palette }) => ({
           color: palette.secondary.light,
         })}
@@ -38,7 +37,7 @@ export const generateDataRowValue = (
       return (
         <div className={css.inline}>
           {/* TODO: missing the chain prefix */}
-          <Typography variant="body1">{shortenAddress(value, 8)}</Typography>
+          <Typography>{shortenAddress(value, 8)}</Typography>
           {/* TODO: missing copy button */}
           {/* TODO: missing block explorer button */}
         </div>
@@ -61,10 +60,6 @@ export const generateDataRowValue = (
     case 'bytes':
       return <HexEncodedData limit={60} hexData={value} />
     default:
-      return (
-        <Typography variant="body1" sx={{ wordBreak: 'break-all' }}>
-          {value}
-        </Typography>
-      )
+      return <Typography sx={{ wordBreak: 'break-all' }}>{value}</Typography>
   }
 }
