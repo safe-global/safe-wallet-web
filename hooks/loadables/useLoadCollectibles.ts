@@ -10,10 +10,14 @@ export const useLoadCollectibles = (): AsyncResult<SafeCollectibleResponse[]> =>
   const address = safe?.address.value
 
   // Re-fetch assets when the Safe address or the collectibes tag updates
-  const [data, error, loading] = useAsync<SafeCollectibleResponse[] | undefined>(async () => {
-    if (!address || !chainId) return
-    return getCollectibles(chainId, address)
-  }, [address, chainId, collectiblesTag], false)
+  const [data, error, loading] = useAsync<SafeCollectibleResponse[] | undefined>(
+    async () => {
+      if (!address || !chainId) return
+      return getCollectibles(chainId, address)
+    },
+    [address, chainId, collectiblesTag],
+    false,
+  )
 
   // Log errors
   useEffect(() => {

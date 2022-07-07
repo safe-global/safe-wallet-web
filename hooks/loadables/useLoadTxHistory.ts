@@ -10,11 +10,15 @@ export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
   const address = safe?.address.value
 
   // Re-fetch when chainId/address, or txHistoryTag change
-  const [data, error, loading] = useAsync<TransactionListPage | undefined>(async () => {
-    if (chainId && address) {
-      return getTransactionHistory(chainId, address)
-    }
-  }, [chainId, address, txHistoryTag], false)
+  const [data, error, loading] = useAsync<TransactionListPage | undefined>(
+    async () => {
+      if (chainId && address) {
+        return getTransactionHistory(chainId, address)
+      }
+    },
+    [chainId, address, txHistoryTag],
+    false,
+  )
 
   // Log errors
   useEffect(() => {

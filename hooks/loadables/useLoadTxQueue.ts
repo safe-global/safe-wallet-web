@@ -10,11 +10,15 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
   const address = safe?.address.value
 
   // Re-fetch when chainId/address, or txQueueTag change
-  const [data, error, loading] = useAsync<TransactionListPage | undefined>(async () => {
-    if (chainId && address) {
-      return getTransactionQueue(chainId, address)
-    }
-  }, [chainId, address, txQueuedTag], false)
+  const [data, error, loading] = useAsync<TransactionListPage | undefined>(
+    async () => {
+      if (chainId && address) {
+        return getTransactionQueue(chainId, address)
+      }
+    },
+    [chainId, address, txQueuedTag],
+    false,
+  )
 
   // Log errors
   useEffect(() => {

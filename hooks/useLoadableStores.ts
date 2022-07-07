@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { type Slice } from '@reduxjs/toolkit'
 import { useAppDispatch } from '@/store'
 import { type AsyncResult } from './useAsync'
-import useSafeInfo from './useSafeInfo'
 
 // import all the loadable hooks
 import useLoadChains from './loadables/useLoadChains'
@@ -24,10 +23,15 @@ import { txQueueSlice } from '../store/txQueueSlice'
 const useUpdateStore = (slice: Slice, useLoadHook: () => AsyncResult<unknown>): void => {
   const dispatch = useAppDispatch()
   const [data, error, loading] = useLoadHook()
+  const setAction = slice.actions.set
 
   useEffect(() => {
-    dispatch(slice.actions.set({ data, error: error?.message, loading }))
-  }, [data, error, loading])
+    dispatch(setAction({
+      data,
+      error: data ? undefined : error?.message,
+      loading: loading && !data,
+    }))
+  }, [dispatch, setAction, data, error, loading])
 }
 
 const useLoadableStores = () => {
