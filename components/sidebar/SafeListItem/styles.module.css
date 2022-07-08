@@ -1,0 +1,8 @@
+.safe {
+  border-radius: 8px;
+  padding-left: 22px;
+}
+
+.safe :global .Mui-selected {
+  padding-left: 16px;
+}

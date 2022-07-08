@@ -5,3 +5,28 @@
   margin-left: 10px;
   padding: 0 0 0 10px;
 }
+
+.sublist::after {
+  content: '';
+  height: 23px;
+  width: 1px;
+  position: absolute;
+  bottom: 0;
+  left: -1px;
+}
+
+.sublistItem {
+  border-radius: 6px;
+}
+
+.sublistItem :global .MuiListItemButton-root {
+  padding-left: 26px;
+}
+
+.sublistItem::before {
+  content: '';
+  width: 6px;
+  height: 1px;
+  position: absolute;
+  left: -10px;
+}

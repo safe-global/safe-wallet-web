@@ -149,33 +149,19 @@ const Navigation = (): ReactElement => {
                 sx={({ palette }) => ({
                   borderLeft: `solid 1px ${palette.border.light}`,
                   '::after': {
-                    content: '""',
-                    height: '23px',
-                    width: '1px',
-                    position: 'absolute',
-                    bottom: 0,
-                    left: '-1px',
-                    backgroundColor: 'background.paper', // Cannot move to CSS module
+                    backgroundColor: 'background.paper',
                   },
                 })}
               >
                 {item.items.map((subItem) => (
                   <Link href={{ pathname: subItem.href, query: router.query }} passHref key={subItem.href}>
                     <ListItemButton
+                      className={css.sublistItem}
                       onClick={() => toggleOpen(subItem)}
                       selected={isSelected(subItem.href)}
                       sx={({ palette }) => ({
                         '::before': {
-                          content: '""',
-                          width: '6px',
-                          height: '1px',
                           background: palette.border.light,
-                          position: 'absolute',
-                          left: '-10px',
-                        },
-                        borderRadius: '6px',
-                        '&.MuiListItemButton-root': {
-                          pl: '26px',
                         },
                         '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
                           backgroundColor: `${palette.border.background} !important`,

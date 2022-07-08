@@ -12,6 +12,8 @@ import SafeListRemoveDialog from '@/components/sidebar/SafeListRemoveDialog'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 
+import css from './styles.module.css'
+
 enum ModalType {
   RENAME = 'rename',
   REMOVE = 'remove',
@@ -52,19 +54,13 @@ const SafeListContextMenu = ({ address, chainId }: { address: string; chainId: s
         <MoreVertIcon sx={({ palette }) => ({ color: palette.border.main })} />
       </IconButton>
       <Menu
+        className={css.menu}
         anchorEl={anchorEl}
         open={!!anchorEl}
         onClose={handleCloseContextMenu}
         sx={({ palette }) => ({
-          '.MuiPaper-root': { borderRadius: '8px !important', width: '138px' },
-          '.MuiList-root': { p: '4px' },
-          '.MuiMenuItem-root': {
-            paddingLeft: '12px',
-            minHeight: '40px',
-            '&:hover': { borderRadius: '8px !important', backgroundColor: palette.primary.background },
-          },
-          '.MuiListItemIcon-root': {
-            minWidth: '26px',
+          '.MuiMenuItem-root:hover': {
+            backgroundColor: palette.primary.background,
           },
         })}
       >
