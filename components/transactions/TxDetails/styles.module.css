@@ -2,14 +2,22 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   width: 100%;
-  margin: -1px; /* to compensate for the border */
-  width: calc(100% + 2px);
+  margin: -2px; /* to compensate for the border */
+  width: calc(100% + 4px);
   border-radius: 8px;
+  overflow: hidden;
 }
 
 .details {
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+.shareLink {
+  position: absolute;
+  right: 16px;
+  top: 16px;
 }
 
 .details.noSigners {
@@ -38,6 +46,7 @@
 .txData {
   display: flex;
   flex-direction: column;
+  padding-right: 60px; /* to not overlap with the share link */
 }
 
 .txSummary,

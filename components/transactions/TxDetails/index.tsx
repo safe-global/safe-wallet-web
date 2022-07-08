@@ -19,6 +19,7 @@ import { DelegateCallWarning } from '@/components/transactions/Warning'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import TxShareLink from '../TxShareLink'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -68,6 +69,10 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     <>
       {/* /Details */}
       <div className={`${css.details} ${!hasSigners ? css.noSigners : ''}`}>
+        <div className={css.shareLink}>
+          <TxShareLink id={txSummary.id} />
+        </div>
+
         {isMultisendTxInfo(txDetails.txInfo) ? (
           <MultiSendTx txDetails={txDetails} />
         ) : (
