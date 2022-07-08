@@ -1,5 +1,6 @@
 {
   "name": "web-core",
+  "type": "module",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,7 +13,8 @@
     "test": "jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
-    "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts"
+    "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts",
+    "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./styles/vars.css"
   },
   "pre-push": [
     "lint:fix",
@@ -28,7 +30,7 @@
     "@gnosis.pm/safe-ethers-lib": "^1.1.0",
     "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
     "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.8.6",
+    "@mui/material": "^5.8.7",
     "@reduxjs/toolkit": "^1.8.2",
     "@sentry/react": "^7.1.1",
     "@sentry/tracing": "^7.1.1",
@@ -80,6 +82,7 @@
     "jest-environment-jsdom": "^28.1.2",
     "pre-push": "^0.1.2",
     "prettier": "^2.7.0",
+    "ts-node": "^10.8.2",
     "typescript": "4.7.3"
   }
 }
