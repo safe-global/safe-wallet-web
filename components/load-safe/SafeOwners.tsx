@@ -41,7 +41,8 @@ const SafeOwners = ({ params, onSubmit, onBack }: Props): ReactElement => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box padding={3}>
             <Typography mb={2}>
-              This Safe on <ChainIndicator inline /> has x owners. Optional: Provide a name for each owner.
+              This Safe on <ChainIndicator inline /> has {safeInfo?.owners.length} owners. Optional: Provide a name for
+              each owner.
             </Typography>
           </Box>
           <Divider />

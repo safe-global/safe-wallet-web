@@ -9,6 +9,9 @@ import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { selectChainById } from '@/store/chainsSlice'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import useWallet from '@/hooks/wallets/useWallet'
+import { isOwner } from '@/utils/transaction-guards'
 
 type Props = {
   params: LoadSafeFormData
@@ -19,9 +22,14 @@ const SafeReview = ({ params, onBack }: Props) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
   const chain = useAppSelector((state) => selectChainById(state, params.safeInfo.chainId))
+  const wallet = useWallet()
+  const isSafeOwner = wallet && isOwner(params.safeInfo.owners, wallet.address)
 
   const addSafe = () => {
     dispatch(addOrUpdateSafe({ safe: params.safeInfo }))
+    for (const { value: address, name } of params.safeInfo.owners) {
+      dispatch(upsertAddressBookEntry({ chainId: params.safeInfo.chainId, address, name: name ?? '' }))
+    }
     router.push({
       pathname: AppRoutes.safe.index,
       query: { safe: `${chain?.shortName}:${params.safeInfo.address.value}` },
@@ -41,10 +49,30 @@ const SafeReview = ({ params, onBack }: Props) => {
               <ChainIndicator inline />
             </Typography>
 
+            {params.name && (
+              <>
+                <Typography variant="caption" color="text.secondary">
+                  Name of the Safe
+                </Typography>
+                <Typography mb={3}>{params.name}</Typography>
+              </>
+            )}
             <Typography variant="caption" color="text.secondary">
-              Name of the Safe
+              Safe address
             </Typography>
-            <Typography mb={3}>{params.name}</Typography>
+            <Typography mb={3}>
+              <EthHashInfo
+                key={params.safeInfo.address.value}
+                address={params.safeInfo.address.value}
+                name={params.safeInfo.address.name}
+                shortAddress
+              />
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Connected wallet client is owner?
+            </Typography>
+            <Typography mb={3}>{isSafeOwner ? 'Yes' : 'No'}</Typography>
+
             <Typography variant="caption" color="text.secondary">
               Any transaction requires the confirmation of:
             </Typography>
@@ -56,9 +84,11 @@ const SafeReview = ({ params, onBack }: Props) => {
         <Grid item md={8} borderLeft="1px solid #ddd">
           <Box padding={3}>{params.safeInfo.owners.length} Safe owners</Box>
           <Divider />
-          {params.safeInfo.owners.map((owner) => {
-            return <EthHashInfo key={owner.value} address={owner.value} name={owner.name} shortAddress={false} />
-          })}
+          <Box padding={3}>
+            {params.safeInfo.owners.map((owner) => {
+              return <EthHashInfo key={owner.value} address={owner.value} name={owner.name} shortAddress={false} />
+            })}
+          </Box>
           <Divider />
         </Grid>
       </Grid>

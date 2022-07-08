@@ -50,16 +50,22 @@ const SetAddress = ({ onSubmit, onBack }: Props) => {
                 This article explains how to find it.
               </a>
             </Typography>
-            <Box marginBottom={2}>
+            <Box marginBottom={2} maxWidth={500} paddingRight={6}>
               <TextField
                 label="Safe name"
                 InputLabelProps={{ shrink: true }}
                 {...register('name')}
                 placeholder={fallbackName}
+                fullWidth
               />
             </Box>
-            <Box>
-              <AddressInput name="address" validate={validateSafeAddress} />
+            <Box maxWidth={500}>
+              <AddressInput
+                name="address"
+                label="Safe address"
+                validate={validateSafeAddress}
+                InputLabelProps={{ shrink: true }}
+              />
             </Box>
             <Typography mt={2}>
               By continuing you consent to the <a href="#">terms of use</a> and <a href="#">privacy policy</a>.
