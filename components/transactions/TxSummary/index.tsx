@@ -34,7 +34,7 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
 
   return (
-    <Paper className={css.paper}>
+    <Paper className={css.paper} elevation={0}>
       <div id={tx.id}>
         <Grid container className={css.gridContainer}>
           <Grid item md={1}>

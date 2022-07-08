@@ -18,14 +18,13 @@ export const AppRoutes = {
       setup: '/safe/settings/setup',
       modules: '/safe/settings/modules',
       index: '/safe/settings',
-      details: '/safe/settings/details',
       appearance: '/safe/settings/appearance',
     },
     transactions: {
+      tx: '/safe/transactions/tx',
       queue: '/safe/transactions/queue',
       index: '/safe/transactions',
       history: '/safe/transactions/history',
-      txId: '/safe/transactions/[txId]',
     },
   },
 }

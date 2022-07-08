@@ -132,7 +132,7 @@ const Navigation = (): ReactElement => {
             <SidebarListItemButton
               onClick={() => toggleOpen(item)}
               selected={isExpanded}
-              href={{ pathname: item.href, query: router.query }}
+              href={{ pathname: item.href, query: { safe: router.query.safe } }}
             >
               {item.icon && (
                 <SidebarListItemIcon>
@@ -160,7 +160,11 @@ const Navigation = (): ReactElement => {
                 })}
               >
                 {item.items.map((subItem) => (
-                  <Link href={{ pathname: subItem.href, query: router.query }} passHref key={subItem.href}>
+                  <Link
+                    href={{ pathname: subItem.href, query: { safe: router.query.safe } }}
+                    passHref
+                    key={subItem.href}
+                  >
                     <ListItemButton
                       onClick={() => toggleOpen(subItem)}
                       selected={isSelected(subItem.href)}

@@ -43,8 +43,9 @@ export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null):
 export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>
   value?.type === EXECUTION_INFO_TYPES.MULTISIG
 
-export const isModuleExecutionInfo = (value: TransactionSummary['executionInfo']): value is ModuleExecutionInfo =>
-  value?.type === EXECUTION_INFO_TYPES.MODULE
+export const isModuleExecutionInfo = (
+  value: TransactionSummary['executionInfo'] | DetailedExecutionInfo,
+): value is ModuleExecutionInfo => value?.type === EXECUTION_INFO_TYPES.MODULE
 
 enum EXECUTION_INFO_TYPES {
   MULTISIG = 'MULTISIG',
