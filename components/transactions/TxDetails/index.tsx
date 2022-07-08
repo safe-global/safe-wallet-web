@@ -125,13 +125,13 @@ const TxDetails = ({
       {txDetailsData ? (
         <TxDetailsBlock txSummary={txSummary} txDetails={txDetailsData} />
       ) : loading ? (
-        <Box className={css.loading}>
+        <div className={css.loading}>
           <CircularProgress />
-        </Box>
+        </div>
       ) : (
-        <Box className={css.error}>
+        <div className={css.error}>
           <ErrorMessage error={error}>Couldn&apos;t load the transaction details</ErrorMessage>
-        </Box>
+        </div>
       )}
     </Box>
   )

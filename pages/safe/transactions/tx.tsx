@@ -39,9 +39,6 @@ const SingleTransaction: NextPage = () => {
     return getTransactionDetails(chainId, transactionId)
   }, [transactionId])
 
-  const tx: Transaction | undefined = txDetails ? makeTxFromDetails(txDetails) : undefined
-  const dateLabel: DateLabel | undefined = tx ? makeDateLabelFromTx(tx) : undefined
-
   return (
     <main>
       <h2>Transaction details</h2>

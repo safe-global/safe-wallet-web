@@ -4,7 +4,7 @@
   width: 100%;
   margin: -2px; /* to compensate for the border */
   width: calc(100% + 4px);
-  border-radius: 8px;
+  border-radius: 0 0 8px 8px;
   overflow: hidden;
 }
 
