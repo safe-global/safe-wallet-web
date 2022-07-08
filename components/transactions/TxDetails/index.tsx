@@ -5,7 +5,7 @@ import {
   TransactionDetails,
   TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import { CircularProgress, Box as MuiBox, styled } from '@mui/material'
+import { CircularProgress } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
 import Summary from '@/components/transactions/TxDetails/Summary'
@@ -27,10 +27,6 @@ type TxDetailsProps = {
   txSummary: TransactionSummary
   txDetails: TransactionDetails
 }
-
-const Box = styled(MuiBox)(({ theme }) => ({
-  borderColor: theme.palette.border.light,
-}))
 
 const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const txInfo = isMultisendTxInfo(txDetails.txInfo) ? txDetails.txInfo : undefined
@@ -54,9 +50,9 @@ const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactEle
         <Summary txDetails={txDetails} />
       </div>
 
-      <Box className={`${css.txData} ${css.multisend} ${css.noPadding}`}>
+      <div className={`${css.txData} ${css.multisend} ${css.noPadding}`}>
         <TxData txDetails={txDetails} />
-      </Box>
+      </div>
     </>
   )
 }
@@ -77,9 +73,9 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <MultiSendTx txDetails={txDetails} />
         ) : (
           <>
-            <Box className={css.txData}>
+            <div className={css.txData}>
               <TxData txDetails={txDetails} />
-            </Box>
+            </div>
 
             {/* Module information*/}
             {isModuleExecutionInfo(txSummary.executionInfo) && (
@@ -99,9 +95,9 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
 
       {/* Signers */}
       {hasSigners && (
-        <Box className={css.txSigners}>
+        <div className={css.txSigners}>
           <TxSigners txDetails={txDetails} txSummary={txSummary} />
-        </Box>
+        </div>
       )}
     </>
   )
@@ -121,7 +117,7 @@ const TxDetails = ({
   }, [txDetails, chainId, txSummary.id])
 
   return (
-    <Box className={css.container}>
+    <div className={css.container}>
       {txDetailsData ? (
         <TxDetailsBlock txSummary={txSummary} txDetails={txDetailsData} />
       ) : loading ? (
@@ -133,7 +129,7 @@ const TxDetails = ({
           <ErrorMessage error={error}>Couldn&apos;t load the transaction details</ErrorMessage>
         </div>
       )}
-    </Box>
+    </div>
   )
 }
 

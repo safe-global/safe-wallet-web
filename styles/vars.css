@@ -1,0 +1,31 @@
+/* This file is generated from the MUI theme colors. Do not edit directly. */
+
+:root {
+  --color-primary-dark: #0e7361;
+  --color-primary-main: #008c73;
+  --color-primary-light: #92c9be;
+  --color-primary-background: #effaf8;
+  --color-secondary-main: #162d45;
+  --color-secondary-light: #566976;
+  --color-border-main: #acbac3;
+  --color-border-light: #eeeff0;
+  --color-border-background: #f6f7f8;
+  --color-error-dark: #c31717;
+  --color-error-main: #f02525;
+  --color-error-light: #ffced6;
+  --color-error-background: #fff3f5;
+  --color-success-dark: #027128;
+  --color-success-main: #008c30;
+  --color-success-light: #99cdab;
+  --color-info-dark: #247cb7;
+  --color-info-main: #3ba2e7;
+  --color-info-light: #a6d0ec;
+  --color-info-background: #ebf7ff;
+  --color-warning-dark: #e8663d;
+  --color-warning-main: #ffc05f;
+  --color-warning-light: #fbe5c5;
+  --color-warning-background: #fff4e3;
+  --color-background-main: #f6f7f8;
+  --color-background-paper: #ffffff;
+  --color-background-light: #f1faf8;
+}
