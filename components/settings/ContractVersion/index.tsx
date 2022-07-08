@@ -6,6 +6,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Link, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import OpenInNewRounded from '@mui/icons-material/OpenInNewRounded'
+import React from 'react'
+import UpdateSafeDialog from './UpdateSafeDialog'
 
 export const ContractVersion = () => {
   const [masterCopies] = useMasterCopies()
@@ -24,13 +26,12 @@ export const ContractVersion = () => {
 
   const needsUpdate = safeNeedsUpdate(safe?.version, LATEST_SAFE_VERSION)
 
-  // TODO: Fetch from master contract on-chain after initiating typechain
   const latestMasterContractVersion = LATEST_SAFE_VERSION
 
+  const showUpdateDialog = safeMasterCopy?.deployer === MasterCopyDeployer.GNOSIS && needsUpdate
+
   const getSafeVersionUpdate = () => {
-    return safeMasterCopy?.deployer === MasterCopyDeployer.GNOSIS && needsUpdate
-      ? ` (there's a newer version: ${latestMasterContractVersion})`
-      : ''
+    return showUpdateDialog ? ` there's a newer version: ${latestMasterContractVersion})` : ''
   }
   return (
     <div>
@@ -44,6 +45,7 @@ export const ContractVersion = () => {
           <OpenInNewRounded fontSize="small" />
         </Box>
       </Link>
+      {showUpdateDialog && <UpdateSafeDialog />}
     </div>
   )
 }

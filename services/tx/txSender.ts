@@ -1,5 +1,6 @@
 import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
+  MetaTransactionData,
   SafeTransaction,
   SafeTransactionDataPartial,
   TransactionOptions,
@@ -10,11 +11,28 @@ import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
+import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
 
 /**
  * Create a transaction from raw params
  */
 export const createTx = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
+  const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not initialized')
+  }
+  return await safeSDK.createTransaction(txParams)
+}
+
+/**
+ * Create a multiSend transaction from an array of MetaTransactionData and options
+ *
+ * If only one tx is passed it will be created without multiSend.
+ */
+export const createMultiSendTx = async (
+  txParams: MetaTransactionData[],
+  options?: SafeTransactionOptionalProps,
+): Promise<SafeTransaction> => {
   const safeSDK = getSafeSDK()
   if (!safeSDK) {
     throw new Error('Safe SDK not initialized')

@@ -1752,7 +1752,7 @@
     semver "^7.3.5"
     web3-utils "^1.7.1"
 
-"@gnosis.pm/safe-deployments@^1.12.0":
+"@gnosis.pm/safe-deployments@^1.12.0", "@gnosis.pm/safe-deployments@^1.15.0":
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.15.0.tgz#71ed9a37437a3080443c49aa65308f2d8839d751"
   integrity sha512-twfC5HNuj+TKS2gOowf6A1FGZfOLBHAV2JhYpmOCf2MKsfcG+Fe4TrSRgQg605MhWdwFiaGVpNkcwjvpxhGuew==
