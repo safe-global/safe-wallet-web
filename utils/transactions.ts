@@ -5,7 +5,6 @@ import {
   MultisigExecutionInfo,
   Transaction,
   TransactionDetails,
-  TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isModuleExecutionInfo, isMultisigExecutionDetails, isTxQueued } from './transaction-guards'
 
