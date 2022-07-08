@@ -15,6 +15,10 @@ import {
 // Mock getTransactionDetails
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   getTransactionDetails: jest.fn(),
+  postSafeGasEstimation: jest.fn(() => Promise.resolve({ safeTxGas: 60000, recommendedNonce: 17 })),
+  Operation: {
+    CALL: 0,
+  },
 }))
 
 // Mock extractTxInfo
@@ -43,6 +47,8 @@ const mockSafeSDK = {
   })),
   signTransaction: jest.fn(),
   executeTransaction: jest.fn(),
+  getChainId: jest.fn(() => Promise.resolve(4)),
+  getAddress: jest.fn(() => '0x0000000000000000000000000000000000000123'),
 } as unknown as Safe
 
 describe('txSender', () => {
@@ -57,9 +63,32 @@ describe('txSender', () => {
         value: '1',
         data: '0x0',
       }
-      const tx = await createTx(txParams)
+      await createTx(txParams)
 
-      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith(txParams)
+      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 17,
+        safeTxGas: 60000,
+      })
+    })
+
+    it('should create a tx with a given nonce', async () => {
+      const txParams = {
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 18,
+      }
+      await createTx(txParams)
+
+      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 18,
+      })
     })
   })
 
