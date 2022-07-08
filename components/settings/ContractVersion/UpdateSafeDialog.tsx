@@ -15,7 +15,6 @@ import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
-import useSafeTxGas from '@/hooks/useSafeTxGas'
 
 const UpdateSafeSteps: TxStepperProps['steps'] = [
   {
@@ -51,20 +50,12 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
     return await createMultiSendTx(txs)
   }, [chain, safe])
 
-  // Estimate safeTxGas
-  const { safeGas, safeGasError } = useSafeTxGas(updateSafeTx?.data)
-  const { recommendedNonce = 0 } = safeGas || {}
-
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!updateSafeTx) return
-    return await createTx({
-      ...updateSafeTx.data,
-      nonce: recommendedNonce,
-      safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
-    })
-  }, [recommendedNonce, updateSafeTx, safeGas?.safeTxGas])
+    return await createTx(updateSafeTx.data)
+  }, [updateSafeTx])
 
-  const txError = txCreationError || safeTxError || safeGasError
+  const txError = txCreationError || safeTxError
 
   return (
     <SignOrExecuteForm

@@ -11,7 +11,6 @@ import useAsync from '@/hooks/useAsync'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import useSafeTxGas from '@/hooks/useSafeTxGas'
 
 interface ChangeThresholdData {
   threshold: number
@@ -62,21 +61,12 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
     setSelectedThreshold(parseInt(event.target.value.toString()))
   }
 
-  // Estimate safeTxGas
-  const { safeGas, safeGasError } = useSafeTxGas(changeThresholdTx?.data)
-  const { recommendedNonce = 0 } = safeGas || {}
-
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!changeThresholdTx) return
+    return await createTx(changeThresholdTx.data)
+  }, [changeThresholdTx])
 
-    return await createTx({
-      ...changeThresholdTx.data,
-      nonce: recommendedNonce,
-      safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
-    })
-  }, [recommendedNonce, changeThresholdTx, safeGas?.safeTxGas])
-
-  const txError = createTxError || safeGasError || safeTxError
+  const txError = createTxError || safeTxError
 
   return (
     <SignOrExecuteForm
