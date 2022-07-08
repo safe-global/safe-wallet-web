@@ -28,7 +28,7 @@ type TxDetailsProps = {
 }
 
 const PaperBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
+  border: `1px solid ${theme.palette.border.light}`,
 }))
 
 const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
@@ -37,19 +37,19 @@ const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactEle
   return (
     <>
       {txDetails.txData?.operation === Operation.DELEGATE && (
-        <PaperBox className={css.delegateCall}>
+        <div className={css.delegateCall}>
           <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
-        </PaperBox>
+        </div>
       )}
 
-      <PaperBox className={css.multisendInfo}>
+      <div className={css.multisendInfo}>
         <InfoDetails title="MultiSend contract:">
           <EthHashInfo address={txInfo?.to.value || ''} />
         </InfoDetails>
         <TxDataRow title="Value:">{txInfo?.value}</TxDataRow>
-      </PaperBox>
+      </div>
 
-      <PaperBox className={`${css.txSummary} ${css.multisend}`}>
+      <PaperBox className={`${css.txSummary} ${css.multisend}`} sx={{ borderTop: 'none' }}>
         <Summary txDetails={txDetails} />
       </PaperBox>
 
@@ -116,7 +116,7 @@ const TxDetails = ({
   }, [txDetails, chainId, txSummary.id])
 
   return (
-    <Box className={css.container} sx={{ backgroundColor: 'border.light' }}>
+    <Box className={css.container}>
       {txDetailsData ? (
         <TxDetailsBlock txSummary={txSummary} txDetails={txDetailsData} />
       ) : loading ? (
