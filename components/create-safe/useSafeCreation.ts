@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { useRouter } from 'next/router'
-import useLocalStorage from '@/services/localStorage/useLocalStorage'
-import { PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/create-safe/index'
+import { PendingSafeData } from '@/components/create-safe/index'
 import { createNewSafe } from '@/components/create-safe/Review'
 import { AppRoutes } from '@/config/routes'
 import { Errors, logError } from '@/services/exceptions'
+import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 
 export enum SafeCreationStatus {
   PENDING = 'PENDING',
@@ -30,24 +30,23 @@ const getSafeDeployProps = (pendingSafe: PendingSafeData, callback: (txHash: str
 export const useSafeCreation = () => {
   const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.PENDING)
   const [creationPromise, setCreationPromise] = useState<Promise<Safe>>()
+  const [pendingSafe, setPendingSafe] = usePendingSafe()
   const ethersProvider = useWeb3()
   const router = useRouter()
 
-  const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(
-    SAFE_PENDING_CREATION_STORAGE_KEY,
-    undefined,
+  const safeCreationCallback = useCallback(
+    (txHash: string) => {
+      setPendingSafe((prev) => prev && { ...prev, txHash })
+    },
+    [setPendingSafe],
   )
 
-  const createSafe = useCallback(() => {
+  const onRetry = () => {
     if (!ethersProvider || !pendingSafe) return
 
-    const callback = (txHash: string) => {
-      setPendingSafe((prev) => prev && { ...prev, txHash })
-    }
-
     setStatus(SafeCreationStatus.PENDING)
-    setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, callback)))
-  }, [ethersProvider, pendingSafe, setPendingSafe])
+    setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
+  }
 
   useEffect(() => {
     if (pendingSafe?.txHash) {
@@ -57,10 +56,11 @@ export const useSafeCreation = () => {
   }, [pendingSafe])
 
   useEffect(() => {
-    if (creationPromise || pendingSafe?.txHash) return
+    if (creationPromise || pendingSafe?.txHash || !ethersProvider || !pendingSafe) return
 
-    createSafe()
-  }, [creationPromise, pendingSafe, createSafe])
+    setStatus(SafeCreationStatus.PENDING)
+    setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
+  }, [safeCreationCallback, creationPromise, ethersProvider, pendingSafe])
 
   useEffect(() => {
     if (!creationPromise || !pendingSafe) return
@@ -80,6 +80,6 @@ export const useSafeCreation = () => {
 
   return {
     status,
-    createSafe,
+    onRetry,
   }
 }

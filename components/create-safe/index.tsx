@@ -9,7 +9,7 @@ import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 import { AppRoutes } from '@/config/routes'
 import { CreationStatus } from '@/components/create-safe/CreationStatus'
-import useLocalStorage from '@/services/localStorage/useLocalStorage'
+import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 
 export const SAFE_PENDING_CREATION_STORAGE_KEY = 'NEW_SAFE_PENDING_CREATION_STORAGE_KEY'
 
@@ -51,10 +51,7 @@ export const CreateSafeSteps: TxStepperProps['steps'] = [
 ]
 
 const CreateSafe = () => {
-  const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(
-    SAFE_PENDING_CREATION_STORAGE_KEY,
-    undefined,
-  )
+  const [pendingSafe, setPendingSafe] = usePendingSafe()
   const [safeCreationPending, setSafeCreationPending] = useState<boolean>(false)
   const router = useRouter()
 

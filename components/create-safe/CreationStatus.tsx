@@ -34,7 +34,7 @@ const getStep = (status: SafeCreationStatus) => {
 }
 
 export const CreationStatus = ({ onClose }: Props) => {
-  const { status, createSafe } = useSafeCreation()
+  const { status, onRetry } = useSafeCreation()
   const stepInfo = getStep(status)
 
   return (
@@ -58,7 +58,7 @@ export const CreationStatus = ({ onClose }: Props) => {
       {status === SafeCreationStatus.ERROR && (
         <Grid container padding={3} justifyContent="center" gap={2}>
           <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={createSafe} variant="contained">
+          <Button onClick={onRetry} variant="contained">
             Retry
           </Button>
         </Grid>

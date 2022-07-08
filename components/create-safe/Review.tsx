@@ -1,6 +1,6 @@
 import React from 'react'
 import type { Web3Provider } from '@ethersproject/providers'
-import { CreateSafeFormData, PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/create-safe/index'
+import { CreateSafeFormData } from '@/components/create-safe/index'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import Safe, { DeploySafeProps, SafeFactory } from '@gnosis.pm/safe-core-sdk'
@@ -9,7 +9,7 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import EthHashInfo from '../common/EthHashInfo'
-import local from '@/services/localStorage/local'
+import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 
 export const createNewSafe = async (ethersProvider: Web3Provider, props: DeploySafeProps): Promise<Safe> => {
   const ethAdapter = createEthersAdapter(ethersProvider)
@@ -27,13 +27,14 @@ type Props = {
 const Review = ({ params, onSubmit, onBack }: Props) => {
   const wallet = useWallet()
   const ethersProvider = useWeb3()
+  const [_, setPendingSafe] = usePendingSafe()
 
   const createSafe = async () => {
     if (!wallet || !ethersProvider) return
 
     const saltNonce = Date.now()
 
-    local.setItem<PendingSafeData>(SAFE_PENDING_CREATION_STORAGE_KEY, { ...params, saltNonce })
+    setPendingSafe({ ...params, saltNonce })
     onSubmit(params)
   }
 
