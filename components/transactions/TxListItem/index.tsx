@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import type { Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { Transaction, TransactionDetails, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { isDateLabel, isLabelListItem, isTransactionListItem } from '@/utils/transaction-guards'
@@ -9,7 +9,13 @@ import TxDateLabel from '../TxDateLabel'
 import TxDetails from '../TxDetails'
 import css from './styles.module.css'
 
-const ExpandableTransactionItem = ({ item }: { item: Transaction }) => (
+export const ExpandableTransactionItem = ({
+  item,
+  txDetails,
+}: {
+  item: Transaction
+  txDetails?: TransactionDetails
+}) => (
   <Accordion
     disableGutters
     TransitionProps={{
@@ -17,12 +23,13 @@ const ExpandableTransactionItem = ({ item }: { item: Transaction }) => (
       unmountOnExit: true,
     }}
     elevation={0}
+    defaultExpanded={!!txDetails}
   >
     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
       <TxSummary item={item} />
     </AccordionSummary>
     <AccordionDetails className={css.details}>
-      <TxDetails txSummary={item.transaction} />
+      <TxDetails txSummary={item.transaction} txDetails={txDetails} />
     </AccordionDetails>
   </Accordion>
 )

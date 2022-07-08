@@ -8,6 +8,10 @@ type TxListProps = {
   items: TransactionListPage['results']
 }
 
+export const TxListGrid = ({ children }: { children: ReactElement[] }): ReactElement => {
+  return <div className={css.listContainer}>{children}</div>
+}
+
 const TxList = ({ items }: TxListProps): ReactElement => {
   // Ensure list always starts with a date label
   const list = useMemo(() => {
@@ -29,11 +33,11 @@ const TxList = ({ items }: TxListProps): ReactElement => {
   }, [items])
 
   return (
-    <div className={css.listContainer}>
+    <TxListGrid>
       {list.map((item, index) => (
         <TxListItem key={index} item={item} />
       ))}
-    </div>
+    </TxListGrid>
   )
 }
 
