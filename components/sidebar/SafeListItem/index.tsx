@@ -17,6 +17,8 @@ import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
 import Box from '@mui/material/Box'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 
+import css from './styles.module.css'
+
 const SafeListItem = ({
   address,
   chainId,
@@ -77,17 +79,15 @@ const SafeListItem = ({
           onClick={closeDrawer}
           selected={isOpen}
           sx={({ palette }) => ({
-            borderRadius: '8px',
             borderLeft: isOpen ? `6px solid ${palette.primary.main}` : undefined,
-            paddingLeft: '22px',
             '&.Mui-selected': {
               backgroundColor: palette.border.background,
-              paddingLeft: '16px',
             },
             '&:hover': {
               backgroundColor: palette.primary.background,
             },
           })}
+          className={css.safe}
           ref={safeRef}
         >
           <ListItemIcon>

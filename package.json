@@ -27,6 +27,7 @@
     "@emotion/styled": "^11.9.3",
     "@gnosis.pm/safe-core-sdk": "^2.1.0",
     "@gnosis.pm/safe-core-sdk-types": "^1.1.0",
+    "@gnosis.pm/safe-deployments": "^1.15.0",
     "@gnosis.pm/safe-ethers-lib": "^1.1.0",
     "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
     "@mui/icons-material": "^5.8.4",
