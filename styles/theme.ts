@@ -154,11 +154,6 @@ const theme = createTheme({
     },
     MuiAccordionSummary: {
       styleOverrides: {
-        root: ({ theme }) => ({
-          '&.Mui-expanded': {
-            borderBottom: `2px solid ${theme.palette.border.light}`,
-          },
-        }),
         content: { margin: '0px' },
       },
     },

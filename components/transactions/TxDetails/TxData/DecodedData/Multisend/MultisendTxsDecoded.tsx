@@ -56,7 +56,10 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Multi
           </Typography>
         </div>
       </AccordionSummary>
-      <AccordionDetails sx={{ flexFlow: 'column' }}>
+
+      <AccordionDetails
+        sx={{ flexFlow: 'column', borderTopWidth: '2px', borderTopStyle: 'solid', borderTopColor: 'border.light' }}
+      >
         {/* We always warn of nested delegate calls */}
         {isDelegateCall && <DelegateCallWarning showWarning={isDelegateCall} />}
         {!isSpendingLimitMethod && (

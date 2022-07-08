@@ -7,7 +7,6 @@ import TxSummary from '../TxSummary'
 import GroupLabel from '../GroupLabel'
 import TxDateLabel from '../TxDateLabel'
 import TxDetails from '../TxDetails'
-import css from './styles.module.css'
 
 export const ExpandableTransactionItem = ({
   item,
@@ -28,7 +27,8 @@ export const ExpandableTransactionItem = ({
     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
       <TxSummary item={item} />
     </AccordionSummary>
-    <AccordionDetails className={css.details}>
+
+    <AccordionDetails sx={{ padding: 0 }}>
       <TxDetails txSummary={item.transaction} txDetails={txDetails} />
     </AccordionDetails>
   </Accordion>

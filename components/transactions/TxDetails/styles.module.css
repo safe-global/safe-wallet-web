@@ -2,10 +2,8 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   width: 100%;
-  margin: -2px; /* to compensate for the border */
-  width: calc(100% + 4px);
-  border-radius: 0 0 8px 8px;
-  overflow: hidden;
+  border-top-width: 2px;
+  border-top-style: solid;
 }
 
 .details {
@@ -47,6 +45,14 @@
   display: flex;
   flex-direction: column;
   padding-right: 60px; /* to not overlap with the share link */
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+}
+
+.txSummary + .txData {
+  border-bottom-width: 0;
+  border-top-width: 2px;
+  border-top-style: solid;
 }
 
 .txSummary,
@@ -56,6 +62,8 @@
 
 .txSigners {
   padding: 24px;
+  border-left-width: 2px;
+  border-left-style: solid;
 }
 
 .noPadding {

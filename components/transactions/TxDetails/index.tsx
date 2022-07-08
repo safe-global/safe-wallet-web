@@ -29,7 +29,7 @@ type TxDetailsProps = {
 }
 
 const Box = styled(MuiBox)(({ theme }) => ({
-  border: `1px solid ${theme.palette.border.light}`,
+  borderColor: theme.palette.border.light,
 }))
 
 const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
@@ -50,9 +50,9 @@ const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactEle
         <TxDataRow title="Value:">{txInfo?.value}</TxDataRow>
       </div>
 
-      <Box className={`${css.txSummary} ${css.multisend}`} sx={{ borderTop: 'none' }}>
+      <div className={`${css.txSummary} ${css.multisend}`}>
         <Summary txDetails={txDetails} />
-      </Box>
+      </div>
 
       <Box className={`${css.txData} ${css.multisend} ${css.noPadding}`}>
         <TxData txDetails={txDetails} />
@@ -83,16 +83,16 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
 
             {/* Module information*/}
             {isModuleExecutionInfo(txSummary.executionInfo) && (
-              <Box className={css.txModule}>
+              <div className={css.txModule}>
                 <InfoDetails title="Module:">
                   <EthHashInfo address={txSummary.executionInfo.address.value} />
                 </InfoDetails>
-              </Box>
+              </div>
             )}
 
-            <Box className={css.txSummary}>
+            <div className={css.txSummary}>
               <Summary txDetails={txDetails} />
-            </Box>
+            </div>
           </>
         )}
       </div>
