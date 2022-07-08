@@ -48,7 +48,7 @@ const navItems: NavItem[] = [
   {
     label: 'Transactions',
     icon: '/images/sidebar/transactions.svg',
-    href: AppRoutes.safe.transactions.index,
+    href: AppRoutes.safe.transactions.history,
     items: [
       {
         label: 'Queue',
