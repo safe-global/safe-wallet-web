@@ -45,7 +45,7 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
 
   const updateSafeTx = useMemo(() => {
     if (!safe || !chain) return undefined
-    return createSafeUpgradeParams(safe.address.value, safe.version, chain)
+    return createSafeUpgradeParams(safe.address.value, chain)
   }, [chain, safe])
 
   // Estimate safeTxGas
