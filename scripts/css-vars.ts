@@ -1,8 +1,8 @@
 import palette from '../styles/colors.js'
 
 const cssVars: string[] = []
-Object.entries(palette).forEach(([ key, value ]) => {
-  Object.entries(value).forEach(([ subKey, color ]) => {
+Object.entries(palette).forEach(([key, value]) => {
+  Object.entries(value).forEach(([subKey, color]) => {
     cssVars.push(`  --color-${key}-${subKey}: ${color};`)
   })
 })
