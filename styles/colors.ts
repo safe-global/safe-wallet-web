@@ -37,6 +37,11 @@ const palette = {
     light: '#FBE5C5',
     background: '#FFF4E3',
   },
+  background: {
+    main: '#F6F7F8',
+    paper: '#FFFFFF',
+    light: '#F1FAF8',
+  },
 }
 
 export default palette
