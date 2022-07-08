@@ -5,7 +5,7 @@ import {
   TransactionDetails,
   TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import { CircularProgress, Box, styled } from '@mui/material'
+import { CircularProgress, Box as MuiBox, styled } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
 import Summary from '@/components/transactions/TxDetails/Summary'
@@ -27,7 +27,7 @@ type TxDetailsProps = {
   txDetails: TransactionDetails
 }
 
-const PaperBox = styled(Box)(({ theme }) => ({
+const Box = styled(MuiBox)(({ theme }) => ({
   border: `1px solid ${theme.palette.border.light}`,
 }))
 
@@ -49,13 +49,13 @@ const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactEle
         <TxDataRow title="Value:">{txInfo?.value}</TxDataRow>
       </div>
 
-      <PaperBox className={`${css.txSummary} ${css.multisend}`} sx={{ borderTop: 'none' }}>
+      <Box className={`${css.txSummary} ${css.multisend}`} sx={{ borderTop: 'none' }}>
         <Summary txDetails={txDetails} />
-      </PaperBox>
+      </Box>
 
-      <PaperBox className={`${css.txData} ${css.multisend} ${css.noPadding}`}>
+      <Box className={`${css.txData} ${css.multisend} ${css.noPadding}`}>
         <TxData txDetails={txDetails} />
-      </PaperBox>
+      </Box>
     </>
   )
 }
@@ -67,36 +67,36 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   return (
     <>
       {/* /Details */}
-      <div className={[css.details, !hasSigners ? css.noSigners : ''].join(' ')}>
+      <div className={`${css.details} ${!hasSigners ? css.noSigners : ''}`}>
         {isMultisendTxInfo(txDetails.txInfo) ? (
           <MultiSendTx txDetails={txDetails} />
         ) : (
           <>
-            <PaperBox className={css.txData}>
+            <Box className={css.txData}>
               <TxData txDetails={txDetails} />
-            </PaperBox>
+            </Box>
 
             {/* Module information*/}
             {isModuleExecutionInfo(txSummary.executionInfo) && (
-              <PaperBox className={css.txModule}>
+              <Box className={css.txModule}>
                 <InfoDetails title="Module:">
                   <EthHashInfo address={txSummary.executionInfo.address.value} />
                 </InfoDetails>
-              </PaperBox>
+              </Box>
             )}
 
-            <PaperBox className={css.txSummary}>
+            <Box className={css.txSummary}>
               <Summary txDetails={txDetails} />
-            </PaperBox>
+            </Box>
           </>
         )}
       </div>
 
       {/* Signers */}
       {hasSigners && (
-        <PaperBox className={css.txSigners}>
+        <Box className={css.txSigners}>
           <TxSigners txDetails={txDetails} txSummary={txSummary} />
-        </PaperBox>
+        </Box>
       )}
     </>
   )
@@ -120,13 +120,13 @@ const TxDetails = ({
       {txDetailsData ? (
         <TxDetailsBlock txSummary={txSummary} txDetails={txDetailsData} />
       ) : loading ? (
-        <PaperBox className={css.loading}>
+        <Box className={css.loading}>
           <CircularProgress />
-        </PaperBox>
+        </Box>
       ) : (
-        <PaperBox className={css.error}>
+        <Box className={css.error}>
           <ErrorMessage error={error}>Couldn&apos;t load the transaction details</ErrorMessage>
-        </PaperBox>
+        </Box>
       )}
     </Box>
   )
