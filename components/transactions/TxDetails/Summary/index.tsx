@@ -1,9 +1,9 @@
 import React, { ReactElement, useState } from 'react'
+import { Link } from '@mui/material'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { dateString } from '@/utils/formatters'
-import { Button, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
 
@@ -36,11 +36,10 @@ const Summary = ({ txDetails }: Props): ReactElement => {
       {/* Advanced TxData */}
       {txData && (
         <>
-          <Button className={css.buttonExpand} disableRipple onClick={toggleExpanded}>
-            <Typography sx={{ textDecoration: 'underline', cursor: 'pointer' }} variant="body1">
-              Advanced Details
-            </Typography>
-          </Button>
+          <Link className={css.buttonExpand} onClick={toggleExpanded} component="button" variant="body1">
+            Advanced details
+          </Link>
+
           <div className={`${css.collapsibleSection}${expanded ? 'Expanded' : ''}`}>
             <TxDataRow title="Operation:">
               {`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}
