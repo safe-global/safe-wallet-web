@@ -111,7 +111,7 @@ export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next)
       const chainId = data?.chainId
       const address = data?.address.value
 
-      if (!chainId || !address) {
+      if (!chainId || !address || !action.payload.balances) {
         break
       }
 
