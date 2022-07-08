@@ -129,7 +129,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                 {chain.chainName}
               </Typography>
               {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
-                <Typography variant="body2" sx={({ palette }) => ({ color: palette.secondary.light })}>
+                <Typography variant="body2" sx={({ palette }) => ({ color: palette.secondary.light, my: '8px' })}>
                   <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
                     Create or add
                   </Link>{' '}
@@ -154,8 +154,8 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                   variant="body2"
                   sx={({ palette }) => ({
                     color: palette.secondary.light,
-                    mt: '8px',
-                    mb: '8px',
+                    my: '8px',
+                    cursor: 'pointer',
                   })}
                   display="inline"
                 >

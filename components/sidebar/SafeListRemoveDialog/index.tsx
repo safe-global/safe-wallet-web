@@ -6,13 +6,19 @@ import type { ReactElement } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
 import { useAppDispatch } from '@/store'
-import useChainId from '@/hooks/useChainId'
 import useAddressBook from '@/hooks/useAddressBook'
 import { removeSafe } from '@/store/addedSafesSlice'
 
-const SafeListRemoveDialog = ({ handleClose, address }: { handleClose: () => void; address: string }): ReactElement => {
+const SafeListRemoveDialog = ({
+  handleClose,
+  address,
+  chainId,
+}: {
+  handleClose: () => void
+  address: string
+  chainId: string
+}): ReactElement => {
   const dispatch = useAppDispatch()
-  const chainId = useChainId()
   const addressBook = useAddressBook()
 
   const safe = addressBook?.[address] || address
