@@ -9,6 +9,8 @@ import ListItemText from '@mui/material/ListItemText'
 import useAddressBook from '@/hooks/useAddressBook'
 import EntryDialog from '@/components/address-book/EntryDialog'
 import SafeListRemoveDialog from '@/components/sidebar/SafeListRemoveDialog'
+import { useAppSelector } from '@/store'
+import { selectAddedSafes } from '@/store/addedSafesSlice'
 
 enum ModalType {
   RENAME = 'rename',
@@ -17,7 +19,10 @@ enum ModalType {
 
 const defaultOpen = { [ModalType.RENAME]: false, [ModalType.REMOVE]: false }
 
-const SafeListContextMenu = ({ address }: { address: string }): ReactElement => {
+const SafeListContextMenu = ({ address, chainId }: { address: string; chainId: string }): ReactElement => {
+  const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
+  const isAdded = !!addedSafes?.[address]
+
   const addressBook = useAddressBook()
   const name = addressBook?.[address]
 
@@ -70,19 +75,23 @@ const SafeListContextMenu = ({ address }: { address: string }): ReactElement => 
           <ListItemText>Rename</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={handleOpenModal(ModalType.REMOVE)}>
-          <ListItemIcon>
-            <img src="/images/sidebar/safe-list/trash.svg" alt="Remove" height="16px" width="16px" />
-          </ListItemIcon>
-          <ListItemText>Remove</ListItemText>
-        </MenuItem>
+        {isAdded && (
+          <MenuItem onClick={handleOpenModal(ModalType.REMOVE)}>
+            <ListItemIcon>
+              <img src="/images/sidebar/safe-list/trash.svg" alt="Remove" height="16px" width="16px" />
+            </ListItemIcon>
+            <ListItemText>Remove</ListItemText>
+          </MenuItem>
+        )}
       </Menu>
 
       {open[ModalType.RENAME] && (
         <EntryDialog handleClose={handleCloseModal} defaultValues={{ name, address }} disableAddressInput />
       )}
 
-      {open[ModalType.REMOVE] && <SafeListRemoveDialog handleClose={handleCloseModal} address={address} />}
+      {open[ModalType.REMOVE] && (
+        <SafeListRemoveDialog handleClose={handleCloseModal} address={address} chainId={chainId} />
+      )}
     </>
   )
 }

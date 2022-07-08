@@ -9,13 +9,13 @@ import SafeIcon from '@/components/common/SafeIcon'
 import { shortenAddress } from '@/utils/formatters'
 import { useAppSelector } from '@/store'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import useAddressBook from '@/hooks/useAddressBook'
 import { selectChainById } from '@/store/chainsSlice'
 import SafeListItemSecondaryAction from '@/components/sidebar/SafeListItemSecondaryAction'
 import useChainId from '@/hooks/useChainId'
 import { AppRoutes } from '@/config/routes'
 import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
 import Box from '@mui/material/Box'
+import { selectAllAddressBooks } from '@/store/addressBookSlice'
 
 const SafeListItem = ({
   address,
@@ -34,6 +34,7 @@ const SafeListItem = ({
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()
   const chain = useAppSelector((state) => selectChainById(state, chainId))
+  const allAddressBooks = useAppSelector(selectAllAddressBooks)
 
   const currChainId = useChainId()
   const isCurrentSafe = currChainId === currChainId && safeAddress.toLowerCase() === address.toLowerCase()
@@ -44,8 +45,7 @@ const SafeListItem = ({
     }
   }, [isCurrentSafe, shouldScrollToSafe])
 
-  const addressBook = useAddressBook()
-  const name = addressBook?.[address]
+  const name = allAddressBooks[chainId]?.[address]
 
   const isOpen = address.toLowerCase() === safeAddress.toLowerCase()
 
@@ -66,7 +66,7 @@ const SafeListItem = ({
             onClick={closeDrawer}
             href={`${AppRoutes.welcome}?chain=${chain?.shortName}`}
           />
-          <SafeListContextMenu address={address} />
+          <SafeListContextMenu address={address} chainId={chainId} />
         </Box>
       }
       sx={{ my: '8px', px: '8px' }}
