@@ -23,6 +23,8 @@ export const SetThresholdStep = ({
     onSubmit({ ...data, threshold: selectedThreshold })
   }
 
+  const newNumberOfOwners = (safe?.owners.length ?? 0) + 1
+
   return (
     <form onSubmit={onSubmitHandler}>
       <TxModalTitle>Add new owner</TxModalTitle>
@@ -40,13 +42,13 @@ export const SetThresholdStep = ({
                   {idx + 1}
                 </MenuItem>
               ))}
-              <MenuItem key={(safe?.owners.length ?? 0) + 1} value={(safe?.owners.length ?? 0) + 1}>
-                {(safe?.owners.length ?? 0) + 1}
+              <MenuItem key={newNumberOfOwners} value={newNumberOfOwners}>
+                {newNumberOfOwners}
               </MenuItem>
             </Select>
           </Grid>
           <Grid item>
-            <Typography>out of {(safe?.owners.length ?? 0) + 1} owner(s)</Typography>
+            <Typography>out of {newNumberOfOwners} owner(s)</Typography>
           </Grid>
         </Grid>
       </Box>

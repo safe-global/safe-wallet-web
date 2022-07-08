@@ -1,5 +1,4 @@
 import { LATEST_SAFE_VERSION } from '@/config/constants'
-import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types'
 import {
   getFallbackHandlerDeployment,
@@ -8,7 +7,6 @@ import {
 } from '@gnosis.pm/safe-deployments'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ethers } from 'ethers'
-import { encodeMultiSendCall } from './multisend'
 
 export const CHANGE_MASTER_COPY_ABI = 'function changeMasterCopy(address _masterCopy)'
 export const CHANGE_FALLBACK_HANDLER_ABI = 'function setFallbackHandler(address handler)'
@@ -37,16 +35,12 @@ const getLatestMasterCopyAddress = (chain: ChainInfo) => {
 }
 
 /**
- * Creates multisend tx params which changes the safes mastercopy and fallback handler
+ * Creates two transactions:
+ * - change the mastercopy address
+ * - set the fallback handler address
  * Only works for safes < 1.3.0 as the changeMasterCopy function was removed
  */
-export const createSafeUpgradeParams = (safeAddress: string, chain: ChainInfo): MetaTransactionData => {
-  const safeSDK = getSafeSDK()
-
-  if (!safeSDK) {
-    throw Error('No safe SDK available!')
-  }
-
+export const createUpdateSafeTxs = (safeAddress: string, chain: ChainInfo): MetaTransactionData[] => {
   const latestMasterCopyAddress = getLatestMasterCopyAddress(chain)
   const safeContractInterface = new ethers.utils.Interface([CHANGE_MASTER_COPY_ABI, CHANGE_FALLBACK_HANDLER_ABI])
   const changeMasterCopyCallData = safeContractInterface.encodeFunctionData('changeMasterCopy', [
@@ -58,23 +52,20 @@ export const createSafeUpgradeParams = (safeAddress: string, chain: ChainInfo): 
     fallbackHandlerAddress,
   ])
 
-  const txs = [
+  const txs: MetaTransactionData[] = [
     {
       to: safeAddress,
       value: '0',
       data: changeMasterCopyCallData,
+      operation: OperationType.Call,
     },
     {
       to: safeAddress,
       value: '0',
       data: changeFallbackHandlerCallData,
+      operation: OperationType.Call,
     },
   ]
 
-  return {
-    to: safeSDK.getMultiSendAddress(),
-    data: encodeMultiSendCall(txs),
-    value: '0',
-    operation: OperationType.DelegateCall,
-  }
+  return txs
 }

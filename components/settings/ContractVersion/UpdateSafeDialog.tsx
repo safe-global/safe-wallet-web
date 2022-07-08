@@ -1,15 +1,17 @@
-import { Box, Button, Typography } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { Box, Button, Link, Typography } from '@mui/material'
+import { useState } from 'react'
+
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 import TxModal from '@/components/tx/TxModal'
 
-import { createTx } from '@/services/tx/txSender'
+import { createMultiSendTx, createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { createSafeUpgradeParams } from '@/services/tx/safeUpgradeParams'
+import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -22,7 +24,7 @@ const UpdateSafeSteps: TxStepperProps['steps'] = [
   },
 ]
 
-export const UpdateSafeDialog = () => {
+const UpdateSafeDialog = () => {
   const [open, setOpen] = useState(false)
 
   const handleClose = () => setOpen(false)
@@ -43,25 +45,26 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
   const { safe } = useSafeInfo()
   const chain = useCurrentChain()
 
-  const updateSafeTx = useMemo(() => {
+  const [updateSafeTx, txCreationError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!safe || !chain) return undefined
-    return createSafeUpgradeParams(safe.address.value, chain)
+    const txs = createUpdateSafeTxs(safe.address.value, chain)
+    return await createMultiSendTx(txs)
   }, [chain, safe])
 
   // Estimate safeTxGas
-  const { safeGas, safeGasError } = useSafeTxGas(updateSafeTx)
+  const { safeGas, safeGasError } = useSafeTxGas(updateSafeTx?.data)
   const { recommendedNonce = 0 } = safeGas || {}
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!updateSafeTx) return
     return await createTx({
-      ...updateSafeTx,
+      ...updateSafeTx.data,
       nonce: recommendedNonce,
       safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
     })
   }, [recommendedNonce, updateSafeTx, safeGas?.safeTxGas])
 
-  const txError = safeTxError || safeGasError
+  const txError = txCreationError || safeTxError || safeGasError
 
   return (
     <SignOrExecuteForm
@@ -76,8 +79,14 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
       </Typography>
 
       <Typography>
-        To check details about updates added by this smart contract version please visit latest Gnosis Safe contracts
-        changelog
+        To check details about updates added by this smart contract version please visit{' '}
+        <Link
+          rel="noreferrer noopener"
+          href={`https://github.com/gnosis/safe-contracts/releases/tag/v${LATEST_SAFE_VERSION}`}
+          target="_blank"
+        >
+          latest Gnosis Safe contracts changelog
+        </Link>
       </Typography>
 
       <Typography>
@@ -93,3 +102,5 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
     </SignOrExecuteForm>
   )
 }
+
+export default UpdateSafeDialog
