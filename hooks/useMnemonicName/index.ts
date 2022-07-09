@@ -19,6 +19,6 @@ export const useMnemonicName = (noun?: string): string => {
 }
 
 export const useMnemonicSafeName = (): string => {
-  const networkName = useCurrentChain()?.chainName
+  const networkName = useCurrentChain()?.chainName.toLowerCase()
   return useMnemonicName(`${networkName}-safe`)
 }
