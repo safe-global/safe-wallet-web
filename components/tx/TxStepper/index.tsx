@@ -17,7 +17,7 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
           </Typography>
         </Box>
 
-        {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onBack)}
+        {steps[activeStep].render(stepData[Math.max(0, activeStep)], onSubmit, onBack)}
       </Box>
 
       <DialogActions sx={{ m: -3, mt: 3 }}>
