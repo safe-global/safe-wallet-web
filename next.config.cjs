@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: false,
   eslint: {
-    dirs: ['pages', 'services', 'store', 'components', 'config'],
+    dirs: ['pages', 'services', 'store', 'components', 'config', 'utils', 'hooks', 'tests'],
   },
 }
 

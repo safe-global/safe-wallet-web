@@ -1,4 +1,4 @@
-import { Grid, Paper } from '@mui/material'
+import { Grid, Box } from '@mui/material'
 import { ReactElement } from 'react'
 import { TransactionStatus, type Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -10,8 +10,6 @@ import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isAwaitingExecution } from '@/utils/transaction-guards'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
-import Box from '@mui/material/Box'
-import { useRouter } from 'next/router'
 import { useTransactionStatus } from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 
@@ -27,51 +25,44 @@ const dateOptions = {
 const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
-  const router = useRouter()
-  const isQueue = router.pathname.includes('queue')
-  const txStatus = useTransactionStatus(tx)
-
+  const txStatusLabel = useTransactionStatus(tx)
+  const isQueue = tx.txStatus !== TransactionStatus.SUCCESS
   const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
+  const nonce = tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''
 
   return (
-    <Paper className={css.paper} elevation={0}>
-      <div id={tx.id}>
-        <Grid container className={css.gridContainer}>
-          <Grid item md={1}>
-            {tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''}
-          </Grid>
+    <Grid container className={css.gridContainer} id={tx.id} gap={2} p={1}>
+      <Grid item md>
+        {nonce}
+      </Grid>
 
-          <Grid item md={3}>
-            <TxType tx={tx} />
-          </Grid>
+      <Grid item md={4}>
+        <TxType tx={tx} />
+      </Grid>
 
-          <Grid item md>
-            <TxInfo info={tx.txInfo} />
-          </Grid>
+      <Grid item md={4}>
+        <TxInfo info={tx.txInfo} />
+      </Grid>
 
-          <Grid item md={2}>
-            <DateTime value={tx.timestamp} options={dateOptions} />
-          </Grid>
+      <Grid item xs sx={{ whiteSpace: 'nowrap' }}>
+        <DateTime value={tx.timestamp} options={dateOptions} />
+      </Grid>
 
-          <Grid item md={3}>
-            {txStatus !== TransactionStatus.SUCCESS && txStatus}
-          </Grid>
+      <Grid item>{txStatusLabel}</Grid>
 
-          {wallet && isQueue && (
-            <Grid item md={1}>
-              <Box display="flex" alignItems="center">
-                {awaitingExecution ? (
-                  <ExecuteTxButton txSummary={item.transaction} />
-                ) : (
-                  <SignTxButton txSummary={item.transaction} />
-                )}
-                <RejectTxButton txSummary={item.transaction} />
-              </Box>
-            </Grid>
-          )}
+      {wallet && isQueue && (
+        <Grid item>
+          <Box display="flex" alignItems="center">
+            {awaitingExecution ? (
+              <ExecuteTxButton txSummary={item.transaction} />
+            ) : (
+              <SignTxButton txSummary={item.transaction} />
+            )}
+            <RejectTxButton txSummary={item.transaction} />
+          </Box>
         </Grid>
-      </div>
-    </Paper>
+      )}
+    </Grid>
   )
 }
 

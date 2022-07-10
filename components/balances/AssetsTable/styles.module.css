@@ -1,0 +1,21 @@
+.container tr {
+  transition: background-color 100ms linear;
+}
+
+.container td {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.container tr:hover {
+  background-color: var(--color-background-light);
+}
+
+.container td:last-of-type button {
+  opacity: 0;
+  transition: opacity 200ms 100ms ease-in-out;
+}
+
+.container tr:hover button {
+  opacity: 1;
+}

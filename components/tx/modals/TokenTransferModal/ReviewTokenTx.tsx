@@ -18,9 +18,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
     <Box className={css.tokenPreview}>
-      <Box fontSize={24}>
-        <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
-      </Box>
+      <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
 
       <Box mt={1} fontSize={20}>
         {params.amount} {tokenInfo.symbol}

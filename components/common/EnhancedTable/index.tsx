@@ -126,7 +126,7 @@ function EnhancedTable({ rows, headCells }: EnhancedTableProps) {
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size="medium">
+          <Table aria-labelledby="tableTitle">
             <EnhancedTableHead
               headCells={headCells}
               order={order}
