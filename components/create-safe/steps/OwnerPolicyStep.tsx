@@ -88,7 +88,11 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
       setValue(`owners.${index}.resolving`, true)
       const { address } = parsePrefixedAddress(owner.address)
       const ensName = await lookupAddress(ethersProvider, address)
-      update(index, { ...owner, name: ensName || owner.name, resolving: false })
+      if (ensName) {
+        update(index, { ...owner, name: ensName || owner.name, resolving: false })
+      } else {
+        setValue(`owners.${index}.resolving`, false)
+      }
     },
     [update, setValue, ethersProvider],
   )
