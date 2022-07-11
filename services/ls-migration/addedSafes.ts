@@ -1,0 +1,62 @@
+import newStorage from '@/services/localStorage/local'
+import { addedSafesSlice, type AddedSafesState, type AddedSafesOnChain } from '@/store/addedSafesSlice'
+import { LOCAL_STORAGE_DATA, parseLsValue } from './common'
+
+const IMMORTAL_PREFIX = '_immortal|v2_'
+
+const CHAIN_PREFIXES: Record<string, string> = {
+  '1': 'MAINNET',
+  '4': 'RINKEBY',
+  '56': 'BSC',
+  '100': 'XDAI',
+  '137': 'POLYGON',
+  '246': 'ENERGY_WEB_CHAIN',
+  '42161': 'ARBITRUM',
+  '73799': 'VOLTA',
+}
+const ALL_CHAINS = ['1', '100', '137', '56', '246', '42161', '1313161554', '43114', '10', '5', '4', '73799']
+
+const OLD_LS_KEY = '__SAFES'
+
+type OldAddedSafes = Record<
+  string,
+  {
+    address: string
+    chainId: string
+    ethBalance: string
+    owners: string[]
+    threshold: number
+  }
+>
+
+export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): void => {
+  // Don't migrate if the new storage is already populated
+  const prevAddedSafes = newStorage.getItem<AddedSafesState>(addedSafesSlice.name)
+  if (prevAddedSafes && Object.keys(prevAddedSafes).length > 0) {
+    return
+  }
+
+  const newAddedSafes: AddedSafesState = {}
+
+  ALL_CHAINS.forEach((chainId) => {
+    const chainPrefix = CHAIN_PREFIXES[chainId] || chainId
+    const legacyAddedSafes = parseLsValue<OldAddedSafes>(lsData[IMMORTAL_PREFIX + chainPrefix + OLD_LS_KEY])
+
+    if (legacyAddedSafes && Object.keys(legacyAddedSafes).length > 0) {
+      console.log('Migrating added safes on chain', chainId)
+
+      newAddedSafes[chainId] = Object.values(legacyAddedSafes).reduce<AddedSafesOnChain>((acc, oldItem) => {
+        acc[oldItem.address] = {
+          ethBalance: oldItem.ethBalance,
+          owners: oldItem.owners.map((value) => ({ value, name: null, logoUri: null })),
+          threshold: oldItem.threshold,
+        }
+        return acc
+      }, {})
+    }
+  })
+
+  if (Object.keys(newAddedSafes).length > 0) {
+    newStorage.setItem<AddedSafesState>(addedSafesSlice.name, newAddedSafes)
+  }
+}
