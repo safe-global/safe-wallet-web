@@ -63,7 +63,7 @@ describe('useSafeCreation', () => {
     })
   })
 
-  it('should monitor an existing tx and return a PENDING state', () => {
+  it('should monitor an existing tx and return a MINING state', () => {
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
         name: 'joyful-rinkeby-safe',
@@ -76,7 +76,7 @@ describe('useSafeCreation', () => {
     ])
     const { result } = renderHook(() => useSafeCreation())
 
-    expect(result.current.status).toBe(SafeCreationStatus.PENDING)
+    expect(result.current.status).toBe(SafeCreationStatus.MINING)
     // TODO: assert that tx monitor was called
   })
 })
