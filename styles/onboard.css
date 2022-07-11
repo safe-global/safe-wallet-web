@@ -12,6 +12,9 @@
   --onboard-gray-200: var(--color-border-main);
   --onboard-gray-300: var(--color-secondary-light);
   --onboard-gray-400: var(--color-secondary-main);
+  --onboard-gray-500: var(--color-primary-main);
+  --onboard-gray-600: var(--color-primary-dark);
+  --onboard-gray-700: var(--color-primary-dark);
   --onboard-success-500: var(--color-success-light);
   --onboard-success-600: var(--color-success-main);
   --onboard-success-700: var(--color-success-dark);
@@ -31,10 +34,20 @@
   --account-select-modal-primary-500: var(--color-primary-main);
   --account-select-modal-primary-600: var(--color-primary-dark);
 
+  --onboard-connect-sidebar-color: var(--color-secondary-main);
+  --onboard-wallet-button-color: var(--color-secondary-main);
+  --onboard-wallet-app-icon-border-color: var(--color-border-light);
+
   /* FONTS */
   --onboard-font-family-normal: Averta, sans-serif;
   --onboard-font-family-semibold: Averta, sans-serif;
   --onboard-font-family-light: Averta, sans-serif;
   --account-select-modal-font-family-normal: Averta, sans-serif;
   --account-select-modal-font-family-light: Averta, sans-serif;
+
+  --onboard-modal-border-radius: 8px;
+  --onboard-border-radius-1: 8px;
+  --onboard-border-radius-2: 8px;
+  --onboard-border-radius-3: 8px;
+  --onboard-modal-z-index: 1201;
 }

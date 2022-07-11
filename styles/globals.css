@@ -30,7 +30,3 @@ a {
 * {
   box-sizing: border-box;
 }
-
-:root {
-  --onboard-modal-z-index: 1201;
-}
