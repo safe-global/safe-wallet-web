@@ -16,6 +16,12 @@ const getStep = (status: SafeCreationStatus) => {
       return {
         image: <Image src={SafeCreationPending} alt="Image of a vault that is loading" width={111} height={91} />,
         description: 'Transaction is pending.',
+        instruction: 'Please confirm the transaction in your wallet.',
+      }
+    case SafeCreationStatus.MINING:
+      return {
+        image: <Image src={SafeCreationPending} alt="Image of a vault that is loading" width={111} height={91} />,
+        description: 'Transaction is being executed.',
         instruction: 'Please do not leave the page.',
       }
     case SafeCreationStatus.ERROR:
@@ -36,6 +42,8 @@ const getStep = (status: SafeCreationStatus) => {
 export const CreationStatus = ({ onClose }: Props) => {
   const { status, onRetry } = useSafeCreation()
   const stepInfo = getStep(status)
+
+  console.log(status)
 
   return (
     <Paper

@@ -10,6 +10,7 @@ import { createNewSafe } from '@/components/create-safe/sender'
 
 export enum SafeCreationStatus {
   PENDING = 'PENDING',
+  MINING = 'MINING',
   ERROR = 'ERROR',
   SUCCESS = 'SUCCESS',
 }
@@ -36,6 +37,7 @@ export const useSafeCreation = () => {
 
   const safeCreationCallback = useCallback(
     (txHash: string) => {
+      setStatus(SafeCreationStatus.MINING)
       setPendingSafe((prev) => prev && { ...prev, txHash })
     },
     [setPendingSafe],
@@ -50,7 +52,7 @@ export const useSafeCreation = () => {
 
   useEffect(() => {
     if (pendingSafe?.txHash) {
-      setStatus(SafeCreationStatus.PENDING)
+      setStatus(SafeCreationStatus.MINING)
       // TODO: monitor existing tx
     }
   }, [pendingSafe])
