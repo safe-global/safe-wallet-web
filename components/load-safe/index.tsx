@@ -1,14 +1,14 @@
 import React from 'react'
-
-import ConnectWallet from '@/components/create-safe/ConnectWallet'
-import SafeOwners from '@/components/load-safe/SafeOwners'
+import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useRouter } from 'next/router'
+
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 import { AppRoutes } from '@/config/routes'
-import SetAddress from '@/components/load-safe/SetAddress'
-import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import SafeReview from '@/components/load-safe/SafeReview'
+import SafeOwnersStep from '@/components/load-safe/steps/SafeOwnersStep'
+import SetAddressStep from '@/components/load-safe/steps/SetAddressStep'
+import SafeReviewStep from '@/components/load-safe/steps/SafeReviewStep'
+import SelectNetworkStep from '@/components/load-safe/steps/SelectNetworkStep'
 
 export type LoadSafeFormData = {
   name: string
@@ -19,28 +19,43 @@ export type LoadSafeFormData = {
 export const LoadSafeSteps: TxStepperProps['steps'] = [
   {
     label: 'Connect wallet & select network',
-    render: (data, onSubmit, onBack) => <ConnectWallet onSubmit={onSubmit} onBack={onBack} />,
+    render: (data, onSubmit, onBack) => <SelectNetworkStep onSubmit={onSubmit} onBack={onBack} />,
   },
   {
     label: 'Name and address',
-    render: (data, onSubmit, onBack) => <SetAddress onSubmit={onSubmit} onBack={onBack} />,
+    render: (data, onSubmit, onBack) => (
+      <SetAddressStep params={data as LoadSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+    ),
   },
   {
     label: 'Owners',
     render: (data, onSubmit, onBack) => (
-      <SafeOwners params={data as LoadSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+      <SafeOwnersStep params={data as LoadSafeFormData} onSubmit={onSubmit} onBack={onBack} />
     ),
   },
   {
     label: 'Review',
-    render: (data, onSubmit, onBack) => <SafeReview params={data as LoadSafeFormData} onBack={onBack} />,
+    render: (data, onSubmit, onBack) => <SafeReviewStep params={data as LoadSafeFormData} onBack={onBack} />,
   },
 ]
 
-const LoadSafe = () => {
+const LoadSafe = ({
+  initialStep,
+  initialData,
+}: {
+  initialStep?: TxStepperProps['initialStep']
+  initialData?: TxStepperProps['initialData']
+}) => {
   const router = useRouter()
 
-  return <VerticalTxStepper steps={LoadSafeSteps} onClose={() => router.push(AppRoutes.welcome)} />
+  return (
+    <VerticalTxStepper
+      steps={LoadSafeSteps}
+      initialStep={initialStep}
+      initialData={initialData}
+      onClose={() => router.push(AppRoutes.welcome)}
+    />
+  )
 }
 
 export default LoadSafe

@@ -1,6 +1,7 @@
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Link, { LinkProps } from 'next/link'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
@@ -53,8 +54,13 @@ const SafeListItemSecondaryAction = ({
 
   if (!isOwner) {
     return (
-      <Typography variant="body2" display="flex" sx={({ palette }) => ({ color: palette.border.main })}>
-        <img src="/images/sidebar/safe-list/eye.svg" alt="Read only" height="16px" width="16px" /> Read only
+      <Typography
+        variant="body2"
+        display="flex"
+        alignItems="center"
+        sx={({ palette }) => ({ color: palette.border.main })}
+      >
+        <VisibilityIcon fontSize="inherit" sx={{ marginRight: 1 }} /> Read only
       </Typography>
     )
   }

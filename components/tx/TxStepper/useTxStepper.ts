@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 
 export type StepRenderProps = {
   data: unknown
@@ -20,12 +20,13 @@ type Step = {
 export type TxStepperProps = {
   steps: Array<Step>
   initialData?: unknown[]
+  initialStep?: number
   onClose: () => void
   onFinish?: () => void
 }
 
-export const useTxStepper = ({ steps, initialData, onClose, onFinish }: TxStepperProps) => {
-  const [activeStep, setActiveStep] = useState<number>(0)
+export const useTxStepper = ({ steps, initialData, initialStep, onClose, onFinish }: TxStepperProps) => {
+  const [activeStep, setActiveStep] = useState<number>(initialStep || 0)
   const [stepData, setStepData] = useState<Array<unknown>>(initialData || [])
 
   const handleNext = () => {

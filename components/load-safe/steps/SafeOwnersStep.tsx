@@ -4,8 +4,8 @@ import { FormProvider, useForm } from 'react-hook-form'
 
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import AddressInput from '../common/AddressInput'
-import { LoadSafeFormData } from '@/components/load-safe/index'
+import AddressInput from 'components/common/AddressInput'
+import { LoadSafeFormData } from '@/components/load-safe'
 import useAsync from '@/hooks/useAsync'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChainId from '@/hooks/useChainId'
@@ -17,7 +17,7 @@ type Props = {
   onBack: StepRenderProps['onBack']
 }
 
-const SafeOwners = ({ params, onSubmit, onBack }: Props): ReactElement => {
+const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
   const currentChainId = useChainId()
   const formMethods = useForm<LoadSafeFormData>({ defaultValues: params })
   const { register, handleSubmit, setValue } = formMethods
@@ -47,10 +47,10 @@ const SafeOwners = ({ params, onSubmit, onBack }: Props): ReactElement => {
           </Box>
           <Divider />
           <Grid container gap={3} flexWrap="nowrap" paddingX={3} paddingY={1}>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={4}>
               Name
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={7}>
               Address
             </Grid>
           </Grid>
@@ -99,4 +99,4 @@ const SafeOwners = ({ params, onSubmit, onBack }: Props): ReactElement => {
   )
 }
 
-export default SafeOwners
+export default SafeOwnersStep

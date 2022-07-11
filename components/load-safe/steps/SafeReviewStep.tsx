@@ -2,8 +2,8 @@ import React from 'react'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import EthHashInfo from '../common/EthHashInfo'
-import { LoadSafeFormData } from '@/components/load-safe/index'
+import EthHashInfo from 'components/common/EthHashInfo'
+import { LoadSafeFormData } from '@/components/load-safe'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { useRouter } from 'next/router'
@@ -18,7 +18,7 @@ type Props = {
   onBack: StepRenderProps['onBack']
 }
 
-const SafeReview = ({ params, onBack }: Props) => {
+const SafeReviewStep = ({ params, onBack }: Props) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
   const chain = useAppSelector((state) => selectChainById(state, params.safeInfo.chainId))
@@ -60,7 +60,7 @@ const SafeReview = ({ params, onBack }: Props) => {
             <Typography variant="caption" color="text.secondary">
               Safe address
             </Typography>
-            <Typography mb={3}>
+            <Typography mb={3} component="div">
               <EthHashInfo
                 key={params.safeInfo.address.value}
                 address={params.safeInfo.address.value}
@@ -82,7 +82,7 @@ const SafeReview = ({ params, onBack }: Props) => {
           </Box>
         </Grid>
         <Grid item md={8} borderLeft="1px solid #ddd">
-          <Box padding={3}>{params.safeInfo.owners.length} Safe owners</Box>
+          <Box padding={3}>{params.safeInfo.owners.length} Safe owner(s)</Box>
           <Divider />
           <Box padding={3}>
             {params.safeInfo.owners.map((owner) => {
@@ -109,4 +109,4 @@ const SafeReview = ({ params, onBack }: Props) => {
   )
 }
 
-export default SafeReview
+export default SafeReviewStep
