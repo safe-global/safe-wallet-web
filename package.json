@@ -17,7 +17,7 @@
     "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./styles/vars.css"
   },
   "pre-push": [
-    "lint:fix",
+    "lint",
     "prettier"
   ],
   "dependencies": {
