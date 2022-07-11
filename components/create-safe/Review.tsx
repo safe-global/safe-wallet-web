@@ -59,9 +59,11 @@ const Review = ({ params, onSubmit, onBack }: Props) => {
         <Grid item md={8} borderLeft="1px solid #ddd">
           <Box padding={3}>{params.owners.length} Safe owners</Box>
           <Divider />
-          {params.owners.map((owner) => {
-            return <EthHashInfo key={owner.address} address={owner.address} name={owner.name} shortAddress={false} />
-          })}
+          <Box padding={3}>
+            {params.owners.map((owner) => {
+              return <EthHashInfo key={owner.address} address={owner.address} name={owner.name} shortAddress={false} />
+            })}
+          </Box>
           <Divider />
         </Grid>
       </Grid>

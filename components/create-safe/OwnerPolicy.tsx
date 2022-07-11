@@ -42,9 +42,11 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
     resolving: false,
   }
 
+  const defaultThreshold = params.threshold || 1
+
   const formMethods = useForm<CreateSafeFormData>({
     mode: 'all',
-    defaultValues: { name: params.name, owners: [defaultOwner], threshold: 1 },
+    defaultValues: { name: params.name, owners: params.owners ?? [defaultOwner], threshold: defaultThreshold },
   })
   const {
     register,
@@ -161,7 +163,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
             </Typography>
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl>
-                <Select {...register('threshold')} defaultValue={1}>
+                <Select {...register('threshold')} defaultValue={defaultThreshold}>
                   {fields.map((field, index) => {
                     return (
                       <MenuItem key={field.id} value={index + 1}>

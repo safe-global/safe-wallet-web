@@ -56,7 +56,15 @@ export const useSafeCreation = () => {
   }, [pendingSafe])
 
   useEffect(() => {
-    if (creationPromise || pendingSafe?.txHash || !ethersProvider || !pendingSafe) return
+    if (
+      creationPromise ||
+      pendingSafe?.txHash ||
+      !ethersProvider ||
+      !pendingSafe ||
+      status === SafeCreationStatus.ERROR
+    ) {
+      return
+    }
 
     setStatus(SafeCreationStatus.PENDING)
     setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
@@ -73,8 +81,10 @@ export const useSafeCreation = () => {
       })
       .catch((error: Error) => {
         setStatus(SafeCreationStatus.ERROR)
+        setCreationPromise(undefined)
         setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
         logError(Errors._800, error.message)
+        return
       })
   }, [creationPromise, pendingSafe, router, setPendingSafe])
 

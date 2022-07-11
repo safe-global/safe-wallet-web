@@ -11,8 +11,6 @@ import { AppRoutes } from '@/config/routes'
 import { CreationStatus } from '@/components/create-safe/CreationStatus'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 
-export const SAFE_PENDING_CREATION_STORAGE_KEY = 'NEW_SAFE_PENDING_CREATION_STORAGE_KEY'
-
 export type Owner = {
   name: string
   address: string
@@ -34,7 +32,9 @@ export const CreateSafeSteps: TxStepperProps['steps'] = [
   },
   {
     label: 'Name',
-    render: (data, onSubmit, onBack) => <SetName onSubmit={onSubmit} onBack={onBack} />,
+    render: (data, onSubmit, onBack) => (
+      <SetName params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+    ),
   },
   {
     label: 'Owners and Confirmations',

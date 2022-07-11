@@ -7,13 +7,16 @@ import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 
 type Props = {
+  params: CreateSafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
 }
 
-const SetName = ({ onSubmit, onBack }: Props) => {
+const SetName = ({ params, onSubmit, onBack }: Props) => {
   const fallbackName = useMnemonicSafeName()
-  const { register, handleSubmit } = useForm<CreateSafeFormData>({ defaultValues: { name: fallbackName } })
+  const { register, handleSubmit } = useForm<CreateSafeFormData>({
+    defaultValues: { name: params?.name || fallbackName },
+  })
 
   return (
     <Paper>

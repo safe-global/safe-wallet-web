@@ -60,7 +60,7 @@ const ConnectWallet = ({ onSubmit, onBack }: Props) => {
             <Button onClick={onBack}>Cancel</Button>
           </Grid>
           <Grid item>
-            <Button variant="contained" onClick={onSubmit}>
+            <Button variant="contained" onClick={() => onSubmit(undefined)}>
               Continue
             </Button>
           </Grid>
