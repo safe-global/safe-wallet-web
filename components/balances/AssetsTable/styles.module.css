@@ -1,5 +1,9 @@
-.container tr {
+.container tbody tr {
   transition: background-color 100ms linear;
+}
+
+.container tbody tr:hover {
+  background-color: var(--color-background-light);
 }
 
 .container td {
@@ -7,15 +11,16 @@
   padding-bottom: 8px;
 }
 
-.container tr:hover {
-  background-color: var(--color-background-light);
-}
-
 .container td:last-of-type button {
   opacity: 0;
   transition: opacity 200ms 100ms ease-in-out;
 }
 
-.container tr:hover button {
+.container tr:hover td:last-of-type button {
   opacity: 1;
+}
+
+.alignCenter {
+  display: flex;
+  align-items: center;
 }

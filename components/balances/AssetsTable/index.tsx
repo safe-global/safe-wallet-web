@@ -5,7 +5,6 @@ import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
 import EnhancedTable from '@/components/common/EnhancedTable'
-import { useCurrentChain } from '@/hooks/useChains'
 import TokenExplorerLink from '../TokenExplorerLink'
 
 interface AssetsTableProps {
@@ -36,19 +35,17 @@ const headCells = [
 ]
 
 const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
-  const chainInfo = useCurrentChain()
-
   const rows = (items || []).map((item) => ({
     asset: {
       rawValue: item.tokenInfo.name,
       content: (
-        <Typography fontSize="medium" sx={{ display: 'flex', alignItems: 'center' }}>
+        <div className={css.alignCenter}>
           <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
 
-          {item.tokenInfo.name}
+          <Typography fontSize="medium">{item.tokenInfo.name}</Typography>
 
           <TokenExplorerLink address={item.tokenInfo.address} />
-        </Typography>
+        </div>
       ),
     },
     balance: {
