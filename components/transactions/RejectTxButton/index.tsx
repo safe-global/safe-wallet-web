@@ -1,4 +1,4 @@
-import { TransactionSummary, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Tooltip } from '@mui/material'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import IconButton from '@mui/material/IconButton'
