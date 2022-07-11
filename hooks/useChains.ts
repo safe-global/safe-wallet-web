@@ -2,7 +2,7 @@ import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from '@/store'
 import { selectChainById, selectChains } from '@/store/chainsSlice'
 import { useChainId } from './useChainId'
-import { getExplorerLink, getHashedExplorerUrl } from '@/utils/gateway'
+import { getExplorerLink } from '@/utils/gateway'
 
 const useChains = () => {
   const state = useAppSelector(selectChains)
