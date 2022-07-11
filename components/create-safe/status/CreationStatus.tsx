@@ -1,9 +1,4 @@
 import { Grid, Box, Button, Divider, Paper, Typography } from '@mui/material'
-import Image from 'next/image'
-
-import SafeCreationWaiting from '@/public/images/safe-creation.svg'
-import SafeCreationPending from '@/public/images/safe-creation-process.gif'
-import SafeCreationError from '@/public/images/safe-creation-error.svg'
 import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
@@ -23,25 +18,29 @@ const getStep = (status: SafeCreationStatus) => {
   switch (status) {
     case SafeCreationStatus.PENDING:
       return {
-        image: <Image src={SafeCreationPending} alt="Image of a vault that is loading" width={111} height={91} />,
+        image: (
+          <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
+        ),
         description: 'Transaction is pending.',
         instruction: 'Please confirm the transaction in your wallet.',
       }
     case SafeCreationStatus.MINING:
       return {
-        image: <Image src={SafeCreationPending} alt="Image of a vault that is loading" width={111} height={91} />,
+        image: (
+          <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
+        ),
         description: 'Transaction is being executed.',
         instruction: 'Please do not leave the page.',
       }
     case SafeCreationStatus.ERROR:
       return {
-        image: <Image src={SafeCreationError} alt="Image of a vault with a red error sign" />,
+        image: <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />,
         description: 'There was an error.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.SUCCESS:
       return {
-        image: <Image src={SafeCreationWaiting} alt="Image of a vault" />,
+        image: <img src="/images/safe-creation.svg" alt="Image of a vault" />,
         description: 'Your Safe was successfully created!',
         instruction: 'Press continue to get to your Dashboard.',
       }
