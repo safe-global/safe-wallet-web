@@ -8,6 +8,7 @@ import { isOwner, isSignableBy } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ConfirmTxModal from '@/components/tx/modals/ConfirmTxModal'
+import useIsPending from '@/hooks/useIsPending'
 
 const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
@@ -15,18 +16,20 @@ const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactEl
   const wallet = useWallet()
   const signaturePending = isSignableBy(txSummary, wallet?.address || '')
   const granted = isOwner(safe?.owners, wallet?.address)
+  const isPending = useIsPending({ txId: txSummary.id })
 
-  const onClick = () => {
+  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
     setOpen(true)
   }
 
-  const isDisabled = !signaturePending || !granted
+  const isDisabled = !signaturePending || !granted || isPending
 
   return (
     <>
       <Tooltip title="Sign" arrow placement="top">
         <span>
-          <IconButton onClick={onClick} disabled={isDisabled} size="small">
+          <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
             <CheckIcon fontSize="small" />
           </IconButton>
         </span>

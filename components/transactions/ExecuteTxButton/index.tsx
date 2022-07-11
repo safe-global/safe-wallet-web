@@ -19,7 +19,8 @@ const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): Reac
   const isNext = !!txNonce && !!safeNonce && txNonce === safeNonce
   const isDisabled = !isNext || isPending
 
-  const onClick = () => {
+  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
     setOpen(true)
   }
 
@@ -27,7 +28,7 @@ const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): Reac
     <>
       <Tooltip title="Execute" arrow placement="top">
         <span>
-          <IconButton onClick={onClick} disabled={isDisabled} size="small">
+          <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
             <RocketLaunchIcon fontSize="small" />
           </IconButton>
         </span>
