@@ -13,7 +13,6 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
-import useSafeTxGas from '@/hooks/useSafeTxGas'
 
 export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
@@ -41,19 +40,10 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
     }
   }, [removedOwner, newOwner])
 
-  // Estimate safeTxGas
-  const { safeGas, safeGasError } = useSafeTxGas(changeOwnerTx?.data)
-  const { recommendedNonce = 0 } = safeGas || {}
-
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!changeOwnerTx) return
-
-    return await createTx({
-      ...changeOwnerTx.data,
-      nonce: recommendedNonce,
-      safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
-    })
-  }, [recommendedNonce, changeOwnerTx, safeGas?.safeTxGas])
+    return await createTx(changeOwnerTx.data)
+  }, [changeOwnerTx])
 
   const isReplace = Boolean(removedOwner)
 
@@ -72,7 +62,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
   }
 
   // All errors
-  const txError = safeTxError || safeGasError || createTxError
+  const txError = safeTxError || createTxError
 
   return (
     <SignOrExecuteForm
