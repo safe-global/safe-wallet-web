@@ -1,0 +1,40 @@
+:root {
+  --onboard-white: var(--color-background-paper);
+  --onboard-black: var(--color-secondary-main);
+  --onboard-primary-1: var(--color-primary-main);
+  --onboard-primary-100: var(--color-primary-background);
+  --onboard-primary-200: var(--color-primary-light);
+  --onboard-primary-400: var(--color-primary-light);
+  --onboard-primary-500: var(--color-primary-main);
+  --onboard-primary-600: var(--color-primary-dark);
+  --onboard-primary-700: var(--color-primary-dark);
+  --onboard-gray-100: var(--color-border-light);
+  --onboard-gray-200: var(--color-border-main);
+  --onboard-gray-300: var(--color-secondary-light);
+  --onboard-gray-400: var(--color-secondary-main);
+  --onboard-success-500: var(--color-success-light);
+  --onboard-success-600: var(--color-success-main);
+  --onboard-success-700: var(--color-success-dark);
+
+  --onboard-danger-500: var(--color-error-light);
+  --onboard-danger-600: var(--color-error-main);
+  --onboard-danger-700: var(--color-error-dark);
+  --onboard-warning-500: var(--color-warning-light);
+  --onboard-warning-600: var(--color-warning-main);
+  --onboard-warning-700: var(--color-warning-dark);
+
+  --account-select-modal-white: var(--color-background-paper);
+  --account-select-modal-black: var(--color-secondary-main);
+  --account-select-modal-primary-100: var(--color-primary-background);
+  --account-select-modal-primary-200: var(--color-background-light);
+  --account-select-modal-primary-300: var(--color-primary-main);
+  --account-select-modal-primary-500: var(--color-primary-main);
+  --account-select-modal-primary-600: var(--color-primary-dark);
+
+  /* FONTS */
+  --onboard-font-family-normal: Averta, sans-serif;
+  --onboard-font-family-semibold: Averta, sans-serif;
+  --onboard-font-family-light: Averta, sans-serif;
+  --account-select-modal-font-family-normal: Averta, sans-serif;
+  --account-select-modal-font-family-light: Averta, sans-serif;
+}

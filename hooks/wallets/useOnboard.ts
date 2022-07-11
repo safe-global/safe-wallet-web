@@ -94,23 +94,26 @@ export const useInitOnboard = () => {
   const { lastWallet } = useAppSelector(selectSession)
   const dispatch = useAppDispatch()
 
+  // Disable unsupported wallets on the current chain
   useEffect(() => {
-    if (!onboard || !chain?.disabledWallets) {
-      return
+    if (onboard && chain?.disabledWallets) {
+      const supportedModules = getSupportedWallets(chain.disabledWallets)
+      onboard.state.actions.setWalletModules(supportedModules)
     }
-
-    const supportedModules = getSupportedWallets(chain.disabledWallets)
-    onboard.state.actions.setWalletModules(supportedModules)
   }, [onboard, chain?.disabledWallets])
 
+  // Connect to the last connected wallet
   useEffect(() => {
-    if (!onboard) {
-      return
+    if (onboard && lastWallet) {
+      onboard.connectWallet({
+        autoSelect: { label: lastWallet, disableModals: true },
+      })
     }
+  }, [onboard, lastWallet])
 
-    if (lastWallet) {
-      onboard.connectWallet({ autoSelect: { disableModals: true, label: lastWallet } })
-    }
+  // Save the last connected wallet to Redux/local storage
+  useEffect(() => {
+    if (!onboard) return
 
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
       const connectedWallet = getConnectedWallet(wallets)
@@ -120,7 +123,7 @@ export const useInitOnboard = () => {
     return () => {
       walletSubscription.unsubscribe()
     }
-  }, [onboard, lastWallet, dispatch])
+  }, [onboard, dispatch, setLastWallet])
 }
 
 export default useOnboard
