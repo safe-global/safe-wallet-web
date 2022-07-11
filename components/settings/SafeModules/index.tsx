@@ -5,7 +5,7 @@ import { Paper, Grid, Typography, Box, Link } from '@mui/material'
 const NoModules = () => {
   return (
     <Typography mt={2} color={(theme) => theme.palette.secondary.light}>
-      No modules set
+      No modules enabled
     </Typography>
   )
 }
