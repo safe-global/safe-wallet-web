@@ -7,7 +7,7 @@ import TxSummary from '@/components/transactions/TxSummary'
 import GroupLabel from '@/components/transactions/GroupLabel'
 import TxDateLabel from '@/components/transactions/TxDateLabel'
 import TxDetails from '@/components/transactions/TxDetails'
-import CreateTxInfo from '@/components/transactions/Create'
+import CreateTxInfo from '@/components/transactions/SafeCreationTx'
 
 export const ExpandableTransactionItem = ({
   item,
@@ -31,7 +31,7 @@ export const ExpandableTransactionItem = ({
 
     <AccordionDetails sx={{ padding: 0 }}>
       {isCreationTxInfo(item.transaction.txInfo) ? (
-        <CreateTxInfo timestamp={item.transaction.timestamp} txInfo={item.transaction.txInfo} />
+        <CreateTxInfo txSummary={item.transaction} />
       ) : (
         <TxDetails txSummary={item.transaction} txDetails={txDetails} />
       )}
