@@ -4,4 +4,37 @@
   padding-left: 0;
   margin-left: 10px;
   padding: 0 0 0 10px;
+  border-left: 1px solid var(--color-border-light);
+}
+
+.sublist::after {
+  content: '';
+  height: 23px;
+  width: 1px;
+  position: absolute;
+  bottom: 0;
+  left: -1px;
+  background-color: var(--color-background-paper);
+}
+
+.sublistItem {
+  border-radius: 6px;
+}
+
+.sublistItem :global .MuiListItemButton-root {
+  padding-left: 26px;
+}
+
+.sublistItem :global .MuiListItemButton-root:hover,
+.sublistItem :global .MuiListItemButton-root.Mui-selected {
+  background-color: var(--color-border-background) !important;
+}
+
+.sublistItem::before {
+  content: '';
+  width: 6px;
+  height: 1px;
+  position: absolute;
+  left: -10px;
+  background-color: var(--color-border-light);
 }

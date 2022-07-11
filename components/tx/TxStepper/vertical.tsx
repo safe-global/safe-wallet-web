@@ -6,8 +6,8 @@ import StepLabel from '@mui/material/StepLabel'
 import { StepContent } from '@mui/material'
 import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
 
-const VerticalTxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElement => {
-  const { onBack, onSubmit, activeStep, stepData } = useTxStepper({ steps, initialData, onClose })
+const VerticalTxStepper = ({ steps, initialData, onClose, onFinish }: TxStepperProps): ReactElement => {
+  const { onBack, onSubmit, setStep, activeStep, stepData } = useTxStepper({ steps, initialData, onClose, onFinish })
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -19,7 +19,7 @@ const VerticalTxStepper = ({ steps, initialData, onClose }: TxStepperProps): Rea
             <Step key={label} {...stepProps}>
               <StepLabel>{label}</StepLabel>
               <StepContent>
-                {steps[activeStep].render(stepData[Math.max(0, activeStep - 1)], onSubmit, onBack)}
+                {steps[activeStep].render(stepData[Math.max(0, activeStep)], onSubmit, onBack, setStep)}
               </StepContent>
             </Step>
           )

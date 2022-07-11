@@ -2,8 +2,7 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   width: 100%;
-  border-top-width: 2px;
-  border-top-style: solid;
+  border-top: 2px solid var(--color-border-light);
 }
 
 .details {
@@ -45,14 +44,12 @@
   display: flex;
   flex-direction: column;
   padding-right: 60px; /* to not overlap with the share link */
-  border-bottom-width: 2px;
-  border-bottom-style: solid;
+  border-bottom: 2px solid var(--color-border-light);
 }
 
 .txSummary + .txData {
-  border-bottom-width: 0;
-  border-top-width: 2px;
-  border-top-style: solid;
+  border-bottom: none;
+  border-top: 2px solid var(--color-border-light);
 }
 
 .txSummary,
@@ -62,8 +59,7 @@
 
 .txSigners {
   padding: 24px;
-  border-left-width: 2px;
-  border-left-style: solid;
+  border-left: 2px solid var(--color-border-light);
 }
 
 .noPadding {

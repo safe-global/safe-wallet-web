@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material'
+import palette from './colors'
 
 declare module '@mui/material/styles' {
   // Custom color properties
@@ -17,65 +18,11 @@ declare module '@mui/material/styles' {
   }
 }
 
-const palette = {
-  primary: {
-    dark: '#0E7361',
-    main: '#008C73',
-    light: '#92C9BE',
-    background: '#EFFAF8',
-  },
-  secondary: {
-    main: '#162D45',
-    light: '#566976',
-  },
-  border: {
-    main: '#ACBAC3',
-    light: '#EEEFF0',
-    background: '#F6F7F8',
-  },
-  error: {
-    dark: '#C31717',
-    main: '#F02525',
-    light: '#FFCED6',
-    background: '#FFF3F5',
-  },
-  success: {
-    dark: '#027128',
-    main: '#008C30',
-    light: '#99CDAB',
-  },
-  info: {
-    dark: '#247CB7',
-    main: '#3BA2E7',
-    light: '#A6D0EC',
-    background: '#EBF7FF',
-  },
-  warning: {
-    dark: '#E8663D',
-    main: '#FFC05F',
-    light: '#FBE5C5',
-    background: '#FFF4E3',
-  },
-}
-
 const theme = createTheme({
   palette,
   typography: {
-    fontFamily: [
-      'Averta',
-      'Roboto',
-      'Helvetica Neue',
-      'Arial',
-      'Segoe UI',
-      'Oxygen',
-      'Ubuntu',
-      'Cantarell',
-      'Fira Sans',
-      'Droid Sans',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      'sans-serif',
-    ].join(','),
+    fontFamily: 'Averta, sans-serif',
+
     allVariants: {
       color: palette.secondary.main,
     },

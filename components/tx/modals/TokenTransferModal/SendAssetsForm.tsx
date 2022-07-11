@@ -44,9 +44,7 @@ export const SendFromBlock = (): ReactElement => {
 
 const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center">
-    <Box fontSize={24}>
-      <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
-    </Box>
+    <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
 
     <Grid item xs>
       <Typography variant="body2" lineHeight={1.2}>
@@ -105,7 +103,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         <SendFromBlock />
 
         <FormControl fullWidth>
-          <AddressBookInput name="recipient" />
+          <AddressBookInput name="recipient" label="Recipient" />
         </FormControl>
 
         <FormControl fullWidth>

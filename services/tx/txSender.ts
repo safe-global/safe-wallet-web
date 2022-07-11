@@ -1,4 +1,11 @@
-import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  getTransactionDetails,
+  Operation,
+  postSafeGasEstimation,
+  SafeTransactionEstimation,
+  TransactionDetails,
+  TransactionSummary,
+} from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   MetaTransactionData,
   SafeTransaction,
@@ -13,6 +20,19 @@ import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
 import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
 
+const estimateSafeTxGas = async (
+  chainId: string,
+  safeAddress: string,
+  txParams: MetaTransactionData,
+): Promise<SafeTransactionEstimation> => {
+  return await postSafeGasEstimation(chainId, safeAddress, {
+    to: txParams.to,
+    value: txParams.value,
+    data: txParams.data,
+    operation: (txParams.operation as unknown as Operation) || Operation.CALL,
+  })
+}
+
 /**
  * Create a transaction from raw params
  */
@@ -21,6 +41,14 @@ export const createTx = async (txParams: SafeTransactionDataPartial): Promise<Sa
   if (!safeSDK) {
     throw new Error('Safe SDK not initialized')
   }
+
+  // Get the nonce and safeTxGas if not provided
+  if (txParams.nonce == null) {
+    const chainId = await safeSDK.getChainId()
+    const estimaton = await estimateSafeTxGas(String(chainId), safeSDK.getAddress(), txParams)
+    txParams = { ...txParams, nonce: estimaton.recommendedNonce, safeTxGas: Number(estimaton.safeTxGas) }
+  }
+
   return await safeSDK.createTransaction(txParams)
 }
 
