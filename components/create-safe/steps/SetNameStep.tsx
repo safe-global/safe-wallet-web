@@ -1,19 +1,24 @@
-import React from 'react'
 import { Box, Button, Divider, FormControl, Grid, Paper, TextField, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { CreateSafeFormData } from '@/components/create-safe/index'
+import { CreateSafeFormData } from '@/components/create-safe'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
+import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 
 type Props = {
+  params: CreateSafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
+  setStep: StepRenderProps['setStep']
 }
 
-const SetName = ({ onSubmit, onBack }: Props) => {
+const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
+  useResetSafeCreation(setStep)
   const fallbackName = useMnemonicSafeName()
-  const { register, handleSubmit } = useForm<CreateSafeFormData>({ defaultValues: { name: fallbackName } })
+  const { register, handleSubmit } = useForm<CreateSafeFormData>({
+    defaultValues: { name: params?.name || fallbackName },
+  })
 
   return (
     <Paper>
@@ -54,4 +59,4 @@ const SetName = ({ onSubmit, onBack }: Props) => {
   )
 }
 
-export default SetName
+export default SetNameStep

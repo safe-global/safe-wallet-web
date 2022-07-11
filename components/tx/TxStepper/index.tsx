@@ -6,7 +6,7 @@ import { DialogActions, Typography } from '@mui/material'
 import css from './styles.module.css'
 
 const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElement => {
-  const { onBack, onSubmit, activeStep, stepData, firstStep } = useTxStepper({ steps, initialData, onClose })
+  const { onBack, onSubmit, setStep, activeStep, stepData, firstStep } = useTxStepper({ steps, initialData, onClose })
 
   return (
     <Box sx={{ m: 3 }} className={css.container}>
@@ -17,7 +17,7 @@ const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElemen
           </Typography>
         </Box>
 
-        {steps[activeStep].render(stepData[Math.max(0, activeStep)], onSubmit, onBack)}
+        {steps[activeStep].render(stepData[Math.max(0, activeStep)], onSubmit, onBack, setStep)}
       </Box>
 
       <DialogActions sx={{ m: -3, mt: 3 }}>
