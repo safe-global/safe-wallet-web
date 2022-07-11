@@ -34,16 +34,18 @@ export const useTxStepper = ({ steps, initialData, onClose }: TxStepperProps) =>
   }
 
   const firstStep = activeStep === 0
+  const lastStep = activeStep === steps.length - 1
 
   const onBack = firstStep ? onClose : handleBack
 
   const onSubmit = (data: unknown) => {
-    if (activeStep === steps.length - 1) {
+    if (lastStep) {
       onClose()
       return
     }
     const allData = [...stepData]
     allData[activeStep] = data
+    allData[activeStep + 1] = data
     setStepData(allData)
     handleNext()
   }
