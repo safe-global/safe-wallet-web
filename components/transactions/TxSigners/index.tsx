@@ -131,7 +131,7 @@ export const TxSigners = ({
       <StyledStep $bold $state={isConfirmed ? 'confirmed' : 'active'}>
         <StepLabel icon={isConfirmed ? <CheckIcon /> : <CircleIcon />}>
           Confirmations{' '}
-          <Box className={css.confirmations}>
+          <Box className={css.confirmationsTotal}>
             ({`${numberOfConfirmations} of ${detailedExecutionInfo.confirmationsRequired}`})
           </Box>
         </StepLabel>
