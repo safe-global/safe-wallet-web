@@ -31,8 +31,8 @@ export const isTxQueued = (value: TransactionStatus): boolean => {
 export const isAwaitingExecution = (txStatus: TransactionStatus): boolean =>
   TransactionStatus.AWAITING_EXECUTION === txStatus
 
-export const isOwner = (safeOwners: AddressEx[] | undefined, walletAddress: string | undefined) => {
-  return safeOwners?.some((owner) => owner.value.toLowerCase() === walletAddress?.toLowerCase())
+export const isOwner = (safeOwners: AddressEx[] = [], walletAddress?: string) => {
+  return safeOwners.some((owner) => owner.value.toLowerCase() === walletAddress?.toLowerCase())
 }
 
 export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null): value is MultisigExecutionDetails => {

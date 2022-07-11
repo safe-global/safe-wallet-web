@@ -11,7 +11,7 @@ const NewTxButton = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)
   const { safe } = useSafeInfo()
   const wallet = useWallet()
-  const isSafeOwner = wallet && isOwner(safe?.owners, wallet.address)
+  const isSafeOwner = isOwner(safe?.owners, wallet?.address)
   const isWrongChain = wallet?.chainId !== safe?.chainId
 
   return (
