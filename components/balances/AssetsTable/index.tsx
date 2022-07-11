@@ -39,16 +39,10 @@ const headCells = [
 ]
 
 const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
-  const [txOpen, setTxOpen] = useState<boolean>(false)
-  const [clickedAsset, setClickedAsset] = useState<string>('')
+  const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const isSafeOwner = isOwner(safe?.owners, wallet?.address)
-
-  const handleSendClick = (asset: string) => {
-    setClickedAsset(asset)
-    setTxOpen(true)
-  }
 
   const rows = (items || []).map((item) => ({
     asset: {
@@ -76,7 +70,7 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
       content: (
         <>
           {isSafeOwner && (
-            <Button variant="contained" color="primary" onClick={() => handleSendClick(item.tokenInfo.address)}>
+            <Button variant="contained" color="primary" onClick={() => setSelectedAsset(item.tokenInfo.address)}>
               Send
             </Button>
           )}
@@ -88,7 +82,12 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
   return (
     <div className={css.container}>
       <EnhancedTable rows={rows} headCells={headCells} />
-      {txOpen && <TokenTransferModal onClose={() => setTxOpen(false)} initialData={[{ tokenAddress: clickedAsset }]} />}
+      {selectedAsset && (
+        <TokenTransferModal
+          onClose={() => setSelectedAsset(undefined)}
+          initialData={[{ tokenAddress: selectedAsset }]}
+        />
+      )}
     </div>
   )
 }
