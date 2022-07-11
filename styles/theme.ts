@@ -21,21 +21,8 @@ declare module '@mui/material/styles' {
 const theme = createTheme({
   palette,
   typography: {
-    fontFamily: [
-      'Averta',
-      'Roboto',
-      'Helvetica Neue',
-      'Arial',
-      'Segoe UI',
-      'Oxygen',
-      'Ubuntu',
-      'Cantarell',
-      'Fira Sans',
-      'Droid Sans',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      'sans-serif',
-    ].join(','),
+    fontFamily: 'Averta, sans-serif',
+
     allVariants: {
       color: palette.secondary.main,
     },

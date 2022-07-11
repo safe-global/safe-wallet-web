@@ -18,7 +18,7 @@
 
 .main {
   grid-area: main;
-  padding: 25px;
+  padding: 24px;
   overflow: auto;
   height: calc(100vh - 52px);
   position: relative;
@@ -37,5 +37,9 @@
 
   .sidebar {
     display: none;
+  }
+
+  .main {
+    padding: 8px;
   }
 }
