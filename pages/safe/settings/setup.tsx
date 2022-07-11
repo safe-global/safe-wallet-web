@@ -3,7 +3,7 @@ import { Grid, Paper, Typography } from '@mui/material'
 import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
-import { sameAddress } from '@/utils/addresses'
+import { isOwner } from '@/utils/transaction-guards'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet, { useIsWrongChain } from '@/hooks/wallets/useWallet'
 
@@ -16,9 +16,8 @@ const Setup: NextPage = () => {
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
 
-  const isOwner =
-    Boolean(wallet?.address) && Boolean(safe?.owners.some((owner) => sameAddress(owner.value, wallet?.address)))
-  const isGranted = isOwner && !isWrongChain
+  const isSafeOwner = isOwner(safe?.owners, wallet?.address)
+  const isGranted = isSafeOwner && !isWrongChain
 
   return (
     <main>

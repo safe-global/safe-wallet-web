@@ -7,6 +7,7 @@ import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import useChains from '@/hooks/useChains'
+import { isOwner } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
 
@@ -25,9 +26,7 @@ const SafeListItemSecondaryAction = ({
   const wallet = useWallet()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const isAdded = !!addedSafes?.[address]
-  const isOwner = addedSafes?.[address]?.owners.some(
-    ({ value }) => value.toLowerCase() === wallet?.address?.toLowerCase(),
-  )
+  const isSafeOwner = isOwner(addedSafes?.[address]?.owners, wallet?.address)
 
   if (!isAdded && href) {
     return (
@@ -52,7 +51,7 @@ const SafeListItemSecondaryAction = ({
     )
   }
 
-  if (!isOwner) {
+  if (!isSafeOwner) {
     return (
       <Typography
         variant="body2"
