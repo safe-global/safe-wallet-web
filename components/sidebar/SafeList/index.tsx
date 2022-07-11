@@ -19,6 +19,7 @@ import SafeListItem from '@/components/sidebar/SafeListItem'
 import { AppRoutes } from '@/config/routes'
 
 import css from './styles.module.css'
+import { sameAddress } from '@/utils/addresses'
 
 export const _extractSafesByChainId = ({
   chainId,
@@ -53,9 +54,9 @@ export const _shouldExpandSafeList = ({
 
   const addedAddressesOnChain = Object.keys(addedSafesOnChain)
 
-  if (isCurrentChain && ownedSafesOnChain.some((address) => address.toLowerCase() === safeAddress.toLowerCase())) {
+  if (isCurrentChain && ownedSafesOnChain.some((address) => sameAddress(address, safeAddress))) {
     // Expand the Owned Safes if the current Safe is owned, but not added
-    shouldExpand = !addedAddressesOnChain.some((address) => address.toLowerCase() === safeAddress.toLowerCase())
+    shouldExpand = !addedAddressesOnChain.some((address) => sameAddress(address, safeAddress))
   } else {
     // Expand the Owned Safes if there are no added Safes
     shouldExpand = !addedAddressesOnChain.length && ownedSafesOnChain.length <= MAX_EXPANDED_SAFES
@@ -85,7 +86,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
         <Typography variant="h4" display="inline" fontWeight={700}>
           My Safes
         </Typography>
-        <Link href={{ pathname: AppRoutes.welcome, query: router.query }} passHref>
+        <Link href={{ pathname: AppRoutes.welcome }} passHref>
           <Button disableElevation size="small" variant="outlined" onClick={closeDrawer} className={css.addButton}>
             + Add
           </Button>

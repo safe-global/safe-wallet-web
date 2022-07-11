@@ -8,6 +8,7 @@ const useSafeAddress = (): string => {
   const fullAddress = Array.isArray(safe) ? safe[0] : safe
 
   const checksummedAddress = useMemo(() => {
+    if (!fullAddress) return ''
     const { address } = parsePrefixedAddress(fullAddress)
     return address
   }, [fullAddress])
