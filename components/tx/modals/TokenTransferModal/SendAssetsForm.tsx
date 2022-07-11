@@ -103,7 +103,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         <SendFromBlock />
 
         <FormControl fullWidth>
-          <AddressBookInput name="recipient" />
+          <AddressBookInput name="recipient" label="Recipient" />
         </FormControl>
 
         <FormControl fullWidth>
