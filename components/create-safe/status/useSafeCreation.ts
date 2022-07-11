@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { useRouter } from 'next/router'
-import { PendingSafeData } from '@/components/create-safe/index'
-import { createNewSafe } from '@/components/create-safe/Review'
+import { PendingSafeData } from '@/components/create-safe'
 import { AppRoutes } from '@/config/routes'
 import { Errors, logError } from '@/services/exceptions'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
+import { createNewSafe } from '@/components/create-safe/sender'
 
 export enum SafeCreationStatus {
   PENDING = 'PENDING',
@@ -68,7 +68,7 @@ export const useSafeCreation = () => {
 
     setStatus(SafeCreationStatus.PENDING)
     setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
-  }, [safeCreationCallback, creationPromise, ethersProvider, pendingSafe])
+  }, [safeCreationCallback, creationPromise, ethersProvider, pendingSafe, status])
 
   useEffect(() => {
     if (!creationPromise || !pendingSafe) return

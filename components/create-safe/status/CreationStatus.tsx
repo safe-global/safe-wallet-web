@@ -4,7 +4,7 @@ import Image from 'next/image'
 import SafeCreationWaiting from '@/public/images/safe-creation.svg'
 import SafeCreationPending from '@/public/images/safe-creation-process.gif'
 import SafeCreationError from '@/public/images/safe-creation-error.svg'
-import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/useSafeCreation'
+import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
 
 type Props = {
   onClose: () => void

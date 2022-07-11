@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 
-import ConnectWallet from '@/components/create-safe/ConnectWallet'
-import SetName from '@/components/create-safe/SetName'
-import OwnerPolicy from '@/components/create-safe/OwnerPolicy'
-import Review from '@/components/create-safe/Review'
+import ConnectWalletStep from '@/components/create-safe/steps/ConnectWalletStep'
+import SetNameStep from '@/components/create-safe/steps/SetNameStep'
+import OwnerPolicyStep from '@/components/create-safe/steps/OwnerPolicyStep'
+import ReviewStep from '@/components/create-safe/steps/ReviewStep'
 import { useRouter } from 'next/router'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 import { AppRoutes } from '@/config/routes'
-import { CreationStatus } from '@/components/create-safe/CreationStatus'
+import { CreationStatus } from '@/components/create-safe/status/CreationStatus'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 
 export type Owner = {
@@ -28,24 +28,24 @@ export type PendingSafeData = CreateSafeFormData & { txHash?: string; saltNonce:
 export const CreateSafeSteps: TxStepperProps['steps'] = [
   {
     label: 'Connect wallet & select network',
-    render: (data, onSubmit, onBack) => <ConnectWallet onSubmit={onSubmit} onBack={onBack} />,
+    render: (data, onSubmit, onBack) => <ConnectWalletStep onSubmit={onSubmit} onBack={onBack} />,
   },
   {
     label: 'Name',
-    render: (data, onSubmit, onBack) => (
-      <SetName params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+    render: (data, onSubmit, onBack, setStep) => (
+      <SetNameStep params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
     ),
   },
   {
     label: 'Owners and Confirmations',
-    render: (data, onSubmit, onBack) => (
-      <OwnerPolicy params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+    render: (data, onSubmit, onBack, setStep) => (
+      <OwnerPolicyStep params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
     ),
   },
   {
     label: 'Review',
-    render: (data, onSubmit, onBack) => (
-      <Review params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+    render: (data, onSubmit, onBack, setStep) => (
+      <ReviewStep params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
     ),
   },
 ]

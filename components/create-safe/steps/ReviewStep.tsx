@@ -1,30 +1,23 @@
 import React from 'react'
-import type { Web3Provider } from '@ethersproject/providers'
-import { CreateSafeFormData } from '@/components/create-safe/index'
+import { CreateSafeFormData } from '@/components/create-safe'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import Safe, { DeploySafeProps, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import EthHashInfo from '../common/EthHashInfo'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
-
-export const createNewSafe = async (ethersProvider: Web3Provider, props: DeploySafeProps): Promise<Safe> => {
-  const ethAdapter = createEthersAdapter(ethersProvider)
-
-  const safeFactory = await SafeFactory.create({ ethAdapter })
-  return safeFactory.deploySafe(props)
-}
+import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 
 type Props = {
   params: CreateSafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
+  setStep: StepRenderProps['setStep']
 }
 
-const Review = ({ params, onSubmit, onBack }: Props) => {
+const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
+  useResetSafeCreation(setStep)
   const wallet = useWallet()
   const ethersProvider = useWeb3()
   const [_, setPendingSafe] = usePendingSafe()
@@ -91,4 +84,4 @@ const Review = ({ params, onSubmit, onBack }: Props) => {
   )
 }
 
-export default Review
+export default ReviewStep

@@ -4,6 +4,7 @@ export type StepRenderProps = {
   data: unknown
   onSubmit: (data: unknown) => void
   onBack: () => void
+  setStep: (step: number) => void
 }
 
 type Step = {
@@ -12,6 +13,7 @@ type Step = {
     data: StepRenderProps['data'],
     onSubmit: StepRenderProps['onSubmit'],
     onBack: StepRenderProps['onBack'],
+    setStep: StepRenderProps['setStep'],
   ) => ReactElement
 }
 
@@ -32,6 +34,10 @@ export const useTxStepper = ({ steps, initialData, onClose, onFinish }: TxSteppe
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  }
+
+  const setStep = (step: number) => {
+    setActiveStep(step)
   }
 
   const firstStep = activeStep === 0
@@ -56,6 +62,7 @@ export const useTxStepper = ({ steps, initialData, onClose, onFinish }: TxSteppe
   return {
     onBack,
     onSubmit,
+    setStep,
     activeStep,
     stepData,
     firstStep,
