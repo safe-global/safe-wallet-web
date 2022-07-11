@@ -43,7 +43,7 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
   const [clickedAsset, setClickedAsset] = useState<string>('')
   const { safe } = useSafeInfo()
   const wallet = useWallet()
-  const granted = isOwner(safe?.owners, wallet?.address)
+  const isSafeOwner = isOwner(safe?.owners, wallet?.address)
 
   const handleSendClick = (asset: string) => {
     setClickedAsset(asset)
@@ -75,7 +75,7 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
       rawValue: '',
       content: (
         <>
-          {granted && (
+          {isSafeOwner && (
             <Button variant="contained" color="primary" onClick={() => handleSendClick(item.tokenInfo.address)}>
               Send
             </Button>
