@@ -3,6 +3,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { Paper, Grid, Link, Typography, Box } from '@mui/material'
 import { gte } from 'semver'
 
+import css from './styles.module.css'
+
 const NoTransactionGuard = () => {
   return (
     <Typography mt={2} color={(theme) => theme.palette.secondary.light}>
@@ -13,15 +15,7 @@ const NoTransactionGuard = () => {
 
 const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId: string }) => {
   return (
-    <Box
-      sx={(theme) => ({
-        backgroundColor: theme.palette.primary.background,
-        border: `1px solid ${theme.palette.primary.main}`,
-        padding: 1,
-        borderRadius: '4px',
-        marginTop: 2,
-      })}
-    >
+    <Box className={css.guarddisplay}>
       <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton chainId={chainId} showAvatar={false} />
     </Box>
   )

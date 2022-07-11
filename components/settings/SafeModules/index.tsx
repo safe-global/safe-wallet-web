@@ -2,6 +2,8 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Paper, Grid, Typography, Box, Link } from '@mui/material'
 
+import css from './styles.module.css'
+
 const NoModules = () => {
   return (
     <Typography mt={2} color={(theme) => theme.palette.secondary.light}>
@@ -12,15 +14,7 @@ const NoModules = () => {
 
 const ModuleDisplay = ({ moduleAddress, chainId }: { moduleAddress: string; chainId: string }) => {
   return (
-    <Box
-      sx={(theme) => ({
-        backgroundColor: theme.palette.primary.background,
-        border: `1px solid ${theme.palette.primary.main}`,
-        padding: 1,
-        borderRadius: '4px',
-        marginTop: 2,
-      })}
-    >
+    <Box className={css.moduledisplay}>
       <EthHashInfo shortAddress={false} address={moduleAddress} showCopyButton chainId={chainId} showAvatar={false} />
     </Box>
   )
