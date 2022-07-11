@@ -12,9 +12,11 @@ export type TxModalProps = {
 
 const TxModal = ({ onClose, steps, wide = false, initialData }: TxModalProps): ReactElement => {
   return (
-    <ModalDialog open onClose={onClose} maxWidth={wide ? 'md' : 'sm'} fullWidth>
-      <TxStepper steps={steps} initialData={initialData} onClose={onClose} />
-    </ModalDialog>
+    <div onClick={(e) => e.stopPropagation()}>
+      <ModalDialog open onClose={onClose} maxWidth={wide ? 'md' : 'sm'} fullWidth>
+        <TxStepper steps={steps} initialData={initialData} onClose={onClose} />
+      </ModalDialog>
+    </div>
   )
 }
 

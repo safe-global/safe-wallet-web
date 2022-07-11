@@ -1,4 +1,4 @@
-import React, { useState, type ReactElement } from 'react'
+import { useState, type ReactElement, SyntheticEvent } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Tooltip } from '@mui/material'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
@@ -19,7 +19,8 @@ const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): Reac
   const isNext = !!txNonce && !!safeNonce && txNonce === safeNonce
   const isDisabled = !isNext || isPending
 
-  const onClick = () => {
+  const onClick = (e: SyntheticEvent) => {
+    e.stopPropagation()
     setOpen(true)
   }
 
@@ -27,7 +28,7 @@ const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): Reac
     <>
       <Tooltip title="Execute" arrow placement="top">
         <span>
-          <IconButton onClick={onClick} disabled={isDisabled} size="small">
+          <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
             <RocketLaunchIcon fontSize="small" />
           </IconButton>
         </span>
