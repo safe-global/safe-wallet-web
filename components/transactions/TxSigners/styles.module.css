@@ -19,7 +19,7 @@
   padding: 0 !important;
 }
 
-.confirmations {
+.confirmationsTotal {
   color: var(--color-border-main);
   display: inline;
   font-weight: normal;
