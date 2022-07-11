@@ -14,7 +14,6 @@ export const AppRoutes = {
       index: '/safe/balances',
     },
     settings: {
-      spendingLimit: '/safe/settings/spending-limit',
       setup: '/safe/settings/setup',
       modules: '/safe/settings/modules',
       index: '/safe/settings',
