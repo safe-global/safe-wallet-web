@@ -3,3 +3,24 @@
   width: 20px;
   margin-right: 2px;
 }
+
+.stepper {
+  padding: 0;
+}
+
+.stepper :global .MuiStepConnector-line {
+  margin-left: -3px;
+  border-color: var(--color-border-light);
+  border-left-width: 2px;
+  min-height: 14px;
+}
+
+.stepper :global .MuiStepLabel-root {
+  padding: 0 !important;
+}
+
+.confirmations {
+  color: var(--color-border-main);
+  display: inline;
+  font-weight: normal;
+}

@@ -1,15 +1,10 @@
-import Step, { StepProps } from '@mui/material/Step'
-import StepConnector from '@mui/material/StepConnector'
-import StepContent from '@mui/material/StepContent'
-import StepLabel from '@mui/material/StepLabel'
-import Stepper from '@mui/material/Stepper'
+import { useState, type ReactElement } from 'react'
+import { Box, Button, Step, StepConnector, StepContent, StepLabel, Stepper, type StepProps } from '@mui/material'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUncheckedOutlined'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
-import Box from '@mui/material/Box'
-import { useState, type ReactElement } from 'react'
 import type {
   AddressEx,
   DetailedExecutionInfo,
@@ -19,10 +14,8 @@ import type {
 import theme from '@/styles/theme'
 
 import useWallet from '@/hooks/wallets/useWallet'
-import useAddressBook from '@/hooks/useAddressBook'
 import useIsPending from '@/hooks/useIsPending'
 import { isCancellationTxInfo, isExecutable, isMultisigExecutionDetails } from '@/utils/transaction-guards'
-import { Button } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 import css from './styles.module.css'
@@ -36,7 +29,7 @@ const CheckIcon = () => <CheckCircleIcon className={css.icon} />
 const CircleIcon = () => (
   <RadioButtonUncheckedOutlinedIcon className={css.icon} sx={{ stroke: 'currentColor', strokeWidth: '1px' }} />
 )
-const DotIcon = () => <FiberManualRecordIcon className={css.icon} sx={{ height: '14px', width: '14px' }} />
+const DotIcon = () => <FiberManualRecordIcon className={css.icon} />
 
 type StepState = 'confirmed' | 'active' | 'disabled' | 'error'
 const getStepColor = (state: StepState): string => {
@@ -55,13 +48,13 @@ type StyledStepProps = {
   $bold?: boolean
   $state: StepState
 }
-const StyledStep = ({ $bold, $state, children, sx, ...rest }: StyledStepProps & StepProps) => (
+const StyledStep = ({ $bold, $state, sx, ...rest }: StyledStepProps & StepProps) => (
   <Step
     sx={{
       '.MuiStepLabel-label': {
         fontWeight: `${$bold ? 'bold' : 'normal'} !important`,
-        fontSize: '16px !important',
         color: `${getStepColor($state)} !important`,
+        fontSize: '16px !important',
       },
       '.MuiStepLabel-iconContainer': {
         color: getStepColor($state),
@@ -70,9 +63,7 @@ const StyledStep = ({ $bold, $state, children, sx, ...rest }: StyledStepProps & 
       ...sx,
     }}
     {...rest}
-  >
-    {children}
-  </Step>
+  />
 )
 
 const shouldHideConfirmations = (detailedExecutionInfo: DetailedExecutionInfo | null): boolean => {
@@ -106,8 +97,6 @@ export const TxSigners = ({
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(detailedExecutionInfo))
   const isPending = useIsPending({ txId })
   const wallet = useWallet()
-  const account = wallet?.address || ''
-  const { [account]: name } = useAddressBook()
 
   const toggleHide = () => {
     setHideConfirmations((prev) => !prev)
@@ -127,20 +116,8 @@ export const TxSigners = ({
     <Stepper
       orientation="vertical"
       nonLinear
-      connector={
-        <StepConnector
-          sx={({ palette }) => ({
-            padding: '3px 0',
-            '.MuiStepConnector-line': {
-              marginLeft: '-3px',
-              borderColor: palette.border.light,
-              borderLeftWidth: '2px',
-              minHeight: '14px',
-            },
-          })}
-        />
-      }
-      sx={{ padding: 0 }}
+      connector={<StepConnector sx={{ padding: '3px 0' }} />}
+      className={css.stepper}
     >
       {isCancellationTxInfo(txInfo) ? (
         <StyledStep $bold $state="error">
@@ -154,13 +131,7 @@ export const TxSigners = ({
       <StyledStep $bold $state={isConfirmed ? 'confirmed' : 'active'}>
         <StepLabel icon={isConfirmed ? <CheckIcon /> : <CircleIcon />}>
           Confirmations{' '}
-          <Box
-            sx={({ palette }) => ({
-              color: palette.border.main,
-              display: 'inline',
-              fontWeight: 'normal',
-            })}
-          >
+          <Box className={css.confirmations}>
             ({`${numberOfConfirmations} of ${detailedExecutionInfo.confirmationsRequired}`})
           </Box>
         </StepLabel>
@@ -170,7 +141,7 @@ export const TxSigners = ({
       {detailedExecutionInfo.confirmations.length > 0 && (
         <StyledStep $state="confirmed">
           <StepLabel icon={<DotIcon />}>
-            <Button variant="text" size="large" onClick={toggleHide}>
+            <Button variant="text" size="large" onClick={toggleHide} disableRipple sx={{ padding: 0 }}>
               {hideConfirmations ? 'Show all' : 'Hide all'}
             </Button>
           </StepLabel>
