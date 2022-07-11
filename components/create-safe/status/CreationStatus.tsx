@@ -5,9 +5,18 @@ import SafeCreationWaiting from '@/public/images/safe-creation.svg'
 import SafeCreationPending from '@/public/images/safe-creation-process.gif'
 import SafeCreationError from '@/public/images/safe-creation-error.svg'
 import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
+import { useAppSelector } from '@/store'
+import { selectChainById } from '@/store/chainsSlice'
+import useChainId from '@/hooks/useChainId'
+import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { evalTemplate } from '@/utils/strings'
 
 type Props = {
   onClose: () => void
+}
+
+const getExplorerUrl = (txHash: string, chain: ChainInfo) => {
+  return evalTemplate(chain.blockExplorerUriTemplate.txHash, txHash)
 }
 
 const getStep = (status: SafeCreationStatus) => {
@@ -40,8 +49,10 @@ const getStep = (status: SafeCreationStatus) => {
 }
 
 export const CreationStatus = ({ onClose }: Props) => {
-  const { status, onRetry } = useSafeCreation()
+  const { status, onRetry, txHash } = useSafeCreation()
   const stepInfo = getStep(status)
+  const chainId = useChainId()
+  const chain = useAppSelector((state) => selectChainById(state, chainId))
 
   console.log(status)
 
@@ -57,11 +68,19 @@ export const CreationStatus = ({ onClose }: Props) => {
           {stepInfo.description}
         </Typography>
       </Box>
-      <Box sx={({ palette }) => ({ backgroundColor: palette.primary.main })} padding={3} marginBottom={6}>
+      <Box sx={({ palette }) => ({ backgroundColor: palette.primary.main })} padding={3}>
         <Typography variant="h4" color="white">
           {stepInfo.instruction}
         </Typography>
       </Box>
+      {txHash && chain && (
+        <Box padding={3}>
+          <Typography>Your Safe creation transaction:</Typography>
+          <a href={getExplorerUrl(txHash, chain)} target="_blank" rel="noreferrer">
+            {txHash}
+          </a>
+        </Box>
+      )}
       <Divider />
       {status === SafeCreationStatus.ERROR && (
         <Grid container padding={3} justifyContent="center" gap={2}>

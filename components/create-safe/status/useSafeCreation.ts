@@ -93,5 +93,6 @@ export const useSafeCreation = () => {
   return {
     status,
     onRetry,
+    txHash: pendingSafe?.txHash,
   }
 }
