@@ -1,4 +1,4 @@
-import React, { useState, type ReactElement } from 'react'
+import { useState, type ReactElement, SyntheticEvent } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Tooltip } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
@@ -18,7 +18,7 @@ const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactEl
   const granted = isOwner(safe?.owners, wallet?.address)
   const isPending = useIsPending({ txId: txSummary.id })
 
-  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
     setOpen(true)
   }

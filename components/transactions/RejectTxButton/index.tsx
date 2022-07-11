@@ -3,7 +3,7 @@ import { Tooltip } from '@mui/material'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import IconButton from '@mui/material/IconButton'
 
-import React, { useState, type ReactElement } from 'react'
+import { useState, type ReactElement, SyntheticEvent } from 'react'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isCustomTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import RejectTxModal from '@/components/tx/modals/RejectTxModal'
@@ -20,7 +20,7 @@ const RejectTxButton = ({ txSummary }: { txSummary: TransactionSummary }): React
 
   const isDisabled = isPending
 
-  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
     setOpen(true)
   }
