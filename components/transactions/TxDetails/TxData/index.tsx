@@ -7,35 +7,10 @@ import {
   isSettingsChangeTxInfo,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
-import { useCurrentChain } from '@/hooks/useChains'
 import { TransactionDetails, Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { type ReactElement } from 'react'
 import RejectionTxInfo from '@/components/transactions/TxDetails/TxData/Rejection'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
-
-export const AddressInfo = ({
-  name,
-  avatarUrl,
-  address,
-  shortName,
-}: {
-  name?: string | null
-  avatarUrl?: string | null
-  address: string | null
-  shortName?: string
-}): ReactElement => {
-  if (!address) {
-    return <></>
-  }
-
-  return (
-    <>
-      {/* TODO: Add these to EthHashInfo */}
-      {name}
-      <EthHashInfo address={address} prefix={shortName} customAvatar={avatarUrl ? avatarUrl : undefined} />
-    </>
-  )
-}
 
 const TransferTxInfoSummary = ({ txInfo }: { txInfo: Transfer }) => {
   const { direction } = txInfo
@@ -52,9 +27,6 @@ const TransferTxInfoSummary = ({ txInfo }: { txInfo: Transfer }) => {
 }
 
 const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
-  const currentChain = useCurrentChain()
-  const { shortName } = currentChain || {}
-
   const txInfo = txDetails.txInfo
 
   if (isTransferTxInfo(txInfo)) {
@@ -63,7 +35,7 @@ const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement 
     return (
       <div>
         <TransferTxInfoSummary txInfo={txInfo} />
-        <AddressInfo address={address} shortName={shortName} />
+        <EthHashInfo address={address} />
       </div>
     )
   }

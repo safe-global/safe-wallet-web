@@ -1,7 +1,7 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
 import useAddressBook from '@/hooks/useAddressBook'
 import { useState } from 'react'
-import CreateEntryDialog, { AddressEntry } from '@/components/address-book/CreateEntryDialog'
+import EntryDialog, { AddressEntry } from '@/components/address-book/EntryDialog'
 import ExportDialog from '@/components/address-book/ExportDialog'
 import ImportDialog from '@/components/address-book/ImportDialog'
 import EditIcon from '@mui/icons-material/Edit'
@@ -9,10 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-
-import { useAppDispatch } from '@/store'
-import { removeAddressBookEntry } from '@/store/addressBookSlice'
-import useChainId from '@/hooks/useChainId'
+import RemoveDialog from '@/components/address-book/RemoveDialog'
 
 import css from './styles.module.css'
 
@@ -22,22 +19,36 @@ const headCells = [
   { id: 'actions', label: '' },
 ]
 
-const defaultOpen = { export: false, import: false, createEntry: false }
+enum ModalType {
+  EXPORT = 'export',
+  IMPORT = 'import',
+  ENTRY = 'entry',
+  REMOVE = 'remove',
+}
+
+const defaultOpen = {
+  [ModalType.EXPORT]: false,
+  [ModalType.IMPORT]: false,
+  [ModalType.ENTRY]: false,
+  [ModalType.REMOVE]: false,
+}
 
 const AddressBookTable = () => {
-  const dispatch = useAppDispatch()
-  const chainId = useChainId()
-
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
-  const [entryDefaultValues, setEntryDefaultValues] = useState<AddressEntry | undefined>(undefined)
+  const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)
 
-  const handleOpen = (type: keyof typeof open) => () => {
+  const handleOpenModal = (type: keyof typeof open) => () => {
     setOpen((prev) => ({ ...prev, [type]: true }))
+  }
+
+  const handleOpenModalWithValues = (modal: ModalType, address: string, name: string) => {
+    setDefaultValues({ address, name })
+    handleOpenModal(modal)()
   }
 
   const handleClose = () => {
     setOpen(defaultOpen)
-    setEntryDefaultValues(undefined)
+    setDefaultValues(undefined)
   }
 
   const addressBook = useAddressBook()
@@ -57,22 +68,13 @@ const AddressBookTable = () => {
       content: (
         <div className={css.entryButtonWrapper}>
           <Tooltip title="Edit entry">
-            <IconButton
-              onClick={() => {
-                setEntryDefaultValues({ address, name })
-                handleOpen('createEntry')()
-              }}
-            >
+            <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)}>
               <EditIcon />
             </IconButton>
           </Tooltip>
 
           <Tooltip title="Delete entry">
-            <IconButton
-              onClick={() => {
-                dispatch(removeAddressBookEntry({ chainId, address }))
-              }}
-            >
+            <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -90,7 +92,7 @@ const AddressBookTable = () => {
     <>
       <div className={css.headerButtonWrapper}>
         <Button
-          onClick={handleOpen('export')}
+          onClick={handleOpenModal(ModalType.EXPORT)}
           disabled={addressBookEntries.length === 0}
           variant="contained"
           disableElevation
@@ -98,22 +100,24 @@ const AddressBookTable = () => {
           Export
         </Button>
 
-        <Button onClick={handleOpen('import')} variant="contained" disableElevation>
+        <Button onClick={handleOpenModal(ModalType.IMPORT)} variant="contained" disableElevation>
           Import
         </Button>
 
-        <Button onClick={handleOpen('createEntry')} variant="contained" disableElevation>
+        <Button onClick={handleOpenModal(ModalType.ENTRY)} variant="contained" disableElevation>
           Create entry
         </Button>
       </div>
 
       <EnhancedTable rows={rows} headCells={headCells} />
 
-      {open.export && <ExportDialog handleClose={handleClose} />}
+      {open[ModalType.EXPORT] && <ExportDialog handleClose={handleClose} />}
 
-      {open.import && <ImportDialog handleClose={handleClose} />}
+      {open[ModalType.IMPORT] && <ImportDialog handleClose={handleClose} />}
 
-      {open.createEntry && <CreateEntryDialog handleClose={handleClose} defaultValues={entryDefaultValues} />}
+      {open[ModalType.ENTRY] && <EntryDialog handleClose={handleClose} defaultValues={defaultValues} />}
+
+      {open[ModalType.REMOVE] && <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />}
     </>
   )
 }

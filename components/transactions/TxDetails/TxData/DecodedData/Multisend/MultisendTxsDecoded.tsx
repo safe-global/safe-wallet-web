@@ -4,11 +4,12 @@ import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/
 import CodeIcon from '@mui/icons-material/Code'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
-import { InfoDetails } from '@/components/transactions/TxDetails/TxData/SettingsChange'
-import { AddressInfo } from '@/components/transactions/TxDetails/TxData'
+import { InfoDetails } from '@/components/transactions/InfoDetails'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import { DelegateCallWarning } from '@/components/transactions/Warning'
 import css from './styles.module.css'
 
-interface Props {
+type MultisendTxsDecodedProps = {
   actionTitle: string
   method: string
   children: ReactNode
@@ -22,7 +23,7 @@ interface Props {
   }
 }
 
-const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props): ReactElement => {
+const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: MultisendTxsDecodedProps): ReactElement => {
   const isDelegateCall = txDetails.operation === Operation.DELEGATE
   const isSpendingLimitMethod =
     isSetAllowance(txDetails.dataDecoded?.method) || isDeleteAllowance(txDetails.dataDecoded?.method)
@@ -34,7 +35,7 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props
         boxShadow: 0,
         '&:not(:last-child)': {
           borderRadius: 0,
-          borderBottom: `2px solid ${palette.gray.light}`,
+          borderBottom: `2px solid ${palette.border.light}`,
         },
         '&:last-of-type': {
           borderBottomLeftRadius: '8px',
@@ -55,16 +56,16 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Props
           </Typography>
         </div>
       </AccordionSummary>
-      <AccordionDetails sx={{ flexFlow: 'column' }}>
+
+      <AccordionDetails
+        sx={{ flexFlow: 'column', borderTopWidth: '2px', borderTopStyle: 'solid', borderTopColor: 'border.light' }}
+      >
         {/* We always warn of nested delegate calls */}
-        {/* {isDelegateCall && <DelegateCallWarning showWarning={isDelegateCall} />} */}
+        {isDelegateCall && <DelegateCallWarning showWarning={isDelegateCall} />}
         {!isSpendingLimitMethod && (
-          <>
-            {/* TODO: these 2 components should not belong in SettingsChange */}
-            <InfoDetails title={txDetails.title}>
-              <AddressInfo address={txDetails.address} name={txDetails.name} avatarUrl={txDetails.avatarUrl} />
-            </InfoDetails>
-          </>
+          <InfoDetails title={txDetails.title}>
+            <EthHashInfo address={txDetails.address} name={txDetails.name} customAvatar={txDetails.avatarUrl} />
+          </InfoDetails>
         )}
         {children}
       </AccordionDetails>

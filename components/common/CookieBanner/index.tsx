@@ -38,7 +38,7 @@ const CookieBannerPopup = ({ warning }: { warning?: string }): ReactElement => {
     <Box
       sx={({ palette }) => ({
         backgroundColor: 'background.paper',
-        borderTop: `1px solid ${palette.gray.light}`,
+        borderTop: `1px solid ${palette.border.light}`,
       })}
       className={css.container}
     >

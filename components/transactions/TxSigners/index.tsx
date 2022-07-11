@@ -23,7 +23,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import useIsPending from '@/hooks/useIsPending'
 import { isCancellationTxInfo, isExecutable, isMultisigExecutionDetails } from '@/utils/transaction-guards'
 import { Button } from '@mui/material'
-import { AddressInfo } from '../TxDetails/TxData'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 import css from './styles.module.css'
 
@@ -45,7 +45,7 @@ const getStepColor = (state: StepState): string => {
   const colors = {
     confirmed: palette.primary.main,
     active: palette.warning.dark,
-    disabled: palette.gray.main,
+    disabled: palette.border.main,
     error: palette.error.main,
   }
   return colors[state]
@@ -90,7 +90,7 @@ const shouldHideConfirmations = (detailedExecutionInfo: DetailedExecutionInfo | 
 const getConfirmationStep = ({ value, name }: AddressEx, key: string | undefined = undefined): ReactElement => (
   <StyledStep key={key} $bold $state="confirmed">
     <StepLabel icon={<DotIcon />}>
-      <AddressInfo address={value} name={name} />
+      <EthHashInfo address={value} name={name} />
     </StepLabel>
   </StyledStep>
 )
@@ -133,7 +133,7 @@ export const TxSigners = ({
             padding: '3px 0',
             '.MuiStepConnector-line': {
               marginLeft: '-3px',
-              borderColor: palette.gray.light,
+              borderColor: palette.border.light,
               borderLeftWidth: '2px',
               minHeight: '14px',
             },
@@ -156,7 +156,7 @@ export const TxSigners = ({
           Confirmations{' '}
           <Box
             sx={({ palette }) => ({
-              color: palette.black[300],
+              color: palette.border.main,
               display: 'inline',
               fontWeight: 'normal',
             })}
@@ -184,15 +184,15 @@ export const TxSigners = ({
           // isExecuted
           detailedExecutionInfo.executor ? (
             <StepContent>
-              <AddressInfo
+              <EthHashInfo
                 address={detailedExecutionInfo.executor.value}
                 name={detailedExecutionInfo.executor.name}
-                avatarUrl={detailedExecutionInfo.executor.logoUri}
+                customAvatar={detailedExecutionInfo.executor.logoUri || undefined}
               />
             </StepContent>
           ) : (
             !isConfirmed && (
-              <StepContent sx={({ palette }) => ({ color: palette.black[300] })}>
+              <StepContent sx={({ palette }) => ({ color: palette.border.main })}>
                 Can be executed once the threshold is reached
               </StepContent>
             )

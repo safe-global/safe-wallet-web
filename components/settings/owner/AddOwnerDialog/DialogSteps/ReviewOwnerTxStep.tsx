@@ -8,7 +8,6 @@ import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
-import useSafeTxGas from '@/hooks/useSafeTxGas'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useChainId from '@/hooks/useChainId'
@@ -41,18 +40,10 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
     }
   }, [removedOwner, newOwner])
 
-  const { safeGas, safeGasError } = useSafeTxGas(changeOwnerTx?.data)
-  const { recommendedNonce = 0 } = safeGas || {}
-
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!changeOwnerTx || !recommendedNonce) return
-
-    return await createTx({
-      ...changeOwnerTx.data,
-      nonce: recommendedNonce,
-      safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
-    })
-  }, [recommendedNonce, changeOwnerTx, safeGas?.safeTxGas])
+    if (!changeOwnerTx) return
+    return await createTx(changeOwnerTx.data)
+  }, [changeOwnerTx])
 
   const isReplace = Boolean(removedOwner)
 
@@ -71,7 +62,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
   }
 
   // All errors
-  const txError = safeTxError || safeGasError || createTxError
+  const txError = safeTxError || createTxError
 
   return (
     <SignOrExecuteForm

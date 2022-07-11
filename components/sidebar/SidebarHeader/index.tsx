@@ -21,7 +21,7 @@ const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'classNa
   <IconButton
     className={css.iconButton}
     sx={({ palette }) => ({
-      backgroundColor: palette.gray.background,
+      backgroundColor: palette.border.background,
       '&:hover': {
         backgroundColor: palette.primary.background,
       },

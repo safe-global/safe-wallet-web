@@ -4,6 +4,7 @@ import { Box, Drawer } from '@mui/material'
 import Sidebar from '@/components/sidebar/Sidebar'
 import Header from '@/components/common//Header'
 import css from './styles.module.css'
+import SafeLoadingError from '../SafeLoadingError'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false)
@@ -28,8 +29,8 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
         {sidebar}
       </Drawer>
 
-      <Box className={css.main} sx={({ palette }) => ({ backgroundColor: palette.gray.background })}>
-        {children}
+      <Box className={css.main} sx={({ palette }) => ({ backgroundColor: palette.border.background })}>
+        <SafeLoadingError>{children}</SafeLoadingError>
       </Box>
     </div>
   )

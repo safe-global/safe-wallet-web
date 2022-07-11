@@ -8,7 +8,6 @@ import { SendAssetsFormData, SendFromBlock } from '@/components/tx/modals/TokenT
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
-import useSafeTxGas from '@/hooks/useSafeTxGas'
 import useBalances from '@/hooks/useBalances'
 import useAsync from '@/hooks/useAsync'
 import { createTx } from '@/services/tx/txSender'
@@ -49,23 +48,11 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
     return createTokenTransferParams(params.recipient, params.amount, decimals, address)
   }, [params, decimals, address])
 
-  // Estimate safeTxGas
-  const { safeGas, safeGasError } = useSafeTxGas(txParams)
-  const { recommendedNonce = 0 } = safeGas || {}
-
   // Create a safeTx
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!txParams || recommendedNonce == null) return
-
-    return createTx({
-      ...txParams,
-      nonce: recommendedNonce,
-      safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
-    })
-  }, [recommendedNonce, txParams, safeGas?.safeTxGas])
-
-  // All errors
-  const txError = safeTxError || safeGasError
+    if (!txParams) return
+    return createTx(txParams)
+  }, [txParams])
 
   return (
     <SignOrExecuteForm
@@ -73,7 +60,7 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
       isExecutable={safe?.threshold === 1}
       onSubmit={onSubmit}
       title="Review transaction"
-      error={txError}
+      error={safeTxError}
     >
       {token && <TokenTransferReview params={params} tokenInfo={token.tokenInfo} />}
 

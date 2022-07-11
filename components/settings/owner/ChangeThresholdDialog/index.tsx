@@ -8,7 +8,6 @@ import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
-import useSafeTxGas from '@/hooks/useSafeTxGas'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
@@ -48,7 +47,6 @@ export const ChangeThresholdDialog = () => {
 const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
-  const [editableNonce, setEditableNonce] = useState<number>()
   const safeSDK = useSafeSDK()
 
   // @TODO: move to txSender, add events
@@ -59,23 +57,16 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
     return safeSDK.getChangeThresholdTx(selectedThreshold)
   }, [selectedThreshold])
 
-  const { safeGas, safeGasError } = useSafeTxGas(changeThresholdTx?.data)
-
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedThreshold(parseInt(event.target.value.toString()))
   }
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!changeThresholdTx || !editableNonce) return
+    if (!changeThresholdTx) return
+    return await createTx(changeThresholdTx.data)
+  }, [changeThresholdTx])
 
-    return await createTx({
-      ...changeThresholdTx.data,
-      nonce: editableNonce,
-      safeTxGas: safeGas ? Number(safeGas.safeTxGas) : undefined,
-    })
-  }, [editableNonce, changeThresholdTx, safeGas?.safeTxGas])
-
-  const txError = safeGasError || createTxError || safeTxError
+  const txError = createTxError || safeTxError
 
   return (
     <SignOrExecuteForm

@@ -20,7 +20,7 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
   return (
     <Box data-testid="tx-hexData" className={css.encodedData}>
       {title && (
-        <Typography variant="body1">
+        <Typography>
           <b>{title}:</b>
         </Typography>
       )}
@@ -33,7 +33,6 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
                 color: palette.primary.main,
                 textDecoration: 'underline',
               })}
-              variant="body1"
             >
               Show {showTxData ? 'Less' : 'More'}
             </Typography>

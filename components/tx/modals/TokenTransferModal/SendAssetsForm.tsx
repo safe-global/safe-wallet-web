@@ -49,7 +49,9 @@ const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): Reac
     </Box>
 
     <Grid item xs>
-      <Typography variant="body2">{item.tokenInfo.name}</Typography>
+      <Typography variant="body2" lineHeight={1.2}>
+        {item.tokenInfo.name}
+      </Typography>
 
       <Typography variant="caption" color="text.secondary">
         <TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} tokenSymbol={item.tokenInfo.symbol} />

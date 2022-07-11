@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AddressEx, SettingsInfoType, TransactionSummary, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isTxQueued } from '@/utils/transaction-guards'
+import { isCancellationTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 
 type TxTypeProps = {
   icon?: string
@@ -55,13 +55,12 @@ export const useTransactionType = (tx: TransactionSummary): TxTypeProps => {
         break
       }
       case 'Custom': {
-        // TODO: is this the only way to identify a 'module' transaction?
-        if (!tx.executionInfo) {
+        if (isModuleExecutionInfo(tx.executionInfo)) {
           setType({ icon: '/images/settings.svg', text: 'Module' })
           break
         }
 
-        if (tx.txInfo.isCancellation) {
+        if (isCancellationTxInfo(tx.txInfo)) {
           setType({ icon: '/images/circle-cross-red.svg', text: 'On-chain rejection' })
           break
         }

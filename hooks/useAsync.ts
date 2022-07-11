@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 
 export type AsyncResult<T> = [result: T | undefined, error: Error | undefined, loading: boolean]
 
-const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[]): AsyncResult<T> => {
-  const [result, setResult] = useState<T | undefined>()
+const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[], clearData = true): AsyncResult<T> => {
+  const [data, setData] = useState<T | undefined>()
   const [error, setError] = useState<Error>()
   const [loading, setLoading] = useState<boolean>(true)
 
@@ -13,13 +13,13 @@ const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[]): Asyn
   useEffect(() => {
     let isCurrent = true
 
-    setResult(undefined)
+    clearData && setData(undefined)
     setError(undefined)
     setLoading(true)
 
     callback()
       .then((val: T) => {
-        isCurrent && setResult(val)
+        isCurrent && setData(val)
       })
       .catch((err) => {
         isCurrent && setError(err)
@@ -31,9 +31,9 @@ const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[]): Asyn
     return () => {
       isCurrent = false
     }
-  }, [callback])
+  }, [callback, clearData])
 
-  return [result, error, loading]
+  return [data, error, loading]
 }
 
 export default useAsync
