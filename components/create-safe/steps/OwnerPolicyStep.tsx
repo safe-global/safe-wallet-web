@@ -119,18 +119,19 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
           </Box>
           <Divider />
           <Grid container gap={3} flexWrap="nowrap" paddingX={3} paddingY={1}>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={4}>
               Name
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={7}>
               Address
             </Grid>
+            <Grid item xs={1} />
           </Grid>
           <Divider />
           <Box padding={3}>
             {fields.map((field, index) => {
               return (
-                <Grid container key={field.id} gap={3} marginBottom={3} flexWrap="nowrap">
+                <Grid container key={field.id} spacing={3} marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
                   <Grid item xs={12} md={4}>
                     <FormControl fullWidth>
                       <TextField
@@ -147,12 +148,12 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={7}>
+                  <Grid item xs={10} md={7}>
                     <FormControl fullWidth>
                       <AddressInput label="Owner address" name={`owners.${index}.address`} />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={1} display="flex" alignItems="center" flexShrink={0}>
+                  <Grid item xs={2} md={1} display="flex" alignItems="center" flexShrink={0}>
                     {index > 0 && (
                       <>
                         <IconButton onClick={() => remove(index)}>
