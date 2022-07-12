@@ -1,18 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import Safe from '@gnosis.pm/safe-core-sdk'
-import { useWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import { useRouter } from 'next/router'
 import { PendingSafeData } from '@/components/create-safe'
 import { AppRoutes } from '@/config/routes'
 import { Errors, logError } from '@/services/exceptions'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import { createNewSafe } from '@/components/create-safe/sender'
-import { didRevert } from '@/utils/ethers-utils'
-import { JsonRpcProvider, Log } from '@ethersproject/providers'
-import { getProxyFactoryDeployment } from '@gnosis.pm/safe-deployments'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
-import { Interface } from '@ethersproject/abi'
-import { sameAddress } from '@/utils/addresses'
+import { usePendingSafeCreation } from '@/components/create-safe/status/usePendingSafeCreation'
 
 export enum SafeCreationStatus {
   PENDING = 'PENDING',
@@ -36,67 +31,15 @@ const getSafeDeployProps = (pendingSafe: PendingSafeData, callback: (txHash: str
   }
 }
 
-export const getNewSafeAddressFromLogs = (logs: Log[]): string => {
-  let safeAddress = ''
-  const contract = getProxyFactoryDeployment({
-    version: LATEST_SAFE_VERSION,
-  })
-
-  if (!contract) return safeAddress
-
-  const contractInterface = new Interface(contract.abi)
-
-  try {
-    const logDescriptions = logs
-      .filter((log) => sameAddress(log.address, contract.defaultAddress))
-      .map((log) => contractInterface.parseLog(log))
-
-    const proxyCreationEvent = logDescriptions.find(({ name }) => name === 'ProxyCreation')
-    safeAddress = proxyCreationEvent?.args['proxy']
-
-    return safeAddress
-  } catch (error) {
-    console.log(error)
-  }
-
-  return safeAddress
-}
-
-export const monitorSafeCreationTx = async (provider: JsonRpcProvider, txHash: string) => {
-  const TIMEOUT_TIME = 6.5
-
-  try {
-    const receipt = await provider.waitForTransaction(txHash, 1, TIMEOUT_TIME * 60_000)
-
-    if (didRevert(receipt)) {
-      return {
-        status: SafeCreationStatus.REVERTED,
-        safeAddress: undefined,
-      }
-    }
-
-    const safeAddress = getNewSafeAddressFromLogs(receipt.logs)
-
-    return {
-      status: SafeCreationStatus.SUCCESS,
-      safeAddress,
-    }
-  } catch (error) {
-    return {
-      status: SafeCreationStatus.TIMEOUT,
-      safeAddress: undefined,
-    }
-  }
-}
-
 export const useSafeCreation = () => {
   const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.PENDING)
   const [safeAddress, setSafeAddress] = useState<string>()
   const [creationPromise, setCreationPromise] = useState<Promise<Safe>>()
   const [pendingSafe, setPendingSafe] = usePendingSafe()
   const ethersProvider = useWeb3()
-  const provider = useWeb3ReadOnly()
   const router = useRouter()
+
+  usePendingSafeCreation({ txHash: pendingSafe?.txHash, setSafeAddress, setStatus })
 
   const safeCreationCallback = useCallback(
     (txHash: string) => {
@@ -112,19 +55,6 @@ export const useSafeCreation = () => {
     setStatus(SafeCreationStatus.PENDING)
     setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
   }
-
-  useEffect(() => {
-    if (!pendingSafe?.txHash || !provider) return
-
-    const monitorTx = async (txHash: string) => {
-      const txStatus = await monitorSafeCreationTx(provider, txHash)
-      setStatus(txStatus.status)
-      setSafeAddress(txStatus.safeAddress)
-    }
-
-    setStatus(SafeCreationStatus.MINING)
-    monitorTx(pendingSafe.txHash)
-  }, [pendingSafe, provider])
 
   useEffect(() => {
     if (

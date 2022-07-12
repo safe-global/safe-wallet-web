@@ -1,16 +1,13 @@
 import { renderHook } from '@/tests/test-utils'
 import * as createSafe from '@/components/create-safe/sender'
-import {
-  monitorSafeCreationTx,
-  SafeCreationStatus,
-  useSafeCreation,
-} from '@/components/create-safe/status/useSafeCreation'
+import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
 import * as pendingSafe from '@/components/create-safe/usePendingSafe'
 import * as web3 from '@/hooks/wallets/web3'
 import { waitFor } from '@testing-library/react'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import { checkSafeCreationTx } from '@/components/create-safe/status/usePendingSafeCreation'
 
 describe('useSafeCreation', () => {
   beforeEach(() => {
@@ -87,7 +84,7 @@ describe('monitorSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    const result = await monitorSafeCreationTx(provider, '0x0')
+    const result = await checkSafeCreationTx(provider, '0x0')
 
     expect(result.status).toBe(SafeCreationStatus.SUCCESS)
   })
@@ -99,7 +96,7 @@ describe('monitorSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    const result = await monitorSafeCreationTx(provider, '0x0')
+    const result = await checkSafeCreationTx(provider, '0x0')
 
     expect(result.status).toBe(SafeCreationStatus.REVERTED)
   })
@@ -107,7 +104,7 @@ describe('monitorSafeCreationTx', () => {
   it('returns TIMEOUT if transaction couldnt be found within the timout limit', async () => {
     waitForTxSpy.mockImplementationOnce(() => Promise.reject())
 
-    const result = await monitorSafeCreationTx(provider, '0x0')
+    const result = await checkSafeCreationTx(provider, '0x0')
 
     expect(result.status).toBe(SafeCreationStatus.TIMEOUT)
   })
