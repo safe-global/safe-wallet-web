@@ -95,16 +95,17 @@ const AddressBookTable = () => {
           onClick={handleOpenModal(ModalType.EXPORT)}
           disabled={addressBookEntries.length === 0}
           variant="contained"
+          size="small"
           disableElevation
         >
           Export
         </Button>
 
-        <Button onClick={handleOpenModal(ModalType.IMPORT)} variant="contained" disableElevation>
+        <Button onClick={handleOpenModal(ModalType.IMPORT)} variant="contained" size="small" disableElevation>
           Import
         </Button>
 
-        <Button onClick={handleOpenModal(ModalType.ENTRY)} variant="contained" disableElevation>
+        <Button onClick={handleOpenModal(ModalType.ENTRY)} variant="contained" size="small" disableElevation>
           Create entry
         </Button>
       </div>

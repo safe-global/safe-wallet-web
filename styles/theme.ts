@@ -18,6 +18,12 @@ declare module '@mui/material/styles' {
   }
 }
 
+declare module '@mui/material/Button' {
+  interface ButtonPropsSizeOverrides {
+    stretched: true
+  }
+}
+
 const theme = createTheme({
   palette,
   typography: {
@@ -69,9 +75,27 @@ const theme = createTheme({
   },
   components: {
     MuiButton: {
+      variants: [
+        {
+          props: { size: 'stretched' },
+          style: {
+            padding: '12px 48px',
+          },
+        },
+      ],
       styleOverrides: {
+        sizeSmall: {
+          fontSize: '14px',
+          padding: '8px 24px',
+        },
+        sizeMedium: {
+          fontSize: '16px',
+          padding: '12px 24px',
+        },
         root: ({ theme }) => ({
           borderRadius: '8px',
+          fontWeight: 'bold',
+          lineHeight: 1.25,
           borderColor: theme.palette.primary.main,
           textTransform: 'none',
           '&.Mui-disabled': {
