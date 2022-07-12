@@ -14,6 +14,8 @@ const migrateLocalStorage = () => {
 }
 
 // Run immediately on import
-migrateLocalStorage()
+if (typeof window !== 'undefined') {
+  migrateLocalStorage()
+}
 
 export default undefined
