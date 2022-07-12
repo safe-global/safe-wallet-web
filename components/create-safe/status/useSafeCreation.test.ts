@@ -12,18 +12,12 @@ import Safe from '@gnosis.pm/safe-core-sdk'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
-const provider = new JsonRpcProvider()
-
 describe('useSafeCreation', () => {
-  let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
-
   beforeEach(() => {
-    jest.useFakeTimers()
     jest.resetAllMocks()
 
     const mockProvider: Web3Provider = new Web3Provider(jest.fn())
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
-    waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
   })
 
   it('should return a PENDING state by default', () => {
@@ -74,6 +68,8 @@ describe('useSafeCreation', () => {
     })
   })
 })
+
+const provider = new JsonRpcProvider()
 
 describe('monitorSafeCreationTx', () => {
   let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
