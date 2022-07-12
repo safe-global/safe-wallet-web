@@ -1,0 +1,26 @@
+.txSummary {
+  padding: 20px 24px;
+  height: 100%;
+}
+
+.multisendInfo,
+.delegateCall {
+  padding: 20px 24px 0;
+}
+
+.txData {
+  display: flex;
+  flex-direction: column;
+  padding-right: 60px; /* to not overlap with the share link */
+  border-bottom: none;
+  border-top: 2px solid var(--color-border-light);
+}
+
+.delegateCall .alert {
+  width: fit-content;
+  padding: 0px 10px;
+}
+
+.noPadding {
+  padding: 0;
+}
