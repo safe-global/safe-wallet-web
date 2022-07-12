@@ -18,7 +18,7 @@
 
 .main {
   grid-area: main;
-  padding: 24px;
+  padding: var(--space-3);
   overflow: auto;
   height: calc(100vh - 52px);
   position: relative;
@@ -29,7 +29,7 @@
   height: calc(100vh - 52px);
 }
 
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .container {
     grid-template-columns: 1fr;
     grid-template-areas: 'header' 'main';
@@ -40,6 +40,6 @@
   }
 
   .main {
-    padding: 8px;
+    padding: var(--space-1);
   }
 }
