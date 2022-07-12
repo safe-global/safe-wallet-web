@@ -13,9 +13,13 @@ export const createIframe = (src: string): HTMLIFrameElement => {
  * Send a message to the iframe
  */
 export const sendReadyMessage = (iframe: HTMLIFrameElement, targetOrigin: string) => {
-  iframe.addEventListener('load', () => {
-    iframe.contentWindow?.postMessage('ready', targetOrigin)
-  }, { once: true })
+  iframe.addEventListener(
+    'load',
+    () => {
+      iframe.contentWindow?.postMessage('ready', targetOrigin)
+    },
+    { once: true },
+  )
 }
 
 /**
