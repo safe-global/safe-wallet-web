@@ -6,6 +6,7 @@ import Identicon from '../Identicon'
 import useChainId from '@/hooks/useChainId'
 import useAddressBook from '@/hooks/useAddressBook'
 import { Typography } from '@mui/material'
+import ExplorerLink from '@/components/balances/TokenExplorerLink'
 
 type EthHashInfoProps = {
   address: string
@@ -17,6 +18,7 @@ type EthHashInfoProps = {
   copyPrefix?: boolean
   shortAddress?: boolean
   customAvatar?: string
+  hasExplorer?: boolean
 }
 
 const SRCEthHashInfo = ({
@@ -50,6 +52,8 @@ const SRCEthHashInfo = ({
       </div>
 
       {props.showCopyButton && <div className={css.copy}>{/* TODO */}</div>}
+
+      {props.hasExplorer && <ExplorerLink address={address} />}
     </div>
   )
 }

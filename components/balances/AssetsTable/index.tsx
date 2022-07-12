@@ -1,6 +1,6 @@
 import { useState, type ReactElement } from 'react'
 import { Button, Typography } from '@mui/material'
-import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeBalanceResponse, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
@@ -49,7 +49,7 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
 
           <Typography fontSize="medium">{item.tokenInfo.name}</Typography>
 
-          <TokenExplorerLink address={item.tokenInfo.address} />
+          {item.tokenInfo.type !== TokenType.NATIVE_TOKEN && <TokenExplorerLink address={item.tokenInfo.address} />}
         </div>
       ),
     },

@@ -10,3 +10,7 @@
   width: 2.3em;
   height: 2.3em;
 }
+
+.container a {
+  display: flex;
+}
