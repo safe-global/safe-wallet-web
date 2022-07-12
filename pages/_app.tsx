@@ -23,6 +23,7 @@ import useTxPendingStatuses, { useTxMonitor } from '@/hooks/useTxPendingStatuses
 import { useInitSession } from '@/hooks/useInitSession'
 import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
+import '@/services/ls-migration'
 
 const cssCache = createCache({
   key: 'css',
