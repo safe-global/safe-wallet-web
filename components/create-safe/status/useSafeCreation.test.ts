@@ -1,18 +1,29 @@
 import { renderHook } from '@/tests/test-utils'
 import * as createSafe from '@/components/create-safe/sender'
-import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
+import {
+  monitorSafeCreationTx,
+  SafeCreationStatus,
+  useSafeCreation,
+} from '@/components/create-safe/status/useSafeCreation'
 import * as pendingSafe from '@/components/create-safe/usePendingSafe'
 import * as web3 from '@/hooks/wallets/web3'
 import { waitFor } from '@testing-library/react'
 import Safe from '@gnosis.pm/safe-core-sdk'
-import { Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { TransactionReceipt } from '@ethersproject/abstract-provider'
+
+const provider = new JsonRpcProvider()
 
 describe('useSafeCreation', () => {
+  let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
+
   beforeEach(() => {
+    jest.useFakeTimers()
     jest.resetAllMocks()
 
     const mockProvider: Web3Provider = new Web3Provider(jest.fn())
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
+    waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
   })
 
   it('should return a PENDING state by default', () => {
@@ -62,21 +73,46 @@ describe('useSafeCreation', () => {
       expect(result.current.status).toBe(SafeCreationStatus.ERROR)
     })
   })
+})
 
-  it('should monitor an existing tx and return a MINING state', () => {
-    jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
-      {
-        name: 'joyful-rinkeby-safe',
-        threshold: 1,
-        owners: [],
-        saltNonce: 123,
-        txHash: '0x0',
-      },
-      jest.fn,
-    ])
-    const { result } = renderHook(() => useSafeCreation())
+describe('monitorSafeCreationTx', () => {
+  let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
 
-    expect(result.current.status).toBe(SafeCreationStatus.MINING)
-    // TODO: assert that tx monitor was called
+  beforeEach(() => {
+    jest.resetAllMocks()
+
+    waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
+  })
+
+  it('returns SUCCESS if promise was resolved', async () => {
+    const receipt = {
+      status: 1,
+    } as TransactionReceipt
+
+    waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
+
+    const result = await monitorSafeCreationTx(provider, '0x0')
+
+    expect(result.status).toBe(SafeCreationStatus.SUCCESS)
+  })
+
+  it('returns REVERTED if transaction was reverted', async () => {
+    const receipt = {
+      status: 0,
+    } as TransactionReceipt
+
+    waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
+
+    const result = await monitorSafeCreationTx(provider, '0x0')
+
+    expect(result.status).toBe(SafeCreationStatus.REVERTED)
+  })
+
+  it('returns TIMEOUT if transaction couldnt be found within the timout limit', async () => {
+    waitForTxSpy.mockImplementationOnce(() => Promise.reject())
+
+    const result = await monitorSafeCreationTx(provider, '0x0')
+
+    expect(result.status).toBe(SafeCreationStatus.TIMEOUT)
   })
 })
