@@ -1,4 +1,4 @@
-import TokenExplorerLink from '@/components/balances/TokenExplorerLink'
+import TokenExplorerLink from '@/components/common/TokenExplorerLink'
 import CopyAddressButton from '@/components/common/CopyAddressButton'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { shortenAddress } from '@/utils/formatters'

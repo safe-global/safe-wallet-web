@@ -6,7 +6,7 @@ import Identicon from '../Identicon'
 import useChainId from '@/hooks/useChainId'
 import useAddressBook from '@/hooks/useAddressBook'
 import { Typography } from '@mui/material'
-import ExplorerLink from '@/components/balances/TokenExplorerLink'
+import ExplorerLink from '@/components/common/TokenExplorerLink'
 
 type EthHashInfoProps = {
   address: string
