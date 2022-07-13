@@ -2,7 +2,7 @@ import { Paper, Grid, Typography, Box, Button } from '@mui/material'
 
 const SpendingLimits = () => {
   return (
-    <Paper elevation={0} sx={{ padding: 4 }}>
+    <Paper elevation={0} sx={{ padding: 4 }} variant="outlined">
       <Grid container direction="row" justifyContent="space-between">
         <Grid item>
           <Typography variant="h4" fontWeight={700}>

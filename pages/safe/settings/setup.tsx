@@ -6,6 +6,8 @@ import { RequiredConfirmation } from '@/components/settings/RequiredConfirmation
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { Breadcrumbs } from '@/components/common/Breadcrumbs'
+import SettingsIcon from '@/public/images/sidebar/settings.svg'
 
 const Setup: NextPage = () => {
   const { safe } = useSafeInfo()
@@ -20,11 +22,11 @@ const Setup: NextPage = () => {
 
   return (
     <main>
-      <Typography variant="h2">Settings / Setup</Typography>
+      <Breadcrumbs icon={SettingsIcon} first="Settings" second="/ Setup" />
       <Grid container spacing={7}>
         <Grid item xs={8}>
-          <Paper>
-            <Grid container padding="40px 48px 32px 32px">
+          <Paper elevation={0} sx={{ padding: 4 }} variant="outlined">
+            <Grid container>
               <Grid item xs={12}>
                 <OwnerList isGranted={isGranted} />
               </Grid>

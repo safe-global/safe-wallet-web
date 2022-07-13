@@ -43,7 +43,7 @@ const SingleTransaction: NextPage = () => {
 
   return (
     <main>
-      <Breadcrumbs icon={TransactionsIcon} parent="Transactions" child="Details" />
+      <Breadcrumbs icon={TransactionsIcon} first="Transactions" second="/ Details" />
 
       {loading ? (
         <CircularProgress />
