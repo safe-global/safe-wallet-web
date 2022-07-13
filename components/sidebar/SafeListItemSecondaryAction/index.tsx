@@ -25,7 +25,7 @@ const SafeListItemSecondaryAction = ({
   const wallet = useWallet()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const isAdded = !!addedSafes?.[address]
-  const isSafeOwner = isOwner(addedSafes?.[address]?.owners, wallet?.address)
+  const isAddedSafeOwner = isOwner(addedSafes?.[address]?.owners, wallet?.address)
 
   if (!isAdded && href) {
     return (
@@ -50,7 +50,7 @@ const SafeListItemSecondaryAction = ({
     )
   }
 
-  if (!isSafeOwner) {
+  if (!isAddedSafeOwner) {
     return (
       <Typography variant="body2" display="flex" sx={({ palette }) => ({ color: palette.border.main })}>
         <img src="/images/sidebar/safe-list/eye.svg" alt="Read only" height="16px" width="16px" /> Read only

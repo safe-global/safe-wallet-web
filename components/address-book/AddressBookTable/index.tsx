@@ -12,6 +12,7 @@ import Tooltip from '@mui/material/Tooltip'
 import RemoveDialog from '@/components/address-book/RemoveDialog'
 
 import css from './styles.module.css'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -34,6 +35,7 @@ const defaultOpen = {
 }
 
 const AddressBookTable = () => {
+  const isSafeOwner = useIsSafeOwner()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)
 
@@ -79,10 +81,11 @@ const AddressBookTable = () => {
             </IconButton>
           </Tooltip>
 
-          {/* TODO: */}
-          <Button disableElevation disabled>
-            Send
-          </Button>
+          {isSafeOwner && (
+            <Button variant="contained" color="primary">
+              Send
+            </Button>
+          )}
         </div>
       ),
     },
