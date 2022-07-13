@@ -123,7 +123,7 @@ export const useInitOnboard = () => {
     return () => {
       walletSubscription.unsubscribe()
     }
-  }, [onboard, dispatch, setLastWallet])
+  }, [onboard, dispatch])
 }
 
 export default useOnboard
