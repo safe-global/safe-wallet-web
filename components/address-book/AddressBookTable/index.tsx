@@ -66,7 +66,7 @@ const AddressBookTable = () => {
     },
     address: {
       rawValue: address,
-      content: <EthHashInfo address={address} showName={false} shortAddress={false} hasExplorer />,
+      content: <EthHashInfo address={address} showName={false} shortAddress={false} hasExplorer showCopyButton />,
     },
     actions: {
       rawValue: '',

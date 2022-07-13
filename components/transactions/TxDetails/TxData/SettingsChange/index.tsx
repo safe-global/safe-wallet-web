@@ -21,6 +21,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
             address={settingsInfo.handler.value}
             name={settingsInfo.handler?.name || undefined}
             customAvatar={settingsInfo.handler?.logoUri || undefined}
+            shortAddress={false}
+            showCopyButton
+            hasExplorer
           />
         </InfoDetails>
       )
@@ -36,6 +39,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
               address={settingsInfo.owner.value}
               name={settingsInfo.owner?.name || undefined}
               customAvatar={settingsInfo.owner?.logoUri || undefined}
+              shortAddress={false}
+              showCopyButton
+              hasExplorer
             />
             <InfoDetails title="Increase/decrease confirmation policy to:">{settingsInfo.threshold}</InfoDetails>
           </InfoDetails>
@@ -50,6 +56,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
               address={settingsInfo.oldOwner.value}
               name={settingsInfo.oldOwner?.name || undefined}
               customAvatar={settingsInfo.oldOwner?.logoUri || undefined}
+              shortAddress={false}
+              showCopyButton
+              hasExplorer
             />
           </InfoDetails>
           <InfoDetails title="New owner">
@@ -57,6 +66,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
               address={settingsInfo.newOwner.value}
               name={settingsInfo.newOwner?.name || undefined}
               customAvatar={settingsInfo.newOwner?.logoUri || undefined}
+              shortAddress={false}
+              showCopyButton
+              hasExplorer
             />
           </InfoDetails>
         </InfoDetails>
@@ -77,6 +89,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
             address={settingsInfo.implementation.value}
             name={settingsInfo.implementation?.name || undefined}
             customAvatar={settingsInfo.implementation?.logoUri || undefined}
+            shortAddress={false}
+            showCopyButton
+            hasExplorer
           />
         </InfoDetails>
       )
@@ -90,6 +105,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
             address={settingsInfo.module.value}
             name={settingsInfo.module?.name || undefined}
             customAvatar={settingsInfo.module?.logoUri || undefined}
+            shortAddress={false}
+            showCopyButton
+            hasExplorer
           />
         </InfoDetails>
       )
@@ -101,6 +119,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
             address={settingsInfo.guard.value}
             name={settingsInfo.guard?.name || undefined}
             customAvatar={settingsInfo.guard?.logoUri || undefined}
+            shortAddress={false}
+            showCopyButton
+            hasExplorer
           />
         </InfoDetails>
       )

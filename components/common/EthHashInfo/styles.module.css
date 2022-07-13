@@ -11,6 +11,11 @@
   height: 2.3em;
 }
 
+.addressRow {
+  display: flex;
+  gap: 4px;
+}
+
 .container a {
   display: flex;
 }

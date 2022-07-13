@@ -64,7 +64,14 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Multi
         {isDelegateCall && <DelegateCallWarning showWarning={isDelegateCall} />}
         {!isSpendingLimitMethod && (
           <InfoDetails title={txDetails.title}>
-            <EthHashInfo address={txDetails.address} name={txDetails.name} customAvatar={txDetails.avatarUrl} />
+            <EthHashInfo
+              address={txDetails.address}
+              name={txDetails.name}
+              customAvatar={txDetails.avatarUrl}
+              shortAddress={false}
+              showCopyButton
+              hasExplorer
+            />
           </InfoDetails>
         )}
         {children}

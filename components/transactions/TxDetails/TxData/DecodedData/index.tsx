@@ -32,6 +32,9 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
             address={txData.to.value}
             name={isCustomTxInfo(txInfo) ? txInfo.to.name : undefined}
             customAvatar={isCustomTxInfo(txInfo) ? txInfo.to.logoUri || undefined : undefined}
+            shortAddress={false}
+            showCopyButton
+            hasExplorer
           />
         </InfoDetails>
         <HexEncodedData title="Data (hex encoded)" hexData={txData.hexData} />
@@ -57,6 +60,9 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
           address={txData.to.value}
           name={isCustomTxInfo(txInfo) ? txInfo.to.name : undefined}
           customAvatar={isCustomTxInfo(txInfo) ? txInfo.to.logoUri || undefined : undefined}
+          shortAddress={false}
+          showCopyButton
+          hasExplorer
         />
       </InfoDetails>
       <MethodDetails data={txData.dataDecoded} />
