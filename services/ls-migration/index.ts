@@ -11,7 +11,7 @@ import { MIGRATION_KEY } from './config'
 
 const useStorageMigration = (): void => {
   const dispatch = useAppDispatch()
-  const [isMigrationFinished, setIsMigrationFinished] = useLocalStorage<boolean | undefined>(MIGRATION_KEY, true)
+  const [isMigrationFinished, setIsMigrationFinished] = useLocalStorage<boolean | undefined>(MIGRATION_KEY, false)
 
   useEffect(() => {
     if (isMigrationFinished) return
