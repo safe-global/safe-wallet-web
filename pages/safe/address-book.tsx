@@ -1,4 +1,4 @@
-import AddressBookTable from '@/components/address-book/AdressBookTable'
+import AddressBookTable from '@/components/address-book/AddressBookTable'
 import type { NextPage } from 'next'
 
 const AddressBook: NextPage = () => {
