@@ -5,6 +5,12 @@
   border-top: 2px solid var(--color-border-light);
 }
 
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
 .details {
   display: flex;
   flex-direction: column;
@@ -45,4 +51,11 @@
 .txSigners {
   padding: 24px;
   border-left: 2px solid var(--color-border-light);
+}
+
+@media (max-width: 768px) {
+  .txSigners {
+    border-left: 0;
+    border-top: 2px solid var(--color-border-light);
+  }
 }
