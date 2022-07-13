@@ -13,6 +13,7 @@ const LoadSafeWithAddress: NextPage = () => {
     address: safeAddress,
   }
 
+  // This is a hack to force remounting if the query param changes but not the path
   useEffect(() => {
     setId(safeAddress)
   }, [safeAddress])
