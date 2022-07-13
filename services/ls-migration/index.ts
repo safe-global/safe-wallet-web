@@ -32,7 +32,7 @@ const useStorageMigration = (): void => {
     })
 
     return unmount
-  }, [isMigrationFinished, setIsMigrationFinished])
+  }, [isMigrationFinished, setIsMigrationFinished, dispatch])
 }
 
 export default useStorageMigration
