@@ -9,6 +9,8 @@ import AddressInput from '@/components/common/AddressInput'
 import { getSafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChainId from '@/hooks/useChainId'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import { useAppSelector } from '@/store'
+import { selectAddedSafes } from '@/store/addedSafesSlice'
 
 type Props = {
   params: LoadSafeFormData
@@ -19,12 +21,18 @@ type Props = {
 const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
   const currentChainId = useChainId()
   const fallbackName = useMnemonicSafeName()
+  const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
   const formMethods = useForm<LoadSafeFormData>({ defaultValues: { name: fallbackName, address: params?.address } })
 
   const { register, handleSubmit } = formMethods
 
   const validateSafeAddress = async (address: string) => {
     const { address: safeAddress } = parsePrefixedAddress(address)
+
+    if (Object.keys(addedSafes).includes(safeAddress)) {
+      return 'Safe is already added'
+    }
+
     try {
       await getSafeInfo(currentChainId, safeAddress)
     } catch (error) {
