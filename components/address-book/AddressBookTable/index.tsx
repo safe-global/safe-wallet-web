@@ -13,6 +13,7 @@ import RemoveDialog from '@/components/address-book/RemoveDialog'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import css from './styles.module.css'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -64,7 +65,7 @@ const AddressBookTable = () => {
     },
     address: {
       rawValue: address,
-      content: address,
+      content: <EthHashInfo address={address} showName={false} shortAddress={false} />,
     },
     actions: {
       rawValue: '',
