@@ -1,5 +1,6 @@
 import { createTheme } from '@mui/material'
 import palette from './colors'
+import { base } from './spacings'
 
 declare module '@mui/material/styles' {
   // Custom color properties
@@ -26,6 +27,7 @@ declare module '@mui/material/Button' {
 
 const theme = createTheme({
   palette,
+  spacing: base,
   typography: {
     fontFamily: 'Averta, sans-serif',
 
