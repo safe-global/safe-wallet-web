@@ -1,13 +1,13 @@
 .container {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 2fr 1fr;
   width: 100%;
   border-top: 2px solid var(--color-border-light);
 }
 
-@media (min-width: 600px) {
+@media (max-width: 768px) {
   .container {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -50,12 +50,12 @@
 
 .txSigners {
   padding: 24px;
-  border-top: 2px solid var(--color-border-light);
+  border-left: 2px solid var(--color-border-light);
 }
 
-@media (min-width: 600px) {
+@media (max-width: 768px) {
   .txSigners {
-    border-top: 0;
-    border-left: 2px solid var(--color-border-light);
+    border-left: 0;
+    border-top: 2px solid var(--color-border-light);
   }
 }
