@@ -115,7 +115,9 @@ const AddressBookTable = () => {
         </Button>
       </div>
 
-      <EnhancedTable rows={rows} headCells={headCells} />
+      <div className={css.container}>
+        <EnhancedTable rows={rows} headCells={headCells} />
+      </div>
 
       {open[ModalType.EXPORT] && <ExportDialog handleClose={handleClose} />}
 
