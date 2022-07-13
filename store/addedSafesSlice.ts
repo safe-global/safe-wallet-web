@@ -44,11 +44,11 @@ export const addedSafesSlice = createSlice({
     },
     updateAddedSafeBalance: (
       state,
-      { payload }: PayloadAction<{ chainId: string; address: string; balances: SafeBalanceResponse }>,
+      { payload }: PayloadAction<{ chainId: string; address: string; balances?: SafeBalanceResponse }>,
     ) => {
       const { chainId, address, balances } = payload
 
-      if (!isAddedSafe(state, chainId, address)) {
+      if (!balances?.items || !isAddedSafe(state, chainId, address)) {
         return
       }
 
