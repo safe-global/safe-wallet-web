@@ -19,6 +19,7 @@ const NewTxButton = (): ReactElement => {
       <Button
         onClick={() => setTxOpen(true)}
         variant="contained"
+        size="small"
         disabled={!isSafeOwner || isWrongChain}
         fullWidth
         className={css.button}

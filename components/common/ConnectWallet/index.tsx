@@ -24,10 +24,12 @@ const ConnectWallet = (): ReactElement => {
     <Box sx={{ color: 'text.primary' }}>
       {wallet.ens || shortenAddress(wallet.address)}
 
-      <Button onClick={handleDisconnect}>Disconnect</Button>
+      <Button onClick={handleDisconnect} size="small" variant="text" sx={{ fontWeight: 'normal', marginLeft: 1 }}>
+        Disconnect
+      </Button>
     </Box>
   ) : (
-    <Button onClick={handleConnect} variant="contained">
+    <Button onClick={handleConnect} variant="contained" size="small">
       Connect Wallet
     </Button>
   )
