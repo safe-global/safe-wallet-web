@@ -1,4 +1,5 @@
 import TokenExplorerLink from '@/components/balances/TokenExplorerLink'
+import CopyAddressButton from '@/components/common/CopyAddressButton'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { shortenAddress } from '@/utils/formatters'
 import { Typography } from '@mui/material'
@@ -39,7 +40,7 @@ export const generateDataRowValue = (
         <div className={css.inline}>
           {/* TODO: missing the chain prefix */}
           <Typography>{shortenAddress(value, 8)}</Typography>
-          {/* TODO: missing copy button */}
+          <CopyAddressButton address={value} />
           {hasExplorer && <TokenExplorerLink address={value} />}
         </div>
       )
@@ -47,7 +48,7 @@ export const generateDataRowValue = (
       return (
         <div className={css.inline}>
           <div>{shortenAddress(value, 8)}</div>
-          {/* TODO: missing copy button */}
+          <CopyAddressButton address={value} />
           {hasExplorer && <TokenExplorerLink address={value} />}
         </div>
       )
@@ -55,7 +56,7 @@ export const generateDataRowValue = (
       return (
         <div className={css.rawData}>
           <div>{value ? hexDataLength(value) : 0} bytes</div>
-          {/* TODO: missing copy button */}
+          <CopyAddressButton address={value} />
         </div>
       )
     case 'bytes':

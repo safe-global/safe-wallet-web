@@ -17,6 +17,10 @@
   gap: 8px;
 }
 
+.iconButtons a {
+  display: flex; /* link gets same height as child button*/
+}
+
 .iconButton {
   border-radius: 4px;
   padding: 6px;
