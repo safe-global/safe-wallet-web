@@ -1,9 +1,6 @@
-import { IS_PRODUCTION } from '@/config/constants'
 import { LOCAL_STORAGE_DATA } from './common'
+import { IFRAME_HOST, IFRAME_PATH } from './config'
 import { createIframe, receiveMessage, sendReadyMessage } from './iframe'
-
-const IFRAME_HOST = IS_PRODUCTION ? 'https://gnosis-safe.io' : 'https://pr4017--safereact.review-safe.gnosisdev.com' // 'https://safe-team.dev.gnosisdev.com'
-const IFRAME_PATH = '/app/migrate.html'
 
 enum MessageType {
   MigrationData = 'migration-data',
@@ -28,14 +25,14 @@ const createMigrationBus = (onMessage: (message: LOCAL_STORAGE_DATA) => void): (
   // Subscribe to the message from iframe
   const unsubscribe = receiveMessage((message) => {
     if (isMigrationMessage(message)) {
-      onDone()
       onMessage(message.payload)
     }
   }, IFRAME_HOST)
 
-  const onDone = () => {
+  let onDone = () => {
     iframe.remove()
     unsubscribe()
+    onDone = () => void null
   }
 
   // Send a message to the iframe so that it knows where to respond

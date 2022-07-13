@@ -7,8 +7,7 @@ import { migrateAddressBook } from './addressBook'
 import { migrateAddedSafes } from './addedSafes'
 import { LOCAL_STORAGE_DATA } from './common'
 import createMigrationBus from './migrationBus'
-
-const MIGRATION_KEY = 'migrationFinished'
+import { MIGRATION_KEY } from './config'
 
 const useStorageMigration = (): void => {
   const dispatch = useAppDispatch()
@@ -17,7 +16,7 @@ const useStorageMigration = (): void => {
   useEffect(() => {
     if (isMigrationFinished) return
 
-    return createMigrationBus((lsData: LOCAL_STORAGE_DATA) => {
+    const unmount = createMigrationBus((lsData: LOCAL_STORAGE_DATA) => {
       const abData = migrateAddressBook(lsData)
       if (abData) {
         dispatch(addressBookSlice.actions.setAddressBook(abData))
@@ -29,7 +28,10 @@ const useStorageMigration = (): void => {
       }
 
       setIsMigrationFinished(true)
+      unmount()
     })
+
+    return unmount
   }, [isMigrationFinished, setIsMigrationFinished])
 }
 
