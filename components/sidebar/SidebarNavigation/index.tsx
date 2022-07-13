@@ -1,4 +1,4 @@
-import React, { Fragment, useState, type ReactElement } from 'react'
+import React, { Fragment, useState, type ReactElement, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
 import Collapse from '@mui/material/Collapse'
@@ -21,6 +21,11 @@ const Navigation = (): ReactElement => {
   const router = useRouter()
   const query = { safe: router.query.safe }
   const [open, setOpen] = useState<string>(router.pathname)
+
+  useEffect(() => {
+    setOpen(router.pathname)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.safe])
 
   const toggleOpen = (href: string) => {
     setOpen((prev) => (prev === href ? '' : href))
