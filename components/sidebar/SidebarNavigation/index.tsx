@@ -20,7 +20,7 @@ import css from './styles.module.css'
 const Navigation = (): ReactElement => {
   const router = useRouter()
   const query = { safe: router.query.safe }
-  const [open, setOpen] = useState<string>('')
+  const [open, setOpen] = useState<string>(router.pathname)
 
   const toggleOpen = (href: string) => {
     setOpen((prev) => (prev === href ? '' : href))
