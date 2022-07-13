@@ -3,7 +3,7 @@ import { Button } from '@mui/material'
 import { hexValue } from 'ethers/lib/utils'
 import { useCurrentChain } from '@/hooks/useChains'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { useIsWrongChain } from '@/hooks/wallets/useWallet'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 const ChainSwitcher = (): ReactElement | null => {
   const chain = useCurrentChain()

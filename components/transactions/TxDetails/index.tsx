@@ -1,10 +1,5 @@
 import { type ReactElement } from 'react'
-import {
-  getTransactionDetails,
-  Operation,
-  TransactionDetails,
-  TransactionSummary,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { CircularProgress } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
@@ -14,47 +9,17 @@ import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { isModuleExecutionInfo, isMultisendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
-import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import { DelegateCallWarning } from '@/components/transactions/Warning'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import TxShareLink from '../TxShareLink'
+import MultiSendTx from '@/components/transactions/MultisendTx'
 
 export const NOT_AVAILABLE = 'n/a'
 
 type TxDetailsProps = {
   txSummary: TransactionSummary
   txDetails: TransactionDetails
-}
-
-const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
-  const txInfo = isMultisendTxInfo(txDetails.txInfo) ? txDetails.txInfo : undefined
-
-  return (
-    <>
-      {txDetails.txData?.operation === Operation.DELEGATE && (
-        <div className={css.delegateCall}>
-          <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
-        </div>
-      )}
-
-      <div className={css.multisendInfo}>
-        <InfoDetails title="MultiSend contract:">
-          <EthHashInfo address={txInfo?.to.value || ''} />
-        </InfoDetails>
-        <TxDataRow title="Value:">{txInfo?.value}</TxDataRow>
-      </div>
-
-      <div className={`${css.txSummary} ${css.multisend}`}>
-        <Summary txDetails={txDetails} />
-      </div>
-
-      <div className={`${css.txData} ${css.multisend} ${css.noPadding}`}>
-        <TxData txDetails={txDetails} />
-      </div>
-    </>
-  )
 }
 
 const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {

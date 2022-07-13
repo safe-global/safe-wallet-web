@@ -5,6 +5,12 @@
   border-top: 2px solid var(--color-border-light);
 }
 
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
 .details {
   display: flex;
   flex-direction: column;
@@ -30,26 +36,11 @@
   padding: 20px 24px;
 }
 
-.multisendInfo,
-.delegateCall {
-  padding: 20px 24px 0;
-}
-
-.delegateCall .alert {
-  width: fit-content;
-  padding: 0px 10px;
-}
-
 .txData {
   display: flex;
   flex-direction: column;
   padding-right: 60px; /* to not overlap with the share link */
   border-bottom: 2px solid var(--color-border-light);
-}
-
-.txSummary + .txData {
-  border-bottom: none;
-  border-top: 2px solid var(--color-border-light);
 }
 
 .txSummary,
@@ -62,6 +53,9 @@
   border-left: 2px solid var(--color-border-light);
 }
 
-.noPadding {
-  padding: 0;
+@media (max-width: 768px) {
+  .txSigners {
+    border-left: 0;
+    border-top: 2px solid var(--color-border-light);
+  }
 }

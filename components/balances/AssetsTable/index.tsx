@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import { useState, type ReactElement } from 'react'
 import { Button, Typography } from '@mui/material'
 import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
@@ -6,6 +6,8 @@ import FiatValue from '@/components/common/FiatValue'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import TokenExplorerLink from '../TokenExplorerLink'
+import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
 interface AssetsTableProps {
   items?: SafeBalanceResponse['items']
@@ -35,6 +37,9 @@ const headCells = [
 ]
 
 const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
+  const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
+  const isSafeOwner = useIsSafeOwner()
+
   const rows = (items || []).map((item) => ({
     asset: {
       rawValue: item.tokenInfo.name,
@@ -59,9 +64,13 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
     actions: {
       rawValue: '',
       content: (
-        <Button variant="contained" color="primary">
-          Send
-        </Button>
+        <>
+          {isSafeOwner && (
+            <Button variant="contained" color="primary" onClick={() => setSelectedAsset(item.tokenInfo.address)}>
+              Send
+            </Button>
+          )}
+        </>
       ),
     },
   }))
@@ -69,6 +78,12 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
   return (
     <div className={css.container}>
       <EnhancedTable rows={rows} headCells={headCells} />
+      {selectedAsset && (
+        <TokenTransferModal
+          onClose={() => setSelectedAsset(undefined)}
+          initialData={[{ tokenAddress: selectedAsset }]}
+        />
+      )}
     </div>
   )
 }

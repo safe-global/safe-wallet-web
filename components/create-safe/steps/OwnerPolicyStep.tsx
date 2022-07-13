@@ -17,22 +17,25 @@ import InputAdornment from '@mui/material/InputAdornment'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
-import { CreateSafeFormData, Owner } from '@/components/create-safe/index'
+import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import useWallet from '@/hooks/wallets/useWallet'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import AddressInput from '../common/AddressInput'
+import AddressInput from '@/components/common/AddressInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import { lookupAddress } from '@/services/domains'
+import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 
 type Props = {
   params: CreateSafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
+  setStep: StepRenderProps['setStep']
 }
 
-const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
+const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactElement => {
+  useResetSafeCreation(setStep)
   const ethersProvider = useWeb3ReadOnly()
   const wallet = useWallet()
 
@@ -42,9 +45,11 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
     resolving: false,
   }
 
+  const defaultThreshold = params.threshold || 1
+
   const formMethods = useForm<CreateSafeFormData>({
     mode: 'all',
-    defaultValues: { name: params.name, owners: [defaultOwner], threshold: 1 },
+    defaultValues: { name: params.name, owners: params.owners ?? [defaultOwner], threshold: defaultThreshold },
   })
   const {
     register,
@@ -83,7 +88,11 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
       setValue(`owners.${index}.resolving`, true)
       const { address } = parsePrefixedAddress(owner.address)
       const ensName = await lookupAddress(ethersProvider, address)
-      update(index, { ...owner, name: ensName || owner.name, resolving: false })
+      if (ensName) {
+        update(index, { ...owner, name: ensName || owner.name, resolving: false })
+      } else {
+        setValue(`owners.${index}.resolving`, false)
+      }
     },
     [update, setValue, ethersProvider],
   )
@@ -110,18 +119,19 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
           </Box>
           <Divider />
           <Grid container gap={3} flexWrap="nowrap" paddingX={3} paddingY={1}>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={4}>
               Name
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={7}>
               Address
             </Grid>
+            <Grid item xs={1} />
           </Grid>
           <Divider />
           <Box padding={3}>
             {fields.map((field, index) => {
               return (
-                <Grid container key={field.id} gap={3} marginBottom={3} flexWrap="nowrap">
+                <Grid container key={field.id} spacing={3} marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
                   <Grid item xs={12} md={4}>
                     <FormControl fullWidth>
                       <TextField
@@ -138,12 +148,12 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={7}>
+                  <Grid item xs={10} md={7}>
                     <FormControl fullWidth>
                       <AddressInput label="Owner address" name={`owners.${index}.address`} />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={1} display="flex" alignItems="center" flexShrink={0}>
+                  <Grid item xs={2} md={1} display="flex" alignItems="center" flexShrink={0}>
                     {index > 0 && (
                       <>
                         <IconButton onClick={() => remove(index)}>
@@ -161,7 +171,7 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
             </Typography>
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl>
-                <Select {...register('threshold')} defaultValue={1}>
+                <Select {...register('threshold')} defaultValue={defaultThreshold}>
                   {fields.map((field, index) => {
                     return (
                       <MenuItem key={field.id} value={index + 1}>
@@ -190,4 +200,4 @@ const OwnerPolicy = ({ params, onSubmit, onBack }: Props): ReactElement => {
   )
 }
 
-export default OwnerPolicy
+export default OwnerPolicyStep

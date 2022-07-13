@@ -4,18 +4,17 @@ import { Tooltip } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import IconButton from '@mui/material/IconButton'
 
-import { isOwner, isSignableBy } from '@/utils/transaction-guards'
+import { isSignableBy } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import ConfirmTxModal from '@/components/tx/modals/ConfirmTxModal'
 import useIsPending from '@/hooks/useIsPending'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
 const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
-  const { safe } = useSafeInfo()
   const wallet = useWallet()
   const signaturePending = isSignableBy(txSummary, wallet?.address || '')
-  const granted = isOwner(safe?.owners, wallet?.address)
+  const isSafeOwner = useIsSafeOwner()
   const isPending = useIsPending({ txId: txSummary.id })
 
   const onClick = (e: SyntheticEvent) => {
@@ -23,7 +22,7 @@ const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactEl
     setOpen(true)
   }
 
-  const isDisabled = !signaturePending || !granted || isPending
+  const isDisabled = !signaturePending || !isSafeOwner || isPending
 
   return (
     <>

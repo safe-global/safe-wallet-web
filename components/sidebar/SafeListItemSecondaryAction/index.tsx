@@ -1,11 +1,13 @@
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Link, { LinkProps } from 'next/link'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import useChains from '@/hooks/useChains'
+import { isOwner } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
 
@@ -24,9 +26,7 @@ const SafeListItemSecondaryAction = ({
   const wallet = useWallet()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const isAdded = !!addedSafes?.[address]
-  const isOwner = addedSafes?.[address]?.owners.some(
-    ({ value }) => value.toLowerCase() === wallet?.address?.toLowerCase(),
-  )
+  const isAddedSafeOwner = isOwner(addedSafes?.[address]?.owners, wallet?.address)
 
   if (!isAdded && href) {
     return (
@@ -51,10 +51,15 @@ const SafeListItemSecondaryAction = ({
     )
   }
 
-  if (!isOwner) {
+  if (!isAddedSafeOwner) {
     return (
-      <Typography variant="body2" display="flex" sx={({ palette }) => ({ color: palette.border.main })}>
-        <img src="/images/sidebar/safe-list/eye.svg" alt="Read only" height="16px" width="16px" /> Read only
+      <Typography
+        variant="body2"
+        display="flex"
+        alignItems="center"
+        sx={({ palette }) => ({ color: palette.border.main })}
+      >
+        <VisibilityIcon fontSize="inherit" sx={{ marginRight: 1 }} /> Read only
       </Typography>
     )
   }

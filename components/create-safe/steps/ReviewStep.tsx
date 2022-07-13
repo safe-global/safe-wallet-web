@@ -1,44 +1,40 @@
 import React from 'react'
-import type { Web3Provider } from '@ethersproject/providers'
-import { CreateSafeFormData } from '@/components/create-safe/index'
+import { CreateSafeFormData } from '@/components/create-safe'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import Safe, { SafeAccountConfig, SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import EthHashInfo from '../common/EthHashInfo'
-
-const createNewSafe = async (ethersProvider: Web3Provider, txParams: SafeAccountConfig): Promise<Safe> => {
-  const ethAdapter = createEthersAdapter(ethersProvider)
-
-  const safeFactory = await SafeFactory.create({ ethAdapter })
-  return await safeFactory.deploySafe({ safeAccountConfig: txParams })
-}
+import EthHashInfo from '@/components/common/EthHashInfo'
+import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
+import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 
 type Props = {
   params: CreateSafeFormData
+  onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
+  setStep: StepRenderProps['setStep']
 }
 
-const Review = ({ params, onBack }: Props) => {
+const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
+  useResetSafeCreation(setStep)
   const wallet = useWallet()
   const ethersProvider = useWeb3()
+  const [_, setPendingSafe] = usePendingSafe()
 
   const createSafe = async () => {
     if (!wallet || !ethersProvider) return
 
-    await createNewSafe(ethersProvider, {
-      threshold: params.threshold,
-      owners: params.owners.map((owner) => owner.address),
-    })
+    const saltNonce = Date.now()
+
+    setPendingSafe({ ...params, saltNonce })
+    onSubmit(params)
   }
 
   return (
     <Paper>
       <Grid container>
-        <Grid item md={4}>
+        <Grid item xs={12} md={4}>
           <Box padding={3}>
             <Typography mb={3}>Details</Typography>
             <Typography variant="caption" color="text.secondary">
@@ -53,12 +49,20 @@ const Review = ({ params, onBack }: Props) => {
             </Typography>
           </Box>
         </Grid>
-        <Grid item md={8} borderLeft="1px solid #ddd">
+        <Grid
+          item
+          xs={12}
+          md={8}
+          borderLeft={[undefined, undefined, '1px solid #ddd']}
+          borderTop={['1px solid #ddd', undefined, 'none']}
+        >
           <Box padding={3}>{params.owners.length} Safe owners</Box>
           <Divider />
-          {params.owners.map((owner) => {
-            return <EthHashInfo key={owner.address} address={owner.address} name={owner.name} shortAddress={false} />
-          })}
+          <Box padding={3}>
+            {params.owners.map((owner) => {
+              return <EthHashInfo key={owner.address} address={owner.address} name={owner.name} shortAddress={false} />
+            })}
+          </Box>
           <Divider />
         </Grid>
       </Grid>
@@ -86,4 +90,4 @@ const Review = ({ params, onBack }: Props) => {
   )
 }
 
-export default Review
+export default ReviewStep

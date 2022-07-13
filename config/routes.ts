@@ -1,7 +1,10 @@
 export const AppRoutes = {
   welcome: '/welcome',
   open: '/open',
-  load: '/load',
+  load: {
+    index: '/load',
+    safe: '/load/safe',
+  },
   index: '/',
   demoTheme: '/demo-theme',
   safe: {
@@ -14,7 +17,6 @@ export const AppRoutes = {
       index: '/safe/balances',
     },
     settings: {
-      spendingLimit: '/safe/settings/spending-limit',
       setup: '/safe/settings/setup',
       modules: '/safe/settings/modules',
       index: '/safe/settings',

@@ -8,7 +8,7 @@
     "start": "next dev",
     "build": "next build",
     "lint": "tsc && next lint",
-    "lint:fix": "yarn lint --fix",
+    "lint:fix": "yarn lint --fix && git add -A .",
     "prettier": "prettier -w './**/*.{ts,tsx,css}'",
     "test": "jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
@@ -16,7 +16,7 @@
     "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts",
     "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./styles/vars.css"
   },
-  "pre-push": [
+  "pre-commit": [
     "lint:fix",
     "prettier"
   ],
@@ -81,7 +81,7 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "jest": "^28.1.2",
     "jest-environment-jsdom": "^28.1.2",
-    "pre-push": "^0.1.2",
+    "pre-commit": "^1.2.2",
     "prettier": "^2.7.0",
     "ts-node": "^10.8.2",
     "typescript": "4.7.3"

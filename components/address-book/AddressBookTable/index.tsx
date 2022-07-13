@@ -10,8 +10,10 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import RemoveDialog from '@/components/address-book/RemoveDialog'
-
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import css from './styles.module.css'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -34,8 +36,10 @@ const defaultOpen = {
 }
 
 const AddressBookTable = () => {
+  const isSafeOwner = useIsSafeOwner()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)
+  const [selectedAddress, setSelectedAddress] = useState<string | undefined>()
 
   const handleOpenModal = (type: keyof typeof open) => () => {
     setOpen((prev) => ({ ...prev, [type]: true }))
@@ -61,7 +65,7 @@ const AddressBookTable = () => {
     },
     address: {
       rawValue: address,
-      content: address,
+      content: <EthHashInfo address={address} showName={false} shortAddress={false} />,
     },
     actions: {
       rawValue: '',
@@ -79,10 +83,11 @@ const AddressBookTable = () => {
             </IconButton>
           </Tooltip>
 
-          {/* TODO: */}
-          <Button disableElevation disabled>
-            Send
-          </Button>
+          {isSafeOwner && (
+            <Button variant="contained" color="primary" onClick={() => setSelectedAddress(address)}>
+              Send
+            </Button>
+          )}
         </div>
       ),
     },
@@ -95,21 +100,24 @@ const AddressBookTable = () => {
           onClick={handleOpenModal(ModalType.EXPORT)}
           disabled={addressBookEntries.length === 0}
           variant="contained"
+          size="small"
           disableElevation
         >
           Export
         </Button>
 
-        <Button onClick={handleOpenModal(ModalType.IMPORT)} variant="contained" disableElevation>
+        <Button onClick={handleOpenModal(ModalType.IMPORT)} variant="contained" size="small" disableElevation>
           Import
         </Button>
 
-        <Button onClick={handleOpenModal(ModalType.ENTRY)} variant="contained" disableElevation>
+        <Button onClick={handleOpenModal(ModalType.ENTRY)} variant="contained" size="small" disableElevation>
           Create entry
         </Button>
       </div>
 
-      <EnhancedTable rows={rows} headCells={headCells} />
+      <div className={css.container}>
+        <EnhancedTable rows={rows} headCells={headCells} />
+      </div>
 
       {open[ModalType.EXPORT] && <ExportDialog handleClose={handleClose} />}
 
@@ -118,6 +126,14 @@ const AddressBookTable = () => {
       {open[ModalType.ENTRY] && <EntryDialog handleClose={handleClose} defaultValues={defaultValues} />}
 
       {open[ModalType.REMOVE] && <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />}
+
+      {/* Send funds modal */}
+      {selectedAddress && (
+        <TokenTransferModal
+          onClose={() => setSelectedAddress(undefined)}
+          initialData={[{ recipient: selectedAddress }]}
+        />
+      )}
     </>
   )
 }

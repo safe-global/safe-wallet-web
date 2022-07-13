@@ -11,11 +11,11 @@ interface Props {
 
 const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
   const txNonce = nonce ?? NOT_AVAILABLE
-  const message = isTxExecuted
-    ? `This is an on-chain rejection that didn't send any funds.
-     This on-chain rejection replaced all transactions with nonce ${txNonce}.`
-    : `This is an on-chain rejection that doesn't send any funds.
- Executing this on-chain rejection will replace all currently awaiting transactions with nonce ${txNonce}.`
+  const message = `This is an on-chain rejection that didn't send any funds. ${
+    isTxExecuted
+      ? `This on-chain rejection replaced all transactions with nonce ${txNonce}.`
+      : `Executing this on-chain rejection will replace all currently awaiting transactions with nonce ${txNonce}.`
+  }`
 
   return (
     <>

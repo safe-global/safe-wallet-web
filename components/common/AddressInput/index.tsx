@@ -58,9 +58,11 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
         />
       </Grid>
 
-      <Grid item>
-        <ScanQRButton onScan={setAddressValue} />
-      </Grid>
+      {!props.disabled && (
+        <Grid item>
+          <ScanQRButton onScan={setAddressValue} />
+        </Grid>
+      )}
     </Grid>
   )
 }
