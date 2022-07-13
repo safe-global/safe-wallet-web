@@ -81,10 +81,16 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
             </Typography>
           </Box>
         </Grid>
-        <Grid item md={8} borderLeft="1px solid #ddd">
+        <Grid
+          item
+          xs={12}
+          md={8}
+          borderLeft={({ palette }) => [undefined, undefined, `1px solid ${palette.border.light}`]}
+          borderTop={({ palette }) => [`1px solid ${palette.border.light}`, undefined, 'none']}
+        >
           <Box padding={3}>{params.safeInfo.owners.length} Safe owner(s)</Box>
           <Divider />
-          <Box padding={3}>
+          <Box display="flex" flexDirection="column" gap={2} padding={3}>
             {params.safeInfo.owners.map((owner) => {
               return <EthHashInfo key={owner.value} address={owner.value} name={owner.name} shortAddress={false} />
             })}

@@ -59,7 +59,13 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
             {safeInfo &&
               safeInfo.owners.map((owner, index) => {
                 return (
-                  <Grid container key={owner.value} gap={3} marginBottom={3} flexWrap="nowrap">
+                  <Grid
+                    container
+                    key={owner.value}
+                    gap={3}
+                    marginBottom={3}
+                    flexWrap={[undefined, undefined, 'nowrap']}
+                  >
                     <Grid item xs={12} md={4}>
                       <FormControl fullWidth>
                         <TextField

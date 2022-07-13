@@ -53,9 +53,7 @@ export const useTxStepper = ({ steps, initialData, initialStep, onClose, onFinis
     }
     const allData = [...stepData]
     allData[activeStep] = data
-    if (!allData[activeStep + 1]) {
-      allData[activeStep + 1] = data
-    }
+    allData[activeStep + 1] = data
     setStepData(allData)
     handleNext()
   }
