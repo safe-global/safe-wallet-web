@@ -1,21 +1,36 @@
+import { useEffect } from 'react'
+import useLocalStorage from '@/services/localStorage/useLocalStorage'
+import { useAppDispatch } from '@/store'
+import { addressBookSlice } from '@/store/addressBookSlice'
+import { addedSafesSlice } from '@/store/addedSafesSlice'
 import { migrateAddressBook } from './addressBook'
 import { migrateAddedSafes } from './addedSafes'
 import { LOCAL_STORAGE_DATA } from './common'
 import createMigrationBus from './migrationBus'
 
-/**
- * Subscribe to the message from iframe and migrate the data
- */
-const migrateLocalStorage = () => {
-  createMigrationBus((lsData: LOCAL_STORAGE_DATA) => {
-    migrateAddressBook(lsData)
-    migrateAddedSafes(lsData)
-  })
+const MIGRATION_KEY = 'migrationFinished'
+
+const useStorageMigration = (): void => {
+  const dispatch = useAppDispatch()
+  const [isMigrationFinished, setIsMigrationFinished] = useLocalStorage<boolean | undefined>(MIGRATION_KEY, true)
+
+  useEffect(() => {
+    if (isMigrationFinished) return
+
+    return createMigrationBus((lsData: LOCAL_STORAGE_DATA) => {
+      const abData = migrateAddressBook(lsData)
+      if (abData) {
+        dispatch(addressBookSlice.actions.setAddressBook(abData))
+      }
+
+      const addedSafesData = migrateAddedSafes(lsData)
+      if (addedSafesData) {
+        dispatch(addedSafesSlice.actions.set(addedSafesData))
+      }
+
+      setIsMigrationFinished(true)
+    })
+  }, [isMigrationFinished, setIsMigrationFinished])
 }
 
-// Run immediately on import
-if (typeof window !== 'undefined') {
-  migrateLocalStorage()
-}
-
-export default undefined
+export default useStorageMigration

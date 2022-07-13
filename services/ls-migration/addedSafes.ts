@@ -1,5 +1,4 @@
-import newStorage from '@/services/localStorage/local'
-import { addedSafesSlice, type AddedSafesState, type AddedSafesOnChain } from '@/store/addedSafesSlice'
+import { type AddedSafesState, type AddedSafesOnChain } from '@/store/addedSafesSlice'
 import { LOCAL_STORAGE_DATA, parseLsValue } from './common'
 
 const IMMORTAL_PREFIX = '_immortal|v2_'
@@ -29,13 +28,7 @@ type OldAddedSafes = Record<
   }
 >
 
-export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): void => {
-  // Don't migrate if the new storage is already populated
-  const prevAddedSafes = newStorage.getItem<AddedSafesState>(addedSafesSlice.name)
-  if (prevAddedSafes && Object.keys(prevAddedSafes).length > 0) {
-    return
-  }
-
+export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): AddedSafesState | void => {
   const newAddedSafes: AddedSafesState = {}
 
   ALL_CHAINS.forEach((chainId) => {
@@ -57,6 +50,6 @@ export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): void => {
   })
 
   if (Object.keys(newAddedSafes).length > 0) {
-    newStorage.setItem<AddedSafesState>(addedSafesSlice.name, newAddedSafes)
+    return newAddedSafes
   }
 }

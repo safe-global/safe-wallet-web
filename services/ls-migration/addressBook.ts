@@ -1,18 +1,11 @@
-import newStorage from '@/services/localStorage/local'
-import { addressBookSlice, type AddressBookState } from '@/store/addressBookSlice'
+import { type AddressBookState } from '@/store/addressBookSlice'
 import { LOCAL_STORAGE_DATA, parseLsValue } from './common'
 
 const OLD_LS_KEY = 'SAFE__addressBook'
 
 type OldAddressBook = Array<{ address: string; name: string; chainId: string }>
 
-export const migrateAddressBook = (lsData: LOCAL_STORAGE_DATA): void => {
-  // Don't migrate if the new storage is already populated
-  const currAb = newStorage.getItem<AddressBookState>(addressBookSlice.name)
-  if (currAb && Object.keys(currAb).length > 0) {
-    return
-  }
-
+export const migrateAddressBook = (lsData: LOCAL_STORAGE_DATA): AddressBookState | void => {
   const legacyAb = parseLsValue<OldAddressBook>(lsData[OLD_LS_KEY])
   if (Array.isArray(legacyAb)) {
     console.log('Migrating address book')
@@ -23,6 +16,6 @@ export const migrateAddressBook = (lsData: LOCAL_STORAGE_DATA): void => {
       return acc
     }, {})
 
-    newStorage.setItem<AddressBookState>(addressBookSlice.name, newAb)
+    return newAb
   }
 }

@@ -15,20 +15,18 @@ describe('Local storage migration', () => {
     }
 
     it('should migrate the address book', () => {
-      migrateAddressBook(oldStorage)
+      const newData = migrateAddressBook(oldStorage)
 
-      expect(localStorage.getItem('SAFE_v2__addressBook')).toBe(
-        JSON.stringify({
-          '1': {
-            '0x123': 'Alice',
-            '0x456': 'Bob',
-          },
-          '4': {
-            '0x789': 'Charlie',
-            '0xabc': 'Dave',
-          },
-        }),
-      )
+      expect(newData).toEqual({
+        '1': {
+          '0x123': 'Alice',
+          '0x456': 'Bob',
+        },
+        '4': {
+          '0x789': 'Charlie',
+          '0xabc': 'Dave',
+        },
+      })
     })
   })
 
@@ -51,12 +49,9 @@ describe('Local storage migration', () => {
     }
 
     it('should migrate the added safes', () => {
-      migrateAddedSafes(oldStorage)
+      const newData = migrateAddedSafes(oldStorage)
 
-      const result = localStorage.getItem('SAFE_v2__addedSafes')
-
-      expect(result).not.toBe('')
-      expect(JSON.parse(result || '')).toEqual({
+      expect(newData).toEqual({
         '1': {
           '0x123': {
             ethBalance: '0.1',

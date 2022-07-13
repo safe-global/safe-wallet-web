@@ -28,6 +28,9 @@ export const addedSafesSlice = createSlice({
   name: 'addedSafes',
   initialState,
   reducers: {
+    set: (_, action: PayloadAction<AddedSafesState>) => {
+      return action.payload
+    },
     addOrUpdateSafe: (state, { payload }: PayloadAction<{ safe: SafeInfo }>) => {
       const { chainId, address, owners, threshold } = payload.safe
 

@@ -21,21 +21,27 @@ const isMigrationMessage = (message: any): message is MigrationMessage => {
 /**
  * Create and an iframe and subscribe to the message from it
  */
-const createMigrationBus = (onMessage: (message: LOCAL_STORAGE_DATA) => void) => {
+const createMigrationBus = (onMessage: (message: LOCAL_STORAGE_DATA) => void): (() => void) => {
   // Create iframe
   const iframe = createIframe(`${IFRAME_HOST}${IFRAME_PATH}`)
 
   // Subscribe to the message from iframe
-  const unsub = receiveMessage((message) => {
+  const unsubscribe = receiveMessage((message) => {
     if (isMigrationMessage(message)) {
-      iframe.remove()
-      unsub()
+      onDone()
       onMessage(message.payload)
     }
   }, IFRAME_HOST)
 
+  const onDone = () => {
+    iframe.remove()
+    unsubscribe()
+  }
+
   // Send a message to the iframe so that it knows where to respond
   sendReadyMessage(iframe, IFRAME_HOST)
+
+  return onDone
 }
 
 export default createMigrationBus
