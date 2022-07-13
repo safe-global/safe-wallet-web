@@ -9,7 +9,7 @@ const TxNotifications: Partial<Record<TxEvent, string>> = {
   [TxEvent.PROPOSE_FAILED]: 'Proposal failed. Please try again.',
   [TxEvent.EXECUTING]: 'Please confirm the execution in your wallet.',
   [TxEvent.MINING]: 'Your transaction is mining.',
-  [TxEvent.MINED]: 'Your transaction was succesfully mined and is now being indexed.',
+  [TxEvent.MINED]: 'Your transaction was successfully mined and is now being indexed.',
   [TxEvent.REVERTED]: 'Please check your gas settings.',
   [TxEvent.SUCCESS]: 'Your transaction was successfully executed.',
   [TxEvent.FAILED]: 'Your transaction was unsuccessful.',

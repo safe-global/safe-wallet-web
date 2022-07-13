@@ -15,8 +15,8 @@ const NewSafe = () => {
         <br />
         Here is how to get started:
       </Typography>
-      <Paper sx={{ padding: 3 }}>
-        <Grid container>
+      <Paper sx={{ padding: 3, maxWidth: '800px' }}>
+        <Grid container gap={3}>
           <Grid item md={6}>
             <Typography variant="h2" mb={1}>
               Create Safe
