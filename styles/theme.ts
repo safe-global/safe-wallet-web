@@ -140,6 +140,13 @@ const theme = createTheme({
         }),
       },
     },
+    MuiDivider: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderColor: theme.palette.border.light,
+        }),
+      },
+    },
   },
 })
 
