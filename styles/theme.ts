@@ -1,7 +1,6 @@
 import { createTheme } from '@mui/material'
 import palette from './colors'
 import { base } from './spacings'
-import breakpoints from './breakpoints'
 
 declare module '@mui/material/styles' {
   // Custom color properties
@@ -23,9 +22,6 @@ declare module '@mui/material/styles' {
 const theme = createTheme({
   palette,
   spacing: base,
-  breakpoints: {
-    values: breakpoints,
-  },
   typography: {
     fontFamily: 'Averta, sans-serif',
 

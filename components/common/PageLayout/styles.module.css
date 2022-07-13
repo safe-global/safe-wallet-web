@@ -29,7 +29,7 @@
   height: calc(100vh - 52px);
 }
 
-@media (max-width: var(--breakpoint-md)) {
+@media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
     grid-template-areas: 'header' 'main';
