@@ -2,7 +2,8 @@ import { useState, type ReactElement } from 'react'
 import Button from '@mui/material/Button'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useWallet, { useIsWrongChain } from '@/hooks/wallets/useWallet'
+import useWallet from '@/hooks/wallets/useWallet'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 import css from './styles.module.css'
 

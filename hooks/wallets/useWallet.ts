@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import useChainId from '@/hooks/useChainId'
 import useOnboard, { ConnectedWallet, getConnectedWallet } from './useOnboard'
 
 const useWallet = (): ConnectedWallet | null => {
@@ -22,9 +21,3 @@ const useWallet = (): ConnectedWallet | null => {
 }
 
 export default useWallet
-
-export const useIsWrongChain = (): boolean => {
-  const chainId = useChainId()
-  const wallet = useWallet()
-  return !wallet || !chainId ? false : wallet.chainId !== chainId
-}
