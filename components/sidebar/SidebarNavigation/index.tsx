@@ -13,20 +13,22 @@ import {
   SidebarListItemIcon,
   SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
-import { navItems, type NavItem } from './config'
+import { navItems } from './config'
 
 import css from './styles.module.css'
 
 const Navigation = (): ReactElement => {
   const router = useRouter()
   const query = { safe: router.query.safe }
-  const [open, setOpen] = useState<Record<string, boolean>>({})
+  const [open, setOpen] = useState<string>('')
 
-  const toggleOpen = ({ href }: NavItem) => {
-    setOpen((prev) => ({ [href]: !prev[href] }))
+  const toggleOpen = (href: string) => {
+    setOpen((prev) => (prev === href ? '' : href))
   }
 
-  const isSelected = (href: string) => router.pathname === href
+  const isOpen = (href: string) => {
+    return open === href
+  }
 
   return (
     <SidebarList>
@@ -34,7 +36,8 @@ const Navigation = (): ReactElement => {
         if (!item.items) {
           return (
             <SidebarListItemButton
-              selected={isSelected(item.href)}
+              onClick={() => setOpen(item.href)}
+              selected={isOpen(item.href)}
               href={{ pathname: item.href, query }}
               key={item.href}
             >
@@ -48,12 +51,12 @@ const Navigation = (): ReactElement => {
           )
         }
 
-        const isExpanded = open[item.href] || item.items.some((i) => open[i.href])
+        const isExpanded = isOpen(item.href) || item.items.some((subItem) => isOpen(subItem.href))
 
         return (
           <Fragment key={item.href}>
             <SidebarListItemButton
-              onClick={() => toggleOpen(item)}
+              onClick={() => toggleOpen(item.href)}
               selected={isExpanded}
               href={{ pathname: item.href, query }}
             >
@@ -74,8 +77,8 @@ const Navigation = (): ReactElement => {
                   <Link href={{ pathname: subItem.href, query }} passHref key={subItem.href}>
                     <ListItemButton
                       className={css.sublistItem}
-                      onClick={() => toggleOpen(subItem)}
-                      selected={isSelected(subItem.href)}
+                      onClick={() => setOpen(subItem.href)}
+                      selected={isOpen(subItem.href)}
                     >
                       <SidebarListItemText>{subItem.label}</SidebarListItemText>
                     </ListItemButton>
