@@ -1,10 +1,11 @@
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import useWallet, { useIsWrongChain } from '@/hooks/wallets/useWallet'
+import useWallet from '@/hooks/wallets/useWallet'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
 import ConnectWallet from '@/components/common/ConnectWallet'
 import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import NetworkSelector from '@/components/common/NetworkSelector'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 export const ConnectWalletContent = ({
   wallet,

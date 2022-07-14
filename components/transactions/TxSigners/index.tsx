@@ -81,7 +81,7 @@ const shouldHideConfirmations = (detailedExecutionInfo: DetailedExecutionInfo | 
 const getConfirmationStep = ({ value, name }: AddressEx, key: string | undefined = undefined): ReactElement => (
   <StyledStep key={key} $bold $state="confirmed">
     <StepLabel icon={<DotIcon />}>
-      <EthHashInfo address={value} name={name} />
+      <EthHashInfo address={value} name={name} hasExplorer showCopyButton />
     </StepLabel>
   </StyledStep>
 )
@@ -159,6 +159,8 @@ export const TxSigners = ({
                 address={detailedExecutionInfo.executor.value}
                 name={detailedExecutionInfo.executor.name}
                 customAvatar={detailedExecutionInfo.executor.logoUri || undefined}
+                hasExplorer
+                showCopyButton
               />
             </StepContent>
           ) : (

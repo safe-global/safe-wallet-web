@@ -1,4 +1,4 @@
-import { Grid, Box, Button, Divider, Paper, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
@@ -21,7 +21,7 @@ const getStep = (status: SafeCreationStatus) => {
         image: (
           <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
         ),
-        description: 'Transaction is pending.',
+        description: 'Waiting for transaction confirmation.',
         instruction: 'Please confirm the transaction in your wallet.',
       }
     case SafeCreationStatus.MINING:
@@ -38,11 +38,23 @@ const getStep = (status: SafeCreationStatus) => {
         description: 'There was an error.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
+    case SafeCreationStatus.REVERTED:
+      return {
+        image: <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />,
+        description: 'Transaction was reverted.',
+        instruction: 'You can cancel or retry the Safe creation process.',
+      }
+    case SafeCreationStatus.TIMEOUT:
+      return {
+        image: <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />,
+        description: 'Transaction not found. Be aware that it might still be mined.',
+        instruction: 'You can cancel or retry the Safe creation process.',
+      }
     case SafeCreationStatus.SUCCESS:
       return {
         image: <img src="/images/safe-creation.svg" alt="Image of a vault" />,
         description: 'Your Safe was successfully created!',
-        instruction: 'Press continue to get to your Dashboard.',
+        instruction: 'Taking you to your dashboard...',
       }
   }
 }
@@ -53,7 +65,10 @@ export const CreationStatus = ({ onClose }: Props) => {
   const chainId = useChainId()
   const chain = useAppSelector((state) => selectChainById(state, chainId))
 
-  console.log(status)
+  const displayActions =
+    status === SafeCreationStatus.ERROR ||
+    status === SafeCreationStatus.REVERTED ||
+    status === SafeCreationStatus.TIMEOUT
 
   return (
     <Paper
@@ -67,7 +82,7 @@ export const CreationStatus = ({ onClose }: Props) => {
           {stepInfo.description}
         </Typography>
       </Box>
-      <Box sx={({ palette }) => ({ backgroundColor: palette.primary.main })} padding={3}>
+      <Box sx={({ palette }) => ({ backgroundColor: palette.primary.main })} padding={3} mb={6}>
         <Typography variant="h4" color="white">
           {stepInfo.instruction}
         </Typography>
@@ -81,7 +96,7 @@ export const CreationStatus = ({ onClose }: Props) => {
         </Box>
       )}
       <Divider />
-      {status === SafeCreationStatus.ERROR && (
+      {displayActions && (
         <Grid container padding={3} justifyContent="center" gap={2}>
           <Button onClick={onClose}>Cancel</Button>
           <Button onClick={onRetry} variant="contained">

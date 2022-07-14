@@ -6,6 +6,12 @@
 
 .avatar,
 .avatar img {
+  flex-shrink: 0;
   width: 2.3em;
   height: 2.3em;
+}
+
+.addressRow {
+  display: flex;
+  gap: 4px;
 }

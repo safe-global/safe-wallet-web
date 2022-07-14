@@ -95,7 +95,7 @@ export const selectAllAddedSafes = (state: RootState): AddedSafesState => {
 
 export const selectAddedSafes = createSelector(
   [selectAllAddedSafes, (_: RootState, chainId: string) => chainId],
-  (allAddedSafes, chainId) => {
+  (allAddedSafes, chainId): AddedSafesOnChain | undefined => {
     return allAddedSafes[chainId]
   },
 )
@@ -111,7 +111,7 @@ export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next)
       const chainId = data?.chainId
       const address = data?.address.value
 
-      if (!chainId || !address) {
+      if (!chainId || !address || !action.payload.balances) {
         break
       }
 

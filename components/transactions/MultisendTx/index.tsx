@@ -22,7 +22,7 @@ const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactEle
 
       <div className={css.multisendInfo}>
         <InfoDetails title="MultiSend contract:">
-          <EthHashInfo address={txInfo?.to.value || ''} />
+          <EthHashInfo address={txInfo?.to.value || ''} shortAddress={false} showCopyButton hasExplorer />
         </InfoDetails>
         <TxDataRow title="Value:">{txInfo?.value}</TxDataRow>
       </div>

@@ -5,7 +5,9 @@ import { shortenAddress } from '@/utils/formatters'
 import Identicon from '../Identicon'
 import useChainId from '@/hooks/useChainId'
 import useAddressBook from '@/hooks/useAddressBook'
-import { Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
+import ExplorerLink from '@/components/common/TokenExplorerLink'
+import CopyAddressButton from '@/components/common/CopyAddressButton'
 
 type EthHashInfoProps = {
   address: string
@@ -17,6 +19,7 @@ type EthHashInfoProps = {
   copyPrefix?: boolean
   shortAddress?: boolean
   customAvatar?: string
+  hasExplorer?: boolean
 }
 
 const SRCEthHashInfo = ({
@@ -43,13 +46,17 @@ const SRCEthHashInfo = ({
 
       <div>
         <Typography variant="body2">{props.name}</Typography>
-        <Typography variant="body2">
-          {prefix && <b>{prefix}:</b>}
-          {shortAddress ? shortenAddress(address) : address}
-        </Typography>
-      </div>
+        <Box className={css.addressRow}>
+          <Typography variant="body2">
+            {prefix && <b>{prefix}:</b>}
+            {shortAddress ? shortenAddress(address) : address}
+          </Typography>
 
-      {props.showCopyButton && <div className={css.copy}>{/* TODO */}</div>}
+          {props.showCopyButton && <CopyAddressButton address={address} />}
+
+          {props.hasExplorer && <ExplorerLink address={address} />}
+        </Box>
+      </div>
     </div>
   )
 }

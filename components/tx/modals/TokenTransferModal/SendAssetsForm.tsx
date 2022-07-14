@@ -27,7 +27,7 @@ export const SendFromBlock = (): ReactElement => {
       </Typography>
 
       <Box>
-        <EthHashInfo address={address} shortAddress={false} />
+        <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
       </Box>
 
       {nativeToken && (

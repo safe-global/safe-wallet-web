@@ -34,7 +34,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
   return (
     <Paper>
       <Grid container>
-        <Grid item md={4}>
+        <Grid item xs={12} md={4}>
           <Box padding={3}>
             <Typography mb={3}>Details</Typography>
             <Typography variant="caption" color="text.secondary">
@@ -49,7 +49,13 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
             </Typography>
           </Box>
         </Grid>
-        <Grid item md={8} borderLeft="1px solid #ddd">
+        <Grid
+          item
+          xs={12}
+          md={8}
+          borderLeft={[undefined, undefined, '1px solid #ddd']}
+          borderTop={['1px solid #ddd', undefined, 'none']}
+        >
           <Box padding={3}>{params.owners.length} Safe owners</Box>
           <Divider />
           <Box padding={3}>

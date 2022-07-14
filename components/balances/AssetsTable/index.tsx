@@ -1,15 +1,13 @@
 import { useState, type ReactElement } from 'react'
 import { Button, Typography } from '@mui/material'
-import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeBalanceResponse, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
 import EnhancedTable from '@/components/common/EnhancedTable'
-import TokenExplorerLink from '../TokenExplorerLink'
-import { isOwner } from '@/utils/transaction-guards'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import useWallet from '@/hooks/wallets/useWallet'
+import TokenExplorerLink from '@/components/common/TokenExplorerLink'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
 interface AssetsTableProps {
   items?: SafeBalanceResponse['items']
@@ -40,9 +38,7 @@ const headCells = [
 
 const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
-  const { safe } = useSafeInfo()
-  const wallet = useWallet()
-  const isSafeOwner = isOwner(safe?.owners, wallet?.address)
+  const isSafeOwner = useIsSafeOwner()
 
   const rows = (items || []).map((item) => ({
     asset: {
@@ -53,7 +49,7 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
 
           <Typography fontSize="medium">{item.tokenInfo.name}</Typography>
 
-          <TokenExplorerLink address={item.tokenInfo.address} />
+          {item.tokenInfo.type !== TokenType.NATIVE_TOKEN && <TokenExplorerLink address={item.tokenInfo.address} />}
         </div>
       ),
     },

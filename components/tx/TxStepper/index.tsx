@@ -5,11 +5,16 @@ import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxSte
 import { DialogActions, Typography } from '@mui/material'
 import css from './styles.module.css'
 
-const TxStepper = ({ steps, initialData, onClose }: TxStepperProps): ReactElement => {
-  const { onBack, onSubmit, setStep, activeStep, stepData, firstStep } = useTxStepper({ steps, initialData, onClose })
+const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps): ReactElement => {
+  const { onBack, onSubmit, setStep, activeStep, stepData, firstStep } = useTxStepper({
+    steps,
+    initialData,
+    initialStep,
+    onClose,
+  })
 
   return (
-    <Box sx={{ m: 3 }} className={css.container}>
+    <Box margin={3} className={css.container}>
       <Box py={1}>
         <Box className={css.stepIndicator} py={0.5}>
           <Typography color={({ palette }) => palette.text.secondary}>

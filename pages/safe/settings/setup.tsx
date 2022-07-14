@@ -3,9 +3,11 @@ import { Grid, Paper, Typography } from '@mui/material'
 import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
-import { isOwner } from '@/utils/transaction-guards'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useWallet, { useIsWrongChain } from '@/hooks/wallets/useWallet'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { Breadcrumbs } from '@/components/common/Breadcrumbs'
+import SettingsIcon from '@/public/images/sidebar/settings.svg'
 
 const Setup: NextPage = () => {
   const { safe } = useSafeInfo()
@@ -13,19 +15,18 @@ const Setup: NextPage = () => {
   const ownerLength = safe?.owners.length ?? 0
   const threshold = safe?.threshold ?? 0
 
-  const wallet = useWallet()
+  const isSafeOwner = useIsSafeOwner()
   const isWrongChain = useIsWrongChain()
 
-  const isSafeOwner = isOwner(safe?.owners, wallet?.address)
   const isGranted = isSafeOwner && !isWrongChain
 
   return (
     <main>
-      <Typography variant="h2">Settings / Setup</Typography>
+      <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Setup" />
       <Grid container spacing={7}>
         <Grid item xs={8}>
-          <Paper>
-            <Grid container padding="40px 48px 32px 32px">
+          <Paper sx={{ padding: 4 }} variant="outlined">
+            <Grid container>
               <Grid item xs={12}>
                 <OwnerList isGranted={isGranted} />
               </Grid>

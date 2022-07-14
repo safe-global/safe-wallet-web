@@ -46,7 +46,12 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
             {isModuleExecutionInfo(txSummary.executionInfo) && (
               <div className={css.txModule}>
                 <InfoDetails title="Module:">
-                  <EthHashInfo address={txSummary.executionInfo.address.value} />
+                  <EthHashInfo
+                    address={txSummary.executionInfo.address.value}
+                    shortAddress={false}
+                    showCopyButton
+                    hasExplorer
+                  />
                 </InfoDetails>
               </div>
             )}
