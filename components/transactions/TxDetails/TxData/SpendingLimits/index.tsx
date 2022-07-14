@@ -46,6 +46,9 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
           address={(beneficiary as string) || txTo?.value || '0x'}
           name={txTo.name || undefined}
           customAvatar={txTo.logoUri || undefined}
+          shortAddress={false}
+          showCopyButton
+          hasExplorer
         />
       </Box>
       {tokenInfo && (

@@ -161,6 +161,13 @@ const theme = createTheme({
         },
       },
     },
+    MuiIconButton: {
+      styleOverrides: {
+        sizeSmall: {
+          padding: '4px',
+        },
+      },
+    },
   },
 })
 

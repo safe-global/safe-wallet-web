@@ -1,22 +1,20 @@
 import { type ReactElement } from 'react'
-import { IconButton } from '@mui/material'
+import { IconButton, Tooltip } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
 
 const ExplorerLink = ({ address }: { address: string }): ReactElement | null => {
   const currentChain = useCurrentChain()
-  const link = currentChain?.getExplorerLink(address)
 
-  // Native token
-  if (parseInt(address, 16) === 0) {
-    return null
-  }
+  if (!currentChain) return null
+
+  const link = currentChain.getExplorerLink(address)
 
   return (
-    <a {...link} target="_blank" rel="noopener noreferrer">
-      <IconButton>
+    <Tooltip title={link.title} placement="top">
+      <IconButton href={link.href} target="_blank" rel="noopener noreferrer" disableRipple size="small">
         <img src="/images/link.svg" width={16} height={16} alt="Link" />
       </IconButton>
-    </a>
+    </Tooltip>
   )
 }
 
