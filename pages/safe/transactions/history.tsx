@@ -7,7 +7,7 @@ import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 const History: NextPage = () => {
   return (
     <main>
-      <Breadcrumbs icon={TransactionsIcon} first="Transactions" second="/ History" />
+      <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="History" />
 
       <PaginatedTxns useTxns={useTxHistory} />
     </main>

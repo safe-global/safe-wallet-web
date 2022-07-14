@@ -9,7 +9,7 @@ import SettingsIcon from '@/public/images/sidebar/settings.svg'
 const Modules: NextPage = () => {
   return (
     <main>
-      <Breadcrumbs icon={SettingsIcon} first="Settings" second="/ Modules" />
+      <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Modules" />
       <Grid container direction="column" spacing={2}>
         <Grid item>
           <SafeModules />

@@ -14,7 +14,7 @@ const Balances: NextPage = () => {
     <main>
       <Grid container spacing={2}>
         <Grid item xs>
-          <Breadcrumbs icon={AssetsIcon} first="Assets" second="/ Coins" />
+          <Breadcrumbs Icon={AssetsIcon} first="Assets" second="Coins" />
         </Grid>
 
         <Grid item>

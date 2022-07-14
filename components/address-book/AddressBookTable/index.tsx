@@ -100,7 +100,7 @@ const AddressBookTable = () => {
     <>
       <div className={css.headerButtonWrapper}>
         <Box alignSelf="flex-start" marginRight="auto">
-          <Breadcrumbs icon={ABIcon} first="Address Book" second={`(${addressBookEntries.length})`} />
+          <Breadcrumbs Icon={ABIcon} first="Address Book" />
         </Box>
 
         <Button

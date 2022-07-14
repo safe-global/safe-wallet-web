@@ -22,7 +22,7 @@ const Setup: NextPage = () => {
 
   return (
     <main>
-      <Breadcrumbs icon={SettingsIcon} first="Settings" second="/ Setup" />
+      <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Setup" />
       <Grid container spacing={7}>
         <Grid item xs={8}>
           <Paper elevation={0} sx={{ padding: 4 }} variant="outlined">

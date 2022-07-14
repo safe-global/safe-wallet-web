@@ -7,7 +7,7 @@ import TransactionsIcon from '@/public/images/sidebar/transactions.svg'
 const Queue: NextPage = () => {
   return (
     <main>
-      <Breadcrumbs icon={TransactionsIcon} first="Transactions" second="/ Queue" />
+      <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Queue" />
 
       <PaginatedTxns useTxns={useTxQueue} />
     </main>

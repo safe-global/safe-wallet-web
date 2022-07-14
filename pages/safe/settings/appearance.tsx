@@ -19,7 +19,7 @@ const Appearance: NextPage = () => {
 
   return (
     <main>
-      <Breadcrumbs icon={SettingsIcon} first="Settings" second="/ Appearance" />
+      <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Appearance" />
       <Paper elevation={0} sx={{ padding: 4 }} variant="outlined">
         <Typography variant="h4" fontWeight="bold" mb={1}>
           Chain-specific addresses

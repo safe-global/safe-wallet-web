@@ -9,7 +9,7 @@ const NFTs: NextPage = () => {
 
   return (
     <main>
-      <Breadcrumbs icon={AssetsIcon} first="Assets" second="/ NFTs" />
+      <Breadcrumbs Icon={AssetsIcon} first="Assets" second="NFTs" />
       <NftGrid collectibles={collectibles} />
     </main>
   )
