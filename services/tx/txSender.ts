@@ -137,7 +137,7 @@ export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string):
 
   try {
     // Adds signatures to safeTx
-    await sdk.signTransaction(safeTx)
+    await sdk.signTransaction(safeTx, 'eth_signTypedData')
   } catch (error) {
     txDispatch(TxEvent.SIGN_FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
