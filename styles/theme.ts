@@ -3,19 +3,20 @@ import palette from './colors'
 import { base } from './spacings'
 
 declare module '@mui/material/styles' {
-  // Custom color properties
-  interface PaletteColor {
-    background?: string
-  }
-  interface SimplePaletteColorOptions {
-    background?: string
-  }
   // Custom color palettes
   interface Palette {
     border: Palette['primary']
   }
   interface PaletteOptions {
     border: PaletteOptions['primary']
+  }
+
+  // Custom color properties
+  interface PaletteColor {
+    background?: string
+  }
+  interface SimplePaletteColorOptions {
+    background?: string
   }
 }
 
@@ -126,6 +127,11 @@ const theme = createTheme({
 
           '&:hover .MuiAccordionSummary-root': {
             background: theme.palette.primary.background,
+          },
+
+          '&:last-of-type': {
+            borderBottomLeftRadius: '8px',
+            borderBottomRightRadius: '8px',
           },
         }),
       },

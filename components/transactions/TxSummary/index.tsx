@@ -12,6 +12,7 @@ import { isAwaitingExecution } from '@/utils/transaction-guards'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import { useTransactionStatus } from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
+import GroupIcon from '@mui/icons-material/Group'
 
 type TxSummaryProps = {
   item: Transaction
@@ -31,25 +32,42 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const nonce = tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''
 
   return (
-    <Grid container className={css.gridContainer} id={tx.id}>
-      <Grid item md={1}>
+    <Grid container className={css.gridContainer} id={tx.id} gap={[2, undefined, undefined, 0]}>
+      <Grid item xs={1}>
         {nonce}
       </Grid>
 
-      <Grid item md={3}>
+      <Grid item md={2} lg={3}>
         <TxType tx={tx} />
       </Grid>
 
-      <Grid item md={3}>
+      <Grid item md={2} lg={3}>
         <TxInfo info={tx.txInfo} />
       </Grid>
 
-      <Grid item sx={{ whiteSpace: 'nowrap' }}>
+      <Grid item lg={1} sx={{ whiteSpace: 'nowrap' }}>
         <DateTime value={tx.timestamp} options={dateOptions} />
       </Grid>
 
+      {awaitingExecution && (
+        <Grid item lg={1} display="flex" alignItems="center" gap={1}>
+          {/* TODO: Mui doesnt recognize custom colors on SvgIcon */
+          /* @ts-ignore */}
+          <GroupIcon fontSize="small" color="border" />
+          <Typography variant="caption" fontWeight="bold" color="primary">
+            {tx.executionInfo && 'confirmationsSubmitted' in tx.executionInfo
+              ? tx.executionInfo.confirmationsSubmitted
+              : ''}{' '}
+            out of{' '}
+            {tx.executionInfo && 'confirmationsRequired' in tx.executionInfo
+              ? tx.executionInfo.confirmationsRequired
+              : ''}
+          </Typography>
+        </Grid>
+      )}
+
       {wallet && isQueue && (
-        <Grid item md={2}>
+        <Grid item lg={1}>
           <Box display="flex" alignItems="center" justifyContent="flex-end">
             {awaitingExecution ? (
               <ExecuteTxButton txSummary={item.transaction} />
