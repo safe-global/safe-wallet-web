@@ -20,7 +20,7 @@ const CopyAddressButton = ({ address }: { address: string }) => {
 
   return (
     <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
-      <IconButton onClick={handleCopy} sx={{ padding: 0, width: '24px', height: '24px' }}>
+      <IconButton onClick={handleCopy} size="small">
         <img src="/images/copy.svg" width={16} height={16} alt="Copy address" />
       </IconButton>
     </Tooltip>
