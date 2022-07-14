@@ -16,6 +16,8 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import TxDateLabel from '@/components/transactions/TxDateLabel'
 import { ExpandableTransactionItem } from '@/components/transactions/TxListItem'
 import { TxListGrid } from '@/components/transactions/TxList'
+import { Breadcrumbs } from '@/components/common/Breadcrumbs'
+import TransactionsIcon from '@/public/images/sidebar/transactions.svg'
 
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
@@ -41,7 +43,7 @@ const SingleTransaction: NextPage = () => {
 
   return (
     <main>
-      <h2>Transaction details</h2>
+      <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" />
 
       {loading ? (
         <CircularProgress />

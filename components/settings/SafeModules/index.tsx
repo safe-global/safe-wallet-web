@@ -23,7 +23,7 @@ const ModuleDisplay = ({ moduleAddress, chainId }: { moduleAddress: string; chai
 const SafeModules = () => {
   const { safe } = useSafeInfo()
   return (
-    <Paper elevation={0} sx={{ padding: 4 }}>
+    <Paper sx={{ padding: 4 }} variant="outlined">
       <Grid container direction="row" justifyContent="space-between">
         <Grid item>
           <Typography variant="h4" fontWeight={700}>

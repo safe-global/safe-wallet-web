@@ -1,0 +1,23 @@
+.icon path {
+  fill: var(--color-primary-main);
+}
+
+.text {
+  font-size: 12px;
+  color: var(--color-primary-main);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.secondaryText {
+  font-size: 12px;
+  color: var(--color-secondary-light);
+  text-transform: uppercase;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: var(--space-3);
+}

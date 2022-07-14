@@ -147,6 +147,20 @@ const theme = createTheme({
         }),
       },
     },
+    MuiPaper: {
+      defaultProps: {
+        elevation: 0,
+      },
+      styleOverrides: {
+        outlined: ({ theme }) => ({
+          borderWidth: 2,
+          borderColor: theme.palette.border.light,
+        }),
+        root: {
+          borderRadius: '8px',
+        },
+      },
+    },
   },
 })
 
