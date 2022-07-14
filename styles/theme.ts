@@ -117,17 +117,17 @@ const theme = createTheme({
     MuiAccordion: {
       styleOverrides: {
         root: ({ theme }) => ({
+          transition: 'background 0.2s',
           borderRadius: '8px',
           border: `2px solid ${theme.palette.border.light}`,
           '&::before': {
             content: 'none',
           },
+
+          '&:hover .MuiAccordionSummary-root': {
+            background: theme.palette.primary.background,
+          },
         }),
-      },
-    },
-    MuiAccordionSummary: {
-      styleOverrides: {
-        content: { margin: '0px' },
       },
     },
     MuiCard: {

@@ -1,4 +1,4 @@
-import { Grid, Box } from '@mui/material'
+import { Grid, Box, Typography } from '@mui/material'
 import { ReactElement } from 'react'
 import { TransactionStatus, type Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -31,28 +31,26 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const nonce = tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''
 
   return (
-    <Grid container className={css.gridContainer} id={tx.id} gap={2} p={1}>
-      <Grid item md>
+    <Grid container className={css.gridContainer} id={tx.id}>
+      <Grid item md={1}>
         {nonce}
       </Grid>
 
-      <Grid item md={4}>
+      <Grid item md={3}>
         <TxType tx={tx} />
       </Grid>
 
-      <Grid item md={4}>
+      <Grid item md={3}>
         <TxInfo info={tx.txInfo} />
       </Grid>
 
-      <Grid item xs sx={{ whiteSpace: 'nowrap' }}>
+      <Grid item sx={{ whiteSpace: 'nowrap' }}>
         <DateTime value={tx.timestamp} options={dateOptions} />
       </Grid>
 
-      <Grid item>{txStatusLabel}</Grid>
-
       {wallet && isQueue && (
-        <Grid item>
-          <Box display="flex" alignItems="center">
+        <Grid item md={2}>
+          <Box display="flex" alignItems="center" justifyContent="flex-end">
             {awaitingExecution ? (
               <ExecuteTxButton txSummary={item.transaction} />
             ) : (
@@ -62,6 +60,16 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
           </Box>
         </Grid>
       )}
+
+      <Grid item marginLeft="auto" marginRight={2}>
+        <Typography
+          variant="caption"
+          fontWeight="bold"
+          color={({ palette }) => (awaitingExecution ? palette.warning.dark : palette.primary.main)}
+        >
+          {txStatusLabel}
+        </Typography>
+      </Grid>
     </Grid>
   )
 }
