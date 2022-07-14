@@ -22,6 +22,7 @@
 
 .headerButtonWrapper {
   display: flex;
+  justify-content: flex-end;
   align-items: flex-start;
   gap: 8px;
   margin-bottom: 8px;

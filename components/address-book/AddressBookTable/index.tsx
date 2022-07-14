@@ -14,8 +14,6 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { Breadcrumbs } from '@/components/common/Breadcrumbs'
-import ABIcon from '@/public/images/sidebar/address-book.svg'
 import Box from '@mui/material/Box'
 
 const headCells = [
@@ -97,12 +95,8 @@ const AddressBookTable = () => {
   }))
 
   return (
-    <>
+    <Box marginTop={['0', '-46px']}>
       <div className={css.headerButtonWrapper}>
-        <Box alignSelf="flex-start" marginRight="auto">
-          <Breadcrumbs Icon={ABIcon} first="Address Book" />
-        </Box>
-
         <Button
           onClick={handleOpenModal(ModalType.EXPORT)}
           disabled={addressBookEntries.length === 0}
@@ -141,7 +135,7 @@ const AddressBookTable = () => {
           initialData={[{ recipient: selectedAddress }]}
         />
       )}
-    </>
+    </Box>
   )
 }
 
