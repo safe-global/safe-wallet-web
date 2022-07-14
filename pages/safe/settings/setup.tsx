@@ -25,7 +25,7 @@ const Setup: NextPage = () => {
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Setup" />
       <Grid container spacing={7}>
         <Grid item xs={8}>
-          <Paper elevation={0} sx={{ padding: 4 }} variant="outlined">
+          <Paper sx={{ padding: 4 }} variant="outlined">
             <Grid container>
               <Grid item xs={12}>
                 <OwnerList isGranted={isGranted} />

@@ -31,7 +31,7 @@ const TransactionGuards = () => {
   }
 
   return (
-    <Paper elevation={0} sx={{ padding: 4 }} variant="outlined">
+    <Paper sx={{ padding: 4 }} variant="outlined">
       <Grid container direction="row" justifyContent="space-between">
         <Grid item>
           <Typography variant="h4" fontWeight={700}>
