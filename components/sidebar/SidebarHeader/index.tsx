@@ -16,6 +16,7 @@ import css from './styles.module.css'
 import { selectSettings } from '@/store/settingsSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getExplorerLink } from '@/utils/gateway'
+import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 
 const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
   <IconButton
@@ -81,7 +82,7 @@ const SafeHeader = (): ReactElement => {
         </HeaderIconButton>
         <a target="_blank" rel="noreferrer" {...(chain && getExplorerLink(address, chain.blockExplorerUriTemplate))}>
           <HeaderIconButton>
-            <img src="/images/sidebar/block-explorer.svg" alt="Open Block Explorer" height="16px" width="16px" />
+            <OpenInNewRoundedIcon sx={({ palette }) => ({ color: `${palette.primary.main}` })} fontSize="small" />
           </HeaderIconButton>
         </a>
       </div>
