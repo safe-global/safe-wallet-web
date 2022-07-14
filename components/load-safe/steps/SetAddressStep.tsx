@@ -29,7 +29,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
   const validateSafeAddress = async (address: string) => {
     const { address: safeAddress } = parsePrefixedAddress(address)
 
-    if (Object.keys(addedSafes).includes(safeAddress)) {
+    if (addedSafes && Object.keys(addedSafes).includes(safeAddress)) {
       return 'Safe is already added'
     }
 
