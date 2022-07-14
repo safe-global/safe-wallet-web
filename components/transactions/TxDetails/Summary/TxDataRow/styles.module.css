@@ -21,10 +21,6 @@
   gap: 4px;
 }
 
-.inline a {
-  display: flex; /* so icon center aligns inside link */
-}
-
 .rawData {
   display: flex;
   align-items: center;

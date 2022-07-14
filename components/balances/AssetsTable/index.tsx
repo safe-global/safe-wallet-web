@@ -5,7 +5,7 @@ import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
 import EnhancedTable from '@/components/common/EnhancedTable'
-import TokenExplorerLink from '../../common/TokenExplorerLink'
+import TokenExplorerLink from '@/components/common/TokenExplorerLink'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
