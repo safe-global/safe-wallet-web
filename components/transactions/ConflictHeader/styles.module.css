@@ -1,0 +1,14 @@
+.disclaimerContainer {
+  background-color: var(--color-error-background);
+  padding: 8px;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 50px auto 70px;
+  gap: 4px;
+  align-items: center;
+}
+
+.alignItemsWithMargin {
+  display: flex;
+  align-items: center;
+}
