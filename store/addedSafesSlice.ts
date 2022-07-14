@@ -95,7 +95,7 @@ export const selectAllAddedSafes = (state: RootState): AddedSafesState => {
 
 export const selectAddedSafes = createSelector(
   [selectAllAddedSafes, (_: RootState, chainId: string) => chainId],
-  (allAddedSafes, chainId) => {
+  (allAddedSafes, chainId): AddedSafesOnChain | undefined => {
     return allAddedSafes[chainId]
   },
 )
