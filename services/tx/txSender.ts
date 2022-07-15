@@ -18,7 +18,7 @@ import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
-import Safe, { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
+import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
 
 const estimateSafeTxGas = async (
   chainId: string,
@@ -37,7 +37,7 @@ const estimateSafeTxGas = async (
  * Create a transaction from raw params
  */
 export const createTx = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
-  const safeSDK: Safe = getSafeSDK()
+  const safeSDK = getSafeSDK()
   if (!safeSDK) {
     throw new Error('Safe SDK not initialized')
   }
@@ -61,7 +61,7 @@ export const createMultiSendTx = async (
   txParams: MetaTransactionData[],
   options?: SafeTransactionOptionalProps,
 ): Promise<SafeTransaction> => {
-  const safeSDK: Safe = getSafeSDK()
+  const safeSDK = getSafeSDK()
   if (!safeSDK) {
     throw new Error('Safe SDK not initialized')
   }
@@ -72,7 +72,7 @@ export const createMultiSendTx = async (
  * Create a rejection tx
  */
 export const createRejectTx = async (nonce: number): Promise<SafeTransaction> => {
-  const safeSDK: Safe = getSafeSDK()
+  const safeSDK = getSafeSDK()
   if (!safeSDK) {
     throw new Error('Safe SDK not initialized')
   }
@@ -130,7 +130,7 @@ export const dispatchTxProposal = async (
  * Sign a transaction
  */
 export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string): Promise<SafeTransaction> => {
-  const sdk: Safe = getSafeSDK()
+  const sdk = getSafeSDK()
   if (!sdk) {
     throw new Error('Safe SDK not initialized')
   }
@@ -155,7 +155,7 @@ export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
   txOptions?: TransactionOptions,
 ): Promise<string> => {
-  const sdk: Safe = getSafeSDK()
+  const sdk = getSafeSDK()
   if (!sdk) {
     throw new Error('Safe SDK not initialized')
   }
