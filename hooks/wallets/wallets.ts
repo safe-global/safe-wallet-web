@@ -12,6 +12,7 @@ import portisModule from '@web3-onboard/portis'
 import torusModule from '@web3-onboard/torus'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
+import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
@@ -71,4 +72,8 @@ export const getSupportedWallets = (disabledWallets: string[]): WalletInit[] => 
   return Object.entries(WALLET_MODULES)
     .filter(([key]) => isWalletSupported(disabledWallets, key))
     .map(([, module]) => module())
+}
+
+export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
+  return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR].includes(wallet.label.toUpperCase() as WALLET_KEYS)
 }
