@@ -31,9 +31,10 @@ const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
       color: cfg.theme.backgroundColor,
       // TODO: add block explorer URL
     })),
+    // TODO: Remove once containerElement is optional again
     accountCenter: {
-      mobile: { enabled: true },
-      desktop: { enabled: false },
+      mobile: { enabled: true, containerElement: 'body' },
+      desktop: { enabled: false, containerElement: 'body' },
     },
     appMetadata: {
       name: 'Gnosis Safe',
