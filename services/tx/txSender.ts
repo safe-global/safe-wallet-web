@@ -19,8 +19,6 @@ import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
 import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
-import { getConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { isHardwareWallet } from '@/hooks/wallets/wallets'
 
 const estimateSafeTxGas = async (
   chainId: string,
@@ -131,21 +129,19 @@ export const dispatchTxProposal = async (
 /**
  * Sign a transaction
  */
-export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string): Promise<SafeTransaction> => {
+export const dispatchTxSigning = async (
+  safeTx: SafeTransaction,
+  isHardwareWallet: boolean,
+  txId?: string,
+): Promise<SafeTransaction> => {
   const sdk = getSafeSDK()
   if (!sdk) {
     throw new Error('Safe SDK not initialized')
   }
 
-  const connectedWallet = getConnectedWallet()
-
-  if (!connectedWallet) {
-    throw new Error('Wallet not connected')
-  }
-
   try {
     // Adds signatures to safeTx
-    if (isHardwareWallet(connectedWallet)) {
+    if (isHardwareWallet) {
       await sdk.signTransaction(safeTx, 'eth_sign')
     } else {
       await sdk.signTransaction(safeTx, 'eth_signTypedData')
