@@ -35,7 +35,7 @@ export const isOwner = (safeOwners: AddressEx[] = [], walletAddress?: string) =>
   return safeOwners.some((owner) => owner.value.toLowerCase() === walletAddress?.toLowerCase())
 }
 
-export const isMultisigExecutionDetails = (value: DetailedExecutionInfo | null): value is MultisigExecutionDetails => {
+export const isMultisigExecutionDetails = (value?: DetailedExecutionInfo): value is MultisigExecutionDetails => {
   return value?.type === 'MULTISIG'
 }
 

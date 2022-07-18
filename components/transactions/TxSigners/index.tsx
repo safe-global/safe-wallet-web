@@ -66,7 +66,7 @@ const StyledStep = ({ $bold, $state, sx, ...rest }: StyledStepProps & StepProps)
   />
 )
 
-const shouldHideConfirmations = (detailedExecutionInfo: DetailedExecutionInfo | null): boolean => {
+const shouldHideConfirmations = (detailedExecutionInfo?: DetailedExecutionInfo): boolean => {
   if (!detailedExecutionInfo || !isMultisigExecutionDetails(detailedExecutionInfo)) {
     return true
   }

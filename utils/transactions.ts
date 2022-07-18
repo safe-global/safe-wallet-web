@@ -18,7 +18,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       return !hasConfirmed
     })
 
-    return missingSigners.length ? missingSigners : null
+    return missingSigners.length ? missingSigners : undefined
   }
 
   const getMultisigExecutionInfo = ({
