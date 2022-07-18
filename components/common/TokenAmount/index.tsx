@@ -3,7 +3,6 @@ import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { formatAmount } from '@/utils/formatNumber'
 import css from './styles.module.css'
 import { formatUnits } from 'ethers/lib/utils'
-import Box from '@mui/material/Box'
 
 export const TokenIcon = (props: {
   logoUri?: string | null
@@ -14,13 +13,11 @@ export const TokenIcon = (props: {
   const { logoUri, tokenSymbol, size = DEFAULT_SIZE } = props
   const [src, setSrc] = useState<string>(logoUri || '')
 
-  useEffect(() => {
-    setSrc(logoUri || '')
-  }, [logoUri])
+  useEffect(() => void setSrc(logoUri || ''), [logoUri])
 
-  if (!src) return null
-
-  return <img src={src} alt={tokenSymbol || ''} className={css.tokenIcon} onError={() => setSrc('')} height={size} />
+  return !src ? null : (
+    <img src={src} alt={tokenSymbol || ''} className={css.tokenIcon} onError={() => setSrc('')} height={size} />
+  )
 }
 
 const TokenAmount = ({
@@ -43,11 +40,11 @@ const TokenAmount = ({
   const amount = decimals ? formatUnits(value, decimals) : value
 
   return (
-    <Box className={css.container}>
+    <span className={css.container}>
       {logoUri && <TokenIcon logoUri={logoUri} tokenSymbol={tokenSymbol} />}
       {sign}
       {formatAmount(amount)} {tokenSymbol}
-    </Box>
+    </span>
   )
 }
 
