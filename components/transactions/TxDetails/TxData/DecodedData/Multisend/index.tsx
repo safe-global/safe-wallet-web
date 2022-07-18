@@ -39,8 +39,8 @@ export const Multisend = ({ txData }: MultisendProps): ReactElement | null => {
         }
 
         const addressInfo = txData.addressInfoIndex?.[to]
-        const name = addressInfo?.name || undefined
-        const avatarUrl = addressInfo?.logoUri || undefined
+        const name = addressInfo?.name
+        const avatarUrl = addressInfo?.logoUri
 
         const title = `Interact with${Number(amount) !== 0 ? ` (and send ${amount} ${symbol} to)` : ''}:`
         return (

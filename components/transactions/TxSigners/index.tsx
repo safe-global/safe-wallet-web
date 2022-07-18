@@ -66,7 +66,7 @@ const StyledStep = ({ $bold, $state, sx, ...rest }: StyledStepProps & StepProps)
   />
 )
 
-const shouldHideConfirmations = (detailedExecutionInfo: DetailedExecutionInfo | null): boolean => {
+const shouldHideConfirmations = (detailedExecutionInfo?: DetailedExecutionInfo): boolean => {
   if (!detailedExecutionInfo || !isMultisigExecutionDetails(detailedExecutionInfo)) {
     return true
   }
@@ -158,7 +158,7 @@ export const TxSigners = ({
               <EthHashInfo
                 address={detailedExecutionInfo.executor.value}
                 name={detailedExecutionInfo.executor.name}
-                customAvatar={detailedExecutionInfo.executor.logoUri || undefined}
+                customAvatar={detailedExecutionInfo.executor.logoUri}
                 hasExplorer
                 showCopyButton
               />

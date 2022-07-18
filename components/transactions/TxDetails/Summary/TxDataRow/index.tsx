@@ -29,7 +29,7 @@ export const TxDataRow = ({ title, children }: TxDataRowProps): ReactElement | n
 }
 
 export const generateDataRowValue = (
-  value?: string | null,
+  value?: string,
   type?: 'hash' | 'rawData' | 'address' | 'bytes',
   hasExplorer?: boolean,
 ): ReactElement | null => {

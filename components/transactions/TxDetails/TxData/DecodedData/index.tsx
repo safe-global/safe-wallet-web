@@ -31,7 +31,7 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
           <EthHashInfo
             address={txData.to.value}
             name={isCustomTxInfo(txInfo) ? txInfo.to.name : undefined}
-            customAvatar={isCustomTxInfo(txInfo) ? txInfo.to.logoUri || undefined : undefined}
+            customAvatar={isCustomTxInfo(txInfo) ? txInfo.to.logoUri : undefined}
             shortAddress={false}
             showCopyButton
             hasExplorer
@@ -59,7 +59,7 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
         <EthHashInfo
           address={txData.to.value}
           name={isCustomTxInfo(txInfo) ? txInfo.to.name : undefined}
-          customAvatar={isCustomTxInfo(txInfo) ? txInfo.to.logoUri || undefined : undefined}
+          customAvatar={isCustomTxInfo(txInfo) ? txInfo.to.logoUri : undefined}
           shortAddress={false}
           showCopyButton
           hasExplorer

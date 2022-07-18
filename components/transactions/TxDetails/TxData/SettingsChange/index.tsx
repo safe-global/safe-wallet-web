@@ -25,8 +25,8 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
         <InfoDetails title="Set fallback handler:">
           <EthHashInfo
             address={settingsInfo.handler.value}
-            name={settingsInfo.handler?.name || undefined}
-            customAvatar={settingsInfo.handler?.logoUri || undefined}
+            name={settingsInfo.handler?.name}
+            customAvatar={settingsInfo.handler?.logoUri}
             {...addressInfoProps}
           />
         </InfoDetails>
@@ -41,8 +41,8 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
           <InfoDetails title={title}>
             <EthHashInfo
               address={settingsInfo.owner.value}
-              name={settingsInfo.owner?.name || undefined}
-              customAvatar={settingsInfo.owner?.logoUri || undefined}
+              name={settingsInfo.owner?.name}
+              customAvatar={settingsInfo.owner?.logoUri}
               {...addressInfoProps}
             />
             <InfoDetails title="Increase/decrease confirmation policy to:">{settingsInfo.threshold}</InfoDetails>
@@ -56,16 +56,16 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
           <InfoDetails title="Old owner">
             <EthHashInfo
               address={settingsInfo.oldOwner.value}
-              name={settingsInfo.oldOwner?.name || undefined}
-              customAvatar={settingsInfo.oldOwner?.logoUri || undefined}
+              name={settingsInfo.oldOwner?.name}
+              customAvatar={settingsInfo.oldOwner?.logoUri}
               {...addressInfoProps}
             />
           </InfoDetails>
           <InfoDetails title="New owner">
             <EthHashInfo
               address={settingsInfo.newOwner.value}
-              name={settingsInfo.newOwner?.name || undefined}
-              customAvatar={settingsInfo.newOwner?.logoUri || undefined}
+              name={settingsInfo.newOwner?.name}
+              customAvatar={settingsInfo.newOwner?.logoUri}
               {...addressInfoProps}
             />
           </InfoDetails>
@@ -85,8 +85,8 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
         <InfoDetails title="Change implementation:">
           <EthHashInfo
             address={settingsInfo.implementation.value}
-            name={settingsInfo.implementation?.name || undefined}
-            customAvatar={settingsInfo.implementation?.logoUri || undefined}
+            name={settingsInfo.implementation?.name}
+            customAvatar={settingsInfo.implementation?.logoUri}
             {...addressInfoProps}
           />
         </InfoDetails>
@@ -99,8 +99,8 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
         <InfoDetails title={title}>
           <EthHashInfo
             address={settingsInfo.module.value}
-            name={settingsInfo.module?.name || undefined}
-            customAvatar={settingsInfo.module?.logoUri || undefined}
+            name={settingsInfo.module?.name}
+            customAvatar={settingsInfo.module?.logoUri}
             {...addressInfoProps}
           />
         </InfoDetails>
@@ -111,8 +111,8 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
         <InfoDetails title="Set guard:">
           <EthHashInfo
             address={settingsInfo.guard.value}
-            name={settingsInfo.guard?.name || undefined}
-            customAvatar={settingsInfo.guard?.logoUri || undefined}
+            name={settingsInfo.guard?.name}
+            customAvatar={settingsInfo.guard?.logoUri}
             {...addressInfoProps}
           />
         </InfoDetails>

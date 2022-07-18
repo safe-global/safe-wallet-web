@@ -20,7 +20,7 @@ const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | un
       return txInfo.to
     }
     case 'Creation': {
-      return txInfo.factory || undefined
+      return txInfo.factory
     }
   }
 }
