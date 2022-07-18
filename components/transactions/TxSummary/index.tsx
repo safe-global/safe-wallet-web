@@ -8,7 +8,7 @@ import SignTxButton from '@/components/transactions/SignTxButton'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
-import { isAwaitingExecution } from '@/utils/transaction-guards'
+import { isAwaitingExecution, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import { useTransactionStatus } from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
@@ -29,7 +29,11 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const txStatusLabel = useTransactionStatus(tx)
   const isQueue = tx.txStatus !== TransactionStatus.SUCCESS
   const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
-  const nonce = tx.executionInfo && 'nonce' in tx.executionInfo ? tx.executionInfo.nonce : ''
+  const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : ''
+  const submittedConfirmations = isMultisigExecutionInfo(tx.executionInfo)
+    ? tx.executionInfo.confirmationsSubmitted
+    : ''
+  const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.confirmationsRequired : ''
 
   return (
     <Grid container className={css.gridContainer} id={tx.id} gap={[2, undefined, undefined, 0]}>
@@ -50,16 +54,10 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
       </Grid>
 
       {awaitingExecution && (
-        <Grid item lg={1} display="flex" alignItems="center" gap={1}>
+        <Grid item lg={2} display="flex" alignItems="center" justifyContent="center" gap={1}>
           <GroupIcon fontSize="small" color="border" />
           <Typography variant="caption" fontWeight="bold" color="primary">
-            {tx.executionInfo && 'confirmationsSubmitted' in tx.executionInfo
-              ? tx.executionInfo.confirmationsSubmitted
-              : ''}{' '}
-            out of{' '}
-            {tx.executionInfo && 'confirmationsRequired' in tx.executionInfo
-              ? tx.executionInfo.confirmationsRequired
-              : ''}
+            {submittedConfirmations} out of {requiredConfirmations}
           </Typography>
         </Grid>
       )}
