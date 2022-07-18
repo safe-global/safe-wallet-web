@@ -16,6 +16,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParamsForm, { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
 import { BigNumber } from 'ethers'
 import TxModalTitle from '../TxModalTitle'
+import { isHardwareWallet } from '@/hooks/wallets/wallets'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -86,8 +87,11 @@ const SignOrExecuteForm = ({
   }
 
   const onSign = async () => {
+    if (!wallet || !tx) return
+
     onFinish(async () => {
-      const signedTx = await dispatchTxSigning(tx!, txId)
+      const hardwareWallet = isHardwareWallet(wallet)
+      const signedTx = await dispatchTxSigning(tx, hardwareWallet, txId)
       await dispatchTxProposal(chainId, safeAddress, wallet!.address, signedTx)
     })
   }

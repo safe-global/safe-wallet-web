@@ -129,7 +129,11 @@ export const dispatchTxProposal = async (
 /**
  * Sign a transaction
  */
-export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string): Promise<SafeTransaction> => {
+export const dispatchTxSigning = async (
+  safeTx: SafeTransaction,
+  isHardwareWallet: boolean,
+  txId?: string,
+): Promise<SafeTransaction> => {
   const sdk = getSafeSDK()
   if (!sdk) {
     throw new Error('Safe SDK not initialized')
@@ -137,7 +141,11 @@ export const dispatchTxSigning = async (safeTx: SafeTransaction, txId?: string):
 
   try {
     // Adds signatures to safeTx
-    await sdk.signTransaction(safeTx)
+    if (isHardwareWallet) {
+      await sdk.signTransaction(safeTx, 'eth_sign')
+    } else {
+      await sdk.signTransaction(safeTx, 'eth_signTypedData')
+    }
   } catch (error) {
     txDispatch(TxEvent.SIGN_FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
