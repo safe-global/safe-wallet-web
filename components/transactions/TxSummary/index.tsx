@@ -29,15 +29,15 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const txStatusLabel = useTransactionStatus(tx)
   const isQueue = tx.txStatus !== TransactionStatus.SUCCESS
   const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
-  const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : ''
+  const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const submittedConfirmations = isMultisigExecutionInfo(tx.executionInfo)
     ? tx.executionInfo.confirmationsSubmitted
     : ''
   const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.confirmationsRequired : ''
 
   return (
-    <Box className={css.gridContainer} id={tx.id}>
-      <Box gridArea="nonce">{nonce}</Box>
+    <Box className={`${css.gridContainer} ${nonce ? css.columnTemplate : css.columnTemplateWithoutNonce}`} id={tx.id}>
+      {nonce && <Box gridArea="nonce">{nonce}</Box>}
 
       <Box gridArea="type">
         <TxType tx={tx} />

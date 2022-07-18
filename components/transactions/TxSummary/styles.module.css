@@ -6,19 +6,38 @@
   width: 100%;
   display: grid;
   gap: var(--space-2);
-  grid-template-columns: minmax(50px, 0.5fr) 2fr 2fr 1fr 1fr 1fr 1fr;
-  grid-template-areas: 'nonce type info date confirmations actions status';
   align-items: center;
   white-space: nowrap;
+}
+
+.columnTemplate {
+  grid-template-columns: auto 2fr 2fr 1fr 1fr 1fr 1fr;
+  grid-template-areas: 'nonce type info date confirmations actions status';
+}
+
+.columnTemplateWithoutNonce {
+  grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr;
+  grid-template-areas: 'type info date confirmations actions status';
 }
 
 @media (max-width: 768px) {
   .gridContainer {
     gap: var(--space-1);
+  }
+
+  .columnTemplate {
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-areas:
+      'nonce nonce type type type type type info info info info info'
+      'date date date date date date confirmations confirmations confirmations confirmations confirmations confirmations'
+      'status status status status status status actions actions actions actions actions actions';
+  }
+
+  .columnTemplateWithoutNonce {
     grid-template-columns: repeat(12, 1fr);
     grid-template-areas:
       'type type type type type type info info info info info info'
-      'nonce date date date date date actions actions actions actions actions actions'
-      'status status status status status status confirmations confirmations confirmations confirmations confirmations confirmations';
+      'date date date date date date confirmations confirmations confirmations confirmations confirmations confirmations'
+      'status status status status status status actions actions actions actions actions actions';
   }
 }
