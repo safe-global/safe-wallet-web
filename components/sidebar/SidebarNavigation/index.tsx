@@ -1,6 +1,7 @@
-import React, { Fragment, useState, type ReactElement, useEffect } from 'react'
+import React, { useState, type ReactElement, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import ListItemButton from '@mui/material/ListItemButton'
+import ListItem from '@mui/material/ListItem'
 import Collapse from '@mui/material/Collapse'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
@@ -40,34 +41,48 @@ const Navigation = (): ReactElement => {
       {navItems.map((item) => {
         if (!item.items) {
           return (
-            <SidebarListItemButton
-              onClick={() => setOpen(item.href)}
-              selected={isOpen(item.href)}
-              href={{ pathname: item.href, query }}
-              key={item.href}
-            >
-              {item.icon && (
-                <SidebarListItemIcon>
-                  <img src={item.icon} alt={item.label} height="16px" width="16px" />
-                </SidebarListItemIcon>
-              )}
-              <SidebarListItemText bold>{item.label}</SidebarListItemText>
-            </SidebarListItemButton>
+            <ListItem disablePadding>
+              <SidebarListItemButton
+                onClick={() => setOpen(item.href)}
+                selected={isOpen(item.href)}
+                href={{ pathname: item.href, query }}
+                key={item.href}
+              >
+                {item.icon && (
+                  <SidebarListItemIcon
+                    sx={{
+                      '& svg path': {
+                        fill: ({ palette }) => (isOpen(item.href) ? palette.primary.main : palette.secondary.main),
+                      },
+                    }}
+                  >
+                    {item.icon}
+                  </SidebarListItemIcon>
+                )}
+                <SidebarListItemText bold>{item.label}</SidebarListItemText>
+              </SidebarListItemButton>
+            </ListItem>
           )
         }
 
         const isExpanded = isOpen(item.href) || item.items.some((subItem) => isOpen(subItem.href))
 
         return (
-          <Fragment key={item.href}>
+          <ListItem key={item.href} disablePadding sx={{ display: 'block' }}>
             <SidebarListItemButton
               onClick={() => toggleOpen(item.href)}
               selected={isExpanded}
               href={{ pathname: item.href, query }}
             >
               {item.icon && (
-                <SidebarListItemIcon>
-                  <img src={item.icon} alt={item.label} height="16px" width="16px" />
+                <SidebarListItemIcon
+                  sx={{
+                    '& svg path': {
+                      fill: ({ palette }) => (isOpen(item.href) ? palette.primary.main : palette.secondary.main),
+                    },
+                  }}
+                >
+                  {item.icon}
                 </SidebarListItemIcon>
               )}
 
@@ -76,22 +91,24 @@ const Navigation = (): ReactElement => {
               {isExpanded ? <ExpandLess /> : <ExpandMore />}
             </SidebarListItemButton>
 
-            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <List component="nav" className={css.sublist}>
+            <Collapse in={isExpanded} timeout="auto" unmountOnExit sx={{ marginTop: '4px' }}>
+              <List className={css.sublist}>
                 {item.items.map((subItem) => (
-                  <Link href={{ pathname: subItem.href, query }} passHref key={subItem.href}>
-                    <ListItemButton
-                      className={css.sublistItem}
-                      onClick={() => setOpen(subItem.href)}
-                      selected={isOpen(subItem.href)}
-                    >
-                      <SidebarListItemText>{subItem.label}</SidebarListItemText>
-                    </ListItemButton>
-                  </Link>
+                  <ListItem key={subItem.href} disablePadding>
+                    <Link href={{ pathname: subItem.href, query }} passHref>
+                      <ListItemButton
+                        className={css.sublistItem}
+                        onClick={() => setOpen(subItem.href)}
+                        selected={isOpen(subItem.href)}
+                      >
+                        <SidebarListItemText>{subItem.label}</SidebarListItemText>
+                      </ListItemButton>
+                    </Link>
+                  </ListItem>
                 ))}
               </List>
             </Collapse>
-          </Fragment>
+          </ListItem>
         )
       })}
     </SidebarList>

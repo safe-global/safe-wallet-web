@@ -1,8 +1,15 @@
+import React, { ReactElement } from 'react'
 import { AppRoutes } from '@/config/routes'
+import HomeIcon from '@/public/images/sidebar/home.svg'
+import AssetsIcon from '@/public/images/sidebar/assets.svg'
+import TransactionIcon from '@/public/images/sidebar/transactions.svg'
+import ABIcon from '@/public/images/sidebar/address-book.svg'
+import AppsIcon from '@/public/images/sidebar/apps.svg'
+import SettingsIcon from '@/public/images/sidebar/settings.svg'
 
 export type NavItem = {
   label: string
-  icon?: string
+  icon?: ReactElement
   href: string
   items?: NavItem[]
 }
@@ -10,12 +17,12 @@ export type NavItem = {
 export const navItems: NavItem[] = [
   {
     label: 'Home',
-    icon: '/images/sidebar/home.svg', // TODO: Include thick icon from design
+    icon: <HomeIcon />,
     href: AppRoutes.safe.home,
   },
   {
     label: 'Assets',
-    icon: '/images/sidebar/assets.svg',
+    icon: <AssetsIcon />,
     href: AppRoutes.safe.balances.index,
     items: [
       {
@@ -30,7 +37,7 @@ export const navItems: NavItem[] = [
   },
   {
     label: 'Transactions',
-    icon: '/images/sidebar/transactions.svg',
+    icon: <TransactionIcon />,
     href: AppRoutes.safe.transactions.history,
     items: [
       {
@@ -45,17 +52,17 @@ export const navItems: NavItem[] = [
   },
   {
     label: 'Address Book',
-    icon: '/images/sidebar/address-book.svg',
+    icon: <ABIcon />,
     href: AppRoutes.safe.addressBook,
   },
   {
     label: 'Apps',
-    icon: '/images/sidebar/apps.svg',
+    icon: <AppsIcon />,
     href: AppRoutes.safe.apps,
   },
   {
     label: 'Settings',
-    icon: '/images/sidebar/settings.svg',
+    icon: <SettingsIcon />,
     href: AppRoutes.safe.settings.setup,
     items: [
       {
