@@ -15,6 +15,7 @@ import TxType from '@/components/transactions/TxType'
 import GroupIcon from '@mui/icons-material/Group'
 
 type TxSummaryProps = {
+  isGrouped?: boolean
   item: Transaction
 }
 
@@ -23,7 +24,7 @@ const dateOptions = {
   hour12: true,
 }
 
-const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
+const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
   const txStatusLabel = useTransactionStatus(tx)
@@ -38,7 +39,7 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   return (
     <Grid container className={css.gridContainer} id={tx.id} gap={[2, undefined, undefined, 0]}>
       <Grid item xs={1}>
-        {nonce}
+        {isGrouped ? null : nonce}
       </Grid>
 
       <Grid item md={2} lg={3}>

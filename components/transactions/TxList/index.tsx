@@ -7,8 +7,8 @@ import {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
 import { isConflictHeaderListItem, isDateLabel, isTransactionListItem } from '@/utils/transaction-guards'
+import GroupedTxListItems from '@/components/transactions/ConflictHeader'
 import css from './styles.module.css'
-import ConflictHeader from '@/components/transactions/ConflictHeader'
 
 type TxListProps = {
   items: TransactionListPage['results']
@@ -19,7 +19,7 @@ export const TxListGrid = ({ children }: { children: (ReactElement | null)[] }):
 }
 
 const TxList = ({ items }: TxListProps): ReactElement => {
-  let grouppedListItems: TransactionListItem[] = []
+  let groupedListItems: TransactionListItem[] = []
 
   // Ensure list always starts with a date label
   const list = useMemo(() => {
@@ -45,16 +45,16 @@ const TxList = ({ items }: TxListProps): ReactElement => {
       {list.map((item, index) => {
         if (isConflictHeaderListItem(item)) {
           // starts a new groupped list when finds a conflict header list item
-          grouppedListItems = [item]
+          groupedListItems = [item]
           return null
         }
         if (isTransactionListItem(item) && item.conflictType === 'HasNext') {
-          grouppedListItems = [...grouppedListItems, item]
+          groupedListItems = [...groupedListItems, item]
           return null
         }
         if (isTransactionListItem(item) && item.conflictType === 'End') {
-          grouppedListItems = [...grouppedListItems, item]
-          return <ConflictHeader grouppedListItems={grouppedListItems} />
+          groupedListItems = [...groupedListItems, item]
+          return <GroupedTxListItems groupedListItems={groupedListItems} />
         }
 
         return <TxListItem key={index} item={item} />

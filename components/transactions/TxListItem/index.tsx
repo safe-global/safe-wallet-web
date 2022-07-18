@@ -9,13 +9,13 @@ import TxDateLabel from '@/components/transactions/TxDateLabel'
 import TxDetails from '@/components/transactions/TxDetails'
 import CreateTxInfo from '@/components/transactions/SafeCreationTx'
 
-export const ExpandableTransactionItem = ({
-  item,
-  txDetails,
-}: {
+interface ExpandableTransactionItemProps {
+  isGrouped?: boolean
   item: Transaction
   txDetails?: TransactionDetails
-}) => (
+}
+
+export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }: ExpandableTransactionItemProps) => (
   <Accordion
     disableGutters
     TransitionProps={{
@@ -24,9 +24,10 @@ export const ExpandableTransactionItem = ({
     }}
     elevation={0}
     defaultExpanded={!!txDetails}
+    sx={{ border: `${isGrouped ? 'none' : ''}` }}
   >
     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-      <TxSummary item={item} />
+      <TxSummary item={item} isGrouped />
     </AccordionSummary>
 
     <AccordionDetails sx={{ padding: 0 }}>
@@ -53,6 +54,7 @@ const TxListItem = ({ item }: TxListItemProps): ReactElement | null => {
   if (isDateLabel(item)) {
     return <TxDateLabel item={item} />
   }
-  return <></>
+  return null
 }
+
 export default TxListItem

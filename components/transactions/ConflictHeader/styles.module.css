@@ -1,6 +1,17 @@
+.container {
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.container:hover {
+  background: var(--color-primary-background)
+}
+
 .disclaimerContainer {
   background-color: var(--color-border-light);
-  padding: 8px;
+  padding: var(--space-1);
   border-radius: 8px;
   display: grid;
   grid-template-columns: 50px auto 70px;
