@@ -51,8 +51,6 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
 
       {awaitingExecution && (
         <Grid item lg={1} display="flex" alignItems="center" gap={1}>
-          {/* TODO: Mui doesnt recognize custom colors on SvgIcon */
-          /* @ts-ignore */}
           <GroupIcon fontSize="small" color="border" />
           <Typography variant="caption" fontWeight="bold" color="primary">
             {tx.executionInfo && 'confirmationsSubmitted' in tx.executionInfo

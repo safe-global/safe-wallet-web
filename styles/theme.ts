@@ -20,6 +20,13 @@ declare module '@mui/material/styles' {
   }
 }
 
+declare module '@mui/material/SvgIcon' {
+  interface SvgIconPropsColorOverrides {
+    // SvgIconPropsColorOverrides['primary'] doesn't work
+    border: unknown
+  }
+}
+
 declare module '@mui/material/Button' {
   interface ButtonPropsSizeOverrides {
     stretched: true
