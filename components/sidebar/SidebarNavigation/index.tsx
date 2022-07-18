@@ -78,7 +78,7 @@ const Navigation = (): ReactElement => {
                 <SidebarListItemIcon
                   sx={{
                     '& svg path': {
-                      fill: ({ palette }) => (isOpen(item.href) ? palette.primary.main : palette.secondary.main),
+                      fill: ({ palette }) => (isExpanded ? palette.primary.main : palette.secondary.main),
                     },
                   }}
                 >
