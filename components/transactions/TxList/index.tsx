@@ -6,7 +6,13 @@ import {
   type TransactionListPage,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
-import { isConflictHeaderListItem, isDateLabel, isTransactionListItem } from '@/utils/transaction-guards'
+import {
+  isConflictHeaderListItem,
+  isDateLabel,
+  isEndConflictType,
+  isHasNextConflictType,
+  isTransactionListItem,
+} from '@/utils/transaction-guards'
 import GroupedTxListItems from '@/components/transactions/ConflictHeader'
 import css from './styles.module.css'
 
@@ -48,11 +54,11 @@ const TxList = ({ items }: TxListProps): ReactElement => {
           groupedListItems = [item]
           return null
         }
-        if (isTransactionListItem(item) && item.conflictType === 'HasNext') {
+        if (isTransactionListItem(item) && isHasNextConflictType(item)) {
           groupedListItems = [...groupedListItems, item]
           return null
         }
-        if (isTransactionListItem(item) && item.conflictType === 'End') {
+        if (isTransactionListItem(item) && isEndConflictType(item)) {
           groupedListItems = [...groupedListItems, item]
           return <GroupedTxListItems groupedListItems={groupedListItems} />
         }

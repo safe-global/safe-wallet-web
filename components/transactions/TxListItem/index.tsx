@@ -2,7 +2,13 @@ import { type ReactElement } from 'react'
 import type { Transaction, TransactionDetails, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { isCreationTxInfo, isDateLabel, isLabelListItem, isTransactionListItem } from '@/utils/transaction-guards'
+import {
+  isCreationTxInfo,
+  isDateLabel,
+  isLabelListItem,
+  isNoneConflictType,
+  isTransactionListItem,
+} from '@/utils/transaction-guards'
 import TxSummary from '@/components/transactions/TxSummary'
 import GroupLabel from '@/components/transactions/GroupLabel'
 import TxDateLabel from '@/components/transactions/TxDateLabel'
@@ -48,7 +54,7 @@ const TxListItem = ({ item }: TxListItemProps): ReactElement | null => {
   if (isLabelListItem(item)) {
     return <GroupLabel item={item} />
   }
-  if (isTransactionListItem(item) && item.conflictType === 'None') {
+  if (isTransactionListItem(item) && isNoneConflictType(item)) {
     return <ExpandableTransactionItem item={item} />
   }
   if (isDateLabel(item)) {
