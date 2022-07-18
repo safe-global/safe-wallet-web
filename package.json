@@ -17,8 +17,7 @@
     "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./styles/vars.css"
   },
   "pre-commit": [
-    "lint:fix",
-    "prettier"
+    "lint"
   ],
   "dependencies": {
     "@emotion/cache": "^11.9.3",
