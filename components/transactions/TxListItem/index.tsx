@@ -2,19 +2,12 @@ import { type ReactElement } from 'react'
 import type { Transaction, TransactionDetails, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import {
-  isConflictHeaderListItem,
-  isCreationTxInfo,
-  isDateLabel,
-  isLabelListItem,
-  isTransactionListItem,
-} from '@/utils/transaction-guards'
+import { isCreationTxInfo, isDateLabel, isLabelListItem, isTransactionListItem } from '@/utils/transaction-guards'
 import TxSummary from '@/components/transactions/TxSummary'
 import GroupLabel from '@/components/transactions/GroupLabel'
 import TxDateLabel from '@/components/transactions/TxDateLabel'
 import TxDetails from '@/components/transactions/TxDetails'
 import CreateTxInfo from '@/components/transactions/SafeCreationTx'
-import ConflictHeader from '@/components/transactions/ConflictHeader'
 
 export const ExpandableTransactionItem = ({
   item,
@@ -50,18 +43,15 @@ type TxListItemProps = {
   item: TransactionListItem
 }
 
-const TxListItem = ({ item }: TxListItemProps): ReactElement => {
+const TxListItem = ({ item }: TxListItemProps): ReactElement | null => {
   if (isLabelListItem(item)) {
     return <GroupLabel item={item} />
   }
-  if (isTransactionListItem(item)) {
+  if (isTransactionListItem(item) && item.conflictType === 'None') {
     return <ExpandableTransactionItem item={item} />
   }
   if (isDateLabel(item)) {
     return <TxDateLabel item={item} />
-  }
-  if (isConflictHeaderListItem(item)) {
-    return <ConflictHeader nonce={item.nonce} />
   }
   return <></>
 }

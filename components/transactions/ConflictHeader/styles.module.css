@@ -1,5 +1,5 @@
 .disclaimerContainer {
-  background-color: var(--color-error-background);
+  background-color: var(--color-border-light);
   padding: 8px;
   border-radius: 8px;
   display: grid;

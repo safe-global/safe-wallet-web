@@ -1,18 +1,26 @@
 import { useMemo, type ReactElement } from 'react'
-import { DateLabel, Transaction, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  DateLabel,
+  Transaction,
+  TransactionListItem,
+  type TransactionListPage,
+} from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
-import { isDateLabel, isTransactionListItem } from '@/utils/transaction-guards'
+import { isConflictHeaderListItem, isDateLabel, isTransactionListItem } from '@/utils/transaction-guards'
 import css from './styles.module.css'
+import ConflictHeader from '@/components/transactions/ConflictHeader'
 
 type TxListProps = {
   items: TransactionListPage['results']
 }
 
-export const TxListGrid = ({ children }: { children: ReactElement[] }): ReactElement => {
+export const TxListGrid = ({ children }: { children: (ReactElement | null)[] }): ReactElement => {
   return <div className={css.listContainer}>{children}</div>
 }
 
 const TxList = ({ items }: TxListProps): ReactElement => {
+  let grouppedListItems: TransactionListItem[] = []
+
   // Ensure list always starts with a date label
   const list = useMemo(() => {
     const firstDateLabelIndex = items.findIndex(isDateLabel)
@@ -34,9 +42,23 @@ const TxList = ({ items }: TxListProps): ReactElement => {
 
   return (
     <TxListGrid>
-      {list.map((item, index) => (
-        <TxListItem key={index} item={item} />
-      ))}
+      {list.map((item, index) => {
+        if (isConflictHeaderListItem(item)) {
+          // starts a new groupped list when finds a conflict header list item
+          grouppedListItems = [item]
+          return null
+        }
+        if (isTransactionListItem(item) && item.conflictType === 'HasNext') {
+          grouppedListItems = [...grouppedListItems, item]
+          return null
+        }
+        if (isTransactionListItem(item) && item.conflictType === 'End') {
+          grouppedListItems = [...grouppedListItems, item]
+          return <ConflictHeader grouppedListItems={grouppedListItems} />
+        }
+
+        return <TxListItem key={index} item={item} />
+      })}
     </TxListGrid>
   )
 }
