@@ -28,7 +28,7 @@
   .columnTemplate {
     grid-template-columns: repeat(12, 1fr);
     grid-template-areas:
-      'nonce nonce type type type type type info info info info info'
+      'nonce type type type type type info info info info info info'
       'date date date date date date confirmations confirmations confirmations confirmations confirmations confirmations'
       'status status status status status status actions actions actions actions actions actions';
   }
