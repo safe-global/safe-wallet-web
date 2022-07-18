@@ -2,6 +2,7 @@ import React, { ReactElement, useMemo } from 'react'
 import { Custom, TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { TokenIcon } from '@/components/common/TokenAmount'
 import SpeedIcon from '@mui/icons-material/Speed'
 import { useCurrentChain } from '@/hooks/useChains'
 import { selectTokens } from '@/store/balancesSlice'
@@ -44,8 +45,8 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
         <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
         <EthHashInfo
           address={(beneficiary as string) || txTo?.value || '0x'}
-          name={txTo.name || undefined}
-          customAvatar={txTo.logoUri || undefined}
+          name={txTo.name}
+          customAvatar={txTo.logoUri}
           shortAddress={false}
           showCopyButton
           hasExplorer
@@ -57,10 +58,10 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
             {isAllowance ? 'Amount' : 'Token'}
           </Typography>
           <Box className={css.inline}>
-            <img src={tokenInfo.logoUri} width={32} height={32} alt={`${tokenInfo.name} logo`} />
+            <TokenIcon logoUri={tokenInfo.logoUri} size={32} tokenSymbol={tokenInfo.symbol} />
             {isAllowance ? (
               <Typography>
-                {formatDecimals(amount as string, tokenInfo.decimals || undefined)} {tokenInfo.symbol}
+                {formatDecimals(amount as string, tokenInfo.decimals)} {tokenInfo.symbol}
               </Typography>
             ) : (
               <></>

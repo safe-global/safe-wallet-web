@@ -158,7 +158,7 @@ export const TxSigners = ({
               <EthHashInfo
                 address={detailedExecutionInfo.executor.value}
                 name={detailedExecutionInfo.executor.name}
-                customAvatar={detailedExecutionInfo.executor.logoUri || undefined}
+                customAvatar={detailedExecutionInfo.executor.logoUri}
                 hasExplorer
                 showCopyButton
               />
