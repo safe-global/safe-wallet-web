@@ -8,7 +8,7 @@
     "start": "next dev",
     "build": "next build",
     "lint": "tsc && next lint",
-    "lint:fix": "yarn lint --fix && git add -A .",
+    "lint:fix": "yarn lint --fix",
     "prettier": "prettier -w './**/*.{ts,tsx,css}'",
     "test": "jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
@@ -17,8 +17,7 @@
     "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./styles/vars.css"
   },
   "pre-commit": [
-    "lint:fix",
-    "prettier"
+    "lint"
   ],
   "dependencies": {
     "@emotion/cache": "^11.9.3",
