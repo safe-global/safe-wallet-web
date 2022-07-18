@@ -16,6 +16,8 @@ export const migrateAddressBook = (lsData: LOCAL_STORAGE_DATA): AddressBookState
       return acc
     }, {})
 
-    return newAb
+    if (Object.keys(newAb).length > 0) {
+      return newAb
+    }
   }
 }

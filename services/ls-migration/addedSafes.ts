@@ -38,7 +38,7 @@ export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): AddedSafesState |
     if (legacyAddedSafes && Object.keys(legacyAddedSafes).length > 0) {
       console.log('Migrating added safes on chain', chainId)
 
-      newAddedSafes[chainId] = Object.values(legacyAddedSafes).reduce<AddedSafesOnChain>((acc, oldItem) => {
+      const safesPerChain = Object.values(legacyAddedSafes).reduce<AddedSafesOnChain>((acc, oldItem) => {
         acc[oldItem.address] = {
           ethBalance: oldItem.ethBalance,
           owners: oldItem.owners.map((value) => ({ value, name: null, logoUri: null })),
@@ -46,6 +46,10 @@ export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): AddedSafesState |
         }
         return acc
       }, {})
+
+      if (Object.keys(safesPerChain).length > 0) {
+        newAddedSafes[chainId] = safesPerChain
+      }
     }
   })
 

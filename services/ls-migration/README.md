@@ -6,18 +6,18 @@ We migrate the Address Book and Added Safes.
 It can be potentially extended to more pieces of stored data, as each piece is a separate module.
 
 ## How it works
-The new app will be deployed on a new domain, so we have to use and iframe + postMessage.
+The new app will be deployed on a new domain, so we have to use and iframe + [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage).
 
 Here's how we do it.
 
-On safe-react's side:
+#### On safe-react's side:
 
  * safe-react exposes a special public HTML file named `migrate.html`
  * this file is listening to window messages
  * it ignores anything that is not on the trusted domain list (only web-core domains)
  * if the sender domain is in the trusted list, it sends back the entire contents of the local storage
 
-On web-core's side:
+#### On web-core's side:
 
  * it checks if the migration has already been done by reading a flag in LS
  * if it hasn't been done, it tries to migrate

@@ -28,6 +28,14 @@ describe('Local storage migration', () => {
         },
       })
     })
+
+    it('should return undefined if there are no address book entries', () => {
+      const newData = migrateAddressBook({
+        SAFE__addressBook: '[]',
+      })
+
+      expect(newData).toEqual(undefined)
+    })
   })
 
   describe('migrateAddedSafes', () => {
@@ -84,6 +92,14 @@ describe('Local storage migration', () => {
           },
         },
       })
+    })
+
+    it('should return undefined if there are no added safes', () => {
+      const newData = migrateAddedSafes({
+        '_immortal|v2_MAINNET__SAFES': '{}',
+      })
+
+      expect(newData).toEqual(undefined)
     })
   })
 

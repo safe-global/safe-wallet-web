@@ -28,7 +28,10 @@ export const addedSafesSlice = createSlice({
   name: 'addedSafes',
   initialState,
   reducers: {
-    set: (_, action: PayloadAction<AddedSafesState>) => {
+    migrate: (state, action: PayloadAction<AddedSafesState>) => {
+      // Don't migrate if there's data already
+      if (Object.keys(state).length > 0) return state
+      // Otherwise, migrate
       return action.payload
     },
     addOrUpdateSafe: (state, { payload }: PayloadAction<{ safe: SafeInfo }>) => {
