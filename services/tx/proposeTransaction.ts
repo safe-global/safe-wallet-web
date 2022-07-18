@@ -1,4 +1,4 @@
-import { proposeTransaction, type Operation } from '@gnosis.pm/safe-react-gateway-sdk'
+import { proposeTransaction, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 
@@ -15,7 +15,7 @@ const proposeTx = async (chainId: string, safeAddress: string, sender: string, t
     ...tx.data,
     safeTxHash,
     sender,
-    value: parseInt(tx.data.value, 16).toString(),
+    value: tx.data.value.toString(),
     operation: tx.data.operation as unknown as Operation,
     nonce: tx.data.nonce.toString(),
     safeTxGas: tx.data.safeTxGas.toString(),

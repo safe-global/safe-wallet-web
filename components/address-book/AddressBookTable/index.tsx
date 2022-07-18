@@ -14,6 +14,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import Box from '@mui/material/Box'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -65,7 +66,7 @@ const AddressBookTable = () => {
     },
     address: {
       rawValue: address,
-      content: <EthHashInfo address={address} showName={false} shortAddress={false} />,
+      content: <EthHashInfo address={address} showName={false} shortAddress={false} hasExplorer showCopyButton />,
     },
     actions: {
       rawValue: '',
@@ -94,7 +95,7 @@ const AddressBookTable = () => {
   }))
 
   return (
-    <>
+    <Box marginTop={['0', '-46px']}>
       <div className={css.headerButtonWrapper}>
         <Button
           onClick={handleOpenModal(ModalType.EXPORT)}
@@ -134,7 +135,7 @@ const AddressBookTable = () => {
           initialData={[{ recipient: selectedAddress }]}
         />
       )}
-    </>
+    </Box>
   )
 }
 

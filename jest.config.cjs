@@ -11,6 +11,7 @@ const customJestConfig = {
   moduleNameMapper: {
     // Handle module aliases (this will be automatically configured for you soon)
     '^@/(.*)$': '<rootDir>/$1',
+    '^.+\\.(svg)$': '<rootDir>/mocks/svg.js',
   },
   testEnvironment: 'jest-environment-jsdom',
   testEnvironmentOptions: { url: 'http://localhost/balances?safe=rin:0xb3b83bf204C458B461de9B0CD2739DB152b4fa5A' },

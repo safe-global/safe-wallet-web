@@ -28,8 +28,8 @@ const Summary = ({ txDetails }: Props): ReactElement => {
 
   return (
     <>
-      <TxDataRow title="Transaction hash:">{generateDataRowValue(txHash, 'hash')}</TxDataRow>
-      <TxDataRow title="SafeTxHash:">{generateDataRowValue(safeTxHash, 'hash', false)}</TxDataRow>
+      <TxDataRow title="Transaction hash:">{generateDataRowValue(txHash, 'hash', true)}</TxDataRow>
+      <TxDataRow title="SafeTxHash:">{generateDataRowValue(safeTxHash, 'hash')}</TxDataRow>
       <TxDataRow title="Created:">{submittedAt ? dateString(submittedAt) : null}</TxDataRow>
       <TxDataRow title="Executed:">{executedAt ? dateString(executedAt) : NOT_AVAILABLE}</TxDataRow>
 
@@ -47,8 +47,8 @@ const Summary = ({ txDetails }: Props): ReactElement => {
             <TxDataRow title="safeTxGas:">{safeTxGas}</TxDataRow>
             <TxDataRow title="baseGas:">{baseGas}</TxDataRow>
             <TxDataRow title="gasPrice:">{gasPrice}</TxDataRow>
-            <TxDataRow title="gasToken:">{generateDataRowValue(gasToken, 'hash')}</TxDataRow>
-            <TxDataRow title="refundReceiver:">{generateDataRowValue(refundReceiver, 'hash')}</TxDataRow>
+            <TxDataRow title="gasToken:">{generateDataRowValue(gasToken, 'hash', true)}</TxDataRow>
+            <TxDataRow title="refundReceiver:">{generateDataRowValue(refundReceiver, 'hash', true)}</TxDataRow>
             {confirmations?.map(({ signature }, index) => (
               <TxDataRow title={`Signature ${index + 1}:`} key={`signature-${index}:`}>
                 {generateDataRowValue(signature, 'rawData')}
