@@ -13,7 +13,7 @@ import {
   isHasNextConflictType,
   isTransactionListItem,
 } from '@/utils/transaction-guards'
-import GroupedTxListItems from '@/components/transactions/ConflictHeader'
+import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
 import css from './styles.module.css'
 
 type TxListProps = {
