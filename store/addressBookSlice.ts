@@ -12,6 +12,13 @@ export const addressBookSlice = createSlice({
   name: 'addressBook',
   initialState,
   reducers: {
+    migrate: (state, action: PayloadAction<AddressBookState>): AddressBookState => {
+      // Don't migrate if there's data already
+      if (Object.keys(state).length > 0) return state
+      // Otherwise, migrate
+      return action.payload
+    },
+
     setAddressBook: (_, action: PayloadAction<AddressBookState>): AddressBookState => {
       return action.payload
     },
