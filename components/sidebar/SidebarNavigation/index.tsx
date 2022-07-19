@@ -25,8 +25,7 @@ const Navigation = (): ReactElement => {
 
   useEffect(() => {
     setOpen(router.pathname)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query.safe])
+  }, [router.pathname, query.safe])
 
   const toggleOpen = (href: string) => {
     setOpen((prev) => (prev === href ? '' : href))
