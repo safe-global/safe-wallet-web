@@ -55,7 +55,9 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
     },
     balance: {
       rawValue: Number(item.balance) / 10 ** item.tokenInfo.decimals,
-      content: <TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} />,
+      content: (
+        <TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} tokenSymbol={item.tokenInfo.symbol} />
+      ),
     },
     value: {
       rawValue: parseFloat(item.fiatBalance),
