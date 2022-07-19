@@ -65,7 +65,7 @@ const Footer = (): ReactElement | null => {
           <Link
             rel="noopener noreferrer"
             target="_blank"
-            href={`https://github.com/5afe/web-core/releases/tags/${packageJson.version}`}
+            href={`${packageJson.homepage}/releases/tags/${packageJson.version}`}
           >
             v{packageJson.version}
           </Link>

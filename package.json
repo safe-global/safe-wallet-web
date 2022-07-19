@@ -1,5 +1,7 @@
 {
   "name": "web-core",
+  "homepage": "https://github.com/5afe/web-core",
+  "license": "MIT",
   "type": "module",
   "version": "0.1.0",
   "private": true,
