@@ -5,6 +5,7 @@ import Sidebar from '@/components/sidebar/Sidebar'
 import Header from '@/components/common//Header'
 import css from './styles.module.css'
 import SafeLoadingError from '../SafeLoadingError'
+import Footer from '../Footer'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false)
@@ -29,9 +30,13 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
         {sidebar}
       </Drawer>
 
-      <Box className={css.main} sx={({ palette }) => ({ backgroundColor: palette.border.background })}>
+      <Box className={css.main}>
         <SafeLoadingError>{children}</SafeLoadingError>
       </Box>
+
+      <footer>
+        <Footer />
+      </footer>
     </div>
   )
 }

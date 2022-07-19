@@ -63,7 +63,9 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
         <CacheProvider value={cssCache}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
+
             <InitApp />
+
             <PageLayout>
               <Component {...pageProps} />
             </PageLayout>
