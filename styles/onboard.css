@@ -50,5 +50,5 @@
   --onboard-border-radius-2: 8px;
   --onboard-border-radius-3: 8px;
   --onboard-modal-z-index: 1201;
-  --account-center-z-index: -1;
+  --account-center-z-index: 1201;
 }

@@ -25,9 +25,9 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box padding={3}>
           <Typography variant="body1" mb={2}>
-            You are about to create a new Gnosis Safe wallet with one or more owners. First, let&apos;s give your new
-            wallet a name. This name is only stored locally and will never be shared with Gnosis or any third parties.
-            The new Safe will ONLY be available on <ChainIndicator inline />
+            You are about to create a new Safe wallet with one or more owners. First, let&apos;s give your new wallet a
+            name. This name is only stored locally and will never be shared with Gnosis or any third parties. The new
+            Safe will ONLY be available on <ChainIndicator inline />
           </Typography>
           <FormControl>
             <TextField

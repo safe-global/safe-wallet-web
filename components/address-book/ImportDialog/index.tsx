@@ -106,7 +106,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
           }}
         </CSVReader>
         <Typography>
-          Only CSV files exported from a Gnosis Safe can be imported.
+          Only CSV files exported from a Safe can be imported.
           <br />
           <Link
             href="https://help.gnosis-safe.io/en/articles/5299068-address-book-export-and-import"

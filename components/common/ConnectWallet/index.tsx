@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import { Box, Button } from '@mui/material'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
-import { shortenAddress } from '@/utils/formatters'
+import EthHashInfo from '../EthHashInfo'
 
 const ConnectWallet = (): ReactElement => {
   const wallet = useWallet()
@@ -21,8 +21,8 @@ const ConnectWallet = (): ReactElement => {
   }
 
   return wallet ? (
-    <Box sx={{ color: 'text.primary' }}>
-      {wallet.ens || shortenAddress(wallet.address)}
+    <Box sx={{ display: 'flex' }}>
+      <EthHashInfo address={wallet.address} name={wallet.ens} />
 
       <Button onClick={handleDisconnect} size="small" variant="text" sx={{ fontWeight: 'normal', marginLeft: 1 }}>
         Disconnect
