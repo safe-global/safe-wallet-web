@@ -31,7 +31,7 @@ const ModalDialog = ({ title, children, ...restProps }: ModalDialogProps): React
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
-    <StyledDialog {...restProps} fullScreen={fullScreen}>
+    <StyledDialog {...restProps} fullScreen={fullScreen} onClick={(e) => e.stopPropagation()}>
       {title && <DialogTitle>{title}</DialogTitle>}
       {children}
     </StyledDialog>
