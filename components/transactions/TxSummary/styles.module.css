@@ -11,13 +11,13 @@
 }
 
 .columnTemplate {
-  grid-template-columns: auto 2fr 2fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: minmax(50px, 0.25fr) 2fr 2fr 1fr 1fr 1fr 1fr;
   grid-template-areas: 'nonce type info date confirmations actions status';
 }
 
 .columnTemplateWithoutNonce {
-  grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr;
-  grid-template-areas: 'type info date confirmations actions status';
+  grid-template-columns: minmax(50px, 0.25fr) 2fr 2fr 1fr 1fr 1fr 1fr;
+  grid-template-areas: 'nonce type info date confirmations actions status';
 }
 
 @media (max-width: 768px) {
