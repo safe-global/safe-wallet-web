@@ -40,12 +40,11 @@ const Navigation = (): ReactElement => {
       {navItems.map((item) => {
         if (!item.items) {
           return (
-            <ListItem disablePadding>
+            <ListItem key={item.href} disablePadding>
               <SidebarListItemButton
                 onClick={() => setOpen(item.href)}
                 selected={isOpen(item.href)}
                 href={{ pathname: item.href, query }}
-                key={item.href}
               >
                 {item.icon && (
                   <SidebarListItemIcon
