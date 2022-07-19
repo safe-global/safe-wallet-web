@@ -14,6 +14,22 @@ export type NavItem = {
   items?: NavItem[]
 }
 
+export const transactionItems: NavItem = {
+  label: 'Transactions',
+  icon: <TransactionIcon />,
+  href: AppRoutes.safe.transactions.history,
+  items: [
+    {
+      label: 'Queue',
+      href: AppRoutes.safe.transactions.queue,
+    },
+    {
+      label: 'History',
+      href: AppRoutes.safe.transactions.history,
+    },
+  ],
+}
+
 export const navItems: NavItem[] = [
   {
     label: 'Home',
@@ -35,21 +51,7 @@ export const navItems: NavItem[] = [
       },
     ],
   },
-  {
-    label: 'Transactions',
-    icon: <TransactionIcon />,
-    href: AppRoutes.safe.transactions.history,
-    items: [
-      {
-        label: 'Queue',
-        href: AppRoutes.safe.transactions.queue,
-      },
-      {
-        label: 'History',
-        href: AppRoutes.safe.transactions.history,
-      },
-    ],
-  },
+  transactionItems,
   {
     label: 'Address Book',
     icon: <ABIcon />,
