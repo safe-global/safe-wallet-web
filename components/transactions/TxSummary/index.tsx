@@ -71,7 +71,7 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      <Box gridArea="status" marginLeft={[undefined, undefined, 'auto']} marginRight={1}>
+      <Box gridArea="status" marginLeft={{ md: 'auto' }} marginRight={1}>
         <Typography
           variant="caption"
           fontWeight="bold"
