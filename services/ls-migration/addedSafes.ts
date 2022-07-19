@@ -41,7 +41,7 @@ export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): AddedSafesState |
       const safesPerChain = Object.values(legacyAddedSafes).reduce<AddedSafesOnChain>((acc, oldItem) => {
         acc[oldItem.address] = {
           ethBalance: oldItem.ethBalance,
-          owners: oldItem.owners.map((value) => ({ value, name: null, logoUri: null })),
+          owners: oldItem.owners.map((value) => ({ value })),
           threshold: oldItem.threshold,
         }
         return acc
