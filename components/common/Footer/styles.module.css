@@ -1,5 +1,6 @@
 .container {
   padding: var(--space-1);
+  font-size: 13px;
 }
 
 .container ul {

@@ -1,5 +1,5 @@
 import { SyntheticEvent, ReactElement } from 'react'
-import { Link, Typography } from '@mui/material'
+import { Link } from '@mui/material'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'
 import { useAppDispatch } from '@/store'
@@ -29,7 +29,7 @@ const Footer = (): ReactElement | null => {
   }
 
   return (
-    <Typography className={css.container} variant="body2">
+    <div className={css.container}>
       <ul>
         <li>&copy;2022 Safe Foundation</li>
         <li>
@@ -71,7 +71,7 @@ const Footer = (): ReactElement | null => {
           </Link>
         </li>
       </ul>
-    </Typography>
+    </div>
   )
 }
 

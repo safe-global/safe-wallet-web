@@ -22,10 +22,6 @@
   background-color: var(--color-border-background);
 }
 
-.container footer > * {
-  margin-left: -220px;
-}
-
 .main {
   grid-area: main;
   padding: var(--space-3);
@@ -50,9 +46,5 @@
 
   .main {
     padding: var(--space-1);
-  }
-
-  .container footer > * {
-    margin-left: 0;
   }
 }
