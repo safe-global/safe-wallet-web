@@ -7,8 +7,7 @@
   grid-template-columns: 220px 1fr;
   grid-template-areas:
     'header header'
-    'sidebar main'
-    'sidebar footer';
+    'sidebar main';
 }
 
 .container header {
@@ -17,17 +16,18 @@
   z-index: 1201;
 }
 
-.container footer {
-  grid-area: footer;
-  background-color: var(--color-border-background);
-}
-
 .main {
   grid-area: main;
   padding: var(--space-3);
   overflow: auto;
   position: relative;
   background-color: var(--color-border-background);
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
 }
 
 .sidebar {

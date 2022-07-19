@@ -1,5 +1,5 @@
 import { useState, type ReactElement } from 'react'
-import { Box, Drawer } from '@mui/material'
+import { Drawer } from '@mui/material'
 
 import Sidebar from '@/components/sidebar/Sidebar'
 import Header from '@/components/common//Header'
@@ -30,13 +30,13 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
         {sidebar}
       </Drawer>
 
-      <Box className={css.main}>
-        <SafeLoadingError>{children}</SafeLoadingError>
-      </Box>
+      <div className={css.main}>
+        <div className={css.content}>
+          <SafeLoadingError>{children}</SafeLoadingError>
+        </div>
 
-      <footer>
         <Footer />
-      </footer>
+      </div>
     </div>
   )
 }

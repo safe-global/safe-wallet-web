@@ -1,7 +1,11 @@
 .container {
-  background-color: var(--color-background-paper);
-  border-top: 1px solid var(--color-border-light);
-  padding: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  position: fixed;
+  z-index: 1300;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 0 !important;
 }
 
 .grid {
@@ -13,4 +17,10 @@
 
 .container form {
   margin-top: var(--space-2);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: var(--space-3) var(--space-1);
+  }
 }

@@ -1,5 +1,5 @@
 .container {
-  padding: var(--space-1);
+  margin-top: var(--space-2);
   font-size: 13px;
 }
 
@@ -9,10 +9,13 @@
   list-style: none;
   margin: 0;
   justify-content: center;
+  row-gap: 0.2em;
+  column-gap: var(--space-2);
 }
 
 .container li {
-  padding: 0.2em var(--space-1);
+  padding: 0;
+  margin: 0;
 }
 
 .container li:not(:last-of-type):after {

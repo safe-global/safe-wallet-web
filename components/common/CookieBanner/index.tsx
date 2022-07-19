@@ -1,5 +1,5 @@
 import { useEffect, ReactElement } from 'react'
-import { Button, Checkbox, FormControlLabel, Link, Modal, Typography } from '@mui/material'
+import { Button, Checkbox, FormControlLabel, Link, Typography, Paper } from '@mui/material'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import { useForm } from 'react-hook-form'
 
@@ -40,7 +40,7 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
   }
 
   return (
-    <div className={css.container}>
+    <Paper className={css.container} elevation={3}>
       {warning && (
         <Typography align="center" paddingBottom="8px">
           <WarningAmberIcon fontSize="small" sx={({ palette }) => ({ fill: palette.error.main })} /> {warning}
@@ -76,7 +76,7 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
           </Button>
         </div>
       </form>
-    </div>
+    </Paper>
   )
 }
 
@@ -93,11 +93,7 @@ const CookieBanner = (): ReactElement | null => {
     }
   }, [dispatch, shouldOpen])
 
-  return cookiePopup?.open ? (
-    <Modal open aria-labelledby="Cookies consent" sx={{ top: 'unset' }}>
-      <CookieBannerPopup warningKey={cookiePopup.warningKey} />
-    </Modal>
-  ) : null
+  return cookiePopup?.open ? <CookieBannerPopup warningKey={cookiePopup.warningKey} /> : null
 }
 
 export default CookieBanner

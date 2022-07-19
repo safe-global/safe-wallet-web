@@ -29,7 +29,7 @@ const Footer = (): ReactElement | null => {
   }
 
   return (
-    <div className={css.container}>
+    <footer className={css.container}>
       <ul>
         <li>&copy;2022 Safe Foundation</li>
         <li>
@@ -71,7 +71,7 @@ const Footer = (): ReactElement | null => {
           </Link>
         </li>
       </ul>
-    </div>
+    </footer>
   )
 }
 
