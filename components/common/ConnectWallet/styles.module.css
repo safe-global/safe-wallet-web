@@ -1,0 +1,9 @@
+.connectedContainer {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .connectedContainer {
+    display: none; /* use onboard account center instead */
+  }
+}
