@@ -1,5 +1,5 @@
 import { useEffect, ReactElement } from 'react'
-import { Box, Button, Checkbox, FormControlLabel, Link, Typography } from '@mui/material'
+import { Button, Checkbox, FormControlLabel, Link, Modal, Typography } from '@mui/material'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import { useForm } from 'react-hook-form'
 
@@ -15,11 +15,16 @@ const COOKIE_WARNING: Record<CookieType, string> = {
   [CookieType.ANALYTICS]: '',
 }
 
-const CookieBannerPopup = ({ warning }: { warning?: string }): ReactElement => {
+const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactElement => {
+  const warning = warningKey ? COOKIE_WARNING[warningKey] : undefined
   const dispatch = useAppDispatch()
   const cookies = useAppSelector(selectCookies)
+
   const { register, getValues, setValue } = useForm({
-    defaultValues: cookies,
+    defaultValues: {
+      ...cookies,
+      ...(warningKey ? { [warningKey]: true } : {}),
+    },
   })
 
   const handleAccept = () => {
@@ -35,13 +40,7 @@ const CookieBannerPopup = ({ warning }: { warning?: string }): ReactElement => {
   }
 
   return (
-    <Box
-      sx={({ palette }) => ({
-        backgroundColor: 'background.paper',
-        borderTop: `1px solid ${palette.border.light}`,
-      })}
-      className={css.container}
-    >
+    <div className={css.container}>
       {warning && (
         <Typography align="center" paddingBottom="8px">
           <WarningAmberIcon fontSize="small" sx={({ palette }) => ({ fill: palette.error.main })} /> {warning}
@@ -58,24 +57,26 @@ const CookieBannerPopup = ({ warning }: { warning?: string }): ReactElement => {
         enhance site navigation, analyze site usage and provide customer support.
       </Typography>
 
-      <form className={css.form}>
+      <form className={css.grid}>
         <FormControlLabel
           control={<Checkbox defaultChecked disabled {...register(CookieType.NECESSARY)} />}
           label="Necessary"
         />
 
-        <FormControlLabel control={<Checkbox {...register(CookieType.UPDATES)} />} label="Updates & Feedback" />
+        <FormControlLabel control={<Checkbox {...register(CookieType.UPDATES)} />} label="Updates (Beamer)" />
 
         <FormControlLabel control={<Checkbox {...register(CookieType.ANALYTICS)} />} label="Analytics" />
 
-        <Button onClick={handleAccept} variant="outlined" disableElevation>
-          Accept selection
-        </Button>
-        <Button onClick={handleAcceptAll} variant="contained" disableElevation>
-          Accept all
-        </Button>
+        <div className={css.grid}>
+          <Button onClick={handleAccept} variant="outlined" disableElevation>
+            Accept selection
+          </Button>
+          <Button onClick={handleAcceptAll} variant="contained" disableElevation>
+            Accept all
+          </Button>
+        </div>
       </form>
-    </Box>
+    </div>
   )
 }
 
@@ -92,9 +93,11 @@ const CookieBanner = (): ReactElement | null => {
     }
   }, [dispatch, shouldOpen])
 
-  const warning = cookiePopup.warningKey && COOKIE_WARNING[cookiePopup.warningKey]
-
-  return cookiePopup?.open ? <CookieBannerPopup warning={warning} /> : null
+  return cookiePopup?.open ? (
+    <Modal open aria-labelledby="Cookies consent" sx={{ top: 'unset' }}>
+      <CookieBannerPopup warningKey={cookiePopup.warningKey} />
+    </Modal>
+  ) : null
 }
 
 export default CookieBanner
