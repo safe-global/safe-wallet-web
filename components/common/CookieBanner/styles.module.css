@@ -19,6 +19,11 @@
   margin-top: var(--space-2);
 }
 
+.container label,
+.container input {
+  user-select: none;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: var(--space-3) var(--space-1);

@@ -20,7 +20,7 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
   const dispatch = useAppDispatch()
   const cookies = useAppSelector(selectCookies)
 
-  const { register, getValues, setValue } = useForm({
+  const { register, watch, getValues, setValue } = useForm({
     defaultValues: {
       ...cookies,
       ...(warningKey ? { [warningKey]: true } : {}),
@@ -36,7 +36,10 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
   const handleAcceptAll = () => {
     setValue(CookieType.UPDATES, true)
     setValue(CookieType.ANALYTICS, true)
-    handleAccept()
+
+    setTimeout(() => {
+      handleAccept()
+    }, 100)
   }
 
   return (
@@ -63,9 +66,17 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
           label="Necessary"
         />
 
-        <FormControlLabel control={<Checkbox {...register(CookieType.UPDATES)} />} label="Updates (Beamer)" />
+        <FormControlLabel
+          control={<Checkbox {...register(CookieType.UPDATES)} />}
+          label="Updates (Beamer)"
+          checked={watch(CookieType.UPDATES)}
+        />
 
-        <FormControlLabel control={<Checkbox {...register(CookieType.ANALYTICS)} />} label="Analytics" />
+        <FormControlLabel
+          control={<Checkbox {...register(CookieType.ANALYTICS)} />}
+          label="Analytics"
+          checked={watch(CookieType.ANALYTICS)}
+        />
 
         <div className={css.grid}>
           <Button onClick={handleAccept} variant="outlined" disableElevation>
