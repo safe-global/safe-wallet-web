@@ -3,6 +3,7 @@ import styled from '@emotion/styled'
 import { Box, Grid, Typography } from '@mui/material'
 import { useSafeApps } from '@/hooks/useSafeApps'
 import { Card, WidgetBody, WidgetContainer, WidgetTitle } from '../styled'
+import { SAFE_REACT_URL } from '@/config/constants'
 
 export const FEATURED_APPS_TAG = 'dashboard-widgets'
 
@@ -24,7 +25,7 @@ const StyledGridItem = styled(Grid)`
 `
 
 const getSafeAppUrl = (appUrl: string) => {
-  return `https://gnosis-safe.io/app/share/safe-app?appUrl=${appUrl}`
+  return `${SAFE_REACT_URL}/share/safe-app?appUrl=${appUrl}`
 }
 
 export const FeaturedApps = (): ReactElement | null => {
