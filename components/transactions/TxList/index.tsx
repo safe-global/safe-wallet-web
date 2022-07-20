@@ -9,8 +9,7 @@ import TxListItem from '../TxListItem'
 import {
   isConflictHeaderListItem,
   isDateLabel,
-  isEndConflictType,
-  isHasNextConflictType,
+  isNoneConflictType,
   isTransactionListItem,
 } from '@/utils/transaction-guards'
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
@@ -46,21 +45,27 @@ const TxList = ({ items }: TxListProps): ReactElement => {
     return [dateLabel, ...items]
   }, [items])
 
+  const listWithGroupedItems: (TransactionListItem | TransactionListItem[])[] = useMemo(() => {
+    return list.reduce((acc: (TransactionListItem | TransactionListItem[])[], current) => {
+      if (isConflictHeaderListItem(current)) {
+        return [...acc, [current]]
+      }
+
+      const prev = acc[acc.length - 1]
+      if (Array.isArray(prev) && isTransactionListItem(current) && !isNoneConflictType(current)) {
+        prev.push(current)
+        return acc
+      }
+
+      return [...acc, current]
+    }, [])
+  }, [list])
+
   return (
     <TxListGrid>
-      {list.map((item, index) => {
-        if (isConflictHeaderListItem(item)) {
-          // starts a new groupped list when finds a conflict header list item
-          groupedListItems = [item]
-          return null
-        }
-        if (isTransactionListItem(item) && isHasNextConflictType(item)) {
-          groupedListItems = [...groupedListItems, item]
-          return null
-        }
-        if (isTransactionListItem(item) && isEndConflictType(item)) {
-          groupedListItems = [...groupedListItems, item]
-          return <GroupedTxListItems groupedListItems={groupedListItems} />
+      {listWithGroupedItems.map((item, index) => {
+        if (Array.isArray(item)) {
+          return <GroupedTxListItems groupedListItems={item} />
         }
 
         return <TxListItem key={index} item={item} />

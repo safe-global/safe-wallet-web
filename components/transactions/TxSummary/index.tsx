@@ -37,8 +37,11 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.confirmationsRequired : ''
 
   return (
-    <Box className={`${css.gridContainer} ${nonce ? css.columnTemplate : css.columnTemplateWithoutNonce}`} id={tx.id}>
-      {nonce && <Box gridArea="nonce">{isGrouped ? null : nonce}</Box>}
+    <Box
+      className={`${css.gridContainer} ${nonce && !isGrouped ? css.columnTemplate : css.columnTemplateWithoutNonce}`}
+      id={tx.id}
+    >
+      {nonce && !isGrouped && <Box gridArea="nonce">{nonce}</Box>}
 
       <Box gridArea="type">
         <TxType tx={tx} />
