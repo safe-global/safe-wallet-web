@@ -13,23 +13,23 @@ import semverSatisfies from 'semver/functions/satisfies'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Gnosis_safe, Proxy_factory, Multi_send, Compatibility_fallback_handler } from '@/types/contracts'
 
-const getSafeContractDeployment = (chain: ChainInfo): SingletonDeployment | undefined => {
+const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
   // We check if version is prior to v1.0.0 as they are not supported but still we want to keep a minimum compatibility
-  const useOldestContractVersion = semverSatisfies(LATEST_SAFE_VERSION, '<1.0.0')
+  const useOldestContractVersion = semverSatisfies(safeVersion, '<1.0.0')
   // We have to check if network is L2
   const networkId = chain.chainId
 
   // We had L1 contracts in three L2 networks, xDai, EWC and Volta so even if network is L2 we have to check that safe version is after v1.3.0
-  const useL2ContractVersion = chain.l2 && semverSatisfies(LATEST_SAFE_VERSION, '>=1.3.0')
+  const useL2ContractVersion = chain.l2 && semverSatisfies(safeVersion, '>=1.3.0')
   const getDeployment = useL2ContractVersion ? getSafeL2SingletonDeployment : getSafeSingletonDeployment
 
   return (
     getDeployment({
-      version: LATEST_SAFE_VERSION,
+      version: safeVersion,
       network: networkId.toString(),
     }) ||
     getDeployment({
-      version: LATEST_SAFE_VERSION,
+      version: safeVersion,
     }) ||
     // In case we couldn't find a valid deployment and it's a version before 1.0.0 we return v1.0.0 to allow a minimum compatibility
     (useOldestContractVersion
@@ -40,8 +40,8 @@ const getSafeContractDeployment = (chain: ChainInfo): SingletonDeployment | unde
   )
 }
 
-export const getGnosisSafeContractInstance = (chain: ChainInfo): Gnosis_safe => {
-  const safeSingletonDeployment = getSafeContractDeployment(chain)
+export const getGnosisSafeContractInstance = (chain: ChainInfo, safeVersion: string): Gnosis_safe => {
+  const safeSingletonDeployment = getSafeContractDeployment(chain, safeVersion)
 
   if (!safeSingletonDeployment) {
     throw new Error(`GnosisSafe contract not found for chainId: ${chain.chainId}`)

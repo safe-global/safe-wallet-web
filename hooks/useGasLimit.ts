@@ -16,6 +16,7 @@ import {
   getGnosisSafeContractInstance,
   getProxyFactoryContractInstance,
 } from '@/services/safeContracts'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 const getPreValidatedSignature = (from: string): string => {
   return `0x000000000000000000000000${from
@@ -63,7 +64,7 @@ export const useEstimateSafeCreationGas = (
   const chainInfo = useAppSelector((state) => selectChainById(state, chainId))
   const wallet = useWallet()
 
-  const safeContract = getGnosisSafeContractInstance(chainInfo!)
+  const safeContract = getGnosisSafeContractInstance(chainInfo!, LATEST_SAFE_VERSION)
   const proxyContract = getProxyFactoryContractInstance(chainId)
   const fallbackHandlerContract = getFallbackHandlerContractInstance(chainId)
 
