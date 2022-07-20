@@ -66,6 +66,20 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
 }))
 
 describe('AppsPage', () => {
+  it('shows apps add custom app card', async () => {
+    render(<AppsPage />, {
+      routerProps: {
+        query: {
+          safe: 'matic:0x0000000000000000000000000000000000000000',
+        },
+      },
+    })
+
+    await waitFor(() => {
+      expect(screen.getByText('Add custom app')).toBeInTheDocument()
+    })
+  })
+
   it('shows apps from remote app list', async () => {
     render(<AppsPage />, {
       routerProps: {
