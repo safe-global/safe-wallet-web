@@ -1,4 +1,4 @@
-import { Grid, Box, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { ReactElement } from 'react'
 import { TransactionStatus, type Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -30,53 +30,49 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const txStatusLabel = useTransactionStatus(tx)
   const isQueue = tx.txStatus !== TransactionStatus.SUCCESS
   const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
-  const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : ''
+  const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const submittedConfirmations = isMultisigExecutionInfo(tx.executionInfo)
     ? tx.executionInfo.confirmationsSubmitted
     : ''
   const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.confirmationsRequired : ''
 
   return (
-    <Grid container className={css.gridContainer} id={tx.id} gap={[2, undefined, undefined, 0]}>
-      <Grid item xs={1}>
-        {isGrouped ? null : nonce}
-      </Grid>
+    <Box className={`${css.gridContainer} ${nonce ? css.columnTemplate : css.columnTemplateWithoutNonce}`} id={tx.id}>
+      {nonce && <Box gridArea="nonce">{isGrouped ? null : nonce}</Box>}
 
-      <Grid item md={2} lg={3}>
+      <Box gridArea="type">
         <TxType tx={tx} />
-      </Grid>
+      </Box>
 
-      <Grid item md={2} lg={3}>
+      <Box gridArea="info">
         <TxInfo info={tx.txInfo} />
-      </Grid>
+      </Box>
 
-      <Grid item lg={1} sx={{ whiteSpace: 'nowrap' }}>
+      <Box gridArea="date">
         <DateTime value={tx.timestamp} options={dateOptions} />
-      </Grid>
+      </Box>
 
       {awaitingExecution && (
-        <Grid item lg={2} display="flex" alignItems="center" justifyContent="center" gap={1}>
+        <Box gridArea="confirmations" display="flex" alignItems="center" gap={1}>
           <GroupIcon fontSize="small" color="border" />
           <Typography variant="caption" fontWeight="bold" color="primary">
             {submittedConfirmations} out of {requiredConfirmations}
           </Typography>
-        </Grid>
+        </Box>
       )}
 
       {wallet && isQueue && (
-        <Grid item lg={1}>
-          <Box display="flex" alignItems="center" justifyContent="flex-end">
-            {awaitingExecution ? (
-              <ExecuteTxButton txSummary={item.transaction} />
-            ) : (
-              <SignTxButton txSummary={item.transaction} />
-            )}
-            <RejectTxButton txSummary={item.transaction} />
-          </Box>
-        </Grid>
+        <Box gridArea="actions">
+          {awaitingExecution ? (
+            <ExecuteTxButton txSummary={item.transaction} />
+          ) : (
+            <SignTxButton txSummary={item.transaction} />
+          )}
+          <RejectTxButton txSummary={item.transaction} />
+        </Box>
       )}
 
-      <Grid item marginLeft="auto" marginRight={2}>
+      <Box gridArea="status" marginLeft={{ md: 'auto' }} marginRight={1}>
         <Typography
           variant="caption"
           fontWeight="bold"
@@ -84,8 +80,8 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         >
           {txStatusLabel}
         </Typography>
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   )
 }
 

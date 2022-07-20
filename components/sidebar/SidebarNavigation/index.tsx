@@ -25,8 +25,7 @@ const Navigation = (): ReactElement => {
 
   useEffect(() => {
     setOpen(router.pathname)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query.safe])
+  }, [router.pathname, query.safe])
 
   const toggleOpen = (href: string) => {
     setOpen((prev) => (prev === href ? '' : href))
@@ -41,12 +40,11 @@ const Navigation = (): ReactElement => {
       {navItems.map((item) => {
         if (!item.items) {
           return (
-            <ListItem disablePadding>
+            <ListItem key={item.href} disablePadding>
               <SidebarListItemButton
                 onClick={() => setOpen(item.href)}
                 selected={isOpen(item.href)}
                 href={{ pathname: item.href, query }}
-                key={item.href}
               >
                 {item.icon && (
                   <SidebarListItemIcon

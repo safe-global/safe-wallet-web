@@ -37,9 +37,9 @@ const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
       desktop: { enabled: false, containerElement: 'body' },
     },
     appMetadata: {
-      name: 'Gnosis Safe',
+      name: 'Safe',
       icon: '/logo-no-text.svg',
-      description: 'Please select a wallet to connect to Gnosis Safe',
+      description: 'Please select a wallet to connect to Safe',
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
   })

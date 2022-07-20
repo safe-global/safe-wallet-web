@@ -1,5 +1,5 @@
 import { useState, type ReactElement } from 'react'
-import { Box, Divider, Drawer, IconButton } from '@mui/material'
+import { Divider, Drawer, IconButton } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
@@ -20,29 +20,16 @@ const Sidebar = (): ReactElement => {
   }
 
   return (
-    <Box
-      className={css.container}
-      sx={({ palette }) => ({
-        backgroundColor: 'background.paper',
-        borderRight: `1px solid ${palette.border.light}`,
-      })}
-    >
+    <div className={css.container}>
       <div className={css.scroll}>
         <div className={css.chain}>
           <ChainIndicator />
         </div>
-        <IconButton
-          className={css.drawerButton}
-          onClick={onDrawerToggle}
-          sx={({ palette }) => ({
-            backgroundColor: palette.border.light,
-            '&:hover': {
-              backgroundColor: palette.primary.background,
-            },
-          })}
-        >
+
+        <IconButton className={css.drawerButton} onClick={onDrawerToggle}>
           <ChevronRight />
         </IconButton>
+
         {/* For routes with a Safe address */}
         {address ? (
           <>
@@ -55,6 +42,7 @@ const Sidebar = (): ReactElement => {
         ) : (
           <div className={css.noSafeSidebar} />
         )}
+
         <div style={{ flexGrow: 1 }} />
 
         <Divider flexItem sx={({ palette }) => ({ borderColor: palette.border.light })} />
@@ -67,7 +55,7 @@ const Sidebar = (): ReactElement => {
           <SafeList closeDrawer={() => setIsDrawerOpen(false)} />
         </div>
       </Drawer>
-    </Box>
+    </div>
   )
 }
 

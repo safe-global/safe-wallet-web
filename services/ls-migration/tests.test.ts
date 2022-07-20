@@ -63,31 +63,24 @@ describe('Local storage migration', () => {
         '1': {
           '0x123': {
             ethBalance: '0.1',
-            owners: [{ value: '0x123', name: undefined, logoUri: undefined }],
+            owners: [{ value: '0x123' }],
             threshold: 1,
           },
           '0x456': {
             ethBalance: '20.3',
-            owners: [
-              { value: '0x456', name: undefined, logoUri: undefined },
-              { value: '0x789', name: undefined, logoUri: undefined },
-            ],
+            owners: [{ value: '0x456' }, { value: '0x789' }],
             threshold: 2,
           },
         },
         '1313161554': {
           '0x789': {
             ethBalance: '0',
-            owners: [{ value: '0x789', name: undefined, logoUri: undefined }],
+            owners: [{ value: '0x789' }],
             threshold: 1,
           },
           '0xabc': {
             ethBalance: '0.00001',
-            owners: [
-              { value: '0xabc', name: undefined, logoUri: undefined },
-              { value: '0xdef', name: undefined, logoUri: undefined },
-              { value: '0x123', name: undefined, logoUri: undefined },
-            ],
+            owners: [{ value: '0xabc' }, { value: '0xdef' }, { value: '0x123' }],
             threshold: 2,
           },
         },

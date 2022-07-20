@@ -22,7 +22,6 @@ const TxType = ({ tx }: TxTypeProps) => {
           alt="transaction type"
           width={16}
           height={16}
-          className={css.txTypeIcon}
           onError={() => setFallbackToIdenticon(true)}
         />
       ) : (

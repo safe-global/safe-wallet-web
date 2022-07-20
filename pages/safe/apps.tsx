@@ -21,7 +21,7 @@ const Apps: NextPage = () => {
       <Breadcrumbs Icon={AppsIcon} first="Apps" />
       <Grid container rowSpacing={2} columnSpacing={2}>
         {apps?.map((a) => (
-          <Grid key={a.url} item xs={12} sm={6} md={3} xl={1.5}>
+          <Grid key={a.id || a.url} item xs={12} sm={6} md={3} xl={1.5}>
             <AppCard safeApp={a} />
           </Grid>
         ))}

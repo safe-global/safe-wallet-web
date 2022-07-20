@@ -6,11 +6,13 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  background-color: var(--color-background-paper);
 }
 
 .container {
   width: 220px;
   padding: 20px 0 0;
+  border-right: 1px solid var(--color-border-light);
 }
 
 .scroll {
@@ -21,6 +23,7 @@
   width: 400px;
   text-align: center;
   padding: 52px 0 0;
+  border-right: 1px solid var(--color-border-light);
 }
 
 .chain {
@@ -41,7 +44,12 @@
   z-index: 2;
   right: 0;
   transform: translateX(50%);
-  top: 40px;
+  margin-top: 18px;
+  background-color: var(--color-border-light);
+}
+
+.drawerButton:hover {
+  background-color: var(--color-primary-background);
 }
 
 .drawerButton svg {
@@ -51,5 +59,9 @@
 @media (max-width: 768px) {
   .container {
     padding-top: 74px;
+  }
+
+  .drawer {
+    max-width: 90vw;
   }
 }
