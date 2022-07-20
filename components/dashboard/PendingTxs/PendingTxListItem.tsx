@@ -1,4 +1,5 @@
 import { ReactElement } from 'react'
+import NextLink from 'next/link'
 import styled from '@emotion/styled'
 import { ChevronRight } from '@mui/icons-material'
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -7,7 +8,7 @@ import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import TxInfo from '@/components/transactions/TxInfo'
 import TxType from '@/components/transactions/TxType'
 
-const StyledLink = styled.a`
+const StyledContainer = styled.div`
   width: 100%;
   text-decoration: none;
   background-color: var(--color-background-paper);
@@ -45,34 +46,38 @@ type PendingTxType = {
 
 const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {
   return (
-    <StyledLink key={transaction.id} href={url}>
-      <Grid container py={1} px={2} alignItems="center" gap={1}>
-        <Grid item sx={{ minWidth: '36px' }}>
-          <Typography fontSize="lg" component="span">
-            {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
-          </Typography>
-        </Grid>
+    <NextLink href={url}>
+      <a>
+        <StyledContainer>
+          <Grid container py={1} px={2} alignItems="center" gap={1}>
+            <Grid item sx={{ minWidth: '36px' }}>
+              <Typography fontSize="lg" component="span">
+                {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
+              </Typography>
+            </Grid>
 
-        <Grid item flexGrow={1}>
-          <TxType tx={transaction} />
-        </Grid>
+            <Grid item flexGrow={1}>
+              <TxType tx={transaction} />
+            </Grid>
 
-        <TxInfo info={transaction.txInfo} />
+            <TxInfo info={transaction.txInfo} />
 
-        <Grid item xs />
+            <Grid item xs />
 
-        <TxConfirmations>
-          {isMultisigExecutionInfo(transaction.executionInfo) ? (
-            <StyledConfirmationsCount>
-              {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
-            </StyledConfirmationsCount>
-          ) : (
-            <Spacer />
-          )}
-          <ChevronRight color="secondary" />
-        </TxConfirmations>
-      </Grid>
-    </StyledLink>
+            <TxConfirmations>
+              {isMultisigExecutionInfo(transaction.executionInfo) ? (
+                <StyledConfirmationsCount>
+                  {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
+                </StyledConfirmationsCount>
+              ) : (
+                <Spacer />
+              )}
+              <ChevronRight color="secondary" />
+            </TxConfirmations>
+          </Grid>
+        </StyledContainer>
+      </a>
+    </NextLink>
   )
 }
 

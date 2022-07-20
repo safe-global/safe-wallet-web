@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 import styled from '@emotion/styled'
+import NextLink from 'next/link'
 import { Link } from '@mui/material'
 
 export const WidgetContainer = styled.section`
@@ -45,5 +46,7 @@ const StyledLink = styled(Link)`
 `
 
 export const ViewAllLink = ({ url, text }: { url: string; text?: string }): ReactElement => (
-  <StyledLink href={url}>{text || 'View all'}</StyledLink>
+  <NextLink href={url}>
+    <StyledLink href={url}>{text || 'View all'}</StyledLink>
+  </NextLink>
 )

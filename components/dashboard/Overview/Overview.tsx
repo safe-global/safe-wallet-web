@@ -1,5 +1,6 @@
 import { ReactElement, useMemo } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import styled from '@emotion/styled'
 import { Box, Button, Grid, Skeleton, Typography } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer, WidgetTitle } from '../styled'
@@ -22,10 +23,6 @@ const StyledText = styled(Typography)`
   margin-top: 8px;
   font-size: 24px;
   font-weight: bold;
-`
-
-const StyledLink = styled.a`
-  text-decoration: none;
 `
 
 const NetworkLabelContainer = styled.div`
@@ -118,32 +115,38 @@ const Overview = (): ReactElement => {
 
             <Grid container>
               <Grid item xs={3}>
-                <StyledLink href={assetsLink}>
-                  <Typography color="inputDefault" fontSize="lg">
-                    Tokens
-                  </Typography>
-                  <StyledText fontSize="lg">{tokenCount}</StyledText>
-                </StyledLink>
+                <Link href={assetsLink}>
+                  <a>
+                    <Typography color="inputDefault" fontSize="lg">
+                      Tokens
+                    </Typography>
+                    <StyledText fontSize="lg">{tokenCount}</StyledText>
+                  </a>
+                </Link>
               </Grid>
 
               <Grid item xs={3}>
-                <StyledLink href={nftsLink}>
-                  <Typography color="inputDefault" fontSize="lg">
-                    NFTs
-                  </Typography>
-                  {collectibles && (
-                    <StyledText fontSize="lg">{!nftsLoading ? collectibles.length : ValueSkeleton}</StyledText>
-                  )}
-                </StyledLink>
+                <Link href={nftsLink}>
+                  <a>
+                    <Typography color="inputDefault" fontSize="lg">
+                      NFTs
+                    </Typography>
+                    {collectibles && (
+                      <StyledText fontSize="lg">{!nftsLoading ? collectibles.length : ValueSkeleton}</StyledText>
+                    )}
+                  </a>
+                </Link>
               </Grid>
 
               <Grid item xs={6}>
                 <Box display="flex" height={1} alignItems="flex-end" justifyContent="flex-end">
-                  <StyledLink href={assetsLink}>
-                    <Button size="medium" variant="contained" color="primary">
-                      View assets
-                    </Button>
-                  </StyledLink>
+                  <Link href={assetsLink}>
+                    <a>
+                      <Button size="medium" variant="contained" color="primary">
+                        View assets
+                      </Button>
+                    </a>
+                  </Link>
                 </Box>
               </Grid>
             </Grid>
