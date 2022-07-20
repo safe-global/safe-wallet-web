@@ -1,61 +1,6 @@
-import { _extractSafesByChainId, _shouldExpandSafeList } from '..'
+import { _shouldExpandSafeList } from '..'
 
 describe('SafeList', () => {
-  describe('extractSafesByChainId', () => {
-    it('returns owned Safes on provided chain', () => {
-      const ownedSafes = {
-        1: ['0x0', '0x1'],
-        4: ['0x2', '0x3'],
-      }
-
-      expect(_extractSafesByChainId({ chainId: '4', ownedSafes, addedSafes: {} }).ownedSafesOnChain).toBe(ownedSafes[4])
-    })
-    it('returns an empty array if no owned Safes are on provided chain', () => {
-      const ownedSafes = {
-        1: ['0x0', '0x1'],
-      }
-
-      expect(_extractSafesByChainId({ chainId: '2', ownedSafes, addedSafes: {} }).ownedSafesOnChain).toStrictEqual([])
-    })
-    it('returns added Safes on provided chain', () => {
-      const addedSafes = {
-        1: {
-          ['0x0']: {
-            owners: [],
-            threshold: 0,
-          },
-          ['0x1']: {
-            owners: [],
-            threshold: 0,
-          },
-        },
-        4: {
-          ['0x2']: {
-            owners: [],
-            threshold: 0,
-          },
-        },
-      }
-
-      expect(_extractSafesByChainId({ chainId: '1', ownedSafes: {}, addedSafes }).addedSafesOnChain).toBe(addedSafes[1])
-    })
-    it('returns an empty object if no added Safes are on provided chain', () => {
-      const addedSafes = {
-        1: {
-          ['0x0']: {
-            owners: [],
-            threshold: 0,
-          },
-          ['0x1']: {
-            owners: [],
-            threshold: 0,
-          },
-        },
-      }
-
-      expect(_extractSafesByChainId({ chainId: '2', ownedSafes: {}, addedSafes }).addedSafesOnChain).toStrictEqual({})
-    })
-  })
   describe('shouldExpandSafeList', () => {
     it('should expand if the current Safe is not owned', () => {
       const safeAddress = '0x0'

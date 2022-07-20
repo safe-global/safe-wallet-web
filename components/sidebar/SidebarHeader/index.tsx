@@ -13,21 +13,16 @@ import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/sessionSlice'
 
 import css from './styles.module.css'
+import QrIcon from '@/public/images/sidebar/qr.svg'
+import CopyIcon from '@/public/images/sidebar/copy.svg'
+import ExplorerIcon from '@/public/images/sidebar/block-explorer.svg'
+
 import { selectSettings } from '@/store/settingsSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getExplorerLink } from '@/utils/gateway'
 
 const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
-  <IconButton
-    className={css.iconButton}
-    sx={({ palette }) => ({
-      backgroundColor: palette.border.background,
-      '&:hover': {
-        backgroundColor: palette.primary.background,
-      },
-    })}
-    {...props}
-  >
+  <IconButton className={css.iconButton} {...props}>
     {children}
   </IconButton>
 )
@@ -63,6 +58,7 @@ const SafeHeader = (): ReactElement => {
             <SafeIcon address={address} threshold={threshold} owners={owners?.length} />
           )}
         </div>
+
         <div>
           <Typography variant="body2">
             {loading ? <Skeleton variant="text" width={86} /> : address ? shortenAddress(address) : '...'}
@@ -70,21 +66,24 @@ const SafeHeader = (): ReactElement => {
           <Typography variant="body1">{loading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
         </div>
       </div>
+
       <div className={css.iconButtons}>
-        {/* 
-        TODO: Add QR functionality */}
-        <HeaderIconButton disabled>
-          <img src="/images/sidebar/qr.svg" alt="Address QR Code" height="16px" width="16px" />
+        {/* TODO: Add QR functionality */}
+        <HeaderIconButton>
+          <QrIcon />
         </HeaderIconButton>
+
         <HeaderIconButton onClick={handleCopy}>
-          <img src="/images/sidebar/copy.svg" alt="Copy Address" height="16px" width="16px" />
+          <CopyIcon />
         </HeaderIconButton>
+
         <a target="_blank" rel="noreferrer" {...(chain && getExplorerLink(address, chain.blockExplorerUriTemplate))}>
           <HeaderIconButton>
-            <img src="/images/sidebar/block-explorer.svg" alt="Open Block Explorer" height="16px" width="16px" />
+            <ExplorerIcon />
           </HeaderIconButton>
         </a>
       </div>
+
       <NewTxButton />
     </div>
   )

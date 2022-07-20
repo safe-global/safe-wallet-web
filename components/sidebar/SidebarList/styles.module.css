@@ -9,3 +9,23 @@
   min-width: 0;
   margin-right: var(--space-2);
 }
+
+.listItemButton {
+  border-radius: 6px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.list :global .MuiListItemButton-root:hover,
+.list :global .MuiListItemButton-root.Mui-selected {
+  background-color: var(--color-primary-background);
+}
+
+.listItemButton :global .beamer_icon.active {
+  top: auto;
+  left: 28px;
+  bottom: 10px;
+  width: 6px;
+  height: 6px;
+  color: transparent;
+}

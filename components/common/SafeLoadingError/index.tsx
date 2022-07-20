@@ -9,7 +9,7 @@ const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement =
   if (!error) return <>{children}</>
 
   return (
-    <PagePlaceholder imageUrl="/images/error.svg" text="This Safe couldn't be loaded">
+    <PagePlaceholder imageUrl="/images/error.png" text="This Safe couldn't be loaded">
       <Button variant="contained" color="primary" size="large" href="/">
         Go to the main page
       </Button>

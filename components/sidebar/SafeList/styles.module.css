@@ -15,9 +15,6 @@
 }
 
 .chainDivider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: unset;
   border-radius: 8px;
   text-transform: none;
@@ -27,11 +24,15 @@
 }
 
 .ownedLabelWrapper {
-  padding-top: 0;
+  padding-top: var(--space-1);
   padding-bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+ul + .ownedLabelWrapper {
+  padding-top: 0;
 }
 
 .ownedLabelWrapper:hover {
@@ -40,6 +41,9 @@
 
 .ownedLabel {
   cursor: pointer;
+  color: var(--color-secondary-light);
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .list {
