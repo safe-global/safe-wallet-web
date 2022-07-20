@@ -66,6 +66,7 @@ const AppCard = ({ safeApp }: AppCardProps): ReactElement => {
               size="small"
               onClick={onShareClick}
               title="Click to copy share URL"
+              sx={{ width: '32px' }}
             >
               <ShareIcon width={16} alt="Share icon" />
             </IconButton>
