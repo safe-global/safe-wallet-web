@@ -18,7 +18,7 @@ const AppCard = ({ safeApp }: Props) => {
   return (
     <Card
       sx={({ palette }) => ({
-        maxWidth: 345,
+        maxWidth: 260,
         height: 190,
         transition: 'all 0.3s ease-in-out',
         '&:hover': {
