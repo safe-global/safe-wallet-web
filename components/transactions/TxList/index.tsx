@@ -65,7 +65,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
     <TxListGrid>
       {listWithGroupedItems.map((item, index) => {
         if (Array.isArray(item)) {
-          return <GroupedTxListItems groupedListItems={item} />
+          return <GroupedTxListItems key={index} groupedListItems={item} />
         }
 
         return <TxListItem key={index} item={item} />

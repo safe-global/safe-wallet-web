@@ -19,11 +19,6 @@ type TxSummaryProps = {
   item: Transaction
 }
 
-const dateOptions = {
-  timeStyle: 'short',
-  hour12: true,
-}
-
 const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
@@ -52,10 +47,10 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       </Box>
 
       <Box gridArea="date">
-        <DateTime value={tx.timestamp} options={dateOptions} />
+        <DateTime value={tx.timestamp} />
       </Box>
 
-      {awaitingExecution && (
+      {isQueue && (
         <Box gridArea="confirmations" display="flex" alignItems="center" gap={1}>
           <GroupIcon fontSize="small" color="border" />
           <Typography variant="caption" fontWeight="bold" color="primary">

@@ -35,7 +35,7 @@ const GroupedTxListItems = ({ groupedListItems }: { groupedListItems: Transactio
       <Disclaimer nonce={nonce} />
       {groupedTxs.map((tx) => {
         if (isTransactionListItem(tx)) {
-          return <ExpandableTransactionItem item={tx} isGrouped />
+          return <ExpandableTransactionItem key={tx.transaction.id} item={tx} isGrouped />
         }
       })}
     </Paper>
