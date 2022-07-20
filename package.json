@@ -16,7 +16,9 @@
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
     "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts",
-    "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./styles/vars.css"
+    "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./styles/vars.css",
+    "generate-types:safeDeployments": "typechain --target ethers-v5 --out-dir './types/contracts' ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json",
+    "postinstall": "yarn generate-types:safeDeployments"
   },
   "pre-commit": [
     "lint"
@@ -32,7 +34,7 @@
     "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
     "@gnosis.pm/safe-react-gateway-sdk": "^3.2.1",
     "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.8.7",
+    "@mui/material": "^5.9.1",
     "@reduxjs/toolkit": "^1.8.2",
     "@sentry/react": "^7.1.1",
     "@sentry/tracing": "^7.1.1",
@@ -70,7 +72,10 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.1",
+    "@typechain/ethers-v5": "^8.0.0",
     "@types/jest": "^28.1.4",
+    "cross-env": "^7.0.3",
+    "typechain": "^8.0.0",
     "@types/js-cookie": "^3.0.2",
     "@types/lodash": "^4.14.182",
     "@types/node": "17.0.44",

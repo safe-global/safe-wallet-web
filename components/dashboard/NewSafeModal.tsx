@@ -17,9 +17,9 @@ export const NewSafeModal = () => {
     <ModalDialog open={open} onClose={handleClose}>
       <DialogContent>
         <Typography>
-          You just created a new Safe on <ChainIndicator inline />
+          You&apos;ve just created a new Safe on <ChainIndicator inline />
         </Typography>
-        <Typography>It can take a few minutes until its fully usable.</Typography>
+        <Typography>It can take a few minutes until it is fully usable.</Typography>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" onClick={handleClose}>

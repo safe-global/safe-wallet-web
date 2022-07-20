@@ -13,10 +13,6 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   const noTransactions = !loading && !error && page?.results.length === 0
   const showPagination = loading || page?.next || page?.previous
 
-  const pagination = showPagination && (
-    <Pagination page={pageUrl} nextPage={page?.next} prevPage={page?.previous} onPageChange={setPageUrl} />
-  )
-
   const placeholder =
     noTransactions && useTxns === useTxQueue ? (
       <PagePlaceholder imageUrl="/images/no-transactions.svg" text="Queued transactions will appear here" />
@@ -24,8 +20,6 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
 
   return (
     <>
-      {pagination}
-
       {loading ? (
         <CircularProgress size={20} sx={{ marginTop: 2 }} />
       ) : error ? (
@@ -36,7 +30,11 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
         placeholder
       )}
 
-      <Box my={3}>{pagination}</Box>
+      {showPagination && (
+        <Box my={3}>
+          <Pagination page={pageUrl} nextPage={page?.next} prevPage={page?.previous} onPageChange={setPageUrl} />
+        </Box>
+      )}
     </>
   )
 }

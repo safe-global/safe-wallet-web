@@ -165,7 +165,9 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
                 </Grid>
               )
             })}
-            <Button onClick={addOwner}>+ Add another owner</Button>
+            <Button onClick={addOwner} sx={{ fontWeight: 'normal' }}>
+              + Add another owner
+            </Button>
             <Typography marginTop={3} marginBottom={1}>
               Any transaction requires the confirmation of:
             </Typography>

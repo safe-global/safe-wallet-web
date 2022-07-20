@@ -1,38 +1,10 @@
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types'
-import {
-  getFallbackHandlerDeployment,
-  getSafeL2SingletonDeployment,
-  getSafeSingletonDeployment,
-} from '@gnosis.pm/safe-deployments'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { ethers } from 'ethers'
+import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getFallbackHandlerContractInstance, getGnosisSafeContractInstance } from '@/services/safeContracts'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 export const CHANGE_MASTER_COPY_ABI = 'function changeMasterCopy(address _masterCopy)'
 export const CHANGE_FALLBACK_HANDLER_ABI = 'function setFallbackHandler(address handler)'
-
-const getLatestFallbackHandlerAddress = (chainId: string) => {
-  const fallbackHandlerDeployment =
-    getFallbackHandlerDeployment({
-      version: LATEST_SAFE_VERSION,
-      network: chainId,
-    }) ||
-    getFallbackHandlerDeployment({
-      version: LATEST_SAFE_VERSION,
-    })
-
-  return fallbackHandlerDeployment?.networkAddresses[chainId]
-}
-
-const getLatestMasterCopyAddress = (chain: ChainInfo) => {
-  const useL2MasterCopy = chain.l2
-  const getDeployment = useL2MasterCopy ? getSafeL2SingletonDeployment : getSafeSingletonDeployment
-  const masterCopyDeployment =
-    getDeployment({ version: LATEST_SAFE_VERSION, network: chain.chainId }) ||
-    getDeployment({ version: LATEST_SAFE_VERSION })
-
-  return masterCopyDeployment?.networkAddresses[chain.chainId]
-}
 
 /**
  * Creates two transactions:
@@ -40,27 +12,29 @@ const getLatestMasterCopyAddress = (chain: ChainInfo) => {
  * - set the fallback handler address
  * Only works for safes < 1.3.0 as the changeMasterCopy function was removed
  */
-export const createUpdateSafeTxs = (safeAddress: string, chain: ChainInfo): MetaTransactionData[] => {
-  const latestMasterCopyAddress = getLatestMasterCopyAddress(chain)
-  const safeContractInterface = new ethers.utils.Interface([CHANGE_MASTER_COPY_ABI, CHANGE_FALLBACK_HANDLER_ABI])
+export const createUpdateSafeTxs = (safe: SafeInfo, chain: ChainInfo): MetaTransactionData[] => {
+  const latestMasterCopy = getGnosisSafeContractInstance(chain, LATEST_SAFE_VERSION)
+  const safeContractInstance = getGnosisSafeContractInstance(chain, safe.version)
+  const safeContractInterface = safeContractInstance.interface
+  // @ts-expect-error this was removed in 1.3.0 but we need to support it for older safe versions
   const changeMasterCopyCallData = safeContractInterface.encodeFunctionData('changeMasterCopy', [
-    latestMasterCopyAddress,
+    latestMasterCopy.address,
   ])
 
-  const fallbackHandlerAddress = getLatestFallbackHandlerAddress(chain.chainId)
+  const fallbackHandlerAddress = getFallbackHandlerContractInstance(chain.chainId).address
   const changeFallbackHandlerCallData = safeContractInterface.encodeFunctionData('setFallbackHandler', [
     fallbackHandlerAddress,
   ])
 
   const txs: MetaTransactionData[] = [
     {
-      to: safeAddress,
+      to: safe.address.value,
       value: '0',
       data: changeMasterCopyCallData,
       operation: OperationType.Call,
     },
     {
-      to: safeAddress,
+      to: safe.address.value,
       value: '0',
       data: changeFallbackHandlerCallData,
       operation: OperationType.Call,
