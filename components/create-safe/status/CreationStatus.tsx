@@ -3,15 +3,10 @@ import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/st
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import useChainId from '@/hooks/useChainId'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { evalTemplate } from '@/utils/strings'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 type Props = {
   onClose: () => void
-}
-
-const getExplorerUrl = (txHash: string, chain: ChainInfo) => {
-  return evalTemplate(chain.blockExplorerUriTemplate.txHash, txHash)
 }
 
 const getStep = (status: SafeCreationStatus) => {
@@ -90,9 +85,9 @@ export const CreationStatus = ({ onClose }: Props) => {
       {txHash && chain && (
         <Box padding={3}>
           <Typography>Your Safe creation transaction:</Typography>
-          <a href={getExplorerUrl(txHash, chain)} target="_blank" rel="noreferrer">
-            {txHash}
-          </a>
+          <Box display="flex" justifyContent="center">
+            <EthHashInfo address={txHash} hasExplorer shortAddress={false} showAvatar={false} />
+          </Box>
         </Box>
       )}
       <Divider />
