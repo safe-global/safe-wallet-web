@@ -77,8 +77,8 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
       </div>
 
       {configs.map((chain) => {
-        const ownedSafesOnChain = ownedSafes[chainId] ?? []
-        const addedSafesOnChain = addedSafes[chainId] ?? {}
+        const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
+        const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
         const isCurrentChain = chain.chainId === chainId
         const addedSafeEntriesOnChain = Object.entries(addedSafesOnChain)
 
