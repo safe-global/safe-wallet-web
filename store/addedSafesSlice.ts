@@ -28,6 +28,12 @@ export const addedSafesSlice = createSlice({
   name: 'addedSafes',
   initialState,
   reducers: {
+    migrate: (state, action: PayloadAction<AddedSafesState>) => {
+      // Don't migrate if there's data already
+      if (Object.keys(state).length > 0) return state
+      // Otherwise, migrate
+      return action.payload
+    },
     addOrUpdateSafe: (state, { payload }: PayloadAction<{ safe: SafeInfo }>) => {
       const { chainId, address, owners, threshold } = payload.safe
 
@@ -41,11 +47,11 @@ export const addedSafesSlice = createSlice({
     },
     updateAddedSafeBalance: (
       state,
-      { payload }: PayloadAction<{ chainId: string; address: string; balances: SafeBalanceResponse }>,
+      { payload }: PayloadAction<{ chainId: string; address: string; balances?: SafeBalanceResponse }>,
     ) => {
       const { chainId, address, balances } = payload
 
-      if (!isAddedSafe(state, chainId, address)) {
+      if (!balances?.items || !isAddedSafe(state, chainId, address)) {
         return
       }
 

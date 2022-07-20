@@ -1,5 +1,7 @@
 {
   "name": "web-core",
+  "homepage": "https://github.com/5afe/web-core",
+  "license": "MIT",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -8,7 +10,7 @@
     "start": "next dev",
     "build": "next build",
     "lint": "tsc && next lint",
-    "lint:fix": "yarn lint --fix && git add -A .",
+    "lint:fix": "yarn lint --fix",
     "prettier": "prettier -w './**/*.{ts,tsx,css}'",
     "test": "jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
@@ -17,8 +19,7 @@
     "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./styles/vars.css"
   },
   "pre-commit": [
-    "lint:fix",
-    "prettier"
+    "lint"
   ],
   "dependencies": {
     "@emotion/cache": "^11.9.3",
@@ -26,10 +27,10 @@
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.9.3",
     "@gnosis.pm/safe-core-sdk": "^2.2.1",
-    "@gnosis.pm/safe-core-sdk-types": "^1.2.1",
     "@gnosis.pm/safe-deployments": "^1.15.0",
     "@gnosis.pm/safe-ethers-lib": "^1.2.1",
     "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
+    "@gnosis.pm/safe-react-gateway-sdk": "^3.2.1",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.7",
     "@reduxjs/toolkit": "^1.8.2",
@@ -46,6 +47,7 @@
     "@web3-onboard/torus": "^2.0.2",
     "@web3-onboard/trezor": "^2.1.1",
     "@web3-onboard/walletconnect": "^2.0.2",
+    "classnames": "^2.3.1",
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^5.6.8",
     "js-cookie": "^3.0.1",
@@ -61,7 +63,7 @@
     "semver": "^7.3.7"
   },
   "devDependencies": {
-    "@gnosis.pm/safe-react-gateway-sdk": "^3.1.3",
+    "@gnosis.pm/safe-core-sdk-types": "^1.2.1",
     "@sentry/types": "^7.1.1",
     "@svgr/webpack": "^6.2.1",
     "@testing-library/jest-dom": "^5.16.4",

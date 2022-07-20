@@ -1,15 +1,14 @@
 .sublist {
   display: grid;
   gap: 4px;
-  padding-left: 0;
-  margin-left: 10px;
+  margin-left: var(--space-3);
   padding: 0 0 0 10px;
   border-left: 1px solid var(--color-border-light);
 }
 
 .sublist::after {
   content: '';
-  height: 23px;
+  height: 20px;
   width: 1px;
   position: absolute;
   bottom: 0;
@@ -19,15 +18,8 @@
 
 .sublistItem {
   border-radius: 6px;
-}
-
-.sublistItem :global .MuiListItemButton-root {
-  padding-left: 26px;
-}
-
-.sublistItem :global .MuiListItemButton-root:hover,
-.sublistItem :global .MuiListItemButton-root.Mui-selected {
-  background-color: var(--color-border-background) !important;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
 .sublistItem::before {

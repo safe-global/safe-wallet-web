@@ -10,6 +10,9 @@ import { BEAMER_SELECTOR, isBeamerLoaded, loadBeamer } from '@/services/beamer'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectCookies, CookieType } from '@/store/cookiesSlice'
 import { openCookieBanner } from '@/store/popupSlice'
+import BeamerIcon from '@/public/images/sidebar/whats-new.svg'
+import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
+import { ListItem } from '@mui/material'
 
 const WHATS_NEW_PATH = 'https://help.gnosis-safe.io/en/'
 
@@ -34,22 +37,24 @@ const SidebarFooter = (): ReactElement => {
 
   return (
     <SidebarList>
-      <SidebarListItemButton id={BEAMER_SELECTOR} onClick={handleBeamer}>
-        <SidebarListItemIcon>
-          {/* 
-          // TODO: Include thick icon from design */}
-          <img src="/images/sidebar/whats-new.svg" alt="What's New" height="16px" width="16px" />
-        </SidebarListItemIcon>
-        <SidebarListItemText bold>What&apos;s New</SidebarListItemText>
-      </SidebarListItemButton>
-      <a target="_blank" rel="noopener noreferrer" href={WHATS_NEW_PATH}>
-        <SidebarListItemButton>
+      <ListItem disablePadding>
+        <SidebarListItemButton id={BEAMER_SELECTOR} onClick={handleBeamer}>
           <SidebarListItemIcon>
-            <img src="/images/sidebar/help-center.svg" alt="Help Center" height="16px" width="16px" />
+            <BeamerIcon />
           </SidebarListItemIcon>
-          <SidebarListItemText bold>Need Help?</SidebarListItemText>
+          <SidebarListItemText bold>What&apos;s New</SidebarListItemText>
         </SidebarListItemButton>
-      </a>
+      </ListItem>
+      <ListItem disablePadding>
+        <a target="_blank" rel="noopener noreferrer" href={WHATS_NEW_PATH} style={{ width: '100%' }}>
+          <SidebarListItemButton>
+            <SidebarListItemIcon>
+              <HelpCenterIcon />
+            </SidebarListItemIcon>
+            <SidebarListItemText bold>Need Help?</SidebarListItemText>
+          </SidebarListItemButton>
+        </a>
+      </ListItem>
     </SidebarList>
   )
 }

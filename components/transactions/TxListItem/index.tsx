@@ -25,7 +25,7 @@ export const ExpandableTransactionItem = ({
     elevation={0}
     defaultExpanded={!!txDetails}
   >
-    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
       <TxSummary item={item} />
     </AccordionSummary>
 

@@ -1,14 +1,31 @@
 .container {
-  left: 0;
-  bottom: 0;
+  padding: var(--space-3) var(--space-4);
   position: fixed;
-  padding: 12px 96px !important;
+  z-index: 1300;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 0 !important;
 }
 
-.form {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  column-gap: 8px;
-  row-gap: 20px;
-  padding: 8px;
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  justify-content: center;
+}
+
+.container form {
+  margin-top: var(--space-2);
+}
+
+.container label,
+.container input {
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: var(--space-3) var(--space-1);
+  }
 }

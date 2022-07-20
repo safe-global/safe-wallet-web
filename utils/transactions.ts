@@ -18,7 +18,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       return !hasConfirmed
     })
 
-    return missingSigners.length ? missingSigners : null
+    return missingSigners.length ? missingSigners : undefined
   }
 
   const getMultisigExecutionInfo = ({
@@ -35,8 +35,8 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
     }
   }
 
-  const executionInfo: ExecutionInfo | undefined = isModuleExecutionInfo(txDetails.detailedExecutionInfo || undefined)
-    ? ((txDetails.detailedExecutionInfo || undefined) as ExecutionInfo)
+  const executionInfo: ExecutionInfo | undefined = isModuleExecutionInfo(txDetails.detailedExecutionInfo)
+    ? (txDetails.detailedExecutionInfo as ExecutionInfo)
     : getMultisigExecutionInfo(txDetails)
 
   // Will only be used as a fallback whilst waiting on backend tx creation cache
@@ -55,7 +55,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       txStatus: txDetails.txStatus,
       txInfo: txDetails.txInfo,
       executionInfo,
-      safeAppInfo: txDetails?.safeAppInfo || undefined,
+      safeAppInfo: txDetails?.safeAppInfo,
     },
     conflictType: 'None',
   }

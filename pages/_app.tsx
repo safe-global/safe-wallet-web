@@ -21,6 +21,7 @@ import { useInitSafeCoreSDK } from '@/hooks/coreSDK/useInitSafeCoreSDK'
 import useTxNotifications from '@/hooks/useTxNotifications'
 import useTxPendingStatuses, { useTxMonitor } from '@/hooks/useTxPendingStatuses'
 import { useInitSession } from '@/hooks/useInitSession'
+import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
 
@@ -35,6 +36,7 @@ const InitApp = (): null => {
   }
 
   usePathRewrite()
+  useStorageMigration()
   useLoadChains()
   useInitSession()
   useLoadableStores()
@@ -61,7 +63,9 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
         <CacheProvider value={cssCache}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
+
             <InitApp />
+
             <PageLayout>
               <Component {...pageProps} />
             </PageLayout>

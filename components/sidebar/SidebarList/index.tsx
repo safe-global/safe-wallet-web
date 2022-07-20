@@ -8,7 +8,7 @@ import Link, { type LinkProps } from 'next/link'
 import css from './styles.module.css'
 
 export const SidebarList = ({ children, ...rest }: Omit<ListProps, 'className'>): ReactElement => (
-  <List component="nav" className={css.list} {...rest}>
+  <List className={css.list} {...rest}>
     {children}
   </List>
 )
@@ -19,29 +19,7 @@ export const SidebarListItemButton = ({
   ...rest
 }: Omit<ListItemButtonProps, 'sx'> & { href?: LinkProps['href'] }): ReactElement => {
   const button = (
-    <ListItemButton
-      sx={({ palette }) => ({
-        borderRadius: '6px',
-        '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
-          backgroundColor: `${palette.primary.background} !important`,
-          img: {
-            filter: rest.selected
-              ? // #008C73 - palette.primary.main
-                'invert(33%) sepia(96%) saturate(625%) hue-rotate(127deg) brightness(99%) contrast(101%)'
-              : undefined,
-          },
-        },
-        '& .beamer_icon.active': {
-          top: 'auto',
-          left: '28px',
-          bottom: '10px',
-          width: '6px',
-          height: '6px',
-          color: 'transparent',
-        },
-      })}
-      {...rest}
-    >
+    <ListItemButton className={css.listItemButton} {...rest}>
       {children}
     </ListItemButton>
   )

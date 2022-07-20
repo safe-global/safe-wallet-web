@@ -8,10 +8,10 @@ const NewSafe = () => {
   return (
     <Box>
       <Typography variant="h1" mb={2}>
-        Welcome to Gnosis Safe.
+        Welcome to the Safe.
       </Typography>
       <Typography variant="h4" mb={2}>
-        Gnosis Safe is the most trusted platform to manage digital assets.
+        Safe is the most trusted platform to manage digital assets.
         <br />
         Here is how to get started:
       </Typography>

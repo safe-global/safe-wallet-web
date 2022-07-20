@@ -3,6 +3,14 @@ import palette from './colors'
 import { base } from './spacings'
 
 declare module '@mui/material/styles' {
+  // Custom color palettes
+  interface Palette {
+    border: Palette['primary']
+  }
+  interface PaletteOptions {
+    border: PaletteOptions['primary']
+  }
+
   // Custom color properties
   interface PaletteColor {
     background?: string
@@ -10,12 +18,12 @@ declare module '@mui/material/styles' {
   interface SimplePaletteColorOptions {
     background?: string
   }
-  // Custom color palettes
-  interface Palette {
-    border: Palette['primary']
-  }
-  interface PaletteOptions {
-    border: PaletteOptions['primary']
+}
+
+declare module '@mui/material/SvgIcon' {
+  interface SvgIconPropsColorOverrides {
+    // SvgIconPropsColorOverrides['primary'] doesn't work
+    border: unknown
   }
 }
 
@@ -62,7 +70,7 @@ const theme = createTheme({
     },
     body2: {
       fontSize: '14px',
-      lineHeight: '22px',
+      lineHeight: '20px',
     },
     caption: {
       fontSize: '12px',
@@ -117,17 +125,22 @@ const theme = createTheme({
     MuiAccordion: {
       styleOverrides: {
         root: ({ theme }) => ({
+          transition: 'background 0.2s',
           borderRadius: '8px',
           border: `2px solid ${theme.palette.border.light}`,
           '&::before': {
             content: 'none',
           },
+
+          '&:hover .MuiAccordionSummary-root': {
+            background: theme.palette.primary.background,
+          },
+
+          '&:last-of-type': {
+            borderBottomLeftRadius: '8px',
+            borderBottomRightRadius: '8px',
+          },
         }),
-      },
-    },
-    MuiAccordionSummary: {
-      styleOverrides: {
-        content: { margin: '0px' },
       },
     },
     MuiCard: {

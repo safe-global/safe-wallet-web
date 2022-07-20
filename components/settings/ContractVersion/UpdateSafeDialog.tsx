@@ -76,7 +76,7 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
           href={`https://github.com/gnosis/safe-contracts/releases/tag/v${LATEST_SAFE_VERSION}`}
           target="_blank"
         >
-          latest Gnosis Safe contracts changelog
+          latest Safe contracts changelog
         </Link>
       </Typography>
 

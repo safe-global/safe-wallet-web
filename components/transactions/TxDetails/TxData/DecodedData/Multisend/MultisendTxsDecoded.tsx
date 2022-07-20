@@ -18,7 +18,7 @@ type MultisendTxsDecodedProps = {
     address: string
     name?: string
     avatarUrl?: string
-    dataDecoded: DataDecoded | null
+    dataDecoded?: DataDecoded
     operation: Operation
   }
 }
