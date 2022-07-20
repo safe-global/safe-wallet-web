@@ -9,7 +9,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import useGasPrice from '@/hooks/useGasPrice'
-import { useEstimateSafeCreationGas } from '@/hooks/useGasLimit'
+import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
 import { safeFormatUnits } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 
@@ -30,11 +30,11 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
 
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
 
-  const { gasLimit } = useEstimateSafeCreationGas(
-    params.owners.map((owner) => owner.address),
-    params.threshold,
+  const { gasLimit } = useEstimateSafeCreationGas({
+    owners: params.owners.map((owner) => owner.address),
+    threshold: params.threshold,
     saltNonce,
-  )
+  })
 
   const totalFee =
     gasLimit && maxFeePerGas && maxPriorityFeePerGas

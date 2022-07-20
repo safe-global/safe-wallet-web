@@ -7,16 +7,6 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
-import useChainId from '@/hooks/useChainId'
-import { useAppSelector } from '@/store'
-import { selectChainById } from '@/store/chainsSlice'
-import {
-  getFallbackHandlerContractInstance,
-  getGnosisSafeContractInstance,
-  getProxyFactoryContractInstance,
-} from '@/services/safeContracts'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 const getPreValidatedSignature = (from: string): string => {
   return `0x000000000000000000000000${from
@@ -48,54 +38,6 @@ export const _encodeSignatures = (safeTx: SafeTransaction, from: string): string
   }
 
   return encoded
-}
-
-export const useEstimateSafeCreationGas = (
-  owners: string[],
-  threshold: number,
-  safeCreationSalt: number,
-): {
-  gasLimit?: BigNumber
-  gasLimitError?: Error
-  gasLimitLoading: boolean
-} => {
-  const web3ReadOnly = useWeb3ReadOnly()
-  const chainId = useChainId()
-  const chainInfo = useAppSelector((state) => selectChainById(state, chainId))
-  const wallet = useWallet()
-
-  const safeContract = getGnosisSafeContractInstance(chainInfo!, LATEST_SAFE_VERSION)
-  const proxyContract = getProxyFactoryContractInstance(chainId)
-  const fallbackHandlerContract = getFallbackHandlerContractInstance(chainId)
-
-  const setupData = safeContract.interface.encodeFunctionData('setup', [
-    owners,
-    threshold,
-    ZERO_ADDRESS,
-    EMPTY_DATA,
-    fallbackHandlerContract.address,
-    ZERO_ADDRESS,
-    '0',
-    ZERO_ADDRESS,
-  ])
-
-  const encodedSafeCreationTx = proxyContract.interface.encodeFunctionData('createProxyWithNonce', [
-    safeContract.address,
-    setupData,
-    safeCreationSalt,
-  ])
-
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber | undefined>(async () => {
-    if (!wallet?.address || !encodedSafeCreationTx || !web3ReadOnly) return undefined
-
-    return await web3ReadOnly.estimateGas({
-      to: proxyContract.address,
-      from: wallet.address,
-      data: encodedSafeCreationTx,
-    })
-  }, [proxyContract.address, wallet, encodedSafeCreationTx, web3ReadOnly])
-
-  return { gasLimit, gasLimitError, gasLimitLoading }
 }
 
 const estimateSafeTxGas = (safeSDK: Safe, safeTx: SafeTransaction, from: string): string => {
