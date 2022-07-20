@@ -30,7 +30,6 @@ export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }
     }}
     elevation={0}
     defaultExpanded={!!txDetails}
-    sx={{ border: `${isGrouped ? 'none' : ''}` }}
   >
     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
       <TxSummary item={item} isGrouped />

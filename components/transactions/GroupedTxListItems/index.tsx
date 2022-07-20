@@ -9,22 +9,19 @@ import css from './styles.module.css'
 const Disclaimer = ({ nonce }: { nonce?: number }) => (
   <Box className={css.disclaimerContainer}>
     <Typography alignSelf="flex-start">{`${nonce}`}</Typography>
-    <Box className={css.alignItemsWithMargin}>
-      <Typography>
-        These transactions conflict as they use the same nonce. Executing one will automatically replace the other(s).{' '}
-      </Typography>
-    </Box>
+    <Typography>
+      These transactions conflict as they use the same nonce. Executing one will automatically replace the other(s).
+    </Typography>
 
     <Link
       href="https://help.gnosis-safe.io/en/articles/4730252-why-are-transactions-with-the-same-nonce-conflicting-with-each-other"
       target="_blank"
       rel="noreferrer"
       title="Why are transactions with the same nonce conflicting with each other?"
+      className={css.link}
     >
-      <Box className={css.alignItemsWithMargin}>
-        Learn more
-        <OpenInNewRoundedIcon fontSize="small" />
-      </Box>
+      Learn more
+      <OpenInNewRoundedIcon fontSize="small" />
     </Link>
   </Box>
 )
