@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { IS_PRODUCTION } from '@/config/constants'
 import useLocalStorage from '@/services/localStorage/useLocalStorage'
 import { useAppDispatch } from '@/store'
 import { addressBookSlice } from '@/store/addressBookSlice'
@@ -35,4 +36,4 @@ const useStorageMigration = (): void => {
   }, [isMigrationFinished, setIsMigrationFinished, dispatch])
 }
 
-export default useStorageMigration
+export default IS_PRODUCTION ? useStorageMigration : () => void null
