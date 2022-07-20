@@ -4,6 +4,7 @@ import { Box, Grid, Typography } from '@mui/material'
 import { useSafeApps } from '@/hooks/useSafeApps'
 import { Card, WidgetBody, WidgetContainer, WidgetTitle } from '../styled'
 import { SAFE_REACT_URL } from '@/config/constants'
+import useChainId from '@/hooks/useChainId'
 
 export const FEATURED_APPS_TAG = 'dashboard-widgets'
 
@@ -24,12 +25,13 @@ const StyledGridItem = styled(Grid)`
   min-width: 300px;
 `
 
-const getSafeAppUrl = (appUrl: string) => {
-  return `${SAFE_REACT_URL}/share/safe-app?appUrl=${appUrl}`
+const getSafeAppUrl = (appUrl: string, chainId: string) => {
+  return `${SAFE_REACT_URL}/share/safe-app?appUrl=${appUrl}&chainId=${chainId}`
 }
 
 export const FeaturedApps = (): ReactElement | null => {
   const [allApps = [], , isLoading] = useSafeApps()
+  const chainId = useChainId()
   const featuredApps = useMemo(() => allApps.filter((app) => app.tags?.includes(FEATURED_APPS_TAG)), [allApps])
 
   if (!featuredApps.length && !isLoading) return null
@@ -42,7 +44,7 @@ export const FeaturedApps = (): ReactElement | null => {
           <StyledGrid container>
             {featuredApps.map((app) => (
               <StyledGridItem item xs md key={app.id}>
-                <StyledLink href={getSafeAppUrl(app.url)} target="_blank">
+                <StyledLink href={getSafeAppUrl(app.url, chainId)} target="_blank">
                   <Card>
                     <Grid container alignItems="center" spacing={3}>
                       <Grid item xs={12} md={3}>
