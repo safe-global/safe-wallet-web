@@ -19,25 +19,7 @@ export const SidebarListItemButton = ({
   ...rest
 }: Omit<ListItemButtonProps, 'sx'> & { href?: LinkProps['href'] }): ReactElement => {
   const button = (
-    <ListItemButton
-      sx={({ palette }) => ({
-        borderRadius: '6px',
-        paddingTop: '6px',
-        paddingBottom: '6px',
-        '&.MuiListItemButton-root:hover, &.MuiListItemButton-root.Mui-selected': {
-          backgroundColor: `${palette.primary.background}`,
-        },
-        '& .beamer_icon.active': {
-          top: 'auto',
-          left: '28px',
-          bottom: '10px',
-          width: '6px',
-          height: '6px',
-          color: 'transparent',
-        },
-      })}
-      {...rest}
-    >
+    <ListItemButton className={css.listItemButton} {...rest}>
       {children}
     </ListItemButton>
   )
