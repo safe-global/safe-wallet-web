@@ -1,5 +1,6 @@
 import { ReactElement, useMemo } from 'react'
 import { useRouter } from 'next/router'
+import uniqBy from 'lodash/uniqBy'
 import styled from '@emotion/styled'
 import { Box, Skeleton, Typography } from '@mui/material'
 import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -48,7 +49,7 @@ const PendingTxsList = ({ size = 5 }: { size?: number }): ReactElement | null =>
   const { page, loading } = useTxQueue()
   const router = useRouter()
   const url = `${AppRoutes.safe.transactions.queue}?safe=${router.query.safe}`
-  const queuedTxsToDisplay: Transaction[] = (page?.results || []).filter(isTransactionListItem)
+  const queuedTxsToDisplay: Transaction[] = uniqBy((page?.results || []).filter(isTransactionListItem), 'nonce')
   const totalQueuedTxs = queuedTxsToDisplay.length
 
   const LoadingState = useMemo(
@@ -68,7 +69,7 @@ const PendingTxsList = ({ size = 5 }: { size?: number }): ReactElement | null =>
     () => (
       <StyledList>
         {queuedTxsToDisplay.map((transaction) => (
-          <PendingTxListItem transaction={transaction} url={url} key={transaction.transaction.id} />
+          <PendingTxListItem transaction={transaction.transaction} url={url} key={transaction.transaction.id} />
         ))}
       </StyledList>
     ),
