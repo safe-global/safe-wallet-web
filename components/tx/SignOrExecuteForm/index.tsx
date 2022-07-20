@@ -65,10 +65,11 @@ const SignOrExecuteForm = ({
   // Estimate gas price
   const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
 
+  console.log(manualParams)
   // Take the manually set gas params or the estimated ones
   const advancedParams: Partial<AdvancedParameters> = {
     nonce: manualParams?.nonce || tx?.data.nonce,
-    gasLimit: manualParams?.gasLimit.gt(0) ? manualParams.gasLimit : gasLimit,
+    gasLimit: manualParams?.gasLimit ? manualParams.gasLimit : gasLimit,
     maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
     maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
   }
@@ -143,7 +144,7 @@ const SignOrExecuteForm = ({
   return isEditingGas ? (
     <AdvancedParamsForm
       nonce={advancedParams.nonce || 0}
-      gasLimit={advancedParams.gasLimit || BigNumber.from(0)}
+      gasLimit={advancedParams.gasLimit}
       maxFeePerGas={advancedParams.maxFeePerGas || BigNumber.from(0)}
       maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas || BigNumber.from(0)}
       isExecution={willExecute}

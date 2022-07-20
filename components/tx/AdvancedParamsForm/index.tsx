@@ -9,7 +9,7 @@ import NonceForm from '../NonceForm'
 
 export type AdvancedParameters = {
   nonce: number
-  gasLimit: BigNumber
+  gasLimit: BigNumber | undefined
   maxFeePerGas: BigNumber
   maxPriorityFeePerGas: BigNumber
 }
@@ -23,7 +23,7 @@ type AdvancedParamsFormProps = AdvancedParameters & {
 
 type FormData = {
   nonce: number
-  gasLimit: string
+  gasLimit: string | undefined
   maxFeePerGas: string
   maxPriorityFeePerGas: string
 }
@@ -32,7 +32,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
   const formMethods = useForm<FormData>({
     defaultValues: {
       nonce: props.nonce,
-      gasLimit: props.gasLimit.toString(),
+      gasLimit: props.gasLimit ? props.gasLimit.toString() : undefined,
       maxFeePerGas: safeFormatUnits(props.maxFeePerGas),
       maxPriorityFeePerGas: safeFormatUnits(props.maxPriorityFeePerGas),
     },
@@ -55,7 +55,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
   const onSubmit = (data: FormData) => {
     props.onSubmit({
       nonce: data.nonce,
-      gasLimit: BigNumber.from(data.gasLimit),
+      gasLimit: data.gasLimit ? BigNumber.from(data.gasLimit) : undefined,
       maxFeePerGas: safeParseUnits(data.maxFeePerGas) || props.maxFeePerGas,
       maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) || props.maxPriorityFeePerGas,
     })
