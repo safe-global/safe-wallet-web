@@ -31,7 +31,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
       ) : error ? (
         <ErrorMessage>Error loading the history</ErrorMessage>
       ) : page?.results.length ? (
-        <TxList items={page?.results} />
+        <TxList items={page.results} />
       ) : (
         placeholder
       )}
