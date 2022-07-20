@@ -1,36 +1,36 @@
-import * as React from 'react'
-import { Button, Paper } from '@mui/material'
+import { ReactElement } from 'react'
+import { useRouter } from 'next/router'
+import { SAFE_REACT_URL } from '@/config/constants'
+import { Box, Button } from '@mui/material'
+import { AppCardContainer } from './AppCard'
 
-type Props = {}
+const AddCustomAppCard = (): ReactElement => {
+  const router = useRouter()
+  const url = `${SAFE_REACT_URL}/${router.query.safe}/apps`
 
-const AddCustomAppCard = ({}: Props) => {
   return (
-    <Paper
-      sx={({ palette }) => ({
-        height: 190,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
-        border: '2px solid transparent',
-        '&:hover': {
-          backgroundColor: palette.primary.background,
-          border: `2px solid ${palette.primary.light}`,
-        },
-      })}
-    >
-      <img src="/images/add-custom-app.svg" alt="Add custom app icon" />
-      <Button
-        variant="contained"
-        size="small"
+    <AppCardContainer url={url}>
+      <Box
         sx={{
-          mt: 1,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        Add custom app
-      </Button>
-    </Paper>
+        <img src="/images/add-custom-app.svg" alt="Add custom app icon" />
+        <Button
+          variant="contained"
+          size="small"
+          sx={{
+            mt: 1,
+          }}
+        >
+          Add custom app
+        </Button>
+      </Box>
+    </AppCardContainer>
   )
 }
 

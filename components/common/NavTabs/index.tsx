@@ -11,7 +11,6 @@ const NavTabs = ({ tabs }: { tabs: NavItem[] }) => {
     <Tabs
       value={activeTab}
       sx={({ palette }) => ({
-        marginBottom: 4,
         '& .MuiTabs-flexContainer': { borderBottom: `2px solid ${palette.border.light}` },
       })}
     >
