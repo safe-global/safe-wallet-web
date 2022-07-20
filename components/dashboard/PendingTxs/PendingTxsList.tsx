@@ -6,7 +6,7 @@ import { Box, Skeleton, Typography } from '@mui/material'
 import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Card, ViewAllLink, WidgetBody, WidgetContainer, WidgetTitle } from '../styled'
 import PendingTxListItem from './PendingTxListItem'
-import { isTransactionListItem } from '@/utils/transaction-guards'
+import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
 
@@ -49,8 +49,15 @@ const PendingTxsList = ({ size = 5 }: { size?: number }): ReactElement | null =>
   const { page, loading } = useTxQueue()
   const router = useRouter()
   const url = `${AppRoutes.safe.transactions.queue}?safe=${router.query.safe}`
-  const queuedTxsToDisplay: Transaction[] = uniqBy((page?.results || []).filter(isTransactionListItem), 'nonce')
-  const totalQueuedTxs = queuedTxsToDisplay.length
+
+  const queuedTxns: Transaction[] = (page?.results || []).filter(isTransactionListItem)
+
+  // Filter out duplicate nonce transactions
+  const queuedTxsToDisplay = uniqBy(queuedTxns, (item) =>
+    isMultisigExecutionInfo(item.transaction.executionInfo) ? item.transaction.executionInfo.nonce : '',
+  ).slice(0, size)
+
+  const totalQueuedTxs = queuedTxns.length
 
   const LoadingState = useMemo(
     () => (

@@ -53,28 +53,24 @@ const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {
           </Typography>
         </Grid>
 
-        <Grid item xs>
+        <Grid item flexGrow={1}>
           <TxType tx={transaction} />
         </Grid>
 
-        <Grid item>
-          <TxInfo info={transaction.txInfo} />
-        </Grid>
+        <TxInfo info={transaction.txInfo} />
 
         <Grid item xs />
 
-        <Grid item>
-          <TxConfirmations>
-            {isMultisigExecutionInfo(transaction.executionInfo) ? (
-              <StyledConfirmationsCount>
-                {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
-              </StyledConfirmationsCount>
-            ) : (
-              <Spacer />
-            )}
-            <ChevronRight color="secondary" />
-          </TxConfirmations>
-        </Grid>
+        <TxConfirmations>
+          {isMultisigExecutionInfo(transaction.executionInfo) ? (
+            <StyledConfirmationsCount>
+              {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
+            </StyledConfirmationsCount>
+          ) : (
+            <Spacer />
+          )}
+          <ChevronRight color="secondary" />
+        </TxConfirmations>
       </Grid>
     </StyledLink>
   )
