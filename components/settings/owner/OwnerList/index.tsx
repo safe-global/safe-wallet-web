@@ -22,10 +22,8 @@ const OwnerRow = ({
 }): ReactElement => {
   return (
     <TableRow className={css.row}>
-      <TableCell>{name ?? ''}</TableCell>
-
       <TableCell>
-        <EthHashInfo address={address} showCopyButton shortAddress={false} showName={false} />
+        <EthHashInfo address={address} showCopyButton shortAddress={false} showName={true} />
       </TableCell>
 
       <TableCell>
@@ -61,9 +59,8 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
               <TableCell>Address</TableCell>
-              <TableCell></TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
 

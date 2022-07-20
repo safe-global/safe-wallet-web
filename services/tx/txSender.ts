@@ -25,7 +25,7 @@ const estimateSafeTxGas = async (
   safeAddress: string,
   txParams: MetaTransactionData,
 ): Promise<SafeTransactionEstimation> => {
-  return await postSafeGasEstimation(chainId, safeAddress, {
+  return postSafeGasEstimation(chainId, safeAddress, {
     to: txParams.to,
     value: txParams.value,
     data: txParams.data,
@@ -43,13 +43,13 @@ export const createTx = async (txParams: SafeTransactionDataPartial): Promise<Sa
   }
 
   // Get the nonce and safeTxGas if not provided
-  if (txParams.nonce == null) {
+  if (typeof txParams.nonce === 'undefined') {
     const chainId = await safeSDK.getChainId()
     const estimaton = await estimateSafeTxGas(String(chainId), safeSDK.getAddress(), txParams)
     txParams = { ...txParams, nonce: estimaton.recommendedNonce, safeTxGas: Number(estimaton.safeTxGas) }
   }
 
-  return await safeSDK.createTransaction(txParams)
+  return safeSDK.createTransaction(txParams)
 }
 
 /**
@@ -65,7 +65,8 @@ export const createMultiSendTx = async (
   if (!safeSDK) {
     throw new Error('Safe SDK not initialized')
   }
-  return await safeSDK.createTransaction(txParams)
+
+  return safeSDK.createTransaction(txParams, options)
 }
 
 /**
@@ -76,7 +77,7 @@ export const createRejectTx = async (nonce: number): Promise<SafeTransaction> =>
   if (!safeSDK) {
     throw new Error('Safe SDK not initialized')
   }
-  return await safeSDK.createRejectionTransaction(nonce)
+  return safeSDK.createRejectionTransaction(nonce)
 }
 
 /**

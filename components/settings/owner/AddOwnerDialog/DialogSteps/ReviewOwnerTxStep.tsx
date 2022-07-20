@@ -23,7 +23,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
   const { newOwner, removedOwner, threshold } = data
 
   // @TODO: move to txSender, add event dispatching
-  const [changeOwnerTx, createTxError, loading] = useAsync(() => {
+  const [changeOwnerTx, createTxError] = useAsync(() => {
     if (!safeSDK) {
       throw new Error('Safe SDK not initialized')
     }
@@ -42,12 +42,13 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!changeOwnerTx) return
-    return await createTx(changeOwnerTx.data)
+    // Reset the nonce to fetch the recommended nonce in createTx
+    return createTx({ ...changeOwnerTx.data, nonce: undefined })
   }, [changeOwnerTx])
 
   const isReplace = Boolean(removedOwner)
 
-  const addAddressBookEntryAndSubmit = (data: null) => {
+  const addAddressBookEntryAndSubmit = (dialogData: null) => {
     if (typeof newOwner.name !== 'undefined') {
       dispatch(
         upsertAddressBookEntry({
@@ -58,7 +59,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
       )
     }
 
-    onSubmit(data)
+    onSubmit(dialogData)
   }
 
   // All errors

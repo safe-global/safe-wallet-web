@@ -45,14 +45,14 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
   const chain = useCurrentChain()
 
   const [updateSafeTx, txCreationError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!safe || !chain) return undefined
+    if (!safe?.address.value || !chain) return undefined
     const txs = createUpdateSafeTxs(safe.address.value, chain)
-    return await createMultiSendTx(txs)
-  }, [chain, safe])
+    return createMultiSendTx(txs)
+  }, [chain?.chainId, safe?.address.value])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!updateSafeTx) return
-    return await createTx(updateSafeTx.data)
+    return createTx({ ...updateSafeTx.data, nonce: undefined, operation: 1 })
   }, [updateSafeTx])
 
   const txError = txCreationError || safeTxError

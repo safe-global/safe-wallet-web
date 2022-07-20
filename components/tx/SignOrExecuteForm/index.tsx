@@ -68,7 +68,7 @@ const SignOrExecuteForm = ({
   // Take the manually set gas params or the estimated ones
   const advancedParams: Partial<AdvancedParameters> = {
     nonce: manualParams?.nonce || tx?.data.nonce,
-    gasLimit: manualParams?.gasLimit || gasLimit,
+    gasLimit: manualParams?.gasLimit.gt(0) ? manualParams.gasLimit : gasLimit,
     maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
     maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
   }
@@ -92,7 +92,7 @@ const SignOrExecuteForm = ({
     onFinish(async () => {
       const hardwareWallet = isHardwareWallet(wallet)
       const signedTx = await dispatchTxSigning(tx, hardwareWallet, txId)
-      await dispatchTxProposal(chainId, safeAddress, wallet!.address, signedTx)
+      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     })
   }
 
