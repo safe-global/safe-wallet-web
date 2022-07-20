@@ -24,8 +24,6 @@ export const TxListGrid = ({ children }: { children: (ReactElement | null)[] }):
 }
 
 const TxList = ({ items }: TxListProps): ReactElement => {
-  let groupedListItems: TransactionListItem[] = []
-
   // Ensure list always starts with a date label
   const list = useMemo(() => {
     const firstDateLabelIndex = items.findIndex(isDateLabel)

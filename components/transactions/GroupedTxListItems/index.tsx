@@ -5,6 +5,7 @@ import { TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isConflictHeaderListItem, isTransactionListItem } from '@/utils/transaction-guards'
 import { ExpandableTransactionItem } from '@/components/transactions/TxListItem'
 import css from './styles.module.css'
+import { TxHoverProvider } from '@/components/transactions/GroupedTxListItems/TxHoverProvider'
 
 const Disclaimer = ({ nonce }: { nonce?: number }) => (
   <Box className={css.disclaimerContainer}>
@@ -33,11 +34,13 @@ const GroupedTxListItems = ({ groupedListItems }: { groupedListItems: Transactio
   return (
     <Paper className={css.container} variant="outlined">
       <Disclaimer nonce={nonce} />
-      {groupedTxs.map((tx) => {
-        if (isTransactionListItem(tx)) {
-          return <ExpandableTransactionItem key={tx.transaction.id} item={tx} isGrouped />
-        }
-      })}
+      <TxHoverProvider>
+        {groupedTxs.map((tx) => {
+          if (isTransactionListItem(tx)) {
+            return <ExpandableTransactionItem key={tx.transaction.id} item={tx} isGrouped />
+          }
+        })}
+      </TxHoverProvider>
     </Paper>
   )
 }
