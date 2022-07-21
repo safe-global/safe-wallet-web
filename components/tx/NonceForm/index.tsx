@@ -15,7 +15,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
   const { safe } = useSafeInfo()
   const safeNonce = safe?.nonce || 0
 
-  const { register, watch, setValue, formState } = useFormContext() || {}
+  const { register, watch, setValue, trigger, formState } = useFormContext() || {}
 
   // Warn about a higher nonce
   const editableNonce = watch(name)
@@ -25,6 +25,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
   const onResetNonce = () => {
     if (recommendedNonce) {
       setValue('nonce', recommendedNonce)
+      trigger('nonce')
     }
   }
 
@@ -37,7 +38,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
       error={!!formState?.errors[name]}
       label={<>{formState?.errors[name]?.message || nonceWarning || 'Nonce'}</>}
       InputProps={{
-        endAdornment: (
+        endAdornment: !readonly && (
           <InputValueHelper onClick={onResetNonce} disabled={!recommendedNonce}>
             Recommended
           </InputValueHelper>

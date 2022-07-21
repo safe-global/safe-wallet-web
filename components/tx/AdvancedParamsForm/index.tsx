@@ -32,6 +32,7 @@ type FormData = {
 
 const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
   const formMethods = useForm<FormData>({
+    mode: 'onChange',
     defaultValues: {
       nonce: props.nonce,
       gasLimit: props.gasLimit ? props.gasLimit.toString() : undefined,
@@ -43,6 +44,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
     register,
     setValue,
     handleSubmit,
+    trigger,
     watch,
     formState: { errors },
   } = formMethods
@@ -67,11 +69,12 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
 
   const onResetGasLimit = () => {
     setValue('gasLimit', props.estimatedGasLimit)
+    trigger('gasLimit')
   }
 
   const gasLimitError = errors.gasLimit
     ? errors.gasLimit.type === 'min'
-      ? 'Gas limit must be >= 0'
+      ? 'Gas limit must be at least 21000'
       : errors.gasLimit.message
     : undefined
 
@@ -113,7 +116,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                         shrink: !!watch('gasLimit'),
                       }}
                       type="number"
-                      {...register('gasLimit', { required: true, min: 0 })}
+                      {...register('gasLimit', { required: true, min: 21000 })}
                     ></TextField>
                   </FormControl>
                 </Grid>
