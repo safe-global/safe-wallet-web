@@ -1,10 +1,11 @@
 import { ReactElement } from 'react'
 import { Box, Link, Paper, Typography } from '@mui/material'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
-import { TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isConflictHeaderListItem, isTransactionListItem } from '@/utils/transaction-guards'
+import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { ExpandableTransactionItem } from '@/components/transactions/TxListItem'
 import css from './styles.module.css'
+import { useGroupedItems } from '@/components/transactions/GroupedTxListItems/useGroupedItems'
 
 const Disclaimer = ({ nonce }: { nonce?: number }) => (
   <Box className={css.disclaimerContainer}>
@@ -26,18 +27,19 @@ const Disclaimer = ({ nonce }: { nonce?: number }) => (
   </Box>
 )
 
-const GroupedTxListItems = ({ groupedListItems }: { groupedListItems: TransactionListItem[] }): ReactElement => {
-  const [conflictHeader, ...groupedTxs] = groupedListItems
-  const nonce = isConflictHeaderListItem(conflictHeader) ? conflictHeader.nonce : undefined
+const GroupedTxListItems = ({ groupedListItems }: { groupedListItems: Transaction[] }): ReactElement => {
+  const nonce = isMultisigExecutionInfo(groupedListItems[0].transaction.executionInfo)
+    ? groupedListItems[0].transaction.executionInfo.nonce
+    : undefined
+
+  const items = useGroupedItems(groupedListItems)
 
   return (
     <Paper className={css.container} variant="outlined">
       <Disclaimer nonce={nonce} />
-      {groupedTxs.map((tx) => {
-        if (isTransactionListItem(tx)) {
-          return <ExpandableTransactionItem key={tx.transaction.id} item={tx} isGrouped />
-        }
-      })}
+      {items.map((tx) => (
+        <ExpandableTransactionItem key={tx.transaction.id} item={tx} isGrouped />
+      ))}
     </Paper>
   )
 }
