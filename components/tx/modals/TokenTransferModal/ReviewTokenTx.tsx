@@ -43,7 +43,11 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
   // Format safeTx params
   const txParams = useMemo(() => {
     if (!address || !decimals) return
-    return createTokenTransferParams(params.recipient, params.amount, decimals, address)
+    try {
+      return createTokenTransferParams(params.recipient, params.amount, decimals, address)
+    } catch (e) {
+      return undefined
+    }
   }, [params, decimals, address])
 
   // Create a safeTx
