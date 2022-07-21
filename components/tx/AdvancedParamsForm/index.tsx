@@ -9,7 +9,7 @@ import NonceForm from '../NonceForm'
 
 export type AdvancedParameters = {
   nonce: number
-  gasLimit: BigNumber | undefined
+  gasLimit?: BigNumber
   maxFeePerGas: BigNumber
   maxPriorityFeePerGas: BigNumber
 }
@@ -23,7 +23,7 @@ type AdvancedParamsFormProps = AdvancedParameters & {
 
 type FormData = {
   nonce: number
-  gasLimit: string | undefined
+  gasLimit?: string
   maxFeePerGas: string
   maxPriorityFeePerGas: string
 }
@@ -61,6 +61,12 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
     })
   }
 
+  const gasLimitError = errors.gasLimit
+    ? errors.gasLimit.type === 'min'
+      ? 'Gas limit must be >= 0'
+      : errors.gasLimit.message
+    : undefined
+
   return (
     <Paper className={css.container} elevation={0}>
       <FormProvider {...formMethods}>
@@ -84,12 +90,12 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                 <Grid item xs={6}>
                   <FormControl fullWidth>
                     <TextField
-                      label={errors.gasLimit?.message || 'Gas limit'}
+                      label={gasLimitError || 'Gas limit'}
                       error={!!errors.gasLimit}
                       autoComplete="off"
                       type="number"
-                      {...register('gasLimit', { required: true })}
-                    />
+                      {...register('gasLimit', { required: true, min: 0 })}
+                    ></TextField>
                   </FormControl>
                 </Grid>
 
@@ -99,7 +105,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                       label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
                       error={!!errors.maxPriorityFeePerGas}
                       autoComplete="off"
-                      {...register('maxPriorityFeePerGas', { required: true, pattern: FLOAT_REGEX })}
+                      {...register('maxPriorityFeePerGas', { required: true, pattern: FLOAT_REGEX, min: 0 })}
                     />
                   </FormControl>
                 </Grid>
@@ -110,7 +116,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                       label={errors.maxFeePerGas?.message || 'Max fee (Gwei)'}
                       error={!!errors.maxFeePerGas}
                       autoComplete="off"
-                      {...register('maxFeePerGas', { required: true, pattern: FLOAT_REGEX })}
+                      {...register('maxFeePerGas', { required: true, pattern: FLOAT_REGEX, min: 0 })}
                     />
                   </FormControl>
                 </Grid>

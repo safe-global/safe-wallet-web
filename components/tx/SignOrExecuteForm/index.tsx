@@ -65,11 +65,10 @@ const SignOrExecuteForm = ({
   // Estimate gas price
   const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
 
-  console.log(manualParams)
   // Take the manually set gas params or the estimated ones
   const advancedParams: Partial<AdvancedParameters> = {
     nonce: manualParams?.nonce || tx?.data.nonce,
-    gasLimit: manualParams?.gasLimit ? manualParams.gasLimit : gasLimit,
+    gasLimit: manualParams?.gasLimit || gasLimit,
     maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
     maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
   }
