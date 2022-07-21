@@ -5,6 +5,7 @@ const useSafeInfo = () => {
   const { data, error, loading } = useAppSelector(selectSafeInfo)
   return {
     safe: data,
+    safeAddress: data?.address.value,
     error,
     loading,
   }

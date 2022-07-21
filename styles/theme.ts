@@ -161,9 +161,6 @@ const theme = createTheme({
       },
     },
     MuiPaper: {
-      defaultProps: {
-        elevation: 0,
-      },
       styleOverrides: {
         outlined: ({ theme }) => ({
           borderWidth: 2,

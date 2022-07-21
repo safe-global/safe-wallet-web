@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { CreateSafeFormData } from '@/components/create-safe'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -8,6 +8,10 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
+import useGasPrice from '@/hooks/useGasPrice'
+import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
+import { safeFormatUnits } from '@/utils/formatters'
+import { useCurrentChain } from '@/hooks/useChains'
 
 type Props = {
   params: CreateSafeFormData
@@ -21,11 +25,24 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
   const wallet = useWallet()
   const ethersProvider = useWeb3()
   const [_, setPendingSafe] = usePendingSafe()
+  const chain = useCurrentChain()
+  const saltNonce = useMemo(() => Date.now(), [])
+
+  const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
+
+  const { gasLimit } = useEstimateSafeCreationGas({
+    owners: params.owners.map((owner) => owner.address),
+    threshold: params.threshold,
+    saltNonce,
+  })
+
+  const totalFee =
+    gasLimit && maxFeePerGas && maxPriorityFeePerGas
+      ? safeFormatUnits(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+      : '> 0.001'
 
   const createSafe = async () => {
     if (!wallet || !ethersProvider) return
-
-    const saltNonce = Date.now()
 
     setPendingSafe({ ...params, saltNonce })
     onSubmit(params)
@@ -69,8 +86,8 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
       <Box padding={3} bgcolor={(theme) => theme.palette.grey.A100}>
         <Typography textAlign="center">
           You are about to create a new Safe on <ChainIndicator inline /> and will have to confirm a transaction with
-          your currently connected wallet. The creation will cost approximately GAS_ESTIMATION. The exact amount will be
-          determined by your wallet.
+          your currently connected wallet. The creation will cost approximately {totalFee}{' '}
+          {chain?.nativeCurrency.symbol}. The exact amount will be determined by your wallet.
         </Typography>
       </Box>
       <Divider />

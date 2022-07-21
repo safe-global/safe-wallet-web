@@ -13,31 +13,14 @@ import useChains from '@/hooks/useChains'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
-import { AddedSafesState, AddedSafesOnChain, selectAllAddedSafes } from '@/store/addedSafesSlice'
+import { AddedSafesOnChain, selectAllAddedSafes } from '@/store/addedSafesSlice'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import SafeListItem from '@/components/sidebar/SafeListItem'
 import { AppRoutes } from '@/config/routes'
 
 import css from './styles.module.css'
 import { sameAddress } from '@/utils/addresses'
-
-export const _extractSafesByChainId = ({
-  chainId,
-  ownedSafes,
-  addedSafes,
-}: {
-  chainId: string
-  ownedSafes: ReturnType<typeof useOwnedSafes>
-  addedSafes: AddedSafesState
-}): {
-  ownedSafesOnChain: string[]
-  addedSafesOnChain: AddedSafesOnChain
-} => {
-  const ownedSafesOnChain = ownedSafes[chainId] ?? []
-  const addedSafesOnChain = addedSafes[chainId] ?? {}
-
-  return { ownedSafesOnChain, addedSafesOnChain }
-}
+import ChainIndicator from '@/components/common/ChainIndicator'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -92,13 +75,10 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
           </Button>
         </Link>
       </div>
-      {configs.map((chain) => {
-        const { ownedSafesOnChain, addedSafesOnChain } = _extractSafesByChainId({
-          chainId: chain.chainId,
-          ownedSafes,
-          addedSafes,
-        })
 
+      {configs.map((chain) => {
+        const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
+        const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
         const isCurrentChain = chain.chainId === chainId
         const addedSafeEntriesOnChain = Object.entries(addedSafesOnChain)
 
@@ -118,25 +98,21 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
 
         return (
           <Fragment key={chain.chainName}>
-            <List className={css.list}>
-              <Typography
-                variant="overline"
-                className={css.chainDivider}
-                sx={{
-                  backgroundColor: `${chain.theme.backgroundColor} !important`,
-                  color: chain.theme.textColor,
-                }}
-              >
-                {chain.chainName}
+            {/* Chain indicator */}
+            <ChainIndicator chainId={chain.chainId} className={css.chainDivider} />
+
+            {/* No Safes yet */}
+            {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
+              <Typography variant="body2" sx={({ palette }) => ({ color: palette.secondary.light, my: '8px' })}>
+                <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
+                  Create or add
+                </Link>{' '}
+                an existing Safe on this network
               </Typography>
-              {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
-                <Typography variant="body2" sx={({ palette }) => ({ color: palette.secondary.light, my: '8px' })}>
-                  <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
-                    Create or add
-                  </Link>{' '}
-                  an existing Safe on this network
-                </Typography>
-              )}
+            )}
+
+            {/* Added Safes */}
+            <List className={css.list}>
               {addedSafeEntriesOnChain.map(([address, { threshold, owners }]) => (
                 <SafeListItem
                   key={address}
@@ -149,21 +125,13 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                 />
               ))}
             </List>
+
+            {/* Owned Safes */}
             {ownedSafesOnChain.length > 0 && (
               <div onClick={() => toggleOpen(chain.chainId, !isOpen)} className={css.ownedLabelWrapper}>
-                <Typography
-                  variant="body2"
-                  sx={({ palette }) => ({
-                    color: palette.secondary.light,
-                    my: '8px',
-                  })}
-                  display="inline"
-                  className={css.ownedLabel}
-                >
+                <Typography variant="body2" display="inline" className={css.ownedLabel}>
                   Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
-                  <IconButton sx={({ palette }) => ({ fill: palette.secondary.light, py: 0 })} disableRipple>
-                    {isOpen ? <ExpandLess /> : <ExpandMore />}
-                  </IconButton>
+                  <IconButton disableRipple>{isOpen ? <ExpandLess /> : <ExpandMore />}</IconButton>
                 </Typography>
               </div>
             )}

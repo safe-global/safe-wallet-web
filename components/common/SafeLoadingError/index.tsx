@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react'
-import { Button, Typography } from '@mui/material'
+import { Button } from '@mui/material'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import css from './styles.module.css'
+import PagePlaceholder from '../PagePlaceholder'
 
 const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement => {
   const { error } = useSafeInfo()
@@ -9,17 +9,11 @@ const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement =
   if (!error) return <>{children}</>
 
   return (
-    <div className={css.container}>
-      <img src="/images/error.png" alt="Error loading Safe" />
-
-      <Typography variant="h3" m={3}>
-        This Safe couldn&apos;t be loaded
-      </Typography>
-
+    <PagePlaceholder imageUrl="/images/error.png" text="This Safe couldn't be loaded">
       <Button variant="contained" color="primary" size="large" href="/">
         Go to the main page
       </Button>
-    </div>
+    </PagePlaceholder>
   )
 }
 

@@ -46,9 +46,9 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
 
   const [updateSafeTx, txCreationError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!safe?.address.value || !chain) return undefined
-    const txs = createUpdateSafeTxs(safe.address.value, chain)
+    const txs = createUpdateSafeTxs(safe, chain)
     return createMultiSendTx(txs)
-  }, [chain?.chainId, safe?.address.value])
+  }, [chain?.chainId, safe?.address.value, safe?.version])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!updateSafeTx) return
