@@ -12,13 +12,8 @@ const ExplorerLink = ({ address }: { address: string }): ReactElement | null => 
 
   return (
     <Tooltip title={link.title} placement="top">
-      <IconButton href={link.href} target="_blank" rel="noopener noreferrer" disableRipple size="small">
-        <OpenInNewRoundedIcon
-          fontSize="small"
-          sx={({ palette }) => ({
-            color: `${palette.border.main}`,
-          })}
-        />
+      <IconButton href={link.href} target="_blank" rel="noopener noreferrer" size="small">
+        <OpenInNewRoundedIcon fontSize="small" color="border" sx={{ width: '16px', height: '16px' }} />
       </IconButton>
     </Tooltip>
   )

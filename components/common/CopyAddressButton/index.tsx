@@ -1,8 +1,9 @@
+import React, { useCallback, useState } from 'react'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { useCurrentChain } from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 import { IconButton, Tooltip } from '@mui/material'
-import React, { useCallback, useState } from 'react'
 
 const CopyAddressButton = ({ address }: { address: string }) => {
   const [tooltipText, setTooltipText] = useState('Copy to clipboard')
@@ -21,7 +22,7 @@ const CopyAddressButton = ({ address }: { address: string }) => {
   return (
     <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
       <IconButton onClick={handleCopy} size="small">
-        <img src="/images/copy.svg" width={16} height={16} alt="Copy address" />
+        <ContentCopyIcon fontSize="small" color="border" sx={{ width: '16px', height: '16px' }} />
       </IconButton>
     </Tooltip>
   )
