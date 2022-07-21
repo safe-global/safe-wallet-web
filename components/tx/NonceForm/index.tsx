@@ -43,6 +43,10 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
           </InputValueHelper>
         ),
       }}
+      // @see https://github.com/react-hook-form/react-hook-form/issues/220
+      InputLabelProps={{
+        shrink: !!watch('nonce'),
+      }}
       {...register(name, {
         required: true,
         valueAsNumber: true,

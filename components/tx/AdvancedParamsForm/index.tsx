@@ -43,6 +43,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
     register,
     setValue,
     handleSubmit,
+    watch,
     formState: { errors },
   } = formMethods
 
@@ -106,6 +107,10 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                             Estimation
                           </InputValueHelper>
                         ),
+                      }}
+                      // @see https://github.com/react-hook-form/react-hook-form/issues/220
+                      InputLabelProps={{
+                        shrink: !!watch('gasLimit'),
                       }}
                       type="number"
                       {...register('gasLimit', { required: true, min: 0 })}
