@@ -9,7 +9,7 @@ import { TxHoverProvider } from '@/components/transactions/GroupedTxListItems/Tx
 
 const Disclaimer = ({ nonce }: { nonce?: number }) => (
   <Box className={css.disclaimerContainer}>
-    <Typography alignSelf="flex-start">{`${nonce}`}</Typography>
+    <Typography alignSelf="flex-start">{nonce}</Typography>
     <Typography>
       These transactions conflict as they use the same nonce. Executing one will automatically replace the other(s).
     </Typography>

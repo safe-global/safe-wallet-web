@@ -79,7 +79,7 @@ const SafeHeader = (): ReactElement => {
 
         <a target="_blank" rel="noreferrer" {...(chain && getExplorerLink(address, chain.blockExplorerUriTemplate))}>
           <HeaderIconButton>
-            <OpenInNewRoundedIcon sx={({ palette }) => ({ color: `${palette.primary.main}` })} fontSize="small" />
+            <OpenInNewRoundedIcon color="primary" fontSize="small" />
           </HeaderIconButton>
         </a>
       </div>

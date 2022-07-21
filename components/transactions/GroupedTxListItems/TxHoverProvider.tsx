@@ -11,7 +11,7 @@ export const TxHoverContext = createContext<Props>({
 })
 
 export const TxHoverProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [activeHover, setActiveHover] = useState<string | undefined>()
+  const [activeHover, setActiveHover] = useState<string>()
 
   return <TxHoverContext.Provider value={{ activeHover, setActiveHover }}>{children}</TxHoverContext.Provider>
 }

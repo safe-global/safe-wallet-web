@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { TxHoverContext } from './TxHoverProvider'
 import { TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 
 const events: TxEvent[] = [TxEvent.EXECUTING, TxEvent.FAILED, TxEvent.MINED, TxEvent.REVERTED]
 
@@ -14,9 +15,13 @@ export const useTxHoverProvider = (item: Transaction) => {
     const unsubFns = events.map((event) =>
       txSubscribe(event, (detail) => {
         const txId = 'txId' in detail ? detail.txId : undefined
-        setActiveHover(undefined)
+        const tx = 'tx' in detail ? detail.tx : undefined
+        const executionInfo = isMultisigExecutionInfo(item.transaction.executionInfo)
+          ? item.transaction.executionInfo
+          : undefined
 
-        event === TxEvent.EXECUTING && setActiveHover(txId)
+        setActiveHover(undefined)
+        event === TxEvent.EXECUTING && tx?.data.nonce === executionInfo?.nonce && setActiveHover(txId)
       }),
     )
 
