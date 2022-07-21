@@ -1,5 +1,6 @@
-import { type ReactElement, useContext } from 'react'
+import { type ReactElement } from 'react'
 import type { Transaction, TransactionDetails, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import {
@@ -14,8 +15,8 @@ import GroupLabel from '@/components/transactions/GroupLabel'
 import TxDateLabel from '@/components/transactions/TxDateLabel'
 import TxDetails from '@/components/transactions/TxDetails'
 import CreateTxInfo from '@/components/transactions/SafeCreationTx'
-import { TxHoverContext } from '@/components/transactions/GroupedTxListItems/TxHoverProvider'
 import css from './styles.module.css'
+import { useTxHoverProvider } from '@/components/transactions/GroupedTxListItems/useTxHoverProvider'
 
 interface ExpandableTransactionItemProps {
   isGrouped?: boolean
@@ -24,8 +25,8 @@ interface ExpandableTransactionItemProps {
 }
 
 export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }: ExpandableTransactionItemProps) => {
-  const { activeHover } = useContext(TxHoverContext)
-  console.log(activeHover)
+  const txStatus = useTxHoverProvider(item)
+
   return (
     <Accordion
       disableGutters
@@ -35,7 +36,7 @@ export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }
       }}
       elevation={0}
       defaultExpanded={!!txDetails}
-      className={activeHover && activeHover !== item.transaction.id ? css.willBeReplaced : ''}
+      className={txStatus === TransactionStatus.WILL_BE_REPLACED ? css.willBeReplaced : ''}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
         <TxSummary item={item} isGrouped={isGrouped} />
