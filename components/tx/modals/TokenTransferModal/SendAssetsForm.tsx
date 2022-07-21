@@ -145,11 +145,13 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             label={errors.amount?.message || 'Amount'}
             error={!!errors.amount}
             autoComplete="off"
-            helperText={
-              <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
-                Max amount
-              </InputValueHelper>
-            }
+            InputProps={{
+              endAdornment: (
+                <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
+                  Max
+                </InputValueHelper>
+              ),
+            }}
             {...register(Field.amount, {
               required: true,
               validate: (val) => validateTokenAmount(val, selectedToken),
