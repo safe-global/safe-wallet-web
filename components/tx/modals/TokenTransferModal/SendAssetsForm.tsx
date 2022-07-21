@@ -104,8 +104,8 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
   const onMaxAmountClick = () => {
     if (!selectedToken) return
-    setFocus(Field.amount)
     setValue(Field.amount, formatDecimals(selectedToken.balance, selectedToken.tokenInfo.decimals))
+    setFocus(Field.amount)
   }
 
   return (
@@ -151,6 +151,10 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
                   Max
                 </InputValueHelper>
               ),
+            }}
+            // @see https://github.com/react-hook-form/react-hook-form/issues/220
+            InputLabelProps={{
+              shrink: !!watch(Field.amount),
             }}
             {...register(Field.amount, {
               required: true,
