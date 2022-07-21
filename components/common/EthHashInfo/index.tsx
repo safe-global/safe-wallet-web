@@ -45,7 +45,8 @@ const SRCEthHashInfo = ({
       )}
 
       <div>
-        <Typography variant="body2">{props.name}</Typography>
+        {props.name && <Typography variant="body2">{props.name}</Typography>}
+
         <Box className={css.addressRow}>
           <Typography variant="body2">
             {prefix && <b>{prefix}:</b>}

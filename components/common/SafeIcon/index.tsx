@@ -23,12 +23,13 @@ const Threshold = ({ threshold, owners }: ThresholdProps): ReactElement => (
 interface SafeIconProps extends IdenticonProps {
   threshold?: ThresholdProps['threshold']
   owners?: ThresholdProps['owners']
+  size?: number
 }
 
-const SafeIcon = ({ address, threshold, owners }: SafeIconProps): ReactElement => (
+const SafeIcon = ({ address, threshold, owners, size }: SafeIconProps): ReactElement => (
   <div className={css.container}>
     {threshold && owners && <Threshold threshold={threshold} owners={owners} />}
-    <Identicon address={address} />
+    <Identicon address={address} size={size} />
   </div>
 )
 

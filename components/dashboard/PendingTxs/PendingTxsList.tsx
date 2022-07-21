@@ -18,7 +18,7 @@ const SkeletonWrapper = styled.div`
 const StyledList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--space-1);
   width: 100%;
 `
 
@@ -45,7 +45,7 @@ const EmptyState = (
   </Card>
 )
 
-const PendingTxsList = ({ size = 5 }: { size?: number }): ReactElement | null => {
+const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null => {
   const { page, loading } = useTxQueue()
   const router = useRouter()
   const url = `${AppRoutes.safe.transactions.queue}?safe=${router.query.safe}`
