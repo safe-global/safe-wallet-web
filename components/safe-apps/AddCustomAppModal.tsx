@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useForm } from 'react-hook-form'
 import {
   DialogActions,
   DialogContent,
@@ -9,11 +10,10 @@ import {
   Checkbox,
   Link,
   Box,
+  FormHelperText,
 } from '@mui/material'
 import ModalDialog from '@/components/common/ModalDialog'
-import { validateTokenAmount } from '@/utils/validation'
-import { useForm } from 'react-hook-form'
-import { CreateSafeFormData } from '@/components/create-safe'
+import { isValidURL } from '@/utils/validation'
 
 type Props = {
   open: boolean
@@ -22,23 +22,42 @@ type Props = {
 
 type CustomAppFormData = {
   appUrl: string
+  riskAcknowledgement: boolean
 }
 
 const TEXT_FIELD_HEIGHT = '56px'
 
 const AddCustomAppModal = ({ open, onClose }: Props) => {
-  const { register, handleSubmit } = useForm<CustomAppFormData>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false } })
+  const onSubmit = (data, e) => console.log(data, e)
 
   return (
     <ModalDialog open={open} onClose={onClose} dialogTitle="Add custom app">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent
           sx={{
             display: 'flex',
             flexDirection: 'column',
           }}
         >
-          <TextField label="App URL" autoComplete="off" sx={{ mt: 2 }} {...register('appUrl')} />
+          <TextField
+            required
+            label="App URL"
+            autoComplete="off"
+            sx={{ mt: 2 }}
+            error={!!errors.appUrl}
+            helperText={errors.appUrl?.message}
+            {...register('appUrl', {
+              required: true,
+              validate: {
+                validUrl: isValidURL,
+              },
+            })}
+          />
           <Box
             sx={{
               width: '100%',
@@ -51,10 +70,17 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
           </Box>
           <FormControlLabel
             aria-required
-            control={<Checkbox />}
+            control={
+              <Checkbox
+                {...register('riskAcknowledgement', {
+                  required: true,
+                })}
+              />
+            }
             label="This app is not a Gnosis product and I agree to use this app at my own risk."
             sx={{ mt: 2 }}
           />
+          {errors.riskAcknowledgement && <FormHelperText error>Required</FormHelperText>}
           <Typography mt={2}>
             <Link href="https://docs.gnosis-safe.io/build/sdks/safe-apps" target="_blank">
               Learn more about building Safe Apps.
@@ -63,7 +89,7 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button variant="contained" onClick={onClose}>
+          <Button type="submit" variant="contained">
             Save
           </Button>
         </DialogActions>
