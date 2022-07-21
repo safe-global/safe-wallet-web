@@ -1,16 +1,12 @@
 import { DateLabel } from '@gnosis.pm/safe-react-gateway-sdk'
-import DateTime from '@/components/common/DateTime'
 import { ReactElement } from 'react'
 import css from './styles.module.css'
-
-const dateOptions = {
-  dateStyle: 'long',
-}
+import { formatWithSchema } from '@/utils/date'
 
 const TxDateLabel = ({ item }: { item: DateLabel }): ReactElement => {
   return (
     <div className={css.container}>
-      <DateTime value={item.timestamp} options={dateOptions} />
+      <span>{formatWithSchema(item.timestamp, 'MMM d, yyyy')}</span>
     </div>
   )
 }

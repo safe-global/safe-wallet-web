@@ -20,5 +20,5 @@
 .addressRow {
   display: flex;
   align-items: center;
-  gap: 0.1em;
+  gap: 4px;
 }

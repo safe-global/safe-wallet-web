@@ -15,15 +15,11 @@ import TxType from '@/components/transactions/TxType'
 import GroupIcon from '@mui/icons-material/Group'
 
 type TxSummaryProps = {
+  isGrouped?: boolean
   item: Transaction
 }
 
-const dateOptions = {
-  timeStyle: 'short',
-  hour12: true,
-}
-
-const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
+const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
   const txStatusLabel = useTransactionStatus(tx)
@@ -32,12 +28,19 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const submittedConfirmations = isMultisigExecutionInfo(tx.executionInfo)
     ? tx.executionInfo.confirmationsSubmitted
-    : ''
-  const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.confirmationsRequired : ''
+    : undefined
+  const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo)
+    ? tx.executionInfo.confirmationsRequired
+    : undefined
+
+  const displayConfirmations = isQueue && submittedConfirmations && requiredConfirmations
 
   return (
-    <Box className={`${css.gridContainer} ${nonce ? css.columnTemplate : css.columnTemplateWithoutNonce}`} id={tx.id}>
-      {nonce && <Box gridArea="nonce">{nonce}</Box>}
+    <Box
+      className={`${css.gridContainer} ${nonce && !isGrouped ? css.columnTemplate : css.columnTemplateWithoutNonce}`}
+      id={tx.id}
+    >
+      {nonce && !isGrouped && <Box gridArea="nonce">{nonce}</Box>}
 
       <Box gridArea="type">
         <TxType tx={tx} />
@@ -48,13 +51,17 @@ const TxSummary = ({ item }: TxSummaryProps): ReactElement => {
       </Box>
 
       <Box gridArea="date">
-        <DateTime value={tx.timestamp} options={dateOptions} />
+        <DateTime value={tx.timestamp} />
       </Box>
 
-      {awaitingExecution && (
+      {displayConfirmations && (
         <Box gridArea="confirmations" display="flex" alignItems="center" gap={1}>
           <GroupIcon fontSize="small" color="border" />
-          <Typography variant="caption" fontWeight="bold" color="primary">
+          <Typography
+            variant="caption"
+            fontWeight="bold"
+            color={requiredConfirmations > submittedConfirmations ? 'border.main' : 'primary'}
+          >
             {submittedConfirmations} out of {requiredConfirmations}
           </Typography>
         </Box>

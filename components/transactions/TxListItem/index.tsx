@@ -9,41 +9,43 @@ import TxDateLabel from '@/components/transactions/TxDateLabel'
 import TxDetails from '@/components/transactions/TxDetails'
 import CreateTxInfo from '@/components/transactions/SafeCreationTx'
 
-export const ExpandableTransactionItem = ({
-  item,
-  txDetails,
-}: {
+interface ExpandableTransactionItemProps {
+  isGrouped?: boolean
   item: Transaction
   txDetails?: TransactionDetails
-}) => (
-  <Accordion
-    disableGutters
-    TransitionProps={{
-      mountOnEnter: false,
-      unmountOnExit: true,
-    }}
-    elevation={0}
-    defaultExpanded={!!txDetails}
-  >
-    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
-      <TxSummary item={item} />
-    </AccordionSummary>
+}
 
-    <AccordionDetails sx={{ padding: 0 }}>
-      {isCreationTxInfo(item.transaction.txInfo) ? (
-        <CreateTxInfo txSummary={item.transaction} />
-      ) : (
-        <TxDetails txSummary={item.transaction} txDetails={txDetails} />
-      )}
-    </AccordionDetails>
-  </Accordion>
-)
+export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }: ExpandableTransactionItemProps) => {
+  return (
+    <Accordion
+      disableGutters
+      TransitionProps={{
+        mountOnEnter: false,
+        unmountOnExit: true,
+      }}
+      elevation={0}
+      defaultExpanded={!!txDetails}
+    >
+      <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
+        <TxSummary item={item} isGrouped={isGrouped} />
+      </AccordionSummary>
+
+      <AccordionDetails sx={{ padding: 0 }}>
+        {isCreationTxInfo(item.transaction.txInfo) ? (
+          <CreateTxInfo txSummary={item.transaction} />
+        ) : (
+          <TxDetails txSummary={item.transaction} txDetails={txDetails} />
+        )}
+      </AccordionDetails>
+    </Accordion>
+  )
+}
 
 type TxListItemProps = {
   item: TransactionListItem
 }
 
-const TxListItem = ({ item }: TxListItemProps): ReactElement => {
+const TxListItem = ({ item }: TxListItemProps): ReactElement | null => {
   if (isLabelListItem(item)) {
     return <GroupLabel item={item} />
   }
@@ -53,7 +55,7 @@ const TxListItem = ({ item }: TxListItemProps): ReactElement => {
   if (isDateLabel(item)) {
     return <TxDateLabel item={item} />
   }
-  // ignore ConflictHeader
-  return <></>
+  return null
 }
+
 export default TxListItem

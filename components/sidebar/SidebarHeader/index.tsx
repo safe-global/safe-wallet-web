@@ -15,11 +15,11 @@ import { selectCurrency } from '@/store/sessionSlice'
 import css from './styles.module.css'
 import QrIcon from '@/public/images/sidebar/qr.svg'
 import CopyIcon from '@/public/images/sidebar/copy.svg'
-import ExplorerIcon from '@/public/images/sidebar/block-explorer.svg'
 
 import { selectSettings } from '@/store/settingsSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getExplorerLink } from '@/utils/gateway'
+import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 
 const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
   <IconButton className={css.iconButton} {...props}>
@@ -79,7 +79,7 @@ const SafeHeader = (): ReactElement => {
 
         <a target="_blank" rel="noreferrer" {...(chain && getExplorerLink(address, chain.blockExplorerUriTemplate))}>
           <HeaderIconButton>
-            <ExplorerIcon />
+            <OpenInNewRoundedIcon color="primary" fontSize="small" />
           </HeaderIconButton>
         </a>
       </div>

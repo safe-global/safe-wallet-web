@@ -1,14 +1,25 @@
 import { useMemo, type ReactElement } from 'react'
-import { DateLabel, Transaction, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  DateLabel,
+  Transaction,
+  TransactionListItem,
+  type TransactionListPage,
+} from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
-import { isDateLabel, isTransactionListItem } from '@/utils/transaction-guards'
+import {
+  isConflictHeaderListItem,
+  isDateLabel,
+  isNoneConflictType,
+  isTransactionListItem,
+} from '@/utils/transaction-guards'
+import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
 import css from './styles.module.css'
 
 type TxListProps = {
   items: TransactionListPage['results']
 }
 
-export const TxListGrid = ({ children }: { children: ReactElement[] }): ReactElement => {
+export const TxListGrid = ({ children }: { children: (ReactElement | null)[] }): ReactElement => {
   return <div className={css.listContainer}>{children}</div>
 }
 
@@ -32,11 +43,31 @@ const TxList = ({ items }: TxListProps): ReactElement => {
     return [dateLabel, ...items]
   }, [items])
 
+  const listWithGroupedItems: (TransactionListItem | TransactionListItem[])[] = useMemo(() => {
+    return list.reduce((acc: (TransactionListItem | TransactionListItem[])[], current) => {
+      if (isConflictHeaderListItem(current)) {
+        return [...acc, [current]]
+      }
+
+      const prev = acc[acc.length - 1]
+      if (Array.isArray(prev) && isTransactionListItem(current) && !isNoneConflictType(current)) {
+        prev.push(current)
+        return acc
+      }
+
+      return [...acc, current]
+    }, [])
+  }, [list])
+
   return (
     <TxListGrid>
-      {list.map((item, index) => (
-        <TxListItem key={index} item={item} />
-      ))}
+      {listWithGroupedItems.map((item, index) => {
+        if (Array.isArray(item)) {
+          return <GroupedTxListItems key={index} groupedListItems={item} />
+        }
+
+        return <TxListItem key={index} item={item} />
+      })}
     </TxListGrid>
   )
 }
