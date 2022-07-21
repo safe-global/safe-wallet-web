@@ -28,8 +28,12 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const submittedConfirmations = isMultisigExecutionInfo(tx.executionInfo)
     ? tx.executionInfo.confirmationsSubmitted
-    : ''
-  const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.confirmationsRequired : ''
+    : undefined
+  const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo)
+    ? tx.executionInfo.confirmationsRequired
+    : undefined
+
+  const displayConfirmations = isQueue && submittedConfirmations && requiredConfirmations
 
   return (
     <Box
@@ -50,10 +54,14 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         <DateTime value={tx.timestamp} />
       </Box>
 
-      {isQueue && (
+      {displayConfirmations && (
         <Box gridArea="confirmations" display="flex" alignItems="center" gap={1}>
           <GroupIcon fontSize="small" color="border" />
-          <Typography variant="caption" fontWeight="bold" color="primary">
+          <Typography
+            variant="caption"
+            fontWeight="bold"
+            color={requiredConfirmations > submittedConfirmations ? 'border.main' : 'primary'}
+          >
             {submittedConfirmations} out of {requiredConfirmations}
           </Typography>
         </Box>
