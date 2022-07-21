@@ -8,6 +8,9 @@
 # testing
 /coverage
 
+# types
+/types/contracts/
+
 # next.js
 /.next/
 /out/

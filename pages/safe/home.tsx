@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
-import { Dashboard } from '@/components/home'
+import DashboardPage from '@/components/dashboard'
 
 const Home: NextPage = () => {
-  return <Dashboard />
+  return <DashboardPage />
 }
 
 export default Home
