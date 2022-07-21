@@ -84,7 +84,6 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     register,
     handleSubmit,
     setValue,
-    setFocus,
     watch,
     formState: { errors },
   } = formMethods
@@ -105,7 +104,6 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const onMaxAmountClick = () => {
     if (!selectedToken) return
     setValue(Field.amount, formatDecimals(selectedToken.balance, selectedToken.tokenInfo.decimals))
-    setFocus(Field.amount)
   }
 
   return (
