@@ -97,9 +97,14 @@ const Overview = (): ReactElement => {
           SkeletonOverview
         ) : (
           <Card>
-            <Grid container>
+            <Grid container pb={2}>
               <Grid item xs={2}>
-                <SafeIcon address={safeAddress} threshold={safe?.threshold} owners={safe?.owners.length || 0} />
+                <SafeIcon
+                  address={safeAddress}
+                  threshold={safe?.threshold}
+                  owners={safe?.owners.length || 0}
+                  size={48}
+                />
               </Grid>
 
               <Grid item xs />
@@ -117,7 +122,7 @@ const Overview = (): ReactElement => {
               <Grid item xs={3}>
                 <Link href={assetsLink}>
                   <a>
-                    <Typography color="inputDefault" fontSize="lg">
+                    <Typography color="border.main" variant="body2">
                       Tokens
                     </Typography>
                     <StyledText fontSize="lg">{tokenCount}</StyledText>
@@ -128,7 +133,7 @@ const Overview = (): ReactElement => {
               <Grid item xs={3}>
                 <Link href={nftsLink}>
                   <a>
-                    <Typography color="inputDefault" fontSize="lg">
+                    <Typography color="border.main" variant="body2">
                       NFTs
                     </Typography>
                     {collectibles && (

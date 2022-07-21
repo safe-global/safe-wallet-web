@@ -6,19 +6,28 @@ import css from './styles.module.css'
 
 export interface IdenticonProps {
   address: string
+  size?: number
 }
 
-const Identicon = ({ address }: IdenticonProps): ReactElement => {
+const Identicon = ({ address, size = 40 }: IdenticonProps): ReactElement => {
   const style = useMemo<CSSProperties | null>(() => {
-    let blockie = ''
     try {
-      blockie = makeBlockie(address)
-    } catch (e) {}
+      const blockie = makeBlockie(address)
+      return {
+        backgroundImage: `url(${blockie})`,
+        width: `${size}px`,
+        height: `${size}px`,
+      }
+    } catch (e) {
+      return null
+    }
+  }, [address, size])
 
-    return blockie ? { backgroundImage: `url(${blockie})` } : null
-  }, [address])
-
-  return !style ? <Skeleton variant="circular" width={40} height={40} /> : <div className={css.icon} style={style} />
+  return !style ? (
+    <Skeleton variant="circular" width={size} height={size} />
+  ) : (
+    <div className={css.icon} style={style} />
+  )
 }
 
 export default Identicon

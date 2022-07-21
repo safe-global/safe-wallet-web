@@ -4,7 +4,7 @@ import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typograph
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import css from './styles.module.css'
-import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
+import { TokenIcon } from '@/components/common/TokenAmount'
 import { formatDecimals } from '@/utils/formatters'
 import { validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
@@ -13,6 +13,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import TxModalTitle from '../../TxModalTitle'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import InputValueHelper from '@/components/common/InputValueHelper'
 
 export const SendFromBlock = (): ReactElement => {
   const address = useSafeAddress()
@@ -43,25 +44,29 @@ export const SendFromBlock = (): ReactElement => {
 }
 
 const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
-  <Grid container alignItems="center">
+  <Grid container alignItems="center" gap={1}>
     <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
 
     <Grid item xs>
-      <Typography variant="body2" lineHeight={1.2}>
-        {item.tokenInfo.name}
-      </Typography>
+      <Typography fontSize="14px">{item.tokenInfo.name}</Typography>
 
-      <Typography variant="caption" color="text.secondary">
-        <TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} tokenSymbol={item.tokenInfo.symbol} />
+      <Typography fontSize="12px" lineHeight="14px" color="text.secondary">
+        {formatDecimals(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
       </Typography>
     </Grid>
   </Grid>
 )
 
+enum Field {
+  recipient = 'recipient',
+  tokenAddress = 'tokenAddress',
+  amount = 'amount',
+}
+
 export type SendAssetsFormData = {
-  recipient: string
-  tokenAddress: string
-  amount: string
+  [Field.recipient]: string
+  [Field.tokenAddress]: string
+  [Field.amount]: string
 }
 
 type SendAssetsFormProps = {
@@ -78,12 +83,13 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors },
   } = formMethods
 
   // Selected token
-  const tokenAddress = watch('tokenAddress')
+  const tokenAddress = watch(Field.tokenAddress)
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
@@ -95,6 +101,11 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     })
   }
 
+  const onMaxAmountClick = () => {
+    if (!selectedToken) return
+    setValue(Field.amount, formatDecimals(selectedToken.balance, selectedToken.tokenInfo.decimals))
+  }
+
   return (
     <FormProvider {...formMethods}>
       <form className={css.container} onSubmit={handleSubmit(onFormSubmit)}>
@@ -103,7 +114,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         <SendFromBlock />
 
         <FormControl fullWidth>
-          <AddressBookInput name="recipient" label="Recipient" />
+          <AddressBookInput name={Field.recipient} label="Recipient" />
         </FormControl>
 
         <FormControl fullWidth>
@@ -113,7 +124,11 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             label={errors.tokenAddress?.message || 'Select an asset'}
             defaultValue={formData?.tokenAddress || ''}
             error={!!errors.tokenAddress}
-            {...register('tokenAddress', { required: true })}
+            {...register(Field.tokenAddress, {
+              required: true,
+              onChange: () => setValue(Field.amount, ''),
+            })}
+            sx={{ '& .MuiSelect-select > *': { my: -1 } }}
           >
             {balances.items.map((item) => (
               <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
@@ -128,7 +143,21 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             label={errors.amount?.message || 'Amount'}
             error={!!errors.amount}
             autoComplete="off"
-            {...register('amount', { required: true, validate: (val) => validateTokenAmount(val, selectedToken) })}
+            InputProps={{
+              endAdornment: (
+                <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
+                  Max
+                </InputValueHelper>
+              ),
+            }}
+            // @see https://github.com/react-hook-form/react-hook-form/issues/220
+            InputLabelProps={{
+              shrink: !!watch(Field.amount),
+            }}
+            {...register(Field.amount, {
+              required: true,
+              validate: (val) => validateTokenAmount(val, selectedToken),
+            })}
           />
         </FormControl>
 
