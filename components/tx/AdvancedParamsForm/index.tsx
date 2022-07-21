@@ -6,6 +6,7 @@ import css from './styles.module.css'
 import { FLOAT_REGEX } from '@/utils/validation'
 import TxModalTitle from '../TxModalTitle'
 import NonceForm from '../NonceForm'
+import InputValueHelper from '@/components/common/InputValueHelper'
 
 export type AdvancedParameters = {
   nonce: number
@@ -17,6 +18,7 @@ export type AdvancedParameters = {
 type AdvancedParamsFormProps = AdvancedParameters & {
   onSubmit: (params: AdvancedParameters) => void
   recommendedNonce?: number
+  estimatedGasLimit?: string
   isExecution: boolean
   nonceReadonly?: boolean
 }
@@ -39,6 +41,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
   })
   const {
     register,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = formMethods
@@ -59,6 +62,10 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
       maxFeePerGas: safeParseUnits(data.maxFeePerGas) || props.maxFeePerGas,
       maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) || props.maxPriorityFeePerGas,
     })
+  }
+
+  const onResetGasLimit = () => {
+    setValue('gasLimit', props.estimatedGasLimit)
   }
 
   const gasLimitError = errors.gasLimit
@@ -93,6 +100,13 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                       label={gasLimitError || 'Gas limit'}
                       error={!!errors.gasLimit}
                       autoComplete="off"
+                      InputProps={{
+                        endAdornment: (
+                          <InputValueHelper onClick={onResetGasLimit} disabled={!props.estimatedGasLimit}>
+                            Estimation
+                          </InputValueHelper>
+                        ),
+                      }}
                       type="number"
                       {...register('gasLimit', { required: true, min: 0 })}
                     ></TextField>
@@ -124,7 +138,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
             )}
           </Grid>
 
-          <DialogActions sx={{ paddingLeft: '0 !important', paddingRight: '0 !important' }}>
+          <DialogActions sx={{ margin: '-24px', marginTop: '24px', backgroundColor: '#FFF' }}>
             <Button color="inherit" onClick={onBack}>
               Back
             </Button>

@@ -148,6 +148,7 @@ const SignOrExecuteForm = ({
       maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas || BigNumber.from(0)}
       isExecution={willExecute}
       recommendedNonce={recommendedNonce}
+      estimatedGasLimit={gasLimit?.toString()}
       nonceReadonly={!!tx?.signatures.size || isRejection}
       onSubmit={onAdvancedSubmit}
     />
