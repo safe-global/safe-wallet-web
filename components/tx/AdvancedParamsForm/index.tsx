@@ -104,7 +104,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                       InputProps={{
                         endAdornment: (
                           <InputValueHelper onClick={onResetGasLimit} disabled={!props.estimatedGasLimit}>
-                            Estimation
+                            Recommended
                           </InputValueHelper>
                         ),
                       }}
@@ -143,7 +143,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
             )}
           </Grid>
 
-          <DialogActions sx={{ margin: '-24px', marginTop: '24px', backgroundColor: '#FFF' }}>
+          <DialogActions className={css.actions}>
             <Button color="inherit" onClick={onBack}>
               Back
             </Button>
