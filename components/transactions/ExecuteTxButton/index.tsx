@@ -1,4 +1,4 @@
-import { useState, type ReactElement, SyntheticEvent, useContext } from 'react'
+import { useState, type ReactElement, SyntheticEvent } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Tooltip } from '@mui/material'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
@@ -8,11 +8,9 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import ExecuteTxModal from '@/components/tx/modals/ExecuteTxModal'
 import useIsPending from '@/hooks/useIsPending'
-import { TxHoverContext } from '@/components/transactions/GroupedTxListItems/TxHoverProvider'
 
 const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
-  const { setActiveHover } = useContext(TxHoverContext)
   const { safe } = useSafeInfo()
   const safeNonce = safe?.nonce
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
@@ -30,14 +28,7 @@ const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): Reac
     <>
       <Tooltip title="Execute" arrow placement="top">
         <span>
-          <IconButton
-            onClick={onClick}
-            onMouseEnter={() => setActiveHover(txSummary.id)}
-            onMouseLeave={() => setActiveHover(undefined)}
-            color="primary"
-            disabled={isDisabled}
-            size="small"
-          >
+          <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
             <RocketLaunchIcon fontSize="small" />
           </IconButton>
         </span>
