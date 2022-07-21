@@ -8,7 +8,7 @@ type Props = {
 
 const AddCustomAppModal = ({ open, onClose }: Props) => {
   return (
-    <ModalDialog open={open} onClose={onClose} title="Add custom app">
+    <ModalDialog open={open} onClose={onClose} dialogTitle="Add custom app">
       <DialogContent>
         <Typography>You just created a new Safe on</Typography>
         <Typography>It can take a few minutes until its fully usable.</Typography>

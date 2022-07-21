@@ -1,11 +1,11 @@
-import { ReactElement } from 'react'
-import { Dialog, DialogTitle, type DialogProps } from '@mui/material'
-import { useMediaQuery } from '@mui/material'
+import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery, ModalProps } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import CloseIcon from '@mui/icons-material/Close'
 import theme from '@/styles/theme'
+// import { ModalProps } from '@mui/material/Modal'
 
 interface ModalDialogProps extends DialogProps {
-  title?: string
+  dialogTitle?: React.ReactNode
 }
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -27,12 +27,42 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   },
 }))
 
-const ModalDialog = ({ title, children, ...restProps }: ModalDialogProps): ReactElement => {
+interface DialogTitleProps {
+  children?: React.ReactNode
+  onClose?: ModalProps['onClose']
+}
+
+const CustomDialogTitle = ({ children, onClose, ...other }: DialogTitleProps) => {
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={(e) => {
+            onClose(e, 'backdropClick')
+          }}
+          size="small"
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  )
+}
+
+const ModalDialog = ({ dialogTitle, children, ...restProps }: ModalDialogProps): React.ReactElement => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <StyledDialog {...restProps} fullScreen={fullScreen} onClick={(e) => e.stopPropagation()}>
-      {title && <DialogTitle>{title}</DialogTitle>}
+      {dialogTitle && <CustomDialogTitle onClose={restProps.onClose}>{dialogTitle}</CustomDialogTitle>}
       {children}
     </StyledDialog>
   )
