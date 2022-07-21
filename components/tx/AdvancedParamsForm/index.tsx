@@ -7,6 +7,7 @@ import { FLOAT_REGEX } from '@/utils/validation'
 import TxModalTitle from '../TxModalTitle'
 import NonceForm from '../NonceForm'
 import InputValueHelper from '@/components/common/InputValueHelper'
+import { BASE_TX_GAS } from '@/config/constants'
 
 export type AdvancedParameters = {
   nonce: number
@@ -116,7 +117,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                         shrink: !!watch('gasLimit'),
                       }}
                       type="number"
-                      {...register('gasLimit', { required: true, min: 21000 })}
+                      {...register('gasLimit', { required: true, min: BASE_TX_GAS })}
                     ></TextField>
                   </FormControl>
                 </Grid>
