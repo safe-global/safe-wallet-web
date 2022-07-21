@@ -62,8 +62,10 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
   }
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!changeThresholdTx) return
-    return await createTx(changeThresholdTx.data)
+    if (changeThresholdTx) {
+      // Reset the nonce to fetch the recommended nonce in createTx
+      return createTx({ ...changeThresholdTx.data, nonce: undefined })
+    }
   }, [changeThresholdTx])
 
   const txError = createTxError || safeTxError

@@ -92,7 +92,7 @@ const SignOrExecuteForm = ({
     onFinish(async () => {
       const hardwareWallet = isHardwareWallet(wallet)
       const signedTx = await dispatchTxSigning(tx, hardwareWallet, txId)
-      await dispatchTxProposal(chainId, safeAddress, wallet!.address, signedTx)
+      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     })
   }
 
@@ -143,11 +143,12 @@ const SignOrExecuteForm = ({
   return isEditingGas ? (
     <AdvancedParamsForm
       nonce={advancedParams.nonce || 0}
-      gasLimit={advancedParams.gasLimit || BigNumber.from(0)}
+      gasLimit={advancedParams.gasLimit}
       maxFeePerGas={advancedParams.maxFeePerGas || BigNumber.from(0)}
       maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas || BigNumber.from(0)}
       isExecution={willExecute}
       recommendedNonce={recommendedNonce}
+      estimatedGasLimit={gasLimit?.toString()}
       nonceReadonly={!!tx?.signatures.size || isRejection}
       onSubmit={onAdvancedSubmit}
     />

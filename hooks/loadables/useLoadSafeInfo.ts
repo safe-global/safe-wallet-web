@@ -17,7 +17,7 @@ export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
 
   const [data, error, loading] = useAsync<SafeInfo | undefined>(async () => {
     if (!chainId || !address) return
-    return await getSafeInfo(chainId, address)
+    return getSafeInfo(chainId, address)
   }, [chainId, address, pollCount])
 
   // Reset the counter when safe address/chainId changes

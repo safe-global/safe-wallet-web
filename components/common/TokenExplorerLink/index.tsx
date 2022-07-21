@@ -6,9 +6,9 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 const ExplorerLink = ({ address }: { address: string }): ReactElement | null => {
   const currentChain = useCurrentChain()
 
-  if (!currentChain) return null
+  const link = currentChain?.getExplorerLink(address)
 
-  const link = currentChain.getExplorerLink(address)
+  if (!link) return null
 
   return (
     <Tooltip title={link.title} placement="top">
