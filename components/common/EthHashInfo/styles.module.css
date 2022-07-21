@@ -4,14 +4,21 @@
   gap: 8px;
 }
 
+.container,
+.container p {
+  font-size: inherit;
+  line-height: 1.4;
+}
+
 .avatar,
-.avatar img {
+.avatar * {
   flex-shrink: 0;
-  width: 2.3em;
-  height: 2.3em;
+  width: 2.3em !important;
+  height: 2.3em !important;
 }
 
 .addressRow {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 0.1em;
 }
