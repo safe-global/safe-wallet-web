@@ -21,11 +21,7 @@ import {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
-  return [
-    TransactionStatus.AWAITING_CONFIRMATIONS,
-    TransactionStatus.AWAITING_EXECUTION,
-    TransactionStatus.WILL_BE_REPLACED,
-  ].includes(value)
+  return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
 }
 
 export const isAwaitingExecution = (txStatus: TransactionStatus): boolean =>

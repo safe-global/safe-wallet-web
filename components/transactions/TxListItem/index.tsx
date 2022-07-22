@@ -1,6 +1,5 @@
 import { type ReactElement } from 'react'
 import type { Transaction, TransactionDetails, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
-import { TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { isCreationTxInfo, isDateLabel, isLabelListItem, isTransactionListItem } from '@/utils/transaction-guards'
@@ -9,7 +8,6 @@ import GroupLabel from '@/components/transactions/GroupLabel'
 import TxDateLabel from '@/components/transactions/TxDateLabel'
 import TxDetails from '@/components/transactions/TxDetails'
 import CreateTxInfo from '@/components/transactions/SafeCreationTx'
-import css from './styles.module.css'
 
 interface ExpandableTransactionItemProps {
   isGrouped?: boolean
@@ -27,7 +25,6 @@ export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }
       }}
       elevation={0}
       defaultExpanded={!!txDetails}
-      className={item.transaction.txStatus === TransactionStatus.WILL_BE_REPLACED ? css.willBeReplaced : ''}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
         <TxSummary item={item} isGrouped={isGrouped} />

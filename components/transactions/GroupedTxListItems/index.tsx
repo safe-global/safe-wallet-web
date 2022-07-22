@@ -32,13 +32,15 @@ const GroupedTxListItems = ({ groupedListItems }: { groupedListItems: Transactio
     ? groupedListItems[0].transaction.executionInfo.nonce
     : undefined
 
-  const items = useGroupedItems(groupedListItems)
+  const disabledItems = useGroupedItems(groupedListItems)
 
   return (
     <Paper className={css.container} variant="outlined">
       <Disclaimer nonce={nonce} />
-      {items.map((tx) => (
-        <ExpandableTransactionItem key={tx.transaction.id} item={tx} isGrouped />
+      {groupedListItems.map((tx) => (
+        <div key={tx.transaction.id} className={disabledItems.includes(tx.transaction.id) ? css.willBeReplaced : ''}>
+          <ExpandableTransactionItem item={tx} isGrouped />
+        </div>
       ))}
     </Paper>
   )
