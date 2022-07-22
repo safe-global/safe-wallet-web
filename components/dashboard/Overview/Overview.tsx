@@ -98,7 +98,7 @@ const Overview = (): ReactElement => {
           <Card>
             <Grid container pb={2}>
               <Grid item xs={2}>
-                <SafeIcon address={safeAddress} threshold={safe.threshold} owners={safe.owners.length || 0} size={48} />
+                <SafeIcon address={safeAddress} threshold={safe.threshold} owners={safe.owners.length} size={48} />
               </Grid>
 
               <Grid item xs />
