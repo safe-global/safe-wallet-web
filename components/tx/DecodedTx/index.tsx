@@ -22,7 +22,9 @@ const DecodedTx = ({ tx }: DecodedTxProps): ReactElement | null => {
     return getDecodedData(chainId, encodedData)
   }, [chainId, encodedData, isNativeTransfer])
 
-  return isNativeTransfer ? null : (
+  if (isNativeTransfer) return null
+
+  return (
     <Accordion elevation={0}>
       <AccordionSummary>Transaction data</AccordionSummary>
 
@@ -38,7 +40,7 @@ const DecodedTx = ({ tx }: DecodedTxProps): ReactElement | null => {
           </>
         ) : error ? (
           <ErrorMessage error={error}>Failed decoding transaction data</ErrorMessage>
-        ) : decodedData === null ? null : (
+        ) : (
           <Skeleton />
         )}
       </AccordionDetails>
