@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material'
+import { createTheme, Shadows } from '@mui/material'
 import palette from './colors'
 import { base } from './spacings'
 
@@ -36,6 +36,7 @@ declare module '@mui/material/Button' {
 const theme = createTheme({
   palette,
   spacing: base,
+  shadows: ['none', '0px 7px 20px #28363d2e', ...Array(23).fill('none')] as Shadows,
   typography: {
     fontFamily: 'Averta, sans-serif',
 
@@ -176,6 +177,35 @@ const theme = createTheme({
         sizeSmall: {
           padding: '4px',
         },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        standardError: ({ theme }) => ({
+          '& .MuiAlert-icon': {
+            color: theme.palette.error.main,
+          },
+        }),
+        standardInfo: ({ theme }) => ({
+          '& .MuiAlert-icon': {
+            color: theme.palette.info.main,
+          },
+        }),
+        standardSuccess: ({ theme }) => ({
+          '& .MuiAlert-icon': {
+            color: theme.palette.success.main,
+          },
+        }),
+        standardWarning: ({ theme }) => ({
+          '& .MuiAlert-icon': {
+            color: theme.palette.warning.main,
+          },
+        }),
+        root: ({ theme }) => ({
+          color: theme.palette.secondary.main,
+          padding: '12px 16px',
+          backgroundColor: 'white',
+        }),
       },
     },
   },
