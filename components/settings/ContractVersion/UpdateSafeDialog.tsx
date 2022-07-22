@@ -60,7 +60,7 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
   return (
     <SignOrExecuteForm
       safeTx={safeTx}
-      isExecutable={safe?.threshold === 1}
+      isExecutable={safe.threshold === 1}
       onSubmit={onSubmit}
       error={txError}
       title="Update safe version"

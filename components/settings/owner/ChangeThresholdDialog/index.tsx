@@ -73,7 +73,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
   return (
     <SignOrExecuteForm
       safeTx={safeTx}
-      isExecutable={safe?.threshold === 1}
+      isExecutable={safe.threshold === 1}
       onSubmit={onSubmit}
       error={txError}
       title="Change threshold"
@@ -83,7 +83,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
       <Grid container direction="row" gap={1} alignItems="center">
         <Grid item xs={2}>
           <Select value={selectedThreshold} onChange={handleChange} fullWidth>
-            {safe?.owners.map((_, idx) => (
+            {safe.owners.map((_, idx) => (
               <MenuItem key={idx + 1} value={idx + 1}>
                 {idx + 1}
               </MenuItem>
@@ -91,7 +91,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
           </Select>
         </Grid>
         <Grid item>
-          <Typography>out of {safe?.owners.length ?? 0} owner(s)</Typography>
+          <Typography>out of {safe.owners.length} owner(s)</Typography>
         </Grid>
       </Grid>
     </SignOrExecuteForm>
