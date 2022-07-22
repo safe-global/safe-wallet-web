@@ -17,6 +17,7 @@ import AdvancedParamsForm, { AdvancedParameters } from '@/components/tx/Advanced
 import { BigNumber } from 'ethers'
 import TxModalTitle from '../TxModalTitle'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
+import DecodedTx from '../DecodedTx'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -157,6 +158,8 @@ const SignOrExecuteForm = ({
       {title && <TxModalTitle>{title}</TxModalTitle>}
 
       {children}
+
+      <DecodedTx tx={tx} />
 
       <form onSubmit={handleSubmit}>
         {canExecute && !onlyExecute && (
