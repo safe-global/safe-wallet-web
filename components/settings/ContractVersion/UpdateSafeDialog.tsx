@@ -41,14 +41,14 @@ const UpdateSafeDialog = () => {
 }
 
 const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) => {
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const chain = useCurrentChain()
 
   const [updateSafeTx, txCreationError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!safe?.address.value || !chain) return undefined
+    if (!safeAddress || !chain) return undefined
     const txs = createUpdateSafeTxs(safe, chain)
     return createMultiSendTx(txs)
-  }, [chain?.chainId, safe?.address.value, safe?.version])
+  }, [safeAddress, chain, safe.version])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!updateSafeTx) return

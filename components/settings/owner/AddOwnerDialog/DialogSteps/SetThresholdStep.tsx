@@ -23,7 +23,7 @@ export const SetThresholdStep = ({
     onSubmit({ ...data, threshold: selectedThreshold })
   }
 
-  const newNumberOfOwners = (safe?.owners.length ?? 0) + 1
+  const newNumberOfOwners = safe.owners.length + 1
 
   return (
     <form onSubmit={onSubmitHandler}>
@@ -37,7 +37,7 @@ export const SetThresholdStep = ({
         <Grid container direction="row" alignItems="center" gap={1} pt={2}>
           <Grid item xs={1.5}>
             <Select value={selectedThreshold} onChange={handleChange} fullWidth>
-              {safe?.owners.map((_, idx) => (
+              {safe.owners.map((_, idx) => (
                 <MenuItem key={idx + 1} value={idx + 1}>
                   {idx + 1}
                 </MenuItem>

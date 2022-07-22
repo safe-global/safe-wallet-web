@@ -16,15 +16,15 @@ export const ContractVersion = () => {
 
   useEffect(() => {
     const getMasterCopyInfo = () => {
-      const masterCopyAddress = safe?.implementation.value
+      const masterCopyAddress = safe.implementation.value
       const masterCopy = masterCopies?.find((mc) => sameAddress(mc.address, masterCopyAddress))
 
       setSafeMasterCopy(masterCopy)
     }
     getMasterCopyInfo()
-  }, [masterCopies, safe?.implementation.value])
+  }, [masterCopies, safe.implementation.value])
 
-  const needsUpdate = safeNeedsUpdate(safe?.version, LATEST_SAFE_VERSION)
+  const needsUpdate = safeNeedsUpdate(safe.version, LATEST_SAFE_VERSION)
 
   const latestMasterContractVersion = LATEST_SAFE_VERSION
 
@@ -40,7 +40,7 @@ export const ContractVersion = () => {
       </Typography>
       <Link rel="noreferrer noopener" href={safeMasterCopy?.deployerRepoUrl} target="_blank">
         <Box display="flex" alignContent={'center'}>
-          {safe?.version}
+          {safe.version}
           {getSafeVersionUpdate()}
           <OpenInNewRounded fontSize="small" />
         </Box>

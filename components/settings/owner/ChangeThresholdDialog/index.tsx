@@ -30,7 +30,7 @@ export const ChangeThresholdDialog = () => {
 
   const handleClose = () => setOpen(false)
 
-  const initialModalData: ChangeThresholdData = { threshold: safe?.threshold || 1 }
+  const initialModalData: ChangeThresholdData = { threshold: safe.threshold || 1 }
 
   return (
     <Box paddingTop={2}>

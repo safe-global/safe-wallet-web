@@ -59,7 +59,7 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
   return (
     <SignOrExecuteForm
       safeTx={safeTx}
-      isExecutable={safe?.threshold === 1}
+      isExecutable={safe.threshold === 1}
       onSubmit={onSubmit}
       title="Review transaction"
       error={safeTxError}

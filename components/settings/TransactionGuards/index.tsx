@@ -24,7 +24,7 @@ const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId
 const TransactionGuards = () => {
   const { safe } = useSafeInfo()
 
-  const isVersionWithGuards = safe && gte(safe.version, '1.3.0')
+  const isVersionWithGuards = gte(safe.version, '1.3.0')
 
   if (!isVersionWithGuards) {
     return null

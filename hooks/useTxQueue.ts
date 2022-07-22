@@ -11,14 +11,14 @@ const useTxQueue = (
   error?: string
   loading: boolean
 } => {
-  const { safe } = useSafeInfo()
-  const [chainId, address] = [safe?.chainId, safe?.address.value]
+  const { safe, safeAddress, safeLoaded } = useSafeInfo()
+  const { chainId } = safe
 
   // If pageUrl is passed, load a new queue page from the API
   const [page, error, loading] = useAsync<TransactionListPage | undefined>(async () => {
-    if (!pageUrl || !chainId || !address) return
-    return getTransactionQueue(chainId, address, pageUrl)
-  }, [chainId, address, pageUrl])
+    if (!pageUrl || !safeLoaded) return
+    return getTransactionQueue(chainId, safeAddress, pageUrl)
+  }, [chainId, safeAddress, safeLoaded, pageUrl])
 
   // The latest page of the queue is always in the store
   const queueState = useAppSelector(selectTxQueue)

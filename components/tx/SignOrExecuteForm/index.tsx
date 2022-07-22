@@ -4,8 +4,6 @@ import { Button, Checkbox, FormControlLabel } from '@mui/material'
 
 import css from './styles.module.css'
 
-import useSafeAddress from '@/hooks/useSafeAddress'
-import { useChainId } from '@/hooks/useChainId'
 import { createTx, dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
@@ -50,13 +48,12 @@ const SignOrExecuteForm = ({
 
   useEffect(() => setTx(safeTx), [safeTx])
 
-  const { safe } = useSafeInfo()
-  const safeAddress = useSafeAddress()
-  const chainId = useChainId()
+  const { safe, safeAddress } = useSafeInfo()
+  const { chainId } = safe
   const wallet = useWallet()
 
   // Check that the transaction is executable
-  const canExecute = isExecutable && !!tx && tx.data.nonce === safe?.nonce
+  const canExecute = isExecutable && !!tx && tx.data.nonce === safe.nonce
   const willExecute = shouldExecute && canExecute
   const recommendedNonce = safeTx?.data.nonce
 

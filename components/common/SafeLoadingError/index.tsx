@@ -4,9 +4,9 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import PagePlaceholder from '../PagePlaceholder'
 
 const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement => {
-  const { error } = useSafeInfo()
+  const { safeError } = useSafeInfo()
 
-  if (!error) return <>{children}</>
+  if (!safeError) return <>{children}</>
 
   return (
     <PagePlaceholder imageUrl="/images/error.png" text="This Safe couldn't be loaded">
