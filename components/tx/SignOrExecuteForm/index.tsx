@@ -17,6 +17,7 @@ import AdvancedParamsForm, { AdvancedParameters } from '@/components/tx/Advanced
 import { BigNumber } from 'ethers'
 import TxModalTitle from '../TxModalTitle'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
+import DecodedTx from '../DecodedTx'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -92,7 +93,7 @@ const SignOrExecuteForm = ({
     onFinish(async () => {
       const hardwareWallet = isHardwareWallet(wallet)
       const signedTx = await dispatchTxSigning(tx, hardwareWallet, txId)
-      await dispatchTxProposal(chainId, safeAddress, wallet!.address, signedTx)
+      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
     })
   }
 
@@ -143,11 +144,12 @@ const SignOrExecuteForm = ({
   return isEditingGas ? (
     <AdvancedParamsForm
       nonce={advancedParams.nonce || 0}
-      gasLimit={advancedParams.gasLimit || BigNumber.from(0)}
+      gasLimit={advancedParams.gasLimit}
       maxFeePerGas={advancedParams.maxFeePerGas || BigNumber.from(0)}
       maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas || BigNumber.from(0)}
       isExecution={willExecute}
       recommendedNonce={recommendedNonce}
+      estimatedGasLimit={gasLimit?.toString()}
       nonceReadonly={!!tx?.signatures.size || isRejection}
       onSubmit={onAdvancedSubmit}
     />
@@ -156,6 +158,8 @@ const SignOrExecuteForm = ({
       {title && <TxModalTitle>{title}</TxModalTitle>}
 
       {children}
+
+      <DecodedTx tx={tx} />
 
       <form onSubmit={handleSubmit}>
         {canExecute && !onlyExecute && (

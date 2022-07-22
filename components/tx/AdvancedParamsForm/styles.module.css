@@ -7,3 +7,9 @@
 .container button[type='submit'] {
   position: static !important;
 }
+
+.actions {
+  margin: -24px;
+  margin-top: 24px;
+  background-color: var(--color-background-paper);
+}

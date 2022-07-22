@@ -1,17 +1,13 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement } from 'react'
+import { Tooltip } from '@mui/material'
+import { formatDateTime, formatTimeInWords } from '@/utils/date'
 
-const DateTime = ({
-  value,
-  options,
-}: {
-  value: string | number
-  options?: any /* FIXME: DateTimeFormatOptions */
-}): ReactElement => {
-  const formatter = useMemo(() => {
-    return new Intl.DateTimeFormat([], options)
-  }, [options])
-
-  return <span suppressHydrationWarning>{formatter.format(new Date(value))}</span>
+const DateTime = ({ value }: { value: number }): ReactElement => {
+  return (
+    <Tooltip title={formatDateTime(value)} placement="top">
+      <span>{formatTimeInWords(value)}</span>
+    </Tooltip>
+  )
 }
 
 export default DateTime

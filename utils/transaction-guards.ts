@@ -21,11 +21,7 @@ import {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
-  return [
-    TransactionStatus.AWAITING_CONFIRMATIONS,
-    TransactionStatus.AWAITING_EXECUTION,
-    TransactionStatus.WILL_BE_REPLACED,
-  ].includes(value)
+  return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
 }
 
 export const isAwaitingExecution = (txStatus: TransactionStatus): boolean =>
@@ -147,3 +143,21 @@ export const isDeleteAllowance = (method?: string): method is SpendingLimitMetho
 export const isArrayParameter = (parameter: string): boolean => /(\[\d*])+$/.test(parameter)
 export const isAddress = (type: string): boolean => type.indexOf('address') === 0
 export const isByte = (type: string): boolean => type.indexOf('byte') === 0
+
+// Conflict types (https://safe.global/safe-client-gateway/docs/routes/transactions/models/summary/enum.ConflictType.html)
+// TODO: could be passed to Client GW SDK
+enum CONFLICT_TYPES {
+  NONE = 'None',
+  HAS_NEXT = 'HasNext',
+  END = 'End',
+}
+
+export const isNoneConflictType = (transaction: Transaction) => {
+  return transaction.conflictType === CONFLICT_TYPES.NONE
+}
+export const isHasNextConflictType = (transaction: Transaction) => {
+  return transaction.conflictType === CONFLICT_TYPES.HAS_NEXT
+}
+export const isEndConflictType = (transaction: Transaction) => {
+  return transaction.conflictType === CONFLICT_TYPES.END
+}

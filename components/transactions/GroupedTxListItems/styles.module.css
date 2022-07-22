@@ -1,0 +1,32 @@
+.container {
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.disclaimerContainer {
+  background-color: var(--color-border-light);
+  padding: var(--space-1);
+  border-radius: 8px;
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.link {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.willBeReplaced {
+  filter: grayscale(1);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.willBeReplaced * {
+  text-decoration: line-through;
+}

@@ -6,6 +6,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { ReactElement } from 'react'
 import { EditOwnerDialog } from '../EditOwnerDialog'
+import { RemoveOwnerDialog } from '../RemoveOwnerDialog'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import css from './styles.module.css'
 
@@ -22,10 +23,8 @@ const OwnerRow = ({
 }): ReactElement => {
   return (
     <TableRow className={css.row}>
-      <TableCell>{name ?? ''}</TableCell>
-
       <TableCell>
-        <EthHashInfo address={address} showCopyButton shortAddress={false} showName={false} />
+        <EthHashInfo address={address} showCopyButton shortAddress={false} showName={true} />
       </TableCell>
 
       <TableCell>
@@ -33,6 +32,7 @@ const OwnerRow = ({
           <div className={css.actions}>
             <EditOwnerDialog address={address} name={name} chainId={chainId} />
             <ReplaceOwnerDialog address={address} />
+            <RemoveOwnerDialog owner={{ address, name }} />
           </div>
         )}
       </TableCell>
@@ -61,9 +61,8 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
               <TableCell>Address</TableCell>
-              <TableCell></TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
 

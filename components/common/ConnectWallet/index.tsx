@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { Button } from '@mui/material'
+import { Button, Box } from '@mui/material'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
 import EthHashInfo from '../EthHashInfo'
@@ -23,7 +23,9 @@ const ConnectWallet = (): ReactElement => {
 
   return wallet ? (
     <div className={css.connectedContainer}>
-      <EthHashInfo address={wallet.address} name={wallet.ens} />
+      <Box fontSize="10px">
+        <EthHashInfo address={wallet.address} name={wallet.ens} />
+      </Box>
 
       <Button onClick={handleDisconnect} size="small" variant="text" sx={{ fontWeight: 'normal', marginLeft: 1 }}>
         Disconnect

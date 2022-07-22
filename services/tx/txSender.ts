@@ -18,14 +18,22 @@ import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
-import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
+import Safe, { RemoveOwnerTxParams, SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
+
+const getAndValidateSafeSDK = (): Safe => {
+  const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not initialized')
+  }
+  return safeSDK
+}
 
 const estimateSafeTxGas = async (
   chainId: string,
   safeAddress: string,
   txParams: MetaTransactionData,
 ): Promise<SafeTransactionEstimation> => {
-  return await postSafeGasEstimation(chainId, safeAddress, {
+  return postSafeGasEstimation(chainId, safeAddress, {
     to: txParams.to,
     value: txParams.value,
     data: txParams.data,
@@ -37,19 +45,15 @@ const estimateSafeTxGas = async (
  * Create a transaction from raw params
  */
 export const createTx = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
-  const safeSDK = getSafeSDK()
-  if (!safeSDK) {
-    throw new Error('Safe SDK not initialized')
-  }
-
+  const safeSDK = getAndValidateSafeSDK()
   // Get the nonce and safeTxGas if not provided
-  if (txParams.nonce == null) {
+  if (txParams.nonce === undefined) {
     const chainId = await safeSDK.getChainId()
     const estimaton = await estimateSafeTxGas(String(chainId), safeSDK.getAddress(), txParams)
     txParams = { ...txParams, nonce: estimaton.recommendedNonce, safeTxGas: Number(estimaton.safeTxGas) }
   }
 
-  return await safeSDK.createTransaction(txParams)
+  return safeSDK.createTransaction(txParams)
 }
 
 /**
@@ -61,22 +65,24 @@ export const createMultiSendTx = async (
   txParams: MetaTransactionData[],
   options?: SafeTransactionOptionalProps,
 ): Promise<SafeTransaction> => {
-  const safeSDK = getSafeSDK()
-  if (!safeSDK) {
-    throw new Error('Safe SDK not initialized')
-  }
-  return await safeSDK.createTransaction(txParams)
+  const safeSDK = getAndValidateSafeSDK()
+
+  return safeSDK.createTransaction(txParams, options)
+}
+
+export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promise<SafeTransaction> => {
+  const safeSDK = getAndValidateSafeSDK()
+
+  return safeSDK.getRemoveOwnerTx(txParams)
 }
 
 /**
  * Create a rejection tx
  */
 export const createRejectTx = async (nonce: number): Promise<SafeTransaction> => {
-  const safeSDK = getSafeSDK()
-  if (!safeSDK) {
-    throw new Error('Safe SDK not initialized')
-  }
-  return await safeSDK.createRejectionTransaction(nonce)
+  const safeSDK = getAndValidateSafeSDK()
+
+  return safeSDK.createRejectionTransaction(nonce)
 }
 
 /**
@@ -134,10 +140,7 @@ export const dispatchTxSigning = async (
   isHardwareWallet: boolean,
   txId?: string,
 ): Promise<SafeTransaction> => {
-  const sdk = getSafeSDK()
-  if (!sdk) {
-    throw new Error('Safe SDK not initialized')
-  }
+  const sdk = getAndValidateSafeSDK()
 
   try {
     // Adds signatures to safeTx
@@ -163,10 +166,7 @@ export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
   txOptions?: TransactionOptions,
 ): Promise<string> => {
-  const sdk = getSafeSDK()
-  if (!sdk) {
-    throw new Error('Safe SDK not initialized')
-  }
+  const sdk = getAndValidateSafeSDK()
 
   txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
 

@@ -12,3 +12,4 @@ export const TREZOR_EMAIL = 'safe@gnosis.io'
 export const LATEST_SAFE_VERSION = process.env.NEXT_PUBLIC_SAFE_VERSION || '1.3.0'
 export const BEAMER_ID = process.env.NEXT_PUBLIC_BEAMER_ID
 export const SAFE_REACT_URL = IS_PRODUCTION ? 'https://gnosis-safe.io/app' : 'https://safe-team.dev.gnosisdev.com/app'
+export const BASE_TX_GAS = 21_000

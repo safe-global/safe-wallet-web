@@ -63,7 +63,7 @@ const GasParams = ({
             )}
           </Typography>
         ) : (
-          <Typography>Off-chain signature</Typography>
+          <Typography>Signing transaction with nonce {nonce}</Typography>
         )}
       </AccordionSummary>
 

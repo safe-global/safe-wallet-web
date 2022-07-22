@@ -14,6 +14,7 @@ describe('SafeModules', () => {
         modules: [] as AddressEx[],
         chainId: '4',
       } as SafeInfo,
+      safeAddress: undefined,
       error: undefined,
       loading: false,
     }))
@@ -25,6 +26,7 @@ describe('SafeModules', () => {
   it('should render placeholder label if safe is loading', async () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: undefined,
+      safeAddress: undefined,
       error: undefined,
       loading: true,
     }))
@@ -45,6 +47,7 @@ describe('SafeModules', () => {
         ],
         chainId: '4',
       } as SafeInfo,
+      safeAddress: undefined,
       error: undefined,
       loading: true,
     }))

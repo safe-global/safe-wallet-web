@@ -5,6 +5,20 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 
+const Circle = ({ color }: { color: string }): ReactElement => {
+  return (
+    <span
+      style={{
+        width: '0.8em',
+        height: '0.8em',
+        borderRadius: '50%',
+        backgroundColor: color,
+        marginLeft: 1,
+      }}
+    />
+  )
+}
+
 const ChainSwitcher = (): ReactElement | null => {
   const chain = useCurrentChain()
   const onboard = useOnboard()
@@ -17,13 +31,10 @@ const ChainSwitcher = (): ReactElement | null => {
   }
 
   return isWrongChain ? (
-    <Button
-      onClick={handleChainSwitch}
-      variant="outlined"
-      size="small"
-      sx={{ borderColor: chain?.theme?.backgroundColor }}
-    >
-      Switch to {chain?.chainName}
+    <Button onClick={handleChainSwitch} variant="outlined" size="small">
+      Switch to&nbsp;
+      <Circle color={chain?.theme?.backgroundColor || ''} />
+      &nbsp;{chain?.chainName}
     </Button>
   ) : null
 }
