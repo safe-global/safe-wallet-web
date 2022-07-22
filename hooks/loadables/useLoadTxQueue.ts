@@ -23,6 +23,7 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
         return getTransactionQueue(chainId, address)
       }
     },
+    // The queueTag doesn't seem to update when executing txs so we also do it when the historyTag changes
     [chainId, address, txQueuedTag, txHistoryTag, proposedTxId],
     false,
   )
