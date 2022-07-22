@@ -41,14 +41,14 @@ function getComparator(order: SortDirection, orderBy: string) {
     : (a: any, b: any) => -descendingComparator(a, b, orderBy)
 }
 
-type EnhancedTableHead = {
+type EnhancedTableHeadProps = {
   headCells: EnhancedHeadCell[]
   onRequestSort: (property: string) => void
   order: 'asc' | 'desc'
   orderBy: string
 }
 
-function EnhancedTableHead(props: EnhancedTableHead) {
+function EnhancedTableHead(props: EnhancedTableHeadProps) {
   const { headCells, order, orderBy, onRequestSort } = props
   const createSortHandler = (property: string) => () => {
     onRequestSort(property)
@@ -126,7 +126,7 @@ function EnhancedTable({ rows, headCells }: EnhancedTableProps) {
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <TableContainer>
-          <Table aria-labelledby="tableTitle">
+          <Table sx={{ minWidth: '650px' }} aria-labelledby="tableTitle">
             <EnhancedTableHead
               headCells={headCells}
               order={order}

@@ -208,6 +208,15 @@ const theme = createTheme({
         }),
       },
     },
+    MuiTableHead: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '& .MuiTableCell-root': {
+            borderBottom: `2px solid ${theme.palette.border.light}`,
+          },
+        }),
+      },
+    },
   },
 })
 
