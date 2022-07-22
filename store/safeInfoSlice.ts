@@ -7,7 +7,7 @@ export const defaultSafeInfo: SafeInfo = {
   address: emptyAddress,
   chainId: '',
   nonce: -1,
-  threshold: -1,
+  threshold: 0,
   owners: [],
   implementation: emptyAddress,
   modules: null,
