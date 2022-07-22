@@ -19,8 +19,12 @@
   width: inherit;
 }
 
+.ownedSafesContainer,
 .drawer {
   width: 400px;
+}
+
+.drawer {
   text-align: center;
   padding: 52px 0 0;
   border-right: 1px solid var(--color-border-light);
@@ -34,9 +38,10 @@
   padding: 3px;
 }
 
-.noSafeSidebar {
+.noSafeHeader {
   background: url('/keyhole.svg') center 10px no-repeat;
-  min-height: 100px;
+  padding-top: 50px;
+  min-height: 80px;
 }
 
 .drawerButton {

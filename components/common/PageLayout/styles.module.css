@@ -4,7 +4,7 @@
   overflow: hidden;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: auto 1fr;
   grid-template-areas:
     'header header'
     'sidebar main';

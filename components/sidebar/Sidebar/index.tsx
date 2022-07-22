@@ -1,6 +1,7 @@
 import { useState, type ReactElement } from 'react'
-import { Divider, Drawer, IconButton } from '@mui/material'
+import { Divider, Drawer, IconButton, List } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
+import classnames from 'classnames'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SidebarHeader from '@/components/sidebar/SidebarHeader'
@@ -8,19 +9,29 @@ import SafeList from '@/components/sidebar/SafeList'
 import SidebarNavigation from '@/components/sidebar/SidebarNavigation'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import SidebarFooter from '@/components/sidebar/SidebarFooter'
+import useOwnedSafes from '@/hooks/useOwnedSafes'
 
 import css from './styles.module.css'
+import SafeListItem from '../SafeListItem'
+import useChainId from '@/hooks/useChainId'
 
 const Sidebar = (): ReactElement => {
+  const chainId = useChainId()
   const address = useSafeAddress()
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+  const allOwnedSafes = useOwnedSafes()
+  const ownedSafesOnChain = allOwnedSafes[chainId]
 
   const onDrawerToggle = () => {
     setIsDrawerOpen((prev) => !prev)
   }
 
   return (
-    <div className={css.container}>
+    <div
+      className={classnames(css.container, {
+        [css.ownedSafesContainer]: !address && ownedSafesOnChain?.length,
+      })}
+    >
       <div className={css.scroll}>
         <div className={css.chain}>
           <ChainIndicator />
@@ -40,7 +51,21 @@ const Sidebar = (): ReactElement => {
             <SidebarNavigation />
           </>
         ) : (
-          <div className={css.noSafeSidebar} />
+          <div className={css.noSafeHeader}>
+            {ownedSafesOnChain?.length > 0 && (
+              <List sx={{ py: 0 }}>
+                {ownedSafesOnChain?.map((address) => (
+                  <SafeListItem
+                    key={address}
+                    address={address}
+                    chainId={chainId}
+                    closeDrawer={() => void null}
+                    shouldScrollToSafe={false}
+                  />
+                ))}
+              </List>
+            )}
+          </div>
         )}
 
         <div style={{ flexGrow: 1 }} />
