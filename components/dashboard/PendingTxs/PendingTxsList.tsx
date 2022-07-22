@@ -2,13 +2,14 @@ import { ReactElement, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import uniqBy from 'lodash/uniqBy'
 import styled from '@emotion/styled'
-import { Box, Skeleton, Typography } from '@mui/material'
+import { Skeleton } from '@mui/material'
 import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Card, ViewAllLink, WidgetBody, WidgetContainer, WidgetTitle } from '../styled'
 import PendingTxListItem from './PendingTxListItem'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
+import PagePlaceholder from '@/components/common/PagePlaceholder'
 
 const SkeletonWrapper = styled.div`
   border-radius: 8px;
@@ -27,22 +28,28 @@ const StyledWidgetTitle = styled.div`
   justify-content: space-between;
 `
 
+const StyledEmptyCard = styled(Card)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: var(--space-4);
+
+  img {
+    width: 144px;
+    height: auto;
+  }
+
+  h3 {
+    font-size: 16px;
+    margin-bottom: 0;
+  }
+`
+
 const EmptyState = (
-  <Card>
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        height: 1,
-        gap: 2,
-      }}
-    >
-      <img alt="No Transactions yet" src="/images/no-transactions.svg" />
-      <Typography fontSize="lg">This Safe has no queued transactions</Typography>
-    </Box>
-  </Card>
+  <StyledEmptyCard>
+    <PagePlaceholder imageUrl="/images/no-transactions.svg" text="This Safe has no queued transactions" />
+  </StyledEmptyCard>
 )
 
 const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null => {
@@ -93,7 +100,7 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
     <WidgetContainer>
       <StyledWidgetTitle>
         <WidgetTitle>Transaction queue {totalQueuedTxs ? ` (${totalQueuedTxs})` : ''}</WidgetTitle>
-        <ViewAllLink url={url} />
+        {totalQueuedTxs > 0 && <ViewAllLink url={url} />}
       </StyledWidgetTitle>
       <WidgetBody>{getWidgetBody()}</WidgetBody>
     </WidgetContainer>
