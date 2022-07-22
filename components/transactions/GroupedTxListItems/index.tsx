@@ -5,7 +5,7 @@ import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { ExpandableTransactionItem } from '@/components/transactions/TxListItem'
 import css from './styles.module.css'
-import { useGroupedItems } from '@/components/transactions/GroupedTxListItems/useGroupedItems'
+import { useTxGroup } from './useTxGroup'
 
 const Disclaimer = ({ nonce }: { nonce?: number }) => (
   <Box className={css.disclaimerContainer}>
@@ -32,7 +32,7 @@ const GroupedTxListItems = ({ groupedListItems }: { groupedListItems: Transactio
     ? groupedListItems[0].transaction.executionInfo.nonce
     : undefined
 
-  const disabledItems = useGroupedItems(groupedListItems)
+  const disabledItems = useTxGroup(groupedListItems)
 
   return (
     <Paper className={css.container} variant="outlined">

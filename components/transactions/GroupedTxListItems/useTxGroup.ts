@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 
-export const useGroupedItems = (groupedListItems: Transaction[]) => {
+export const useTxGroup = (groupedListItems: Transaction[]) => {
   const [items, setItems] = useState<string[]>([])
   const pendingTxs = useAppSelector(selectPendingTxs)
 
