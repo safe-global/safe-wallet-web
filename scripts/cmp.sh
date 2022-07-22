@@ -14,7 +14,10 @@ cat << EOF > "${dir}/index.tsx"
 import { type ReactElement } from 'react'
 import css from './styles.module.css'
 
-const ${name} = (): ReactElement => {
+type ${name}Props = {
+}
+
+const ${name} = (props: ${name}Props): ReactElement => {
   return (
     <div className={css.container}>
     </div>
