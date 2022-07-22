@@ -7,11 +7,13 @@ import MultisendTxsDecoded from '@/components/transactions/TxDetails/TxData/Deco
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 
 type MultisendProps = {
-  txData: TransactionData
+  txData?: TransactionData
 }
 
 export const Multisend = ({ txData }: MultisendProps): ReactElement | null => {
   const chain = useCurrentChain()
+
+  if (!txData) return null
 
   // ? when can a multiSend call take no parameters?
   if (!txData.dataDecoded?.parameters) {

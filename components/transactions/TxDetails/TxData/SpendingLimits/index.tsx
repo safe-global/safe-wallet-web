@@ -13,18 +13,18 @@ import { isSetAllowance, SpendingLimitMethods } from '@/utils/transaction-guards
 import css from './styles.module.css'
 
 type SpendingLimitsProps = {
-  txData: TransactionData
+  txData?: TransactionData
   txInfo: Custom
   type: SpendingLimitMethods
 }
 
-export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): ReactElement => {
+export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): ReactElement | null => {
   const chain = useCurrentChain()
   const tokens = useAppSelector(selectTokens)
   const isSetAllowanceMethod = useMemo(() => isSetAllowance(type), [type])
 
   const [beneficiary, tokenAddress, amount, resetTimeMin] =
-    txData.dataDecoded?.parameters?.map(({ value }) => value) || []
+    txData?.dataDecoded?.parameters?.map(({ value }) => value) || []
 
   const resetTimeLabel = useMemo(
     () => getResetTimeOptions(chain?.chainName).find(({ value }) => +value === +resetTimeMin)?.label,
@@ -35,6 +35,8 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
     [tokenAddress, tokens],
   )
   const txTo = txInfo.to
+
+  if (!txData) return null
 
   return (
     <Box className={css.container}>
