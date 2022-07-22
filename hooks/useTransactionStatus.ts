@@ -8,7 +8,7 @@ const BACKEND_STATUS_LABELS: { [key in TransactionStatus]: string } = {
   [TransactionStatus.CANCELLED]: 'Cancelled',
   [TransactionStatus.FAILED]: 'Failed',
   [TransactionStatus.SUCCESS]: 'Success',
-  [TransactionStatus.WILL_BE_REPLACED]: 'Will be replaced',
+  [TransactionStatus.WILL_BE_REPLACED]: '', // deprecated
   [TransactionStatus.PENDING]: '', // deprecated
 }
 

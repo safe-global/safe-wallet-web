@@ -24,11 +24,7 @@ import { sameAddress } from '@/utils/addresses'
 import { getMultiSendContractAddress } from '@/services/contracts/safeContracts'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
-  return [
-    TransactionStatus.AWAITING_CONFIRMATIONS,
-    TransactionStatus.AWAITING_EXECUTION,
-    TransactionStatus.WILL_BE_REPLACED,
-  ].includes(value)
+  return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
 }
 
 export const isAwaitingExecution = (txStatus: TransactionStatus): boolean =>

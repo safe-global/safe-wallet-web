@@ -20,3 +20,13 @@
   align-items: center;
   flex-shrink: 0;
 }
+
+.willBeReplaced {
+  filter: grayscale(1);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.willBeReplaced * {
+  text-decoration: line-through;
+}
