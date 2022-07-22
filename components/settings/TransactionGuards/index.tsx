@@ -32,7 +32,7 @@ const TransactionGuards = () => {
 
   return (
     <Paper sx={{ padding: 4 }} variant="outlined">
-      <Grid container direction="row" justifyContent="space-between">
+      <Grid container direction="row" justifyContent="space-between" gap={2}>
         <Grid item>
           <Typography variant="h4" fontWeight={700}>
             Transaction Guards
