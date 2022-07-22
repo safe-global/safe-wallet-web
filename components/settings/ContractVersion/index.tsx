@@ -13,16 +13,12 @@ export const ContractVersion = () => {
   const [masterCopies] = useMasterCopies()
   const [safeMasterCopy, setSafeMasterCopy] = useState<MasterCopy>()
   const { safe } = useSafeInfo()
+  const masterCopyAddress = safe.implementation.value
 
   useEffect(() => {
-    const getMasterCopyInfo = () => {
-      const masterCopyAddress = safe.implementation.value
-      const masterCopy = masterCopies?.find((mc) => sameAddress(mc.address, masterCopyAddress))
-
-      setSafeMasterCopy(masterCopy)
-    }
-    getMasterCopyInfo()
-  }, [masterCopies, safe.implementation.value])
+    const masterCopy = masterCopies?.find((mc) => sameAddress(mc.address, masterCopyAddress))
+    setSafeMasterCopy(masterCopy)
+  }, [masterCopies, masterCopyAddress])
 
   const needsUpdate = safeNeedsUpdate(safe.version, LATEST_SAFE_VERSION)
 
