@@ -105,7 +105,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           {removedOwner && (
             <>
               <div className={css.info}>
-                <Typography className={css.overline}>REMOVING OWNER &darr;</Typography>
+                <Typography className={css.overline}>Removing owner &darr;</Typography>
               </div>
               <Divider />
               <Box className={css.removedOwner} padding={2}>
@@ -115,7 +115,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
             </>
           )}
           <div className={css.info}>
-            <Typography className={css.overline}>ADDING NEW OWNER &darr;</Typography>
+            <Typography className={css.overline}>Adding new owner &darr;</Typography>
           </div>
           <Divider />
           <Box padding={2}>
