@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
+import { AppManifest, fetchAppManifest, isAppManifestValid } from '@/services/safe-apps/manifest'
 
 type Props = {
   open: boolean
@@ -28,6 +29,8 @@ type CustomAppFormData = {
 const TEXT_FIELD_HEIGHT = '56px'
 
 const AddCustomAppModal = ({ open, onClose }: Props) => {
+  const [appManifest, setAppManifest] = React.useState<AppManifest>()
+
   const {
     register,
     handleSubmit,
@@ -55,6 +58,24 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
               required: true,
               validate: {
                 validUrl: isValidURL,
+                validManifest: async (val): Promise<string | undefined> => {
+                  try {
+                    const manifest = await fetchAppManifest(val)
+
+                    if (isAppManifestValid(manifest)) {
+                      setAppManifest(manifest)
+                      return
+                    }
+
+                    throw new Error('Invalid manifest')
+                  } catch (err) {
+                    if (err instanceof Error) {
+                      return err.message
+                    }
+
+                    return 'The app doesnt support Safe App functionality'
+                  }
+                },
               },
             })}
           />
@@ -66,7 +87,7 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
             }}
           >
             <img height={TEXT_FIELD_HEIGHT} src="/images/apps-icon.svg" alt="Apps icon" />
-            <TextField label="App name" disabled sx={{ width: '100%', ml: 2 }} />
+            <TextField label="App name" disabled sx={{ width: '100%', ml: 2 }} value={appManifest?.name || ''} />
           </Box>
           <FormControlLabel
             aria-required
