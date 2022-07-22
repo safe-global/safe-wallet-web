@@ -21,6 +21,8 @@
   border-radius: 4px;
   padding: 6px;
   background-color: var(--color-border-background);
+  width: 32px;
+  height: 32px;
 }
 
 .iconButton:hover {

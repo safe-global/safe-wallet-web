@@ -1,9 +1,9 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement, useCallback, useMemo, useState } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
 import Skeleton from '@mui/material/Skeleton'
 
-import { shortenAddress } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SafeIcon from '@/components/common/SafeIcon'
@@ -20,6 +20,7 @@ import { selectSettings } from '@/store/settingsSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getExplorerLink } from '@/utils/gateway'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
   <IconButton className={css.iconButton} {...props}>
@@ -28,6 +29,7 @@ const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'classNa
 )
 
 const SafeHeader = (): ReactElement => {
+  const [tooltipText, setTooltipText] = useState<string>('Copy to clipboard')
   const currency = useAppSelector(selectCurrency)
   const { balances } = useBalances()
   const { safe, loading } = useSafeInfo()
@@ -45,8 +47,12 @@ const SafeHeader = (): ReactElement => {
 
   const handleCopy = () => {
     const text = settings.shortName.copy && chain ? `${chain.shortName}:${address}` : address
-    navigator.clipboard.writeText(text)
+    navigator.clipboard.writeText(text).then(() => setTooltipText('Copied'))
   }
+
+  const handleMouseLeave = useCallback(() => {
+    setTimeout(() => setTooltipText('Copy to clipboard'), 500)
+  }, [])
 
   return (
     <div className={css.container}>
@@ -61,7 +67,11 @@ const SafeHeader = (): ReactElement => {
 
         <div>
           <Typography variant="body2">
-            {loading ? <Skeleton variant="text" width={86} /> : address ? shortenAddress(address) : '...'}
+            {loading ? (
+              <Skeleton variant="text" width={86} />
+            ) : (
+              <EthHashInfo address={address} shortAddress showAvatar={false} />
+            )}
           </Typography>
           <Typography variant="body1">{loading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
         </div>
@@ -73,9 +83,11 @@ const SafeHeader = (): ReactElement => {
           <QrIcon />
         </HeaderIconButton>
 
-        <HeaderIconButton onClick={handleCopy}>
-          <CopyIcon />
-        </HeaderIconButton>
+        <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
+          <IconButton className={css.iconButton} onClick={handleCopy}>
+            <CopyIcon />
+          </IconButton>
+        </Tooltip>
 
         <a target="_blank" rel="noreferrer" {...(chain && getExplorerLink(address, chain.blockExplorerUriTemplate))}>
           <HeaderIconButton>
