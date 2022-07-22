@@ -14,6 +14,7 @@ import css from './styles.module.css'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import TxShareLink from '../TxShareLink'
 import MultiSendTx from '@/components/transactions/MultisendTx'
+import { ErrorBoundary } from '@sentry/react'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -39,7 +40,9 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
         ) : (
           <>
             <div className={css.txData}>
-              <TxData txDetails={txDetails} />
+              <ErrorBoundary fallback={<div>Error parsing data</div>}>
+                <TxData txDetails={txDetails} />
+              </ErrorBoundary>
             </div>
 
             {/* Module information*/}

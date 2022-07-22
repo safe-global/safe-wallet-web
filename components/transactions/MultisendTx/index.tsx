@@ -8,6 +8,7 @@ import Summary from '@/components/transactions/TxDetails/Summary'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import css from './styles.module.css'
 import { DelegateCallWarning } from '@/components/transactions/Warning'
+import { ErrorBoundary } from '@sentry/react'
 
 const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const txInfo = isMultiSendTxInfo(txDetails.txInfo) ? txDetails.txInfo : undefined
@@ -32,7 +33,9 @@ const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactEle
       </div>
 
       <div className={`${css.txData} ${css.noPadding}`}>
-        <TxData txDetails={txDetails} />
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <TxData txDetails={txDetails} />
+        </ErrorBoundary>
       </div>
     </>
   )
