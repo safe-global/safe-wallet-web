@@ -23,7 +23,7 @@ export const SetThresholdStep = ({
     onSubmit({ ...data, threshold: selectedThreshold })
   }
 
-  const newNumberOfOwners = (safe?.owners.length ?? 2) - 1
+  const newNumberOfOwners = safe ? safe.owners.length - 1 : 1
 
   return (
     <form onSubmit={onSubmitHandler}>

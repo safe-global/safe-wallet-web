@@ -34,7 +34,7 @@ export const ReviewRemoveOwnerTxStep = ({
   // All errors
   const txError = safeTxError || createTxError
 
-  const newOwnerLength = (safe?.owners.length ?? 2) - 1
+  const newOwnerLength = safe ? safe.owners.length - 1 : 1
 
   return (
     <SignOrExecuteForm
@@ -76,7 +76,7 @@ export const ReviewRemoveOwnerTxStep = ({
           {
             <>
               <div className={css.info}>
-                <Typography className={css.overline}>REMOVING OWNER &darr;</Typography>
+                <Typography className={css.overline}>Removing owner &darr;</Typography>
               </div>
               <Divider />
               <Box className={css.removedOwner} padding={2}>

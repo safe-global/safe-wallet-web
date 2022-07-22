@@ -32,7 +32,7 @@ const OwnerRow = ({
           <div className={css.actions}>
             <EditOwnerDialog address={address} name={name} chainId={chainId} />
             <ReplaceOwnerDialog address={address} />
-            <RemoveOwnerDialog owner={{ address: address, name }} />
+            <RemoveOwnerDialog owner={{ address, name }} />
           </div>
         )}
       </TableCell>
