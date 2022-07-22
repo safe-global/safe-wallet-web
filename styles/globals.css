@@ -23,6 +23,10 @@ body {
   background-color: var(--color-background-paper);
 }
 
+main {
+  width: 100%;
+}
+
 a {
   color: inherit;
   text-decoration: none;

@@ -47,8 +47,4 @@
   .sidebar {
     display: none;
   }
-
-  .main {
-    padding: var(--space-1);
-  }
 }

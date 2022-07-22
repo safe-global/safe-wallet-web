@@ -25,3 +25,11 @@
   display: flex;
   align-items: center;
 }
+
+@media (max-width: 768px) {
+  .gridRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-top: var(--space-1);
+  }
+}

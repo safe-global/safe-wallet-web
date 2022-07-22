@@ -22,3 +22,9 @@
   align-items: center;
   gap: 4px;
 }
+
+@media (max-width: 768px) {
+  .container {
+    word-break: break-all;
+  }
+}

@@ -27,7 +27,7 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
       {showExpandBtn ? (
         <>
           {showTxData ? hexData : shortenText(hexData, 25)}{' '}
-          <Button disableRipple onClick={toggleExpanded}>
+          <Button disableRipple onClick={toggleExpanded} variant="text" size="small" sx={{ p: 0 }}>
             <Typography
               sx={({ palette }) => ({
                 color: palette.primary.main,
