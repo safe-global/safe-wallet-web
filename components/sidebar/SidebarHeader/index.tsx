@@ -1,7 +1,6 @@
-import { ReactElement, useCallback, useMemo, useState } from 'react'
+import { ReactElement, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
 import Skeleton from '@mui/material/Skeleton'
 
 import { formatCurrency } from '@/utils/formatNumber'
@@ -21,6 +20,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { getExplorerLink } from '@/utils/gateway'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import CopyButton from '@/components/common/CopyButton'
 
 const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
   <IconButton className={css.iconButton} {...props}>
@@ -29,7 +29,6 @@ const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'classNa
 )
 
 const SafeHeader = (): ReactElement => {
-  const [tooltipText, setTooltipText] = useState<string>('Copy to clipboard')
   const currency = useAppSelector(selectCurrency)
   const { balances } = useBalances()
   const { safe, safeAddress, safeLoading } = useSafeInfo()
@@ -43,14 +42,7 @@ const SafeHeader = (): ReactElement => {
     return formatCurrency(balances.fiatTotal, currency)
   }, [currency, balances.fiatTotal])
 
-  const handleCopy = () => {
-    const text = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
-    navigator.clipboard.writeText(text).then(() => setTooltipText('Copied'))
-  }
-
-  const handleMouseLeave = useCallback(() => {
-    setTimeout(() => setTooltipText('Copy to clipboard'), 500)
-  }, [])
+  const text = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
 
   return (
     <div className={css.container}>
@@ -81,11 +73,9 @@ const SafeHeader = (): ReactElement => {
           <QrIcon />
         </HeaderIconButton>
 
-        <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
-          <IconButton className={css.iconButton} onClick={handleCopy}>
-            <CopyIcon />
-          </IconButton>
-        </Tooltip>
+        <CopyButton text={text} className={css.iconButton}>
+          <CopyIcon />
+        </CopyButton>
 
         <a
           target="_blank"
