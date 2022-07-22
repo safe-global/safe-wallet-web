@@ -19,7 +19,7 @@ export const defaultSafeInfo: SafeInfo = {
   txHistoryTag: '',
 }
 
-const { slice, selector } = makeLoadableSlice('safeInfo', defaultSafeInfo)
+const { slice, selector } = makeLoadableSlice('safeInfo', undefined as SafeInfo | undefined)
 
 export const safeInfoSlice = slice
 export const selectSafeInfo = selector
