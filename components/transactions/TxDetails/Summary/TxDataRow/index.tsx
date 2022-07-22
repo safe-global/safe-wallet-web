@@ -1,4 +1,5 @@
 import TokenExplorerLink from '@/components/common/TokenExplorerLink'
+import CopyButton from '@/components/common/CopyButton'
 import CopyAddressButton from '@/components/common/CopyAddressButton'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { shortenAddress } from '@/utils/formatters'
@@ -48,7 +49,7 @@ export const generateDataRowValue = (
       return (
         <div className={css.inline}>
           <div>{shortenAddress(value, 8)}</div>
-          <CopyAddressButton address={value} />
+          <CopyButton text={value} />
           {hasExplorer && <TokenExplorerLink address={value} />}
         </div>
       )
@@ -56,7 +57,7 @@ export const generateDataRowValue = (
       return (
         <div className={css.rawData}>
           <div>{value ? hexDataLength(value) : 0} bytes</div>
-          <CopyAddressButton address={value} />
+          <CopyButton text={value} />
         </div>
       )
     case 'bytes':

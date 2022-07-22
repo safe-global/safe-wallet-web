@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Grid, Skeleton } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { type DecodedDataResponse, getDecodedData } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChainId from '@/hooks/useChainId'
@@ -26,18 +26,14 @@ const DecodedTx = ({ tx }: DecodedTxProps): ReactElement | null => {
 
   return (
     <Accordion elevation={0}>
-      <AccordionSummary>Transaction data</AccordionSummary>
+      <AccordionSummary>
+        <Box flex={1}>Transaction data</Box>
+        {encodedData ? generateDataRowValue(encodedData, 'rawData') : ''}
+      </AccordionSummary>
 
       <AccordionDetails>
-        {encodedData && decodedData ? (
-          <>
-            <Grid container>
-              <b>Raw data:&nbsp;</b>
-              {generateDataRowValue(encodedData, 'rawData')}
-            </Grid>
-
-            <MethodDetails data={decodedData} />
-          </>
+        {decodedData ? (
+          <MethodDetails data={decodedData} />
         ) : error ? (
           <ErrorMessage error={error}>Failed decoding transaction data</ErrorMessage>
         ) : (
