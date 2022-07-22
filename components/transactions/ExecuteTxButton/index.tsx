@@ -12,11 +12,10 @@ import useIsPending from '@/hooks/useIsPending'
 const ExecuteTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
   const { safe } = useSafeInfo()
-  const safeNonce = safe?.nonce
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const isPending = useIsPending({ txId: txSummary.id })
 
-  const isNext = !!txNonce && !!safeNonce && txNonce === safeNonce
+  const isNext = !!txNonce && !!safe.nonce && txNonce === safe.nonce
   const isDisabled = !isNext || isPending
 
   const onClick = (e: SyntheticEvent) => {

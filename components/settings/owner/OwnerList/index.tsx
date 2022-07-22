@@ -1,7 +1,6 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
 import useAddressBook from '@/hooks/useAddressBook'
-import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { ReactElement } from 'react'
@@ -41,10 +40,10 @@ const OwnerRow = ({
 }
 
 export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
-  const chainId = useChainId()
   const addressBook = useAddressBook()
   const { safe } = useSafeInfo()
-  const owners = (safe?.owners ?? []).map((item) => item.value)
+  const { chainId } = safe
+  const owners = safe.owners.map((item) => item.value)
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>

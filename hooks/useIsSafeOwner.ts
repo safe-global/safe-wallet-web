@@ -6,7 +6,7 @@ const useIsSafeOwner = () => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
 
-  return isOwner(safe?.owners, wallet?.address)
+  return isOwner(safe.owners, wallet?.address)
 }
 
 export default useIsSafeOwner

@@ -7,17 +7,17 @@ import { initSafeSDK, setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 export const useInitSafeCoreSDK = (): Error | null => {
   const chain = useCurrentChain()
   const wallet = useWallet()
-  const { safe } = useSafeInfo()
+  const { safe, safeLoaded } = useSafeInfo()
 
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    if (!safe || !chain || !wallet || chain.chainId !== wallet.chainId) {
+    if (!safeLoaded || !chain || !wallet || chain.chainId !== wallet.chainId) {
       return
     }
 
     initSafeSDK(wallet.provider, wallet.chainId, safe.address.value, safe.version).then(setSafeSDK).catch(setError)
-  }, [chain, wallet, safe])
+  }, [chain, wallet, safe, safeLoaded])
 
   return error
 }

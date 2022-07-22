@@ -36,7 +36,7 @@ export const RemoveOwnerDialog = ({ owner }: { owner: OwnerData }) => {
 
   const handleClose = () => setOpen(false)
 
-  const showRemoveOwnerButton = safe && safe?.owners.length > 1
+  const showRemoveOwnerButton = safe.owners.length > 1
 
   if (!showRemoveOwnerButton) {
     return null
