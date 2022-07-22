@@ -19,6 +19,9 @@ import {
   TransactionSummary,
   Transfer,
 } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
+import { sameAddress } from '@/utils/addresses'
+import { getMultiSendContractAddress } from '@/services/contracts/safeContracts'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [
@@ -73,7 +76,14 @@ export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
   return value.type === TransactionInfoType.CUSTOM
 }
 
-export const isMultisendTxInfo = (value: TransactionInfo): value is MultiSend => {
+export const isSupportedMultiSendAddress = (txInfo: TransactionInfo, chainId: string): boolean => {
+  const toAddress = isCustomTxInfo(txInfo) ? txInfo.to.value : ''
+  const multiSendAddress = getMultiSendContractAddress(chainId)
+
+  return sameAddress(multiSendAddress, toAddress)
+}
+
+export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend => {
   return value.type === TransactionInfoType.CUSTOM && value.methodName === 'multiSend'
 }
 
@@ -141,6 +151,17 @@ export const isSetAllowance = (method?: string): method is SpendingLimitMethods 
 
 export const isDeleteAllowance = (method?: string): method is SpendingLimitMethods => {
   return method === SPENDING_LIMIT_METHODS_NAMES.DELETE_ALLOWANCE
+}
+
+export const isSpendingLimitMethod = (method?: string): boolean => {
+  return isSetAllowance(method) || isDeleteAllowance(method)
+}
+
+export const isSupportedSpendingLimitAddress = (txInfo: TransactionInfo, chainId: string): boolean => {
+  const toAddress = isCustomTxInfo(txInfo) ? txInfo.to.value : ''
+  const spendingLimitModuleAddress = getSpendingLimitModuleAddress(chainId)
+
+  return sameAddress(spendingLimitModuleAddress, toAddress)
 }
 
 // Method parameter types

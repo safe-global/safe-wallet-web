@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react'
-import { isMultisendTxInfo } from '@/utils/transaction-guards'
+import { isMultiSendTxInfo } from '@/utils/transaction-guards'
 import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -10,7 +10,7 @@ import css from './styles.module.css'
 import { DelegateCallWarning } from '@/components/transactions/Warning'
 
 const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
-  const txInfo = isMultisendTxInfo(txDetails.txInfo) ? txDetails.txInfo : undefined
+  const txInfo = isMultiSendTxInfo(txDetails.txInfo) ? txDetails.txInfo : undefined
 
   return (
     <>

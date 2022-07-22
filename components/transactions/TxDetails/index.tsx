@@ -7,7 +7,7 @@ import Summary from '@/components/transactions/TxDetails/Summary'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
-import { isModuleExecutionInfo, isMultisendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { isModuleExecutionInfo, isMultiSendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
@@ -34,7 +34,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <TxShareLink id={txSummary.id} />
         </div>
 
-        {isMultisendTxInfo(txDetails.txInfo) ? (
+        {isMultiSendTxInfo(txDetails.txInfo) ? (
           <MultiSendTx txDetails={txDetails} />
         ) : (
           <>

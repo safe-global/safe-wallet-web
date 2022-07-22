@@ -17,14 +17,16 @@ const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement 
   if (isTransferTxInfo(txInfo)) {
     return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} />
   }
+
   if (isSettingsChangeTxInfo(txInfo)) {
     return <SettingsChangeTxInfo settingsInfo={txInfo.settingsInfo} />
   }
+
   if (isCancellationTxInfo(txInfo) && isMultisigExecutionDetails(txDetails.detailedExecutionInfo)) {
     return <RejectionTxInfo nonce={txDetails.detailedExecutionInfo?.nonce} isTxExecuted={!!txDetails.executedAt} />
   }
 
-  return <DecodedData txData={txDetails.txData} txInfo={txDetails.txInfo}></DecodedData>
+  return <DecodedData txData={txDetails.txData} txInfo={txDetails.txInfo} />
 }
 
 export default TxData

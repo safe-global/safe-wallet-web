@@ -21,7 +21,7 @@ type SpendingLimitsProps = {
 export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): ReactElement => {
   const chain = useCurrentChain()
   const tokens = useAppSelector(selectTokens)
-  const isAllowance = useMemo(() => isSetAllowance(type), [type])
+  const isSetAllowanceMethod = useMemo(() => isSetAllowance(type), [type])
 
   const [beneficiary, tokenAddress, amount, resetTimeMin] =
     txData.dataDecoded?.parameters?.map(({ value }) => value) || []
@@ -39,7 +39,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
   return (
     <Box className={css.container}>
       <Typography>
-        <b>{`${isAllowance ? 'Modify' : 'Delete'} spending limit:`}</b>
+        <b>{`${isSetAllowanceMethod ? 'Modify' : 'Delete'} spending limit:`}</b>
       </Typography>
       <Box className={css.group}>
         <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
@@ -55,11 +55,11 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
       {tokenInfo && (
         <Box className={css.group}>
           <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>
-            {isAllowance ? 'Amount' : 'Token'}
+            {isSetAllowanceMethod ? 'Amount' : 'Token'}
           </Typography>
           <Box className={css.inline}>
             <TokenIcon logoUri={tokenInfo.logoUri} size={32} tokenSymbol={tokenInfo.symbol} />
-            {isAllowance ? (
+            {isSetAllowanceMethod ? (
               <Typography>
                 {formatDecimals(amount as string, tokenInfo.decimals)} {tokenInfo.symbol}
               </Typography>
@@ -69,7 +69,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
           </Box>
         </Box>
       )}
-      {isAllowance && (
+      {isSetAllowanceMethod && (
         <Box className={css.group}>
           <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Reset time</Typography>
           {resetTimeLabel ? (

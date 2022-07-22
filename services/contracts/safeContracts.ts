@@ -11,7 +11,10 @@ import { Contract } from 'ethers'
 import { Interface } from '@ethersproject/abi'
 import semverSatisfies from 'semver/functions/satisfies'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Gnosis_safe, Proxy_factory, Multi_send, Compatibility_fallback_handler } from '@/types/contracts'
+import { Gnosis_safe } from '@/types/contracts/Gnosis_safe'
+import { Compatibility_fallback_handler } from '@/types/contracts/Compatibility_fallback_handler'
+import { Multi_send } from '@/types/contracts/Multi_send'
+import { Proxy_factory } from '@/types/contracts/Proxy_factory'
 
 const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
   // We check if version is prior to v1.0.0 as they are not supported but still we want to keep a minimum compatibility
@@ -49,11 +52,6 @@ export const getGnosisSafeContractInstance = (chain: ChainInfo, safeVersion: str
   return new Contract(contractAddress, safeSingletonDeployment.abi) as Gnosis_safe
 }
 
-/**
- * Creates a Contract instance of the FallbackHandler contract
- * @param {Web3} web3
- * @param {ChainId} chainId
- */
 export const getFallbackHandlerContractInstance = (chainId: string): Compatibility_fallback_handler => {
   const fallbackHandlerDeployment =
     getFallbackHandlerDeployment({
@@ -73,11 +71,12 @@ export const getFallbackHandlerContractInstance = (chainId: string): Compatibili
   return new Contract(contractAddress, new Interface(fallbackHandlerDeployment.abi)) as Compatibility_fallback_handler
 }
 
-/**
- * Creates a Contract instance of the MultiSend contract
- * @param {Web3} web3
- * @param {ChainId} chainId
- */
+export const getMultiSendContractAddress = (chainId: string): string | undefined => {
+  const deployment = getMultiSendCallOnlyDeployment({ network: chainId }) || getMultiSendCallOnlyDeployment()
+
+  return deployment?.networkAddresses[chainId]
+}
+
 const getMultiSendContractInstance = (chainId: string): Multi_send => {
   const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId }) || getMultiSendCallOnlyDeployment()
 
@@ -90,11 +89,6 @@ const getMultiSendContractInstance = (chainId: string): Multi_send => {
   return new Contract(contractAddress, new Interface(multiSendDeployment.abi)) as Multi_send
 }
 
-/**
- * Creates a Contract instance of the GnosisSafeProxyFactory contract
- * @param {Web3} web3
- * @param {ChainId} chainId
- */
 export const getProxyFactoryContractInstance = (chainId: string): Proxy_factory => {
   const proxyFactoryDeployment =
     getProxyFactoryDeployment({
