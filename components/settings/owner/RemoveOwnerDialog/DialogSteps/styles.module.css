@@ -1,0 +1,23 @@
+.detailsBlock {
+  border-right: solid 1px #e8e7e6;
+  padding-top: 0rem;
+  padding-right: 1rem;
+}
+
+.removedOwner {
+  background-color: #ffe6ea;
+}
+
+.info {
+  background-color: #f6f7f8;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.overline {
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 1px;
+  align-self: center;
+}

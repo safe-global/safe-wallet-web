@@ -18,7 +18,7 @@ import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
-import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
+import { RemoveOwnerTxParams, SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
 
 const estimateSafeTxGas = async (
   chainId: string,
@@ -67,6 +67,15 @@ export const createMultiSendTx = async (
   }
 
   return safeSDK.createTransaction(txParams, options)
+}
+
+export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promise<SafeTransaction> => {
+  const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not initialized')
+  }
+
+  return safeSDK.getRemoveOwnerTx(txParams)
 }
 
 /**
