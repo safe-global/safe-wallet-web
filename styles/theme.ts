@@ -36,7 +36,14 @@ declare module '@mui/material/Button' {
 const theme = createTheme({
   palette,
   spacing: base,
-  shadows: ['none', '0px 7px 20px #28363d2e', ...Array(23).fill('none')] as Shadows,
+  shadows: [
+    'none',
+    '0 1px 1px #162d4505, 0 2px 2px #162d450a',
+    '0 1px 4px #162d450a, 0 4px 10px #162d4514',
+    '0 2px 20px #162d450a, 0 8px 32px #162d4514',
+    '0 8px 32px #162d450f, 0 24px 60px #162d451f',
+    ...Array(20).fill('none'),
+  ] as Shadows,
   typography: {
     fontFamily: 'Averta, sans-serif',
 
@@ -136,11 +143,6 @@ const theme = createTheme({
           '&:hover .MuiAccordionSummary-root': {
             background: theme.palette.primary.background,
           },
-
-          '&:last-of-type': {
-            borderBottomLeftRadius: '8px',
-            borderBottomRightRadius: '8px',
-          },
         }),
       },
     },
@@ -168,7 +170,7 @@ const theme = createTheme({
           borderColor: theme.palette.border.light,
         }),
         root: {
-          borderRadius: '8px',
+          borderRadius: '8px !important',
         },
       },
     },
