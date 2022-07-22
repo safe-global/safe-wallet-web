@@ -43,10 +43,10 @@ const TxList = ({ items }: TxListProps): ReactElement => {
     return [dateLabel, ...items]
   }, [items])
 
-  const listWithGroupedItems: (TransactionListItem | TransactionListItem[])[] = useMemo(() => {
-    return list.reduce((acc: (TransactionListItem | TransactionListItem[])[], current) => {
+  const listWithGroupedItems: (TransactionListItem | Transaction[])[] = useMemo(() => {
+    return list.reduce((acc: (TransactionListItem | Transaction[])[], current) => {
       if (isConflictHeaderListItem(current)) {
-        return [...acc, [current]]
+        return [...acc, []]
       }
 
       const prev = acc[acc.length - 1]

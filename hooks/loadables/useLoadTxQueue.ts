@@ -7,7 +7,7 @@ import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 
 export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
   const { safe } = useSafeInfo()
-  const { chainId, txQueuedTag } = safe || {}
+  const { chainId, txQueuedTag, txHistoryTag } = safe || {}
   const address = safe?.address.value
   const [proposedTxId, setProposedTxId] = useState<string>()
 
@@ -23,7 +23,8 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
         return getTransactionQueue(chainId, address)
       }
     },
-    [chainId, address, txQueuedTag, proposedTxId],
+    // The queueTag doesn't seem to update when executing txs so we also do it when the historyTag changes
+    [chainId, address, txQueuedTag, txHistoryTag, proposedTxId],
     false,
   )
 
