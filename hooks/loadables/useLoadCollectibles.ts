@@ -5,17 +5,16 @@ import useSafeInfo from '../useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
 
 export const useLoadCollectibles = (): AsyncResult<SafeCollectibleResponse[]> => {
-  const { safe } = useSafeInfo()
-  const { chainId, collectiblesTag } = safe || {}
-  const address = safe?.address.value
+  const { safe, safeAddress, safeLoaded } = useSafeInfo()
+  const { chainId, collectiblesTag } = safe
 
   // Re-fetch assets when the Safe address or the collectibes tag updates
   const [data, error, loading] = useAsync<SafeCollectibleResponse[] | undefined>(
     async () => {
-      if (!address || !chainId) return
-      return getCollectibles(chainId, address)
+      if (!safeLoaded) return
+      return getCollectibles(chainId, safeAddress)
     },
-    [address, chainId, collectiblesTag],
+    [safeAddress, chainId, collectiblesTag],
     false,
   )
 

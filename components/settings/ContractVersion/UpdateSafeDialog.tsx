@@ -41,14 +41,14 @@ const UpdateSafeDialog = () => {
 }
 
 const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) => {
-  const { safe } = useSafeInfo()
+  const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
 
   const [updateSafeTx, txCreationError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!safe?.address.value || !chain) return undefined
+    if (!safeLoaded || !chain) return undefined
     const txs = createUpdateSafeTxs(safe, chain)
     return createMultiSendTx(txs)
-  }, [chain?.chainId, safe?.address.value, safe?.version])
+  }, [chain, safe, safeLoaded])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!updateSafeTx) return
@@ -60,7 +60,7 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
   return (
     <SignOrExecuteForm
       safeTx={safeTx}
-      isExecutable={safe?.threshold === 1}
+      isExecutable={safe.threshold === 1}
       onSubmit={onSubmit}
       error={txError}
       title="Update safe version"

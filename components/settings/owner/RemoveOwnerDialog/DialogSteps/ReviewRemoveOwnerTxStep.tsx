@@ -17,7 +17,7 @@ export const ReviewRemoveOwnerTxStep = ({
   data: RemoveOwnerData
   onSubmit: (data: null) => void
 }) => {
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const addressBook = useAddressBook()
   const { removedOwner, threshold } = data
 
@@ -34,13 +34,13 @@ export const ReviewRemoveOwnerTxStep = ({
   // All errors
   const txError = safeTxError || createTxError
 
-  const newOwnerLength = safe ? safe.owners.length - 1 : 1
+  const newOwnerLength = safe.owners.length - 1
 
   return (
     <SignOrExecuteForm
       safeTx={safeTx}
       onSubmit={onSubmit}
-      isExecutable={safe?.threshold === 1}
+      isExecutable={safe.threshold === 1}
       error={txError}
       title="Remove owner"
     >
@@ -50,7 +50,7 @@ export const ReviewRemoveOwnerTxStep = ({
 
           <Box marginBottom={2}>
             <Typography>Safe name:</Typography>
-            <Typography>{safe ? addressBook[safe?.address.value] || 'No name' : ''}</Typography>
+            <Typography>{addressBook[safeAddress] || 'No name'}</Typography>
           </Box>
           <Box marginBottom={2}>
             <Typography>Any transaction requires the confirmation of:</Typography>
@@ -63,7 +63,7 @@ export const ReviewRemoveOwnerTxStep = ({
         <Grid>
           <Typography paddingLeft={2}>{newOwnerLength} Safe owner(s)</Typography>
           <Divider />
-          {safe?.owners
+          {safe.owners
             .filter((owner) => !sameAddress(owner.value, removedOwner.address))
             .map((owner) => (
               <div key={owner.value}>

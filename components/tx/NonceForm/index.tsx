@@ -13,7 +13,7 @@ type NonceFormProps = {
 
 const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps): ReactElement => {
   const { safe } = useSafeInfo()
-  const safeNonce = safe?.nonce || 0
+  const safeNonce = safe.nonce || 0
 
   const { register, watch, setValue, trigger, formState } = useFormContext() || {}
 

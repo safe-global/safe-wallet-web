@@ -11,9 +11,9 @@ import SettingsIcon from '@/public/images/sidebar/settings.svg'
 
 const Setup: NextPage = () => {
   const { safe } = useSafeInfo()
-  const nonce = safe?.nonce
-  const ownerLength = safe?.owners.length ?? 0
-  const threshold = safe?.threshold ?? 0
+  const nonce = safe.nonce
+  const ownerLength = safe.owners.length
+  const threshold = safe.threshold
 
   const isSafeOwner = useIsSafeOwner()
   const isWrongChain = useIsWrongChain()

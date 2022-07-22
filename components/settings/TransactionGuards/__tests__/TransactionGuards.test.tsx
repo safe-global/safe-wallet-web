@@ -15,9 +15,10 @@ describe('TransactionGuards', () => {
         chainId: '4',
         version: '1.3.0',
       } as any as SafeInfo,
-      safeAddress: undefined,
-      error: undefined,
-      loading: false,
+      safeAddress: '0x123',
+      safeError: undefined,
+      safeLoading: false,
+      safeLoaded: true,
     }))
 
     const utils = render(<TransactionGuards />)
@@ -26,10 +27,11 @@ describe('TransactionGuards', () => {
 
   it('should render null if safe is loading', async () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
-      safe: undefined,
-      safeAddress: undefined,
-      error: undefined,
-      loading: true,
+      safe: {} as SafeInfo,
+      safeAddress: '',
+      safeError: undefined,
+      safeLoading: true,
+      safeLoaded: false,
     }))
 
     const utils = render(<TransactionGuards />)
@@ -43,9 +45,10 @@ describe('TransactionGuards', () => {
         chainId: '4',
         version: '1.2.0',
       } as any as SafeInfo,
-      safeAddress: undefined,
-      error: undefined,
-      loading: true,
+      safeAddress: '0x123',
+      safeError: undefined,
+      safeLoading: false,
+      safeLoaded: true,
     }))
 
     const utils = render(<TransactionGuards />)
@@ -61,9 +64,10 @@ describe('TransactionGuards', () => {
         chainId: '4',
         version: '1.3.0',
       } as SafeInfo,
-      safeAddress: undefined,
-      error: undefined,
-      loading: true,
+      safeAddress: '0x123',
+      safeError: undefined,
+      safeLoading: false,
+      safeLoaded: true,
     }))
 
     const utils = render(<TransactionGuards />)

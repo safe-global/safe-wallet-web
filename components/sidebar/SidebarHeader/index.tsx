@@ -30,13 +30,11 @@ const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'classNa
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
   const { balances } = useBalances()
-  const { safe, loading } = useSafeInfo()
+  const { safe, safeAddress, safeLoading } = useSafeInfo()
   const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
 
-  const address = safe?.address.value || ''
-
-  const { threshold, owners } = safe || {}
+  const { threshold, owners } = safe
 
   // TODO: Format to parts w/ style
   const fiat = useMemo(() => {
@@ -44,7 +42,7 @@ const SafeHeader = (): ReactElement => {
   }, [currency, balances.fiatTotal])
 
   const handleCopy = () => {
-    const text = settings.shortName.copy && chain ? `${chain.shortName}:${address}` : address
+    const text = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
     navigator.clipboard.writeText(text)
   }
 
@@ -52,18 +50,18 @@ const SafeHeader = (): ReactElement => {
     <div className={css.container}>
       <div className={css.safe}>
         <div className={css.icon}>
-          {loading ? (
+          {safeLoading ? (
             <Skeleton variant="circular" width={40} height={40} />
           ) : (
-            <SafeIcon address={address} threshold={threshold} owners={owners?.length} />
+            <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
           )}
         </div>
 
         <div>
           <Typography variant="body2">
-            {loading ? <Skeleton variant="text" width={86} /> : address ? shortenAddress(address) : '...'}
+            {safeLoading ? <Skeleton variant="text" width={86} /> : safeAddress ? shortenAddress(safeAddress) : '...'}
           </Typography>
-          <Typography variant="body1">{loading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
+          <Typography variant="body1">{safeLoading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
         </div>
       </div>
 
@@ -77,7 +75,11 @@ const SafeHeader = (): ReactElement => {
           <CopyIcon />
         </HeaderIconButton>
 
-        <a target="_blank" rel="noreferrer" {...(chain && getExplorerLink(address, chain.blockExplorerUriTemplate))}>
+        <a
+          target="_blank"
+          rel="noreferrer"
+          {...(chain && getExplorerLink(safeAddress, chain.blockExplorerUriTemplate))}
+        >
           <HeaderIconButton>
             <OpenInNewRoundedIcon color="primary" fontSize="small" />
           </HeaderIconButton>

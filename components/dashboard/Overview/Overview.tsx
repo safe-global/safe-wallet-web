@@ -76,12 +76,11 @@ const SkeletonOverview = (
 const Overview = (): ReactElement => {
   const router = useRouter()
   const safeAddress = useSafeAddress()
-  const { safe } = useSafeInfo()
+  const { safe, safeLoading } = useSafeInfo()
   const { balances } = useBalances()
   const { collectibles, loading: nftsLoading } = useCollectibles()
   const chain = useCurrentChain()
   const { chainId } = chain || {}
-  const loaded = !!safe
   const assetsLink = `${AppRoutes.safe.balances.index}?safe=${router.query.safe}`
   const nftsLink = `${AppRoutes.safe.balances.nfts}?safe=${router.query.safe}`
 
@@ -93,18 +92,13 @@ const Overview = (): ReactElement => {
       <WidgetTitle>Overview</WidgetTitle>
 
       <WidgetBody>
-        {!loaded ? (
+        {safeLoading ? (
           SkeletonOverview
         ) : (
           <Card>
             <Grid container pb={2}>
               <Grid item xs={2}>
-                <SafeIcon
-                  address={safeAddress}
-                  threshold={safe?.threshold}
-                  owners={safe?.owners.length || 0}
-                  size={48}
-                />
+                <SafeIcon address={safeAddress} threshold={safe.threshold} owners={safe.owners.length} size={48} />
               </Grid>
 
               <Grid item xs />

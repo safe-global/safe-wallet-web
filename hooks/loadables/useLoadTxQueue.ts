@@ -6,9 +6,8 @@ import { Errors, logError } from '@/services/exceptions'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 
 export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
-  const { safe } = useSafeInfo()
-  const { chainId, txQueuedTag, txHistoryTag } = safe || {}
-  const address = safe?.address.value
+  const { safe, safeAddress, safeLoaded } = useSafeInfo()
+  const { chainId, txQueuedTag, txHistoryTag } = safe
   const [proposedTxId, setProposedTxId] = useState<string>()
 
   // Listen to newly proposed txns
@@ -19,12 +18,12 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
   // Re-fetch when chainId/address, or txQueueTag change
   const [data, error, loading] = useAsync<TransactionListPage | undefined>(
     async () => {
-      if (chainId && address) {
-        return getTransactionQueue(chainId, address)
-      }
+      if (!safeLoaded) return
+      return getTransactionQueue(chainId, safeAddress)
     },
-    // The queueTag doesn't seem to update when executing txs so we also do it when the historyTag changes
-    [chainId, address, txQueuedTag, txHistoryTag, proposedTxId],
+    // N.B. we reload when either txQueuedTag or txHistoryTag changes
+    // @TODO: evaluate if txHistoryTag should be included in the reload
+    [safeLoaded, chainId, safeAddress, txQueuedTag, txHistoryTag, proposedTxId],
     false,
   )
 

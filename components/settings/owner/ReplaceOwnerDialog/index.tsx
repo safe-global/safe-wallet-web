@@ -29,7 +29,7 @@ export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
 
   const initialModalData: Partial<ChangeOwnerData> = {
     removedOwner: { address },
-    threshold: safe?.threshold,
+    threshold: safe.threshold,
   }
 
   return (

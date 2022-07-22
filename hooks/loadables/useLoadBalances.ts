@@ -7,7 +7,7 @@ import { Errors, logError } from '@/services/exceptions'
 import { selectCurrency } from '@/store/sessionSlice'
 
 export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
-  const { safe } = useSafeInfo()
+  const { safe, safeLoaded } = useSafeInfo()
   const currency = useAppSelector(selectCurrency)
 
   // Re-fetch assets when the entire SafeInfo updates
@@ -15,10 +15,10 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
     async () => {
       // SafeInfo becomes undefined when the safe address in the URL changes
       // At this point Balances should also become undefined
-      if (!safe) return
+      if (!safeLoaded) return
       return getBalances(safe.chainId, safe.address.value, currency)
     },
-    [safe, currency], // Reload either when the Safe is updated or the currency changes
+    [safe, safeLoaded, currency], // Reload either when the Safe is updated or the currency changes
     false, // Don't clear data between SafeInfo polls
   )
 
