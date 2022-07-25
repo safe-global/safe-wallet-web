@@ -1,41 +1,46 @@
 import * as React from 'react'
-import { Button, Paper } from '@mui/material'
+import { useRouter } from 'next/router'
+import { Button, Box } from '@mui/material'
 import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
+import { AppCardContainer } from './AppCard'
+import { IS_PRODUCTION, SAFE_REACT_URL } from '@/config/constants'
 
 type Props = {}
 
 const AddCustomAppCard = ({}: Props) => {
   const [addCustomAppModalOpen, setAddCustomAppModalOpen] = React.useState(false)
+  const router = useRouter()
+  const url = `${SAFE_REACT_URL}/${router.query.safe}/apps`
 
   return (
     <>
-      <Paper
-        sx={({ palette }) => ({
-          height: 190,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
-          border: '2px solid transparent',
-          '&:hover': {
-            backgroundColor: palette.primary.background,
-            border: `2px solid ${palette.primary.light}`,
-          },
-        })}
-      >
-        <img src="/images/add-custom-app.svg" alt="Add custom app icon" />
-        <Button
-          variant="contained"
-          size="small"
+      <AppCardContainer url={IS_PRODUCTION ? url : undefined}>
+        <Box
           sx={{
-            mt: 1,
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
-          onClick={() => setAddCustomAppModalOpen(true)}
         >
-          Add custom app
-        </Button>
-      </Paper>
+          <img src="/images/add-custom-app.svg" alt="Add custom app icon" />
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              mt: 1,
+            }}
+            onClick={() => {
+              if (!IS_PRODUCTION) {
+                setAddCustomAppModalOpen(true)
+              }
+            }}
+          >
+            Add custom app
+          </Button>
+        </Box>
+      </AppCardContainer>
 
       <AddCustomAppModal open={addCustomAppModalOpen} onClose={() => setAddCustomAppModalOpen(false)} />
     </>
