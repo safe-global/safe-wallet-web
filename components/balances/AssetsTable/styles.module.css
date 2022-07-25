@@ -3,7 +3,7 @@
 }
 
 .container tbody tr:hover {
-  background-color: var(--color-background-light);
+  background-color: var(--color-primary-background);
 }
 
 .container td {

@@ -2,9 +2,9 @@ import { ReactElement, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import uniqBy from 'lodash/uniqBy'
 import styled from '@emotion/styled'
-import { Skeleton } from '@mui/material'
+import { Skeleton, Typography } from '@mui/material'
 import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Card, ViewAllLink, WidgetBody, WidgetContainer, WidgetTitle } from '../styled'
+import { Card, ViewAllLink, WidgetBody, WidgetContainer } from '../styled'
 import PendingTxListItem from './PendingTxListItem'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
@@ -99,7 +99,9 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
   return (
     <WidgetContainer>
       <StyledWidgetTitle>
-        <WidgetTitle>Transaction queue {totalQueuedTxs ? ` (${totalQueuedTxs})` : ''}</WidgetTitle>
+        <Typography variant="h2" mb={2}>
+          Transaction queue {totalQueuedTxs ? ` (${totalQueuedTxs})` : ''}
+        </Typography>
         {totalQueuedTxs > 0 && <ViewAllLink url={url} />}
       </StyledWidgetTitle>
       <WidgetBody>{getWidgetBody()}</WidgetBody>

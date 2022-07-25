@@ -3,7 +3,7 @@ import { Provider } from 'react-redux'
 import { NextRouter } from 'next/router'
 import { RouterContext } from 'next/dist/shared/lib/router-context'
 import { ThemeProvider } from '@mui/material'
-import theme from '@/styles/theme'
+import initTheme from '@/styles/theme'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   asPath: '/',
@@ -37,7 +37,7 @@ const getProviders: (routerProps: Partial<NextRouter>) => React.FC<{ children: R
 
     return (
       <RouterContext.Provider value={mockRouter(routerProps)}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={initTheme(false)}>
           <Provider store={store}>{children}</Provider>
         </ThemeProvider>
       </RouterContext.Provider>

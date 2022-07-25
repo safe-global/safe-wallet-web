@@ -4,6 +4,7 @@
   gap: var(--space-1);
   white-space: nowrap;
   vertical-align: middle;
+  color: var(--color-text-primary);
 }
 
 .tokenIcon {

@@ -2,12 +2,21 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/store'
 
-const initialState = {
+export type SettingsState = {
+  shortName: {
+    show: boolean
+    copy: boolean
+  }
+  theme: {
+    darkMode: boolean
+  }
+}
+
+const initialState: SettingsState = {
   shortName: {
     show: true,
     copy: true,
   },
-  // TODO:
   theme: {
     darkMode: false,
   },
@@ -17,13 +26,13 @@ export const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    setShowShortName: (state, { payload }: PayloadAction<boolean>) => {
+    setShowShortName: (state, { payload }: PayloadAction<SettingsState['shortName']['show']>) => {
       state.shortName.show = payload
     },
-    setCopyShortName: (state, { payload }: PayloadAction<boolean>) => {
+    setCopyShortName: (state, { payload }: PayloadAction<SettingsState['shortName']['copy']>) => {
       state.shortName.copy = payload
     },
-    setDarkMode: (state, { payload }: PayloadAction<boolean>) => {
+    setDarkMode: (state, { payload }: PayloadAction<SettingsState['theme']['darkMode']>) => {
       state.theme.darkMode = payload
     },
   },
@@ -31,4 +40,4 @@ export const settingsSlice = createSlice({
 
 export const { setShowShortName, setCopyShortName, setDarkMode } = settingsSlice.actions
 
-export const selectSettings = (state: RootState) => state[settingsSlice.name]
+export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]

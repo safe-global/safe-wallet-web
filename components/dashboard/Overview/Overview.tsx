@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import styled from '@emotion/styled'
 import { Box, Button, Grid, Skeleton, Typography } from '@mui/material'
-import { Card, WidgetBody, WidgetContainer, WidgetTitle } from '../styled'
+import { Card, WidgetBody, WidgetContainer } from '../styled'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import useBalances from '@/hooks/useBalances'
@@ -89,7 +89,9 @@ const Overview = (): ReactElement => {
 
   return (
     <WidgetContainer>
-      <WidgetTitle>Overview</WidgetTitle>
+      <Typography variant="h2" mb={2}>
+        Overview
+      </Typography>
 
       <WidgetBody>
         {safeLoading ? (

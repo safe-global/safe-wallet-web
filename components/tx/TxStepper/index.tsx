@@ -14,9 +14,9 @@ const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps)
   })
 
   return (
-    <Box margin={3} className={css.container}>
-      <Box py={1}>
-        <Box className={css.stepIndicator} py={0.5}>
+    <Box className={css.container}>
+      <Box p={3}>
+        <Box className={css.stepIndicator}>
           <Typography color={({ palette }) => palette.text.secondary}>
             Step {activeStep + 1} out of {steps.length}
           </Typography>
@@ -25,7 +25,7 @@ const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps)
         {steps[activeStep].render(stepData[Math.max(0, activeStep)], onSubmit, onBack, setStep)}
       </Box>
 
-      <DialogActions sx={{ m: -3, mt: 3 }}>
+      <DialogActions>
         <Button color="inherit" onClick={onBack}>
           {firstStep ? 'Cancel' : 'Back'}
         </Button>

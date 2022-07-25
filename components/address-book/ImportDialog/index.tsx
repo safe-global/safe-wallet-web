@@ -83,7 +83,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
                 {...getRootProps()}
                 className={css.dropbox}
                 sx={{
-                  border: ({ palette }) => `2px dashed ${zoneHover ? palette.error.main : palette.border.light}`,
+                  border: ({ palette }) => `2px dashed ${zoneHover ? palette.primary.main : palette.border.light}`,
                   py: '12px',
                   my: '24px',
                 }}
