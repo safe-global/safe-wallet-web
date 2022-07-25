@@ -11,7 +11,12 @@ const REFRESH_DELAY = 20e3 // 20 seconds
 
 const fetchGasOracle = async (gasPriceOracle: GasPriceOracle): Promise<BigNumber> => {
   const { uri, gasParameter, gweiFactor } = gasPriceOracle
-  const json = await fetch(uri).then((resp) => resp.json())
+  const response = await fetch(uri)
+  if (!response.ok) {
+    throw new Error(`Error fetching gas price from oracle ${uri}`)
+  }
+
+  const json = await response.json()
   const data = json.data || json.result || json
   return BigNumber.from(data[gasParameter] * Number(gweiFactor))
 }

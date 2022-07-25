@@ -1,3 +1,5 @@
+import { normalizeUrl } from '@/utils/url'
+
 type AppManifestIcon = {
   src: string
   sizes: string
@@ -16,9 +18,14 @@ export type AppManifest = {
 }
 
 const fetchAppManifest = async (appUrl: string) => {
-  const manifestUrl = `${appUrl}/manifest.json`
+  const normalizedUrl = normalizeUrl(appUrl)
+  const manifestUrl = `${normalizedUrl}/manifest.json`
+  const response = await fetch(manifestUrl)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch manifest from ${manifestUrl}`)
+  }
 
-  return await fetch(manifestUrl).then((res) => res.json())
+  return response.json()
 }
 
 const isAppManifestValid = (json: unknown): json is AppManifest => {
