@@ -6,8 +6,6 @@ import { ConnectButton } from '@/components/common/ConnectWallet/ConnectButton'
 const ConnectWallet = (): ReactElement => {
   const wallet = useWallet()
 
-  console.log('WALLET ADDRESS: ', wallet?.ens)
-
   return wallet ? <DisconnectButton wallet={wallet} /> : <ConnectButton />
 }
 
