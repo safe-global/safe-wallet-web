@@ -87,8 +87,7 @@ export const createRejectTx = async (nonce: number): Promise<SafeTransaction> =>
  * Update tx nonce
  */
 export const updateTxNonce = async (tx: SafeTransaction, nonce: number): Promise<SafeTransaction> => {
-  const safeSDK = getAndValidateSafeSDK()
-  return await createTx({ ...tx.data, nonce })
+  return createTx({ ...tx.data, nonce })
 }
 
 /**
