@@ -129,7 +129,7 @@ export const getNewTxId = async (
     return proposedTx.txId
   } catch (e) {
     // This fallback is needed because proposeTx will fail if you propose the same tx repeatedly
-    // It migtht happen when the user rejects execution in the wallet and submits the tx again
+    // It might happen when the user rejects execution in the wallet and submits the tx again
     return Math.random().toString(32)
   }
 }
