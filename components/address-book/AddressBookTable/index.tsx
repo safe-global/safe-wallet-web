@@ -5,7 +5,7 @@ import EntryDialog, { AddressEntry } from '@/components/address-book/EntryDialog
 import ExportDialog from '@/components/address-book/ExportDialog'
 import ImportDialog from '@/components/address-book/ImportDialog'
 import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
@@ -80,7 +80,7 @@ const AddressBookTable = () => {
 
           <Tooltip title="Delete entry">
             <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)}>
-              <DeleteIcon />
+              <DeleteOutlineIcon />
             </IconButton>
           </Tooltip>
 

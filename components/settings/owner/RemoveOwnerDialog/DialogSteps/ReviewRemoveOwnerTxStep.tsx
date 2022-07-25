@@ -9,6 +9,7 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
 import { RemoveOwnerData } from '..'
+import React from 'react'
 
 export const ReviewRemoveOwnerTxStep = ({
   data,
@@ -44,24 +45,36 @@ export const ReviewRemoveOwnerTxStep = ({
       error={txError}
       title="Remove owner"
     >
-      <Grid container spacing={2} py={3}>
-        <Grid xs item className={`${css.detailsBlock}`}>
-          <Typography>Details</Typography>
-
-          <Box marginBottom={2}>
-            <Typography>Safe name:</Typography>
-            <Typography>{addressBook[safeAddress] || 'No name'}</Typography>
-          </Box>
-          <Box marginBottom={2}>
-            <Typography>Any transaction requires the confirmation of:</Typography>
-            <Typography>
-              <b>{threshold}</b> out of <b>{newOwnerLength}</b> owners
-            </Typography>
-          </Box>
+      <Grid
+        container
+        mt={-3}
+        mb={2}
+        mx={-3}
+        width="auto"
+        borderBottom={({ palette }) => `1px solid ${palette.border.light}`}
+      >
+        <Grid item md={4} pt={3} pl={3}>
+          <Typography mb={3}>Details</Typography>
+          <Typography variant="caption" color="text.secondary">
+            Name of the Safe:
+          </Typography>
+          <Typography mb={3}>{addressBook[safeAddress] || 'No name'}</Typography>
+          <Typography variant="caption" color="text.secondary">
+            Any transaction requires the confirmation of:
+          </Typography>
+          <Typography mb={3}>
+            <b>{threshold}</b> out of <b>{newOwnerLength}</b> owners
+          </Typography>
         </Grid>
 
-        <Grid>
-          <Typography paddingLeft={2}>{newOwnerLength} Safe owner(s)</Typography>
+        <Grid
+          item
+          xs={12}
+          md={8}
+          borderLeft={({ palette }) => [undefined, undefined, `1px solid ${palette.border.light}`]}
+          borderTop={({ palette }) => [`1px solid ${palette.border.light}`, undefined, 'none']}
+        >
+          <Typography p={3}>{newOwnerLength} Safe owner(s)</Typography>
           <Divider />
           {safe.owners
             .filter((owner) => !sameAddress(owner.value, removedOwner.address))
@@ -76,10 +89,10 @@ export const ReviewRemoveOwnerTxStep = ({
           {
             <>
               <div className={css.info}>
-                <Typography className={css.overline}>Removing owner &darr;</Typography>
+                <Typography variant="overline">Removing owner &darr;</Typography>
               </div>
               <Divider />
-              <Box className={css.removedOwner} padding={2}>
+              <Box bgcolor="error.light" padding={2}>
                 <EthHashInfo address={removedOwner.address} shortAddress={false} />
               </Box>
               <Divider />

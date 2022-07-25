@@ -1,24 +1,7 @@
-.detailsBlock {
-  border-right: 1px solid var(--color-border-light);
-  padding-top: 0;
-  padding-right: 1rem;
-}
-
-.removedOwner {
-  background-color: var(--color-background-main);
-}
-
 .info {
   background-color: var(--color-background-main);
   align-items: center;
   display: flex;
   flex-direction: column;
-}
-
-.overline {
-  font-size: 11px;
-  line-height: 14px;
-  letter-spacing: 1px;
-  align-self: center;
-  text-transform: uppercase;
+  padding: var(--space-1);
 }

@@ -29,12 +29,12 @@ export const SetThresholdStep = ({
     <form onSubmit={onSubmitHandler}>
       <TxModalTitle>Remove owner</TxModalTitle>
 
-      <Box py={3}>
-        <Typography>Set the required owner confirmations:</Typography>
+      <Box>
+        <Typography mb={3}>Set the required owner confirmations:</Typography>
 
-        <span>Any transaction requires the confirmation of:</span>
+        <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
 
-        <Grid container direction="row" alignItems="center" gap={1} pt={2}>
+        <Grid container direction="row" alignItems="center" gap={1} mt={1}>
           <Grid item xs={1.5}>
             <Select value={selectedThreshold} onChange={handleChange} fullWidth>
               {safe.owners.slice(1).map((_, idx) => (

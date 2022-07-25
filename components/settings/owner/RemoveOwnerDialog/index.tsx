@@ -1,6 +1,6 @@
 import { IconButton, Tooltip } from '@mui/material'
 import { useState } from 'react'
-import DeleteIcon from '@mui/icons-material/Delete'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -51,7 +51,7 @@ export const RemoveOwnerDialog = ({ owner }: { owner: OwnerData }) => {
     <div>
       <Tooltip title="Remove owner">
         <IconButton onClick={() => setOpen(true)}>
-          <DeleteIcon color="error" />
+          <DeleteOutlineIcon color="error" />
         </IconButton>
       </Tooltip>
       {open && <TxModal wide onClose={handleClose} steps={RemoveOwnerSteps} initialData={[initialModalData]} />}
