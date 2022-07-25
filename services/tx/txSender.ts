@@ -72,7 +72,6 @@ export const createMultiSendTx = async (
 
 export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
-
   return safeSDK.getRemoveOwnerTx(txParams)
 }
 
@@ -81,8 +80,14 @@ export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promis
  */
 export const createRejectTx = async (nonce: number): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
-
   return safeSDK.createRejectionTransaction(nonce)
+}
+
+/**
+ * Update tx nonce
+ */
+export const updateTxNonce = async (tx: SafeTransaction, nonce: number): Promise<SafeTransaction> => {
+  return createTx({ ...tx.data, nonce })
 }
 
 /**
@@ -110,6 +115,26 @@ export const createExistingTx = async (
 }
 
 /**
+ * Try to propose a transaction, or fall back to a random id
+ */
+export const getNewTxId = async (
+  chainId: string,
+  safeAddress: string,
+  sender: string,
+  safeTx: SafeTransaction,
+): Promise<string> => {
+  try {
+    // N.B.: proposals w/o signatures won't appear in the queue
+    const proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx)
+    return proposedTx.txId
+  } catch (e) {
+    // This fallback is needed because proposeTx will fail if you propose the same tx repeatedly
+    // It might happen when the user rejects execution in the wallet and submits the tx again
+    return Math.random().toString(32)
+  }
+}
+
+/**
  * Propose a transaction
  */
 export const dispatchTxProposal = async (
@@ -126,7 +151,6 @@ export const dispatchTxProposal = async (
     throw error
   }
 
-  // N.B.: proposals w/o signatures (i.e. immediate execution in 1/1 Safes) won't appear in the queue
   txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
 
   return proposedTx
@@ -141,14 +165,11 @@ export const dispatchTxSigning = async (
   txId?: string,
 ): Promise<SafeTransaction> => {
   const sdk = getAndValidateSafeSDK()
+  const signingMethod = isHardwareWallet ? 'eth_sign' : 'eth_signTypedData'
 
   try {
-    // Adds signatures to safeTx
-    if (isHardwareWallet) {
-      await sdk.signTransaction(safeTx, 'eth_sign')
-    } else {
-      await sdk.signTransaction(safeTx, 'eth_signTypedData')
-    }
+    // Add signature to safeTx
+    await sdk.signTransaction(safeTx, signingMethod)
   } catch (error) {
     txDispatch(TxEvent.SIGN_FAILED, { txId, tx: safeTx, error: error as Error })
     throw error

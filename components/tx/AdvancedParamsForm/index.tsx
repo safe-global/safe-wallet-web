@@ -12,8 +12,8 @@ import { BASE_TX_GAS } from '@/config/constants'
 export type AdvancedParameters = {
   nonce: number
   gasLimit?: BigNumber
-  maxFeePerGas: BigNumber
-  maxPriorityFeePerGas: BigNumber
+  maxFeePerGas?: BigNumber
+  maxPriorityFeePerGas?: BigNumber
 }
 
 type AdvancedParamsFormProps = AdvancedParameters & {
@@ -37,8 +37,8 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
     defaultValues: {
       nonce: props.nonce,
       gasLimit: props.gasLimit ? props.gasLimit.toString() : undefined,
-      maxFeePerGas: safeFormatUnits(props.maxFeePerGas),
-      maxPriorityFeePerGas: safeFormatUnits(props.maxPriorityFeePerGas),
+      maxFeePerGas: props.maxFeePerGas ? safeFormatUnits(props.maxFeePerGas) : '',
+      maxPriorityFeePerGas: props.maxPriorityFeePerGas ? safeFormatUnits(props.maxPriorityFeePerGas) : '',
     },
   })
   const {
