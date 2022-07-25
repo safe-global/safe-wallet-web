@@ -1,7 +1,6 @@
 import { useState, type ReactElement } from 'react'
 import { Divider, Drawer, IconButton, List } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
-import classnames from 'classnames'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SidebarHeader from '@/components/sidebar/SidebarHeader'
@@ -27,11 +26,7 @@ const Sidebar = (): ReactElement => {
   }
 
   return (
-    <div
-      className={classnames(css.container, {
-        [css.ownedSafesContainer]: !address && ownedSafesOnChain?.length,
-      })}
-    >
+    <div className={css.container}>
       <div className={css.scroll}>
         <div className={css.chain}>
           <ChainIndicator />
@@ -53,7 +48,7 @@ const Sidebar = (): ReactElement => {
         ) : (
           <div className={css.noSafeHeader}>
             {ownedSafesOnChain?.length > 0 && (
-              <List sx={{ py: 0 }}>
+              <List sx={{ py: 0 }} className={css.ownedSafes}>
                 {ownedSafesOnChain?.map((address) => (
                   <SafeListItem
                     key={address}

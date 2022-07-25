@@ -19,7 +19,9 @@
 .main {
   grid-area: main;
   padding: var(--space-3);
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 52px); /* needed for scroll */
   position: relative;
   background-color: var(--color-border-background);
   display: flex;

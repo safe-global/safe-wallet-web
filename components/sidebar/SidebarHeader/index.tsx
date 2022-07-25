@@ -56,13 +56,11 @@ const SafeHeader = (): ReactElement => {
         </div>
 
         <div>
-          <Typography variant="body2">
-            {safeLoading ? (
-              <Skeleton variant="text" width={86} />
-            ) : (
-              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
-            )}
-          </Typography>
+          {safeLoading ? (
+            <Skeleton variant="text" width={86} />
+          ) : (
+            <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
+          )}
           <Typography variant="body1">{safeLoading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
         </div>
       </div>

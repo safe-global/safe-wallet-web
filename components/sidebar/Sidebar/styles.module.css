@@ -1,37 +1,34 @@
 .container,
 .drawer {
   height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  position: relative;
   display: flex;
+  overflow: hidden;
   flex-direction: column;
   background-color: var(--color-background-paper);
 }
 
 .container {
-  width: 220px;
-  padding: 20px 0 0;
+  min-width: 220px;
   border-right: 1px solid var(--color-border-light);
 }
 
 .scroll {
+  position: relative;
   width: inherit;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 52px); /* needed for scroll */
 }
 
-.ownedSafesContainer,
-.drawer {
-  width: 400px;
+.drawer,
+.ownedSafes {
+  width: 340px;
 }
 
 .drawer {
   text-align: center;
   padding: 52px 0 0;
   border-right: 1px solid var(--color-border-light);
-}
-
-.chain {
-  margin-top: -20px;
 }
 
 .chain > * {
