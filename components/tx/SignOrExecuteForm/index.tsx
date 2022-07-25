@@ -4,7 +4,13 @@ import { Button, Checkbox, FormControlLabel } from '@mui/material'
 
 import css from './styles.module.css'
 
-import { createTx, dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
+import {
+  dispatchTxExecution,
+  dispatchTxProposal,
+  dispatchTxSigning,
+  getNewTxId,
+  updateTxNonce,
+} from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useGasPrice from '@/hooks/useGasPrice'
@@ -12,10 +18,10 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import GasParams from '@/components/tx/GasParams'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParamsForm, { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
-import { BigNumber } from 'ethers'
 import TxModalTitle from '../TxModalTitle'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
+import { logError, Errors } from '@/services/exceptions'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -40,22 +46,25 @@ const SignOrExecuteForm = ({
   error,
   title,
 }: SignOrExecuteProps): ReactElement => {
+  //
+  // Hooks & variables
+  //
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [isEditingGas, setEditingGas] = useState<boolean>(false)
   const [manualParams, setManualParams] = useState<AdvancedParameters>()
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
 
-  useEffect(() => setTx(safeTx), [safeTx])
-
   const { safe, safeAddress } = useSafeInfo()
-  const { chainId } = safe
   const wallet = useWallet()
 
   // Check that the transaction is executable
   const canExecute = isExecutable && !!tx && tx.data.nonce === safe.nonce
+  // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = shouldExecute && canExecute
-  const recommendedNonce = safeTx?.data.nonce
+
+  // Syncronize the tx with the safeTx
+  useEffect(() => setTx(safeTx), [safeTx])
 
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
@@ -71,83 +80,79 @@ const SignOrExecuteForm = ({
     maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
   }
 
-  const onFinish = async (actionFn: () => Promise<void>) => {
-    if (!wallet || !tx) return
+  // Estimating gas limit and price
+  const isEstimating = willExecute && (gasLimitLoading || gasPriceLoading)
+  // Nonce cannot be edited if the tx is already signed, or it's a rejection
+  const nonceReadonly = !!tx?.signatures.size || isRejection
 
+  //
+  // Callbacks
+  //
+
+  // Sign transaction
+  const onSign = async () => {
+    if (!wallet || !tx) throw new Error('Cannot sign')
+
+    const hardwareWallet = isHardwareWallet(wallet)
+    const signedTx = await dispatchTxSigning(tx, hardwareWallet, txId)
+
+    await dispatchTxProposal(safe.chainId, safeAddress, wallet.address, signedTx)
+  }
+
+  // Execute transaction
+  const onExecute = async () => {
+    if (!wallet || !tx) throw new Error('Cannot execute')
+
+    // If no txId was provided, it's an immediate execution of a new tx
+    const id = txId || (await getNewTxId(safe.chainId, safeAddress, wallet.address, tx))
+
+    // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
+    const txOptions = {
+      gasLimit: advancedParams.gasLimit?.toString(),
+      gasPrice: advancedParams.maxFeePerGas?.toString(),
+    }
+    await dispatchTxExecution(id, tx, txOptions)
+  }
+
+  // On modal submit
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault()
     setIsSubmittable(false)
+
     try {
-      await actionFn()
+      await (willExecute ? onExecute() : onSign())
+      onSubmit(null)
     } catch (err) {
       setIsSubmittable(true)
-      return
     }
-    onSubmit(null)
-  }
-
-  const onSign = async () => {
-    if (!wallet || !tx) return
-
-    onFinish(async () => {
-      const hardwareWallet = isHardwareWallet(wallet)
-      const signedTx = await dispatchTxSigning(tx, hardwareWallet, txId)
-      await dispatchTxProposal(chainId, safeAddress, wallet.address, signedTx)
-    })
-  }
-
-  const onExecute = async () => {
-    onFinish(async () => {
-      let id = txId
-      // If no txId was provided, it's an immediate execution of a new tx
-      if (!id) {
-        const proposedTx = await dispatchTxProposal(chainId, safeAddress, wallet!.address, tx!)
-        id = proposedTx.txId
-      }
-
-      // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
-      const txOptions = {
-        gasLimit: advancedParams.gasLimit?.toString(),
-        gasPrice: advancedParams.maxFeePerGas?.toString(),
-      }
-      await dispatchTxExecution(id, tx!, txOptions)
-    })
   }
 
   const onAdvancedSubmit = async (data: AdvancedParameters) => {
-    setEditingGas(false)
-    setManualParams(data)
-
-    // Create a new tx with the new nonce
+    // If nonce was edited, create a new with that nonce
     if (tx && data.nonce !== tx.data.nonce) {
       try {
-        const newTx = await createTx({ ...tx.data, nonce: data.nonce })
-        setTx(newTx)
+        setTx(await updateTxNonce(tx, data.nonce))
       } catch (err) {
-        console.error('Could not set new nonce', err)
+        logError(Errors._103, (err as Error).message)
+        return
       }
     }
-  }
 
-  const preventDefault = (callback: () => unknown) => {
-    return (e: SyntheticEvent) => {
-      e.preventDefault()
-      callback()
-    }
+    // Close the form and remember the manually set params
+    setEditingGas(false)
+    setManualParams(data)
   }
-
-  // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
-  const isEstimating = willExecute && (gasLimitLoading || gasPriceLoading)
-  const handleSubmit = preventDefault(willExecute ? onExecute : onSign)
 
   return isEditingGas ? (
     <AdvancedParamsForm
       nonce={advancedParams.nonce || 0}
       gasLimit={advancedParams.gasLimit}
-      maxFeePerGas={advancedParams.maxFeePerGas || BigNumber.from(0)}
-      maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas || BigNumber.from(0)}
+      maxFeePerGas={advancedParams.maxFeePerGas}
+      maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
       isExecution={willExecute}
-      recommendedNonce={recommendedNonce}
+      recommendedNonce={safeTx?.data.nonce}
       estimatedGasLimit={gasLimit?.toString()}
-      nonceReadonly={!!tx?.signatures.size || isRejection}
+      nonceReadonly={nonceReadonly}
       onSubmit={onAdvancedSubmit}
     />
   ) : (
