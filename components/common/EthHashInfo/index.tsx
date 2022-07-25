@@ -50,7 +50,7 @@ const SRCEthHashInfo = ({
         {props.name && <Typography variant="body2">{props.name}</Typography>}
 
         <Box className={css.addressRow}>
-          <Typography variant="body2">
+          <Typography variant="body2" fontWeight="inherit">
             {prefix && <b>{prefix}:</b>}
             {shortAddress ? shortenAddress(address) : address}
           </Typography>
@@ -69,7 +69,7 @@ const EthHashInfo = (props: EthHashInfoProps & { showName?: boolean }): ReactEle
   const chainId = useChainId()
   const addressBook = useAddressBook()
   // prefer address book name
-  const name = props.showName === false ? undefined : addressBook[props.address] || props.name
+  const name = props.showName ? addressBook[props.address] || props.name : undefined
   const prefix = settings.shortName.show ? Object.keys(chains).find((key) => chains[key] === chainId) : undefined
 
   return <SRCEthHashInfo {...props} prefix={prefix} name={name} />

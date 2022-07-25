@@ -12,7 +12,7 @@ import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
-const enum WALLET_KEYS {
+export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
   FORTMATIC = 'FORTMATIC',
   INJECTED = 'INJECTED',
