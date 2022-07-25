@@ -29,4 +29,8 @@
   .menuButton {
     display: block;
   }
+
+  .container button {
+    font-size: 8px;
+  }
 }
