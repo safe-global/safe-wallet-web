@@ -27,7 +27,7 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
 
       {/* Mobile sidebar */}
       <Drawer variant="temporary" anchor="left" open={isMobileDrawerOpen} onClose={onMenuToggle}>
-        {sidebar}
+        <div onClick={onMenuToggle}>{sidebar}</div>
       </Drawer>
 
       <div className={css.main}>
