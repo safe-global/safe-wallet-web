@@ -29,11 +29,7 @@ const fetchAppManifest = async (appUrl: string) => {
 }
 
 const isAppManifestValid = (json: unknown): json is AppManifest => {
-  if (json != null && typeof json === 'object' && 'name' in json && 'description' in json && 'icons' in json) {
-    return true
-  }
-
-  return false
+  return json != null && typeof json === 'object' && 'name' in json && 'description' in json && 'icons' in json
 }
 
 export { fetchAppManifest, isAppManifestValid }

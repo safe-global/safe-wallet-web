@@ -73,6 +73,6 @@ export const isValidURL = (url: string, protocolsAllowed = ['https:', 'http:']):
       return `Protocol "${urlInfo.protocol}" is not allowed`
     }
   } catch (error) {
-    return 'Invalid url'
+    return 'Invalid URL'
   }
 }
