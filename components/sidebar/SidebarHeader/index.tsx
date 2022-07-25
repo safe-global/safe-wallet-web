@@ -57,7 +57,9 @@ const SafeHeader = (): ReactElement => {
 
         <div>
           {safeLoading ? (
-            <Skeleton variant="text" width={86} />
+            <Typography variant="body2">
+              <Skeleton variant="text" width={86} />
+            </Typography>
           ) : (
             <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
           )}

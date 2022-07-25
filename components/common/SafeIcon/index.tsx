@@ -28,7 +28,7 @@ interface SafeIconProps extends IdenticonProps {
 
 const SafeIcon = ({ address, threshold, owners, size }: SafeIconProps): ReactElement => (
   <div className={css.container}>
-    {threshold && owners && <Threshold threshold={threshold} owners={owners} />}
+    {threshold && owners ? <Threshold threshold={threshold} owners={owners} /> : null}
     <Identicon address={address} size={size} />
   </div>
 )
