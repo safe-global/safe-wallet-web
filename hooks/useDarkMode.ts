@@ -1,14 +1,20 @@
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import initTheme from '@/styles/theme'
+
+const mediaQuery = '(prefers-color-scheme: dark)'
 
 export const useDarkMode = () => {
   const settings = useAppSelector(selectSettings)
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', settings.theme.darkMode ? 'dark' : 'light')
-  }, [settings.theme.darkMode])
+    const systemPreference = window.matchMedia(mediaQuery)
+    setIsDarkMode(systemPreference.matches || settings.theme.darkMode)
 
-  return useMemo(() => initTheme(settings.theme.darkMode), [settings.theme.darkMode])
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light')
+  }, [isDarkMode, settings.theme.darkMode])
+
+  return useMemo(() => initTheme(isDarkMode), [isDarkMode])
 }
