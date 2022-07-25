@@ -28,7 +28,7 @@ export const ConnectButton = () => {
 
   return (
     <>
-      <ButtonBase onClick={handleClick} disableRipple sx={{ alignSelf: 'stretch' }}>
+      <ButtonBase onClick={handleClick} aria-describedby={id} disableRipple sx={{ alignSelf: 'stretch' }}>
         <Box className={css.buttonContainer}>
           <Box className={css.imageContainer}>
             <KeyholeImage />
