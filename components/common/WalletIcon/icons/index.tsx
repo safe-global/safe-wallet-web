@@ -7,6 +7,7 @@ import fortmaticIcon from './icon-fortmatic.svg'
 import portisIcon from './icon-portis.svg'
 import torusIcon from './icon-torus.svg'
 import coinbaseIcon from './icon-coinbase.svg'
+import keystoneIcon from './icon-keystone.png'
 
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { StaticImageData } from 'next/image'
@@ -25,7 +26,7 @@ const WALLET_ICONS: Props = {
   [ADDITIONAL_KEYS.METAMASK]: metamaskIcon,
   [WALLET_KEYS.COINBASE]: coinbaseIcon,
   [WALLET_KEYS.INJECTED]: metamaskIcon,
-  [WALLET_KEYS.KEEPKEY]: metamaskIcon,
+  [WALLET_KEYS.KEYSTONE]: keystoneIcon,
   [WALLET_KEYS.WALLETCONNECT]: walletConnectIcon,
   [WALLET_KEYS.TREZOR]: trezorIcon,
   [WALLET_KEYS.LEDGER]: ledgerIcon,
