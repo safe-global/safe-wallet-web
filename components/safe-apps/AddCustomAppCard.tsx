@@ -36,6 +36,7 @@ const AddCustomAppCard = ({}: Props) => {
           Add custom app
         </Button>
       </Paper>
+
       <AddCustomAppModal open={addCustomAppModalOpen} onClose={() => setAddCustomAppModalOpen(false)} />
     </>
   )

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import {
   DialogActions,
   DialogContent,
@@ -16,6 +16,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
 import { AppManifest, fetchAppManifest, isAppManifestValid } from '@/services/safe-apps/manifest'
 import ChainIndicator from '@/components/common/ChainIndicator'
+import { normalizeUrl } from '@/utils/url'
 
 type Props = {
   open: boolean
@@ -28,6 +29,7 @@ type CustomAppFormData = {
 }
 
 const TEXT_FIELD_HEIGHT = '56px'
+const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
 
 const AddCustomAppModal = ({ open, onClose }: Props) => {
   const [appManifest, setAppManifest] = React.useState<AppManifest>()
@@ -35,14 +37,26 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false } })
-  const onSubmit = (data, e) => console.log(data, e)
+  const appUrl = watch('appUrl')
+  const onSubmit: SubmitHandler<CustomAppFormData> = (data, e) => console.log(data, e)
+
+  let appLogoUrl = APP_LOGO_FALLBACK_IMAGE
+  if (!errors.appUrl && appManifest?.icons[0]?.src) {
+    appLogoUrl = `${normalizeUrl(appUrl)}/${appManifest.icons[0].src}`
+  }
+
+  const handleClose = () => {
+    setAppManifest(undefined)
+    onClose()
+  }
 
   return (
     <ModalDialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       dialogTitle={
         <>
           <span>Add custom app</span>
@@ -71,6 +85,7 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
                 validUrl: isValidURL,
                 validManifest: async (val): Promise<string | undefined> => {
                   try {
+                    setAppManifest(undefined)
                     const manifest = await fetchAppManifest(val)
 
                     if (isAppManifestValid(manifest)) {
@@ -80,10 +95,6 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
 
                     throw new Error('Invalid manifest')
                   } catch (err) {
-                    if (err instanceof Error) {
-                      return err.message
-                    }
-
                     return 'The app doesnt support Safe App functionality'
                   }
                 },
@@ -97,7 +108,14 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
               mt: 2,
             }}
           >
-            <img height={TEXT_FIELD_HEIGHT} src="/images/apps-icon.svg" alt="Apps icon" />
+            <img
+              height={TEXT_FIELD_HEIGHT}
+              src={appLogoUrl}
+              alt="Apps icon"
+              onError={(e) => {
+                e.currentTarget.src = APP_LOGO_FALLBACK_IMAGE
+              }}
+            />
             <TextField label="App name" disabled sx={{ width: '100%', ml: 2 }} value={appManifest?.name || ''} />
           </Box>
           <FormControlLabel
@@ -119,8 +137,8 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
             </Link>
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
+        <DialogActions disableSpacing>
+          <Button onClick={handleClose}>Cancel</Button>
           <Button type="submit" variant="contained">
             Save
           </Button>
