@@ -21,6 +21,7 @@ body {
   margin: 0;
   font-family: Averta, sans-serif;
   background-color: var(--color-background-paper);
+  overflow: hidden;
 }
 
 main {

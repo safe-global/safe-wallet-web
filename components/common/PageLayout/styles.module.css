@@ -2,6 +2,7 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  background-color: var(--color-background-main);
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: auto 1fr;
@@ -21,9 +22,8 @@
   padding: var(--space-3);
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(100vh - 52px); /* needed for scroll */
+  min-height: calc(100vh - 52px); /* needed for scroll */
   position: relative;
-  background-color: var(--color-background-main);
   display: flex;
   flex-direction: column;
 }
