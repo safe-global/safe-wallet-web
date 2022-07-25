@@ -35,7 +35,7 @@ const Sidebar = (): ReactElement => {
           <>
             <SidebarHeader />
 
-            <Divider sx={({ palette }) => ({ borderColor: palette.border.light })} />
+            <Divider />
 
             <SidebarNavigation />
           </>
@@ -45,7 +45,7 @@ const Sidebar = (): ReactElement => {
 
         <div style={{ flexGrow: 1 }} />
 
-        <Divider flexItem sx={({ palette }) => ({ borderColor: palette.border.light })} />
+        <Divider flexItem />
 
         <SidebarFooter />
       </div>

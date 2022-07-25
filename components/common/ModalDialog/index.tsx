@@ -2,7 +2,6 @@ import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery, Modal
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import theme from '@/styles/theme'
-// import { ModalProps } from '@mui/material/Modal'
 
 interface ModalDialogProps extends DialogProps {
   dialogTitle?: React.ReactNode

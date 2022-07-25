@@ -32,7 +32,7 @@ export const SendFromBlock = (): ReactElement => {
       </Box>
 
       {nativeToken && (
-        <Box className={css.balance} bgcolor={(theme) => theme.palette.grey.A100}>
+        <Box className={css.balance} bgcolor={(theme) => theme.palette.background.main}>
           Balance:{' '}
           <b>
             {nativeTokenBalance} {nativeToken.tokenInfo.symbol}
@@ -128,7 +128,6 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               required: true,
               onChange: () => setValue(Field.amount, ''),
             })}
-            sx={{ '& .MuiSelect-select > *': { my: -1 } }}
           >
             {balances.items.map((item) => (
               <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>

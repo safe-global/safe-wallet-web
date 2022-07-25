@@ -22,9 +22,11 @@ const ModuleDisplay = ({ moduleAddress, chainId }: { moduleAddress: string; chai
 
 const SafeModules = () => {
   const { safe } = useSafeInfo()
+  const safeModules = safe.modules || []
+
   return (
     <Paper sx={{ padding: 4 }} variant="outlined">
-      <Grid container direction="row" justifyContent="space-between">
+      <Grid container direction="row" justifyContent="space-between" gap={2}>
         <Grid item>
           <Typography variant="h4" fontWeight={700}>
             Safe modules
@@ -39,10 +41,10 @@ const SafeModules = () => {
                 here
               </Link>
             </Typography>
-            {(safe?.modules || []).length === 0 ? (
+            {safeModules.length === 0 ? (
               <NoModules />
             ) : (
-              safe?.modules?.map((module) => (
+              safeModules.map((module) => (
                 <ModuleDisplay key={module.value} chainId={safe.chainId} moduleAddress={module.value} />
               ))
             )}

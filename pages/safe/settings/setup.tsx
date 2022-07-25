@@ -11,9 +11,9 @@ import SettingsIcon from '@/public/images/sidebar/settings.svg'
 
 const Setup: NextPage = () => {
   const { safe } = useSafeInfo()
-  const nonce = safe?.nonce
-  const ownerLength = safe?.owners.length ?? 0
-  const threshold = safe?.threshold ?? 0
+  const nonce = safe.nonce
+  const ownerLength = safe.owners.length
+  const threshold = safe.threshold
 
   const isSafeOwner = useIsSafeOwner()
   const isWrongChain = useIsWrongChain()
@@ -23,31 +23,23 @@ const Setup: NextPage = () => {
   return (
     <main>
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Setup" />
-      <Grid container spacing={7}>
-        <Grid item xs={8}>
-          <Paper sx={{ padding: 4 }} variant="outlined">
-            <Grid container>
-              <Grid item xs={12}>
-                <OwnerList isGranted={isGranted} />
-              </Grid>
-              <Grid item xs={12} marginTop={7}>
-                <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />
-              </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
-        <Grid item>
-          <Grid item xs>
-            <Typography variant="h4" fontWeight={700} paddingTop="48px">
+      <Paper sx={{ padding: 4 }} variant="outlined">
+        <OwnerList isGranted={isGranted} />
+        <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />
+      </Paper>
+      <Paper sx={{ padding: 4, marginTop: 2 }} variant="outlined">
+        <Grid container justifyContent="space-between" gap={2}>
+          <Grid item>
+            <Typography variant="h4" fontWeight={700}>
               Safe nonce
             </Typography>
             <Typography paddingTop={1}>Current nonce: {nonce}</Typography>
           </Grid>
-          <Grid item xs marginTop="64px">
+          <Grid item xs={12} md={8}>
             <ContractVersion />
           </Grid>
         </Grid>
-      </Grid>
+      </Paper>
     </main>
   )
 }

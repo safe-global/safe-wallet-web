@@ -22,9 +22,9 @@ const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId
 }
 
 const TransactionGuards = () => {
-  const { safe } = useSafeInfo()
+  const { safe, safeLoaded } = useSafeInfo()
 
-  const isVersionWithGuards = safe && gte(safe.version, '1.3.0')
+  const isVersionWithGuards = safeLoaded && gte(safe.version, '1.3.0')
 
   if (!isVersionWithGuards) {
     return null
@@ -32,7 +32,7 @@ const TransactionGuards = () => {
 
   return (
     <Paper sx={{ padding: 4 }} variant="outlined">
-      <Grid container direction="row" justifyContent="space-between">
+      <Grid container direction="row" justifyContent="space-between" gap={2}>
         <Grid item>
           <Typography variant="h4" fontWeight={700}>
             Transaction Guards

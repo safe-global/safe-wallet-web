@@ -4,8 +4,6 @@ import { Button, Checkbox, FormControlLabel } from '@mui/material'
 
 import css from './styles.module.css'
 
-import useSafeAddress from '@/hooks/useSafeAddress'
-import { useChainId } from '@/hooks/useChainId'
 import { createTx, dispatchTxExecution, dispatchTxProposal, dispatchTxSigning } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
@@ -50,13 +48,12 @@ const SignOrExecuteForm = ({
 
   useEffect(() => setTx(safeTx), [safeTx])
 
-  const { safe } = useSafeInfo()
-  const safeAddress = useSafeAddress()
-  const chainId = useChainId()
+  const { safe, safeAddress } = useSafeInfo()
+  const { chainId } = safe
   const wallet = useWallet()
 
   // Check that the transaction is executable
-  const canExecute = isExecutable && !!tx && tx.data.nonce === safe?.nonce
+  const canExecute = isExecutable && !!tx && tx.data.nonce === safe.nonce
   const willExecute = shouldExecute && canExecute
   const recommendedNonce = safeTx?.data.nonce
 
@@ -154,42 +151,43 @@ const SignOrExecuteForm = ({
       onSubmit={onAdvancedSubmit}
     />
   ) : (
-    <div className={css.container}>
+    <>
       {title && <TxModalTitle>{title}</TxModalTitle>}
+      <div className={css.container}>
+        {children}
 
-      {children}
+        <DecodedTx tx={tx} />
 
-      <DecodedTx tx={tx} />
+        <form onSubmit={handleSubmit}>
+          {canExecute && !onlyExecute && (
+            <FormControlLabel
+              control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
+              label="Execute transaction"
+            />
+          )}
 
-      <form onSubmit={handleSubmit}>
-        {canExecute && !onlyExecute && (
-          <FormControlLabel
-            control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
-            label="Execute transaction"
+          <GasParams
+            isExecution={willExecute}
+            isLoading={isEstimating}
+            nonce={advancedParams.nonce}
+            gasLimit={advancedParams.gasLimit}
+            maxFeePerGas={advancedParams.maxFeePerGas}
+            maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
+            onEdit={() => setEditingGas(true)}
           />
-        )}
 
-        <GasParams
-          isExecution={willExecute}
-          isLoading={isEstimating}
-          nonce={advancedParams.nonce}
-          gasLimit={advancedParams.gasLimit}
-          maxFeePerGas={advancedParams.maxFeePerGas}
-          maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
-          onEdit={() => setEditingGas(true)}
-        />
+          {(error || (willExecute && gasLimitError)) && (
+            <ErrorMessage error={error || gasLimitError}>
+              This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+            </ErrorMessage>
+          )}
 
-        {(error || (willExecute && gasLimitError)) && (
-          <ErrorMessage error={error || gasLimitError}>
-            This transaction will most likely fail. To save gas costs, avoid creating the transaction.
-          </ErrorMessage>
-        )}
-
-        <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
-          {isEstimating ? 'Estimating...' : 'Submit'}
-        </Button>
-      </form>
-    </div>
+          <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
+            {isEstimating ? 'Estimating...' : 'Submit'}
+          </Button>
+        </form>
+      </div>
+    </>
   )
 }
 

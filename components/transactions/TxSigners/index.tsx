@@ -1,5 +1,15 @@
 import { useState, type ReactElement } from 'react'
-import { Box, Button, Step, StepConnector, StepContent, StepLabel, Stepper, type StepProps } from '@mui/material'
+import {
+  Box,
+  Button,
+  Palette,
+  Step,
+  StepConnector,
+  StepContent,
+  StepLabel,
+  Stepper,
+  type StepProps,
+} from '@mui/material'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUncheckedOutlined'
@@ -11,7 +21,6 @@ import type {
   TransactionDetails,
   TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import theme from '@/styles/theme'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsPending from '@/hooks/useIsPending'
@@ -32,9 +41,7 @@ const CircleIcon = () => (
 const DotIcon = () => <FiberManualRecordIcon className={css.icon} />
 
 type StepState = 'confirmed' | 'active' | 'disabled' | 'error'
-const getStepColor = (state: StepState): string => {
-  const { palette } = theme
-
+const getStepColor = (state: StepState, palette: Palette): string => {
   const colors = {
     confirmed: palette.primary.main,
     active: palette.warning.dark,
@@ -50,18 +57,17 @@ type StyledStepProps = {
 }
 const StyledStep = ({ $bold, $state, sx, ...rest }: StyledStepProps & StepProps) => (
   <Step
-    sx={{
+    sx={({ palette }) => ({
       '.MuiStepLabel-label': {
         fontWeight: `${$bold ? 'bold' : 'normal'} !important`,
-        color: `${getStepColor($state)} !important`,
+        color: `${getStepColor($state, palette)} !important`,
         fontSize: '16px !important',
       },
       '.MuiStepLabel-iconContainer': {
-        color: getStepColor($state),
+        color: getStepColor($state, palette),
         alignItems: 'center',
       },
-      ...sx,
-    }}
+    })}
     {...rest}
   />
 )
@@ -148,7 +154,7 @@ export const TxSigners = ({
         </StyledStep>
       )}
       <StyledStep expanded $bold $state={isExecuted ? 'confirmed' : 'disabled'}>
-        <StepLabel icon={isExecuted ? <CheckIcon /> : <CircleIcon />}>
+        <StepLabel icon={isExecuted ? <CheckIcon /> : <CircleIcon />} sx={{ marginBottom: 1 }}>
           {isExecuted ? 'Executed' : isPending ? 'Executing' : 'Execution'}
         </StepLabel>
         {

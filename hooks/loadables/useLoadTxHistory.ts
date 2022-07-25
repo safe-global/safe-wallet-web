@@ -5,18 +5,16 @@ import { Errors, logError } from '@/services/exceptions'
 import useSafeInfo from '../useSafeInfo'
 
 export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
-  const { safe } = useSafeInfo()
-  const { chainId, txHistoryTag } = safe || {}
-  const address = safe?.address.value
+  const { safe, safeAddress, safeLoaded } = useSafeInfo()
+  const { chainId, txHistoryTag } = safe
 
   // Re-fetch when chainId/address, or txHistoryTag change
   const [data, error, loading] = useAsync<TransactionListPage | undefined>(
     async () => {
-      if (chainId && address) {
-        return getTransactionHistory(chainId, address)
-      }
+      if (!safeLoaded) return
+      return getTransactionHistory(chainId, safeAddress)
     },
-    [chainId, address, txHistoryTag],
+    [safeLoaded, chainId, safeAddress, txHistoryTag],
     false,
   )
 

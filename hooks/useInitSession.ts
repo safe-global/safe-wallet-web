@@ -6,10 +6,10 @@ import useSafeInfo from './useSafeInfo'
 
 export const useInitSession = (): void => {
   const dispatch = useAppDispatch()
+  // N.B. use "useChainId" because we can be on a non-Safe route
   const chainId = useChainId()
-  const { safe } = useSafeInfo()
   // N.B. only successfully loaded Safes, don't use useSafeAddress() here!
-  const safeAddress = safe?.address.value
+  const { safeAddress } = useSafeInfo()
 
   useEffect(() => {
     dispatch(setLastChainId(chainId))

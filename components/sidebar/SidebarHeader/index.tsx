@@ -3,7 +3,6 @@ import Typography from '@mui/material/Typography'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 
-import { shortenAddress } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SafeIcon from '@/components/common/SafeIcon'
@@ -20,6 +19,8 @@ import { selectSettings } from '@/store/settingsSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getExplorerLink } from '@/utils/gateway'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import CopyButton from '@/components/common/CopyButton'
 
 const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
   <IconButton className={css.iconButton} {...props}>
@@ -30,40 +31,39 @@ const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'classNa
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
   const { balances } = useBalances()
-  const { safe, loading } = useSafeInfo()
+  const { safe, safeAddress, safeLoading } = useSafeInfo()
   const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
 
-  const address = safe?.address.value || ''
-
-  const { threshold, owners } = safe || {}
+  const { threshold, owners } = safe
 
   // TODO: Format to parts w/ style
   const fiat = useMemo(() => {
     return formatCurrency(balances.fiatTotal, currency)
   }, [currency, balances.fiatTotal])
 
-  const handleCopy = () => {
-    const text = settings.shortName.copy && chain ? `${chain.shortName}:${address}` : address
-    navigator.clipboard.writeText(text)
-  }
+  const text = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
 
   return (
     <div className={css.container}>
       <div className={css.safe}>
         <div className={css.icon}>
-          {loading ? (
+          {safeLoading ? (
             <Skeleton variant="circular" width={40} height={40} />
           ) : (
-            <SafeIcon address={address} threshold={threshold} owners={owners?.length} />
+            <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
           )}
         </div>
 
         <div>
-          <Typography variant="body2">
-            {loading ? <Skeleton variant="text" width={86} /> : address ? shortenAddress(address) : '...'}
+          <Typography variant="body2" component="div">
+            {safeLoading ? (
+              <Skeleton variant="text" width={86} />
+            ) : (
+              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
+            )}
           </Typography>
-          <Typography variant="body1">{loading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
+          <Typography variant="body1">{safeLoading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
         </div>
       </div>
 
@@ -73,11 +73,15 @@ const SafeHeader = (): ReactElement => {
           <QrIcon />
         </HeaderIconButton>
 
-        <HeaderIconButton onClick={handleCopy}>
+        <CopyButton text={text} className={css.iconButton}>
           <CopyIcon />
-        </HeaderIconButton>
+        </CopyButton>
 
-        <a target="_blank" rel="noreferrer" {...(chain && getExplorerLink(address, chain.blockExplorerUriTemplate))}>
+        <a
+          target="_blank"
+          rel="noreferrer"
+          {...(chain && getExplorerLink(safeAddress, chain.blockExplorerUriTemplate))}
+        >
           <HeaderIconButton>
             <OpenInNewRoundedIcon color="primary" fontSize="small" />
           </HeaderIconButton>

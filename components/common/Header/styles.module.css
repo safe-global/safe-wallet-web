@@ -8,12 +8,14 @@
   align-items: center;
   position: relative;
   z-index: 2;
-  box-shadow: rgb(40 54 61 / 18%) 0px 2px 4px 0px;
+  border-radius: 0 !important;
+  background-color: var(--color-background-paper);
 }
 
 .logo {
   width: auto;
   display: block;
+  fill: var(--color-logo-main);
 }
 
 .menuButton {

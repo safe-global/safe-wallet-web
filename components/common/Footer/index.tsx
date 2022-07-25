@@ -1,5 +1,5 @@
 import { SyntheticEvent, ReactElement } from 'react'
-import { Link } from '@mui/material'
+import { Link, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'
 import { useAppDispatch } from '@/store'
@@ -31,7 +31,9 @@ const Footer = (): ReactElement | null => {
   return (
     <footer className={css.container}>
       <ul>
-        <li>&copy;2022 Safe Foundation</li>
+        <li>
+          <Typography variant="caption">&copy;2022 Safe Foundation</Typography>
+        </li>
         <li>
           <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/terms">
             Terms

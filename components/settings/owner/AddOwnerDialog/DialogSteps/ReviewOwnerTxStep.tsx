@@ -10,13 +10,12 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
 
 export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (data: null) => void }) => {
-  const { safe } = useSafeInfo()
-  const chainId = useChainId()
+  const { safe, safeAddress } = useSafeInfo()
+  const { chainId } = safe
   const dispatch = useAppDispatch()
   const safeSDK = useSafeSDK()
   const addressBook = useAddressBook()
@@ -69,7 +68,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
     <SignOrExecuteForm
       safeTx={safeTx}
       onSubmit={addAddressBookEntryAndSubmit}
-      isExecutable={safe?.threshold === 1}
+      isExecutable={safe.threshold === 1}
       error={txError}
       title="Add new owner"
     >
@@ -79,20 +78,20 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
 
           <Box marginBottom={2}>
             <Typography>Safe name:</Typography>
-            <Typography>{safe ? addressBook[safe?.address.value] || 'No name' : ''}</Typography>
+            <Typography>{addressBook[safeAddress] || 'No name'}</Typography>
           </Box>
           <Box marginBottom={2}>
             <Typography>Any transaction requires the confirmation of:</Typography>
             <Typography>
-              <b>{threshold}</b> out of <b>{(safe?.owners.length ?? 0) + (isReplace ? 0 : 1)}</b> owners
+              <b>{threshold}</b> out of <b>{safe.owners.length + (isReplace ? 0 : 1)}</b> owners
             </Typography>
           </Box>
         </Grid>
 
         <Grid>
-          <Typography paddingLeft={2}>{safe?.owners.length ?? 0} Safe owner(s)</Typography>
+          <Typography paddingLeft={2}>{safe.owners.length} Safe owner(s)</Typography>
           <Divider />
-          {safe?.owners
+          {safe.owners
             .filter((owner) => !removedOwner || !sameAddress(owner.value, removedOwner.address))
             .map((owner) => (
               <div key={owner.value}>

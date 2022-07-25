@@ -52,7 +52,7 @@ const EntryDialog = ({
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
-            <Box py={2}>
+            <Box mb={2}>
               <TextField
                 autoFocus
                 label="Name"
@@ -63,7 +63,7 @@ const EntryDialog = ({
               />
             </Box>
 
-            <Box py={2}>
+            <Box>
               <AddressInput
                 name="address"
                 label="Address"

@@ -20,9 +20,9 @@ export const ChooseOwnerStep = ({
   data: ChangeOwnerData
   onSubmit: (data: ChangeOwnerData) => void
 }) => {
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const { removedOwner, newOwner } = data
-  const owners = safe?.owners
+  const owners = safe.owners
 
   const isReplace = Boolean(removedOwner)
 
@@ -47,7 +47,7 @@ export const ChooseOwnerStep = ({
   }
 
   const notAlreadyOwner = uniqueAddress(owners?.map((owner) => owner.value))
-  const notCurrentSafe = addressIsNotCurrentSafe(safe?.address.value ?? '')
+  const notCurrentSafe = addressIsNotCurrentSafe(safeAddress)
   const combinedValidate = (address: string) => notAlreadyOwner(address) || notCurrentSafe(address)
 
   return (
