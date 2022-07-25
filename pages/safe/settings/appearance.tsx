@@ -55,7 +55,7 @@ const Appearance: NextPage = () => {
           </Grid>
           <Grid item md={8}>
             <FormControlLabel
-              control={<Checkbox checked={settings.theme.darkMode} onChange={handleToggle(setDarkMode)} disabled />}
+              control={<Checkbox checked={settings.theme.darkMode} onChange={handleToggle(setDarkMode)} />}
               label="Dark mode"
             />
           </Grid>

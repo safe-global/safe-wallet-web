@@ -1,7 +1,7 @@
 .container {
   position: relative;
   z-index: 2;
-  margin: 0 0 -118.5px; /* cover the stepper bottom buttons */
+  margin: 0 0 -117.5px; /* cover the stepper bottom buttons */
 }
 
 .container button[type='submit'] {

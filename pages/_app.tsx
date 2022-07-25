@@ -1,5 +1,5 @@
 import Sentry from '@/services/sentry' // needs to be imported first
-import { type ReactElement } from 'react'
+import { type ReactElement, ReactNode, useEffect, useState } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import { Provider } from 'react-redux'
@@ -7,7 +7,6 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
 import { CacheProvider } from '@emotion/react'
 import createCache from '@emotion/cache'
-import theme from '@/styles/theme'
 import '@/styles/globals.css'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { store } from '@/store'
@@ -24,6 +23,7 @@ import { useInitSession } from '@/hooks/useInitSession'
 import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const cssCache = createCache({
   key: 'css',
@@ -50,7 +50,26 @@ const InitApp = (): null => {
   return null
 }
 
-const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
+const AppProviders = ({ children }: { children: ReactNode[] }) => {
+  const theme = useDarkMode()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
+
+  return (
+    <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
+      <CacheProvider value={cssCache}>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      </CacheProvider>
+    </Sentry.ErrorBoundary>
+  )
+}
+
+const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement | null => {
   return (
     <Provider store={store}>
       <Head>
@@ -58,24 +77,19 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
         <meta name="description" content="Safe app" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <AppProviders>
+        <CssBaseline />
 
-      <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
-        <CacheProvider value={cssCache}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
+        <InitApp />
 
-            <InitApp />
+        <PageLayout>
+          <Component {...pageProps} />
+        </PageLayout>
 
-            <PageLayout>
-              <Component {...pageProps} />
-            </PageLayout>
+        <CookieBanner />
 
-            <CookieBanner />
-
-            <Notifications />
-          </ThemeProvider>
-        </CacheProvider>
-      </Sentry.ErrorBoundary>
+        <Notifications />
+      </AppProviders>
     </Provider>
   )
 }

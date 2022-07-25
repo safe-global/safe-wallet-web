@@ -32,15 +32,15 @@ const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
       title="Reject transaction"
       error={rejectError}
     >
-      <Typography sx={{ margin: '20px 0' }}>
+      <Typography mb={2}>
         This action will reject this transaction. A separate transaction will be performed to submit the rejection.
       </Typography>
 
-      <Typography sx={{ margin: '20px 0' }}>
+      <Typography mb={2}>
         Transaction nonce: <b>{txNonce}</b>
       </Typography>
 
-      <Typography>
+      <Typography mb={2}>
         You are about to create a rejection transaction and will have to confirm it with your currently connected
         wallet.
       </Typography>

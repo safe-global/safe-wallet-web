@@ -16,8 +16,13 @@
   padding-bottom: 6px;
 }
 
+.list :global .MuiListItemButton-root {
+  color: var(--color-text-primary);
+}
+
 .list :global .MuiListItemButton-root:hover,
 .list :global .MuiListItemButton-root.Mui-selected {
+  color: var(--color-text-primary);
   background-color: var(--color-primary-background);
 }
 

@@ -4,13 +4,13 @@
 
 .container button[type='submit'] {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: var(--space-3);
+  right: var(--space-3);
   z-index: 1;
 }
 
 .stepIndicator {
   position: absolute;
-  right: 0;
-  top: 0;
+  right: var(--space-3);
+  top: var(--space-3);
 }

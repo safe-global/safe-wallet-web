@@ -1,23 +1,26 @@
-const palette = {
+const darkPalette = {
   text: {
-    primary: '#162D45',
-    secondary: '#162D45',
-    disabled: '#ddd',
+    primary: '#ffffff',
+    secondary: '#ffffff',
+    disabled: '#ffffff4d',
+  },
+  action: {
+    active: '#ffffff',
   },
   primary: {
     dark: '#0E7361',
     main: '#008C73',
     light: '#92C9BE',
-    background: '#EFFAF8',
+    background: '#3e454d',
   },
   secondary: {
-    main: '#162D45',
+    main: '#EFFAF8',
     light: '#566976',
   },
   border: {
     main: '#ACBAC3',
-    light: '#EEEFF0',
-    background: '#F6F7F8',
+    light: '#25282b',
+    background: '#444444',
   },
   error: {
     dark: '#C31717',
@@ -43,14 +46,14 @@ const palette = {
     background: '#FFF4E3',
   },
   background: {
-    default: '#F6F7F8',
-    main: '#F6F7F8',
-    paper: '#FFFFFF',
-    light: '#F1FAF8',
+    default: '#121212',
+    main: '#121212',
+    paper: '#1e1f20',
+    light: '#282e2d',
   },
   logo: {
-    main: '#000000',
+    main: '#ffffff',
   },
 }
 
-export default palette
+export default darkPalette

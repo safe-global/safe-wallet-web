@@ -85,7 +85,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <TxModalTitle>Advanced parameters</TxModalTitle>
 
-          <Grid container my={4} spacing={2}>
+          <Grid container spacing={2}>
             <Grid item xs={6}>
               <FormControl fullWidth>
                 <NonceForm

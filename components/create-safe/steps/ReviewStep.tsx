@@ -70,8 +70,8 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
           item
           xs={12}
           md={8}
-          borderLeft={[undefined, undefined, '1px solid #ddd']}
-          borderTop={['1px solid #ddd', undefined, 'none']}
+          borderLeft={({ palette }) => [undefined, undefined, `1px solid ${palette.border.light}`]}
+          borderTop={({ palette }) => [`1px solid ${palette.border.light}`, undefined, 'none']}
         >
           <Box padding={3}>{params.owners.length} Safe owners</Box>
           <Divider />
