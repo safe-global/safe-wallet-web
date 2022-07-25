@@ -4,7 +4,7 @@
   overflow: hidden;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: auto 1fr;
   grid-template-areas:
     'header header'
     'sidebar main';
@@ -19,7 +19,9 @@
 .main {
   grid-area: main;
   padding: var(--space-3);
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: calc(100vh - 52px); /* needed for scroll */
   position: relative;
   background-color: var(--color-background-main);
   display: flex;
@@ -40,8 +42,16 @@
 
 @media (max-width: 768px) {
   .container {
-    grid-template-columns: 1fr;
-    grid-template-areas: 'header' 'main' 'footer';
+    display: block;
+    padding-top: 52px;
+    height: auto;
+  }
+
+  .container header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
   }
 
   .sidebar {
@@ -50,5 +60,6 @@
 
   .main {
     padding: var(--space-2);
+    overflow: hidden;
   }
 }

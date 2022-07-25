@@ -4261,6 +4261,16 @@
     joi "^17.4.2"
     rxjs "^7.5.2"
 
+"@web3-onboard/common@^2.1.6":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/common/-/common-2.1.6.tgz#29d1a4a98b24a08af9f532707225ad5054e25bb6"
+  integrity sha512-mVmkjM/hI4WeK9uN3TNt/+v7VtNdwoTbAzTRAOcUSIZRK3q1ptWQoL0tydRimXCTfvv+EUJxlJHb+1+QqmRVPw==
+  dependencies:
+    "@ethereumjs/common" "2.6.2"
+    ethers "5.5.4"
+    joi "^17.4.2"
+    rxjs "^7.5.2"
+
 "@web3-onboard/core@^2.2.12":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@web3-onboard/core/-/core-2.4.0.tgz#37948f6826cc147a16e7ae56bae01c03a4675994"
@@ -4308,15 +4318,15 @@
     "@web3-onboard/common" "^2.1.5"
     ethereumjs-util "^7.1.3"
 
-"@web3-onboard/keystone@^2.1.2":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/keystone/-/keystone-2.1.6.tgz#4f8b635133994b5eb9719f35b069384fe4835729"
-  integrity sha512-Ivfdei6yxzRnaYh4ycsOKY3xYz1MTD2CxuboMZZ8iAjKIYMBUDGBYOXKy+1q7nU750D+dKMVnGVQonEcBQj++Q==
+"@web3-onboard/keystone@^2.1.7":
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/keystone/-/keystone-2.1.7.tgz#a4f6d31c199f72667ad7bf77dba530a82fefe4b5"
+  integrity sha512-7DLNivF0CbkQRuVdhtLkz3AYnQnuLDAf48M66QUCNeciYAEf4j/rPIR2CCCWJ84gLLEVRQTJohG+Afat0kX3dg==
   dependencies:
     "@ethereumjs/tx" "^3.4.0"
     "@ethersproject/providers" "^5.5.0"
     "@keystonehq/eth-keyring" "^0.14.0-alpha.10.3"
-    "@web3-onboard/common" "^2.1.5"
+    "@web3-onboard/common" "^2.1.6"
 
 "@web3-onboard/ledger@^2.1.1":
   version "2.1.5"
