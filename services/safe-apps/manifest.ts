@@ -1,4 +1,4 @@
-import { normalizeUrl } from '@/utils/url'
+import { trimTrailingSlash } from '@/utils/url'
 
 type AppManifestIcon = {
   src: string
@@ -18,7 +18,7 @@ export type AppManifest = {
 }
 
 const fetchAppManifest = async (appUrl: string) => {
-  const normalizedUrl = normalizeUrl(appUrl)
+  const normalizedUrl = trimTrailingSlash(appUrl)
   const manifestUrl = `${normalizedUrl}/manifest.json`
   const response = await fetch(manifestUrl)
   if (!response.ok) {

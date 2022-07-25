@@ -16,7 +16,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
 import { AppManifest, fetchAppManifest, isAppManifestValid } from '@/services/safe-apps/manifest'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { normalizeUrl } from '@/utils/url'
+import { trimTrailingSlash } from '@/utils/url'
 
 type Props = {
   open: boolean
@@ -31,6 +31,28 @@ type CustomAppFormData = {
 const TEXT_FIELD_HEIGHT = '56px'
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
 
+// The icons URL can be any of the following format:
+// - https://example.com/icon.png
+// - icon.png
+// - /icon.png
+// This function calculates the absolute URL of the icon taking into account the
+// different formats.
+const getAppLogoUrl = (appUrl: string, icons: AppManifest['icons']) => {
+  const iconUrl = icons[0].src
+  const includesBaseUrl = iconUrl.startsWith('https://')
+  if (includesBaseUrl) {
+    return iconUrl
+  }
+
+  const isAbsoluteUrl = iconUrl.startsWith('/')
+  if (isAbsoluteUrl) {
+    const appUrlHost = new URL(appUrl).host
+    return `${appUrlHost}${iconUrl}`
+  }
+
+  return `${appUrl}/${icons[0].src}`
+}
+
 const AddCustomAppModal = ({ open, onClose }: Props) => {
   const [appManifest, setAppManifest] = React.useState<AppManifest>()
 
@@ -44,8 +66,8 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
   const onSubmit: SubmitHandler<CustomAppFormData> = (data, e) => console.log(data, e)
 
   let appLogoUrl = APP_LOGO_FALLBACK_IMAGE
-  if (!errors.appUrl && appManifest?.icons[0]?.src) {
-    appLogoUrl = `${normalizeUrl(appUrl)}/${appManifest.icons[0].src}`
+  if (appManifest && appManifest.icons.length > 0) {
+    appLogoUrl = getAppLogoUrl(trimTrailingSlash(appUrl), appManifest.icons)
   }
 
   const handleClose = () => {
@@ -95,7 +117,7 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
 
                     throw new Error('Invalid manifest')
                   } catch (err) {
-                    return 'The app doesnt support Safe App functionality'
+                    return "The app doesn't support Safe App functionality"
                   }
                 },
               },
