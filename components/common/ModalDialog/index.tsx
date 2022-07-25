@@ -1,8 +1,7 @@
 import { ReactElement } from 'react'
-import { Dialog, DialogTitle, type DialogProps } from '@mui/material'
-import { useMediaQuery } from '@mui/material'
+import { Dialog, DialogTitle, useMediaQuery, type DialogProps } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import theme from '@/styles/theme'
+import { theme } from '@/styles/theme'
 
 interface ModalDialogProps extends DialogProps {
   title?: string

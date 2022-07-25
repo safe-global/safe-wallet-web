@@ -2,7 +2,7 @@ import { ReactElement, useMemo } from 'react'
 import styled from '@emotion/styled'
 import { Box, Grid, Typography } from '@mui/material'
 import { useSafeApps } from '@/hooks/useSafeApps'
-import { Card, WidgetBody, WidgetContainer, WidgetTitle } from '../styled'
+import { Card, WidgetBody, WidgetContainer } from '../styled'
 import { SAFE_REACT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 
@@ -39,7 +39,9 @@ export const FeaturedApps = (): ReactElement | null => {
   return (
     <Grid item xs={12} md>
       <WidgetContainer id="featured-safe-apps">
-        <WidgetTitle>Connect &amp; transact</WidgetTitle>
+        <Typography variant="h2" mb={2}>
+          Connect &amp; transact
+        </Typography>
         <WidgetBody>
           <StyledGrid container>
             {featuredApps.map((app) => (

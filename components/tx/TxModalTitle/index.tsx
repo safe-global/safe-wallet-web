@@ -5,8 +5,8 @@ const TxModalTitle = ({ children }: { children: ReactNode }): ReactElement => {
   return (
     <DialogTitle
       sx={{
-        marginY: -1,
         marginX: -3,
+        marginBottom: 3,
         paddingY: 0,
         paddingX: 3,
         paddingBottom: 2,
