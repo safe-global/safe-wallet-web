@@ -1,5 +1,5 @@
 import Sentry from '@/services/sentry' // needs to be imported first
-import { type ReactElement, ReactNode, useEffect, useState } from 'react'
+import { type ReactElement, ReactNode } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import { Provider } from 'react-redux'
@@ -52,13 +52,6 @@ const InitApp = (): null => {
 
 const AppProviders = ({ children }: { children: ReactNode[] }) => {
   const theme = useDarkMode()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
 
   return (
     <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
