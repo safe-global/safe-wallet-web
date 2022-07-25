@@ -15,7 +15,7 @@ const Toast = ({ message, severity, onClose }: { message: string; severity: Aler
 
   return (
     <Snackbar open onClose={handleClose} sx={toastStyle}>
-      <Alert severity={severity} onClose={handleClose}>
+      <Alert severity={severity} onClose={handleClose} elevation={3}>
         {message}
       </Alert>
     </Snackbar>

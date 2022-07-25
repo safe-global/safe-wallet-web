@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material'
+import { createTheme, Shadows } from '@mui/material'
 import palette from './colors'
 import { base } from './spacings'
 
@@ -36,6 +36,14 @@ declare module '@mui/material/Button' {
 const theme = createTheme({
   palette,
   spacing: base,
+  shadows: [
+    'none',
+    '0 1px 1px #162d4505, 0 2px 2px #162d450a',
+    '0 1px 4px #162d450a, 0 4px 10px #162d4514',
+    '0 2px 20px #162d450a, 0 8px 32px #162d4514',
+    '0 8px 32px #162d450f, 0 24px 60px #162d451f',
+    ...Array(20).fill('none'),
+  ] as Shadows,
   typography: {
     fontFamily: 'Averta, sans-serif',
 
@@ -135,11 +143,6 @@ const theme = createTheme({
           '&:hover .MuiAccordionSummary-root': {
             background: theme.palette.primary.background,
           },
-
-          '&:last-of-type': {
-            borderBottomLeftRadius: '8px',
-            borderBottomRightRadius: '8px',
-          },
         }),
       },
     },
@@ -167,7 +170,7 @@ const theme = createTheme({
           borderColor: theme.palette.border.light,
         }),
         root: {
-          borderRadius: '8px',
+          borderRadius: '8px !important',
         },
       },
     },
@@ -176,6 +179,44 @@ const theme = createTheme({
         sizeSmall: {
           padding: '4px',
         },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        standardError: ({ theme }) => ({
+          '& .MuiAlert-icon': {
+            color: theme.palette.error.main,
+          },
+        }),
+        standardInfo: ({ theme }) => ({
+          '& .MuiAlert-icon': {
+            color: theme.palette.info.main,
+          },
+        }),
+        standardSuccess: ({ theme }) => ({
+          '& .MuiAlert-icon': {
+            color: theme.palette.success.main,
+          },
+        }),
+        standardWarning: ({ theme }) => ({
+          '& .MuiAlert-icon': {
+            color: theme.palette.warning.main,
+          },
+        }),
+        root: ({ theme }) => ({
+          color: theme.palette.secondary.main,
+          padding: '12px 16px',
+          backgroundColor: 'white',
+        }),
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '& .MuiTableCell-root': {
+            borderBottom: `2px solid ${theme.palette.border.light}`,
+          },
+        }),
       },
     },
   },

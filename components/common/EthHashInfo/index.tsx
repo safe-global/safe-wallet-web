@@ -8,6 +8,8 @@ import useAddressBook from '@/hooks/useAddressBook'
 import { Box, Typography } from '@mui/material'
 import ExplorerLink from '@/components/common/TokenExplorerLink'
 import CopyAddressButton from '@/components/common/CopyAddressButton'
+import { useAppSelector } from '@/store'
+import { selectSettings } from '@/store/settingsSlice'
 
 type EthHashInfoProps = {
   address: string
@@ -63,11 +65,12 @@ const SRCEthHashInfo = ({
 }
 
 const EthHashInfo = (props: EthHashInfoProps & { showName?: boolean }): ReactElement => {
+  const settings = useAppSelector(selectSettings)
   const chainId = useChainId()
   const addressBook = useAddressBook()
   // prefer address book name
   const name = props.showName === false ? undefined : addressBook[props.address] || props.name
-  const prefix = Object.keys(chains).find((key) => chains[key] === chainId)
+  const prefix = settings.shortName.show ? Object.keys(chains).find((key) => chains[key] === chainId) : undefined
 
   return <SRCEthHashInfo {...props} prefix={prefix} name={name} />
 }
