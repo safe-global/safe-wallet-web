@@ -114,10 +114,10 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           {removedOwner && (
             <>
               <div className={css.info}>
-                <Typography className={css.overline}>Removing owner &darr;</Typography>
+                <Typography variant="overline">Removing owner &darr;</Typography>
               </div>
               <Divider />
-              <Box className={css.removedOwner} padding={2}>
+              <Box bgcolor="error.light" padding={2}>
                 <EthHashInfo address={removedOwner.address} shortAddress={false} />
               </Box>
               <Divider />

@@ -197,6 +197,11 @@ const initTheme = (darkMode: boolean) => {
           },
         },
       },
+      MuiPopover: {
+        defaultProps: {
+          elevation: 2,
+        },
+      },
       MuiIconButton: {
         styleOverrides: {
           sizeSmall: {
