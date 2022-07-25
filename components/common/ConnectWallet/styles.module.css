@@ -8,3 +8,14 @@
     display: none; /* use onboard account center instead */
   }
 }
+
+.buttonContainer {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: var(--space-1);
+  height: 100%;
+  padding: var(--space-1);
+  border-left: 2px solid var(--color-border-light);
+  border-right: 2px solid var(--color-border-light);
+}
