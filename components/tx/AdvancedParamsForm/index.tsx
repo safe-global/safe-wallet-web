@@ -114,7 +114,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                       }}
                       // @see https://github.com/react-hook-form/react-hook-form/issues/220
                       InputLabelProps={{
-                        shrink: !!watch('gasLimit'),
+                        shrink: watch('gasLimit') !== undefined,
                       }}
                       type="number"
                       {...register('gasLimit', { required: true, min: BASE_TX_GAS })}
