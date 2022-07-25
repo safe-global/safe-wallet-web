@@ -13,18 +13,18 @@ import { isSetAllowance, SpendingLimitMethods } from '@/utils/transaction-guards
 import css from './styles.module.css'
 
 type SpendingLimitsProps = {
-  txData: TransactionData
+  txData?: TransactionData
   txInfo: Custom
   type: SpendingLimitMethods
 }
 
-export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): ReactElement => {
+export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): ReactElement | null => {
   const chain = useCurrentChain()
   const tokens = useAppSelector(selectTokens)
-  const isAllowance = useMemo(() => isSetAllowance(type), [type])
+  const isSetAllowanceMethod = useMemo(() => isSetAllowance(type), [type])
 
   const [beneficiary, tokenAddress, amount, resetTimeMin] =
-    txData.dataDecoded?.parameters?.map(({ value }) => value) || []
+    txData?.dataDecoded?.parameters?.map(({ value }) => value) || []
 
   const resetTimeLabel = useMemo(
     () => getResetTimeOptions(chain?.chainName).find(({ value }) => +value === +resetTimeMin)?.label,
@@ -36,10 +36,12 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
   )
   const txTo = txInfo.to
 
+  if (!txData) return null
+
   return (
     <Box className={css.container}>
       <Typography>
-        <b>{`${isAllowance ? 'Modify' : 'Delete'} spending limit:`}</b>
+        <b>{`${isSetAllowanceMethod ? 'Modify' : 'Delete'} spending limit:`}</b>
       </Typography>
       <Box className={css.group}>
         <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
@@ -55,11 +57,11 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
       {tokenInfo && (
         <Box className={css.group}>
           <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>
-            {isAllowance ? 'Amount' : 'Token'}
+            {isSetAllowanceMethod ? 'Amount' : 'Token'}
           </Typography>
           <Box className={css.inline}>
             <TokenIcon logoUri={tokenInfo.logoUri} size={32} tokenSymbol={tokenInfo.symbol} />
-            {isAllowance ? (
+            {isSetAllowanceMethod ? (
               <Typography>
                 {formatDecimals(amount as string, tokenInfo.decimals)} {tokenInfo.symbol}
               </Typography>
@@ -69,7 +71,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
           </Box>
         </Box>
       )}
-      {isAllowance && (
+      {isSetAllowanceMethod && (
         <Box className={css.group}>
           <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Reset time</Typography>
           {resetTimeLabel ? (

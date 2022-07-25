@@ -18,7 +18,9 @@
     "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts",
     "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./styles/vars.css",
     "generate-types:safeDeployments": "typechain --target ethers-v5 --out-dir './types/contracts' ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json",
-    "postinstall": "yarn generate-types:safeDeployments"
+    "generate-types:spendingLimit": "typechain --target ethers-v5 --out-dir './types/contracts' ./node_modules/@gnosis.pm/safe-modules-deployments/dist/assets/**/*.json",
+    "generate-types": "yarn generate-types:safeDeployments && yarn generate-types:spendingLimit",
+    "postinstall": "yarn generate-types"
   },
   "pre-commit": [
     "lint"
@@ -30,6 +32,7 @@
     "@emotion/styled": "^11.9.3",
     "@gnosis.pm/safe-core-sdk": "^2.2.1",
     "@gnosis.pm/safe-deployments": "^1.15.0",
+    "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@gnosis.pm/safe-ethers-lib": "^1.2.1",
     "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
     "@gnosis.pm/safe-react-gateway-sdk": "^3.2.1",

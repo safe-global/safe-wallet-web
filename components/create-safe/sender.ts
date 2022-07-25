@@ -7,7 +7,7 @@ import {
   getFallbackHandlerContractInstance,
   getGnosisSafeContractInstance,
   getProxyFactoryContractInstance,
-} from '@/services/safeContracts'
+} from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { SafeCreationProps } from '@/components/create-safe/useEstimateSafeCreationGas'
 

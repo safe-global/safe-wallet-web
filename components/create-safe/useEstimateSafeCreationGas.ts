@@ -4,7 +4,7 @@ import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import useWallet from '@/hooks/wallets/useWallet'
-import { getProxyFactoryContractInstance } from '@/services/safeContracts'
+import { getProxyFactoryContractInstance } from '@/services/contracts/safeContracts'
 import useAsync from '@/hooks/useAsync'
 import { getSafeCreationTx } from '@/components/create-safe/sender'
 
