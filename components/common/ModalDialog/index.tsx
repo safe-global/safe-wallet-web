@@ -1,7 +1,7 @@
 import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery, ModalProps } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
-import theme from '@/styles/theme'
+import { theme } from '@/styles/theme'
 
 interface ModalDialogProps extends DialogProps {
   dialogTitle?: React.ReactNode
@@ -27,13 +27,13 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
 }))
 
 interface DialogTitleProps {
-  children?: React.ReactNode
+  children: React.ReactNode
   onClose?: ModalProps['onClose']
 }
 
 const CustomDialogTitle = ({ children, onClose, ...other }: DialogTitleProps) => {
   return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+    <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center' }} {...other}>
       {children}
       {onClose ? (
         <IconButton
@@ -43,9 +43,7 @@ const CustomDialogTitle = ({ children, onClose, ...other }: DialogTitleProps) =>
           }}
           size="small"
           sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
+            ml: 'auto',
             color: (theme) => theme.palette.grey[500],
           }}
         >

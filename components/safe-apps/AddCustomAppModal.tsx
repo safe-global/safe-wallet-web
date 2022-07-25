@@ -15,6 +15,7 @@ import {
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
 import { AppManifest, fetchAppManifest, isAppManifestValid } from '@/services/safe-apps/manifest'
+import ChainIndicator from '@/components/common/ChainIndicator'
 
 type Props = {
   open: boolean
@@ -39,7 +40,17 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
   const onSubmit = (data, e) => console.log(data, e)
 
   return (
-    <ModalDialog open={open} onClose={onClose} dialogTitle="Add custom app">
+    <ModalDialog
+      open={open}
+      onClose={onClose}
+      dialogTitle={
+        <>
+          <span>Add custom app</span>
+          <span style={{ flex: 1 }} />
+          <ChainIndicator inline />
+        </>
+      }
+    >
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent
           sx={{
