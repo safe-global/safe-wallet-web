@@ -67,7 +67,7 @@ const GasParams = ({
       </AccordionSummary>
 
       <AccordionDetails>
-        <GasDetail isLoading={nonce == undefined} name="Nonce" value={(nonce ?? '').toString()} />
+        <GasDetail isLoading={nonce === undefined} name="Nonce" value={(nonce ?? '').toString()} />
 
         {isExecution && (
           <>
