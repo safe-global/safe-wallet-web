@@ -17,10 +17,19 @@ export type AppManifest = {
   iconPath?: string
 }
 
-const fetchAppManifest = async (appUrl: string) => {
+const fetchAppManifest = async (appUrl: string, timeout = 5000): Promise<unknown> => {
   const normalizedUrl = trimTrailingSlash(appUrl)
   const manifestUrl = `${normalizedUrl}/manifest.json`
-  const response = await fetch(manifestUrl)
+
+  // A lot of apps are hosted on IPFS and IPFS never times out, so we add our own timeout
+  const controller = new AbortController()
+  const id = setTimeout(() => controller.abort(), timeout)
+
+  const response = await fetch(manifestUrl, {
+    signal: controller.signal,
+  })
+  clearTimeout(id)
+
   if (!response.ok) {
     throw new Error(`Failed to fetch manifest from ${manifestUrl}`)
   }

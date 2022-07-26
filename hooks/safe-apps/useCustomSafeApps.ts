@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { logError, Errors } from 'src/logic/exceptions/CodedException'
-import { FETCH_STATUS } from 'src/utils/requests'
-import { getAppInfoFromUrl, getEmptySafeApp } from '../../utils'
+import { SafeAppData, SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
 import local from '@/services/local-storage/local'
+import { AppManifest, fetchAppManifest, isAppManifestValid } from '@/services/safe-apps/manifest'
 
 type ReturnType = {
-  customSafeApps: SafeApp[]
+  customSafeApps: SafeAppData[]
   loaded: boolean
   updateCustomSafeApps: (newCustomSafeApps: SafeApp[]) => void
 }
@@ -14,6 +12,24 @@ type ReturnType = {
 const CUSTOM_SAFE_APPS_STORAGE_KEY = 'customSafeApps'
 
 type StoredCustomSafeApp = { url: string }
+
+const fetchSafeAppFromManifest = async (appUrl: string): Promise<SafeAppData> => {
+  const appManifest = await fetchAppManifest(appUrl)
+
+  if (!isAppManifestValid(appManifest)) {
+    throw new Error('Invalid app manifest')
+  }
+  const
+
+  return {
+    id: Math.random(),
+    url: appUrl,
+    name: appManifest.name,
+    description: appManifest.description,
+    accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
+    tags: [],
+  }
+}
 
 /*
   This hook is used to manage the list of custom safe apps.
@@ -26,53 +42,25 @@ const useCustomSafeApps = (): ReturnType => {
   const [customSafeApps, setCustomSafeApps] = useState<SafeAppData[]>([])
   const [loaded, setLoaded] = useState(false)
 
-  const updateCustomSafeApps = useCallback((newCustomSafeApps: SafeApp[]) => {
+  const updateCustomSafeApps = useCallback((newCustomSafeApps: SafeAppData[]) => {
     setCustomSafeApps(newCustomSafeApps)
-    local
+
+    local.setItem(
+      CUSTOM_SAFE_APPS_STORAGE_KEY,
+      newCustomSafeApps.map((app) => ({ url: app.url })),
+    )
   }, [])
 
   useEffect(() => {
-    const fetchAppCallback = (res: SafeApp, error = false) => {
-      setCustomSafeApps((prev) => {
-        const prevAppsCopy = [...prev]
-        const appIndex = prevAppsCopy.findIndex((a) => a.url === res.url)
+    const loadCustomApps = async () => {
+      const storedApps = local.getItem<StoredCustomSafeApp[]>(CUSTOM_SAFE_APPS_STORAGE_KEY) || []
+      const appManifests = await Promise.allSettled(storedApps.map((app) => fetchAppManifest(app.url)))
+      const resolvedApps = appManifests
+        .filter((promiseResult) => promiseResult.status === 'fulfilled' && isAppManifestValid(promiseResult.value))
+        .map((promiseResult) => (promiseResult as PromiseFulfilledResult<AppManifest>).value)
 
-        if (error) {
-          prevAppsCopy.splice(appIndex, 1)
-        } else {
-          prevAppsCopy[appIndex] = { ...res, fetchStatus: FETCH_STATUS.SUCCESS }
-        }
-
-        return prevAppsCopy
-      })
-    }
-
-    const loadCustomApps = () => {
-      // recover apps from storage (third-party apps added by the user)
-      const storageAppList = loadFromStorage<CustomSafeApp[]>(APPS_STORAGE_KEY) || []
-      // if the app does not expose supported networks, include them. (backward compatible)
-      const serializedApps = storageAppList.map(
-        (app): SafeApp => ({
-          ...getEmptySafeApp(),
-          ...app,
-          url: app.url.trim(),
-          id: app.url.trim(),
-          custom: true,
-        }),
-      )
       setCustomSafeApps(serializedApps)
       setLoaded(true)
-
-      serializedApps.forEach((app) => {
-        getAppInfoFromUrl(app.url)
-          .then((appFromUrl) => {
-            fetchAppCallback({ ...appFromUrl, custom: true })
-          })
-          .catch((err) => {
-            fetchAppCallback(app, true)
-            logError(Errors._900, `${app.url}, ${err.message}`)
-          })
-      })
     }
 
     loadCustomApps()
