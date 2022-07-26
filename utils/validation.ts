@@ -65,3 +65,14 @@ export const validateTokenAmount = (amount: string, token?: { balance: string; t
     return `Maximum value is ${formatDecimals(token.balance, token.tokenInfo.decimals)}`
   }
 }
+
+export const isValidURL = (url: string, protocolsAllowed = ['https:', 'http:']): string | undefined => {
+  try {
+    const urlInfo = new URL(url)
+    if (!protocolsAllowed.includes(urlInfo.protocol)) {
+      return `Protocol "${urlInfo.protocol}" is not allowed`
+    }
+  } catch (error) {
+    return 'Invalid URL'
+  }
+}

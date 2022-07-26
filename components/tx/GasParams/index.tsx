@@ -12,7 +12,6 @@ type GasParamsProps = Partial<AdvancedParameters> & {
 
 const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
   const valueSkeleton = <Skeleton variant="text" sx={{ minWidth: '5em' }} />
-
   return (
     <Grid container>
       <Grid item xs>
@@ -68,7 +67,7 @@ const GasParams = ({
       </AccordionSummary>
 
       <AccordionDetails>
-        <GasDetail isLoading={nonce == null} name="Nonce" value={(nonce || '').toString()} />
+        <GasDetail isLoading={nonce === undefined} name="Nonce" value={(nonce ?? '').toString()} />
 
         {isExecution && (
           <>

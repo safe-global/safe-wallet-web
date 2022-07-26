@@ -17,26 +17,43 @@ type AppCardProps = {
 }
 
 type AppCardContainerProps = {
-  url: string
+  url?: string
   children: ReactNode
 }
 
 export const AppCardContainer = ({ url, children }: AppCardContainerProps): ReactElement => {
+  if (url) {
+    return (
+      <a href={url} target="_blank" rel="noreferrer">
+        <Card
+          sx={({ palette }) => ({
+            height: 190,
+            transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
+            '&:hover': {
+              backgroundColor: palette.primary.background,
+              border: `2px solid ${palette.primary.light}`,
+            },
+          })}
+        >
+          {children}
+        </Card>
+      </a>
+    )
+  }
+
   return (
-    <a href={url} target="_blank" rel="noreferrer">
-      <Card
-        sx={({ palette }) => ({
-          height: 190,
-          transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
-          '&:hover': {
-            backgroundColor: palette.primary.background,
-            border: `2px solid ${palette.primary.light}`,
-          },
-        })}
-      >
-        {children}
-      </Card>
-    </a>
+    <Card
+      sx={({ palette }) => ({
+        height: 190,
+        transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
+        '&:hover': {
+          backgroundColor: palette.primary.background,
+          border: `2px solid ${palette.primary.light}`,
+        },
+      })}
+    >
+      {children}
+    </Card>
   )
 }
 

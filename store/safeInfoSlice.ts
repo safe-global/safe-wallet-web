@@ -1,18 +1,17 @@
 import { type SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { makeLoadableSlice } from './common'
 
-const emptyAddress = { value: '' }
-
 export const defaultSafeInfo: SafeInfo = {
-  address: emptyAddress,
+  address: { value: '' },
   chainId: '',
   nonce: -1,
   threshold: 0,
   owners: [],
-  implementation: emptyAddress,
+  implementation: { value: '' },
+  implementationVersionState: '' as SafeInfo['implementationVersionState'],
   modules: null,
   guard: null,
-  fallbackHandler: emptyAddress,
+  fallbackHandler: { value: '' },
   version: '',
   collectiblesTag: '',
   txQueuedTag: '',

@@ -13,7 +13,7 @@ export const ReviewSelectedOwnerStep = ({
   return (
     <form onSubmit={() => onSubmit(data)}>
       <TxModalTitle>Remove owner</TxModalTitle>
-      <Box py={3}>
+      <Box>
         <Typography mb={4}>Review the owner you want to remove from the active Safe:</Typography>
         <EthHashInfo
           address={data.removedOwner.address}

@@ -4,7 +4,7 @@ import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/util
 import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as chainIdModule from '@/hooks/useChainId'
 import * as store from '@/store'
-import * as safeContracts from '@/services/safeContracts'
+import * as safeContracts from '@/services/contracts/safeContracts'
 import * as sender from './sender'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as web3 from '@/hooks/wallets/web3'
@@ -12,7 +12,7 @@ import { waitFor } from '@testing-library/react'
 import { EIP1193Provider } from '@web3-onboard/core'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { BigNumber } from 'ethers'
-import { Proxy_factory } from '@/types/contracts'
+import { Proxy_factory } from '@/types/contracts/Proxy_factory'
 
 const mockProps = {
   owners: [],

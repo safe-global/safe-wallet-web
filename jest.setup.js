@@ -16,6 +16,16 @@ jest.mock('@web3-onboard/torus', () => jest.fn())
 jest.mock('@web3-onboard/trezor', () => jest.fn())
 jest.mock('@web3-onboard/walletconnect', () => jest.fn())
 
+jest.mock('@web3-onboard/injected-wallets/dist/icons/metamask', () => '')
+jest.mock('@web3-onboard/coinbase/dist/icon', () => '')
+jest.mock('@web3-onboard/keystone/dist/icon', () => '')
+jest.mock('@web3-onboard/walletconnect/dist/icon', () => '')
+jest.mock('@web3-onboard/trezor/dist/icon', () => '')
+jest.mock('@web3-onboard/ledger/dist/icon', () => '')
+jest.mock('@web3-onboard/fortmatic/dist/icon', () => '')
+jest.mock('@web3-onboard/portis/dist/icon', () => '')
+jest.mock('@web3-onboard/torus/dist/icon', () => '')
+
 const mockOnboardState = {
   chains: [],
   walletModules: [],

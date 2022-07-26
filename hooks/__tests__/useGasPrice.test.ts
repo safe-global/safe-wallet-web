@@ -65,6 +65,7 @@ describe('useGasPrice', () => {
       writable: true,
       value: jest.fn(() =>
         Promise.resolve({
+          ok: true,
           json: () =>
             Promise.resolve({
               data: {
@@ -106,6 +107,7 @@ describe('useGasPrice', () => {
         .mockImplementationOnce(() => Promise.reject())
         .mockImplementationOnce(() =>
           Promise.resolve({
+            ok: true,
             json: () =>
               Promise.resolve({
                 result: {
@@ -177,6 +179,7 @@ describe('useGasPrice', () => {
         .fn()
         .mockImplementationOnce(() =>
           Promise.resolve({
+            ok: true,
             json: () =>
               Promise.resolve({
                 data: {
@@ -187,6 +190,7 @@ describe('useGasPrice', () => {
         )
         .mockImplementationOnce(() =>
           Promise.resolve({
+            ok: true,
             json: () =>
               Promise.resolve({
                 data: {

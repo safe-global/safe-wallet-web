@@ -1,10 +1,12 @@
-import { ReactElement } from 'react'
-import { Dialog, DialogTitle, useMediaQuery, type DialogProps } from '@mui/material'
+import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery, ModalProps } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import CloseIcon from '@mui/icons-material/Close'
 import { theme } from '@/styles/theme'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import * as React from 'react'
 
 interface ModalDialogProps extends DialogProps {
-  title?: string
+  dialogTitle?: React.ReactNode
 }
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -26,12 +28,43 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   },
 }))
 
-const ModalDialog = ({ title, children, ...restProps }: ModalDialogProps): ReactElement => {
+interface DialogTitleProps {
+  children: React.ReactNode
+  onClose?: ModalProps['onClose']
+  hideChainIndicator?: boolean
+}
+
+const CustomDialogTitle = ({ children, onClose, hideChainIndicator = false, ...other }: DialogTitleProps) => {
+  return (
+    <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center' }} {...other}>
+      {children}
+      <span style={{ flex: 1 }} />
+      {!hideChainIndicator && <ChainIndicator inline />}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={(e) => {
+            onClose(e, 'backdropClick')
+          }}
+          size="small"
+          sx={{
+            ml: 'auto',
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  )
+}
+
+const ModalDialog = ({ dialogTitle, children, ...restProps }: ModalDialogProps): React.ReactElement => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <StyledDialog {...restProps} fullScreen={fullScreen} onClick={(e) => e.stopPropagation()}>
-      {title && <DialogTitle>{title}</DialogTitle>}
+      {dialogTitle && <CustomDialogTitle onClose={restProps.onClose}>{dialogTitle}</CustomDialogTitle>}
       {children}
     </StyledDialog>
   )

@@ -21,7 +21,7 @@ export const notificationsSlice = createSlice({
     enqueueNotification: (state, { payload }: PayloadAction<Notification>): NotificationState => {
       return [...state, payload]
     },
-    closeNotification: (state, { payload }: PayloadAction<Notification>): NotificationState => {
+    closeNotification: (state, { payload }: PayloadAction<{ id: string }>): NotificationState => {
       return state.map((notification) => {
         return notification.id === payload.id ? { ...notification, dismissed: true } : notification
       })

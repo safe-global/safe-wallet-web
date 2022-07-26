@@ -8,7 +8,7 @@ export type SettingsState = {
     copy: boolean
   }
   theme: {
-    darkMode: boolean
+    darkMode?: boolean
   }
 }
 
@@ -18,7 +18,7 @@ const initialState: SettingsState = {
     copy: true,
   },
   theme: {
-    darkMode: false,
+    darkMode: undefined,
   },
 }
 

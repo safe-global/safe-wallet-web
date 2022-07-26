@@ -1,6 +1,6 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { TransferTx } from '@/components/transactions/TxInfo'
-import { isTransferTxInfo, isTxQueued } from '@/utils/transaction-guards'
+import { isTxQueued } from '@/utils/transaction-guards'
 import { TransactionStatus, Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
@@ -11,9 +11,8 @@ type TransferTxInfoProps = {
 }
 
 const TransferTxInfoSummary = ({ txInfo, txStatus }: TransferTxInfoProps) => {
-  if (!isTransferTxInfo(txInfo)) return <></>
-
   const { direction } = txInfo
+
   return (
     <Typography>
       {direction === TransferDirection.INCOMING ? 'Received' : isTxQueued(txStatus) ? 'Send' : 'Sent'}{' '}

@@ -33,7 +33,7 @@ const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
     })),
     // TODO: Remove once containerElement is optional again
     accountCenter: {
-      mobile: { enabled: true, containerElement: 'body' },
+      mobile: { enabled: false, containerElement: 'body' },
       desktop: { enabled: false, containerElement: 'body' },
     },
     appMetadata: {

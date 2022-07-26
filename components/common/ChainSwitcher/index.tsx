@@ -6,7 +6,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import css from './styles.module.css'
 
-const ChainSwitcher = (): ReactElement | null => {
+const ChainSwitcher = ({ fullWidth }: { fullWidth?: boolean }): ReactElement | null => {
   const chain = useCurrentChain()
   const onboard = useOnboard()
   const isWrongChain = useIsWrongChain()
@@ -20,7 +20,7 @@ const ChainSwitcher = (): ReactElement | null => {
   if (!isWrongChain) return null
 
   return (
-    <Button onClick={handleChainSwitch} variant="outlined" size="small">
+    <Button onClick={handleChainSwitch} variant="outlined" size="small" fullWidth={fullWidth}>
       Switch to&nbsp;
       <Box className={css.circle} bgcolor={chain?.theme?.backgroundColor || ''} />
       &nbsp;{chain?.chainName}

@@ -13,6 +13,10 @@
 }
 
 .logo {
+  flex: 1;
+}
+
+.logo svg {
   width: auto;
   display: block;
   fill: var(--color-logo-main);
@@ -23,14 +27,17 @@
 }
 
 @media (max-width: 768px) {
-  .logo {
-    display: none;
-  }
-  .menuButton {
-    display: block;
+  .container {
+    gap: var(--space-1);
   }
 
-  .container button {
-    font-size: 8px;
+  .logo,
+  .chainSwitcher {
+    display: none;
+  }
+
+  .menuButton {
+    display: block;
+    flex: 1;
   }
 }

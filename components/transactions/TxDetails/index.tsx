@@ -7,13 +7,14 @@ import Summary from '@/components/transactions/TxDetails/Summary'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
-import { isModuleExecutionInfo, isMultisendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { isModuleExecutionInfo, isMultiSendTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import TxShareLink from '../TxShareLink'
 import MultiSendTx from '@/components/transactions/MultisendTx'
+import { ErrorBoundary } from '@sentry/react'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -34,12 +35,14 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <TxShareLink id={txSummary.id} />
         </div>
 
-        {isMultisendTxInfo(txDetails.txInfo) ? (
+        {isMultiSendTxInfo(txDetails.txInfo) ? (
           <MultiSendTx txDetails={txDetails} />
         ) : (
           <>
             <div className={css.txData}>
-              <TxData txDetails={txDetails} />
+              <ErrorBoundary fallback={<div>Error parsing data</div>}>
+                <TxData txDetails={txDetails} />
+              </ErrorBoundary>
             </div>
 
             {/* Module information*/}
