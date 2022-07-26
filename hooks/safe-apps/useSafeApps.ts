@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { getSafeApps, SafeAppsResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Errors, logError } from '@/services/exceptions'
-import useAsync, { AsyncResult } from './useAsync'
+import useAsync, { AsyncResult } from '../useAsync'
 import useChainId from '@/hooks/useChainId'
 
 const useSafeApps = (): AsyncResult<SafeAppsResponse> => {

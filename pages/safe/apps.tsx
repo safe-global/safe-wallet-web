@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Grid from '@mui/material/Grid'
-import { useSafeApps } from '@/hooks/useSafeApps'
+import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppCard } from '@/components/safe-apps/AppCard'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import AppsIcon from '@/public/images/sidebar/apps.svg'

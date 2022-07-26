@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { getOwnedSafes, type OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import useChainId from '@/hooks/useChainId'
-import useLocalStorage from '@/services/localStorage/useLocalStorage'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import useWallet from '@/hooks/wallets/useWallet'
 import useAsync from './useAsync'
 

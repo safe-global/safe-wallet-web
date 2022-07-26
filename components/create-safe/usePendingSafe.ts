@@ -1,4 +1,4 @@
-import useLocalStorage from '@/services/localStorage/useLocalStorage'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { PendingSafeData } from '@/components/create-safe/index'
 
 const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'

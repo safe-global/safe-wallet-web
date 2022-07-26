@@ -1,7 +1,7 @@
 import { ReactElement, useMemo } from 'react'
 import styled from '@emotion/styled'
 import { Box, Grid, Typography } from '@mui/material'
-import { useSafeApps } from '@/hooks/useSafeApps'
+import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import { SAFE_REACT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
