@@ -11,7 +11,6 @@ import '@/styles/globals.css'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { store } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
-import useLoadChains from '@/hooks/loadables/useLoadChains'
 import useLoadableStores from '@/hooks/useLoadableStores'
 import usePathRewrite from '@/hooks/usePathRewrite'
 import { useInitOnboard } from '@/hooks/wallets/useOnboard'
@@ -38,7 +37,6 @@ const InitApp = (): null => {
 
   usePathRewrite()
   useStorageMigration()
-  useLoadChains()
   useInitSession()
   useLoadableStores()
   useInitOnboard()
