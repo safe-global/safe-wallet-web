@@ -11,13 +11,13 @@ import '@/styles/globals.css'
 import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
 import { store } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
-import useLoadChains from '@/hooks/loadables/useLoadChains'
 import useLoadableStores from '@/hooks/useLoadableStores'
 import usePathRewrite from '@/hooks/usePathRewrite'
 import { useInitOnboard } from '@/hooks/wallets/useOnboard'
 import { useInitWeb3 } from '@/hooks/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/hooks/coreSDK/useInitSafeCoreSDK'
 import useTxNotifications from '@/hooks/useTxNotifications'
+import useSafeNotifications from '@/hooks/useSafeNotifications'
 import useTxPendingStatuses, { useTxMonitor } from '@/hooks/useTxPendingStatuses'
 import { useInitSession } from '@/hooks/useInitSession'
 import useStorageMigration from '@/services/ls-migration'
@@ -37,13 +37,13 @@ const InitApp = (): null => {
 
   usePathRewrite()
   useStorageMigration()
-  useLoadChains()
   useInitSession()
   useLoadableStores()
   useInitOnboard()
   useInitWeb3()
   useInitSafeCoreSDK()
   useTxNotifications()
+  useSafeNotifications()
   useTxPendingStatuses()
   useTxMonitor()
 

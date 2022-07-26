@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { Box, Link, Typography } from '@mui/material'
 import OpenInNewRounded from '@mui/icons-material/OpenInNewRounded'
+import { ImplementationVersionState } from '@gnosis.pm/safe-react-gateway-sdk'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { sameAddress } from '@/utils/addresses'
-import { safeNeedsUpdate } from '@/utils/safeVersion'
 import { MasterCopy, MasterCopyDeployer, useMasterCopies } from '@/hooks/useMasterCopies'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
@@ -18,14 +18,12 @@ export const ContractVersion = () => {
     return masterCopies?.find((mc) => sameAddress(mc.address, masterCopyAddress))
   }, [masterCopies, masterCopyAddress])
 
-  const needsUpdate = safeNeedsUpdate(safe.version, LATEST_SAFE_VERSION)
-
+  const needsUpdate = safe.implementationVersionState === ImplementationVersionState.OUTDATED
   const latestMasterContractVersion = LATEST_SAFE_VERSION
-
   const showUpdateDialog = safeMasterCopy?.deployer === MasterCopyDeployer.GNOSIS && needsUpdate
 
   const getSafeVersionUpdate = () => {
-    return showUpdateDialog ? ` there's a newer version: ${latestMasterContractVersion})` : ''
+    return showUpdateDialog ? ` (there's a newer version: ${latestMasterContractVersion})` : ''
   }
   return (
     <div>
