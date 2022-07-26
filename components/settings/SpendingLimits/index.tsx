@@ -6,7 +6,7 @@ const SpendingLimits = () => {
       <Grid container direction="row" justifyContent="space-between" gap={2}>
         <Grid item>
           <Typography variant="h4" fontWeight={700}>
-            Spending limits
+            Spending limit
           </Typography>
         </Grid>
         <Grid item sm={12} md={8}>
