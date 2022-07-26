@@ -10,8 +10,9 @@ import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
+import ChainSwitcher from '../ChainSwitcher'
 
-export const DisconnectButton = ({ wallet }: { wallet: ConnectedWallet }) => {
+const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const onboard = useOnboard()
   const chainId = useChainId()
@@ -44,11 +45,11 @@ export const DisconnectButton = ({ wallet }: { wallet: ConnectedWallet }) => {
             <WalletIcon provider={wallet.label} />
           </Box>
           <Box>
-            <Typography variant="caption" component="div">
+            <Typography variant="caption" component="div" className={css.walletDetails}>
               {wallet.label} @ {chainInfo?.chainName}
             </Typography>
-            <Typography variant="caption" fontWeight="bold">
-              <EthHashInfo address={wallet.address} name={wallet.ens} showName={false} showAvatar={false} />
+            <Typography variant="caption" fontWeight="bold" className={css.address}>
+              {wallet.ens || <EthHashInfo address={wallet.address} showAvatar={false} prefix={''} />}
             </Typography>
           </Box>
           <Box justifySelf="flex-end" marginLeft="auto">
@@ -88,6 +89,9 @@ export const DisconnectButton = ({ wallet }: { wallet: ConnectedWallet }) => {
               <Typography variant="body2">{chainInfo?.chainName}</Typography>
             </Box>
           </Box>
+
+          <ChainSwitcher fullWidth />
+
           <Button onClick={handleDisconnect} color="error" variant="contained" size="small" fullWidth disableElevation>
             Disconnect
           </Button>
@@ -96,3 +100,5 @@ export const DisconnectButton = ({ wallet }: { wallet: ConnectedWallet }) => {
     </>
   )
 }
+
+export default AccountCenter
