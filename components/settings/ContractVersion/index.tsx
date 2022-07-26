@@ -9,7 +9,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 
 import UpdateSafeDialog from './UpdateSafeDialog'
 
-export const ContractVersion = () => {
+export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
   const [masterCopies] = useMasterCopies()
   const { safe } = useSafeInfo()
   const masterCopyAddress = safe.implementation.value
@@ -39,7 +39,7 @@ export const ContractVersion = () => {
           <OpenInNewRounded fontSize="small" />
         </Box>
       </Link>
-      {showUpdateDialog && <UpdateSafeDialog />}
+      {showUpdateDialog && isGranted && <UpdateSafeDialog />}
     </div>
   )
 }

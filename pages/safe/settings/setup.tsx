@@ -36,7 +36,7 @@ const Setup: NextPage = () => {
             <Typography paddingTop={1}>Current nonce: {nonce}</Typography>
           </Grid>
           <Grid item xs={12} md={8}>
-            <ContractVersion />
+            <ContractVersion isGranted={isGranted} />
           </Grid>
         </Grid>
       </Paper>
