@@ -11,7 +11,7 @@ export const useDarkMode = () => {
 
   useEffect(() => {
     const systemPreference = window.matchMedia(mediaQuery)
-    setIsDarkMode(settings.theme.darkMode || systemPreference.matches)
+    setIsDarkMode(settings.theme.darkMode ?? systemPreference.matches)
 
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light')
   }, [isDarkMode, settings.theme.darkMode])
