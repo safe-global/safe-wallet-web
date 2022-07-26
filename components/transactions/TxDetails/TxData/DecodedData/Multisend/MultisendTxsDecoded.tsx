@@ -34,7 +34,7 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Multi
         border: 'none',
         boxShadow: 0,
         '&:not(:last-child)': {
-          borderRadius: 0,
+          borderRadius: '0 !important',
           borderBottom: `2px solid ${palette.border.light}`,
         },
         '&:last-of-type': {
