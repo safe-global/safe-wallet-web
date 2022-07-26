@@ -33,8 +33,9 @@ export const ChooseOwnerStep = ({
 
   const formMethods = useForm<ChooseOwnerFormData>({
     defaultValues: formData,
+    mode: 'onChange',
   })
-  const { register, handleSubmit } = formMethods
+  const { register, handleSubmit, formState } = formMethods
 
   const onSubmitHandler = (formData: ChooseOwnerFormData) => {
     onSubmit({
@@ -70,7 +71,18 @@ export const ChooseOwnerStep = ({
 
         <Box display="flex" flexDirection="column" gap={2} paddingTop={2}>
           <FormControl>
-            <TextField autoFocus label="Owner name" variant="outlined" fullWidth {...register('ownerName')} />
+            <TextField
+              label="Owner name"
+              variant="outlined"
+              error={Boolean(formState.errors.ownerName)}
+              helperText={
+                formState.errors.ownerName?.type === 'maxLength'
+                  ? 'Should be 1 to 50 symbols'
+                  : formState.errors.ownerName?.message
+              }
+              fullWidth
+              {...register('ownerName', { maxLength: 50 })}
+            />
           </FormControl>
 
           <FormControl>
@@ -78,7 +90,7 @@ export const ChooseOwnerStep = ({
           </FormControl>
         </Box>
 
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" disabled={!formState.isValid}>
           Next
         </Button>
       </form>

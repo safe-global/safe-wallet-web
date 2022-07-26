@@ -55,10 +55,16 @@ const EntryDialog = ({
             <Box mb={2}>
               <TextField
                 autoFocus
+                error={Boolean(formState.errors.name)}
+                helperText={
+                  formState.errors.name?.type === 'maxLength'
+                    ? 'Should be 1 to 50 symbols'
+                    : formState.errors.name?.message
+                }
                 label="Name"
                 variant="outlined"
                 fullWidth
-                {...register('name', { required: true })}
+                {...register('name', { required: true, maxLength: 50 })}
                 required
               />
             </Box>
