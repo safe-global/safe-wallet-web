@@ -79,6 +79,10 @@ export const navItems: NavItem[] = [
         label: 'Modules',
         href: AppRoutes.safe.settings.modules,
       },
+      {
+        label: 'Spending Limits',
+        href: AppRoutes.safe.settings.spendingLimits,
+      },
     ],
   },
 ]
