@@ -72,7 +72,7 @@ const EthHashInfo = (props: EthHashInfoProps & { showName?: boolean }): ReactEle
   const name = props.showName ? addressBook[props.address] || props.name : undefined
   const prefix = settings.shortName.show ? Object.keys(chains).find((key) => chains[key] === chainId) : undefined
 
-  return <SRCEthHashInfo {...props} prefix={prefix} name={name} />
+  return <SRCEthHashInfo prefix={prefix} {...props} name={name} />
 }
 
 export default EthHashInfo

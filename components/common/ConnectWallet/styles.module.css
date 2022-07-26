@@ -55,6 +55,10 @@
 
 @media (max-width: 768px) {
   .buttonContainer {
-    display: none; /* use onboard account center instead */
+    width: auto;
+  }
+
+  .walletDetails {
+    display: none;
   }
 }
