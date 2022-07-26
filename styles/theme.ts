@@ -148,10 +148,10 @@ const initTheme = (darkMode: boolean) => {
             },
 
             '&:hover': {
-              border: `2px solid ${theme.palette.primary.light}`,
+              borderColor: theme.palette.primary.light,
             },
 
-            '&:hover .MuiAccordionSummary-root': {
+            '&:hover > .MuiAccordionSummary-root': {
               background: theme.palette.primary.background,
             },
           }),
