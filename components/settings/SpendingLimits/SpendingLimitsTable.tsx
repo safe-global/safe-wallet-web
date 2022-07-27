@@ -7,6 +7,7 @@ import { relativeTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useMemo } from 'react'
 import { SpendingLimitState } from '@/store/spendingLimitsSlice'
+import { BigNumber } from '@ethersproject/bignumber'
 
 const headCells = [
   { id: 'beneficiary', label: 'Beneficiary' },
@@ -17,7 +18,8 @@ const headCells = [
 const getSpendingLimitRows = (spendingLimits: SpendingLimitState[], balances: SafeBalanceResponse) => {
   return spendingLimits.map((spendingLimit) => {
     const token = balances.items.find((item) => item.tokenInfo.address === spendingLimit.token)
-    const formattedAmount = formatUnits(spendingLimit.amount, token?.tokenInfo.decimals)
+    const amount = BigNumber.from(spendingLimit.amount)
+    const formattedAmount = formatUnits(amount, token?.tokenInfo.decimals)
 
     return {
       beneficiary: {
@@ -25,19 +27,17 @@ const getSpendingLimitRows = (spendingLimits: SpendingLimitState[], balances: Sa
         content: <EthHashInfo address={spendingLimit.beneficiary} shortAddress={false} hasExplorer showCopyButton />,
       },
       spent: {
-        rawValue: spendingLimit.spent.toString(),
+        rawValue: spendingLimit.spent,
         content: (
           <Box display="flex" alignItems="center" gap={1}>
             <img src={token?.tokenInfo.logoUri} alt={token?.tokenInfo.name} width={24} height={24} />
-            {`${spendingLimit.spent.toString()} of ${formattedAmount} ${token?.tokenInfo.symbol}`}
+            {`${spendingLimit.spent} of ${formattedAmount} ${token?.tokenInfo.symbol}`}
           </Box>
         ),
       },
       resetTime: {
-        rawValue: spendingLimit.resetTimeMin.toString(),
-        content: (
-          <div>{relativeTime(spendingLimit.lastResetMin.toString(), spendingLimit.resetTimeMin.toString())}</div>
-        ),
+        rawValue: spendingLimit.resetTimeMin,
+        content: <div>{relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}</div>,
       },
     }
   })

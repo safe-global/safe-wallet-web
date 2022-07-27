@@ -9,9 +9,36 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { getSpendingLimitContract, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { AddressEx } from '@gnosis.pm/safe-react-gateway-sdk'
 import { sameAddress } from '@/utils/addresses'
+import { AllowanceModule } from '@/types/contracts'
 
 const isModuleEnabled = (modules: string[], moduleAddress: string): boolean => {
   return modules?.some((module) => sameAddress(module, moduleAddress)) ?? false
+}
+
+export const getTokenAllowanceForDelegate = async (
+  contract: AllowanceModule,
+  safeAddress: string,
+  delegate: string,
+  token: string,
+): Promise<SpendingLimitState> => {
+  const tokenAllowance = await contract.getTokenAllowance(safeAddress, delegate, token)
+  const [amount, spent, resetTimeMin, lastResetMin, nonce] = tokenAllowance
+
+  return {
+    beneficiary: delegate,
+    token,
+    amount: amount.toString(),
+    spent: spent.toString(),
+    resetTimeMin: resetTimeMin.toString(),
+    lastResetMin: lastResetMin.toString(),
+    nonce: nonce.toString(),
+  }
+}
+
+export const getTokensForDelegate = async (contract: AllowanceModule, safeAddress: string, delegate: string) => {
+  const tokens = await contract.getTokens(safeAddress, delegate)
+
+  return Promise.all(tokens.map(async (token) => getTokenAllowanceForDelegate(contract, safeAddress, delegate, token)))
 }
 
 export const getSpendingLimits = async (
@@ -33,25 +60,7 @@ export const getSpendingLimits = async (
   const delegates = await contract.getDelegates(safeAddress, 0, 100)
 
   const spendingLimits = await Promise.all(
-    delegates.results.map(async (delegate) => {
-      const tokens = await contract.getTokens(safeAddress, delegate)
-      return Promise.all(
-        tokens.map(async (token) => {
-          const tokenAllowance = await contract.getTokenAllowance(safeAddress, delegate, token)
-          const [amount, spent, resetTimeMin, lastResetMin, nonce] = tokenAllowance
-
-          return {
-            beneficiary: delegate,
-            token,
-            amount: amount.toString(),
-            spent: spent.toString(),
-            resetTimeMin: resetTimeMin.toString(),
-            lastResetMin: lastResetMin.toString(),
-            nonce: nonce.toString(),
-          }
-        }),
-      )
-    }),
+    delegates.results.map(async (delegate) => getTokensForDelegate(contract, safeAddress, delegate)),
   )
   return spendingLimits.flat()
 }
