@@ -135,9 +135,9 @@ const SignOrExecuteForm = ({
     onSubmit(null)
 
     // If txId isn't passed in props, it's a newly created tx
-    // Redirect to the single tx view, unless it's a rejection
+    // Redirect to the single tx view
     // @TODO: also don't redirect for Safe Apps transactions (add a new prop)
-    if (!txId && !isRejection) {
+    if (!txId) {
       router.push({
         pathname: AppRoutes.safe.transactions.tx,
         query: { safe: router.query.safe, id },
