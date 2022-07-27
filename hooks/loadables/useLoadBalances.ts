@@ -4,7 +4,7 @@ import { useAppSelector } from '@/store'
 import useAsync, { type AsyncResult } from '../useAsync'
 import useSafeInfo from '../useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
-import { selectCurrency } from '@/store/sessionSlice'
+import { selectCurrency } from '@/store/settingsSlice'
 
 export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const { safe, safeLoaded } = useSafeInfo()

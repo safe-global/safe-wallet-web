@@ -3,6 +3,9 @@
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
+  position: absolute;
+  right: var(--space-3);
+  top: var(--space-3);
 }
 
 .container > *:first-of-type {

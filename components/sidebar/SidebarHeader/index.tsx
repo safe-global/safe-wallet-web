@@ -9,7 +9,7 @@ import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
 import useBalances from '@/hooks/useBalances'
 import { useAppSelector } from '@/store'
-import { selectCurrency } from '@/store/sessionSlice'
+import { selectCurrency } from '@/store/settingsSlice'
 
 import css from './styles.module.css'
 import QrIcon from '@/public/images/sidebar/qr.svg'

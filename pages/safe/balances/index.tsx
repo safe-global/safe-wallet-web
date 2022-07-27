@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Box, Grid } from '@mui/material'
+import { Box } from '@mui/material'
 
 import AssetsTable from '@/components/balances/AssetsTable'
 import CurrencySelect from '@/components/balances/CurrencySelect'
@@ -16,15 +16,9 @@ const Balances: NextPage = () => {
     <main>
       <Breadcrumbs Icon={AssetsIcon} first="Assets" second="Coins" />
 
-      <Grid container spacing={2}>
-        <Grid item xs>
-          <NavTabs tabs={balancesNavItems} />
-        </Grid>
+      <NavTabs tabs={balancesNavItems} />
 
-        <Grid item>
-          <CurrencySelect />
-        </Grid>
-      </Grid>
+      <CurrencySelect />
 
       <Box mt={2}>
         <AssetsTable items={balances?.items} />
