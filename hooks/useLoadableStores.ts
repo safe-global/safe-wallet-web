@@ -12,12 +12,12 @@ import useLoadTxHistory from './loadables/useLoadTxHistory'
 import useLoadTxQueue from './loadables/useLoadTxQueue'
 
 // Import all the loadable slices
-import { chainsSlice } from '../store/chainsSlice'
-import { safeInfoSlice } from '../store/safeInfoSlice'
-import { balancesSlice } from '../store/balancesSlice'
-import { collectiblesSlice } from '../store/collectiblesSlice'
-import { txHistorySlice } from '../store/txHistorySlice'
-import { txQueueSlice } from '../store/txQueueSlice'
+import { chainsSlice } from '@/store/chainsSlice'
+import { safeInfoSlice } from '@/store/safeInfoSlice'
+import { balancesSlice } from '@/store/balancesSlice'
+import { collectiblesSlice } from '@/store/collectiblesSlice'
+import { txHistorySlice } from '@/store/txHistorySlice'
+import { txQueueSlice } from '@/store/txQueueSlice'
 import { spendingLimitSlice } from '@/store/spendingLimitsSlice'
 import useLoadSpendingLimits from '@/hooks/loadables/useLoadSpendingLimits'
 
