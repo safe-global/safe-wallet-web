@@ -1,4 +1,3 @@
-import { SpendingLimitData } from '@/components/settings/SpendingLimits/index'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import useBalances from '@/hooks/useBalances'
 import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -7,6 +6,7 @@ import { Box } from '@mui/material'
 import { relativeTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useMemo } from 'react'
+import { SpendingLimitState } from '@/store/spendingLimitsSlice'
 
 const headCells = [
   { id: 'beneficiary', label: 'Beneficiary' },
@@ -14,7 +14,7 @@ const headCells = [
   { id: 'resetTime', label: 'Reset Time' },
 ]
 
-const getSpendingLimitRows = (spendingLimits: SpendingLimitData[], balances: SafeBalanceResponse) => {
+const getSpendingLimitRows = (spendingLimits: SpendingLimitState[], balances: SafeBalanceResponse) => {
   return spendingLimits.map((spendingLimit) => {
     const token = balances.items.find((item) => item.tokenInfo.address === spendingLimit.token)
     const formattedAmount = formatUnits(spendingLimit.amount, token?.tokenInfo.decimals)
@@ -43,7 +43,7 @@ const getSpendingLimitRows = (spendingLimits: SpendingLimitData[], balances: Saf
   })
 }
 
-export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: SpendingLimitData[] }) => {
+export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: SpendingLimitState[] }) => {
   const { balances } = useBalances()
   const rows = useMemo(() => getSpendingLimitRows(spendingLimits, balances), [balances, spendingLimits])
   return <EnhancedTable rows={rows} headCells={headCells} />
