@@ -60,7 +60,7 @@ describe('getSpendingLimits', () => {
     const getDelegatesMock = jest.fn(() => ({ results: ['0x2', '0x3'] }))
     const getTokensMock = jest.fn(() => ['0x10', '0x11'])
     const getTokenAllowanceMock = jest.fn(() => [
-      BigNumber.from(0),
+      BigNumber.from(1),
       BigNumber.from(0),
       BigNumber.from(0),
       BigNumber.from(0),
@@ -81,6 +81,33 @@ describe('getSpendingLimits', () => {
     const result = await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4')
 
     expect(result?.length).toBe(4)
+  })
+
+  it('should filter out empty allowances', async () => {
+    const getDelegatesMock = jest.fn(() => ({ results: ['0x2', '0x3'] }))
+    const getTokensMock = jest.fn(() => ['0x10', '0x11'])
+    const getTokenAllowanceMock = jest.fn(() => [
+      BigNumber.from(0),
+      BigNumber.from(0),
+      BigNumber.from(0),
+      BigNumber.from(0),
+      BigNumber.from(0),
+    ])
+
+    jest.spyOn(spendingLimit, 'getSpendingLimitModuleAddress').mockReturnValue('0x1')
+    jest.spyOn(spendingLimit, 'getSpendingLimitContract').mockImplementation(
+      jest.fn(() => {
+        return {
+          getDelegates: getDelegatesMock,
+          getTokens: getTokensMock,
+          getTokenAllowance: getTokenAllowanceMock,
+        } as unknown as AllowanceModule
+      }),
+    )
+
+    const result = await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4')
+
+    expect(result?.length).toBe(0)
   })
 })
 
