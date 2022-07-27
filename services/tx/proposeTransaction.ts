@@ -1,6 +1,10 @@
-import { proposeTransaction, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
+import { proposeTransaction, Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+
+// It's important to cache proposals to avoid re-proposing the same transaction
+// Backend returns an error if you try to propose the same transaction twice
+const cache: Record<string, TransactionDetails> = {}
 
 const proposeTx = async (chainId: string, safeAddress: string, sender: string, tx: SafeTransaction) => {
   const safeSDK = getSafeSDK()
@@ -10,8 +14,14 @@ const proposeTx = async (chainId: string, safeAddress: string, sender: string, t
   }
 
   const safeTxHash = await safeSDK.getTransactionHash(tx)
+  const signatures = tx.signatures.size ? tx.encodedSignatures() : undefined
+  const cacheKey = `${safeTxHash}_${signatures || ''}`
 
-  return await proposeTransaction(chainId, safeAddress, {
+  if (cache[cacheKey]) {
+    return cache[cacheKey]
+  }
+
+  const proposedTx = await proposeTransaction(chainId, safeAddress, {
     ...tx.data,
     safeTxHash,
     sender,
@@ -21,8 +31,12 @@ const proposeTx = async (chainId: string, safeAddress: string, sender: string, t
     safeTxGas: tx.data.safeTxGas.toString(),
     baseGas: tx.data.baseGas.toString(),
     gasPrice: tx.data.gasPrice.toString(),
-    signature: tx.signatures.size ? tx.encodedSignatures() : undefined,
+    signature: signatures,
   })
+
+  cache[cacheKey] = proposedTx
+
+  return proposedTx
 }
 
 export default proposeTx
