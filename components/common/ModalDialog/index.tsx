@@ -48,7 +48,7 @@ const CustomDialogTitle = ({ children, onClose, hideChainIndicator = false, ...o
           }}
           size="small"
           sx={{
-            ml: 'auto',
+            ml: 1,
             color: (theme) => theme.palette.grey[500],
           }}
         >

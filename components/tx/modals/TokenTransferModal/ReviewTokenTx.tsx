@@ -66,16 +66,14 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
     >
       {token && <TokenTransferReview params={params} tokenInfo={token.tokenInfo} />}
 
+      <SendFromBlock />
+
+      <Typography color={({ palette }) => palette.text.secondary} pb={1}>
+        Recipient
+      </Typography>
+
       <Box mb={3}>
-        <SendFromBlock />
-
-        <Typography color={({ palette }) => palette.text.secondary} pb={1}>
-          Recipient
-        </Typography>
-
-        <Box>
-          <EthHashInfo address={params.recipient} shortAddress={false} hasExplorer showCopyButton />
-        </Box>
+        <EthHashInfo address={params.recipient} shortAddress={false} hasExplorer showCopyButton />
       </Box>
     </SignOrExecuteForm>
   )

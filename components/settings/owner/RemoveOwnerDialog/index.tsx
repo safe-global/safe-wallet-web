@@ -16,11 +16,11 @@ export type RemoveOwnerData = {
 
 const RemoveOwnerSteps: TxStepperProps['steps'] = [
   {
-    label: 'Review owner',
+    label: 'Remove owner',
     render: (data, onSubmit) => <ReviewSelectedOwnerStep data={data as RemoveOwnerData} onSubmit={onSubmit} />,
   },
   {
-    label: 'Set threshold',
+    label: 'Set Threshold',
     render: (data, onSubmit) => <SetThresholdStep data={data as RemoveOwnerData} onSubmit={onSubmit} />,
   },
   {

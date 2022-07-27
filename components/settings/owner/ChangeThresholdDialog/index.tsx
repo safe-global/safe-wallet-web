@@ -78,9 +78,9 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
       error={txError}
       title="Change threshold"
     >
-      <Typography>Any transaction requires the confirmation of:</Typography>
+      <Typography mb={1}>Any transaction requires the confirmation of:</Typography>
 
-      <Grid container direction="row" gap={1} alignItems="center">
+      <Grid container direction="row" gap={1} alignItems="center" mb={2}>
         <Grid item xs={2}>
           <Select value={selectedThreshold} onChange={handleChange} fullWidth>
             {safe.owners.map((_, idx) => (

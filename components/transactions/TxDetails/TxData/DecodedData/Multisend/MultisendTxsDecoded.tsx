@@ -40,7 +40,6 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Multi
         '&:last-of-type': {
           borderBottomLeftRadius: '8px',
         },
-        '&.Mui-expanded': { margin: 0 },
       })}
       defaultExpanded={isDelegateCall}
     >

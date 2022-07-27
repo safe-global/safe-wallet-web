@@ -1,6 +1,5 @@
-import { Box, Button, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { Button, DialogContent, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import { SyntheticEvent, useState } from 'react'
-import TxModalTitle from '@/components/tx/TxModalTitle'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { RemoveOwnerData } from '..'
 
@@ -27,9 +26,7 @@ export const SetThresholdStep = ({
 
   return (
     <form onSubmit={onSubmitHandler}>
-      <TxModalTitle>Remove owner</TxModalTitle>
-
-      <Box>
+      <DialogContent>
         <Typography mb={3}>Set the required owner confirmations:</Typography>
 
         <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
@@ -48,7 +45,7 @@ export const SetThresholdStep = ({
             <Typography>out of {newNumberOfOwners} owner(s)</Typography>
           </Grid>
         </Grid>
-      </Box>
+      </DialogContent>
 
       <Button variant="contained" type="submit">
         Next

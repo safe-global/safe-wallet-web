@@ -1,6 +1,17 @@
 import { ReactElement } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography, TextField } from '@mui/material'
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+  TextField,
+  DialogContent,
+} from '@mui/material'
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import css from './styles.module.css'
@@ -10,7 +21,6 @@ import { validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import TxModalTitle from '../../TxModalTitle'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import InputValueHelper from '@/components/common/InputValueHelper'
@@ -108,57 +118,57 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
   return (
     <FormProvider {...formMethods}>
-      <form className={css.container} onSubmit={handleSubmit(onFormSubmit)}>
-        <TxModalTitle>Send funds</TxModalTitle>
+      <form onSubmit={handleSubmit(onFormSubmit)}>
+        <DialogContent>
+          <SendFromBlock />
 
-        <SendFromBlock />
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <AddressBookInput name={Field.recipient} label="Recipient" />
+          </FormControl>
 
-        <FormControl fullWidth>
-          <AddressBookInput name={Field.recipient} label="Recipient" />
-        </FormControl>
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel id="asset-label">Select an asset</InputLabel>
+            <Select
+              labelId="asset-label"
+              label={errors.tokenAddress?.message || 'Select an asset'}
+              defaultValue={formData?.tokenAddress || ''}
+              error={!!errors.tokenAddress}
+              {...register(Field.tokenAddress, {
+                required: true,
+                onChange: () => setValue(Field.amount, ''),
+              })}
+            >
+              {balances.items.map((item) => (
+                <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
+                  <AutocompleteItem {...item} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <FormControl fullWidth>
-          <InputLabel id="asset-label">Select an asset</InputLabel>
-          <Select
-            labelId="asset-label"
-            label={errors.tokenAddress?.message || 'Select an asset'}
-            defaultValue={formData?.tokenAddress || ''}
-            error={!!errors.tokenAddress}
-            {...register(Field.tokenAddress, {
-              required: true,
-              onChange: () => setValue(Field.amount, ''),
-            })}
-          >
-            {balances.items.map((item) => (
-              <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
-                <AutocompleteItem {...item} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth>
-          <TextField
-            label={errors.amount?.message || 'Amount'}
-            error={!!errors.amount}
-            autoComplete="off"
-            InputProps={{
-              endAdornment: (
-                <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
-                  Max
-                </InputValueHelper>
-              ),
-            }}
-            // @see https://github.com/react-hook-form/react-hook-form/issues/220
-            InputLabelProps={{
-              shrink: !!watch(Field.amount),
-            }}
-            {...register(Field.amount, {
-              required: true,
-              validate: (val) => validateTokenAmount(val, selectedToken),
-            })}
-          />
-        </FormControl>
+          <FormControl fullWidth>
+            <TextField
+              label={errors.amount?.message || 'Amount'}
+              error={!!errors.amount}
+              autoComplete="off"
+              InputProps={{
+                endAdornment: (
+                  <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
+                    Max
+                  </InputValueHelper>
+                ),
+              }}
+              // @see https://github.com/react-hook-form/react-hook-form/issues/220
+              InputLabelProps={{
+                shrink: !!watch(Field.amount),
+              }}
+              {...register(Field.amount, {
+                required: true,
+                validate: (val) => validateTokenAmount(val, selectedToken),
+              })}
+            />
+          </FormControl>
+        </DialogContent>
 
         <Button variant="contained" type="submit">
           Next

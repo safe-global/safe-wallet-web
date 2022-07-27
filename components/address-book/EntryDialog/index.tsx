@@ -48,7 +48,7 @@ const EntryDialog = ({
   }
 
   return (
-    <ModalDialog open onClose={handleClose} title="Create entry">
+    <ModalDialog open onClose={handleClose} dialogTitle="Create entry">
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
