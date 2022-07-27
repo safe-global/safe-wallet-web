@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import useAsync, { type AsyncResult } from '../useAsync'
 import useSafeInfo from '../useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
@@ -10,10 +10,15 @@ import { getSpendingLimitContract, getSpendingLimitModuleAddress } from '@/servi
 import { AddressEx } from '@gnosis.pm/safe-react-gateway-sdk'
 import { sameAddress } from '@/utils/addresses'
 import { AllowanceModule } from '@/types/contracts'
+import { sameString } from '@gnosis.pm/safe-core-sdk/dist/src/utils'
+import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 
 const isModuleEnabled = (modules: string[], moduleAddress: string): boolean => {
   return modules?.some((module) => sameAddress(module, moduleAddress)) ?? false
 }
+
+const discardZeroAllowance = (spendingLimit: SpendingLimitState): boolean =>
+  !(sameString(spendingLimit.amount, '0') && sameString(spendingLimit.resetTimeMin, '0'))
 
 export const getTokenAllowanceForDelegate = async (
   contract: AllowanceModule,
@@ -62,13 +67,20 @@ export const getSpendingLimits = async (
   const spendingLimits = await Promise.all(
     delegates.results.map(async (delegate) => getTokensForDelegate(contract, safeAddress, delegate)),
   )
-  return spendingLimits.flat()
+  return spendingLimits.flat().filter(discardZeroAllowance)
 }
 
 export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
+  const [updateSpendingLimitsTag, setUpdateSpendingLimitsTag] = useState<number>()
   const { safeAddress, safe } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
+
+  // Update spending limits whenever a transaction is executed
+  // TODO: Find a more optimised way to update them
+  useEffect(() => {
+    return txSubscribe(TxEvent.SUCCESS, () => setUpdateSpendingLimitsTag(Date.now()))
+  }, [])
 
   const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(
     async () => {
@@ -76,7 +88,7 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
 
       return getSpendingLimits(provider, safe.modules, safeAddress, chainId)
     },
-    [provider, safe.modules?.length, safeAddress, chainId],
+    [provider, safe.modules?.length, safeAddress, chainId, updateSpendingLimitsTag],
     false,
   )
 
