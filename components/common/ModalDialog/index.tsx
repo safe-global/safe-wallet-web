@@ -7,6 +7,7 @@ import * as React from 'react'
 
 interface ModalDialogProps extends DialogProps {
   dialogTitle?: React.ReactNode
+  hideChainIndicator?: boolean
 }
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -59,12 +60,22 @@ const CustomDialogTitle = ({ children, onClose, hideChainIndicator = false, ...o
   )
 }
 
-const ModalDialog = ({ dialogTitle, children, ...restProps }: ModalDialogProps): React.ReactElement => {
+const ModalDialog = ({
+  dialogTitle,
+  hideChainIndicator,
+  children,
+  ...restProps
+}: ModalDialogProps): React.ReactElement => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <StyledDialog {...restProps} fullScreen={fullScreen} onClick={(e) => e.stopPropagation()}>
-      {dialogTitle && <CustomDialogTitle onClose={restProps.onClose}>{dialogTitle}</CustomDialogTitle>}
+      {dialogTitle && (
+        <CustomDialogTitle onClose={restProps.onClose} hideChainIndicator={hideChainIndicator}>
+          {dialogTitle}
+        </CustomDialogTitle>
+      )}
+
       {children}
     </StyledDialog>
   )
