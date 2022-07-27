@@ -115,26 +115,6 @@ export const createExistingTx = async (
 }
 
 /**
- * Try to propose a transaction, or fall back to a random id
- */
-export const getNewTxId = async (
-  chainId: string,
-  safeAddress: string,
-  sender: string,
-  safeTx: SafeTransaction,
-): Promise<string> => {
-  try {
-    // N.B.: proposals w/o signatures won't appear in the queue
-    const proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx)
-    return proposedTx.txId
-  } catch (e) {
-    // This fallback is needed because proposeTx will fail if you propose the same tx repeatedly
-    // It might happen when the user rejects execution in the wallet and submits the tx again
-    return Math.random().toString(32)
-  }
-}
-
-/**
  * Propose a transaction
  */
 export const dispatchTxProposal = async (

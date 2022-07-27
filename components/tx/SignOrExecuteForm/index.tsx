@@ -1,16 +1,11 @@
 import { ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Checkbox, FormControlLabel } from '@mui/material'
 
 import css from './styles.module.css'
 
-import {
-  dispatchTxExecution,
-  dispatchTxProposal,
-  dispatchTxSigning,
-  getNewTxId,
-  updateTxNonce,
-} from '@/services/tx/txSender'
+import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, updateTxNonce } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useGasPrice from '@/hooks/useGasPrice'
@@ -22,6 +17,7 @@ import TxModalTitle from '../TxModalTitle'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import { logError, Errors } from '@/services/exceptions'
+import { AppRoutes } from '@/config/routes'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -55,6 +51,7 @@ const SignOrExecuteForm = ({
   const [manualParams, setManualParams] = useState<AdvancedParameters>()
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
 
+  const router = useRouter()
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
 
@@ -90,21 +87,26 @@ const SignOrExecuteForm = ({
   //
 
   // Sign transaction
-  const onSign = async () => {
+  const onSign = async (): Promise<string> => {
     if (!wallet || !tx) throw new Error('Cannot sign')
 
     const hardwareWallet = isHardwareWallet(wallet)
     const signedTx = await dispatchTxSigning(tx, hardwareWallet, txId)
 
-    await dispatchTxProposal(safe.chainId, safeAddress, wallet.address, signedTx)
+    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, wallet.address, signedTx)
+    return proposedTx.txId
   }
 
   // Execute transaction
-  const onExecute = async () => {
+  const onExecute = async (): Promise<string> => {
     if (!wallet || !tx) throw new Error('Cannot execute')
 
     // If no txId was provided, it's an immediate execution of a new tx
-    const id = txId || (await getNewTxId(safe.chainId, safeAddress, wallet.address, tx))
+    let id = txId
+    if (!id) {
+      const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, wallet.address, tx)
+      id = proposedTx.txId
+    }
 
     // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
     const txOptions = {
@@ -112,6 +114,8 @@ const SignOrExecuteForm = ({
       gasPrice: advancedParams.maxFeePerGas?.toString(),
     }
     await dispatchTxExecution(id, tx, txOptions)
+
+    return id
   }
 
   // On modal submit
@@ -119,11 +123,24 @@ const SignOrExecuteForm = ({
     e.preventDefault()
     setIsSubmittable(false)
 
+    let id: string
     try {
-      await (willExecute ? onExecute() : onSign())
-      onSubmit(null)
+      id = await (willExecute ? onExecute() : onSign())
     } catch (err) {
+      logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
+      return
+    }
+
+    onSubmit(null)
+
+    // If txId isn't passed in props, it's a newly created tx
+    // Redirect to the single tx view
+    if (!txId) {
+      router.push({
+        pathname: AppRoutes.safe.transactions.tx,
+        query: { safe: router.query.safe, id },
+      })
     }
   }
 
