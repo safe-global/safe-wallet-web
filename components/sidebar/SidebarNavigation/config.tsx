@@ -14,22 +14,6 @@ export type NavItem = {
   items?: NavItem[]
 }
 
-export const transactionItems: NavItem = {
-  label: 'Transactions',
-  icon: <TransactionIcon />,
-  href: AppRoutes.safe.transactions.history,
-  items: [
-    {
-      label: 'Queue',
-      href: AppRoutes.safe.transactions.queue,
-    },
-    {
-      label: 'History',
-      href: AppRoutes.safe.transactions.history,
-    },
-  ],
-}
-
 export const navItems: NavItem[] = [
   {
     label: 'Home',
@@ -40,18 +24,12 @@ export const navItems: NavItem[] = [
     label: 'Assets',
     icon: <AssetsIcon />,
     href: AppRoutes.safe.balances.index,
-    items: [
-      {
-        label: 'Coins',
-        href: AppRoutes.safe.balances.index,
-      },
-      {
-        label: 'NFTs',
-        href: AppRoutes.safe.balances.nfts,
-      },
-    ],
   },
-  transactionItems,
+  {
+    label: 'Transactions',
+    icon: <TransactionIcon />,
+    href: AppRoutes.safe.transactions.history,
+  },
   {
     label: 'Address Book',
     icon: <ABIcon />,
@@ -84,5 +62,27 @@ export const navItems: NavItem[] = [
         href: AppRoutes.safe.settings.spendingLimits,
       },
     ],
+  },
+]
+
+export const transactionNavItems = [
+  {
+    label: 'Queue',
+    href: AppRoutes.safe.transactions.queue,
+  },
+  {
+    label: 'History',
+    href: AppRoutes.safe.transactions.history,
+  },
+]
+
+export const balancesNavItems = [
+  {
+    label: 'Coins',
+    href: AppRoutes.safe.balances.index,
+  },
+  {
+    label: 'NFTs',
+    href: AppRoutes.safe.balances.nfts,
   },
 ]
