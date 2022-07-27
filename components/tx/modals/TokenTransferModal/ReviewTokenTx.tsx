@@ -57,13 +57,7 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
   }, [txParams])
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      isExecutable={safe.threshold === 1}
-      onSubmit={onSubmit}
-      title="Review transaction"
-      error={safeTxError}
-    >
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
       {token && <TokenTransferReview params={params} tokenInfo={token.tokenInfo} />}
 
       <SendFromBlock />

@@ -71,13 +71,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
   const txError = createTxError || safeTxError
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      isExecutable={safe.threshold === 1}
-      onSubmit={onSubmit}
-      error={txError}
-      title="Change threshold"
-    >
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={txError}>
       <Typography mb={1}>Any transaction requires the confirmation of:</Typography>
 
       <Grid container direction="row" gap={1} alignItems="center" mb={2}>

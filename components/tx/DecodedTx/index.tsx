@@ -25,22 +25,24 @@ const DecodedTx = ({ tx }: DecodedTxProps): ReactElement | null => {
   if (isNativeTransfer) return null
 
   return (
-    <Accordion elevation={0}>
-      <AccordionSummary>
-        <Box flex={1}>Transaction data</Box>
-        {encodedData ? generateDataRowValue(encodedData, 'rawData') : ''}
-      </AccordionSummary>
+    <Box mb={2}>
+      <Accordion elevation={0}>
+        <AccordionSummary>
+          <Box flex={1}>Transaction data</Box>
+          {encodedData ? generateDataRowValue(encodedData, 'rawData') : ''}
+        </AccordionSummary>
 
-      <AccordionDetails>
-        {decodedData ? (
-          <MethodDetails data={decodedData} />
-        ) : error ? (
-          <ErrorMessage error={error}>Failed decoding transaction data</ErrorMessage>
-        ) : (
-          <Skeleton />
-        )}
-      </AccordionDetails>
-    </Accordion>
+        <AccordionDetails>
+          {decodedData ? (
+            <MethodDetails data={decodedData} />
+          ) : error ? (
+            <ErrorMessage error={error}>Failed decoding transaction data</ErrorMessage>
+          ) : (
+            <Skeleton />
+          )}
+        </AccordionDetails>
+      </Accordion>
+    </Box>
   )
 }
 

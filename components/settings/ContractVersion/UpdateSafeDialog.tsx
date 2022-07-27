@@ -58,13 +58,7 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
   const txError = txCreationError || safeTxError
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      isExecutable={safe.threshold === 1}
-      onSubmit={onSubmit}
-      error={txError}
-      title="Update safe version"
-    >
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={txError}>
       <Typography mb={2}>
         Update now to take advantage of new features and the highest security standards available.
       </Typography>

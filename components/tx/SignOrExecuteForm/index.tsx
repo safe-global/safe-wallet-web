@@ -1,7 +1,7 @@
 import { ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Box, Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material'
+import { Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material'
 
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, updateTxNonce } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -26,7 +26,6 @@ type SignOrExecuteProps = {
   onSubmit: (data: null) => void
   children?: ReactNode
   error?: Error
-  title?: string
 }
 
 const SignOrExecuteForm = ({
@@ -38,7 +37,6 @@ const SignOrExecuteForm = ({
   onSubmit,
   children,
   error,
-  title,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -184,9 +182,7 @@ const SignOrExecuteForm = ({
       <DialogContent>
         {children}
 
-        <Box mb={2}>
-          <DecodedTx tx={tx} />
-        </Box>
+        <DecodedTx tx={tx} />
 
         {canExecute && !onlyExecute && (
           <FormControlLabel
