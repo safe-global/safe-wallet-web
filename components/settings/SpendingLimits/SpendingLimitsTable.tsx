@@ -84,7 +84,7 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
 
   return (
     <>
-      <EnhancedTable rows={rows} headCells={headCells} />
+      <EnhancedTable rows={rows} headCells={headCells} variant="outlined" />
       {open && <TxModal onClose={() => setOpen(false)} steps={RemoveSpendingLimitSteps} initialData={[initialData]} />}
     </>
   )

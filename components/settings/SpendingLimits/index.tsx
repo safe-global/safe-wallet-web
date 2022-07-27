@@ -28,7 +28,7 @@ const SpendingLimits = () => {
         </Grid>
       </Grid>
 
-      {spendingLimits ? <SpendingLimitsTable spendingLimits={spendingLimits} /> : <NoSpendingLimits />}
+      {spendingLimits.length > 0 ? <SpendingLimitsTable spendingLimits={spendingLimits} /> : <NoSpendingLimits />}
     </Paper>
   )
 }

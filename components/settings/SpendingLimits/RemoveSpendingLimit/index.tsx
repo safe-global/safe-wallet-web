@@ -46,9 +46,11 @@ export const RemoveSpendingLimit = ({
       error={safeTxError}
       title="Remove spending limit"
     >
-      <Typography>Beneficiary</Typography>
+      <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
       <EthHashInfo address={data.beneficiary} showCopyButton hasExplorer shortAddress={false} />
-      <Typography mt={2}>Reset Time</Typography>
+      <Typography mt={2} sx={({ palette }) => ({ color: palette.secondary.light })}>
+        Reset Time
+      </Typography>
       <Typography mb={2}>{relativeTime(data.lastResetMin, data.resetTimeMin)}</Typography>
     </SignOrExecuteForm>
   )
