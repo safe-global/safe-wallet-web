@@ -1,17 +1,17 @@
-import React, { useMemo } from 'react'
-import { CreateSafeFormData } from '@/components/create-safe'
-import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import useWallet from '@/hooks/wallets/useWallet'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { CreateSafeFormData } from '@/components/create-safe'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
-import useGasPrice from '@/hooks/useGasPrice'
-import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
-import { safeFormatUnits } from '@/utils/formatters'
+import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import { useCurrentChain } from '@/hooks/useChains'
+import useGasPrice from '@/hooks/useGasPrice'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useWeb3 } from '@/hooks/wallets/web3'
+import { safeFormatUnits } from '@/utils/formatters'
+import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
+import { useMemo } from 'react'
+import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
 
 type Props = {
   params: CreateSafeFormData
@@ -43,7 +43,6 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
 
   const createSafe = async () => {
     if (!wallet || !ethersProvider) return
-
     setPendingSafe({ ...params, saltNonce })
     onSubmit(params)
   }
@@ -77,7 +76,15 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
           <Divider />
           <Box padding={3}>
             {params.owners.map((owner) => {
-              return <EthHashInfo key={owner.address} address={owner.address} name={owner.name} shortAddress={false} />
+              return (
+                <EthHashInfo
+                  key={owner.address}
+                  address={owner.address}
+                  name={owner.name}
+                  shortAddress={false}
+                  showName
+                />
+              )
             })}
           </Box>
           <Divider />
