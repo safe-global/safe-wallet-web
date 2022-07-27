@@ -78,7 +78,7 @@ export const transactionNavItems = [
 
 export const balancesNavItems = [
   {
-    label: 'Coins',
+    label: 'Tokens',
     href: AppRoutes.safe.balances.index,
   },
   {
