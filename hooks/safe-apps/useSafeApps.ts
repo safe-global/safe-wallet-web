@@ -1,25 +1,36 @@
-import { useEffect } from 'react'
-import { getSafeApps, SafeAppsResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Errors, logError } from '@/services/exceptions'
-import useAsync, { AsyncResult } from '../useAsync'
-import useChainId from '@/hooks/useChainId'
+import * as React from 'react'
+import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import { useCustomSafeApps } from '@/hooks/safe-apps/useCustomSafeApps'
 
-const useSafeApps = (): AsyncResult<SafeAppsResponse> => {
-  const chainId = useChainId()
+type ReturnType = {
+  remoteSafeApps: SafeAppData[]
+  customSafeApps: SafeAppData[]
+  remoteSafeAppsLoading: boolean
+  customSafeAppsLoading: boolean
+  remoteSafeAppsError?: Error
+  addCustomApp: (app: SafeAppData) => void
+}
 
-  const [apps, error, loading] = useAsync(async () => {
-    if (!chainId) return
-    return getSafeApps(chainId)
-  }, [chainId])
+const useSafeApps = (): ReturnType => {
+  const [remoteSafeApps = [], remoteSafeAppsError, remoteSafeAppsLoading] = useRemoteSafeApps()
+  const { customSafeApps, loading: customSafeAppsLoading, updateCustomSafeApps } = useCustomSafeApps()
 
-  // Log errors
-  useEffect(() => {
-    if (error) {
-      logError(Errors._900, error.message)
-    }
-  }, [error])
+  const addCustomApp = React.useCallback(
+    (app: SafeAppData) => {
+      updateCustomSafeApps([...customSafeApps, app])
+    },
+    [updateCustomSafeApps, customSafeApps],
+  )
 
-  return [apps, error, loading]
+  return {
+    remoteSafeApps,
+    customSafeApps,
+    remoteSafeAppsLoading,
+    customSafeAppsLoading,
+    remoteSafeAppsError,
+    addCustomApp,
+  }
 }
 
 export { useSafeApps }

@@ -14,12 +14,14 @@ import {
 } from '@mui/material'
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
-import { AppManifest, fetchAppManifest, isAppManifestValid } from '@/services/safe-apps/manifest'
-import { trimTrailingSlash } from '@/utils/url'
+import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
+import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import useChainId from '@/hooks/useChainId'
 
 type Props = {
   open: boolean
   onClose: () => void
+  onSave: (data: SafeAppData) => void
 }
 
 type CustomAppFormData = {
@@ -30,47 +32,26 @@ type CustomAppFormData = {
 const TEXT_FIELD_HEIGHT = '56px'
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
 
-// The icons URL can be any of the following format:
-// - https://example.com/icon.png
-// - icon.png
-// - /icon.png
-// This function calculates the absolute URL of the icon taking into account the
-// different formats.
-const getAppLogoUrl = (appUrl: string, icons: AppManifest['icons']) => {
-  const iconUrl = icons[0].src
-  const includesBaseUrl = iconUrl.startsWith('https://')
-  if (includesBaseUrl) {
-    return iconUrl
-  }
-
-  const isAbsoluteUrl = iconUrl.startsWith('/')
-  if (isAbsoluteUrl) {
-    const appUrlHost = new URL(appUrl).host
-    return `${appUrlHost}${iconUrl}`
-  }
-
-  return `${appUrl}/${icons[0].src}`
-}
-
-const AddCustomAppModal = ({ open, onClose }: Props) => {
-  const [appManifest, setAppManifest] = React.useState<AppManifest>()
+const AddCustomAppModal = ({ open, onClose, onSave }: Props) => {
+  const [safeApp, setSafeApp] = React.useState<SafeAppData>()
+  const chainId = useChainId()
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false } })
-  const appUrl = watch('appUrl')
-  const onSubmit: SubmitHandler<CustomAppFormData> = (data, e) => console.log(data, e)
-
-  let appLogoUrl = APP_LOGO_FALLBACK_IMAGE
-  if (appManifest && appManifest.icons.length > 0) {
-    appLogoUrl = getAppLogoUrl(trimTrailingSlash(appUrl), appManifest.icons)
+  const onSubmit: SubmitHandler<CustomAppFormData> = (_, __) => {
+    if (safeApp) {
+      onSave(safeApp)
+      onClose()
+    }
   }
 
+  const appLogoUrl = safeApp?.iconUrl || APP_LOGO_FALLBACK_IMAGE
+
   const handleClose = () => {
-    setAppManifest(undefined)
+    setSafeApp(undefined)
     onClose()
   }
 
@@ -96,15 +77,9 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
                 validUrl: isValidURL,
                 validManifest: async (val): Promise<string | undefined> => {
                   try {
-                    setAppManifest(undefined)
-                    const manifest = await fetchAppManifest(val)
-
-                    if (isAppManifestValid(manifest)) {
-                      setAppManifest(manifest)
-                      return
-                    }
-
-                    throw new Error('Invalid manifest')
+                    setSafeApp(undefined)
+                    const appFromManifest = await fetchSafeAppFromManifest(val, chainId)
+                    setSafeApp(appFromManifest)
                   } catch (err) {
                     return "The app doesn't support Safe App functionality"
                   }
@@ -127,7 +102,7 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
                 e.currentTarget.src = APP_LOGO_FALLBACK_IMAGE
               }}
             />
-            <TextField label="App name" disabled sx={{ width: '100%', ml: 2 }} value={appManifest?.name || ''} />
+            <TextField label="App name" disabled sx={{ width: '100%', ml: 2 }} value={safeApp?.name || ''} />
           </Box>
           <FormControlLabel
             aria-required

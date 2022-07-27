@@ -1,35 +1,20 @@
 import { useState, useEffect, useCallback } from 'react'
-import { SafeAppData, SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import local from '@/services/local-storage/local'
-import { AppManifest, fetchAppManifest, isAppManifestValid } from '@/services/safe-apps/manifest'
+import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
+import useChainId from '@/hooks/useChainId'
 
 type ReturnType = {
   customSafeApps: SafeAppData[]
-  loaded: boolean
-  updateCustomSafeApps: (newCustomSafeApps: SafeApp[]) => void
+  loading: boolean
+  updateCustomSafeApps: (newCustomSafeApps: SafeAppData[]) => void
 }
 
 const CUSTOM_SAFE_APPS_STORAGE_KEY = 'customSafeApps'
 
+const getChainSpecificSafeAppsStorageKey = (chainId: string) => `${CUSTOM_SAFE_APPS_STORAGE_KEY}-${chainId}`
+
 type StoredCustomSafeApp = { url: string }
-
-const fetchSafeAppFromManifest = async (appUrl: string): Promise<SafeAppData> => {
-  const appManifest = await fetchAppManifest(appUrl)
-
-  if (!isAppManifestValid(appManifest)) {
-    throw new Error('Invalid app manifest')
-  }
-  const
-
-  return {
-    id: Math.random(),
-    url: appUrl,
-    name: appManifest.name,
-    description: appManifest.description,
-    accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
-    tags: [],
-  }
-}
 
 /*
   This hook is used to manage the list of custom safe apps.
@@ -40,33 +25,40 @@ const fetchSafeAppFromManifest = async (appUrl: string): Promise<SafeAppData> =>
 */
 const useCustomSafeApps = (): ReturnType => {
   const [customSafeApps, setCustomSafeApps] = useState<SafeAppData[]>([])
-  const [loaded, setLoaded] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const chainId = useChainId()
 
-  const updateCustomSafeApps = useCallback((newCustomSafeApps: SafeAppData[]) => {
-    setCustomSafeApps(newCustomSafeApps)
+  const updateCustomSafeApps = useCallback(
+    (newCustomSafeApps: SafeAppData[]) => {
+      setCustomSafeApps(newCustomSafeApps)
 
-    local.setItem(
-      CUSTOM_SAFE_APPS_STORAGE_KEY,
-      newCustomSafeApps.map((app) => ({ url: app.url })),
-    )
-  }, [])
+      const chainSpecificSafeAppsStorageKey = getChainSpecificSafeAppsStorageKey(chainId)
+      local.setItem(
+        chainSpecificSafeAppsStorageKey,
+        newCustomSafeApps.map((app) => ({ url: app.url })),
+      )
+    },
+    [chainId],
+  )
 
   useEffect(() => {
     const loadCustomApps = async () => {
-      const storedApps = local.getItem<StoredCustomSafeApp[]>(CUSTOM_SAFE_APPS_STORAGE_KEY) || []
-      const appManifests = await Promise.allSettled(storedApps.map((app) => fetchAppManifest(app.url)))
+      setLoading(true)
+      const chainSpecificSafeAppsStorageKey = getChainSpecificSafeAppsStorageKey(chainId)
+      const storedApps = local.getItem<StoredCustomSafeApp[]>(chainSpecificSafeAppsStorageKey) || []
+      const appManifests = await Promise.allSettled(storedApps.map((app) => fetchSafeAppFromManifest(app.url, chainId)))
       const resolvedApps = appManifests
-        .filter((promiseResult) => promiseResult.status === 'fulfilled' && isAppManifestValid(promiseResult.value))
-        .map((promiseResult) => (promiseResult as PromiseFulfilledResult<AppManifest>).value)
+        .filter((promiseResult) => promiseResult.status === 'fulfilled')
+        .map((promiseResult) => (promiseResult as PromiseFulfilledResult<SafeAppData>).value)
 
-      setCustomSafeApps(serializedApps)
-      setLoaded(true)
+      setCustomSafeApps(resolvedApps)
+      setLoading(false)
     }
 
     loadCustomApps()
-  }, [])
+  }, [chainId])
 
-  return { customSafeApps, loaded, updateCustomSafeApps }
+  return { customSafeApps, loading, updateCustomSafeApps }
 }
 
 export { useCustomSafeApps }
