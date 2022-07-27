@@ -18,6 +18,7 @@ import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import { logError, Errors } from '@/services/exceptions'
 import { AppRoutes } from '@/config/routes'
+import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -50,6 +51,7 @@ const SignOrExecuteForm = ({
   const [isEditingGas, setEditingGas] = useState<boolean>(false)
   const [manualParams, setManualParams] = useState<AdvancedParameters>()
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
+  const [submitError, setSubmitError] = useState<Error | undefined>()
 
   const router = useRouter()
   const { safe, safeAddress } = useSafeInfo()
@@ -85,26 +87,31 @@ const SignOrExecuteForm = ({
   //
   // Callbacks
   //
+  const assertSubmittable = (): [ConnectedWallet, SafeTransaction] => {
+    if (!wallet) throw new Error('Wallet not connected')
+    if (!tx) throw new Error('Transaction not ready')
+    return [wallet, tx]
+  }
 
   // Sign transaction
   const onSign = async (): Promise<string> => {
-    if (!wallet || !tx) throw new Error('Cannot sign')
+    const [connectedWallet, createdTx] = assertSubmittable()
 
-    const hardwareWallet = isHardwareWallet(wallet)
-    const signedTx = await dispatchTxSigning(tx, hardwareWallet, txId)
+    const hardwareWallet = isHardwareWallet(connectedWallet)
+    const signedTx = await dispatchTxSigning(createdTx, hardwareWallet, txId)
 
-    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, wallet.address, signedTx)
+    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx)
     return proposedTx.txId
   }
 
   // Execute transaction
   const onExecute = async (): Promise<string> => {
-    if (!wallet || !tx) throw new Error('Cannot execute')
+    const [connectedWallet, createdTx] = assertSubmittable()
 
     // If no txId was provided, it's an immediate execution of a new tx
     let id = txId
     if (!id) {
-      const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, wallet.address, tx)
+      const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, createdTx)
       id = proposedTx.txId
     }
 
@@ -113,7 +120,7 @@ const SignOrExecuteForm = ({
       gasLimit: advancedParams.gasLimit?.toString(),
       gasPrice: advancedParams.maxFeePerGas?.toString(),
     }
-    await dispatchTxExecution(id, tx, txOptions)
+    await dispatchTxExecution(id, createdTx, txOptions)
 
     return id
   }
@@ -122,6 +129,7 @@ const SignOrExecuteForm = ({
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
     setIsSubmittable(false)
+    setSubmitError(undefined)
 
     let id: string
     try {
@@ -129,6 +137,7 @@ const SignOrExecuteForm = ({
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
+      setSubmitError(err as Error)
       return
     }
 
@@ -203,6 +212,10 @@ const SignOrExecuteForm = ({
             <ErrorMessage error={error || gasLimitError}>
               This transaction will most likely fail. To save gas costs, avoid creating the transaction.
             </ErrorMessage>
+          )}
+
+          {submitError && (
+            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           )}
 
           <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
