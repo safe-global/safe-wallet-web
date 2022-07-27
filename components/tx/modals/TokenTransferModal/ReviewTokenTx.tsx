@@ -74,7 +74,7 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
         </Typography>
 
         <Box>
-          <EthHashInfo address={safeTx?.data.to || ''} shortAddress={false} hasExplorer showCopyButton />
+          <EthHashInfo address={params.recipient} shortAddress={false} hasExplorer showCopyButton />
         </Box>
       </Box>
     </SignOrExecuteForm>
