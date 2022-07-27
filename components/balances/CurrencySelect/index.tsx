@@ -2,13 +2,13 @@ import { ReactElement } from 'react'
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectCurrency, setCurrency } from '@/store/sessionSlice'
-import useCurriencies from './useCurrencies'
+import useCurrencies from './useCurrencies'
 import css from './styles.module.css'
 
 const CurrencySelect = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
   const dispatch = useAppDispatch()
-  const fiatCurrencies = useCurriencies() || [currency.toUpperCase()]
+  const fiatCurrencies = useCurrencies() || [currency.toUpperCase()]
 
   const handleChange = (e: SelectChangeEvent<string>) => {
     dispatch(setCurrency(e.target.value.toLowerCase()))
