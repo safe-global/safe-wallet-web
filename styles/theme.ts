@@ -251,7 +251,17 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             '& .MuiTableCell-root': {
+              paddingTop: theme.spacing(1),
+              paddingBottom: theme.spacing(1),
               borderBottom: `1px solid ${theme.palette.border.light}`,
+            },
+
+            '& .MuiTableRow-root': {
+              transition: 'background-color 0.2s',
+            },
+
+            '& .MuiTableRow-root:hover': {
+              backgroundColor: theme.palette.background.light,
             },
           }),
         },
