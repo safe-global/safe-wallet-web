@@ -4,7 +4,7 @@ import { useState } from 'react'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-import { createTx, createUpdateThresholdTx } from '@/services/tx/txSender'
+import { createUpdateThresholdTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -51,10 +51,8 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
     setSelectedThreshold(parseInt(event.target.value.toString()))
   }
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    const changeThresholdTx = await createUpdateThresholdTx(selectedThreshold)
-    // Reset the nonce to fetch the recommended nonce in createTx
-    return createTx({ ...changeThresholdTx.data, nonce: undefined })
+  const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
+    return createUpdateThresholdTx(selectedThreshold)
   }, [selectedThreshold])
 
   return (

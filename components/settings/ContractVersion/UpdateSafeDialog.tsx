@@ -5,7 +5,7 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 import TxModal from '@/components/tx/TxModal'
 
-import { createMultiSendTx, createTx } from '@/services/tx/txSender'
+import { createMultiSendTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -46,11 +46,8 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!safeLoaded || !chain) return
-
     const txs = createUpdateSafeTxs(safe, chain)
-    const updateSafeTx = await createMultiSendTx(txs)
-
-    return createTx({ ...updateSafeTx.data, nonce: undefined, operation: 1 })
+    return createMultiSendTx(txs)
   }, [chain, safe, safeLoaded])
 
   return (
