@@ -13,3 +13,6 @@ export const LATEST_SAFE_VERSION = process.env.NEXT_PUBLIC_SAFE_VERSION || '1.3.
 export const BEAMER_ID = process.env.NEXT_PUBLIC_BEAMER_ID
 export const SAFE_REACT_URL = IS_PRODUCTION ? 'https://gnosis-safe.io/app' : 'https://safe-team.dev.gnosisdev.com/app'
 export const BASE_TX_GAS = 21_000
+export const SAFE_TOKEN_ADDRESS = IS_PRODUCTION
+  ? '0x5aFE3855358E112B5647B952709E6165e1c1eEEe'
+  : '0xCFf1b0FdE85C102552D1D96084AF148f478F964A'

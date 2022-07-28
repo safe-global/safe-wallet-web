@@ -1,0 +1,21 @@
+.buttonContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 100%;
+  border-left: 2px solid var(--color-border-light);
+  justify-content: center;
+  margin-right: -20px;
+}
+
+.tokenButton {
+  display: flex;
+  border-radius: 8px;
+  padding: 0px var(--space-1) 0px var(--space-1);
+  background-color: var(--color-border-background);
+  margin: var(--space-1);
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
