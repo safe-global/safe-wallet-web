@@ -55,5 +55,5 @@ export const { setCurrency, setShowShortName, setCopyShortName, setQrShortName, 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
 
 export const selectCurrency = (state: RootState): SettingsState['currency'] => {
-  return state[settingsSlice.name].currency
+  return state[settingsSlice.name].currency || initialState.currency
 }
