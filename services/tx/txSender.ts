@@ -19,6 +19,7 @@ import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
 import Safe, { RemoveOwnerTxParams, SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
+import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -73,6 +74,16 @@ export const createMultiSendTx = async (
 export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
   return safeSDK.getRemoveOwnerTx(txParams)
+}
+
+export const createAddOwnerTx = async (txParams: AddOwnerTxParams): Promise<SafeTransaction> => {
+  const safeSDK = getAndValidateSafeSDK()
+  return safeSDK.getAddOwnerTx(txParams)
+}
+
+export const createSwapOwnerTx = async (txParams: SwapOwnerTxParams): Promise<SafeTransaction> => {
+  const safeSDK = getAndValidateSafeSDK()
+  return safeSDK.getSwapOwnerTx(txParams)
 }
 
 export const createUpdateThresholdTx = async (threshold: number): Promise<SafeTransaction> => {

@@ -3,8 +3,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
-import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import { createTx } from '@/services/tx/txSender'
+import { createAddOwnerTx, createSwapOwnerTx, createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
@@ -18,33 +17,26 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const dispatch = useAppDispatch()
-  const safeSDK = useSafeSDK()
   const addressBook = useAddressBook()
   const { newOwner, removedOwner, threshold } = data
 
-  // @TODO: move to txSender, add event dispatching
-  const [changeOwnerTx, createTxError] = useAsync(() => {
-    if (!safeSDK) {
-      throw new Error('Safe SDK not initialized')
-    }
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+    let tx: SafeTransaction
+
     if (removedOwner) {
-      return safeSDK.getSwapOwnerTx({
+      tx = await createSwapOwnerTx({
         newOwnerAddress: newOwner.address,
         oldOwnerAddress: removedOwner.address,
       })
     } else {
-      return safeSDK.getAddOwnerTx({
+      tx = await createAddOwnerTx({
         ownerAddress: newOwner.address,
         threshold,
       })
     }
+    console.log(tx)
+    return createTx({ ...tx.data, nonce: undefined })
   }, [removedOwner, newOwner])
-
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!changeOwnerTx) return
-    // Reset the nonce to fetch the recommended nonce in createTx
-    return createTx({ ...changeOwnerTx.data, nonce: undefined })
-  }, [changeOwnerTx])
 
   const isReplace = Boolean(removedOwner)
 
@@ -62,15 +54,12 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
     onSubmit(dialogData)
   }
 
-  // All errors
-  const txError = safeTxError || createTxError
-
   return (
     <SignOrExecuteForm
       safeTx={safeTx}
       onSubmit={addAddressBookEntryAndSubmit}
       isExecutable={safe.threshold === 1}
-      error={txError}
+      error={safeTxError}
     >
       <Grid
         container
