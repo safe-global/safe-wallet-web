@@ -1,19 +1,17 @@
 import { proposeTransaction, Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 
 // It's important to cache proposals to avoid re-proposing the same transaction
 // Backend returns an error if you try to propose the same transaction twice
 const cache: Record<string, TransactionDetails> = {}
 
-const proposeTx = async (chainId: string, safeAddress: string, sender: string, tx: SafeTransaction) => {
-  const safeSDK = getSafeSDK()
-
-  if (!safeSDK) {
-    throw new Error('Safe SDK not initialized')
-  }
-
-  const safeTxHash = await safeSDK.getTransactionHash(tx)
+const proposeTx = async (
+  chainId: string,
+  safeAddress: string,
+  sender: string,
+  tx: SafeTransaction,
+  safeTxHash: string,
+) => {
   const signatures = tx.signatures.size ? tx.encodedSignatures() : undefined
   const cacheKey = `${safeTxHash}_${signatures || ''}`
 

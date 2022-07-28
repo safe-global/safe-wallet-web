@@ -123,9 +123,12 @@ export const dispatchTxProposal = async (
   sender: string,
   safeTx: SafeTransaction,
 ): Promise<TransactionDetails> => {
+  const safeSDK = getAndValidateSafeSDK()
+  const safeTxHash = await safeSDK.getTransactionHash(safeTx)
+
   let proposedTx: TransactionDetails | undefined
   try {
-    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx)
+    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash)
   } catch (error) {
     txDispatch(TxEvent.PROPOSE_FAILED, { tx: safeTx, error: error as Error })
     throw error
@@ -163,10 +166,10 @@ export const dispatchTxSigning = async (
  * Execute a transaction
  */
 export const dispatchTxExecution = async (
-  txId: string,
   safeTx: SafeTransaction,
   txOptions?: TransactionOptions,
-): Promise<string> => {
+  txId?: string,
+): Promise<TransactionResult> => {
   const sdk = getAndValidateSafeSDK()
 
   txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
@@ -179,22 +182,31 @@ export const dispatchTxExecution = async (
     txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
   }
+  return result
+}
 
+export const dispatchWatchExecution = async (
+  txId: string,
+  safeTx: SafeTransaction,
+  result: TransactionResult,
+): Promise<void> => {
   txDispatch(TxEvent.MINING, { txId, txHash: result.hash, tx: safeTx })
 
   // Asynchronously watch the tx to be mined
-  result.transactionResponse
-    ?.wait()
-    .then((receipt) => {
-      if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, { txId, receipt, tx: safeTx, error: new Error('Transaction reverted by EVM') })
-      } else {
-        txDispatch(TxEvent.MINED, { txId, tx: safeTx, receipt })
-      }
-    })
-    .catch((error) => {
-      txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
-    })
+  try {
+    const receipt = await result.transactionResponse?.wait()
 
-  return result.hash
+    if (!receipt) {
+      throw new Error('Transaction not mined')
+    }
+
+    if (didRevert(receipt)) {
+      txDispatch(TxEvent.REVERTED, { txId, receipt, tx: safeTx, error: new Error('Transaction reverted by EVM') })
+    } else {
+      txDispatch(TxEvent.MINED, { txId, tx: safeTx, receipt })
+    }
+  } catch (error) {
+    txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
+    return
+  }
 }

@@ -3,7 +3,13 @@ import { useRouter } from 'next/router'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material'
 
-import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, updateTxNonce } from '@/services/tx/txSender'
+import {
+  dispatchTxExecution,
+  dispatchTxProposal,
+  dispatchTxSigning,
+  dispatchWatchExecution,
+  updateTxNonce,
+} from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useGasPrice from '@/hooks/useGasPrice'
@@ -103,19 +109,17 @@ const SignOrExecuteForm = ({
   const onExecute = async (): Promise<string> => {
     const [connectedWallet, createdTx] = assertSubmittable()
 
-    // If no txId was provided, it's an immediate execution of a new tx
-    let id = txId
-    if (!id) {
-      const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, createdTx)
-      id = proposedTx.txId
-    }
-
     // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
     const txOptions = {
       gasLimit: advancedParams.gasLimit?.toString(),
       gasPrice: advancedParams.maxFeePerGas?.toString(),
     }
-    await dispatchTxExecution(id, createdTx, txOptions)
+    const result = await dispatchTxExecution(createdTx, txOptions)
+
+    // If no txId was provided, it's an immediate execution of a new tx
+    let id = txId || (await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, createdTx)).txId
+
+    dispatchWatchExecution(id, createdTx, result)
 
     return id
   }
