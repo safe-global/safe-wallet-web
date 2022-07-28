@@ -39,13 +39,7 @@ export const RemoveSpendingLimit = ({
   }, [provider, chainId, data.beneficiary, data.token])
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      isExecutable={safe.threshold === 1}
-      onSubmit={onSubmit}
-      error={safeTxError}
-      title="Remove spending limit"
-    >
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
       <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
       <EthHashInfo address={data.beneficiary} showCopyButton hasExplorer shortAddress={false} />
       <Typography mt={2} sx={({ palette }) => ({ color: palette.secondary.light })}>
