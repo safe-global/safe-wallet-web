@@ -33,10 +33,11 @@ export const txHistoryMiddleware: Middleware<{}, RootState> = (store) => (next) 
         if (!isTransactionListItem(result)) {
           continue
         }
+        // @TODO: have CGW add txHash to the TransactionSummary
+        const txHash = result.transaction.id.split('_').pop() || ''
 
-        const { id } = result.transaction
-        if (pendingTxs[id]) {
-          txDispatch(TxEvent.SUCCESS, { txId: id })
+        if (pendingTxs[txHash]) {
+          txDispatch(TxEvent.SUCCESS, { txHash })
         }
       }
     }

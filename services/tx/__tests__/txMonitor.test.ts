@@ -29,7 +29,7 @@ describe('txMonitor', () => {
 
       waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-      await waitForTx(provider, '0x0', '0x0')
+      await waitForTx(provider, '0x0')
 
       expect(txDispatchSpy).not.toHaveBeenCalled()
     })
@@ -42,7 +42,7 @@ describe('txMonitor', () => {
 
       waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-      await waitForTx(provider, '0x0', '0x0')
+      await waitForTx(provider, '0x0')
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error) })
     })
@@ -52,7 +52,7 @@ describe('txMonitor', () => {
         () => Promise.resolve(null) as unknown as ReturnType<typeof provider.waitForTransaction>,
       )
 
-      await waitForTx(provider, '0x0', '0x0')
+      await waitForTx(provider, '0x0')
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
         txId: '0x0',
@@ -67,7 +67,7 @@ describe('txMonitor', () => {
 
       waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-      await waitForTx(provider, '0x0', '0x0')
+      await waitForTx(provider, '0x0')
 
       expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
         txId: '0x0',
@@ -79,7 +79,7 @@ describe('txMonitor', () => {
     it('emits a FAILED event if waitForTransaction times out', async () => {
       waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error('Test error.')))
 
-      await waitForTx(provider, '0x0', '0x0')
+      await waitForTx(provider, '0x0')
 
       // 6.5 minutes (timeout of txMonitor) + 1ms
       jest.advanceTimersByTime(6.5 * 60_000 + 1)
@@ -90,7 +90,7 @@ describe('txMonitor', () => {
     it('emits a FAILED event if waitForTransaction throws', async () => {
       waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error('Test error.')))
 
-      await waitForTx(provider, '0x0', '0x0')
+      await waitForTx(provider, '0x0')
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: new Error('Test error.') })
     })

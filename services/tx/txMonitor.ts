@@ -4,7 +4,7 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
-export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash: string) => {
+export const waitForTx = async (provider: JsonRpcProvider, txHash: string) => {
   const TIMEOUT_MINUTES = 6.5
 
   try {
@@ -18,7 +18,7 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
 
     if (didRevert(receipt)) {
       txDispatch(TxEvent.REVERTED, {
-        txId,
+        txHash,
         error: new Error(`Transaction reverted by EVM.`),
         receipt,
       })
@@ -27,7 +27,7 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
     // Tx successfully mined but we don't dispatch SUCCESS as this may be faster than our indexer
   } catch (error) {
     txDispatch(TxEvent.FAILED, {
-      txId,
+      txHash,
       error: error as Error,
     })
   }

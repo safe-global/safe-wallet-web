@@ -123,15 +123,18 @@ export const dispatchTxProposal = async (
   sender: string,
   safeTx: SafeTransaction,
 ): Promise<TransactionDetails> => {
+  const sdk = getAndValidateSafeSDK()
+  const txHash = await sdk.getTransactionHash(safeTx)
+
   let proposedTx: TransactionDetails | undefined
   try {
-    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx)
+    proposedTx = await proposeTx(chainId, safeAddress, sender, txHash, safeTx)
   } catch (error) {
-    txDispatch(TxEvent.PROPOSE_FAILED, { tx: safeTx, error: error as Error })
+    txDispatch(TxEvent.PROPOSE_FAILED, { txHash, error: error as Error })
     throw error
   }
 
-  txDispatch(TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
+  txDispatch(TxEvent.PROPOSED, { txHash })
 
   return proposedTx
 }
@@ -146,15 +149,16 @@ export const dispatchTxSigning = async (
 ): Promise<SafeTransaction> => {
   const sdk = getAndValidateSafeSDK()
   const signingMethod = isHardwareWallet ? 'eth_sign' : 'eth_signTypedData'
+  const txHash = await sdk.getTransactionHash(safeTx)
 
   try {
     // Add signature to safeTx
     await sdk.signTransaction(safeTx, signingMethod)
   } catch (error) {
-    txDispatch(TxEvent.SIGN_FAILED, { txId, tx: safeTx, error: error as Error })
+    txDispatch(TxEvent.SIGN_FAILED, { txHash, error: error as Error })
     throw error
   }
-  txDispatch(TxEvent.SIGNED, { txId, tx: safeTx })
+  txDispatch(TxEvent.SIGNED, { txHash })
 
   return safeTx
 }
@@ -162,38 +166,35 @@ export const dispatchTxSigning = async (
 /**
  * Execute a transaction
  */
-export const dispatchTxExecution = async (
-  txId: string,
-  safeTx: SafeTransaction,
-  txOptions?: TransactionOptions,
-): Promise<string> => {
+export const dispatchTxExecution = async (safeTx: SafeTransaction, txOptions?: TransactionOptions): Promise<string> => {
   const sdk = getAndValidateSafeSDK()
+  const txHash = await sdk.getTransactionHash(safeTx)
 
-  txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
+  txDispatch(TxEvent.EXECUTING, { txHash })
 
   // Execute the tx
   let result: TransactionResult | undefined
   try {
     result = await sdk.executeTransaction(safeTx, txOptions)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
+    txDispatch(TxEvent.FAILED, { txHash, error: error as Error })
     throw error
   }
 
-  txDispatch(TxEvent.MINING, { txId, txHash: result.hash, tx: safeTx })
+  txDispatch(TxEvent.MINING, { txHash })
 
   // Asynchronously watch the tx to be mined
   result.transactionResponse
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, { txId, receipt, tx: safeTx, error: new Error('Transaction reverted by EVM') })
+        txDispatch(TxEvent.REVERTED, { txHash, receipt, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.MINED, { txId, tx: safeTx, receipt })
+        txDispatch(TxEvent.MINED, { txHash, receipt })
       }
     })
     .catch((error) => {
-      txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
+      txDispatch(TxEvent.FAILED, { txHash, error: error as Error })
     })
 
   return result.hash

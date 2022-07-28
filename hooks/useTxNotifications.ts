@@ -30,12 +30,11 @@ const useTxNotifications = (): void => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
         const message = isError ? `${baseMessage} ${detail.error.message.slice(0, 300)}` : baseMessage
-        const txId = 'txId' in detail && detail.txId
 
         dispatch(
           showNotification({
             message,
-            groupKey: txId || '',
+            groupKey: detail.txHash,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
           }),
         )

@@ -22,7 +22,10 @@ type TxSummaryProps = {
 const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
-  const txStatusLabel = useTransactionStatus(tx)
+  const txStatusLabel = useTransactionStatus({
+    txStatus: tx.txStatus,
+    txHash: tx.id.split('_').pop() || '',
+  })
   const isQueue = tx.txStatus !== TransactionStatus.SUCCESS
   const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined

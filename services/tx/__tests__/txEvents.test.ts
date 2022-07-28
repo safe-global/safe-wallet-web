@@ -10,9 +10,7 @@ describe('txEvents', () => {
     const event = TxEvent.MINING
 
     const detail = {
-      txId: '123',
       txHash: '0x123',
-      tx,
     }
 
     const callback = jest.fn()
@@ -24,9 +22,7 @@ describe('txEvents', () => {
     expect(callback).toHaveBeenCalledWith(detail)
 
     const detail2 = {
-      txId: '123',
       txHash: '0x456',
-      tx,
     }
 
     txDispatch(event, detail2)
@@ -44,8 +40,7 @@ describe('txEvents', () => {
     const event = TxEvent.FAILED
 
     const detail = {
-      txId: '0x123',
-      tx,
+      txHash: '0x123',
       error: new Error('Tx failed'),
     }
 

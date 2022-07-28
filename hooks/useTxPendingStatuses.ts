@@ -23,24 +23,21 @@ const useTxPendingStatuses = (): void => {
   useEffect(() => {
     const unsubFns = Object.entries(pendingStatuses).map(([event, status]) =>
       txSubscribe(event as TxEvent, (detail) => {
-        // All pending txns should have a txId
-        const txId = 'txId' in detail && detail.txId
-        if (!txId) return
+        const { txHash } = detail
 
         // Clear the pending status if the tx is no longer pending
         const isFinished = status === null
         if (isFinished) {
-          dispatch(clearPendingTx({ txId }))
+          dispatch(clearPendingTx({ txHash }))
           return
         }
 
         // Or set a new status
         dispatch(
           setPendingTx({
+            txHash,
             chainId,
-            txId,
             status,
-            txHash: 'txHash' in detail ? detail.txHash : undefined,
           }),
         )
       }),
@@ -67,17 +64,17 @@ export const useTxMonitor = (): void => {
       return
     }
 
-    for (const [txId, { txHash, status }] of pendingTxEntriesOnChain) {
+    for (const [, { txHash, status }] of pendingTxEntriesOnChain) {
       const isMining = status === pendingStatuses[TxEvent.MINING]
-      const isMonitored = monitoredTxs.current[txId]
+      const isMonitored = monitoredTxs.current[txHash]
 
       if (!txHash || !isMining || isMonitored) {
         continue
       }
 
-      monitoredTxs.current[txId] = true
+      monitoredTxs.current[txHash] = true
 
-      waitForTx(provider, txId, txHash)
+      waitForTx(provider, txHash)
     }
     // `provider` is updated when switching chains, re-running this effect
     // eslint-disable-next-line react-hooks/exhaustive-deps

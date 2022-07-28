@@ -8,11 +8,11 @@ import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
   const { chainId, txQueuedTag, txHistoryTag } = safe
-  const [proposedTxId, setProposedTxId] = useState<string>()
+  const [proposedHash, setProposedHash] = useState<string>()
 
   // Listen to newly proposed txns
   useEffect(() => {
-    return txSubscribe(TxEvent.PROPOSED, ({ txId }) => setProposedTxId(txId))
+    return txSubscribe(TxEvent.PROPOSED, ({ txHash }) => setProposedHash(txHash))
   }, [])
 
   // Re-fetch when chainId/address, or txQueueTag change
@@ -23,7 +23,7 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
     },
     // N.B. we reload when either txQueuedTag or txHistoryTag changes
     // @TODO: evaluate if txHistoryTag should be included in the reload
-    [safeLoaded, chainId, safeAddress, txQueuedTag, txHistoryTag, proposedTxId],
+    [safeLoaded, chainId, safeAddress, txQueuedTag, txHistoryTag, proposedHash],
     false,
   )
 

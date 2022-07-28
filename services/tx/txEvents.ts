@@ -1,4 +1,3 @@
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import type { ContractReceipt } from 'ethers/lib/ethers'
 import EventBus from '@/services/EventBus'
 
@@ -17,17 +16,17 @@ export enum TxEvent {
 }
 
 interface TxEvents {
-  [TxEvent.CREATED]: { tx: SafeTransaction }
-  [TxEvent.SIGNED]: { txId?: string; tx: SafeTransaction }
-  [TxEvent.SIGN_FAILED]: { txId?: string; tx: SafeTransaction; error: Error }
-  [TxEvent.PROPOSE_FAILED]: { tx: SafeTransaction; error: Error }
-  [TxEvent.PROPOSED]: { txId: string; tx: SafeTransaction }
-  [TxEvent.EXECUTING]: { txId: string; tx: SafeTransaction }
-  [TxEvent.MINING]: { txId: string; txHash: string; tx: SafeTransaction }
-  [TxEvent.MINED]: { txId: string; receipt: ContractReceipt; tx: SafeTransaction }
-  [TxEvent.REVERTED]: { txId: string; error: Error; receipt: ContractReceipt; tx?: SafeTransaction }
-  [TxEvent.FAILED]: { txId: string; error: Error; tx?: SafeTransaction }
-  [TxEvent.SUCCESS]: { txId: string }
+  [TxEvent.CREATED]: { txHash: string }
+  [TxEvent.SIGNED]: { txHash: string }
+  [TxEvent.SIGN_FAILED]: { txHash: string; error: Error }
+  [TxEvent.PROPOSE_FAILED]: { txHash: string; error: Error }
+  [TxEvent.PROPOSED]: { txHash: string }
+  [TxEvent.EXECUTING]: { txHash: string }
+  [TxEvent.MINING]: { txHash: string }
+  [TxEvent.MINED]: { txHash: string; receipt: ContractReceipt }
+  [TxEvent.REVERTED]: { txHash: string; error: Error; receipt: ContractReceipt }
+  [TxEvent.FAILED]: { txHash: string; error: Error }
+  [TxEvent.SUCCESS]: { txHash: string }
 }
 
 const txEventBus = new EventBus<TxEvents>()

@@ -103,21 +103,18 @@ const SignOrExecuteForm = ({
   const onExecute = async (): Promise<string> => {
     const [connectedWallet, createdTx] = assertSubmittable()
 
-    // If no txId was provided, it's an immediate execution of a new tx
-    let id = txId
-    if (!id) {
-      const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, createdTx)
-      id = proposedTx.txId
-    }
-
     // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
     const txOptions = {
       gasLimit: advancedParams.gasLimit?.toString(),
       gasPrice: advancedParams.maxFeePerGas?.toString(),
     }
-    await dispatchTxExecution(id, createdTx, txOptions)
+    await dispatchTxExecution(createdTx, txOptions)
 
-    return id
+    if (txId) return txId
+
+    // If no txId was provided, it's an immediate execution of a new tx
+    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, createdTx)
+    return proposedTx.txId
   }
 
   // On modal submit
