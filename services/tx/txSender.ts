@@ -123,9 +123,12 @@ export const dispatchTxProposal = async (
   sender: string,
   safeTx: SafeTransaction,
 ): Promise<TransactionDetails> => {
+  const safeSDK = getAndValidateSafeSDK()
+  const safeTxHash = await safeSDK.getTransactionHash(safeTx)
+
   let proposedTx: TransactionDetails | undefined
   try {
-    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx)
+    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash)
   } catch (error) {
     txDispatch(TxEvent.PROPOSE_FAILED, { tx: safeTx, error: error as Error })
     throw error
