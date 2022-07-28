@@ -66,13 +66,12 @@ export const validateTokenAmount = (amount: string, token?: { balance: string; t
   }
 }
 
-export const isValidURL = (url: string, protocolsAllowed = ['https:', 'http:']): string | undefined => {
+export const isValidURL = (url: string, protocolsAllowed = ['https:', 'http:']): boolean => {
   try {
     const urlInfo = new URL(url)
-    if (!protocolsAllowed.includes(urlInfo.protocol)) {
-      return `Protocol "${urlInfo.protocol}" is not allowed`
-    }
+
+    return protocolsAllowed.includes(urlInfo.protocol)
   } catch (error) {
-    return 'Invalid URL'
+    return false
   }
 }

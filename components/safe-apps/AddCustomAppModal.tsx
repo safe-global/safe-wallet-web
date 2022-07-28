@@ -17,6 +17,7 @@ import { isValidURL } from '@/utils/validation'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChainId from '@/hooks/useChainId'
+import { SyntheticEvent } from 'react'
 
 type Props = {
   open: boolean
@@ -27,6 +28,7 @@ type Props = {
 type CustomAppFormData = {
   appUrl: string
   riskAcknowledgement: boolean
+  safeApp: SafeAppData
 }
 
 const TEXT_FIELD_HEIGHT = '56px'
@@ -39,8 +41,9 @@ const AddCustomAppModal = ({ open, onClose, onSave }: Props) => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
-  } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false } })
+  } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false }, mode: 'onChange' })
   const onSubmit: SubmitHandler<CustomAppFormData> = (_, __) => {
     if (safeApp) {
       onSave(safeApp)
@@ -74,16 +77,21 @@ const AddCustomAppModal = ({ open, onClose, onSave }: Props) => {
             {...register('appUrl', {
               required: true,
               validate: {
-                validUrl: isValidURL,
-                validManifest: async (val): Promise<string | undefined> => {
-                  try {
-                    setSafeApp(undefined)
-                    const appFromManifest = await fetchSafeAppFromManifest(val, chainId)
-                    setSafeApp(appFromManifest)
-                  } catch (err) {
-                    return "The app doesn't support Safe App functionality"
-                  }
-                },
+                validUrl: (val: string) => (isValidURL(val) ? undefined : 'Invalid URL'),
+              },
+              onChange: async (event: SyntheticEvent<HTMLInputElement>): Promise<void> => {
+                const input = event.currentTarget.value
+                if (!isValidURL(input)) {
+                  return
+                }
+
+                try {
+                  setSafeApp(undefined)
+                  const appFromManifest = await fetchSafeAppFromManifest(input, chainId)
+                  setSafeApp(appFromManifest)
+                } catch (err) {
+                  setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
+                }
               },
             })}
           />
