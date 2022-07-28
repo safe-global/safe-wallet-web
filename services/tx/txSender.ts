@@ -177,7 +177,11 @@ export const dispatchTxExecution = async (
   // Execute the tx
   let result: TransactionResult | undefined
   try {
-    result = await sdk.executeTransaction(safeTx, txOptions)
+    // @FIXME: clone the tx to avoid mutating the original
+    // Should be fixed on the Core SDK side
+    const tx = !safeTx.signatures.size ? await createTx({ ...safeTx.data }) : safeTx
+
+    result = await sdk.executeTransaction(tx, txOptions)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
