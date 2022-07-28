@@ -11,12 +11,14 @@ import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
 import ChainSwitcher from '../ChainSwitcher'
+import useAddressBook from '@/hooks/useAddressBook'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const onboard = useOnboard()
   const chainId = useChainId()
   const chainInfo = useAppSelector((state) => selectChainById(state, chainId))
+  const addressBook = useAddressBook()
 
   const handleDisconnect = () => {
     if (!wallet) return
@@ -49,7 +51,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
               {wallet.label} @ {chainInfo?.chainName}
             </Typography>
             <Typography variant="caption" fontWeight="bold" className={css.address}>
-              {wallet.ens || <EthHashInfo address={wallet.address} showAvatar={false} prefix={''} />}
+              {wallet.ens || <EthHashInfo address={wallet.address} showName={false} showAvatar={false} prefix={''} />}
             </Typography>
           </Box>
           <Box justifySelf="flex-end" marginLeft="auto">
@@ -75,9 +77,11 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
       >
         <Paper className={css.popoverContainer}>
           <Identicon address={wallet.address} />
-          <Typography variant="h5">{wallet.ens}</Typography>
+
+          <Typography variant="h5">{addressBook[wallet.address] || wallet.ens}</Typography>
+
           <Box bgcolor="border.background" px={2} py={1} fontSize={14}>
-            <EthHashInfo address={wallet.address} showAvatar={false} hasExplorer showCopyButton />
+            <EthHashInfo address={wallet.address} showAvatar={false} showName={false} hasExplorer showCopyButton />
           </Box>
           <Box className={css.rowContainer}>
             <Box className={css.row}>
@@ -85,7 +89,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
               <Typography variant="body2">{wallet.label}</Typography>
             </Box>
             <Box className={css.row}>
-              <Typography variant="caption">Connected Network</Typography>
+              <Typography variant="caption">Connected network</Typography>
               <Typography variant="body2">{chainInfo?.chainName}</Typography>
             </Box>
           </Box>
