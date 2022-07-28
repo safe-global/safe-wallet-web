@@ -34,7 +34,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
         threshold,
       })
     }
-    console.log(tx)
+
     return createTx({ ...tx.data, nonce: undefined })
   }, [removedOwner, newOwner])
 
