@@ -35,3 +35,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+:root {
+  --header-height: 52px;
+}

@@ -53,11 +53,16 @@
   margin-top: -2px;
 }
 
+.connectWallet {
+  white-space: nowrap;
+}
+
 @media (max-width: 768px) {
   .buttonContainer {
     width: auto;
   }
 
+  .notConnected,
   .walletDetails {
     display: none;
   }

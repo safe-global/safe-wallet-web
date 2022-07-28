@@ -17,7 +17,7 @@
   width: inherit;
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(100vh - 52px); /* needed for scroll */
+  max-height: calc(100vh - var(--header-height)); /* needed for scroll */
 }
 
 .drawer,
@@ -27,7 +27,8 @@
 
 .drawer {
   text-align: center;
-  padding: 52px 0 0;
+  padding: 0;
+  padding-top: var(--header-height);
   border-right: 1px solid var(--color-border-light);
 }
 
@@ -66,7 +67,7 @@
 
 @media (max-width: 768px) {
   .container {
-    padding-top: 52px;
+    padding-top: var(--header-height);
   }
 
   .drawer {

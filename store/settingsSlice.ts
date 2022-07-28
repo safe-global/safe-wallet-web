@@ -3,6 +3,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 
 export type SettingsState = {
+  currency: string
+
   shortName: {
     show: boolean
     copy: boolean
@@ -14,6 +16,8 @@ export type SettingsState = {
 }
 
 const initialState: SettingsState = {
+  currency: 'usd',
+
   shortName: {
     show: true,
     copy: true,
@@ -28,6 +32,9 @@ export const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    setCurrency: (state, { payload }: PayloadAction<SettingsState['currency']>) => {
+      state.currency = payload
+    },
     setShowShortName: (state, { payload }: PayloadAction<SettingsState['shortName']['show']>) => {
       state.shortName.show = payload
     },
@@ -43,6 +50,10 @@ export const settingsSlice = createSlice({
   },
 })
 
-export const { setShowShortName, setCopyShortName, setQrShortName, setDarkMode } = settingsSlice.actions
+export const { setCurrency, setShowShortName, setCopyShortName, setQrShortName, setDarkMode } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
+
+export const selectCurrency = (state: RootState): SettingsState['currency'] => {
+  return state[settingsSlice.name].currency || initialState.currency
+}

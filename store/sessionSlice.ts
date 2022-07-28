@@ -2,14 +2,12 @@ import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolki
 import { RootState } from '.'
 
 type SessionState = {
-  currency: string
   lastChainId: string
   lastSafeAddress: { [chainId: string]: string }
   lastWallet: string
 }
 
 const initialState: SessionState = {
-  currency: 'usd',
   lastChainId: '',
   lastSafeAddress: {},
   lastWallet: '',
@@ -19,9 +17,6 @@ export const sessionSlice = createSlice({
   name: 'session',
   initialState,
   reducers: {
-    setCurrency: (state, action: PayloadAction<SessionState['currency']>) => {
-      state.currency = action.payload
-    },
     setLastWallet: (state, action: PayloadAction<SessionState['lastWallet']>) => {
       state.lastWallet = action.payload
     },
@@ -41,14 +36,10 @@ export const sessionSlice = createSlice({
   },
 })
 
-export const { setCurrency, setLastChainId, setLastSafeAddress, setLastWallet } = sessionSlice.actions
+export const { setLastChainId, setLastSafeAddress, setLastWallet } = sessionSlice.actions
 
 export const selectSession = (state: RootState): SessionState => {
   return state[sessionSlice.name]
-}
-
-export const selectCurrency = (state: RootState): SessionState['currency'] => {
-  return state[sessionSlice.name].currency
 }
 
 export const selectLastSafeAddress = createSelector(

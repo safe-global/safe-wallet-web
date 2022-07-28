@@ -49,6 +49,9 @@
   --onboard-border-radius-1: 8px;
   --onboard-border-radius-2: 8px;
   --onboard-border-radius-3: 8px;
-  --onboard-modal-z-index: 1301;
-  --account-center-z-index: 1201;
+  --onboard-modal-z-index: 1201;
+}
+
+#walletconnect-qrcode-modal {
+  padding: 20px !important;
 }

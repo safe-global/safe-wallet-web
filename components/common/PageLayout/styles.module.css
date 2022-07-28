@@ -21,7 +21,7 @@
   padding: var(--space-3);
   overflow-y: auto;
   overflow-x: hidden;
-  min-height: calc(100vh - 52px); /* needed for scroll */
+  min-height: calc(100vh - var(--header-height)); /* needed for scroll */
   position: relative;
   background-color: var(--color-background-main);
   display: flex;
@@ -43,7 +43,7 @@
 @media (max-width: 768px) {
   .container {
     display: block;
-    padding-top: 52px;
+    padding-top: var(--header-height);
     height: auto;
   }
 

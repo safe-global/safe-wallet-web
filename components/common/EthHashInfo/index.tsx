@@ -64,12 +64,12 @@ const SRCEthHashInfo = ({
   )
 }
 
-const EthHashInfo = (props: EthHashInfoProps & { showName?: boolean }): ReactElement => {
+const EthHashInfo = ({ showName = true, ...props }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
   const chainId = useChainId()
   const addressBook = useAddressBook()
   // prefer address book name
-  const name = props.showName ? addressBook[props.address] || props.name : undefined
+  const name = showName ? addressBook[props.address] || props.name : undefined
   const prefix = settings.shortName.show ? Object.keys(chains).find((key) => chains[key] === chainId) : undefined
 
   return <SRCEthHashInfo prefix={prefix} {...props} name={name} />
