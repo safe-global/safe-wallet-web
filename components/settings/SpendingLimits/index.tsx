@@ -1,8 +1,9 @@
-import { Paper, Grid, Typography, Box, Button } from '@mui/material'
+import { Paper, Grid, Typography, Box } from '@mui/material'
 import { NoSpendingLimits } from '@/components/settings/SpendingLimits/NoSpendingLimits'
 import { SpendingLimitsTable } from '@/components/settings/SpendingLimits/SpendingLimitsTable'
 import { useSelector } from 'react-redux'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
+import { NewSpendingLimit } from '@/components/settings/SpendingLimits/NewSpendingLimit'
 
 const SpendingLimits = () => {
   const spendingLimits = useSelector(selectSpendingLimits)
@@ -21,9 +22,7 @@ const SpendingLimits = () => {
               You can set rules for specific beneficiaries to access funds from this Safe without having to collect all
               signatures.
             </Typography>
-            <Button sx={{ marginTop: 2 }} variant="contained">
-              New spending limit
-            </Button>
+            <NewSpendingLimit />
           </Box>
         </Grid>
       </Grid>
