@@ -157,6 +157,11 @@ const initTheme = (darkMode: boolean) => {
 
             '&.Mui-expanded': {
               margin: 0,
+              borderColor: theme.palette.primary.light,
+            },
+
+            '&.Mui-expanded > .MuiAccordionSummary-root': {
+              background: theme.palette.primary.background,
             },
           }),
         },
