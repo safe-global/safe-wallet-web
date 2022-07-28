@@ -58,18 +58,12 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
   const txError = txCreationError || safeTxError
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      isExecutable={safe.threshold === 1}
-      onSubmit={onSubmit}
-      error={txError}
-      title="Update safe version"
-    >
-      <Typography>
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={txError}>
+      <Typography mb={2}>
         Update now to take advantage of new features and the highest security standards available.
       </Typography>
 
-      <Typography>
+      <Typography mb={2}>
         To check details about updates added by this smart contract version please visit{' '}
         <Link
           rel="noreferrer noopener"
@@ -80,12 +74,12 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
         </Link>
       </Typography>
 
-      <Typography>
+      <Typography mb={2}>
         You will need to confirm this update just like any other transaction. This means other owners will have to
         confirm the update in case more than one confirmation is required for this Safe.
       </Typography>
 
-      <Typography>
+      <Typography mb={2}>
         <b>Warning:</b> this upgrade will invalidate all unexecuted transactions. This means you will be unable to
         access or execute them after the upgrade. Please make sure to execute any remaining transactions before
         upgrading.

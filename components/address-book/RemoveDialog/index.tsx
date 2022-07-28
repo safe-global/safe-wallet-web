@@ -23,7 +23,7 @@ const RemoveDialog = ({ handleClose, address }: { handleClose: () => void; addre
   }
 
   return (
-    <ModalDialog open onClose={handleClose} title="Delete entry">
+    <ModalDialog open onClose={handleClose} dialogTitle="Delete entry">
       <DialogContent sx={{ p: '24px !important' }}>
         <Typography>
           Are you sure you want to permanently delete <b>{name}</b> from your address book?

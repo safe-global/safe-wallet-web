@@ -154,6 +154,17 @@ const initTheme = (darkMode: boolean) => {
             '&:hover > .MuiAccordionSummary-root': {
               background: theme.palette.primary.background,
             },
+
+            '&.Mui-expanded': {
+              margin: 0,
+            },
+          }),
+        },
+      },
+      MuiAccordionDetails: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            padding: theme.spacing(2),
           }),
         },
       },

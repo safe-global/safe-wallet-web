@@ -38,13 +38,7 @@ export const ReviewRemoveOwnerTxStep = ({
   const newOwnerLength = safe.owners.length - 1
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      onSubmit={onSubmit}
-      isExecutable={safe.threshold === 1}
-      error={txError}
-      title="Remove owner"
-    >
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} isExecutable={safe.threshold === 1} error={txError}>
       <Grid
         container
         mt={-3}

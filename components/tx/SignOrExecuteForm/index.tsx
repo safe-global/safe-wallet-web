@@ -1,9 +1,7 @@
 import { ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Button, Checkbox, FormControlLabel } from '@mui/material'
-
-import css from './styles.module.css'
+import { Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material'
 
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, updateTxNonce } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -13,7 +11,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import GasParams from '@/components/tx/GasParams'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParamsForm, { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
-import TxModalTitle from '../TxModalTitle'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import { logError, Errors } from '@/services/exceptions'
@@ -29,7 +26,6 @@ type SignOrExecuteProps = {
   onSubmit: (data: null) => void
   children?: ReactNode
   error?: Error
-  title?: string
 }
 
 const SignOrExecuteForm = ({
@@ -41,7 +37,6 @@ const SignOrExecuteForm = ({
   onSubmit,
   children,
   error,
-  title,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -183,47 +178,45 @@ const SignOrExecuteForm = ({
       onSubmit={onAdvancedSubmit}
     />
   ) : (
-    <>
-      {title && <TxModalTitle>{title}</TxModalTitle>}
-      <div className={css.container}>
+    <form onSubmit={handleSubmit}>
+      <DialogContent>
         {children}
 
         <DecodedTx tx={tx} />
 
-        <form onSubmit={handleSubmit}>
-          {canExecute && !onlyExecute && (
-            <FormControlLabel
-              control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
-              label="Execute transaction"
-            />
-          )}
-
-          <GasParams
-            isExecution={willExecute}
-            isLoading={isEstimating}
-            nonce={advancedParams.nonce}
-            gasLimit={advancedParams.gasLimit}
-            maxFeePerGas={advancedParams.maxFeePerGas}
-            maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
-            onEdit={() => setEditingGas(true)}
+        {canExecute && !onlyExecute && (
+          <FormControlLabel
+            control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
+            label="Execute transaction"
+            sx={{ mb: 1 }}
           />
+        )}
 
-          {(error || (willExecute && gasLimitError)) && (
-            <ErrorMessage error={error || gasLimitError}>
-              This transaction will most likely fail. To save gas costs, avoid creating the transaction.
-            </ErrorMessage>
-          )}
+        <GasParams
+          isExecution={willExecute}
+          isLoading={isEstimating}
+          nonce={advancedParams.nonce}
+          gasLimit={advancedParams.gasLimit}
+          maxFeePerGas={advancedParams.maxFeePerGas}
+          maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
+          onEdit={() => setEditingGas(true)}
+        />
 
-          {submitError && (
-            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-          )}
+        {(error || (willExecute && gasLimitError)) && (
+          <ErrorMessage error={error || gasLimitError}>
+            This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+          </ErrorMessage>
+        )}
 
-          <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
-            {isEstimating ? 'Estimating...' : 'Submit'}
-          </Button>
-        </form>
-      </div>
-    </>
+        {submitError && (
+          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        )}
+
+        <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
+          {isEstimating ? 'Estimating...' : 'Submit'}
+        </Button>
+      </DialogContent>
+    </form>
   )
 }
 

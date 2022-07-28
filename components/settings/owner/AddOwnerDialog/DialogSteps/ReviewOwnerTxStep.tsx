@@ -71,12 +71,11 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
       onSubmit={addAddressBookEntryAndSubmit}
       isExecutable={safe.threshold === 1}
       error={txError}
-      title="Add new owner"
     >
       <Grid
         container
         mt={-3}
-        mb={2}
+        mb={3}
         mx={-3}
         width="auto"
         borderBottom={({ palette }) => `1px solid ${palette.border.light}`}
