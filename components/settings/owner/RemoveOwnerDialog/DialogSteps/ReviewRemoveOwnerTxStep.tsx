@@ -22,23 +22,16 @@ export const ReviewRemoveOwnerTxStep = ({
   const addressBook = useAddressBook()
   const { removedOwner, threshold } = data
 
-  const [removeOwnerTx, createTxError] = useAsync(() => {
-    return createRemoveOwnerTx({ ownerAddress: removedOwner.address, threshold })
-  }, [removedOwner.address, threshold])
-
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!removeOwnerTx) return
-    // Reset the nonce to fetch the recommended nonce in createTx
-    return createTx({ ...removeOwnerTx.data, nonce: undefined })
-  }, [removeOwnerTx])
+    const tx = await createRemoveOwnerTx({ ownerAddress: removedOwner.address, threshold })
 
-  // All errors
-  const txError = safeTxError || createTxError
+    return createTx({ ...tx.data, nonce: undefined })
+  }, [removedOwner.address, threshold])
 
   const newOwnerLength = safe.owners.length - 1
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} isExecutable={safe.threshold === 1} error={txError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} isExecutable={safe.threshold === 1} error={safeTxError}>
       <Grid
         container
         mt={-3}

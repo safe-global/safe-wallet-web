@@ -44,21 +44,17 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
 
-  const [updateSafeTx, txCreationError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!safeLoaded || !chain) return undefined
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+    if (!safeLoaded || !chain) return
+
     const txs = createUpdateSafeTxs(safe, chain)
-    return createMultiSendTx(txs)
+    const updateSafeTx = await createMultiSendTx(txs)
+
+    return createTx({ ...updateSafeTx.data, nonce: undefined, operation: 1 })
   }, [chain, safe, safeLoaded])
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!updateSafeTx) return
-    return createTx({ ...updateSafeTx.data, nonce: undefined, operation: 1 })
-  }, [updateSafeTx])
-
-  const txError = txCreationError || safeTxError
-
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={txError}>
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
       <Typography mb={2}>
         Update now to take advantage of new features and the highest security standards available.
       </Typography>

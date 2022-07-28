@@ -4,8 +4,7 @@ import { useState } from 'react'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import { createTx } from '@/services/tx/txSender'
+import { createTx, createUpdateThresholdTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -47,31 +46,19 @@ export const ChangeThresholdDialog = () => {
 const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
-  const safeSDK = useSafeSDK()
-
-  // @TODO: move to txSender, add events
-  const [changeThresholdTx, createTxError] = useAsync(() => {
-    if (!safeSDK) {
-      throw new Error('Safe SDK not initialized')
-    }
-    return safeSDK.getChangeThresholdTx(selectedThreshold)
-  }, [selectedThreshold])
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedThreshold(parseInt(event.target.value.toString()))
   }
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (changeThresholdTx) {
-      // Reset the nonce to fetch the recommended nonce in createTx
-      return createTx({ ...changeThresholdTx.data, nonce: undefined })
-    }
-  }, [changeThresholdTx])
-
-  const txError = createTxError || safeTxError
+    const changeThresholdTx = await createUpdateThresholdTx(selectedThreshold)
+    // Reset the nonce to fetch the recommended nonce in createTx
+    return createTx({ ...changeThresholdTx.data, nonce: undefined })
+  }, [selectedThreshold])
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={txError}>
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
       <Typography mb={1}>Any transaction requires the confirmation of:</Typography>
 
       <Grid container direction="row" gap={1} alignItems="center" mb={2}>
