@@ -75,6 +75,12 @@ export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promis
   return safeSDK.getRemoveOwnerTx(txParams)
 }
 
+export const createUpdateThresholdTx = async (threshold: number): Promise<SafeTransaction> => {
+  const safeSDK = getAndValidateSafeSDK()
+
+  return safeSDK.getChangeThresholdTx(threshold)
+}
+
 /**
  * Create a rejection tx
  */
