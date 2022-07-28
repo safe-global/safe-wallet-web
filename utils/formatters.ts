@@ -10,8 +10,11 @@ const formatter = new Intl.NumberFormat([], {
 export const formatDecimals = (value: BigNumberish, decimals?: number | string): string => {
   return formatter.format(Number(formatUnits(value, decimals)))
 }
+export const toDecimals = (value: BigNumberish, decimals?: number | string): number => {
+  return Number(formatUnits(value, decimals))
+}
 
-export const toDecimals = (value: string, decimals?: number | string): BigNumber => {
+export const toWei = (value: string, decimals?: number | string): BigNumber => {
   return parseUnits(value, decimals)
 }
 

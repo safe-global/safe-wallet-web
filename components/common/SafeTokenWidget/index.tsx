@@ -1,6 +1,6 @@
 import { SAFE_TOKEN_ADDRESS } from '@/config/constants'
 import useBalances from '@/hooks/useBalances'
-import { formatDecimals } from '@/utils/formatters'
+import { toDecimals } from '@/utils/formatters'
 import { Box, ButtonBase, Skeleton, Typography } from '@mui/material'
 
 import SafeTokenIcon from './safe_token.svg'
@@ -15,12 +15,17 @@ const SafeTokenWidget = () => {
   )
 
   const safeBalanceDecimals = Math.floor(
-    Number(formatDecimals(safeBalance?.balance || '0', safeBalance?.tokenInfo.decimals)),
+    toDecimals(safeBalance?.balance || '0', safeBalance?.tokenInfo.decimals),
   ).toFixed(0)
 
   return (
     <Box className={css.buttonContainer}>
-      <ButtonBase aria-describedby={'safe-token-widget'} sx={{ alignSelf: 'stretch' }} className={css.tokenButton}>
+      <ButtonBase
+        disabled /* Until safe app is deployed! */
+        aria-describedby={'safe-token-widget'}
+        sx={{ alignSelf: 'stretch' }}
+        className={css.tokenButton}
+      >
         <SafeTokenIcon />
 
         <Typography lineHeight="16px" fontWeight={700}>
