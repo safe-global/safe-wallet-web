@@ -26,12 +26,17 @@
   display: none;
 }
 
+.tokenWidget {
+  height: 100%;
+}
+
 @media (max-width: 768px) {
   .container {
     gap: var(--space-1);
   }
 
   .logo,
+  .tokenWidget,
   .chainSwitcher {
     display: none;
   }
@@ -39,9 +44,5 @@
   .menuButton {
     display: block;
     flex: 1;
-  }
-
-  .tokenWidget {
-    display: none;
   }
 }
