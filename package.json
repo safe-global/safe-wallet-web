@@ -35,7 +35,7 @@
     "@gnosis.pm/safe-ethers-lib": "^1.2.1",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
-    "@gnosis.pm/safe-react-gateway-sdk": "^3.2.3",
+    "@gnosis.pm/safe-react-gateway-sdk": "^3.2.4",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.1",
     "@reduxjs/toolkit": "^1.8.2",
