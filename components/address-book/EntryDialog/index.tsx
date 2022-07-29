@@ -53,7 +53,7 @@ const EntryDialog = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
             <Box mb={2}>
-              <NameInput textFieldProps={{ label: 'Name' }} name="name" />
+              <NameInput textFieldProps={{ label: 'Name', autoFocus: true }} name="name" />
             </Box>
 
             <Box>
