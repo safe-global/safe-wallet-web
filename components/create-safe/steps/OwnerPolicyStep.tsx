@@ -1,7 +1,8 @@
-import { useEffect, useCallback, ReactElement } from 'react'
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import {
   Box,
   Button,
+  CircularProgress,
   Divider,
   FormControl,
   Grid,
@@ -9,23 +10,23 @@ import {
   MenuItem,
   Paper,
   Select,
-  TextField,
   Typography,
-  CircularProgress,
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import { ReactElement, useCallback, useEffect } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
-import { CreateSafeFormData, Owner } from '@/components/create-safe'
-import useWallet from '@/hooks/wallets/useWallet'
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import ChainIndicator from '@/components/common/ChainIndicator'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import AddressInput from '@/components/common/AddressInput'
-import { parsePrefixedAddress } from '@/utils/addresses'
-import { lookupAddress } from '@/services/domains'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import NameInput from '@/components/common/NameInput'
+import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
+import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import useAddressBook from '@/hooks/useAddressBook'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { lookupAddress } from '@/services/domains'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 type Props = {
   params: CreateSafeFormData
@@ -39,8 +40,12 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   const ethersProvider = useWeb3ReadOnly()
   const wallet = useWallet()
 
+  const addressBook = useAddressBook()
+
+  const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
+
   const defaultOwner: Owner = {
-    name: wallet?.ens || '',
+    name: defaultOwnerAddressBookName || wallet?.ens || '',
     address: wallet?.address || '',
     resolving: false,
   }
@@ -51,14 +56,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     mode: 'all',
     defaultValues: { name: params.name, owners: params.owners ?? [defaultOwner], threshold: defaultThreshold },
   })
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-    watch,
-    setValue,
-  } = formMethods
+  const { register, handleSubmit, control, watch, setValue } = formMethods
 
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -66,6 +64,8 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   })
 
   const owners = watch('owners')
+  // the owners array does not trigger useEffect when internal values change, therefore we use a signature containing all owner values
+  const ownersSignature = owners.map((owner) => owner.address + owner.name).join('')
 
   const onFormSubmit = (data: CreateSafeFormData) => {
     onSubmit({
@@ -81,25 +81,32 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     append({ name: '', address: '', resolving: false })
   }
 
-  const addENSName = useCallback(
+  const addAddressBookOrENSName = useCallback(
     async (owner: Owner, index: number) => {
       if (owner.name || owner.resolving || !owner.address || !ethersProvider) return
-
       setValue(`owners.${index}.resolving`, true)
       const { address } = parsePrefixedAddress(owner.address)
+      // Lookup Addressbook
+      const nameFromAddressbook = addressBook[address]
+      if (nameFromAddressbook) {
+        update(index, { ...owner, name: nameFromAddressbook, resolving: false })
+        return
+      }
+
+      // Lookup ENS
       const ensName = await lookupAddress(ethersProvider, address)
       if (ensName) {
-        update(index, { ...owner, name: ensName || owner.name, resolving: false })
+        update(index, { ...owner, name: ensName, resolving: false })
       } else {
         setValue(`owners.${index}.resolving`, false)
       }
     },
-    [update, setValue, ethersProvider],
+    [update, setValue, ethersProvider, addressBook],
   )
 
   useEffect(() => {
-    owners.forEach(addENSName)
-  }, [owners, addENSName])
+    owners.forEach(addAddressBookOrENSName)
+  }, [owners, ownersSignature, addAddressBookOrENSName])
 
   return (
     <Paper>
@@ -134,17 +141,19 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
                 <Grid container key={field.id} spacing={3} marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
                   <Grid item xs={12} md={4}>
                     <FormControl fullWidth>
-                      <TextField
-                        label="Owner name"
-                        InputLabelProps={{ shrink: true }}
-                        {...register(`owners.${index}.name`)}
-                        InputProps={{
-                          endAdornment: owners[index].resolving ? (
-                            <InputAdornment position="end">
-                              <CircularProgress size={20} />
-                            </InputAdornment>
-                          ) : null,
+                      <NameInput
+                        textFieldProps={{
+                          label: 'Owner name',
+                          InputLabelProps: { shrink: true },
+                          InputProps: {
+                            endAdornment: owners[index].resolving ? (
+                              <InputAdornment position="end">
+                                <CircularProgress size={20} />
+                              </InputAdornment>
+                            ) : null,
+                          },
                         }}
+                        name={`owners.${index}.name`}
                       />
                     </FormControl>
                   </Grid>

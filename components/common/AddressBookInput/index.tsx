@@ -14,7 +14,7 @@ const abFilterOptions = createFilterOptions({
  */
 const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement => {
   const addressBook = useAddressBook()
-  const { watch } = useFormContext()
+  const { watch, setValue } = useFormContext()
   const addressValue = watch(name)
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
@@ -28,6 +28,7 @@ const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement =
       freeSolo
       disablePortal
       options={addressBookEntries}
+      onInputChange={(_, value) => setValue(name, value, { shouldValidate: true })}
       filterOptions={abFilterOptions}
       renderOption={(props, option) => (
         <Typography component="li" variant="body2" {...props}>

@@ -1,10 +1,11 @@
-import { Box, Button, Divider, FormControl, Grid, Paper, TextField, Typography } from '@mui/material'
-import { useForm } from 'react-hook-form'
-import { CreateSafeFormData } from '@/components/create-safe'
-import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
+import NameInput from '@/components/common/NameInput'
+import { CreateSafeFormData } from '@/components/create-safe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
+import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
+import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
+import { FormProvider, useForm } from 'react-hook-form'
 
 type Props = {
   params: CreateSafeFormData
@@ -16,45 +17,47 @@ type Props = {
 const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
   useResetSafeCreation(setStep)
   const fallbackName = useMnemonicSafeName()
-  const { register, handleSubmit } = useForm<CreateSafeFormData>({
+  const formMethods = useForm<CreateSafeFormData>({
     defaultValues: { name: params?.name || fallbackName },
+    mode: 'onChange',
   })
+  const { handleSubmit, formState } = formMethods
 
   return (
     <Paper>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box padding={3}>
-          <Typography variant="body1" mb={2}>
-            You are about to create a new Safe wallet with one or more owners. First, let&apos;s give your new wallet a
-            name. This name is only stored locally and will never be shared with Gnosis or any third parties. The new
-            Safe will ONLY be available on <ChainIndicator inline />
-          </Typography>
-          <FormControl>
-            <TextField
-              label="Safe name"
-              InputLabelProps={{ shrink: true }}
-              {...register('name')}
-              placeholder={fallbackName}
-            />
-          </FormControl>
-          <Typography mt={2}>
-            By continuing you consent to the <a href="#">terms of use</a> and <a href="#">privacy policy</a>.
-          </Typography>
-        </Box>
-        <Divider />
-        <Box padding={3}>
-          <Grid container alignItems="center" justifyContent="center" spacing={3}>
-            <Grid item>
-              <Button onClick={onBack}>Back</Button>
+      <FormProvider {...formMethods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box padding={3}>
+            <Typography variant="body1" mb={2}>
+              You are about to create a new Safe wallet with one or more owners. First, let&apos;s give your new wallet
+              a name. This name is only stored locally and will never be shared with Gnosis or any third parties. The
+              new Safe will ONLY be available on <ChainIndicator inline />
+            </Typography>
+            <FormControl>
+              <NameInput
+                name="name"
+                textFieldProps={{ label: 'Safe name', InputLabelProps: { shrink: true }, placeholder: fallbackName }}
+              />
+            </FormControl>
+            <Typography mt={2}>
+              By continuing you consent to the <a href="#">terms of use</a> and <a href="#">privacy policy</a>.
+            </Typography>
+          </Box>
+          <Divider />
+          <Box padding={3}>
+            <Grid container alignItems="center" justifyContent="center" spacing={3}>
+              <Grid item>
+                <Button onClick={onBack}>Back</Button>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" type="submit" disabled={!formState.isValid}>
+                  Continue
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Button variant="contained" type="submit">
-                Continue
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-      </form>
+          </Box>
+        </form>
+      </FormProvider>
     </Paper>
   )
 }

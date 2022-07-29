@@ -1,10 +1,6 @@
 import { proposeTransaction, Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
-// It's important to cache proposals to avoid re-proposing the same transaction
-// Backend returns an error if you try to propose the same transaction twice
-const cache: Record<string, TransactionDetails> = {}
-
 const proposeTx = async (
   chainId: string,
   safeAddress: string,
@@ -13,13 +9,8 @@ const proposeTx = async (
   safeTxHash: string,
 ): Promise<TransactionDetails> => {
   const signatures = tx.signatures.size ? tx.encodedSignatures() : undefined
-  const cacheKey = `${safeTxHash}_${signatures || ''}`
 
-  if (cache[cacheKey]) {
-    return cache[cacheKey]
-  }
-
-  const proposedTx = await proposeTransaction(chainId, safeAddress, {
+  return proposeTransaction(chainId, safeAddress, {
     ...tx.data,
     safeTxHash,
     sender,
@@ -31,10 +22,6 @@ const proposeTx = async (
     gasPrice: tx.data.gasPrice.toString(),
     signature: signatures,
   })
-
-  cache[cacheKey] = proposedTx
-
-  return proposedTx
 }
 
 export default proposeTx
