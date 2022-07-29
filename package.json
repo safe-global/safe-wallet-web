@@ -12,7 +12,7 @@
     "lint": "tsc && next lint",
     "lint:fix": "yarn lint --fix",
     "prettier": "prettier -w './**/*.{ts,tsx,css}'",
-    "test": "jest",
+    "test": "DEBUG_PRINT_LIMIT=15000 jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
     "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts",

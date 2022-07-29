@@ -1,6 +1,6 @@
 import React from 'react'
 import * as safeAppsGatewaySDK from '@gnosis.pm/safe-react-gateway-sdk'
-import { render, screen, waitFor } from '../test-utils'
+import { render, screen, waitFor, fireEvent, act } from '../test-utils'
 import AppsPage from '@/pages/safe/apps'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
@@ -77,6 +77,39 @@ describe('AppsPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Add custom app')).toBeInTheDocument()
+    })
+  })
+
+  it('allows adding custom apps', async () => {
+    const APP_URL = 'https://apps.gnosis-safe.io/compound'
+
+    render(<AppsPage />, {
+      routerProps: {
+        query: {
+          safe: 'matic:0x0000000000000000000000000000000000000000',
+        },
+      },
+    })
+
+    await waitFor(() => {
+      expect(screen.getByText('Add custom app')).toBeInTheDocument()
+    })
+
+    const addCustomAppButton = screen.getByText('Add custom app')
+    act(() => {
+      fireEvent.click(addCustomAppButton)
+    })
+
+    await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
+
+    const appURLInput = screen.getByLabelText(/App URL/)
+    const riskCheckbox = screen.getByLabelText(
+      /This app is not a Gnosis product and I agree to use this app at my own risk./,
+    )
+
+    act(() => {
+      fireEvent.change(appURLInput, { target: { value: APP_URL } })
+      fireEvent.click(riskCheckbox)
     })
   })
 
