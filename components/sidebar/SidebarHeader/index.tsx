@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
@@ -31,19 +31,19 @@ const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'classNa
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
-  const { balances } = useBalances()
+  const { balances, loading: balancesLoading } = useBalances()
   const { safe, safeAddress, safeLoading } = useSafeInfo()
+  const { threshold, owners } = safe
   const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
-
-  const { threshold, owners } = safe
+  const [fiatTotal, setFiatTotal] = useState<string>('')
 
   // TODO: Format to parts w/ style
-  const fiat = useMemo(() => {
-    return formatCurrency(balances.fiatTotal, currency)
-  }, [currency, balances.fiatTotal])
+  useEffect(() => {
+    setFiatTotal(balancesLoading ? '' : formatCurrency(balances.fiatTotal, currency))
+  }, [currency, balances.fiatTotal, balancesLoading])
 
-  const text = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
+  const addressCopyText = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
 
   return (
     <div className={css.container}>
@@ -64,7 +64,8 @@ const SafeHeader = (): ReactElement => {
           ) : (
             <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
           )}
-          <Typography variant="body1">{safeLoading ? <Skeleton variant="text" width={60} /> : fiat}</Typography>
+
+          <Typography variant="body1">{fiatTotal || <Skeleton variant="text" width={60} />}</Typography>
         </div>
       </div>
 
@@ -75,7 +76,7 @@ const SafeHeader = (): ReactElement => {
           </HeaderIconButton>
         </QrCodeButton>
 
-        <CopyButton text={text} className={css.iconButton}>
+        <CopyButton text={addressCopyText} className={css.iconButton}>
           <CopyIcon />
         </CopyButton>
 

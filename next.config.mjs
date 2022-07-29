@@ -9,6 +9,14 @@ const nextConfig = {
       unoptimized: true,
     },
   },
+  async rewrites() {
+    return [
+      {
+        source: '/:safe([a-z]+\\:0x[a-fA-F0-9]{40})/:path*',
+        destination: '/safe/:path*?safe=:safe',
+      },
+    ]
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
