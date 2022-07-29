@@ -250,7 +250,7 @@ const initTheme = (darkMode: boolean) => {
           root: ({ theme }) => ({
             color: theme.palette.secondary.main,
             padding: '12px 16px',
-            backgroundColor: 'white',
+            backgroundColor: theme.palette.background.paper,
           }),
         },
       },
