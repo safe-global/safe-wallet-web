@@ -12,17 +12,19 @@ import {
   Box,
   FormHelperText,
 } from '@mui/material'
+import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChainId from '@/hooks/useChainId'
-import { SyntheticEvent } from 'react'
+import { trimTrailingSlash } from '@/utils/url'
 
 type Props = {
   open: boolean
   onClose: () => void
   onSave: (data: SafeAppData) => void
+  // A list of safe apps to check if the app is already there
+  safeAppsList: SafeAppData[]
 }
 
 type CustomAppFormData = {
@@ -34,7 +36,7 @@ type CustomAppFormData = {
 const TEXT_FIELD_HEIGHT = '56px'
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
 
-const AddCustomAppModal = ({ open, onClose, onSave }: Props) => {
+const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const [safeApp, setSafeApp] = React.useState<SafeAppData>()
   const chainId = useChainId()
 
@@ -58,6 +60,24 @@ const AddCustomAppModal = ({ open, onClose, onSave }: Props) => {
     onClose()
   }
 
+  const handleAppUrlChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.currentTarget.value
+    if (!isValidURL(input)) {
+      return
+    }
+
+    try {
+      setSafeApp(undefined)
+      const appFromManifest = await fetchSafeAppFromManifest(input, chainId)
+      setSafeApp(appFromManifest)
+    } catch (err) {
+      setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
+    }
+  }
+
+  const isAppAlreadyInTheList = (appUrl: string) =>
+    safeAppsList.some((app) => trimTrailingSlash(app.url) === trimTrailingSlash(appUrl))
+
   return (
     <ModalDialog open={open} onClose={handleClose} dialogTitle="Add custom app">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -78,21 +98,10 @@ const AddCustomAppModal = ({ open, onClose, onSave }: Props) => {
               required: true,
               validate: {
                 validUrl: (val: string) => (isValidURL(val) ? undefined : 'Invalid URL'),
+                doesntExist: (val: string) =>
+                  isAppAlreadyInTheList(val) ? 'This app is already in the list' : undefined,
               },
-              onChange: async (event: SyntheticEvent<HTMLInputElement>): Promise<void> => {
-                const input = event.currentTarget.value
-                if (!isValidURL(input)) {
-                  return
-                }
-
-                try {
-                  setSafeApp(undefined)
-                  const appFromManifest = await fetchSafeAppFromManifest(input, chainId)
-                  setSafeApp(appFromManifest)
-                } catch (err) {
-                  setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
-                }
-              },
+              onChange: handleAppUrlChange,
             })}
           />
           <Box

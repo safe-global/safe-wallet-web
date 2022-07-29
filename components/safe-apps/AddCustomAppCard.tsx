@@ -6,9 +6,9 @@ import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
 import { AppCardContainer } from './AppCard'
 import { IS_PRODUCTION, SAFE_REACT_URL } from '@/config/constants'
 
-type Props = { onSave: (data: SafeAppData) => void }
+type Props = { onSave: (data: SafeAppData) => void; safeAppList: SafeAppData[] }
 
-const AddCustomAppCard = ({ onSave }: Props) => {
+const AddCustomAppCard = ({ onSave, safeAppList }: Props) => {
   const [addCustomAppModalOpen, setAddCustomAppModalOpen] = React.useState(false)
   const router = useRouter()
   const url = `${SAFE_REACT_URL}/${router.query.safe}/apps`
@@ -43,7 +43,12 @@ const AddCustomAppCard = ({ onSave }: Props) => {
         </Box>
       </AppCardContainer>
 
-      <AddCustomAppModal open={addCustomAppModalOpen} onClose={() => setAddCustomAppModalOpen(false)} onSave={onSave} />
+      <AddCustomAppModal
+        open={addCustomAppModalOpen}
+        onClose={() => setAddCustomAppModalOpen(false)}
+        onSave={onSave}
+        safeAppsList={safeAppList}
+      />
     </>
   )
 }

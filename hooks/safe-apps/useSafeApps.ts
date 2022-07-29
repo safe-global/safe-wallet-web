@@ -4,6 +4,7 @@ import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { useCustomSafeApps } from '@/hooks/safe-apps/useCustomSafeApps'
 
 type ReturnType = {
+  allSafeApps: SafeAppData[]
   remoteSafeApps: SafeAppData[]
   customSafeApps: SafeAppData[]
   remoteSafeAppsLoading: boolean
@@ -16,6 +17,11 @@ const useSafeApps = (): ReturnType => {
   const [remoteSafeApps = [], remoteSafeAppsError, remoteSafeAppsLoading] = useRemoteSafeApps()
   const { customSafeApps, loading: customSafeAppsLoading, updateCustomSafeApps } = useCustomSafeApps()
 
+  const allSafeApps = React.useMemo(
+    () => [...remoteSafeApps, ...customSafeApps].sort((a, b) => a.name.localeCompare(b.name)),
+    [remoteSafeApps, customSafeApps],
+  )
+
   const addCustomApp = React.useCallback(
     (app: SafeAppData) => {
       updateCustomSafeApps([...customSafeApps, app])
@@ -24,6 +30,7 @@ const useSafeApps = (): ReturnType => {
   )
 
   return {
+    allSafeApps,
     remoteSafeApps,
     customSafeApps,
     remoteSafeAppsLoading,

@@ -7,9 +7,9 @@ import AppsIcon from '@/public/images/sidebar/apps.svg'
 import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
 
 const Apps: NextPage = () => {
-  const { remoteSafeApps, customSafeApps, remoteSafeAppsLoading, addCustomApp } = useSafeApps()
+  const { allSafeApps, remoteSafeAppsLoading, customSafeAppsLoading, addCustomApp } = useSafeApps()
 
-  if (remoteSafeAppsLoading) {
+  if (remoteSafeAppsLoading || customSafeAppsLoading) {
     return <p>Loading...</p>
   }
 
@@ -18,10 +18,10 @@ const Apps: NextPage = () => {
       <Breadcrumbs Icon={AppsIcon} first="Apps" />
       <Grid container rowSpacing={2} columnSpacing={2}>
         <Grid item xs={12} sm={6} md={3} xl={1.5}>
-          <AddCustomAppCard onSave={addCustomApp} />
+          <AddCustomAppCard onSave={addCustomApp} safeAppList={allSafeApps} />
         </Grid>
 
-        {remoteSafeApps.map((a) => (
+        {allSafeApps.map((a) => (
           <Grid key={a.id || a.url} item xs={12} sm={6} md={3} xl={1.5}>
             <AppCard safeApp={a} />
           </Grid>
