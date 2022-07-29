@@ -39,7 +39,7 @@ const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactEle
         <Summary txDetails={txDetails} />
       </div>
 
-      <div className={`${css.txData} ${css.noPadding}`}>
+      <div className={`${css.txData}`}>
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <TxData txDetails={txDetails} />
         </ErrorBoundary>
