@@ -43,13 +43,13 @@ describe('useSafeAddress hook', () => {
     expect(result.current).toBe('0x220866B1A2219f40e72f5c628B65D54268cA3A9D')
   })
 
-  it('should return zero address for safe routes w/o query', () => {
+  it('should return empty address for safe routes w/o query', () => {
     ;(useRouter as any).mockImplementation(() => ({
       pathname: '/safe/home',
       query: {},
     }))
 
     const { result } = renderHook(() => useSafeAddress())
-    expect(result.current).toBe('0x0000000000000000000000000000000000000000')
+    expect(result.current).toBe('')
   })
 })
