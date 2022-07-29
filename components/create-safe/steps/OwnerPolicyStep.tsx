@@ -46,7 +46,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   const allAddressBooks = useAppSelector(selectAllAddressBooks)
   const addressBook = useMemo(() => allAddressBooks[currentChainId], [currentChainId, allAddressBooks])
 
-  const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
+  const defaultOwnerAddressBookName = wallet?.address && addressBook ? addressBook[wallet.address] : undefined
 
   const defaultOwner: Owner = {
     name: defaultOwnerAddressBookName || wallet?.ens || '',
@@ -98,7 +98,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
       setValue(`owners.${index}.resolving`, true)
       const { address } = parsePrefixedAddress(owner.address)
       // Lookup Addressbook
-      const nameFromAddressbook = addressBook[address]
+      const nameFromAddressbook = addressBook ? addressBook[address] : undefined
       if (nameFromAddressbook) {
         update(index, { ...owner, name: nameFromAddressbook, resolving: false })
         return
