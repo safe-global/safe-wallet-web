@@ -3,7 +3,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
-import { createAddOwnerTx, createSwapOwnerTx, createTx } from '@/services/tx/txSender'
+import { createAddOwnerTx, createSwapOwnerTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
@@ -20,22 +20,18 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
   const addressBook = useAddressBook()
   const { newOwner, removedOwner, threshold } = data
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    let tx: SafeTransaction
-
+  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (removedOwner) {
-      tx = await createSwapOwnerTx({
+      return createSwapOwnerTx({
         newOwnerAddress: newOwner.address,
         oldOwnerAddress: removedOwner.address,
       })
     } else {
-      tx = await createAddOwnerTx({
+      return createAddOwnerTx({
         ownerAddress: newOwner.address,
         threshold,
       })
     }
-
-    return createTx({ ...tx.data, nonce: undefined })
   }, [removedOwner, newOwner])
 
   const isReplace = Boolean(removedOwner)

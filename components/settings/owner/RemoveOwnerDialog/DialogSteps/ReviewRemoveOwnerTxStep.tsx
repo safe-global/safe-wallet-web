@@ -2,7 +2,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { createRemoveOwnerTx, createTx } from '@/services/tx/txSender'
+import { createRemoveOwnerTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -22,10 +22,8 @@ export const ReviewRemoveOwnerTxStep = ({
   const addressBook = useAddressBook()
   const { removedOwner, threshold } = data
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    const tx = await createRemoveOwnerTx({ ownerAddress: removedOwner.address, threshold })
-
-    return createTx({ ...tx.data, nonce: undefined })
+  const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
+    return createRemoveOwnerTx({ ownerAddress: removedOwner.address, threshold })
   }, [removedOwner.address, threshold])
 
   const newOwnerLength = safe.owners.length - 1
