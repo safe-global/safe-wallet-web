@@ -1,4 +1,5 @@
-import { lazy, MouseEvent, useState } from 'react'
+import { MouseEvent, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Box, Button, ButtonBase, Paper, Popover, Typography } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -11,9 +12,11 @@ import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
 import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
-import { ConnectedWallet } from '@/hooks/wallets/useWallet'
+import { type ConnectedWallet } from '@/hooks/wallets/useWallet'
 
-const WalletIcon = lazy(() => import('@/components/common/WalletIcon'))
+const WalletIcon = dynamic(() => import('@/components/common/WalletIcon'), {
+  ssr: false,
+})
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)

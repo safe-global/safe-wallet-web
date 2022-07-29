@@ -1,8 +1,9 @@
-import React, { ReactElement, useState, lazy, Suspense } from 'react'
+import React, { ReactElement, useState, Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import QrCodeIcon from '@mui/icons-material/QrCode'
 import { IconButton } from '@mui/material'
 
-const ScanQRModal = lazy(() => import('.'))
+const ScanQRModal = dynamic(() => import('.'), { ssr: false })
 
 type Props = {
   onScan: (value: string) => void
