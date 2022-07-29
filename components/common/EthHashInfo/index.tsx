@@ -1,15 +1,14 @@
 import { ReactElement, useState } from 'react'
 import css from './styles.module.css'
-import chains from '@/config/chains'
 import { shortenAddress } from '@/utils/formatters'
 import Identicon from '../Identicon'
-import useChainId from '@/hooks/useChainId'
 import useAddressBook from '@/hooks/useAddressBook'
 import { Box, Typography } from '@mui/material'
 import ExplorerLink from '@/components/common/TokenExplorerLink'
 import CopyAddressButton from '@/components/common/CopyAddressButton'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
+import { useCurrentChain } from '@/hooks/useChains'
 
 type EthHashInfoProps = {
   address: string
@@ -66,11 +65,11 @@ const SRCEthHashInfo = ({
 
 const EthHashInfo = ({ showName = true, ...props }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
-  const chainId = useChainId()
+  const chain = useCurrentChain()
   const addressBook = useAddressBook()
   // prefer address book name
   const name = showName ? addressBook[props.address] || props.name : undefined
-  const prefix = settings.shortName.show ? Object.keys(chains).find((key) => chains[key] === chainId) : undefined
+  const prefix = settings.shortName.show ? chain?.shortName : undefined
 
   return <SRCEthHashInfo prefix={prefix} {...props} name={name} />
 }

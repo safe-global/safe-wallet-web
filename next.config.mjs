@@ -52,11 +52,6 @@ const nextConfig = {
       'mainnet.json': path.resolve('./node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json'),
     }
 
-    config.optimization = config.optimization || {}
-    config.optimization.splitChunks = {
-      chunks: 'all',
-    }
-
     return config
   },
 }
