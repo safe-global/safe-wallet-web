@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
-import { ReactElement, useCallback, useEffect, useMemo } from 'react'
+import { ReactElement, useCallback, useEffect } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import AddressInput from '@/components/common/AddressInput'
@@ -22,12 +22,10 @@ import NameInput from '@/components/common/NameInput'
 import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import useChainId from '@/hooks/useChainId'
+import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { lookupAddress } from '@/services/domains'
-import { useAppSelector } from '@/store'
-import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import { parsePrefixedAddress } from '@/utils/addresses'
 
 type Props = {
@@ -40,11 +38,9 @@ type Props = {
 const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactElement => {
   useResetSafeCreation(setStep)
   const ethersProvider = useWeb3ReadOnly()
-  const currentChainId = useChainId()
   const wallet = useWallet()
 
-  const allAddressBooks = useAppSelector(selectAllAddressBooks)
-  const addressBook = useMemo(() => allAddressBooks[currentChainId], [currentChainId, allAddressBooks])
+  const addressBook = useAddressBook()
 
   const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
 
@@ -60,14 +56,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     mode: 'all',
     defaultValues: { name: params.name, owners: params.owners ?? [defaultOwner], threshold: defaultThreshold },
   })
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-    watch,
-    setValue,
-  } = formMethods
+  const { register, handleSubmit, control, watch, setValue } = formMethods
 
   const { fields, append, remove, update } = useFieldArray({
     control,
