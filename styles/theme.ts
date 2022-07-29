@@ -148,12 +148,28 @@ const initTheme = (darkMode: boolean) => {
             },
 
             '&:hover': {
-              border: `2px solid ${theme.palette.primary.light}`,
+              borderColor: theme.palette.primary.light,
             },
 
-            '&:hover .MuiAccordionSummary-root': {
+            '&:hover > .MuiAccordionSummary-root': {
               background: theme.palette.primary.background,
             },
+
+            '&.Mui-expanded': {
+              margin: 0,
+              borderColor: theme.palette.primary.light,
+            },
+
+            '&.Mui-expanded > .MuiAccordionSummary-root': {
+              background: theme.palette.primary.background,
+            },
+          }),
+        },
+      },
+      MuiAccordionDetails: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            padding: theme.spacing(2),
           }),
         },
       },
@@ -251,7 +267,17 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             '& .MuiTableCell-root': {
+              paddingTop: theme.spacing(1),
+              paddingBottom: theme.spacing(1),
               borderBottom: `1px solid ${theme.palette.border.light}`,
+            },
+
+            '& .MuiTableRow-root': {
+              transition: 'background-color 0.2s',
+            },
+
+            '& .MuiTableRow-root:hover': {
+              backgroundColor: theme.palette.background.light,
             },
           }),
         },

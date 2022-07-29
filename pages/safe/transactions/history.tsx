@@ -4,14 +4,14 @@ import PaginatedTxns from '@/components/common/PaginatedTxns'
 import TransactionsIcon from '@/public/images/sidebar/transactions.svg'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import NavTabs from '@/components/common/NavTabs'
-import { transactionItems } from '@/components/sidebar/SidebarNavigation/config'
+import { transactionNavItems } from '@/components/sidebar/SidebarNavigation/config'
 
 const History: NextPage = () => {
   return (
     <main>
       <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="History" />
 
-      <NavTabs tabs={transactionItems.items!} />
+      <NavTabs tabs={transactionNavItems} />
 
       <PaginatedTxns useTxns={useTxHistory} />
     </main>

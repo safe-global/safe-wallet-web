@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { Box, IconButton, Paper } from '@mui/material'
+import { IconButton, Paper } from '@mui/material'
 import css from './styles.module.css'
 import MenuIcon from '@mui/icons-material/Menu'
 import NetworkSelector from '@/components/common/NetworkSelector'
@@ -19,11 +19,13 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => (
       </IconButton>
     </div>
 
-    <SafeLogo alt="Safe Logo" className={css.logo} height={29} />
+    <div className={css.logo}>
+      <SafeLogo alt="Safe Logo" height={29} />
+    </div>
 
-    <Box flexGrow={1} />
-
-    <ChainSwitcher />
+    <div className={css.chainSwitcher}>
+      <ChainSwitcher />
+    </div>
 
     <ConnectWallet />
 

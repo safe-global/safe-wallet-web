@@ -1,17 +1,17 @@
-import { FormProvider, useForm } from 'react-hook-form'
 import Box from '@mui/material/Box'
-import DialogContent from '@mui/material/DialogContent'
-import TextField from '@mui/material/TextField'
-import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
 import type { ReactElement } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 
-import ModalDialog from '@/components/common/ModalDialog'
 import AddressInput from '@/components/common/AddressInput'
-import { parsePrefixedAddress } from '@/utils/addresses'
+import ModalDialog from '@/components/common/ModalDialog'
+import NameInput from '@/components/common/NameInput'
+import useChainId from '@/hooks/useChainId'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import useChainId from '@/hooks/useChainId'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 export type AddressEntry = {
   name: string
@@ -48,19 +48,12 @@ const EntryDialog = ({
   }
 
   return (
-    <ModalDialog open onClose={handleClose} title="Create entry">
+    <ModalDialog open onClose={handleClose} dialogTitle="Create entry">
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
             <Box mb={2}>
-              <TextField
-                autoFocus
-                label="Name"
-                variant="outlined"
-                fullWidth
-                {...register('name', { required: true })}
-                required
-              />
+              <NameInput textFieldProps={{ label: 'Name' }} name="name" />
             </Box>
 
             <Box>

@@ -3,7 +3,7 @@ import { getFiatCurrencies, FiatCurrencies } from '@gnosis.pm/safe-react-gateway
 import useAsync from '@/hooks/useAsync'
 import { Errors, logError } from '@/services/exceptions'
 
-const useCurriencies = (): FiatCurrencies | undefined => {
+const useCurrencies = (): FiatCurrencies | undefined => {
   // Re-fetch assets when the entire SafeInfo updates
   const [data, error] = useAsync<FiatCurrencies>(getFiatCurrencies, [])
 
@@ -16,4 +16,4 @@ const useCurriencies = (): FiatCurrencies | undefined => {
   return data
 }
 
-export default useCurriencies
+export default useCurrencies

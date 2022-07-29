@@ -29,7 +29,6 @@ const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
       isExecutable={safe.threshold === 1}
       isRejection
       onSubmit={onSubmit}
-      title="Reject transaction"
       error={rejectError}
     >
       <Typography mb={2}>

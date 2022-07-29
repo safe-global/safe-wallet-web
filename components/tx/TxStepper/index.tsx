@@ -1,8 +1,6 @@
 import { ReactElement } from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
+import { DialogTitle, Button, Box, DialogActions, Typography } from '@mui/material'
 import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
-import { DialogActions, Typography } from '@mui/material'
 import css from './styles.module.css'
 
 const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps): ReactElement => {
@@ -15,15 +13,15 @@ const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps)
 
   return (
     <Box className={css.container}>
-      <Box p={3}>
-        <Box className={css.stepIndicator}>
-          <Typography color={({ palette }) => palette.text.secondary}>
-            Step {activeStep + 1} out of {steps.length}
-          </Typography>
-        </Box>
+      <DialogTitle display="flex" alignItems="center" justifyContent="space-between">
+        {steps[activeStep].label}
 
-        {steps[activeStep].render(stepData[Math.max(0, activeStep)], onSubmit, onBack, setStep)}
-      </Box>
+        <Typography color={({ palette }) => palette.text.secondary}>
+          Step {activeStep + 1} out of {steps.length}
+        </Typography>
+      </DialogTitle>
+
+      {steps[activeStep].render(stepData[Math.max(0, activeStep)], onSubmit, onBack, setStep)}
 
       <DialogActions>
         <Button color="inherit" onClick={onBack}>

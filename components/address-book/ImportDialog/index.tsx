@@ -55,7 +55,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
   }
 
   return (
-    <ModalDialog open onClose={handleClose} title="Import address book">
+    <ModalDialog open onClose={handleClose} dialogTitle="Import address book">
       <DialogContent>
         <CSVReader
           onUploadAccepted={(result: ParseResult<['address', 'name', 'chainId']>) => {

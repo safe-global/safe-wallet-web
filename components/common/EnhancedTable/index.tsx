@@ -10,6 +10,7 @@ import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import Paper from '@mui/material/Paper'
 import { visuallyHidden } from '@mui/utils'
+import { PaperTypeMap } from '@mui/material/Paper/Paper'
 
 type EnhancedRow = Record<
   string,
@@ -91,11 +92,12 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
 type EnhancedTableProps = {
   rows: EnhancedRow[]
   headCells: EnhancedHeadCell[]
+  variant?: PaperTypeMap['props']['variant']
 }
 
 const pageSizes = [5, 10, 25]
 
-function EnhancedTable({ rows, headCells }: EnhancedTableProps) {
+function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
   const [orderBy, setOrderBy] = useState<string>('')
   const [page, setPage] = useState<number>(0)
@@ -124,7 +126,7 @@ function EnhancedTable({ rows, headCells }: EnhancedTableProps) {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <Paper sx={{ width: '100%', mb: 2 }} variant={variant}>
         <TableContainer>
           <Table sx={{ minWidth: '650px' }} aria-labelledby="tableTitle">
             <EnhancedTableHead

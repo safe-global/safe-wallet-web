@@ -3,8 +3,18 @@
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
+  position: absolute;
+  right: var(--space-3);
+  top: var(--space-3);
 }
 
 .container > *:first-of-type {
   width: 6em;
+}
+
+@media (max-width: 768px) {
+  .container {
+    right: var(--space-2);
+    top: var(--space-2);
+  }
 }

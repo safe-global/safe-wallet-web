@@ -49,6 +49,7 @@ const mockSafeSDK = {
   executeTransaction: jest.fn(),
   getChainId: jest.fn(() => Promise.resolve(4)),
   getAddress: jest.fn(() => '0x0000000000000000000000000000000000000123'),
+  getTransactionHash: jest.fn(() => Promise.resolve('0x1234567890')),
 } as unknown as Safe
 
 describe('txSender', () => {
@@ -127,7 +128,7 @@ describe('txSender', () => {
 
       const proposedTx = await dispatchTxProposal('4', '0x123', '0x456', tx)
 
-      expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx)
+      expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx, '0x1234567890')
       expect(proposedTx).toEqual({ txId: '123' })
     })
   })

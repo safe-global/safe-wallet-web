@@ -53,16 +53,21 @@ const GasParams = ({
     <Accordion elevation={0}>
       <AccordionSummary>
         {isExecution ? (
-          <Typography>
-            Estimated fee{' '}
+          <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
+            <span>Estimated fee </span>
             {isLoading ? (
               <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
             ) : (
-              `${totalFee} ${chain?.nativeCurrency.symbol}`
+              <span>
+                {totalFee} {chain?.nativeCurrency.symbol}
+              </span>
             )}
           </Typography>
         ) : (
-          <Typography>Signing transaction with nonce {nonce}</Typography>
+          <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
+            <span>Signing transaction with nonce</span>
+            <span>{nonce}</span>
+          </Typography>
         )}
       </AccordionSummary>
 
