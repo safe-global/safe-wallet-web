@@ -34,7 +34,7 @@ export const initSafeSDK = async (
   }
 
   const ethersProvider = new ethers.providers.Web3Provider(provider)
-  return await Safe.create({
+  return Safe.create({
     ethAdapter: createEthersAdapter(ethersProvider),
     safeAddress,
     isL1SafeMasterCopy,

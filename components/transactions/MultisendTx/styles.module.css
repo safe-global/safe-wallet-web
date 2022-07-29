@@ -1,5 +1,5 @@
 .txSummary {
-  padding: 20px 24px;
+  padding: var(--space-3);
   height: 100%;
 }
 
@@ -11,16 +11,13 @@
 .txData {
   display: flex;
   flex-direction: column;
-  padding-right: 60px; /* to not overlap with the share link */
   border-bottom: none;
   border-top: 2px solid var(--color-border-light);
+  padding: var(--space-3);
+  padding-right: 60px;
 }
 
 .delegateCall .alert {
   width: fit-content;
-  padding: 0px 10px;
-}
-
-.noPadding {
-  padding: 0;
+  padding: 0 var(--space-1);
 }
