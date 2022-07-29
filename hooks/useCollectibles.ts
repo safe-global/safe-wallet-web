@@ -8,7 +8,6 @@ export const useCollectibles = (pageUrl?: string): AsyncResult<SafeCollectiblesP
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
   const { chainId } = safe
 
-  // Re-fetch assets when the Safe address or the collectibes tag updates
   const [data, error, loading] = useAsync<SafeCollectiblesPage | undefined>(
     async () => {
       if (!safeLoaded) return
