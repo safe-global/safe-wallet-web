@@ -1,6 +1,5 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
-import TxModalTitle from '@/components/tx/TxModalTitle'
-import { Box, Button, Typography } from '@mui/material'
+import { Button, DialogContent, Typography } from '@mui/material'
 import { RemoveOwnerData } from '..'
 
 export const ReviewSelectedOwnerStep = ({
@@ -12,9 +11,8 @@ export const ReviewSelectedOwnerStep = ({
 }) => {
   return (
     <form onSubmit={() => onSubmit(data)}>
-      <TxModalTitle>Remove owner</TxModalTitle>
-      <Box>
-        <Typography mb={4}>Review the owner you want to remove from the active Safe:</Typography>
+      <DialogContent>
+        <Typography mb={2}>Review the owner you want to remove from the active Safe:</Typography>
         <EthHashInfo
           address={data.removedOwner.address}
           name={data.removedOwner.name}
@@ -27,7 +25,7 @@ export const ReviewSelectedOwnerStep = ({
         <Button variant="contained" type="submit">
           Next
         </Button>
-      </Box>
+      </DialogContent>
     </form>
   )
 }

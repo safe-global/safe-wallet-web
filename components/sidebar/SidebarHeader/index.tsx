@@ -9,7 +9,7 @@ import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
 import useBalances from '@/hooks/useBalances'
 import { useAppSelector } from '@/store'
-import { selectCurrency } from '@/store/sessionSlice'
+import { selectCurrency } from '@/store/settingsSlice'
 
 import css from './styles.module.css'
 import QrIcon from '@/public/images/sidebar/qr.svg'
@@ -21,6 +21,7 @@ import { getExplorerLink } from '@/utils/gateway'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import CopyButton from '@/components/common/CopyButton'
+import QrCodeButton from '../QrCodeButton'
 
 const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
   <IconButton className={css.iconButton} {...props}>
@@ -68,10 +69,11 @@ const SafeHeader = (): ReactElement => {
       </div>
 
       <div className={css.iconButtons}>
-        {/* TODO: Add QR functionality */}
-        <HeaderIconButton>
-          <QrIcon />
-        </HeaderIconButton>
+        <QrCodeButton>
+          <HeaderIconButton>
+            <QrIcon />
+          </HeaderIconButton>
+        </QrCodeButton>
 
         <CopyButton text={text} className={css.iconButton}>
           <CopyIcon />

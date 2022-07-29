@@ -21,18 +21,18 @@ import css from './styles.module.css'
 const Navigation = (): ReactElement => {
   const router = useRouter()
   const query = { safe: router.query.safe }
-  const [open, setOpen] = useState<string>(router.pathname)
+  const [openHref, setOpenHref] = useState<string>(router.pathname)
 
   useEffect(() => {
-    setOpen(router.pathname)
+    setOpenHref(router.pathname)
   }, [router.pathname, query.safe])
 
   const toggleOpen = (href: string) => {
-    setOpen((prev) => (prev === href ? '' : href))
+    setOpenHref((prev) => (prev === href ? '' : href))
   }
 
   const isOpen = (href: string) => {
-    return open === href
+    return openHref === href
   }
 
   return (
@@ -42,7 +42,7 @@ const Navigation = (): ReactElement => {
           return (
             <ListItem key={item.href} disablePadding>
               <SidebarListItemButton
-                onClick={() => setOpen(item.href)}
+                onClick={() => setOpenHref(item.href)}
                 selected={isOpen(item.href)}
                 href={{ pathname: item.href, query }}
               >
@@ -96,7 +96,7 @@ const Navigation = (): ReactElement => {
                     <Link href={{ pathname: subItem.href, query }} passHref>
                       <ListItemButton
                         className={css.sublistItem}
-                        onClick={() => setOpen(subItem.href)}
+                        onClick={() => setOpenHref(subItem.href)}
                         selected={isOpen(subItem.href)}
                       >
                         <SidebarListItemText>{subItem.label}</SidebarListItemText>

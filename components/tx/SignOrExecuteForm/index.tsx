@@ -1,16 +1,9 @@
 import { ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Button, Checkbox, FormControlLabel } from '@mui/material'
+import { Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material'
 
-import css from './styles.module.css'
-
-import {
-  dispatchTxExecution,
-  dispatchTxProposal,
-  dispatchTxSigning,
-  getNewTxId,
-  updateTxNonce,
-} from '@/services/tx/txSender'
+import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, updateTxNonce } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useGasPrice from '@/hooks/useGasPrice'
@@ -18,10 +11,11 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import GasParams from '@/components/tx/GasParams'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParamsForm, { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
-import TxModalTitle from '../TxModalTitle'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import { logError, Errors } from '@/services/exceptions'
+import { AppRoutes } from '@/config/routes'
+import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -32,7 +26,6 @@ type SignOrExecuteProps = {
   onSubmit: (data: null) => void
   children?: ReactNode
   error?: Error
-  title?: string
 }
 
 const SignOrExecuteForm = ({
@@ -44,7 +37,6 @@ const SignOrExecuteForm = ({
   onSubmit,
   children,
   error,
-  title,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -54,7 +46,9 @@ const SignOrExecuteForm = ({
   const [isEditingGas, setEditingGas] = useState<boolean>(false)
   const [manualParams, setManualParams] = useState<AdvancedParameters>()
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
+  const [submitError, setSubmitError] = useState<Error | undefined>()
 
+  const router = useRouter()
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
 
@@ -88,42 +82,70 @@ const SignOrExecuteForm = ({
   //
   // Callbacks
   //
+  const assertSubmittable = (): [ConnectedWallet, SafeTransaction] => {
+    if (!wallet) throw new Error('Wallet not connected')
+    if (!tx) throw new Error('Transaction not ready')
+    return [wallet, tx]
+  }
 
   // Sign transaction
-  const onSign = async () => {
-    if (!wallet || !tx) throw new Error('Cannot sign')
+  const onSign = async (): Promise<string> => {
+    const [connectedWallet, createdTx] = assertSubmittable()
 
-    const hardwareWallet = isHardwareWallet(wallet)
-    const signedTx = await dispatchTxSigning(tx, hardwareWallet, txId)
+    const hardwareWallet = isHardwareWallet(connectedWallet)
+    const signedTx = await dispatchTxSigning(createdTx, hardwareWallet, txId)
 
-    await dispatchTxProposal(safe.chainId, safeAddress, wallet.address, signedTx)
+    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx)
+    return proposedTx.txId
   }
 
   // Execute transaction
-  const onExecute = async () => {
-    if (!wallet || !tx) throw new Error('Cannot execute')
+  const onExecute = async (): Promise<string> => {
+    const [connectedWallet, createdTx] = assertSubmittable()
 
     // If no txId was provided, it's an immediate execution of a new tx
-    const id = txId || (await getNewTxId(safe.chainId, safeAddress, wallet.address, tx))
+    let id = txId
+    if (!id) {
+      const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, createdTx)
+      id = proposedTx.txId
+    }
 
     // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
     const txOptions = {
       gasLimit: advancedParams.gasLimit?.toString(),
       gasPrice: advancedParams.maxFeePerGas?.toString(),
     }
-    await dispatchTxExecution(id, tx, txOptions)
+    await dispatchTxExecution(id, createdTx, txOptions)
+
+    return id
   }
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
     setIsSubmittable(false)
+    setSubmitError(undefined)
 
+    let id: string
     try {
-      await (willExecute ? onExecute() : onSign())
-      onSubmit(null)
+      id = await (willExecute ? onExecute() : onSign())
     } catch (err) {
+      logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
+      setSubmitError(err as Error)
+      return
+    }
+
+    onSubmit(null)
+
+    // If txId isn't passed in props, it's a newly created tx
+    // Redirect to the single tx view
+    // @TODO: also don't redirect for Safe Apps transactions (add a new prop)
+    if (!txId) {
+      router.push({
+        pathname: AppRoutes.safe.transactions.tx,
+        query: { safe: router.query.safe, id },
+      })
     }
   }
 
@@ -156,43 +178,45 @@ const SignOrExecuteForm = ({
       onSubmit={onAdvancedSubmit}
     />
   ) : (
-    <>
-      {title && <TxModalTitle>{title}</TxModalTitle>}
-      <div className={css.container}>
+    <form onSubmit={handleSubmit}>
+      <DialogContent>
         {children}
 
         <DecodedTx tx={tx} />
 
-        <form onSubmit={handleSubmit}>
-          {canExecute && !onlyExecute && (
-            <FormControlLabel
-              control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
-              label="Execute transaction"
-            />
-          )}
-
-          <GasParams
-            isExecution={willExecute}
-            isLoading={isEstimating}
-            nonce={advancedParams.nonce}
-            gasLimit={advancedParams.gasLimit}
-            maxFeePerGas={advancedParams.maxFeePerGas}
-            maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
-            onEdit={() => setEditingGas(true)}
+        {canExecute && !onlyExecute && (
+          <FormControlLabel
+            control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
+            label="Execute transaction"
+            sx={{ mb: 1 }}
           />
+        )}
 
-          {(error || (willExecute && gasLimitError)) && (
-            <ErrorMessage error={error || gasLimitError}>
-              This transaction will most likely fail. To save gas costs, avoid creating the transaction.
-            </ErrorMessage>
-          )}
+        <GasParams
+          isExecution={willExecute}
+          isLoading={isEstimating}
+          nonce={advancedParams.nonce}
+          gasLimit={advancedParams.gasLimit}
+          maxFeePerGas={advancedParams.maxFeePerGas}
+          maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
+          onEdit={() => setEditingGas(true)}
+        />
 
-          <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
-            {isEstimating ? 'Estimating...' : 'Submit'}
-          </Button>
-        </form>
-      </div>
-    </>
+        {(error || (willExecute && gasLimitError)) && (
+          <ErrorMessage error={error || gasLimitError}>
+            This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+          </ErrorMessage>
+        )}
+
+        {submitError && (
+          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        )}
+
+        <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
+          {isEstimating ? 'Estimating...' : 'Submit'}
+        </Button>
+      </DialogContent>
+    </form>
   )
 }
 

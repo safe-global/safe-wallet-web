@@ -18,7 +18,8 @@ import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
-import Safe, { RemoveOwnerTxParams, SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk'
+import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
+import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -46,7 +47,8 @@ const estimateSafeTxGas = async (
  */
 export const createTx = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
-  // Get the nonce and safeTxGas if not provided
+
+  // Set the recommended nonce and safeTxGas if not provided
   if (txParams.nonce === undefined) {
     const chainId = await safeSDK.getChainId()
     const estimaton = await estimateSafeTxGas(String(chainId), safeSDK.getAddress(), txParams)
@@ -61,18 +63,34 @@ export const createTx = async (txParams: SafeTransactionDataPartial): Promise<Sa
  *
  * If only one tx is passed it will be created without multiSend.
  */
-export const createMultiSendTx = async (
-  txParams: MetaTransactionData[],
-  options?: SafeTransactionOptionalProps,
+export const createMultiSendTx = async (txParams: MetaTransactionData[]): Promise<SafeTransaction> => {
+  const safeSDK = getAndValidateSafeSDK()
+  const tx = await safeSDK.createTransaction(txParams)
+  return createTx({ ...tx.data, nonce: undefined, operation: 1 })
+}
+
+const withRecommendedNonce = async (
+  createFn: (safeSDK: Safe) => Promise<SafeTransaction>,
 ): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
-
-  return safeSDK.createTransaction(txParams, options)
+  const tx = await createFn(safeSDK)
+  return createTx({ ...tx.data, nonce: undefined })
 }
 
 export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promise<SafeTransaction> => {
-  const safeSDK = getAndValidateSafeSDK()
-  return safeSDK.getRemoveOwnerTx(txParams)
+  return withRecommendedNonce((safeSDK) => safeSDK.getRemoveOwnerTx(txParams))
+}
+
+export const createAddOwnerTx = async (txParams: AddOwnerTxParams): Promise<SafeTransaction> => {
+  return withRecommendedNonce((safeSDK) => safeSDK.getAddOwnerTx(txParams))
+}
+
+export const createSwapOwnerTx = async (txParams: SwapOwnerTxParams): Promise<SafeTransaction> => {
+  return withRecommendedNonce((safeSDK) => safeSDK.getSwapOwnerTx(txParams))
+}
+
+export const createUpdateThresholdTx = async (threshold: number): Promise<SafeTransaction> => {
+  return withRecommendedNonce((safeSDK) => safeSDK.getChangeThresholdTx(threshold))
 }
 
 /**
@@ -115,26 +133,6 @@ export const createExistingTx = async (
 }
 
 /**
- * Try to propose a transaction, or fall back to a random id
- */
-export const getNewTxId = async (
-  chainId: string,
-  safeAddress: string,
-  sender: string,
-  safeTx: SafeTransaction,
-): Promise<string> => {
-  try {
-    // N.B.: proposals w/o signatures won't appear in the queue
-    const proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx)
-    return proposedTx.txId
-  } catch (e) {
-    // This fallback is needed because proposeTx will fail if you propose the same tx repeatedly
-    // It might happen when the user rejects execution in the wallet and submits the tx again
-    return Math.random().toString(32)
-  }
-}
-
-/**
  * Propose a transaction
  */
 export const dispatchTxProposal = async (
@@ -143,9 +141,12 @@ export const dispatchTxProposal = async (
   sender: string,
   safeTx: SafeTransaction,
 ): Promise<TransactionDetails> => {
+  const safeSDK = getAndValidateSafeSDK()
+  const safeTxHash = await safeSDK.getTransactionHash(safeTx)
+
   let proposedTx: TransactionDetails | undefined
   try {
-    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx)
+    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash)
   } catch (error) {
     txDispatch(TxEvent.PROPOSE_FAILED, { tx: safeTx, error: error as Error })
     throw error
@@ -194,7 +195,11 @@ export const dispatchTxExecution = async (
   // Execute the tx
   let result: TransactionResult | undefined
   try {
-    result = await sdk.executeTransaction(safeTx, txOptions)
+    // @FIXME: clone the tx to avoid mutating the original
+    // Should be fixed on the Core SDK side
+    const tx = !safeTx.signatures.size ? await createTx({ ...safeTx.data }) : safeTx
+
+    result = await sdk.executeTransaction(tx, txOptions)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
     throw error

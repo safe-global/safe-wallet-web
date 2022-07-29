@@ -8,7 +8,7 @@ describe('ConnectWalletContent', () => {
     it('displays a button to connect the wallet', () => {
       const { getByText } = render(<ConnectWalletContent wallet={null} isWrongChain={false} />)
 
-      expect(getByText('Connect Wallet')).toBeInTheDocument()
+      expect(getByText('Connect wallet')).toBeInTheDocument()
     })
   })
 

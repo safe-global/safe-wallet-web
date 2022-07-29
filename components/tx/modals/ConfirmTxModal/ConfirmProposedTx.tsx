@@ -34,7 +34,6 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
       onSubmit={onSubmit}
       isExecutable={canExecute}
       onlyExecute={!canSign}
-      title={canSign ? 'Confirm transaction' : 'Execute transaction'}
       error={safeTxError}
     />
   )

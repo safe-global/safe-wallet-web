@@ -11,16 +11,17 @@ export const ConnectButton = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const onboard = useOnboard()
 
-  const handleConnect = () => {
-    onboard?.connectWallet()
-  }
-
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleConnect = () => {
+    handleClose()
+    onboard?.connectWallet()
   }
 
   const open = Boolean(anchorEl)
@@ -35,11 +36,11 @@ export const ConnectButton = () => {
             <FiberManualRecordIcon className={css.dot} color="error" fontSize="inherit" />
           </Box>
           <Box>
-            <Typography variant="caption" fontWeight="bold" component="div">
+            <Typography variant="caption" fontWeight="bold" component="div" className={css.notConnected}>
               Not connected
             </Typography>
-            <Typography variant="caption" color="error" component="div">
-              Connect Wallet
+            <Typography variant="caption" color="error" component="div" className={css.connectWallet}>
+              Connect wallet
             </Typography>
           </Box>
           <Box justifySelf="flex-end" marginLeft="auto">

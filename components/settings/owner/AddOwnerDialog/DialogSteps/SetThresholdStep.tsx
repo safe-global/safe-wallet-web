@@ -1,7 +1,6 @@
-import { Box, Button, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { Button, DialogContent, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import { SyntheticEvent, useState } from 'react'
 import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
-import TxModalTitle from '@/components/tx/TxModalTitle'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
 export const SetThresholdStep = ({
@@ -27,9 +26,7 @@ export const SetThresholdStep = ({
 
   return (
     <form onSubmit={onSubmitHandler}>
-      <TxModalTitle>Add new owner</TxModalTitle>
-
-      <Box>
+      <DialogContent>
         <Typography mb={2}>Set the required owner confirmations:</Typography>
 
         <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
@@ -51,7 +48,7 @@ export const SetThresholdStep = ({
             <Typography>out of {newNumberOfOwners} owner(s)</Typography>
           </Grid>
         </Grid>
-      </Box>
+      </DialogContent>
 
       <Button variant="contained" type="submit">
         Next

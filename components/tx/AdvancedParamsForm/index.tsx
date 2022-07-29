@@ -1,10 +1,9 @@
-import { Button, DialogActions, FormControl, Grid, Paper, TextField } from '@mui/material'
+import { Button, DialogTitle, DialogActions, FormControl, Grid, Paper, TextField } from '@mui/material'
 import { BigNumber } from 'ethers'
 import { FormProvider, useForm } from 'react-hook-form'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 import css from './styles.module.css'
 import { FLOAT_REGEX } from '@/utils/validation'
-import TxModalTitle from '../TxModalTitle'
 import NonceForm from '../NonceForm'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import { BASE_TX_GAS } from '@/config/constants'
@@ -82,9 +81,8 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
   return (
     <Paper className={css.container} elevation={0}>
       <FormProvider {...formMethods}>
+        <DialogTitle className={css.title}>Advanced parameters</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TxModalTitle>Advanced parameters</TxModalTitle>
-
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <FormControl fullWidth>

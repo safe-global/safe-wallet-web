@@ -49,7 +49,7 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
         </IconButton>
       </Tooltip>
 
-      <ModalDialog open={open} onClose={handleClose} title="Edit owner name">
+      <ModalDialog open={open} onClose={handleClose} dialogTitle="Edit owner name">
         <FormProvider {...formMethods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogContent>

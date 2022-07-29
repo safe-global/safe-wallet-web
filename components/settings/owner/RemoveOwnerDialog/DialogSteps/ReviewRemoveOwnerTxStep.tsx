@@ -2,7 +2,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { createRemoveOwnerTx, createTx } from '@/services/tx/txSender'
+import { createRemoveOwnerTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -22,29 +22,14 @@ export const ReviewRemoveOwnerTxStep = ({
   const addressBook = useAddressBook()
   const { removedOwner, threshold } = data
 
-  const [removeOwnerTx, createTxError] = useAsync(() => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
     return createRemoveOwnerTx({ ownerAddress: removedOwner.address, threshold })
   }, [removedOwner.address, threshold])
-
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!removeOwnerTx) return
-    // Reset the nonce to fetch the recommended nonce in createTx
-    return createTx({ ...removeOwnerTx.data, nonce: undefined })
-  }, [removeOwnerTx])
-
-  // All errors
-  const txError = safeTxError || createTxError
 
   const newOwnerLength = safe.owners.length - 1
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      onSubmit={onSubmit}
-      isExecutable={safe.threshold === 1}
-      error={txError}
-      title="Remove owner"
-    >
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} isExecutable={safe.threshold === 1} error={safeTxError}>
       <Grid
         container
         mt={-3}

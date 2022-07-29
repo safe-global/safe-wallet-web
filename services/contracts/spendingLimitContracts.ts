@@ -1,7 +1,7 @@
 import { getAllowanceModuleDeployment } from '@gnosis.pm/safe-modules-deployments'
-import { Contract } from 'ethers'
-import { Interface } from '@ethersproject/abi'
-import { AllowanceModule } from '@/types/contracts'
+
+import { AllowanceModule, AllowanceModule__factory } from '@/types/contracts'
+import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 
 export const getSpendingLimitModuleAddress = (chainId: string): string | undefined => {
   const deployment = getAllowanceModuleDeployment({ network: chainId })
@@ -9,7 +9,10 @@ export const getSpendingLimitModuleAddress = (chainId: string): string | undefin
   return deployment?.networkAddresses[chainId]
 }
 
-export const getSpendingLimitContract = (chainId: string): AllowanceModule => {
+export const getSpendingLimitContract = (
+  chainId: string,
+  provider: JsonRpcProvider | JsonRpcSigner,
+): AllowanceModule => {
   const allowanceModuleDeployment = getAllowanceModuleDeployment({ network: chainId })
 
   if (!allowanceModuleDeployment) {
@@ -18,5 +21,9 @@ export const getSpendingLimitContract = (chainId: string): AllowanceModule => {
 
   const contractAddress = allowanceModuleDeployment.networkAddresses[chainId]
 
-  return new Contract(contractAddress, new Interface(allowanceModuleDeployment.abi)) as unknown as AllowanceModule
+  return AllowanceModule__factory.connect(contractAddress, provider)
+}
+
+export const getSpendingLimitInterface = () => {
+  return AllowanceModule__factory.createInterface()
 }
