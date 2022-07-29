@@ -20,3 +20,8 @@ export const FORTMATIC_KEY = process.env.NEXT_PUBLIC_FORTMATIC_KEY || ''
 export const PORTIS_KEY = process.env.NEXT_PUBLIC_PORTIS_KEY || ''
 export const TREZOR_APP_URL = 'gnosis-safe.io'
 export const TREZOR_EMAIL = 'safe@gnosis.io'
+// Safe Token
+export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
+  '1': '0x5aFE3855358E112B5647B952709E6165e1c1eEEe',
+  '4': '0xCFf1b0FdE85C102552D1D96084AF148f478F964A',
+}

@@ -1,6 +1,6 @@
-import { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
-import { toDecimals } from '@/utils/formatters'
+import { toWei } from '@/utils/formatters'
 import { Interface } from '@ethersproject/abi'
+import { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 
 const encodeTokenTransferData = (to: string, value: string): string => {
   const erc20Transfer = ['function transfer(address to, uint256 value)']
@@ -14,7 +14,7 @@ export const createTokenTransferParams = (
   decimals: number,
   tokenAddress: string,
 ): MetaTransactionData => {
-  const value = toDecimals(amount, decimals).toString()
+  const value = toWei(amount, decimals).toString()
   const isNativeToken = parseInt(tokenAddress, 16) === 0
 
   return isNativeToken

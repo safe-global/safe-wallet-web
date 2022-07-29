@@ -53,14 +53,14 @@ export const SendFromBlock = (): ReactElement => {
   )
 }
 
-const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
+export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
     <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
 
     <Grid item xs>
-      <Typography fontSize="14px">{item.tokenInfo.name}</Typography>
+      <Typography variant="body2">{item.tokenInfo.name}</Typography>
 
-      <Typography fontSize="12px" lineHeight="14px" color="text.secondary">
+      <Typography variant="caption" component="p">
         {formatDecimals(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
       </Typography>
     </Grid>

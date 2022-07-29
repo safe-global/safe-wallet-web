@@ -27,6 +27,13 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
 
   const addSafe = () => {
     dispatch(addOrUpdateSafe({ safe: params.safeInfo }))
+    dispatch(
+      upsertAddressBookEntry({
+        chainId: params.safeInfo.chainId,
+        address: params.safeInfo.address.value,
+        name: params.name ?? '',
+      }),
+    )
     for (const { value: address, name } of params.safeInfo.owners) {
       dispatch(upsertAddressBookEntry({ chainId: params.safeInfo.chainId, address, name: name ?? '' }))
     }

@@ -2,6 +2,8 @@ import format from 'date-fns/format'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import formatRelative from 'date-fns/formatRelative'
 
+export const currentMinutes = (): number => Math.floor(Date.now() / (1000 * 60))
+
 export const relativeTime = (baseTimeMin: string, resetTimeMin: string): string => {
   if (resetTimeMin === '0') {
     return 'One-time'

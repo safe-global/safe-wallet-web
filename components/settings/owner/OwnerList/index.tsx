@@ -2,7 +2,18 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
 import useAddressBook from '@/hooks/useAddressBook'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import {
+  Box,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material'
 import { ReactElement } from 'react'
 import { EditOwnerDialog } from '../EditOwnerDialog'
 import { RemoveOwnerDialog } from '../RemoveOwnerDialog'
@@ -54,33 +65,35 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
           </Typography>
         </Grid>
         <Grid item md={8}>
-          <Typography>
+          <Typography mb={2}>
             Add, remove and replace or rename existing owners. Owner names are only stored locally and never shared with
             Gnosis or any third parties.
           </Typography>
 
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Address</TableCell>
-                  <TableCell>Actions</TableCell>
-                </TableRow>
-              </TableHead>
+          <Paper variant="outlined">
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Address</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
 
-              <TableBody>
-                {owners.map((owner) => (
-                  <OwnerRow
-                    key={owner}
-                    address={owner}
-                    name={addressBook[owner]}
-                    chainId={chainId}
-                    isGranted={isGranted}
-                  />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                <TableBody>
+                  {owners.map((owner) => (
+                    <OwnerRow
+                      key={owner}
+                      address={owner}
+                      name={addressBook[owner]}
+                      chainId={chainId}
+                      isGranted={isGranted}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
           {isGranted && <AddOwnerDialog />}
         </Grid>
       </Grid>

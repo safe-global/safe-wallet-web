@@ -56,7 +56,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
               {wallet.label} @ {chainInfo?.chainName}
             </Typography>
             <Typography variant="caption" fontWeight="bold" className={css.address}>
-              {wallet.ens || <EthHashInfo address={wallet.address} showName={false} showAvatar={false} prefix={''} />}
+              {wallet.ens || <EthHashInfo address={wallet.address} showName={false} showAvatar={false} />}
             </Typography>
           </Box>
           <Box justifySelf="flex-end" marginLeft="auto">

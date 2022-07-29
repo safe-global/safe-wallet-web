@@ -27,7 +27,7 @@ type EthHashInfoProps = {
 const SRCEthHashInfo = ({
   address,
   customAvatar,
-  prefix,
+  prefix = '',
   shortAddress = true,
   showAvatar = true,
   ...props

@@ -90,7 +90,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
           <Divider />
         </Grid>
       </Grid>
-      <Box padding={3} bgcolor={(theme) => theme.palette.grey.A100}>
+      <Box padding={3} bgcolor={(theme) => theme.palette.background.main}>
         <Typography textAlign="center">
           You are about to create a new Safe on <ChainIndicator inline /> and will have to confirm a transaction with
           your currently connected wallet. The creation will cost approximately {totalFee}{' '}
