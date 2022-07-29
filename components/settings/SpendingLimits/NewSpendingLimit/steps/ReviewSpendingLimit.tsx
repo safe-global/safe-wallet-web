@@ -3,18 +3,70 @@ import useBalances from '@/hooks/useBalances'
 import { useEffect, useState } from 'react'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useAsync from '@/hooks/useAsync'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useChainId from '@/hooks/useChainId'
 import { useSelector } from 'react-redux'
 import { selectSpendingLimits, SpendingLimitState } from '@/store/spendingLimitsSlice'
-import { createNewSpendingLimitTx } from '@/services/tx/spendingLimitParams'
+import { createAddDelegateTx, createResetAllowanceTx, createSetAllowanceTx } from '@/services/tx/spendingLimitParams'
 import { RESET_TIME_OPTIONS } from '@/components/settings/SpendingLimits/NewSpendingLimit/steps/SpendingLimitForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from 'ethers/lib/utils'
-import { relativeTime } from '@/utils/date'
+import { currentMinutes, relativeTime } from '@/utils/date'
+import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
+import { parseUnits } from '@ethersproject/units'
+import { createMultiSendTx } from '@/services/tx/txSender'
+
+export const createNewSpendingLimitTx = async (
+  data: NewSpendingLimitData,
+  spendingLimits: SpendingLimitState[],
+  chainId: string,
+  tokenDecimals?: number,
+  existingSpendingLimit?: SpendingLimitState,
+) => {
+  const sdk = getSafeSDK()
+  const spendingLimitAddress = getSpendingLimitModuleAddress(chainId)
+  if (!spendingLimitAddress || !sdk) return
+
+  const txs: MetaTransactionData[] = []
+
+  const isSpendingLimitEnabled = await sdk.isModuleEnabled(spendingLimitAddress)
+  if (!isSpendingLimitEnabled) {
+    const enableModuleTx = await sdk.getEnableModuleTx(spendingLimitAddress)
+
+    const tx = {
+      to: enableModuleTx.data.to,
+      value: '0',
+      data: enableModuleTx.data.data,
+    }
+    txs.push(tx)
+  }
+
+  const existingDelegate = spendingLimits.find((spendingLimit) => spendingLimit.beneficiary === data.beneficiary)
+  if (!existingDelegate) {
+    txs.push(createAddDelegateTx(data.beneficiary, spendingLimitAddress))
+  }
+
+  if (existingSpendingLimit && existingSpendingLimit.spent !== '0') {
+    txs.push(createResetAllowanceTx(data.beneficiary, data.tokenAddress, spendingLimitAddress))
+  }
+
+  const tx = createSetAllowanceTx(
+    data.beneficiary,
+    data.tokenAddress,
+    parseUnits(data.amount, tokenDecimals).toString(),
+    parseInt(data.resetTime),
+    data.resetTime !== '0' ? currentMinutes() - 30 : 0,
+    spendingLimitAddress,
+  )
+
+  txs.push(tx)
+
+  return createMultiSendTx(txs)
+}
 
 export type NewSpendingLimitData = {
   beneficiary: string
