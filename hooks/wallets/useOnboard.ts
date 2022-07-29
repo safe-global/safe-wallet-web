@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
@@ -19,14 +19,15 @@ export const initOnboardSingleton = (chainConfigs: ChainInfo[]): OnboardAPI => {
 
 const useOnboard = (): OnboardAPI | null => {
   const { configs } = useChains()
+  const [onboard, setOnboard] = useState<OnboardAPI | null>(null)
 
   useEffect(() => {
     if (configs.length > 0) {
-      initOnboardSingleton(configs)
+      setOnboard(initOnboardSingleton(configs))
     }
   }, [configs])
 
-  return onboardSingleton
+  return onboard
 }
 
 // Disable/enable wallets according to chain and cache the last used wallet
