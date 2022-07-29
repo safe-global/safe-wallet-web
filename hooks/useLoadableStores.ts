@@ -7,7 +7,6 @@ import { type AsyncResult } from './useAsync'
 import useLoadChains from './loadables/useLoadChains'
 import useLoadSafeInfo from './loadables/useLoadSafeInfo'
 import useLoadBalances from './loadables/useLoadBalances'
-import useLoadCollectibles from './loadables/useLoadCollectibles'
 import useLoadTxHistory from './loadables/useLoadTxHistory'
 import useLoadTxQueue from './loadables/useLoadTxQueue'
 
@@ -15,7 +14,6 @@ import useLoadTxQueue from './loadables/useLoadTxQueue'
 import { chainsSlice } from '@/store/chainsSlice'
 import { safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from '@/store/balancesSlice'
-import { collectiblesSlice } from '@/store/collectiblesSlice'
 import { txHistorySlice } from '@/store/txHistorySlice'
 import { txQueueSlice } from '@/store/txQueueSlice'
 import { spendingLimitSlice } from '@/store/spendingLimitsSlice'
@@ -42,7 +40,6 @@ const useLoadableStores = () => {
   useUpdateStore(chainsSlice, useLoadChains)
   useUpdateStore(safeInfoSlice, useLoadSafeInfo)
   useUpdateStore(balancesSlice, useLoadBalances)
-  useUpdateStore(collectiblesSlice, useLoadCollectibles)
   useUpdateStore(txHistorySlice, useLoadTxHistory)
   useUpdateStore(txQueueSlice, useLoadTxQueue)
   useUpdateStore(spendingLimitSlice, useLoadSpendingLimits)

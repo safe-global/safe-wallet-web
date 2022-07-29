@@ -9,7 +9,6 @@ import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux
 import { chainsSlice } from './chainsSlice'
 import { safeInfoSlice } from './safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
-import { collectiblesSlice } from './collectiblesSlice'
 import { sessionSlice } from './sessionSlice'
 import { txHistorySlice, txHistoryMiddleware } from './txHistorySlice'
 import { txQueueSlice } from './txQueueSlice'
@@ -27,7 +26,6 @@ const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
   [safeInfoSlice.name]: safeInfoSlice.reducer,
   [balancesSlice.name]: balancesSlice.reducer,
-  [collectiblesSlice.name]: collectiblesSlice.reducer,
   [sessionSlice.name]: sessionSlice.reducer,
   [txHistorySlice.name]: txHistorySlice.reducer,
   [txQueueSlice.name]: txQueueSlice.reducer,
