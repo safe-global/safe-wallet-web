@@ -1,5 +1,5 @@
-import { BigNumber } from 'ethers'
 import * as formatters from '@/utils/formatters'
+import { BigNumber } from 'ethers'
 
 describe('shortenAddress', () => {
   it('should shorten an address', () => {
@@ -25,12 +25,22 @@ describe('formatDecimals', () => {
   })
 })
 
+describe('toWei', () => {
+  it('should convert to wei', () => {
+    expect(formatters.toWei('2.01')).toEqual(BigNumber.from('2010000000000000000'))
+  })
+
+  it('should convert to wei with custom decimals', () => {
+    expect(formatters.toWei('3', 6)).toEqual(BigNumber.from('3000000'))
+  })
+})
+
 describe('toDecimals', () => {
   it('should convert to decimals', () => {
-    expect(formatters.toDecimals('2.01')).toEqual(BigNumber.from('2010000000000000000'))
+    expect(formatters.toDecimals('2010000000000000000')).toEqual(2.01)
   })
 
   it('should convert to decimals with custom decimals', () => {
-    expect(formatters.toDecimals('3', 6)).toEqual(BigNumber.from('3000000'))
+    expect(formatters.toDecimals('3000000', 6)).toEqual(3)
   })
 })
