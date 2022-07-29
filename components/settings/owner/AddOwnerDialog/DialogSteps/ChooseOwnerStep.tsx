@@ -1,11 +1,12 @@
-import { useForm, FormProvider } from 'react-hook-form'
-import { TextField, Button, Typography, FormControl, Box, DialogContent } from '@mui/material'
-import EthHashInfo from '@/components/common/EthHashInfo'
 import AddressBookInput from '@/components/common/AddressBookInput'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import NameInput from '@/components/common/NameInput'
 import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { uniqueAddress, addressIsNotCurrentSafe } from '@/utils/validation'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import { addressIsNotCurrentSafe, uniqueAddress } from '@/utils/validation'
+import { Box, Button, DialogContent, FormControl, Typography } from '@mui/material'
+import { FormProvider, useForm } from 'react-hook-form'
 
 type ChooseOwnerFormData = {
   ownerName?: string
@@ -25,15 +26,16 @@ export const ChooseOwnerStep = ({
 
   const isReplace = Boolean(removedOwner)
 
-  const formData: ChooseOwnerFormData = {
+  const defaultValues: ChooseOwnerFormData = {
     ownerAddress: newOwner?.address,
     ownerName: newOwner?.name,
   }
 
   const formMethods = useForm<ChooseOwnerFormData>({
-    defaultValues: formData,
+    defaultValues,
+    mode: 'onChange',
   })
-  const { register, handleSubmit } = formMethods
+  const { handleSubmit, formState } = formMethods
 
   const onSubmitHandler = (formData: ChooseOwnerFormData) => {
     onSubmit({
@@ -68,7 +70,7 @@ export const ChooseOwnerStep = ({
 
           <Box display="flex" flexDirection="column" gap={2} paddingTop={2}>
             <FormControl>
-              <TextField autoFocus label="Owner name" variant="outlined" fullWidth {...register('ownerName')} />
+              <NameInput textFieldProps={{ label: 'Owner name' }} name="ownerName" />
             </FormControl>
 
             <FormControl>
@@ -76,7 +78,7 @@ export const ChooseOwnerStep = ({
             </FormControl>
           </Box>
 
-          <Button variant="contained" type="submit">
+          <Button variant="contained" type="submit" disabled={!formState.isValid}>
             Next
           </Button>
         </DialogContent>
