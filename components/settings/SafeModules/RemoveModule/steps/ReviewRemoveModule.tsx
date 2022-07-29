@@ -19,7 +19,7 @@ export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData;
 
     const tx = await sdk.getDisableModuleTx(data.address)
 
-    return createTx(tx.data)
+    return createTx({ ...tx.data, nonce: undefined })
   }, [sdk, data.address])
 
   useEffect(() => {
