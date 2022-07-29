@@ -1,4 +1,4 @@
-import { SAFE_TOKEN_ADDRESS } from '@/config/constants'
+import { SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import * as useBalances from '@/hooks/useBalances'
 import { render, waitFor } from '@/tests/test-utils'
 import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -44,7 +44,7 @@ describe('SafeTokenWidget', () => {
             fiatBalance: '0',
             fiatConversion: '1',
             tokenInfo: {
-              address: SAFE_TOKEN_ADDRESS,
+              address: SAFE_TOKEN_ADDRESSES['4'],
               decimals: 18,
               logoUri: '',
               name: 'SAFE Token',
