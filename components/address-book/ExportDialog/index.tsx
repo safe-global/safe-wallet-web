@@ -48,7 +48,7 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
   }, [addressBook, chain])
 
   return (
-    <ModalDialog open onClose={handleClose} title="Export address book">
+    <ModalDialog open onClose={handleClose} dialogTitle="Export address book">
       <DialogContent sx={{ p: '24px !important' }}>
         <Typography>
           You&apos;re about to export a CSV file with{' '}
