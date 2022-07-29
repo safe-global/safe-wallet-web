@@ -4,17 +4,28 @@ import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { selectSession } from '@/store/sessionSlice'
-import useAsync from '../useAsync'
+import { createOnboard } from '@/services/onboard'
 
 // Initialize an onboard singleton when chains are loaded
 // Return a cached singleton if already initialized
 let onboardSingleton: OnboardAPI | null = null
 
-export const initOnboardSingleton = async (chainConfigs: ChainInfo[]): Promise<OnboardAPI> => {
+export const initOnboardSingleton = (chainConfigs: ChainInfo[]): OnboardAPI => {
   if (!onboardSingleton) {
-    const { createOnboard } = await import('@/services/onboard')
     onboardSingleton = createOnboard(chainConfigs)
   }
+  return onboardSingleton
+}
+
+const useOnboard = (): OnboardAPI | null => {
+  const { configs } = useChains()
+
+  useEffect(() => {
+    if (configs.length > 0) {
+      initOnboardSingleton(configs)
+    }
+  }, [configs])
+
   return onboardSingleton
 }
 
@@ -22,24 +33,20 @@ export const initOnboardSingleton = async (chainConfigs: ChainInfo[]): Promise<O
 export const useInitOnboard = () => {
   const chain = useCurrentChain()
   const { lastWallet } = useAppSelector(selectSession)
-  const { configs } = useChains()
-
-  const [onboard] = useAsync(async () => {
-    return initOnboardSingleton(configs)
-  }, [configs])
-
-  const [supportedWallets] = useAsync(async () => {
-    if (!chain?.disabledWallets) return
-    const { getSupportedWallets } = await import('@/hooks/wallets/wallets')
-    return getSupportedWallets(chain.disabledWallets)
-  }, [chain?.disabledWallets])
+  const onboard = useOnboard()
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
-    if (onboard && supportedWallets) {
+    if (!onboard || !chain?.disabledWallets) return
+
+    const enableWallets = async () => {
+      const { getSupportedWallets } = await import('@/hooks/wallets/wallets')
+      const supportedWallets = getSupportedWallets(chain.disabledWallets)
       onboard.state.actions.setWalletModules(supportedWallets)
     }
-  }, [onboard, supportedWallets])
+
+    enableWallets()
+  }, [chain?.disabledWallets, onboard])
 
   // Connect to the last connected wallet
   useEffect(() => {
@@ -49,10 +56,6 @@ export const useInitOnboard = () => {
       })
     }
   }, [onboard, lastWallet])
-}
-
-const useOnboard = (): OnboardAPI | null => {
-  return onboardSingleton
 }
 
 export default useOnboard
