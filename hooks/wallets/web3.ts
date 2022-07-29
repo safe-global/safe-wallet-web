@@ -1,6 +1,6 @@
 import { RPC_AUTHENTICATION, type ChainInfo, type RpcUri } from '@gnosis.pm/safe-react-gateway-sdk'
 import { INFURA_TOKEN } from '@/config/constants'
-import { EIP1193Provider } from '@web3-onboard/core'
+import { type EIP1193Provider } from '@web3-onboard/core'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import ExternalStore from '@/services/ExternalStore'
 

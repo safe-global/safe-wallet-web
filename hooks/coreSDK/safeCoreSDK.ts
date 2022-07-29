@@ -1,4 +1,4 @@
-import { EIP1193Provider } from '@web3-onboard/core'
+import { type EIP1193Provider } from '@web3-onboard/core'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import { ethers } from 'ethers'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
