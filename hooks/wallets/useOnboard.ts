@@ -1,40 +1,30 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { selectSession } from '@/store/sessionSlice'
-import { createOnboard } from '@/services/onboard'
+import ExternalStore from '@/services/ExternalStore'
 
-// Initialize an onboard singleton when chains are loaded
-// Return a cached singleton if already initialized
-let onboardSingleton: OnboardAPI | null = null
+const { setStore, useStore } = new ExternalStore<OnboardAPI>()
 
-export const initOnboardSingleton = (chainConfigs: ChainInfo[]): OnboardAPI => {
-  if (!onboardSingleton) {
-    onboardSingleton = createOnboard(chainConfigs)
-  }
-  return onboardSingleton
-}
-
-const useOnboard = (): OnboardAPI | null => {
-  const { configs } = useChains()
-  const [onboard, setOnboard] = useState<OnboardAPI | null>(null)
-
-  useEffect(() => {
-    if (configs.length > 0) {
-      setOnboard(initOnboardSingleton(configs))
-    }
-  }, [configs])
-
-  return onboard
+export const initOnboard = async (chainConfigs: ChainInfo[]): Promise<OnboardAPI> => {
+  const { createOnboard } = await import('@/services/onboard')
+  return createOnboard(chainConfigs)
 }
 
 // Disable/enable wallets according to chain and cache the last used wallet
 export const useInitOnboard = () => {
+  const { configs } = useChains()
   const chain = useCurrentChain()
   const { lastWallet } = useAppSelector(selectSession)
-  const onboard = useOnboard()
+  const onboard = useStore()
+
+  useEffect(() => {
+    if (configs.length > 0) {
+      initOnboard(configs).then(setStore)
+    }
+  }, [configs])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
@@ -59,4 +49,4 @@ export const useInitOnboard = () => {
   }, [onboard, lastWallet])
 }
 
-export default useOnboard
+export default useStore
