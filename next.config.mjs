@@ -1,3 +1,6 @@
+import path from 'path'
+import withBundleAnalyzer from '@next/bundle-analyzer'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
@@ -42,8 +45,15 @@ const nextConfig = {
         },
       ],
     })
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'bn.js': path.resolve('./node_modules/bn.js/lib/bn.js'),
+      'mainnet.json': path.resolve('./node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json'),
+    }
     return config
   },
 }
 
-export default nextConfig
+export default withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})(nextConfig)
