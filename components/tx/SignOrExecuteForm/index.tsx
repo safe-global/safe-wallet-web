@@ -15,7 +15,7 @@ import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import { logError, Errors } from '@/services/exceptions'
 import { AppRoutes } from '@/config/routes'
-import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { ConnectedWallet } from '@/hooks/wallets/useWallet'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction

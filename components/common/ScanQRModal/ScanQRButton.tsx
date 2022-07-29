@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, lazy, Suspense } from 'react'
+import React, { lazy, useState, Suspense, type ReactElement } from 'react'
 import QrCodeIcon from '@mui/icons-material/QrCode'
 import { IconButton } from '@mui/material'
 

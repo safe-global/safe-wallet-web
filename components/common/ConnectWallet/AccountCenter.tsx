@@ -1,17 +1,20 @@
+import { MouseEvent, useState, Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import { Box, Button, ButtonBase, Paper, Popover, Typography } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
-import WalletIcon from '@/components/common/WalletIcon'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { MouseEvent, useState } from 'react'
-import useOnboard, { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import useOnboard from '@/hooks/wallets/useOnboard'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
 import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
+import { type ConnectedWallet } from '@/hooks/wallets/useWallet'
+
+const WalletIcon = dynamic(() => import('@/components/common/WalletIcon'))
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -44,8 +47,11 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
       <ButtonBase onClick={handleClick} aria-describedby={id} disableRipple sx={{ alignSelf: 'stretch' }}>
         <Box className={css.buttonContainer}>
           <Box className={css.imageContainer}>
-            <WalletIcon provider={wallet.label} />
+            <Suspense>
+              <WalletIcon provider={wallet.label} />
+            </Suspense>
           </Box>
+
           <Box>
             <Typography variant="caption" component="div" className={css.walletDetails}>
               {wallet.label} @ {chainInfo?.chainName}
@@ -54,11 +60,13 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
               {wallet.ens || <EthHashInfo address={wallet.address} showName={false} showAvatar={false} />}
             </Typography>
           </Box>
+
           <Box justifySelf="flex-end" marginLeft="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
           </Box>
         </Box>
       </ButtonBase>
+
       <Popover
         id={id}
         open={open}
