@@ -7,6 +7,8 @@ import { Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { RemoveModuleData } from '@/components/settings/SafeModules/RemoveModule'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { useEffect } from 'react'
+import { Errors, logError } from '@/services/exceptions'
 
 export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
@@ -19,6 +21,12 @@ export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData;
 
     return createTx(tx.data)
   }, [sdk, data.address])
+
+  useEffect(() => {
+    if (safeTxError) {
+      logError(Errors._806, safeTxError.message)
+    }
+  }, [safeTxError])
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
