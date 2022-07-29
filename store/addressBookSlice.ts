@@ -50,3 +50,10 @@ export const selectAddressBook = createSelector(
     return chainId ? allAddressBooks[chainId] || {} : {}
   },
 )
+
+export const selectAddressBookByChain = createSelector(
+  [selectAllAddressBooks, (_, chainId: string) => chainId],
+  (allAddressBooks, chainId): AddressBook => {
+    return chainId ? allAddressBooks[chainId] || {} : {}
+  },
+)

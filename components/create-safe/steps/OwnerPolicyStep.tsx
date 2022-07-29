@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
-import { ReactElement, useCallback, useEffect, useMemo } from 'react'
+import { ReactElement, useCallback, useEffect } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import AddressInput from '@/components/common/AddressInput'
@@ -22,12 +22,11 @@ import NameInput from '@/components/common/NameInput'
 import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import useAddressBookByChain from '@/hooks/useAddressBookByChain'
 import useChainId from '@/hooks/useChainId'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { lookupAddress } from '@/services/domains'
-import { useAppSelector } from '@/store'
-import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import { parsePrefixedAddress } from '@/utils/addresses'
 
 type Props = {
@@ -43,10 +42,9 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   const currentChainId = useChainId()
   const wallet = useWallet()
 
-  const allAddressBooks = useAppSelector(selectAllAddressBooks)
-  const addressBook = useMemo(() => allAddressBooks[currentChainId], [currentChainId, allAddressBooks])
+  const addressBook = useAddressBookByChain(currentChainId)
 
-  const defaultOwnerAddressBookName = wallet?.address && addressBook ? addressBook[wallet.address] : undefined
+  const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
 
   const defaultOwner: Owner = {
     name: defaultOwnerAddressBookName || wallet?.ens || '',
@@ -98,7 +96,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
       setValue(`owners.${index}.resolving`, true)
       const { address } = parsePrefixedAddress(owner.address)
       // Lookup Addressbook
-      const nameFromAddressbook = addressBook ? addressBook[address] : undefined
+      const nameFromAddressbook = addressBook[address]
       if (nameFromAddressbook) {
         update(index, { ...owner, name: nameFromAddressbook, resolving: false })
         return
