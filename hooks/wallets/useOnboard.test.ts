@@ -1,5 +1,5 @@
 import type { EIP1193Provider, WalletState } from '@web3-onboard/core'
-import { getConnectedWallet } from './useWallet'
+import { getConnectedWallet } from './useOnboard'
 
 // mock wallets
 jest.mock('@/hooks/wallets/wallets', () => ({

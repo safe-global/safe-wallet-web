@@ -10,7 +10,7 @@ import portisModule from '@web3-onboard/portis'
 import torusModule from '@web3-onboard/torus'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
-import { ConnectedWallet } from '@/hooks/wallets/useWallet'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',

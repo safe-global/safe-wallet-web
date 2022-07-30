@@ -21,7 +21,7 @@
 }
 
 .drawer,
-.ownedSafes {
+.noSafeHeader > * {
   width: 340px;
 }
 

@@ -128,27 +128,28 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
 
             {/* Owned Safes */}
             {ownedSafesOnChain.length > 0 && (
-              <div onClick={() => toggleOpen(chain.chainId, !isOpen)} className={css.ownedLabelWrapper}>
-                <Typography variant="body2" display="inline" className={css.ownedLabel}>
-                  Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
-                  <IconButton disableRipple>{isOpen ? <ExpandLess /> : <ExpandMore />}</IconButton>
-                </Typography>
-              </div>
-            )}
-            {ownedSafesOnChain.length > 0 && (
-              <Collapse key={chainId} in={isOpen}>
-                <List sx={{ py: 0 }}>
-                  {ownedSafesOnChain.map((address) => (
-                    <SafeListItem
-                      key={address}
-                      address={address}
-                      chainId={chain.chainId}
-                      closeDrawer={closeDrawer}
-                      shouldScrollToSafe={!addedSafesOnChain[address]}
-                    />
-                  ))}
-                </List>
-              </Collapse>
+              <>
+                <div onClick={() => toggleOpen(chain.chainId, !isOpen)} className={css.ownedLabelWrapper}>
+                  <Typography variant="body2" display="inline" className={css.ownedLabel}>
+                    Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
+                    <IconButton disableRipple>{isOpen ? <ExpandLess /> : <ExpandMore />}</IconButton>
+                  </Typography>
+                </div>
+
+                <Collapse key={chainId} in={isOpen}>
+                  <List sx={{ py: 0 }}>
+                    {ownedSafesOnChain.map((address) => (
+                      <SafeListItem
+                        key={address}
+                        address={address}
+                        chainId={chain.chainId}
+                        closeDrawer={closeDrawer}
+                        shouldScrollToSafe={!addedSafesOnChain[address]}
+                      />
+                    ))}
+                  </List>
+                </Collapse>
+              </>
             )}
           </Fragment>
         )

@@ -1,7 +1,7 @@
 import { renderHook } from '@/tests/test-utils'
 import { useEstimateSafeCreationGas } from '@/components/create-safe/useEstimateSafeCreationGas'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
-import { ConnectedWallet } from '@/hooks/wallets/useWallet'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as chainIdModule from '@/hooks/useChainId'
 import * as store from '@/store'
 import * as safeContracts from '@/services/contracts/safeContracts'
