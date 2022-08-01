@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import isEqual from 'lodash/isEqual'
 import { type SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from '@/store'
 import { defaultSafeInfo, selectSafeInfo } from '@/store/safeInfoSlice'
@@ -10,7 +11,7 @@ const useSafeInfo = (): {
   safeLoading: boolean
   safeError?: string
 } => {
-  const { data, error, loading } = useAppSelector(selectSafeInfo)
+  const { data, error, loading } = useAppSelector(selectSafeInfo, isEqual)
 
   return useMemo(
     () => ({

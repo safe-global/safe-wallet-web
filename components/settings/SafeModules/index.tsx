@@ -4,6 +4,8 @@ import { Paper, Grid, Typography, Box, Link } from '@mui/material'
 
 import css from './styles.module.css'
 import { RemoveModule } from '@/components/settings/SafeModules/RemoveModule'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 const NoModules = () => {
   return (
@@ -14,6 +16,11 @@ const NoModules = () => {
 }
 
 const ModuleDisplay = ({ moduleAddress, chainId }: { moduleAddress: string; chainId: string }) => {
+  const isSafeOwner = useIsSafeOwner()
+  const isWrongChain = useIsWrongChain()
+
+  const isGranted = isSafeOwner && !isWrongChain
+
   return (
     <Box className={css.container}>
       <EthHashInfo
@@ -24,7 +31,7 @@ const ModuleDisplay = ({ moduleAddress, chainId }: { moduleAddress: string; chai
         showAvatar={false}
         hasExplorer
       />
-      <RemoveModule address={moduleAddress} />
+      {isGranted && <RemoveModule address={moduleAddress} />}
     </Box>
   )
 }

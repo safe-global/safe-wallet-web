@@ -4,9 +4,15 @@ import { SpendingLimitsTable } from '@/components/settings/SpendingLimits/Spendi
 import { useSelector } from 'react-redux'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import { NewSpendingLimit } from '@/components/settings/SpendingLimits/NewSpendingLimit'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 const SpendingLimits = () => {
+  const isSafeOwner = useIsSafeOwner()
+  const isWrongChain = useIsWrongChain()
   const spendingLimits = useSelector(selectSpendingLimits)
+
+  const isGranted = isSafeOwner && !isWrongChain
 
   return (
     <Paper sx={{ padding: 4 }} variant="outlined">
@@ -22,7 +28,7 @@ const SpendingLimits = () => {
               You can set rules for specific beneficiaries to access funds from this Safe without having to collect all
               signatures.
             </Typography>
-            <NewSpendingLimit />
+            {isGranted && <NewSpendingLimit />}
           </Box>
         </Grid>
       </Grid>
