@@ -1,11 +1,12 @@
-import { useState, type ReactElement } from 'react'
+import { Suspense, useState, type ReactElement } from 'react'
+import dynamic from 'next/dynamic'
 import Button from '@mui/material/Button'
-import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-
 import css from './styles.module.css'
+
+const NewTxModal = dynamic(() => import('@/components/tx/modals/NewTxModal'))
 
 const NewTxButton = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)
@@ -33,7 +34,11 @@ const NewTxButton = (): ReactElement => {
           : 'Read only'}
       </Button>
 
-      {txOpen && <TokenTransferModal onClose={() => setTxOpen(false)} />}
+      {txOpen && (
+        <Suspense>
+          <NewTxModal onClose={() => setTxOpen(false)} />
+        </Suspense>
+      )}
     </>
   )
 }
