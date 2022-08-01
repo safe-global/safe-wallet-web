@@ -1,6 +1,6 @@
 import { PendingSafeData } from '@/components/create-safe'
 import { createNewSafe } from '@/components/create-safe/sender'
-import { usePendingSafeCreation } from '@/components/create-safe/status/usePendingSafeCreation'
+import { pollSafeInfo, usePendingSafeCreation } from '@/components/create-safe/status/usePendingSafeCreation'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import { AppRoutes } from '@/config/routes'
 import { useWeb3 } from '@/hooks/wallets/web3'
@@ -12,6 +12,7 @@ import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
+import useChainId from '@/hooks/useChainId'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
@@ -20,6 +21,8 @@ export enum SafeCreationStatus {
   REVERTED = 'REVERTED',
   TIMEOUT = 'TIMEOUT',
   SUCCESS = 'SUCCESS',
+  INDEXED = 'INDEXED',
+  INDEXED_FAILED = 'INDEXED_FAILED',
 }
 
 const getSafeDeployProps = (pendingSafe: PendingSafeData, callback: (txHash: string) => void) => {
@@ -41,6 +44,7 @@ export const useSafeCreation = () => {
   const [creationPromise, setCreationPromise] = useState<Promise<Safe>>()
   const [pendingSafe, setPendingSafe] = usePendingSafe()
   const ethersProvider = useWeb3()
+  const chainId = useChainId()
   const dispatch = useAppDispatch()
   const router = useRouter()
 
@@ -128,21 +132,35 @@ export const useSafeCreation = () => {
         setStatus(SafeCreationStatus.ERROR)
         logError(Errors._800, error.message)
       })
-  }, [creationPromise, dispatch, pendingSafe, router, setPendingSafe])
+  }, [creationPromise, dispatch, pendingSafe])
 
   useEffect(() => {
+    const checkCreatedSafe = async (chainId: string, address: string) => {
+      try {
+        await pollSafeInfo(chainId, address)
+        setStatus(SafeCreationStatus.INDEXED)
+      } catch (e) {
+        setStatus(SafeCreationStatus.INDEXED_FAILED)
+      }
+    }
+
+    if (status === SafeCreationStatus.INDEXED) {
+      safeAddress && router.push({ pathname: AppRoutes.safe.home, query: { safe: safeAddress } })
+    }
+
     if (status === SafeCreationStatus.SUCCESS) {
       setPendingSafe(undefined)
-      safeAddress && router.push({ pathname: AppRoutes.safe.home, query: { safe: safeAddress, new: 1 } })
+      safeAddress && checkCreatedSafe(chainId, safeAddress)
     }
 
     if (status === SafeCreationStatus.ERROR || status === SafeCreationStatus.REVERTED) {
       setCreationPromise(undefined)
       setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
     }
-  }, [status, safeAddress, setPendingSafe, router])
+  }, [chainId, router, safeAddress, setPendingSafe, status])
 
   return {
+    safeAddress,
     status,
     onRetry,
     txHash: pendingSafe?.txHash,

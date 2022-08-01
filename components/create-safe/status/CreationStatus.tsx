@@ -47,18 +47,34 @@ const getStep = (status: SafeCreationStatus) => {
       }
     case SafeCreationStatus.SUCCESS:
       return {
-        image: <img src="/images/safe-creation.svg" alt="Image of a vault" />,
+        image: (
+          <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
+        ),
         description: 'Your Safe was successfully created!',
+        instruction: 'It is now being indexed. Please do not leave the page.',
+      }
+    case SafeCreationStatus.INDEXED:
+      return {
+        image: <img src="/images/safe-creation.svg" alt="Image of a vault" />,
+        description: 'Your Safe was successfully indexed!',
         instruction: 'Taking you to your dashboard...',
+      }
+    case SafeCreationStatus.INDEXED_FAILED:
+      return {
+        image: <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />,
+        description: 'Your safe is not indexed yet.',
+        instruction: 'You can navigate to your safe but be aware that it might not be fully usable.',
       }
   }
 }
 
 export const CreationStatus = ({ onClose }: Props) => {
-  const { status, onRetry, txHash } = useSafeCreation()
+  const { status, onRetry, txHash, safeAddress } = useSafeCreation()
   const stepInfo = getStep(status)
   const chainId = useChainId()
   const chain = useAppSelector((state) => selectChainById(state, chainId))
+
+  const displaySafeAddress = safeAddress && status === SafeCreationStatus.INDEXED_FAILED
 
   const displayActions =
     status === SafeCreationStatus.ERROR ||
@@ -99,6 +115,7 @@ export const CreationStatus = ({ onClose }: Props) => {
           </Button>
         </Grid>
       )}
+      {displaySafeAddress && <Typography>Safe Address: {safeAddress}</Typography>}
     </Paper>
   )
 }
