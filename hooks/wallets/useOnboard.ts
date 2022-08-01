@@ -6,7 +6,7 @@ import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/localStorage/local'
 
-export const lastWalletCache = localItem<string>('lastWallet')
+export const lastWalletStorage = localItem<string>('lastWallet')
 
 const { setStore, useStore } = new ExternalStore<OnboardAPI>()
 
@@ -74,7 +74,7 @@ export const useInitOnboard = () => {
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
       const newWallet = getConnectedWallet(wallets)
       if (newWallet) {
-        lastWalletCache.set(newWallet?.label)
+        lastWalletStorage.set(newWallet?.label)
       }
     })
 
@@ -86,7 +86,7 @@ export const useInitOnboard = () => {
   // Connect to the last connected wallet
   useEffect(() => {
     if (onboard && onboard.state.get().wallets.length === 0) {
-      const label = lastWalletCache.get()
+      const label = lastWalletStorage.get()
 
       if (label) {
         onboard.connectWallet({
