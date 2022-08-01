@@ -41,13 +41,21 @@ const useCustomSafeApps = (): ReturnType => {
     [chainId],
   )
 
-  const [customApps, loading] = useAsync(async () => {
+  useEffect(() => {
+    const loadCustomApps = async () => {
+      setLoading(true)
       const chainSpecificSafeAppsStorageKey = getChainSpecificSafeAppsStorageKey(chainId)
       const storedApps = local.getItem<StoredCustomSafeApp[]>(chainSpecificSafeAppsStorageKey) || []
       const appManifests = await Promise.allSettled(storedApps.map((app) => fetchSafeAppFromManifest(app.url, chainId)))
-      return appManifests
+      const resolvedApps = appManifests
         .filter((promiseResult) => promiseResult.status === 'fulfilled')
         .map((promiseResult) => (promiseResult as PromiseFulfilledResult<SafeAppData>).value)
+
+      setCustomSafeApps(resolvedApps)
+      setLoading(false)
+    }
+
+    loadCustomApps()
   }, [chainId])
 
   return { customSafeApps, loading, updateCustomSafeApps }
