@@ -16,32 +16,28 @@ type OwnedSafesCache = {
 
 const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const chainId = useChainId()
-  const wallet = useWallet()
-  const walletAddress = wallet?.address
-
-  const [ownedSafes] = useAsync<OwnedSafes | undefined>(async () => {
-    return !chainId || !walletAddress ? undefined : getOwnedSafes(chainId, walletAddress)
-  }, [chainId, walletAddress])
-
+  const { address: walletAddress } = useWallet() || {}
   const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY, {})
 
+  const [ownedSafes] = useAsync<OwnedSafes['safes'] | undefined>(async () => {
+    if (!chainId || !walletAddress) return
+
+    return (await getOwnedSafes(chainId, walletAddress)).safes
+  }, [chainId, walletAddress])
+
   useEffect(() => {
-    if (!ownedSafes?.safes || !walletAddress || !chainId) {
-      return
-    }
+    if (!ownedSafes || !walletAddress || !chainId) return
 
     setOwnedSafesCache((prev) => ({
       ...prev,
       [walletAddress]: {
         ...(prev[walletAddress] || {}),
-        [chainId]: ownedSafes.safes,
+        [chainId]: ownedSafes,
       },
     }))
+  }, [ownedSafes, setOwnedSafesCache, walletAddress, chainId])
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ownedSafes])
-
-  return walletAddress ? ownedSafesCache[walletAddress] ?? {} : {}
+  return ownedSafesCache[walletAddress || ''] ?? {}
 }
 
 export default useOwnedSafes

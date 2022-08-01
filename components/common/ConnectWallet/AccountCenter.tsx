@@ -5,14 +5,14 @@ import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import useOnboard from '@/hooks/wallets/useOnboard'
+import useOnboard, { lastWalletStorage } from '@/hooks/wallets/useOnboard'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
 import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
-import { type ConnectedWallet } from '@/hooks/wallets/useWallet'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 const WalletIcon = dynamic(() => import('@/components/common/WalletIcon'))
 
@@ -29,6 +29,8 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
     onboard?.disconnectWallet({
       label: wallet.label,
     })
+
+    lastWalletStorage.remove()
   }
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
