@@ -38,9 +38,7 @@ const NftMenuItem = ({ image, name }: { image: string | null; name: string }) =>
 
 const CollectionMenuItem = ({ address, name }: { address: string; name: string }) => (
   <Grid container spacing={1}>
-    <Grid item>
-      <b>{name}</b>
-    </Grid>
+    <Grid item>{name}</Grid>
     <Grid item>
       <Typography component="span" variant="body2" color="secondary.light">
         {address}
@@ -125,7 +123,7 @@ const SendNftForm = ({ formData, onSubmit }: SendNftFormProps) => {
             >
               {selectedTokens.map((item) => (
                 <MenuItem key={item.address + item.id} value={item.id}>
-                  <NftMenuItem image={item.imageUri} name={`${item.tokenName} #${item.id}`} />
+                  <NftMenuItem image={item.imageUri} name={item.name || `${item.tokenName} #${item.id}`} />
                 </MenuItem>
               ))}
             </Select>
