@@ -11,20 +11,20 @@ type Props = {
 
 const getStep = (status: SafeCreationStatus) => {
   switch (status) {
-    case SafeCreationStatus.PENDING:
+    case SafeCreationStatus.AWAITING:
       return {
         image: (
           <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
         ),
-        description: 'Waiting for transaction confirmation.',
-        instruction: 'Please confirm the transaction in your wallet.',
+        description: 'Step 1/2: Waiting for transaction confirmation.',
+        instruction: 'Please confirm the transaction with your connected wallet.',
       }
     case SafeCreationStatus.MINING:
       return {
         image: (
           <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
         ),
-        description: 'Transaction is being executed.',
+        description: 'Step 2/2: Transaction is being executed.',
         instruction: 'Please do not leave the page.',
       }
     case SafeCreationStatus.ERROR:
@@ -42,7 +42,7 @@ const getStep = (status: SafeCreationStatus) => {
     case SafeCreationStatus.TIMEOUT:
       return {
         image: <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />,
-        description: 'Transaction not found. Be aware that it might still be mined.',
+        description: 'Transaction was not found. Be aware that it might still be mined.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.SUCCESS:

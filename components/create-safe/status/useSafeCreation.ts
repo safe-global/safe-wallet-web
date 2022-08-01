@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 
 export enum SafeCreationStatus {
-  PENDING = 'PENDING',
+  AWAITING = 'AWAITING',
   MINING = 'MINING',
   ERROR = 'ERROR',
   REVERTED = 'REVERTED',
@@ -36,7 +36,7 @@ const getSafeDeployProps = (pendingSafe: PendingSafeData, callback: (txHash: str
 }
 
 export const useSafeCreation = () => {
-  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.PENDING)
+  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
   const [safeAddress, setSafeAddress] = useState<string>()
   const [creationPromise, setCreationPromise] = useState<Promise<Safe>>()
   const [pendingSafe, setPendingSafe] = usePendingSafe()
@@ -57,7 +57,7 @@ export const useSafeCreation = () => {
   const onRetry = () => {
     if (!ethersProvider || !pendingSafe) return
 
-    setStatus(SafeCreationStatus.PENDING)
+    setStatus(SafeCreationStatus.AWAITING)
     setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
   }
 
@@ -72,7 +72,7 @@ export const useSafeCreation = () => {
       return
     }
 
-    setStatus(SafeCreationStatus.PENDING)
+    setStatus(SafeCreationStatus.AWAITING)
     setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
   }, [safeCreationCallback, creationPromise, ethersProvider, pendingSafe, status])
 

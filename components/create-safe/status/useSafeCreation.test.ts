@@ -20,7 +20,7 @@ describe('useSafeCreation', () => {
   it('should return a PENDING state by default', () => {
     const { result } = renderHook(() => useSafeCreation())
 
-    expect(result.current.status).toBe(SafeCreationStatus.PENDING)
+    expect(result.current.status).toBe(SafeCreationStatus.AWAITING)
   })
 
   it('should return SUCCESS if the safe creation promise resolves', async () => {
