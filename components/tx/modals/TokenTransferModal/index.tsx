@@ -7,7 +7,7 @@ import TxModal, { TxModalProps } from '@/components/tx/TxModal'
 
 export const TokenTransferSteps: TxStepperProps['steps'] = [
   {
-    label: 'Create transaction',
+    label: 'Send tokens',
     render: (data, onSubmit) => <SendAssetsForm onSubmit={onSubmit} formData={data as SendAssetsFormData} />,
   },
   {

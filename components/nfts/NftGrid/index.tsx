@@ -9,7 +9,7 @@ const NftGrid = ({
   onSendClick,
 }: {
   collectibles: SafeCollectibleResponse[]
-  onSendClick: (nft: SafeCollectibleResponse) => void
+  onSendClick?: (nft: SafeCollectibleResponse) => void
 }): ReactElement => {
   const collections: Record<string, SafeCollectibleResponse[]> = groupBy(collectibles, 'address')
 
@@ -24,7 +24,7 @@ const NftGrid = ({
           <Grid container spacing={3}>
             {nfts.map((nft) => (
               <Grid item xs={12} md={4} key={nft.address + nft.id}>
-                <NftCard nft={nft} onSendClick={() => onSendClick(nft)} />
+                <NftCard nft={nft} onSendClick={onSendClick ? () => onSendClick(nft) : undefined} />
               </Grid>
             ))}
           </Grid>

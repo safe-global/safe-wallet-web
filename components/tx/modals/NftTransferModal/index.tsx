@@ -6,7 +6,7 @@ import ReviewNftTx from './ReviewNftTx'
 
 export const NftTransferSteps: TxStepperProps['steps'] = [
   {
-    label: 'Create transaction',
+    label: 'Send NFT',
     render: (data, onSubmit) => <SendNftForm onSubmit={onSubmit} formData={data as SendNftFormData} />,
   },
   {

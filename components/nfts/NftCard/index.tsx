@@ -3,7 +3,7 @@ import { Button, Card, CardContent, Typography } from '@mui/material'
 import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
 
-const NftCard = ({ nft, onSendClick }: { nft: SafeCollectibleResponse; onSendClick: () => void }): ReactElement => (
+const NftCard = ({ nft, onSendClick }: { nft: SafeCollectibleResponse; onSendClick?: () => void }): ReactElement => (
   <Card className={css.card}>
     <CardContent>
       <img
@@ -16,9 +16,11 @@ const NftCard = ({ nft, onSendClick }: { nft: SafeCollectibleResponse; onSendCli
 
       {nft.description && <Typography>{nft.description.slice(0, 70)}&hellip;</Typography>}
 
-      <Button variant="contained" color="primary" className={css.sendButton} onClick={onSendClick}>
-        Transfer
-      </Button>
+      {onSendClick ? (
+        <Button variant="contained" color="primary" className={css.sendButton} onClick={onSendClick}>
+          Transfer
+        </Button>
+      ) : null}
     </CardContent>
   </Card>
 )
