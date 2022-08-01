@@ -66,7 +66,7 @@ export const validateTokenAmount = (amount: string, token?: { balance: string; t
   }
 }
 
-export const isValidURL = (url: string, protocolsAllowed = ['https:', 'http:']): boolean => {
+export const isValidURL = (url: string, protocolsAllowed = ['https:']): boolean => {
   try {
     const urlInfo = new URL(url)
 

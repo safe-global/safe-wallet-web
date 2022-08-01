@@ -44,8 +44,11 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     register,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors, dirtyFields, isValidating },
+    watch,
   } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false }, mode: 'onChange' })
+  const appUrl = watch('appUrl')
+
   const onSubmit: SubmitHandler<CustomAppFormData> = (_, __) => {
     if (safeApp) {
       onSave(safeApp)
@@ -53,26 +56,25 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     }
   }
 
+  React.useEffect(() => {
+    const loadApp = async () => {
+      try {
+        setSafeApp(undefined)
+        const appFromManifest = await fetchSafeAppFromManifest(appUrl, chainId)
+        setSafeApp(appFromManifest)
+      } catch (err) {
+        setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
+      }
+    }
+
+    if (!isValidating && dirtyFields.appUrl && !errors.appUrl) loadApp()
+  }, [appUrl, chainId, setError, errors, isValidating])
+
   const appLogoUrl = safeApp?.iconUrl || APP_LOGO_FALLBACK_IMAGE
 
   const handleClose = () => {
     setSafeApp(undefined)
     onClose()
-  }
-
-  const handleAppUrlChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.currentTarget.value
-    if (!isValidURL(input)) {
-      return
-    }
-
-    try {
-      setSafeApp(undefined)
-      const appFromManifest = await fetchSafeAppFromManifest(input, chainId)
-      setSafeApp(appFromManifest)
-    } catch (err) {
-      setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
-    }
   }
 
   const isAppAlreadyInTheList = (appUrl: string) =>
@@ -101,7 +103,6 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
                 doesntExist: (val: string) =>
                   isAppAlreadyInTheList(val) ? 'This app is already in the list' : undefined,
               },
-              onChange: handleAppUrlChange,
             })}
           />
           <Box
