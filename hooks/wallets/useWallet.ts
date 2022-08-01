@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
-import useOnboard, { ConnectedWallet, getConnectedWallet } from './useOnboard'
+import useOnboard, { type ConnectedWallet, getConnectedWallet } from './useOnboard'
 
 const useWallet = (): ConnectedWallet | null => {
   const onboard = useOnboard()
-  const [wallet, setWallet] = useState<ConnectedWallet | null>(getConnectedWallet())
+  const onboardWallets = onboard?.state.get().wallets || []
+  const [wallet, setWallet] = useState<ConnectedWallet | null>(getConnectedWallet(onboardWallets))
 
   useEffect(() => {
     if (!onboard) return
 
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
-      setWallet(getConnectedWallet(wallets))
+      const newWallet = getConnectedWallet(wallets)
+      setWallet(newWallet)
     })
 
     return () => {

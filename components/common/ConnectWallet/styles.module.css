@@ -8,9 +8,8 @@
   align-items: center;
   text-align: left;
   gap: var(--space-1);
-  width: 250px;
   height: 100%;
-  padding: var(--space-1);
+  padding: var(--space-1) var(--space-2);
   border-left: 2px solid var(--color-border-light);
   border-right: 2px solid var(--color-border-light);
 }
@@ -29,14 +28,6 @@
   font-size: 16px;
 }
 
-.dot {
-  position: absolute;
-  right: -4px;
-  bottom: 0;
-  background: white;
-  border-radius: 50%;
-}
-
 .rowContainer {
   align-self: stretch;
   margin-left: calc(var(--space-2) * -1);
@@ -53,16 +44,15 @@
   margin-top: -2px;
 }
 
-.connectWallet {
-  white-space: nowrap;
-}
-
 @media (max-width: 768px) {
   .buttonContainer {
-    width: auto;
+    padding: var(--space-1);
   }
 
-  .notConnected,
+  .buttonContainer button {
+    font-size: 12px;
+  }
+
   .walletDetails {
     display: none;
   }

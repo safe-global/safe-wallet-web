@@ -1,4 +1,4 @@
-import { EIP1193Provider } from '@web3-onboard/core'
+import { type EIP1193Provider } from '@web3-onboard/core'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import { ethers } from 'ethers'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
@@ -34,7 +34,7 @@ export const initSafeSDK = async (
   }
 
   const ethersProvider = new ethers.providers.Web3Provider(provider)
-  return await Safe.create({
+  return Safe.create({
     ethAdapter: createEthersAdapter(ethersProvider),
     safeAddress,
     isL1SafeMasterCopy,

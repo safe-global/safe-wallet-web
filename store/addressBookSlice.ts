@@ -1,6 +1,5 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '.'
-import { selectSafeInfo } from './safeInfoSlice'
 
 export type AddressBook = { [address: string]: string }
 
@@ -43,10 +42,9 @@ export const selectAllAddressBooks = (state: RootState): AddressBookState => {
   return state[addressBookSlice.name]
 }
 
-export const selectAddressBook = createSelector(
-  [selectAllAddressBooks, selectSafeInfo],
-  (allAddressBooks, safeInfo): AddressBook => {
-    const chainId = safeInfo.data?.chainId
+export const selectAddressBookByChain = createSelector(
+  [selectAllAddressBooks, (_, chainId: string) => chainId],
+  (allAddressBooks, chainId): AddressBook => {
     return chainId ? allAddressBooks[chainId] || {} : {}
   },
 )

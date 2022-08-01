@@ -1,25 +1,24 @@
 import { useState, type ReactElement } from 'react'
-import { Divider, Drawer, IconButton, List } from '@mui/material'
+import { Divider, Drawer, IconButton } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
+import { useRouter } from 'next/router'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SidebarHeader from '@/components/sidebar/SidebarHeader'
 import SafeList from '@/components/sidebar/SafeList'
 import SidebarNavigation from '@/components/sidebar/SidebarNavigation'
-import useSafeAddress from '@/hooks/useSafeAddress'
 import SidebarFooter from '@/components/sidebar/SidebarFooter'
-import useOwnedSafes from '@/hooks/useOwnedSafes'
 
 import css from './styles.module.css'
-import SafeListItem from '../SafeListItem'
-import useChainId from '@/hooks/useChainId'
+import { AppRoutes } from '@/config/routes'
+import OwnedSafes from '../OwnedSafes'
 
 const Sidebar = (): ReactElement => {
-  const chainId = useChainId()
-  const address = useSafeAddress()
+  const router = useRouter()
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
-  const allOwnedSafes = useOwnedSafes()
-  const ownedSafesOnChain = allOwnedSafes[chainId]
+
+  // Routes with a Safe address in query
+  const isSafeRoute = router.pathname.startsWith(AppRoutes.safe.index)
 
   const onDrawerToggle = () => {
     setIsDrawerOpen((prev) => !prev)
@@ -36,8 +35,7 @@ const Sidebar = (): ReactElement => {
           <ChevronRight />
         </IconButton>
 
-        {/* For routes with a Safe address */}
-        {address ? (
+        {isSafeRoute ? (
           <>
             <SidebarHeader />
 
@@ -47,19 +45,7 @@ const Sidebar = (): ReactElement => {
           </>
         ) : (
           <div className={css.noSafeHeader}>
-            {ownedSafesOnChain?.length > 0 && (
-              <List sx={{ py: 0 }} className={css.ownedSafes}>
-                {ownedSafesOnChain?.map((address) => (
-                  <SafeListItem
-                    key={address}
-                    address={address}
-                    chainId={chainId}
-                    closeDrawer={() => void null}
-                    shouldScrollToSafe={false}
-                  />
-                ))}
-              </List>
-            )}
+            <OwnedSafes />
           </div>
         )}
 

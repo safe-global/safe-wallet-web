@@ -11,7 +11,7 @@ class ExternalStore<T extends unknown> {
     this.store = initialValue
   }
 
-  public readonly getStore = (): typeof this.store => {
+  public readonly getStore = () => {
     return this.store
   }
 
@@ -27,7 +27,7 @@ class ExternalStore<T extends unknown> {
     }
   }
 
-  public readonly useStore = (): typeof this.store => {
+  public readonly useStore = () => {
     return useSyncExternalStore(this.subscribe, this.getStore, this.getStore)
   }
 }

@@ -1,5 +1,5 @@
 import { FORTMATIC_KEY, PORTIS_KEY, TREZOR_APP_URL, TREZOR_EMAIL, WC_BRIDGE } from '@/config/constants'
-import type { RecommendedInjectedWallets, WalletInit } from '@web3-onboard/common/dist/types.d'
+import { type RecommendedInjectedWallets, type WalletInit } from '@web3-onboard/common/dist/types.d'
 
 import coinbaseModule from '@web3-onboard/coinbase'
 import fortmaticModule from '@web3-onboard/fortmatic'
@@ -10,7 +10,7 @@ import portisModule from '@web3-onboard/portis'
 import torusModule from '@web3-onboard/torus'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
-import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',

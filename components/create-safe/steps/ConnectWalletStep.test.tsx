@@ -1,7 +1,7 @@
 import { render } from '@/tests/test-utils'
 import { ConnectWalletContent } from '@/components/create-safe/steps/ConnectWalletStep'
-import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { EIP1193Provider } from '@web3-onboard/core'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { type EIP1193Provider } from '@web3-onboard/core'
 
 describe('ConnectWalletContent', () => {
   describe('Wallet is not connected', () => {

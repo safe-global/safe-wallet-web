@@ -1,8 +1,8 @@
-import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isAddress } from '@ethersproject/address'
-import { parsePrefixedAddress, sameAddress } from './addresses'
-import { formatDecimals, toDecimals } from './formatters'
 import chains from '@/config/chains'
+import { isAddress } from '@ethersproject/address'
+import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { parsePrefixedAddress, sameAddress } from './addresses'
+import { formatDecimals, toWei } from './formatters'
 
 export const validateAddress = (address: string) => {
   const ADDRESS_RE = /^0x[0-9a-zA-Z]{40}$/
@@ -61,7 +61,7 @@ export const validateTokenAmount = (amount: string, token?: { balance: string; t
     return 'The amount must be greater than 0'
   }
 
-  if (toDecimals(amount, token.tokenInfo.decimals).gt(token.balance)) {
+  if (toWei(amount, token.tokenInfo.decimals).gt(token.balance)) {
     return `Maximum value is ${formatDecimals(token.balance, token.tokenInfo.decimals)}`
   }
 }

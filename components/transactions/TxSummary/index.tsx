@@ -1,6 +1,6 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Palette, Typography } from '@mui/material'
 import { ReactElement } from 'react'
-import { TransactionStatus, type Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type Transaction, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
@@ -8,11 +8,26 @@ import SignTxButton from '@/components/transactions/SignTxButton'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
-import { isAwaitingExecution, isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { isAwaitingExecution, isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import { useTransactionStatus } from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 import GroupIcon from '@mui/icons-material/Group'
+
+const getStatusColor = (value: TransactionStatus, palette: Palette) => {
+  switch (value) {
+    case TransactionStatus.SUCCESS:
+      return palette.primary.main
+    case TransactionStatus.FAILED:
+    case TransactionStatus.CANCELLED:
+      return palette.error.main
+    case TransactionStatus.AWAITING_CONFIRMATIONS:
+    case TransactionStatus.AWAITING_EXECUTION:
+      return palette.warning.dark
+    default:
+      return palette.primary.main
+  }
+}
 
 type TxSummaryProps = {
   isGrouped?: boolean
@@ -23,8 +38,8 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
   const txStatusLabel = useTransactionStatus(tx)
-  const isQueue = tx.txStatus !== TransactionStatus.SUCCESS
-  const awaitingExecution = isAwaitingExecution(item.transaction.txStatus)
+  const isQueue = isTxQueued(tx.txStatus)
+  const awaitingExecution = isAwaitingExecution(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const submittedConfirmations = isMultisigExecutionInfo(tx.executionInfo)
     ? tx.executionInfo.confirmationsSubmitted
@@ -79,11 +94,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       )}
 
       <Box gridArea="status" marginLeft={{ md: 'auto' }} marginRight={1}>
-        <Typography
-          variant="caption"
-          fontWeight="bold"
-          color={({ palette }) => (awaitingExecution ? palette.warning.dark : palette.primary.main)}
-        >
+        <Typography variant="caption" fontWeight="bold" color={({ palette }) => getStatusColor(tx.txStatus, palette)}>
           {txStatusLabel}
         </Typography>
       </Box>

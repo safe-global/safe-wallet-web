@@ -20,7 +20,8 @@
     "generate-types:safeDeployments": "typechain --target ethers-v5 --out-dir './types/contracts' ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json",
     "generate-types:spendingLimit": "typechain --target ethers-v5 --out-dir './types/contracts' ./node_modules/@gnosis.pm/safe-modules-deployments/dist/assets/**/*.json",
     "generate-types": "yarn generate-types:safeDeployments && yarn generate-types:spendingLimit",
-    "postinstall": "yarn generate-types"
+    "postinstall": "yarn generate-types",
+    "analyze": "ANALYZE=true yarn build"
   },
   "pre-commit": [
     "lint"
@@ -35,7 +36,7 @@
     "@gnosis.pm/safe-ethers-lib": "^1.2.1",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
-    "@gnosis.pm/safe-react-gateway-sdk": "^3.2.3",
+    "@gnosis.pm/safe-react-gateway-sdk": "^3.2.4",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.1",
     "@reduxjs/toolkit": "^1.8.2",
@@ -71,6 +72,7 @@
   },
   "devDependencies": {
     "@gnosis.pm/safe-core-sdk-types": "^1.2.1",
+    "@next/bundle-analyzer": "^12.2.3",
     "@sentry/types": "^7.1.1",
     "@svgr/webpack": "^6.2.1",
     "@testing-library/jest-dom": "^5.16.4",

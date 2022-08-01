@@ -1,13 +1,19 @@
-import { useEffect, useState } from 'react'
-import Onboard, { EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { hexValue } from '@ethersproject/bytes'
-import { getAddress } from '@ethersproject/address'
-import { getAllWallets, getRecommendedInjectedWallets, getSupportedWallets } from '@/hooks/wallets/wallets'
-import { getRpcServiceUrl } from '@/hooks/wallets/web3'
+import { useEffect } from 'react'
+import { type EIP1193Provider, type WalletState, type OnboardAPI } from '@web3-onboard/core'
+import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getAddress } from 'ethers/lib/utils'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
-import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSession, setLastWallet } from '@/store/sessionSlice'
+import ExternalStore from '@/services/ExternalStore'
+import { localItem } from '@/services/localStorage/local'
+
+export const lastWalletStorage = localItem<string>('lastWallet')
+
+const { setStore, useStore } = new ExternalStore<OnboardAPI>()
+
+export const initOnboard = async (chainConfigs: ChainInfo[]): Promise<OnboardAPI> => {
+  const { createOnboard } = await import('@/services/onboard')
+  return createOnboard(chainConfigs)
+}
 
 export type ConnectedWallet = {
   label: string
@@ -17,45 +23,8 @@ export type ConnectedWallet = {
   provider: EIP1193Provider
 }
 
-const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
-  const wallets = getAllWallets()
-
-  return Onboard({
-    wallets,
-    chains: chainConfigs.map((cfg) => ({
-      id: hexValue(parseInt(cfg.chainId)),
-      label: cfg.chainName,
-      rpcUrl: getRpcServiceUrl(cfg.rpcUri),
-      publicRpcUrl: cfg.publicRpcUri.value,
-      token: cfg.nativeCurrency.symbol,
-      color: cfg.theme.backgroundColor,
-      // TODO: add block explorer URL
-    })),
-    // TODO: Remove once containerElement is optional again
-    accountCenter: {
-      mobile: { enabled: false, containerElement: 'body' },
-      desktop: { enabled: false, containerElement: 'body' },
-    },
-    appMetadata: {
-      name: 'Safe',
-      icon: '/logo-no-text.svg',
-      description: 'Please select a wallet to connect to Safe',
-      recommendedInjectedWallets: getRecommendedInjectedWallets(),
-    },
-  })
-}
-
-let onboardSingleton: OnboardAPI | null = null
-
-const initOnboardSingleton = (chainConfigs: ChainInfo[]): OnboardAPI => {
-  if (!onboardSingleton) {
-    onboardSingleton = createOnboard(chainConfigs)
-  }
-  return onboardSingleton
-}
-
 // Get the most recently connected wallet address
-export const getConnectedWallet = (wallets = onboardSingleton?.state.get().wallets): ConnectedWallet | null => {
+export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | null => {
   if (!wallets) return null
 
   const primaryWallet = wallets[0]
@@ -73,58 +42,59 @@ export const getConnectedWallet = (wallets = onboardSingleton?.state.get().walle
   }
 }
 
-// Initialize an onboard singleton when chains are loaded
-// Return a cached singleton if already initialized
-export const useOnboard = (): OnboardAPI | null => {
-  const [onboard, setOnboard] = useState<OnboardAPI | null>(null)
-  const { configs } = useChains()
-
-  useEffect(() => {
-    if (!configs.length) return
-
-    setOnboard((prev) => prev || initOnboardSingleton(configs))
-  }, [configs])
-
-  return onboard
-}
-
 // Disable/enable wallets according to chain and cache the last used wallet
 export const useInitOnboard = () => {
-  const onboard = useOnboard()
+  const { configs } = useChains()
   const chain = useCurrentChain()
-  const { lastWallet } = useAppSelector(selectSession)
-  const dispatch = useAppDispatch()
+  const onboard = useStore()
+
+  useEffect(() => {
+    if (configs.length > 0) {
+      initOnboard(configs).then(setStore)
+    }
+  }, [configs])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
-    if (onboard && chain?.disabledWallets) {
-      const supportedModules = getSupportedWallets(chain.disabledWallets)
-      onboard.state.actions.setWalletModules(supportedModules)
-    }
-  }, [onboard, chain?.disabledWallets])
+    if (!onboard || !chain?.disabledWallets) return
 
-  // Connect to the last connected wallet
-  useEffect(() => {
-    if (onboard && lastWallet) {
-      onboard.connectWallet({
-        autoSelect: { label: lastWallet, disableModals: true },
-      })
+    const enableWallets = async () => {
+      const { getSupportedWallets } = await import('@/hooks/wallets/wallets')
+      const supportedWallets = getSupportedWallets(chain.disabledWallets)
+      onboard.state.actions.setWalletModules(supportedWallets)
     }
-  }, [onboard, lastWallet])
 
-  // Save the last connected wallet to Redux/local storage
+    enableWallets()
+  }, [chain?.disabledWallets, onboard])
+
+  // Remember the last used wallet
   useEffect(() => {
     if (!onboard) return
 
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
-      const connectedWallet = getConnectedWallet(wallets)
-      dispatch(setLastWallet(connectedWallet?.label || ''))
+      const newWallet = getConnectedWallet(wallets)
+      if (newWallet) {
+        lastWalletStorage.set(newWallet?.label)
+      }
     })
 
     return () => {
       walletSubscription.unsubscribe()
     }
-  }, [onboard, dispatch])
+  }, [onboard])
+
+  // Connect to the last connected wallet
+  useEffect(() => {
+    if (onboard && onboard.state.get().wallets.length === 0) {
+      const label = lastWalletStorage.get()
+
+      if (label) {
+        onboard.connectWallet({
+          autoSelect: { label, disableModals: true },
+        })
+      }
+    }
+  }, [onboard])
 }
 
-export default useOnboard
+export default useStore

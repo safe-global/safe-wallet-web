@@ -9,7 +9,6 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useBalances from '@/hooks/useBalances'
 import SafeIcon from '@/components/common/SafeIcon'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import useCollectibles from '@/hooks/useCollectibles'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
 import useSafeAddress from '@/hooks/useSafeAddress'
@@ -78,11 +77,9 @@ const Overview = (): ReactElement => {
   const safeAddress = useSafeAddress()
   const { safe, safeLoading } = useSafeInfo()
   const { balances } = useBalances()
-  const { collectibles, loading: nftsLoading } = useCollectibles()
   const chain = useCurrentChain()
   const { chainId } = chain || {}
   const assetsLink = `${AppRoutes.safe.balances.index}?safe=${router.query.safe}`
-  const nftsLink = `${AppRoutes.safe.balances.nfts}?safe=${router.query.safe}`
 
   // Native token is always returned even when its balance is 0
   const tokenCount = useMemo(() => balances.items.filter((token) => token.balance !== '0').length, [balances])
@@ -115,7 +112,7 @@ const Overview = (): ReactElement => {
             </Box>
 
             <Grid container>
-              <Grid item xs={3}>
+              <Grid item xs>
                 <Link href={assetsLink}>
                   <a>
                     <Typography color="border.main" variant="body2">
@@ -126,20 +123,7 @@ const Overview = (): ReactElement => {
                 </Link>
               </Grid>
 
-              <Grid item xs={3}>
-                <Link href={nftsLink}>
-                  <a>
-                    <Typography color="border.main" variant="body2">
-                      NFTs
-                    </Typography>
-                    {collectibles && (
-                      <StyledText fontSize="lg">{!nftsLoading ? collectibles.length : ValueSkeleton}</StyledText>
-                    )}
-                  </a>
-                </Link>
-              </Grid>
-
-              <Grid item xs={6}>
+              <Grid item>
                 <Box display="flex" height={1} alignItems="flex-end" justifyContent="flex-end">
                   <Link href={assetsLink}>
                     <a>
