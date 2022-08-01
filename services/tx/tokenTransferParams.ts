@@ -3,14 +3,14 @@ import { Interface } from '@ethersproject/abi'
 import { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 
 const encodeTokenTransferData = (to: string, value: string): string => {
-  const erc20Transfer = ['function transfer(address to, uint256 value)']
-  const contractInterface = new Interface(erc20Transfer)
+  const erc20Abi = ['function transfer(address to, uint256 value)']
+  const contractInterface = new Interface(erc20Abi)
   return contractInterface.encodeFunctionData('transfer', [to, value])
 }
 
 const encodeERC721TransferData = (from: string, to: string, tokenId: string): string => {
-  const erc721Transfer = ['function safeTransferFrom(address from, address to, uint256 tokenId)']
-  const contractInterface = new Interface(erc721Transfer)
+  const erc721Abi = ['function safeTransferFrom(address from, address to, uint256 tokenId)']
+  const contractInterface = new Interface(erc721Abi)
   return contractInterface.encodeFunctionData('safeTransferFrom', [from, to, tokenId])
 }
 

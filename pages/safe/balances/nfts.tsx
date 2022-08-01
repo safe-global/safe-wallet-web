@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { NextPage } from 'next'
 import { Alert, AlertTitle, Box, CircularProgress, Paper, Typography } from '@mui/material'
 import useCollectibles from '@/hooks/useCollectibles'
-import { NftGrid } from '@/components/nfts'
+import Nfts from '@/components/nfts'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import NavTabs from '@/components/common/NavTabs'
@@ -42,7 +42,7 @@ const NFTs: NextPage = () => {
         ) : error ? (
           <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>
         ) : collectibles?.results.length ? (
-          <NftGrid collectibles={collectibles?.results || []} />
+          <Nfts collectibles={collectibles.results} />
         ) : (
           <Paper sx={{ py: 9, textAlign: 'center' }}>
             <Typography variant="h3">No NFTs available</Typography>
