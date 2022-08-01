@@ -18,7 +18,7 @@ const useSafeApps = (): ReturnType => {
   const { customSafeApps, loading: customSafeAppsLoading, updateCustomSafeApps } = useCustomSafeApps()
 
   const allSafeApps = React.useMemo(
-    () => [...remoteSafeApps, ...customSafeApps].sort((a, b) => a.name.localeCompare(b.name)),
+    () => remoteSafeApps.concat(customSafeApps).sort((a, b) => a.name.localeCompare(b.name)),
     [remoteSafeApps, customSafeApps],
   )
 
