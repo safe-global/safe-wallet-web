@@ -35,7 +35,7 @@ interface DialogTitleProps {
   hideChainIndicator?: boolean
 }
 
-const CustomDialogTitle = ({ children, onClose, hideChainIndicator = false, ...other }: DialogTitleProps) => {
+export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false, ...other }: DialogTitleProps) => {
   return (
     <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center' }} {...other}>
       {children}
@@ -49,7 +49,7 @@ const CustomDialogTitle = ({ children, onClose, hideChainIndicator = false, ...o
           }}
           size="small"
           sx={{
-            ml: 1,
+            ml: 2,
             color: (theme) => theme.palette.grey[500],
           }}
         >
@@ -71,9 +71,9 @@ const ModalDialog = ({
   return (
     <StyledDialog {...restProps} fullScreen={fullScreen} onClick={(e) => e.stopPropagation()}>
       {dialogTitle && (
-        <CustomDialogTitle onClose={restProps.onClose} hideChainIndicator={hideChainIndicator}>
+        <ModalDialogTitle onClose={restProps.onClose} hideChainIndicator={hideChainIndicator}>
           {dialogTitle}
-        </CustomDialogTitle>
+        </ModalDialogTitle>
       )}
 
       {children}
