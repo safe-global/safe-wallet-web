@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material'
 
-import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, updateTxNonce } from '@/services/tx/txSender'
+import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useGasPrice from '@/hooks/useGasPrice'
@@ -153,7 +153,7 @@ const SignOrExecuteForm = ({
     // If nonce was edited, create a new with that nonce
     if (tx && data.nonce !== tx.data.nonce) {
       try {
-        setTx(await updateTxNonce(tx, data.nonce))
+        setTx(await createTx(tx.data, data.nonce))
       } catch (err) {
         logError(Errors._103, (err as Error).message)
         return
