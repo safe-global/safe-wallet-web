@@ -50,7 +50,7 @@ export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false
           size="small"
           sx={{
             ml: 2,
-            color: (theme) => theme.palette.grey[500],
+            color: 'border.main',
           }}
         >
           <CloseIcon />
