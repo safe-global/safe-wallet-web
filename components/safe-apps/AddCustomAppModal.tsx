@@ -68,7 +68,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     }
 
     if (!isValidating && dirtyFields.appUrl && !errors.appUrl) loadApp()
-  }, [appUrl, chainId, setError, errors, isValidating])
+  }, [appUrl, chainId, setError, errors.appUrl, isValidating, dirtyFields.appUrl])
 
   const appLogoUrl = safeApp?.iconUrl || APP_LOGO_FALLBACK_IMAGE
 
