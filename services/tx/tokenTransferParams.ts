@@ -8,6 +8,12 @@ const encodeTokenTransferData = (to: string, value: string): string => {
   return contractInterface.encodeFunctionData('transfer', [to, value])
 }
 
+const encodeERC721TransferData = (from: string, to: string, tokenId: string): string => {
+  const erc721Transfer = ['function safeTransferFrom(address from, address to, uint256 tokenId)']
+  const contractInterface = new Interface(erc721Transfer)
+  return contractInterface.encodeFunctionData('safeTransferFrom', [from, to, tokenId])
+}
+
 export const createTokenTransferParams = (
   recipient: string,
   amount: string,
@@ -28,4 +34,17 @@ export const createTokenTransferParams = (
         value: '0',
         data: encodeTokenTransferData(recipient, value),
       }
+}
+
+export const createNftTransferParams = (
+  from: string,
+  to: string,
+  tokenId: string,
+  tokenAddress: string,
+): MetaTransactionData => {
+  return {
+    to: tokenAddress,
+    value: '0',
+    data: encodeERC721TransferData(from, to, tokenId),
+  }
 }

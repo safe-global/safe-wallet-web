@@ -13,6 +13,7 @@ enum ErrorCodes {
   _104 = '104: Error upserting an addressbook entry',
   _300 = '300: Error switching the wallet network',
   _301 = '301: Error adding a new wallet network',
+  _302 = '302: Error connecting to the wallet',
   _600 = '600: Error fetching token list',
   _601 = '601: Error fetching balances',
   _602 = '602: Error fetching history txs',

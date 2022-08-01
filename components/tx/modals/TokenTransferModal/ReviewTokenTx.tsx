@@ -4,7 +4,7 @@ import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import css from './styles.module.css'
-import { SendAssetsFormData, SendFromBlock } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { SendAssetsFormData } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
@@ -13,6 +13,7 @@ import useAsync from '@/hooks/useAsync'
 import { createTx } from '@/services/tx/txSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import SendFromBlock from '../../SendFromBlock'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (

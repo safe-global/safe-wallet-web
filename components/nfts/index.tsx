@@ -1,10 +1,12 @@
+import { useState, type ReactElement } from 'react'
 import groupBy from 'lodash/groupBy'
-import { Box, Card, CardContent, Grid, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material'
 import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
+import NftTransferModal from '../tx/modals/NftTransferModal'
 
-const NftCard = ({ nft }: { nft: SafeCollectibleResponse }) => (
-  <Card>
+const NftCard = ({ nft, onClick }: { nft: SafeCollectibleResponse; onClick: () => void }): ReactElement => (
+  <Card className={css.card}>
     <CardContent>
       <img
         className={css.image}
@@ -15,11 +17,16 @@ const NftCard = ({ nft }: { nft: SafeCollectibleResponse }) => (
       <Typography fontWeight="bold">{nft.name || `${nft.tokenName} #${nft.id}`}</Typography>
 
       {nft.description && <Typography>{nft.description.slice(0, 70)}&hellip;</Typography>}
+
+      <Button variant="contained" color="primary" className={css.sendButton} onClick={onClick}>
+        Transfer
+      </Button>
     </CardContent>
   </Card>
 )
 
-export const NftGrid = ({ collectibles }: { collectibles: SafeCollectibleResponse[] }) => {
+export const NftGrid = ({ collectibles }: { collectibles: SafeCollectibleResponse[] }): ReactElement => {
+  const [sendNft, setSendNft] = useState<SafeCollectibleResponse | null>(null)
   const collections: Record<string, SafeCollectibleResponse[]> = groupBy(collectibles, 'address')
 
   return (
@@ -33,12 +40,25 @@ export const NftGrid = ({ collectibles }: { collectibles: SafeCollectibleRespons
           <Grid container spacing={3}>
             {nfts.map((nft) => (
               <Grid item xs={12} md={4} key={nft.address + nft.id}>
-                <NftCard nft={nft} />
+                <NftCard nft={nft} onClick={() => setSendNft(nft)} />
               </Grid>
             ))}
           </Grid>
         </Box>
       ))}
+
+      {sendNft && (
+        <NftTransferModal
+          onClose={() => setSendNft(null)}
+          initialData={[
+            {
+              recipient: '',
+              tokenAddress: sendNft.address,
+              tokenId: sendNft.id,
+            },
+          ]}
+        />
+      )}
     </>
   )
 }
