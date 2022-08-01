@@ -1,5 +1,5 @@
 import { TextField, TextFieldProps } from '@mui/material'
-import * as lodash from 'lodash'
+import get from 'lodash/get'
 import { FieldError, useFormContext } from 'react-hook-form'
 
 const NameInput = ({
@@ -11,7 +11,7 @@ const NameInput = ({
 }) => {
   const { register, formState } = useFormContext() || {}
   // the name can be a path: e.g. "owner.3.name"
-  const fieldError = lodash.get(formState.errors, name) as FieldError | undefined
+  const fieldError = get(formState.errors, name) as FieldError | undefined
 
   return (
     <TextField

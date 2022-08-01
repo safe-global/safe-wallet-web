@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
 import { type SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from '@/store'
 import { defaultSafeInfo, selectSafeInfo } from '@/store/safeInfoSlice'
