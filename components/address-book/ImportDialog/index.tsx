@@ -5,12 +5,12 @@ import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { useCSVReader, formatFileSize } from 'react-papaparse'
 import { ParseResult } from 'papaparse'
-import { type ReactElement, useState, type MouseEvent } from 'react'
+import { type ReactElement, useState, type MouseEvent, useMemo } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
-import { Box } from '@mui/material'
+import { Box, Grid, IconButton } from '@mui/material'
 import { showNotification } from '@/store/notificationsSlice'
 
 import css from './styles.module.css'
@@ -18,6 +18,15 @@ import css from './styles.module.css'
 const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [zoneHover, setZoneHover] = useState<boolean>(false)
   const [csvData, setCsvData] = useState<ParseResult<['address', 'name', 'chainId']>>()
+
+  // Count how many entries are in the CSV file
+  const [entryCount, chainCount] = useMemo(() => {
+    if (!csvData) return [0, 0]
+    const entries = csvData.data.slice(1).filter((entry) => entry[0] && entry[1] && entry[2])
+    const entryLen = entries.length
+    const chainLen = new Set(entries.map((entry) => entry[2])).size
+    return [entryLen, chainLen]
+  }, [csvData])
 
   const dispatch = useAppDispatch()
   const { CSVReader } = useCSVReader()
@@ -55,7 +64,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
   }
 
   return (
-    <ModalDialog open onClose={handleClose} dialogTitle="Import address book">
+    <ModalDialog open onClose={handleClose} dialogTitle="Import address book" hideChainIndicator>
       <DialogContent>
         <CSVReader
           onUploadAccepted={(result: ParseResult<['address', 'name', 'chainId']>) => {
@@ -90,13 +99,23 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
               >
                 {acceptedFile ? (
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      {acceptedFile.name} - {formatFileSize(acceptedFile.size)}
-                      <span {...removeProps} onClick={onRemove}>
-                        <Remove width={16} height={16} />
-                      </span>
-                    </div>
+                    <Grid container gap={1} alignItems="center">
+                      <Grid item>
+                        {acceptedFile.name} - {formatFileSize(acceptedFile.size)}
+                      </Grid>
+
+                      <Grid item>
+                        <IconButton {...removeProps} onClick={onRemove}>
+                          <Remove width={16} height={16} />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+
                     <ProgressBar />
+
+                    <Typography mt={1}>
+                      Found {entryCount} entries on {chainCount} chains
+                    </Typography>
                   </div>
                 ) : (
                   'Drop your CSV file here or click to upload.'
