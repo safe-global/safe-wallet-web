@@ -4,25 +4,28 @@ import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { useCSVDownloader } from 'react-papaparse'
-import { useMemo, type ReactElement } from 'react'
+import { SyntheticEvent, useMemo, type ReactElement } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
-import useAddressBook from '@/hooks/useAddressBook'
-import { useCurrentChain } from '@/hooks/useChains'
-import { AddressBook } from '@/store/addressBookSlice'
+import { type AddressBookState, selectAllAddressBooks } from '@/store/addressBookSlice'
+import { useAppSelector } from '@/store'
 
 const COL_1 = 'address'
 const COL_2 = 'name'
 const COL_3 = 'chainId'
 
 type CsvData = { [COL_1]: string; [COL_2]: string; [COL_3]: string }[]
-export const _getCsvData = (addressBook: AddressBook, chainId: string) => {
-  const csvData = Object.entries(addressBook).reduce<CsvData>((acc, [address, name]) => {
-    acc.push({
-      [COL_1]: address,
-      [COL_2]: name,
-      [COL_3]: chainId,
+
+export const _getCsvData = (addressBooks: AddressBookState): CsvData => {
+  const csvData = Object.entries(addressBooks).reduce<CsvData>((acc, [chainId, entries]) => {
+    Object.entries(entries).forEach(([address, name]) => {
+      acc.push({
+        [COL_1]: address,
+        [COL_2]: name,
+        [COL_3]: chainId,
+      })
     })
+
     return acc
   }, [])
 
@@ -30,25 +33,24 @@ export const _getCsvData = (addressBook: AddressBook, chainId: string) => {
 }
 
 const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
-  const chain = useCurrentChain()
-  const addressBook = useAddressBook()
-  const length = Object.keys(addressBook).length
-
+  const addressBooks: AddressBookState = useAppSelector(selectAllAddressBooks)
+  const length = Object.values(addressBooks).reduce<number>((acc, entries) => acc + Object.keys(entries).length, 0)
   const { CSVDownloader } = useCSVDownloader()
+  // safe-address-book-1970-01-01
+  const filename = `safe-address-book-${new Date().toISOString().slice(0, 10)}`
 
-  // rinkeby-address-book-1970-01-01
-  const filename = `${chain!.chainName.toLowerCase()}-address-book-${new Date().toISOString().slice(0, 10)}`
+  const csvData = useMemo(() => _getCsvData(addressBooks), [addressBooks])
 
-  const csvData = useMemo(() => {
-    if (!chain) {
-      return []
-    }
+  const onSubmit = (e: SyntheticEvent) => {
+    e.preventDefault()
 
-    return _getCsvData(addressBook, chain.chainId)
-  }, [addressBook, chain])
+    setTimeout(() => {
+      handleClose()
+    }, 300)
+  }
 
   return (
-    <ModalDialog open onClose={handleClose} dialogTitle="Export address book">
+    <ModalDialog open onClose={handleClose} dialogTitle="Export address book" hideChainIndicator>
       <DialogContent sx={{ p: '24px !important' }}>
         <Typography>
           You&apos;re about to export a CSV file with{' '}
@@ -56,7 +58,9 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
             {length} address book {length === 1 ? 'entry' : 'entries'}
           </b>
           .
-          <br />
+        </Typography>
+
+        <Typography mt={1}>
           <Link
             href="https://help.gnosis-safe.io/en/articles/5299068-address-book-export-and-import"
             target="_blank"
@@ -67,10 +71,11 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
           </Link>
         </Typography>
       </DialogContent>
+
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <CSVDownloader filename={filename} bom config={{ delimiter: ',' }} data={csvData} style={{ order: 2 }}>
-          <Button variant="contained" disableElevation onClick={handleClose} disabled={!chain?.chainId}>
+          <Button variant="contained" disableElevation onClick={onSubmit}>
             Export
           </Button>
         </CSVDownloader>
