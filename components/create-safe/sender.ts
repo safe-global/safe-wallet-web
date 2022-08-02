@@ -10,12 +10,20 @@ import {
 } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { SafeCreationProps } from '@/components/create-safe/useEstimateSafeCreationGas'
+import { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
 
 export const createNewSafe = async (ethersProvider: Web3Provider, props: DeploySafeProps): Promise<Safe> => {
   const ethAdapter = createEthersAdapter(ethersProvider)
 
   const safeFactory = await SafeFactory.create({ ethAdapter })
   return safeFactory.deploySafe(props)
+}
+
+export const computeNewSafeAddress = async (ethersProvider: Web3Provider, props: PredictSafeProps): Promise<string> => {
+  const ethAdapter = createEthersAdapter(ethersProvider)
+
+  const safeFactory = await SafeFactory.create({ ethAdapter })
+  return safeFactory.predictSafeAddress(props)
 }
 
 export const getSafeCreationTx = ({

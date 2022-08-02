@@ -18,7 +18,7 @@ export const ConnectButton = () => {
 
   return (
     <Box className={css.buttonContainer}>
-      <Button onClick={handleConnect} variant="contained" size="small" fullWidth disableElevation>
+      <Button onClick={handleConnect} variant="contained" size="small" disableElevation>
         Connect wallet
       </Button>
     </Box>

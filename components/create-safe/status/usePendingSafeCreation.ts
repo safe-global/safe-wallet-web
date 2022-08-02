@@ -1,5 +1,6 @@
 import { JsonRpcProvider, Log } from '@ethersproject/providers'
 import { getProxyFactoryDeployment } from '@gnosis.pm/safe-deployments'
+import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { Interface } from '@ethersproject/abi'
 import { sameAddress } from '@/utils/addresses'
@@ -7,6 +8,20 @@ import { didRevert } from '@/utils/ethers-utils'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import { useEffect } from 'react'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+
+export const pollSafeInfo = async (chainId: string, safeAddress: string): Promise<SafeInfo> => {
+  // exponential delay between attempts for around 4 min
+  return backOff(() => getSafeInfo(chainId, safeAddress), {
+    startingDelay: 750,
+    maxDelay: 20000,
+    numOfAttempts: 19,
+    retry: (e) => {
+      console.info('waiting for client-gateway to provide safe information', e)
+      return true
+    },
+  })
+}
 
 export const getNewSafeAddressFromLogs = (logs: Log[]): string => {
   let safeAddress = ''

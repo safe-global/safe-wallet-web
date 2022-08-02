@@ -2428,6 +2428,16 @@
     "@gnosis.pm/safe-deployments" "1.15.0"
     web3-core "^1.7.1"
 
+"@gnosis.pm/safe-core-sdk-types@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk-types/-/safe-core-sdk-types-1.3.0.tgz#8400e51a85dbaf860227b1ed98e81055a48794e3"
+  integrity sha512-mvfvSnLy69BJziycesQfWBuXFj4PlUA/XWjOg9gLocenE1Ic6uOlx+tYLIedQRSiBd49svLocrWbw5QgYZuhkw==
+  dependencies:
+    "@ethersproject/bignumber" "^5.6.0"
+    "@ethersproject/contracts" "^5.6.0"
+    "@gnosis.pm/safe-deployments" "1.15.0"
+    web3-core "^1.7.1"
+
 "@gnosis.pm/safe-core-sdk-utils@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk-utils/-/safe-core-sdk-utils-1.2.1.tgz#1cc9de8187e724c02104a8c15c14fb77796d1240"
@@ -2437,13 +2447,13 @@
     semver "^7.3.7"
     web3-utils "^1.7.1"
 
-"@gnosis.pm/safe-core-sdk@^2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk/-/safe-core-sdk-2.2.1.tgz#6c93201a6d0d19c5aa28096789512ff3d7501ee5"
-  integrity sha512-QeoEBqey5crrM0lBVOeEAW0OoQWfBrTUr2fqapDlmDGFVXf4fWM5R68zGzym+5HMvc3/CkVvanwQa4mZWllsjg==
+"@gnosis.pm/safe-core-sdk@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk/-/safe-core-sdk-2.3.0.tgz#9aef5c592c8656dc786b040ff15eaabae62cd4db"
+  integrity sha512-ROX5qmz0pmEi8SVM5MmHX9i/CiskLy1c4+/y16JtuvkaYTp2NbV6QSYzFKMwigE1tclqvITGb8WtPR6492xWEw==
   dependencies:
     "@ethersproject/solidity" "^5.6.0"
-    "@gnosis.pm/safe-core-sdk-types" "^1.2.1"
+    "@gnosis.pm/safe-core-sdk-types" "^1.3.0"
     "@gnosis.pm/safe-deployments" "1.15.0"
     ethereumjs-util "^7.1.4"
     semver "^7.3.5"
@@ -2456,12 +2466,12 @@
   dependencies:
     semver "^7.3.7"
 
-"@gnosis.pm/safe-ethers-lib@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-ethers-lib/-/safe-ethers-lib-1.2.1.tgz#d429480f187c6897fb9fcbfd7a526e3d422e6735"
-  integrity sha512-7A9t2fQW5VtfHVs++Fc5G+a45C/TO4/Tb0MB0G7eYfrrf/rnKZBsUaPIEm4J1ny5WMjGQv2f5DjA3hgaRL9VhA==
+"@gnosis.pm/safe-ethers-lib@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-ethers-lib/-/safe-ethers-lib-1.3.0.tgz#58630914662fe384c0c39a2b1f0bfb17cd563c01"
+  integrity sha512-n04uXApmKaFW6OH2yMPlUzJup8cxETyq6DBve3Wqoi6UMiSfwKmjCPMvG640Ho1RIjNh4fsNxukRNvFJnHHtpw==
   dependencies:
-    "@gnosis.pm/safe-core-sdk-types" "^1.2.1"
+    "@gnosis.pm/safe-core-sdk-types" "^1.3.0"
     "@gnosis.pm/safe-core-sdk-utils" "^1.2.1"
 
 "@gnosis.pm/safe-modules-deployments@^1.0.0":
@@ -6968,6 +6978,11 @@ expect@^28.1.3:
     jest-matcher-utils "^28.1.3"
     jest-message-util "^28.1.3"
     jest-util "^28.1.3"
+
+exponential-backoff@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/exponential-backoff/-/exponential-backoff-3.1.0.tgz#9409c7e579131f8bd4b32d7d8094a911040f2e68"
+  integrity sha512-oBuz5SYz5zzyuHINoe9ooePwSu0xApKWgeNzok4hZ5YKXFh9zrQBEM15CXqoZkJJPuI2ArvqjPQd8UKJA753XA==
 
 ext@^1.1.2:
   version "1.6.0"
