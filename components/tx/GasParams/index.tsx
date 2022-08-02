@@ -64,9 +64,9 @@ const GasParams = ({
             )}
           </Typography>
         ) : (
-          <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
-            <span>Signing transaction with nonce</span>
-            <span>{nonce}</span>
+          <Typography>
+            Signing transaction with nonce&nbsp;
+            {nonce || <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />}
           </Typography>
         )}
       </AccordionSummary>
