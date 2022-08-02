@@ -1,25 +1,29 @@
-import { ReactElement, ReactNode } from 'react'
-import { Typography } from '@mui/material'
+import { type ReactElement, type ReactNode, type SyntheticEvent, useState } from 'react'
+import { Link, Typography } from '@mui/material'
 
 const ErrorMessage = ({
   children,
   error,
 }: {
-  children?: ReactNode
+  children: ReactNode
   error?: Error & { reason?: string }
-}): ReactElement | null => {
-  if (!children) return null
+}): ReactElement => {
+  const [showDetails, setShowDetails] = useState<boolean>(false)
+
+  const onDetailsToggle = (e: SyntheticEvent) => {
+    e.preventDefault()
+    setShowDetails((prev) => !prev)
+  }
 
   return (
-    <Typography color="error" paddingY={4}>
-      {children}
-
+    <Typography color="error" mt={4} mb={1}>
+      {children}&nbsp;
       {error && (
-        <code>
-          <br />
-          Error: {error.reason || error.message.slice(0, 100)}
-        </code>
+        <Link component="button" color="secondary.light" onClick={onDetailsToggle}>
+          Details
+        </Link>
       )}
+      {error && showDetails && <Typography mt={1}>Error: {error.reason || error.message.slice(0, 300)}</Typography>}
     </Typography>
   )
 }

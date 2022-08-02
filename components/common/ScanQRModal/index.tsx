@@ -68,7 +68,7 @@ const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElement => 
 
       <Divider />
 
-      <Box>
+      <Box display="flex" flexDirection="column" alignItems="center">
         {error && <Alert severity="error">{error}</Alert>}
 
         <QrReader
