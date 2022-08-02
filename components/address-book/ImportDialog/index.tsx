@@ -22,8 +22,9 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
   // Count how many entries are in the CSV file
   const [entryCount, chainCount] = useMemo(() => {
     if (!csvData) return [0, 0]
-    const entryLen = csvData.data.length
-    const chainLen = new Set(csvData.data.map((entry) => entry[2])).size
+    const entries = csvData.data.slice(1).filter((entry) => entry[0] && entry[1] && entry[2])
+    const entryLen = entries.length
+    const chainLen = new Set(entries.map((entry) => entry[2])).size
     return [entryLen, chainLen]
   }, [csvData])
 
