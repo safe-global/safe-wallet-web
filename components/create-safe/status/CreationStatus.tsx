@@ -4,6 +4,8 @@ import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import useChainId from '@/hooks/useChainId'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import Link from 'next/link'
+import { AppRoutes } from '@/config/routes'
 
 type Props = {
   onClose: () => void
@@ -59,11 +61,12 @@ const getStep = (status: SafeCreationStatus) => {
         description: 'Your Safe was successfully indexed!',
         instruction: 'Taking you to your dashboard...',
       }
-    case SafeCreationStatus.INDEXED_FAILED:
+    case SafeCreationStatus.INDEX_FAILED:
       return {
         image: <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />,
-        description: 'Your safe is not indexed yet.',
-        instruction: 'You can navigate to your safe but be aware that it might not be fully usable.',
+        description: 'Your Safe is created and will be indexed by our services shortly.',
+        instruction:
+          'You can already open your Safe. It might take a moment until it becomes fully usable in the interface.',
       }
   }
 }
@@ -74,7 +77,7 @@ export const CreationStatus = ({ onClose }: Props) => {
   const chainId = useChainId()
   const chain = useAppSelector((state) => selectChainById(state, chainId))
 
-  const displaySafeAddress = safeAddress && status === SafeCreationStatus.INDEXED_FAILED
+  const displaySafeLink = status === SafeCreationStatus.INDEX_FAILED
 
   const displayActions =
     status === SafeCreationStatus.ERROR ||
@@ -93,20 +96,34 @@ export const CreationStatus = ({ onClose }: Props) => {
           {stepInfo.description}
         </Typography>
       </Box>
-      <Box sx={({ palette }) => ({ backgroundColor: palette.primary.main })} padding={3} mb={6}>
+      <Box sx={({ palette }) => ({ backgroundColor: palette.primary.main })} padding={3} mb={3}>
         <Typography variant="h4" color="white">
           {stepInfo.instruction}
         </Typography>
       </Box>
       {txHash && chain && (
-        <Box padding={3}>
+        <Box mb={3}>
           <Typography>Your Safe creation transaction:</Typography>
           <Box display="flex" justifyContent="center">
             <EthHashInfo address={txHash} hasExplorer shortAddress={false} showAvatar={false} />
           </Box>
         </Box>
       )}
-      <Divider />
+      {safeAddress && !displaySafeLink && (
+        <Typography>
+          Your safe will have the following address after creation:
+          <br />
+          {safeAddress}
+        </Typography>
+      )}
+      {displaySafeLink && (
+        <Box mt={3}>
+          <Link href={{ pathname: AppRoutes.safe.home, query: { safe: safeAddress } }} passHref>
+            <Button variant="contained">Open your safe</Button>
+          </Link>
+        </Box>
+      )}
+      <Divider sx={{ marginTop: 3 }} />
       {displayActions && (
         <Grid container padding={3} justifyContent="center" gap={2}>
           <Button onClick={onClose}>Cancel</Button>
@@ -115,7 +132,6 @@ export const CreationStatus = ({ onClose }: Props) => {
           </Button>
         </Grid>
       )}
-      {displaySafeAddress && <Typography>Safe Address: {safeAddress}</Typography>}
     </Paper>
   )
 }

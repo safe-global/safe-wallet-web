@@ -1,5 +1,5 @@
 import { PendingSafeData } from '@/components/create-safe'
-import { createNewSafe } from '@/components/create-safe/sender'
+import { computeNewSafeAddress, createNewSafe } from '@/components/create-safe/sender'
 import { pollSafeInfo, usePendingSafeCreation } from '@/components/create-safe/status/usePendingSafeCreation'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import { AppRoutes } from '@/config/routes'
@@ -9,10 +9,11 @@ import { useAppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import Safe from '@gnosis.pm/safe-core-sdk'
+import Safe, { DeploySafeProps } from '@gnosis.pm/safe-core-sdk'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import useChainId from '@/hooks/useChainId'
+import { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
@@ -22,17 +23,20 @@ export enum SafeCreationStatus {
   TIMEOUT = 'TIMEOUT',
   SUCCESS = 'SUCCESS',
   INDEXED = 'INDEXED',
-  INDEXED_FAILED = 'INDEXED_FAILED',
+  INDEX_FAILED = 'INDEX_FAILED',
 }
 
-const getSafeDeployProps = (pendingSafe: PendingSafeData, callback: (txHash: string) => void) => {
+const getSafeDeployProps = (
+  pendingSafe: PendingSafeData,
+  callback: (txHash: string) => void,
+): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
   return {
     safeAccountConfig: {
       threshold: pendingSafe.threshold,
       owners: pendingSafe.owners.map((owner) => owner.address),
     },
     safeDeploymentConfig: {
-      saltNonce: pendingSafe.saltNonce,
+      saltNonce: pendingSafe.saltNonce.toString(),
     },
     callback,
   }
@@ -64,6 +68,17 @@ export const useSafeCreation = () => {
     setStatus(SafeCreationStatus.AWAITING)
     setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
   }
+
+  useEffect(() => {
+    if (!ethersProvider || !pendingSafe) return
+
+    const getNewSafeAddress = async () => {
+      const address = await computeNewSafeAddress(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback))
+      setSafeAddress(address)
+    }
+
+    getNewSafeAddress()
+  }, [ethersProvider, pendingSafe, safeCreationCallback])
 
   useEffect(() => {
     if (
@@ -140,7 +155,7 @@ export const useSafeCreation = () => {
         await pollSafeInfo(chainId, address)
         setStatus(SafeCreationStatus.INDEXED)
       } catch (e) {
-        setStatus(SafeCreationStatus.INDEXED_FAILED)
+        setStatus(SafeCreationStatus.INDEX_FAILED)
       }
     }
 
