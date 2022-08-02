@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Box, Button, DialogContent, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import uniqBy from 'lodash/uniqBy'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, Controller } from 'react-hook-form'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import SendFromBlock from '../../SendFromBlock'
@@ -49,10 +49,13 @@ const CollectionMenuItem = ({ address, name }: { address: string; name: string }
 
 const SendNftForm = ({ formData, onSubmit }: SendNftFormProps) => {
   const formMethods = useForm<SendNftFormData>({
-    defaultValues: formData,
+    defaultValues: {
+      [Field.recipient]: formData?.[Field.recipient] || '',
+      [Field.tokenAddress]: formData?.[Field.tokenAddress] || '',
+      [Field.tokenId]: formData?.[Field.tokenId] || '',
+    },
   })
   const {
-    register,
     handleSubmit,
     watch,
     setValue,
@@ -91,42 +94,47 @@ const SendNftForm = ({ formData, onSubmit }: SendNftFormProps) => {
 
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel id="asset-label">Select an NFT collection</InputLabel>
-            <Select
-              labelId="asset-label"
-              label={errors.tokenAddress?.message || 'Select an NFT collection'}
-              defaultValue={formData?.tokenAddress || ''}
-              error={!!errors.tokenAddress}
-              {...register(Field.tokenAddress, {
-                required: true,
-                onChange: () => setValue(Field.tokenId, ''),
-              })}
-            >
-              {collections.map((item) => (
-                <MenuItem key={item.address} value={item.address}>
-                  <CollectionMenuItem name={item.tokenName} address={item.address} />
-                </MenuItem>
-              ))}
-            </Select>
+            <Controller
+              rules={{ required: true, onChange: () => setValue(Field.tokenId, '') }}
+              name={Field.tokenAddress}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="asset-label"
+                  label={errors.tokenAddress?.message || 'Select an NFT collection'}
+                  error={!!errors.tokenAddress}
+                >
+                  {collections.map((item) => (
+                    <MenuItem key={item.address} value={item.address}>
+                      <CollectionMenuItem name={item.tokenName} address={item.address} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
           </FormControl>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel id="asset-label">Select an NFT</InputLabel>
-            <Select
-              labelId="asset-label"
-              label={errors.tokenId?.message || 'Select an NFT'}
-              defaultValue={formData?.tokenId || ''}
-              error={!!errors.tokenId}
-              disabled={nftsLoading}
-              {...register(Field.tokenId, {
-                required: true,
-              })}
-            >
-              {selectedTokens.map((item) => (
-                <MenuItem key={item.address + item.id} value={item.id}>
-                  <NftMenuItem image={item.imageUri} name={item.name || `${item.tokenName} #${item.id}`} />
-                </MenuItem>
-              ))}
-            </Select>
+            <Controller
+              rules={{ required: true }}
+              name={Field.tokenId}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="asset-label"
+                  label={errors.tokenId?.message || 'Select an NFT'}
+                  error={!!errors.tokenId}
+                  disabled={nftsLoading}
+                >
+                  {selectedTokens.map((item) => (
+                    <MenuItem key={item.address + item.id} value={item.id}>
+                      <NftMenuItem image={item.imageUri} name={item.name || `${item.tokenName} #${item.id}`} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
           </FormControl>
 
           {nftsError && <ErrorMessage>Failed to load NFTs</ErrorMessage>}
