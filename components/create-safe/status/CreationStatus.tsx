@@ -110,11 +110,15 @@ export const CreationStatus = ({ onClose }: Props) => {
         </Box>
       )}
       {safeAddress && !displaySafeLink && (
-        <Typography>
-          Your safe will have the following address after creation:
-          <br />
-          {safeAddress}
-        </Typography>
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Typography>Your safe will have the following address after creation:</Typography>
+          <EthHashInfo
+            address={safeAddress}
+            hasExplorer={status === SafeCreationStatus.SUCCESS}
+            shortAddress={false}
+            showCopyButton
+          />
+        </Box>
       )}
       {displaySafeLink && (
         <Box mt={3}>
