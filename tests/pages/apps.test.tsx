@@ -182,5 +182,46 @@ describe('AppsPage', () => {
         expect(screen.getByText("The app doesn't support Safe App functionality")).toBeInTheDocument(),
       )
     })
+
+    it('Requires risk acknowledgment checkbox to add the app', async () => {
+      const APP_URL = 'https://apps.gnosis-safe.io/compound'
+      jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
+        id: Math.random(),
+        url: APP_URL,
+        name: 'Compound',
+        description: 'Money markets on the Ethereum blockchain',
+        accessControl: {
+          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
+        },
+        tags: [],
+        chainIds: ['1', '4'],
+        iconUrl: '',
+      })
+
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
+
+      const addCustomAppButton = screen.getByText('Add custom app')
+      await act(() => {
+        fireEvent.click(addCustomAppButton)
+      })
+
+      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
+
+      const appURLInput = screen.getByLabelText(/App URL/)
+      await act(() => {
+        fireEvent.change(appURLInput, { target: { value: APP_URL } })
+        fireEvent.click(screen.getByText('Save'))
+      })
+
+      await waitFor(() => expect(screen.getByText('Required')).toBeInTheDocument())
+    })
   })
 })
