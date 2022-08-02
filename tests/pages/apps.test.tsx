@@ -67,87 +67,120 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
 }))
 
 describe('AppsPage', () => {
-  it('shows apps add custom app card', async () => {
-    render(<AppsPage />, {
-      routerProps: {
-        query: {
-          safe: 'matic:0x0000000000000000000000000000000000000000',
+  describe('Remote Safe Apps', () => {
+    it('shows apps from remote app list', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
         },
-      },
-    })
+      })
 
-    await waitFor(() => {
-      expect(screen.getByText('Add custom app')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByText('Compound')).toBeInTheDocument()
+        expect(screen.getByText('ENS App')).toBeInTheDocument()
+      })
     })
   })
 
-  it('allows adding custom apps', async () => {
-    const APP_URL = 'https://apps.gnosis-safe.io/compound'
-    jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
-      id: 13,
-      url: APP_URL,
-      name: 'Compound',
-      description: 'Money markets on the Ethereum blockchain',
-      accessControl: {
-        type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
-      },
-      tags: [],
-      chainIds: ['1', '4'],
-      iconUrl: '',
-    })
-
-    render(<AppsPage />, {
-      routerProps: {
-        query: {
-          safe: 'matic:0x0000000000000000000000000000000000000000',
+  describe('Custom Safe apps', () => {
+    it('shows apps add custom app card', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
         },
-      },
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('Add custom app')).toBeInTheDocument()
+      })
     })
 
-    await waitFor(() => {
-      expect(screen.getByText('Add custom app')).toBeInTheDocument()
-    })
-
-    const addCustomAppButton = screen.getByText('Add custom app')
-    act(() => {
-      fireEvent.click(addCustomAppButton)
-    })
-
-    await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
-
-    const appURLInput = screen.getByLabelText(/App URL/)
-    const riskCheckbox = screen.getByLabelText(
-      /This app is not a Gnosis product and I agree to use this app at my own risk./,
-    )
-
-    act(() => {
-      fireEvent.change(appURLInput, { target: { value: APP_URL } })
-      fireEvent.click(riskCheckbox)
-    })
-
-    // This is not a test of an implementation detail, we're waiting for an async effect to finish after the
-    // user input (validation and fetching the app from the manifest)
-    await waitFor(() => expect(safeAppsService.fetchSafeAppFromManifest).toBeCalledTimes(1))
-
-    expect(screen.getByText('Compound')).toBeInTheDocument()
-
-    act(() => {
-      fireEvent.click(screen.getByText('Save'))
-    })
-  })
-
-  it('shows apps from remote app list', async () => {
-    render(<AppsPage />, {
-      routerProps: {
-        query: {
-          safe: 'matic:0x0000000000000000000000000000000000000000',
+    it('allows adding custom apps', async () => {
+      const APP_URL = 'https://apps.gnosis-safe.io/compound'
+      jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
+        id: Math.random(),
+        url: APP_URL,
+        name: 'Compound',
+        description: 'Money markets on the Ethereum blockchain',
+        accessControl: {
+          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
         },
-      },
-    })
+        tags: [],
+        chainIds: ['1', '4'],
+        iconUrl: '',
+      })
 
-    await waitFor(() => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
+
+      const addCustomAppButton = screen.getByText('Add custom app')
+      await act(() => {
+        fireEvent.click(addCustomAppButton)
+      })
+
+      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
+
+      const appURLInput = screen.getByLabelText(/App URL/)
+      const riskCheckbox = screen.getByLabelText(
+        /This app is not a Gnosis product and I agree to use this app at my own risk./,
+      )
+
+      act(() => {
+        fireEvent.change(appURLInput, { target: { value: APP_URL } })
+        fireEvent.click(riskCheckbox)
+      })
       expect(screen.getByText('Compound')).toBeInTheDocument()
-      expect(screen.getByText('ENS App')).toBeInTheDocument()
+
+      await act(() => {
+        fireEvent.click(screen.getByText('Save'))
+      })
+      expect(screen.getByText('Money markets on the Ethereum blockchain')).toBeInTheDocument()
+    })
+
+    it('Shows an error message if the App doesnt support Safe App functionality', async () => {
+      const APP_URL = 'https://google.com'
+
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
+
+      const addCustomAppButton = screen.getByText('Add custom app')
+      await act(() => {
+        fireEvent.click(addCustomAppButton)
+      })
+
+      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
+
+      const appURLInput = screen.getByLabelText(/App URL/)
+      const riskCheckbox = screen.getByLabelText(
+        /This app is not a Gnosis product and I agree to use this app at my own risk./,
+      )
+
+      act(() => {
+        fireEvent.change(appURLInput, { target: { value: APP_URL } })
+        fireEvent.click(riskCheckbox)
+      })
+
+      await waitFor(() =>
+        expect(screen.getByText("The app doesn't support Safe App functionality")).toBeInTheDocument(),
+      )
     })
   })
 })
