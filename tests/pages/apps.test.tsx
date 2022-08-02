@@ -2,6 +2,7 @@ import React from 'react'
 import * as safeAppsGatewaySDK from '@gnosis.pm/safe-react-gateway-sdk'
 import { render, screen, waitFor, fireEvent, act } from '../test-utils'
 import AppsPage from '@/pages/safe/apps'
+import * as safeAppsService from '@/services/safe-apps/manifest'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   ...jest.requireActual('@gnosis.pm/safe-react-gateway-sdk'),
@@ -82,6 +83,18 @@ describe('AppsPage', () => {
 
   it('allows adding custom apps', async () => {
     const APP_URL = 'https://apps.gnosis-safe.io/compound'
+    jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
+      id: 13,
+      url: APP_URL,
+      name: 'Compound',
+      description: 'Money markets on the Ethereum blockchain',
+      accessControl: {
+        type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
+      },
+      tags: [],
+      chainIds: ['1', '4'],
+      iconUrl: '',
+    })
 
     render(<AppsPage />, {
       routerProps: {
@@ -110,6 +123,16 @@ describe('AppsPage', () => {
     act(() => {
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
       fireEvent.click(riskCheckbox)
+    })
+
+    // This is not a test of an implementation detail, we're waiting for an async effect to finish after the
+    // user input (validation and fetching the app from the manifest)
+    await waitFor(() => expect(safeAppsService.fetchSafeAppFromManifest).toBeCalledTimes(1))
+
+    expect(screen.getByText('Compound')).toBeInTheDocument()
+
+    act(() => {
+      fireEvent.click(screen.getByText('Save'))
     })
   })
 
