@@ -1,7 +1,6 @@
 import { ReactElement } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import {
-  Box,
   Button,
   FormControl,
   Grid,
@@ -14,44 +13,14 @@ import {
 } from '@mui/material'
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import css from './styles.module.css'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { formatDecimals } from '@/utils/formatters'
 import { validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import useSafeAddress from '@/hooks/useSafeAddress'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import InputValueHelper from '@/components/common/InputValueHelper'
-
-export const SendFromBlock = (): ReactElement => {
-  const address = useSafeAddress()
-  const { balances } = useBalances()
-  const nativeToken = balances.items.find((item) => parseInt(item.tokenInfo.address, 16) === 0)
-  const nativeTokenBalance = nativeToken ? formatDecimals(nativeToken.balance, nativeToken.tokenInfo.decimals) : '0'
-
-  return (
-    <Box sx={{ borderBottom: ({ palette }) => `1px solid ${palette.divider}` }} pb={2} mb={2}>
-      <Typography color={({ palette }) => palette.text.secondary} pb={1}>
-        Sending from
-      </Typography>
-
-      <Box>
-        <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
-      </Box>
-
-      {nativeToken && (
-        <Box className={css.balance} bgcolor={(theme) => theme.palette.background.main}>
-          Balance:{' '}
-          <b>
-            {nativeTokenBalance} {nativeToken.tokenInfo.symbol}
-          </b>
-        </Box>
-      )}
-    </Box>
-  )
-}
+import SendFromBlock from '../../SendFromBlock'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>

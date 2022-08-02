@@ -10,7 +10,5 @@
 }
 
 .stepIndicator {
-  position: absolute;
-  right: var(--space-3);
-  top: var(--space-3);
+  padding-right: var(--space-1);
 }

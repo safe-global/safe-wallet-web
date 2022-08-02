@@ -45,14 +45,16 @@ const estimateSafeTxGas = async (
 /**
  * Create a transaction from raw params
  */
-export const createTx = async (txParams: SafeTransactionDataPartial): Promise<SafeTransaction> => {
+export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: number): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
 
   // Set the recommended nonce and safeTxGas if not provided
-  if (txParams.nonce === undefined) {
+  if (nonce === undefined) {
     const chainId = await safeSDK.getChainId()
     const estimation = await estimateSafeTxGas(String(chainId), safeSDK.getAddress(), txParams)
     txParams = { ...txParams, nonce: estimation.recommendedNonce, safeTxGas: Number(estimation.safeTxGas) }
+  } else {
+    txParams = { ...txParams, nonce }
   }
 
   return safeSDK.createTransaction(txParams)
@@ -66,7 +68,7 @@ export const createTx = async (txParams: SafeTransactionDataPartial): Promise<Sa
 export const createMultiSendTx = async (txParams: MetaTransactionData[]): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
   const tx = await safeSDK.createTransaction(txParams)
-  return createTx({ ...tx.data, nonce: undefined, operation: 1 })
+  return createTx({ ...tx.data, operation: 1 })
 }
 
 const withRecommendedNonce = async (
@@ -74,7 +76,7 @@ const withRecommendedNonce = async (
 ): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
   const tx = await createFn(safeSDK)
-  return createTx({ ...tx.data, nonce: undefined })
+  return createTx(tx.data)
 }
 
 export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promise<SafeTransaction> => {
@@ -102,13 +104,6 @@ export const createRejectTx = async (nonce: number): Promise<SafeTransaction> =>
 }
 
 /**
- * Update tx nonce
- */
-export const updateTxNonce = async (tx: SafeTransaction, nonce: number): Promise<SafeTransaction> => {
-  return createTx({ ...tx.data, nonce })
-}
-
-/**
  * Prepare a SafeTransaction from Client Gateway / Tx Queue
  */
 export const createExistingTx = async (
@@ -124,7 +119,7 @@ export const createExistingTx = async (
   const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
 
   // Create a tx and add pre-approved signatures
-  const safeTx = await createTx(txParams)
+  const safeTx = await createTx(txParams, txParams.nonce)
   Object.entries(signatures).forEach(([signer, data]) => {
     safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
   })
@@ -197,7 +192,7 @@ export const dispatchTxExecution = async (
   try {
     // @FIXME: clone the tx to avoid mutating the original
     // Should be fixed on the Core SDK side
-    const tx = !safeTx.signatures.size ? await createTx({ ...safeTx.data }) : safeTx
+    const tx = !safeTx.signatures.size ? await createTx(safeTx.data, safeTx.data.nonce) : safeTx
 
     result = await sdk.executeTransaction(tx, txOptions)
   } catch (error) {

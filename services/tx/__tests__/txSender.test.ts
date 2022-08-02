@@ -80,9 +80,9 @@ describe('txSender', () => {
         to: '0x123',
         value: '1',
         data: '0x0',
-        nonce: 18,
+        nonce: 100,
       }
-      await createTx(txParams)
+      await createTx(txParams, 18)
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({
         to: '0x123',

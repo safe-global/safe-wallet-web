@@ -8,14 +8,10 @@ export const useCollectibles = (pageUrl?: string): AsyncResult<SafeCollectiblesP
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
   const { chainId } = safe
 
-  const [data, error, loading] = useAsync<SafeCollectiblesPage | undefined>(
-    async () => {
-      if (!safeLoaded) return
-      return getCollectiblesPage(chainId, safeAddress, undefined, pageUrl)
-    },
-    [safeAddress, chainId, pageUrl],
-    false,
-  )
+  const [data, error, loading] = useAsync<SafeCollectiblesPage | undefined>(async () => {
+    if (!safeLoaded) return
+    return getCollectiblesPage(chainId, safeAddress, undefined, pageUrl)
+  }, [safeLoaded, safeAddress, chainId, pageUrl])
 
   // Log errors
   useEffect(() => {

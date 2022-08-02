@@ -4,12 +4,13 @@ import ModalDialog from '@/components/common/ModalDialog'
 import TokenTransferModal from '../TokenTransferModal'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import NftIcon from '@/public/images/sidebar/nfts.svg'
+import NftTransferModal from '../NftTransferModal'
 
 const TxButton = (props: ButtonProps) => <Button variant="contained" fullWidth {...props} />
 
 const NewTxModal = ({ onClose }: { onClose: () => void }): ReactElement => {
   const [tokenModalOpen, setTokenModalOpen] = useState<boolean>(false)
-  // const [nftsModalOpen, setNftModalOpen] = useState<boolean>(false)
+  const [nftsModalOpen, setNftModalOpen] = useState<boolean>(false)
 
   return (
     <>
@@ -20,14 +21,16 @@ const NewTxModal = ({ onClose }: { onClose: () => void }): ReactElement => {
               Send tokens
             </TxButton>
 
-            <TxButton onClick={() => alert('Implement me')} startIcon={<NftIcon width={16} height={16} />}>
+            <TxButton onClick={() => setNftModalOpen(true)} startIcon={<NftIcon width={16} height={16} />}>
               Send NFTs
             </TxButton>
           </Box>
         </DialogContent>
       </ModalDialog>
 
-      {tokenModalOpen && <TokenTransferModal onClose={() => setTokenModalOpen(false)} />}
+      {tokenModalOpen && <TokenTransferModal onClose={onClose} />}
+
+      {nftsModalOpen && <NftTransferModal onClose={onClose} />}
     </>
   )
 }
