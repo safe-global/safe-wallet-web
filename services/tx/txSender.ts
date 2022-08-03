@@ -163,16 +163,16 @@ export const dispatchTxSigning = async (
   const sdk = getAndValidateSafeSDK()
   const signingMethod = isHardwareWallet ? 'eth_sign' : 'eth_signTypedData'
 
+  let signedTx: SafeTransaction | undefined
   try {
-    // Add signature to safeTx
-    await sdk.signTransaction(safeTx, signingMethod)
+    signedTx = await sdk.signTransaction(safeTx, signingMethod)
   } catch (error) {
     txDispatch(TxEvent.SIGN_FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
   }
-  txDispatch(TxEvent.SIGNED, { txId, tx: safeTx })
+  txDispatch(TxEvent.SIGNED, { txId, tx: signedTx })
 
-  return safeTx
+  return signedTx
 }
 
 /**
@@ -190,11 +190,7 @@ export const dispatchTxExecution = async (
   // Execute the tx
   let result: TransactionResult | undefined
   try {
-    // @FIXME: clone the tx to avoid mutating the original
-    // Should be fixed on the Core SDK side
-    const tx = !safeTx.signatures.size ? await createTx(safeTx.data, safeTx.data.nonce) : safeTx
-
-    result = await sdk.executeTransaction(tx, txOptions)
+    result = await sdk.executeTransaction(safeTx, txOptions)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
