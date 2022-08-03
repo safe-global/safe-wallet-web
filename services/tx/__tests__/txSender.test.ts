@@ -145,7 +145,7 @@ describe('txSender', () => {
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
-      expect(signedTx).toBe(tx)
+      expect(signedTx).not.toBe(tx)
     })
 
     it('should sign a tx with eth_sign if a hardware wallet is connected', async () => {
@@ -159,7 +159,7 @@ describe('txSender', () => {
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
-      expect(signedTx).toBe(tx)
+      expect(signedTx).not.toBe(tx)
     })
   })
 
