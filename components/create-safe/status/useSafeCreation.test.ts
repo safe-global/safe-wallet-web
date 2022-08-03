@@ -31,12 +31,10 @@ describe('useSafeCreation', () => {
     jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.resolve(mockSafe))
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
-        4: {
-          name: 'joyful-rinkeby-safe',
-          threshold: 1,
-          owners: [],
-          saltNonce: 123,
-        },
+        name: 'joyful-rinkeby-safe',
+        threshold: 1,
+        owners: [],
+        saltNonce: 123,
       },
       jest.fn,
     ])
@@ -55,12 +53,10 @@ describe('useSafeCreation', () => {
     jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.reject(mockSafe))
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
-        4: {
-          name: 'joyful-rinkeby-safe',
-          threshold: 1,
-          owners: [],
-          saltNonce: 123,
-        },
+        name: 'joyful-rinkeby-safe',
+        threshold: 1,
+        owners: [],
+        saltNonce: 123,
       },
       jest.fn,
     ])

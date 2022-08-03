@@ -59,7 +59,7 @@ const CreateSafe = () => {
   const router = useRouter()
 
   useEffect(() => {
-    setSafeCreationPending(!!pendingSafe?.[chainId])
+    setSafeCreationPending(!!pendingSafe)
   }, [pendingSafe, chainId])
 
   const onFinish = () => {
@@ -67,7 +67,7 @@ const CreateSafe = () => {
   }
 
   const onClose = () => {
-    setPendingSafe({ ...pendingSafe, [chainId]: undefined })
+    setPendingSafe(undefined)
     router.push(AppRoutes.welcome)
   }
 

@@ -12,7 +12,6 @@ import { safeFormatUnits } from '@/utils/formatters'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useMemo } from 'react'
 import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
-import useChainId from '@/hooks/useChainId'
 
 type Props = {
   params: CreateSafeFormData
@@ -24,9 +23,8 @@ type Props = {
 const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
   useResetSafeCreation(setStep)
   const wallet = useWallet()
-  const chainId = useChainId()
   const ethersProvider = useWeb3()
-  const [pendingSafe, setPendingSafe] = usePendingSafe()
+  const [_, setPendingSafe] = usePendingSafe()
   const chain = useCurrentChain()
   const saltNonce = useMemo(() => Date.now(), [])
 
@@ -45,7 +43,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
 
   const createSafe = async () => {
     if (!wallet || !ethersProvider) return
-    setPendingSafe({ ...pendingSafe, [chainId]: { ...params, saltNonce } })
+    setPendingSafe({ ...params, saltNonce })
     onSubmit(params)
   }
 
