@@ -1,5 +1,10 @@
-import { type ReactElement } from 'react'
-import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import React, { type ReactElement } from 'react'
+import {
+  getTransactionDetails,
+  Operation,
+  TransactionDetails,
+  TransactionSummary,
+} from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, CircularProgress } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
@@ -26,6 +31,7 @@ import SignTxButton from '@/components/transactions/SignTxButton'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { DelegateCallWarning } from '@/components/transactions/Warning'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -35,6 +41,7 @@ type TxDetailsProps = {
 }
 
 const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {
+  console.log(txDetails)
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const isQueue = isTxQueued(txSummary.txStatus)
@@ -75,6 +82,11 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
             )}
 
             <div className={css.txSummary}>
+              {txDetails.txData?.operation === Operation.DELEGATE && (
+                <div className={css.delegateCall}>
+                  <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
+                </div>
+              )}
               <Summary txDetails={txDetails} />
             </div>
           </>
