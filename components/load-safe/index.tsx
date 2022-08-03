@@ -1,5 +1,4 @@
 import React from 'react'
-import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useRouter } from 'next/router'
 
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -9,11 +8,13 @@ import SafeOwnersStep from '@/components/load-safe/steps/SafeOwnersStep'
 import SetAddressStep from '@/components/load-safe/steps/SetAddressStep'
 import SafeReviewStep from '@/components/load-safe/steps/SafeReviewStep'
 import SelectNetworkStep from '@/components/load-safe/steps/SelectNetworkStep'
+import { Owner } from '@/components/create-safe/index'
 
 export type LoadSafeFormData = {
-  name: string
-  address: string
-  safeInfo: SafeInfo
+  safeAddress: Owner
+  threshold: number
+  owners: Owner[]
+  chainId: string
 }
 
 export const LoadSafeSteps: TxStepperProps['steps'] = [

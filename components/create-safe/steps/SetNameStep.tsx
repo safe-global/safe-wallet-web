@@ -34,10 +34,7 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
               new Safe will ONLY be available on <ChainIndicator inline />
             </Typography>
             <FormControl>
-              <NameInput
-                name="name"
-                textFieldProps={{ label: 'Safe name', InputLabelProps: { shrink: true }, placeholder: fallbackName }}
-              />
+              <NameInput name="name" label="Safe name" InputLabelProps={{ shrink: true }} placeholder={fallbackName} />
             </FormControl>
             <Typography mt={2}>
               By continuing you consent to the <a href="#">terms of use</a> and <a href="#">privacy policy</a>.

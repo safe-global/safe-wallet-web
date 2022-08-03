@@ -12,6 +12,7 @@ import { selectChainById } from '@/store/chainsSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isOwner } from '@/utils/transaction-guards'
+import { defaultSafeInfo } from '@/store/safeInfoSlice'
 
 type Props = {
   params: LoadSafeFormData
@@ -21,25 +22,38 @@ type Props = {
 const SafeReviewStep = ({ params, onBack }: Props) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const chain = useAppSelector((state) => selectChainById(state, params.safeInfo.chainId))
+  const chain = useAppSelector((state) => selectChainById(state, params.chainId))
   const wallet = useWallet()
-  const isSafeOwner = wallet && isOwner(params.safeInfo.owners, wallet.address)
+  const isSafeOwner = wallet && isOwner(params.owners, wallet.address)
 
   const addSafe = () => {
-    dispatch(addOrUpdateSafe({ safe: params.safeInfo }))
     dispatch(
-      upsertAddressBookEntry({
-        chainId: params.safeInfo.chainId,
-        address: params.safeInfo.address.value,
-        name: params.name ?? '',
+      addOrUpdateSafe({
+        safe: {
+          ...defaultSafeInfo,
+          address: { value: params.safeAddress.address, name: params.safeAddress.name },
+          threshold: params.threshold,
+          owners: params.owners.map((owner) => ({
+            value: owner.address,
+            name: owner.name,
+          })),
+          chainId: params.chainId,
+        },
       }),
     )
-    for (const { value: address, name } of params.safeInfo.owners) {
-      dispatch(upsertAddressBookEntry({ chainId: params.safeInfo.chainId, address, name: name ?? '' }))
+    dispatch(
+      upsertAddressBookEntry({
+        chainId: params.chainId,
+        address: params.safeAddress.address,
+        name: params.safeAddress.name ?? '',
+      }),
+    )
+    for (const { address, name } of params.owners) {
+      dispatch(upsertAddressBookEntry({ chainId: params.chainId, address, name: name ?? '' }))
     }
     router.push({
       pathname: AppRoutes.safe.index,
-      query: { safe: `${chain?.shortName}:${params.safeInfo.address.value}` },
+      query: { safe: `${chain?.shortName}:${params.safeAddress.address}` },
     })
   }
 
@@ -56,12 +70,12 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
               <ChainIndicator inline />
             </Typography>
 
-            {params.name && (
+            {params.safeAddress.name && (
               <>
                 <Typography variant="caption" color="text.secondary">
                   Name of the Safe
                 </Typography>
-                <Typography mb={3}>{params.name}</Typography>
+                <Typography mb={3}>{params.safeAddress.name}</Typography>
               </>
             )}
             <Typography variant="caption" color="text.secondary">
@@ -69,9 +83,9 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
             </Typography>
             <Typography mb={3} component="div">
               <EthHashInfo
-                key={params.safeInfo.address.value}
-                address={params.safeInfo.address.value}
-                name={params.safeInfo.address.name}
+                key={params.safeAddress.address}
+                address={params.safeAddress.address}
+                name={params.safeAddress.name}
                 shortAddress
               />
             </Typography>
@@ -84,7 +98,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
               Any transaction requires the confirmation of:
             </Typography>
             <Typography mb={3}>
-              {params.safeInfo.threshold} out of {params.safeInfo.owners.length}
+              {params.threshold} out of {params.owners.length}
             </Typography>
           </Box>
         </Grid>
@@ -95,11 +109,11 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
           borderLeft={({ palette }) => [undefined, undefined, `1px solid ${palette.border.light}`]}
           borderTop={({ palette }) => [`1px solid ${palette.border.light}`, undefined, 'none']}
         >
-          <Box padding={3}>{params.safeInfo.owners.length} Safe owner(s)</Box>
+          <Box padding={3}>{params.owners.length} Safe owner(s)</Box>
           <Divider />
           <Box display="flex" flexDirection="column" gap={2} padding={3}>
-            {params.safeInfo.owners.map((owner) => {
-              return <EthHashInfo key={owner.value} address={owner.value} name={owner.name} shortAddress={false} />
+            {params.owners.map((owner) => {
+              return <EthHashInfo key={owner.address} address={owner.address} name={owner.name} shortAddress={false} />
             })}
           </Box>
           <Divider />

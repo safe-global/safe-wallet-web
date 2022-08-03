@@ -54,7 +54,7 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogContent>
               <Box py={2}>
-                <NameInput textFieldProps={{ label: 'Owner name' }} name="name" />
+                <NameInput label="Owner name" name="name" />
               </Box>
 
               <Box py={2}>

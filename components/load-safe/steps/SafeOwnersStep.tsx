@@ -1,5 +1,5 @@
 import { ReactElement, useEffect } from 'react'
-import { Box, Button, Divider, FormControl, Grid, Paper, TextField, Typography } from '@mui/material'
+import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -10,6 +10,9 @@ import useAsync from '@/hooks/useAsync'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChainId from '@/hooks/useChainId'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import NameInput from '@/components/common/NameInput'
+
+import { useOwnerForm } from './useOwnerForm'
 
 type Props = {
   params: LoadSafeFormData
@@ -19,21 +22,28 @@ type Props = {
 
 const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
   const currentChainId = useChainId()
-  const formMethods = useForm<LoadSafeFormData>({ defaultValues: params })
-  const { register, handleSubmit, setValue } = formMethods
+  const formMethods = useForm<LoadSafeFormData>({ defaultValues: params, mode: 'all' })
+  const { handleSubmit, setValue } = formMethods
 
-  const [safeInfo, error, loading] = useAsync<SafeInfo | undefined>(async () => {
-    if (!currentChainId || !params.address) return
-    const { address } = parsePrefixedAddress(params.address)
+  const [safeInfo] = useAsync<SafeInfo | undefined>(async () => {
+    if (!currentChainId || !params.safeAddress.address) return
+    const { address } = parsePrefixedAddress(params.safeAddress.address)
 
-    return await getSafeInfo(currentChainId, address)
-  }, [currentChainId, params.address])
+    return getSafeInfo(currentChainId, address)
+  }, [currentChainId, params.safeAddress.address])
 
+  // Initialize dialog data after fetching the safe
   useEffect(() => {
     if (!safeInfo) return
 
-    setValue('safeInfo', safeInfo)
-  }, [safeInfo, setValue])
+    setValue('threshold', safeInfo.threshold)
+    setValue(
+      'owners',
+      safeInfo.owners.map((owner) => ({ address: owner.value, name: '', resolving: false })),
+    )
+  }, [safeInfo, safeInfo?.threshold, safeInfo?.owners, setValue])
+
+  useOwnerForm('owners', formMethods)
 
   return (
     <Paper>
@@ -68,10 +78,10 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
                   >
                     <Grid item xs={12} md={4}>
                       <FormControl fullWidth>
-                        <TextField
+                        <NameInput
                           label="Owner name"
                           InputLabelProps={{ shrink: true }}
-                          {...register(`safeInfo.owners.${index}.name`)}
+                          name={`owners.${index}.name`}
                         />
                       </FormControl>
                     </Grid>
@@ -79,7 +89,7 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
                       <FormControl fullWidth>
                         <AddressInput
                           label="Owner address"
-                          name={`safeInfo.owners.${index}.value`}
+                          name={`owners.${index}.address`}
                           disabled
                           InputLabelProps={{ shrink: true }}
                         />

@@ -1,7 +1,6 @@
 import React from 'react'
-import { Box, Button, Divider, Grid, Link, Paper, TextField, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, Link, Paper, Typography } from '@mui/material'
 import { useForm, FormProvider } from 'react-hook-form'
-import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { LoadSafeFormData } from '@/components/load-safe'
@@ -11,6 +10,8 @@ import useChainId from '@/hooks/useChainId'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
+import NameInput from '@/components/common/NameInput'
+import { useOwnerForm } from './useOwnerForm'
 
 type Props = {
   params: LoadSafeFormData
@@ -19,12 +20,20 @@ type Props = {
 }
 
 const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
-  const currentChainId = useChainId()
-  const fallbackName = useMnemonicSafeName()
-  const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
-  const formMethods = useForm<LoadSafeFormData>({ defaultValues: { name: fallbackName, address: params?.address } })
+  console.log(params)
 
-  const { register, handleSubmit } = formMethods
+  const currentChainId = useChainId()
+  const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
+  const formMethods = useForm<LoadSafeFormData>({
+    defaultValues: {
+      safeAddress: { name: params?.safeAddress.name || '', address: params?.safeAddress.address, resolving: false },
+    },
+  })
+
+  const { register, handleSubmit, watch } = formMethods
+  console.log(watch('safeAddress'))
+
+  useOwnerForm('safeAddress', formMethods, true)
 
   const validateSafeAddress = async (address: string) => {
     const { address: safeAddress } = parsePrefixedAddress(address)
@@ -38,7 +47,6 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     } catch (error) {
       return 'Address given is not a valid Safe address'
     }
-    return
   }
 
   return (
@@ -63,20 +71,14 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
               </Link>
             </Typography>
             <Box marginBottom={2} maxWidth={500} paddingRight={6}>
-              <TextField
-                label="Safe name"
-                InputLabelProps={{ shrink: true }}
-                {...register('name')}
-                placeholder={fallbackName}
-                fullWidth
-              />
+              <NameInput label="Safe name" InputLabelProps={{ shrink: true }} name="safeAddress.name" />
             </Box>
             <Box maxWidth={500}>
               <AddressInput
                 label="Safe address"
                 validate={validateSafeAddress}
                 InputLabelProps={{ shrink: true }}
-                {...register('address')}
+                {...register('safeAddress.address')}
               />
             </Box>
             <Typography mt={2}>

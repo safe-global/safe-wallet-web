@@ -37,7 +37,7 @@ const EntryDialog = ({
     defaultValues,
     mode: 'onChange',
   })
-  const { register, handleSubmit, formState } = methods
+  const { handleSubmit, formState } = methods
 
   const onSubmit = (data: AddressEntry) => {
     const { address } = parsePrefixedAddress(data.address)
@@ -53,7 +53,7 @@ const EntryDialog = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
             <Box mb={2}>
-              <NameInput textFieldProps={{ label: 'Name', autoFocus: true }} name="name" />
+              <NameInput label="Name" autoFocus name="name" />
             </Box>
 
             <Box>

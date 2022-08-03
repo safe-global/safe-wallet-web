@@ -70,7 +70,7 @@ export const ChooseOwnerStep = ({
 
           <Box display="flex" flexDirection="column" gap={2} paddingTop={2}>
             <FormControl>
-              <NameInput textFieldProps={{ label: 'Owner name' }} name="ownerName" />
+              <NameInput label="Owner name" name="ownerName" />
             </FormControl>
 
             <FormControl>

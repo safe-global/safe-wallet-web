@@ -8,7 +8,7 @@ const LoadSafeWithAddress: NextPage = () => {
   const [id, setId] = useState<string>(safeAddress)
 
   const initialData = {
-    address: safeAddress,
+    safeAddress: { address: safeAddress },
   }
 
   // This is a hack to force remounting if the query param changes but not the path
