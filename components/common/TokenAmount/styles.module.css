@@ -10,3 +10,8 @@
 .tokenIcon {
   width: auto;
 }
+
+.symbol {
+  white-space: normal;
+  word-break: break-all;
+}

@@ -64,3 +64,7 @@ export const camelCaseToSpaces = (str: string): string => {
     .replace(/\s{2}/g, ' ')
     .trim()
 }
+
+export const ellipsis = (str: string, length: number): string => {
+  return str.length > length ? `${str.slice(0, length)}...` : str
+}
