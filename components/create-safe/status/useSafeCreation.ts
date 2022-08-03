@@ -172,7 +172,7 @@ export const useSafeCreation = () => {
       setCreationPromise(undefined)
       pendingSafe && setPendingSafe({ ...pendingSafe, txHash: undefined })
     }
-  }, [chainId, router, safeAddress, setPendingSafe, status])
+  }, [chainId, pendingSafe, router, safeAddress, setPendingSafe, status])
 
   return {
     safeAddress,

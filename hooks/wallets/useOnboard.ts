@@ -89,7 +89,6 @@ export const useInitOnboard = () => {
       const label = lastWalletStorage.get()
 
       if (label) {
-        console.log(onboard)
         onboard.connectWallet({
           autoSelect: { label, disableModals: true },
         })
