@@ -7,7 +7,7 @@ import { useChainId } from '@/hooks/useChainId'
 import chains from '@/config/chains'
 import { ReactElement } from 'react'
 
-const NetworkSelector = (): ReactElement => {
+const NetworkSelector = ({ loadLastSafe = false }: { loadLastSafe?: boolean }): ReactElement => {
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
@@ -18,10 +18,11 @@ const NetworkSelector = (): ReactElement => {
 
     if (!newShortName) return
 
-    router.replace({
-      pathname: '/',
+    return router.replace({
+      pathname: loadLastSafe ? '/' : router.pathname,
       query: {
         chain: newShortName,
+        loadLastSafe,
       },
     })
   }

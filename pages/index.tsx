@@ -15,12 +15,14 @@ const useLastSafe = (): string | undefined => {
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
-  const { chain } = router.query
+  const { chain, loadLastSafe } = router.query
   const lastSafe = useLastSafe()
 
   useEffect(() => {
-    router.push(lastSafe ? `/safe/home?safe=${lastSafe}` : chain ? `/welcome?chain=${chain}` : `/welcome`)
-  }, [router, lastSafe, chain])
+    router.push(
+      loadLastSafe && lastSafe ? `/safe/home?safe=${lastSafe}` : chain ? `/welcome?chain=${chain}` : `/welcome`,
+    )
+  }, [router, lastSafe, chain, loadLastSafe])
 
   return <></>
 }
