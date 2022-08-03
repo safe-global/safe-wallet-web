@@ -49,7 +49,7 @@ const SRCEthHashInfo = ({
         {props.name && <Typography variant="body2">{props.name}</Typography>}
 
         <Box className={css.addressRow}>
-          <Typography variant="body2" fontWeight="inherit">
+          <Typography variant="body2" fontWeight="inherit" component="div" className={css.address}>
             {prefix && <b>{prefix}:</b>}
             {shortAddress ? shortenAddress(address) : address}
           </Typography>
