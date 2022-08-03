@@ -1,6 +1,5 @@
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION
 
-export const PROD_GATEWAY_URL = 'https://safe-client.gnosis.io'
 export const STAGING_GATEWAY_URL = 'https://safe-client.staging.gnosisdev.com'
 export const SAFE_REACT_URL = IS_PRODUCTION ? 'https://gnosis-safe.io/app' : 'https://safe-team.dev.gnosisdev.com/app'
 
