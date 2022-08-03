@@ -37,7 +37,7 @@ const TokenAmount = ({
     <span className={css.container}>
       {logoUri && <TokenIcon logoUri={logoUri} tokenSymbol={tokenSymbol} />}
 
-      <span className={css.text}>
+      <span>
         {sign}
         {formatAmount(amount)} <span className={css.symbol}>{tokenSymbol}</span>
       </span>
