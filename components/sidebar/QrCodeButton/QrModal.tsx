@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { Box, Checkbox, DialogContent, FormControlLabel, Typography } from '@mui/material'
+import { Box, Switch, DialogContent, FormControlLabel, Typography } from '@mui/material'
 import ModalDialog from '@/components/common/ModalDialog'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -37,7 +37,7 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
 
           <FormControlLabel
             control={
-              <Checkbox checked={settings.shortName.qr} onChange={(e) => dispatch(setQrShortName(e.target.checked))} />
+              <Switch checked={settings.shortName.qr} onChange={(e) => dispatch(setQrShortName(e.target.checked))} />
             }
             label={
               <>

@@ -13,6 +13,8 @@ import { openCookieBanner } from '@/store/popupSlice'
 import BeamerIcon from '@/public/images/sidebar/whats-new.svg'
 import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
 import { ListItem } from '@mui/material'
+import DebugToggle from '../DebugToggle'
+import { IS_PRODUCTION } from '@/config/constants'
 
 const WHATS_NEW_PATH = 'https://help.gnosis-safe.io/en/'
 
@@ -37,6 +39,12 @@ const SidebarFooter = (): ReactElement => {
 
   return (
     <SidebarList>
+      {!IS_PRODUCTION && (
+        <ListItem disablePadding>
+          <DebugToggle />
+        </ListItem>
+      )}
+
       <ListItem disablePadding>
         <SidebarListItemButton id={BEAMER_SELECTOR} onClick={handleBeamer}>
           <SidebarListItemIcon
@@ -51,6 +59,7 @@ const SidebarFooter = (): ReactElement => {
           <SidebarListItemText bold>What&apos;s New</SidebarListItemText>
         </SidebarListItemButton>
       </ListItem>
+
       <ListItem disablePadding>
         <a target="_blank" rel="noopener noreferrer" href={WHATS_NEW_PATH} style={{ width: '100%' }}>
           <SidebarListItemButton>
