@@ -52,7 +52,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
       className={css.alert}
       sx={({ palette }) => ({
         color: palette.secondary.main,
-        backgroundColor: `${showWarning ? palette.warning.light : palette.success.light}`,
+        backgroundColor: `${showWarning ? palette.warning.light : palette.success.background}`,
         borderLeft: `3px solid ${showWarning ? palette.warning.dark : palette.success.main}`,
 
         '&.MuiAlert-standardInfo .MuiAlert-icon': {

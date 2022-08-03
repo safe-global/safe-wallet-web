@@ -80,9 +80,9 @@ describe('txSender', () => {
         to: '0x123',
         value: '1',
         data: '0x0',
-        nonce: 18,
+        nonce: 100,
       }
-      await createTx(txParams)
+      await createTx(txParams, 18)
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({
         to: '0x123',
@@ -145,7 +145,7 @@ describe('txSender', () => {
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
-      expect(signedTx).toBe(tx)
+      expect(signedTx).not.toBe(tx)
     })
 
     it('should sign a tx with eth_sign if a hardware wallet is connected', async () => {
@@ -159,7 +159,7 @@ describe('txSender', () => {
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
-      expect(signedTx).toBe(tx)
+      expect(signedTx).not.toBe(tx)
     })
   })
 

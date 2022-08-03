@@ -1,10 +1,10 @@
-import { useMemo, type ReactElement } from 'react'
+import { type ReactElement } from 'react'
 import { Box, Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import css from './styles.module.css'
-import { SendAssetsFormData, SendFromBlock } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { SendAssetsFormData } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
@@ -13,6 +13,7 @@ import useAsync from '@/hooks/useAsync'
 import { createTx } from '@/services/tx/txSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import SendFromBlock from '../../SendFromBlock'
 
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
@@ -40,21 +41,14 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const { decimals, address } = token?.tokenInfo || {}
 
-  // Format safeTx params
-  const txParams = useMemo(() => {
-    if (!address || !decimals) return
-    try {
-      return createTokenTransferParams(params.recipient, params.amount, decimals, address)
-    } catch (e) {
-      return undefined
-    }
-  }, [params, decimals, address])
-
   // Create a safeTx
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    if (!txParams) return
-    return createTx(txParams)
-  }, [txParams])
+    if (!address || !decimals) return
+    const txParams = createTokenTransferParams(params.recipient, params.amount, decimals, address)
+    if (txParams) {
+      return createTx(txParams)
+    }
+  }, [params, decimals, address])
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>

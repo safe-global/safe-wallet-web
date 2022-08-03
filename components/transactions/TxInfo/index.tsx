@@ -1,15 +1,8 @@
 import { type ReactElement } from 'react'
-import {
-  Transfer,
-  Custom,
-  Creation,
-  TransactionTokenType,
-  TransactionInfo,
-  TransferDirection,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+import { Transfer, Custom, Creation, TransactionTokenType, TransactionInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 import { isCreationTxInfo, isCustomTxInfo, isTransferTxInfo } from '@/utils/transaction-guards'
-import { shortenAddress } from '@/utils/formatters'
+import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 
 export const TransferTx = ({
@@ -41,9 +34,13 @@ export const TransferTx = ({
       return <TokenAmount {...transfer} direction={direction} logoUri={withLogo ? transfer?.logoUri : undefined} />
     case TransactionTokenType.ERC721:
       return (
-        <>
-          {info.direction === TransferDirection.OUTGOING ? 'Sent' : 'Received'} {transfer.tokenName} #{transfer.tokenId}
-        </>
+        <TokenAmount
+          {...transfer}
+          tokenSymbol={ellipsis(`${transfer.tokenSymbol} #${transfer.tokenId}`, withLogo ? 16 : 100)}
+          value="1"
+          direction={undefined}
+          logoUri={withLogo ? transfer?.logoUri : undefined}
+        />
       )
     default:
       return <></>

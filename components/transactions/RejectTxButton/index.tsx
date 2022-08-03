@@ -1,16 +1,24 @@
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Tooltip } from '@mui/material'
-import HighlightOffIcon from '@mui/icons-material/HighlightOff'
-import IconButton from '@mui/material/IconButton'
+import { Button, Tooltip } from '@mui/material'
 
 import { useState, type ReactElement, SyntheticEvent } from 'react'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isCustomTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import RejectTxModal from '@/components/tx/modals/RejectTxModal'
 import useIsPending from '@/hooks/useIsPending'
+import IconButton from '@mui/material/IconButton'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
-const RejectTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement | null => {
+const RejectTxButton = ({
+  txSummary,
+  compact = false,
+}: {
+  txSummary: TransactionSummary
+  compact?: boolean
+}): ReactElement | null => {
   const [open, setOpen] = useState<boolean>(false)
+  const isSafeOwner = useIsSafeOwner()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
   const canCancel = !queuedTxsByNonce?.some(
@@ -18,7 +26,7 @@ const RejectTxButton = ({ txSummary }: { txSummary: TransactionSummary }): React
   )
   const isPending = useIsPending({ txId: txSummary.id })
 
-  const isDisabled = isPending
+  const isDisabled = isPending || !isSafeOwner
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -29,13 +37,17 @@ const RejectTxButton = ({ txSummary }: { txSummary: TransactionSummary }): React
 
   return (
     <>
-      <Tooltip title="Reject" arrow placement="top">
-        <span>
+      {compact ? (
+        <Tooltip title="Reject" arrow placement="top">
           <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>
             <HighlightOffIcon fontSize="small" />
           </IconButton>
-        </span>
-      </Tooltip>
+        </Tooltip>
+      ) : (
+        <Button onClick={onClick} color="error" variant="contained" disabled={isDisabled}>
+          Reject
+        </Button>
+      )}
 
       {open && <RejectTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </>

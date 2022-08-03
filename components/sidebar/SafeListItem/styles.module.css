@@ -1,8 +1,24 @@
+.container {
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-1);
+  padding-left: var(--space-1);
+  padding-right: var(--space-1);
+}
+
 .safe {
   border-radius: 8px;
   padding-left: 22px;
 }
 
-.safe :global .Mui-selected {
+.safe.open {
   padding-left: 16px;
+  border-left: 6px solid var(--color-primary-main);
+}
+
+.safe :global .Mui-selected {
+  background-color: var(--color-border-background);
+}
+
+.safe:hover {
+  background-color: var(--color-primary-background);
 }

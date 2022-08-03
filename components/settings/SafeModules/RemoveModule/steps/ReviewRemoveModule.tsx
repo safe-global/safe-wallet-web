@@ -16,10 +16,8 @@ export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData;
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!sdk) return
-
     const tx = await sdk.getDisableModuleTx(data.address)
-
-    return createTx({ ...tx.data, nonce: undefined })
+    return createTx(tx.data)
   }, [sdk, data.address])
 
   useEffect(() => {

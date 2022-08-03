@@ -6,13 +6,14 @@ import { formatUnits } from 'ethers/lib/utils'
 
 export const TokenIcon = (props: { logoUri?: string; tokenSymbol?: string; size?: number }): ReactElement | null => {
   const DEFAULT_SIZE = 26
+  const FALLBACK_ICON = '/images/token-placeholder.svg'
   const { logoUri, tokenSymbol, size = DEFAULT_SIZE } = props
   const [src, setSrc] = useState<string>(logoUri || '')
 
   useEffect(() => void setSrc(logoUri || ''), [logoUri])
 
   return !src ? null : (
-    <img src={src} alt={tokenSymbol} className={css.tokenIcon} onError={() => setSrc('')} height={size} />
+    <img src={src} alt={tokenSymbol} className={css.tokenIcon} onError={() => setSrc(FALLBACK_ICON)} height={size} />
   )
 }
 
@@ -35,8 +36,11 @@ const TokenAmount = ({
   return (
     <span className={css.container}>
       {logoUri && <TokenIcon logoUri={logoUri} tokenSymbol={tokenSymbol} />}
-      {sign}
-      {formatAmount(amount)} {tokenSymbol}
+
+      <span>
+        {sign}
+        {formatAmount(amount)} <span className={css.symbol}>{tokenSymbol}</span>
+      </span>
     </span>
   )
 }

@@ -23,7 +23,8 @@ export type CreateSafeFormData = {
   owners: Owner[]
 }
 
-export type PendingSafeData = CreateSafeFormData & { txHash?: string; saltNonce: number }
+export type PendingSafeData = CreateSafeFormData & { txHash?: string; safeAddress?: string; saltNonce: number }
+export type PendingSafeByChain = Record<string, PendingSafeData | undefined>
 
 export const CreateSafeSteps: TxStepperProps['steps'] = [
   {

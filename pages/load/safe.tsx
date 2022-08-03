@@ -1,12 +1,10 @@
 import type { NextPage } from 'next'
 import LoadSafe from '@/components/load-safe'
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 const LoadSafeWithAddress: NextPage = () => {
-  const router = useRouter()
-  const { address = '' } = router.query
-  const safeAddress = Array.isArray(address) ? address[0] : address
+  const safeAddress = useSafeAddress()
   const [id, setId] = useState<string>(safeAddress)
 
   const initialData = {

@@ -1,7 +1,8 @@
 import { ReactElement } from 'react'
-import { DialogTitle, Button, Box, DialogActions, Typography } from '@mui/material'
+import { Button, DialogActions, Grid, Typography } from '@mui/material'
 import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
 import css from './styles.module.css'
+import { ModalDialogTitle } from '@/components/common/ModalDialog'
 
 const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps): ReactElement => {
   const { onBack, onSubmit, setStep, activeStep, stepData, firstStep } = useTxStepper({
@@ -12,14 +13,18 @@ const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps)
   })
 
   return (
-    <Box className={css.container}>
-      <DialogTitle display="flex" alignItems="center" justifyContent="space-between">
-        {steps[activeStep].label}
+    <div className={css.container}>
+      <ModalDialogTitle onClose={onClose}>
+        <Grid container px={1} alignItems="center" gap={2}>
+          <Grid item>{steps[activeStep].label}</Grid>
 
-        <Typography color={({ palette }) => palette.text.secondary}>
-          Step {activeStep + 1} out of {steps.length}
-        </Typography>
-      </DialogTitle>
+          <Grid item>
+            <Typography className={css.stepIndicator} variant="caption" color="border.main">
+              Step {activeStep + 1} out of {steps.length}
+            </Typography>
+          </Grid>
+        </Grid>
+      </ModalDialogTitle>
 
       {steps[activeStep].render(stepData[Math.max(0, activeStep)], onSubmit, onBack, setStep)}
 
@@ -28,7 +33,7 @@ const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps)
           {firstStep ? 'Cancel' : 'Back'}
         </Button>
       </DialogActions>
-    </Box>
+    </div>
   )
 }
 

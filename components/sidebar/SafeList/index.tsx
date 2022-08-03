@@ -14,13 +14,13 @@ import useOwnedSafes from '@/hooks/useOwnedSafes'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { AddedSafesOnChain, selectAllAddedSafes } from '@/store/addedSafesSlice'
-import useSafeAddress from '@/hooks/useSafeAddress'
 import SafeListItem from '@/components/sidebar/SafeListItem'
 import { AppRoutes } from '@/config/routes'
 
 import css from './styles.module.css'
 import { sameAddress } from '@/utils/addresses'
 import ChainIndicator from '@/components/common/ChainIndicator'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -53,7 +53,7 @@ const MAX_EXPANDED_SAFES = 3
 const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement => {
   const router = useRouter()
   const chainId = useChainId()
-  const safeAddress = useSafeAddress()
+  const { safeAddress, safe } = useSafeInfo()
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
@@ -103,7 +103,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
 
             {/* No Safes yet */}
             {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
-              <Typography variant="body2" sx={({ palette }) => ({ color: palette.secondary.light, my: '8px' })}>
+              <Typography variant="body2" color="secondary.light" py={1} mb={1}>
                 <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
                   Create or add
                 </Link>{' '}
@@ -124,6 +124,20 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
                   shouldScrollToSafe
                 />
               ))}
+
+              {isCurrentChain &&
+                safeAddress &&
+                !addedSafesOnChain[safeAddress] &&
+                !ownedSafesOnChain.includes(safeAddress) && (
+                  <SafeListItem
+                    address={safeAddress}
+                    threshold={safe.threshold}
+                    owners={safe.owners.length}
+                    chainId={safe.chainId}
+                    closeDrawer={closeDrawer}
+                    shouldScrollToSafe
+                  />
+                )}
             </List>
 
             {/* Owned Safes */}

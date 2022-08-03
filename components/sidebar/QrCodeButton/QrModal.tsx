@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { Box, Checkbox, DialogContent, FormControlLabel, Typography } from '@mui/material'
+import { Box, Switch, DialogContent, FormControlLabel, Typography } from '@mui/material'
 import ModalDialog from '@/components/common/ModalDialog'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -15,17 +15,19 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
   const dispatch = useAppDispatch()
   const qrPrefix = settings.shortName.qr ? `${chain?.shortName}:` : ''
   const qrCode = useGenerateQrCode(`${qrPrefix}${safeAddress}`)
+  const chainName = chain?.chainName || ''
+  const nativeToken = chain?.nativeCurrency.symbol || ''
 
   return (
     <ModalDialog open dialogTitle="Receive assets" onClose={onClose} hideChainIndicator>
       <DialogContent>
         <Box bgcolor={chain?.theme.backgroundColor} color={chain?.theme.textColor} px={3} py={2} mx={-3}>
-          {chain?.chainName} network &mdash; only send {chain?.chainName} assets to this Safe.
+          {chainName} network &mdash; only send {chainName} assets to this Safe.
         </Box>
 
         <Typography my={2}>
           This is the address of your Safe. Deposit funds by scanning the QR code or copying the address below. Only
-          send ETH and assets to this address (e.g. ETH, ERC20, ERC721)!
+          send {nativeToken} and tokens (e.g. ERC20, ERC721) to this address.
         </Typography>
 
         <Box display="flex" flexDirection="column" flexWrap="wrap" justifyContent="center" alignItems="center" my={2}>
@@ -35,7 +37,7 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
 
           <FormControlLabel
             control={
-              <Checkbox checked={settings.shortName.qr} onChange={(e) => dispatch(setQrShortName(e.target.checked))} />
+              <Switch checked={settings.shortName.qr} onChange={(e) => dispatch(setQrShortName(e.target.checked))} />
             }
             label={
               <>

@@ -1,44 +1,34 @@
-import groupBy from 'lodash/groupBy'
-import { Box, Card, CardContent, Grid, Typography } from '@mui/material'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import css from './styles.module.css'
+import { useState, type ReactElement } from 'react'
+import NftTransferModal from '../tx/modals/NftTransferModal'
+import NftGrid from './NftGrid'
 
-const NftCard = ({ nft }: { nft: SafeCollectibleResponse }) => (
-  <Card>
-    <CardContent>
-      <img
-        className={css.image}
-        src={nft.imageUri || '/images/nft-placeholder.png'}
-        alt={`${nft.tokenName} #${nft.id}`}
-      />
-
-      <Typography fontWeight="bold">{nft.name || `${nft.tokenName} #${nft.id}`}</Typography>
-
-      {nft.description && <Typography>{nft.description.slice(0, 70)}&hellip;</Typography>}
-    </CardContent>
-  </Card>
-)
-
-export const NftGrid = ({ collectibles }: { collectibles: SafeCollectibleResponse[] }) => {
-  const collections: Record<string, SafeCollectibleResponse[]> = groupBy(collectibles, 'address')
+const Nfts = ({ collectibles }: { collectibles: SafeCollectibleResponse[] }): ReactElement => {
+  const [sendNft, setSendNft] = useState<SafeCollectibleResponse | null>(null)
+  const isSafeOwner = useIsSafeOwner()
+  const isWrongChain = useIsWrongChain()
+  const isGranted = isSafeOwner && !isWrongChain
 
   return (
     <>
-      {Object.entries(collections).map(([address, nfts]) => (
-        <Box key={address} pb={4}>
-          <Typography variant="h6" mb={1}>
-            {nfts[0].tokenName}
-          </Typography>
+      <NftGrid collectibles={collectibles} onSendClick={isGranted ? (nft) => setSendNft(nft) : undefined} />
 
-          <Grid container spacing={3}>
-            {nfts.map((nft) => (
-              <Grid item xs={12} md={4} key={nft.address + nft.id}>
-                <NftCard nft={nft} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      ))}
+      {isGranted && sendNft && (
+        <NftTransferModal
+          onClose={() => setSendNft(null)}
+          initialData={[
+            {
+              recipient: '',
+              tokenAddress: sendNft.address,
+              tokenId: sendNft.id,
+            },
+          ]}
+        />
+      )}
     </>
   )
 }
+
+export default Nfts

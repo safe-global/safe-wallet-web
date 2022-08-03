@@ -17,7 +17,7 @@ import CopyIcon from '@/public/images/sidebar/copy.svg'
 
 import { selectSettings } from '@/store/settingsSlice'
 import { useCurrentChain } from '@/hooks/useChains'
-import { getExplorerLink } from '@/utils/gateway'
+import { getBlockExplorerLink } from '@/utils/chains'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import CopyButton from '@/components/common/CopyButton'
@@ -80,11 +80,7 @@ const SafeHeader = (): ReactElement => {
           <CopyIcon />
         </CopyButton>
 
-        <a
-          target="_blank"
-          rel="noreferrer"
-          {...(chain && getExplorerLink(safeAddress, chain.blockExplorerUriTemplate))}
-        >
+        <a target="_blank" rel="noreferrer" {...(chain && getBlockExplorerLink(chain, safeAddress))}>
           <HeaderIconButton>
             <OpenInNewRoundedIcon color="primary" fontSize="small" />
           </HeaderIconButton>

@@ -8,6 +8,7 @@ import Safe from '@gnosis.pm/safe-core-sdk'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { checkSafeCreationTx } from '@/components/create-safe/status/usePendingSafeCreation'
+import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 
 describe('useSafeCreation', () => {
   beforeEach(() => {
@@ -20,12 +21,13 @@ describe('useSafeCreation', () => {
   it('should return a PENDING state by default', () => {
     const { result } = renderHook(() => useSafeCreation())
 
-    expect(result.current.status).toBe(SafeCreationStatus.PENDING)
+    expect(result.current.status).toBe(SafeCreationStatus.AWAITING)
   })
 
   it('should return SUCCESS if the safe creation promise resolves', async () => {
     const mockSafe: Safe = new Safe()
     mockSafe.getAddress = jest.fn(() => '0x0')
+    jest.spyOn(createSafe, 'computeNewSafeAddress').mockImplementation(() => Promise.resolve(ZERO_ADDRESS))
     jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.resolve(mockSafe))
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
@@ -47,6 +49,7 @@ describe('useSafeCreation', () => {
   it('should return ERROR if the safe creation promise rejects', async () => {
     const mockSafe: Safe = new Safe()
     mockSafe.getAddress = jest.fn(() => '0x0')
+    jest.spyOn(createSafe, 'computeNewSafeAddress').mockImplementation(() => Promise.resolve(ZERO_ADDRESS))
     jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.reject(mockSafe))
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {

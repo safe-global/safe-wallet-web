@@ -1,16 +1,22 @@
 import { useState, type ReactElement, SyntheticEvent } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Tooltip } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
-import IconButton from '@mui/material/IconButton'
+import { Button, Tooltip } from '@mui/material'
 
 import { isSignableBy } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
 import ConfirmTxModal from '@/components/tx/modals/ConfirmTxModal'
 import useIsPending from '@/hooks/useIsPending'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import IconButton from '@mui/material/IconButton'
+import CheckIcon from '@mui/icons-material/Check'
 
-const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactElement => {
+const SignTxButton = ({
+  txSummary,
+  compact = false,
+}: {
+  txSummary: TransactionSummary
+  compact?: boolean
+}): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
   const wallet = useWallet()
   const signaturePending = isSignableBy(txSummary, wallet?.address || '')
@@ -26,13 +32,17 @@ const SignTxButton = ({ txSummary }: { txSummary: TransactionSummary }): ReactEl
 
   return (
     <>
-      <Tooltip title="Sign" arrow placement="top">
-        <span>
+      {compact ? (
+        <Tooltip title="Sign" arrow placement="top">
           <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
             <CheckIcon fontSize="small" />
           </IconButton>
-        </span>
-      </Tooltip>
+        </Tooltip>
+      ) : (
+        <Button onClick={onClick} variant="contained" disabled={isDisabled}>
+          Sign
+        </Button>
+      )}
 
       {open && <ConfirmTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </>
