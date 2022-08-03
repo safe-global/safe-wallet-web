@@ -57,9 +57,9 @@ export const useSafeCreation = () => {
   const safeCreationCallback = useCallback(
     (txHash: string) => {
       setStatus(SafeCreationStatus.MINING)
-      pendingSafe && setPendingSafe({ ...pendingSafe, txHash })
+      setPendingSafe((prev) => prev && { ...prev, txHash })
     },
-    [pendingSafe, setPendingSafe],
+    [setPendingSafe],
   )
 
   const onRetry = () => {
@@ -170,9 +170,9 @@ export const useSafeCreation = () => {
 
     if (status === SafeCreationStatus.ERROR || status === SafeCreationStatus.REVERTED) {
       setCreationPromise(undefined)
-      pendingSafe && setPendingSafe({ ...pendingSafe, txHash: undefined })
+      setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
     }
-  }, [chainId, pendingSafe, router, safeAddress, setPendingSafe, status])
+  }, [chainId, router, safeAddress, status])
 
   return {
     safeAddress,

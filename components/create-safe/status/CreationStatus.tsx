@@ -110,7 +110,7 @@ export const CreationStatus = ({ onClose }: Props) => {
         </Box>
       )}
       {safeAddress && !displaySafeLink && (
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Box display="flex" flexDirection="column" alignItems="center" px={3}>
           <Typography>Your safe will have the following address after creation:</Typography>
           <EthHashInfo
             address={safeAddress}
