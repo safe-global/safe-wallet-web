@@ -67,6 +67,10 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
 }))
 
 describe('AppsPage', () => {
+  beforeEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('Remote Safe Apps', () => {
     it('shows apps from remote app list', async () => {
       render(<AppsPage />, {
@@ -178,8 +182,9 @@ describe('AppsPage', () => {
         fireEvent.click(riskCheckbox)
       })
 
-      await waitFor(() =>
-        expect(screen.getByText("The app doesn't support Safe App functionality")).toBeInTheDocument(),
+      await waitFor(
+        () => expect(screen.getByText("The App doesn't support Safe App functionality")).toBeInTheDocument(),
+        { timeout: 7000 },
       )
     })
 
