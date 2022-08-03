@@ -5,6 +5,7 @@ import { selectLastSafeAddress } from '@/store/sessionSlice'
 import { useAppSelector } from '@/store'
 import useChainId from '@/hooks/useChainId'
 import chains from '@/config/chains'
+import { AppRoutes } from '@/config/routes'
 
 const useLastSafe = (): string | undefined => {
   const chainId = useChainId()
@@ -15,14 +16,16 @@ const useLastSafe = (): string | undefined => {
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
-  const { chain, loadLastSafe } = router.query
+  const { chain } = router.query
   const lastSafe = useLastSafe()
 
   useEffect(() => {
+    const loadLastSafe = ![AppRoutes.welcome, AppRoutes.load, AppRoutes.open].includes(router.pathname)
+
     router.push(
       loadLastSafe && lastSafe ? `/safe/home?safe=${lastSafe}` : chain ? `/welcome?chain=${chain}` : `/welcome`,
     )
-  }, [router, lastSafe, chain, loadLastSafe])
+  }, [router, lastSafe, chain])
 
   return <></>
 }

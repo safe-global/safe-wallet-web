@@ -22,7 +22,6 @@ const NetworkSelector = ({ loadLastSafe = false }: { loadLastSafe?: boolean }): 
       pathname: loadLastSafe ? '/' : router.pathname,
       query: {
         chain: newShortName,
-        loadLastSafe,
       },
     })
   }
