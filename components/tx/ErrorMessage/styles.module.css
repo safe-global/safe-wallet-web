@@ -15,11 +15,6 @@
   line-height: 1.4;
 }
 
-.icon {
-  width: 16px !important;
-  height: 16px !important;
-}
-
 .details {
   margin-top: var(--space-1);
   color: var(--color-secondary-light);

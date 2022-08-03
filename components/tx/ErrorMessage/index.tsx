@@ -20,7 +20,7 @@ const ErrorMessage = ({
   return (
     <div className={css.container}>
       <div className={css.message}>
-        <WarningAmberIcon className={css.icon} />
+        <WarningAmberIcon fontSize="small" />
 
         <div>
           <Typography variant="body2">{children}</Typography>
