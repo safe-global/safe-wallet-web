@@ -54,6 +54,11 @@
   border-left: 2px solid var(--color-border-light);
 }
 
+.delegateCall .alert {
+  width: fit-content;
+  padding: 0 var(--space-1);
+}
+
 @media (max-width: 768px) {
   .txSigners {
     border-left: 0;
