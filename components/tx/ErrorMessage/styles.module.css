@@ -1,0 +1,26 @@
+.container {
+  background-color: var(--color-error-background);
+  color: var(--color-error-dark);
+  padding: var(--space-2);
+  margin: var(--space-2) 0;
+}
+
+.message {
+  display: flex;
+  align-items: start;
+  gap: var(--space-1);
+}
+
+.message * {
+  line-height: 1.4;
+}
+
+.icon {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.details {
+  margin-top: var(--space-1);
+  color: var(--color-secondary-light);
+}

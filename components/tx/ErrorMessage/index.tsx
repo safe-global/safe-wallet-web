@@ -1,5 +1,7 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useState } from 'react'
 import { Link, Typography } from '@mui/material'
+import WarningAmberIcon from '@mui/icons-material/WarningAmber'
+import css from './styles.module.css'
 
 const ErrorMessage = ({
   children,
@@ -16,15 +18,27 @@ const ErrorMessage = ({
   }
 
   return (
-    <Typography color="error" mt={4} mb={1}>
-      {children}&nbsp;
-      {error && (
-        <Link component="button" color="secondary.light" onClick={onDetailsToggle}>
-          Details
-        </Link>
-      )}
-      {error && showDetails && <Typography mt={1}>Error: {error.reason || error.message.slice(0, 300)}</Typography>}
-    </Typography>
+    <div className={css.container}>
+      <div className={css.message}>
+        <WarningAmberIcon className={css.icon} />
+
+        <div>
+          <Typography variant="body2">{children}</Typography>
+
+          {error && showDetails && (
+            <Typography variant="body2" className={css.details}>
+              {error.reason || error.message.slice(0, 300)}
+            </Typography>
+          )}
+        </div>
+
+        {error && (
+          <Link component="button" onClick={onDetailsToggle}>
+            Details
+          </Link>
+        )}
+      </div>
+    </div>
   )
 }
 

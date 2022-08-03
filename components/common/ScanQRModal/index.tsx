@@ -1,8 +1,9 @@
 import { useCallback, useEffect, createRef, useState } from 'react'
-import { Box, Dialog, DialogTitle, IconButton, Button, Divider, Alert } from '@mui/material'
+import { Box, Dialog, DialogTitle, IconButton, Button, Divider } from '@mui/material'
 import QrReader from 'react-qr-reader'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 
 type Props = {
   isOpen: boolean
@@ -69,7 +70,7 @@ const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElement => 
       <Divider />
 
       <Box display="flex" flexDirection="column" alignItems="center">
-        {error && <Alert severity="error">{error}</Alert>}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <QrReader
           legacyMode={cameraBlocked}
