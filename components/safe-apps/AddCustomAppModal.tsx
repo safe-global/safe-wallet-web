@@ -46,6 +46,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     setError,
     formState: { errors, dirtyFields, isValidating },
     watch,
+    reset,
   } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false }, mode: 'onChange' })
   const appUrl = watch('appUrl')
 
@@ -57,23 +58,35 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   }
 
   React.useEffect(() => {
+    let isCurrent = true
+
     const loadApp = async () => {
       try {
         setSafeApp(undefined)
         const appFromManifest = await fetchSafeAppFromManifest(appUrl, chainId)
-        setSafeApp(appFromManifest)
+
+        if (isCurrent) {
+          setSafeApp(appFromManifest)
+        }
       } catch (err) {
-        setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
+        if (isCurrent) {
+          setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
+        }
       }
     }
 
-    if (!isValidating && dirtyFields.appUrl && !errors.appUrl) loadApp()
+    if (!isValidating && dirtyFields.appUrl && !errors.appUrl && safeApp?.url !== appUrl) loadApp()
+
+    return () => {
+      isCurrent = false
+    }
   }, [appUrl, chainId, setError, errors.appUrl, isValidating, dirtyFields.appUrl])
 
   const appLogoUrl = safeApp?.iconUrl || APP_LOGO_FALLBACK_IMAGE
 
   const handleClose = () => {
     setSafeApp(undefined)
+    reset()
     onClose()
   }
 
