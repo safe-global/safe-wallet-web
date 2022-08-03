@@ -34,7 +34,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => (
 
     <ConnectWallet />
 
-    <NetworkSelector loadLastSafe />
+    <NetworkSelector />
   </Paper>
 )
 

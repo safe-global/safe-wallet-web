@@ -6,8 +6,9 @@ import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
 import chains from '@/config/chains'
 import { ReactElement } from 'react'
+import { AppRoutes } from '@/config/routes'
 
-const NetworkSelector = ({ loadLastSafe = false }: { loadLastSafe?: boolean }): ReactElement => {
+const NetworkSelector = (): ReactElement => {
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
@@ -17,6 +18,8 @@ const NetworkSelector = ({ loadLastSafe = false }: { loadLastSafe?: boolean }): 
     const newShortName = Object.entries(chains).find(([, val]) => val === selectedChainId)?.[0]
 
     if (!newShortName) return
+
+    const loadLastSafe = ![AppRoutes.welcome, AppRoutes.load, AppRoutes.open].includes(router.pathname)
 
     return router.replace({
       pathname: loadLastSafe ? '/' : router.pathname,
