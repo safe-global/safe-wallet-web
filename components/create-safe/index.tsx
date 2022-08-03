@@ -10,6 +10,7 @@ import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 import { AppRoutes } from '@/config/routes'
 import { CreationStatus } from '@/components/create-safe/status/CreationStatus'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
+import useChainId from '@/hooks/useChainId'
 
 export type Owner = {
   name: string
@@ -24,6 +25,7 @@ export type CreateSafeFormData = {
 }
 
 export type PendingSafeData = CreateSafeFormData & { txHash?: string; safeAddress?: string; saltNonce: number }
+export type PendingSafeByChain = Record<string, PendingSafeData | undefined>
 
 export const CreateSafeSteps: TxStepperProps['steps'] = [
   {
@@ -52,19 +54,20 @@ export const CreateSafeSteps: TxStepperProps['steps'] = [
 
 const CreateSafe = () => {
   const [pendingSafe, setPendingSafe] = usePendingSafe()
+  const chainId = useChainId()
   const [safeCreationPending, setSafeCreationPending] = useState<boolean>(false)
   const router = useRouter()
 
   useEffect(() => {
-    setSafeCreationPending(!!pendingSafe)
-  }, [pendingSafe])
+    setSafeCreationPending(!!pendingSafe?.[chainId])
+  }, [pendingSafe, chainId])
 
   const onFinish = () => {
     setSafeCreationPending(true)
   }
 
   const onClose = () => {
-    setPendingSafe(undefined)
+    setPendingSafe({ ...pendingSafe, [chainId]: undefined })
     router.push(AppRoutes.welcome)
   }
 

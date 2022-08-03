@@ -51,52 +51,60 @@ export const useSafeCreation = () => {
   const chainId = useChainId()
   const dispatch = useAppDispatch()
   const router = useRouter()
+  const currentPendingSafe = pendingSafe?.[chainId]
 
-  usePendingSafeCreation({ txHash: pendingSafe?.txHash, setSafeAddress, setStatus })
+  usePendingSafeCreation({ txHash: currentPendingSafe?.txHash, setSafeAddress, setStatus })
 
   const safeCreationCallback = useCallback(
     (txHash: string) => {
       setStatus(SafeCreationStatus.MINING)
-      setPendingSafe((prev) => prev && { ...prev, txHash })
+      setPendingSafe((prev) => {
+        return prev
+          ? { ...prev, [chainId]: prev[chainId] ? ({ ...prev[chainId], txHash } as PendingSafeData) : undefined }
+          : undefined
+      })
     },
-    [setPendingSafe],
+    [setPendingSafe, chainId],
   )
 
   const onRetry = () => {
-    if (!ethersProvider || !pendingSafe) return
+    if (!ethersProvider || !currentPendingSafe) return
 
     setStatus(SafeCreationStatus.AWAITING)
-    setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
+    setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(currentPendingSafe, safeCreationCallback)))
   }
 
   useEffect(() => {
-    if (!ethersProvider || !pendingSafe) return
+    if (!ethersProvider || !currentPendingSafe) return
 
     const getNewSafeAddress = async () => {
-      const address = await computeNewSafeAddress(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback))
+      const address = await computeNewSafeAddress(
+        ethersProvider,
+        getSafeDeployProps(currentPendingSafe, safeCreationCallback),
+      )
       setSafeAddress(address)
     }
 
     getNewSafeAddress()
-  }, [ethersProvider, pendingSafe, safeCreationCallback])
+  }, [ethersProvider, currentPendingSafe, safeCreationCallback])
 
   useEffect(() => {
     if (
       creationPromise ||
-      pendingSafe?.txHash ||
+      currentPendingSafe?.txHash ||
       !ethersProvider ||
-      !pendingSafe ||
+      !currentPendingSafe ||
       status === SafeCreationStatus.ERROR
     ) {
       return
     }
 
     setStatus(SafeCreationStatus.AWAITING)
-    setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
-  }, [safeCreationCallback, creationPromise, ethersProvider, pendingSafe, status])
+    setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(currentPendingSafe, safeCreationCallback)))
+  }, [safeCreationCallback, creationPromise, ethersProvider, currentPendingSafe, status])
 
   useEffect(() => {
-    if (!creationPromise || !pendingSafe) return
+    if (!creationPromise || !currentPendingSafe) return
 
     creationPromise
       .then((safe) => {
@@ -106,16 +114,16 @@ export const useSafeCreation = () => {
           .getChainId()
           .then((chainId) => {
             // Update Addressbook
-            if (pendingSafe.name) {
+            if (currentPendingSafe.name) {
               dispatch(
                 upsertAddressBookEntry({
                   chainId: chainId.toString(),
                   address: safe.getAddress(),
-                  name: pendingSafe.name,
+                  name: currentPendingSafe.name,
                 }),
               )
             }
-            pendingSafe.owners.forEach((owner) => {
+            currentPendingSafe.owners.forEach((owner) => {
               if (owner.name) {
                 dispatch(
                   upsertAddressBookEntry({ chainId: chainId.toString(), address: owner.address, name: owner.name }),
@@ -127,9 +135,9 @@ export const useSafeCreation = () => {
               addOrUpdateSafe({
                 safe: {
                   ...defaultSafeInfo,
-                  address: { value: safe.getAddress(), name: pendingSafe.name },
-                  threshold: pendingSafe.threshold,
-                  owners: pendingSafe.owners.map((owner) => ({
+                  address: { value: safe.getAddress(), name: currentPendingSafe.name },
+                  threshold: currentPendingSafe.threshold,
+                  owners: currentPendingSafe.owners.map((owner) => ({
                     value: owner.address,
                     name: owner.name,
                   })),
@@ -147,7 +155,7 @@ export const useSafeCreation = () => {
         setStatus(SafeCreationStatus.ERROR)
         logError(Errors._800, error.message)
       })
-  }, [creationPromise, dispatch, pendingSafe])
+  }, [creationPromise, dispatch, currentPendingSafe])
 
   useEffect(() => {
     const checkCreatedSafe = async (chainId: string, address: string) => {
@@ -178,6 +186,6 @@ export const useSafeCreation = () => {
     safeAddress,
     status,
     onRetry,
-    txHash: pendingSafe?.txHash,
+    txHash: currentPendingSafe?.txHash,
   }
 }
