@@ -1,7 +1,7 @@
 import useLocalStorage from '@/services/localStorage/useLocalStorage'
 import { PendingSafeByChain, PendingSafeData } from '@/components/create-safe/index'
 import useChainId from '@/hooks/useChainId'
-import { Dispatch, SetStateAction, useCallback } from 'react'
+import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
 
 const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 
@@ -14,7 +14,7 @@ export const usePendingSafe = (): [Prop, Dispatch<SetStateAction<Prop>>] => {
     undefined,
   )
 
-  const pendingSafe = pendingSafes?.[chainId]
+  const pendingSafe = useMemo(() => pendingSafes?.[chainId], [chainId, pendingSafes])
 
   const setPendingSafe = useCallback(
     (data: Prop | ((prevData: Prop) => Prop)) => {
