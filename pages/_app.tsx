@@ -24,6 +24,7 @@ import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 
 const cssCache = createCache({
   key: 'css',
@@ -31,7 +32,7 @@ const cssCache = createCache({
 })
 
 const InitApp = (): null => {
-  if (!IS_PRODUCTION) {
+  if (!IS_PRODUCTION && !cgwDebugStorage.get()) {
     setBaseUrl(STAGING_GATEWAY_URL)
   }
 
