@@ -32,6 +32,7 @@ const darkPalette = {
     dark: '#027128',
     main: '#008C30',
     light: '#99CDAB',
+    background: '#EFFAF1',
   },
   info: {
     dark: '#247CB7',

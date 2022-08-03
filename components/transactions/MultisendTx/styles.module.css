@@ -3,8 +3,7 @@
   height: 100%;
 }
 
-.multisendInfo,
-.delegateCall {
+.multisendInfo {
   padding: 20px 24px 0;
 }
 
@@ -15,9 +14,4 @@
   border-top: 2px solid var(--color-border-light);
   padding: var(--space-3);
   padding-right: 60px;
-}
-
-.delegateCall .alert {
-  width: fit-content;
-  padding: 0 var(--space-1);
 }
