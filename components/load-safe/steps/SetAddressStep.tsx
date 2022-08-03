@@ -20,8 +20,6 @@ type Props = {
 }
 
 const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
-  console.log(params)
-
   const currentChainId = useChainId()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
   const formMethods = useForm<LoadSafeFormData>({
@@ -30,9 +28,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     },
   })
 
-  const { register, handleSubmit, watch } = formMethods
-  console.log(watch('safeAddress'))
-
+  const { register, handleSubmit } = formMethods
   useOwnerForm('safeAddress', formMethods, true)
 
   const validateSafeAddress = async (address: string) => {
