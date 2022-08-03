@@ -13,6 +13,7 @@ import RejectTxButton from '@/components/transactions/RejectTxButton'
 import { useTransactionStatus } from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 import GroupIcon from '@mui/icons-material/Group'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette) => {
   switch (value) {
@@ -37,6 +38,7 @@ type TxSummaryProps = {
 const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
+  const isWrongChain = useIsWrongChain()
   const txStatusLabel = useTransactionStatus(tx)
   const isQueue = isTxQueued(tx.txStatus)
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
@@ -82,14 +84,14 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      {wallet && isQueue && (
+      {wallet && !isWrongChain && isQueue && (
         <Box gridArea="actions">
           {awaitingExecution ? (
-            <ExecuteTxButton txSummary={item.transaction} />
+            <ExecuteTxButton txSummary={item.transaction} compact />
           ) : (
-            <SignTxButton txSummary={item.transaction} />
+            <SignTxButton txSummary={item.transaction} compact />
           )}
-          <RejectTxButton txSummary={item.transaction} />
+          <RejectTxButton txSummary={item.transaction} compact />
         </Box>
       )}
 
