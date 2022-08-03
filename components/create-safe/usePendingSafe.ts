@@ -1,4 +1,4 @@
-import useLocalStorage from '@/services/localStorage/useLocalStorage'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { PendingSafeByChain, PendingSafeData } from '@/components/create-safe/index'
 import useChainId from '@/hooks/useChainId'
 import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'

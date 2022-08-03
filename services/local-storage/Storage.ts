@@ -9,7 +9,7 @@ type ItemWithExpiry<T> = {
 }
 
 class Storage {
-  private prefix: string
+  private readonly prefix: string
   private storage?: BrowserStorage
 
   constructor(storage?: BrowserStorage, prefix = LS_NAMESPACE) {

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { IS_PRODUCTION } from '@/config/constants'
-import useLocalStorage from '@/services/localStorage/useLocalStorage'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useAppDispatch } from '@/store'
 import { addressBookSlice } from '@/store/addressBookSlice'
 import { addedSafesSlice } from '@/store/addedSafesSlice'

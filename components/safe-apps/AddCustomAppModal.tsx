@@ -12,67 +12,74 @@ import {
   Box,
   FormHelperText,
 } from '@mui/material'
+import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
-import { AppManifest, fetchAppManifest, isAppManifestValid } from '@/services/safe-apps/manifest'
+import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
+import useChainId from '@/hooks/useChainId'
 import { trimTrailingSlash } from '@/utils/url'
+import useAsync from '@/hooks/useAsync'
+import useDebounce from '@/hooks/useDebounce'
 
 type Props = {
   open: boolean
   onClose: () => void
+  onSave: (data: SafeAppData) => void
+  // A list of safe apps to check if the app is already there
+  safeAppsList: SafeAppData[]
 }
 
 type CustomAppFormData = {
   appUrl: string
   riskAcknowledgement: boolean
+  safeApp: SafeAppData
 }
 
 const TEXT_FIELD_HEIGHT = '56px'
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
 
-// The icons URL can be any of the following format:
-// - https://example.com/icon.png
-// - icon.png
-// - /icon.png
-// This function calculates the absolute URL of the icon taking into account the
-// different formats.
-const getAppLogoUrl = (appUrl: string, icons: AppManifest['icons']) => {
-  const iconUrl = icons[0].src
-  const includesBaseUrl = iconUrl.startsWith('https://')
-  if (includesBaseUrl) {
-    return iconUrl
-  }
-
-  const isAbsoluteUrl = iconUrl.startsWith('/')
-  if (isAbsoluteUrl) {
-    const appUrlHost = new URL(appUrl).host
-    return `${appUrlHost}${iconUrl}`
-  }
-
-  return `${appUrl}/${icons[0].src}`
-}
-
-const AddCustomAppModal = ({ open, onClose }: Props) => {
-  const [appManifest, setAppManifest] = React.useState<AppManifest>()
+const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
+  const chainId = useChainId()
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false } })
-  const appUrl = watch('appUrl')
-  const onSubmit: SubmitHandler<CustomAppFormData> = (data, e) => console.log(data, e)
+    watch,
+    setError,
+    reset,
+  } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false }, mode: 'onChange' })
 
-  let appLogoUrl = APP_LOGO_FALLBACK_IMAGE
-  if (appManifest && appManifest.icons.length > 0) {
-    appLogoUrl = getAppLogoUrl(trimTrailingSlash(appUrl), appManifest.icons)
+  const onSubmit: SubmitHandler<CustomAppFormData> = (_, __) => {
+    if (safeApp) {
+      onSave(safeApp)
+      onClose()
+    }
   }
+
+  const appUrl = watch('appUrl')
+  const debouncedUrl = useDebounce(trimTrailingSlash(appUrl || ''), 300)
+  const [safeApp] = useAsync<SafeAppData | undefined>(async () => {
+    if (!isValidURL(debouncedUrl)) {
+      return
+    }
+
+    try {
+      return await fetchSafeAppFromManifest(debouncedUrl, chainId)
+    } catch (e) {
+      setError('appUrl', { type: 'custom', message: "The App doesn't support Safe App functionality" })
+    }
+  }, [chainId, debouncedUrl])
+
+  const appLogoUrl = safeApp?.iconUrl || APP_LOGO_FALLBACK_IMAGE
 
   const handleClose = () => {
-    setAppManifest(undefined)
+    reset()
     onClose()
   }
+
+  const isAppAlreadyInTheList = (appUrl: string) =>
+    safeAppsList.some((app) => trimTrailingSlash(app.url) === trimTrailingSlash(appUrl))
 
   return (
     <ModalDialog open={open} onClose={handleClose} dialogTitle="Add custom app">
@@ -89,26 +96,13 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
             autoComplete="off"
             sx={{ mt: 2 }}
             error={!!errors.appUrl}
-            helperText={errors.appUrl?.message}
+            helperText={errors.appUrl?.message || ' '}
             {...register('appUrl', {
               required: true,
               validate: {
-                validUrl: isValidURL,
-                validManifest: async (val): Promise<string | undefined> => {
-                  try {
-                    setAppManifest(undefined)
-                    const manifest = await fetchAppManifest(val)
-
-                    if (isAppManifestValid(manifest)) {
-                      setAppManifest(manifest)
-                      return
-                    }
-
-                    throw new Error('Invalid manifest')
-                  } catch (err) {
-                    return "The app doesn't support Safe App functionality"
-                  }
-                },
+                validUrl: (val: string) => (isValidURL(val) ? undefined : 'Invalid URL'),
+                doesntExist: (val: string) =>
+                  isAppAlreadyInTheList(val) ? 'This app is already in the list' : undefined,
               },
             })}
           />
@@ -127,7 +121,7 @@ const AddCustomAppModal = ({ open, onClose }: Props) => {
                 e.currentTarget.src = APP_LOGO_FALLBACK_IMAGE
               }}
             />
-            <TextField label="App name" disabled sx={{ width: '100%', ml: 2 }} value={appManifest?.name || ''} />
+            <TextField label="App name" disabled sx={{ width: '100%', ml: 2 }} value={safeApp?.name || ''} />
           </Box>
           <FormControlLabel
             aria-required
