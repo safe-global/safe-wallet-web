@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Box } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 
 import AssetsTable from '@/components/balances/AssetsTable'
 import CurrencySelect from '@/components/balances/CurrencySelect'
@@ -10,7 +10,7 @@ import NavTabs from '@/components/common/NavTabs'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 
 const Balances: NextPage = () => {
-  const { balances } = useBalances()
+  const { balances, loading } = useBalances()
 
   return (
     <main>
@@ -22,6 +22,8 @@ const Balances: NextPage = () => {
 
       <Box mt={2}>
         <AssetsTable items={balances?.items} />
+
+        {loading && <CircularProgress size={20} sx={{ marginTop: 2 }} />}
       </Box>
     </main>
   )

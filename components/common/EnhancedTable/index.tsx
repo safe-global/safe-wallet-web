@@ -95,7 +95,8 @@ type EnhancedTableProps = {
   variant?: PaperTypeMap['props']['variant']
 }
 
-const pageSizes = [5, 10, 25]
+const pageSizes = [10, 25, 100]
+const defaultRowsPerPage = 25
 
 function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
@@ -156,15 +157,18 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={pageSizes}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+
+        {rows.length > pagedRows.length && (
+          <TablePagination
+            rowsPerPageOptions={pageSizes}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        )}
       </Paper>
     </Box>
   )

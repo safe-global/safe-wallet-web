@@ -13,8 +13,6 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   // Re-fetch assets when the entire SafeInfo updates
   const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(
     async () => {
-      // SafeInfo becomes undefined when the safe address in the URL changes
-      // At this point Balances should also become undefined
       if (!safeLoaded) return
       return getBalances(safe.chainId, safe.address.value, currency)
     },
