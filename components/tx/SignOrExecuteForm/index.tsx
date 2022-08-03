@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction, TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material'
 
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
@@ -16,6 +16,9 @@ import DecodedTx from '../DecodedTx'
 import { logError, Errors } from '@/services/exceptions'
 import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { useCurrentChain } from '@/hooks/useChains'
+import { hasFeature } from '@/utils/chains'
+import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -51,6 +54,7 @@ const SignOrExecuteForm = ({
   const router = useRouter()
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
+  const currentChain = useCurrentChain()
 
   // Check that the transaction is executable
   const canExecute = isExecutable && !!tx && tx.data.nonce === safe.nonce
@@ -110,11 +114,19 @@ const SignOrExecuteForm = ({
       id = proposedTx.txId
     }
 
-    // @FIXME: pass maxFeePerGas and maxPriorityFeePerGas when Core SDK supports it
-    const txOptions = {
+    const txOptions: TransactionOptions = {
       gasLimit: advancedParams.gasLimit?.toString(),
-      gasPrice: advancedParams.maxFeePerGas?.toString(),
+      maxFeePerGas: advancedParams.maxFeePerGas?.toString(),
+      maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas?.toString(),
     }
+
+    // Some chains don't support EIP-1559 gas price params
+    if (currentChain && !hasFeature(currentChain, FEATURES.EIP1559)) {
+      txOptions.gasPrice = txOptions.maxFeePerGas
+      delete txOptions.maxFeePerGas
+      delete txOptions.maxPriorityFeePerGas
+    }
+
     await dispatchTxExecution(id, createdTx, txOptions)
 
     return id

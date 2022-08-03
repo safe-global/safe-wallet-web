@@ -1,40 +1,27 @@
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { useMemo } from 'react'
+import isEqual from 'lodash/isEqual'
+import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from '@/store'
 import { selectChainById, selectChains } from '@/store/chainsSlice'
 import { useChainId } from './useChainId'
-import { getExplorerLink } from '@/utils/gateway'
-import { useCallback, useMemo } from 'react'
 
-const useChains = () => {
-  const state = useAppSelector(selectChains)
-  return {
-    configs: state.data,
-    error: state.error,
-    loading: state.loading,
-  }
+const useChains = (): { configs: ChainInfo[]; error?: string; loading?: boolean } => {
+  const state = useAppSelector(selectChains, isEqual)
+
+  return useMemo(
+    () => ({
+      configs: state.data,
+      error: state.error,
+      loading: state.loading,
+    }),
+    [state.data, state.error, state.loading],
+  )
 }
 
 export default useChains
 
-export const useCurrentChain = ():
-  | (ChainInfo & {
-      getExplorerLink: (address: string) => { title: string; href: string } | undefined
-    })
-  | undefined => {
+export const useCurrentChain = (): ChainInfo | undefined => {
   const chainId = useChainId()
-  const chainInfo = useAppSelector((state) => selectChainById(state, chainId))
-
-  const getExplorerLinkCallback = useCallback(
-    (address: string) => {
-      if (chainInfo?.blockExplorerUriTemplate) {
-        return getExplorerLink(address, chainInfo.blockExplorerUriTemplate)
-      }
-    },
-    [chainInfo?.blockExplorerUriTemplate],
-  )
-
-  return useMemo(
-    () => (chainInfo ? { ...chainInfo, getExplorerLink: getExplorerLinkCallback } : undefined),
-    [chainInfo, getExplorerLinkCallback],
-  )
+  const chainInfo = useAppSelector((state) => selectChainById(state, chainId), isEqual)
+  return chainInfo
 }

@@ -2,11 +2,11 @@ import { type ReactElement } from 'react'
 import { IconButton, Tooltip } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
+import { getBlockExplorerLink } from '@/utils/chains'
 
 const ExplorerLink = ({ address }: { address: string }): ReactElement | null => {
   const currentChain = useCurrentChain()
-
-  const link = currentChain?.getExplorerLink(address)
+  const link = currentChain ? getBlockExplorerLink(currentChain, address) : undefined
 
   if (!link) return null
 
