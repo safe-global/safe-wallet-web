@@ -1,19 +1,21 @@
 import { useState, type ReactElement, SyntheticEvent } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Tooltip } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 
 import { isSignableBy } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
 import ConfirmTxModal from '@/components/tx/modals/ConfirmTxModal'
 import useIsPending from '@/hooks/useIsPending'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import IconButton from '@mui/material/IconButton'
+import CheckIcon from '@mui/icons-material/Check'
 
 const SignTxButton = ({
   txSummary,
-  children,
+  compact = false,
 }: {
   txSummary: TransactionSummary
-  children: (onClick: (e: SyntheticEvent) => void, isDisabled: boolean) => ReactElement
+  compact?: boolean
 }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
   const wallet = useWallet()
@@ -30,9 +32,17 @@ const SignTxButton = ({
 
   return (
     <>
-      <Tooltip title="Sign" arrow placement="top">
-        {children(onClick, isDisabled)}
-      </Tooltip>
+      {compact ? (
+        <Tooltip title="Sign" arrow placement="top">
+          <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
+            <CheckIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <Button onClick={onClick} variant="contained" disabled={isDisabled}>
+          Sign
+        </Button>
+      )}
 
       {open && <ConfirmTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </>

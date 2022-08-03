@@ -13,10 +13,7 @@ import RejectTxButton from '@/components/transactions/RejectTxButton'
 import { useTransactionStatus } from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 import GroupIcon from '@mui/icons-material/Group'
-import IconButton from '@mui/material/IconButton'
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
-import CheckIcon from '@mui/icons-material/Check'
-import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette) => {
   switch (value) {
@@ -41,6 +38,7 @@ type TxSummaryProps = {
 const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
+  const isWrongChain = useIsWrongChain()
   const txStatusLabel = useTransactionStatus(tx)
   const isQueue = isTxQueued(tx.txStatus)
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
@@ -86,32 +84,14 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      {wallet && isQueue && (
+      {wallet && !isWrongChain && isQueue && (
         <Box gridArea="actions">
           {awaitingExecution ? (
-            <ExecuteTxButton txSummary={item.transaction}>
-              {(onClick, isDisabled) => (
-                <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
-                  <RocketLaunchIcon fontSize="small" />
-                </IconButton>
-              )}
-            </ExecuteTxButton>
+            <ExecuteTxButton txSummary={item.transaction} compact />
           ) : (
-            <SignTxButton txSummary={item.transaction}>
-              {(onClick, isDisabled) => (
-                <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
-                  <CheckIcon fontSize="small" />
-                </IconButton>
-              )}
-            </SignTxButton>
+            <SignTxButton txSummary={item.transaction} compact />
           )}
-          <RejectTxButton txSummary={item.transaction}>
-            {(onClick, isDisabled) => (
-              <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>
-                <HighlightOffIcon fontSize="small" />
-              </IconButton>
-            )}
-          </RejectTxButton>
+          <RejectTxButton txSummary={item.transaction} compact />
         </Box>
       )}
 

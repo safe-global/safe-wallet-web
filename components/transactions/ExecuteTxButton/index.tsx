@@ -1,18 +1,20 @@
 import { useState, type ReactElement, SyntheticEvent } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Tooltip } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import ExecuteTxModal from '@/components/tx/modals/ExecuteTxModal'
 import useIsPending from '@/hooks/useIsPending'
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
+import IconButton from '@mui/material/IconButton'
 
 const ExecuteTxButton = ({
   txSummary,
-  children,
+  compact = false,
 }: {
   txSummary: TransactionSummary
-  children: (onClick: (e: SyntheticEvent) => void, isDisabled: boolean) => ReactElement
+  compact?: boolean
 }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
   const { safe } = useSafeInfo()
@@ -29,9 +31,17 @@ const ExecuteTxButton = ({
 
   return (
     <>
-      <Tooltip title="Execute" arrow placement="top">
-        {children(onClick, isDisabled)}
-      </Tooltip>
+      {compact ? (
+        <Tooltip title="Execute" arrow placement="top">
+          <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
+            <RocketLaunchIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <Button onClick={onClick} variant="contained" disabled={isDisabled}>
+          Execute
+        </Button>
+      )}
 
       {open && <ExecuteTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </>

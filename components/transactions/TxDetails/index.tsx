@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react'
 import { getTransactionDetails, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Box, Button, CircularProgress } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
 import Summary from '@/components/transactions/TxDetails/Summary'
@@ -25,6 +25,7 @@ import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import SignTxButton from '@/components/transactions/SignTxButton'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useWallet from '@/hooks/wallets/useWallet'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -35,6 +36,7 @@ type TxDetailsProps = {
 
 const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {
   const wallet = useWallet()
+  const isWrongChain = useIsWrongChain()
   const isQueue = isTxQueued(txSummary.txStatus)
   const awaitingExecution = isAwaitingExecution(txSummary.txStatus)
   // confirmations are in detailedExecutionInfo
@@ -83,32 +85,10 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
       {hasSigners && (
         <div className={css.txSigners}>
           <TxSigners txDetails={txDetails} txSummary={txSummary} />
-          {wallet && isQueue && (
+          {wallet && !isWrongChain && isQueue && (
             <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
-              {awaitingExecution ? (
-                <ExecuteTxButton txSummary={txSummary}>
-                  {(onClick, isDisabled) => (
-                    <Button onClick={onClick} variant="contained" disabled={isDisabled}>
-                      Execute
-                    </Button>
-                  )}
-                </ExecuteTxButton>
-              ) : (
-                <SignTxButton txSummary={txSummary}>
-                  {(onClick, isDisabled) => (
-                    <Button onClick={onClick} variant="contained" disabled={isDisabled}>
-                      Sign
-                    </Button>
-                  )}
-                </SignTxButton>
-              )}
-              <RejectTxButton txSummary={txSummary}>
-                {(onClick, isDisabled) => (
-                  <Button onClick={onClick} color="error" variant="contained" disabled={isDisabled}>
-                    Reject
-                  </Button>
-                )}
-              </RejectTxButton>
+              {awaitingExecution ? <ExecuteTxButton txSummary={txSummary} /> : <SignTxButton txSummary={txSummary} />}
+              <RejectTxButton txSummary={txSummary} />
             </Box>
           )}
         </div>
