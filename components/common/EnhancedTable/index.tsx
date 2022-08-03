@@ -96,7 +96,6 @@ type EnhancedTableProps = {
 }
 
 const pageSizes = [10, 25, 100]
-const defaultRowsPerPage = 25
 
 function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
