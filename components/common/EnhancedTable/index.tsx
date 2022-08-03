@@ -118,9 +118,6 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
     setPage(0)
   }
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
-
   const orderedRows = orderBy ? rows.slice().sort(getComparator(order, orderBy)) : rows
   const pagedRows = orderedRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
@@ -143,16 +140,6 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
                   ))}
                 </TableRow>
               ))}
-
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 53 * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={headCells.length} />
-                </TableRow>
-              )}
             </TableBody>
           </Table>
         </TableContainer>
