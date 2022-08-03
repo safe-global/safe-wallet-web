@@ -18,6 +18,8 @@ import { isValidURL } from '@/utils/validation'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import useChainId from '@/hooks/useChainId'
 import { trimTrailingSlash } from '@/utils/url'
+import useAsync from '@/hooks/useAsync'
+import useDebounce from '@/hooks/useDebounce'
 
 type Props = {
   open: boolean
@@ -37,18 +39,16 @@ const TEXT_FIELD_HEIGHT = '56px'
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
 
 const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
-  const [safeApp, setSafeApp] = React.useState<SafeAppData>()
   const chainId = useChainId()
 
   const {
     register,
     handleSubmit,
-    setError,
-    formState: { errors, dirtyFields, isValidating },
+    formState: { errors },
     watch,
+    setError,
     reset,
   } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false }, mode: 'onChange' })
-  const appUrl = watch('appUrl')
 
   const onSubmit: SubmitHandler<CustomAppFormData> = (_, __) => {
     if (safeApp) {
@@ -57,35 +57,23 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     }
   }
 
-  React.useEffect(() => {
-    let isCurrent = true
-
-    const loadApp = async () => {
-      try {
-        setSafeApp(undefined)
-        const appFromManifest = await fetchSafeAppFromManifest(appUrl, chainId)
-
-        if (isCurrent) {
-          setSafeApp(appFromManifest)
-        }
-      } catch (err) {
-        if (isCurrent) {
-          setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
-        }
-      }
+  const appUrl = watch('appUrl')
+  const debouncedUrl = useDebounce(trimTrailingSlash(appUrl || ''), 300)
+  const [safeApp] = useAsync<SafeAppData | undefined>(async () => {
+    if (!isValidURL(debouncedUrl)) {
+      return
     }
 
-    if (!isValidating && dirtyFields.appUrl && !errors.appUrl && safeApp?.url !== appUrl) loadApp()
-
-    return () => {
-      isCurrent = false
+    try {
+      return await fetchSafeAppFromManifest(debouncedUrl, chainId)
+    } catch (e) {
+      setError('appUrl', { type: 'custom', message: "The App doesn't support Safe App functionality" })
     }
-  }, [appUrl, chainId, setError, errors.appUrl, isValidating, dirtyFields.appUrl, safeApp?.url])
+  }, [chainId, debouncedUrl])
 
   const appLogoUrl = safeApp?.iconUrl || APP_LOGO_FALLBACK_IMAGE
 
   const handleClose = () => {
-    setSafeApp(undefined)
     reset()
     onClose()
   }
@@ -108,7 +96,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
             autoComplete="off"
             sx={{ mt: 2 }}
             error={!!errors.appUrl}
-            helperText={errors.appUrl?.message}
+            helperText={errors.appUrl?.message || ' '}
             {...register('appUrl', {
               required: true,
               validate: {
