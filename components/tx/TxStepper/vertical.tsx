@@ -18,15 +18,13 @@ const VerticalTxStepper = ({ steps, initialData, initialStep, onClose, onFinish 
   return (
     <Box width={1}>
       <Stepper activeStep={activeStep} orientation="vertical">
-        {steps.map(({ label }) => {
+        {steps.map(({ label, render }) => {
           const stepProps: { completed?: boolean } = {}
 
           return (
             <Step key={label} {...stepProps}>
               <StepLabel>{label}</StepLabel>
-              <StepContent>
-                {steps[activeStep].render(stepData[Math.max(0, activeStep)], onSubmit, onBack, setStep)}
-              </StepContent>
+              <StepContent>{render(stepData[Math.max(0, activeStep)], onSubmit, onBack, setStep)}</StepContent>
             </Step>
           )
         })}
