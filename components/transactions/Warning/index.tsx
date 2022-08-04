@@ -51,7 +51,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
     <Alert
       className={css.alert}
       sx={({ palette }) => ({
-        color: '#162D45',
+        color: showWarning ? palette.warning.dark : palette.success.main,
         backgroundColor: `${showWarning ? palette.warning.light : palette.success.background}`,
         borderLeft: `3px solid ${showWarning ? palette.warning.dark : palette.success.main}`,
 
