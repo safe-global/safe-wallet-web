@@ -37,6 +37,7 @@
   --onboard-connect-sidebar-color: var(--color-secondary-main);
   --onboard-wallet-button-color: var(--color-secondary-main);
   --onboard-wallet-app-icon-border-color: var(--color-border-light);
+  --onboard-wallet-app-icon-background-transparent: transparent;
 
   /* FONTS */
   --onboard-font-family-normal: Averta, sans-serif;
@@ -54,4 +55,8 @@
 
 #walletconnect-qrcode-modal {
   padding: 20px !important;
+}
+
+[data-theme='dark'] {
+  --onboard-wallet-app-icon-background-transparent: white;
 }
