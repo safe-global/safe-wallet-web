@@ -41,7 +41,6 @@ type TxDetailsProps = {
 }
 
 const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {
-  console.log(txDetails)
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const isQueue = isTxQueued(txSummary.txStatus)
