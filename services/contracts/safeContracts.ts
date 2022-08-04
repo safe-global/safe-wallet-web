@@ -1,6 +1,7 @@
 import {
   getFallbackHandlerDeployment,
   getMultiSendCallOnlyDeployment,
+  getMultiSendDeployment,
   getProxyFactoryDeployment,
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
@@ -15,6 +16,7 @@ import { Gnosis_safe } from '@/types/contracts/Gnosis_safe'
 import { Compatibility_fallback_handler } from '@/types/contracts/Compatibility_fallback_handler'
 import { Multi_send } from '@/types/contracts/Multi_send'
 import { Proxy_factory } from '@/types/contracts/Proxy_factory'
+import { Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
 
 const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
   // We check if version is prior to v1.0.0 as they are not supported but still we want to keep a minimum compatibility
@@ -71,14 +73,32 @@ export const getFallbackHandlerContractInstance = (chainId: string): Compatibili
   return new Contract(contractAddress, new Interface(fallbackHandlerDeployment.abi)) as Compatibility_fallback_handler
 }
 
-export const getMultiSendContractAddress = (chainId: string): string | undefined => {
+export const getMultiSendCallOnlyContractAddress = (chainId: string): string | undefined => {
   const deployment = getMultiSendCallOnlyDeployment({ network: chainId }) || getMultiSendCallOnlyDeployment()
 
   return deployment?.networkAddresses[chainId]
 }
 
-const getMultiSendContractInstance = (chainId: string): Multi_send => {
+const getMultiSendCallOnlyContractInstance = (chainId: string): Multi_send_call_only => {
   const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId }) || getMultiSendCallOnlyDeployment()
+
+  if (!multiSendDeployment) {
+    throw new Error(`MultiSendCallOnly contract not found for chainId: ${chainId}`)
+  }
+
+  const contractAddress = multiSendDeployment.networkAddresses[chainId]
+
+  return new Contract(contractAddress, new Interface(multiSendDeployment.abi)) as Multi_send_call_only
+}
+
+export const getMultiSendContractAddress = (chainId: string): string | undefined => {
+  const deployment = getMultiSendDeployment({ network: chainId }) || getMultiSendDeployment()
+
+  return deployment?.networkAddresses[chainId]
+}
+
+const getMultiSendContractInstance = (chainId: string): Multi_send => {
+  const multiSendDeployment = getMultiSendDeployment({ network: chainId }) || getMultiSendDeployment()
 
   if (!multiSendDeployment) {
     throw new Error(`MultiSend contract not found for chainId: ${chainId}`)
