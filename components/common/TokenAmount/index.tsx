@@ -10,7 +10,7 @@ export const TokenIcon = (props: { logoUri?: string; tokenSymbol?: string; size?
   const { logoUri, tokenSymbol, size = DEFAULT_SIZE } = props
   const [src, setSrc] = useState<string>(logoUri || '')
 
-  useEffect(() => void setSrc(logoUri || ''), [logoUri])
+  useEffect(() => setSrc(logoUri || ''), [logoUri])
 
   return !src ? null : (
     <img src={src} alt={tokenSymbol} className={css.tokenIcon} onError={() => setSrc(FALLBACK_ICON)} height={size} />
