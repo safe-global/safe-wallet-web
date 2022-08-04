@@ -10,8 +10,6 @@ const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [TransactionStatus.CANCELLED]: 'Cancelled',
   [TransactionStatus.FAILED]: 'Failed',
   [TransactionStatus.SUCCESS]: 'Success',
-  [TransactionStatus.PENDING]: '', // deprecated
-  [TransactionStatus.WILL_BE_REPLACED]: '', // deprecated
   [PendingStatus.SUBMITTING]: 'Submitting',
   [PendingStatus.MINING]: 'Mining',
   [PendingStatus.INDEXING]: 'Indexing',
