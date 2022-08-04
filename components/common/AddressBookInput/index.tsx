@@ -26,7 +26,6 @@ const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement =
     <Autocomplete
       value={addressValue || ''}
       freeSolo
-      disablePortal
       options={addressBookEntries}
       onInputChange={(_, value) => setValue(name, value, { shouldValidate: true })}
       filterOptions={abFilterOptions}

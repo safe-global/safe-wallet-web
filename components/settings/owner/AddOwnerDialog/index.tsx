@@ -12,7 +12,7 @@ import Box from '@mui/material/Box'
 
 const AddOwnerSteps: TxStepperProps['steps'] = [
   {
-    label: 'Choose new owner',
+    label: 'Add new owner',
     render: (data, onSubmit) => <ChooseOwnerStep data={data as ChangeOwnerData} onSubmit={onSubmit} />,
   },
   {
@@ -20,7 +20,7 @@ const AddOwnerSteps: TxStepperProps['steps'] = [
     render: (data, onSubmit) => <SetThresholdStep data={data as ChangeOwnerData} onSubmit={onSubmit} />,
   },
   {
-    label: 'Review',
+    label: 'Review transaction',
     render: (data, onSubmit) => <ReviewOwnerTxStep data={data as ChangeOwnerData} onSubmit={onSubmit} />,
   },
 ]

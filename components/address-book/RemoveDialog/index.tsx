@@ -32,12 +32,7 @@ const RemoveDialog = ({ handleClose, address }: { handleClose: () => void; addre
 
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button
-          onClick={handleConfirm}
-          variant="contained"
-          disableElevation
-          sx={({ palette }) => ({ backgroundColor: palette.error.main })}
-        >
+        <Button onClick={handleConfirm} variant="contained" disableElevation color="error">
           Delete
         </Button>
       </DialogActions>
