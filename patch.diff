@@ -1,0 +1,98 @@
+diff --git a/components/settings/owner/ChangeThresholdDialog/index.tsx b/components/settings/owner/ChangeThresholdDialog/index.tsx
+index 2f37da4..882f753 100644
+--- a/components/settings/owner/ChangeThresholdDialog/index.tsx
++++ b/components/settings/owner/ChangeThresholdDialog/index.tsx
+@@ -45,15 +45,13 @@ export const ChangeThresholdDialog = () => {
+ 
+ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (data: null) => void }) => {
+   const { safe } = useSafeInfo()
+-  const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold)
++  const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
+ 
+   const handleChange = (event: SelectChangeEvent<number>) => {
+     setSelectedThreshold(parseInt(event.target.value.toString()))
+   }
+ 
+-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+-    if (selectedThreshold === data.threshold) return
+-
++  const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
+     return createUpdateThresholdTx(selectedThreshold)
+   }, [selectedThreshold])
+ 
+diff --git a/components/transactions/TxDetails/index.tsx b/components/transactions/TxDetails/index.tsx
+index 59f0075..dcc3799 100644
+--- a/components/transactions/TxDetails/index.tsx
++++ b/components/transactions/TxDetails/index.tsx
+@@ -41,7 +41,6 @@ type TxDetailsProps = {
+ }
+ 
+ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {
+-  console.log(txDetails)
+   const wallet = useWallet()
+   const isWrongChain = useIsWrongChain()
+   const isQueue = isTxQueued(txSummary.txStatus)
+diff --git a/components/tx/SignOrExecuteForm/index.tsx b/components/tx/SignOrExecuteForm/index.tsx
+index e592132..f1060fe 100644
+--- a/components/tx/SignOrExecuteForm/index.tsx
++++ b/components/tx/SignOrExecuteForm/index.tsx
+@@ -61,7 +61,7 @@ const SignOrExecuteForm = ({
+   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
+   const willExecute = shouldExecute && canExecute
+ 
+-  // Synchronize the tx with the safeTx
++  // Syncronize the tx with the safeTx
+   useEffect(() => setTx(safeTx), [safeTx])
+ 
+   // Estimate gas limit
+@@ -177,8 +177,6 @@ const SignOrExecuteForm = ({
+     setManualParams(data)
+   }
+ 
+-  const submitDisabled = !isSubmittable || isEstimating || !tx
+-
+   return isEditingGas ? (
+     <AdvancedParamsForm
+       nonce={advancedParams.nonce || 0}
+@@ -226,7 +224,7 @@ const SignOrExecuteForm = ({
+           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+         )}
+ 
+-        <Button variant="contained" type="submit" disabled={submitDisabled}>
++        <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
+           {isEstimating ? 'Estimating...' : 'Submit'}
+         </Button>
+       </DialogContent>
+diff --git a/pages/safe/transactions/tx.tsx b/pages/safe/transactions/tx.tsx
+index b6a4712..0f9e7aa 100644
+--- a/pages/safe/transactions/tx.tsx
++++ b/pages/safe/transactions/tx.tsx
+@@ -39,18 +39,22 @@ const SingleTransaction: NextPage = () => {
+   const transactionId = Array.isArray(id) ? id[0] : id
+   const { safe } = useSafeInfo()
+ 
+-  const [txDetails, error, loading] = useAsync<TransactionDetails>(() => {
+-    return getTransactionDetails(chainId, transactionId)
+-  }, [transactionId, safe.txHistoryTag])
++  const [txDetails, error, loading] = useAsync<TransactionDetails>(
++    () => {
++      return getTransactionDetails(chainId, transactionId)
++    },
++    [transactionId, safe.txQueuedTag, safe.txHistoryTag],
++    false,
++  )
+ 
+   return (
+     <main>
+       <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" />
+ 
+-      {loading ? (
+-        <CircularProgress />
+-      ) : txDetails ? (
++      {txDetails ? (
+         <SingleTxGrid txDetails={txDetails} />
++      ) : loading ? (
++        <CircularProgress />
+       ) : (
+         error && <ErrorMessage error={error}>Failed loading transaction {transactionId}</ErrorMessage>
+       )}

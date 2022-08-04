@@ -39,18 +39,22 @@ const SingleTransaction: NextPage = () => {
   const transactionId = Array.isArray(id) ? id[0] : id
   const { safe } = useSafeInfo()
 
-  const [txDetails, error, loading] = useAsync<TransactionDetails>(() => {
-    return getTransactionDetails(chainId, transactionId)
-  }, [transactionId, safe.txHistoryTag])
+  const [txDetails, error, loading] = useAsync<TransactionDetails>(
+    () => {
+      return getTransactionDetails(chainId, transactionId)
+    },
+    [transactionId, safe.txQueuedTag, safe.txHistoryTag],
+    false,
+  )
 
   return (
     <main>
       <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" />
 
-      {loading ? (
-        <CircularProgress />
-      ) : txDetails ? (
+      {txDetails ? (
         <SingleTxGrid txDetails={txDetails} />
+      ) : loading ? (
+        <CircularProgress />
       ) : (
         error && <ErrorMessage error={error}>Failed loading transaction {transactionId}</ErrorMessage>
       )}
