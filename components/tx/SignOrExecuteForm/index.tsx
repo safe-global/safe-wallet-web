@@ -27,7 +27,6 @@ type SignOrExecuteProps = {
   isRejection?: boolean
   onlyExecute?: boolean
   onSubmit: (data: null) => void
-  disableSubmit?: boolean
   children?: ReactNode
   error?: Error
 }
@@ -39,7 +38,6 @@ const SignOrExecuteForm = ({
   isRejection,
   onlyExecute,
   onSubmit,
-  disableSubmit,
   children,
   error,
 }: SignOrExecuteProps): ReactElement => {
@@ -63,7 +61,7 @@ const SignOrExecuteForm = ({
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = shouldExecute && canExecute
 
-  // Syncronize the tx with the safeTx
+  // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
 
   // Estimate gas limit
@@ -179,7 +177,7 @@ const SignOrExecuteForm = ({
     setManualParams(data)
   }
 
-  const submitDisabled = !isSubmittable || isEstimating || disableSubmit
+  const submitDisabled = !isSubmittable || isEstimating || !tx
 
   return isEditingGas ? (
     <AdvancedParamsForm
