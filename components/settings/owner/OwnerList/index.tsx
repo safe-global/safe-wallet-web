@@ -38,13 +38,15 @@ const OwnerRow = ({
       </TableCell>
 
       <TableCell>
-        {isGranted && (
-          <div className={css.actions}>
-            <EditOwnerDialog address={address} name={name} chainId={chainId} />
-            <ReplaceOwnerDialog address={address} />
-            <RemoveOwnerDialog owner={{ address, name }} />
-          </div>
-        )}
+        <div className={css.actions}>
+          <EditOwnerDialog address={address} name={name} chainId={chainId} />
+          {isGranted && (
+            <>
+              <ReplaceOwnerDialog address={address} />
+              <RemoveOwnerDialog owner={{ address, name }} />
+            </>
+          )}
+        </div>
       </TableCell>
     </TableRow>
   )
