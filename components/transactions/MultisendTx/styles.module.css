@@ -7,7 +7,7 @@
   padding: 20px 24px 0;
 }
 
-.txData {
+.nestedTxData {
   display: flex;
   flex-direction: column;
   border-bottom: none;

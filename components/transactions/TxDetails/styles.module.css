@@ -37,13 +37,6 @@
   padding: 20px 24px;
 }
 
-.txData {
-  display: flex;
-  flex-direction: column;
-  padding-right: 60px; /* to not overlap with the share link */
-  border-bottom: 2px solid var(--color-border-light);
-}
-
 .txSummary,
 .advancedDetails {
   height: 100%;
