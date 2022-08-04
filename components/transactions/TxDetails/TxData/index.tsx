@@ -15,6 +15,7 @@ import { Multisend } from '@/components/transactions/TxDetails/TxData/DecodedDat
 import { SpendingLimits } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { type ReactElement } from 'react'
+import css from '../styles.module.css'
 import RejectionTxInfo from '@/components/transactions/TxDetails/TxData/Rejection'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
@@ -45,7 +46,11 @@ const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement 
     return <SpendingLimits txData={txDetails.txData} txInfo={txInfo} type={method} />
   }
 
-  return <DecodedData txData={txDetails.txData} txInfo={txInfo} />
+  return (
+    <div className={css.fallbackData}>
+      <DecodedData txData={txDetails.txData} txInfo={txInfo} />
+    </div>
+  )
 }
 
 export default TxData

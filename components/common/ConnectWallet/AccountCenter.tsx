@@ -58,8 +58,9 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
             <Typography variant="caption" component="div" className={css.walletDetails}>
               {wallet.label} @ {chainInfo?.chainName}
             </Typography>
+
             <Typography variant="caption" fontWeight="bold" className={css.address}>
-              {wallet.ens || <EthHashInfo address={wallet.address} showName={false} showAvatar={false} />}
+              {wallet.ens || <EthHashInfo address={wallet.address} showName={false} showAvatar avatarSize={10} />}
             </Typography>
           </Box>
 
@@ -93,6 +94,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           <Box bgcolor="border.background" px={2} py={1} fontSize={14}>
             <EthHashInfo address={wallet.address} showAvatar={false} showName={false} hasExplorer showCopyButton />
           </Box>
+
           <Box className={css.rowContainer}>
             <Box className={css.row}>
               <Typography variant="caption">Wallet</Typography>

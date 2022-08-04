@@ -17,27 +17,12 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
     return null
   }
 
-  // When not receiving decoded data, display it raw tx data
-  if (!txData.dataDecoded) {
-    if (!txData.hexData) {
-      return null
-    }
-
-    return (
-      <>
-        <InfoDetails title="Interact with:">
-          <EthHashInfo
-            address={txData.to.value}
-            name={isCustomTxInfo(txInfo) ? txInfo.to.name : undefined}
-            customAvatar={isCustomTxInfo(txInfo) ? txInfo.to.logoUri : undefined}
-            shortAddress={false}
-            showCopyButton
-            hasExplorer
-          />
-        </InfoDetails>
-        <HexEncodedData title="Data (hex encoded)" hexData={txData.hexData} />
-      </>
-    )
+  let decodedData = <></>
+  if (txData.dataDecoded) {
+    decodedData = <MethodDetails data={txData.dataDecoded} />
+  } else if (txData.hexData) {
+    // When no decoded data, display raw hex data
+    decodedData = <HexEncodedData title="Data (hex encoded)" hexData={txData.hexData} />
   }
 
   // we render the decoded data
@@ -53,7 +38,8 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
           hasExplorer
         />
       </InfoDetails>
-      <MethodDetails data={txData.dataDecoded} />
+
+      {decodedData}
     </>
   )
 }

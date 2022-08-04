@@ -1,4 +1,5 @@
-import { ReactElement, useState } from 'react'
+import { type ReactElement, useState } from 'react'
+import classnames from 'classnames'
 import css from './styles.module.css'
 import { shortenAddress } from '@/utils/formatters'
 import Identicon from '../Identicon'
@@ -21,6 +22,7 @@ type EthHashInfoProps = {
   shortAddress?: boolean
   customAvatar?: string
   hasExplorer?: boolean
+  avatarSize?: number
 }
 
 const SRCEthHashInfo = ({
@@ -29,6 +31,7 @@ const SRCEthHashInfo = ({
   prefix = '',
   shortAddress = true,
   showAvatar = true,
+  avatarSize,
   ...props
 }: EthHashInfoProps): ReactElement => {
   const [fallbackToIdenticon, setFallbackToIdenticon] = useState(false)
@@ -36,11 +39,17 @@ const SRCEthHashInfo = ({
   return (
     <div className={css.container}>
       {showAvatar && (
-        <div className={css.avatar}>
+        <div className={classnames(css.avatar, { [css.resizeAvatar]: !avatarSize })}>
           {!fallbackToIdenticon && customAvatar ? (
-            <img src={customAvatar} alt={address} onError={() => setFallbackToIdenticon(true)} />
+            <img
+              src={customAvatar}
+              alt={address}
+              onError={() => setFallbackToIdenticon(true)}
+              width={avatarSize}
+              height={avatarSize}
+            />
           ) : (
-            <Identicon address={address} />
+            <Identicon address={address} size={avatarSize} />
           )}
         </div>
       )}

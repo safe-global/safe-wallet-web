@@ -1,8 +1,6 @@
 .icon {
   width: auto;
   height: 100%;
-  min-width: 20px;
-  min-height: 20px;
   border-radius: 50%;
   background-size: cover;
 }
