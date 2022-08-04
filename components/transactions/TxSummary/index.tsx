@@ -97,8 +97,8 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      <Box gridArea="status" marginLeft={{ md: 'auto' }} marginRight={1} display="flex" alignItems="center" gap={1}>
-        {isPending && <CircularProgress size={14} />}
+      <Box gridArea="status" marginLeft={{ md: 'auto' }} marginRight={1} display="flex" alignItems="center" gap={1} color={({ palette }) => getStatusColor(tx.txStatus, palette)}>
+        {isPending && <CircularProgress size={14} color="inherit" />}
 
         <Typography variant="caption" fontWeight="bold" color={({ palette }) => getStatusColor(tx.txStatus, palette)}>
           {txStatusLabel}
