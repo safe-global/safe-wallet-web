@@ -101,7 +101,7 @@ export const TxSigners = ({
 }): ReactElement | null => {
   const { detailedExecutionInfo, txInfo, txId } = txDetails
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(detailedExecutionInfo))
-  const isPending = useIsPending({ txId })
+  const isPending = useIsPending(txId)
   const wallet = useWallet()
 
   const toggleHide = () => {

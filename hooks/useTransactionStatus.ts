@@ -2,7 +2,7 @@ import { useAppSelector } from '@/store'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
 import { TransactionSummary, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 
-export type TxLocalStatus = TransactionStatus | PendingStatus
+type TxLocalStatus = TransactionStatus | PendingStatus
 
 const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [TransactionStatus.AWAITING_CONFIRMATIONS]: 'Awaiting confirmations',
@@ -15,15 +15,9 @@ const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [PendingStatus.INDEXING]: 'Indexing',
 }
 
-export const getTxStatusLabel = (status: TxLocalStatus): string => {
-  return STATUS_LABELS[status] || ''
-}
-
-export const isTxPending = (status: TxLocalStatus): boolean => {
-  return status in PendingStatus
-}
-
-export const useTransactionStatus = ({ txStatus, id }: TransactionSummary): TxLocalStatus => {
+const useTransactionStatus = ({ txStatus, id }: TransactionSummary): string => {
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, id))
-  return pendingTx?.status || txStatus
+  return STATUS_LABELS[pendingTx?.status || txStatus] || ''
 }
+
+export default useTransactionStatus

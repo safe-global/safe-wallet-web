@@ -21,7 +21,7 @@ const SignTxButton = ({
   const wallet = useWallet()
   const signaturePending = isSignableBy(txSummary, wallet?.address || '')
   const isSafeOwner = useIsSafeOwner()
-  const isPending = useIsPending({ txId: txSummary.id })
+  const isPending = useIsPending(txSummary.id)
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()

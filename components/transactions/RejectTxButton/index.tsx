@@ -24,7 +24,7 @@ const RejectTxButton = ({
   const canCancel = !queuedTxsByNonce?.some(
     (item) => isCustomTxInfo(item.transaction.txInfo) && item.transaction.txInfo.isCancellation,
   )
-  const isPending = useIsPending({ txId: txSummary.id })
+  const isPending = useIsPending(txSummary.id)
 
   const isDisabled = isPending || !isSafeOwner
 
