@@ -11,10 +11,6 @@
   word-break: break-all;
 }
 
-.value {
-  font-size: 14px;
-}
-
 .gridRow > * {
   flex-shrink: 0;
 }
