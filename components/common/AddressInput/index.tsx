@@ -52,7 +52,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
           }}
           InputLabelProps={{
             ...(props.InputLabelProps || {}),
-            shrink: !!currentValue,
+            shrink: !!currentValue || props.focused,
           }}
           {...register(name, {
             required: true,

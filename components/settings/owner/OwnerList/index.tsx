@@ -34,7 +34,7 @@ const OwnerRow = ({
   return (
     <TableRow className={css.row}>
       <TableCell>
-        <EthHashInfo address={address} showCopyButton shortAddress={false} showName={true} />
+        <EthHashInfo address={address} showCopyButton shortAddress={false} showName={true} hasExplorer />
       </TableCell>
 
       <TableCell>

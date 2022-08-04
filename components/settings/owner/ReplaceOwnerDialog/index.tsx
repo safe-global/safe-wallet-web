@@ -11,11 +11,11 @@ import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 
 const ReplaceOwnerSteps: TxStepperProps['steps'] = [
   {
-    label: 'Choose new owner',
+    label: 'Replace owner',
     render: (data, onSubmit) => <ChooseOwnerStep data={data as ChangeOwnerData} onSubmit={onSubmit} />,
   },
   {
-    label: 'Review',
+    label: 'Review transaction',
     render: (data, onSubmit) => <ReviewOwnerTxStep data={data as ChangeOwnerData} onSubmit={onSubmit} />,
   },
 ]
