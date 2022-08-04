@@ -33,7 +33,8 @@
 .txData,
 .txSummary,
 .advancedDetails,
-.txModule {
+.txModule,
+.fallbackData {
   padding: 20px 24px;
 }
 
