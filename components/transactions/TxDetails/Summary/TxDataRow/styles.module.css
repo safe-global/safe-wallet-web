@@ -1,9 +1,18 @@
 .gridRow {
   display: grid;
-  grid-template-columns: 1fr 2.5fr;
-  gap: 16px;
+  grid-template-columns: 35% auto;
+  gap: var(--space-1);
   justify-content: flex-start;
   max-width: 900px;
+}
+
+.title {
+  color: var(--color-secondary-light);
+  word-break: break-all;
+}
+
+.value {
+  font-size: 14px;
 }
 
 .gridRow > * {
@@ -13,12 +22,6 @@
 .valueWrapper {
   min-width: 50%;
   flex-shrink: 0;
-}
-
-/* For inlineType values */
-.inline {
-  display: inline-flex;
-  gap: 4px;
 }
 
 .rawData {

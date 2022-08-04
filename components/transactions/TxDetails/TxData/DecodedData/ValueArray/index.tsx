@@ -29,7 +29,16 @@ export const Value = ({ type, ...props }: ValueArrayProps): ReactElement => {
               }
               return <Value {...newProps} />
             }
-            return <EthHashInfo key={`${address}_${key}`} address={address} showAvatar={false} />
+            return (
+              <EthHashInfo
+                key={`${address}_${key}`}
+                address={address}
+                showAvatar={false}
+                shortAddress={false}
+                showCopyButton
+                hasExplorer
+              />
+            )
           })}
         </div>
         ]
