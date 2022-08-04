@@ -1,9 +1,23 @@
 import { type ReactElement } from 'react'
-import { Transfer, Custom, Creation, TransactionTokenType, TransactionInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  Transfer,
+  Custom,
+  Creation,
+  TransactionTokenType,
+  TransactionInfo,
+  MultiSend,
+} from '@gnosis.pm/safe-react-gateway-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
-import { isCreationTxInfo, isCustomTxInfo, isTransferTxInfo } from '@/utils/transaction-guards'
+import {
+  isCreationTxInfo,
+  isCustomTxInfo,
+  isMultiSendTxInfo,
+  isSupportedMultiSendAddress,
+  isTransferTxInfo,
+} from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
+import useChainId from '@/hooks/useChainId'
 
 export const TransferTx = ({
   info,
@@ -55,16 +69,33 @@ const CreationTx = ({ info }: { info: Creation }): ReactElement => {
   return <>Safe created by {shortenAddress(info.creator.value)}</>
 }
 
+const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
+  return (
+    <>
+      {info.actionCount} {`action${info.actionCount > 1 ? 's' : ''}`}
+    </>
+  )
+}
+
 const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => {
+  const chainId = useChainId()
+
+  if (isSupportedMultiSendAddress(info, chainId) && isMultiSendTxInfo(info)) {
+    return <MultiSendTx info={info} />
+  }
+
   if (isTransferTxInfo(info)) {
     return <TransferTx info={info} />
   }
+
   if (isCustomTxInfo(info)) {
     return <CustomTx info={info} />
   }
+
   if (isCreationTxInfo(info)) {
     return <CreationTx info={info} />
   }
+
   return <></>
 }
 
