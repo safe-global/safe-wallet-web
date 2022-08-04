@@ -6,7 +6,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 8px 12px;
+  padding: var(--space-2) var(--space-1) 0;
 }
 
 .addButton {
@@ -19,21 +19,13 @@
   border-radius: 8px;
   text-transform: none;
   height: 27px;
-  margin-left: var(--space-1);
-  margin-right: var(--space-1);
-  margin-bottom: var(--space-2);
+  margin: var(--space-1);
 }
 
 .ownedLabelWrapper {
-  padding-top: var(--space-1);
-  padding-bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-ul + .ownedLabelWrapper {
-  padding-top: 0;
 }
 
 .ownedLabelWrapper:hover {
@@ -43,8 +35,8 @@ ul + .ownedLabelWrapper {
 .ownedLabel {
   cursor: pointer;
   color: var(--color-secondary-light);
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-1);
 }
 
 .list {
