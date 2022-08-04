@@ -19,10 +19,10 @@ const NetworkSelector = (): ReactElement => {
 
     if (!newShortName) return
 
-    const loadLastSafe = ![AppRoutes.welcome, AppRoutes.load, AppRoutes.open].includes(router.pathname)
+    const shouldKeepPath = [AppRoutes.welcome, AppRoutes.load, AppRoutes.open].includes(router.pathname)
 
     return router.replace({
-      pathname: loadLastSafe ? '/' : router.pathname,
+      pathname: shouldKeepPath ? router.pathname : '/',
       query: {
         chain: newShortName,
       },
