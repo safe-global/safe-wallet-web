@@ -25,7 +25,7 @@ const TxType = ({ tx }: TxTypeProps) => {
           onError={() => setFallbackToIdenticon(true)}
         />
       ) : (
-        <Identicon address={isCustomTxInfo(tx.txInfo) ? tx.txInfo.to.value : ''} />
+        <Identicon address={isCustomTxInfo(tx.txInfo) ? tx.txInfo.to.value : ''} size={24} />
       )}
       {type.text}
     </Box>

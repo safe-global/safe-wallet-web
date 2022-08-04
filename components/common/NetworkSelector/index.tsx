@@ -6,6 +6,7 @@ import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
 import chains from '@/config/chains'
 import { ReactElement } from 'react'
+import { AppRoutes } from '@/config/routes'
 
 const NetworkSelector = (): ReactElement => {
   const { configs } = useChains()
@@ -18,8 +19,10 @@ const NetworkSelector = (): ReactElement => {
 
     if (!newShortName) return
 
-    router.replace({
-      pathname: '/',
+    const shouldKeepPath = [AppRoutes.welcome, AppRoutes.load, AppRoutes.open].includes(router.pathname)
+
+    return router.push({
+      pathname: shouldKeepPath ? router.pathname : '/',
       query: {
         chain: newShortName,
       },
