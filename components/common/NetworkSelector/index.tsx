@@ -21,7 +21,7 @@ const NetworkSelector = (): ReactElement => {
 
     const shouldKeepPath = [AppRoutes.welcome, AppRoutes.load, AppRoutes.open].includes(router.pathname)
 
-    return router.replace({
+    return router.push({
       pathname: shouldKeepPath ? router.pathname : '/',
       query: {
         chain: newShortName,
