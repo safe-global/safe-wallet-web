@@ -7,11 +7,9 @@
   padding: 20px 24px 0;
 }
 
-.txData {
+.nestedTxData {
   display: flex;
   flex-direction: column;
   border-bottom: none;
   border-top: 2px solid var(--color-border-light);
-  padding: var(--space-3);
-  padding-right: 60px;
 }

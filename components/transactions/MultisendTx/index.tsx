@@ -28,11 +28,11 @@ const MultiSendTx = ({ txDetails }: { txDetails: TransactionDetails }): ReactEle
         <TxDataRow title="Value:">{txInfo?.value}</TxDataRow>
       </div>
 
-      <div className={`${css.txSummary}`}>
+      <div className={css.txSummary}>
         <Summary txDetails={txDetails} />
       </div>
 
-      <div className={`${css.txData}`}>
+      <div className={css.nestedTxData}>
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <TxData txDetails={txDetails} />
         </ErrorBoundary>

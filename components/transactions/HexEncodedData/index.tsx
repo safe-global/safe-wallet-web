@@ -1,5 +1,5 @@
 import { shortenText } from '@/utils/formatters'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Link } from '@mui/material'
 import { ReactElement, useState } from 'react'
 import css from './styles.module.css'
 
@@ -20,26 +20,19 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
   return (
     <Box data-testid="tx-hexData" className={css.encodedData}>
       {title && (
-        <Typography>
+        <span>
           <b>{title}:</b>
-        </Typography>
+        </span>
       )}
       {showExpandBtn ? (
         <>
           {showTxData ? hexData : shortenText(hexData, 25)}{' '}
-          <Button disableRipple onClick={toggleExpanded} variant="text" size="small" sx={{ p: 0 }}>
-            <Typography
-              sx={({ palette }) => ({
-                color: palette.primary.main,
-                textDecoration: 'underline',
-              })}
-            >
-              Show {showTxData ? 'Less' : 'More'}
-            </Typography>
-          </Button>
+          <Link component="button" onClick={toggleExpanded}>
+            Show {showTxData ? 'Less' : 'More'}
+          </Link>
         </>
       ) : (
-        <Typography>{hexData}</Typography>
+        <span>{hexData}</span>
       )}
     </Box>
   )

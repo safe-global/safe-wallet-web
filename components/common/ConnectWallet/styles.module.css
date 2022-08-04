@@ -53,6 +53,7 @@
     font-size: 12px;
   }
 
+  .imageContainer,
   .walletDetails {
     display: none;
   }

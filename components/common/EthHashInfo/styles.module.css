@@ -1,7 +1,7 @@
 .container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5em;
 }
 
 .container,
@@ -10,9 +10,12 @@
   line-height: 1.4;
 }
 
-.avatar,
-.avatar * {
+.avatar {
   flex-shrink: 0;
+}
+
+.resizeAvatar,
+.resizeAvatar * {
   width: 2.3em !important;
   height: 2.3em !important;
 }
@@ -20,6 +23,6 @@
 .addressRow {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 0.25em;
   white-space: nowrap;
 }
