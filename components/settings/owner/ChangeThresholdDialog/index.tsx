@@ -45,13 +45,15 @@ export const ChangeThresholdDialog = () => {
 
 const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
-  const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
+  const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold)
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedThreshold(parseInt(event.target.value.toString()))
   }
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+    if (selectedThreshold === data.threshold) return
+
     return createUpdateThresholdTx(selectedThreshold)
   }, [selectedThreshold])
 

@@ -61,7 +61,7 @@ const SignOrExecuteForm = ({
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = shouldExecute && canExecute
 
-  // Syncronize the tx with the safeTx
+  // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
 
   // Estimate gas limit
@@ -177,6 +177,8 @@ const SignOrExecuteForm = ({
     setManualParams(data)
   }
 
+  const submitDisabled = !isSubmittable || isEstimating || !tx
+
   return isEditingGas ? (
     <AdvancedParamsForm
       nonce={advancedParams.nonce || 0}
@@ -224,7 +226,7 @@ const SignOrExecuteForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
+        <Button variant="contained" type="submit" disabled={submitDisabled}>
           {isEstimating ? 'Estimating...' : 'Submit'}
         </Button>
       </DialogContent>
