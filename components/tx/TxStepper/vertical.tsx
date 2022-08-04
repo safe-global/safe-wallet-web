@@ -22,7 +22,7 @@ const VerticalTxStepper = ({ steps, initialData, initialStep, onClose, onFinish 
           return (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
-              <StepContent>{render(stepData[Math.max(0, index)], onSubmit, onBack, setStep)}</StepContent>
+              <StepContent>{render(stepData[index], onSubmit, onBack, setStep)}</StepContent>
             </Step>
           )
         })}
