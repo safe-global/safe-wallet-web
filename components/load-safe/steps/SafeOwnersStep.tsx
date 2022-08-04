@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from 'react'
+import { ReactElement, useCallback, useEffect } from 'react'
 import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -12,7 +12,7 @@ import useChainId from '@/hooks/useChainId'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import NameInput from '@/components/common/NameInput'
 
-import { useOwnerForm } from './useOwnerForm'
+import { useOwnerForm } from '../../../hooks/useOwnerForm'
 
 type Props = {
   params: LoadSafeFormData
@@ -23,7 +23,7 @@ type Props = {
 const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
   const currentChainId = useChainId()
   const formMethods = useForm<LoadSafeFormData>({ defaultValues: params, mode: 'all' })
-  const { handleSubmit, setValue } = formMethods
+  const { handleSubmit, setValue, watch } = formMethods
 
   const [safeInfo] = useAsync<SafeInfo | undefined>(async () => {
     if (!currentChainId || !params.safeAddress.address) return
@@ -43,7 +43,12 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
     )
   }, [safeInfo, safeInfo?.threshold, safeInfo?.owners, setValue])
 
-  useOwnerForm('owners', formMethods)
+  const setOwnerValue = useCallback(
+    (suffix: `${number}.resolving` | `${number}.name`, value: string | boolean) => setValue(`owners.${suffix}`, value),
+    [setValue],
+  )
+
+  useOwnerForm(watch('owners'), setOwnerValue)
 
   return (
     <Paper>

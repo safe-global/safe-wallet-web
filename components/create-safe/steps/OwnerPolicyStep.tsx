@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
-import { ReactElement } from 'react'
+import { ReactElement, useCallback } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import AddressInput from '@/components/common/AddressInput'
@@ -25,7 +25,7 @@ import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { parsePrefixedAddress } from '@/utils/addresses'
-import { useOwnerForm } from '@/components/load-safe/steps/useOwnerForm'
+import { useOwnerForm } from '@/hooks/useOwnerForm'
 
 type Props = {
   params: CreateSafeFormData
@@ -54,7 +54,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     mode: 'all',
     defaultValues: { name: params.name, owners: params.owners ?? [defaultOwner], threshold: defaultThreshold },
   })
-  const { register, handleSubmit, control, watch } = formMethods
+  const { register, handleSubmit, control, watch, setValue } = formMethods
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -77,7 +77,12 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     append({ name: '', address: '', resolving: false })
   }
 
-  useOwnerForm('owners', formMethods)
+  const setOwnerValue = useCallback(
+    (suffix: `${number}.resolving` | `${number}.name`, value: string | boolean) => setValue(`owners.${suffix}`, value),
+    [setValue],
+  )
+
+  useOwnerForm(owners, setOwnerValue)
 
   return (
     <Paper>

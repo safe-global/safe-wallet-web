@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Box, Button, Divider, Grid, Link, Paper, Typography } from '@mui/material'
 import { useForm, FormProvider } from 'react-hook-form'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -11,7 +11,7 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import NameInput from '@/components/common/NameInput'
-import { useOwnerForm } from './useOwnerForm'
+import { useOwnerForm } from '../../../hooks/useOwnerForm'
 
 type Props = {
   params: LoadSafeFormData
@@ -28,8 +28,20 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     },
   })
 
-  const { register, handleSubmit } = formMethods
-  useOwnerForm('safeAddress', formMethods, true)
+  const { register, handleSubmit, watch, setValue } = formMethods
+
+  const setOwnerValue = useCallback(
+    (suffix: `${number}.resolving` | `${number}.name`, value: string | boolean) => {
+      if (suffix.endsWith('name')) {
+        setValue(`safeAddress.name`, value.toString())
+      } else if (suffix.endsWith('resolving')) {
+        setValue(`safeAddress.resolving`, Boolean(value))
+      }
+    },
+    [setValue],
+  )
+
+  useOwnerForm([watch('safeAddress')], setOwnerValue, { useFallbackName: true })
 
   const validateSafeAddress = async (address: string) => {
     const { address: safeAddress } = parsePrefixedAddress(address)
