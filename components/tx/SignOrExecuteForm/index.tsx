@@ -27,6 +27,7 @@ type SignOrExecuteProps = {
   isRejection?: boolean
   onlyExecute?: boolean
   onSubmit: (data: null) => void
+  disableSubmit?: boolean
   children?: ReactNode
   error?: Error
 }
@@ -38,6 +39,7 @@ const SignOrExecuteForm = ({
   isRejection,
   onlyExecute,
   onSubmit,
+  disableSubmit,
   children,
   error,
 }: SignOrExecuteProps): ReactElement => {
@@ -177,6 +179,8 @@ const SignOrExecuteForm = ({
     setManualParams(data)
   }
 
+  const submitDisabled = !isSubmittable || isEstimating || disableSubmit
+
   return isEditingGas ? (
     <AdvancedParamsForm
       nonce={advancedParams.nonce || 0}
@@ -224,7 +228,7 @@ const SignOrExecuteForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        <Button variant="contained" type="submit" disabled={!isSubmittable || isEstimating}>
+        <Button variant="contained" type="submit" disabled={submitDisabled}>
           {isEstimating ? 'Estimating...' : 'Submit'}
         </Button>
       </DialogContent>

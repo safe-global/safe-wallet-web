@@ -45,10 +45,13 @@ export const ChangeThresholdDialog = () => {
 
 const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
-  const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
+  const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold)
+  const [disableSubmit, setDisableSubmit] = useState<boolean>(true)
 
   const handleChange = (event: SelectChangeEvent<number>) => {
-    setSelectedThreshold(parseInt(event.target.value.toString()))
+    const newThreshold = parseInt(event.target.value.toString())
+    setSelectedThreshold(newThreshold)
+    setDisableSubmit(newThreshold === data.threshold)
   }
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
@@ -56,7 +59,13 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
   }, [selectedThreshold])
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm
+      safeTx={safeTx}
+      isExecutable={safe.threshold === 1}
+      onSubmit={onSubmit}
+      error={safeTxError}
+      disableSubmit={disableSubmit}
+    >
       <Typography mb={1}>Any transaction requires the confirmation of:</Typography>
 
       <Grid container direction="row" gap={1} alignItems="center" mb={2}>
