@@ -2,11 +2,17 @@ import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolki
 
 import type { RootState } from '@/store'
 
+export enum PendingStatus {
+  SUBMITTING = 'SUBMITTING',
+  MINING = 'MINING',
+  INDEXING = 'INDEXING',
+}
+
 type PendingTxsState =
   | {
       [txId: string]: {
         chainId: string
-        status: string
+        status: PendingStatus
         txHash?: string
       }
     }
@@ -20,7 +26,7 @@ export const pendingTxsSlice = createSlice({
   reducers: {
     setPendingTx: (
       state,
-      action: PayloadAction<{ chainId: string; txId: string; txHash?: string; status: string }>,
+      action: PayloadAction<{ chainId: string; txId: string; txHash?: string; status: PendingStatus }>,
     ) => {
       const { txId, ...pendingTx } = action.payload
       state[txId] = pendingTx

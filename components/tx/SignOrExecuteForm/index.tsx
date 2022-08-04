@@ -99,7 +99,7 @@ const SignOrExecuteForm = ({
     const hardwareWallet = isHardwareWallet(connectedWallet)
     const signedTx = await dispatchTxSigning(createdTx, hardwareWallet, txId)
 
-    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx)
+    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
     return proposedTx.txId
   }
 

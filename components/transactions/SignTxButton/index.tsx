@@ -40,7 +40,7 @@ const SignTxButton = ({
         </Tooltip>
       ) : (
         <Button onClick={onClick} variant="contained" disabled={isDisabled}>
-          Sign
+          Confirm
         </Button>
       )}
 
