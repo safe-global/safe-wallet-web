@@ -3,7 +3,7 @@ import { Box, Link, Paper, Typography } from '@mui/material'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
-import { ExpandableTransactionItem } from '@/components/transactions/TxListItem'
+import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import css from './styles.module.css'
 import { useTxGroup } from './useTxGroup'
 

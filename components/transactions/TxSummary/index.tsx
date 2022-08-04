@@ -1,4 +1,4 @@
-import { Box, Palette, Typography } from '@mui/material'
+import { Box, CircularProgress, Palette, Typography } from '@mui/material'
 import { ReactElement } from 'react'
 import { type Transaction, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -10,10 +10,11 @@ import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isAwaitingExecution, isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
-import { useTransactionStatus } from '@/hooks/useTransactionStatus'
+import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 import GroupIcon from '@mui/icons-material/Group'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useIsPending from '@/hooks/useIsPending'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette) => {
   switch (value) {
@@ -40,6 +41,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const txStatusLabel = useTransactionStatus(tx)
+  const isPending = useIsPending(tx.id)
   const isQueue = isTxQueued(tx.txStatus)
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
@@ -95,7 +97,17 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      <Box gridArea="status" marginLeft={{ md: 'auto' }} marginRight={1}>
+      <Box
+        gridArea="status"
+        marginLeft={{ md: 'auto' }}
+        marginRight={1}
+        display="flex"
+        alignItems="center"
+        gap={1}
+        color={({ palette }) => getStatusColor(tx.txStatus, palette)}
+      >
+        {isPending && <CircularProgress size={14} color="inherit" />}
+
         <Typography variant="caption" fontWeight="bold" color={({ palette }) => getStatusColor(tx.txStatus, palette)}>
           {txStatusLabel}
         </Typography>

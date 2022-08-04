@@ -1,7 +1,7 @@
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 
-const useIsPending = ({ txId }: { txId: string }): boolean => {
+const useIsPending = (txId: string): boolean => {
   const pendingTxs = useAppSelector(selectPendingTxs)
   return !!pendingTxs[txId]
 }

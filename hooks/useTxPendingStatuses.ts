@@ -1,15 +1,15 @@
 import { useAppDispatch, useAppSelector } from '@/store'
-import { clearPendingTx, setPendingTx, selectPendingTxs } from '@/store/pendingTxsSlice'
+import { clearPendingTx, setPendingTx, selectPendingTxs, PendingStatus } from '@/store/pendingTxsSlice'
 import { useEffect, useRef } from 'react'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useChainId from './useChainId'
 import { waitForTx } from '@/services/tx/txMonitor'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
-const pendingStatuses: Partial<Record<TxEvent, string | null>> = {
-  [TxEvent.EXECUTING]: 'Submitting',
-  [TxEvent.MINING]: 'Mining',
-  [TxEvent.MINED]: 'Indexing',
+const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
+  [TxEvent.EXECUTING]: PendingStatus.SUBMITTING,
+  [TxEvent.MINING]: PendingStatus.MINING,
+  [TxEvent.MINED]: PendingStatus.INDEXING,
   [TxEvent.SUCCESS]: null,
   [TxEvent.REVERTED]: null,
   [TxEvent.FAILED]: null,
@@ -68,7 +68,7 @@ export const useTxMonitor = (): void => {
     }
 
     for (const [txId, { txHash, status }] of pendingTxEntriesOnChain) {
-      const isMining = status === pendingStatuses[TxEvent.MINING]
+      const isMining = status === PendingStatus.MINING
       const isMonitored = monitoredTxs.current[txId]
 
       if (!txHash || !isMining || isMonitored) {

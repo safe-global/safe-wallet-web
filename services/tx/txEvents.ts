@@ -8,6 +8,8 @@ export enum TxEvent {
   SIGN_FAILED = 'SIGN_FAILED',
   PROPOSED = 'PROPOSED',
   PROPOSE_FAILED = 'PROPOSE_FAILED',
+  SIGNATURE_PROPOSED = 'SIGNATURE_PROPOSED',
+  SIGNATURE_PROPOSE_FAILED = 'SIGNATURE_PROPOSE_FAILED',
   EXECUTING = 'EXECUTING',
   MINING = 'MINING',
   MINED = 'MINED',
@@ -22,6 +24,8 @@ interface TxEvents {
   [TxEvent.SIGN_FAILED]: { txId?: string; tx: SafeTransaction; error: Error }
   [TxEvent.PROPOSE_FAILED]: { tx: SafeTransaction; error: Error }
   [TxEvent.PROPOSED]: { txId: string; tx: SafeTransaction }
+  [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; tx: SafeTransaction; error: Error }
+  [TxEvent.SIGNATURE_PROPOSED]: { txId: string; tx: SafeTransaction }
   [TxEvent.EXECUTING]: { txId: string; tx: SafeTransaction }
   [TxEvent.MINING]: { txId: string; txHash: string; tx: SafeTransaction }
   [TxEvent.MINED]: { txId: string; receipt: ContractReceipt; tx: SafeTransaction }
