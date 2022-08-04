@@ -21,7 +21,7 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
     <Box data-testid="tx-hexData" className={css.encodedData}>
       {title && (
         <span>
-          <b>{title}:</b>
+          <b>{title}: </b>
         </span>
       )}
       {showExpandBtn ? (
