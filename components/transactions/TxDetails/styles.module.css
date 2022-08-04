@@ -33,9 +33,12 @@
 .txData,
 .txSummary,
 .advancedDetails,
-.txModule,
-.fallbackData {
+.txModule {
   padding: 20px 24px;
+}
+
+.txData {
+  border-bottom: 2px solid var(--color-border-light);
 }
 
 .txSummary,
@@ -51,6 +54,10 @@
 .delegateCall .alert {
   width: fit-content;
   padding: 0 var(--space-1);
+}
+
+.multiSend {
+  border-top: 2px solid var(--color-border-light);
 }
 
 @media (max-width: 768px) {

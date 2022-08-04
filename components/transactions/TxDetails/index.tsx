@@ -17,6 +17,7 @@ import {
   isModuleExecutionInfo,
   isMultiSendTxInfo,
   isMultisigExecutionInfo,
+  isSupportedMultiSendAddress,
   isTxQueued,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
@@ -24,7 +25,6 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import TxShareLink from '../TxShareLink'
-import MultiSendTx from '@/components/transactions/MultisendTx'
 import { ErrorBoundary } from '@sentry/react'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import SignTxButton from '@/components/transactions/SignTxButton'
@@ -32,6 +32,7 @@ import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { DelegateCallWarning } from '@/components/transactions/Warning'
+import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -41,6 +42,7 @@ type TxDetailsProps = {
 }
 
 const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {
+  const chainId = useChainId()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const isQueue = isTxQueued(txSummary.txStatus)
@@ -56,39 +58,41 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <TxShareLink id={txSummary.id} />
         </div>
 
-        {isMultiSendTxInfo(txDetails.txInfo) ? (
-          <MultiSendTx txDetails={txDetails} />
-        ) : (
-          <>
-            <div className={css.txData}>
-              <ErrorBoundary fallback={<div>Error parsing data</div>}>
-                <TxData txDetails={txDetails} />
-              </ErrorBoundary>
-            </div>
+        <div className={css.txData}>
+          <ErrorBoundary fallback={<div>Error parsing data</div>}>
+            <TxData txDetails={txDetails} />
+          </ErrorBoundary>
+        </div>
 
-            {/* Module information*/}
-            {isModuleExecutionInfo(txSummary.executionInfo) && (
-              <div className={css.txModule}>
-                <InfoDetails title="Module:">
-                  <EthHashInfo
-                    address={txSummary.executionInfo.address.value}
-                    shortAddress={false}
-                    showCopyButton
-                    hasExplorer
-                  />
-                </InfoDetails>
-              </div>
-            )}
+        {/* Module information*/}
+        {isModuleExecutionInfo(txSummary.executionInfo) && (
+          <div className={css.txModule}>
+            <InfoDetails title="Module:">
+              <EthHashInfo
+                address={txSummary.executionInfo.address.value}
+                shortAddress={false}
+                showCopyButton
+                hasExplorer
+              />
+            </InfoDetails>
+          </div>
+        )}
 
-            <div className={css.txSummary}>
-              {txDetails.txData?.operation === Operation.DELEGATE && (
-                <div className={css.delegateCall}>
-                  <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
-                </div>
-              )}
-              <Summary txDetails={txDetails} />
+        <div className={css.txSummary}>
+          {txDetails.txData?.operation === Operation.DELEGATE && (
+            <div className={css.delegateCall}>
+              <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
             </div>
-          </>
+          )}
+          <Summary txDetails={txDetails} />
+        </div>
+
+        {isSupportedMultiSendAddress(txDetails.txInfo, chainId) && isMultiSendTxInfo(txDetails.txInfo) && (
+          <div className={`${css.multiSend}`}>
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              <Multisend txData={txDetails.txData} />
+            </ErrorBoundary>
+          </div>
         )}
       </div>
 
