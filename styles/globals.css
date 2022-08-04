@@ -36,10 +36,6 @@ a {
   box-sizing: border-box;
 }
 
-#walletconnect-wrapper {
-  color: #162d45;
-}
-
 :root {
   --header-height: 52px;
 }

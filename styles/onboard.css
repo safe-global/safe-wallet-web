@@ -57,6 +57,10 @@
   padding: 20px !important;
 }
 
+#walletconnect-wrapper {
+  color: #162d45;
+}
+
 [data-theme='dark'] {
   --onboard-wallet-app-icon-background-transparent: white;
 }
