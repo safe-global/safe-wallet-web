@@ -4,6 +4,7 @@ import { Alert, AlertTitle, Box, CircularProgress, Paper, Typography } from '@mu
 import useCollectibles from '@/hooks/useCollectibles'
 import Nfts from '@/components/nfts'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
+import { PaddedMain } from '@/components/common/PaddedMain'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import NavTabs from '@/components/common/NavTabs'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
@@ -15,7 +16,7 @@ const NFTs: NextPage = () => {
   const [collectibles, error, loading] = useCollectibles(pageUrl)
 
   return (
-    <main>
+    <PaddedMain>
       <Breadcrumbs Icon={AssetsIcon} first="Assets" second="NFTs" />
 
       <NavTabs tabs={balancesNavItems} />
@@ -49,7 +50,7 @@ const NFTs: NextPage = () => {
           </Paper>
         )}
       </Box>
-    </main>
+    </PaddedMain>
   )
 }
 

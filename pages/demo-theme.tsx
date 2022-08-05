@@ -13,12 +13,13 @@ import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { ThemeProvider } from '@emotion/react'
+import { PaddedMain } from '@/components/common/PaddedMain'
 
 const DemoTheme: NextPage = () => {
   const { theme, switchThemeMode, themeMode } = useThemeMode()
 
   return (
-    <main>
+    <PaddedMain>
       <ThemeProvider theme={theme}>
         <Card>
           <CardContent>
@@ -114,7 +115,7 @@ const DemoTheme: NextPage = () => {
           </CardContent>
         </Card>
       </ThemeProvider>
-    </main>
+    </PaddedMain>
   )
 }
 

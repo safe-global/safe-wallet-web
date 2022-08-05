@@ -18,7 +18,6 @@
 
 .main {
   grid-area: main;
-  padding: var(--space-3);
   overflow-y: auto;
   overflow-x: hidden;
   min-height: calc(100vh - var(--header-height)); /* needed for scroll */

@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import { Grid, Paper, Typography } from '@mui/material'
+import { PaddedMain } from '@/components/common/PaddedMain'
 import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
@@ -21,7 +22,7 @@ const Setup: NextPage = () => {
   const isGranted = isSafeOwner && !isWrongChain
 
   return (
-    <main>
+    <PaddedMain>
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Setup" />
       <Paper sx={{ padding: 4 }} variant="outlined">
         <OwnerList isGranted={isGranted} />
@@ -40,7 +41,7 @@ const Setup: NextPage = () => {
           </Grid>
         </Grid>
       </Paper>
-    </main>
+    </PaddedMain>
   )
 }
 
