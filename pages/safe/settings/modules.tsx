@@ -3,7 +3,6 @@ import TransactionGuards from '@/components/settings/TransactionGuards'
 import { Grid } from '@mui/material'
 import type { NextPage } from 'next'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
-
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
 
 const Modules: NextPage = () => {

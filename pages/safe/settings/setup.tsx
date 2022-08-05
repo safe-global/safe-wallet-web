@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import { Grid, Paper, Typography } from '@mui/material'
-
 import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
