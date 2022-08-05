@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Divider, Grid, Paper, Typography } from '@mui/material'
-
 import { useRouter } from 'next/router'
 
 const NewSafe = () => {

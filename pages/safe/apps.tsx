@@ -20,7 +20,7 @@ const Apps: NextPage = () => {
         rowSpacing={2}
         columnSpacing={2}
         sx={{
-          padding: 'var(--space-3)',
+          p: 3,
         }}
       >
         {allSafeApps.map((a) => (

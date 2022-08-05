@@ -1,5 +1,4 @@
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
-
 import HomeIcon from '@/public/images/sidebar/home.svg'
 import Dashboard from './Dashboard'
 
