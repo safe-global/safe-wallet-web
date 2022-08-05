@@ -75,12 +75,8 @@ export const useSafeCreation = () => {
   }
 
   useEffect(() => {
-    console.log(wallet, isWrongChain)
-    if (!wallet || isWrongChain) {
-      setStatus(SafeCreationStatus.AWAITING_WALLET)
-      return
-    }
-    setStatus(SafeCreationStatus.AWAITING)
+    const newStatus = !wallet || isWrongChain ? SafeCreationStatus.AWAITING_WALLET : SafeCreationStatus.AWAITING
+    setStatus(newStatus)
   }, [wallet, isWrongChain])
 
   useEffect(() => {
