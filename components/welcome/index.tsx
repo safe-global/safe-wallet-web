@@ -1,12 +1,12 @@
 import React from 'react'
-import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
+import { Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
 const NewSafe = () => {
   const router = useRouter()
 
   return (
-    <Box>
+    <main>
       <Typography variant="h1" mb={2}>
         Welcome to the Safe.
       </Typography>
@@ -44,7 +44,7 @@ const NewSafe = () => {
           </Grid>
         </Grid>
       </Paper>
-    </Box>
+    </main>
   )
 }
 

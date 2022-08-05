@@ -1,6 +1,5 @@
-import SpendingLimits from '@/components/settings/SpendingLimits'
-
 import type { NextPage } from 'next'
+import SpendingLimits from '@/components/settings/SpendingLimits'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
 

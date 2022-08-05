@@ -2,9 +2,8 @@ import type { NextPage } from 'next'
 import Grid from '@mui/material/Grid'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppCard } from '@/components/safe-apps/AppCard'
-import { Breadcrumbs } from '@/components/common/Breadcrumbs'
-import AppsIcon from '@/public/images/sidebar/apps.svg'
-import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
+import { SafeAppsHeader } from '@/components/safe-apps/SafeAppsHeader'
+import { IS_PRODUCTION } from '@/config/constants'
 
 const Apps: NextPage = () => {
   const { allSafeApps, remoteSafeAppsLoading, customSafeAppsLoading, addCustomApp } = useSafeApps()
@@ -14,13 +13,16 @@ const Apps: NextPage = () => {
   }
 
   return (
-    <main>
-      <Breadcrumbs Icon={AppsIcon} first="Apps" />
-      <Grid container rowSpacing={2} columnSpacing={2}>
-        <Grid item xs={12} sm={6} md={3} xl={1.5}>
-          <AddCustomAppCard onSave={addCustomApp} safeAppList={allSafeApps} />
-        </Grid>
-
+    <main style={{ padding: 0 }}>
+      {!IS_PRODUCTION && <SafeAppsHeader onCustomAppSave={addCustomApp} safeAppList={allSafeApps} />}
+      <Grid
+        container
+        rowSpacing={2}
+        columnSpacing={2}
+        sx={{
+          p: 3,
+        }}
+      >
         {allSafeApps.map((a) => (
           <Grid key={a.id || a.url} item xs={12} sm={6} md={3} xl={1.5}>
             <AppCard safeApp={a} />
