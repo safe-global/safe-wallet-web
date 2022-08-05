@@ -4,7 +4,7 @@ import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getAddress } from 'ethers/lib/utils'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
-import { localItem } from '@/services/localStorage/local'
+import { localItem } from '@/services/local-storage/local'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 

@@ -21,7 +21,7 @@ import {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
-import { getMultiSendContractAddress } from '@/services/contracts/safeContracts'
+import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
 import { Owner } from '@/components/create-safe'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
@@ -84,8 +84,9 @@ export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
 export const isSupportedMultiSendAddress = (txInfo: TransactionInfo, chainId: string): boolean => {
   const toAddress = isCustomTxInfo(txInfo) ? txInfo.to.value : ''
   const multiSendAddress = getMultiSendContractAddress(chainId)
+  const multiSendCallOnlyAddress = getMultiSendCallOnlyContractAddress(chainId)
 
-  return sameAddress(multiSendAddress, toAddress)
+  return sameAddress(multiSendAddress, toAddress) || sameAddress(multiSendCallOnlyAddress, toAddress)
 }
 
 export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend => {

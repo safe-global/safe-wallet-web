@@ -16,10 +16,10 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
     formState: { errors },
   } = useFormContext()
   const currentChain = useCurrentChain()
-  const currentValue = watch(name)?.trim()
+  const currentValue = watch(name)
 
   // Fetch an ENS resolution for the current address
-  const { address, resolving } = useNameResolver(currentValue)
+  const { address, resolving } = useNameResolver(currentValue?.trim())
 
   const setAddressValue = useCallback(
     (value: string) => {
@@ -49,6 +49,10 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
                 <CircularProgress size={20} />
               </InputAdornment>
             ),
+          }}
+          InputLabelProps={{
+            ...(props.InputLabelProps || {}),
+            shrink: !!currentValue || props.focused,
           }}
           {...register(name, {
             required: true,

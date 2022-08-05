@@ -3,12 +3,15 @@ import * as createSafe from '@/components/create-safe/sender'
 import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
 import * as pendingSafe from '@/components/create-safe/usePendingSafe'
 import * as web3 from '@/hooks/wallets/web3'
+import * as wallet from '@/hooks/wallets/useWallet'
+import * as wrongChain from '@/hooks/useIsWrongChain'
 import { waitFor } from '@testing-library/react'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { checkSafeCreationTx } from '@/components/create-safe/status/usePendingSafeCreation'
 import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 describe('useSafeCreation', () => {
   beforeEach(() => {
@@ -18,7 +21,23 @@ describe('useSafeCreation', () => {
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
   })
 
-  it('should return a PENDING state by default', () => {
+  it('should return an AWAITING_WALLET state by default', () => {
+    const { result } = renderHook(() => useSafeCreation())
+
+    expect(result.current.status).toBe(SafeCreationStatus.AWAITING_WALLET)
+  })
+
+  it('should return an AWAITING_WALLET state if a wallet is connected on the wrong chain', () => {
+    jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
+    jest.spyOn(wrongChain, 'default').mockReturnValue(true)
+    const { result } = renderHook(() => useSafeCreation())
+
+    expect(result.current.status).toBe(SafeCreationStatus.AWAITING_WALLET)
+  })
+
+  it('should return an AWAITING state if a wallet is connected on the correct chain', () => {
+    jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
+    jest.spyOn(wrongChain, 'default').mockReturnValue(false)
     const { result } = renderHook(() => useSafeCreation())
 
     expect(result.current.status).toBe(SafeCreationStatus.AWAITING)
@@ -27,6 +46,8 @@ describe('useSafeCreation', () => {
   it('should return SUCCESS if the safe creation promise resolves', async () => {
     const mockSafe: Safe = new Safe()
     mockSafe.getAddress = jest.fn(() => '0x0')
+    jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
+    jest.spyOn(wrongChain, 'default').mockReturnValue(false)
     jest.spyOn(createSafe, 'computeNewSafeAddress').mockImplementation(() => Promise.resolve(ZERO_ADDRESS))
     jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.resolve(mockSafe))
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
@@ -49,6 +70,8 @@ describe('useSafeCreation', () => {
   it('should return ERROR if the safe creation promise rejects', async () => {
     const mockSafe: Safe = new Safe()
     mockSafe.getAddress = jest.fn(() => '0x0')
+    jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
+    jest.spyOn(wrongChain, 'default').mockReturnValue(false)
     jest.spyOn(createSafe, 'computeNewSafeAddress').mockImplementation(() => Promise.resolve(ZERO_ADDRESS))
     jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.reject(mockSafe))
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [

@@ -1,6 +1,6 @@
 .container {
   display: grid;
-  padding: 16px 16px;
+  padding: var(--space-2);
 }
 
 .safe {

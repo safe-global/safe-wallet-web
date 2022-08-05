@@ -38,9 +38,6 @@
 }
 
 .txData {
-  display: flex;
-  flex-direction: column;
-  padding-right: 60px; /* to not overlap with the share link */
   border-bottom: 2px solid var(--color-border-light);
 }
 
@@ -57,6 +54,10 @@
 .delegateCall .alert {
   width: fit-content;
   padding: 0 var(--space-1);
+}
+
+.multiSend {
+  border-top: 2px solid var(--color-border-light);
 }
 
 @media (max-width: 768px) {

@@ -19,7 +19,7 @@ const ExecuteTxButton = ({
   const [open, setOpen] = useState<boolean>(false)
   const { safe } = useSafeInfo()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
-  const isPending = useIsPending({ txId: txSummary.id })
+  const isPending = useIsPending(txSummary.id)
 
   const isNext = !!txNonce && !!safe.nonce && txNonce === safe.nonce
   const isDisabled = !isNext || isPending

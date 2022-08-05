@@ -1,45 +1,9 @@
 import { type ReactElement } from 'react'
-import type { Transaction, TransactionDetails, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { isCreationTxInfo, isDateLabel, isLabelListItem, isTransactionListItem } from '@/utils/transaction-guards'
-import TxSummary from '@/components/transactions/TxSummary'
+import type { TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
+import { isDateLabel, isLabelListItem, isTransactionListItem } from '@/utils/transaction-guards'
 import GroupLabel from '@/components/transactions/GroupLabel'
 import TxDateLabel from '@/components/transactions/TxDateLabel'
-import TxDetails from '@/components/transactions/TxDetails'
-import CreateTxInfo from '@/components/transactions/SafeCreationTx'
-
-interface ExpandableTransactionItemProps {
-  isGrouped?: boolean
-  item: Transaction
-  txDetails?: TransactionDetails
-}
-
-export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }: ExpandableTransactionItemProps) => {
-  return (
-    <Accordion
-      disableGutters
-      TransitionProps={{
-        mountOnEnter: false,
-        unmountOnExit: true,
-      }}
-      elevation={0}
-      defaultExpanded={!!txDetails}
-    >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
-        <TxSummary item={item} isGrouped={isGrouped} />
-      </AccordionSummary>
-
-      <AccordionDetails sx={{ padding: 0 }}>
-        {isCreationTxInfo(item.transaction.txInfo) ? (
-          <CreateTxInfo txSummary={item.transaction} />
-        ) : (
-          <TxDetails txSummary={item.transaction} txDetails={txDetails} />
-        )}
-      </AccordionDetails>
-    </Accordion>
-  )
-}
+import ExpandableTransactionItem from './ExpandableTransactionItem'
 
 type TxListItemProps = {
   item: TransactionListItem

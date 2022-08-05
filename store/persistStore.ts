@@ -1,6 +1,6 @@
 import type { Middleware, PreloadedState } from '@reduxjs/toolkit'
 
-import local from '@/services/localStorage/local'
+import local from '@/services/local-storage/local'
 import type { RootState } from '@/store'
 
 type PreloadedRootState = PreloadedState<RootState>

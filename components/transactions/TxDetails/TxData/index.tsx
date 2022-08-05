@@ -11,7 +11,6 @@ import {
   isTransferTxInfo,
   SpendingLimitMethods,
 } from '@/utils/transaction-guards'
-import { Multisend } from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import { SpendingLimits } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { type ReactElement } from 'react'
@@ -19,6 +18,7 @@ import RejectionTxInfo from '@/components/transactions/TxDetails/TxData/Rejectio
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
 import useChainId from '@/hooks/useChainId'
+import { MultiSendTxInfo } from '@/components/transactions/TxDetails/TxData/MultiSendTxInfo'
 
 const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const chainId = useChainId()
@@ -37,7 +37,7 @@ const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement 
   }
 
   if (isSupportedMultiSendAddress(txInfo, chainId) && isMultiSendTxInfo(txInfo)) {
-    return <Multisend txData={txDetails.txData} />
+    return <MultiSendTxInfo txInfo={txInfo} />
   }
 
   const method = txDetails.txData?.dataDecoded?.method as SpendingLimitMethods

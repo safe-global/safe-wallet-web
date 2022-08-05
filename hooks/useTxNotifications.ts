@@ -6,11 +6,13 @@ import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 const TxNotifications: Partial<Record<TxEvent, string>> = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
   [TxEvent.PROPOSED]: 'Your transaction was successfully proposed.',
-  [TxEvent.PROPOSE_FAILED]: 'Proposal failed. Please try again.',
+  [TxEvent.PROPOSE_FAILED]: 'Failed proposing the transaction. Please try again.',
+  [TxEvent.SIGNATURE_PROPOSED]: 'You successfully signed the transaction.',
+  [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send the signature. Please try again.',
   [TxEvent.EXECUTING]: 'Please confirm the execution in your wallet.',
-  [TxEvent.MINING]: 'Your transaction is mining.',
+  [TxEvent.MINING]: 'Your transaction is being mined.',
   [TxEvent.MINED]: 'Your transaction was successfully mined and is now being indexed.',
-  [TxEvent.REVERTED]: 'Please check your gas settings.',
+  [TxEvent.REVERTED]: 'Transaction reverted. Please check your gas settings.',
   [TxEvent.SUCCESS]: 'Your transaction was successfully executed.',
   [TxEvent.FAILED]: 'Your transaction was unsuccessful.',
 }

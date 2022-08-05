@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 
 import { BEAMER_ID } from '@/config/constants'
-import local from '@/services/localStorage/local'
+import local from '@/services/local-storage/local'
 
 // Beamer script tag singleton
 let scriptRef: HTMLScriptElement | null = null

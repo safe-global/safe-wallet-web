@@ -21,6 +21,14 @@ const getStep = (status: SafeCreationStatus) => {
         description: 'Step 1/2: Waiting for transaction confirmation.',
         instruction: 'Please confirm the transaction with your connected wallet.',
       }
+    case SafeCreationStatus.AWAITING_WALLET:
+      return {
+        image: (
+          <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
+        ),
+        description: 'Waiting for wallet connection',
+        instruction: 'Please make sure your wallet is connected on the correct network.',
+      }
     case SafeCreationStatus.MINING:
       return {
         image: (

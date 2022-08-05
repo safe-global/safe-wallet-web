@@ -1,12 +1,10 @@
-import TokenExplorerLink from '@/components/common/TokenExplorerLink'
 import CopyButton from '@/components/common/CopyButton'
-import CopyAddressButton from '@/components/common/CopyAddressButton'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { shortenAddress } from '@/utils/formatters'
 import { Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
 import { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 type TxDataRowProps = {
   title: string
@@ -17,14 +15,9 @@ export const TxDataRow = ({ title, children }: TxDataRowProps): ReactElement | n
   if (children == undefined) return null
   return (
     <div className={css.gridRow}>
-      <Typography
-        sx={({ palette }) => ({
-          color: palette.secondary.light,
-        })}
-      >
-        {title}
-      </Typography>
-      {children}
+      <div className={css.title}>{title}</div>
+
+      <Typography component="div">{children}</Typography>
     </div>
   )
 }
@@ -36,23 +29,9 @@ export const generateDataRowValue = (
 ): ReactElement | null => {
   if (value == undefined) return null
   switch (type) {
-    case 'address':
-      return (
-        <div className={css.inline}>
-          {/* TODO: missing the chain prefix */}
-          <Typography>{shortenAddress(value, 8)}</Typography>
-          <CopyAddressButton address={value} />
-          {hasExplorer && <TokenExplorerLink address={value} />}
-        </div>
-      )
     case 'hash':
-      return (
-        <div className={css.inline}>
-          <div>{shortenAddress(value, 8)}</div>
-          <CopyButton text={value} />
-          {hasExplorer && <TokenExplorerLink address={value} />}
-        </div>
-      )
+    case 'address':
+      return <EthHashInfo address={value} hasExplorer={hasExplorer} showAvatar={false} showCopyButton />
     case 'rawData':
       return (
         <div className={css.rawData}>

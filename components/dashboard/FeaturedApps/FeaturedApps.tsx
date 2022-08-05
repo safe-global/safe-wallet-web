@@ -1,10 +1,10 @@
 import { ReactElement, useMemo } from 'react'
 import styled from '@emotion/styled'
 import { Box, Grid, Typography } from '@mui/material'
-import { useSafeApps } from '@/hooks/useSafeApps'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import { SAFE_REACT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 
 export const FEATURED_APPS_TAG = 'dashboard-widgets'
 
@@ -30,7 +30,7 @@ const getSafeAppUrl = (appUrl: string, chainId: string) => {
 }
 
 export const FeaturedApps = (): ReactElement | null => {
-  const [allApps = [], , isLoading] = useSafeApps()
+  const [allApps = [], , isLoading] = useRemoteSafeApps()
   const chainId = useChainId()
   const featuredApps = useMemo(() => allApps.filter((app) => app.tags?.includes(FEATURED_APPS_TAG)), [allApps])
 

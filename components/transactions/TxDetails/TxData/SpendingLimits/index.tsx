@@ -61,6 +61,8 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
           </Typography>
           <Box className={css.inline}>
             <TokenIcon logoUri={tokenInfo.logoUri} size={32} tokenSymbol={tokenInfo.symbol} />
+            <Typography>{tokenInfo.symbol}</Typography>
+
             {isSetAllowanceMethod ? (
               <Typography>
                 {formatDecimals(amount as string, tokenInfo.decimals)} {tokenInfo.symbol}
