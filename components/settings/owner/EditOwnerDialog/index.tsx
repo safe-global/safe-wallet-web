@@ -39,7 +39,11 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
     mode: 'onChange',
   })
 
-  const { handleSubmit, formState } = formMethods
+  const { handleSubmit, formState, watch } = formMethods
+
+  const nameValue = watch('name')
+
+  const buttonDisabled = !formState.isValid || nameValue === name || nameValue === ''
 
   return (
     <>
@@ -54,7 +58,7 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogContent>
               <Box py={2}>
-                <NameInput textFieldProps={{ label: 'Owner name' }} name="name" />
+                <NameInput label="Owner name" name="name" required />
               </Box>
 
               <Box py={2}>
@@ -64,7 +68,7 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
 
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button type="submit" variant="contained" disabled={!formState.isValid}>
+              <Button type="submit" variant="contained" disabled={buttonDisabled}>
                 Save
               </Button>
             </DialogActions>

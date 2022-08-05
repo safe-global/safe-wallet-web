@@ -1,7 +1,6 @@
-import React from 'react'
-import { Box, Button, Divider, Grid, Link, Paper, TextField, Typography } from '@mui/material'
+import React, { useCallback } from 'react'
+import { Box, Button, CircularProgress, Divider, Grid, InputAdornment, Link, Paper, Typography } from '@mui/material'
 import { useForm, FormProvider } from 'react-hook-form'
-import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { LoadSafeFormData } from '@/components/load-safe'
@@ -11,6 +10,9 @@ import useChainId from '@/hooks/useChainId'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
+import NameInput from '@/components/common/NameInput'
+import { useOwnerForm } from '@/hooks/useOwnerForm'
+import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 
 type Props = {
   params: LoadSafeFormData
@@ -19,12 +21,31 @@ type Props = {
 }
 
 const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
-  const currentChainId = useChainId()
   const fallbackName = useMnemonicSafeName()
+  const currentChainId = useChainId()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
-  const formMethods = useForm<LoadSafeFormData>({ defaultValues: { name: fallbackName, address: params?.address } })
+  const formMethods = useForm<LoadSafeFormData>({
+    defaultValues: {
+      safeAddress: { name: params?.safeAddress.name || '', address: params?.safeAddress.address, resolving: false },
+    },
+  })
 
-  const { register, handleSubmit } = formMethods
+  const { register, handleSubmit, watch, setValue } = formMethods
+
+  const setOwnerValue = useCallback(
+    (suffix: `${number}.resolving` | `${number}.name`, value: string | boolean) => {
+      if (suffix.endsWith('name')) {
+        setValue(`safeAddress.name`, value.toString())
+      } else if (suffix.endsWith('resolving')) {
+        setValue(`safeAddress.resolving`, Boolean(value))
+      }
+    },
+    [setValue],
+  )
+
+  const safeAddress = watch('safeAddress')
+
+  useOwnerForm([safeAddress], setOwnerValue, fallbackName)
 
   const validateSafeAddress = async (address: string) => {
     const { address: safeAddress } = parsePrefixedAddress(address)
@@ -38,7 +59,6 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     } catch (error) {
       return 'Address given is not a valid Safe address'
     }
-    return
   }
 
   return (
@@ -62,21 +82,33 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 This article explains how to find it.
               </Link>
             </Typography>
-            <Box marginBottom={2} maxWidth={500} paddingRight={6}>
-              <TextField
+            <Box marginBottom={2} paddingRight={6}>
+              <NameInput
+                name="safeAddress.name"
                 label="Safe name"
                 InputLabelProps={{ shrink: true }}
-                {...register('name')}
-                placeholder={fallbackName}
-                fullWidth
+                InputProps={{
+                  endAdornment: safeAddress.resolving && (
+                    <InputAdornment position="end">
+                      <CircularProgress size={20} />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Box>
-            <Box maxWidth={500}>
+            <Box>
               <AddressInput
                 label="Safe address"
                 validate={validateSafeAddress}
                 InputLabelProps={{ shrink: true }}
-                {...register('address')}
+                InputProps={{
+                  endAdornment: safeAddress.resolving && (
+                    <InputAdornment position="end">
+                      <CircularProgress size={20} />
+                    </InputAdornment>
+                  ),
+                }}
+                {...register('safeAddress.address')}
               />
             </Box>
             <Typography mt={2}>

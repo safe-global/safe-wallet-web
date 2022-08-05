@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
-import { ReactElement, useCallback, useEffect } from 'react'
+import { ReactElement, useCallback } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import AddressInput from '@/components/common/AddressInput'
@@ -24,9 +24,8 @@ import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { lookupAddress } from '@/services/domains'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import { useOwnerForm } from '@/hooks/useOwnerForm'
 
 type Props = {
   params: CreateSafeFormData
@@ -37,7 +36,6 @@ type Props = {
 
 const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactElement => {
   useResetSafeCreation(setStep)
-  const ethersProvider = useWeb3ReadOnly()
   const wallet = useWallet()
 
   const addressBook = useAddressBook()
@@ -58,14 +56,12 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   })
   const { register, handleSubmit, control, watch, setValue } = formMethods
 
-  const { fields, append, remove, update } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'owners',
   })
 
   const owners = watch('owners')
-  // the owners array does not trigger useEffect when internal values change, therefore we use a signature containing all owner values
-  const ownersSignature = owners.map((owner) => owner.address + owner.name).join('')
 
   const onFormSubmit = (data: CreateSafeFormData) => {
     onSubmit({
@@ -81,32 +77,12 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     append({ name: '', address: '', resolving: false })
   }
 
-  const addAddressBookOrENSName = useCallback(
-    async (owner: Owner, index: number) => {
-      if (owner.name || owner.resolving || !owner.address || !ethersProvider) return
-      setValue(`owners.${index}.resolving`, true)
-      const { address } = parsePrefixedAddress(owner.address)
-      // Lookup Addressbook
-      const nameFromAddressbook = addressBook[address]
-      if (nameFromAddressbook) {
-        update(index, { ...owner, name: nameFromAddressbook, resolving: false })
-        return
-      }
-
-      // Lookup ENS
-      const ensName = await lookupAddress(ethersProvider, address)
-      if (ensName) {
-        update(index, { ...owner, name: ensName, resolving: false })
-      } else {
-        setValue(`owners.${index}.resolving`, false)
-      }
-    },
-    [update, setValue, ethersProvider, addressBook],
+  const setOwnerValue = useCallback(
+    (suffix: `${number}.resolving` | `${number}.name`, value: string | boolean) => setValue(`owners.${suffix}`, value),
+    [setValue],
   )
 
-  useEffect(() => {
-    owners.forEach(addAddressBookOrENSName)
-  }, [owners, ownersSignature, addAddressBookOrENSName])
+  useOwnerForm(owners, setOwnerValue)
 
   return (
     <Paper>
@@ -142,16 +118,14 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
                   <Grid item xs={12} md={4}>
                     <FormControl fullWidth>
                       <NameInput
-                        textFieldProps={{
-                          label: 'Owner name',
-                          InputLabelProps: { shrink: true },
-                          InputProps: {
-                            endAdornment: owners[index].resolving ? (
-                              <InputAdornment position="end">
-                                <CircularProgress size={20} />
-                              </InputAdornment>
-                            ) : null,
-                          },
+                        label="Owner name"
+                        InputLabelProps={{ shrink: true }}
+                        InputProps={{
+                          endAdornment: owners[index].resolving ? (
+                            <InputAdornment position="end">
+                              <CircularProgress size={20} />
+                            </InputAdornment>
+                          ) : null,
                         }}
                         name={`owners.${index}.name`}
                       />

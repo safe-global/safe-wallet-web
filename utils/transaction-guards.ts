@@ -22,6 +22,7 @@ import {
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
 import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
+import { Owner } from '@/components/create-safe'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -30,8 +31,16 @@ export const isTxQueued = (value: TransactionStatus): boolean => {
 export const isAwaitingExecution = (txStatus: TransactionStatus): boolean =>
   TransactionStatus.AWAITING_EXECUTION === txStatus
 
-export const isOwner = (safeOwners: AddressEx[] = [], walletAddress?: string) => {
-  return safeOwners.some((owner) => owner.value.toLowerCase() === walletAddress?.toLowerCase())
+const isAddressEx = (owners: AddressEx[] | Owner[]): owners is AddressEx[] => {
+  return (owners as AddressEx[]).every((owner) => owner.value !== undefined)
+}
+
+export const isOwner = (safeOwners: AddressEx[] | Owner[] = [], walletAddress?: string) => {
+  if (isAddressEx(safeOwners)) {
+    return safeOwners.some((owner) => owner.value.toLowerCase() === walletAddress?.toLowerCase())
+  }
+
+  return safeOwners.some((owner) => owner.address.toLowerCase() === walletAddress?.toLowerCase())
 }
 
 export const isMultisigExecutionDetails = (value?: DetailedExecutionInfo): value is MultisigExecutionDetails => {
