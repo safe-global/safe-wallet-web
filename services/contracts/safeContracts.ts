@@ -5,18 +5,18 @@ import {
   getProxyFactoryDeployment,
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
-  SingletonDeployment,
+  type SingletonDeployment,
 } from '@gnosis.pm/safe-deployments'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { Contract } from 'ethers'
 import { Interface } from '@ethersproject/abi'
 import semverSatisfies from 'semver/functions/satisfies'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Gnosis_safe } from '@/types/contracts/Gnosis_safe'
-import { Compatibility_fallback_handler } from '@/types/contracts/Compatibility_fallback_handler'
-import { Multi_send } from '@/types/contracts/Multi_send'
-import { Proxy_factory } from '@/types/contracts/Proxy_factory'
-import { Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
+import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type Gnosis_safe } from '@/types/contracts/Gnosis_safe'
+import { type Compatibility_fallback_handler } from '@/types/contracts/Compatibility_fallback_handler'
+import { type Multi_send } from '@/types/contracts/Multi_send'
+import { type Proxy_factory } from '@/types/contracts/Proxy_factory'
+import { type Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
 
 const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
   // We check if version is prior to v1.0.0 as they are not supported but still we want to keep a minimum compatibility
