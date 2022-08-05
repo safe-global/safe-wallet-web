@@ -22,7 +22,7 @@ export const useOwnerForm = (
 
   const lookupOwnerAddress = useCallback(
     async (owner: Owner, index: number) => {
-      if (!owner.address || owner.address === '' || owner.name !== '' || owner.name !== fallbackName) {
+      if (!owner.address || owner.address === '' || (owner.name !== '' && owner.name !== fallbackName)) {
         return
       }
       console.log('looking up')
@@ -64,5 +64,5 @@ export const useOwnerForm = (
     if (!ownerValues) return
 
     ownerValues.forEach(lookupOwnerAddress)
-  }, [ownerSignature, lookupOwnerAddress])
+  }, [ownerValues, ownerSignature, lookupOwnerAddress])
 }
