@@ -128,7 +128,6 @@ describe('useOwnerForm', () => {
           },
         ],
         updateMock,
-        { useFallbackName: true },
       ),
     )
 
@@ -165,7 +164,6 @@ describe('useOwnerForm', () => {
           },
         ],
         updateMock,
-        { useFallbackName: true },
       ),
     )
 
@@ -204,7 +202,6 @@ describe('useOwnerForm', () => {
           },
         ],
         updateMock,
-        { useFallbackName: true },
       ),
     )
 

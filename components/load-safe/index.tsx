@@ -20,7 +20,7 @@ export type LoadSafeFormData = {
 export const LoadSafeSteps: TxStepperProps['steps'] = [
   {
     label: 'Connect wallet & select network',
-    render: (data, onSubmit, onBack) => <SelectNetworkStep onSubmit={onSubmit} onBack={onBack} />,
+    render: (_, onSubmit, onBack) => <SelectNetworkStep onSubmit={onSubmit} onBack={onBack} />,
   },
   {
     label: 'Name and address',

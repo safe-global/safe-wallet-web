@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Box, Button, Divider, Grid, Link, Paper, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Divider, Grid, InputAdornment, Link, Paper, Typography } from '@mui/material'
 import { useForm, FormProvider } from 'react-hook-form'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
@@ -11,7 +11,8 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import NameInput from '@/components/common/NameInput'
-import { useOwnerForm } from '../../../hooks/useOwnerForm'
+import { useOwnerForm } from '@/hooks/useOwnerForm'
+import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 
 type Props = {
   params: LoadSafeFormData
@@ -20,6 +21,7 @@ type Props = {
 }
 
 const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
+  const fallbackName = useMnemonicSafeName()
   const currentChainId = useChainId()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
   const formMethods = useForm<LoadSafeFormData>({
@@ -41,7 +43,9 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     [setValue],
   )
 
-  useOwnerForm([watch('safeAddress')], setOwnerValue, { useFallbackName: true })
+  const safeAddress = watch('safeAddress')
+
+  useOwnerForm([safeAddress], setOwnerValue, fallbackName)
 
   const validateSafeAddress = async (address: string) => {
     const { address: safeAddress } = parsePrefixedAddress(address)
@@ -78,14 +82,32 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 This article explains how to find it.
               </Link>
             </Typography>
-            <Box marginBottom={2} maxWidth={500} paddingRight={6}>
-              <NameInput label="Safe name" InputLabelProps={{ shrink: true }} name="safeAddress.name" />
+            <Box marginBottom={2} paddingRight={6}>
+              <NameInput
+                name="safeAddress.name"
+                label="Safe name"
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  endAdornment: safeAddress.resolving && (
+                    <InputAdornment position="end">
+                      <CircularProgress size={20} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
             </Box>
-            <Box maxWidth={500}>
+            <Box>
               <AddressInput
                 label="Safe address"
                 validate={validateSafeAddress}
                 InputLabelProps={{ shrink: true }}
+                InputProps={{
+                  endAdornment: safeAddress.resolving && (
+                    <InputAdornment position="end">
+                      <CircularProgress size={20} />
+                    </InputAdornment>
+                  ),
+                }}
                 {...register('safeAddress.address')}
               />
             </Box>

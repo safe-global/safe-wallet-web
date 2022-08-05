@@ -1,6 +1,5 @@
 import { Owner } from '@/components/create-safe'
 import useAddressBook from '@/hooks/useAddressBook'
-import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { lookupAddress } from '@/services/domains'
 import { parsePrefixedAddress } from '@/utils/addresses'
@@ -14,40 +13,32 @@ const createOwnerSignature = (ownerValue: Owner[]) => ownerValue.map((owner) => 
 export const useOwnerForm = (
   ownerValues: Owner[] | undefined,
   update: (fieldNameSuffix: `${number}.resolving` | `${number}.name`, value: string | boolean) => void,
-  options?: { useFallbackName: boolean },
+  fallbackName?: string,
 ) => {
-  const fallbackName = useMnemonicSafeName()
-
   const chainInfo = useCurrentChain()
-
   const addressBook = useAddressBook()
-
   const ethersProvider = useWeb3ReadOnly()
-
   const ownerSignature = ownerValues ? createOwnerSignature(ownerValues) : undefined
 
   const lookupOwnerAddress = useCallback(
     async (owner: Owner, index: number) => {
-      if (!owner.address || owner.address === '') {
-        return
-      }
-      if (owner.name !== '' && owner.name !== fallbackName) {
+      if (!owner.address || owner.address === '' || owner.name !== '' || owner.name !== fallbackName) {
         return
       }
       console.log('looking up')
       update(`${index}.resolving`, true)
 
       // We initially set the fallback name and overwrite it if the lookup is successful
-      if (options?.useFallbackName) {
+      if (fallbackName) {
         update(`${index}.name`, fallbackName)
       }
 
       const { address } = parsePrefixedAddress(owner.address)
 
       // Lookup Addressbook
-      const nameFromAddressbook = addressBook[address]
-      if (nameFromAddressbook) {
-        update(`${index}.name`, nameFromAddressbook)
+      const nameFromAddressBook = addressBook[address]
+      if (nameFromAddressBook) {
+        update(`${index}.name`, nameFromAddressBook)
         update(`${index}.resolving`, false)
         return
       }
@@ -66,14 +57,12 @@ export const useOwnerForm = (
 
       update(`${index}.resolving`, false)
     },
-    [fallbackName, update, options?.useFallbackName, addressBook, ethersProvider, chainInfo],
+    [fallbackName, update, addressBook, ethersProvider, chainInfo],
   )
 
   useEffect(() => {
-    console.log(ownerSignature, fallbackName)
-    if (!ownerValues) {
-      return
-    }
+    if (!ownerValues) return
+
     ownerValues.forEach(lookupOwnerAddress)
-  }, [ownerSignature, lookupOwnerAddress, fallbackName])
+  }, [ownerSignature, lookupOwnerAddress])
 }

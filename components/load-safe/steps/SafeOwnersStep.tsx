@@ -1,5 +1,15 @@
-import { ReactElement, useCallback, useEffect } from 'react'
-import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
+import React, { ReactElement, useCallback, useEffect } from 'react'
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  FormControl,
+  Grid,
+  InputAdornment,
+  Paper,
+  Typography,
+} from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -41,14 +51,17 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
       'owners',
       safeInfo.owners.map((owner) => ({ address: owner.value, name: '', resolving: false })),
     )
-  }, [safeInfo, safeInfo?.threshold, safeInfo?.owners, setValue])
+    setValue('chainId', safeInfo.chainId)
+  }, [safeInfo, setValue])
 
   const setOwnerValue = useCallback(
     (suffix: `${number}.resolving` | `${number}.name`, value: string | boolean) => setValue(`owners.${suffix}`, value),
     [setValue],
   )
 
-  useOwnerForm(watch('owners'), setOwnerValue)
+  const owners = watch('owners')
+
+  useOwnerForm(owners, setOwnerValue)
 
   return (
     <Paper>
@@ -86,6 +99,13 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
                         <NameInput
                           label="Owner name"
                           InputLabelProps={{ shrink: true }}
+                          InputProps={{
+                            endAdornment: owners?.[index].resolving && (
+                              <InputAdornment position="end">
+                                <CircularProgress size={20} />
+                              </InputAdornment>
+                            ),
+                          }}
                           name={`owners.${index}.name`}
                         />
                       </FormControl>
