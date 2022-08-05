@@ -48,12 +48,12 @@ const EntryDialog = ({
   }
 
   return (
-    <ModalDialog open onClose={handleClose} dialogTitle="Create entry">
+    <ModalDialog open onClose={handleClose} dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
             <Box mb={2}>
-              <NameInput label="Name" autoFocus name="name" />
+              <NameInput label="Name" autoFocus name="name" required />
             </Box>
 
             <Box>

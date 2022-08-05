@@ -13,7 +13,6 @@ const createOwnerSignature = (ownerValue: Owner[]) => ownerValue.map((owner) => 
 export const useOwnerForm = (
   ownerValues: Owner[] | undefined,
   update: (fieldNameSuffix: `${number}.resolving` | `${number}.name`, value: string | boolean) => void,
-  fallbackName?: string,
 ) => {
   const chainInfo = useCurrentChain()
   const addressBook = useAddressBook()
@@ -22,16 +21,11 @@ export const useOwnerForm = (
 
   const lookupOwnerAddress = useCallback(
     async (owner: Owner, index: number) => {
-      if (!owner.address || owner.address === '' || (owner.name !== '' && owner.name !== fallbackName)) {
+      if (!owner.address || owner.address === '') {
         return
       }
-      console.log('looking up')
-      update(`${index}.resolving`, true)
 
-      // We initially set the fallback name and overwrite it if the lookup is successful
-      if (fallbackName) {
-        update(`${index}.name`, fallbackName)
-      }
+      update(`${index}.resolving`, true)
 
       const { address } = parsePrefixedAddress(owner.address)
 
@@ -57,12 +51,13 @@ export const useOwnerForm = (
 
       update(`${index}.resolving`, false)
     },
-    [fallbackName, update, addressBook, ethersProvider, chainInfo],
+    [update, addressBook, ethersProvider, chainInfo],
   )
 
   useEffect(() => {
     if (!ownerValues) return
 
     ownerValues.forEach(lookupOwnerAddress)
-  }, [ownerValues, ownerSignature, lookupOwnerAddress])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ownerValues?.length, ownerSignature, lookupOwnerAddress])
 }

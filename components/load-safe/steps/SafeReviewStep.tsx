@@ -45,7 +45,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
       upsertAddressBookEntry({
         chainId: params.chainId,
         address: params.safeAddress.address,
-        name: params.safeAddress.name ?? '',
+        name: params.safeAddress.name,
       }),
     )
     for (const { address, name } of params.owners) {
