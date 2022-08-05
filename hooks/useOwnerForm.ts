@@ -59,5 +59,5 @@ export const useOwnerForm = (
 
     ownerValues.forEach(lookupOwnerAddress)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ownerValues?.length, ownerSignature, lookupOwnerAddress])
+  }, [ownerSignature, lookupOwnerAddress])
 }
