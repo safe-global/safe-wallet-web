@@ -34,32 +34,6 @@ describe('useOwnerForm', () => {
     expect(domainsMock).not.toHaveBeenCalled()
   })
 
-  it('does not resolves name if name is already set', () => {
-    const updateMock = jest.fn()
-
-    jest.spyOn(addressBook, 'default')
-    const domainsMock = jest.spyOn(domains, 'lookupAddress').mockImplementation(() => {
-      return Promise.resolve(undefined)
-    })
-
-    renderHook(() =>
-      useOwnerForm(
-        [
-          {
-            address: ADDRESS1,
-            name: 'Some name',
-            resolving: false,
-          },
-        ],
-        updateMock,
-      ),
-    )
-
-    expect(updateMock).not.toHaveBeenCalled()
-
-    expect(domainsMock).not.toHaveBeenCalled()
-  })
-
   it('resolves name from addressbook if name is empty', () => {
     const updateMock = jest.fn()
 
@@ -128,55 +102,15 @@ describe('useOwnerForm', () => {
           },
         ],
         updateMock,
-        FALLBACK_NAME,
       ),
     )
 
-    expect(updateMock).toHaveBeenCalledTimes(4)
+    expect(updateMock).toHaveBeenCalledTimes(3)
     expect(updateMock).toHaveBeenNthCalledWith(1, '0.resolving', true)
-    expect(updateMock).toHaveBeenNthCalledWith(2, '0.name', FALLBACK_NAME)
-    expect(updateMock).toHaveBeenNthCalledWith(3, '0.name', 'Testname')
-    expect(updateMock).toHaveBeenNthCalledWith(4, '0.resolving', false)
+    expect(updateMock).toHaveBeenNthCalledWith(2, '0.name', 'Testname')
+    expect(updateMock).toHaveBeenNthCalledWith(3, '0.resolving', false)
 
     expect(domainsMock).not.toHaveBeenCalled()
-  })
-
-  it('resolves to fallback name if prop is passed and nothing else finds a name', async () => {
-    const updateMock = jest.fn()
-    jest.spyOn(useChains, 'useCurrentChain').mockImplementation(
-      () =>
-        ({
-          features: [FEATURES.DOMAIN_LOOKUP],
-          chainId: '1',
-        } as any),
-    )
-    jest.spyOn(addressBook, 'default').mockReturnValue({})
-    const domainsMock = jest.spyOn(domains, 'lookupAddress').mockImplementation(() => {
-      return Promise.resolve(undefined)
-    })
-
-    renderHook(() =>
-      useOwnerForm(
-        [
-          {
-            address: ADDRESS1,
-            name: '',
-            resolving: false,
-          },
-        ],
-        updateMock,
-        FALLBACK_NAME,
-      ),
-    )
-
-    await waitFor(() => {
-      expect(updateMock).toHaveBeenCalledTimes(3)
-      expect(updateMock).toHaveBeenNthCalledWith(1, '0.resolving', true)
-      expect(updateMock).toHaveBeenNthCalledWith(2, '0.name', FALLBACK_NAME)
-      expect(updateMock).toHaveBeenNthCalledWith(3, '0.resolving', false)
-
-      expect(domainsMock).toHaveBeenCalled()
-    })
   })
 
   it('resolves to ens name if no addressbook name is found', async () => {
@@ -204,16 +138,14 @@ describe('useOwnerForm', () => {
           },
         ],
         updateMock,
-        FALLBACK_NAME,
       ),
     )
 
     await waitFor(() => {
-      expect(updateMock).toHaveBeenCalledTimes(4)
+      expect(updateMock).toHaveBeenCalledTimes(3)
       expect(updateMock).toHaveBeenNthCalledWith(1, '0.resolving', true)
-      expect(updateMock).toHaveBeenNthCalledWith(2, '0.name', FALLBACK_NAME)
-      expect(updateMock).toHaveBeenNthCalledWith(3, '0.name', 'test.eth')
-      expect(updateMock).toHaveBeenNthCalledWith(4, '0.resolving', false)
+      expect(updateMock).toHaveBeenNthCalledWith(2, '0.name', 'test.eth')
+      expect(updateMock).toHaveBeenNthCalledWith(3, '0.resolving', false)
 
       expect(domainsMock).toHaveBeenCalled()
     })

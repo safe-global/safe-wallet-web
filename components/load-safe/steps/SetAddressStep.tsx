@@ -26,7 +26,11 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
   const formMethods = useForm<LoadSafeFormData>({
     defaultValues: {
-      safeAddress: { name: params?.safeAddress.name || '', address: params?.safeAddress.address, resolving: false },
+      safeAddress: {
+        name: params?.safeAddress.name || fallbackName,
+        address: params?.safeAddress.address,
+        resolving: false,
+      },
     },
   })
 
@@ -45,7 +49,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
 
   const safeAddress = watch('safeAddress')
 
-  useOwnerForm([safeAddress], setOwnerValue, fallbackName)
+  useOwnerForm([safeAddress], setOwnerValue)
 
   const validateSafeAddress = async (address: string) => {
     const { address: safeAddress } = parsePrefixedAddress(address)
