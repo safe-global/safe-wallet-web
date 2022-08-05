@@ -27,6 +27,10 @@
   flex-direction: column;
 }
 
+.main main {
+  padding: var(--space-3);
+}
+
 .content {
   flex: 1;
   display: flex;

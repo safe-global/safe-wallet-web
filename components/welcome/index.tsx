@@ -1,13 +1,13 @@
 import React from 'react'
 import { Button, Divider, Grid, Paper, Typography } from '@mui/material'
-import { PaddedMain } from '@/components/common/PaddedMain'
+
 import { useRouter } from 'next/router'
 
 const NewSafe = () => {
   const router = useRouter()
 
   return (
-    <PaddedMain>
+    <main>
       <Typography variant="h1" mb={2}>
         Welcome to the Safe.
       </Typography>
@@ -45,7 +45,7 @@ const NewSafe = () => {
           </Grid>
         </Grid>
       </Paper>
-    </PaddedMain>
+    </main>
   )
 }
 

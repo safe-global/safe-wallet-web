@@ -8,13 +8,12 @@ import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import NavTabs from '@/components/common/NavTabs'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
-import { PaddedMain } from '@/components/common/PaddedMain'
 
 const Balances: NextPage = () => {
   const { balances, loading } = useBalances()
 
   return (
-    <PaddedMain>
+    <main>
       <Breadcrumbs Icon={AssetsIcon} first="Assets" second="Coins" />
 
       <NavTabs tabs={balancesNavItems} />
@@ -26,7 +25,7 @@ const Balances: NextPage = () => {
 
         {loading && <CircularProgress size={20} sx={{ marginTop: 2 }} />}
       </Box>
-    </PaddedMain>
+    </main>
   )
 }
 

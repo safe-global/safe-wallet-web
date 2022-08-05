@@ -19,7 +19,6 @@ import { TxListGrid } from '@/components/transactions/TxList'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import TransactionsIcon from '@/public/images/sidebar/transactions.svg'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { PaddedMain } from '@/components/common/PaddedMain'
 
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
@@ -45,7 +44,7 @@ const SingleTransaction: NextPage = () => {
   }, [transactionId, safe.txHistoryTag])
 
   return (
-    <PaddedMain>
+    <main>
       <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" />
 
       {loading ? (
@@ -55,7 +54,7 @@ const SingleTransaction: NextPage = () => {
       ) : (
         error && <ErrorMessage error={error}>Failed loading transaction {transactionId}</ErrorMessage>
       )}
-    </PaddedMain>
+    </main>
   )
 }
 

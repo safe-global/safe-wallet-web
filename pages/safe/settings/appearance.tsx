@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setCopyShortName, setDarkMode, setShowShortName } from '@/store/settingsSlice'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
-import { PaddedMain } from '@/components/common/PaddedMain'
 
 const Appearance: NextPage = () => {
   const dispatch = useAppDispatch()
@@ -19,7 +18,7 @@ const Appearance: NextPage = () => {
   }
 
   return (
-    <PaddedMain>
+    <main>
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Appearance" />
       <Paper sx={{ padding: 4 }} variant="outlined">
         <Grid container justifyContent="space-between">
@@ -62,7 +61,7 @@ const Appearance: NextPage = () => {
           </Grid>
         </Grid>
       </Paper>
-    </PaddedMain>
+    </main>
   )
 }
 

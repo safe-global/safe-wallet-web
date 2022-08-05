@@ -9,7 +9,6 @@ import SafeOwnersStep from '@/components/load-safe/steps/SafeOwnersStep'
 import SetAddressStep from '@/components/load-safe/steps/SetAddressStep'
 import SafeReviewStep from '@/components/load-safe/steps/SafeReviewStep'
 import SelectNetworkStep from '@/components/load-safe/steps/SelectNetworkStep'
-import { PaddedMain } from '@/components/common/PaddedMain'
 
 export type LoadSafeFormData = {
   name: string
@@ -50,14 +49,14 @@ const LoadSafe = ({
   const router = useRouter()
 
   return (
-    <PaddedMain>
+    <main>
       <VerticalTxStepper
         steps={LoadSafeSteps}
         initialStep={initialStep}
         initialData={initialData}
         onClose={() => router.push(AppRoutes.welcome)}
       />
-    </PaddedMain>
+    </main>
   )
 }
 
