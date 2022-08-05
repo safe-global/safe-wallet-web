@@ -14,9 +14,12 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import useChainId from '@/hooks/useChainId'
 import { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
+import useWallet from '@/hooks/wallets/useWallet'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
+  AWAITING_WALLET = 'AWAITING_WALLET',
   MINING = 'MINING',
   ERROR = 'ERROR',
   REVERTED = 'REVERTED',
@@ -51,6 +54,8 @@ export const useSafeCreation = () => {
   const chainId = useChainId()
   const dispatch = useAppDispatch()
   const router = useRouter()
+  const wallet = useWallet()
+  const isWrongChain = useIsWrongChain()
 
   usePendingSafeCreation({ txHash: pendingSafe?.txHash, setSafeAddress, setStatus })
 
@@ -70,6 +75,14 @@ export const useSafeCreation = () => {
   }
 
   useEffect(() => {
+    if (!wallet || isWrongChain) {
+      setStatus(SafeCreationStatus.AWAITING_WALLET)
+      return
+    }
+    setStatus(SafeCreationStatus.AWAITING)
+  }, [wallet, isWrongChain])
+
+  useEffect(() => {
     if (!ethersProvider || !pendingSafe) return
 
     const getNewSafeAddress = async () => {
@@ -86,7 +99,8 @@ export const useSafeCreation = () => {
       pendingSafe?.txHash ||
       !ethersProvider ||
       !pendingSafe ||
-      status === SafeCreationStatus.ERROR
+      status === SafeCreationStatus.ERROR ||
+      status === SafeCreationStatus.AWAITING_WALLET
     ) {
       return
     }
@@ -170,9 +184,11 @@ export const useSafeCreation = () => {
 
     if (status === SafeCreationStatus.ERROR || status === SafeCreationStatus.REVERTED) {
       setCreationPromise(undefined)
-      setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
+      if (pendingSafe?.txHash) {
+        setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
+      }
     }
-  }, [chainId, router, safeAddress, setPendingSafe, status])
+  }, [chainId, router, safeAddress, pendingSafe?.txHash, setPendingSafe, status])
 
   return {
     safeAddress,
