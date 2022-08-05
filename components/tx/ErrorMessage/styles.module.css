@@ -7,7 +7,7 @@
 
 .message {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   gap: var(--space-1);
 }
 

@@ -46,7 +46,7 @@ const getSafeDeployProps = (
 }
 
 export const useSafeCreation = () => {
-  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
+  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING_WALLET)
   const [safeAddress, setSafeAddress] = useState<string>()
   const [creationPromise, setCreationPromise] = useState<Promise<Safe>>()
   const [pendingSafe, setPendingSafe] = usePendingSafe()
@@ -75,6 +75,7 @@ export const useSafeCreation = () => {
   }
 
   useEffect(() => {
+    console.log(wallet, isWrongChain)
     if (!wallet || isWrongChain) {
       setStatus(SafeCreationStatus.AWAITING_WALLET)
       return
