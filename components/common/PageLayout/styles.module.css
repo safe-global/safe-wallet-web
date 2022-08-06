@@ -27,16 +27,16 @@
   flex-direction: column;
 }
 
-.main main {
-  padding: var(--space-3);
-}
-
 .content {
   flex: 1;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   align-items: stretch;
+}
+
+.content main {
+  padding: var(--space-3);
 }
 
 .sidebar {
@@ -62,7 +62,10 @@
   }
 
   .main {
-    padding: var(--space-2);
     overflow: hidden;
+  }
+
+  .content main {
+    padding: var(--space-2);
   }
 }
