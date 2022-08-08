@@ -47,7 +47,10 @@
 }
 
 .txSigners {
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-3);
   border-left: 2px solid var(--color-border-light);
 }
 
