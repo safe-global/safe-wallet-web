@@ -1,10 +1,9 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { CreateSafeFormData } from '@/components/create-safe'
+import { CreateSafeFormDataReview } from '@/components/create-safe'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import { useCurrentChain } from '@/hooks/useChains'
 import useGasPrice from '@/hooks/useGasPrice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
@@ -12,9 +11,11 @@ import { safeFormatUnits } from '@/utils/formatters'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useMemo } from 'react'
 import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
+import { useAppSelector } from '@/store'
+import { selectChainById } from '@/store/chainsSlice'
 
 type Props = {
-  params: CreateSafeFormData
+  params: CreateSafeFormDataReview
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
   setStep: StepRenderProps['setStep']
@@ -25,7 +26,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
   const wallet = useWallet()
   const ethersProvider = useWeb3()
   const [_, setPendingSafe] = usePendingSafe()
-  const chain = useCurrentChain()
+  const chain = useAppSelector((state) => selectChainById(state, params.chainId))
   const saltNonce = useMemo(() => Date.now(), [])
 
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
@@ -77,13 +78,9 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
           <Box padding={3}>
             {params.owners.map((owner) => {
               return (
-                <EthHashInfo
-                  key={owner.address}
-                  address={owner.address}
-                  name={owner.name}
-                  shortAddress={false}
-                  showName
-                />
+                <Box key={owner.address} mb={1}>
+                  <EthHashInfo address={owner.address} name={owner.name} shortAddress={false} showName />
+                </Box>
               )
             })}
           </Box>

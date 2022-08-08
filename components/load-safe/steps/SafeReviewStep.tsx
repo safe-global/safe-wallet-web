@@ -3,7 +3,7 @@ import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from 'components/common/EthHashInfo'
-import { LoadSafeFormData } from '@/components/load-safe'
+import { LoadSafeFormDataReview } from '@/components/load-safe'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { useRouter } from 'next/router'
@@ -15,7 +15,7 @@ import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 
 type Props = {
-  params: LoadSafeFormData
+  params: LoadSafeFormDataReview
   onBack: StepRenderProps['onBack']
 }
 
@@ -85,7 +85,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
               <EthHashInfo
                 key={params.safeAddress.address}
                 address={params.safeAddress.address}
-                name={params.safeAddress.name}
+                showName={false}
                 shortAddress
               />
             </Typography>
@@ -113,7 +113,11 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
           <Divider />
           <Box display="flex" flexDirection="column" gap={2} padding={3}>
             {params.owners.map((owner) => {
-              return <EthHashInfo key={owner.address} address={owner.address} name={owner.name} shortAddress={false} />
+              return (
+                <Box key={owner.address} mb={1}>
+                  <EthHashInfo address={owner.address} name={owner.name} shortAddress={false} />
+                </Box>
+              )
             })}
           </Box>
           <Divider />

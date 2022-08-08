@@ -15,11 +15,13 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
     register,
     setValue,
     watch,
+    getFieldState,
     formState: { errors },
   } = useFormContext()
   const currentChain = useCurrentChain()
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
   const currentValue = watch(name)
+  const error = getFieldState(name).error
 
   // Fetch an ENS resolution for the current address
   const { address, resolving } = useNameResolver(isDomainLookupEnabled ? currentValue?.trim() : '')
@@ -42,8 +44,8 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
         <TextField
           {...props}
           autoComplete="off"
-          label={<>{errors[name]?.message || props.label}</>}
-          error={!!errors[name]}
+          label={<>{error?.message || errors[name]?.message || props.label}</>}
+          error={!!error || !!errors[name]}
           fullWidth
           InputProps={{
             ...(props.InputProps || {}),

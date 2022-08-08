@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useEffect } from 'react'
 import { Box, Button, CircularProgress, Divider, Grid, InputAdornment, Link, Paper, Typography } from '@mui/material'
 import { useForm, FormProvider } from 'react-hook-form'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -11,7 +11,7 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import NameInput from '@/components/common/NameInput'
-import { useOwnerForm } from '@/hooks/useOwnerForm'
+import { useAddressResolver } from '@/hooks/useAddressResolver'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 
 type Props = {
@@ -25,31 +25,27 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
   const currentChainId = useChainId()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
   const formMethods = useForm<LoadSafeFormData>({
+    mode: 'onChange',
     defaultValues: {
       safeAddress: {
         name: params?.safeAddress.name || fallbackName,
         address: params?.safeAddress.address,
         resolving: false,
       },
+      chainId: currentChainId,
     },
   })
 
-  const { register, handleSubmit, watch, setValue } = formMethods
-
-  const setOwnerValue = useCallback(
-    (suffix: `${number}.resolving` | `${number}.name`, value: string | boolean) => {
-      if (suffix.endsWith('name')) {
-        setValue(`safeAddress.name`, value.toString())
-      } else if (suffix.endsWith('resolving')) {
-        setValue(`safeAddress.resolving`, Boolean(value))
-      }
-    },
-    [setValue],
-  )
+  const { register, handleSubmit, watch, setValue, formState } = formMethods
 
   const safeAddress = watch('safeAddress')
 
-  useOwnerForm([safeAddress], setOwnerValue)
+  const { name, resolving } = useAddressResolver(safeAddress.address)
+
+  useEffect(() => {
+    name && setValue(`safeAddress.name`, name)
+    setValue(`safeAddress.resolving`, resolving)
+  }, [name, resolving, setValue])
 
   const validateSafeAddress = async (address: string) => {
     const { address: safeAddress } = parsePrefixedAddress(address)
@@ -98,6 +94,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                     </InputAdornment>
                   ),
                 }}
+                required
               />
             </Box>
             <Box>
@@ -134,7 +131,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 <Button onClick={onBack}>Back</Button>
               </Grid>
               <Grid item>
-                <Button variant="contained" type="submit">
+                <Button variant="contained" type="submit" disabled={!formState.isValid}>
                   Continue
                 </Button>
               </Grid>

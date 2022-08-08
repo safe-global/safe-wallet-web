@@ -20,8 +20,8 @@ const NameInput = ({
     <TextField
       {...props}
       variant="outlined"
+      label={<>{fieldError?.type === 'maxLength' ? 'Maximum 50 symbols' : fieldError?.message || props.label}</>}
       error={Boolean(fieldError)}
-      helperText={fieldError?.type === 'maxLength' ? 'Maximum 50 symbols' : fieldError?.message}
       fullWidth
       {...register(name, { maxLength: 50, required })}
     />

@@ -1,31 +1,15 @@
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Divider,
-  FormControl,
-  Grid,
-  IconButton,
-  MenuItem,
-  Paper,
-  Select,
-  Typography,
-} from '@mui/material'
-import InputAdornment from '@mui/material/InputAdornment'
-import { ReactElement, useCallback } from 'react'
+import { Box, Button, Divider, FormControl, Grid, MenuItem, Paper, Select, Typography } from '@mui/material'
+import { ReactElement } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
-import AddressInput from '@/components/common/AddressInput'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import NameInput from '@/components/common/NameInput'
 import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { parsePrefixedAddress } from '@/utils/addresses'
-import { useOwnerForm } from '@/hooks/useOwnerForm'
+import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
 
 type Props = {
   params: CreateSafeFormData
@@ -37,7 +21,6 @@ type Props = {
 const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactElement => {
   useResetSafeCreation(setStep)
   const wallet = useWallet()
-
   const addressBook = useAddressBook()
 
   const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
@@ -51,22 +34,25 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   const defaultThreshold = params.threshold || 1
 
   const formMethods = useForm<CreateSafeFormData>({
-    mode: 'all',
-    defaultValues: { name: params.name, owners: params.owners ?? [defaultOwner], threshold: defaultThreshold },
+    mode: 'onChange',
+    defaultValues: {
+      name: params.name,
+      owners: params.owners ?? [defaultOwner],
+      threshold: defaultThreshold,
+      chainId: params.chainId,
+    },
   })
-  const { register, handleSubmit, control, watch, setValue } = formMethods
+  const { register, handleSubmit, control, formState } = formMethods
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'owners',
   })
 
-  const owners = watch('owners')
-
   const onFormSubmit = (data: CreateSafeFormData) => {
     onSubmit({
       ...data,
-      owners: data.owners.map((owner) => ({
+      owners: data.owners?.map((owner) => ({
         ...owner,
         address: parsePrefixedAddress(owner.address).address,
       })),
@@ -76,13 +62,6 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   const addOwner = () => {
     append({ name: '', address: '', resolving: false })
   }
-
-  const setOwnerValue = useCallback(
-    (suffix: `${number}.resolving` | `${number}.name`, value: string | boolean) => setValue(`owners.${suffix}`, value),
-    [setValue],
-  )
-
-  useOwnerForm(owners, setOwnerValue)
 
   return (
     <Paper>
@@ -112,42 +91,9 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
           </Grid>
           <Divider />
           <Box padding={3}>
-            {fields.map((field, index) => {
-              return (
-                <Grid container key={field.id} spacing={3} marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
-                  <Grid item xs={12} md={4}>
-                    <FormControl fullWidth>
-                      <NameInput
-                        label="Owner name"
-                        InputLabelProps={{ shrink: true }}
-                        InputProps={{
-                          endAdornment: owners[index].resolving ? (
-                            <InputAdornment position="end">
-                              <CircularProgress size={20} />
-                            </InputAdornment>
-                          ) : null,
-                        }}
-                        name={`owners.${index}.name`}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={10} md={7}>
-                    <FormControl fullWidth>
-                      <AddressInput label="Owner address" name={`owners.${index}.address`} />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={2} md={1} display="flex" alignItems="center" flexShrink={0}>
-                    {index > 0 && (
-                      <>
-                        <IconButton onClick={() => remove(index)}>
-                          <DeleteOutlineOutlinedIcon />
-                        </IconButton>
-                      </>
-                    )}
-                  </Grid>
-                </Grid>
-              )
-            })}
+            {fields.map((field, index) => (
+              <OwnerRow key={field.id} field={field} index={index} remove={remove} />
+            ))}
             <Button onClick={addOwner} sx={{ fontWeight: 'normal' }}>
               + Add another owner
             </Button>
@@ -173,7 +119,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
                 <Button onClick={onBack}>Back</Button>
               </Grid>
               <Grid item>
-                <Button variant="contained" type="submit">
+                <Button variant="contained" type="submit" disabled={!formState.isValid}>
                   Continue
                 </Button>
               </Grid>
