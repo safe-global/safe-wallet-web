@@ -143,7 +143,7 @@ export const TxSigners = ({
       {detailedExecutionInfo.confirmations.length > 0 && (
         <StyledStep $state={StepState.CONFIRMED}>
           <StepLabel icon={<DotIcon />}>
-            <Link component="button" onClick={toggleHide}>
+            <Link component="button" onClick={toggleHide} fontSize="medium">
               {hideConfirmations ? 'Show all' : 'Hide all'}
             </Link>
           </StepLabel>
