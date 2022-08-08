@@ -2,10 +2,11 @@ import { toWei } from '@/utils/formatters'
 import { Interface } from '@ethersproject/abi'
 import { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 import chains from '@/config/chains'
+import { sameAddress } from '@/utils/addresses'
 
 // CryptoKitties Contract Addresses by network
 // This is an exception made for a popular NFT that's not ERC721 standard-compatible,
-// so we can allow the user to transfer the assets by using `transferFrom` instead of
+// so we can allow the user to transfer the assets by using `transfer` instead of
 // the standard `safeTransferFrom` method.
 const CryptoKittiesContract = {
   [chains.eth]: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
@@ -22,12 +23,6 @@ const encodeERC721TransferData = (from: string, to: string, tokenId: string): st
   const erc721Abi = ['function safeTransferFrom(address from, address to, uint256 tokenId)']
   const contractInterface = new Interface(erc721Abi)
   return contractInterface.encodeFunctionData('safeTransferFrom', [from, to, tokenId])
-}
-
-const encodeCKTransferData = (from: string, to: string, tokenId: string): string => {
-  const ckAbi = ['function transferFrom(address from, address to, uint256 tokenId)']
-  const contractInterface = new Interface(ckAbi)
-  return contractInterface.encodeFunctionData('transferFrom', [from, to, tokenId])
 }
 
 export const createTokenTransferParams = (
@@ -58,16 +53,19 @@ export const createNftTransferParams = (
   tokenId: string,
   tokenAddress: string,
 ): MetaTransactionData => {
-  let encodeFn = encodeERC721TransferData
+  let data = encodeERC721TransferData(from, to, tokenId)
 
   // An exception made for CryptoKitties, which is not ERC721 standard-compatible
-  if (tokenAddress === CryptoKittiesContract[chains.eth] || tokenAddress === CryptoKittiesContract[chains.rin]) {
-    encodeFn = encodeCKTransferData
+  if (
+    sameAddress(tokenAddress, CryptoKittiesContract[chains.eth]) ||
+    sameAddress(tokenAddress, CryptoKittiesContract[chains.rin])
+  ) {
+    data = encodeERC20TransferData(to, tokenId)
   }
 
   return {
     to: tokenAddress,
     value: '0',
-    data: encodeFn(from, to, tokenId),
+    data,
   }
 }
