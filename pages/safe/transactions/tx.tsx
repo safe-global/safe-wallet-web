@@ -19,6 +19,7 @@ import { TxListGrid } from '@/components/transactions/TxList'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import TransactionsIcon from '@/public/images/sidebar/transactions.svg'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { sameAddress } from '@/utils/addresses'
 
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
@@ -37,7 +38,7 @@ const SingleTransaction: NextPage = () => {
   const router = useRouter()
   const { id = '' } = router.query
   const transactionId = Array.isArray(id) ? id[0] : id
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
 
   const [txDetails, error, loading] = useAsync<TransactionDetails>(
     () => {
@@ -47,16 +48,18 @@ const SingleTransaction: NextPage = () => {
     false,
   )
 
+  const isCurrentSafeTx = sameAddress(txDetails?.safeAddress, safeAddress)
+
   return (
     <main>
       <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" />
 
-      {txDetails ? (
+      {(error || !isCurrentSafeTx) && !loading ? (
+        <ErrorMessage error={error}>Failed to load transaction {transactionId}</ErrorMessage>
+      ) : txDetails && !loading ? (
         <SingleTxGrid txDetails={txDetails} />
-      ) : loading ? (
-        <CircularProgress />
       ) : (
-        error && <ErrorMessage error={error}>Failed loading transaction {transactionId}</ErrorMessage>
+        loading && <CircularProgress />
       )}
     </main>
   )
