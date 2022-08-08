@@ -5,9 +5,9 @@ import { Dispatch, SetStateAction, useCallback } from 'react'
 
 const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 
-type Prop = PendingSafeData | undefined
+type Props = PendingSafeData | undefined
 
-export const usePendingSafe = (): [Prop, Dispatch<SetStateAction<Prop>>] => {
+export const usePendingSafe = (): [Props, Dispatch<SetStateAction<Props>>] => {
   const chainId = useChainId()
   const [pendingSafes, setPendingSafes] = useLocalStorage<PendingSafeByChain | undefined>(
     SAFE_PENDING_CREATION_STORAGE_KEY,
@@ -17,7 +17,7 @@ export const usePendingSafe = (): [Prop, Dispatch<SetStateAction<Prop>>] => {
   const pendingSafe = pendingSafes?.[chainId]
 
   const setPendingSafe = useCallback(
-    (data: Prop | ((prevData: Prop) => Prop)) => {
+    (data: Props | ((prevData: Props) => Props)) => {
       const newData = data instanceof Function ? data(pendingSafe) : data
       return setPendingSafes((prev) => (prev ? { ...prev, [chainId]: newData } : { [chainId]: newData }))
     },

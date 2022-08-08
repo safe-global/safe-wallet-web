@@ -56,6 +56,7 @@ describe('useSafeCreation', () => {
         threshold: 1,
         owners: [],
         saltNonce: 123,
+        chainId: '4',
       },
       jest.fn,
     ])
@@ -80,6 +81,7 @@ describe('useSafeCreation', () => {
         threshold: 1,
         owners: [],
         saltNonce: 123,
+        chainId: '4',
       },
       jest.fn,
     ])

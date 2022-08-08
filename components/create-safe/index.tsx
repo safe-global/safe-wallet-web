@@ -20,10 +20,11 @@ export type Owner = {
 export type CreateSafeFormData = {
   name: string
   threshold: number
-  owners: Owner[]
+  owners?: Owner[]
+  chainId: string
 }
-
-export type PendingSafeData = CreateSafeFormData & { txHash?: string; safeAddress?: string; saltNonce: number }
+export type CreateSafeFormDataReview = Omit<CreateSafeFormData, 'owners'> & { owners: Owner[] }
+export type PendingSafeData = CreateSafeFormDataReview & { txHash?: string; safeAddress?: string; saltNonce: number }
 export type PendingSafeByChain = Record<string, PendingSafeData | undefined>
 
 export const CreateSafeSteps: TxStepperProps['steps'] = [
@@ -46,7 +47,7 @@ export const CreateSafeSteps: TxStepperProps['steps'] = [
   {
     label: 'Review',
     render: (data, onSubmit, onBack, setStep) => (
-      <ReviewStep params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      <ReviewStep params={data as CreateSafeFormDataReview} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
     ),
   },
 ]

@@ -3,7 +3,7 @@ import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from 'components/common/EthHashInfo'
-import { LoadSafeFormData } from '@/components/load-safe'
+import { LoadSafeFormDataReview } from '@/components/load-safe'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { useRouter } from 'next/router'
@@ -15,7 +15,7 @@ import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 
 type Props = {
-  params: LoadSafeFormData
+  params: LoadSafeFormDataReview
   onBack: StepRenderProps['onBack']
 }
 
