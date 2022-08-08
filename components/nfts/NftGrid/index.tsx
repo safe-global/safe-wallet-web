@@ -23,7 +23,7 @@ const NftGrid = ({
 
           <Grid container spacing={3}>
             {nfts.map((nft) => (
-              <Grid item xs={12} md={4} key={nft.address + nft.id}>
+              <Grid item xs={12} md={4} lg={3} key={nft.address + nft.id}>
                 <NftCard nft={nft} onSendClick={onSendClick ? () => onSendClick(nft) : undefined} />
               </Grid>
             ))}
