@@ -14,7 +14,7 @@ const Toast = ({ message, severity, onClose }: { message: string; severity: Aler
   }
 
   return (
-    <Snackbar open onClose={handleClose} sx={toastStyle}>
+    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={severity === 'success' ? 5000 : null}>
       <Alert severity={severity} onClose={handleClose} elevation={3}>
         {message}
       </Alert>
