@@ -21,7 +21,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   return (
     <Box mb={3}>
       {loading ? (
-        <CircularProgress size={20} sx={{ marginTop: 2 }} />
+        <CircularProgress size={40} sx={{ marginTop: 2 }} />
       ) : error ? (
         <ErrorMessage>Error loading the history</ErrorMessage>
       ) : page?.results.length ? (

@@ -2,6 +2,7 @@ import { type ReactElement } from 'react'
 import { Button, Card, CardContent, Typography } from '@mui/material'
 import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
+import { ellipsis } from '@/utils/formatters'
 
 const NftCard = ({ nft, onSendClick }: { nft: SafeCollectibleResponse; onSendClick?: () => void }): ReactElement => (
   <Card className={css.card}>
@@ -14,13 +15,21 @@ const NftCard = ({ nft, onSendClick }: { nft: SafeCollectibleResponse; onSendCli
         {nft.name || `${nft.tokenName} #${nft.id}`}
       </Typography>
 
-      {nft.description && <Typography variant="body2">{nft.description.slice(0, 70)}&hellip;</Typography>}
+      {nft.description && (
+        <Typography variant="body2" title={nft.description}>
+          {ellipsis(nft.description, 50)}
+        </Typography>
+      )}
 
-      {onSendClick ? (
-        <Button variant="contained" color="primary" className={css.sendButton} onClick={onSendClick}>
-          Transfer
-        </Button>
-      ) : null}
+      <Button
+        variant="contained"
+        color="primary"
+        className={css.sendButton}
+        onClick={onSendClick}
+        disabled={!onSendClick}
+      >
+        Transfer
+      </Button>
     </CardContent>
   </Card>
 )
