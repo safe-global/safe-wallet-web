@@ -65,7 +65,7 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
           <Divider />
           <Box padding={3}>
             {fields.map((field, index) => (
-              <OwnerRow key={field.id} field={field} index={index} disabled />
+              <OwnerRow key={field.id} field={field} index={index} readOnly />
             ))}
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>

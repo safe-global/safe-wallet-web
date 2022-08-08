@@ -9,17 +9,18 @@ import { useAddressResolver } from '@/hooks/useAddressResolver'
 import { useEffect } from 'react'
 import { LoadSafeFormData } from '@/components/load-safe'
 import { useMnemonicName } from '@/hooks/useMnemonicName'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 export const OwnerRow = ({
   field,
   index,
   remove,
-  disabled = false,
+  readOnly = false,
 }: {
   field: FieldArrayWithId<CreateSafeFormData | LoadSafeFormData, 'owners', 'id'>
   index: number
   remove?: UseFieldArrayRemove
-  disabled?: boolean
+  readOnly?: boolean
 }) => {
   const fallbackName = useMnemonicName()
   const { setValue, control } = useFormContext()
@@ -37,7 +38,14 @@ export const OwnerRow = ({
   }, [fallbackName, index, name, resolving, setValue])
 
   return (
-    <Grid container key={field.id} spacing={3} marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
+    <Grid
+      container
+      key={field.id}
+      spacing={3}
+      alignItems="center"
+      marginBottom={3}
+      flexWrap={['wrap', undefined, 'nowrap']}
+    >
       <Grid item xs={12} md={4}>
         <FormControl fullWidth>
           <NameInput
@@ -56,15 +64,15 @@ export const OwnerRow = ({
         </FormControl>
       </Grid>
       <Grid item xs={10} md={7}>
-        <FormControl fullWidth>
-          <AddressBookInput
-            name={`owners.${index}.address`}
-            label="Owner address"
-            InputProps={{ readOnly: disabled }}
-          />
-        </FormControl>
+        {readOnly ? (
+          <EthHashInfo address={owner.address} shortAddress={false} hasExplorer showCopyButton />
+        ) : (
+          <FormControl fullWidth>
+            <AddressBookInput name={`owners.${index}.address`} label="Owner address" />
+          </FormControl>
+        )}
       </Grid>
-      {!disabled && (
+      {!readOnly && (
         <Grid item xs={2} md={1} display="flex" alignItems="center" flexShrink={0}>
           {index > 0 && (
             <>
