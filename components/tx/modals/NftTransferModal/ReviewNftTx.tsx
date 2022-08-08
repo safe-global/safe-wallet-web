@@ -3,15 +3,15 @@ import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Box, Typography } from '@mui/material'
 import SendFromBlock from '../../SendFromBlock'
 import SignOrExecuteForm from '../../SignOrExecuteForm'
-import { SendNftFormData } from './SendNftForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useAsync from '@/hooks/useAsync'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
 import { createTx } from '@/services/tx/txSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { type NftTransferParams } from '.'
 
 type ReviewNftTxProps = {
-  params: SendNftFormData
+  params: NftTransferParams
   onSubmit: (data: null) => void
 }
 
@@ -20,7 +20,7 @@ const ReviewNftTx = ({ params, onSubmit }: ReviewNftTxProps): ReactElement => {
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!safeAddress) return
-    const transferParams = createNftTransferParams(safeAddress, params.recipient, params.tokenId, params.tokenAddress)
+    const transferParams = createNftTransferParams(safeAddress, params.recipient, params.token.id, params.token.address)
     return createTx(transferParams)
   }, [safeAddress, params])
 

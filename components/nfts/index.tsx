@@ -6,7 +6,7 @@ import NftTransferModal from '../tx/modals/NftTransferModal'
 import NftGrid from './NftGrid'
 
 const Nfts = ({ collectibles }: { collectibles: SafeCollectibleResponse[] }): ReactElement => {
-  const [sendNft, setSendNft] = useState<SafeCollectibleResponse | null>(null)
+  const [sendNft, setSendNft] = useState<SafeCollectibleResponse>()
   const isSafeOwner = useIsSafeOwner()
   const isWrongChain = useIsWrongChain()
   const isGranted = isSafeOwner && !isWrongChain
@@ -17,12 +17,11 @@ const Nfts = ({ collectibles }: { collectibles: SafeCollectibleResponse[] }): Re
 
       {isGranted && sendNft && (
         <NftTransferModal
-          onClose={() => setSendNft(null)}
+          onClose={() => setSendNft(undefined)}
           initialData={[
             {
               recipient: '',
-              tokenAddress: sendNft.address,
-              tokenId: sendNft.id,
+              token: sendNft,
             },
           ]}
         />

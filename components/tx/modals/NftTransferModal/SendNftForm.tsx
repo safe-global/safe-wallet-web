@@ -7,6 +7,7 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 import SendFromBlock from '../../SendFromBlock'
 import useAllCollectibles from './useAllCollectibles'
 import ErrorMessage from '../../ErrorMessage'
+import { type NftTransferParams } from '.'
 
 enum Field {
   recipient = 'recipient',
@@ -14,15 +15,15 @@ enum Field {
   tokenId = 'tokenId',
 }
 
-export type SendNftFormData = {
+type FormData = {
   [Field.recipient]: string
   [Field.tokenAddress]: string
   [Field.tokenId]: string
 }
 
-type SendNftFormProps = {
-  onSubmit: (data: SendNftFormData) => void
-  formData: SendNftFormData
+export type SendNftFormProps = {
+  onSubmit: (data: NftTransferParams) => void
+  params?: NftTransferParams
 }
 
 const NftMenuItem = ({ image, name }: { image: string | null; name: string }) => (
@@ -47,12 +48,16 @@ const CollectionMenuItem = ({ address, name }: { address: string; name: string }
   </Grid>
 )
 
-const SendNftForm = ({ formData, onSubmit }: SendNftFormProps) => {
-  const formMethods = useForm<SendNftFormData>({
+const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
+  // All NFTs
+  const initialNfts = params ? [params.token] : []
+  const [nfts = initialNfts, nftsError, nftsLoading] = useAllCollectibles()
+
+  const formMethods = useForm<FormData>({
     defaultValues: {
-      [Field.recipient]: formData?.[Field.recipient] || '',
-      [Field.tokenAddress]: formData?.[Field.tokenAddress] || '',
-      [Field.tokenId]: formData?.[Field.tokenId] || '',
+      [Field.recipient]: params?.recipient || '',
+      [Field.tokenAddress]: params?.token.address || '',
+      [Field.tokenId]: params?.token.id || '',
     },
   })
   const {
@@ -61,16 +66,6 @@ const SendNftForm = ({ formData, onSubmit }: SendNftFormProps) => {
     setValue,
     formState: { errors },
   } = formMethods
-
-  const onFormSubmit = (data: SendNftFormData) => {
-    onSubmit({
-      ...data,
-      recipient: parsePrefixedAddress(data.recipient).address,
-    })
-  }
-
-  // All NFTs
-  const [nfts = [], nftsError, nftsLoading] = useAllCollectibles()
 
   // Collections
   const collections = useMemo(() => uniqBy(nfts, 'address'), [nfts])
@@ -81,6 +76,16 @@ const SendNftForm = ({ formData, onSubmit }: SendNftFormProps) => {
     () => nfts.filter((item) => item.address === selectedCollection),
     [nfts, selectedCollection],
   )
+
+  const onFormSubmit = (data: FormData) => {
+    const recipient = parsePrefixedAddress(data.recipient).address
+    const token = selectedTokens.find((item) => item.id === data.tokenId)
+    if (!token) return
+    onSubmit({
+      recipient,
+      token,
+    })
+  }
 
   return (
     <FormProvider {...formMethods}>
@@ -137,11 +142,11 @@ const SendNftForm = ({ formData, onSubmit }: SendNftFormProps) => {
             />
           </FormControl>
 
-          {nftsError && <ErrorMessage>Failed to load NFTs</ErrorMessage>}
+          {nftsError && !params && <ErrorMessage>Failed to load NFTs</ErrorMessage>}
         </DialogContent>
 
-        <Button variant="contained" type="submit" disabled={nftsLoading}>
-          {nftsLoading ? 'Loading...' : 'Next'}
+        <Button variant="contained" type="submit" disabled={nftsLoading && !params}>
+          {nftsLoading && !params ? 'Loading...' : 'Next'}
         </Button>
       </form>
     </FormProvider>
