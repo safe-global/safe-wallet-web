@@ -54,25 +54,31 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
           hasExplorer
         />
       </Box>
-      {tokenInfo && (
-        <Box className={css.group}>
-          <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>
-            {isSetAllowanceMethod ? 'Amount' : 'Token'}
-          </Typography>
-          <Box className={css.inline}>
-            <TokenIcon logoUri={tokenInfo.logoUri} size={32} tokenSymbol={tokenInfo.symbol} />
-            <Typography>{tokenInfo.symbol}</Typography>
+      <Box className={css.group}>
+        <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>
+          {isSetAllowanceMethod ? 'Amount' : 'Token'}
+        </Typography>
+        <Box className={css.inline}>
+          {tokenInfo && (
+            <>
+              <TokenIcon logoUri={tokenInfo.logoUri} size={32} tokenSymbol={tokenInfo.symbol} />
+              <Typography>{tokenInfo.symbol}</Typography>
+            </>
+          )}
 
-            {isSetAllowanceMethod ? (
-              <Typography>
-                {formatDecimals(amount as string, tokenInfo.decimals)} {tokenInfo.symbol}
-              </Typography>
-            ) : (
-              <></>
-            )}
-          </Box>
+          {isSetAllowanceMethod && (
+            <>
+              {tokenInfo ? (
+                <Typography>
+                  {formatDecimals(amount as string, tokenInfo.decimals)} {tokenInfo.symbol}
+                </Typography>
+              ) : (
+                <Typography>{amount}</Typography>
+              )}
+            </>
+          )}
         </Box>
-      )}
+      </Box>
       {isSetAllowanceMethod && (
         <Box className={css.group}>
           <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Reset time</Typography>
