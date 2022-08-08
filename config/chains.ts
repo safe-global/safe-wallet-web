@@ -239,7 +239,7 @@ const chains: Record<string, string> = {
   oasis: '42262',
   avaeth: '43110',
   fuji: '43113',
-  avalanche: '43114',
+  avax: '43114',
   alfa: '44787',
   rei: '47805',
   tnrg: '49797',

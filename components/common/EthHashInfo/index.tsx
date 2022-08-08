@@ -25,7 +25,7 @@ type EthHashInfoProps = {
   avatarSize?: number
 }
 
-const SRCEthHashInfo = ({
+const EthHashInfo = ({
   address,
   customAvatar,
   prefix = '',
@@ -55,7 +55,11 @@ const SRCEthHashInfo = ({
       )}
 
       <div>
-        {props.name && <Typography variant="body2">{props.name}</Typography>}
+        {props.name && (
+          <Typography variant="body2" component="div">
+            {props.name}
+          </Typography>
+        )}
 
         <Box className={css.addressRow}>
           <Typography variant="body2" fontWeight="inherit" component="div" className={css.address}>
@@ -72,7 +76,10 @@ const SRCEthHashInfo = ({
   )
 }
 
-const EthHashInfo = ({ showName = true, ...props }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
+const PrefixedEthHashInfo = ({
+  showName = true,
+  ...props
+}: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
   const chain = useCurrentChain()
   const addressBook = useAddressBook()
@@ -80,7 +87,7 @@ const EthHashInfo = ({ showName = true, ...props }: EthHashInfoProps & { showNam
   const name = showName ? addressBook[props.address] || props.name : undefined
   const prefix = settings.shortName.show ? chain?.shortName : undefined
 
-  return <SRCEthHashInfo prefix={prefix} {...props} name={name} />
+  return <EthHashInfo prefix={prefix} {...props} name={name} />
 }
 
-export default EthHashInfo
+export default PrefixedEthHashInfo

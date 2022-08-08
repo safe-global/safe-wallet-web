@@ -78,7 +78,8 @@ const SafeListItem = ({
             <SafeIcon address={address} {...rest} />
           </ListItemIcon>
           <ListItemText
-            primaryTypographyProps={{ variant: 'body2' }}
+            primaryTypographyProps={{ variant: 'body2', component: 'div' }}
+            secondaryTypographyProps={{ component: 'div' }}
             primary={name || ''}
             secondary={<EthHashInfo address={address} showAvatar={false} showName={false} />}
           />

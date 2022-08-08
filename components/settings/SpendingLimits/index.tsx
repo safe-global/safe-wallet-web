@@ -6,12 +6,17 @@ import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import { NewSpendingLimit } from '@/components/settings/SpendingLimits/NewSpendingLimit'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { useCurrentChain } from '@/hooks/useChains'
+import { hasFeature } from '@/utils/chains'
+import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 
 const SpendingLimits = () => {
   const isSafeOwner = useIsSafeOwner()
   const isWrongChain = useIsWrongChain()
   const spendingLimits = useSelector(selectSpendingLimits)
+  const currentChain = useCurrentChain()
 
+  const isEnabled = currentChain && hasFeature(currentChain, FEATURES.SPENDING_LIMIT)
   const isGranted = isSafeOwner && !isWrongChain
 
   return (
@@ -22,18 +27,30 @@ const SpendingLimits = () => {
             Spending limit
           </Typography>
         </Grid>
+
         <Grid item sm={12} md={8}>
-          <Box>
-            <Typography>
-              You can set rules for specific beneficiaries to access funds from this Safe without having to collect all
-              signatures.
-            </Typography>
-            {isGranted && <NewSpendingLimit />}
-          </Box>
+          {isEnabled ? (
+            <Box>
+              <Typography>
+                You can set rules for specific beneficiaries to access funds from this Safe without having to collect
+                all signatures.
+              </Typography>
+
+              {isGranted && <NewSpendingLimit />}
+            </Box>
+          ) : (
+            <Typography>The spending limit module is not yet available on this chain.</Typography>
+          )}
         </Grid>
       </Grid>
 
-      {spendingLimits.length > 0 ? <SpendingLimitsTable spendingLimits={spendingLimits} /> : <NoSpendingLimits />}
+      {isEnabled ? (
+        spendingLimits.length > 0 ? (
+          <SpendingLimitsTable spendingLimits={spendingLimits} />
+        ) : (
+          <NoSpendingLimits />
+        )
+      ) : null}
     </Paper>
   )
 }
