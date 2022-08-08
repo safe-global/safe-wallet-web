@@ -57,7 +57,11 @@ export const OwnerRow = ({
       </Grid>
       <Grid item xs={10} md={7}>
         <FormControl fullWidth>
-          <AddressBookInput name={`owners.${index}.address`} label="Owner address" disabled={disabled} />
+          <AddressBookInput
+            name={`owners.${index}.address`}
+            label="Owner address"
+            InputProps={{ readOnly: disabled }}
+          />
         </FormControl>
       </Grid>
       {!disabled && (
