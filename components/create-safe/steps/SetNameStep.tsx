@@ -35,7 +35,7 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
               a name. This name is only stored locally and will never be shared with Gnosis or any third parties. The
               new Safe will ONLY be available on <ChainIndicator inline />
             </Typography>
-            <FormControl>
+            <FormControl sx={{ width: '50%' }}>
               <NameInput name="name" label="Safe name" required />
             </FormControl>
             <Typography mt={2}>

@@ -16,7 +16,11 @@ const LoadSafeWithAddress: NextPage = () => {
     setId(safeAddress)
   }, [safeAddress])
 
-  return <LoadSafe key={id} initialStep={1} initialData={[undefined, initialData]} />
+  return (
+    <main>
+      <LoadSafe key={id} initialStep={1} initialData={[undefined, initialData]} />
+    </main>
+  )
 }
 
 export default LoadSafeWithAddress

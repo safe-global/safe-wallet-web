@@ -82,7 +82,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 This article explains how to find it.
               </Link>
             </Typography>
-            <Box marginBottom={2} paddingRight={6}>
+            <Box marginBottom={2} paddingRight={6} width={{ lg: '50%' }}>
               <NameInput
                 name="safeAddress.name"
                 label="Safe name"
@@ -97,7 +97,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 required
               />
             </Box>
-            <Box>
+            <Box width={{ lg: '50%' }}>
               <AddressInput
                 label="Safe address"
                 validate={validateSafeAddress}
