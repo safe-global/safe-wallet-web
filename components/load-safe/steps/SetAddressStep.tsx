@@ -38,6 +38,8 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
 
   const { register, handleSubmit, watch, setValue, formState } = formMethods
 
+  console.log(formState.errors)
+
   const safeAddress = watch('safeAddress')
 
   const { name, resolving } = useAddressResolver(safeAddress.address)
