@@ -78,13 +78,9 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
           <Box padding={3}>
             {params.owners.map((owner) => {
               return (
-                <EthHashInfo
-                  key={owner.address}
-                  address={owner.address}
-                  name={owner.name}
-                  shortAddress={false}
-                  showName
-                />
+                <Box key={owner.address} mb={1}>
+                  <EthHashInfo address={owner.address} name={owner.name} shortAddress={false} showName />
+                </Box>
               )
             })}
           </Box>

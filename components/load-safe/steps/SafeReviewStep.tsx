@@ -113,7 +113,11 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
           <Divider />
           <Box display="flex" flexDirection="column" gap={2} padding={3}>
             {params.owners.map((owner) => {
-              return <EthHashInfo key={owner.address} address={owner.address} name={owner.name} shortAddress={false} />
+              return (
+                <Box key={owner.address} mb={1}>
+                  <EthHashInfo address={owner.address} name={owner.name} shortAddress={false} />
+                </Box>
+              )
             })}
           </Box>
           <Divider />
