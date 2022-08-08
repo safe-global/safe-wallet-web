@@ -48,7 +48,6 @@ const SingleTransaction: NextPage = () => {
     false,
   )
 
-  // @ts-ignore TODO: Update TransactionDetails type in gateway-sdk
   const isCurrentSafeTx = sameAddress(txDetails?.safeAddress, safeAddress)
 
   return (
