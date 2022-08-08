@@ -27,7 +27,7 @@ const NFTs: NextPage = () => {
         </Alert>
 
         {loading ? (
-          <CircularProgress size={20} sx={{ marginTop: 2 }} />
+          <CircularProgress size={40} sx={{ marginTop: 2 }} />
         ) : error ? (
           <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>
         ) : collectibles?.results.length ? (
