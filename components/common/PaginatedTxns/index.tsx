@@ -19,7 +19,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
     ) : null
 
   return (
-    <>
+    <Box mb={3}>
       {loading ? (
         <CircularProgress size={20} sx={{ marginTop: 2 }} />
       ) : error ? (
@@ -35,7 +35,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
           <Pagination page={pageUrl} nextPage={page?.next} prevPage={page?.previous} onPageChange={setPageUrl} />
         </Box>
       )}
-    </>
+    </Box>
   )
 }
 
