@@ -2,6 +2,7 @@ import { act, fireEvent, waitFor } from '@testing-library/react'
 import { render } from '@/tests/test-utils'
 import { useForm, FormProvider } from 'react-hook-form'
 import AddressInput, { type AddressInputProps } from '.'
+import { useCurrentChain } from '@/hooks/useChains'
 
 // mock useCurrentChain
 jest.mock('@/hooks/useChains', () => ({
@@ -9,6 +10,7 @@ jest.mock('@/hooks/useChains', () => ({
     shortName: 'rin',
     chainId: '4',
     chainName: 'Rinkeby',
+    features: ['DOMAIN_LOOKUP'],
   })),
 }))
 
@@ -56,6 +58,10 @@ const TEST_ADDRESS_A = '0x0000000000000000000000000000000000000000'
 const TEST_ADDRESS_B = '0x0000000000000000000000000000000000000001'
 
 describe('AddressInput tests', () => {
+  beforeEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('should render with a default address value', () => {
     const { input } = setup(TEST_ADDRESS_A)
     expect(input.value).toBe(TEST_ADDRESS_A)
@@ -110,9 +116,26 @@ describe('AddressInput tests', () => {
     const { input } = setup('')
 
     await act(() => {
-      fireEvent.change(input, { target: { value: `zero.eth` } })
+      fireEvent.change(input, { target: { value: 'zero.eth' } })
     })
 
     await waitFor(() => expect(input.value).toBe('0x0000000000000000000000000000000000000000'))
+  })
+
+  it('should not resolve ENS names if this feature is disabled', async () => {
+    ;(useCurrentChain as jest.Mock).mockImplementation(() => ({
+      shortName: 'rin',
+      chainId: '4',
+      chainName: 'Rinkeby',
+      features: [],
+    }))
+
+    const { input } = setup('')
+
+    await act(() => {
+      fireEvent.change(input, { target: { value: 'zero.eth' } })
+    })
+
+    await waitFor(() => expect(input.value).toBe('zero.eth'))
   })
 })

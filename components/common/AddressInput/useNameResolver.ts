@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useAsync from '@/hooks/useAsync'
 import { resolveName } from '@/services/domains'
@@ -8,16 +9,22 @@ const useNameResolver = (value: string): { address: string | undefined; resolvin
   const debouncedValue = useDebounce(value, 200)
 
   // Fetch an ENS resolution for the current address
-  const [ens, , resolving] = useAsync<{ name: string; address: string } | undefined>(async () => {
-    if (!ethersProvider) return
+  const [ens, , isResolving] = useAsync<{ name: string; address: string } | undefined>(async () => {
+    if (!ethersProvider || !debouncedValue) return
     const address = await resolveName(ethersProvider, debouncedValue)
     return address ? { address, name: debouncedValue } : undefined
   }, [debouncedValue, ethersProvider])
 
-  return {
-    resolving: !!ethersProvider && resolving,
-    address: ens && ens.name === value ? ens.address : undefined,
-  }
+  const resolving = isResolving && !!ethersProvider && !!debouncedValue
+  const address = ens && ens.name === value ? ens.address : undefined
+
+  return useMemo(
+    () => ({
+      resolving,
+      address,
+    }),
+    [resolving, address],
+  )
 }
 
 export default useNameResolver

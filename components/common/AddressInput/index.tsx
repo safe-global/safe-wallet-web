@@ -1,10 +1,12 @@
 import { ReactElement, useEffect, useCallback } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
 import { useFormContext, type Validate } from 'react-hook-form'
+import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
 import useNameResolver from './useNameResolver'
 import ScanQRButton from '../ScanQRModal/ScanQRButton'
+import { hasFeature } from '@/utils/chains'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
 
@@ -16,10 +18,11 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
     formState: { errors },
   } = useFormContext()
   const currentChain = useCurrentChain()
+  const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
   const currentValue = watch(name)
 
   // Fetch an ENS resolution for the current address
-  const { address, resolving } = useNameResolver(currentValue?.trim())
+  const { address, resolving } = useNameResolver(isDomainLookupEnabled ? currentValue?.trim() : '')
 
   const setAddressValue = useCallback(
     (value: string) => {
