@@ -4,12 +4,13 @@ import InputAdornment from '@mui/material/InputAdornment'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { FieldArrayWithId, UseFieldArrayRemove, useFormContext, useWatch } from 'react-hook-form'
-import { CreateSafeFormData } from '@/components/create-safe'
+import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { LoadSafeFormData } from '@/components/load-safe'
 import { useMnemonicName } from '@/hooks/useMnemonicName'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 export const OwnerRow = ({
   field,
@@ -23,11 +24,23 @@ export const OwnerRow = ({
   readOnly?: boolean
 }) => {
   const fallbackName = useMnemonicName()
-  const { setValue, control } = useFormContext()
+  const { setValue, control, getValues } = useFormContext()
   const owner = useWatch({
     control,
     name: `owners.${index}`,
   })
+
+  const validateSafeAddress = useCallback(
+    async (address: string) => {
+      const { address: safeAddress } = parsePrefixedAddress(address)
+      const owners = getValues('owners')
+
+      if (owners.filter((owner: Owner) => owner.address === safeAddress).length > 1) {
+        return 'Owner is already added'
+      }
+    },
+    [getValues],
+  )
 
   const { name, resolving } = useAddressResolver(owner.address)
 
@@ -68,7 +81,7 @@ export const OwnerRow = ({
           <EthHashInfo address={owner.address} shortAddress={false} hasExplorer showCopyButton />
         ) : (
           <FormControl fullWidth>
-            <AddressBookInput name={`owners.${index}.address`} label="Owner address" />
+            <AddressBookInput name={`owners.${index}.address`} label="Owner address" validate={validateSafeAddress} />
           </FormControl>
         )}
       </Grid>
