@@ -24,6 +24,12 @@ const encodeERC721TransferData = (from: string, to: string, tokenId: string): st
   return contractInterface.encodeFunctionData('safeTransferFrom', [from, to, tokenId])
 }
 
+const encodeCKTransferData = (from: string, to: string, tokenId: string): string => {
+  const ckAbi = ['function transferFrom(address from, address to, uint256 tokenId)']
+  const contractInterface = new Interface(ckAbi)
+  return contractInterface.encodeFunctionData('transferFrom', [from, to, tokenId])
+}
+
 export const createTokenTransferParams = (
   recipient: string,
   amount: string,
@@ -52,16 +58,16 @@ export const createNftTransferParams = (
   tokenId: string,
   tokenAddress: string,
 ): MetaTransactionData => {
-  let data = encodeERC721TransferData(from, to, tokenId)
+  let encodeFn = encodeERC721TransferData
 
   // An exception made for CryptoKitties, which is not ERC721 standard-compatible
   if (tokenAddress === CryptoKittiesContract[chains.eth] || tokenAddress === CryptoKittiesContract[chains.rin]) {
-    data = encodeERC20TransferData(to, tokenId)
+    encodeFn = encodeCKTransferData
   }
 
   return {
     to: tokenAddress,
     value: '0',
-    data,
+    data: encodeFn(from, to, tokenId),
   }
 }
