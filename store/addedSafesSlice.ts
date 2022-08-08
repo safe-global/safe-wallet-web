@@ -4,6 +4,7 @@ import type { RootState } from '.'
 import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { formatDecimals } from '@/utils/formatters'
+import { formatAmount } from '@/utils/formatNumber'
 import { Loadable } from './common'
 
 export type AddedSafesOnChain = {
@@ -60,7 +61,7 @@ export const addedSafesSlice = createSlice({
           continue
         }
 
-        state[chainId][address].ethBalance = formatDecimals(item.balance, item.tokenInfo.decimals)
+        state[chainId][address].ethBalance = formatAmount(formatDecimals(item.balance, item.tokenInfo.decimals))
 
         return
       }
@@ -109,19 +110,15 @@ export const selectAddedSafes = createSelector(
 export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
   const result = next(action)
 
-  switch (action.type) {
-    case balancesSlice.actions.set.type: {
-      const state = store.getState()
-      const { data } = selectSafeInfo(state)
+  if (action.type === balancesSlice.actions.set.type) {
+    const state = store.getState()
+    const { data } = selectSafeInfo(state)
 
-      const chainId = data?.chainId
-      const address = data?.address.value
+    const chainId = data?.chainId
+    const address = data?.address.value
 
-      if (!chainId || !address || !action.payload.balances) {
-        break
-      }
-
-      store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.balances }))
+    if (chainId && address && action.payload.data) {
+      store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
     }
   }
 
