@@ -85,7 +85,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
               <EthHashInfo
                 key={params.safeAddress.address}
                 address={params.safeAddress.address}
-                name={params.safeAddress.name}
+                showName={false}
                 shortAddress
               />
             </Typography>
