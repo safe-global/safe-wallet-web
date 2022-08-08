@@ -33,11 +33,6 @@ const SafeListItemSecondaryAction = ({
       <Link href={href} passHref>
         <Button
           className={css.addButton}
-          sx={({ palette }) => ({
-            '&:hover': {
-              backgroundColor: palette.primary.background,
-            },
-          })}
           size="small"
           disableElevation
           onClick={(e) => {
