@@ -21,21 +21,10 @@ const NFTs: NextPage = () => {
       <NavTabs tabs={balancesNavItems} />
 
       <Box py={3}>
-        <Alert severity="info" sx={{ marginBottom: 4 }}>
+        <Alert severity="info" sx={{ marginBottom: 6 }}>
           <AlertTitle>Use Safe Apps to view your NFT portfolio</AlertTitle>
           Get the most optimal experience with Safe Apps. View your collections, buy or sell NFTs, and more.
         </Alert>
-
-        {loading || collectibles?.next || collectibles?.previous ? (
-          <Box pb={4}>
-            <Pagination
-              page={pageUrl}
-              nextPage={collectibles?.next}
-              prevPage={collectibles?.previous}
-              onPageChange={setPageUrl}
-            />
-          </Box>
-        ) : null}
 
         {loading ? (
           <CircularProgress size={20} sx={{ marginTop: 2 }} />
@@ -47,6 +36,17 @@ const NFTs: NextPage = () => {
           <Paper sx={{ py: 9, textAlign: 'center' }}>
             <Typography variant="h3">No NFTs available</Typography>
           </Paper>
+        )}
+
+        {!!(collectibles?.next || collectibles?.previous) && (
+          <Box py={4}>
+            <Pagination
+              page={pageUrl}
+              nextPage={collectibles?.next}
+              prevPage={collectibles?.previous}
+              onPageChange={setPageUrl}
+            />
+          </Box>
         )}
       </Box>
     </main>
