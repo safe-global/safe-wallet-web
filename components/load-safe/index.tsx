@@ -52,14 +52,12 @@ const LoadSafe = ({
   const router = useRouter()
 
   return (
-    <main>
-      <VerticalTxStepper
-        steps={LoadSafeSteps}
-        initialStep={initialStep}
-        initialData={initialData}
-        onClose={() => router.push(AppRoutes.welcome)}
-      />
-    </main>
+    <VerticalTxStepper
+      steps={LoadSafeSteps}
+      initialStep={initialStep}
+      initialData={initialData}
+      onClose={() => router.push(AppRoutes.welcome)}
+    />
   )
 }
 

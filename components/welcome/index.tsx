@@ -6,7 +6,7 @@ const NewSafe = () => {
   const router = useRouter()
 
   return (
-    <main>
+    <>
       <Typography variant="h1" mb={2}>
         Welcome to the Safe.
       </Typography>
@@ -44,7 +44,7 @@ const NewSafe = () => {
           </Grid>
         </Grid>
       </Paper>
-    </main>
+    </>
   )
 }
 
