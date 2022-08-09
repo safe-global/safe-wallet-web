@@ -17,10 +17,10 @@
     "cmp": "./scripts/cmp.sh",
     "routes": "node ./scripts/generate-routes.js > ./config/routes.ts && prettier -w './config/routes.ts' && cat ./config/routes.ts",
     "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./styles/vars.css",
-    "generate-types:safeDeployments": "typechain --target ethers-v5 --out-dir './types/contracts' ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json",
-    "generate-types:spendingLimit": "typechain --target ethers-v5 --out-dir './types/contracts' ./node_modules/@gnosis.pm/safe-modules-deployments/dist/assets/**/*.json",
+    "generate-types:safeDeployments": "typechain --target ethers-v5 --out-dir types/contracts ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json",
+    "generate-types:spendingLimit": "typechain --target ethers-v5 --out-dir types/contracts ./node_modules/@gnosis.pm/safe-modules-deployments/dist/assets/**/*.json",
     "generate-types": "yarn generate-types:safeDeployments && yarn generate-types:spendingLimit",
-    "postinstall": "yarn generate-types",
+    "postinstall": "yarn generate-types && yarn css-vars",
     "analyze": "ANALYZE=true yarn build"
   },
   "pre-commit": [
