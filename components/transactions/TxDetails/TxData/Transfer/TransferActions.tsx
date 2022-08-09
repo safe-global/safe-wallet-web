@@ -8,6 +8,7 @@ import ListItemText from '@mui/material/ListItemText'
 import useAddressBook from '@/hooks/useAddressBook'
 import EntryDialog from '@/components/address-book/EntryDialog'
 
+// TODO: We should abstract the context menu in order not to import it like this
 import css from '@/components/sidebar/SafeListContextMenu/styles.module.css'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import { Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
