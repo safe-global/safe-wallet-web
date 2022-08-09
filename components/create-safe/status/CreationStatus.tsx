@@ -7,71 +7,71 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 
+import css from './styles.module.css'
+
 type Props = {
   onClose: () => void
 }
 
 const getStep = (status: SafeCreationStatus) => {
+  const loading = (
+    <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" className={css.loading} />
+  )
+  const indexed = <img src="/images/safe-creation.svg" alt="Image of a vault" />
+  const error = <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />
+
   switch (status) {
     case SafeCreationStatus.AWAITING:
       return {
-        image: (
-          <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
-        ),
+        image: loading,
         description: 'Step 1/2: Waiting for transaction confirmation.',
         instruction: 'Please confirm the transaction with your connected wallet.',
       }
     case SafeCreationStatus.AWAITING_WALLET:
       return {
-        image: (
-          <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
-        ),
+        image: loading,
         description: 'Waiting for wallet connection',
         instruction: 'Please make sure your wallet is connected on the correct network.',
       }
     case SafeCreationStatus.MINING:
       return {
-        image: (
-          <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
-        ),
+        image: loading,
         description: 'Step 2/2: Transaction is being executed.',
         instruction: 'Please do not leave the page.',
       }
     case SafeCreationStatus.ERROR:
       return {
-        image: <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />,
+        image: error,
         description: 'There was an error.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.REVERTED:
       return {
-        image: <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />,
+        image: error,
         description: 'Transaction was reverted.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.TIMEOUT:
       return {
-        image: <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />,
+        image: error,
         description: 'Transaction was not found. Be aware that it might still be mined.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.SUCCESS:
       return {
-        image: (
-          <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" width={111} height={91} />
-        ),
+        image: loading,
         description: 'Your Safe was successfully created!',
         instruction: 'It is now being indexed. Please do not leave the page.',
       }
     case SafeCreationStatus.INDEXED:
       return {
-        image: <img src="/images/safe-creation.svg" alt="Image of a vault" />,
+        image: indexed,
         description: 'Your Safe was successfully indexed!',
         instruction: 'Taking you to your dashboard...',
       }
     case SafeCreationStatus.INDEX_FAILED:
       return {
-        image: <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />,
+        image: error,
         description: 'Your Safe is created and will be indexed by our services shortly.',
         instruction:
           'You can already open your Safe. It might take a moment until it becomes fully usable in the interface.',
