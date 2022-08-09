@@ -44,6 +44,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
         <TextField
           {...props}
           autoComplete="off"
+          // Need the fallback here otherwise the tests fail
           label={<>{error?.message || errors[name]?.message || props.label}</>}
           error={!!error || !!errors[name]}
           fullWidth
