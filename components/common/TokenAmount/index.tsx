@@ -1,19 +1,29 @@
-import { useEffect, useState, type ReactElement } from 'react'
+import { type ReactElement } from 'react'
 import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { formatAmount } from '@/utils/formatNumber'
 import css from './styles.module.css'
 import { formatUnits } from 'ethers/lib/utils'
+import ImageFallback from '../ImageFallback'
 
-export const TokenIcon = (props: { logoUri?: string; tokenSymbol?: string; size?: number }): ReactElement | null => {
-  const DEFAULT_SIZE = 26
+export const TokenIcon = ({
+  logoUri,
+  tokenSymbol,
+  size = 26,
+}: {
+  logoUri?: string
+  tokenSymbol?: string
+  size?: number
+}): ReactElement | null => {
   const FALLBACK_ICON = '/images/token-placeholder.svg'
-  const { logoUri, tokenSymbol, size = DEFAULT_SIZE } = props
-  const [src, setSrc] = useState<string>(logoUri || '')
 
-  useEffect(() => setSrc(logoUri || ''), [logoUri])
-
-  return !src ? null : (
-    <img src={src} alt={tokenSymbol} className={css.tokenIcon} onError={() => setSrc(FALLBACK_ICON)} height={size} />
+  return !logoUri ? null : (
+    <ImageFallback
+      src={logoUri}
+      alt={tokenSymbol}
+      className={css.tokenIcon}
+      fallbackSrc={FALLBACK_ICON}
+      height={size}
+    />
   )
 }
 

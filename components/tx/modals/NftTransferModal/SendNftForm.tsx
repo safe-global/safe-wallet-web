@@ -1,13 +1,26 @@
-import { useMemo } from 'react'
-import { Box, Button, DialogContent, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material'
+import { useEffect, useMemo, useState } from 'react'
+import {
+  Box,
+  Button,
+  CircularProgress,
+  DialogContent,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@mui/material'
 import uniqBy from 'lodash/uniqBy'
 import { FormProvider, useForm, Controller } from 'react-hook-form'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import SendFromBlock from '../../SendFromBlock'
-import useAllCollectibles from './useAllCollectibles'
 import ErrorMessage from '../../ErrorMessage'
 import { type NftTransferParams } from '.'
+import useCollectibles from '@/hooks/useCollectibles'
+import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import ImageFallback from '@/components/common/ImageFallback'
 
 enum Field {
   recipient = 'recipient',
@@ -30,7 +43,7 @@ const NftMenuItem = ({ image, name }: { image: string | null; name: string }) =>
   <Grid container spacing={1}>
     <Grid item>
       <Box width={20} height={20} overflow="hidden">
-        <img src={image || '/images/nft-placeholder.png'} alt={name} height={20} />
+        <ImageFallback src={image || ''} fallbackSrc="/images/nft-placeholder.png" alt={name} height={20} />
       </Box>
     </Grid>
     <Grid item>{name}</Grid>
@@ -49,9 +62,11 @@ const CollectionMenuItem = ({ address, name }: { address: string; name: string }
 )
 
 const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
-  // All NFTs
-  const initialNfts = params ? [params.token] : []
-  const [nfts = initialNfts, nftsError, nftsLoading] = useAllCollectibles()
+  const [pageUrl, setPageUrl] = useState<string>()
+  const [combinedNfts, setCombinedNfts] = useState<SafeCollectibleResponse[]>()
+  const [nftData, nftError, nftLoading] = useCollectibles(pageUrl)
+  const allNfts = useMemo(() => combinedNfts ?? (params ? [params.token] : []), [combinedNfts, params])
+  const disabled = nftLoading && !allNfts.length
 
   const formMethods = useForm<FormData>({
     defaultValues: {
@@ -68,13 +83,13 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
   } = formMethods
 
   // Collections
-  const collections = useMemo(() => uniqBy(nfts, 'address'), [nfts])
+  const collections = useMemo(() => uniqBy(allNfts, 'address'), [allNfts])
 
   // Individual tokens
   const selectedCollection = watch(Field.tokenAddress)
   const selectedTokens = useMemo(
-    () => nfts.filter((item) => item.address === selectedCollection),
-    [nfts, selectedCollection],
+    () => allNfts.filter((item) => item.address === selectedCollection),
+    [allNfts, selectedCollection],
   )
 
   const onFormSubmit = (data: FormData) => {
@@ -86,6 +101,17 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
       token,
     })
   }
+
+  // Repeatedly load all NFTs page by page
+  useEffect(() => {
+    if (nftData?.results?.length) {
+      setCombinedNfts((prev) => (prev || []).concat(nftData.results))
+    }
+
+    if (nftData?.next) {
+      setPageUrl(nftData.next)
+    }
+  }, [nftData])
 
   return (
     <FormProvider {...formMethods}>
@@ -108,6 +134,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                   labelId="asset-label"
                   label={errors.tokenAddress?.message || 'Select an NFT collection'}
                   error={!!errors.tokenAddress}
+                  endAdornment={nftLoading && <CircularProgress size={20} sx={{ mr: 3 }} />}
                 >
                   {collections.map((item) => (
                     <MenuItem key={item.address} value={item.address}>
@@ -130,11 +157,10 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                   labelId="asset-label"
                   label={errors.tokenId?.message || 'Select an NFT'}
                   error={!!errors.tokenId}
-                  disabled={nftsLoading}
                 >
                   {selectedTokens.map((item) => (
                     <MenuItem key={item.address + item.id} value={item.id}>
-                      <NftMenuItem image={item.imageUri} name={item.name || `${item.tokenName} #${item.id}`} />
+                      <NftMenuItem image={item.logoUri} name={`${item.tokenName} #${item.id}`} />
                     </MenuItem>
                   ))}
                 </Select>
@@ -142,11 +168,11 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
             />
           </FormControl>
 
-          {nftsError && !params && <ErrorMessage>Failed to load NFTs</ErrorMessage>}
+          {nftError && !params && <ErrorMessage>Failed to load NFTs</ErrorMessage>}
         </DialogContent>
 
-        <Button variant="contained" type="submit" disabled={nftsLoading && !params}>
-          {nftsLoading && !params ? 'Loading...' : 'Next'}
+        <Button variant="contained" type="submit" disabled={disabled}>
+          {disabled ? 'Loading...' : 'Next'}
         </Button>
       </form>
     </FormProvider>
