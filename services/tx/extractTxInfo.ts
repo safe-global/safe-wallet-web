@@ -1,14 +1,6 @@
 import { OperationType, type SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types'
-import {
-  Erc20Transfer,
-  Erc721Transfer,
-  MultisigExecutionInfo,
-  Operation,
-  TransactionDetails,
-  TransactionSummary,
-  TransactionTokenType,
-} from '@gnosis.pm/safe-react-gateway-sdk'
-import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
+import { Operation, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import { isMultisigExecutionDetails, isMultisigExecutionInfo, isNativeTokenTransfer } from '@/utils/transaction-guards'
 
 const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000'
 const EMPTY_DATA: string = '0x'
@@ -54,7 +46,7 @@ const extractTxInfo = (
     ? txDetails.detailedExecutionInfo.gasToken
     : ZERO_ADDRESS
 
-  const nonce = (txSummary.executionInfo as MultisigExecutionInfo)?.nonce ?? 0
+  const nonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : 0
 
   const refundReceiver = isMultisigExecutionDetails(txDetails.detailedExecutionInfo)
     ? txDetails.detailedExecutionInfo.refundReceiver.value
@@ -63,7 +55,7 @@ const extractTxInfo = (
   const value = (() => {
     switch (txSummary.txInfo.type) {
       case 'Transfer':
-        if (txSummary.txInfo.transferInfo.type === TransactionTokenType.NATIVE_COIN) {
+        if (isNativeTokenTransfer(txSummary.txInfo.transferInfo)) {
           return txSummary.txInfo.transferInfo.value
         } else {
           return txDetails.txData?.value ?? '0'
@@ -80,10 +72,10 @@ const extractTxInfo = (
   const to = (() => {
     switch (txSummary.txInfo.type) {
       case 'Transfer':
-        if (txSummary.txInfo.transferInfo.type === TransactionTokenType.NATIVE_COIN) {
+        if (isNativeTokenTransfer(txSummary.txInfo.transferInfo)) {
           return txSummary.txInfo.recipient.value
         } else {
-          return (txSummary.txInfo.transferInfo as Erc20Transfer | Erc721Transfer).tokenAddress
+          return txSummary.txInfo.transferInfo.tokenAddress
         }
       case 'Custom':
         return txSummary.txInfo.to.value

@@ -3,7 +3,6 @@ import {
   Transfer,
   Custom,
   Creation,
-  TransactionTokenType,
   TransactionInfo,
   MultiSend,
   SettingsChange,
@@ -13,7 +12,10 @@ import TokenAmount from '@/components/common/TokenAmount'
 import {
   isCreationTxInfo,
   isCustomTxInfo,
+  isERC20Transfer,
+  isERC721Transfer,
   isMultiSendTxInfo,
+  isNativeTokenTransfer,
   isSettingsChangeTxInfo,
   isSupportedMultiSendAddress,
   isTransferTxInfo,
@@ -36,32 +38,35 @@ export const TransferTx = ({
   const transfer = info.transferInfo
   const direction = omitSign ? undefined : info.direction
 
-  switch (transfer.type) {
-    case TransactionTokenType.NATIVE_COIN:
-      return (
-        <TokenAmount
-          direction={direction}
-          value={transfer.value}
-          decimals={nativeCurrency?.decimals}
-          tokenSymbol={nativeCurrency?.symbol}
-          logoUri={withLogo ? nativeCurrency?.logoUri : undefined}
-        />
-      )
-    case TransactionTokenType.ERC20:
-      return <TokenAmount {...transfer} direction={direction} logoUri={withLogo ? transfer?.logoUri : undefined} />
-    case TransactionTokenType.ERC721:
-      return (
-        <TokenAmount
-          {...transfer}
-          tokenSymbol={ellipsis(`${transfer.tokenSymbol} #${transfer.tokenId}`, withLogo ? 16 : 100)}
-          value="1"
-          direction={undefined}
-          logoUri={withLogo ? transfer?.logoUri : undefined}
-        />
-      )
-    default:
-      return <></>
+  if (isNativeTokenTransfer(transfer)) {
+    return (
+      <TokenAmount
+        direction={direction}
+        value={transfer.value}
+        decimals={nativeCurrency?.decimals}
+        tokenSymbol={nativeCurrency?.symbol}
+        logoUri={withLogo ? nativeCurrency?.logoUri : undefined}
+      />
+    )
   }
+
+  if (isERC20Transfer(transfer)) {
+    return <TokenAmount {...transfer} direction={direction} logoUri={withLogo ? transfer?.logoUri : undefined} />
+  }
+
+  if (isERC721Transfer(transfer)) {
+    return (
+      <TokenAmount
+        {...transfer}
+        tokenSymbol={ellipsis(`${transfer.tokenSymbol} #${transfer.tokenId}`, withLogo ? 16 : 100)}
+        value="1"
+        direction={undefined}
+        logoUri={withLogo ? transfer?.logoUri : undefined}
+      />
+    )
+  }
+
+  return <></>
 }
 
 const CustomTx = ({ info }: { info: Custom }): ReactElement => {

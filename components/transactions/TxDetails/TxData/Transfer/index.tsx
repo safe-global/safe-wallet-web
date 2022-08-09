@@ -4,6 +4,7 @@ import { isTxQueued } from '@/utils/transaction-guards'
 import { TransactionStatus, Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
+import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
 
 type TransferTxInfoProps = {
   txInfo: Transfer
@@ -30,7 +31,10 @@ const TransferTxInfo = ({ txInfo, txStatus }: TransferTxInfoProps) => {
   return (
     <Box>
       <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} />
-      <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
+      <Box display="flex" alignItems="flex-end">
+        <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
+        <TransferActions address={address} txInfo={txInfo} />
+      </Box>
     </Box>
   )
 }
