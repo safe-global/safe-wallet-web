@@ -44,11 +44,13 @@ export const useAddressResolver = (address: string) => {
     return lookupOwnerAddress(debouncedValue)
   }, [lookupOwnerAddress, debouncedValue])
 
+  const resolving = isResolving && !!ethersProvider && !!debouncedValue
+
   return useMemo(
     () => ({
       name,
-      resolving: isResolving && !!ethersProvider && !!debouncedValue,
+      resolving,
     }),
-    [name, isResolving, ethersProvider, debouncedValue],
+    [name, resolving],
   )
 }
