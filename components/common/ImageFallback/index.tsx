@@ -5,9 +5,9 @@ type ImageFallbackProps = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLIm
 }
 
 const ImageFallback = ({ src, fallbackSrc, ...props }: ImageFallbackProps): React.ReactElement => {
-  const [url, setUrl] = useState<string>(src || fallbackSrc)
+  const [isError, setIsError] = useState<boolean>(false)
 
-  return <img {...props} alt={props.alt} src={url} onError={() => setUrl(fallbackSrc)} />
+  return <img {...props} alt={props.alt} src={isError ? fallbackSrc : src} onError={() => setIsError(true)} />
 }
 
 export default ImageFallback
