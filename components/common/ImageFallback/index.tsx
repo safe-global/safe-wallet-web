@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 type ImageFallbackProps = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> & {
-  src: string
   fallbackSrc: string
 }
 
