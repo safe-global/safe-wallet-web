@@ -6,6 +6,8 @@ import {
   Custom,
   DateLabel,
   DetailedExecutionInfo,
+  Erc20Transfer,
+  Erc721Transfer,
   Label,
   ModuleExecutionInfo,
   MultiSend,
@@ -17,12 +19,14 @@ import {
   TransactionListItem,
   TransactionStatus,
   TransactionSummary,
+  TransactionTokenType,
   Transfer,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
 import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
 import { Owner } from '@/components/create-safe'
+import { NativeCoinTransfer, TransferInfo } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/transactions'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -191,4 +195,16 @@ export const isHasNextConflictType = (transaction: Transaction) => {
 }
 export const isEndConflictType = (transaction: Transaction) => {
   return transaction.conflictType === CONFLICT_TYPES.END
+}
+
+export const isNativeTokenTransfer = (value: TransferInfo): value is NativeCoinTransfer => {
+  return value.type === TransactionTokenType.NATIVE_COIN
+}
+
+export const isERC20Transfer = (value: TransferInfo): value is Erc20Transfer => {
+  return value.type === TransactionTokenType.ERC20
+}
+
+export const isERC721Transfer = (value: TransferInfo): value is Erc721Transfer => {
+  return value.type === TransactionTokenType.ERC721
 }
