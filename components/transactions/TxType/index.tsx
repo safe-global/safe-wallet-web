@@ -12,6 +12,9 @@ const TxType = ({ tx }: TxTypeProps) => {
   const [noIcon, setNoIcon] = useState<boolean>(false)
   const type = useTransactionType(tx)
 
+  console.log({ tx })
+  console.log(type)
+
   return (
     <Box className={css.txType}>
       <img

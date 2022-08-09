@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AddressEx, SettingsInfoType, TransactionSummary, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isCancellationTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
+import { isCancellationTxInfo, isCustomTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 
 type TxTypeProps = {
   icon?: string
@@ -56,7 +56,15 @@ export const useTransactionType = (tx: TransactionSummary): TxTypeProps => {
       }
       case 'Custom': {
         if (isModuleExecutionInfo(tx.executionInfo)) {
-          setType({ icon: '/images/settings.svg', text: 'Module' })
+          const DEFAULT_MODULE_NAME = 'Module'
+
+          const isCustom = isCustomTxInfo(tx.txInfo)
+          const { logoUri, name } = tx.txInfo.to
+
+          setType({
+            icon: isCustom && logoUri ? logoUri : '/images/settings.svg',
+            text: isCustom && name ? name : DEFAULT_MODULE_NAME,
+          })
           break
         }
 
