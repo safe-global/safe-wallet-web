@@ -23,19 +23,22 @@ const Setup: NextPage = () => {
   return (
     <main>
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Setup" />
+
       <Paper sx={{ padding: 4, marginBottom: 2 }} variant="outlined">
-        <Grid container justifyContent="space-between" gap={2}>
-          <Grid item>
+        <Grid container spacing={3}>
+          <Grid item lg={4} xs={12}>
             <Typography variant="h4" fontWeight={700}>
               Safe nonce
             </Typography>
             <Typography paddingTop={1}>Current nonce: {nonce}</Typography>
           </Grid>
-          <Grid item xs={12} md={8}>
+
+          <Grid item xs>
             <ContractVersion isGranted={isGranted} />
           </Grid>
         </Grid>
       </Paper>
+
       <Paper sx={{ padding: 4 }} variant="outlined">
         <OwnerList isGranted={isGranted} />
         <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />

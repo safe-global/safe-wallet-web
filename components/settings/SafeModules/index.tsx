@@ -42,13 +42,14 @@ const SafeModules = () => {
 
   return (
     <Paper sx={{ padding: 4 }} variant="outlined">
-      <Grid container direction="row" justifyContent="space-between" gap={2}>
-        <Grid item>
+      <Grid container direction="row" justifyContent="space-between" spacing={3}>
+        <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
             Safe modules
           </Typography>
         </Grid>
-        <Grid item sm={12} md={8}>
+
+        <Grid item xs>
           <Box>
             <Typography>
               Modules allow you to customize the access-control logic of your Safe. Modules are potentially risky, so
