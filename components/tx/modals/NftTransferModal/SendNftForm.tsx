@@ -51,8 +51,10 @@ const NftMenuItem = ({ image, name }: { image: string; name: string }) => (
 )
 
 const CollectionMenuItem = ({ address, name }: { address: string; name: string }) => (
-  <Grid container spacing={1}>
-    <Grid item>{name}</Grid>
+  <Grid container>
+    <Grid item pr={1}>
+      {name}
+    </Grid>
     <Grid item>
       <Typography component="span" variant="body2" color="secondary.light">
         {address}
