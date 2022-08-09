@@ -1,7 +1,7 @@
+import ImageFallback from '@/components/common/ImageFallback'
 import { useTransactionType } from '@/hooks/useTransactionType'
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box } from '@mui/material'
-import { useState } from 'react'
 import css from './styles.module.css'
 
 type TxTypeProps = {
@@ -9,18 +9,11 @@ type TxTypeProps = {
 }
 
 const TxType = ({ tx }: TxTypeProps) => {
-  const [noIcon, setNoIcon] = useState<boolean>(false)
   const type = useTransactionType(tx)
 
   return (
     <Box className={css.txType}>
-      <img
-        src={noIcon ? '/images/custom.svg' : type.icon}
-        alt="transaction type"
-        width={16}
-        height={16}
-        onError={() => setNoIcon(true)}
-      />
+      <ImageFallback src={type.icon} fallbackSrc="/images/custom.svg" alt="transaction type" width={16} height={16} />
       {type.text}
     </Box>
   )

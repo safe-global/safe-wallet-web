@@ -20,6 +20,7 @@ import useChainId from '@/hooks/useChainId'
 import { trimTrailingSlash } from '@/utils/url'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
+import ImageFallback from '../common/ImageFallback'
 
 type Props = {
   open: boolean
@@ -113,13 +114,11 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
               mt: 2,
             }}
           >
-            <img
+            <ImageFallback
               height={TEXT_FIELD_HEIGHT}
               src={appLogoUrl}
+              fallbackSrc={APP_LOGO_FALLBACK_IMAGE}
               alt="Apps icon"
-              onError={(e) => {
-                e.currentTarget.src = APP_LOGO_FALLBACK_IMAGE
-              }}
             />
             <TextField label="App name" disabled sx={{ width: '100%', ml: 2 }} value={safeApp?.name || ''} />
           </Box>
