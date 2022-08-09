@@ -231,26 +231,37 @@ const initTheme = (darkMode: boolean) => {
             '& .MuiAlert-icon': {
               color: theme.palette.error.main,
             },
+            '&. MuiPaper-root': {
+              backgroundColor: theme.palette.error.background,
+            },
           }),
           standardInfo: ({ theme }) => ({
             '& .MuiAlert-icon': {
               color: theme.palette.info.main,
+            },
+            '&. MuiPaper-root': {
+              backgroundColor: theme.palette.info.background,
             },
           }),
           standardSuccess: ({ theme }) => ({
             '& .MuiAlert-icon': {
               color: theme.palette.success.main,
             },
+            '&. MuiPaper-root': {
+              backgroundColor: theme.palette.success.background,
+            },
           }),
           standardWarning: ({ theme }) => ({
             '& .MuiAlert-icon': {
               color: theme.palette.warning.main,
             },
+            '&. MuiPaper-root': {
+              backgroundColor: theme.palette.warning.background,
+            },
           }),
           root: ({ theme }) => ({
-            color: theme.palette.secondary.main,
+            color: theme.palette.text.primary,
             padding: '12px 16px',
-            backgroundColor: theme.palette.background.paper,
           }),
         },
       },
