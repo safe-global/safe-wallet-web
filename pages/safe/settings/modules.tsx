@@ -9,10 +9,12 @@ const Modules: NextPage = () => {
   return (
     <main>
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Modules" />
+
       <Grid container direction="column" spacing={2}>
         <Grid item>
           <SafeModules />
         </Grid>
+
         <Grid item>
           <TransactionGuards />
         </Grid>

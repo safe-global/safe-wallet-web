@@ -7,6 +7,7 @@ const SpendingLimitsPage: NextPage = () => {
   return (
     <main>
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Spending Limits" />
+
       <SpendingLimits />
     </main>
   )

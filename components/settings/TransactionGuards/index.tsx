@@ -32,13 +32,14 @@ const TransactionGuards = () => {
 
   return (
     <Paper sx={{ padding: 4 }} variant="outlined">
-      <Grid container direction="row" justifyContent="space-between" gap={2}>
-        <Grid item>
+      <Grid container direction="row" justifyContent="space-between" spacing={3}>
+        <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
             Transaction Guards
           </Typography>
         </Grid>
-        <Grid item sm={12} md={8}>
+
+        <Grid item xs>
           <Box>
             <Typography>
               Transaction guards impose additional constraints that are checked prior to executing a Safe transaction.

@@ -20,14 +20,16 @@ const Appearance: NextPage = () => {
   return (
     <main>
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Appearance" />
+
       <Paper sx={{ padding: 4 }} variant="outlined">
-        <Grid container justifyContent="space-between">
-          <Grid item>
+        <Grid container spacing={3}>
+          <Grid item lg={4} xs={12}>
             <Typography variant="h4" fontWeight="bold" mb={1}>
               Chain-specific addresses
             </Typography>
           </Grid>
-          <Grid item md={8}>
+
+          <Grid item xs>
             <Typography mb={2}>
               You can choose whether to prepend{' '}
               <Link href="https://eips.ethereum.org/EIPS/eip-3770" target="_blank" rel="noopener noreferrer">
@@ -47,13 +49,15 @@ const Appearance: NextPage = () => {
             </FormGroup>
           </Grid>
         </Grid>
-        <Grid container justifyContent="space-between" alignItems="center" marginTop={2}>
-          <Grid item>
+
+        <Grid container alignItems="center" marginTop={2} spacing={3}>
+          <Grid item lg={4} xs={12}>
             <Typography variant="h4" fontWeight="bold">
               Theme
             </Typography>
           </Grid>
-          <Grid item md={8}>
+
+          <Grid item xs>
             <FormControlLabel
               control={<Checkbox checked={settings.theme.darkMode} onChange={handleToggle(setDarkMode)} />}
               label="Dark mode"

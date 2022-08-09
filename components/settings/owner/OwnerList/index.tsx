@@ -60,13 +60,14 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
-      <Grid container justifyContent="space-between" gap={2}>
-        <Grid item>
+      <Grid container spacing={3}>
+        <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
             Manage Safe owners
           </Typography>
         </Grid>
-        <Grid item md={8}>
+
+        <Grid item xs>
           <Typography mb={2}>
             Add, remove and replace or rename existing owners. Owner names are only stored locally and never shared with
             Gnosis or any third parties.
