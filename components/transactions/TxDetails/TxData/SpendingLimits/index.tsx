@@ -56,7 +56,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
       </Box>
       <Box className={css.group}>
         <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>
-          {isSetAllowanceMethod ? 'Amount' : 'Token'}
+          {isSetAllowanceMethod ? (tokenInfo ? 'Amount' : 'Raw Amount (in decimals)') : 'Token'}
         </Typography>
         <Box className={css.inline}>
           {tokenInfo && (
