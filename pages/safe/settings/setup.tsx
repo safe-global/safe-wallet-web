@@ -23,11 +23,7 @@ const Setup: NextPage = () => {
   return (
     <main>
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Setup" />
-      <Paper sx={{ padding: 4 }} variant="outlined">
-        <OwnerList isGranted={isGranted} />
-        <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />
-      </Paper>
-      <Paper sx={{ padding: 4, marginTop: 2 }} variant="outlined">
+      <Paper sx={{ padding: 4, marginBottom: 2 }} variant="outlined">
         <Grid container justifyContent="space-between" gap={2}>
           <Grid item>
             <Typography variant="h4" fontWeight={700}>
@@ -39,6 +35,10 @@ const Setup: NextPage = () => {
             <ContractVersion isGranted={isGranted} />
           </Grid>
         </Grid>
+      </Paper>
+      <Paper sx={{ padding: 4 }} variant="outlined">
+        <OwnerList isGranted={isGranted} />
+        <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />
       </Paper>
     </main>
   )
