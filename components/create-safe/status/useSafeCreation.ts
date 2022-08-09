@@ -150,8 +150,6 @@ export const useSafeCreation = () => {
   }, [creationPromise, dispatch, pendingSafe])
 
   useEffect(() => {
-    if (!pendingSafe) return
-
     const checkCreatedSafe = async (chainId: string, address: string) => {
       try {
         await pollSafeInfo(chainId, address)
@@ -162,17 +160,17 @@ export const useSafeCreation = () => {
     }
 
     if (status === SafeCreationStatus.INDEXED) {
+      setPendingSafe(undefined)
       safeAddress && router.push({ pathname: AppRoutes.safe.home, query: { safe: safeAddress } })
     }
 
     if (status === SafeCreationStatus.SUCCESS) {
-      setPendingSafe(undefined)
-      safeAddress && checkCreatedSafe(pendingSafe.chainId, safeAddress)
+      safeAddress && pendingSafe && checkCreatedSafe(pendingSafe.chainId, safeAddress)
     }
 
     if (status === SafeCreationStatus.ERROR || status === SafeCreationStatus.REVERTED) {
       setCreationPromise(undefined)
-      if (pendingSafe.txHash) {
+      if (pendingSafe?.txHash) {
         setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
       }
     }
