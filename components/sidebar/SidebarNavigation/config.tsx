@@ -31,7 +31,7 @@ export const navItems: NavItem[] = [
     href: AppRoutes.safe.transactions.history,
   },
   {
-    label: 'Address Book',
+    label: 'Address book',
     icon: <ABIcon />,
     href: AppRoutes.safe.addressBook,
   },

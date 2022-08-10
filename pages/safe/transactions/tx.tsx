@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { CircularProgress } from '@mui/material'
 import {
@@ -52,6 +53,10 @@ const SingleTransaction: NextPage = () => {
 
   return (
     <main>
+      <Head>
+        <title>Safe – Transaction details</title>
+      </Head>
+
       <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" />
 
       {(error || !isCurrentSafeTx) && !loading ? (

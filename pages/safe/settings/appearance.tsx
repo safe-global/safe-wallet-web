@@ -1,6 +1,7 @@
 import { Checkbox, FormControlLabel, FormGroup, Grid, Link, Paper, Typography } from '@mui/material'
 import type { ChangeEvent } from 'react'
 import type { NextPage } from 'next'
+import Head from 'next/head'
 
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setCopyShortName, setDarkMode, setShowShortName } from '@/store/settingsSlice'
@@ -19,6 +20,10 @@ const Appearance: NextPage = () => {
 
   return (
     <main>
+      <Head>
+        <title>Safe – Settings – Appearance</title>
+      </Head>
+
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Appearance" />
 
       <Paper sx={{ padding: 4 }} variant="outlined">

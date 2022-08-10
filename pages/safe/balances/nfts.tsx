@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import { Alert, AlertTitle, Box, CircularProgress, Paper, Typography } from '@mui/material'
 import useCollectibles from '@/hooks/useCollectibles'
 import Nfts from '@/components/nfts'
@@ -16,6 +17,10 @@ const NFTs: NextPage = () => {
 
   return (
     <main>
+      <Head>
+        <title>Safe – NFTs</title>
+      </Head>
+
       <Breadcrumbs Icon={AssetsIcon} first="Assets" second="NFTs" />
 
       <NavTabs tabs={balancesNavItems} />

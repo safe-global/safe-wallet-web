@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import { Box, CircularProgress } from '@mui/material'
 
 import AssetsTable from '@/components/balances/AssetsTable'
@@ -14,6 +15,10 @@ const Balances: NextPage = () => {
 
   return (
     <main>
+      <Head>
+        <title>Safe – Assets</title>
+      </Head>
+
       <Breadcrumbs Icon={AssetsIcon} first="Assets" second="Coins" />
 
       <NavTabs tabs={balancesNavItems} />
