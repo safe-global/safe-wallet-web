@@ -6,6 +6,7 @@ import {
   DialogContent,
   FormControl,
   Grid,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -136,7 +137,13 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                   labelId="asset-label"
                   label={errors.tokenAddress?.message || 'Select an NFT collection'}
                   error={!!errors.tokenAddress}
-                  endAdornment={nftLoading && <CircularProgress size={20} sx={{ mr: 3, flexShrink: 0 }} />}
+                  endAdornment={
+                    nftLoading && (
+                      <InputAdornment position="end">
+                        <CircularProgress size={20} sx={{ mr: 3 }} />
+                      </InputAdornment>
+                    )
+                  }
                 >
                   {collections.map((item) => (
                     <MenuItem key={item.address} value={item.address}>
