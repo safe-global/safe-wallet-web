@@ -1,6 +1,8 @@
 # Safe Web Core
 
-Demo: https://web-core.pages.dev/rin:0xb3b83bf204C458B461de9B0CD2739DB152b4fa5A/balances
+![core](https://user-images.githubusercontent.com/381895/183838109-5447bbfe-a86a-4de3-821e-8d994e0cf1b1.png)
+
+The default Safe web interface.
 
 ## Getting Started
 
@@ -27,7 +29,7 @@ yarn lint --fix
 
 Prettier:
 ```
-yarn prettier -w
+yarn prettier
 ```
 
 Unit tests:
@@ -46,3 +48,13 @@ To create a new component in the root folder:
 ```
 yarn cmp MyNewComponent
 ```
+
+## Frameworks
+ * Next.js
+ * React
+ * Redux
+ * MUI
+ * ethers.js
+ * web3-onboard
+ * [Safe Core SDK](https://github.com/safe-global/safe-core-sdk)
+ * [Gateway SDK](https://github.com/safe-global/safe-react-gateway-sdk)
