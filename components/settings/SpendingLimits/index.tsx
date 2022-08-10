@@ -4,20 +4,16 @@ import { SpendingLimitsTable } from '@/components/settings/SpendingLimits/Spendi
 import { useSelector } from 'react-redux'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import { NewSpendingLimit } from '@/components/settings/SpendingLimits/NewSpendingLimit'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { useCurrentChain } from '@/hooks/useChains'
 import { hasFeature } from '@/utils/chains'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
+import useIsGranted from '@/hooks/useIsGranted'
 
 const SpendingLimits = () => {
-  const isSafeOwner = useIsSafeOwner()
-  const isWrongChain = useIsWrongChain()
+  const isGranted = useIsGranted()
   const spendingLimits = useSelector(selectSpendingLimits)
   const currentChain = useCurrentChain()
-
   const isEnabled = currentChain && hasFeature(currentChain, FEATURES.SPENDING_LIMIT)
-  const isGranted = isSafeOwner && !isWrongChain
 
   return (
     <Paper sx={{ padding: 4 }} variant="outlined">

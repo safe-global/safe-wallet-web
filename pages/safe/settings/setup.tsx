@@ -4,21 +4,16 @@ import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
+import useIsGranted from '@/hooks/useIsGranted'
 
 const Setup: NextPage = () => {
   const { safe } = useSafeInfo()
   const nonce = safe.nonce
   const ownerLength = safe.owners.length
   const threshold = safe.threshold
-
-  const isSafeOwner = useIsSafeOwner()
-  const isWrongChain = useIsWrongChain()
-
-  const isGranted = isSafeOwner && !isWrongChain
+  const isGranted = useIsGranted()
 
   return (
     <main>

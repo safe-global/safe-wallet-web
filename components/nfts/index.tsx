@@ -1,5 +1,4 @@
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useIsGranted from '@/hooks/useIsGranted'
 import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useState, type ReactElement } from 'react'
 import NftTransferModal from '../tx/modals/NftTransferModal'
@@ -7,9 +6,7 @@ import NftGrid from './NftGrid'
 
 const Nfts = ({ collectibles }: { collectibles: SafeCollectibleResponse[] }): ReactElement => {
   const [sendNft, setSendNft] = useState<SafeCollectibleResponse>()
-  const isSafeOwner = useIsSafeOwner()
-  const isWrongChain = useIsWrongChain()
-  const isGranted = isSafeOwner && !isWrongChain
+  const isGranted = useIsGranted()
 
   return (
     <>

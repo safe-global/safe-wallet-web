@@ -11,8 +11,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import TxModal from '@/components/tx/TxModal'
 import { RemoveSpendingLimit } from '@/components/settings/SpendingLimits/RemoveSpendingLimit'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useIsGranted from '@/hooks/useIsGranted'
 
 const headCells = [
   { id: 'beneficiary', label: 'Beneficiary' },
@@ -32,10 +31,7 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
   const [open, setOpen] = useState<boolean>(false)
   const [initialData, setInitialData] = useState<SpendingLimitState>()
   const { balances } = useBalances()
-  const isSafeOwner = useIsSafeOwner()
-  const isWrongChain = useIsWrongChain()
-
-  const isGranted = isSafeOwner && !isWrongChain
+  const isGranted = useIsGranted()
 
   const onRemove = (spendingLimit: SpendingLimitState) => {
     setOpen(true)

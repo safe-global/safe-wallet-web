@@ -16,8 +16,7 @@ import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 import { formatEther } from '@ethersproject/units'
 import { formatUnits } from 'ethers/lib/utils'
 import { isERC20Transfer, isNativeTokenTransfer } from '@/utils/transaction-guards'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useIsGranted from '@/hooks/useIsGranted'
 
 enum ModalType {
   SEND_AGAIN = 'SEND_AGAIN',
@@ -29,11 +28,7 @@ const defaultOpen = { [ModalType.SEND_AGAIN]: false, [ModalType.ADD_TO_AB]: fals
 const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfer }): ReactElement => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
-
-  const isSafeOwner = useIsSafeOwner()
-  const isWrongChain = useIsWrongChain()
-  const isGranted = isSafeOwner && !isWrongChain
-
+  const isGranted = useIsGranted()
   const addressBook = useAddressBook()
   const name = addressBook?.[address]
 

@@ -4,8 +4,7 @@ import { Paper, Grid, Typography, Box, Link } from '@mui/material'
 
 import css from './styles.module.css'
 import { RemoveModule } from '@/components/settings/SafeModules/RemoveModule'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useIsGranted from '@/hooks/useIsGranted'
 
 const NoModules = () => {
   return (
@@ -16,10 +15,7 @@ const NoModules = () => {
 }
 
 const ModuleDisplay = ({ moduleAddress, chainId }: { moduleAddress: string; chainId: string }) => {
-  const isSafeOwner = useIsSafeOwner()
-  const isWrongChain = useIsWrongChain()
-
-  const isGranted = isSafeOwner && !isWrongChain
+  const isGranted = useIsGranted()
 
   return (
     <Box className={css.container}>
