@@ -99,7 +99,8 @@ const AddressBookTable = () => {
       <div className={css.headerButtonWrapper}>
         <Button
           onClick={handleOpenModal(ModalType.EXPORT)}
-          disabled={addressBookEntries.length === 0}
+          // Prevent `className` mismatch hydration error
+          disabled={typeof window === 'undefined' ? undefined : addressBookEntries.length === 0}
           variant="contained"
           size="small"
           disableElevation

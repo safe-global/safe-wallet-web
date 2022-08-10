@@ -133,13 +133,20 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
               onRequestSort={handleRequestSort}
             />
             <TableBody>
-              {pagedRows.map((row, index) => (
-                <TableRow tabIndex={-1} key={index}>
-                  {Object.entries(row).map(([key, cell]) => (
-                    <TableCell key={key}>{cell.content}</TableCell>
-                  ))}
+              {pagedRows.length > 0 ? (
+                pagedRows.map((row, index) => (
+                  <TableRow tabIndex={-1} key={index}>
+                    {Object.entries(row).map(([key, cell]) => (
+                      <TableCell key={key}>{cell.content}</TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                // Prevent no `tbody` rows hydration error
+                <TableRow>
+                  <TableCell />
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
