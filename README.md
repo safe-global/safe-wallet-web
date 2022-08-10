@@ -1,6 +1,6 @@
 # Safe Web Core
 
-![core](https://user-images.githubusercontent.com/381895/183838109-5447bbfe-a86a-4de3-821e-8d994e0cf1b1.png)
+<img src="https://user-images.githubusercontent.com/381895/183839918-14f87835-3a98-4846-b83b-7fb1593ad367.png" height="120" width="120" />
 
 The default Safe web interface.
 
