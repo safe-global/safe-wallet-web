@@ -6,9 +6,9 @@ export type Notification = {
   id: string
   message: string
   groupKey: string
-  read?: boolean
   variant?: AlertColor
-  dismissed?: boolean
+  isDismissed?: boolean
+  isRead?: boolean
 }
 
 type NotificationState = Notification[]
@@ -24,7 +24,7 @@ export const notificationsSlice = createSlice({
     },
     closeNotification: (state, { payload }: PayloadAction<{ id: string }>): NotificationState => {
       return state.map((notification) => {
-        return notification.id === payload.id ? { ...notification, dismissed: true, read: true } : notification
+        return notification.id === payload.id ? { ...notification, isDismissed: true } : notification
       })
     },
     deleteNotification: (state, { payload }: PayloadAction<Notification>) => {
@@ -35,7 +35,7 @@ export const notificationsSlice = createSlice({
     },
     readNotification: (state, { payload }: PayloadAction<{ id: string }>): NotificationState => {
       return state.map((notification) => {
-        return notification.id === payload.id ? { ...notification, read: true } : notification
+        return notification.id === payload.id ? { ...notification, isRead: true } : notification
       })
     },
   },
