@@ -30,10 +30,6 @@
 }
 
 @media (max-width: 768px) {
-  .container {
-    gap: var(--space-1);
-  }
-
   .logo,
   .tokenWidget,
   .chainSwitcher {
