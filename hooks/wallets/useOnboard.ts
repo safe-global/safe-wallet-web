@@ -9,11 +9,13 @@ import { logError, Errors } from '@/services/exceptions'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 
-const { setStore, useStore } = new ExternalStore<OnboardAPI>()
+const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
-export const initOnboard = async (chainConfigs: ChainInfo[]): Promise<OnboardAPI> => {
+export const initOnboard = async (chainConfigs: ChainInfo[]) => {
   const { createOnboard } = await import('@/services/onboard')
-  return createOnboard(chainConfigs)
+  if (!getStore()) {
+    setStore(createOnboard(chainConfigs))
+  }
 }
 
 export type ConnectedWallet = {
@@ -51,7 +53,7 @@ export const useInitOnboard = () => {
 
   useEffect(() => {
     if (configs.length > 0) {
-      initOnboard(configs).then(setStore)
+      initOnboard(configs)
     }
   }, [configs])
 

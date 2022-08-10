@@ -29,7 +29,7 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
     // TODO: add block explorer URL
   }))
 
-  return Onboard({
+  onboard = Onboard({
     wallets,
 
     chains,
@@ -47,4 +47,6 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
   })
+
+  return onboard
 }
