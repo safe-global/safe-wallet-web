@@ -9,9 +9,6 @@
 .menu :global .MuiMenuItem-root {
   padding-left: 12px;
   min-height: 40px;
-}
-
-.menu :global .MuiMenuItem-root:hover {
   border-radius: 8px !important;
 }
 

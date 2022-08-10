@@ -54,9 +54,9 @@ const EthHashInfo = ({
         </div>
       )}
 
-      <div>
+      <div className={css.nameRow}>
         {props.name && (
-          <Typography variant="body2" component="div">
+          <Typography variant="body2" component="div" textOverflow="ellipsis" overflow="hidden" title={props.name}>
             {props.name}
           </Typography>
         )}

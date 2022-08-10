@@ -24,6 +24,16 @@ const Sidebar = (): ReactElement => {
     setIsDrawerOpen((prev) => !prev)
   }
 
+  if (!isSafeRoute) {
+    return (
+      <div className={css.noSafe}>
+        <div className={css.scroll}>
+          <OwnedSafes />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={css.container}>
       <div className={css.scroll}>
@@ -35,19 +45,9 @@ const Sidebar = (): ReactElement => {
           <ChevronRight />
         </IconButton>
 
-        {isSafeRoute ? (
-          <>
-            <SidebarHeader />
-
-            <Divider />
-
-            <SidebarNavigation />
-          </>
-        ) : (
-          <div className={css.noSafeHeader}>
-            <OwnedSafes />
-          </div>
-        )}
+        <SidebarHeader />
+        <Divider />
+        <SidebarNavigation />
 
         <div style={{ flexGrow: 1 }} />
 
