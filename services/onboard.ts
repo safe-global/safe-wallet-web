@@ -12,25 +12,34 @@ export type ConnectedWallet = {
   provider: EIP1193Provider
 }
 
+let onboard: OnboardAPI | null = null
+
 export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
+  if (onboard) return onboard
+
   const wallets = getAllWallets()
 
-  return Onboard({
+  const chains = chainConfigs.map((cfg) => ({
+    id: hexValue(parseInt(cfg.chainId)),
+    label: cfg.chainName,
+    rpcUrl: getRpcServiceUrl(cfg.rpcUri),
+    publicRpcUrl: cfg.publicRpcUri.value,
+    token: cfg.nativeCurrency.symbol,
+    color: cfg.theme.backgroundColor,
+    // TODO: add block explorer URL
+  }))
+
+  onboard = Onboard({
     wallets,
-    chains: chainConfigs.map((cfg) => ({
-      id: hexValue(parseInt(cfg.chainId)),
-      label: cfg.chainName,
-      rpcUrl: getRpcServiceUrl(cfg.rpcUri),
-      publicRpcUrl: cfg.publicRpcUri.value,
-      token: cfg.nativeCurrency.symbol,
-      color: cfg.theme.backgroundColor,
-      // TODO: add block explorer URL
-    })),
+
+    chains,
+
     // TODO: Remove once containerElement is optional again
     accountCenter: {
       mobile: { enabled: false, containerElement: 'body' },
       desktop: { enabled: false, containerElement: 'body' },
     },
+
     appMetadata: {
       name: 'Safe',
       icon: '/logo-no-text.svg',
@@ -38,4 +47,6 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
   })
+
+  return onboard
 }

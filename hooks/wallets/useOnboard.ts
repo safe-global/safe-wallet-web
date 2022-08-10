@@ -49,10 +49,10 @@ export const useInitOnboard = () => {
   const onboard = useStore()
 
   useEffect(() => {
-    if (configs.length > 0 && !onboard) {
+    if (configs.length > 0) {
       initOnboard(configs).then(setStore)
     }
-  }, [configs, onboard])
+  }, [configs])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
@@ -89,9 +89,11 @@ export const useInitOnboard = () => {
       const label = lastWalletStorage.get()
 
       if (label) {
-        onboard.connectWallet({
-          autoSelect: { label, disableModals: true },
-        })
+        onboard
+          .connectWallet({
+            autoSelect: { label, disableModals: true },
+          })
+          .catch(console.error)
       }
     }
   }, [onboard])
