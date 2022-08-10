@@ -5,14 +5,17 @@ import { getAddress } from 'ethers/lib/utils'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/local-storage/local'
+import { logError, Errors } from '@/services/exceptions'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 
-const { setStore, useStore } = new ExternalStore<OnboardAPI>()
+const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
-export const initOnboard = async (chainConfigs: ChainInfo[]): Promise<OnboardAPI> => {
+export const initOnboard = async (chainConfigs: ChainInfo[]) => {
   const { createOnboard } = await import('@/services/onboard')
-  return createOnboard(chainConfigs)
+  if (!getStore()) {
+    setStore(createOnboard(chainConfigs))
+  }
 }
 
 export type ConnectedWallet = {
@@ -49,10 +52,10 @@ export const useInitOnboard = () => {
   const onboard = useStore()
 
   useEffect(() => {
-    if (configs.length > 0 && !onboard) {
-      initOnboard(configs).then(setStore)
+    if (configs.length > 0) {
+      initOnboard(configs)
     }
-  }, [configs, onboard])
+  }, [configs])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
@@ -89,9 +92,11 @@ export const useInitOnboard = () => {
       const label = lastWalletStorage.get()
 
       if (label) {
-        onboard.connectWallet({
-          autoSelect: { label, disableModals: true },
-        })
+        onboard
+          .connectWallet({
+            autoSelect: { label, disableModals: true },
+          })
+          .catch((e) => logError(Errors._302, (e as Error).message))
       }
     }
   }, [onboard])

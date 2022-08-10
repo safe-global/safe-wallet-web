@@ -16,8 +16,10 @@ class ExternalStore<T extends unknown> {
   }
 
   public readonly setStore = (value: T): void => {
-    this.store = value
-    this.listeners.forEach((listener) => listener())
+    if (value !== this.store) {
+      this.store = value
+      this.listeners.forEach((listener) => listener())
+    }
   }
 
   private readonly subscribe = (listener: Listener): (() => void) => {

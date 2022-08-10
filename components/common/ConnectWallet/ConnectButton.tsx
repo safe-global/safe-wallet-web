@@ -8,12 +8,7 @@ export const ConnectButton = () => {
 
   const handleConnect = async () => {
     if (!onboard) return
-
-    try {
-      await onboard.connectWallet()
-    } catch (e) {
-      logError(Errors._302, (e as Error).message)
-    }
+    onboard.connectWallet().catch((e) => logError(Errors._302, (e as Error).message))
   }
 
   return (
