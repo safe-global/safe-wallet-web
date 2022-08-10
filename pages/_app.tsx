@@ -73,6 +73,7 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement | null =>
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="dns-prefetch" href={GATEWAY_URL} />
+        <link rel="preconnect" href={GATEWAY_URL} crossOrigin="" />
       </Head>
 
       <AppProviders>
