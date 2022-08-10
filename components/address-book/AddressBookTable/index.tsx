@@ -1,5 +1,4 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
-import useAddressBook from '@/hooks/useAddressBook'
 import { useState } from 'react'
 import EntryDialog, { AddressEntry } from '@/components/address-book/EntryDialog'
 import ExportDialog from '@/components/address-book/ExportDialog'
@@ -15,6 +14,7 @@ import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import Box from '@mui/material/Box'
+import useAddressBookEntries from './useAddressBookEntries'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -56,8 +56,7 @@ const AddressBookTable = () => {
     setDefaultValues(undefined)
   }
 
-  const addressBook = useAddressBook()
-  const addressBookEntries = Object.entries(addressBook)
+  const addressBookEntries = useAddressBookEntries()
 
   const rows = addressBookEntries.map(([address, name]) => ({
     name: {
@@ -99,8 +98,7 @@ const AddressBookTable = () => {
       <div className={css.headerButtonWrapper}>
         <Button
           onClick={handleOpenModal(ModalType.EXPORT)}
-          // Prevent `className` mismatch hydration error
-          disabled={typeof window === 'undefined' ? undefined : addressBookEntries.length === 0}
+          disabled={addressBookEntries.length === 0}
           variant="contained"
           size="small"
           disableElevation
