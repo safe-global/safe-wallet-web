@@ -49,10 +49,10 @@ export const useInitOnboard = () => {
   const onboard = useStore()
 
   useEffect(() => {
-    if (configs.length > 0) {
+    if (configs.length > 0 && !onboard) {
       initOnboard(configs).then(setStore)
     }
-  }, [configs])
+  }, [configs, onboard])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
