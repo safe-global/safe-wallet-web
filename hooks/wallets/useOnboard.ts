@@ -5,10 +5,11 @@ import { getAddress } from 'ethers/lib/utils'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/local-storage/local'
+import { logError, Errors } from '@/services/exceptions'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 
-const { setStore, useStore } = new ExternalStore<OnboardAPI>()
+const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
 export const initOnboard = async (chainConfigs: ChainInfo[]): Promise<OnboardAPI> => {
   const { createOnboard } = await import('@/services/onboard')
@@ -49,7 +50,7 @@ export const useInitOnboard = () => {
   const onboard = useStore()
 
   useEffect(() => {
-    if (configs.length > 0) {
+    if (configs.length > 0 && !getStore()) {
       initOnboard(configs).then(setStore)
     }
   }, [configs])
@@ -93,7 +94,7 @@ export const useInitOnboard = () => {
           .connectWallet({
             autoSelect: { label, disableModals: true },
           })
-          .catch(console.error)
+          .catch((e) => logError(Errors._302, (e as Error).message))
       }
     }
   }, [onboard])

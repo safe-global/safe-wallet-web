@@ -12,11 +12,7 @@ export type ConnectedWallet = {
   provider: EIP1193Provider
 }
 
-let onboard: OnboardAPI | null = null
-
 export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
-  if (onboard) return onboard
-
   const wallets = getAllWallets()
 
   const chains = chainConfigs.map((cfg) => ({
@@ -29,7 +25,7 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
     // TODO: add block explorer URL
   }))
 
-  onboard = Onboard({
+  return Onboard({
     wallets,
 
     chains,
@@ -47,6 +43,4 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
   })
-
-  return onboard
 }
