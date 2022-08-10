@@ -8,7 +8,7 @@ import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
 import { CacheProvider } from '@emotion/react'
 import createCache from '@emotion/cache'
 import '@/styles/globals.css'
-import { IS_PRODUCTION, STAGING_GATEWAY_URL } from '@/config/constants'
+import { IS_PRODUCTION, GATEWAY_URL } from '@/config/constants'
 import { store } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import useLoadableStores from '@/hooks/useLoadableStores'
@@ -33,7 +33,7 @@ const cssCache = createCache({
 
 const InitApp = (): null => {
   if (!IS_PRODUCTION && !cgwDebugStorage.get()) {
-    setBaseUrl(STAGING_GATEWAY_URL)
+    setBaseUrl(GATEWAY_URL)
   }
 
   usePathRewrite()
@@ -72,7 +72,10 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement | null =>
         <meta name="viewport" content="width=device-width" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="icon" href="/favicon.ico" />
+        <link rel="dns-prefetch" href={GATEWAY_URL} />
+        <link rel="preconnect" href={GATEWAY_URL} crossOrigin="" />
       </Head>
+
       <AppProviders>
         <CssBaseline />
 
