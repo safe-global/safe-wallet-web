@@ -2,6 +2,7 @@ import ChainSwitcher from '@/components/common/ChainSwitcher'
 import ConnectWallet from '@/components/common/ConnectWallet'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import SafeTokenWidget from '@/components/common/SafeTokenWidget'
+import NotificationCenterBell from '@/components/notification-center/NotificationCenterBell'
 import SafeLogo from '@/public/logo.svg'
 import MenuIcon from '@mui/icons-material/Menu'
 import { IconButton, Paper } from '@mui/material'
@@ -31,6 +32,8 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => (
     <div className={css.tokenWidget}>
       <SafeTokenWidget />
     </div>
+
+    <NotificationCenterBell />
 
     <ConnectWallet />
 
