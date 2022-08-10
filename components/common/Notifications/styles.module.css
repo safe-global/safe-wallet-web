@@ -1,6 +1,6 @@
 .container {
   position: fixed;
-  top: 0;
+  top: var(--header-height);
   right: 0;
   z-index: 2000;
 }

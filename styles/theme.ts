@@ -238,26 +238,41 @@ const initTheme = (darkMode: boolean) => {
             '& .MuiAlert-icon': {
               color: theme.palette.error.main,
             },
+            '&. MuiPaper-root': {
+              backgroundColor: theme.palette.error.background,
+            },
+            border: `1px solid ${theme.palette.error.main}`,
           }),
           standardInfo: ({ theme }) => ({
             '& .MuiAlert-icon': {
               color: theme.palette.info.main,
             },
+            '&. MuiPaper-root': {
+              backgroundColor: theme.palette.info.background,
+            },
+            border: `1px solid ${theme.palette.info.main}`,
           }),
           standardSuccess: ({ theme }) => ({
             '& .MuiAlert-icon': {
               color: theme.palette.success.main,
             },
+            '&. MuiPaper-root': {
+              backgroundColor: theme.palette.success.background,
+            },
+            border: `1px solid ${theme.palette.success.main}`,
           }),
           standardWarning: ({ theme }) => ({
             '& .MuiAlert-icon': {
               color: theme.palette.warning.main,
             },
+            '&. MuiPaper-root': {
+              backgroundColor: theme.palette.warning.background,
+            },
+            border: `1px solid ${theme.palette.warning.main}`,
           }),
           root: ({ theme }) => ({
-            color: theme.palette.secondary.main,
+            color: theme.palette.text.primary,
             padding: '12px 16px',
-            backgroundColor: theme.palette.background.paper,
           }),
         },
       },
