@@ -136,7 +136,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                   labelId="asset-label"
                   label={errors.tokenAddress?.message || 'Select an NFT collection'}
                   error={!!errors.tokenAddress}
-                  endAdornment={nftLoading && <CircularProgress size={20} sx={{ mr: 3 }} />}
+                  endAdornment={nftLoading && <CircularProgress size={20} sx={{ mr: 3, flexShrink: 0 }} />}
                 >
                   {collections.map((item) => (
                     <MenuItem key={item.address} value={item.address}>
