@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import { Grid, Paper, Typography } from '@mui/material'
 import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
@@ -17,6 +18,10 @@ const Setup: NextPage = () => {
 
   return (
     <main>
+      <Head>
+        <title>Safe – Settings – Setup</title>
+      </Head>
+
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Setup" />
 
       <Paper sx={{ padding: 4, marginBottom: 2 }} variant="outlined">

@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import Grid from '@mui/material/Grid'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppCard } from '@/components/safe-apps/AppCard'
@@ -14,7 +15,12 @@ const Apps: NextPage = () => {
 
   return (
     <main style={{ padding: 0 }}>
+      <Head>
+        <title>Safe Apps</title>
+      </Head>
+
       {!IS_PRODUCTION && <SafeAppsHeader onCustomAppSave={addCustomApp} safeAppList={allSafeApps} />}
+
       <Grid
         container
         rowSpacing={2}

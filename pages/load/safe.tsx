@@ -1,7 +1,8 @@
 import type { NextPage } from 'next'
-import LoadSafe from '@/components/load-safe'
+import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import LoadSafe from '@/components/load-safe'
 
 const LoadSafeWithAddress: NextPage = () => {
   const router = useRouter()
@@ -20,6 +21,10 @@ const LoadSafeWithAddress: NextPage = () => {
 
   return (
     <main>
+      <Head>
+        <title>Safe – Add Safe</title>
+      </Head>
+
       <LoadSafe key={id} initialStep={1} initialData={[undefined, initialData]} />
     </main>
   )

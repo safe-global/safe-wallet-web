@@ -67,7 +67,7 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement | null =>
   return (
     <Provider store={store}>
       <Head>
-        <title>Safe 🌭</title>
+        <title key="default-title">Safe 🌭</title>
         <meta name="description" content="Safe app" />
         <meta name="viewport" content="width=device-width" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
