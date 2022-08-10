@@ -8,27 +8,25 @@
 }
 
 .container {
-  min-width: 220px;
+  width: 220px;
   border-right: 1px solid var(--color-border-light);
 }
 
 .scroll {
   position: relative;
-  width: inherit;
   overflow-y: auto;
   overflow-x: hidden;
   max-height: calc(100vh - var(--header-height)); /* needed for scroll */
 }
 
 .drawer,
-.noSafeHeader > * {
+.noSafe {
   width: 400px;
 }
 
 .drawer {
   text-align: center;
-  padding: 0;
-  padding-top: var(--header-height);
+  padding: var(--header-height) 0 0 0;
   border-right: 1px solid var(--color-border-light);
 }
 

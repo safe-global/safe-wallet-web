@@ -56,7 +56,7 @@ const SafeHeader = (): ReactElement => {
           )}
         </div>
 
-        <div>
+        <div className={css.address}>
           {safeLoading ? (
             <Typography variant="body2">
               <Skeleton variant="text" width={86} />

@@ -55,7 +55,7 @@ const SafeListItem = ({
       className={css.container}
       disablePadding
       secondaryAction={
-        <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center" gap={1}>
           <SafeListItemSecondaryAction
             chainId={chainId}
             address={address}
@@ -78,7 +78,14 @@ const SafeListItem = ({
             <SafeIcon address={address} {...rest} />
           </ListItemIcon>
           <ListItemText
-            primaryTypographyProps={{ variant: 'body2', component: 'div' }}
+            sx={{ pr: 10 }}
+            primaryTypographyProps={{
+              variant: 'body2',
+              component: 'div',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+            }}
             secondaryTypographyProps={{ component: 'div' }}
             primary={name || ''}
             secondary={<EthHashInfo address={address} showAvatar={false} showName={false} />}

@@ -1,5 +1,4 @@
 .container {
-  display: grid;
   padding: var(--space-2);
 }
 
@@ -27,4 +26,10 @@
 
 .iconButton:hover {
   background-color: var(--color-primary-background);
+}
+
+.address {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
 }

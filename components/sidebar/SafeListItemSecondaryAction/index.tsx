@@ -10,6 +10,7 @@ import useChains from '@/hooks/useChains'
 import { isOwner } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
+import { formatAmount } from '@/utils/formatNumber'
 
 const SafeListItemSecondaryAction = ({
   chainId,
@@ -59,12 +60,14 @@ const SafeListItemSecondaryAction = ({
     )
   }
 
-  if (addedSafes?.[address]?.ethBalance) {
+  const balance = addedSafes?.[address]?.ethBalance
+
+  if (balance) {
     const { nativeCurrency } = configs.find((chain) => chain.chainId === chainId) || {}
 
     return (
       <Typography variant="body2" fontWeight={700}>
-        {addedSafes[address].ethBalance} {nativeCurrency?.symbol || 'ETH'}
+        {formatAmount(balance)} {nativeCurrency?.symbol || 'ETH'}
       </Typography>
     )
   }
