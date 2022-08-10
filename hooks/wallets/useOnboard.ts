@@ -9,7 +9,7 @@ import { logError, Errors } from '@/services/exceptions'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 
-const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
+const { setStore, useStore } = new ExternalStore<OnboardAPI>()
 
 export const initOnboard = async (chainConfigs: ChainInfo[]): Promise<OnboardAPI> => {
   const { createOnboard } = await import('@/services/onboard')
@@ -50,7 +50,7 @@ export const useInitOnboard = () => {
   const onboard = useStore()
 
   useEffect(() => {
-    if (configs.length > 0 && !getStore()) {
+    if (configs.length > 0) {
       initOnboard(configs).then(setStore)
     }
   }, [configs])
