@@ -1,5 +1,6 @@
 .buttonContainer {
   padding-left: var(--space-2);
+  padding-right: var(--space-2);
   display: flex;
   flex-direction: column;
   align-items: center;

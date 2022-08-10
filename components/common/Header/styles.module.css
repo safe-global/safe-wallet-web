@@ -2,7 +2,6 @@
   height: var(--header-height);
   padding: 0 var(--space-2);
   display: flex;
-  gap: var(--space-2);
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
@@ -31,10 +30,6 @@
 }
 
 @media (max-width: 768px) {
-  .container {
-    gap: var(--space-1);
-  }
-
   .logo,
   .tokenWidget,
   .chainSwitcher {
