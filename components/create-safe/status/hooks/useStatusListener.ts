@@ -1,6 +1,5 @@
 import { PendingSafeData } from '@/components/create-safe'
 import { Dispatch, SetStateAction, useEffect } from 'react'
-import Safe from '@gnosis.pm/safe-core-sdk'
 import { useRouter } from 'next/router'
 import { pollSafeInfo } from '@/components/create-safe/status/usePendingSafeCreation'
 import { AppRoutes } from '@/config/routes'
@@ -11,14 +10,12 @@ const useStatusListener = ({
   safeAddress,
   pendingSafe,
   setPendingSafe,
-  setCreationPromise,
   setStatus,
 }: {
   status: SafeCreationStatus
   safeAddress: string | undefined
   pendingSafe: PendingSafeData | undefined
   setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>
-  setCreationPromise: Dispatch<SetStateAction<Promise<Safe> | undefined>>
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>
 }) => {
   const router = useRouter()
@@ -43,12 +40,11 @@ const useStatusListener = ({
     }
 
     if (status === SafeCreationStatus.ERROR || status === SafeCreationStatus.REVERTED) {
-      setCreationPromise(undefined)
       if (pendingSafe?.txHash) {
         setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
       }
     }
-  }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus, setCreationPromise])
+  }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus])
 }
 
 export default useStatusListener

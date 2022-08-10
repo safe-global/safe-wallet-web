@@ -17,47 +17,8 @@ describe('useStatusListener', () => {
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
   })
 
-  it('should reset the promise on ERROR', () => {
-    const setStatusSpy = jest.fn()
-    const setCreationPromiseSpy = jest.fn()
-    const setPendingSafeSpy = jest.fn()
-
-    renderHook(() =>
-      useStatusListener({
-        status: SafeCreationStatus.ERROR,
-        safeAddress: '0x1',
-        pendingSafe: {} as PendingSafeData,
-        setPendingSafe: setPendingSafeSpy,
-        setCreationPromise: setCreationPromiseSpy,
-        setStatus: setStatusSpy,
-      }),
-    )
-
-    expect(setCreationPromiseSpy).toHaveBeenCalledWith(undefined)
-  })
-
-  it('should reset the promise on REVERTED', () => {
-    const setStatusSpy = jest.fn()
-    const setCreationPromiseSpy = jest.fn()
-    const setPendingSafeSpy = jest.fn()
-
-    renderHook(() =>
-      useStatusListener({
-        status: SafeCreationStatus.REVERTED,
-        safeAddress: '0x1',
-        pendingSafe: {} as PendingSafeData,
-        setPendingSafe: setPendingSafeSpy,
-        setCreationPromise: setCreationPromiseSpy,
-        setStatus: setStatusSpy,
-      }),
-    )
-
-    expect(setCreationPromiseSpy).toHaveBeenCalledWith(undefined)
-  })
-
   it('should clear the tx hash if it exists on ERROR or REVERTED', () => {
     const setStatusSpy = jest.fn()
-    const setCreationPromiseSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
@@ -66,7 +27,6 @@ describe('useStatusListener', () => {
         safeAddress: '0x1',
         pendingSafe: { txHash: '0x10' } as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
-        setCreationPromise: setCreationPromiseSpy,
         setStatus: setStatusSpy,
       }),
     )
@@ -76,7 +36,6 @@ describe('useStatusListener', () => {
 
   it('should not clear the tx hash if it doesnt exist on ERROR or REVERTED', () => {
     const setStatusSpy = jest.fn()
-    const setCreationPromiseSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
@@ -85,7 +44,6 @@ describe('useStatusListener', () => {
         safeAddress: '0x1',
         pendingSafe: {} as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
-        setCreationPromise: setCreationPromiseSpy,
         setStatus: setStatusSpy,
       }),
     )
@@ -96,7 +54,6 @@ describe('useStatusListener', () => {
   it('should poll safe info on SUCCESS', () => {
     const pollSafeInfoSpy = jest.spyOn(pendingSafe, 'pollSafeInfo')
     const setStatusSpy = jest.fn()
-    const setCreationPromiseSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
@@ -105,7 +62,6 @@ describe('useStatusListener', () => {
         safeAddress: '0x1',
         pendingSafe: {} as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
-        setCreationPromise: setCreationPromiseSpy,
         setStatus: setStatusSpy,
       }),
     )
@@ -117,7 +73,6 @@ describe('useStatusListener', () => {
   it('should not poll safe info on SUCCESS if there is no safe address', () => {
     const pollSafeInfoSpy = jest.spyOn(pendingSafe, 'pollSafeInfo')
     const setStatusSpy = jest.fn()
-    const setCreationPromiseSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
@@ -126,7 +81,6 @@ describe('useStatusListener', () => {
         safeAddress: undefined,
         pendingSafe: {} as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
-        setCreationPromise: setCreationPromiseSpy,
         setStatus: setStatusSpy,
       }),
     )
@@ -138,7 +92,6 @@ describe('useStatusListener', () => {
   it('should not poll safe info on SUCCESS if there is no pending safe data', () => {
     const pollSafeInfoSpy = jest.spyOn(pendingSafe, 'pollSafeInfo')
     const setStatusSpy = jest.fn()
-    const setCreationPromiseSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
@@ -147,7 +100,6 @@ describe('useStatusListener', () => {
         safeAddress: '0x10',
         pendingSafe: undefined,
         setPendingSafe: setPendingSafeSpy,
-        setCreationPromise: setCreationPromiseSpy,
         setStatus: setStatusSpy,
       }),
     )
@@ -158,12 +110,11 @@ describe('useStatusListener', () => {
 
   it('should navigate to the dashboard on INDEXED', () => {
     const pushMock = jest.fn()
-    const useRouterSpy = jest.spyOn(router, 'useRouter').mockReturnValue({
+    jest.spyOn(router, 'useRouter').mockReturnValue({
       push: pushMock,
     } as unknown as NextRouter)
 
     const setStatusSpy = jest.fn()
-    const setCreationPromiseSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
@@ -172,7 +123,6 @@ describe('useStatusListener', () => {
         safeAddress: '0x10',
         pendingSafe: {} as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
-        setCreationPromise: setCreationPromiseSpy,
         setStatus: setStatusSpy,
       }),
     )
