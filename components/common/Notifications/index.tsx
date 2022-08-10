@@ -22,10 +22,15 @@ const Toast = ({ message, severity, onClose }: { message: string; severity: Aler
   )
 }
 
+const getVisibleNotifications = (notifications: Notification[]) => {
+  return notifications.filter((notification) => !notification.isDismissed)
+}
+
 const Notifications = (): ReactElement | null => {
   const notifications = useAppSelector(selectNotifications)
   const dispatch = useAppDispatch()
-  const visible = notifications.filter((item) => !item.dismissed)
+
+  const visible = getVisibleNotifications(notifications)
 
   const handleClose = useCallback(
     (item: Notification) => {
@@ -39,7 +44,7 @@ const Notifications = (): ReactElement | null => {
     const groups: Record<string, Notification[]> = groupBy(notifications, 'groupKey')
 
     Object.values(groups).forEach((items) => {
-      const previous = items.filter((item) => !item.dismissed).slice(0, -1)
+      const previous = getVisibleNotifications(items).slice(0, -1)
       previous.forEach(handleClose)
     })
   }, [notifications, handleClose])

@@ -7,7 +7,8 @@ export type Notification = {
   message: string
   groupKey: string
   variant?: AlertColor
-  dismissed?: boolean
+  isDismissed?: boolean
+  isRead?: boolean
 }
 
 type NotificationState = Notification[]
@@ -23,11 +24,8 @@ export const notificationsSlice = createSlice({
     },
     closeNotification: (state, { payload }: PayloadAction<{ id: string }>): NotificationState => {
       return state.map((notification) => {
-        return notification.id === payload.id ? { ...notification, dismissed: true } : notification
+        return notification.id === payload.id ? { ...notification, isDismissed: true } : notification
       })
-    },
-    closeAllNotifications: (state): NotificationState => {
-      return state.map((notification) => ({ ...notification, dismissed: true }))
     },
     deleteNotification: (state, { payload }: PayloadAction<Notification>) => {
       return state.filter((notification) => notification.id !== payload.id)
@@ -35,10 +33,15 @@ export const notificationsSlice = createSlice({
     deleteAllNotifications: (): NotificationState => {
       return []
     },
+    readNotification: (state, { payload }: PayloadAction<{ id: string }>): NotificationState => {
+      return state.map((notification) => {
+        return notification.id === payload.id ? { ...notification, isRead: true } : notification
+      })
+    },
   },
 })
 
-export const { closeNotification, closeAllNotifications, deleteNotification, deleteAllNotifications } =
+export const { closeNotification, deleteNotification, deleteAllNotifications, readNotification } =
   notificationsSlice.actions
 
 export const showNotification = (payload: Omit<Notification, 'id'>): AppThunk<string> => {
