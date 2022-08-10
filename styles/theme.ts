@@ -43,6 +43,8 @@ export const theme = createTheme()
 
 const initTheme = (darkMode: boolean) => {
   const colors = darkMode ? darkPalette : palette
+  const shadowColor = darkMode ? colors.secondary.light : colors.secondary.main
+
   return createTheme({
     palette: {
       mode: darkMode ? 'dark' : 'light',
@@ -51,10 +53,10 @@ const initTheme = (darkMode: boolean) => {
     spacing: base,
     shadows: [
       'none',
-      '0 1px 4px #162d450a, 0 4px 10px #162d4514',
-      '0 1px 4px #162d450a, 0 4px 10px #162d4514',
-      '0 2px 20px #162d450a, 0 8px 32px #162d4514',
-      '0 8px 32px #162d450f, 0 24px 60px #162d451f',
+      darkMode ? `0 0 2px ${shadowColor}` : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
+      darkMode ? '0 0 2px ${shadowColor}' : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
+      darkMode ? '0 0 2px ${shadowColor}' : `0 2px 20px ${shadowColor}0a, 0 8px 32px ${shadowColor}14`,
+      darkMode ? '0 0 2px ${shadowColor}' : `0 8px 32px ${shadowColor}0a, 0 24px 60px ${shadowColor}14`,
       ...Array(20).fill('none'),
     ] as Shadows,
     typography: {
@@ -216,6 +218,11 @@ const initTheme = (darkMode: boolean) => {
       MuiPopover: {
         defaultProps: {
           elevation: 2,
+        },
+        styleOverrides: {
+          paper: {
+            overflow: 'visible',
+          },
         },
       },
       MuiIconButton: {
