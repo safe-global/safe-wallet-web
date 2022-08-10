@@ -13,6 +13,7 @@ import { useMemo } from 'react'
 import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
+import { computeNewSafeAddress } from '@/components/create-safe/sender'
 
 type Props = {
   params: CreateSafeFormDataReview
@@ -44,7 +45,20 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
 
   const createSafe = async () => {
     if (!wallet || !ethersProvider) return
-    setPendingSafe({ ...params, saltNonce })
+
+    const props = {
+      safeAccountConfig: {
+        threshold: params.threshold,
+        owners: params.owners.map((owner) => owner.address),
+      },
+      safeDeploymentConfig: {
+        saltNonce: saltNonce.toString(),
+      },
+    }
+
+    const safeAddress = await computeNewSafeAddress(ethersProvider, props)
+
+    setPendingSafe({ ...params, saltNonce, safeAddress })
     onSubmit(params)
   }
 

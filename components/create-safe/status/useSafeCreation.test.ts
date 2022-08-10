@@ -114,7 +114,7 @@ describe('monitorSafeCreationTx', () => {
 
     const result = await checkSafeCreationTx(provider, '0x0')
 
-    expect(result.status).toBe(SafeCreationStatus.SUCCESS)
+    expect(result).toBe(SafeCreationStatus.SUCCESS)
   })
 
   it('returns REVERTED if transaction was reverted', async () => {
@@ -126,7 +126,7 @@ describe('monitorSafeCreationTx', () => {
 
     const result = await checkSafeCreationTx(provider, '0x0')
 
-    expect(result.status).toBe(SafeCreationStatus.REVERTED)
+    expect(result).toBe(SafeCreationStatus.REVERTED)
   })
 
   it('returns TIMEOUT if transaction couldnt be found within the timout limit', async () => {
@@ -134,6 +134,6 @@ describe('monitorSafeCreationTx', () => {
 
     const result = await checkSafeCreationTx(provider, '0x0')
 
-    expect(result.status).toBe(SafeCreationStatus.TIMEOUT)
+    expect(result).toBe(SafeCreationStatus.TIMEOUT)
   })
 })
