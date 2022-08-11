@@ -5,7 +5,7 @@ import { pollSafeInfo } from '@/components/create-safe/status/usePendingSafeCrea
 import { AppRoutes } from '@/config/routes'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 
-const useStatusListener = ({
+const useWatchSafeCreation = ({
   status,
   safeAddress,
   pendingSafe,
@@ -41,10 +41,10 @@ const useStatusListener = ({
 
     if (status === SafeCreationStatus.ERROR || status === SafeCreationStatus.REVERTED) {
       if (pendingSafe?.txHash) {
-        setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
+        setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined } : undefined))
       }
     }
   }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus])
 }
 
-export default useStatusListener
+export default useWatchSafeCreation

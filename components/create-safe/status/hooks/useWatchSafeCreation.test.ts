@@ -5,11 +5,11 @@ import * as web3 from '@/hooks/wallets/web3'
 import * as pendingSafe from '@/components/create-safe/status/usePendingSafeCreation'
 import { Web3Provider } from '@ethersproject/providers'
 import { PendingSafeData } from '@/components/create-safe'
-import useStatusListener from '@/components/create-safe/status/hooks/useStatusListener'
+import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
 import { AppRoutes } from '@/config/routes'
 import { NextRouter } from 'next/router'
 
-describe('useStatusListener', () => {
+describe('useWatchSafeCreation', () => {
   beforeEach(() => {
     jest.resetAllMocks()
 
@@ -22,7 +22,7 @@ describe('useStatusListener', () => {
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
-      useStatusListener({
+      useWatchSafeCreation({
         status: SafeCreationStatus.ERROR,
         safeAddress: '0x1',
         pendingSafe: { txHash: '0x10' } as PendingSafeData,
@@ -39,7 +39,7 @@ describe('useStatusListener', () => {
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
-      useStatusListener({
+      useWatchSafeCreation({
         status: SafeCreationStatus.ERROR,
         safeAddress: '0x1',
         pendingSafe: {} as PendingSafeData,
@@ -57,7 +57,7 @@ describe('useStatusListener', () => {
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
-      useStatusListener({
+      useWatchSafeCreation({
         status: SafeCreationStatus.SUCCESS,
         safeAddress: '0x1',
         pendingSafe: {} as PendingSafeData,
@@ -76,7 +76,7 @@ describe('useStatusListener', () => {
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
-      useStatusListener({
+      useWatchSafeCreation({
         status: SafeCreationStatus.SUCCESS,
         safeAddress: undefined,
         pendingSafe: {} as PendingSafeData,
@@ -95,7 +95,7 @@ describe('useStatusListener', () => {
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
-      useStatusListener({
+      useWatchSafeCreation({
         status: SafeCreationStatus.SUCCESS,
         safeAddress: '0x10',
         pendingSafe: undefined,
@@ -118,7 +118,7 @@ describe('useStatusListener', () => {
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
-      useStatusListener({
+      useWatchSafeCreation({
         status: SafeCreationStatus.INDEXED,
         safeAddress: '0x10',
         pendingSafe: {} as PendingSafeData,

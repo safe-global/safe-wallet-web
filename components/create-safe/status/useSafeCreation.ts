@@ -8,8 +8,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import useStatusListener from '@/components/create-safe/status/hooks/useStatusListener'
-import { AppDispatch, useAppDispatch } from '@/store'
+import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
+import { AppThunk, useAppDispatch } from '@/store'
 import { Errors, logError } from '@/services/exceptions'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
@@ -27,34 +27,36 @@ export enum SafeCreationStatus {
   INDEX_FAILED = 'INDEX_FAILED',
 }
 
-export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, dispatch: AppDispatch) => {
-  dispatch(
-    upsertAddressBookEntry({
-      chainId: pendingSafe.chainId,
-      address: pendingSafe.safeAddress,
-      name: pendingSafe.name,
-    }),
-  )
-
-  pendingSafe.owners.forEach((owner) => {
-    dispatch(upsertAddressBookEntry({ chainId: pendingSafe.chainId, address: owner.address, name: owner.name }))
-  })
-
-  dispatch(
-    addOrUpdateSafe({
-      safe: {
-        ...defaultSafeInfo,
-        address: { value: pendingSafe.safeAddress, name: pendingSafe.name },
-        threshold: pendingSafe.threshold,
-        owners: pendingSafe.owners.map((owner) => ({
-          value: owner.address,
-          name: owner.name,
-        })),
+export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData): AppThunk => {
+  return (dispatch) => {
+    dispatch(
+      upsertAddressBookEntry({
         chainId: pendingSafe.chainId,
-        nonce: 0,
-      },
-    }),
-  )
+        address: pendingSafe.safeAddress,
+        name: pendingSafe.name,
+      }),
+    )
+
+    pendingSafe.owners.forEach((owner) => {
+      dispatch(upsertAddressBookEntry({ chainId: pendingSafe.chainId, address: owner.address, name: owner.name }))
+    })
+
+    dispatch(
+      addOrUpdateSafe({
+        safe: {
+          ...defaultSafeInfo,
+          address: { value: pendingSafe.safeAddress, name: pendingSafe.name },
+          threshold: pendingSafe.threshold,
+          owners: pendingSafe.owners.map((owner) => ({
+            value: owner.address,
+            name: owner.name,
+          })),
+          chainId: pendingSafe.chainId,
+          nonce: 0,
+        },
+      }),
+    )
+  }
 }
 
 export const getSafeDeployProps = (
@@ -100,7 +102,7 @@ export const useSafeCreation = () => {
     try {
       await createNewSafe(provider, getSafeDeployProps(pendingSafe, safeCreationCallback))
       setStatus(SafeCreationStatus.SUCCESS)
-      addSafeAndOwnersToAddressBook(pendingSafe, dispatch)
+      dispatch(addSafeAndOwnersToAddressBook(pendingSafe))
     } catch (err) {
       setStatus(SafeCreationStatus.ERROR)
       logError(Errors._800, (err as Error).message)
@@ -110,7 +112,7 @@ export const useSafeCreation = () => {
   }, [dispatch, isCreationPending, pendingSafe, provider, safeCreationCallback])
 
   usePendingSafeCreation({ txHash: pendingSafe?.txHash, setSafeAddress, setStatus })
-  useStatusListener({ status, safeAddress, pendingSafe, setPendingSafe, setStatus })
+  useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus })
 
   useEffect(() => {
     const newStatus = !wallet || isWrongChain ? SafeCreationStatus.AWAITING_WALLET : SafeCreationStatus.AWAITING
