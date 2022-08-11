@@ -16,9 +16,10 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"],
+      "@/public/*": ["./public/*"]
     }
   },
-  "include": ["next-env.d.ts", "definitions.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "src/definitions.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

@@ -1,6 +1,6 @@
-import palette from '../styles/colors.js'
-import darkPalette from '../styles/colors-dark.js'
-import spacings from '../styles/spacings.js'
+import palette from '../src/styles/colors.js'
+import darkPalette from '../src/styles/colors-dark.js'
+import spacings from '../src/styles/spacings.js'
 
 const cssVars: string[] = []
 Object.entries(palette).forEach(([key, value]) => {
