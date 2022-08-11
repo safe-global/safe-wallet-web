@@ -10,6 +10,7 @@ import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { parsePrefixedAddress } from '@/utils/addresses'
 
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
+import useChainId from '@/hooks/useChainId'
 
 type Props = {
   params: LoadSafeFormData
@@ -18,6 +19,7 @@ type Props = {
 }
 
 const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
+  const chainId = useChainId()
   const formMethods = useForm<LoadSafeFormData>({ defaultValues: params, mode: 'onChange' })
   const { handleSubmit, setValue, control, formState } = formMethods
 
@@ -27,11 +29,11 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
   })
 
   const [safeInfo] = useAsync<SafeInfo | undefined>(async () => {
-    if (!params.chainId || !params.safeAddress.address) return
+    if (!params.safeAddress.address) return
     const { address } = parsePrefixedAddress(params.safeAddress.address)
 
-    return getSafeInfo(params.chainId, address)
-  }, [params.chainId, params.safeAddress.address])
+    return getSafeInfo(chainId, address)
+  }, [chainId, params.safeAddress.address])
 
   useEffect(() => {
     if (!safeInfo) return

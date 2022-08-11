@@ -4,15 +4,16 @@ import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from 'components/common/EthHashInfo'
 import { LoadSafeFormDataReview } from '@/components/load-safe'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { useAppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
-import { selectChainById } from '@/store/chainsSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { parsePrefixedAddress } from '@/utils/addresses'
+import { useCurrentChain } from '@/hooks/useChains'
 
 type Props = {
   params: LoadSafeFormDataReview
@@ -22,38 +23,50 @@ type Props = {
 const SafeReviewStep = ({ params, onBack }: Props) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const chain = useAppSelector((state) => selectChainById(state, params.chainId))
   const wallet = useWallet()
   const isSafeOwner = wallet && isOwner(params.owners, wallet.address)
+  const currentChain = useCurrentChain()
+  const chainId = currentChain?.chainId || ''
 
   const addSafe = () => {
+    const safeName = params.safeAddress.name
+    const safeAddress = parsePrefixedAddress(params.safeAddress.address).address
+
     dispatch(
       addOrUpdateSafe({
         safe: {
           ...defaultSafeInfo,
-          address: { value: params.safeAddress.address, name: params.safeAddress.name },
+          address: { value: safeAddress, name: safeName },
           threshold: params.threshold,
           owners: params.owners.map((owner) => ({
             value: owner.address,
             name: owner.name,
           })),
-          chainId: params.chainId,
+          chainId,
         },
       }),
     )
     dispatch(
       upsertAddressBookEntry({
-        chainId: params.chainId,
-        address: params.safeAddress.address,
-        name: params.safeAddress.name,
+        chainId,
+        address: safeAddress,
+        name: safeName,
       }),
     )
+
     for (const { address, name } of params.owners) {
-      dispatch(upsertAddressBookEntry({ chainId: params.chainId, address, name: name ?? '' }))
+      dispatch(
+        upsertAddressBookEntry({
+          chainId,
+          address: address,
+          name: name ?? '',
+        }),
+      )
     }
+
     router.push({
       pathname: AppRoutes.safe.index,
-      query: { safe: `${chain?.shortName}:${params.safeAddress.address}` },
+      query: { safe: `${currentChain?.shortName}:${safeAddress}` },
     })
   }
 
