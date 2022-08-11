@@ -91,7 +91,7 @@ export const useSafeCreation = () => {
     [setPendingSafe],
   )
 
-  const onRetry = useCallback(async () => {
+  const createSafe = useCallback(async () => {
     if (!provider || !pendingSafe || isCreationPending) return
 
     setStatus(SafeCreationStatus.AWAITING)
@@ -125,14 +125,14 @@ export const useSafeCreation = () => {
 
   useEffect(() => {
     if (status === SafeCreationStatus.AWAITING) {
-      onRetry()
+      createSafe()
     }
-  }, [status, onRetry])
+  }, [status, createSafe])
 
   return {
     safeAddress,
     status,
-    onRetry,
+    createSafe,
     txHash: pendingSafe?.txHash,
   }
 }
