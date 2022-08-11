@@ -29,6 +29,10 @@
   height: 100%;
 }
 
+.chainSwitcher {
+  margin-right: var(--space-2);
+}
+
 @media (max-width: 768px) {
   .logo,
   .tokenWidget,
