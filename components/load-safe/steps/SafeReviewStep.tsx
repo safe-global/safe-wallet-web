@@ -26,6 +26,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
   const wallet = useWallet()
   const isSafeOwner = wallet && isOwner(params.owners, wallet.address)
   const currentChain = useCurrentChain()
+  const chainId = currentChain?.chainId || ''
 
   const addSafe = () => {
     const safeName = params.safeAddress.name
@@ -41,13 +42,13 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
             value: owner.address,
             name: owner.name,
           })),
-          chainId: params.chainId,
+          chainId,
         },
       }),
     )
     dispatch(
       upsertAddressBookEntry({
-        chainId: params.chainId,
+        chainId,
         address: safeAddress,
         name: safeName,
       }),
@@ -56,7 +57,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
     for (const { address, name } of params.owners) {
       dispatch(
         upsertAddressBookEntry({
-          chainId: params.chainId,
+          chainId,
           address: address,
           name: name ?? '',
         }),

@@ -14,7 +14,6 @@ export type LoadSafeFormData = {
   safeAddress: Owner
   threshold: number
   owners?: Owner[]
-  chainId: string
 }
 
 export type LoadSafeFormDataReview = Omit<LoadSafeFormData, 'owners'> & { owners: Owner[] }

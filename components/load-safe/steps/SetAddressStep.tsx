@@ -32,7 +32,6 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
         address: params?.safeAddress.address,
         resolving: false,
       },
-      chainId: currentChainId,
     },
   })
 
