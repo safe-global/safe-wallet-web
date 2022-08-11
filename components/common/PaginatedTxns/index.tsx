@@ -15,7 +15,9 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
 
   const placeholder =
     noTransactions && useTxns === useTxQueue ? (
-      <PagePlaceholder imageUrl="/images/no-transactions.svg" text="Queued transactions will appear here" />
+      <Box mt="5vh">
+        <PagePlaceholder imageUrl="/images/no-transactions.svg" text="Queued transactions will appear here" />
+      </Box>
     ) : null
 
   return (
