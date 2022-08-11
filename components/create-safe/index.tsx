@@ -10,6 +10,7 @@ import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 import { AppRoutes } from '@/config/routes'
 import { CreationStatus } from '@/components/create-safe/status/CreationStatus'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
+import useChainId from '@/hooks/useChainId'
 
 export type Owner = {
   name: string
@@ -21,7 +22,6 @@ export type CreateSafeFormData = {
   name: string
   threshold: number
   owners?: Owner[]
-  chainId: string
 }
 export type CreateSafeFormDataReview = Omit<CreateSafeFormData, 'owners'> & { owners: Owner[] }
 export type PendingSafeData = CreateSafeFormDataReview & { txHash?: string; safeAddress: string; saltNonce: number }
@@ -54,13 +54,14 @@ export const CreateSafeSteps: TxStepperProps['steps'] = [
 
 const CreateSafe = () => {
   const [pendingSafe, setPendingSafe] = usePendingSafe()
+  const chainId = useChainId()
   // We need this additional state to avoid hydration errors
   const [safeCreationPending, setSafeCreationPending] = useState<boolean>(false)
   const router = useRouter()
 
   useEffect(() => {
     setSafeCreationPending(!!pendingSafe)
-  }, [pendingSafe])
+  }, [pendingSafe, chainId])
 
   const onFinish = () => {
     setSafeCreationPending(true)

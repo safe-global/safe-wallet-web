@@ -38,10 +38,9 @@ export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: str
 type Props = {
   txHash: string | undefined
   setStatus: (status: SafeCreationStatus) => void
-  setSafeAddress: (safeAddress: string | undefined) => void
 }
 
-export const usePendingSafeCreation = ({ txHash, setStatus, setSafeAddress }: Props) => {
+export const usePendingSafeCreation = ({ txHash, setStatus }: Props) => {
   const provider = useWeb3ReadOnly()
 
   useEffect(() => {
@@ -54,5 +53,5 @@ export const usePendingSafeCreation = ({ txHash, setStatus, setSafeAddress }: Pr
 
     setStatus(SafeCreationStatus.MINING)
     monitorTx(txHash)
-  }, [txHash, provider, setStatus, setSafeAddress])
+  }, [txHash, provider, setStatus])
 }

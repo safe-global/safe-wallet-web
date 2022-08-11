@@ -14,6 +14,7 @@ import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import { computeNewSafeAddress } from '@/components/create-safe/sender'
+import useChainId from '@/hooks/useChainId'
 
 type Props = {
   params: CreateSafeFormDataReview
@@ -27,7 +28,8 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
   const wallet = useWallet()
   const ethersProvider = useWeb3()
   const [_, setPendingSafe] = usePendingSafe()
-  const chain = useAppSelector((state) => selectChainById(state, params.chainId))
+  const chainId = useChainId()
+  const chain = useAppSelector((state) => selectChainById(state, chainId))
   const saltNonce = useMemo(() => Date.now(), [])
 
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()

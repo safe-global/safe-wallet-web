@@ -39,7 +39,6 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
       name: params.name,
       owners: params.owners ?? [defaultOwner],
       threshold: defaultThreshold,
-      chainId: params.chainId,
     },
   })
   const { register, handleSubmit, control, formState } = formMethods
