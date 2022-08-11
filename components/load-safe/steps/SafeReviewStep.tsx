@@ -13,6 +13,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import { useCurrentChain } from '@/hooks/useChains'
 
 type Props = {
   params: LoadSafeFormDataReview
@@ -24,10 +25,11 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
   const router = useRouter()
   const wallet = useWallet()
   const isSafeOwner = wallet && isOwner(params.owners, wallet.address)
+  const currentChain = useCurrentChain()
 
   const addSafe = () => {
     const safeName = params.safeAddress.name
-    const { address: safeAddress, prefix: safePrefix } = parsePrefixedAddress(params.safeAddress.address)
+    const safeAddress = parsePrefixedAddress(params.safeAddress.address).address
 
     dispatch(
       addOrUpdateSafe({
@@ -36,7 +38,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
           address: { value: safeAddress, name: safeName },
           threshold: params.threshold,
           owners: params.owners.map((owner) => ({
-            value: parsePrefixedAddress(owner.address).address,
+            value: owner.address,
             name: owner.name,
           })),
           chainId: params.chainId,
@@ -55,7 +57,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
       dispatch(
         upsertAddressBookEntry({
           chainId: params.chainId,
-          address: parsePrefixedAddress(address).address,
+          address: address,
           name: name ?? '',
         }),
       )
@@ -63,7 +65,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
 
     router.push({
       pathname: AppRoutes.safe.index,
-      query: { safe: `${safePrefix}:${safeAddress}` },
+      query: { safe: `${currentChain?.shortName}:${safeAddress}` },
     })
   }
 
