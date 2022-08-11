@@ -6,7 +6,6 @@ import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
-import useChainId from '@/hooks/useChainId'
 
 type Props = {
   params: CreateSafeFormData
@@ -18,9 +17,8 @@ type Props = {
 const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
   useResetSafeCreation(setStep)
   const fallbackName = useMnemonicSafeName()
-  const currentChainId = useChainId()
   const formMethods = useForm<CreateSafeFormData>({
-    defaultValues: { name: params?.name || fallbackName, chainId: currentChainId },
+    defaultValues: { name: params?.name || fallbackName },
     mode: 'onChange',
   })
   const { handleSubmit, formState } = formMethods

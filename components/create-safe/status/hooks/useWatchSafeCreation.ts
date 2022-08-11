@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { pollSafeInfo } from '@/components/create-safe/status/usePendingSafeCreation'
 import { AppRoutes } from '@/config/routes'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
+import useChainId from '@/hooks/useChainId'
 
 const useWatchSafeCreation = ({
   status,
@@ -19,6 +20,7 @@ const useWatchSafeCreation = ({
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>
 }) => {
   const router = useRouter()
+  const chainId = useChainId()
 
   useEffect(() => {
     const checkCreatedSafe = async (chainId: string, address: string) => {
@@ -35,7 +37,7 @@ const useWatchSafeCreation = ({
     }
 
     if (status === SafeCreationStatus.SUCCESS) {
-      safeAddress && pendingSafe && checkCreatedSafe(pendingSafe.chainId, safeAddress)
+      safeAddress && pendingSafe && checkCreatedSafe(chainId, safeAddress)
       setPendingSafe(undefined)
     }
 
@@ -44,7 +46,7 @@ const useWatchSafeCreation = ({
         setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined } : undefined))
       }
     }
-  }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus])
+  }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId])
 }
 
 export default useWatchSafeCreation

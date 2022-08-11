@@ -14,6 +14,7 @@ import { Errors, logError } from '@/services/exceptions'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import useChainId from '@/hooks/useChainId'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
@@ -27,18 +28,18 @@ export enum SafeCreationStatus {
   INDEX_FAILED = 'INDEX_FAILED',
 }
 
-export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData): AppThunk => {
+export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chainId: string): AppThunk => {
   return (dispatch) => {
     dispatch(
       upsertAddressBookEntry({
-        chainId: pendingSafe.chainId,
+        chainId: chainId,
         address: pendingSafe.safeAddress,
         name: pendingSafe.name,
       }),
     )
 
     pendingSafe.owners.forEach((owner) => {
-      dispatch(upsertAddressBookEntry({ chainId: pendingSafe.chainId, address: owner.address, name: owner.name }))
+      dispatch(upsertAddressBookEntry({ chainId: chainId, address: owner.address, name: owner.name }))
     })
 
     dispatch(
@@ -51,7 +52,7 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData): App
             value: owner.address,
             name: owner.name,
           })),
-          chainId: pendingSafe.chainId,
+          chainId: chainId,
           nonce: 0,
         },
       }),
@@ -81,6 +82,7 @@ export const useSafeCreation = () => {
   const [isCreationPending, setIsCreationPending] = useState<boolean>(false)
   const [pendingSafe, setPendingSafe] = usePendingSafe()
   const provider = useWeb3()
+  const chainId = useChainId()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const dispatch = useAppDispatch()
@@ -102,16 +104,16 @@ export const useSafeCreation = () => {
     try {
       await createNewSafe(provider, getSafeDeployProps(pendingSafe, safeCreationCallback))
       setStatus(SafeCreationStatus.SUCCESS)
-      dispatch(addSafeAndOwnersToAddressBook(pendingSafe))
+      dispatch(addSafeAndOwnersToAddressBook(pendingSafe, chainId))
     } catch (err) {
       setStatus(SafeCreationStatus.ERROR)
       logError(Errors._800, (err as Error).message)
     }
 
     setIsCreationPending(false)
-  }, [dispatch, isCreationPending, pendingSafe, provider, safeCreationCallback])
+  }, [chainId, dispatch, isCreationPending, pendingSafe, provider, safeCreationCallback])
 
-  usePendingSafeCreation({ txHash: pendingSafe?.txHash, setSafeAddress, setStatus })
+  usePendingSafeCreation({ txHash: pendingSafe?.txHash, setStatus })
   useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus })
 
   useEffect(() => {
