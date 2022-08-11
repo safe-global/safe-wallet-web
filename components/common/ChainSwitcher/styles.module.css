@@ -4,3 +4,7 @@
   border-radius: 50%;
   margin-left: 0.2em;
 }
+
+.button {
+  margin-right: var(--space-2);
+}

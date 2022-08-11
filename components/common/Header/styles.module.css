@@ -32,6 +32,7 @@
 @media (max-width: 768px) {
   .logo,
   .tokenWidget,
+  .notificationCenter,
   .chainSwitcher {
     display: none;
   }
