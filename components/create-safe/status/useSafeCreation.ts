@@ -1,20 +1,19 @@
 import { PendingSafeData } from '@/components/create-safe'
-import { computeNewSafeAddress, createNewSafe } from '@/components/create-safe/sender'
-import { pollSafeInfo, usePendingSafeCreation } from '@/components/create-safe/status/usePendingSafeCreation'
+import { createNewSafe } from '@/components/create-safe/sender'
+import { usePendingSafeCreation } from '@/components/create-safe/status/usePendingSafeCreation'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
-import { AppRoutes } from '@/config/routes'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { Errors, logError } from '@/services/exceptions'
-import { useAppDispatch } from '@/store'
-import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import Safe, { DeploySafeProps } from '@gnosis.pm/safe-core-sdk'
-import { useRouter } from 'next/router'
+import { DeploySafeProps } from '@gnosis.pm/safe-core-sdk'
 import { useCallback, useEffect, useState } from 'react'
 import { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
+import { AppThunk, useAppDispatch } from '@/store'
+import { Errors, logError } from '@/services/exceptions'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { addOrUpdateSafe } from '@/store/addedSafesSlice'
+import { defaultSafeInfo } from '@/store/safeInfoSlice'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
@@ -28,7 +27,39 @@ export enum SafeCreationStatus {
   INDEX_FAILED = 'INDEX_FAILED',
 }
 
-const getSafeDeployProps = (
+export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData): AppThunk => {
+  return (dispatch) => {
+    dispatch(
+      upsertAddressBookEntry({
+        chainId: pendingSafe.chainId,
+        address: pendingSafe.safeAddress,
+        name: pendingSafe.name,
+      }),
+    )
+
+    pendingSafe.owners.forEach((owner) => {
+      dispatch(upsertAddressBookEntry({ chainId: pendingSafe.chainId, address: owner.address, name: owner.name }))
+    })
+
+    dispatch(
+      addOrUpdateSafe({
+        safe: {
+          ...defaultSafeInfo,
+          address: { value: pendingSafe.safeAddress, name: pendingSafe.name },
+          threshold: pendingSafe.threshold,
+          owners: pendingSafe.owners.map((owner) => ({
+            value: owner.address,
+            name: owner.name,
+          })),
+          chainId: pendingSafe.chainId,
+          nonce: 0,
+        },
+      }),
+    )
+  }
+}
+
+export const getSafeDeployProps = (
   pendingSafe: PendingSafeData,
   callback: (txHash: string) => void,
 ): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
@@ -47,30 +78,41 @@ const getSafeDeployProps = (
 export const useSafeCreation = () => {
   const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING_WALLET)
   const [safeAddress, setSafeAddress] = useState<string>()
-  const [creationPromise, setCreationPromise] = useState<Promise<Safe>>()
+  const [isCreationPending, setIsCreationPending] = useState<boolean>(false)
   const [pendingSafe, setPendingSafe] = usePendingSafe()
-  const ethersProvider = useWeb3()
-  const dispatch = useAppDispatch()
-  const router = useRouter()
+  const provider = useWeb3()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
-
-  usePendingSafeCreation({ txHash: pendingSafe?.txHash, setSafeAddress, setStatus })
+  const dispatch = useAppDispatch()
 
   const safeCreationCallback = useCallback(
     (txHash: string) => {
       setStatus(SafeCreationStatus.MINING)
-      setPendingSafe((prev) => prev && { ...prev, txHash })
+      setPendingSafe((prev) => (prev ? { ...prev, txHash } : undefined))
     },
     [setPendingSafe],
   )
 
-  const onRetry = () => {
-    if (!ethersProvider || !pendingSafe) return
+  const createSafe = useCallback(async () => {
+    if (!provider || !pendingSafe || isCreationPending) return
 
     setStatus(SafeCreationStatus.AWAITING)
-    setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
-  }
+    setIsCreationPending(true)
+
+    try {
+      await createNewSafe(provider, getSafeDeployProps(pendingSafe, safeCreationCallback))
+      setStatus(SafeCreationStatus.SUCCESS)
+      dispatch(addSafeAndOwnersToAddressBook(pendingSafe))
+    } catch (err) {
+      setStatus(SafeCreationStatus.ERROR)
+      logError(Errors._800, (err as Error).message)
+    }
+
+    setIsCreationPending(false)
+  }, [dispatch, isCreationPending, pendingSafe, provider, safeCreationCallback])
+
+  usePendingSafeCreation({ txHash: pendingSafe?.txHash, setSafeAddress, setStatus })
+  useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus })
 
   useEffect(() => {
     const newStatus = !wallet || isWrongChain ? SafeCreationStatus.AWAITING_WALLET : SafeCreationStatus.AWAITING
@@ -78,108 +120,21 @@ export const useSafeCreation = () => {
   }, [wallet, isWrongChain])
 
   useEffect(() => {
-    if (!ethersProvider || !pendingSafe) return
+    if (!pendingSafe) return
 
-    const getNewSafeAddress = async () => {
-      const address = await computeNewSafeAddress(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback))
-      setSafeAddress(address)
-    }
-
-    getNewSafeAddress()
-  }, [ethersProvider, pendingSafe, safeCreationCallback])
+    setSafeAddress(pendingSafe.safeAddress)
+  }, [pendingSafe])
 
   useEffect(() => {
-    if (
-      creationPromise ||
-      pendingSafe?.txHash ||
-      !ethersProvider ||
-      !pendingSafe ||
-      status === SafeCreationStatus.ERROR ||
-      status === SafeCreationStatus.AWAITING_WALLET
-    ) {
-      return
+    if (status === SafeCreationStatus.AWAITING) {
+      createSafe()
     }
-
-    setStatus(SafeCreationStatus.AWAITING)
-    setCreationPromise(createNewSafe(ethersProvider, getSafeDeployProps(pendingSafe, safeCreationCallback)))
-  }, [safeCreationCallback, creationPromise, ethersProvider, pendingSafe, status])
-
-  useEffect(() => {
-    if (!creationPromise || !pendingSafe) return
-
-    creationPromise
-      .then((safe) => {
-        setStatus(SafeCreationStatus.SUCCESS)
-        setSafeAddress(safe.getAddress())
-        // Update Addressbook
-        if (pendingSafe.name) {
-          dispatch(
-            upsertAddressBookEntry({
-              chainId: pendingSafe.chainId,
-              address: safe.getAddress(),
-              name: pendingSafe.name,
-            }),
-          )
-        }
-        pendingSafe.owners.forEach((owner) => {
-          if (owner.name) {
-            dispatch(upsertAddressBookEntry({ chainId: pendingSafe.chainId, address: owner.address, name: owner.name }))
-          }
-        })
-        // Add to added safes
-        dispatch(
-          addOrUpdateSafe({
-            safe: {
-              ...defaultSafeInfo,
-              address: { value: safe.getAddress(), name: pendingSafe.name },
-              threshold: pendingSafe.threshold,
-              owners: pendingSafe.owners.map((owner) => ({
-                value: owner.address,
-                name: owner.name,
-              })),
-              chainId: pendingSafe.chainId,
-              nonce: 0,
-            },
-          }),
-        )
-      })
-      .catch((error: Error) => {
-        setStatus(SafeCreationStatus.ERROR)
-        logError(Errors._800, error.message)
-      })
-  }, [creationPromise, dispatch, pendingSafe])
-
-  useEffect(() => {
-    const checkCreatedSafe = async (chainId: string, address: string) => {
-      try {
-        await pollSafeInfo(chainId, address)
-        setStatus(SafeCreationStatus.INDEXED)
-      } catch (e) {
-        setStatus(SafeCreationStatus.INDEX_FAILED)
-      }
-    }
-
-    if (status === SafeCreationStatus.INDEXED) {
-      setPendingSafe(undefined)
-      safeAddress && router.push({ pathname: AppRoutes.safe.home, query: { safe: safeAddress } })
-    }
-
-    if (status === SafeCreationStatus.SUCCESS) {
-      safeAddress && pendingSafe && checkCreatedSafe(pendingSafe.chainId, safeAddress)
-    }
-
-    if (status === SafeCreationStatus.ERROR || status === SafeCreationStatus.REVERTED) {
-      setCreationPromise(undefined)
-      if (pendingSafe?.txHash) {
-        setPendingSafe((prev) => prev && { ...prev, txHash: undefined })
-      }
-    }
-  }, [router, safeAddress, setPendingSafe, status, pendingSafe])
+  }, [status, createSafe])
 
   return {
     safeAddress,
     status,
-    onRetry,
+    createSafe,
     txHash: pendingSafe?.txHash,
   }
 }

@@ -24,7 +24,7 @@ export type CreateSafeFormData = {
   chainId: string
 }
 export type CreateSafeFormDataReview = Omit<CreateSafeFormData, 'owners'> & { owners: Owner[] }
-export type PendingSafeData = CreateSafeFormDataReview & { txHash?: string; safeAddress?: string; saltNonce: number }
+export type PendingSafeData = CreateSafeFormDataReview & { txHash?: string; safeAddress: string; saltNonce: number }
 export type PendingSafeByChain = Record<string, PendingSafeData | undefined>
 
 export const CreateSafeSteps: TxStepperProps['steps'] = [
@@ -54,6 +54,7 @@ export const CreateSafeSteps: TxStepperProps['steps'] = [
 
 const CreateSafe = () => {
   const [pendingSafe, setPendingSafe] = usePendingSafe()
+  // We need this additional state to avoid hydration errors
   const [safeCreationPending, setSafeCreationPending] = useState<boolean>(false)
   const router = useRouter()
 

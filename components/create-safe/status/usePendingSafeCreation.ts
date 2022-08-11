@@ -1,9 +1,5 @@
-import { JsonRpcProvider, Log } from '@ethersproject/providers'
-import { getProxyFactoryDeployment } from '@gnosis.pm/safe-deployments'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { backOff } from 'exponential-backoff'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
-import { Interface } from '@ethersproject/abi'
-import { sameAddress } from '@/utils/addresses'
 import { didRevert } from '@/utils/ethers-utils'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import { useEffect } from 'react'
@@ -23,32 +19,6 @@ export const pollSafeInfo = async (chainId: string, safeAddress: string): Promis
   })
 }
 
-export const getNewSafeAddressFromLogs = (logs: Log[]): string => {
-  let safeAddress = ''
-  const contract = getProxyFactoryDeployment({
-    version: LATEST_SAFE_VERSION,
-  })
-
-  if (!contract) return safeAddress
-
-  const contractInterface = new Interface(contract.abi)
-
-  try {
-    const logDescriptions = logs
-      .filter((log) => sameAddress(log.address, contract.defaultAddress))
-      .map((log) => contractInterface.parseLog(log))
-
-    const proxyCreationEvent = logDescriptions.find(({ name }) => name === 'ProxyCreation')
-    safeAddress = proxyCreationEvent?.args['proxy']
-
-    return safeAddress
-  } catch (error) {
-    console.log('Failed to parse safe address from logs', error)
-  }
-
-  return safeAddress
-}
-
 export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: string) => {
   const TIMEOUT_TIME = 6.5
 
@@ -56,23 +26,12 @@ export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: str
     const receipt = await provider.waitForTransaction(txHash, 1, TIMEOUT_TIME * 60_000)
 
     if (didRevert(receipt)) {
-      return {
-        status: SafeCreationStatus.REVERTED,
-        safeAddress: undefined,
-      }
+      return SafeCreationStatus.REVERTED
     }
 
-    const safeAddress = getNewSafeAddressFromLogs(receipt.logs)
-
-    return {
-      status: SafeCreationStatus.SUCCESS,
-      safeAddress,
-    }
+    return SafeCreationStatus.SUCCESS
   } catch (error) {
-    return {
-      status: SafeCreationStatus.TIMEOUT,
-      safeAddress: undefined,
-    }
+    return SafeCreationStatus.TIMEOUT
   }
 }
 
@@ -90,8 +49,7 @@ export const usePendingSafeCreation = ({ txHash, setStatus, setSafeAddress }: Pr
 
     const monitorTx = async (txHash: string) => {
       const txStatus = await checkSafeCreationTx(provider, txHash)
-      setStatus(txStatus.status)
-      setSafeAddress(txStatus.safeAddress)
+      setStatus(txStatus)
     }
 
     setStatus(SafeCreationStatus.MINING)

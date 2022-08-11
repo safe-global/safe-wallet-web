@@ -80,7 +80,7 @@ const getStep = (status: SafeCreationStatus) => {
 }
 
 export const CreationStatus = ({ onClose }: Props) => {
-  const { status, onRetry, txHash, safeAddress } = useSafeCreation()
+  const { status, createSafe, txHash, safeAddress } = useSafeCreation()
   const stepInfo = getStep(status)
   const chainId = useChainId()
   const chain = useAppSelector((state) => selectChainById(state, chainId))
@@ -139,7 +139,7 @@ export const CreationStatus = ({ onClose }: Props) => {
       {displayActions && (
         <Grid container padding={3} justifyContent="center" gap={2}>
           <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={onRetry} variant="contained">
+          <Button onClick={createSafe} variant="contained">
             Retry
           </Button>
         </Grid>
