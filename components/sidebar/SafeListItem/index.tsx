@@ -42,6 +42,7 @@ const SafeListItem = ({
   const isCurrentSafe = currChainId === currChainId && safeAddress.toLowerCase() === address.toLowerCase()
   const name = allAddressBooks[chainId]?.[address]
   const isOpen = sameAddress(address, safeAddress)
+  const shortName = chain?.shortName || ''
 
   // Scroll to the current Safe
   useEffect(() => {
@@ -60,13 +61,13 @@ const SafeListItem = ({
             chainId={chainId}
             address={address}
             onClick={closeDrawer}
-            href={`${AppRoutes.load.safe}?address=${chain?.shortName}:${address}`}
+            href={`${AppRoutes.load.safe}?chain=${shortName}&address=${shortName}:${address}`}
           />
           <SafeListContextMenu address={address} chainId={chainId} />
         </Box>
       }
     >
-      <Link href={`${AppRoutes.safe.home}?safe=${chain?.shortName}:${address}`} passHref>
+      <Link href={`${AppRoutes.safe.home}?safe=${shortName}:${address}`} passHref>
         <ListItemButton
           key={address}
           onClick={closeDrawer}
@@ -88,7 +89,7 @@ const SafeListItem = ({
             }}
             secondaryTypographyProps={{ component: 'div' }}
             primary={name || ''}
-            secondary={<EthHashInfo address={address} showAvatar={false} showName={false} />}
+            secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
           />
         </ListItemButton>
       </Link>
