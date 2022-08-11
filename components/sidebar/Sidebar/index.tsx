@@ -2,6 +2,7 @@ import { useState, type ReactElement } from 'react'
 import { Divider, Drawer, IconButton } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
 import { useRouter } from 'next/router'
+import classnames from 'classnames'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SidebarHeader from '@/components/sidebar/SidebarHeader'
@@ -24,18 +25,8 @@ const Sidebar = (): ReactElement => {
     setIsDrawerOpen((prev) => !prev)
   }
 
-  if (!isSafeRoute) {
-    return (
-      <div className={css.noSafe}>
-        <div className={css.scroll}>
-          <OwnedSafes />
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className={css.container}>
+    <div className={classnames(css.container, { [css.noSafe]: !isSafeRoute })}>
       <div className={css.scroll}>
         <div className={css.chain}>
           <ChainIndicator />
@@ -45,9 +36,17 @@ const Sidebar = (): ReactElement => {
           <ChevronRight />
         </IconButton>
 
-        <SidebarHeader />
-        <Divider />
-        <SidebarNavigation />
+        {isSafeRoute ? (
+          <>
+            <SidebarHeader />
+            <Divider />
+            <SidebarNavigation />
+          </>
+        ) : (
+          <div className={css.noSafeHeader}>
+            <OwnedSafes />
+          </div>
+        )}
 
         <div style={{ flexGrow: 1 }} />
 
