@@ -37,7 +37,7 @@ const useWatchSafeCreation = ({
     }
 
     if (status === SafeCreationStatus.SUCCESS) {
-      safeAddress && checkCreatedSafe(chainId, safeAddress)
+      safeAddress && pendingSafe && checkCreatedSafe(chainId, safeAddress)
       setPendingSafe(undefined)
     }
 

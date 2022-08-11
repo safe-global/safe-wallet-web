@@ -3,6 +3,7 @@ import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreat
 import * as router from 'next/router'
 import * as web3 from '@/hooks/wallets/web3'
 import * as pendingSafe from '@/components/create-safe/status/usePendingSafeCreation'
+import * as chainIdModule from '@/hooks/useChainId'
 import { Web3Provider } from '@ethersproject/providers'
 import { PendingSafeData } from '@/components/create-safe'
 import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
@@ -109,6 +110,7 @@ describe('useWatchSafeCreation', () => {
   })
 
   it('should navigate to the dashboard on INDEXED', () => {
+    jest.spyOn(chainIdModule, 'useChainId')
     const pushMock = jest.fn()
     jest.spyOn(router, 'useRouter').mockReturnValue({
       push: pushMock,
