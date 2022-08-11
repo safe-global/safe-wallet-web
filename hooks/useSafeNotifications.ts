@@ -3,6 +3,7 @@ import { closeNotification, showNotification } from '@/store/notificationsSlice'
 import { ImplementationVersionState } from '@gnosis.pm/safe-react-gateway-sdk'
 import useSafeInfo from './useSafeInfo'
 import { useAppDispatch } from '@/store'
+import { AppRoutes } from '@/config/routes'
 
 /**
  * General-purpose notifications relating to the entire Safe
@@ -20,6 +21,10 @@ const useSafeNotifications = (): void => {
           variant: 'warning',
           message: `Your Safe version ${version} is out of date. Please update it.`,
           groupKey: 'safe-outdated-version',
+          link: {
+            href: AppRoutes.safe.settings.setup,
+            title: 'Update Safe',
+          },
         }),
       )
 

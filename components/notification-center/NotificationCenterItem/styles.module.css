@@ -1,0 +1,32 @@
+.item {
+  position: relative;
+  padding: 8px 24px;
+}
+
+.item:not(:last-child):after {
+  content: '';
+  background: var(--color-border-background);
+  position: absolute;
+  bottom: 0;
+  left: 24px;
+  height: 2px;
+  width: calc(100% - 48px);
+}
+
+.avatar {
+  min-width: 42px;
+}
+
+.secondaryText {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-border-main);
+}
+
+.link {
+  font-weight: 700;
+  color: var(--color-primary-main);
+  display: flex;
+  align-items: center;
+}
