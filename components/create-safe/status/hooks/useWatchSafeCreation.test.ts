@@ -110,7 +110,7 @@ describe('useWatchSafeCreation', () => {
   })
 
   it('should navigate to the dashboard on INDEXED', () => {
-    jest.spyOn(chainIdModule, 'useChainId')
+    jest.spyOn(chainIdModule, 'default').mockReturnValue('4')
     const pushMock = jest.fn()
     jest.spyOn(router, 'useRouter').mockReturnValue({
       push: pushMock,
