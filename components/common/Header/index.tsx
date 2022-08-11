@@ -33,7 +33,9 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => (
       <SafeTokenWidget />
     </div>
 
-    <NotificationCenterBell />
+    <div className={css.notificationCenter}>
+      <NotificationCenterBell />
+    </div>
 
     <ConnectWallet />
 
