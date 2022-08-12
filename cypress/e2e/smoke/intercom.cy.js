@@ -14,7 +14,9 @@ describe('Intercom and cookie prefs', () => {
     cy.get(fakeIntercomButton).click()
 
     // Cookie preferences appear
-    cy.contains('You attempted to open the customer support chat. Please accept the community support & updates cookies')
+    cy.contains(
+      'You attempted to open the customer support chat. Please accept the community support & updates cookies',
+    )
 
     cy.contains('a', 'Accept all').click()
 
