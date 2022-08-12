@@ -113,13 +113,15 @@ export const useSafeCreation = () => {
     setIsCreationPending(false)
   }, [chainId, dispatch, isCreationPending, pendingSafe, provider, safeCreationCallback])
 
-  usePendingSafeCreation({ txHash: pendingSafe?.txHash, setStatus })
+  usePendingSafeCreation({ txHash: pendingSafe?.txHash, safeAddress: pendingSafe?.safeAddress, setStatus })
   useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus })
 
   useEffect(() => {
+    if (pendingSafe?.txHash) return
+
     const newStatus = !wallet || isWrongChain ? SafeCreationStatus.AWAITING_WALLET : SafeCreationStatus.AWAITING
     setStatus(newStatus)
-  }, [wallet, isWrongChain])
+  }, [wallet, isWrongChain, pendingSafe?.txHash])
 
   useEffect(() => {
     if (!pendingSafe) return
@@ -128,10 +130,10 @@ export const useSafeCreation = () => {
   }, [pendingSafe])
 
   useEffect(() => {
-    if (status === SafeCreationStatus.AWAITING) {
+    if (status === SafeCreationStatus.AWAITING && !pendingSafe?.txHash) {
       createSafe()
     }
-  }, [status, createSafe])
+  }, [status, createSafe, pendingSafe?.txHash])
 
   return {
     safeAddress,

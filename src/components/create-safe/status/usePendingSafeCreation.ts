@@ -35,23 +35,50 @@ export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: str
   }
 }
 
+const checkSafeDeployment = async (provider: JsonRpcProvider, safeAddress: string) => {
+  const code = await provider.getCode(safeAddress)
+
+  if (code === '0x') {
+    throw new Error('Safe not deployed')
+  }
+
+  return code
+}
+
+const pollSafeAddress = async (provider: JsonRpcProvider, safeAddress: string) => {
+  return backOff(() => checkSafeDeployment(provider, safeAddress), {
+    startingDelay: 3900, // Around 6.5 minutes with 100 attempts
+    maxDelay: 3900,
+    numOfAttempts: 100,
+    retry: (e) => {
+      console.info('Waiting for safe to be deployed on-chain', e)
+      return true
+    },
+  })
+}
+
 type Props = {
   txHash: string | undefined
+  safeAddress: string | undefined
   setStatus: (status: SafeCreationStatus) => void
 }
 
-export const usePendingSafeCreation = ({ txHash, setStatus }: Props) => {
+export const usePendingSafeCreation = ({ txHash, safeAddress, setStatus }: Props) => {
   const provider = useWeb3ReadOnly()
 
   useEffect(() => {
-    if (!txHash || !provider) return
+    if (!txHash || !provider || !safeAddress) return
 
-    const monitorTx = async (txHash: string) => {
-      const txStatus = await checkSafeCreationTx(provider, txHash)
-      setStatus(txStatus)
+    const monitorSafe = async (provider: JsonRpcProvider, address: string) => {
+      try {
+        await pollSafeAddress(provider, address)
+        setStatus(SafeCreationStatus.SUCCESS)
+      } catch (e) {
+        setStatus(SafeCreationStatus.TIMEOUT)
+      }
     }
 
     setStatus(SafeCreationStatus.MINING)
-    monitorTx(txHash)
-  }, [txHash, provider, setStatus])
+    monitorSafe(provider, safeAddress)
+  }, [txHash, safeAddress, provider, setStatus])
 }
