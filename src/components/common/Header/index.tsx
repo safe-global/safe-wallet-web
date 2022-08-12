@@ -5,7 +5,7 @@ import SafeTokenWidget from '@/components/common/SafeTokenWidget'
 import NotificationCenter from '@/components/notification-center/NotificationCenter'
 import SafeLogo from '@/public/logo.svg'
 import MenuIcon from '@mui/icons-material/Menu'
-import { IconButton, Paper } from '@mui/material'
+import { AppBar, IconButton, Toolbar } from '@mui/material'
 import { type ReactElement } from 'react'
 import css from './styles.module.css'
 
@@ -14,33 +14,39 @@ type HeaderProps = {
 }
 
 const Header = ({ onMenuToggle }: HeaderProps): ReactElement => (
-  <Paper className={css.container} elevation={1}>
-    <div className={css.menuButton}>
-      <IconButton onClick={onMenuToggle} size="large" edge="start" color="default" aria-label="menu" sx={{ mr: 2 }}>
-        <MenuIcon />
-      </IconButton>
-    </div>
+  <AppBar component="header" sx={{ zIndex: ({ zIndex }) => zIndex.drawer + 1 }} className={css.container}>
+    <Toolbar className={css.header}>
+      <div className={css.menuButton}>
+        <IconButton onClick={onMenuToggle} size="large" edge="start" color="default" aria-label="menu" sx={{ mr: 2 }}>
+          <MenuIcon />
+        </IconButton>
+      </div>
 
-    <div className={css.logo}>
-      <SafeLogo alt="Safe Logo" height={29} />
-    </div>
+      <div className={css.logo}>
+        <SafeLogo alt="Safe Logo" height={29} className={css.logo} />
+      </div>
 
-    <div className={css.chainSwitcher}>
-      <ChainSwitcher />
-    </div>
+      <div className={css.chainSwitcher}>
+        <ChainSwitcher />
+      </div>
 
-    <div className={css.tokenWidget}>
-      <SafeTokenWidget />
-    </div>
+      <div className={css.tokenWidget}>
+        <SafeTokenWidget />
+      </div>
 
-    <div className={css.notificationCenter}>
-      <NotificationCenter />
-    </div>
+      <div className={css.notificationCenter}>
+        <NotificationCenter />
+      </div>
 
-    <ConnectWallet />
+      <div>
+        <ConnectWallet />
+      </div>
 
-    <NetworkSelector />
-  </Paper>
+      <div>
+        <NetworkSelector />
+      </div>
+    </Toolbar>
+  </AppBar>
 )
 
 export default Header
