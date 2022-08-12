@@ -25,13 +25,15 @@ const EntryDialog = ({
     address: '',
   },
   disableAddressInput = false,
+  chainId,
 }: {
   handleClose: () => void
   defaultValues?: AddressEntry
   disableAddressInput?: boolean
+  chainId?: string
 }): ReactElement => {
   const dispatch = useAppDispatch()
-  const chainId = useChainId()
+  const currentChainId = useChainId()
 
   const methods = useForm<AddressEntry>({
     defaultValues,
@@ -42,7 +44,7 @@ const EntryDialog = ({
   const onSubmit = (data: AddressEntry) => {
     const { address } = parsePrefixedAddress(data.address)
 
-    dispatch(upsertAddressBookEntry({ chainId, name: data.name, address }))
+    dispatch(upsertAddressBookEntry({ chainId: chainId || currentChainId, name: data.name, address }))
 
     handleClose()
   }
