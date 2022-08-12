@@ -5,7 +5,7 @@ import withBundleAnalyzer from '@next/bundle-analyzer'
 const nextConfig = {
   reactStrictMode: false,
   eslint: {
-    dirs: ['pages', 'services', 'store', 'components', 'config', 'utils', 'hooks', 'tests'],
+    dirs: ['src'],
   },
   experimental: {
     images: {

@@ -5,7 +5,7 @@ import css from './styles.module.css'
 import { useAppDispatch } from '@/store'
 import { openCookieBanner } from '@/store/popupSlice'
 import { AppRoutes } from '@/config/routes'
-import packageJson from '../../../package.json'
+import packageJson from '../../../../package.json'
 
 const footerPages = [
   AppRoutes.welcome,
