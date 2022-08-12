@@ -7,17 +7,7 @@
   padding-right: 0;
 }
 
-.header > div {
-  padding: 0 var(--space-2);
-}
-
-/* First two elements in Header (hamburger/logo) */
-.header > div:nth-child(-n + 2) {
-  padding: 0;
-}
-
-/* Last three elements in Header */
-.header > div:nth-last-child(-n + 3) {
+.element {
   height: var(--header-height);
   display: flex;
   align-items: center;
@@ -25,8 +15,8 @@
   border-left: 2px solid var(--color-border-light);
 }
 
-.header > div:last-child {
-  padding-right: 0;
+.header > div {
+  padding: 0 var(--space-2);
 }
 
 .logo {
@@ -58,14 +48,5 @@
 
   .header > div {
     padding: 0 var(--space-1);
-  }
-
-  /* First two elements in Header (hamburger/logo) */
-  .header > div:nth-child(-n + 2) {
-    padding: 0;
-  }
-
-  .header > div:last-child {
-    padding-right: 0;
   }
 }
