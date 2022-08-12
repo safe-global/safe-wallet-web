@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 
 import { NotificationState } from '@/store/notificationsSlice'
 import NotificationCenterItem from '@/components/notification-center/NotificationCenterItem'
+import Bell from '@/public/images/bell.svg'
 
 import css from './styles.module.css'
 
@@ -17,7 +18,7 @@ const NotificationCenterList = ({ notifications, handleClose }: NotificationCent
   if (!notifications.length) {
     return (
       <div className={css.wrapper}>
-        <img src="/images/bell.svg" alt="No notifications" />
+        <img src={Bell} alt="No notifications" />
         <Typography paddingTop="8px">No notifications</Typography>
       </div>
     )
