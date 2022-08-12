@@ -163,11 +163,13 @@ describe('AddressInput tests', () => {
     }
 
     const utils = render(<Form address={TEST_ADDRESS_A} />)
+    const input = utils.getByLabelText('Recipient address') as HTMLInputElement
 
     expect(methods.getValues().recipient).toBe(TEST_ADDRESS_A)
+    expect(input.value).toBe(TEST_ADDRESS_A)
+    expect(input.previousElementSibling?.textContent).toBe('rin:')
 
     act(() => {
-      const input = utils.getByLabelText('Recipient address')
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
     })
 

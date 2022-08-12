@@ -58,7 +58,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
 
             // Display the current short name in the adornment, unless the value contains the same prefix
             startAdornment: !error && !errors[name] && !rawValueRef.current.startsWith(`${currentShortName}:`) && (
-              <InputAdornment position="start">{currentShortName}:</InputAdornment>
+              <InputAdornment position="end">{currentShortName}:</InputAdornment>
             ),
 
             endAdornment: resolving && (
