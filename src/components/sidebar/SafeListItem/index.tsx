@@ -63,7 +63,7 @@ const SafeListItem = ({
             onClick={closeDrawer}
             href={`${AppRoutes.load.safe}?chain=${shortName}&address=${address}`}
           />
-          <SafeListContextMenu address={address} chainId={chainId} />
+          <SafeListContextMenu name={name} address={address} chainId={chainId} />
         </Box>
       }
     >
