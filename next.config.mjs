@@ -11,6 +11,11 @@ const nextConfig = {
     images: {
       unoptimized: true,
     },
+    modularizeImports: {
+      '@mui/material/?(((\\w*)?/?)*)': {
+        transform: '@mui/material/{{ matches.[1] }}/{{member}}'
+      }
+    }
   },
   async rewrites() {
     return [
