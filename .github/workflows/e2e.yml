@@ -7,7 +7,6 @@ jobs:
   e2e:
     runs-on: ubuntu-20.04
     name: E2E on Chrome
-    needs: deploy
     steps:
       - name: Extract branch name
         shell: bash
