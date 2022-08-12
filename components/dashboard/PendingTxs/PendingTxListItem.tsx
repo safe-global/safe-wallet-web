@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 import NextLink from 'next/link'
 import styled from '@emotion/styled'
-import { ChevronRight } from '@mui/icons-material'
+import ChevronRight from '@mui/icons-material/ChevronRight'
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Grid, Typography } from '@mui/material'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'

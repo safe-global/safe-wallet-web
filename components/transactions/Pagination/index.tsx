@@ -1,6 +1,7 @@
 import { type ReactNode, type ReactElement, type SyntheticEvent } from 'react'
 import { Box, Link } from '@mui/material'
-import { ArrowBack, ArrowForward } from '@mui/icons-material'
+import ArrowBack from '@mui/icons-material/ArrowBack'
+import ArrowForward from '@mui/icons-material/ArrowForward'
 
 type PaginationProps = {
   page?: string
