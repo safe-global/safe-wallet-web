@@ -46,6 +46,11 @@
   --space-10: 80px;
   --space-11: 88px;
   --space-12: 96px;
+  --breakpoint-xs: 0px;
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 900px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1536px;
 }
 
 [data-theme='dark'] {

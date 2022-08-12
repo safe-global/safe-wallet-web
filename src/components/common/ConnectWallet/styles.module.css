@@ -41,7 +41,7 @@
   margin-top: -2px;
 }
 
-@media (max-width: 768px) {
+@media (--breakpoint-sm) {
   .buttonContainer {
     padding: var(--space-1);
   }
