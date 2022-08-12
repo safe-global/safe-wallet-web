@@ -24,6 +24,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
   const error = getFieldState(name).error
   const rawValueRef = useRef<string>('')
   const watchedValue = watch(name)
+  const currentShortName = currentChain?.shortName || ''
 
   // Fetch an ENS resolution for the current address
   const { address, resolving } = useNameResolver(isDomainLookupEnabled ? watchedValue : '')
@@ -35,7 +36,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
     [setValue, name],
   )
 
-  const validatePrefixed = useMemo(() => validatePrefixedAddress(currentChain?.shortName), [currentChain?.shortName])
+  const validatePrefixed = useMemo(() => validatePrefixedAddress(currentShortName), [currentShortName])
 
   // Update the input value with the resolved ENS name
   useEffect(() => {
@@ -55,8 +56,9 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
           InputProps={{
             ...(props.InputProps || {}),
 
-            startAdornment: !error && !errors[name] && (
-              <InputAdornment position="start">{currentChain?.shortName}:</InputAdornment>
+            // Display the current short name in the adornment, unless the value contains a prefix
+            startAdornment: !error && !errors[name] && !rawValueRef.current.startsWith(`${currentShortName}:`) && (
+              <InputAdornment position="start">{currentShortName}:</InputAdornment>
             ),
 
             endAdornment: resolving && (
@@ -75,8 +77,8 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
             setValueAs: (value: string) => {
               const { address, prefix } = parsePrefixedAddress(value)
               rawValueRef.current = value
-              // Return a bare address if it's a valid shortName
-              return prefix === currentChain?.shortName ? address : value
+              // Return a bare address if the prefx is the correct shortName
+              return prefix === currentShortName ? address : value
             },
 
             validate: () => {

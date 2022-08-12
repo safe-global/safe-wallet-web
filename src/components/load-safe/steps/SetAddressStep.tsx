@@ -98,13 +98,6 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 label="Safe address"
                 validate={validateSafeAddress}
                 InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  endAdornment: safeAddress.resolving && (
-                    <InputAdornment position="end">
-                      <CircularProgress size={20} />
-                    </InputAdornment>
-                  ),
-                }}
                 {...register('safeAddress.address')}
               />
             </Box>
