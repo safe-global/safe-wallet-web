@@ -8,19 +8,14 @@ jobs:
     runs-on: ubuntu-20.04
     name: E2E on Chrome
     steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
-
       - uses: actions/checkout@v2
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v4
         with:
-          spec: cypress/integration/smoke/*.cy.js
+          spec: cypress/e2e/smoke/*.cy.js
           browser: chrome
           record: false
-          config: baseUrl=https://${{ steps.extract_branch.outputs.branch }}.web-core.pages.dev
+          config: baseUrl=https://${{ github.head_ref || github.ref_name }}.web-core.pages.dev
         env:
           CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
           CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}
