@@ -45,8 +45,4 @@
     display: block;
     flex: 1;
   }
-
-  .header > div {
-    padding: 0 var(--space-1);
-  }
 }
