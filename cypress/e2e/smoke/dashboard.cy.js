@@ -34,9 +34,13 @@ describe('Dashboard', () => {
     cy.contains('main', 'This Safe has no queued transactions').should('not.exist')
 
     // Queued txns
-    cy.contains(`main a[href="/safe/transactions/queue?safe=${SAFE}"]`, '0' + 'addOwnerWithThreshold' + '1/1').should('exist')
+    cy.contains(`main a[href="/safe/transactions/queue?safe=${SAFE}"]`, '0' + 'addOwnerWithThreshold' + '1/1').should(
+      'exist',
+    )
 
-    cy.contains(`main a[href="/safe/transactions/queue?safe=${SAFE}"]`, '2' + 'Send' + '-0.001 USDC' + '1/1').should('exist')
+    cy.contains(`main a[href="/safe/transactions/queue?safe=${SAFE}"]`, '2' + 'Send' + '-0.001 USDC' + '1/1').should(
+      'exist',
+    )
 
     cy.contains(`a[href="/safe/transactions/queue?safe=${SAFE}"]`, 'View all')
   })
