@@ -33,7 +33,7 @@
   margin-right: var(--space-2);
 }
 
-@media (max-width: 768px) {
+@media (--breakpoint-sm) {
   .logo,
   .tokenWidget,
   .notificationCenter,
