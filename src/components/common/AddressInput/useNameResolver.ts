@@ -4,9 +4,9 @@ import useAsync from '@/hooks/useAsync'
 import { resolveName } from '@/services/domains'
 import useDebounce from '@/hooks/useDebounce'
 
-const useNameResolver = (value: string): { address: string | undefined; resolving: boolean } => {
+const useNameResolver = (value?: string): { address: string | undefined; resolving: boolean } => {
   const ethersProvider = useWeb3ReadOnly()
-  const debouncedValue = useDebounce(value.trim(), 200)
+  const debouncedValue = useDebounce((value || '').trim(), 200)
 
   // Fetch an ENS resolution for the current address
   const [ens, , isResolving] = useAsync<{ name: string; address: string } | undefined>(async () => {
