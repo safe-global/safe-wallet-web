@@ -30,6 +30,6 @@ const iterate = (folderName, parentRoute, root) => {
   return root
 }
 
-const routes = iterate('pages', '', {})
+const routes = iterate('src/pages', '', {})
 
 console.log(`export const AppRoutes = ${JSON.stringify(routes, null, 2)}`)
