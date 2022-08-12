@@ -15,7 +15,6 @@ import {
 import uniqBy from 'lodash/uniqBy'
 import { FormProvider, useForm, Controller } from 'react-hook-form'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import SendFromBlock from '../../SendFromBlock'
 import ErrorMessage from '../../ErrorMessage'
 import { type NftTransferParams } from '.'
@@ -96,11 +95,10 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
   )
 
   const onFormSubmit = (data: FormData) => {
-    const recipient = parsePrefixedAddress(data.recipient).address
     const token = selectedTokens.find((item) => item.id === data.tokenId)
     if (!token) return
     onSubmit({
-      recipient,
+      recipient: data.recipient,
       token,
     })
   }

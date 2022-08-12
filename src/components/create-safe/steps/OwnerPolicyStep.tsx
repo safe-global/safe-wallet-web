@@ -8,7 +8,6 @@ import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
 
 type Props = {
@@ -48,16 +47,6 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     name: 'owners',
   })
 
-  const onFormSubmit = (data: CreateSafeFormData) => {
-    onSubmit({
-      ...data,
-      owners: data.owners?.map((owner) => ({
-        ...owner,
-        address: parsePrefixedAddress(owner.address).address,
-      })),
-    })
-  }
-
   const addOwner = () => {
     append({ name: '', address: '', resolving: false })
   }
@@ -65,7 +54,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   return (
     <Paper>
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onFormSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Box padding={3}>
             <Typography mb={2}>
               Your Safe will have one or more owners. We have prefilled the first owner with your connected wallet

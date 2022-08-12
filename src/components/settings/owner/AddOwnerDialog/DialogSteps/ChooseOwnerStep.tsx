@@ -3,7 +3,6 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import NameInput from '@/components/common/NameInput'
 import { ChangeOwnerData, OwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import { addressIsNotCurrentSafe, uniqueAddress } from '@/utils/validation'
 import { Box, Button, CircularProgress, DialogContent, FormControl, InputAdornment, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -39,10 +38,7 @@ export const ChooseOwnerStep = ({
   const onSubmitHandler = (formData: OwnerData) => {
     onSubmit({
       ...data,
-      newOwner: {
-        address: parsePrefixedAddress(formData.address).address,
-        name: formData.name,
-      },
+      newOwner: formData,
     })
   }
 

@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useCallback } from 'react'
+import { ReactElement, useEffect, useCallback, useRef, useMemo } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
 import { useFormContext, type Validate } from 'react-hook-form'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -7,6 +7,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useNameResolver from './useNameResolver'
 import ScanQRButton from '../ScanQRModal/ScanQRButton'
 import { hasFeature } from '@/utils/chains'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
 
@@ -14,17 +15,18 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
   const {
     register,
     setValue,
-    watch,
     getFieldState,
+    watch,
     formState: { errors },
   } = useFormContext()
   const currentChain = useCurrentChain()
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
-  const currentValue = watch(name)
   const error = getFieldState(name).error
+  const rawValueRef = useRef<string>('')
+  const watchedValue = watch(name)
 
   // Fetch an ENS resolution for the current address
-  const { address, resolving } = useNameResolver(isDomainLookupEnabled ? currentValue?.trim() : '')
+  const { address, resolving } = useNameResolver(isDomainLookupEnabled ? watchedValue : '')
 
   const setAddressValue = useCallback(
     (value: string) => {
@@ -32,6 +34,8 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
     },
     [setValue, name],
   )
+
+  const validatePrefixed = useMemo(() => validatePrefixedAddress(currentChain?.shortName), [currentChain?.shortName])
 
   // Update the input value with the resolved ENS name
   useEffect(() => {
@@ -50,6 +54,11 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
           fullWidth
           InputProps={{
             ...(props.InputProps || {}),
+
+            startAdornment: !error && !errors[name] && (
+              <InputAdornment position="start">{currentChain?.shortName}:</InputAdornment>
+            ),
+
             endAdornment: resolving && (
               <InputAdornment position="end">
                 <CircularProgress size={20} />
@@ -58,12 +67,22 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
           }}
           InputLabelProps={{
             ...(props.InputLabelProps || {}),
-            shrink: !!currentValue || props.focused,
+            shrink: !!rawValueRef.current || props.focused,
           }}
           {...register(name, {
             required: true,
 
-            validate: (val: string) => validatePrefixedAddress(currentChain?.shortName)(val) || validate?.(val),
+            setValueAs: (value: string) => {
+              const { address, prefix } = parsePrefixedAddress(value)
+              rawValueRef.current = value
+              // Return a bare address if it's a valid shortName
+              return prefix === currentChain?.shortName ? address : value
+            },
+
+            validate: () => {
+              const value = rawValueRef.current
+              return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
+            },
           })}
         />
       </Grid>

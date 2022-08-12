@@ -18,7 +18,6 @@ import { formatDecimals } from '@/utils/formatters'
 import { validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import SendFromBlock from '../../SendFromBlock'
 
@@ -73,13 +72,6 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
 
-  const onFormSubmit = (data: SendAssetsFormData) => {
-    onSubmit({
-      ...data,
-      recipient: parsePrefixedAddress(data.recipient).address,
-    })
-  }
-
   const onMaxAmountClick = () => {
     if (!selectedToken) return
     setValue(Field.amount, formatDecimals(selectedToken.balance, selectedToken.tokenInfo.decimals))
@@ -87,7 +79,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onFormSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
           <SendFromBlock />
 

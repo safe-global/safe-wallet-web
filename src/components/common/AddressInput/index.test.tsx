@@ -17,10 +17,12 @@ jest.mock('@/hooks/useChains', () => ({
 // mock useNameResolver
 jest.mock('@/components/common/AddressInput/useNameResolver', () => ({
   __esModule: true,
-  default: jest.fn((val) => ({
-    address: val === 'zero.eth' ? '0x0000000000000000000000000000000000000000' : undefined,
-    resolving: false,
-  })),
+  default: jest.fn((val) => {
+    return {
+      address: val === 'zero.eth' ? '0x0000000000000000000000000000000000000000' : undefined,
+      resolving: false,
+    }
+  }),
 }))
 
 const TestForm = ({ address, validate }: { address: string; validate?: AddressInputProps['validate'] }) => {
@@ -75,20 +77,20 @@ describe('AddressInput tests', () => {
   it('should validate the address on input', async () => {
     const { input, utils } = setup('')
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: `xyz:${TEST_ADDRESS_A}` } })
       utils.getByText('Submit').click()
     })
 
     await waitFor(() => expect(utils.getByLabelText('Invalid chain prefix "xyz"')).toBeDefined())
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
     })
 
     await waitFor(() => expect(utils.getByLabelText(`"eth" doesn't match the current chain`)).toBeDefined())
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: 'rin:0x123' } })
     })
 
@@ -98,24 +100,24 @@ describe('AddressInput tests', () => {
   it('should accept a custom validate function', async () => {
     const { input, utils } = setup('', (val) => `${val} is wrong`)
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })
       utils.getByText('Submit').click()
     })
 
-    await waitFor(() => expect(utils.getByLabelText(`rin:${TEST_ADDRESS_A} is wrong`)).toBeDefined())
+    await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_A} is wrong`)).toBeDefined())
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
     })
 
-    await waitFor(() => expect(utils.getByLabelText(`rin:${TEST_ADDRESS_B} is wrong`)).toBeDefined())
+    await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_B} is wrong`)).toBeDefined())
   })
 
   it('should resolve ENS names', async () => {
     const { input } = setup('')
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: 'zero.eth' } })
     })
 
@@ -132,10 +134,45 @@ describe('AddressInput tests', () => {
 
     const { input } = setup('')
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: 'zero.eth' } })
     })
 
     await waitFor(() => expect(input.value).toBe('zero.eth'))
+  })
+
+  it('should keep a bare address in the form state', async () => {
+    let methods: any
+
+    const Form = ({ address }: { address: string }) => {
+      const name = 'recipient'
+
+      methods = useForm<{
+        [name]: string
+      }>({
+        defaultValues: {
+          [name]: address,
+        },
+      })
+
+      return (
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(() => null)}>
+            <AddressInput name={name} label="Recipient address" />
+          </form>
+        </FormProvider>
+      )
+    }
+
+    const utils = render(<Form address={TEST_ADDRESS_A} />)
+
+    expect(methods.getValues().recipient).toBe(TEST_ADDRESS_A)
+
+    act(() => {
+      const input = utils.getByLabelText('Recipient address')
+      fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
+    })
+
+    expect(methods.getValues().recipient).toBe(TEST_ADDRESS_B)
   })
 })
