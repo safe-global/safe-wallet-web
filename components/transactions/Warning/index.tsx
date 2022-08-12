@@ -1,5 +1,7 @@
 import { ReactElement } from 'react'
-import { Alert, Link, styled, Tooltip, tooltipClasses, TooltipProps } from '@mui/material'
+import { Alert, Link } from '@mui/material'
+import Tooltip, { tooltipClasses, type TooltipProps } from '@mui/material/Tooltip'
+import { styled } from '@mui/material/styles'
 import css from './styles.module.css'
 
 const UNEXPECTED_DELEGATE_ARTICLE =
