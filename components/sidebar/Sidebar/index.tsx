@@ -1,6 +1,6 @@
 import { useState, type ReactElement } from 'react'
 import { Divider, Drawer, IconButton } from '@mui/material'
-import { ChevronRight } from '@mui/icons-material'
+import ChevronRight from '@mui/icons-material/ChevronRight'
 import { useRouter } from 'next/router'
 import classnames from 'classnames'
 
