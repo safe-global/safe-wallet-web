@@ -2,7 +2,7 @@ import { render, renderHook, RenderHookOptions } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { NextRouter } from 'next/router'
 import { RouterContext } from 'next/dist/shared/lib/router-context'
-import { ThemeProvider } from '@mui/material'
+import { ThemeProvider } from '@mui/material/styles'
 import initTheme from '@/styles/theme'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
