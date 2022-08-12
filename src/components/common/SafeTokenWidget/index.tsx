@@ -8,11 +8,15 @@ import SafeTokenIcon from './safe_token.svg'
 
 import css from './styles.module.css'
 
+export const getSafeTokenAddress = (chainId: string): string => {
+  return SAFE_TOKEN_ADDRESSES[chainId]
+}
+
 const SafeTokenWidget = () => {
   const balances = useBalances()
   const chainId = useChainId()
 
-  const tokenAddress = SAFE_TOKEN_ADDRESSES[chainId]
+  const tokenAddress = getSafeTokenAddress(chainId)
   if (!tokenAddress) {
     return null
   }
