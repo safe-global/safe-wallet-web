@@ -3,7 +3,6 @@ import { Box, Button, CircularProgress, Divider, Grid, InputAdornment, Link, Pap
 import { useForm, FormProvider } from 'react-hook-form'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { LoadSafeFormData } from '@/components/load-safe'
 import AddressInput from '@/components/common/AddressInput'
 import { getSafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChainId from '@/hooks/useChainId'
@@ -13,38 +12,38 @@ import { selectAddedSafes } from '@/store/addedSafesSlice'
 import NameInput from '@/components/common/NameInput'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
+import { SafeFormData } from '@/components/create-safe/types'
 
 type Props = {
-  params: LoadSafeFormData
+  params: SafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
 }
 
 const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
+  console.log(params)
   const fallbackName = useMnemonicSafeName()
   const currentChainId = useChainId()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
-  const formMethods = useForm<LoadSafeFormData>({
+  const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
     defaultValues: {
-      safeAddress: {
-        name: params?.safeAddress.name || fallbackName,
-        address: params?.safeAddress.address,
-        resolving: false,
+      safe: {
+        name: params?.safe?.name || fallbackName,
+        address: params?.safe?.address,
       },
     },
   })
 
   const { register, handleSubmit, watch, setValue, formState } = formMethods
 
-  const safeAddress = watch('safeAddress')
+  const safeAddress = watch('safe.address')
 
-  const { name, resolving } = useAddressResolver(safeAddress.address)
+  const { name, resolving } = useAddressResolver(safeAddress)
 
   useEffect(() => {
-    name && setValue(`safeAddress.name`, name)
-    setValue(`safeAddress.resolving`, resolving)
-  }, [name, resolving, setValue])
+    name && setValue(`safe.name`, name)
+  }, [name, setValue])
 
   const validateSafeAddress = async (address: string) => {
     const { address: safeAddress } = parsePrefixedAddress(address)
@@ -83,11 +82,11 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
             </Typography>
             <Box marginBottom={2} paddingRight={6} width={{ lg: '50%' }}>
               <NameInput
-                name="safeAddress.name"
+                name="safe.name"
                 label="Safe name"
                 InputLabelProps={{ shrink: true }}
                 InputProps={{
-                  endAdornment: safeAddress.resolving && (
+                  endAdornment: resolving && (
                     <InputAdornment position="end">
                       <CircularProgress size={20} />
                     </InputAdornment>
@@ -102,13 +101,13 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 validate={validateSafeAddress}
                 InputLabelProps={{ shrink: true }}
                 InputProps={{
-                  endAdornment: safeAddress.resolving && (
+                  endAdornment: resolving && (
                     <InputAdornment position="end">
                       <CircularProgress size={20} />
                     </InputAdornment>
                   ),
                 }}
-                {...register('safeAddress.address')}
+                {...register('safe.address')}
               />
             </Box>
             <Typography mt={2}>

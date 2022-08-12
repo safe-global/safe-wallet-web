@@ -1,14 +1,14 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
 import NameInput from '@/components/common/NameInput'
-import { CreateSafeFormData } from '@/components/create-safe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
+import { SafeFormData } from '@/components/create-safe/types'
 
 type Props = {
-  params: CreateSafeFormData
+  params: SafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
   setStep: StepRenderProps['setStep']
@@ -17,8 +17,12 @@ type Props = {
 const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
   useResetSafeCreation(setStep)
   const fallbackName = useMnemonicSafeName()
-  const formMethods = useForm<CreateSafeFormData>({
-    defaultValues: { name: params?.name || fallbackName },
+  const formMethods = useForm<SafeFormData>({
+    defaultValues: {
+      safe: {
+        name: params?.safe.name || fallbackName,
+      },
+    },
     mode: 'onChange',
   })
   const { handleSubmit, formState } = formMethods
@@ -34,7 +38,7 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
               new Safe will ONLY be available on <ChainIndicator inline />
             </Typography>
             <FormControl sx={{ width: '50%' }}>
-              <NameInput name="name" label="Safe name" required />
+              <NameInput name="safe.name" label="Safe name" required />
             </FormControl>
             <Typography mt={2}>
               By continuing you consent to the <a href="#">terms of use</a> and <a href="#">privacy policy</a>.
