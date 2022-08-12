@@ -14,14 +14,14 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
-      # - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      # - uses: cypress-io/github-action@v2
-      #   with:
-      #     spec: cypress/integration/smoke/*.spec.js
-      #     browser: chrome
-      #     record: false
-      #     config: baseUrl=https://${{ steps.extract_branch.outputs.branch }}.web-core.pages.dev
-      #   env:
-      #     CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
-      #     CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}
+      - uses: cypress-io/github-action@v2
+        with:
+          spec: cypress/integration/smoke/*.cy.js
+          browser: chrome
+          record: false
+          config: baseUrl=https://${{ steps.extract_branch.outputs.branch }}.web-core.pages.dev
+        env:
+          CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
+          CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}
