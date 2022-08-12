@@ -5,7 +5,6 @@ import Box from '@mui/material/Box'
 
 import { NotificationState } from '@/store/notificationsSlice'
 import NotificationCenterItem from '@/components/notification-center/NotificationCenterItem'
-import { NOTIFICATION_CENTER_LIMIT } from '@/components/notification-center/NotificationCenter'
 
 import css from './styles.module.css'
 
@@ -25,12 +24,7 @@ const NotificationCenterList = ({ notifications, handleClose }: NotificationCent
   }
 
   return (
-    <Box
-      className={css.scrollContainer}
-      sx={{
-        height: notifications.length > NOTIFICATION_CENTER_LIMIT ? '500px' : 'auto',
-      }}
-    >
+    <Box className={css.scrollContainer}>
       <List sx={{ p: 0 }}>
         {notifications.map((notification) => (
           <NotificationCenterItem key={notification.timestamp} {...notification} handleClose={handleClose} />

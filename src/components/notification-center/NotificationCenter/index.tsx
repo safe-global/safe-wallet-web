@@ -22,7 +22,7 @@ import UnreadBadge from '@/components/common/UnreadBadge'
 
 import css from './styles.module.css'
 
-export const NOTIFICATION_CENTER_LIMIT = 4
+const NOTIFICATION_CENTER_LIMIT = 4
 
 export const _getSortedNotifications = (notifications: NotificationState): NotificationState => {
   // Clone as Redux returns read-only array
@@ -133,7 +133,7 @@ const NotificationCenter = (): ReactElement => {
             </div>
             {notifications.length > 0 && (
               <Button variant="text" size="small" onClick={handleClear}>
-                Clear All
+                Clear all
               </Button>
             )}
           </div>
