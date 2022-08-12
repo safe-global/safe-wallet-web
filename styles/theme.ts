@@ -1,4 +1,4 @@
-import { createTheme, Shadows } from '@mui/material'
+import { createTheme, Shadows } from '@mui/material/styles'
 import palette from './colors'
 import darkPalette from './colors-dark'
 import { base } from './spacings'

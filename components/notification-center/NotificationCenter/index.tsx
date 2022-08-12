@@ -1,0 +1,159 @@
+import { useState, useMemo, type ReactElement, type MouseEvent } from 'react'
+import ButtonBase from '@mui/material/ButtonBase'
+import Popover from '@mui/material/Popover'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+
+import { useAppDispatch, useAppSelector } from '@/store'
+import {
+  selectNotifications,
+  readNotification,
+  closeNotification,
+  deleteAllNotifications,
+  type NotificationState,
+} from '@/store/notificationsSlice'
+import NotificationCenterList from '@/components/notification-center/NotificationCenterList'
+import UnreadBadge from '@/components/common/UnreadBadge'
+
+import css from './styles.module.css'
+
+export const NOTIFICATION_CENTER_LIMIT = 4
+
+export const _getSortedNotifications = (notifications: NotificationState): NotificationState => {
+  // Clone as Redux returns read-only array
+  const chronologicalNotifications = [...notifications].sort((a, b) => b.timestamp - a.timestamp)
+
+  const unreadLinkNotifications = chronologicalNotifications.filter(({ isRead, link }) => !isRead && link)
+  const unreadNotifications = chronologicalNotifications.filter(({ isRead, link }) => !isRead && !link)
+  const readNotifications = chronologicalNotifications.filter(({ isRead }) => isRead)
+
+  return [...unreadLinkNotifications, ...unreadNotifications, ...readNotifications]
+}
+
+const NotificationCenter = (): ReactElement => {
+  const [showAll, setShowAll] = useState<boolean>(false)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const open = Boolean(anchorEl)
+
+  const dispatch = useAppDispatch()
+
+  const notifications = useAppSelector(selectNotifications)
+  const sortedNotifications = useMemo(() => _getSortedNotifications(notifications), [notifications])
+
+  const canExpand = notifications.length > NOTIFICATION_CENTER_LIMIT
+
+  const notificationsToShow =
+    canExpand && showAll ? sortedNotifications : sortedNotifications.slice(0, NOTIFICATION_CENTER_LIMIT)
+
+  const unreadCount = useMemo(
+    () => notifications.filter(({ isRead, isDismissed }) => !isRead && isDismissed).length,
+    [notifications],
+  )
+  const hasUnread = unreadCount > 0
+
+  const handleRead = () => {
+    notificationsToShow.forEach(({ isRead, id }) => {
+      if (!isRead) {
+        dispatch(readNotification({ id }))
+      }
+    })
+    setShowAll(false)
+  }
+
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    if (!open) {
+      notifications.forEach(({ isDismissed, id }) => {
+        if (!isDismissed) {
+          dispatch(closeNotification({ id }))
+        }
+      })
+    } else {
+      handleRead()
+    }
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    if (open) {
+      handleRead()
+      setShowAll(false)
+    }
+    setAnchorEl(null)
+  }
+
+  const handleClear = () => {
+    dispatch(deleteAllNotifications())
+  }
+
+  return (
+    <>
+      <ButtonBase disableRipple className={css.bell} onClick={handleClick}>
+        <UnreadBadge
+          invisible={!hasUnread}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+        >
+          <NotificationsNoneOutlinedIcon sx={({ palette }) => ({ color: palette.secondary.light })} />
+        </UnreadBadge>
+      </ButtonBase>
+
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        elevation={3}
+        sx={{ mt: 1 }}
+      >
+        <Paper className={css.popoverContainer}>
+          <div className={css.popoverHeader}>
+            <div>
+              <Typography variant="h4" component="span" fontWeight={700}>
+                Notifications
+              </Typography>
+              {hasUnread && (
+                <Typography variant="caption" className={css.unreadCount}>
+                  {unreadCount}
+                </Typography>
+              )}
+            </div>
+            {notifications.length > 0 && (
+              <Button variant="text" size="small" onClick={handleClear}>
+                Clear All
+              </Button>
+            )}
+          </div>
+          <div>
+            <NotificationCenterList notifications={notificationsToShow} handleClose={handleClose} />
+          </div>
+          {canExpand && (
+            <div className={css.popoverFooter}>
+              <IconButton onClick={() => setShowAll((prev) => !prev)} disableRipple className={css.expandButton}>
+                {showAll ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+              <Typography sx={{ color: ({ palette }) => palette.border.main }}>
+                {showAll ? 'Hide' : `${notifications.length - NOTIFICATION_CENTER_LIMIT} other notifications`}
+              </Typography>
+            </div>
+          )}
+        </Paper>
+      </Popover>
+    </>
+  )
+}
+
+export default NotificationCenter

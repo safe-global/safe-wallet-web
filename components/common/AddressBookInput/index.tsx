@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { Autocomplete, Typography, createFilterOptions } from '@mui/material'
+import { Typography } from '@mui/material'
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import useAddressBook from '@/hooks/useAddressBook'
 import AddressInput, { type AddressInputProps } from '../AddressInput'
 import EthHashInfo from '../EthHashInfo'
