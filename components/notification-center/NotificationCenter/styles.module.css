@@ -1,0 +1,50 @@
+.bell {
+  padding: var(--space-2);
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  border-left: 2px solid var(--color-border-light);
+}
+
+.popoverContainer {
+  width: 446px;
+}
+
+.popoverHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3);
+  border-bottom: 2px solid var(--color-background-main);
+}
+
+.popoverFooter {
+  padding: var(--space-2);
+  display: flex;
+  align-items: center;
+}
+
+.expandButton {
+  box-sizing: border-box;
+  background-color: var(--color-border-light);
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  margin-right: 18px;
+  padding: 0;
+}
+
+.expandButton > * {
+  color: var(--color-border-main);
+}
+
+.unreadCount {
+  display: inline-block;
+  background: var(--color-primary-background);
+  border-radius: 6px;
+  margin-left: 9px;
+  color: var(--color-primary-main);
+  text-align: center;
+  width: 18px;
+  height: 18px;
+}

@@ -1,0 +1,13 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 156px;
+  color: var(--color-border-main);
+}
+
+.scrollContainer {
+  overflow-x: hidden;
+  overflow-y: auto;
+}

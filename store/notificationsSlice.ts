@@ -6,12 +6,14 @@ export type Notification = {
   id: string
   message: string
   groupKey: string
-  variant?: AlertColor
+  variant: AlertColor
+  timestamp: number
   isDismissed?: boolean
   isRead?: boolean
+  link?: { href: string; title: string }
 }
 
-type NotificationState = Notification[]
+export type NotificationState = Notification[]
 
 const initialState: NotificationState = []
 
@@ -44,13 +46,14 @@ export const notificationsSlice = createSlice({
 export const { closeNotification, deleteNotification, deleteAllNotifications, readNotification } =
   notificationsSlice.actions
 
-export const showNotification = (payload: Omit<Notification, 'id'>): AppThunk<string> => {
+export const showNotification = (payload: Omit<Notification, 'id' | 'timestamp'>): AppThunk<string> => {
   return (dispatch) => {
     const id = Math.random().toString(32).slice(2)
 
     const notification: Notification = {
       ...payload,
       id,
+      timestamp: new Date().getTime(),
     }
 
     dispatch(notificationsSlice.actions.enqueueNotification(notification))
