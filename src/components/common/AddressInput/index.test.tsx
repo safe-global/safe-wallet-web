@@ -17,12 +17,10 @@ jest.mock('@/hooks/useChains', () => ({
 // mock useNameResolver
 jest.mock('@/components/common/AddressInput/useNameResolver', () => ({
   __esModule: true,
-  default: jest.fn((val) => {
-    return {
-      address: val === 'zero.eth' ? '0x0000000000000000000000000000000000000000' : undefined,
-      resolving: false,
-    }
-  }),
+  default: jest.fn((val) => ({
+    address: val === 'zero.eth' ? '0x0000000000000000000000000000000000000000' : undefined,
+    resolving: false,
+  })),
 }))
 
 const TestForm = ({ address, validate }: { address: string; validate?: AddressInputProps['validate'] }) => {

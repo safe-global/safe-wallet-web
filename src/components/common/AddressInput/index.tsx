@@ -56,7 +56,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
           InputProps={{
             ...(props.InputProps || {}),
 
-            // Display the current short name in the adornment, unless the value contains a prefix
+            // Display the current short name in the adornment, unless the value contains the same prefix
             startAdornment: !error && !errors[name] && !rawValueRef.current.startsWith(`${currentShortName}:`) && (
               <InputAdornment position="start">{currentShortName}:</InputAdornment>
             ),
@@ -69,7 +69,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
           }}
           InputLabelProps={{
             ...(props.InputLabelProps || {}),
-            shrink: !!rawValueRef.current || props.focused,
+            shrink: !!watchedValue || props.focused,
           }}
           {...register(name, {
             required: true,

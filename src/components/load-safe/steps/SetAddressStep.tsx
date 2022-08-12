@@ -34,7 +34,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     },
   })
 
-  const { register, handleSubmit, watch, setValue, formState } = formMethods
+  const { handleSubmit, watch, setValue, formState } = formMethods
 
   const safeAddress = watch('safeAddress')
 
@@ -68,6 +68,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
               Your connected wallet does not have to be the owner of this Safe. In this case, the interface will provide
               you a read-only view.
             </Typography>
+
             <Typography mb={3}>
               Don&apos;t have the address of the Safe you created?{' '}
               <Link
@@ -78,7 +79,8 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 This article explains how to find it.
               </Link>
             </Typography>
-            <Box marginBottom={2} paddingRight={6} width={{ lg: '50%' }}>
+
+            <Box marginBottom={2} paddingRight={6} width={{ lg: '70%' }}>
               <NameInput
                 name="safeAddress.name"
                 label="Safe name"
@@ -93,14 +95,11 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 required
               />
             </Box>
-            <Box width={{ lg: '50%' }}>
-              <AddressInput
-                label="Safe address"
-                validate={validateSafeAddress}
-                InputLabelProps={{ shrink: true }}
-                {...register('safeAddress.address')}
-              />
+
+            <Box width={{ lg: '70%' }}>
+              <AddressInput label="Safe address" validate={validateSafeAddress} name="safeAddress.address" />
             </Box>
+
             <Typography mt={2}>
               By continuing you consent to the{' '}
               <Link href="https://gnosis-safe.io/terms" target="_blank" rel="noreferrer">
@@ -113,7 +112,9 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
               .
             </Typography>
           </Box>
+
           <Divider />
+
           <Box padding={3}>
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
