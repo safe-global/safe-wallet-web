@@ -63,7 +63,7 @@
   transform: translateX(-25%);
 }
 
-@media (max-width: 768px) {
+@media (--breakpoint-sm) {
   .container {
     padding-top: var(--header-height);
   }
