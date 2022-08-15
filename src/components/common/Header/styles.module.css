@@ -1,10 +1,13 @@
 .container {
   height: var(--header-height);
+  padding: 0 var(--space-2);
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  position: relative;
   border-radius: 0 !important;
   background-color: var(--color-background-paper);
-  padding-right: 0;
 }
 
 .element {
@@ -15,7 +18,7 @@
   border-left: 2px solid var(--color-border-light);
 }
 
-.header > div {
+.container > div {
   padding: 0 var(--space-2);
 }
 
