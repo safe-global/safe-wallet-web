@@ -11,11 +11,18 @@ import CustomTooltip from '@/components/common/CustomTooltip'
 
 const BATCH_LIMIT = 10
 
-const getBatchableTransactions = (items: Transaction[][], nonce: number) => {
+const getBatchableTransactions = (items: (TransactionListItem | Transaction[])[], nonce: number) => {
   const batchableTransactions: Transaction[] = []
   let currentNonce = nonce
 
-  items.forEach((txs) => {
+  const grouped = items
+    .map((item) => {
+      if (Array.isArray(item)) return item
+      if (isTransactionListItem(item)) return [item]
+    })
+    .filter(Boolean) as Transaction[][]
+
+  grouped.forEach((txs) => {
     const sorted = txs.slice().sort((a, b) => b.transaction.timestamp - a.transaction.timestamp)
     sorted.forEach((tx) => {
       if (
@@ -40,21 +47,7 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
 
   const currentNonce = safe.nonce
 
-  const groupedTransactions = useMemo(
-    () =>
-      items
-        .map((item) => {
-          if (Array.isArray(item)) return item
-          if (isTransactionListItem(item)) return [item]
-        })
-        .filter((item) => item !== undefined) as Transaction[][],
-    [items],
-  )
-
-  const batchableTransactions = useMemo(
-    () => getBatchableTransactions(groupedTransactions, currentNonce),
-    [currentNonce, groupedTransactions],
-  )
+  const batchableTransactions = useMemo(() => getBatchableTransactions(items, currentNonce), [currentNonce, items])
 
   const isBatchable = batchableTransactions.length > 1
   const hasPendingTx = batchableTransactions.some((tx) => pendingTxs[tx.transaction.id])
