@@ -55,7 +55,7 @@ describe('useSafeCreation', () => {
         owners: [],
         saltNonce: 123,
         chainId: '4',
-        safeAddress: '0x10',
+        address: '0x10',
         txHash: '0x123',
       },
       jest.fn,

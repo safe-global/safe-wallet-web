@@ -4,6 +4,7 @@
   justify-content: center;
   border-radius: 0 !important;
   background-color: var(--color-background-paper);
+  color: var(--color-text-primary);
   padding-right: 0;
 }
 
