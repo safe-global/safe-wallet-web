@@ -43,7 +43,7 @@
   grid-area: sidebar;
 }
 
-@media (max-width: 768px /* var(--breakpoint-sm) */) {
+@media (max-width: 768px) {
   .container {
     display: block;
     padding-top: var(--header-height);
