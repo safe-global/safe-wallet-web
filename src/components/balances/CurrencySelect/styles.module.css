@@ -12,7 +12,7 @@
   width: 6em;
 }
 
-@media (--breakpoint-sm) {
+@media (max-width: 768px) {
   .container {
     right: var(--space-2);
     top: var(--space-2);

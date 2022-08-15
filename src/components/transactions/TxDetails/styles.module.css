@@ -6,7 +6,7 @@
   border-top: 2px solid var(--color-border-light);
 }
 
-@media (--breakpoint-sm) {
+@media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
   }
@@ -63,7 +63,7 @@
   border-top: 2px solid var(--color-border-light);
 }
 
-@media (--breakpoint-sm) {
+@media (max-width: 768px) {
   .txSigners {
     border-left: 0;
     border-top: 2px solid var(--color-border-light);
