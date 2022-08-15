@@ -16,6 +16,8 @@ import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
 import css from './styles.module.css'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
 
 type TxListProps = {
   items: TransactionListPage['results']
@@ -26,6 +28,7 @@ export const TxListGrid = ({ children }: { children: (ReactElement | null)[] }):
 }
 
 const TxList = ({ items }: TxListProps): ReactElement => {
+  const router = useRouter()
   // Ensure list always starts with a date label
   const list = useMemo(() => {
     const firstDateLabelIndex = items.findIndex(isDateLabel)
@@ -61,10 +64,12 @@ const TxList = ({ items }: TxListProps): ReactElement => {
     }, [])
   }, [list])
 
+  const isQueue = router.pathname === AppRoutes.safe.transactions.queue
+
   return (
     <>
       <BatchExecuteHoverProvider>
-        <BatchExecuteButton items={listWithGroupedItems} />
+        {isQueue && <BatchExecuteButton items={listWithGroupedItems} />}
         <TxListGrid>
           {listWithGroupedItems.map((item, index) => {
             if (Array.isArray(item)) {

@@ -7,6 +7,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
+import CustomTooltip from '@/components/common/CustomTooltip'
 
 const BATCH_LIMIT = 10
 
@@ -50,7 +51,11 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
     [items],
   )
 
-  const batchableTransactions = getBatchableTransactions(groupedTransactions, currentNonce)
+  const batchableTransactions = useMemo(
+    () => getBatchableTransactions(groupedTransactions, currentNonce),
+    [currentNonce, groupedTransactions],
+  )
+
   const isBatchable = batchableTransactions.length > 1
   const hasPendingTx = batchableTransactions.some((tx) => pendingTxs[tx.transaction.id])
   const isDisabled = !isBatchable || hasPendingTx
@@ -64,16 +69,26 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
   }, [hoverContext])
 
   return (
-    <Button
-      onMouseEnter={handleOnMouseEnter}
-      onMouseLeave={handleOnMouseLeave}
-      className={css.button}
-      variant="contained"
-      size="small"
-      disabled={isDisabled}
+    <CustomTooltip
+      placement="top-start"
+      arrow
+      title={
+        isDisabled
+          ? 'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe Nonce.'
+          : 'All transactions highlighted in light green will be included in the batch execution.'
+      }
     >
-      Execute Batch {isBatchable && ` (${batchableTransactions.length})`}
-    </Button>
+      <Button
+        onMouseEnter={handleOnMouseEnter}
+        onMouseLeave={handleOnMouseLeave}
+        className={css.button}
+        variant="contained"
+        size="small"
+        disabled={isDisabled}
+      >
+        Execute Batch {isBatchable && ` (${batchableTransactions.length})`}
+      </Button>
+    </CustomTooltip>
   )
 }
 
