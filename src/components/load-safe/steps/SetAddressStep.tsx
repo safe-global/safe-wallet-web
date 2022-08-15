@@ -28,21 +28,19 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
   const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
     defaultValues: {
-      safe: {
-        name: params?.safe?.name || fallbackName,
-        address: params?.safe?.address,
-      },
+      name: params?.name || fallbackName,
+      address: params?.address,
     },
   })
 
   const { register, handleSubmit, watch, setValue, formState } = formMethods
 
-  const safeAddress = watch('safe.address')
+  const safeAddress = watch('address')
 
   const { name, resolving } = useAddressResolver(safeAddress)
 
   useEffect(() => {
-    name && setValue(`safe.name`, name)
+    name && setValue(`name`, name)
   }, [name, setValue])
 
   const validateSafeAddress = async (address: string) => {
@@ -107,7 +105,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                     </InputAdornment>
                   ),
                 }}
-                {...register('safe.address')}
+                {...register('address')}
               />
             </Box>
             <Typography mt={2}>

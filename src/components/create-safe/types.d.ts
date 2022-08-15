@@ -3,8 +3,7 @@ export type NamedAddress = {
   address: string
 }
 
-export type SafeFormData = {
-  safe: NamedAddress
+export type SafeFormData = NamedAddress & {
   threshold: number
   owners: NamedAddress[]
 }

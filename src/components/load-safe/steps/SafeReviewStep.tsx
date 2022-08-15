@@ -29,8 +29,8 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
   const chainId = currentChain?.chainId || ''
 
   const addSafe = () => {
-    const safeName = params.safe.name
-    const safeAddress = parsePrefixedAddress(params.safe.address).address
+    const safeName = params.name
+    const safeAddress = parsePrefixedAddress(params.address).address
 
     dispatch(
       addOrUpdateSafe({
@@ -83,19 +83,19 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
               <ChainIndicator inline />
             </Typography>
 
-            {params.safe.name && (
+            {params.name && (
               <>
                 <Typography variant="caption" color="text.secondary">
                   Name of the Safe
                 </Typography>
-                <Typography mb={3}>{params.safe.name}</Typography>
+                <Typography mb={3}>{params.name}</Typography>
               </>
             )}
             <Typography variant="caption" color="text.secondary">
               Safe address
             </Typography>
             <Typography mb={3} component="div">
-              <EthHashInfo key={params.safe.address} address={params.safe.address} showName={false} shortAddress />
+              <EthHashInfo key={params.address} address={params.address} showName={false} shortAddress />
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Connected wallet client is owner?

@@ -57,7 +57,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
 
     const safeAddress = await computeNewSafeAddress(ethersProvider, props)
 
-    setPendingSafe({ ...params, safe: { ...params.safe, address: safeAddress }, saltNonce })
+    setPendingSafe({ ...params, address: safeAddress, saltNonce })
     onSubmit(params)
   }
 
@@ -70,7 +70,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
             <Typography variant="caption" color="text.secondary">
               Name of the new Safe
             </Typography>
-            <Typography mb={3}>{params.safe.name}</Typography>
+            <Typography mb={3}>{params.name}</Typography>
             <Typography variant="caption" color="text.secondary">
               Any transaction requires the confirmation of:
             </Typography>

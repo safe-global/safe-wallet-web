@@ -35,9 +35,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
     defaultValues: {
-      safe: {
-        name: params.safe.name,
-      },
+      name: params.name,
       owners: params.owners ?? [defaultOwner],
       threshold: defaultThreshold,
     },

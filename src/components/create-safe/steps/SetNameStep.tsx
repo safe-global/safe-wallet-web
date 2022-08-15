@@ -19,9 +19,7 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
   const fallbackName = useMnemonicSafeName()
   const formMethods = useForm<SafeFormData>({
     defaultValues: {
-      safe: {
-        name: params?.safe.name || fallbackName,
-      },
+      name: params?.name || fallbackName,
     },
     mode: 'onChange',
   })
