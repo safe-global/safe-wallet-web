@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react'
 import { CircularProgress, FormControl, Grid, IconButton } from '@mui/material'
 import NameInput from '@/components/common/NameInput'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -5,7 +6,6 @@ import AddressBookInput from '@/components/common/AddressBookInput'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { FieldArrayWithId, UseFieldArrayRemove, useFormContext, useWatch } from 'react-hook-form'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
-import { useCallback } from 'react'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
 
@@ -20,7 +20,7 @@ export const OwnerRow = ({
   remove?: UseFieldArrayRemove
   readOnly?: boolean
 }) => {
-  const { control, getValues } = useFormContext()
+  const { control, getValues, setValue } = useFormContext()
   const owner = useWatch({
     control,
     name: `owners.${index}`,
@@ -37,6 +37,12 @@ export const OwnerRow = ({
   )
 
   const { name: fallbackName, resolving } = useAddressResolver(owner.address)
+
+  useEffect(() => {
+    if (!owner.name && fallbackName) {
+      setValue(`owners.${index}`, fallbackName)
+    }
+  }, [fallbackName, setValue, owner.name, index])
 
   return (
     <Grid
@@ -61,6 +67,7 @@ export const OwnerRow = ({
                 </InputAdornment>
               ) : null,
             }}
+            required
           />
         </FormControl>
       </Grid>

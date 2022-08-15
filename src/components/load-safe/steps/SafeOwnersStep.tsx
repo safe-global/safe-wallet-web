@@ -20,7 +20,7 @@ type Props = {
 const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
   const chainId = useChainId()
   const formMethods = useForm<SafeFormData>({ defaultValues: params, mode: 'onChange' })
-  const { handleSubmit, setValue, control } = formMethods
+  const { handleSubmit, setValue, control, formState } = formMethods
 
   const { fields } = useFieldArray({
     control,
@@ -71,7 +71,7 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
                 <Button onClick={onBack}>Back</Button>
               </Grid>
               <Grid item>
-                <Button variant="contained" type="submit">
+                <Button variant="contained" type="submit" disabled={!formState.isValid}>
                   Continue
                 </Button>
               </Grid>
