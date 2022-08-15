@@ -18,7 +18,9 @@ describe('useSafeCreation', () => {
     jest.resetAllMocks()
 
     const mockProvider: Web3Provider = new Web3Provider(jest.fn())
+    const mockProviderReadOnly = new JsonRpcProvider()
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
+    jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockProviderReadOnly)
   })
 
   it('should return an AWAITING_WALLET state by default', () => {
@@ -43,12 +45,31 @@ describe('useSafeCreation', () => {
     expect(result.current.status).toBe(SafeCreationStatus.AWAITING)
   })
 
+  it('should return MINING if there is a txHash', async () => {
+    const mockSafe: Safe = new Safe()
+    mockSafe.getAddress = jest.fn(() => '0x0')
+    jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
+      {
+        name: 'joyful-rinkeby-safe',
+        threshold: 1,
+        owners: [],
+        saltNonce: 123,
+        chainId: '4',
+        safeAddress: '0x10',
+        txHash: '0x123',
+      },
+      jest.fn,
+    ])
+
+    const { result } = renderHook(() => useSafeCreation())
+    expect(result.current.status).toBe(SafeCreationStatus.MINING)
+  })
+
   it('should return SUCCESS if the safe creation promise resolves', async () => {
     const mockSafe: Safe = new Safe()
     mockSafe.getAddress = jest.fn(() => '0x0')
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(wrongChain, 'default').mockReturnValue(false)
-    jest.spyOn(createSafe, 'computeNewSafeAddress').mockImplementation(() => Promise.resolve(ZERO_ADDRESS))
     jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.resolve(mockSafe))
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
