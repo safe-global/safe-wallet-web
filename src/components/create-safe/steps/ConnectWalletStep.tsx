@@ -18,7 +18,7 @@ export const ConnectWalletContent = ({
     <>
       {wallet && !isWrongChain && <Typography mb={2}>Wallet connected</Typography>}
       {wallet ? (
-        <Typography mb={2}>
+        <Typography mb={2} component="div">
           Creating a safe on <NetworkSelector />
         </Typography>
       ) : (

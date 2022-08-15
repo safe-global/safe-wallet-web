@@ -53,11 +53,11 @@ describe('useSafeCreation', () => {
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
         name: 'joyful-rinkeby-safe',
+        address: '0x10',
         threshold: 1,
         owners: [],
         saltNonce: 123,
         chainId: '4',
-        safeAddress: '0x10',
       },
       jest.fn,
     ])
@@ -79,11 +79,11 @@ describe('useSafeCreation', () => {
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
         name: 'joyful-rinkeby-safe',
+        address: '0x10',
         threshold: 1,
         owners: [],
         saltNonce: 123,
         chainId: '4',
-        safeAddress: '0x10',
       },
       jest.fn,
     ])

@@ -4,22 +4,22 @@ import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { LoadSafeFormData } from '@/components/load-safe'
 import useAsync from '@/hooks/useAsync'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
 import useChainId from '@/hooks/useChainId'
+import { SafeFormData } from '@/components/create-safe/types'
 
 type Props = {
-  params: LoadSafeFormData
+  params: SafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
 }
 
 const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
   const chainId = useChainId()
-  const formMethods = useForm<LoadSafeFormData>({ defaultValues: params, mode: 'onChange' })
+  const formMethods = useForm<SafeFormData>({ defaultValues: params, mode: 'onChange' })
   const { handleSubmit, setValue, control, formState } = formMethods
 
   const { fields } = useFieldArray({
@@ -28,9 +28,9 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
   })
 
   const [safeInfo] = useAsync<SafeInfo | undefined>(async () => {
-    if (!params.safeAddress.address) return
-    return getSafeInfo(chainId, params.safeAddress.address)
-  }, [chainId, params.safeAddress.address])
+    if (!params.address) return
+    return getSafeInfo(chainId, params.address)
+  }, [chainId, params.address])
 
   useEffect(() => {
     if (!safeInfo) return

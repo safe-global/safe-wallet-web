@@ -33,7 +33,7 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
     dispatch(
       upsertAddressBookEntry({
         chainId: chainId,
-        address: pendingSafe.safeAddress,
+        address: pendingSafe.address,
         name: pendingSafe.name,
       }),
     )
@@ -46,7 +46,7 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
       addOrUpdateSafe({
         safe: {
           ...defaultSafeInfo,
-          address: { value: pendingSafe.safeAddress, name: pendingSafe.name },
+          address: { value: pendingSafe.address, name: pendingSafe.name },
           threshold: pendingSafe.threshold,
           owners: pendingSafe.owners.map((owner) => ({
             value: owner.address,
@@ -124,7 +124,7 @@ export const useSafeCreation = () => {
   useEffect(() => {
     if (!pendingSafe) return
 
-    setSafeAddress(pendingSafe.safeAddress)
+    setSafeAddress(pendingSafe.address)
   }, [pendingSafe])
 
   useEffect(() => {
