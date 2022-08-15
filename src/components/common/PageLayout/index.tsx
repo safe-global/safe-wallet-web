@@ -24,9 +24,7 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
 
   return (
     <div className={css.container}>
-      <header>
-        <Header onMenuToggle={onMenuToggle} />
-      </header>
+      <Header onMenuToggle={onMenuToggle} />
 
       {/* Desktop sidebar */}
       <aside className={css.sidebar}>{sidebar}</aside>
