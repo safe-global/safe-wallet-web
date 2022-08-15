@@ -139,40 +139,54 @@ describe('AddressInput tests', () => {
     await waitFor(() => expect(input.value).toBe('zero.eth'))
   })
 
+  it('should show chain prefix in an adornment', async () => {
+    const { input } = setup(TEST_ADDRESS_A)
+
+    await waitFor(() => expect(input.value).toBe(TEST_ADDRESS_A))
+
+    expect(input.previousElementSibling?.textContent).toBe('rin:')
+  })
+
+  it('should not show adornment when the value contains correct prefix', async () => {
+    const { input } = setup(`rin:${TEST_ADDRESS_B}`)
+
+    act(() => {
+      fireEvent.change(input, { target: { value: 'rin:${TEST_ADDRESS_B}' } })
+    })
+
+    expect(input.previousElementSibling).toBe(null)
+  })
+
   it('should keep a bare address in the form state', async () => {
     let methods: any
 
-    const Form = ({ address }: { address: string }) => {
+    const Form = () => {
       const name = 'recipient'
 
       methods = useForm<{
         [name]: string
       }>({
         defaultValues: {
-          [name]: address,
+          [name]: '',
         },
       })
 
       return (
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(() => null)}>
-            <AddressInput name={name} label="Recipient address" />
+            <AddressInput name={name} label="Recipient" />
           </form>
         </FormProvider>
       )
     }
 
-    const utils = render(<Form address={TEST_ADDRESS_A} />)
-    const input = utils.getByLabelText('Recipient address') as HTMLInputElement
-
-    expect(methods.getValues().recipient).toBe(TEST_ADDRESS_A)
-    expect(input.value).toBe(TEST_ADDRESS_A)
-    expect(input.previousElementSibling?.textContent).toBe('rin:')
+    const utils = render(<Form />)
+    const input = utils.getByLabelText('Recipient') as HTMLInputElement
 
     act(() => {
-      fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
+      fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })
     })
 
-    expect(methods.getValues().recipient).toBe(TEST_ADDRESS_B)
+    expect(methods.getValues().recipient).toBe(TEST_ADDRESS_A)
   })
 })
