@@ -84,7 +84,7 @@ const PrefixedEthHashInfo = ({
   const chain = useCurrentChain()
   const addressBook = useAddressBook()
   // prefer address book name
-  const name = showName ? addressBook[props.address] || props.name : undefined
+  const name = showName ? addressBook?.[props.address] || props.name : undefined
   const prefix = settings.shortName.show ? chain?.shortName : undefined
 
   return <EthHashInfo prefix={prefix} {...props} name={name} />

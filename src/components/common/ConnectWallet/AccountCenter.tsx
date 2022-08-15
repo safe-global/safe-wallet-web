@@ -89,7 +89,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         <Paper className={css.popoverContainer}>
           <Identicon address={wallet.address} />
 
-          <Typography variant="h5">{addressBook[wallet.address] || wallet.ens}</Typography>
+          <Typography variant="h5">{addressBook?.[wallet.address] || wallet.ens}</Typography>
 
           <Box bgcolor="border.background" px={2} py={1} fontSize={14}>
             <EthHashInfo address={wallet.address} showAvatar={false} showName={false} hasExplorer showCopyButton />

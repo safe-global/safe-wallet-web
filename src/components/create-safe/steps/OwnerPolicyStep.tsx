@@ -22,7 +22,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   const wallet = useWallet()
   const addressBook = useAddressBook()
 
-  const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
+  const defaultOwnerAddressBookName = wallet?.address && addressBook ? addressBook[wallet.address] : undefined
 
   const defaultOwner: NamedAddress = {
     name: defaultOwnerAddressBookName || wallet?.ens || '',

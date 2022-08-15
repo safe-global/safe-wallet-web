@@ -43,7 +43,7 @@ export const ReviewRemoveOwnerTxStep = ({
           <Typography variant="caption" color="text.secondary">
             Name of the Safe:
           </Typography>
-          <Typography mb={3}>{addressBook[safeAddress] || 'No name'}</Typography>
+          <Typography mb={3}>{addressBook?.[safeAddress] || 'No name'}</Typography>
           <Typography variant="caption" color="text.secondary">
             Any transaction requires the confirmation of:
           </Typography>

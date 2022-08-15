@@ -30,7 +30,7 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const isGranted = useIsGranted()
   const addressBook = useAddressBook()
-  const name = addressBook?.[address]
+  const name = addressBook?.[address] ?? ''
 
   const handleOpenContextMenu = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
     setAnchorEl(e.currentTarget)

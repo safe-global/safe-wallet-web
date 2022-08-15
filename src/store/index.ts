@@ -5,7 +5,8 @@ import {
   type PreloadedState,
   type AnyAction,
 } from '@reduxjs/toolkit'
-import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
+import { EqualityFn, useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
+import { useEffect, useState } from 'react'
 import { chainsSlice } from './chainsSlice'
 import { safeInfoSlice } from './safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
@@ -63,3 +64,17 @@ export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unk
 
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+
+export const usePersistedAppSelector = <TSelected>(
+  selector: (state: RootState) => TSelected,
+  equalityFn?: EqualityFn<TSelected>,
+): TSelected | undefined => {
+  const [persistedValue, setPersistedValue] = useState<TSelected>()
+  const selection = useAppSelector(selector, equalityFn)
+
+  useEffect(() => {
+    setPersistedValue(selection)
+  }, [selection])
+
+  return persistedValue
+}

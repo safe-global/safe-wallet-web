@@ -20,7 +20,7 @@ export const useAddressResolver = (address: string) => {
         return
       }
 
-      const nameFromAddressBook = addressBook[ownerAddress]
+      const nameFromAddressBook = addressBook?.[ownerAddress]
       if (nameFromAddressBook) {
         return nameFromAddressBook
       }

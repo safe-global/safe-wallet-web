@@ -88,7 +88,7 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
                     <OwnerRow
                       key={owner}
                       address={owner}
-                      name={addressBook[owner]}
+                      name={addressBook?.[owner]}
                       chainId={chainId}
                       isGranted={isGranted}
                     />

@@ -18,7 +18,7 @@ const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement =
   const { watch, setValue } = useFormContext()
   const addressValue = watch(name)
 
-  const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
+  const addressBookEntries = Object.entries(addressBook ?? {}).map(([address, name]) => ({
     label: address,
     name,
   }))
