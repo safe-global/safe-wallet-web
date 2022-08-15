@@ -21,7 +21,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
     ) : null
 
   return (
-    <Box mb={3}>
+    <Box mb={3} position="relative">
       {loading ? (
         <CircularProgress size={40} sx={{ marginTop: 2 }} />
       ) : error ? (

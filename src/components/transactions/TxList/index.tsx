@@ -14,6 +14,8 @@ import {
 } from '@/utils/transaction-guards'
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
 import css from './styles.module.css'
+import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
+import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 
 type TxListProps = {
   items: TransactionListPage['results']
@@ -60,15 +62,20 @@ const TxList = ({ items }: TxListProps): ReactElement => {
   }, [list])
 
   return (
-    <TxListGrid>
-      {listWithGroupedItems.map((item, index) => {
-        if (Array.isArray(item)) {
-          return <GroupedTxListItems key={index} groupedListItems={item} />
-        }
+    <>
+      <BatchExecuteHoverProvider>
+        <BatchExecuteButton items={listWithGroupedItems} />
+        <TxListGrid>
+          {listWithGroupedItems.map((item, index) => {
+            if (Array.isArray(item)) {
+              return <GroupedTxListItems key={index} groupedListItems={item} />
+            }
 
-        return <TxListItem key={index} item={item} />
-      })}
-    </TxListGrid>
+            return <TxListItem key={index} item={item} />
+          })}
+        </TxListGrid>
+      </BatchExecuteHoverProvider>
+    </>
   )
 }
 
