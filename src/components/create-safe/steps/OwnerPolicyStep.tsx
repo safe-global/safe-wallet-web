@@ -3,15 +3,15 @@ import { ReactElement } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
+import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
 
 type Props = {
-  params: CreateSafeFormData
+  params: SafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
   setStep: StepRenderProps['setStep']
@@ -24,15 +24,14 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
 
   const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
 
-  const defaultOwner: Owner = {
+  const defaultOwner: NamedAddress = {
     name: defaultOwnerAddressBookName || wallet?.ens || '',
     address: wallet?.address || '',
-    resolving: false,
   }
 
   const defaultThreshold = params.threshold || 1
 
-  const formMethods = useForm<CreateSafeFormData>({
+  const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
     defaultValues: {
       name: params.name,
@@ -48,7 +47,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   })
 
   const addOwner = () => {
-    append({ name: '', address: '', resolving: false })
+    append({ name: '', address: '' })
   }
 
   return (

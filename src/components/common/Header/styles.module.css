@@ -33,7 +33,7 @@
   display: none;
 }
 
-@media (--breakpoint-sm) {
+@media (max-width: 768px) {
   .logo,
   .tokenWidget,
   .notificationCenter,

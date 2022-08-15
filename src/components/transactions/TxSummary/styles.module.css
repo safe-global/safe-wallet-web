@@ -20,7 +20,7 @@
   grid-template-areas: 'nonce type info date confirmations actions status';
 }
 
-@media (--breakpoint-sm) {
+@media (max-width: 768px) {
   .gridContainer {
     gap: var(--space-1);
   }

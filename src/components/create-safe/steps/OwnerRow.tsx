@@ -4,11 +4,10 @@ import InputAdornment from '@mui/material/InputAdornment'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { FieldArrayWithId, UseFieldArrayRemove, useFormContext, useWatch } from 'react-hook-form'
-import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
-import { useCallback, useEffect } from 'react'
-import { LoadSafeFormData } from '@/components/load-safe'
+import { useCallback } from 'react'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
 
 export const OwnerRow = ({
   field,
@@ -16,12 +15,12 @@ export const OwnerRow = ({
   remove,
   readOnly = false,
 }: {
-  field: FieldArrayWithId<CreateSafeFormData | LoadSafeFormData, 'owners', 'id'>
+  field: FieldArrayWithId<SafeFormData, 'owners', 'id'>
   index: number
   remove?: UseFieldArrayRemove
   readOnly?: boolean
 }) => {
-  const { setValue, control, getValues } = useFormContext()
+  const { control, getValues } = useFormContext()
   const owner = useWatch({
     control,
     name: `owners.${index}`,
@@ -30,7 +29,7 @@ export const OwnerRow = ({
   const validateSafeAddress = useCallback(
     async (address: string) => {
       const owners = getValues('owners')
-      if (owners.filter((owner: Owner) => owner.address === address).length > 1) {
+      if (owners.filter((owner: NamedAddress) => owner.address === address).length > 1) {
         return 'Owner is already added'
       }
     },
@@ -38,10 +37,6 @@ export const OwnerRow = ({
   )
 
   const { name: fallbackName, resolving } = useAddressResolver(owner.address)
-
-  useEffect(() => {
-    setValue(`owners.${index}.resolving`, resolving)
-  }, [index, resolving, setValue])
 
   return (
     <Grid
@@ -60,7 +55,7 @@ export const OwnerRow = ({
             InputLabelProps={{ shrink: true }}
             placeholder={fallbackName}
             InputProps={{
-              endAdornment: owner.resolving ? (
+              endAdornment: resolving ? (
                 <InputAdornment position="end">
                   <CircularProgress size={20} />
                 </InputAdornment>

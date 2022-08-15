@@ -33,7 +33,7 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
     dispatch(
       upsertAddressBookEntry({
         chainId: chainId,
-        address: pendingSafe.safeAddress,
+        address: pendingSafe.address,
         name: pendingSafe.name,
       }),
     )
@@ -46,7 +46,7 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
       addOrUpdateSafe({
         safe: {
           ...defaultSafeInfo,
-          address: { value: pendingSafe.safeAddress, name: pendingSafe.name },
+          address: { value: pendingSafe.address, name: pendingSafe.name },
           threshold: pendingSafe.threshold,
           owners: pendingSafe.owners.map((owner) => ({
             value: owner.address,
@@ -117,21 +117,23 @@ export const useSafeCreation = () => {
   useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus })
 
   useEffect(() => {
+    if (pendingSafe?.txHash) return
+
     const newStatus = !wallet || isWrongChain ? SafeCreationStatus.AWAITING_WALLET : SafeCreationStatus.AWAITING
     setStatus(newStatus)
-  }, [wallet, isWrongChain])
+  }, [wallet, isWrongChain, pendingSafe?.txHash])
 
   useEffect(() => {
     if (!pendingSafe) return
 
-    setSafeAddress(pendingSafe.safeAddress)
+    setSafeAddress(pendingSafe.address)
   }, [pendingSafe])
 
   useEffect(() => {
-    if (status === SafeCreationStatus.AWAITING) {
+    if (status === SafeCreationStatus.AWAITING && !pendingSafe?.txHash) {
       createSafe()
     }
-  }, [status, createSafe])
+  }, [status, createSafe, pendingSafe?.txHash])
 
   return {
     safeAddress,

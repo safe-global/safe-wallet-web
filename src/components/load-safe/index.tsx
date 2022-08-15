@@ -8,15 +8,7 @@ import SafeOwnersStep from '@/components/load-safe/steps/SafeOwnersStep'
 import SetAddressStep from '@/components/load-safe/steps/SetAddressStep'
 import SafeReviewStep from '@/components/load-safe/steps/SafeReviewStep'
 import SelectNetworkStep from '@/components/load-safe/steps/SelectNetworkStep'
-import { Owner } from '@/components/create-safe'
-
-export type LoadSafeFormData = {
-  safeAddress: Owner
-  threshold: number
-  owners?: Owner[]
-}
-
-export type LoadSafeFormDataReview = Omit<LoadSafeFormData, 'owners'> & { owners: Owner[] }
+import { SafeFormData } from '@/components/create-safe/types'
 
 export const LoadSafeSteps: TxStepperProps['steps'] = [
   {
@@ -26,18 +18,18 @@ export const LoadSafeSteps: TxStepperProps['steps'] = [
   {
     label: 'Name and address',
     render: (data, onSubmit, onBack) => (
-      <SetAddressStep params={data as LoadSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+      <SetAddressStep params={data as SafeFormData} onSubmit={onSubmit} onBack={onBack} />
     ),
   },
   {
     label: 'Owners',
     render: (data, onSubmit, onBack) => (
-      <SafeOwnersStep params={data as LoadSafeFormData} onSubmit={onSubmit} onBack={onBack} />
+      <SafeOwnersStep params={data as SafeFormData} onSubmit={onSubmit} onBack={onBack} />
     ),
   },
   {
     label: 'Review',
-    render: (data, _, onBack) => <SafeReviewStep params={data as LoadSafeFormDataReview} onBack={onBack} />,
+    render: (data, _, onBack) => <SafeReviewStep params={data as SafeFormData} onBack={onBack} />,
   },
 ]
 
