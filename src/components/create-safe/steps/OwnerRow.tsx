@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react'
 import { CircularProgress, FormControl, Grid, IconButton } from '@mui/material'
 import NameInput from '@/components/common/NameInput'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -5,8 +6,6 @@ import AddressBookInput from '@/components/common/AddressBookInput'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { FieldArrayWithId, UseFieldArrayRemove, useFormContext, useWatch } from 'react-hook-form'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
-import { useCallback, useEffect } from 'react'
-import { useMnemonicName } from '@/hooks/useMnemonicName'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
 
@@ -21,8 +20,7 @@ export const OwnerRow = ({
   remove?: UseFieldArrayRemove
   readOnly?: boolean
 }) => {
-  const fallbackName = useMnemonicName()
-  const { setValue, control, getValues } = useFormContext()
+  const { control, getValues, setValue } = useFormContext()
   const owner = useWatch({
     control,
     name: `owners.${index}`,
@@ -38,12 +36,13 @@ export const OwnerRow = ({
     [getValues],
   )
 
-  const { name, resolving } = useAddressResolver(owner.address)
+  const { name: fallbackName, resolving } = useAddressResolver(owner.address)
 
   useEffect(() => {
-    const ownerName = name ?? fallbackName
-    setValue(`owners.${index}.name`, ownerName, { shouldValidate: true })
-  }, [fallbackName, index, name, setValue])
+    if (!owner.name && fallbackName) {
+      setValue(`owners.${index}.fallbackName`, fallbackName)
+    }
+  }, [fallbackName, setValue, owner.name, index])
 
   return (
     <Grid
@@ -60,6 +59,7 @@ export const OwnerRow = ({
             name={`owners.${index}.name`}
             label="Owner name"
             InputLabelProps={{ shrink: true }}
+            placeholder={fallbackName}
             InputProps={{
               endAdornment: resolving ? (
                 <InputAdornment position="end">
@@ -67,7 +67,6 @@ export const OwnerRow = ({
                 </InputAdornment>
               ) : null,
             }}
-            required
           />
         </FormControl>
       </Grid>

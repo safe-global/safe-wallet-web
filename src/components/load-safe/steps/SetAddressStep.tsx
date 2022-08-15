@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Box, Button, CircularProgress, Divider, Grid, InputAdornment, Link, Paper, Typography } from '@mui/material'
 import { useForm, FormProvider } from 'react-hook-form'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -19,27 +19,27 @@ type Props = {
   onBack: StepRenderProps['onBack']
 }
 
+enum FormField {
+  address = 'address',
+  name = 'name',
+}
+
 const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
-  const fallbackName = useMnemonicSafeName()
   const currentChainId = useChainId()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
   const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
     defaultValues: {
-      name: params?.name || fallbackName,
-      address: params?.address,
+      [FormField.address]: params?.address,
+      [FormField.name]: params?.name,
     },
   })
 
-  const { handleSubmit, watch, setValue, formState } = formMethods
+  const { handleSubmit, watch, formState } = formMethods
 
   const safeAddress = watch('address')
 
-  const { name, resolving } = useAddressResolver(safeAddress)
-
-  useEffect(() => {
-    name && setValue(`name`, name)
-  }, [name, setValue])
+  const { name: fallbackName, resolving } = useAddressResolver(safeAddress, useMnemonicSafeName())
 
   const validateSafeAddress = async (address: string) => {
     if (addedSafes && Object.keys(addedSafes).includes(address)) {
@@ -53,10 +53,17 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     }
   }
 
+  const onFormSubmit = handleSubmit((data: SafeFormData) => {
+    onSubmit({
+      ...data,
+      [FormField.name]: data[FormField.name] || fallbackName,
+    })
+  })
+
   return (
     <FormProvider {...formMethods}>
       <Paper>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onFormSubmit}>
           <Box padding={3}>
             <Typography variant="body1" mb={2}>
               You are about to add an existing Safe on <ChainIndicator inline />. First, choose a name and enter the
@@ -78,8 +85,9 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
 
             <Box marginBottom={2} paddingRight={6} width={{ lg: '70%' }}>
               <NameInput
-                name="safe.name"
+                name={FormField.name}
                 label="Safe name"
+                placeholder={fallbackName}
                 InputLabelProps={{ shrink: true }}
                 InputProps={{
                   endAdornment: resolving && (
@@ -88,12 +96,11 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                     </InputAdornment>
                   ),
                 }}
-                required
               />
             </Box>
 
             <Box width={{ lg: '70%' }}>
-              <AddressInput label="Safe address" validate={validateSafeAddress} name="address" />
+              <AddressInput label="Safe address" validate={validateSafeAddress} name={FormField.address} />
             </Box>
 
             <Typography mt={2}>

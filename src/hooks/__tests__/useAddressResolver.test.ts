@@ -2,32 +2,28 @@ import { useAddressResolver } from '@/hooks/useAddressResolver'
 import * as addressBook from '@/hooks/useAddressBook'
 import { ethers } from 'ethers'
 import * as domains from '@/services/domains'
-import * as useMnemonicSafeName from '@/hooks/useMnemonicName/index'
 import * as web3 from '@/hooks/wallets/web3'
 import * as useChains from '@/hooks/useChains'
-import { renderHook, waitFor } from '@/tests/test-utils'
+import { act, renderHook, waitFor } from '@/tests/test-utils'
 import { ChainInfo, FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 const ADDRESS1 = ethers.utils.hexZeroPad('0x1', 20)
-const FALLBACK_NAME = 'FALLBACK'
 const mockProvider = new JsonRpcProvider()
 
 describe('useAddressResolver', () => {
   beforeEach(() => {
     jest.resetAllMocks()
-
-    jest.spyOn(useMnemonicSafeName, 'useMnemonicSafeName').mockImplementation(() => FALLBACK_NAME)
     jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockProvider)
   })
 
-  it('returns undefined for an empty address', async () => {
-    const { result } = renderHook(() => useAddressResolver(''))
+  it('returns a fallback for an empty address', async () => {
+    const { result } = renderHook(() => useAddressResolver('', 'feisty-lion-fallback'))
 
-    await waitFor(() => {
-      expect(result.current.name).toBeUndefined()
-      expect(result.current.resolving).toBe(false)
-    })
+    await act(() => Promise.resolve())
+
+    expect(result.current.resolving).toBe(false)
+    expect(result.current.name).toBe('feisty-lion-fallback')
   })
 
   it('resolves name from address book if found', async () => {
@@ -71,10 +67,10 @@ describe('useAddressResolver', () => {
       chainId: '1',
     } as ChainInfo)
 
-    const { result } = renderHook(() => useAddressResolver(ADDRESS1))
+    const { result } = renderHook(() => useAddressResolver(ADDRESS1, 'fallback-caracal'))
 
     await waitFor(() => {
-      expect(result.current.name).toBeUndefined()
+      expect(result.current.name).toBe('fallback-caracal')
       expect(result.current.resolving).toBe(false)
       expect(domainsMock).toHaveBeenCalledTimes(0)
     })

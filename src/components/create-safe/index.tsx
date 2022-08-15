@@ -19,7 +19,7 @@ export type PendingSafeByChain = Record<string, PendingSafeData | undefined>
 export const CreateSafeSteps: TxStepperProps['steps'] = [
   {
     label: 'Connect wallet & select network',
-    render: (data, onSubmit, onBack) => <ConnectWalletStep onSubmit={onSubmit} onBack={onBack} />,
+    render: (_, onSubmit, onBack) => <ConnectWalletStep onSubmit={onSubmit} onBack={onBack} />,
   },
   {
     label: 'Name',

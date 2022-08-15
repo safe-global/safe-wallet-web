@@ -14,42 +14,66 @@ type Props = {
   setStep: StepRenderProps['setStep']
 }
 
+enum FormField {
+  address = 'address',
+  name = 'name',
+}
+
 const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
   useResetSafeCreation(setStep)
   const fallbackName = useMnemonicSafeName()
+
   const formMethods = useForm<SafeFormData>({
     defaultValues: {
-      name: params?.name || fallbackName,
+      name: params?.name,
     },
     mode: 'onChange',
   })
-  const { handleSubmit, formState } = formMethods
+
+  const { handleSubmit } = formMethods
+
+  const onFormSubmit = handleSubmit((data: SafeFormData) => {
+    onSubmit({
+      ...data,
+      name: data.name || fallbackName,
+    })
+  })
 
   return (
     <Paper>
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onFormSubmit}>
           <Box padding={3}>
             <Typography variant="body1" mb={2}>
               You are about to create a new Safe wallet with one or more owners. First, let&apos;s give your new wallet
               a name. This name is only stored locally and will never be shared with Gnosis or any third parties. The
               new Safe will ONLY be available on <ChainIndicator inline />
             </Typography>
+
             <FormControl sx={{ width: '50%' }}>
-              <NameInput name="safe.name" label="Safe name" required />
+              <NameInput
+                name={FormField.name}
+                label="Safe name"
+                placeholder={fallbackName}
+                InputLabelProps={{ shrink: true }}
+              />
             </FormControl>
+
             <Typography mt={2}>
               By continuing you consent to the <a href="#">terms of use</a> and <a href="#">privacy policy</a>.
             </Typography>
           </Box>
+
           <Divider />
+
           <Box padding={3}>
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
                 <Button onClick={onBack}>Back</Button>
               </Grid>
+
               <Grid item>
-                <Button variant="contained" type="submit" disabled={!formState.isValid}>
+                <Button variant="contained" type="submit">
                   Continue
                 </Button>
               </Grid>
