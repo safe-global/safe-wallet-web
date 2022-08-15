@@ -6,7 +6,6 @@
   flex-wrap: nowrap;
   align-items: center;
   position: relative;
-  z-index: 2;
   border-radius: 0 !important;
   background-color: var(--color-background-paper);
 }
@@ -19,7 +18,7 @@
   border-left: 2px solid var(--color-border-light);
 }
 
-.header > div {
+.container > div {
   padding: 0 var(--space-2);
 }
 
@@ -35,14 +34,6 @@
 
 .menuButton {
   display: none;
-}
-
-.tokenWidget {
-  height: 100%;
-}
-
-.chainSwitcher {
-  margin-right: var(--space-2);
 }
 
 @media (max-width: 600px) {
