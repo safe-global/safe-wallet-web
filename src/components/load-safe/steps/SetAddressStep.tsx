@@ -19,14 +19,19 @@ type Props = {
   onBack: StepRenderProps['onBack']
 }
 
+enum FormField {
+  address = 'address',
+  name = 'name',
+}
+
 const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
   const currentChainId = useChainId()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
   const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
     defaultValues: {
-      name: params?.name,
-      address: params?.address,
+      [FormField.address]: params?.address,
+      [FormField.name]: params?.name,
     },
   })
 
@@ -48,8 +53,11 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     }
   }
 
-  const onFormSubmit = handleSubmit(async (data: SafeFormData) => {
-    onSubmit({ ...data, name: data.name || fallbackName })
+  const onFormSubmit = handleSubmit((data: SafeFormData) => {
+    onSubmit({
+      ...data,
+      [FormField.name]: data[FormField.name] || fallbackName,
+    })
   })
 
   return (
@@ -77,7 +85,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
 
             <Box marginBottom={2} paddingRight={6} width={{ lg: '70%' }}>
               <NameInput
-                name="safe.name"
+                name={FormField.name}
                 label="Safe name"
                 placeholder={fallbackName}
                 InputLabelProps={{ shrink: true }}
@@ -92,7 +100,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
             </Box>
 
             <Box width={{ lg: '70%' }}>
-              <AddressInput label="Safe address" validate={validateSafeAddress} name="address" />
+              <AddressInput label="Safe address" validate={validateSafeAddress} name={FormField.address} />
             </Box>
 
             <Typography mt={2}>

@@ -1,11 +1,9 @@
 export const AppRoutes = {
   welcome: '/welcome',
   open: '/open',
+  load: '/load',
   index: '/',
   demoTheme: '/demo-theme',
-  load: {
-    index: '/load',
-  },
   safe: {
     index: '/safe',
     home: '/safe/home',

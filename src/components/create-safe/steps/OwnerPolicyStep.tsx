@@ -40,6 +40,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     },
   })
   const { register, handleSubmit, control, formState } = formMethods
+  const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -66,47 +67,56 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
               <ChainIndicator inline />
             </Typography>
           </Box>
+
           <Divider />
+
           <Grid container gap={3} flexWrap="nowrap" paddingX={3} paddingY={1}>
             <Grid item xs={12} md={4}>
               Name
             </Grid>
+
             <Grid item xs={12} md={7}>
               Address
             </Grid>
+
             <Grid item xs={1} />
           </Grid>
+
           <Divider />
+
           <Box padding={3}>
             {fields.map((field, index) => (
               <OwnerRow key={field.id} field={field} index={index} remove={remove} />
             ))}
+
             <Button onClick={addOwner} sx={{ fontWeight: 'normal' }}>
               + Add another owner
             </Button>
+
             <Typography marginTop={3} marginBottom={1}>
               Any transaction requires the confirmation of:
             </Typography>
+
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl>
                 <Select {...register('threshold')} defaultValue={defaultThreshold}>
-                  {fields.map((field, index) => {
-                    return (
-                      <MenuItem key={field.id} value={index + 1}>
-                        {index + 1}
-                      </MenuItem>
-                    )
-                  })}
+                  {fields.map((field, index) => (
+                    <MenuItem key={field.id} value={index + 1}>
+                      {index + 1}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <Typography>out of {fields.length} owner(s)</Typography>
             </Box>
+
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
                 <Button onClick={onBack}>Back</Button>
               </Grid>
+
               <Grid item>
-                <Button variant="contained" type="submit" disabled={!formState.isValid}>
+                <Button variant="contained" type="submit" disabled={!isValid}>
                   Continue
                 </Button>
               </Grid>

@@ -36,11 +36,11 @@ export const OwnerRow = ({
     [getValues],
   )
 
-  const { name: fallbackName, resolving } = useAddressResolver(owner.address)
+  const { name: fallbackName, resolving } = useAddressResolver(owner.address, '')
 
   useEffect(() => {
     if (!owner.name && fallbackName) {
-      setValue(`owners.${index}`, fallbackName)
+      setValue(`owners.${index}.name`, fallbackName)
     }
   }, [fallbackName, setValue, owner.name, index])
 

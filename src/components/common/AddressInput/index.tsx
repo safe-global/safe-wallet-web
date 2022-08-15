@@ -16,13 +16,14 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
     register,
     setValue,
     watch,
+    getFieldState,
     formState: { errors },
   } = useFormContext()
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
   const watchedValue = watch(name)
   const currentShortName = currentChain?.shortName || ''
-  const error = errors[name]
+  const error = getFieldState(name).error || errors[name]
 
   // Fetch an ENS resolution for the current address
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
