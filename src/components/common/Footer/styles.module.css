@@ -24,7 +24,7 @@
   margin-left: var(--space-2);
 }
 
-@media (max-width: 768px) { {
+@media (max-width: 768px /* var(--breakpoint-sm) */) {
   .container li:not(:last-of-type):after {
     visibility: hidden;
   }

@@ -24,7 +24,7 @@
   user-select: none;
 }
 
-@media (max-width: 768px) { {
+@media (max-width: 768px /* var(--breakpoint-sm) */) {
   .container {
     padding: var(--space-3) var(--space-1);
   }
