@@ -11,7 +11,7 @@ import CustomTooltip from '@/components/common/CustomTooltip'
 
 const BATCH_LIMIT = 10
 
-const getBatchableTransactions = (items: (TransactionListItem | Transaction[])[], nonce: number) => {
+export const getBatchableTransactions = (items: (TransactionListItem | Transaction[])[], nonce: number) => {
   const batchableTransactions: Transaction[] = []
   let currentNonce = nonce
 
