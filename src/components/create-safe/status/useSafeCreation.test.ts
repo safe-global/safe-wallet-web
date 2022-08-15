@@ -48,10 +48,6 @@ describe('useSafeCreation', () => {
   it('should return MINING if there is a txHash', async () => {
     const mockSafe: Safe = new Safe()
     mockSafe.getAddress = jest.fn(() => '0x0')
-    jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
-    jest.spyOn(wrongChain, 'default').mockReturnValue(false)
-    jest.spyOn(createSafe, 'computeNewSafeAddress').mockImplementation(() => Promise.resolve(ZERO_ADDRESS))
-    jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.resolve(mockSafe))
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
         name: 'joyful-rinkeby-safe',
@@ -74,7 +70,6 @@ describe('useSafeCreation', () => {
     mockSafe.getAddress = jest.fn(() => '0x0')
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(wrongChain, 'default').mockReturnValue(false)
-    jest.spyOn(createSafe, 'computeNewSafeAddress').mockImplementation(() => Promise.resolve(ZERO_ADDRESS))
     jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.resolve(mockSafe))
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
