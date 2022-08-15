@@ -1,7 +1,6 @@
 import useAddressBook from '@/hooks/useAddressBook'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { lookupAddress } from '@/services/domains'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import { hasFeature } from '@/utils/chains'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useCallback, useMemo } from 'react'
@@ -21,9 +20,7 @@ export const useAddressResolver = (address: string) => {
         return
       }
 
-      const { address } = parsePrefixedAddress(ownerAddress)
-
-      const nameFromAddressBook = addressBook[address]
+      const nameFromAddressBook = addressBook[ownerAddress]
       if (nameFromAddressBook) {
         return nameFromAddressBook
       }
@@ -32,7 +29,7 @@ export const useAddressResolver = (address: string) => {
         return
       }
 
-      const ensName = await lookupAddress(ethersProvider, address)
+      const ensName = await lookupAddress(ethersProvider, ownerAddress)
       if (ensName) {
         return ensName
       }

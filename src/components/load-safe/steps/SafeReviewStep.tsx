@@ -12,7 +12,6 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import { useCurrentChain } from '@/hooks/useChains'
 
 type Props = {
@@ -30,7 +29,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
 
   const addSafe = () => {
     const safeName = params.safeAddress.name
-    const safeAddress = parsePrefixedAddress(params.safeAddress.address).address
+    const safeAddress = params.safeAddress.address
 
     dispatch(
       addOrUpdateSafe({

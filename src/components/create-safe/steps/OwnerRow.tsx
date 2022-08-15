@@ -10,7 +10,6 @@ import { useCallback, useEffect } from 'react'
 import { LoadSafeFormData } from '@/components/load-safe'
 import { useMnemonicName } from '@/hooks/useMnemonicName'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { parsePrefixedAddress } from '@/utils/addresses'
 
 export const OwnerRow = ({
   field,
@@ -32,10 +31,8 @@ export const OwnerRow = ({
 
   const validateSafeAddress = useCallback(
     async (address: string) => {
-      const { address: safeAddress } = parsePrefixedAddress(address)
       const owners = getValues('owners')
-
-      if (owners.filter((owner: Owner) => owner.address === safeAddress).length > 1) {
+      if (owners.filter((owner: Owner) => owner.address === address).length > 1) {
         return 'Owner is already added'
       }
     },
