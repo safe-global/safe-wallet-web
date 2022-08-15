@@ -3,7 +3,7 @@ import * as useBalances from '@/hooks/useBalances'
 import { render, waitFor } from '@/tests/test-utils'
 import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ethers } from 'ethers'
-import SafeTokenWidget from '../SafeTokenWidget'
+import SafeTokenWidget from '..'
 
 describe('SafeTokenWidget', () => {
   it('Should display skeleton if balance is loading', () => {

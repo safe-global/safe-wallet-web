@@ -6,7 +6,6 @@ import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useAsync from '@/hooks/useAsync'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { parsePrefixedAddress } from '@/utils/addresses'
 
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
 import useChainId from '@/hooks/useChainId'
@@ -30,9 +29,7 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
 
   const [safeInfo] = useAsync<SafeInfo | undefined>(async () => {
     if (!params.address) return
-    const { address } = parsePrefixedAddress(params.address)
-
-    return getSafeInfo(chainId, address)
+    return getSafeInfo(chainId, params.address)
   }, [chainId, params.address])
 
   useEffect(() => {

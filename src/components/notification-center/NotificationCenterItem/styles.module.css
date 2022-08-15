@@ -13,6 +13,10 @@
   width: calc(100% - 48px);
 }
 
+.requiresAction {
+  background-color: var(--color-primary-background);
+}
+
 .avatar {
   min-width: 42px;
 }

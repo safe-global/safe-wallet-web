@@ -1,6 +1,7 @@
 import palette from '../src/styles/colors.js'
 import darkPalette from '../src/styles/colors-dark.js'
 import spacings from '../src/styles/spacings.js'
+import breakpoints from '../src/styles/breakpoints.js'
 
 const cssVars: string[] = []
 Object.entries(palette).forEach(([key, value]) => {
@@ -10,6 +11,8 @@ Object.entries(palette).forEach(([key, value]) => {
 })
 
 Object.entries(spacings).forEach(([key, space]) => cssVars.push(`  --space-${key}: ${space}px;`))
+
+Object.entries(breakpoints).forEach(([key, value]) => cssVars.push(`  --breakpoint-${key}: ${value}px;`))
 
 const darkColorVars: string[] = []
 Object.entries(darkPalette).forEach(([key, value]) => {

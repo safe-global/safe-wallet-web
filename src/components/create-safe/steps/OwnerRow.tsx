@@ -8,7 +8,6 @@ import { useAddressResolver } from '@/hooks/useAddressResolver'
 import { useCallback, useEffect } from 'react'
 import { useMnemonicName } from '@/hooks/useMnemonicName'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
 
 export const OwnerRow = ({
@@ -31,10 +30,8 @@ export const OwnerRow = ({
 
   const validateSafeAddress = useCallback(
     async (address: string) => {
-      const { address: safeAddress } = parsePrefixedAddress(address)
       const owners = getValues('owners')
-
-      if (owners.filter((owner: NamedAddress) => owner.address === safeAddress).length > 1) {
+      if (owners.filter((owner: NamedAddress) => owner.address === address).length > 1) {
         return 'Owner is already added'
       }
     },

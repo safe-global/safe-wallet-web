@@ -6,7 +6,6 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import AddressInput from '@/components/common/AddressInput'
 import { getSafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChainId from '@/hooks/useChainId'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import NameInput from '@/components/common/NameInput'
@@ -21,7 +20,6 @@ type Props = {
 }
 
 const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
-  console.log(params)
   const fallbackName = useMnemonicSafeName()
   const currentChainId = useChainId()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
@@ -33,7 +31,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     },
   })
 
-  const { register, handleSubmit, watch, setValue, formState } = formMethods
+  const { handleSubmit, watch, setValue, formState } = formMethods
 
   const safeAddress = watch('address')
 
@@ -44,14 +42,12 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
   }, [name, setValue])
 
   const validateSafeAddress = async (address: string) => {
-    const { address: safeAddress } = parsePrefixedAddress(address)
-
-    if (addedSafes && Object.keys(addedSafes).includes(safeAddress)) {
+    if (addedSafes && Object.keys(addedSafes).includes(address)) {
       return 'Safe is already added'
     }
 
     try {
-      await getSafeInfo(currentChainId, safeAddress)
+      await getSafeInfo(currentChainId, address)
     } catch (error) {
       return 'Address given is not a valid Safe address'
     }
@@ -68,6 +64,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
               Your connected wallet does not have to be the owner of this Safe. In this case, the interface will provide
               you a read-only view.
             </Typography>
+
             <Typography mb={3}>
               Don&apos;t have the address of the Safe you created?{' '}
               <Link
@@ -78,7 +75,8 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 This article explains how to find it.
               </Link>
             </Typography>
-            <Box marginBottom={2} paddingRight={6} width={{ lg: '50%' }}>
+
+            <Box marginBottom={2} paddingRight={6} width={{ lg: '70%' }}>
               <NameInput
                 name="safe.name"
                 label="Safe name"
@@ -93,21 +91,11 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                 required
               />
             </Box>
-            <Box width={{ lg: '50%' }}>
-              <AddressInput
-                label="Safe address"
-                validate={validateSafeAddress}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  endAdornment: resolving && (
-                    <InputAdornment position="end">
-                      <CircularProgress size={20} />
-                    </InputAdornment>
-                  ),
-                }}
-                {...register('address')}
-              />
+
+            <Box width={{ lg: '70%' }}>
+              <AddressInput label="Safe address" validate={validateSafeAddress} name="address" />
             </Box>
+
             <Typography mt={2}>
               By continuing you consent to the{' '}
               <Link href="https://gnosis-safe.io/terms" target="_blank" rel="noreferrer">
@@ -120,7 +108,9 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
               .
             </Typography>
           </Box>
+
           <Divider />
+
           <Box padding={3}>
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
