@@ -5,6 +5,8 @@ import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecute
 import { Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
+import { useAppSelector } from '@/store'
+import { selectPendingTxs } from '@/store/pendingTxsSlice'
 
 const BATCH_LIMIT = 10
 
@@ -31,6 +33,7 @@ const getBatchableTransactions = (items: Transaction[][], nonce: number) => {
 }
 
 const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transaction[])[] }) => {
+  const pendingTxs = useAppSelector(selectPendingTxs)
   const hoverContext = useContext(BatchExecuteHoverContext)
   const { safe } = useSafeInfo()
 
@@ -48,6 +51,9 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
   )
 
   const batchableTransactions = getBatchableTransactions(groupedTransactions, currentNonce)
+  const isBatchable = batchableTransactions.length > 1
+  const hasPendingTx = batchableTransactions.some((tx) => pendingTxs[tx.transaction.id])
+  const isDisabled = !isBatchable || hasPendingTx
 
   const handleOnMouseEnter = useCallback(() => {
     hoverContext.setActiveHover(batchableTransactions.map((tx) => tx.transaction.id))
@@ -64,8 +70,9 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
       className={css.button}
       variant="contained"
       size="small"
+      disabled={isDisabled}
     >
-      Execute Batch
+      Execute Batch {isBatchable && ` (${batchableTransactions.length})`}
     </Button>
   )
 }
