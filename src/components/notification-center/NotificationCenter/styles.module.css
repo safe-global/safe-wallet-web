@@ -1,7 +1,9 @@
 .bell {
+  padding: var(--space-2);
   display: flex;
   justify-content: center;
   height: 100%;
+  border-left: 2px solid var(--color-border-light);
 }
 
 .popoverContainer {
