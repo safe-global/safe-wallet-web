@@ -8,7 +8,6 @@ import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import { useCallback, useEffect } from 'react'
 import { LoadSafeFormData } from '@/components/load-safe'
-import { useMnemonicName } from '@/hooks/useMnemonicName'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 export const OwnerRow = ({
@@ -22,7 +21,6 @@ export const OwnerRow = ({
   remove?: UseFieldArrayRemove
   readOnly?: boolean
 }) => {
-  const fallbackName = useMnemonicName()
   const { setValue, control, getValues } = useFormContext()
   const owner = useWatch({
     control,
@@ -39,13 +37,11 @@ export const OwnerRow = ({
     [getValues],
   )
 
-  const { name, resolving } = useAddressResolver(owner.address)
+  const { name: fallbackName, resolving } = useAddressResolver(owner.address)
 
   useEffect(() => {
-    const ownerName = name ?? fallbackName
-    setValue(`owners.${index}.name`, ownerName, { shouldValidate: true })
     setValue(`owners.${index}.resolving`, resolving)
-  }, [fallbackName, index, name, resolving, setValue])
+  }, [index, resolving, setValue])
 
   return (
     <Grid
@@ -62,6 +58,7 @@ export const OwnerRow = ({
             name={`owners.${index}.name`}
             label="Owner name"
             InputLabelProps={{ shrink: true }}
+            placeholder={fallbackName}
             InputProps={{
               endAdornment: owner.resolving ? (
                 <InputAdornment position="end">
@@ -69,7 +66,6 @@ export const OwnerRow = ({
                 </InputAdornment>
               ) : null,
             }}
-            required
           />
         </FormControl>
       </Grid>

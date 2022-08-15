@@ -20,14 +20,13 @@ type Props = {
 }
 
 const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
-  const fallbackName = useMnemonicSafeName()
   const currentChainId = useChainId()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
   const formMethods = useForm<LoadSafeFormData>({
     mode: 'onChange',
     defaultValues: {
       safeAddress: {
-        name: params?.safeAddress.name || fallbackName,
+        name: params?.safeAddress.name,
         address: params?.safeAddress.address,
         resolving: false,
       },
@@ -38,12 +37,11 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
 
   const safeAddress = watch('safeAddress')
 
-  const { name, resolving } = useAddressResolver(safeAddress.address)
+  const { name: fallbackName, resolving } = useAddressResolver(safeAddress.address, useMnemonicSafeName())
 
   useEffect(() => {
-    name && setValue(`safeAddress.name`, name)
     setValue(`safeAddress.resolving`, resolving)
-  }, [name, resolving, setValue])
+  }, [resolving, setValue])
 
   const validateSafeAddress = async (address: string) => {
     if (addedSafes && Object.keys(addedSafes).includes(address)) {
@@ -57,10 +55,17 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     }
   }
 
+  const onFormSubmit = handleSubmit(async (data: LoadSafeFormData) => {
+    const { safeAddress } = data
+    const { address, name } = safeAddress
+    const safeName = name || fallbackName
+    onSubmit({ safeAddress: { address, name: safeName } })
+  })
+
   return (
     <FormProvider {...formMethods}>
       <Paper>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onFormSubmit}>
           <Box padding={3}>
             <Typography variant="body1" mb={2}>
               You are about to add an existing Safe on <ChainIndicator inline />. First, choose a name and enter the
@@ -84,6 +89,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
               <NameInput
                 name="safeAddress.name"
                 label="Safe name"
+                placeholder={fallbackName}
                 InputLabelProps={{ shrink: true }}
                 InputProps={{
                   endAdornment: safeAddress.resolving && (
@@ -92,7 +98,6 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
                     </InputAdornment>
                   ),
                 }}
-                required
               />
             </Box>
 
