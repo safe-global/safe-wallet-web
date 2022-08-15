@@ -4,7 +4,6 @@ export const AppRoutes = {
   index: '/',
   demoTheme: '/demo-theme',
   load: {
-    safe: '/load/safe',
     index: '/load',
   },
   safe: {
