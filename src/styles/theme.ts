@@ -1,5 +1,4 @@
 import { createTheme, Shadows } from '@mui/material/styles'
-import breakpoints from './breakpoints'
 import palette from './colors'
 import darkPalette from './colors-dark'
 import { base } from './spacings'
@@ -50,9 +49,6 @@ const initTheme = (darkMode: boolean) => {
     palette: {
       mode: darkMode ? 'dark' : 'light',
       ...colors,
-    },
-    breakpoints: {
-      values: breakpoints,
     },
     spacing: base,
     shadows: [
