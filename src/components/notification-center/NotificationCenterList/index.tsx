@@ -18,7 +18,7 @@ const NotificationCenterList = ({ notifications, handleClose }: NotificationCent
   if (!notifications.length) {
     return (
       <div className={css.wrapper}>
-        <img src={Bell} alt="No notifications" />
+        <Bell alt="No notifications" />
         <Typography paddingTop="8px">No notifications</Typography>
       </div>
     )
