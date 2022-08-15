@@ -36,11 +36,11 @@ export const OwnerRow = ({
     [getValues],
   )
 
-  const { name: fallbackName, resolving } = useAddressResolver(owner.address, '')
+  const { name: fallbackName, resolving } = useAddressResolver(owner.address)
 
   useEffect(() => {
     if (!owner.name && fallbackName) {
-      setValue(`owners.${index}.name`, fallbackName)
+      setValue(`owners.${index}.fallbackName`, fallbackName)
     }
   }, [fallbackName, setValue, owner.name, index])
 
@@ -67,7 +67,6 @@ export const OwnerRow = ({
                 </InputAdornment>
               ) : null,
             }}
-            required
           />
         </FormControl>
       </Grid>

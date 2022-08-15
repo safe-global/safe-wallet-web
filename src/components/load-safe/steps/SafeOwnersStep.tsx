@@ -42,10 +42,20 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
     )
   }, [safeInfo, setValue])
 
+  const onFormSubmit = handleSubmit((data: SafeFormData) => {
+    onSubmit({
+      ...data,
+      owners: data.owners.map((owner) => ({
+        name: owner.name || owner.fallbackName,
+        address: owner.address,
+      })),
+    })
+  })
+
   return (
     <Paper>
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onFormSubmit}>
           <Box padding={3}>
             <Typography mb={2}>
               This Safe on <ChainIndicator inline /> has {safeInfo?.owners.length} owners. Optional: Provide a name for

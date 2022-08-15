@@ -51,10 +51,20 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     append({ name: '', address: '' })
   }
 
+  const onFormSubmit = handleSubmit((data: SafeFormData) => {
+    onSubmit({
+      ...data,
+      owners: data.owners.map((owner) => ({
+        name: owner.name || owner.fallbackName,
+        address: owner.address,
+      })),
+    })
+  })
+
   return (
     <Paper>
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onFormSubmit}>
           <Box padding={3}>
             <Typography mb={2}>
               Your Safe will have one or more owners. We have prefilled the first owner with your connected wallet
