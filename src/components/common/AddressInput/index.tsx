@@ -23,6 +23,10 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
   const rawValueRef = useRef<string>('')
   const watchedValue = watch(name)
   const currentShortName = currentChain?.shortName || ''
+
+  // errors[name] doesn't work with nested field names like 'safe.address'.
+  // But getFieldState doesn't trigger a re-render, which breaks tests.
+  // So both are needed to get the error state and pass tests.
   const error = getFieldState(name).error || errors[name]
 
   // Fetch an ENS resolution for the current address
@@ -51,7 +55,6 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
         <TextField
           {...props}
           autoComplete="off"
-          // Need the fallback here otherwise the tests fail
           label={<>{error?.message || props.label}</>}
           error={!!error}
           fullWidth

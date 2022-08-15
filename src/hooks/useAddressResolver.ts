@@ -7,9 +7,11 @@ import { useMemo } from 'react'
 import { useCurrentChain } from './useChains'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from './useDebounce'
-import { getRandomName } from './useMnemonicName'
+import { useMnemonicName } from './useMnemonicName'
 
-export const useAddressResolver = (address: string, fallback = getRandomName()) => {
+export const useAddressResolver = (address: string, fallback?: string) => {
+  const defaultFallback = useMnemonicName()
+  fallback = fallback ?? defaultFallback
   const addressBook = useAddressBook()
   const ethersProvider = useWeb3ReadOnly()
   const debouncedValue = useDebounce(address, 200)
