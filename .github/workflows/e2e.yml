@@ -28,15 +28,11 @@ jobs:
           rm -rf .yarncache
           yarn cache clean
 
-      - name: Build & serve
-        run: yarn serve &
-
-      - uses: cypress-io/github-action@v4
-        with:
-          spec: cypress/e2e/smoke/*.cy.js
-          browser: chrome
-          record: false
-          config: baseUrl=http://localhost:8080
+      - name: Build, serve & test
+        run: |
+          yarn build
+          yarn export
+          yarn serve &
+          yarn cypress:run  --config baseUrl=http://localhost:8080
         env:
-          CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
-          CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}
+          CYPRESS_MNEMONIC: ${{ secrets.CYPRESS_MNEMONIC }}
