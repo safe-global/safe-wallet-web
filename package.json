@@ -23,7 +23,7 @@
     "generate-types": "yarn generate-types:safeDeployments && yarn generate-types:spendingLimit",
     "postinstall": "yarn generate-types && yarn css-vars",
     "analyze": "ANALYZE=true yarn build",
-    "cypress:open": "cypress open --config baseUrl=http://localhost:3000",
+    "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "serve": "npx -y http-server out"
   },
