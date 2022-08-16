@@ -39,7 +39,7 @@
   --onboard-wallet-app-icon-border-color: var(--color-border-light);
   --onboard-wallet-app-icon-background-transparent: transparent;
 
-  /* FONTS */
+  /* Fonts */
   --onboard-font-family-normal: Averta, sans-serif;
   --onboard-font-family-semibold: Averta, sans-serif;
   --onboard-font-family-light: Averta, sans-serif;
@@ -50,7 +50,10 @@
   --onboard-border-radius-1: 8px;
   --onboard-border-radius-2: 8px;
   --onboard-border-radius-3: 8px;
+
+  /* Z-index */
   --onboard-modal-z-index: 1201;
+  --onboard-account-select-modal-z-index: 1201;
 }
 
 #walletconnect-qrcode-modal {
@@ -62,5 +65,10 @@
 }
 
 [data-theme='dark'] {
-  --onboard-wallet-app-icon-background-transparent: white;
+  --onboard-wallet-app-icon-background-transparent: var(--color-secondary-main);
+}
+
+/* Keystone modal */
+#kv_sdk_container + .ReactModalPortal > div {
+  z-index: var(--onboard-modal-z-index) !important;
 }
