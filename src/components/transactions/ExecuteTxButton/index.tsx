@@ -21,7 +21,7 @@ const ExecuteTxButton = ({
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const isPending = useIsPending(txSummary.id)
 
-  const isNext = !!txNonce && !!safe.nonce && txNonce === safe.nonce
+  const isNext = typeof txNonce !== undefined && typeof safe.nonce !== undefined && txNonce === safe.nonce
   const isDisabled = !isNext || isPending
 
   const onClick = (e: SyntheticEvent) => {
