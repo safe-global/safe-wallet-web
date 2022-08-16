@@ -23,7 +23,8 @@
     "postinstall": "yarn generate-types && yarn css-vars",
     "analyze": "ANALYZE=true yarn build",
     "cypress:open": "node ./scripts/cypress.cjs open",
-    "cypress:run": "node ./scripts/cypress.cjs run"
+    "cypress:run": "node ./scripts/cypress.cjs run",
+    "serve": "next build && next export && npx -y http-server out"
   },
   "pre-commit": [
     "lint"

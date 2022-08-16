@@ -15,12 +15,21 @@ jobs:
         with:
           node-version: 16
 
-      - name: Build & serve
+      - name: Yarn cache
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Yarn install
         run: |
-          yarn build
-          ./node_modules/.bin/next export
-          cd out
-          python3 -m http.server --cgi 8080 &
+          mkdir .yarncache
+          yarn install --cache-folder ./.yarncache --frozen-lockfile
+          rm -rf .yarncache
+          yarn cache clean
+
+      - name: Build & serve
+        run: yarn serve &
 
       - uses: cypress-io/github-action@v4
         with:
