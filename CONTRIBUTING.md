@@ -29,7 +29,7 @@
 
 Infamously, the hardest problem in computer science.
 
-- Components are classes, so their names should be in CapitalCase
+- Components are classes, so their names should be in PascalCase
 - Config-like constants should be in UPPER_CASE, e.g. `INFURA_URL`
 - Regular const variables should be in camelCase
 - Avoid prepositions in variable names:
