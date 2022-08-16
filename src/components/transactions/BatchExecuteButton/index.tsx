@@ -25,14 +25,16 @@ export const getBatchableTransactions = (items: (TransactionListItem | Transacti
   grouped.forEach((txs) => {
     const sorted = txs.slice().sort((a, b) => b.transaction.timestamp - a.transaction.timestamp)
     sorted.forEach((tx) => {
+      if (!isMultisigExecutionInfo(tx.transaction.executionInfo)) return
+
+      const { nonce, confirmationsSubmitted, confirmationsRequired } = tx.transaction.executionInfo
       if (
         batchableTransactions.length < BATCH_LIMIT &&
-        isMultisigExecutionInfo(tx.transaction.executionInfo) &&
-        tx.transaction.executionInfo.nonce === currentNonce &&
-        tx.transaction.executionInfo.confirmationsSubmitted >= tx.transaction.executionInfo.confirmationsRequired
+        nonce === currentNonce &&
+        confirmationsSubmitted >= confirmationsRequired
       ) {
         batchableTransactions.push(tx)
-        currentNonce = tx.transaction.executionInfo.nonce + 1
+        currentNonce = nonce + 1
       }
     })
   })
