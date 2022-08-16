@@ -23,7 +23,7 @@
 
 - Keep in mind the React component life-cycle, avoid excessive re-renders
 - Glue regular JS functions and events with React using hooks
-- Write small useEffect hooks that do just one thing and have only necessary dependencies
+- Write small `useEffect` hooks that do just one thing and have only necessary dependencies
 
 ## Variable/function naming
 
