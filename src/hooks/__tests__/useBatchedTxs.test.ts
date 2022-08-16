@@ -1,4 +1,3 @@
-import { getBatchableTransactions } from '@/components/transactions/BatchExecuteButton'
 import {
   AddressEx,
   MultisigExecutionInfo,
@@ -10,6 +9,7 @@ import {
   TransferDirection,
   TransferInfo,
 } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getBatchableTransactions } from '@/hooks/useBatchedTxs'
 
 const mockAddressEx: AddressEx = {
   value: 'string',
