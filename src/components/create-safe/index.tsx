@@ -11,43 +11,32 @@ import { AppRoutes } from '@/config/routes'
 import { CreationStatus } from '@/components/create-safe/status/CreationStatus'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import useChainId from '@/hooks/useChainId'
+import { SafeFormData } from '@/components/create-safe/types.d'
 
-export type Owner = {
-  name: string
-  address: string
-  resolving: boolean
-}
-
-export type CreateSafeFormData = {
-  name: string
-  threshold: number
-  owners?: Owner[]
-}
-export type CreateSafeFormDataReview = Omit<CreateSafeFormData, 'owners'> & { owners: Owner[] }
-export type PendingSafeData = CreateSafeFormDataReview & { txHash?: string; safeAddress: string; saltNonce: number }
+export type PendingSafeData = SafeFormData & { txHash?: string; saltNonce: number }
 export type PendingSafeByChain = Record<string, PendingSafeData | undefined>
 
 export const CreateSafeSteps: TxStepperProps['steps'] = [
   {
     label: 'Connect wallet & select network',
-    render: (data, onSubmit, onBack) => <ConnectWalletStep onSubmit={onSubmit} onBack={onBack} />,
+    render: (_, onSubmit, onBack) => <ConnectWalletStep onSubmit={onSubmit} onBack={onBack} />,
   },
   {
     label: 'Name',
     render: (data, onSubmit, onBack, setStep) => (
-      <SetNameStep params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      <SetNameStep params={data as SafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
     ),
   },
   {
     label: 'Owners and Confirmations',
     render: (data, onSubmit, onBack, setStep) => (
-      <OwnerPolicyStep params={data as CreateSafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      <OwnerPolicyStep params={data as SafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
     ),
   },
   {
     label: 'Review',
     render: (data, onSubmit, onBack, setStep) => (
-      <ReviewStep params={data as CreateSafeFormDataReview} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      <ReviewStep params={data as SafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
     ),
   },
 ]

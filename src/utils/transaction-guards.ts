@@ -25,8 +25,8 @@ import {
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
 import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
-import { Owner } from '@/components/create-safe'
 import { NativeCoinTransfer, TransferInfo } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/transactions'
+import { NamedAddress } from '@/components/create-safe/types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -35,11 +35,11 @@ export const isTxQueued = (value: TransactionStatus): boolean => {
 export const isAwaitingExecution = (txStatus: TransactionStatus): boolean =>
   TransactionStatus.AWAITING_EXECUTION === txStatus
 
-const isAddressEx = (owners: AddressEx[] | Owner[]): owners is AddressEx[] => {
+const isAddressEx = (owners: AddressEx[] | NamedAddress[]): owners is AddressEx[] => {
   return (owners as AddressEx[]).every((owner) => owner.value !== undefined)
 }
 
-export const isOwner = (safeOwners: AddressEx[] | Owner[] = [], walletAddress?: string) => {
+export const isOwner = (safeOwners: AddressEx[] | NamedAddress[] = [], walletAddress?: string) => {
   if (isAddressEx(safeOwners)) {
     return safeOwners.some((owner) => owner.value.toLowerCase() === walletAddress?.toLowerCase())
   }

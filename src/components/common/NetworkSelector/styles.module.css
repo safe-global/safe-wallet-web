@@ -6,7 +6,3 @@
 .select *:focus {
   background: inherit;
 }
-
-.select {
-  padding-left: var(--space-2);
-}

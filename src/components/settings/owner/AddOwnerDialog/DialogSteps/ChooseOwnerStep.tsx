@@ -3,13 +3,10 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import NameInput from '@/components/common/NameInput'
 import { ChangeOwnerData, OwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import { addressIsNotCurrentSafe, uniqueAddress } from '@/utils/validation'
 import { Box, Button, CircularProgress, DialogContent, FormControl, InputAdornment, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
-import React, { useEffect } from 'react'
-import { useMnemonicName } from '@/hooks/useMnemonicName'
 
 export const ChooseOwnerStep = ({
   data,
@@ -18,7 +15,6 @@ export const ChooseOwnerStep = ({
   data: ChangeOwnerData
   onSubmit: (data: ChangeOwnerData) => void
 }) => {
-  const fallbackName = useMnemonicName()
   const { safe, safeAddress } = useSafeInfo()
   const { removedOwner, newOwner } = data
   const owners = safe.owners
@@ -27,24 +23,15 @@ export const ChooseOwnerStep = ({
 
   const defaultValues: OwnerData = {
     address: newOwner?.address,
-    name: newOwner?.name || fallbackName,
+    name: newOwner?.name,
   }
 
   const formMethods = useForm<OwnerData>({
     defaultValues,
     mode: 'onChange',
   })
-  const { handleSubmit, formState, watch, setValue } = formMethods
-
-  const onSubmitHandler = (formData: OwnerData) => {
-    onSubmit({
-      ...data,
-      newOwner: {
-        address: parsePrefixedAddress(formData.address).address,
-        name: formData.name,
-      },
-    })
-  }
+  const { handleSubmit, formState, watch } = formMethods
+  const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
   const notAlreadyOwner = uniqueAddress(owners?.map((owner) => owner.value))
   const notCurrentSafe = addressIsNotCurrentSafe(safeAddress)
@@ -52,15 +39,21 @@ export const ChooseOwnerStep = ({
 
   const address = watch('address')
 
-  const { name, resolving } = useAddressResolver(address)
+  const { name: fallbackName, resolving } = useAddressResolver(address)
 
-  useEffect(() => {
-    name && setValue(`name`, name)
-  }, [name, setValue])
+  const onFormSubmit = handleSubmit((formData: OwnerData) => {
+    onSubmit({
+      ...data,
+      newOwner: {
+        ...formData,
+        name: formData.name || fallbackName,
+      },
+    })
+  })
 
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onSubmitHandler)}>
+      <form onSubmit={onFormSubmit}>
         <DialogContent>
           <Box mb={1}>
             {isReplace
@@ -80,6 +73,7 @@ export const ChooseOwnerStep = ({
               <NameInput
                 label="Owner name"
                 name="name"
+                placeholder={fallbackName}
                 InputLabelProps={{ shrink: true }}
                 InputProps={{
                   endAdornment: resolving && (
@@ -88,7 +82,6 @@ export const ChooseOwnerStep = ({
                     </InputAdornment>
                   ),
                 }}
-                required
               />
             </FormControl>
 
@@ -97,7 +90,7 @@ export const ChooseOwnerStep = ({
             </FormControl>
           </Box>
 
-          <Button variant="contained" type="submit" disabled={!formState.isValid}>
+          <Button variant="contained" type="submit" disabled={!isValid || resolving}>
             Next
           </Button>
         </DialogContent>

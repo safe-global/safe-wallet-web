@@ -36,7 +36,7 @@ describe('useEstimateSafeCreationGas', () => {
   it('should return no gasLimit by default', () => {
     const { result } = renderHook(() => useEstimateSafeCreationGas(mockProps))
     expect(result.current.gasLimit).toBeUndefined()
-    expect(result.current.gasLimitLoading).toBe(true)
+    expect(result.current.gasLimitLoading).toBe(false)
   })
 
   it('should estimate gas', async () => {
@@ -67,7 +67,7 @@ describe('useEstimateSafeCreationGas', () => {
 
     await waitFor(() => {
       expect(result.current.gasLimit).toBeUndefined()
-      expect(result.current.gasLimitLoading).toBe(true)
+      expect(result.current.gasLimitLoading).toBe(false)
     })
   })
 
@@ -77,7 +77,7 @@ describe('useEstimateSafeCreationGas', () => {
 
     await waitFor(() => {
       expect(result.current.gasLimit).toBeUndefined()
-      expect(result.current.gasLimitLoading).toBe(true)
+      expect(result.current.gasLimitLoading).toBe(false)
     })
   })
 
@@ -87,7 +87,7 @@ describe('useEstimateSafeCreationGas', () => {
 
     await waitFor(() => {
       expect(result.current.gasLimit).toBeUndefined()
-      expect(result.current.gasLimitLoading).toBe(true)
+      expect(result.current.gasLimitLoading).toBe(false)
     })
   })
 })

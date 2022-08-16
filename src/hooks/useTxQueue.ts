@@ -33,7 +33,7 @@ const useTxQueue = (
     : {
         page: queueState.data,
         error: queueState.error,
-        loading: queueState.loading,
+        loading: queueState.loading || !queueState.data,
       }
 }
 

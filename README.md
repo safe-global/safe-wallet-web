@@ -10,6 +10,8 @@ Install the dependencies:
 yarn
 ```
 
+Create a `.env` file with the environment variables. You can use the `.env.example` file as a reference.
+
 Run the development server:
 
 ```bash

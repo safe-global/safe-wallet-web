@@ -5,15 +5,19 @@ import { act, renderHook } from '@/tests/test-utils'
 // Mock getChainsConfig
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => {
   return {
-    getChainsConfig: jest.fn(() =>
-      Promise.resolve({
-        results: [
-          {
-            chainId: '4',
-          },
-        ],
-      }),
-    ),
+    getChainsConfig: jest.fn(() => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            results: [
+              {
+                chainId: '4',
+              },
+            ],
+          })
+        }, 100)
+      })
+    }),
   }
 })
 
@@ -22,11 +26,17 @@ describe('useInitChains hook', () => {
   beforeEach(() => {
     jest.resetModules()
     jest.clearAllMocks()
+    jest.useFakeTimers()
   })
 
   it('should fetch the chains when the hook is called', async () => {
     // Render the hook and check that the loading state is true
     const { result } = renderHook(() => useLoadChains())
+
+    await act(async () => {
+      jest.advanceTimersByTime(10)
+    })
+
     var [data, error, loading] = result.current
 
     // Check that the loading state is true
@@ -36,7 +46,7 @@ describe('useInitChains hook', () => {
 
     // Check that the loading state is false after the promise resolves
     await act(async () => {
-      await Promise.resolve()
+      jest.advanceTimersByTime(100)
     })
 
     var [data, error, loading] = result.current
@@ -54,20 +64,11 @@ describe('useInitChains hook', () => {
     // Change the getChainsConfig mock to reject
     ;(getChainsConfig as jest.Mock).mockImplementation(() => Promise.reject(new Error('Something went wrong')))
 
-    // Render the hook and check that the loading state is true
     const { result } = renderHook(() => useLoadChains())
-    var [data, error, loading] = result.current
 
-    // Check that the loading state is true
-    expect(loading).toBe(true)
-    expect(error).toBe(undefined)
+    await act(async () => Promise.resolve())
 
-    // Check that the loading state is false after the promise resolves
-    await act(async () => {
-      await Promise.resolve()
-    })
-
-    var [data, error, loading] = result.current
+    const [data, error, loading] = result.current
 
     expect(loading).toBe(false)
     expect(error?.message).toBe('Something went wrong')
