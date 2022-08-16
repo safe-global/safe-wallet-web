@@ -33,7 +33,7 @@ Infamously, the hardest problem in computer science.
 - Config-like constants should be in UPPER_CASE, e.g. `INFURA_URL`
 - Regular const variables should be in camelCase
 - Avoid prepositions in variable names:
-    - `~~restoreFromLocalStorage~~` 🙅
+    - ~`restoreFromLocalStorage`~ 🙅
     - `restoreStoredValue` 👍
 - Try to name boolean vars with `is`, e.g. `isLoading` vs `loading`
 - If something needs to be exported just for unit tests, export it with a `_` prefix, e.g. `_getOnboardConfig`
