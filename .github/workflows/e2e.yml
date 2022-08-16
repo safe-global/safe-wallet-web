@@ -16,7 +16,10 @@ jobs:
           node-version: 16
 
       - name: Yarn install
-        run: yarn install --frozen-lockfile
+        run: |
+          rm -rf .yarncache
+          yarn cache clean
+          yarn install --frozen-lockfile
 
       - name: Build, serve & test
         run: |
