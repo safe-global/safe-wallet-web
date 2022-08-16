@@ -24,11 +24,11 @@ jobs:
       - name: Yarn install
         run: |
           mkdir .yarncache
-          yarn install --cache-folder ./.yarncache --frozen-lockfile
+          yarn install --cache-folder ./.yarncache --immutable
           rm -rf .yarncache
           yarn cache clean
 
-      - name: Build, serve & test
+      - name: Build & serve
         run: |
           yarn build
           yarn export
