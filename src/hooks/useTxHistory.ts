@@ -33,7 +33,7 @@ const useTxHistory = (
     : {
         page: historyState.data,
         error: historyState.error,
-        loading: historyState.loading,
+        loading: historyState.loading || !historyState.data,
       }
 }
 

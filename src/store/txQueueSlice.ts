@@ -4,19 +4,13 @@ import type { RootState } from '@/store'
 import { makeLoadableSlice } from './common'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 
-const initialState: TransactionListPage = {
-  results: [],
-  next: '',
-  previous: '',
-}
-
-const { slice, selector } = makeLoadableSlice('txQueue', initialState)
+const { slice, selector } = makeLoadableSlice('txQueue', undefined as TransactionListPage | undefined)
 
 export const txQueueSlice = slice
 export const selectTxQueue = selector
 
 export const selectQueuedTransactions = createSelector(selectTxQueue, (txQueue) => {
-  return txQueue.data.results.filter(isTransactionListItem)
+  return txQueue.data?.results.filter(isTransactionListItem) || []
 })
 
 export const selectQueuedTransactionsByNonce = createSelector(
