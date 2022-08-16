@@ -36,7 +36,7 @@ jobs:
           spec: cypress/e2e/smoke/*.cy.js
           browser: chrome
           record: false
-          config: baseUrl=https://${{ github.head_ref || github.ref_name }}.web-core.pages.dev
+          config: baseUrl=http://localhost:8080
         env:
           CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
           CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}
