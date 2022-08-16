@@ -15,17 +15,31 @@ jobs:
         with:
           node-version: 16
 
+      - name: Yarn cache
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
       - name: Yarn install
         run: |
+          mkdir .yarncache
+          yarn install --cache-folder ./.yarncache --frozen-lockfile
           rm -rf .yarncache
           yarn cache clean
-          yarn install --frozen-lockfile
 
       - name: Build, serve & test
         run: |
           yarn build
           yarn export
           yarn serve &
-          yarn cypress:run --config baseUrl=http://localhost:8080
+
+      - uses: cypress-io/github-action@v4
+        with:
+          spec: cypress/e2e/smoke/*.cy.js
+          browser: chrome
+          record: false
+          config: baseUrl=http://localhost:8080
         env:
-          CYPRESS_MNEMONIC: ${{ secrets.CYPRESS_MNEMONIC }}
+          CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
+          CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}
