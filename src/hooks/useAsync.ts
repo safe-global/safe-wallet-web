@@ -5,7 +5,7 @@ export type AsyncResult<T> = [result: T | undefined, error: Error | undefined, l
 const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[], clearData = true): AsyncResult<T> => {
   const [data, setData] = useState<T | undefined>()
   const [error, setError] = useState<Error>()
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const callback = useCallback(asyncCall, dependencies)
