@@ -5,6 +5,9 @@ import TxSummary from '@/components/transactions/TxSummary'
 import TxDetails from '@/components/transactions/TxDetails'
 import CreateTxInfo from '@/components/transactions/SafeCreationTx'
 import { isCreationTxInfo } from '@/utils/transaction-guards'
+import { useContext } from 'react'
+import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
+import css from './styles.module.css'
 
 interface ExpandableTransactionItemProps {
   isGrouped?: boolean
@@ -13,6 +16,9 @@ interface ExpandableTransactionItemProps {
 }
 
 export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }: ExpandableTransactionItemProps) => {
+  const hoverContext = useContext(BatchExecuteHoverContext)
+  const isActive = hoverContext.activeHover.includes(item.transaction.id)
+
   return (
     <Accordion
       disableGutters
@@ -22,6 +28,7 @@ export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }
       }}
       elevation={0}
       defaultExpanded={!!txDetails}
+      className={isActive ? css.active : undefined}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
         <TxSummary item={item} isGrouped={isGrouped} />

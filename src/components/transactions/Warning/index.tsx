@@ -1,31 +1,11 @@
 import { ReactElement } from 'react'
 import { Alert, Link } from '@mui/material'
-import Tooltip, { tooltipClasses, type TooltipProps } from '@mui/material/Tooltip'
-import { styled } from '@mui/material/styles'
+import { tooltipClasses } from '@mui/material/Tooltip'
 import css from './styles.module.css'
+import CustomTooltip from '@/components/common/CustomTooltip'
 
 const UNEXPECTED_DELEGATE_ARTICLE =
   'https://help.gnosis-safe.io/en/articles/6302452-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction'
-
-const CustomTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    color: theme.palette.common.black,
-    backgroundColor: theme.palette.common.white,
-    borderRadius: '8px',
-    boxShadow: '1px 2px 10px rgba(40, 54, 61, 0.18)',
-    fontSize: '14px',
-    padding: '16px',
-    lineHeight: 'normal',
-  },
-  [`& .${tooltipClasses.arrow}`]: {
-    '&::before': {
-      backgroundColor: theme.palette.common.white,
-      boxShadow: '1px 2px 10px rgba(40, 54, 61, 0.18)',
-    },
-  },
-}))
 
 export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): ReactElement => (
   <CustomTooltip
@@ -55,6 +35,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
       sx={({ palette }) => ({
         color: showWarning ? palette.warning.dark : palette.success.main,
         backgroundColor: `${showWarning ? palette.warning.light : palette.success.background}`,
+        border: 0,
         borderLeft: `3px solid ${showWarning ? palette.warning.dark : palette.success.main}`,
 
         '&.MuiAlert-standardInfo .MuiAlert-icon': {
