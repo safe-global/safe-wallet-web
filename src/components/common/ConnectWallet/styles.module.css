@@ -29,6 +29,11 @@
   display: block;
 }
 
+[data-theme='dark'] .imageContainer img[alt*="Trezor"],
+[data-theme='dark'] .imageContainer img[alt*="Ledger"] {
+  filter: invert(100%);
+}
+
 .rowContainer {
   align-self: stretch;
   margin-left: calc(var(--space-2) * -1);
