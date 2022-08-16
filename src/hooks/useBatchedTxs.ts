@@ -3,7 +3,7 @@ import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transact
 import { useMemo } from 'react'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-const BATCH_LIMIT = 10
+const BATCH_LIMIT = 20
 
 export const getBatchableTransactions = (items: (TransactionListItem | Transaction[])[], nonce: number) => {
   const batchableTransactions: Transaction[] = []
