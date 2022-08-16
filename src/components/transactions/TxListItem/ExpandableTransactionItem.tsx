@@ -17,7 +17,7 @@ interface ExpandableTransactionItemProps {
 
 export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }: ExpandableTransactionItemProps) => {
   const hoverContext = useContext(BatchExecuteHoverContext)
-  const isActive = hoverContext.activeHover?.includes(item.transaction.id)
+  const isActive = hoverContext.activeHover.includes(item.transaction.id)
 
   return (
     <Accordion

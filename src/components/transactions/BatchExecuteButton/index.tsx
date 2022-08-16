@@ -58,7 +58,7 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
   }, [batchableTransactions, hoverContext])
 
   const handleOnMouseLeave = useCallback(() => {
-    hoverContext.setActiveHover()
+    hoverContext.setActiveHover([])
   }, [hoverContext])
 
   return (
@@ -67,7 +67,7 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
       arrow
       title={
         isDisabled
-          ? 'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe Nonce.'
+          ? 'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe nonce.'
           : 'All transactions highlighted in light green will be included in the batch execution.'
       }
     >
