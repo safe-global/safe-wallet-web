@@ -27,3 +27,7 @@ export const parsePrefixedAddress = (value: string): PrefixedAddress => {
     address: isAddress(address) ? getAddress(address) : value,
   }
 }
+
+export const formatPrefixedAddress = (address: string, prefix?: string): string => {
+  return prefix ? `${prefix}:${address}` : address
+}

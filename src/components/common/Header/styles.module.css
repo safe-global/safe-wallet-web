@@ -6,9 +6,20 @@
   flex-wrap: nowrap;
   align-items: center;
   position: relative;
-  z-index: 2;
   border-radius: 0 !important;
   background-color: var(--color-background-paper);
+}
+
+.element {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 2px solid var(--color-border-light);
+}
+
+.container > div {
+  padding: 0 var(--space-2);
 }
 
 .logo {
@@ -25,15 +36,7 @@
   display: none;
 }
 
-.tokenWidget {
-  height: 100%;
-}
-
-.chainSwitcher {
-  margin-right: var(--space-2);
-}
-
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .logo,
   .tokenWidget,
   .notificationCenter,

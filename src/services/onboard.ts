@@ -23,10 +23,10 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
     id: hexValue(parseInt(cfg.chainId)),
     label: cfg.chainName,
     rpcUrl: getRpcServiceUrl(cfg.rpcUri),
-    publicRpcUrl: cfg.publicRpcUri.value,
     token: cfg.nativeCurrency.symbol,
     color: cfg.theme.backgroundColor,
-    // TODO: add block explorer URL
+    // FIXME: add block explorer URL and uncomment publicRpcUrl once Ledger is fixed
+    // publicRpcUrl: cfg.publicRpcUri.value,
   }))
 
   onboard = Onboard({

@@ -9,9 +9,6 @@
   text-align: left;
   gap: var(--space-1);
   height: 100%;
-  padding: var(--space-1) var(--space-2);
-  border-left: 2px solid var(--color-border-light);
-  border-right: 2px solid var(--color-border-light);
 }
 
 .popoverContainer {
@@ -26,6 +23,15 @@
 .imageContainer {
   position: relative;
   font-size: 16px;
+}
+
+.imageContainer img {
+  display: block;
+}
+
+[data-theme='dark'] .imageContainer img[alt*="Trezor"],
+[data-theme='dark'] .imageContainer img[alt*="Ledger"] {
+  filter: invert(100%);
 }
 
 .rowContainer {
@@ -44,7 +50,7 @@
   margin-top: -2px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .buttonContainer {
     padding: var(--space-1);
   }
