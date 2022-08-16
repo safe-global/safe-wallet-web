@@ -7,21 +7,39 @@ jobs:
   e2e:
     runs-on: ubuntu-20.04
     name: E2E on Chrome
-    needs: deploy
     steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
-
       - uses: actions/checkout@v2
 
-      - uses: cypress-io/github-action@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          spec: cypress/integration/smoke/*.cy.js
+          node-version: 16
+
+      - name: Yarn cache
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Yarn install
+        run: |
+          mkdir .yarncache
+          yarn install --cache-folder ./.yarncache --immutable
+          rm -rf .yarncache
+          yarn cache clean
+
+      - name: Build & serve
+        run: |
+          yarn build
+          yarn export
+          yarn serve &
+
+      - uses: cypress-io/github-action@v4
+        with:
+          spec: cypress/e2e/smoke/*.cy.js
           browser: chrome
           record: false
-          config: baseUrl=https://${{ steps.extract_branch.outputs.branch }}.web-core.pages.dev
+          config: baseUrl=http://localhost:8080
         env:
           CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
           CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}

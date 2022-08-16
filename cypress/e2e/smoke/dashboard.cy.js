@@ -3,7 +3,7 @@ const SAFE = 'rin:0xB5ef359e8eBDAd1cd7695FFEF3f6F6D7d5e79B08'
 describe('Dashboard', () => {
   before(() => {
     // Go to the test Safe home page
-    cy.visit(`/${SAFE}/home`)
+    cy.visit(`/${SAFE}/home`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
   })
 

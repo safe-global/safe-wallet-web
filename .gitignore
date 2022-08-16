@@ -10,7 +10,6 @@
 
 # types
 /src/types/contracts/
-/types/contracts/
 
 # next.js
 /.next/
@@ -43,3 +42,6 @@ yarn-error.log*
 .yalc
 yalc.lock
 .env
+
+/cypress/videos
+/cypress/downloads

@@ -9,6 +9,7 @@
     "dev": "next dev",
     "start": "next dev",
     "build": "next build",
+    "export": "next export",
     "lint": "tsc && next lint",
     "lint:fix": "yarn lint --fix",
     "prettier": "prettier -w {src,cypress,mocks,scripts}/**/*.{ts,tsx,css,js}",
@@ -22,8 +23,10 @@
     "generate-types": "yarn generate-types:safeDeployments && yarn generate-types:spendingLimit",
     "postinstall": "yarn generate-types && yarn css-vars",
     "analyze": "ANALYZE=true yarn build",
-    "cypress:open": "node ./scripts/cypress.cjs open",
-    "cypress:run": "node ./scripts/cypress.cjs run"
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:ci": "yarn cypress:run --config baseUrl=http://localhost:8080 --spec cypress/e2e/smoke/*.cy.js",
+    "serve": "npx -y http-server out"
   },
   "pre-commit": [
     "lint"
