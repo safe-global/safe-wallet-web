@@ -6,7 +6,7 @@ const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
 const ADDRESS = '0x61a0c717d18232711bC788F19C9Cd56a43cc8872'
 const ENS_NAME = 'francotest.eth'
-const RINKEBY_TEST_SAFE = 'rin:0xFfDC1BcdeC18b1196e7FA04246295DE3A17972Ac'
+const RINKEBY_TEST_SAFE = 'rin:0xB5ef359e8eBDAd1cd7695FFEF3f6F6D7d5e79B08'
 const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
 const RINKEBY_CSV_ENTRY = {
   name: 'rinkeby user 1',
