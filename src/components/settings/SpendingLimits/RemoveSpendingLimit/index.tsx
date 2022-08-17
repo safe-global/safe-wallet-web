@@ -24,7 +24,7 @@ export const RemoveSpendingLimit = ({
   const chainId = useChainId()
   const provider = useWeb3()
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     const spendingLimitAddress = getSpendingLimitModuleAddress(chainId)
     if (!provider || !spendingLimitAddress) return
 

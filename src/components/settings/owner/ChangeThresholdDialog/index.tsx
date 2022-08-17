@@ -56,7 +56,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
     setSelectedThreshold(parseInt(event.target.value.toString()))
   }
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (selectedThreshold === data.threshold) return
 
     return createUpdateThresholdTx(selectedThreshold)
