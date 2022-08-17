@@ -14,7 +14,7 @@ import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import Box from '@mui/material/Box'
-import useAddressBookEntries from './useAddressBookEntries'
+import useAddressBook from '@/hooks/useAddressBook'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -56,7 +56,8 @@ const AddressBookTable = () => {
     setDefaultValues(undefined)
   }
 
-  const addressBookEntries = useAddressBookEntries()
+  const addressBook = useAddressBook()
+  const addressBookEntries = Object.entries(addressBook)
 
   const rows = addressBookEntries.map(([address, name]) => ({
     name: {

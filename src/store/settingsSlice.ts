@@ -24,7 +24,7 @@ const initialState: SettingsState = {
     qr: true,
   },
   theme: {
-    darkMode: undefined,
+    darkMode: true,
   },
 }
 
