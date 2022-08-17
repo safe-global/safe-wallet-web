@@ -20,7 +20,11 @@ const useAsync = <T>(
 
     const promise = callback()
 
-    if (!promise) return
+    // Not a promise, exit early
+    if (!promise) {
+      setLoading(false)
+      return
+    }
 
     let isCurrent = true
     setLoading(true)
