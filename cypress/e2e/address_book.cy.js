@@ -1,7 +1,6 @@
 import 'cypress-file-upload'
 const path = require('path')
 import { format } from 'date-fns'
-import '@testing-library/cypress/add-commands'
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
