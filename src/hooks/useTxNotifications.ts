@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { showNotification, selectNotifications } from '@/store/notificationsSlice'
+import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 

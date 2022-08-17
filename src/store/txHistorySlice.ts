@@ -1,12 +1,7 @@
 import { Middleware } from '@reduxjs/toolkit'
 import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '@/store'
-import {
-  isMultiSendTxInfo,
-  isMultisigExecutionDetails,
-  isMultisigExecutionInfo,
-  isTransactionListItem,
-} from '@/utils/transaction-guards'
+import { isTransactionListItem } from '@/utils/transaction-guards'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { selectPendingTxs } from './pendingTxsSlice'
 import { makeLoadableSlice } from './common'
