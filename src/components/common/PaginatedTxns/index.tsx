@@ -44,5 +44,4 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
     </Box>
   )
 }
-
 export default PaginatedTxns

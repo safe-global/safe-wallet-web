@@ -8,6 +8,8 @@ import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 
 import css from './styles.module.css'
+import Track from '@/components/common/Track'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 
 type Props = {
   onClose: () => void
@@ -130,18 +132,24 @@ export const CreationStatus = ({ onClose }: Props) => {
       )}
       {displaySafeLink && (
         <Box mt={3}>
-          <Link href={{ pathname: AppRoutes.safe.home, query: { safe: safeAddress } }} passHref>
-            <Button variant="contained">Open your safe</Button>
-          </Link>
+          <Track {...CREATE_SAFE_EVENTS.GO_TO_SAFE}>
+            <Link href={{ pathname: AppRoutes.safe.home, query: { safe: safeAddress } }} passHref>
+              <Button variant="contained">Open your safe</Button>
+            </Link>
+          </Track>
         </Box>
       )}
       <Divider sx={{ marginTop: 3 }} />
       {displayActions && (
         <Grid container padding={3} justifyContent="center" gap={2}>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={createSafe} variant="contained">
-            Retry
-          </Button>
+          <Track {...CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE}>
+            <Button onClick={onClose}>Cancel</Button>
+          </Track>
+          <Track {...CREATE_SAFE_EVENTS.RETRY_CREATE_SAFE}>
+            <Button onClick={createSafe} variant="contained">
+              Retry
+            </Button>
+          </Track>
         </Grid>
       )}
     </Paper>

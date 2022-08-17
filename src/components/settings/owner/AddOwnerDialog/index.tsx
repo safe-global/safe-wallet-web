@@ -9,6 +9,8 @@ import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/Dial
 import { SetThresholdStep } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/SetThresholdStep'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import Box from '@mui/material/Box'
+import Track from '@/components/common/Track'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 
 const AddOwnerSteps: TxStepperProps['steps'] = [
   {
@@ -37,9 +39,11 @@ export const AddOwnerDialog = () => {
   return (
     <Box paddingTop={2}>
       <div>
-        <Button onClick={() => setOpen(true)} variant="contained">
-          Add new owner
-        </Button>
+        <Track {...SETTINGS_EVENTS.OWNERS.ADD_OWNER}>
+          <Button onClick={() => setOpen(true)} variant="contained">
+            Add new owner
+          </Button>
+        </Track>
       </div>
       {open && <TxModal wide onClose={handleClose} steps={AddOwnerSteps} initialData={[initialModalData]} />}
     </Box>

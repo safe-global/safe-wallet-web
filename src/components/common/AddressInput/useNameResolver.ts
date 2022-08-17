@@ -19,7 +19,6 @@ const useNameResolver = (value?: string): { address: string | undefined; resolvi
 
   const resolving = isResolving && !!ethersProvider && !!debouncedValue
   const address = ens && ens.name === value ? ens.address : undefined
-
   return useMemo(
     () => ({
       resolving,
@@ -28,5 +27,4 @@ const useNameResolver = (value?: string): { address: string | undefined; resolvi
     [resolving, address],
   )
 }
-
 export default useNameResolver

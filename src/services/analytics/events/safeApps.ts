@@ -2,6 +2,7 @@ import { GTM_EVENT } from '@/services/analytics/analytics'
 
 const SAFE_APPS_CATEGORY = 'safe-apps'
 
+// TODO: Does not yet exist in web-core
 export const SAFE_APPS_EVENTS = {
   OPEN_APP: {
     action: 'Open Safe App',

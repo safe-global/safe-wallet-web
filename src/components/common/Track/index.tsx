@@ -1,6 +1,6 @@
 import { ReactElement, Fragment, useEffect, useRef } from 'react'
 
-import { EventLabel, GTM_EVENT, trackEvent } from '@/services/analytics/analytics'
+import { EventLabel, trackEvent } from '@/services/analytics/analytics'
 
 type Props = {
   children: ReactElement
@@ -22,7 +22,6 @@ const Track = ({ children, as: Wrapper = 'div', ...trackData }: Props): typeof c
 
     const handleClick = () => {
       trackEvent({
-        event: GTM_EVENT.CLICK,
         ...trackData,
       })
     }

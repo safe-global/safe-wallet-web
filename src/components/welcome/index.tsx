@@ -1,6 +1,8 @@
 import React from 'react'
 import { Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
+import { CREATE_SAFE_EVENTS, LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
+import Track from '../common/Track'
 
 const NewSafe = () => {
   const router = useRouter()
@@ -25,9 +27,11 @@ const NewSafe = () => {
               Create a new Safe that is controlled by one or multiple owners. You will be required to pay a network fee
               for creating your new Safe.
             </Typography>
-            <Button variant="contained" onClick={() => router.push('/open')}>
-              + Create new Safe
-            </Button>
+            <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
+              <Button variant="contained" onClick={() => router.push('/open')}>
+                + Create new Safe
+              </Button>
+            </Track>
             <Divider orientation="vertical" flexItem />
           </Grid>
           <Grid item md>
@@ -38,9 +42,11 @@ const NewSafe = () => {
               Already have a Safe or want to access it from a different device? Easily load your Safe using your Safe
               address.
             </Typography>
-            <Button variant="outlined" onClick={() => router.push('/load')}>
-              Add existing Safe
-            </Button>
+            <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
+              <Button variant="outlined" onClick={() => router.push('/load')}>
+                Add existing Safe
+              </Button>
+            </Track>
           </Grid>
         </Grid>
       </Paper>
