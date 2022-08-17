@@ -21,7 +21,10 @@ import { getPreValidatedSignature } from '@/hooks/useGasLimit'
 import { encodeMultiSendData } from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/utils'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { Button } from '@mui/material'
+import { Button, DialogContent, Typography } from '@mui/material'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import { useEffect, useState } from 'react'
+import { Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
 
 export const getTxRecipient = (txInfo: TransactionInfo, safeAddress: string): string => {
   switch (txInfo.type) {
@@ -119,9 +122,16 @@ const getTxsWithDetails = (txs: Transaction[], chainId: string) => {
 }
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
+  const [multiSendContract, setMultiSendContract] = useState<Multi_send_call_only>()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
   const provider = useWeb3()
+
+  useEffect(() => {
+    if (!chain) return
+
+    setMultiSendContract(getMultiSendCallOnlyContractInstance(chain.chainId))
+  }, [chain])
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[] | undefined>(async () => {
     if (!chain?.chainId) return
@@ -130,21 +140,43 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [data.txs, chain?.chainId])
 
   const sendTx = () => {
-    if (!provider || !txsWithDetails || !chain) return
+    if (!provider || !txsWithDetails || !chain || !multiSendContract) return
 
     const multiSendTxs = getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
     const data = encodeMultiSendData(multiSendTxs)
 
-    const multiSendContractInstance = getMultiSendCallOnlyContractInstance(chain.chainId)
-    multiSendContractInstance.connect(provider.getSigner()).multiSend(data)
+    multiSendContract.connect(provider.getSigner()).multiSend(data)
 
     onSubmit(null)
   }
 
   return (
-    <Button onClick={sendTx} disabled={loading}>
-      Send
-    </Button>
+    <div>
+      <DialogContent>
+        <Typography variant="body2" mb={2}>
+          This transaction batches a total of {data.txs.length} transactions from your queue into a single Ethereum
+          transaction. Please check every included transaction carefully, especially if you have rejection transactions,
+          and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
+          over the execute button.
+        </Typography>
+        <Typography>Interact with:</Typography>
+        {multiSendContract && (
+          <EthHashInfo address={multiSendContract.address} shortAddress={false} hasExplorer showCopyButton />
+        )}
+        <Typography variant="body2" mt={2} textAlign="center">
+          Be aware that if any of the included transactions revert, none of them will be executed. This will result in
+          the loss of the allocated transaction fees.
+        </Typography>
+        <Button
+          onClick={sendTx}
+          disabled={loading}
+          variant="contained"
+          sx={{ position: 'absolute', bottom: '24px', right: '24px', zIndex: 1 }}
+        >
+          Send
+        </Button>
+      </DialogContent>
+    </div>
   )
 }
 
