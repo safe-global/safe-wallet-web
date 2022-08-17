@@ -3,6 +3,8 @@ import { IconButton, Link } from '@mui/material'
 import ShareIcon from '@/public/images/share.svg'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
+import Track from '@/components/common/Track'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
 const TxShareLink = ({ id }: { id: string }): ReactElement => {
   const router = useRouter()
@@ -19,9 +21,11 @@ const TxShareLink = ({ id }: { id: string }): ReactElement => {
   }
 
   return (
-    <IconButton component={Link} aria-label="Share" href={href} onClick={onClick}>
-      <ShareIcon width={16} height={16} />
-    </IconButton>
+    <Track {...TX_LIST_EVENTS.COPY_DEEPLINK}>
+      <IconButton component={Link} aria-label="Share" href={href} onClick={onClick}>
+        <ShareIcon width={16} height={16} />
+      </IconButton>
+    </Track>
   )
 }
 

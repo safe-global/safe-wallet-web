@@ -1,4 +1,4 @@
-import { Fragment, useState, type ReactElement } from 'react'
+import { Fragment, useEffect, useState, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import List from '@mui/material/List'
@@ -21,6 +21,9 @@ import css from './styles.module.css'
 import { sameAddress } from '@/utils/addresses'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import { trackEvent } from '@/services/analytics/analytics'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -63,17 +66,36 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
     setOpen((prev) => ({ ...prev, [chainId]: open }))
   }
 
+  useEffect(() => {
+    const addedSafeAddresses = Object.keys(addedSafes?.[chainId] || {})
+
+    if (addedSafeAddresses.length > 0) {
+      return
+    }
+
+    const event = OVERVIEW_EVENTS.ADDED_SAFES_ON_NETWORK
+    const { chainName } = configs.find((chain) => chain.chainId === chainId) || {}
+
+    trackEvent({
+      ...event,
+      action: `${event.action} ${chainName}`,
+      label: addedSafeAddresses.length,
+    })
+  }, [addedSafes, chainId])
+
   return (
     <div className={css.container}>
       <div className={css.header}>
         <Typography variant="h4" display="inline" fontWeight={700}>
           My Safes
         </Typography>
-        <Link href={{ pathname: AppRoutes.welcome }} passHref>
-          <Button disableElevation size="small" variant="outlined" onClick={closeDrawer} className={css.addButton}>
-            + Add
-          </Button>
-        </Link>
+        <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
+          <Link href={{ pathname: AppRoutes.welcome }} passHref>
+            <Button disableElevation size="small" variant="outlined" onClick={closeDrawer} className={css.addButton}>
+              + Add
+            </Button>
+          </Link>
+        </Track>
       </div>
 
       {configs.map((chain) => {

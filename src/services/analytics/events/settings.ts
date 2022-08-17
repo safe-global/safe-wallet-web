@@ -2,7 +2,9 @@ import { GTM_EVENT } from '@/services/analytics/analytics'
 
 const SETTINGS_CATEGORY = 'settings'
 
+// TODO: Settings organisation has changed, we should alter this to reflect it
 export const SETTINGS_EVENTS = {
+  // TODO: Does not exist in web-core
   DETAILS: {
     SAFE_NAME: {
       action: 'Name Safe',
@@ -18,12 +20,13 @@ export const SETTINGS_EVENTS = {
       action: 'Copy EIP-3770 prefixes',
       category: SETTINGS_CATEGORY,
     },
-    INVERT_COLORS: {
-      action: 'Invert colors',
+    DARK_MODE: {
+      action: 'Dark mode',
       category: SETTINGS_CATEGORY,
     },
   },
   OWNERS: {
+    // TODO: Does not exist in web-core
     REMOVE_SAFE: {
       action: 'Remove Safe',
       category: SETTINGS_CATEGORY,

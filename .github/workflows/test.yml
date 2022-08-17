@@ -28,7 +28,7 @@ jobs:
       - name: Yarn install
         run: |
           mkdir .yarncache
-          yarn install --cache-folder ./.yarncache  --immutable
+          yarn install --cache-folder ./.yarncache --frozen-lockfile
           rm -rf .yarncache
           yarn cache clean
 

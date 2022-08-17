@@ -8,6 +8,8 @@ import { OwnerData } from './DialogSteps/types'
 import { ReviewSelectedOwnerStep } from './DialogSteps/ReviewSelectedOwnerStep'
 import { SetThresholdStep } from './DialogSteps/SetThresholdStep'
 import { ReviewRemoveOwnerTxStep } from './DialogSteps/ReviewRemoveOwnerTxStep'
+import Track from '@/components/common/Track'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 
 export type RemoveOwnerData = {
   removedOwner: OwnerData
@@ -49,11 +51,13 @@ export const RemoveOwnerDialog = ({ owner }: { owner: OwnerData }) => {
 
   return (
     <div>
-      <Tooltip title="Remove owner">
-        <IconButton onClick={() => setOpen(true)}>
-          <DeleteOutlineIcon color="error" />
-        </IconButton>
-      </Tooltip>
+      <Track {...SETTINGS_EVENTS.OWNERS.REMOVE_OWNER}>
+        <Tooltip title="Remove owner">
+          <IconButton onClick={() => setOpen(true)}>
+            <DeleteOutlineIcon color="error" />
+          </IconButton>
+        </Tooltip>
+      </Track>
       {open && <TxModal wide onClose={handleClose} steps={RemoveOwnerSteps} initialData={[initialModalData]} />}
     </div>
   )

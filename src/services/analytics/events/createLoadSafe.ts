@@ -1,5 +1,7 @@
 import { GTM_EVENT } from '@/services/analytics/analytics'
 
+// TODO: Track forward/backward in stepper. It was done automatically in safe-react
+
 const CREATE_SAFE_CATEGORY = 'create-safe'
 
 export const CREATE_SAFE_EVENTS = {
@@ -47,6 +49,7 @@ export const CREATE_SAFE_EVENTS = {
     action: 'Created Safe',
     category: CREATE_SAFE_CATEGORY,
   },
+  // TODO: Is covered by GO_TO_SAFE in web-core
   GET_STARTED: {
     action: 'Load Safe',
     category: CREATE_SAFE_CATEGORY,

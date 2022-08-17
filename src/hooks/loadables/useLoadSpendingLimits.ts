@@ -72,7 +72,7 @@ export const getSpendingLimits = async (
 
 export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
   const [updateSpendingLimitsTag, setUpdateSpendingLimitsTag] = useState<number>()
-  const { safeAddress, safe, safeLoaded } = useSafeInfo()
+  const { safeAddress, safe } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
 
@@ -83,12 +83,12 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
   }, [])
 
   const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(
-    () => {
-      if (!provider || !safeLoaded || !safe.modules) return
+    async () => {
+      if (!provider || !safe.modules) return
 
       return getSpendingLimits(provider, safe.modules, safeAddress, chainId)
     },
-    [provider, safeLoaded, safe.modules?.length, safeAddress, chainId, updateSpendingLimitsTag],
+    [provider, safe.modules?.length, safeAddress, chainId, updateSpendingLimitsTag],
     false,
   )
 

@@ -5,6 +5,8 @@ import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreat
 import { useEffect } from 'react'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { trackEvent } from '@/services/analytics/analytics'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 
 export const pollSafeInfo = async (chainId: string, safeAddress: string): Promise<SafeInfo> => {
   // exponential delay between attempts for around 4 min
@@ -29,6 +31,8 @@ export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: str
       return SafeCreationStatus.REVERTED
     }
 
+    trackEvent(CREATE_SAFE_EVENTS.CREATED_SAFE)
+
     return SafeCreationStatus.SUCCESS
   } catch (error) {
     return SafeCreationStatus.TIMEOUT
@@ -45,6 +49,8 @@ export const usePendingSafeCreation = ({ txHash, setStatus }: Props) => {
 
   useEffect(() => {
     if (!txHash || !provider) return
+
+    trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
 
     const monitorTx = async (txHash: string) => {
       const txStatus = await checkSafeCreationTx(provider, txHash)

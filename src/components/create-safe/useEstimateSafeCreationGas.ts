@@ -31,7 +31,7 @@ export const useEstimateSafeCreationGas = ({
   const proxyContract = getProxyFactoryContractInstance(chainId)
   const encodedSafeCreationTx = getSafeCreationTx({ owners, threshold, saltNonce, chain: currentChain })
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>(() => {
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber | undefined>(async () => {
     if (!wallet?.address || !encodedSafeCreationTx || !web3ReadOnly) return
 
     return web3ReadOnly.estimateGas({

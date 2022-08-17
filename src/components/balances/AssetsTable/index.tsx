@@ -8,6 +8,8 @@ import EnhancedTable from '@/components/common/EnhancedTable'
 import TokenExplorerLink from '@/components/common/TokenExplorerLink'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import Track from '@/components/common/Track'
+import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 
 interface AssetsTableProps {
   items?: SafeBalanceResponse['items']
@@ -68,9 +70,11 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
       content: (
         <>
           {isSafeOwner && (
-            <Button variant="contained" color="primary" onClick={() => setSelectedAsset(item.tokenInfo.address)}>
-              Send
-            </Button>
+            <Track {...ASSETS_EVENTS.SEND}>
+              <Button variant="contained" color="primary" onClick={() => setSelectedAsset(item.tokenInfo.address)}>
+                Send
+              </Button>
+            </Track>
           )}
         </>
       ),

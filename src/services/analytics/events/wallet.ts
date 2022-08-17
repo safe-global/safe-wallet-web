@@ -8,6 +8,12 @@ export const WALLET_EVENTS = {
     action: 'Connect wallet',
     category: WALLET_CATEGORY,
   },
+  WALLET_CONNECT: {
+    event: GTM_EVENT.META,
+    action: 'WalletConnect peer',
+    category: WALLET_CATEGORY,
+  },
+  // TODO: Not sure on the best approach for the following as we have no centralized sender
   OFF_CHAIN_SIGNATURE: {
     event: GTM_EVENT.META,
     action: 'Off-chain signature',

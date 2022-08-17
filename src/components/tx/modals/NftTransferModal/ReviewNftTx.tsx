@@ -18,7 +18,7 @@ type ReviewNftTxProps = {
 const ReviewNftTx = ({ params, onSubmit }: ReviewNftTxProps): ReactElement => {
   const { safeAddress, safe } = useSafeInfo()
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!safeAddress) return
     const transferParams = createNftTransferParams(safeAddress, params.recipient, params.token.id, params.token.address)
     return createTx(transferParams)

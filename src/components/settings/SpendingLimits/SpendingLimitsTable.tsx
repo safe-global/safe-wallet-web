@@ -12,6 +12,8 @@ import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import TxModal from '@/components/tx/TxModal'
 import { RemoveSpendingLimit } from '@/components/settings/SpendingLimits/RemoveSpendingLimit'
 import useIsGranted from '@/hooks/useIsGranted'
+import Track from '@/components/common/Track'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 
 const headCells = [
   { id: 'beneficiary', label: 'Beneficiary' },
@@ -68,9 +70,11 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
           actions: {
             rawValue: '',
             content: isGranted ? (
-              <IconButton onClick={() => onRemove(spendingLimit)} color="error">
-                <DeleteOutlineIcon />
-              </IconButton>
+              <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
+                <IconButton onClick={() => onRemove(spendingLimit)} color="error">
+                  <DeleteOutlineIcon />
+                </IconButton>
+              </Track>
             ) : null,
           },
         }

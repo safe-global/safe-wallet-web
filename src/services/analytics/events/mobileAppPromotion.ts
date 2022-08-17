@@ -1,26 +1,27 @@
 const MOBILE_APP_CATEGORY = 'mobile-app-promotion'
 const SURVEY_ACTION = 'dashboard-banner-survey'
 
+// TODO: Does not yet exist in web-core
 export const MOBILE_APP_EVENTS = {
-  dashboardBannerClick: {
+  DASHBOARD_BANNER_CLICK: {
     action: 'dashboard-banner-click',
     category: MOBILE_APP_CATEGORY,
   },
-  alreadyUse: {
+  ALREADY_USE: {
     label: 'already-use',
     action: SURVEY_ACTION,
     category: MOBILE_APP_CATEGORY,
   },
-  notInterested: {
+  NOT_INTERESTED: {
     label: 'not-interested',
     action: SURVEY_ACTION,
     category: MOBILE_APP_CATEGORY,
   },
-  dashboardBannerClose: {
+  DASHBOARD_BANNER_CLOSE: {
     action: 'dashboard-banner-close',
     category: MOBILE_APP_CATEGORY,
   },
-  appstoreButtonClick: {
+  APPSTORE_BUTTON_CLICK: {
     action: 'appstore-button-click',
     category: MOBILE_APP_CATEGORY,
   },

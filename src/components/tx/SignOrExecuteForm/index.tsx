@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from 'react'
+import { ChangeEvent, ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import type { SafeTransaction, TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material'
@@ -19,6 +19,8 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { hasFeature } from '@/utils/chains'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
+import { trackEvent } from '@/services/analytics/analytics'
+import { MODALS_EVENTS } from '@/services/analytics/events/modals'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -177,6 +179,12 @@ const SignOrExecuteForm = ({
     setManualParams(data)
   }
 
+  const onExecuteTxCheckbox = (_: ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    trackEvent({ ...MODALS_EVENTS.EXECUTE_TX, label: checked })
+
+    setShouldExecute(checked)
+  }
+
   const submitDisabled = !isSubmittable || isEstimating || !tx
 
   return isEditingGas ? (
@@ -200,7 +208,7 @@ const SignOrExecuteForm = ({
 
         {canExecute && !onlyExecute && (
           <FormControlLabel
-            control={<Checkbox checked={shouldExecute} onChange={(e) => setShouldExecute(e.target.checked)} />}
+            control={<Checkbox checked={shouldExecute} onChange={onExecuteTxCheckbox} />}
             label="Execute transaction"
             sx={{ mb: 1 }}
           />
