@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { showNotification } from '@/store/notificationsSlice'
+import { showNotification, selectNotifications } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 
@@ -33,11 +33,12 @@ const useTxNotifications = (): void => {
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
         const message = isError ? `${baseMessage} ${detail.error.message.slice(0, 300)}` : baseMessage
         const txId = 'txId' in detail && detail.txId
+        const txHash = 'txHash' in detail && detail.txHash
 
         dispatch(
           showNotification({
             message,
-            groupKey: txId || '',
+            groupKey: txHash || txId || '',
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
           }),
         )

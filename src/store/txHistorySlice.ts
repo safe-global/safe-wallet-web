@@ -1,7 +1,12 @@
 import { Middleware } from '@reduxjs/toolkit'
 import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '@/store'
-import { isTransactionListItem } from '@/utils/transaction-guards'
+import {
+  isMultiSendTxInfo,
+  isMultisigExecutionDetails,
+  isMultisigExecutionInfo,
+  isTransactionListItem,
+} from '@/utils/transaction-guards'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { selectPendingTxs } from './pendingTxsSlice'
 import { makeLoadableSlice } from './common'
@@ -30,7 +35,7 @@ export const txHistoryMiddleware: Middleware<{}, RootState> = (store) => (next) 
 
         const { id } = result.transaction
         if (pendingTxs[id]) {
-          txDispatch(TxEvent.SUCCESS, { txId: id })
+          txDispatch(TxEvent.SUCCESS, { txId: id, txHash: pendingTxs[id].txHash })
         }
       }
     }

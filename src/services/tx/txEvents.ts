@@ -31,7 +31,7 @@ interface TxEvents {
   [TxEvent.MINED]: { txId: string; receipt: ContractReceipt; tx: SafeTransaction }
   [TxEvent.REVERTED]: { txId: string; error: Error; receipt: ContractReceipt; tx?: SafeTransaction }
   [TxEvent.FAILED]: { txId: string; error: Error; tx?: SafeTransaction }
-  [TxEvent.SUCCESS]: { txId: string }
+  [TxEvent.SUCCESS]: { txId: string; txHash?: string }
 }
 
 const txEventBus = new EventBus<TxEvents>()
