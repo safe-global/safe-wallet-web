@@ -33,9 +33,11 @@ const ExecuteTxButton = ({
     <>
       {compact ? (
         <Tooltip title="Execute" arrow placement="top">
-          <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
-            <RocketLaunchIcon fontSize="small" />
-          </IconButton>
+          <span>
+            <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
+              <RocketLaunchIcon fontSize="small" />
+            </IconButton>
+          </span>
         </Tooltip>
       ) : (
         <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">

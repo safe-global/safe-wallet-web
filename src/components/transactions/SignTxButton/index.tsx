@@ -34,9 +34,11 @@ const SignTxButton = ({
     <>
       {compact ? (
         <Tooltip title="Sign" arrow placement="top">
-          <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
-            <CheckIcon fontSize="small" />
-          </IconButton>
+          <span>
+            <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
+              <CheckIcon fontSize="small" />
+            </IconButton>
+          </span>
         </Tooltip>
       ) : (
         <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
