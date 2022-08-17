@@ -54,6 +54,7 @@ const DemoTheme: NextPage = () => {
                 {/* TextField demo */}
                 <Typography variant="h5">TextField</Typography>
                 <TextField id="outlined-basic-theme-mode" label={`Textfield in ${themeMode} mode`} variant="outlined" />
+                <TextField variant="filled" label={`Filled Textfield in ${themeMode} mode`} />
               </Stack>
 
               {/* Buttons demo */}
