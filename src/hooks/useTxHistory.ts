@@ -15,10 +15,14 @@ const useTxHistory = (
   const { chainId } = safe
 
   // If pageUrl is passed, load a new history page from the API
-  const [page, error, loading] = useAsync<TransactionListPage>(() => {
-    if (!pageUrl || !safeLoaded) return
-    return getTransactionHistory(chainId, safeAddress, pageUrl)
-  }, [chainId, safeAddress, safeLoaded, pageUrl])
+  const [page, error, loading] = useAsync<TransactionListPage>(
+    () => {
+      if (!pageUrl || !safeLoaded) return
+      return getTransactionHistory(chainId, safeAddress, pageUrl)
+    },
+    [chainId, safeAddress, safeLoaded, pageUrl],
+    false,
+  )
 
   // The latest page of the history is always in the store
   const historyState = useAppSelector(selectTxHistory)
@@ -28,7 +32,7 @@ const useTxHistory = (
     ? {
         page,
         error: error?.message,
-        loading,
+        loading: loading || !page,
       }
     : {
         page: historyState.data,

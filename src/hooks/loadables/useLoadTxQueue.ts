@@ -16,8 +16,8 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
   }, [])
 
   // Re-fetch when chainId/address, or txQueueTag change
-  const [data, error, loading] = useAsync<TransactionListPage>(
-    () => {
+  const [data, error, loading] = useAsync<TransactionListPage | undefined>(
+    async () => {
       if (!safeLoaded) return
       return getTransactionQueue(chainId, safeAddress)
     },

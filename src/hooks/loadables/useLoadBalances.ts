@@ -12,8 +12,8 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const currency = useAppSelector(selectCurrency)
 
   // Re-fetch assets when the entire SafeInfo updates
-  const [data, error, loading] = useAsync<SafeBalanceResponse>(
-    () => {
+  const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(
+    async () => {
       if (!safe) return
       return getBalances(safe.chainId, safe.address.value, currency)
     },
