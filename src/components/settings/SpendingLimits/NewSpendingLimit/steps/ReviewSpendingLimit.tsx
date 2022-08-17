@@ -102,7 +102,7 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
       ? 'One-time spending limit'
       : RESET_TIME_OPTIONS.find((time) => time.value === data.resetTime)?.label
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(() => {
     return createNewSpendingLimitTx(data, spendingLimits, chainId, decimals, existingSpendingLimit)
   }, [data, spendingLimits, chainId, decimals, existingSpendingLimit])
 

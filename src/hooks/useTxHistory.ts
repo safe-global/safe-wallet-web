@@ -15,7 +15,7 @@ const useTxHistory = (
   const { chainId } = safe
 
   // If pageUrl is passed, load a new history page from the API
-  const [page, error, loading] = useAsync<TransactionListPage | undefined>(async () => {
+  const [page, error, loading] = useAsync<TransactionListPage>(() => {
     if (!pageUrl || !safeLoaded) return
     return getTransactionHistory(chainId, safeAddress, pageUrl)
   }, [chainId, safeAddress, safeLoaded, pageUrl])

@@ -27,9 +27,10 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
     name: 'owners',
   })
 
-  const [safeInfo] = useAsync<SafeInfo | undefined>(async () => {
-    if (!params.address) return
-    return getSafeInfo(chainId, params.address)
+  const [safeInfo] = useAsync<SafeInfo>(() => {
+    if (params.address) {
+      return getSafeInfo(chainId, params.address)
+    }
   }, [chainId, params.address])
 
   useEffect(() => {
