@@ -104,7 +104,7 @@ describe('Address book', () => {
       cy.contains('button.MuiButton-sizeMedium', 'Export').click()
       const downloadsFolder = Cypress.config('downloadsFolder')
       //File reading is failing in the CI. Can be tested locally
-      //cy.readFile(path.join(downloadsFolder, fileName).replace('/', '\\')).should('exist') 
+      //cy.readFile(path.join(downloadsFolder, fileName).replace('/', '\\')).should('exist')
     })
   })
 })
