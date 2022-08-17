@@ -93,7 +93,7 @@
     "@types/react-qr-reader": "^2.1.4",
     "@types/semver": "^7.3.10",
     "cross-env": "^7.0.3",
-    "cypress": "^10.4.0",
+    "cypress": "^10.6.0",
     "cypress-file-upload": "^5.0.8",
     "eslint": "8.21.0",
     "eslint-config-next": "12.2.4",
