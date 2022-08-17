@@ -15,24 +15,14 @@ jobs:
         with:
           node-version: 16
 
-      - name: Yarn cache
-        uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-
       - name: Yarn install
-        run: |
-          mkdir .yarncache
-          yarn install --cache-folder ./.yarncache --immutable
-          rm -rf .yarncache
-          yarn cache clean
+        run: yarn install --immutable
 
-      - name: Build & serve
-        run: |
-          yarn build
-          yarn export
-          yarn serve &
+      - name: Build
+        run: yarn build && yarn export
+
+      - name: Serve
+        run: yarn serve &
 
       - uses: cypress-io/github-action@v4
         with:
