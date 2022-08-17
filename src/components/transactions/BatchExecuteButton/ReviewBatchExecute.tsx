@@ -17,7 +17,6 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
-import { getPreValidatedSignature } from '@/hooks/useGasLimit'
 import { encodeMultiSendData } from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/utils'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { useWeb3 } from '@/hooks/wallets/web3'
@@ -25,6 +24,8 @@ import { Button, DialogContent, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useEffect, useState } from 'react'
 import { Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
+import { createExistingTx } from '@/services/tx/txSender'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 export const getTxRecipient = (txInfo: TransactionInfo, safeAddress: string): string => {
   switch (txInfo.type) {
@@ -61,9 +62,12 @@ export const getTxValue = (txInfo: TransactionInfo, txDetails: TransactionDetail
 }
 
 const getSignatures = (confirmations: MultisigConfirmation[]) => {
-  return confirmations.reduce((prev, current) => {
-    return prev + current.signature?.slice(2) || getPreValidatedSignature(current.signer.value)
-  }, '0x')
+  return confirmations
+    .filter((confirmation) => Boolean(confirmation.signature))
+    .sort((a, b) => a.signer.value.toLowerCase().localeCompare(b.signer.value.toLocaleLowerCase()))
+    .reduce((prev, current) => {
+      return prev + current.signature?.slice(2)
+    }, '0x')
 }
 
 const getMultiSendTxs = (
@@ -133,19 +137,24 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     setMultiSendContract(getMultiSendCallOnlyContractInstance(chain.chainId))
   }, [chain])
 
-  const [txsWithDetails, error, loading] = useAsync<TransactionDetails[] | undefined>(async () => {
+  const [txsWithDetails, _, loading] = useAsync<TransactionDetails[] | undefined>(async () => {
     if (!chain?.chainId) return
 
     return getTxsWithDetails(data.txs, chain.chainId)
   }, [data.txs, chain?.chainId])
 
-  const sendTx = () => {
+  const sendTx = async () => {
     if (!provider || !txsWithDetails || !chain || !multiSendContract) return
 
     const multiSendTxs = getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
-    const data = encodeMultiSendData(multiSendTxs)
+    const multiSendTxData = encodeMultiSendData(multiSendTxs)
 
-    multiSendContract.connect(provider.getSigner()).multiSend(data)
+    const multisendTransaction = await multiSendContract.connect(provider.getSigner()).multiSend(multiSendTxData)
+    data.txs.forEach((tx) => {
+      createExistingTx(chain.chainId, safe.address.value, tx.transaction).then((safeTx) =>
+        txDispatch(TxEvent.MINING, { txId: tx.transaction.id, txHash: multisendTransaction.hash, tx: safeTx }),
+      )
+    })
 
     onSubmit(null)
   }
