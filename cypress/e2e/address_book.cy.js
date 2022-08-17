@@ -36,7 +36,6 @@ describe('Address book', () => {
 
       cy.findByText(NAME).should('exist')
       cy.findByText(ADDRESS).should('exist')
-
     })
 
     it('should edit an entry', () => {
@@ -63,7 +62,7 @@ describe('Address book', () => {
   describe('should import and export address book files', () => {
     it('should import an address book csv file', () => {
       // Import CSV
-      cy.findByText('Import' ).click()
+      cy.findByText('Import').click()
       cy.get('[type="file"]').attachFile('../fixtures/address_book_test.csv')
       //This is the submit button for the Import modal. It requires an actuall class or testId to differentiate
       //from the Import button at the top of the AB table
@@ -104,7 +103,7 @@ describe('Address book', () => {
       //from the Export button at the top of the AB table
       cy.contains('button.MuiButton-sizeMedium', 'Export').click()
       const downloadsFolder = Cypress.config('downloadsFolder')
-      cy.readFile(path.join(downloadsFolder, fileName).replace("\/","\\")).should('exist')
+      cy.readFile(path.join(downloadsFolder, fileName).replace('/', '\\')).should('exist')
     })
   })
 })
