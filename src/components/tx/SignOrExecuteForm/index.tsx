@@ -21,6 +21,7 @@ import { hasFeature } from '@/utils/chains'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { trackEvent } from '@/services/analytics/analytics'
 import { MODALS_EVENTS } from '@/services/analytics/events/modals'
+import { WALLET_EVENTS } from '@/services/analytics/events/wallet'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -98,6 +99,8 @@ const SignOrExecuteForm = ({
   const onSign = async (): Promise<string> => {
     const [connectedWallet, createdTx] = assertSubmittable()
 
+    trackEvent(WALLET_EVENTS.OFF_CHAIN_SIGNATURE)
+
     const hardwareWallet = isHardwareWallet(connectedWallet)
     const signedTx = await dispatchTxSigning(createdTx, hardwareWallet, txId)
 
@@ -108,6 +111,8 @@ const SignOrExecuteForm = ({
   // Execute transaction
   const onExecute = async (): Promise<string> => {
     const [connectedWallet, createdTx] = assertSubmittable()
+
+    trackEvent(WALLET_EVENTS.ON_CHAIN_INTERACTION)
 
     // If no txId was provided, it's an immediate execution of a new tx
     let id = txId

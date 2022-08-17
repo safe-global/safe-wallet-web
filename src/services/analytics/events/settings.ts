@@ -2,7 +2,6 @@ import { GTM_EVENT } from '@/services/analytics/analytics'
 
 const SETTINGS_CATEGORY = 'settings'
 
-// TODO: Settings organisation has changed, we should alter this to reflect it
 export const SETTINGS_EVENTS = {
   // TODO: Does not exist in web-core
   DETAILS: {
@@ -11,21 +10,7 @@ export const SETTINGS_EVENTS = {
       category: SETTINGS_CATEGORY,
     },
   },
-  APPEARANCE: {
-    PREPEND_PREFIXES: {
-      action: 'Prepend EIP-3770 prefixes',
-      category: SETTINGS_CATEGORY,
-    },
-    COPY_PREFIXES: {
-      action: 'Copy EIP-3770 prefixes',
-      category: SETTINGS_CATEGORY,
-    },
-    DARK_MODE: {
-      action: 'Dark mode',
-      category: SETTINGS_CATEGORY,
-    },
-  },
-  OWNERS: {
+  SETUP: {
     // TODO: Does not exist in web-core
     REMOVE_SAFE: {
       action: 'Remove Safe',
@@ -47,9 +32,7 @@ export const SETTINGS_EVENTS = {
       action: 'Remove owner',
       category: SETTINGS_CATEGORY,
     },
-  },
-  THRESHOLD: {
-    CHANGE: {
+    CHANGE_THRESHOLD: {
       action: 'Change threshold',
       category: SETTINGS_CATEGORY,
     },
@@ -61,6 +44,26 @@ export const SETTINGS_EVENTS = {
     THRESHOLD: {
       event: GTM_EVENT.META,
       action: 'Threshold',
+      category: SETTINGS_CATEGORY,
+    },
+  },
+  APPEARANCE: {
+    PREPEND_PREFIXES: {
+      action: 'Prepend EIP-3770 prefixes',
+      category: SETTINGS_CATEGORY,
+    },
+    COPY_PREFIXES: {
+      action: 'Copy EIP-3770 prefixes',
+      category: SETTINGS_CATEGORY,
+    },
+    DARK_MODE: {
+      action: 'Dark mode',
+      category: SETTINGS_CATEGORY,
+    },
+  },
+  MODULES: {
+    REMOVE_MODULE: {
+      action: 'Remove module',
       category: SETTINGS_CATEGORY,
     },
   },

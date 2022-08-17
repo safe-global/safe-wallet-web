@@ -9,6 +9,8 @@ import { RemoveModuleData } from '@/components/settings/SafeModules/RemoveModule
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { trackEvent } from '@/services/analytics/analytics'
 
 export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
@@ -24,8 +26,14 @@ export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData;
     }
   }, [safeTxError])
 
+  const onRemove = (data: null) => {
+    trackEvent(SETTINGS_EVENTS.MODULES.REMOVE_MODULE)
+
+    onSubmit(data)
+  }
+
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onRemove} error={safeTxError}>
       <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Module</Typography>
       <EthHashInfo address={data.address} showCopyButton hasExplorer shortAddress={false} />
       <Typography my={2}>

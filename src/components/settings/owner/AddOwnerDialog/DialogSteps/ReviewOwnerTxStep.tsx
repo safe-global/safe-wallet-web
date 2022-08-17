@@ -49,8 +49,8 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
       )
     }
 
-    trackEvent({ ...SETTINGS_EVENTS.THRESHOLD.THRESHOLD, label: safe.threshold })
-    trackEvent({ ...SETTINGS_EVENTS.THRESHOLD.OWNERS, label: safe.owners.length })
+    trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
+    trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
 
     onSubmit(dialogData)
   }

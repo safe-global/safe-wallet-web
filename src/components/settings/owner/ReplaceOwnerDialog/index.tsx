@@ -36,7 +36,7 @@ export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
 
   return (
     <div>
-      <Track {...SETTINGS_EVENTS.OWNERS.REPLACE_OWNER}>
+      <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
         <Tooltip title="Replace owner">
           <IconButton onClick={() => setOpen(true)}>
             <ChangeCircleOutlinedIcon />

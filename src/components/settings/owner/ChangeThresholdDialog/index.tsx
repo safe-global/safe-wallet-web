@@ -37,7 +37,7 @@ export const ChangeThresholdDialog = () => {
   return (
     <Box paddingTop={2}>
       <div>
-        <Track {...SETTINGS_EVENTS.THRESHOLD.CHANGE}>
+        <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD}>
           <Button onClick={() => setOpen(true)} variant="contained">
             Change
           </Button>
@@ -63,8 +63,8 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
   }, [selectedThreshold])
 
   const onChangeTheshold = (data: null) => {
-    trackEvent({ ...SETTINGS_EVENTS.THRESHOLD.OWNERS, label: safe.owners.length })
-    trackEvent({ ...SETTINGS_EVENTS.THRESHOLD.THRESHOLD, label: selectedThreshold })
+    trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
+    trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: selectedThreshold })
 
     onSubmit(data)
   }

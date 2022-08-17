@@ -51,7 +51,7 @@ export const RemoveOwnerDialog = ({ owner }: { owner: OwnerData }) => {
 
   return (
     <div>
-      <Track {...SETTINGS_EVENTS.OWNERS.REMOVE_OWNER}>
+      <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
         <Tooltip title="Remove owner">
           <IconButton onClick={() => setOpen(true)}>
             <DeleteOutlineIcon color="error" />

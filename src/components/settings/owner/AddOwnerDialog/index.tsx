@@ -39,7 +39,7 @@ export const AddOwnerDialog = () => {
   return (
     <Box paddingTop={2}>
       <div>
-        <Track {...SETTINGS_EVENTS.OWNERS.ADD_OWNER}>
+        <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
           <Button onClick={() => setOpen(true)} variant="contained">
             Add new owner
           </Button>
