@@ -9,7 +9,7 @@ export const useCollectibles = (pageUrl?: string): AsyncResult<SafeCollectiblesP
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
 
-  const [data, error, loading] = useAsync<SafeCollectiblesPage | undefined>(async () => {
+  const [data, error, loading] = useAsync<SafeCollectiblesPage>(() => {
     return getCollectiblesPage(chainId, safeAddress, undefined, pageUrl)
   }, [safeAddress, chainId, pageUrl])
 

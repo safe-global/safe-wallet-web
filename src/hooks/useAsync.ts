@@ -2,7 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 
 export type AsyncResult<T> = [result: T | undefined, error: Error | undefined, loading: boolean]
 
-const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[], clearData = true): AsyncResult<T> => {
+const useAsync = <T>(
+  asyncCall: () => Promise<T> | undefined,
+  dependencies: unknown[],
+  clearData = true,
+): AsyncResult<T> => {
   const [data, setData] = useState<T | undefined>()
   const [error, setError] = useState<Error>()
   const [loading, setLoading] = useState<boolean>(false)
@@ -11,17 +15,17 @@ const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[], clear
   const callback = useCallback(asyncCall, dependencies)
 
   useEffect(() => {
-    let isCurrent = true
-
     clearData && setData(undefined)
     setError(undefined)
 
-    // Mark as loading with a small timeout to avoid flashing the loading state for quickly resolved promises
-    const loadingTimeout = setTimeout(() => {
-      setLoading(true)
-    }, 10)
+    const promise = callback()
 
-    callback()
+    if (!promise) return
+
+    let isCurrent = true
+    setLoading(true)
+
+    promise
       .then((val: T) => {
         isCurrent && setData(val)
       })
@@ -29,13 +33,11 @@ const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[], clear
         isCurrent && setError(err)
       })
       .finally(() => {
-        clearTimeout(loadingTimeout)
         isCurrent && setLoading(false)
       })
 
     return () => {
       isCurrent = false
-      clearTimeout(loadingTimeout)
     }
   }, [callback, clearData])
 
