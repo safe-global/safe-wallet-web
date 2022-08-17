@@ -1,5 +1,7 @@
 import { GTM_EVENT } from '@/services/analytics/analytics'
 
+// TODO: Track forward/backward in stepper. It was done automatically in safe-react
+
 const CREATE_SAFE_CATEGORY = 'create-safe'
 
 export const CREATE_SAFE_EVENTS = {

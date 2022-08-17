@@ -15,7 +15,7 @@ export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
   const { safe } = useSafeInfo()
   const isStoredSafeValid = safe.chainId === chainId && safe.address.value === address
 
-  const [data, error, loading] = useAsync<SafeInfo>(() => {
+  const [data, error, loading] = useAsync<SafeInfo | undefined>(async () => {
     if (!chainId || !address) return
     return getSafeInfo(chainId, address)
   }, [chainId, address, pollCount])

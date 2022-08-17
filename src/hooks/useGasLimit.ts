@@ -84,8 +84,8 @@ const useGasLimit = (
     [safeTx?.data.operation],
   )
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>(() => {
-    if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber | undefined>(async () => {
+    if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return undefined
 
     return web3ReadOnly.estimateGas({
       to: safeAddress,

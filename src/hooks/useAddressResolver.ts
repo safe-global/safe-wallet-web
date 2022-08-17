@@ -20,7 +20,7 @@ export const useAddressResolver = (address: string, fallback?: string) => {
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
   const shouldResolve = !addressBookName && isDomainLookupEnabled && !!ethersProvider && !!debouncedValue
 
-  const [ensName, _, isResolving] = useAsync<string | undefined>(() => {
+  const [ensName, _, isResolving] = useAsync<string | undefined>(async () => {
     if (!shouldResolve) return
     return lookupAddress(ethersProvider, debouncedValue)
   }, [ethersProvider, debouncedValue, shouldResolve])

@@ -42,7 +42,7 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
   const { decimals, address } = token?.tokenInfo || {}
 
   // Create a safeTx
-  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     if (!address || !decimals) return
     const txParams = createTokenTransferParams(params.recipient, params.amount, decimals, address)
     return createTx(txParams)

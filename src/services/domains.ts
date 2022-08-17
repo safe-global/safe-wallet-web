@@ -9,11 +9,10 @@ type EthersError = Error & {
 // ENS domains can have any TLD, so just check that it ends with a dot-separated tld
 const DOMAIN_RE = /[^.]+[.][^.]+$/iu
 
-export function isDomain(domain: string): boolean {
-  return DOMAIN_RE.test(domain)
-}
-
 export const resolveName = async (rpcProvider: JsonRpcProvider, name: string): Promise<string | undefined> => {
+  // Check if the value looks like a domain name
+  if (!DOMAIN_RE.test(name)) return
+
   try {
     return (await rpcProvider.resolveName(name)) || undefined
   } catch (e) {
