@@ -8,7 +8,13 @@ jobs:
     runs-on: ubuntu-20.04
     name: E2E on Chrome
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
       - uses: actions/checkout@v2
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
