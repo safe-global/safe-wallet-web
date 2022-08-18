@@ -112,14 +112,13 @@ describe('AddressInput tests', () => {
     await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_B} is wrong`)).toBeDefined())
   })
 
-  it('should resolve ENS names', async () => {
+  it.only('should resolve ENS names', async () => {
     const { input } = setup('')
 
-    act(() => {
+    await act(async () => {
       fireEvent.change(input, { target: { value: 'zero.eth' } })
+      await waitFor(() => expect(input.value).toBe('0x0000000000000000000000000000000000000000'))
     })
-
-    await waitFor(() => expect(input.value).toBe('0x0000000000000000000000000000000000000000'))
   })
 
   it('should not resolve ENS names if this feature is disabled', async () => {
