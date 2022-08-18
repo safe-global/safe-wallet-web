@@ -9,6 +9,8 @@ import useIsPending from '@/hooks/useIsPending'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import IconButton from '@mui/material/IconButton'
 import CheckIcon from '@mui/icons-material/Check'
+import Track from '@/components/common/Track'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
 const SignTxButton = ({
   txSummary,
@@ -32,17 +34,21 @@ const SignTxButton = ({
 
   return (
     <>
-      {compact ? (
-        <Tooltip title="Sign" arrow placement="top">
-          <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
-            <CheckIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
-          Confirm
-        </Button>
-      )}
+      <Track {...TX_LIST_EVENTS.CONFIRM}>
+        {compact ? (
+          <Tooltip title="Sign" arrow placement="top">
+            <span>
+              <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
+                <CheckIcon fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        ) : (
+          <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
+            Confirm
+          </Button>
+        )}
+      </Track>
 
       {open && <ConfirmTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </>

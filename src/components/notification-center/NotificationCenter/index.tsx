@@ -21,6 +21,8 @@ import NotificationCenterList from '@/components/notification-center/Notificatio
 import UnreadBadge from '@/components/common/UnreadBadge'
 
 import css from './styles.module.css'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import { trackEvent } from '@/services/analytics/analytics'
 
 const NOTIFICATION_CENTER_LIMIT = 4
 
@@ -67,6 +69,8 @@ const NotificationCenter = (): ReactElement => {
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     if (!open) {
+      trackEvent(OVERVIEW_EVENTS.NOTIFICATION_CENTER)
+
       notifications.forEach(({ isDismissed, id }) => {
         if (!isDismissed) {
           dispatch(closeNotification({ id }))

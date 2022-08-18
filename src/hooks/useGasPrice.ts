@@ -58,14 +58,14 @@ const useGasPrice = (): {
   const [counter] = useIntervalCounter(REFRESH_DELAY)
   const provider = useWeb3ReadOnly()
 
-  const [gasPrice, gasPriceError, gasPriceLoading] = useAsync<BigNumber | undefined>(async () => {
-    if (!gasPriceConfigs) return
-    return getGasPrice(gasPriceConfigs)
+  const [gasPrice, gasPriceError, gasPriceLoading] = useAsync<BigNumber | undefined>(() => {
+    if (gasPriceConfigs) {
+      return getGasPrice(gasPriceConfigs)
+    }
   }, [gasPriceConfigs, counter])
 
-  const [feeData, feeDataError, feeDataLoading] = useAsync<FeeData | undefined>(async () => {
-    if (!provider) return
-    return provider.getFeeData()
+  const [feeData, feeDataError, feeDataLoading] = useAsync<FeeData>(() => {
+    return provider?.getFeeData()
   }, [provider, counter])
 
   // Save the previous gas price so that we don't return undefined each time it's polled

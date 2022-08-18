@@ -21,6 +21,8 @@ import css from './styles.module.css'
 import { sameAddress } from '@/utils/addresses'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -69,11 +71,13 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
         <Typography variant="h4" display="inline" fontWeight={700}>
           My Safes
         </Typography>
-        <Link href={{ pathname: AppRoutes.welcome }} passHref>
-          <Button disableElevation size="small" variant="outlined" onClick={closeDrawer} className={css.addButton}>
-            + Add
-          </Button>
-        </Link>
+        <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
+          <Link href={{ pathname: AppRoutes.welcome }} passHref>
+            <Button disableElevation size="small" variant="outlined" onClick={closeDrawer} className={css.addButton}>
+              + Add
+            </Button>
+          </Link>
+        </Track>
       </div>
 
       {configs.map((chain) => {

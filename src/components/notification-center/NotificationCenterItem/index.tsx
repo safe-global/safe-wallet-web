@@ -16,6 +16,8 @@ import { formatTimeInWords } from '@/utils/date'
 
 import css from './styles.module.css'
 import classnames from 'classnames'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 
 const VARIANT_ICONS = {
   error: ErrorOutlineOutlinedIcon,
@@ -43,11 +45,13 @@ const NotificationCenterItem = ({
     <div className={css.secondaryText}>
       <span>{formatTimeInWords(timestamp)}</span>
       {link && (
-        <Link onClick={handleClose} href={link.href} passHref>
-          <a className={css.link}>
-            {link.title} <ChevronRightIcon />
-          </a>
-        </Link>
+        <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title}>
+          <Link onClick={handleClose} href={link.href} passHref>
+            <a className={css.link}>
+              {link.title} <ChevronRightIcon />
+            </a>
+          </Link>
+        </Track>
       )}
     </div>
   )

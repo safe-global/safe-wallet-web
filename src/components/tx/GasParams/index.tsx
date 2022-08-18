@@ -1,8 +1,10 @@
-import { ReactElement, SyntheticEvent } from 'react'
+import { ReactElement, SyntheticEvent, useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Link, Grid } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
 import { safeFormatUnits } from '@/utils/formatters'
 import { AdvancedParameters } from '../AdvancedParamsForm'
+import Track from '@/components/common/Track'
+import { MODALS_EVENTS } from '@/services/analytics/events/modals'
 
 type GasParamsProps = Partial<AdvancedParameters> & {
   isLoading: boolean
@@ -31,6 +33,12 @@ const GasParams = ({
   isExecution,
   onEdit,
 }: GasParamsProps): ReactElement => {
+  const [isAccordionExpanded, setIsAccordionExpanded] = useState(false)
+
+  const onChangeExpand = () => {
+    setIsAccordionExpanded((prev) => !prev)
+  }
+
   const chain = useCurrentChain()
 
   // Total gas cost
@@ -50,26 +58,28 @@ const GasParams = ({
   }
 
   return (
-    <Accordion elevation={0}>
-      <AccordionSummary>
-        {isExecution ? (
-          <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
-            <span>Estimated fee </span>
-            {isLoading ? (
-              <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
-            ) : (
-              <span>
-                {totalFee} {chain?.nativeCurrency.symbol}
-              </span>
-            )}
-          </Typography>
-        ) : (
-          <Typography>
-            Signing transaction with nonce&nbsp;
-            {nonce || <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />}
-          </Typography>
-        )}
-      </AccordionSummary>
+    <Accordion elevation={0} onChange={onChangeExpand}>
+      <Track {...MODALS_EVENTS.ESTIMATION} label={isAccordionExpanded ? 'Close' : 'Open'}>
+        <AccordionSummary>
+          {isExecution ? (
+            <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
+              <span>Estimated fee </span>
+              {isLoading ? (
+                <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
+              ) : (
+                <span>
+                  {totalFee} {chain?.nativeCurrency.symbol}
+                </span>
+              )}
+            </Typography>
+          ) : (
+            <Typography>
+              Signing transaction with nonce&nbsp;
+              {nonce || <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />}
+            </Typography>
+          )}
+        </AccordionSummary>
+      </Track>
 
       <AccordionDetails>
         <GasDetail isLoading={nonce === undefined} name="Nonce" value={(nonce ?? '').toString()} />
@@ -84,9 +94,11 @@ const GasParams = ({
           </>
         )}
 
-        <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
-          Edit
-        </Link>
+        <Track {...MODALS_EVENTS.EDIT_ESTIMATION}>
+          <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
+            Edit
+          </Link>
+        </Track>
       </AccordionDetails>
     </Accordion>
   )

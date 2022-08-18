@@ -14,6 +14,8 @@ import { Box, Grid, IconButton } from '@mui/material'
 import { showNotification } from '@/store/notificationsSlice'
 
 import css from './styles.module.css'
+import { trackEvent } from '@/services/analytics/analytics'
+import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
 
 const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [zoneHover, setZoneHover] = useState<boolean>(false)
@@ -61,6 +63,8 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
         dispatch(upsertAddressBookEntry({ address, name, chainId }))
       }
     }
+
+    trackEvent({ ...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON, label: entries.length })
 
     handleClose()
   }

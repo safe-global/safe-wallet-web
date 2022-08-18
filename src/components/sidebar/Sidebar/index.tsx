@@ -13,6 +13,8 @@ import SidebarFooter from '@/components/sidebar/SidebarFooter'
 import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
 import OwnedSafes from '../OwnedSafes'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import { trackEvent } from '@/services/analytics/analytics'
 
 const Sidebar = (): ReactElement => {
   const router = useRouter()
@@ -22,6 +24,7 @@ const Sidebar = (): ReactElement => {
   const isSafeRoute = router.pathname.startsWith(AppRoutes.safe.index)
 
   const onDrawerToggle = () => {
+    trackEvent({ ...OVERVIEW_EVENTS.SIDEBAR, label: isDrawerOpen ? 'Close' : 'Open' })
     setIsDrawerOpen((prev) => !prev)
   }
 
