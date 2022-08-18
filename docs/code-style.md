@@ -4,7 +4,7 @@
 
 - Rely on automation/IDE
 - Strive for pragmatism
-- Don’t add bells and whistles (newlines, spaces for “beauty”, ordering imports etc)
+- Don’t add bells and whistles (newlines, spaces for “beauty”, ordering imports etc.)
 - Avoid unnecessary stylistic changes
     - They increase the chance of git conflicts (esp. in imports)
     - They make it harder to review the PR
