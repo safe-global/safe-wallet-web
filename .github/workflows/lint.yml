@@ -6,17 +6,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Yarn cache
         uses: actions/cache@v2
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
       - name: Yarn install
         run: |
           mkdir .yarncache
           yarn install --cache-folder ./.yarncache --immutable
           rm -rf .yarncache
           yarn cache clean
+
       - uses: Maggi64/eslint-plus-action@master
         with:
           npmInstall: false
+
+      - name: Build
+        run: yarn build
