@@ -15,8 +15,8 @@
 - Write small functions that do one thing with no side-effects
 - Compose small functions to do more things
 - Same with components: don’t write giant components, write small composable components
-- Prefer map/filter over reduce/forEach
-- Watch out when using destructive methods like `pop` or `sort` (yes, sort is destructive!)
+- Prefer `map`/`filter` over `reduce`/`forEach`
+- Watch out when using destructive methods like `pop` or `sort` (yes, `sort` is destructive!)
 - Avoid initializing things on the module level, prefer to export an init function instead
 
 ## Reactive programming
