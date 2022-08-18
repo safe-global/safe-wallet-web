@@ -6,7 +6,7 @@ We migrate the Address Book and Added Safes.
 It can be potentially extended to more pieces of stored data, as each piece is a separate module.
 
 ## How it works
-The new app will be deployed on a new domain, so we have to use an iframe + [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage).
+The new app will be deployed on a new domain, so we have to use an iframe + [`postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage).
 
 Here's how we do it.
 
