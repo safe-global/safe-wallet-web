@@ -92,6 +92,8 @@ export const useSafeCreation = () => {
 
   const safeCreationCallback = useCallback(
     (txHash: string) => {
+      trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
+
       setStatus(SafeCreationStatus.MINING)
       setPendingSafe((prev) => (prev ? { ...prev, txHash } : undefined))
     },

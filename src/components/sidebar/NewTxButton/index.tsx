@@ -19,9 +19,7 @@ const NewTxButton = (): ReactElement => {
   const onClick = () => {
     setTxOpen(true)
 
-    if (wallet && !isWrongChain && isSafeOwner) {
-      trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
-    }
+    trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 
   return (

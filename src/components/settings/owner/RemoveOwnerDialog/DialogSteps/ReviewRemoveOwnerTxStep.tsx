@@ -30,7 +30,7 @@ export const ReviewRemoveOwnerTxStep = ({
 
   const newOwnerLength = safe.owners.length - 1
 
-  const onRemoval = (data: null) => {
+  const onFormSubmit = (data: null) => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
 
@@ -38,7 +38,7 @@ export const ReviewRemoveOwnerTxStep = ({
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={onRemoval} isExecutable={safe.threshold === 1} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} isExecutable={safe.threshold === 1} error={safeTxError}>
       <Grid
         container
         mt={-3}

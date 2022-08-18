@@ -40,14 +40,14 @@ export const RemoveSpendingLimit = ({
     return createTx(txParams)
   }, [provider, chainId, data.beneficiary, data.token])
 
-  const onRemoval = (data: null) => {
+  const onFormSubmit = (data: null) => {
     trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
 
     onSubmit(data)
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onRemoval} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
       <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
       <EthHashInfo address={data.beneficiary} showCopyButton hasExplorer shortAddress={false} />
       <Typography mt={2} sx={({ palette }) => ({ color: palette.secondary.light })}>

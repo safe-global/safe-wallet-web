@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState, type ReactElement } from 'react'
+import { Fragment, useState, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import List from '@mui/material/List'
@@ -23,7 +23,6 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
-import { trackEvent } from '@/services/analytics/analytics'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -65,23 +64,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
   const toggleOpen = (chainId: string, open: boolean) => {
     setOpen((prev) => ({ ...prev, [chainId]: open }))
   }
-
-  useEffect(() => {
-    const addedSafeAddresses = Object.keys(addedSafes?.[chainId] || {})
-
-    if (addedSafeAddresses.length > 0) {
-      return
-    }
-
-    const event = OVERVIEW_EVENTS.ADDED_SAFES_ON_NETWORK
-    const { chainName } = configs.find((chain) => chain.chainId === chainId) || {}
-
-    trackEvent({
-      ...event,
-      action: `${event.action} ${chainName}`,
-      label: addedSafeAddresses.length,
-    })
-  }, [addedSafes, chainId])
 
   return (
     <div className={css.container}>

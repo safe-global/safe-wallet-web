@@ -6,8 +6,7 @@ import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/local-storage/local'
 import { logError, Errors } from '@/services/exceptions'
-import { trackEvent } from '@/services/analytics/analytics'
-import { WALLET_EVENTS } from '@/services/analytics/events/wallet'
+import { trackWalletType } from '@/services/analytics/analytics'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 
@@ -47,8 +46,6 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
   }
 }
 
-const UNKNOWN_PEER = 'Unknown'
-
 // Disable/enable wallets according to chain and cache the last used wallet
 export const useInitOnboard = () => {
   const { configs } = useChains()
@@ -80,25 +77,11 @@ export const useInitOnboard = () => {
 
     const walletSubscription = onboard.state.select('wallets').subscribe(async (wallets) => {
       const newWallet = getConnectedWallet(wallets)
+
       if (newWallet) {
-        const { label, provider } = newWallet
+        await trackWalletType(newWallet)
 
-        lastWalletStorage.set(label)
-
-        trackEvent({ ...WALLET_EVENTS.CONNECT, label })
-
-        if (label.toUpperCase() === 'WALLETCONNECT') {
-          const { default: WalletConnect } = await import('@walletconnect/client')
-
-          const peerWallet =
-            ((provider as unknown as any).connector as InstanceType<typeof WalletConnect>).peerMeta?.name ||
-            UNKNOWN_PEER
-
-          trackEvent({
-            ...WALLET_EVENTS.WALLET_CONNECT,
-            label: peerWallet ?? UNKNOWN_PEER,
-          })
-        }
+        lastWalletStorage.set(newWallet.label)
       }
     })
 

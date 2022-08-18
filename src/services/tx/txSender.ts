@@ -20,6 +20,8 @@ import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
 import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
+import { trackEvent } from '../analytics/analytics'
+import { WALLET_EVENTS } from '../analytics/events/wallet'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -176,6 +178,8 @@ export const dispatchTxSigning = async (
     txDispatch(TxEvent.SIGN_FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
   }
+
+  trackEvent(WALLET_EVENTS.OFF_CHAIN_SIGNATURE)
   txDispatch(TxEvent.SIGNED, { txId, tx: signedTx })
 
   return signedTx
@@ -202,6 +206,7 @@ export const dispatchTxExecution = async (
     throw error
   }
 
+  trackEvent(WALLET_EVENTS.ON_CHAIN_INTERACTION)
   txDispatch(TxEvent.MINING, { txId, txHash: result.hash, tx: safeTx })
 
   // Asynchronously watch the tx to be mined

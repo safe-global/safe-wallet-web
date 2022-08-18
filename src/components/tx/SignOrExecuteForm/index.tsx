@@ -21,7 +21,6 @@ import { hasFeature } from '@/utils/chains'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { trackEvent } from '@/services/analytics/analytics'
 import { MODALS_EVENTS } from '@/services/analytics/events/modals'
-import { WALLET_EVENTS } from '@/services/analytics/events/wallet'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -99,8 +98,6 @@ const SignOrExecuteForm = ({
   const onSign = async (): Promise<string> => {
     const [connectedWallet, createdTx] = assertSubmittable()
 
-    trackEvent(WALLET_EVENTS.OFF_CHAIN_SIGNATURE)
-
     const hardwareWallet = isHardwareWallet(connectedWallet)
     const signedTx = await dispatchTxSigning(createdTx, hardwareWallet, txId)
 
@@ -111,8 +108,6 @@ const SignOrExecuteForm = ({
   // Execute transaction
   const onExecute = async (): Promise<string> => {
     const [connectedWallet, createdTx] = assertSubmittable()
-
-    trackEvent(WALLET_EVENTS.ON_CHAIN_INTERACTION)
 
     // If no txId was provided, it's an immediate execution of a new tx
     let id = txId
@@ -168,7 +163,7 @@ const SignOrExecuteForm = ({
     }
   }
 
-  const onAdvancedSubmit = async (data: AdvancedParameters) => {
+  const onFormSubmit = async (data: AdvancedParameters) => {
     // If nonce was edited, create a new with that nonce
     if (tx && data.nonce !== tx.data.nonce) {
       try {
@@ -202,7 +197,7 @@ const SignOrExecuteForm = ({
       recommendedNonce={safeTx?.data.nonce}
       estimatedGasLimit={gasLimit?.toString()}
       nonceReadonly={nonceReadonly}
-      onSubmit={onAdvancedSubmit}
+      onSubmit={onFormSubmit}
     />
   ) : (
     <form onSubmit={handleSubmit}>

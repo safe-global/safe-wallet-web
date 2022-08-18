@@ -36,7 +36,7 @@ const GasParams = ({
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(false)
 
   const onChangeExpand = () => {
-    setIsAccordionExpanded(!isAccordionExpanded)
+    setIsAccordionExpanded((prev) => !prev)
   }
 
   const chain = useCurrentChain()

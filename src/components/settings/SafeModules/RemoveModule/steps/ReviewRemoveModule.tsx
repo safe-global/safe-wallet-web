@@ -26,14 +26,14 @@ export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData;
     }
   }, [safeTxError])
 
-  const onRemove = (data: null) => {
+  const onFormSubmit = (data: null) => {
     trackEvent(SETTINGS_EVENTS.MODULES.REMOVE_MODULE)
 
     onSubmit(data)
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onRemove} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
       <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Module</Typography>
       <EthHashInfo address={data.address} showCopyButton hasExplorer shortAddress={false} />
       <Typography my={2}>

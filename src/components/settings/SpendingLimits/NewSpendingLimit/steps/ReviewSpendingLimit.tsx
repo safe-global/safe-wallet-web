@@ -108,7 +108,7 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
     return createNewSpendingLimitTx(data, spendingLimits, chainId, decimals, existingSpendingLimit)
   }, [data, spendingLimits, chainId, decimals, existingSpendingLimit])
 
-  const onNewSpendingLimitTx = (data: null) => {
+  const onFormSubmit = (data: null) => {
     trackEvent({
       ...SETTINGS_EVENTS.SPENDING_LIMIT.RESET_PERIOD,
       label: resetTime,
@@ -118,12 +118,7 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
   }
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      isExecutable={safe.threshold === 1}
-      onSubmit={onNewSpendingLimitTx}
-      error={safeTxError}
-    >
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
       <Box textAlign="center" mb={3}>
         <TokenIcon logoUri={logoUri} tokenSymbol={symbol} />
 

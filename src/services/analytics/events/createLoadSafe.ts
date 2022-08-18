@@ -47,7 +47,6 @@ export const CREATE_SAFE_EVENTS = {
     action: 'Created Safe',
     category: CREATE_SAFE_CATEGORY,
   },
-  // TODO: Is covered by GO_TO_SAFE in web-core
   GET_STARTED: {
     action: 'Load Safe',
     category: CREATE_SAFE_CATEGORY,
