@@ -11,15 +11,19 @@ import ModalDialog from '@/components/common/ModalDialog'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
 import { Box, Grid, IconButton } from '@mui/material'
-import { showNotification } from '@/store/notificationsSlice'
 
 import css from './styles.module.css'
 import { trackEvent } from '@/services/analytics/analytics'
 import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
+import { abCsvReaderValidator, abOnUploadValidator } from './validation'
+
+type AddressBookCSVRow = ['address', 'name', 'chainId']
+type AddressBookCSV = AddressBookCSVRow[]
 
 const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [zoneHover, setZoneHover] = useState<boolean>(false)
-  const [csvData, setCsvData] = useState<ParseResult<['address', 'name', 'chainId']>>()
+  const [csvData, setCsvData] = useState<ParseResult<AddressBookCSVRow>>()
+  const [error, setError] = useState<string>()
 
   // Count how many entries are in the CSV file
   const [entryCount, chainCount] = useMemo(() => {
@@ -38,30 +42,10 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
       return
     }
 
-    if (csvData.errors.length > 0) {
-      const { message } = csvData.errors[0]
-      dispatch(showNotification({ message, variant: 'error', groupKey: '' }))
-      return
-    }
-
-    if (csvData.data.length === 0) {
-      return
-    }
-
-    const [header, ...entries] = csvData.data
-
-    const hasValidHeaders =
-      header.length === 3 && header[0] === 'address' && header[1] === 'name' && header[2] === 'chainId'
-
-    if (!hasValidHeaders) {
-      dispatch(showNotification({ message: 'Invalid or corrupt address book', variant: 'error', groupKey: '' }))
-      return
-    }
+    const [, ...entries] = csvData.data
 
     for (const [address, name, chainId] of entries) {
-      if (name && address && chainId) {
-        dispatch(upsertAddressBookEntry({ address, name, chainId }))
-      }
+      dispatch(upsertAddressBookEntry({ address, name, chainId: chainId.replace(/\s/g, '') }))
     }
 
     trackEvent({ ...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON, label: entries.length })
@@ -73,15 +57,37 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
     <ModalDialog open onClose={handleClose} dialogTitle="Import address book" hideChainIndicator>
       <DialogContent>
         <CSVReader
-          onUploadAccepted={(result: ParseResult<['address', 'name', 'chainId']>) => {
-            setCsvData(result)
-            setZoneHover(false)
-          }}
+          accept="text/csv"
+          multiple={false}
           onDragOver={() => {
             setZoneHover(true)
           }}
           onDragLeave={() => {
             setZoneHover(false)
+          }}
+          validator={abCsvReaderValidator}
+          onUploadRejected={(file?: { file: File; errors?: string[] }[]) => {
+            setZoneHover(false)
+            setError(undefined)
+
+            // csvReaderValidator error
+            const message = file?.[0].errors?.[0]
+
+            if (message) {
+              setError(message)
+            }
+          }}
+          onUploadAccepted={(result: ParseResult<['address', 'name', 'chainId']>) => {
+            setZoneHover(false)
+            setError(undefined)
+
+            const message = abOnUploadValidator(result)
+
+            if (message) {
+              setError(message)
+            } else {
+              setCsvData(result)
+            }
           }}
         >
           {/* https://github.com/Bunlong/react-papaparse/blob/master/src/useCSVReader.tsx */}
@@ -119,8 +125,8 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
 
                     <ProgressBar />
 
-                    <Typography mt={1}>
-                      Found {entryCount} entries on {chainCount} chains
+                    <Typography mt={1} sx={({ palette }) => ({ color: error ? palette.error.main : undefined })}>
+                      {error ? error : `Found ${entryCount} entries on ${chainCount} chains`}
                     </Typography>
                   </div>
                 ) : (
@@ -145,12 +151,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button
-          onClick={handleImport}
-          variant="contained"
-          disableElevation
-          disabled={!csvData || csvData.data.length === 0}
-        >
+        <Button onClick={handleImport} variant="contained" disableElevation disabled={!csvData || !!error}>
           Import
         </Button>
       </DialogActions>
