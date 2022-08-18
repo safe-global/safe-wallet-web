@@ -1,6 +1,6 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via a GitHub issue before making a change.
+When contributing to this repository, please first discuss the change you wish to make via a GitHub issue before making it.
 
 Please note we have a code of conduct (see below), please follow it in all your interactions with the project.
 
