@@ -2,7 +2,6 @@ import { ParseMeta, ParseResult } from 'papaparse'
 import {
   abCsvReaderValidator,
   abOnUploadValidator,
-  hasCompleteAbEntries,
   hasValidAbEntryAddresses,
   hasValidAbEntryChainIds,
   hasValidAbHeader,
@@ -53,32 +52,7 @@ describe('Address book import validation', () => {
       expect(hasValidAbHeader(header4)).toBe(false)
     })
   })
-  describe('hasCompleteAbEntries', () => {
-    it('should return true if all entries are complete', () => {
-      const entries = [
-        ['address', 'name', 'chainId'],
-        ['address1', 'name1', 'chainId1'],
-      ]
 
-      expect(hasCompleteAbEntries(entries)).toBe(true)
-    })
-
-    it('should return false if any entry is incomplete', () => {
-      const entries1 = [
-        ['', 'name', 'chainId'],
-        ['address1', 'name1', 'chainId1'],
-      ]
-      const entries2 = [
-        ['address', 'name', 'chainId'],
-        ['address1', 'name1', 'chainId', ''],
-      ]
-      const entries3 = [['', ''], []]
-
-      expect(hasCompleteAbEntries(entries1)).toBe(false)
-      expect(hasCompleteAbEntries(entries2)).toBe(false)
-      expect(hasCompleteAbEntries(entries3)).toBe(false)
-    })
-  })
   describe('hasValidAbEntryAddresses', () => {
     it('should return true if all entries have valid addresses', () => {
       const entries = [
@@ -183,19 +157,6 @@ describe('Address book import validation', () => {
       } as ParseResult<string[]>
 
       expect(abOnUploadValidator(result)).toBe('No entries found in address book')
-    })
-
-    it('should return an error if some entries have empty values', () => {
-      const result = {
-        data: [
-          ['address', 'name', 'chainId'],
-          ['0xAb5e3288640396C3988af5a820510682f3C58adF', '', '1'],
-        ],
-        errors: [],
-        meta: {} as ParseMeta,
-      } as ParseResult<string[]>
-
-      expect(abOnUploadValidator(result)).toBe('Address book contains entries with empty fields')
     })
 
     it('should return an error if some entries have empty values', () => {

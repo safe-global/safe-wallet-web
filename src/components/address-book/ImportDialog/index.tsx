@@ -18,7 +18,10 @@ import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
 import { abCsvReaderValidator, abOnUploadValidator } from './validation'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']
-type AddressBookCSV = AddressBookCSVRow[]
+
+const hasEntry = (entry: string[]) => {
+  return entry.length === 3 && entry[0] && entry[1] && entry[2]
+}
 
 const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [zoneHover, setZoneHover] = useState<boolean>(false)
@@ -28,7 +31,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
   // Count how many entries are in the CSV file
   const [entryCount, chainCount] = useMemo(() => {
     if (!csvData) return [0, 0]
-    const entries = csvData.data.slice(1).filter((entry) => entry[0] && entry[1] && entry[2])
+    const entries = csvData.data.slice(1).filter(hasEntry)
     const entryLen = entries.length
     const chainLen = new Set(entries.map((entry) => entry[2])).size
     return [entryLen, chainLen]
@@ -44,8 +47,11 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
 
     const [, ...entries] = csvData.data
 
-    for (const [address, name, chainId] of entries) {
-      dispatch(upsertAddressBookEntry({ address, name, chainId: chainId.replace(/\s/g, '') }))
+    for (const entry of entries) {
+      if (hasEntry(entry)) {
+        const [address, name, chainId] = entry
+        dispatch(upsertAddressBookEntry({ address, name, chainId: chainId.replace(/\s/g, '') }))
+      }
     }
 
     trackEvent({ ...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON, label: entries.length })

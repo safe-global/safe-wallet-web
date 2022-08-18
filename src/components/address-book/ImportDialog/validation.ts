@@ -16,10 +16,6 @@ export const hasValidAbHeader = (header: string[]) => {
   return header.length === 3 && header[0] === 'address' && header[1] === 'name' && header[2] === 'chainId'
 }
 
-export const hasCompleteAbEntries = (entries: string[][]) => {
-  return entries.every((entry) => entry.every(Boolean))
-}
-
 export const hasValidAbEntryAddresses = (entries: string[][]) => {
   return entries.every((entry) => entry.length >= 1 && !validateAddress(entry[0]))
 }
@@ -55,11 +51,6 @@ export const abOnUploadValidator = ({ data, errors }: ParseResult<string[]>): st
   // No entries
   if (entries.length === 0) {
     return 'No entries found in address book'
-  }
-
-  // An entry has empty value
-  if (!hasCompleteAbEntries(entries)) {
-    return 'Address book contains entries with empty fields'
   }
 
   // An entry has invalid address
