@@ -10,13 +10,14 @@ import { useAppsSearch } from '@/hooks/safe-apps/useAppsSearch'
 
 const Apps: NextPage = () => {
   const [searchQuery, setSearchQuery] = React.useState('')
-  const { allSafeApps, remoteSafeAppsLoading, customSafeAppsLoading, addCustomApp } = useSafeApps()
+  const { allSafeApps, remoteSafeAppsLoading, customSafeAppsLoading, addCustomApp, customSafeApps } = useSafeApps()
   const filteredApps = useAppsSearch(allSafeApps, searchQuery)
 
   let pageBody = (
     <SafeAppsList
       loading={remoteSafeAppsLoading || customSafeAppsLoading}
-      apps={filteredApps}
+      customApps={customSafeApps}
+      allApps={filteredApps}
       hideAddCustomApp={searchQuery.length > 0}
       onAddCustomApp={addCustomApp}
     />
