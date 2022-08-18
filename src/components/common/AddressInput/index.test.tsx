@@ -75,20 +75,20 @@ describe('AddressInput tests', () => {
   it('should validate the address on input', async () => {
     const { input, utils } = setup('')
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: `xyz:${TEST_ADDRESS_A}` } })
       utils.getByText('Submit').click()
     })
 
     await waitFor(() => expect(utils.getByLabelText('Invalid chain prefix "xyz"')).toBeDefined())
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
     })
 
     await waitFor(() => expect(utils.getByLabelText(`"eth" doesn't match the current chain`)).toBeDefined())
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: 'rin:0x123' } })
     })
 
@@ -98,14 +98,14 @@ describe('AddressInput tests', () => {
   it('should accept a custom validate function', async () => {
     const { input, utils } = setup('', (val) => `${val} is wrong`)
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })
       utils.getByText('Submit').click()
     })
 
     await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_A} is wrong`)).toBeDefined())
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
     })
 
@@ -115,7 +115,7 @@ describe('AddressInput tests', () => {
   it('should resolve ENS names', async () => {
     const { input } = setup('')
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: 'zero.eth' } })
     })
 
@@ -132,7 +132,7 @@ describe('AddressInput tests', () => {
 
     const { input } = setup('')
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: 'zero.eth' } })
     })
 
@@ -150,7 +150,7 @@ describe('AddressInput tests', () => {
   it('should not show adornment when the value contains correct prefix', async () => {
     const { input } = setup(`rin:${TEST_ADDRESS_B}`)
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: 'rin:${TEST_ADDRESS_B}' } })
     })
 
@@ -183,7 +183,7 @@ describe('AddressInput tests', () => {
     const utils = render(<Form />)
     const input = utils.getByLabelText('Recipient') as HTMLInputElement
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })
     })
 
