@@ -140,7 +140,7 @@ describe('AppsPage', () => {
         /This app is not a Gnosis product and I agree to use this app at my own risk./,
       )
 
-      await act(() => {
+      act(() => {
         fireEvent.change(appURLInput, { target: { value: APP_URL } })
         fireEvent.click(riskCheckbox)
       })
@@ -177,7 +177,7 @@ describe('AppsPage', () => {
         /This app is not a Gnosis product and I agree to use this app at my own risk./,
       )
 
-      await act(() => {
+      act(() => {
         fireEvent.change(appURLInput, { target: { value: APP_URL } })
         fireEvent.click(riskCheckbox)
       })
