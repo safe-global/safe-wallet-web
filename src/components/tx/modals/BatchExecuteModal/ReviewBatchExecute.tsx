@@ -83,7 +83,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const { safe } = useSafeInfo()
   const provider = useWeb3()
 
-  const [txsWithDetails, error, loading] = useAsync<TransactionDetails[] | undefined>(async () => {
+  const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
 
     return getTxsWithDetails(data.txs, chain.chainId)

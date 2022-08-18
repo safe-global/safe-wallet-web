@@ -7,7 +7,7 @@ import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { createExistingTx } from '@/services/tx/txSender'
 
-const getTxs = (txs: TransactionDetails[], chainId: string, safeAddress: string): Promise<SafeTransaction[]> => {
+const getTxs = (txs: TransactionDetails[], chainId: string, safeAddress: string) => {
   return Promise.all(
     txs.map(async (tx) => {
       return await createExistingTx(chainId, safeAddress, tx.txId, tx)
@@ -19,7 +19,7 @@ const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefine
   const chainId = useChainId()
   const { safeAddress } = useSafeInfo()
 
-  const [safeTxs, _, loading] = useAsync<SafeTransaction[] | undefined>(async () => {
+  const [safeTxs, _, loading] = useAsync<SafeTransaction[]>(() => {
     if (!txs) return
 
     return getTxs(txs, chainId, safeAddress)
