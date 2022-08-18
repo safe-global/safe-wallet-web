@@ -6,6 +6,8 @@ import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { SafeFormData } from '@/components/create-safe/types'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
+import { trackEvent } from '@/services/analytics/analytics'
 
 type Props = {
   params: SafeFormData
@@ -37,6 +39,10 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
       ...data,
       name: data.name || fallbackName,
     })
+
+    if (data.name) {
+      trackEvent(CREATE_SAFE_EVENTS.NAME_SAFE)
+    }
   })
 
   return (

@@ -13,6 +13,8 @@ import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SafeFormData } from '@/components/create-safe/types'
+import { trackEvent } from '@/services/analytics/analytics'
+import { LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 
 type Props = {
   params: SafeFormData
@@ -62,6 +64,18 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
         }),
       )
     }
+
+    trackEvent({
+      ...LOAD_SAFE_EVENTS.OWNERS,
+      label: params.owners.length,
+    })
+
+    trackEvent({
+      ...LOAD_SAFE_EVENTS.THRESHOLD,
+      label: params.threshold,
+    })
+
+    trackEvent(LOAD_SAFE_EVENTS.GO_TO_SAFE)
 
     router.push({
       pathname: AppRoutes.safe.index,

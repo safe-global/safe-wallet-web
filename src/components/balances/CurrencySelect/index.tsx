@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { selectCurrency, setCurrency } from '@/store/settingsSlice'
 import useCurrencies from './useCurrencies'
 import css from './styles.module.css'
+import { trackEvent } from '@/services/analytics/analytics'
+import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 
 const CurrencySelect = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
@@ -11,7 +13,21 @@ const CurrencySelect = (): ReactElement => {
   const fiatCurrencies = useCurrencies() || [currency.toUpperCase()]
 
   const handleChange = (e: SelectChangeEvent<string>) => {
-    dispatch(setCurrency(e.target.value.toLowerCase()))
+    const currency = e.target.value
+
+    trackEvent({
+      ...ASSETS_EVENTS.CHANGE_CURRENCY,
+      label: currency.toUpperCase(),
+    })
+
+    dispatch(setCurrency(currency.toLowerCase()))
+  }
+
+  const handleTrack = (label: 'Open' | 'Close') => {
+    trackEvent({
+      ...ASSETS_EVENTS.CURRENCY_MENU,
+      label,
+    })
   }
 
   return (
@@ -25,6 +41,8 @@ const CurrencySelect = (): ReactElement => {
           value={currency.toUpperCase()}
           label="Currency"
           onChange={handleChange}
+          onOpen={() => handleTrack('Open')}
+          onClose={() => handleTrack('Close')}
         >
           {fiatCurrencies.map((item) => (
             <MenuItem key={item} value={item}>

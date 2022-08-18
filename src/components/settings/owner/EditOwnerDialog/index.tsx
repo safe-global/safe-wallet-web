@@ -1,6 +1,8 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ModalDialog from '@/components/common/ModalDialog'
 import NameInput from '@/components/common/NameInput'
+import Track from '@/components/common/Track'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
@@ -47,11 +49,13 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
 
   return (
     <>
-      <Tooltip title="Edit owner">
-        <IconButton onClick={() => setOpen(true)}>
-          <EditOutlinedIcon />
-        </IconButton>
-      </Tooltip>
+      <Track {...SETTINGS_EVENTS.SETUP.EDIT_OWNER}>
+        <Tooltip title="Edit owner">
+          <IconButton onClick={() => setOpen(true)}>
+            <EditOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+      </Track>
 
       <ModalDialog open={open} onClose={handleClose} dialogTitle="Edit owner name">
         <FormProvider {...formMethods}>

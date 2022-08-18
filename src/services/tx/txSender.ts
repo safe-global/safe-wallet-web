@@ -176,6 +176,7 @@ export const dispatchTxSigning = async (
     txDispatch(TxEvent.SIGN_FAILED, { txId, tx: safeTx, error: error as Error })
     throw error
   }
+
   txDispatch(TxEvent.SIGNED, { txId, tx: signedTx })
 
   return signedTx
