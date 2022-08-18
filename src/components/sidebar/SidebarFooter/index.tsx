@@ -15,6 +15,8 @@ import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
 import { ListItem } from '@mui/material'
 import DebugToggle from '../DebugToggle'
 import { IS_PRODUCTION } from '@/config/constants'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 
 const WHATS_NEW_PATH = 'https://help.gnosis-safe.io/en/'
 
@@ -45,24 +47,9 @@ const SidebarFooter = (): ReactElement => {
         </ListItem>
       )}
 
-      <ListItem disablePadding>
-        <SidebarListItemButton id={BEAMER_SELECTOR} onClick={handleBeamer}>
-          <SidebarListItemIcon
-            sx={{
-              '& svg path': {
-                fill: ({ palette }) => palette.secondary.main,
-              },
-            }}
-          >
-            <BeamerIcon />
-          </SidebarListItemIcon>
-          <SidebarListItemText bold>What&apos;s New</SidebarListItemText>
-        </SidebarListItemButton>
-      </ListItem>
-
-      <ListItem disablePadding>
-        <a target="_blank" rel="noopener noreferrer" href={WHATS_NEW_PATH} style={{ width: '100%' }}>
-          <SidebarListItemButton>
+      <Track {...OVERVIEW_EVENTS.WHATS_NEW}>
+        <ListItem disablePadding>
+          <SidebarListItemButton id={BEAMER_SELECTOR} onClick={handleBeamer}>
             <SidebarListItemIcon
               sx={{
                 '& svg path': {
@@ -70,12 +57,31 @@ const SidebarFooter = (): ReactElement => {
                 },
               }}
             >
-              <HelpCenterIcon />
+              <BeamerIcon />
             </SidebarListItemIcon>
-            <SidebarListItemText bold>Need Help?</SidebarListItemText>
+            <SidebarListItemText bold>What&apos;s New</SidebarListItemText>
           </SidebarListItemButton>
-        </a>
-      </ListItem>
+        </ListItem>
+      </Track>
+
+      <Track {...OVERVIEW_EVENTS.HELP_CENTER}>
+        <ListItem disablePadding>
+          <a target="_blank" rel="noopener noreferrer" href={WHATS_NEW_PATH} style={{ width: '100%' }}>
+            <SidebarListItemButton>
+              <SidebarListItemIcon
+                sx={{
+                  '& svg path': {
+                    fill: ({ palette }) => palette.secondary.main,
+                  },
+                }}
+              >
+                <HelpCenterIcon />
+              </SidebarListItemIcon>
+              <SidebarListItemText bold>Need Help?</SidebarListItemText>
+            </SidebarListItemButton>
+          </a>
+        </ListItem>
+      </Track>
     </SidebarList>
   )
 }

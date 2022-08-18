@@ -19,6 +19,9 @@ describe('useWatchSafeCreation', () => {
   })
 
   it('should clear the tx hash if it exists on ERROR or REVERTED', () => {
+    // Prevent backOff logging after test is completed
+    jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn())
+
     const setStatusSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 
@@ -36,6 +39,9 @@ describe('useWatchSafeCreation', () => {
   })
 
   it('should not clear the tx hash if it doesnt exist on ERROR or REVERTED', () => {
+    // Prevent backOff logging after test is completed
+    jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn())
+
     const setStatusSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 
@@ -115,6 +121,9 @@ describe('useWatchSafeCreation', () => {
     jest.spyOn(router, 'useRouter').mockReturnValue({
       push: pushMock,
     } as unknown as NextRouter)
+
+    // Prevent backOff logging after test is completed
+    jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn())
 
     const setStatusSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()

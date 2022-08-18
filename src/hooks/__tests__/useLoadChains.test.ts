@@ -21,10 +21,9 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => {
   }
 })
 
-// Jest tests for the useInitChains hook
-describe('useInitChains hook', () => {
+// Jest tests for the useLoadChains hook
+describe('useLoadChains hook', () => {
   beforeEach(() => {
-    jest.resetModules()
     jest.clearAllMocks()
     jest.useFakeTimers()
   })

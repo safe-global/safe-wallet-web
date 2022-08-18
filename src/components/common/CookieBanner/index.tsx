@@ -101,6 +101,8 @@ const CookieBanner = (): ReactElement | null => {
   useEffect(() => {
     if (shouldOpen) {
       dispatch(openCookieBanner({}))
+    } else {
+      dispatch(closeCookieBanner())
     }
   }, [dispatch, shouldOpen])
 

@@ -14,7 +14,7 @@ const DecodedTx = ({ tx }: { tx: SafeTransaction }): ReactElement | null => {
   const encodedData = tx.data.data
   const isNativeTransfer = encodedData && isNaN(parseInt(encodedData, 16))
 
-  const [decodedData, error, loading] = useAsync<DecodedDataResponse | undefined>(async () => {
+  const [decodedData, error, loading] = useAsync<DecodedDataResponse>(() => {
     if (!encodedData || isNativeTransfer) return
     return getDecodedData(chainId, encodedData)
   }, [chainId, encodedData, isNativeTransfer])

@@ -10,6 +10,9 @@ import useAsync from '@/hooks/useAsync'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import Track from '@/components/common/Track'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { trackEvent } from '@/services/analytics/analytics'
 
 interface ChangeThresholdData {
   threshold: number
@@ -34,9 +37,11 @@ export const ChangeThresholdDialog = () => {
   return (
     <Box paddingTop={2}>
       <div>
-        <Button onClick={() => setOpen(true)} variant="contained">
-          Change
-        </Button>
+        <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD}>
+          <Button onClick={() => setOpen(true)} variant="contained">
+            Change
+          </Button>
+        </Track>
       </div>
       {open && <TxModal onClose={handleClose} steps={ChangeThresholdSteps} initialData={[initialModalData]} />}
     </Box>
@@ -51,14 +56,26 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
     setSelectedThreshold(parseInt(event.target.value.toString()))
   }
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (selectedThreshold === data.threshold) return
 
     return createUpdateThresholdTx(selectedThreshold)
   }, [selectedThreshold])
 
+  const onChangeTheshold = (data: null) => {
+    trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
+    trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: selectedThreshold })
+
+    onSubmit(data)
+  }
+
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm
+      safeTx={safeTx}
+      isExecutable={safe.threshold === 1}
+      onSubmit={onChangeTheshold}
+      error={safeTxError}
+    >
       <Typography mb={1}>Any transaction requires the confirmation of:</Typography>
 
       <Grid container direction="row" gap={1} alignItems="center" mb={2}>

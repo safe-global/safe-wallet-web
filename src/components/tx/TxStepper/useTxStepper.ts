@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics/analytics'
+import { MODALS_CATEGORY } from '@/services/analytics/events/modals'
 import { ReactElement, useState } from 'react'
 
 export type StepRenderProps = {
@@ -31,10 +33,12 @@ export const useTxStepper = ({ steps, initialData, initialStep, onClose, onFinis
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
+    trackEvent({ category: MODALS_CATEGORY, action: lastStep ? 'Submit' : 'Next' })
   }
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
+    trackEvent({ category: MODALS_CATEGORY, action: firstStep ? 'Cancel' : 'Back' })
   }
 
   const setStep = (step: number) => {

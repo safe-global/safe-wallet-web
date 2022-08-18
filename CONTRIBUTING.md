@@ -1,39 +1,52 @@
-# 💝 Code Style Guidelines
+# Contributing
 
-## Principles
+When contributing to this repository, please first discuss the change you wish to make via a GitHub issue before making it.
 
-- Rely on automation/IDE
-- Strive for pragmatism
-- Don’t add bells and whistles (newlines, spaces for “beauty”, ordering imports etc)
-- Avoid unnecessary stylistic changes
-    - They increase the chance of git conflicts (esp. in imports)
-    - They make it harder to review the PR
-    - Ultimately, a waste of time
+Please note we have a Code of Conduct (see below), please follow it in all your interactions with the project.
 
-## Functional code style
+## Pull Request Process
 
-- Write small functions that do one thing with no side-effects
-- Compose small functions to do more things
-- Same with components: don’t write giant components, write small composable components
-- Prefer map/filter over reduce/forEach
-- Watch out when using destructive methods like `pop` or `sort` (yes, sort is destructive!)
-- Avoid initializing things on the module level, prefer to export an init function instead
+- When opening a pull request, please make sure to fully fill out the pull request template that will appear in the description text box.
+- Make sure to cover your changes with unit tests.
+- Automatic linting and tests should pass once the workflows are approved by a maintainer.
+- Please follow our [Code Style Guidelines](docs/code-style.md).
 
-## Reactive programming
+## Code of Conduct
 
-- Keep in mind the React component life-cycle, avoid excessive re-renders
-- Glue regular JS functions and events with React using hooks
-- Write small `useEffect` hooks that do just one thing and have only necessary dependencies
+### Our Pledge
 
-## Variable/function naming
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
-Infamously, the hardest problem in computer science.
+### Our Standards
 
-- Components are classes, so their names should be in PascalCase
-- Config-like constants should be in UPPER_CASE, e.g. `INFURA_URL`
-- Regular `const` variables should be in camelCase
-- Avoid prepositions in variable names:
-    - ~`restoreFromLocalStorage`~ 🙅
-    - `restoreStoredValue` 👍
-- Try to name boolean vars with `is`, e.g. `isLoading` vs `loading`
-- If something needs to be exported just for unit tests, export it with a `_` prefix, e.g. `_getOnboardConfig`
+Examples of behavior that contributes to creating a positive environment include:
+
+- Using welcoming and inclusive language
+- Being respectful of differing viewpoints and experiences
+- Gracefully accepting constructive criticism
+- Focusing on what is best for the community
+- Showing empathy towards other community members
+
+Examples of unacceptable behavior by participants include:
+
+- The use of sexualized language or imagery and unwelcome sexual attention or advances
+- Trolling, insulting/derogatory comments, and personal or political attacks
+- Public or private harassment
+- Publishing others' private information, such as a physical or electronic address, without explicit permission
+- Other conduct which could reasonably be considered inappropriate in a professional setting
+
+### Our Responsibilities
+
+Project maintainers are responsible for clarifying the standards of acceptable behavior and are expected to take appropriate and fair corrective action in response to any instances of unacceptable behavior.
+
+Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, issues, and other contributions that are not aligned to this Code of Conduct, or to ban temporarily or permanently any contributor for other behaviors that they deem inappropriate, threatening, offensive, or harmful.
+
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported via GitHub’s report feature.
+
+### Scope
+
+This Code of Conduct applies both within project spaces and in public spaces when an individual is representing the project or its community. Examples of representing a project or community include using an official project email address, posting via an official social media account, or acting as an appointed representative at an online or offline event. Representation of a project may be further defined and clarified by project maintainers.
+
+### Attribution
+
+This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org/), version 1.4, available at [http://contributor-covenant.org/version/1/4](http://contributor-covenant.org/version/1/4/)

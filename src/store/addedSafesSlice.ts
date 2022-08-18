@@ -6,6 +6,9 @@ import { balancesSlice } from './balancesSlice'
 import { formatDecimals } from '@/utils/formatters'
 import { formatAmount } from '@/utils/formatNumber'
 import { Loadable } from './common'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import { selectChainById } from '@/store/chainsSlice'
+import { trackEvent } from '@/services/analytics/analytics'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {
@@ -110,15 +113,42 @@ export const selectAddedSafes = createSelector(
 export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
   const result = next(action)
 
-  if (action.type === balancesSlice.actions.set.type) {
-    const state = store.getState()
-    const { data } = selectSafeInfo(state)
+  const state = store.getState()
 
-    const chainId = data?.chainId
-    const address = data?.address.value
+  switch (action.type) {
+    // Track number of total Safes (when a new one is added)
+    case addedSafesSlice.actions.addOrUpdateSafe.type: {
+      const { chainId, address } = action.payload.safe
 
-    if (chainId && address && action.payload.data) {
-      store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
+      const addedSafes = selectAllAddedSafes(state)
+      const addedSafeAddresses = Object.keys(addedSafes?.[chainId] || {})
+
+      if (isAddedSafe(addedSafes, chainId, address.value) || addedSafeAddresses.length === 0) {
+        return
+      }
+
+      const event = OVERVIEW_EVENTS.ADDED_SAFES_ON_NETWORK
+
+      const currentChain = selectChainById(state, chainId)
+      const { chainName } = currentChain || {}
+
+      trackEvent({
+        ...event,
+        action: `${event.action} ${chainName}`,
+        label: addedSafeAddresses.length,
+      })
+    }
+
+    // Update added Safe balances when balance polling occurs
+    case balancesSlice.actions.set.type: {
+      const { data } = selectSafeInfo(state)
+
+      const chainId = data?.chainId
+      const address = data?.address.value
+
+      if (chainId && address && action.payload.data) {
+        store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
+      }
     }
   }
 

@@ -12,6 +12,8 @@ import NameInput from '@/components/common/NameInput'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { SafeFormData } from '@/components/create-safe/types'
+import { LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
+import { trackEvent } from '@/services/analytics/analytics'
 
 type Props = {
   params: SafeFormData
@@ -58,6 +60,10 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
       ...data,
       [FormField.name]: data[FormField.name] || fallbackName,
     })
+
+    if (data[FormField.name]) {
+      trackEvent(LOAD_SAFE_EVENTS.NAME_SAFE)
+    }
   })
 
   return (

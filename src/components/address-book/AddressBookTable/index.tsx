@@ -14,7 +14,11 @@ import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import Box from '@mui/material/Box'
-import useAddressBookEntries from './useAddressBookEntries'
+import useAddressBook from '@/hooks/useAddressBook'
+import Track from '@/components/common/Track'
+import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
+import { useAppSelector } from '@/store'
+import { selectAllAddressBooks } from '@/store/addressBookSlice'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -56,7 +60,11 @@ const AddressBookTable = () => {
     setDefaultValues(undefined)
   }
 
-  const addressBookEntries = useAddressBookEntries()
+  const allAddressBooks = useAppSelector(selectAllAddressBooks)
+  const canExport = Object.values(allAddressBooks).length > 0
+
+  const addressBook = useAddressBook()
+  const addressBookEntries = Object.entries(addressBook)
 
   const rows = addressBookEntries.map(([address, name]) => ({
     name: {
@@ -71,22 +79,28 @@ const AddressBookTable = () => {
       rawValue: '',
       content: (
         <div className={css.entryButtonWrapper}>
-          <Tooltip title="Edit entry">
-            <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)}>
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
+          <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
+            <Tooltip title="Edit entry">
+              <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </Track>
 
-          <Tooltip title="Delete entry">
-            <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)}>
-              <DeleteOutlineIcon />
-            </IconButton>
-          </Tooltip>
+          <Track {...ADDRESS_BOOK_EVENTS.DELETE_ENTRY}>
+            <Tooltip title="Delete entry">
+              <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)}>
+                <DeleteOutlineIcon />
+              </IconButton>
+            </Tooltip>
+          </Track>
 
           {isSafeOwner && (
-            <Button variant="contained" color="primary" onClick={() => setSelectedAddress(address)}>
-              Send
-            </Button>
+            <Track {...ADDRESS_BOOK_EVENTS.SEND}>
+              <Button variant="contained" color="primary" onClick={() => setSelectedAddress(address)}>
+                Send
+              </Button>
+            </Track>
           )}
         </div>
       ),
@@ -96,23 +110,29 @@ const AddressBookTable = () => {
   return (
     <Box marginTop={['0', '-46px']}>
       <div className={css.headerButtonWrapper}>
-        <Button
-          onClick={handleOpenModal(ModalType.EXPORT)}
-          disabled={addressBookEntries.length === 0}
-          variant="contained"
-          size="small"
-          disableElevation
-        >
-          Export
-        </Button>
+        <Track {...ADDRESS_BOOK_EVENTS.DOWNLOAD_BUTTON}>
+          <Button
+            onClick={handleOpenModal(ModalType.EXPORT)}
+            disabled={!canExport}
+            variant="contained"
+            size="small"
+            disableElevation
+          >
+            Export
+          </Button>
+        </Track>
 
-        <Button onClick={handleOpenModal(ModalType.IMPORT)} variant="contained" size="small" disableElevation>
-          Import
-        </Button>
+        <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
+          <Button onClick={handleOpenModal(ModalType.IMPORT)} variant="contained" size="small" disableElevation>
+            Import
+          </Button>
+        </Track>
 
-        <Button onClick={handleOpenModal(ModalType.ENTRY)} variant="contained" size="small" disableElevation>
-          Create entry
-        </Button>
+        <Track {...ADDRESS_BOOK_EVENTS.CREATE_ENTRY}>
+          <Button onClick={handleOpenModal(ModalType.ENTRY)} variant="contained" size="small" disableElevation>
+            Create entry
+          </Button>
+        </Track>
       </div>
 
       <div className={css.container}>

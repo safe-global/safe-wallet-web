@@ -51,10 +51,6 @@
 }
 
 @media (max-width: 600px) {
-  .buttonContainer {
-    padding: var(--space-1);
-  }
-
   .buttonContainer button {
     font-size: 12px;
   }

@@ -9,6 +9,8 @@ import { SyntheticEvent, useMemo, type ReactElement } from 'react'
 import ModalDialog from '@/components/common/ModalDialog'
 import { type AddressBookState, selectAllAddressBooks } from '@/store/addressBookSlice'
 import { useAppSelector } from '@/store'
+import { trackEvent } from '@/services/analytics/analytics'
+import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
 
 const COL_1 = 'address'
 const COL_2 = 'name'
@@ -43,6 +45,8 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
 
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
+
+    trackEvent(ADDRESS_BOOK_EVENTS.EXPORT)
 
     setTimeout(() => {
       handleClose()

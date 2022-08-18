@@ -6,7 +6,3 @@ export enum GTM_EVENT {
 }
 
 export type EventLabel = string | number | boolean | null
-
-export const trackEvent = (eventData: { event: GTM_EVENT; category: string; action: string; label?: EventLabel }) => {
-  console.log(eventData)
-}

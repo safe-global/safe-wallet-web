@@ -21,6 +21,8 @@ import { settingsSlice } from './settingsSlice'
 import { cookiesSlice, cookiesMiddleware } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
 import { spendingLimitSlice } from '@/store/spendingLimitsSlice'
+import { IS_PRODUCTION } from '@/config/constants'
+import { createStoreHydrator, HYDRATE_ACTION } from './storeHydrator'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -50,13 +52,31 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
 
 const middleware = [persistState(persistedSlices), txHistoryMiddleware, addedSafesMiddleware, cookiesMiddleware]
 
-export const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
-  preloadedState: getPreloadedState(persistedSlices),
-})
+export const getPersistedState = () => {
+  return getPreloadedState(persistedSlices)
+}
 
-export type AppDispatch = typeof store.dispatch
+const hydrationReducer: typeof rootReducer = (state, action) => {
+  if (action.type === HYDRATE_ACTION) {
+    return {
+      ...state,
+      ...action.payload,
+    }
+  }
+  return rootReducer(state, action)
+}
+
+const makeStore = () => {
+  return configureStore({
+    reducer: hydrationReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
+    devTools: !IS_PRODUCTION,
+  })
+}
+
+export const StoreHydrator = createStoreHydrator(makeStore)
+
+export type AppDispatch = ReturnType<typeof makeStore>['dispatch']
 export type RootState = ReturnType<typeof rootReducer>
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AnyAction>

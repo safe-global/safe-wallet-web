@@ -22,6 +22,8 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import CopyButton from '@/components/common/CopyButton'
 import QrCodeButton from '../QrCodeButton'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 
 const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
   <IconButton className={css.iconButton} {...props}>
@@ -70,21 +72,27 @@ const SafeHeader = (): ReactElement => {
       </div>
 
       <div className={css.iconButtons}>
-        <QrCodeButton>
-          <HeaderIconButton>
-            <QrIcon />
-          </HeaderIconButton>
-        </QrCodeButton>
+        <Track {...OVERVIEW_EVENTS.SHOW_QR}>
+          <QrCodeButton>
+            <HeaderIconButton>
+              <QrIcon />
+            </HeaderIconButton>
+          </QrCodeButton>
+        </Track>
 
-        <CopyButton text={addressCopyText} className={css.iconButton}>
-          <CopyIcon />
-        </CopyButton>
+        <Track {...OVERVIEW_EVENTS.COPY_ADDRESS}>
+          <CopyButton text={addressCopyText} className={css.iconButton}>
+            <CopyIcon />
+          </CopyButton>
+        </Track>
 
-        <a target="_blank" rel="noreferrer" {...(chain && getBlockExplorerLink(chain, safeAddress))}>
-          <HeaderIconButton>
-            <OpenInNewRoundedIcon color="primary" fontSize="small" />
-          </HeaderIconButton>
-        </a>
+        <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
+          <a target="_blank" rel="noreferrer" {...(chain && getBlockExplorerLink(chain, safeAddress))}>
+            <HeaderIconButton>
+              <OpenInNewRoundedIcon color="primary" fontSize="small" />
+            </HeaderIconButton>
+          </a>
+        </Track>
       </div>
 
       <NewTxButton />
