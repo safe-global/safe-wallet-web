@@ -1,5 +1,5 @@
 # Local storage migration
-This service is for migrating local user data from the old safe-react app to web-core (the new app).
+This service is for migrating locally stored user data from the old safe-react app to web-core (the new app).
 
 ## What we migrate
 We migrate the Address Book and Added Safes.
@@ -15,7 +15,7 @@ Here's how we do it.
  * safe-react exposes a special public HTML file named `migrate.html`
  * this file is listening to window messages
  * it ignores anything that is not on a trusted domain list that includes only web-core domains
- * if the sender domain is in the trusted list, safe-react sends back the entire contents of the local storage
+ * if the sender domain is in the trusted list, safe-react sends back the entire contents of the local storage (LS)
 
 #### On web-core's side:
 
