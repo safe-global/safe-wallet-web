@@ -25,7 +25,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   }, [page])
 
   useEffect(() => {
-    if (isQueue && allResults.length > 0) {
+    if (isQueue) {
       trackEvent({
         ...TX_LIST_EVENTS.QUEUED_TXS,
         label: allResults.length,

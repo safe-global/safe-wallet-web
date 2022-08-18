@@ -116,6 +116,7 @@ export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next)
   const state = store.getState()
 
   switch (action.type) {
+    // Track number of total Safes (when a new one is added)
     case addedSafesSlice.actions.addOrUpdateSafe.type: {
       const { chainId, address } = action.payload.safe
 
