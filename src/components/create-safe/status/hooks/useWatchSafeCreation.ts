@@ -5,6 +5,8 @@ import { pollSafeInfo } from '@/components/create-safe/status/usePendingSafeCrea
 import { AppRoutes } from '@/config/routes'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import useChainId from '@/hooks/useChainId'
+import { trackEvent } from '@/services/analytics/analytics'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 
 const useWatchSafeCreation = ({
   status,
@@ -33,10 +35,14 @@ const useWatchSafeCreation = ({
     }
 
     if (status === SafeCreationStatus.INDEXED) {
+      trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)
+
       safeAddress && router.push({ pathname: AppRoutes.safe.home, query: { safe: safeAddress } })
     }
 
     if (status === SafeCreationStatus.SUCCESS) {
+      trackEvent(CREATE_SAFE_EVENTS.CREATED_SAFE)
+
       safeAddress && pendingSafe && checkCreatedSafe(chainId, safeAddress)
       setPendingSafe(undefined)
     }

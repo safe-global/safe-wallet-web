@@ -5,6 +5,8 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import css from './styles.module.css'
+import { trackEvent } from '@/services/analytics/analytics'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 
 const NewTxModal = dynamic(() => import('@/components/tx/modals/NewTxModal'))
 
@@ -14,10 +16,16 @@ const NewTxButton = (): ReactElement => {
   const isSafeOwner = useIsSafeOwner()
   const isWrongChain = useIsWrongChain()
 
+  const onClick = () => {
+    setTxOpen(true)
+
+    trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
+  }
+
   return (
     <>
       <Button
-        onClick={() => setTxOpen(true)}
+        onClick={onClick}
         variant="contained"
         size="small"
         disabled={!isSafeOwner || isWrongChain}

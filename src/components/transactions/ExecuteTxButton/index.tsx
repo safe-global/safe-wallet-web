@@ -8,6 +8,8 @@ import ExecuteTxModal from '@/components/tx/modals/ExecuteTxModal'
 import useIsPending from '@/hooks/useIsPending'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import IconButton from '@mui/material/IconButton'
+import Track from '@/components/common/Track'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
 const ExecuteTxButton = ({
   txSummary,
@@ -31,19 +33,21 @@ const ExecuteTxButton = ({
 
   return (
     <>
-      {compact ? (
-        <Tooltip title="Execute" arrow placement="top">
-          <span>
-            <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
-              <RocketLaunchIcon fontSize="small" />
-            </IconButton>
-          </span>
-        </Tooltip>
-      ) : (
-        <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
-          Execute
-        </Button>
-      )}
+      <Track {...TX_LIST_EVENTS.EXECUTE}>
+        {compact ? (
+          <Tooltip title="Execute" arrow placement="top">
+            <span>
+              <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
+                <RocketLaunchIcon fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        ) : (
+          <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
+            Execute
+          </Button>
+        )}
+      </Track>
 
       {open && <ExecuteTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </>

@@ -17,6 +17,8 @@ import { formatEther } from '@ethersproject/units'
 import { formatUnits } from 'ethers/lib/utils'
 import { isERC20Transfer, isNativeTokenTransfer } from '@/utils/transaction-guards'
 import useIsGranted from '@/hooks/useIsGranted'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
+import { trackEvent } from '@/services/analytics/analytics'
 
 enum ModalType {
   SEND_AGAIN = 'SEND_AGAIN',
@@ -40,10 +42,18 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
     setAnchorEl(undefined)
   }
 
-  const handleOpenModal = (type: keyof typeof open) => () => {
-    handleCloseContextMenu()
-    setOpen((prev) => ({ ...prev, [type]: true }))
-  }
+  const handleOpenModal =
+    (type: keyof typeof open, event?: typeof TX_LIST_EVENTS.ADDRESS_BOOK, label?: string) => () => {
+      handleCloseContextMenu()
+      setOpen((prev) => ({ ...prev, [type]: true }))
+
+      if (event) {
+        trackEvent({
+          ...event,
+          label,
+        })
+      }
+    }
 
   const handleCloseModal = () => {
     setOpen(defaultOpen)
@@ -79,12 +89,12 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
         })}
       >
         {canSendAgain && (
-          <MenuItem onClick={handleOpenModal(ModalType.SEND_AGAIN)} disabled={!isGranted}>
+          <MenuItem onClick={handleOpenModal(ModalType.SEND_AGAIN, TX_LIST_EVENTS.SEND_AGAIN)} disabled={!isGranted}>
             <ListItemText>Send again</ListItemText>
           </MenuItem>
         )}
 
-        <MenuItem onClick={handleOpenModal(ModalType.ADD_TO_AB)}>
+        <MenuItem onClick={handleOpenModal(ModalType.ADD_TO_AB, TX_LIST_EVENTS.ADDRESS_BOOK, 'Add')}>
           <ListItemText>Add to address book</ListItemText>
         </MenuItem>
       </Menu>
