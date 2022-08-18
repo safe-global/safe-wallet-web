@@ -1,6 +1,6 @@
 import { OperationType, type SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types'
-import { Operation, TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isMultisigExecutionDetails, isMultisigExecutionInfo, isNativeTokenTransfer } from '@/utils/transaction-guards'
+import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { isMultisigExecutionDetails, isNativeTokenTransfer } from '@/utils/transaction-guards'
 
 const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000'
 const EMPTY_DATA: string = '0x'
@@ -9,7 +9,6 @@ const EMPTY_DATA: string = '0x'
  * Convert the CGW tx type to a Safe Core SDK tx
  */
 const extractTxInfo = (
-  txSummary: TransactionSummary,
   txDetails: TransactionDetails,
   safeAddress: string,
 ): { txParams: SafeTransactionData; signatures: Record<string, string> } => {
@@ -21,12 +20,6 @@ const extractTxInfo = (
       return result
     }, signatures)
   }
-
-  // const safeTxHash = isMultisig(txDetails.detailedExecutionInfo)
-  //   ? txDetails.detailedExecutionInfo.safeTxHash
-  //   : EMPTY_DATA
-
-  //const origin = txSummary.safeAppInfo ? JSON.stringify({ name: txSummary.safeAppInfo.name, url: txSummary.safeAppInfo.url }) : ''
 
   const data = txDetails.txData?.hexData ?? EMPTY_DATA
 
@@ -46,22 +39,22 @@ const extractTxInfo = (
     ? txDetails.detailedExecutionInfo.gasToken
     : ZERO_ADDRESS
 
-  const nonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : 0
+  const nonce = isMultisigExecutionDetails(txDetails.detailedExecutionInfo) ? txDetails.detailedExecutionInfo.nonce : 0
 
   const refundReceiver = isMultisigExecutionDetails(txDetails.detailedExecutionInfo)
     ? txDetails.detailedExecutionInfo.refundReceiver.value
     : ZERO_ADDRESS
 
   const value = (() => {
-    switch (txSummary.txInfo.type) {
+    switch (txDetails.txInfo.type) {
       case 'Transfer':
-        if (isNativeTokenTransfer(txSummary.txInfo.transferInfo)) {
-          return txSummary.txInfo.transferInfo.value
+        if (isNativeTokenTransfer(txDetails.txInfo.transferInfo)) {
+          return txDetails.txInfo.transferInfo.value
         } else {
           return txDetails.txData?.value ?? '0'
         }
       case 'Custom':
-        return txSummary.txInfo.value
+        return txDetails.txInfo.value
       case 'Creation':
       case 'SettingsChange':
       default:
@@ -70,15 +63,15 @@ const extractTxInfo = (
   })()
 
   const to = (() => {
-    switch (txSummary.txInfo.type) {
+    switch (txDetails.txInfo.type) {
       case 'Transfer':
-        if (isNativeTokenTransfer(txSummary.txInfo.transferInfo)) {
-          return txSummary.txInfo.recipient.value
+        if (isNativeTokenTransfer(txDetails.txInfo.transferInfo)) {
+          return txDetails.txInfo.recipient.value
         } else {
-          return txSummary.txInfo.transferInfo.tokenAddress
+          return txDetails.txInfo.transferInfo.tokenAddress
         }
       case 'Custom':
-        return txSummary.txInfo.to.value
+        return txDetails.txInfo.to.value
       case 'Creation':
       case 'SettingsChange':
       default:

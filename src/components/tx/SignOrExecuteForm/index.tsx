@@ -196,7 +196,7 @@ const SignOrExecuteForm = ({
       <DialogContent>
         {children}
 
-        <DecodedTx tx={tx} />
+        {tx && <DecodedTx tx={tx} />}
 
         {canExecute && !onlyExecute && (
           <FormControlLabel

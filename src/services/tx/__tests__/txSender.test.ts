@@ -1,6 +1,6 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import Safe from '@gnosis.pm/safe-core-sdk'
-import { getTransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import extractTxInfo from '../extractTxInfo'
 import proposeTx from '../proposeTransaction'
 import {
@@ -95,9 +95,7 @@ describe('txSender', () => {
 
   describe('createExistingTx', () => {
     it('should create a tx from an existing proposal', async () => {
-      const tx = await createExistingTx('4', '0x123', {
-        id: '0x345',
-      } as unknown as TransactionSummary)
+      const tx = await createExistingTx('4', '0x123', '0x345')
 
       expect(getTransactionDetails).toHaveBeenCalledWith('4', '0x345')
       expect(extractTxInfo).toHaveBeenCalled()

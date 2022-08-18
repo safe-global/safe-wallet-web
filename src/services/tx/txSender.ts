@@ -4,7 +4,6 @@ import {
   postSafeGasEstimation,
   SafeTransactionEstimation,
   TransactionDetails,
-  TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   MetaTransactionData,
@@ -109,14 +108,14 @@ export const createRejectTx = async (nonce: number): Promise<SafeTransaction> =>
 export const createExistingTx = async (
   chainId: string,
   safeAddress: string,
-  txSummary: TransactionSummary,
+  txId: string,
   txDetails?: TransactionDetails,
 ): Promise<SafeTransaction> => {
   // Get the tx details from the backend if not provided
-  txDetails = txDetails || (await getTransactionDetails(chainId, txSummary.id))
+  txDetails = txDetails || (await getTransactionDetails(chainId, txId))
 
   // Convert them to the Core SDK tx params
-  const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
+  const { txParams, signatures } = extractTxInfo(txDetails, safeAddress)
 
   // Create a tx and add pre-approved signatures
   const safeTx = await createTx(txParams, txParams.nonce)

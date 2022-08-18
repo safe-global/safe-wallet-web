@@ -7,20 +7,7 @@ import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import CustomTooltip from '@/components/common/CustomTooltip'
 import useBatchedTxs from '@/hooks/useBatchedTxs'
-import TxModal from '@/components/tx/TxModal'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import ReviewBatchExecute from '@/components/transactions/BatchExecuteButton/ReviewBatchExecute'
-
-export type BatchExecuteData = {
-  txs: Transaction[]
-}
-
-const BatchExecuteSteps: TxStepperProps['steps'] = [
-  {
-    label: 'Execute batch',
-    render: (data, onSubmit) => <ReviewBatchExecute data={data as BatchExecuteData} onSubmit={onSubmit} />,
-  },
-]
+import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
 
 const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transaction[])[] }) => {
   const [open, setOpen] = useState(false)
@@ -51,25 +38,21 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
             : 'All transactions highlighted in light green will be included in the batch execution.'
         }
       >
-        <Button
-          onMouseEnter={handleOnMouseEnter}
-          onMouseLeave={handleOnMouseLeave}
-          className={css.button}
-          variant="contained"
-          size="small"
-          disabled={isDisabled}
-          onClick={() => setOpen(true)}
-        >
-          Execute batch {isBatchable && ` (${batchableTransactions.length})`}
-        </Button>
+        <span>
+          <Button
+            onMouseEnter={handleOnMouseEnter}
+            onMouseLeave={handleOnMouseLeave}
+            className={css.button}
+            variant="contained"
+            size="small"
+            disabled={isDisabled}
+            onClick={() => setOpen(true)}
+          >
+            Execute batch {isBatchable && ` (${batchableTransactions.length})`}
+          </Button>
+        </span>
       </CustomTooltip>
-      {open && (
-        <TxModal
-          onClose={() => setOpen(false)}
-          steps={BatchExecuteSteps}
-          initialData={[{ txs: batchableTransactions }]}
-        />
-      )}
+      {open && <BatchExecuteModal onClose={() => setOpen(false)} initialData={[{ txs: batchableTransactions }]} />}
     </>
   )
 }
