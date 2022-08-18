@@ -17,6 +17,8 @@ import Box from '@mui/material/Box'
 import useAddressBook from '@/hooks/useAddressBook'
 import Track from '@/components/common/Track'
 import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
+import { useAppSelector } from '@/store'
+import { selectAllAddressBooks } from '@/store/addressBookSlice'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -57,6 +59,9 @@ const AddressBookTable = () => {
     setOpen(defaultOpen)
     setDefaultValues(undefined)
   }
+
+  const allAddressBooks = useAppSelector(selectAllAddressBooks)
+  const canExport = Object.keys(allAddressBooks).length > 0
 
   const addressBook = useAddressBook()
   const addressBookEntries = Object.entries(addressBook)
@@ -108,7 +113,7 @@ const AddressBookTable = () => {
         <Track {...ADDRESS_BOOK_EVENTS.DOWNLOAD_BUTTON}>
           <Button
             onClick={handleOpenModal(ModalType.EXPORT)}
-            disabled={addressBookEntries.length === 0}
+            disabled={!canExport}
             variant="contained"
             size="small"
             disableElevation
