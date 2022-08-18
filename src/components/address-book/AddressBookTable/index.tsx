@@ -61,7 +61,7 @@ const AddressBookTable = () => {
   }
 
   const allAddressBooks = useAppSelector(selectAllAddressBooks)
-  const canExport = Object.keys(allAddressBooks).length > 0
+  const canExport = Object.values(allAddressBooks).length > 0
 
   const addressBook = useAddressBook()
   const addressBookEntries = Object.entries(addressBook)
