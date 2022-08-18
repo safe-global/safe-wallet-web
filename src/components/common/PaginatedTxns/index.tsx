@@ -20,20 +20,18 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
 
   useEffect(() => {
     if (page?.results.length) {
-      setAllResults((prev) => {
-        const newResults = prev.concat(page.results)
+      setAllResults((prev) => prev.concat(page.results))
+    }
+  }, [page])
 
-        if (isQueue) {
-          trackEvent({
-            ...TX_LIST_EVENTS.QUEUED_TXS,
-            label: newResults.length,
-          })
-        }
-
-        return newResults
+  useEffect(() => {
+    if (isQueue && allResults.length > 0) {
+      trackEvent({
+        ...TX_LIST_EVENTS.QUEUED_TXS,
+        label: allResults.length,
       })
     }
-  }, [page, isQueue])
+  }, [allResults.length, isQueue])
 
   return (
     <Box mb={4} position="relative">

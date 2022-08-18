@@ -26,6 +26,7 @@ import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
+import { useTxTracking } from '@/hooks/useTxTracking'
 
 const cssCache = createCache({
   key: 'css',
@@ -48,6 +49,7 @@ const InitApp = (): null => {
   useSafeNotifications()
   useTxPendingStatuses()
   useTxMonitor()
+  useTxTracking()
 
   return null
 }

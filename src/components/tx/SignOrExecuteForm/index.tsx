@@ -163,7 +163,7 @@ const SignOrExecuteForm = ({
     }
   }
 
-  const onFormSubmit = async (data: AdvancedParameters) => {
+  const onAdvancedSubmit = async (data: AdvancedParameters) => {
     // If nonce was edited, create a new with that nonce
     if (tx && data.nonce !== tx.data.nonce) {
       try {
@@ -197,7 +197,7 @@ const SignOrExecuteForm = ({
       recommendedNonce={safeTx?.data.nonce}
       estimatedGasLimit={gasLimit?.toString()}
       nonceReadonly={nonceReadonly}
-      onSubmit={onFormSubmit}
+      onSubmit={onAdvancedSubmit}
     />
   ) : (
     <form onSubmit={handleSubmit}>
