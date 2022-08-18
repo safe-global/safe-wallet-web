@@ -1,9 +1,13 @@
 import { BatchExecuteData } from '@/components/transactions/BatchExecuteButton/index'
+import CodeIcon from '@mui/icons-material/Code'
 import useAsync from '@/hooks/useAsync'
 import {
   ChainInfo,
+  DecodedDataBasicParameter,
+  DecodedDataResponse,
   Erc20Transfer,
   Erc721Transfer,
+  getDecodedData,
   getTransactionDetails,
   MultisigConfirmation,
   Operation,
@@ -20,12 +24,23 @@ import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 import { encodeMultiSendData } from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/utils'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { Button, DialogContent, Typography } from '@mui/material'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  DialogContent,
+  Skeleton,
+  Typography,
+} from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useEffect, useState } from 'react'
 import { Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
 import { createExistingTx } from '@/services/tx/txSender'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 
 export const getTxRecipient = (txInfo: TransactionInfo, safeAddress: string): string => {
   switch (txInfo.type) {
@@ -125,17 +140,83 @@ const getTxsWithDetails = (txs: Transaction[], chainId: string) => {
   )
 }
 
+const getTxs = (txs: Transaction[], chainId: string, safeAddress: string): Promise<SafeTransaction[]> => {
+  return Promise.all(
+    txs.map(async (tx) => {
+      return await createExistingTx(chainId, safeAddress, tx.transaction)
+    }),
+  )
+}
+
+export const getParameterElement = ({ name, type, value }: DecodedDataBasicParameter) => {
+  let valueElement
+
+  if (!Array.isArray(value)) {
+    switch (type) {
+      case 'address':
+        valueElement = <EthHashInfo address={value} showAvatar showCopyButton hasExplorer />
+        break
+      case 'bytes':
+        valueElement = <Box margin={2}>{generateDataRowValue(value, 'rawData')}</Box>
+        break
+    }
+  }
+
+  if (!valueElement) {
+    valueElement = <Typography>{JSON.stringify(value)}</Typography>
+  }
+
+  return (
+    <Box>
+      <Typography color="secondary.light">
+        {name} ({type})
+      </Typography>
+      {valueElement}
+    </Box>
+  )
+}
+
+const DecodedTxInfo = ({ tx, chainId }: { tx: SafeTransaction; chainId: string }) => {
+  const [decodedData, error] = useAsync<DecodedDataResponse | undefined>(async () => {
+    if (isNaN(parseInt(tx.data.data, 16))) return
+
+    return getDecodedData(chainId, tx.data.data)
+  }, [tx.data.data])
+
+  return (
+    <Box mt={2}>
+      <Accordion elevation={0}>
+        <AccordionSummary>
+          <CodeIcon color="border" />
+          <Box ml="4px">{decodedData?.method ?? 'Contract Interaction'}</Box>
+          <Box justifySelf="flex-end" marginLeft="auto">
+            {generateDataRowValue(tx.data.data, 'rawData')}
+          </Box>
+        </AccordionSummary>
+
+        <AccordionDetails>
+          <Box display="flex" flexDirection="column" gap={2}>
+            {decodedData && decodedData.parameters.length > 0 ? (
+              decodedData.parameters.map((param) => getParameterElement(param))
+            ) : (
+              <Box>
+                <Typography color="secondary.light">Interact with:</Typography>
+                <EthHashInfo address={tx.data.to} showAvatar showCopyButton hasExplorer />
+              </Box>
+            )}
+          </Box>
+        </AccordionDetails>
+      </Accordion>
+    </Box>
+  )
+}
+
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [multiSendContract, setMultiSendContract] = useState<Multi_send_call_only>()
+  const [multiSendTxData, setMultiSendTxData] = useState<string>()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
   const provider = useWeb3()
-
-  useEffect(() => {
-    if (!chain) return
-
-    setMultiSendContract(getMultiSendCallOnlyContractInstance(chain.chainId))
-  }, [chain])
 
   const [txsWithDetails, _, loading] = useAsync<TransactionDetails[] | undefined>(async () => {
     if (!chain?.chainId) return
@@ -143,13 +224,32 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     return getTxsWithDetails(data.txs, chain.chainId)
   }, [data.txs, chain?.chainId])
 
-  const sendTx = async () => {
-    if (!provider || !txsWithDetails || !chain || !multiSendContract) return
+  const [safeTxs, safeTxsError, safeTxsLoading] = useAsync<SafeTransaction[] | undefined>(async () => {
+    if (!chain?.chainId) return
+
+    return getTxs(data.txs, chain.chainId, safe.address.value)
+  }, [data.txs, chain?.chainId, safe.address.value])
+
+  useEffect(() => {
+    if (!chain) return
+
+    setMultiSendContract(getMultiSendCallOnlyContractInstance(chain.chainId))
+  }, [chain])
+
+  useEffect(() => {
+    if (!txsWithDetails || !chain) return
 
     const multiSendTxs = getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
-    const multiSendTxData = encodeMultiSendData(multiSendTxs)
+    const data = encodeMultiSendData(multiSendTxs)
+
+    setMultiSendTxData(data)
+  }, [chain, safe.address.value, safe.version, txsWithDetails])
+
+  const sendTx = async () => {
+    if (!provider || !multiSendTxData || !chain || !multiSendContract) return
 
     const multisendTransaction = await multiSendContract.connect(provider.getSigner()).multiSend(multiSendTxData)
+
     data.txs.forEach((tx) => {
       createExistingTx(chain.chainId, safe.address.value, tx.transaction).then((safeTx) =>
         txDispatch(TxEvent.MINING, { txId: tx.transaction.id, txHash: multisendTransaction.hash, tx: safeTx }),
@@ -171,6 +271,22 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         <Typography>Interact with:</Typography>
         {multiSendContract && (
           <EthHashInfo address={multiSendContract.address} shortAddress={false} hasExplorer showCopyButton />
+        )}
+        {multiSendTxData && (
+          <>
+            <Typography mt={2}>Data (hex encoded)</Typography>
+            {generateDataRowValue(multiSendTxData, 'rawData')}
+          </>
+        )}
+        {safeTxs &&
+          chain &&
+          safeTxs.map((safeTx) => <DecodedTxInfo key={safeTx.data.nonce} tx={safeTx} chainId={chain.chainId} />)}
+        {safeTxsLoading && (
+          <Box display="flex" flexDirection="column" gap={2} mt={2}>
+            {data.txs.map((tx) => (
+              <Skeleton key={tx.transaction.id} variant="rectangular" height={52} sx={{ borderRadius: 2 }} />
+            ))}
+          </Box>
         )}
         <Typography variant="body2" mt={2} textAlign="center">
           Be aware that if any of the included transactions revert, none of them will be executed. This will result in
