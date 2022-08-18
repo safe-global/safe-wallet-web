@@ -41,6 +41,18 @@
 }
 
 @media (max-width: 600px) {
+  .element {
+    padding: 0 var(--space-1);
+  }
+
+  .menuButton {
+    padding-left: var(--space-2);
+  }
+
+  .networkSelector {
+    padding-right: 0;
+  }
+
   .logo,
   .hideMobile {
     display: none;

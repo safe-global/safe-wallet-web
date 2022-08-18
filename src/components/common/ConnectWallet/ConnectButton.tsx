@@ -1,4 +1,5 @@
-import { Button } from '@mui/material'
+import { Box, Button } from '@mui/material'
+import css from '@/components/common/ConnectWallet/styles.module.css'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 
@@ -11,8 +12,10 @@ export const ConnectButton = () => {
   }
 
   return (
-    <Button onClick={handleConnect} variant="contained" size="small" disableElevation>
-      Connect wallet
-    </Button>
+    <Box className={css.buttonContainer}>
+      <Button onClick={handleConnect} variant="contained" size="small" disableElevation>
+        Connect wallet
+      </Button>
+    </Box>
   )
 }

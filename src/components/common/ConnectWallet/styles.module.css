@@ -3,6 +3,14 @@
   align-items: center;
 }
 
+.buttonContainer {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: var(--space-1);
+  height: 100%;
+}
+
 .popoverContainer {
   padding: var(--space-2);
   width: 250px;
