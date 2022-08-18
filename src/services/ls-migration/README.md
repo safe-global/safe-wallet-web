@@ -23,6 +23,6 @@ Here's how we do it.
  * if it hasn't been done, it tries to migrate
  * it loads `migrate.html` from safe-react in an iframe (e.g. on prod it loads `https://gnosis-safe.io/app/migrate.html`)
  * it listens to messages from the iframe and only trusts the safe-react domain
- * it posts a message to the iframe window saying `ready`, so that the iframe knows where to send the data to
+ * it posts a message to the iframe window saying `ready`, so that the iframe knows where to send the data
  * when web-core receives the LS data, it transforms it to a new format
  * it dispatches parts of the data to corresponding Redux slices
