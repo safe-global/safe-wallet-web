@@ -2,7 +2,7 @@
 
 When contributing to this repository, please first discuss the change you wish to make via a GitHub issue before making it.
 
-Please note we have a code of conduct (see below), please follow it in all your interactions with the project.
+Please note we have a Code of Conduct (see below), please follow it in all your interactions with the project.
 
 ## Pull Request Process
 
