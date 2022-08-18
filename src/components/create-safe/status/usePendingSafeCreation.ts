@@ -7,7 +7,7 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getProxyFactoryContractInstance } from '@/services/contracts/safeContracts'
 import useChainId from '@/hooks/useChainId'
-import { ErrorCode } from '@ethersproject/logger/src.ts'
+import { ErrorCode } from '@ethersproject/logger'
 
 type EthersError = Error & { code: ErrorCode; reason: string }
 
