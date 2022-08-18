@@ -22,9 +22,7 @@ const Track = ({ children, as: Wrapper = 'div', ...trackData }: Props): typeof c
     const trackEl = el.current
 
     const handleClick = () => {
-      trackEvent({
-        ...trackData,
-      })
+      trackEvent(trackData)
     }
 
     // We cannot use onClick as events in children do not always bubble up
