@@ -103,6 +103,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "fuse.js": "^6.6.2",
     "jest": "^28.1.2",
     "jest-environment-jsdom": "^28.1.2",
     "pre-commit": "^1.2.2",
