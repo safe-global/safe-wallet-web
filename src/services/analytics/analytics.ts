@@ -1,14 +1,6 @@
 import { ConnectedWallet } from '../onboard'
 import { WALLET_EVENTS } from './events/wallet'
-
-export enum GTM_EVENT {
-  PAGEVIEW = 'pageview',
-  CLICK = 'customClick',
-  META = 'metadata',
-  SAFE_APP = 'safeApp',
-}
-
-export type EventLabel = string | number | boolean | null
+import { GTM_EVENT, EventLabel } from './types'
 
 export const trackEvent = ({
   event = GTM_EVENT.CLICK,

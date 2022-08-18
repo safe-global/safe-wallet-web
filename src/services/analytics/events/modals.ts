@@ -1,4 +1,4 @@
-import { GTM_EVENT } from '@/services/analytics/analytics'
+import { GTM_EVENT } from '@/services/analytics/types'
 
 export const MODALS_CATEGORY = 'modals'
 
