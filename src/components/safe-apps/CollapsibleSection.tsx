@@ -22,6 +22,10 @@ const CollapsibleSection = ({ title, showCounterInTitle = true, apps }: Props) =
         boxShadow: 'none',
         border: 'none',
         background: 'transparent',
+        '.MuiCollapse-wrapperInner': {
+          // the padding is needed to prevent the box-shadow on the app card from being cut off
+          pb: 1,
+        },
       }}
     >
       <AccordionSummary
