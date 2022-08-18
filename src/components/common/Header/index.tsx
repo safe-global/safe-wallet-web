@@ -12,7 +12,7 @@ import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
 import SafeLogo from '@/public/logo.svg'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
-import router from 'next/router'
+import { useRouter } from 'next/router'
 import Track from '../Track'
 import Link from 'next/link'
 
@@ -21,6 +21,7 @@ type HeaderProps = {
 }
 
 const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
+  const router = useRouter()
   const chainId = useChainId()
   const showSafeToken = !!getSafeTokenAddress(chainId)
 
