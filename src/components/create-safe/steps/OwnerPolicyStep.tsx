@@ -9,6 +9,8 @@ import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
 import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
+import { trackEvent } from '@/services/analytics/analytics'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 
 type Props = {
   params: SafeFormData
@@ -58,6 +60,16 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
         name: owner.name || owner.fallbackName,
         address: owner.address,
       })),
+    })
+
+    trackEvent({
+      ...CREATE_SAFE_EVENTS.OWNERS,
+      label: data.owners.length,
+    })
+
+    trackEvent({
+      ...CREATE_SAFE_EVENTS.THRESHOLD,
+      label: data.threshold,
     })
   })
 

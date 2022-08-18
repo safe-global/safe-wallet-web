@@ -8,14 +8,20 @@ import ConnectWallet from '@/components/common/ConnectWallet'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import SafeTokenWidget, { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import NotificationCenter from '@/components/notification-center/NotificationCenter'
+import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
 import SafeLogo from '@/public/logo.svg'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import { useRouter } from 'next/router'
+import Track from '../Track'
+import Link from 'next/link'
 
 type HeaderProps = {
   onMenuToggle: () => void
 }
 
 const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
+  const router = useRouter()
   const chainId = useChainId()
   const showSafeToken = !!getSafeTokenAddress(chainId)
 
@@ -28,7 +34,11 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
       </div>
 
       <div className={classnames(css.element, css.hideMobile, css.logo)}>
-        <SafeLogo alt="Safe Logo" height={29} />
+        <Track {...OVERVIEW_EVENTS.HOME}>
+          <Link href={{ href: AppRoutes.index, query: router.query }} passHref>
+            <SafeLogo alt="Safe Logo" height={29} />
+          </Link>
+        </Track>
       </div>
 
       <div className={classnames(css.element, css.hideMobile)}>

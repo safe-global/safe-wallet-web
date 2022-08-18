@@ -10,6 +10,8 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { Typography } from '@mui/material'
 import { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { relativeTime } from '@/utils/date'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { trackEvent } from '@/services/analytics/analytics'
 
 export const RemoveSpendingLimit = ({
   data,
@@ -38,8 +40,14 @@ export const RemoveSpendingLimit = ({
     return createTx(txParams)
   }, [provider, chainId, data.beneficiary, data.token])
 
+  const onFormSubmit = (data: null) => {
+    trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
+
+    onSubmit(data)
+  }
+
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
       <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
       <EthHashInfo address={data.beneficiary} showCopyButton hasExplorer shortAddress={false} />
       <Typography mt={2} sx={({ palette }) => ({ color: palette.secondary.light })}>

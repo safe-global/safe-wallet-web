@@ -8,17 +8,30 @@ import useTxQueue from '@/hooks/useTxQueue'
 import PagePlaceholder from '../PagePlaceholder'
 import LoadMoreButton from '../LoadMoreButton'
 import SkeletonTxList from './SkeletonTxList'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
+import { trackEvent } from '@/services/analytics/analytics'
 
 const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useTxQueue }): ReactElement => {
   const [pageUrl, setPageUrl] = useState<string | undefined>()
   const [allResults, setAllResults] = useState<TransactionListItem[]>([])
   const { page, error, loading } = useTxns(pageUrl)
 
+  const isQueue = useTxns === useTxQueue
+
   useEffect(() => {
     if (page?.results.length) {
       setAllResults((prev) => prev.concat(page.results))
     }
   }, [page])
+
+  useEffect(() => {
+    if (isQueue) {
+      trackEvent({
+        ...TX_LIST_EVENTS.QUEUED_TXS,
+        label: allResults.length,
+      })
+    }
+  }, [allResults.length, isQueue])
 
   return (
     <Box mb={4} position="relative">
@@ -29,7 +42,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
       ) : loading ? (
         <SkeletonTxList />
       ) : (
-        useTxns === useTxQueue && (
+        isQueue && (
           <Box mt="5vh">
             <PagePlaceholder imageUrl="/images/no-transactions.svg" text="Queued transactions will appear here" />
           </Box>

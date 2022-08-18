@@ -12,6 +12,8 @@ import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 
 import css from './styles.module.css'
+import { trackEvent } from '@/services/analytics/analytics'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 
 enum ModalType {
   RENAME = 'rename',
@@ -43,10 +45,14 @@ const SafeListContextMenu = ({
     setAnchorEl(undefined)
   }
 
-  const handleOpenModal = (type: keyof typeof open) => () => {
-    handleCloseContextMenu()
-    setOpen((prev) => ({ ...prev, [type]: true }))
-  }
+  const handleOpenModal =
+    (type: keyof typeof open, event: typeof OVERVIEW_EVENTS.SIDEBAR_RENAME | typeof OVERVIEW_EVENTS.SIDEBAR_RENAME) =>
+    () => {
+      handleCloseContextMenu()
+      setOpen((prev) => ({ ...prev, [type]: true }))
+
+      trackEvent(event)
+    }
 
   const handleCloseModal = () => {
     setOpen(defaultOpen)
@@ -68,7 +74,7 @@ const SafeListContextMenu = ({
           },
         })}
       >
-        <MenuItem onClick={handleOpenModal(ModalType.RENAME)}>
+        <MenuItem onClick={handleOpenModal(ModalType.RENAME, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
           <ListItemIcon>
             <img src="/images/sidebar/safe-list/pencil.svg" alt="Rename" height="16px" width="16px" />
           </ListItemIcon>
@@ -76,7 +82,7 @@ const SafeListContextMenu = ({
         </MenuItem>
 
         {isAdded && (
-          <MenuItem onClick={handleOpenModal(ModalType.REMOVE)}>
+          <MenuItem onClick={handleOpenModal(ModalType.REMOVE, OVERVIEW_EVENTS.SIDEBAR_REMOVE)}>
             <ListItemIcon>
               <img src="/images/sidebar/safe-list/trash.svg" alt="Remove" height="16px" width="16px" />
             </ListItemIcon>

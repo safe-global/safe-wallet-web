@@ -10,6 +10,8 @@ import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
 import { RemoveOwnerData } from '..'
 import React from 'react'
+import { trackEvent } from '@/services/analytics/analytics'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 
 export const ReviewRemoveOwnerTxStep = ({
   data,
@@ -28,8 +30,15 @@ export const ReviewRemoveOwnerTxStep = ({
 
   const newOwnerLength = safe.owners.length - 1
 
+  const onFormSubmit = (data: null) => {
+    trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
+    trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
+
+    onSubmit(data)
+  }
+
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} isExecutable={safe.threshold === 1} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} isExecutable={safe.threshold === 1} error={safeTxError}>
       <Grid
         container
         mt={-3}

@@ -9,6 +9,8 @@ import useIsPending from '@/hooks/useIsPending'
 import IconButton from '@mui/material/IconButton'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import Track from '@/components/common/Track'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
 const RejectTxButton = ({
   txSummary,
@@ -37,19 +39,21 @@ const RejectTxButton = ({
 
   return (
     <>
-      {compact ? (
-        <Tooltip title="Reject" arrow placement="top">
-          <span>
-            <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>
-              <HighlightOffIcon fontSize="small" />
-            </IconButton>
-          </span>
-        </Tooltip>
-      ) : (
-        <Button onClick={onClick} color="error" variant="contained" disabled={isDisabled} size="stretched">
-          Reject
-        </Button>
-      )}
+      <Track {...TX_LIST_EVENTS.REJECT}>
+        {compact ? (
+          <Tooltip title="Reject" arrow placement="top">
+            <span>
+              <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>
+                <HighlightOffIcon fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        ) : (
+          <Button onClick={onClick} color="error" variant="contained" disabled={isDisabled} size="stretched">
+            Reject
+          </Button>
+        )}
+      </Track>
 
       {open && <RejectTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </>

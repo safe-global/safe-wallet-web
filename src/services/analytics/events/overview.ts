@@ -1,4 +1,4 @@
-import { GTM_EVENT } from '@/services/analytics/analytics'
+import { GTM_EVENT } from '@/services/analytics/types'
 
 const OVERVIEW_CATEGORY = 'overview'
 
@@ -7,6 +7,7 @@ export const OVERVIEW_EVENTS = {
     action: 'Go to Welcome page',
     category: OVERVIEW_CATEGORY,
   },
+  // TODO: Not yet in web-core
   IPHONE_APP_BUTTON: {
     action: 'Download App',
     category: OVERVIEW_CATEGORY,
@@ -41,8 +42,7 @@ export const OVERVIEW_EVENTS = {
   },
   ADDED_SAFES_ON_NETWORK: {
     event: GTM_EVENT.META,
-    // TODO: Safe name is appended in trackEvent in safe-react. Do here?
-    action: 'Added Safes on',
+    action: 'Added Safes on', // Safe name is appended trackEvent on SafeList
     category: OVERVIEW_CATEGORY,
   },
   WHATS_NEW: {
@@ -51,10 +51,6 @@ export const OVERVIEW_EVENTS = {
   },
   HELP_CENTER: {
     action: 'Open Help Center',
-    category: OVERVIEW_CATEGORY,
-  },
-  OPEN_INTERCOM: {
-    action: 'Open Intercom',
     category: OVERVIEW_CATEGORY,
   },
   NEW_TRANSACTION: {
@@ -67,6 +63,14 @@ export const OVERVIEW_EVENTS = {
   },
   NOTIFICATION_INTERACTION: {
     action: 'Interact with notification',
+    category: OVERVIEW_CATEGORY,
+  },
+  SIDEBAR_RENAME: {
+    action: 'Rename Safe from sidebar',
+    category: OVERVIEW_CATEGORY,
+  },
+  SIDEBAR_REMOVE: {
+    action: 'Remove Safe from sidebar',
     category: OVERVIEW_CATEGORY,
   },
 }
