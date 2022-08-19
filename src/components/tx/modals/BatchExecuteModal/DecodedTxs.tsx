@@ -5,15 +5,7 @@ import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import DecodedTx from '@/components/tx/DecodedTx'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { createExistingTx } from '@/services/tx/txSender'
-
-const getTxs = (txs: TransactionDetails[], chainId: string, safeAddress: string) => {
-  return Promise.all(
-    txs.map(async (tx) => {
-      return await createExistingTx(chainId, safeAddress, tx.txId, tx)
-    }),
-  )
-}
+import { getSafeTxs } from '@/utils/transactions'
 
 const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefined; numberOfTxs: number }) => {
   const chainId = useChainId()
@@ -22,7 +14,7 @@ const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefine
   const [safeTxs, _, loading] = useAsync<SafeTransaction[]>(() => {
     if (!txs) return
 
-    return getTxs(txs, chainId, safeAddress)
+    return getSafeTxs(txs, chainId, safeAddress)
   }, [txs, chainId, safeAddress])
 
   if (loading) {

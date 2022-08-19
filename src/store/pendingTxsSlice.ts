@@ -14,6 +14,7 @@ type PendingTxsState =
         chainId: string
         status: PendingStatus
         txHash?: string
+        batchId?: string
       }
     }
   | Record<string, never>
@@ -26,7 +27,13 @@ export const pendingTxsSlice = createSlice({
   reducers: {
     setPendingTx: (
       state,
-      action: PayloadAction<{ chainId: string; txId: string; txHash?: string; status: PendingStatus }>,
+      action: PayloadAction<{
+        chainId: string
+        txId: string
+        txHash?: string
+        batchId?: string
+        status: PendingStatus
+      }>,
     ) => {
       const { txId, ...pendingTx } = action.payload
       state[txId] = pendingTx

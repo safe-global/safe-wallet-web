@@ -1,83 +1,26 @@
 import useAsync from '@/hooks/useAsync'
-import { ChainInfo, getTransactionDetails, Transaction, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getGnosisSafeContractInstance, getMultiSendCallOnlyContractInstance } from '@/services/contracts/safeContracts'
+import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getMultiSendCallOnlyContractInstance } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 import { encodeMultiSendData } from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/utils'
-import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { Button, DialogContent, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useMemo, useState } from 'react'
-import { createExistingTx } from '@/services/tx/txSender'
-import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { dispatchBatchExecution } from '@/services/tx/txSender'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { Errors, logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import extractTxInfo from '@/services/tx/extractTxInfo'
 import { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/index'
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
-
-const getSignatures = (confirmations: Record<string, string>) => {
-  return Object.entries(confirmations)
-    .filter(([_, signature]) => Boolean(signature))
-    .sort(([signerA], [signerB]) => signerA.toLowerCase().localeCompare(signerB.toLowerCase()))
-    .reduce((prev, [_, signature]) => {
-      return prev + signature.slice(2)
-    }, '0x')
-}
-
-const getMultiSendTxs = (
-  txs: TransactionDetails[],
-  chain: ChainInfo,
-  safeAddress: string,
-  safeVersion: string,
-): MetaTransactionData[] => {
-  const safeContractInstance = getGnosisSafeContractInstance(chain, safeVersion)
-
-  return txs
-    .map((tx) => {
-      if (!isMultisigExecutionDetails(tx.detailedExecutionInfo)) return
-
-      const args = extractTxInfo(tx, safeAddress)
-      const sigs = getSignatures(args.signatures)
-
-      const data = safeContractInstance.interface.encodeFunctionData('execTransaction', [
-        args.txParams.to,
-        args.txParams.value,
-        args.txParams.data,
-        args.txParams.operation,
-        args.txParams.safeTxGas,
-        args.txParams.baseGas,
-        args.txParams.gasPrice,
-        args.txParams.gasToken,
-        args.txParams.refundReceiver,
-        sigs,
-      ])
-
-      return {
-        operation: OperationType.Call,
-        to: safeAddress,
-        value: '0',
-        data,
-      }
-    })
-    .filter(Boolean) as MetaTransactionData[]
-}
-
-const getTxsWithDetails = (txs: Transaction[], chainId: string) => {
-  return Promise.all(
-    txs.map(async (tx) => {
-      return await getTransactionDetails(chainId, tx.transaction.id)
-    }),
-  )
-}
+import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const provider = useWeb3()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
@@ -98,25 +41,31 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     return encodeMultiSendData(multiSendTxs)
   }, [chain, safe.address.value, safe.version, txsWithDetails])
 
-  const sendTx = async () => {
-    setSubmitError(undefined)
+  const onExecute = async () => {
     if (!provider || !multiSendTxData || !chain || !multiSendContract || !txsWithDetails) return
 
+    setIsSubmittable(false)
+    setSubmitError(undefined)
+
     try {
-      const multiSendTransaction = await multiSendContract.connect(provider.getSigner()).multiSend(multiSendTxData)
-
-      txsWithDetails.forEach((tx) => {
-        createExistingTx(chain.chainId, safe.address.value, tx.txId, tx).then((safeTx) =>
-          txDispatch(TxEvent.MINING, { txId: tx.txId, txHash: multiSendTransaction.hash, tx: safeTx }),
-        )
-      })
-
-      onSubmit(null)
+      await dispatchBatchExecution(
+        txsWithDetails,
+        multiSendContract,
+        multiSendTxData,
+        provider,
+        chain.chainId,
+        safeAddress,
+      )
     } catch (err) {
       logError(Errors._804, (err as Error).message)
+      setIsSubmittable(true)
       setSubmitError(err as Error)
     }
+
+    onSubmit(null)
   }
+
+  const submitDisabled = loading || !isSubmittable
 
   return (
     <div>
@@ -163,8 +112,8 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         )}
 
         <Button
-          onClick={sendTx}
-          disabled={loading}
+          onClick={onExecute}
+          disabled={submitDisabled}
           variant="contained"
           sx={{ position: 'absolute', bottom: '24px', right: '24px', zIndex: 1 }}
         >
