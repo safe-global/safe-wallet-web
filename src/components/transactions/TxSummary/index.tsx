@@ -87,7 +87,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       )}
 
       {wallet && !isWrongChain && isQueue && (
-        <Box gridArea="actions">
+        <Box gridArea="actions" display="flex" justifyContent="center" gap={1}>
           {awaitingExecution ? (
             <ExecuteTxButton txSummary={item.transaction} compact />
           ) : (
