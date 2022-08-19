@@ -20,12 +20,16 @@ export const hasValidAbEntryAddresses = (entries: string[][]) => {
   return entries.every((entry) => entry.length >= 1 && !validateAddress(entry[0]))
 }
 
+export const hasValidAbNames = (entries: string[][]) => {
+  return entries.every((entry) => entry.length >= 2 && !!entry[1])
+}
+
 export const hasValidAbEntryChainIds = (entries: string[][]) => {
   return entries.every((entry) => {
     if (entry.length < 3) {
       return false
     }
-    const chainId = entry[2].replace(/\s/g, '')
+    const chainId = entry[2].trim()
     return !validateChainId(chainId)
   })
 }
@@ -45,7 +49,7 @@ export const abOnUploadValidator = ({ data, errors }: ParseResult<string[]>): st
 
   // Wrong header
   if (!hasValidAbHeader(header)) {
-    return 'Invalid or corrupt address book'
+    return 'Invalid or corrupt address book header'
   }
 
   // No entries
@@ -53,13 +57,23 @@ export const abOnUploadValidator = ({ data, errors }: ParseResult<string[]>): st
     return 'No entries found in address book'
   }
 
+  // We + 2 to each row to make up for header and index
+
   // An entry has invalid address
   if (!hasValidAbEntryAddresses(entries)) {
-    return 'Address book contains invalid addresses'
+    const i = entries.findIndex((entry) => (entry.length >= 1 ? validateAddress(entry[0]) : true))
+    return `Address book contains an invalid address on row ${i + 2}`
+  }
+
+  // An entry has invalid name
+  if (!hasValidAbNames(entries)) {
+    const i = entries.findIndex((entry) => (entry.length >= 2 ? !entry[1] : true))
+    return `Address book contains an invalid name on row ${i + 2}`
   }
 
   // An entry has invalid chainId
   if (!hasValidAbEntryChainIds(entries)) {
-    return 'Address book contains invalid chain IDs'
+    const i = entries.findIndex((entry) => (entry.length >= 3 ? validateChainId(entry[2]) : true))
+    return `Address book contains an invalid chain ID on row ${i + 2}`
   }
 }

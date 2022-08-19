@@ -33,7 +33,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
     if (!csvData) return [0, 0]
     const entries = csvData.data.slice(1).filter(hasEntry)
     const entryLen = entries.length
-    const chainLen = new Set(entries.map((entry) => entry[2])).size
+    const chainLen = new Set(entries.map((entry) => entry[2].trim())).size
     return [entryLen, chainLen]
   }, [csvData])
 
@@ -50,7 +50,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
     for (const entry of entries) {
       if (hasEntry(entry)) {
         const [address, name, chainId] = entry
-        dispatch(upsertAddressBookEntry({ address, name, chainId: chainId.replace(/\s/g, '') }))
+        dispatch(upsertAddressBookEntry({ address, name, chainId: chainId.trim() }))
       }
     }
 
@@ -130,13 +130,15 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
                     </Grid>
 
                     <ProgressBar />
-
-                    <Typography mt={1} sx={({ palette }) => ({ color: error ? palette.error.main : undefined })}>
-                      {error ? error : `Found ${entryCount} entries on ${chainCount} chains`}
-                    </Typography>
                   </div>
                 ) : (
                   'Drop your CSV file here or click to upload.'
+                )}
+
+                {(error || acceptedFile) && (
+                  <Typography mt={1} sx={({ palette }) => ({ color: error ? palette.error.main : undefined })}>
+                    {error || `Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`}
+                  </Typography>
                 )}
               </Box>
             )
