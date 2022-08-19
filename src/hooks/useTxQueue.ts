@@ -28,12 +28,12 @@ const useTxQueue = (
     ? {
         page,
         error: error?.message,
-        loading: loading || !page,
+        loading: loading,
       }
     : {
         page: queueState.data,
         error: queueState.error,
-        loading: queueState.loading || !queueState.data,
+        loading: queueState.loading,
       }
 }
 

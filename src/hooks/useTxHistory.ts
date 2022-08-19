@@ -32,12 +32,12 @@ const useTxHistory = (
     ? {
         page,
         error: error?.message,
-        loading: loading || !page,
+        loading: loading,
       }
     : {
         page: historyState.data,
         error: historyState.error,
-        loading: historyState.loading || !historyState.data,
+        loading: historyState.loading,
       }
 }
 

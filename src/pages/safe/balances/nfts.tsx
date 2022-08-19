@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
+import { type ReactElement, useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Alert, AlertTitle, Box, Paper, Typography } from '@mui/material'
-import { type SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Alert, AlertTitle, Box, CircularProgress, Paper, Typography } from '@mui/material'
 import useCollectibles from '@/hooks/useCollectibles'
 import Nfts from '@/components/nfts'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
@@ -12,16 +11,52 @@ import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import LoadMoreButton from '@/components/common/LoadMoreButton'
 
-const NFTs: NextPage = () => {
-  const [pageUrl, setPageUrl] = useState<string | undefined>()
-  const [allResults, setAllResults] = useState<SafeCollectibleResponse[]>([])
-  const [collectibles, error, loading] = useCollectibles(pageUrl)
+const NftPage = ({
+  pageUrl,
+  onNextPage,
+}: {
+  pageUrl?: string
+  onNextPage?: (pageUrl?: string) => void
+}): ReactElement => {
+  const [collectibles, error] = useCollectibles(pageUrl)
 
-  useEffect(() => {
-    if (collectibles?.results.length) {
-      setAllResults((prev) => prev.concat(collectibles.results))
-    }
-  }, [collectibles?.results, setAllResults])
+  if (collectibles) {
+    return (
+      <>
+        {collectibles.results.length > 0 ? (
+          <Nfts collectibles={collectibles.results} />
+        ) : (
+          <Paper sx={{ py: 9, textAlign: 'center' }}>
+            <Typography variant="h3">No NFTs available</Typography>
+          </Paper>
+        )}
+
+        {onNextPage && collectibles.next && (
+          <Box py={4} textAlign="center">
+            <LoadMoreButton onLoadMore={() => onNextPage(collectibles.next)} />
+          </Box>
+        )}
+      </>
+    )
+  }
+
+  if (error) {
+    return <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>
+  }
+
+  return (
+    <Box py={4} textAlign="center">
+      <CircularProgress size={40} />
+    </Box>
+  )
+}
+
+const NFTs: NextPage = () => {
+  const [pages, setPages] = useState<string[]>([''])
+
+  const onNextPage = (pageUrl = '') => {
+    setPages([...pages, pageUrl])
+  }
 
   return (
     <main>
@@ -39,23 +74,13 @@ const NFTs: NextPage = () => {
           Get the most optimal experience with Safe Apps. View your collections, buy or sell NFTs, and more.
         </Alert>
 
-        {allResults.length > 0 ? (
-          <Nfts collectibles={allResults} />
-        ) : error ? (
-          <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>
-        ) : (
-          !loading && (
-            <Paper sx={{ py: 9, textAlign: 'center' }}>
-              <Typography variant="h3">No NFTs available</Typography>
-            </Paper>
-          )
-        )}
-
-        {(collectibles?.next || loading) && (
-          <Box py={4}>
-            <LoadMoreButton onLoadMore={() => setPageUrl(collectibles?.next)} loading={loading} />
-          </Box>
-        )}
+        {pages.map((pageUrl, index) => (
+          <NftPage
+            key={index}
+            pageUrl={pageUrl}
+            onNextPage={index === pages.length - 1 ? (pageUrl) => onNextPage(pageUrl) : undefined}
+          />
+        ))}
       </Box>
     </main>
   )
