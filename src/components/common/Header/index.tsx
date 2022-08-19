@@ -35,7 +35,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
 
       <div className={classnames(css.element, css.hideMobile, css.logo)}>
         <Track {...OVERVIEW_EVENTS.HOME}>
-          <Link href={{ href: AppRoutes.index, query: router.query }} passHref>
+          <Link href={AppRoutes.index} passHref>
             <a>
               <SafeLogo alt="Safe Logo" height={29} />
             </a>
