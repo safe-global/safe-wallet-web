@@ -1,7 +1,7 @@
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SafeAppCardVariants } from '../AppCard'
 import { CollapsibleSection } from './CollapsibleSection'
 import { DefaultSection } from './DefaultSection'
+import { SafeAppCardVariants } from '../AppCard'
 
 type Props = {
   title: string
