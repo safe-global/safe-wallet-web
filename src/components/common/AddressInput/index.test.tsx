@@ -75,20 +75,20 @@ describe('AddressInput tests', () => {
   it('should validate the address on input', async () => {
     const { input, utils } = setup('')
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: `xyz:${TEST_ADDRESS_A}` } })
       utils.getByText('Submit').click()
     })
 
     await waitFor(() => expect(utils.getByLabelText('Invalid chain prefix "xyz"')).toBeDefined())
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
     })
 
     await waitFor(() => expect(utils.getByLabelText(`"eth" doesn't match the current chain`)).toBeDefined())
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: 'rin:0x123' } })
     })
 
@@ -98,28 +98,27 @@ describe('AddressInput tests', () => {
   it('should accept a custom validate function', async () => {
     const { input, utils } = setup('', (val) => `${val} is wrong`)
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })
       utils.getByText('Submit').click()
     })
 
-    await waitFor(() => expect(utils.getByLabelText(`rin:${TEST_ADDRESS_A} is wrong`)).toBeDefined())
+    await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_A} is wrong`)).toBeDefined())
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
     })
 
-    await waitFor(() => expect(utils.getByLabelText(`rin:${TEST_ADDRESS_B} is wrong`)).toBeDefined())
+    await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_B} is wrong`)).toBeDefined())
   })
 
-  it('should resolve ENS names', async () => {
+  it.only('should resolve ENS names', async () => {
     const { input } = setup('')
 
-    await act(() => {
+    await act(async () => {
       fireEvent.change(input, { target: { value: 'zero.eth' } })
+      await waitFor(() => expect(input.value).toBe('0x0000000000000000000000000000000000000000'))
     })
-
-    await waitFor(() => expect(input.value).toBe('0x0000000000000000000000000000000000000000'))
   })
 
   it('should not resolve ENS names if this feature is disabled', async () => {
@@ -132,10 +131,61 @@ describe('AddressInput tests', () => {
 
     const { input } = setup('')
 
-    await act(() => {
+    act(() => {
       fireEvent.change(input, { target: { value: 'zero.eth' } })
     })
 
     await waitFor(() => expect(input.value).toBe('zero.eth'))
+  })
+
+  it('should show chain prefix in an adornment', async () => {
+    const { input } = setup(TEST_ADDRESS_A)
+
+    await waitFor(() => expect(input.value).toBe(TEST_ADDRESS_A))
+
+    expect(input.previousElementSibling?.textContent).toBe('rin:')
+  })
+
+  it('should not show adornment when the value contains correct prefix', async () => {
+    const { input } = setup(`rin:${TEST_ADDRESS_B}`)
+
+    act(() => {
+      fireEvent.change(input, { target: { value: 'rin:${TEST_ADDRESS_B}' } })
+    })
+
+    expect(input.previousElementSibling).toBe(null)
+  })
+
+  it('should keep a bare address in the form state', async () => {
+    let methods: any
+
+    const Form = () => {
+      const name = 'recipient'
+
+      methods = useForm<{
+        [name]: string
+      }>({
+        defaultValues: {
+          [name]: '',
+        },
+      })
+
+      return (
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(() => null)}>
+            <AddressInput name={name} label="Recipient" />
+          </form>
+        </FormProvider>
+      )
+    }
+
+    const utils = render(<Form />)
+    const input = utils.getByLabelText('Recipient') as HTMLInputElement
+
+    act(() => {
+      fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })
+    })
+
+    expect(methods.getValues().recipient).toBe(TEST_ADDRESS_A)
   })
 })

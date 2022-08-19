@@ -2,7 +2,6 @@ import Sentry from '@/services/sentry' // needs to be imported first
 import { type ReactElement, ReactNode } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
-import { Provider } from 'react-redux'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -10,7 +9,7 @@ import { CacheProvider } from '@emotion/react'
 import createCache from '@emotion/cache'
 import '@/styles/globals.css'
 import { IS_PRODUCTION, GATEWAY_URL } from '@/config/constants'
-import { store } from '@/store'
+import { StoreHydrator } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import useLoadableStores from '@/hooks/useLoadableStores'
 import usePathRewrite from '@/hooks/usePathRewrite'
@@ -24,8 +23,9 @@ import { useInitSession } from '@/hooks/useInitSession'
 import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
-import { useDarkMode } from '@/hooks/useDarkMode'
+import { useLightDarkTheme } from '@/hooks/useDarkMode'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
+import { useTxTracking } from '@/hooks/useTxTracking'
 
 const cssCache = createCache({
   key: 'css',
@@ -48,12 +48,13 @@ const InitApp = (): null => {
   useSafeNotifications()
   useTxPendingStatuses()
   useTxMonitor()
+  useTxTracking()
 
   return null
 }
 
 const AppProviders = ({ children }: { children: ReactNode[] }) => {
-  const theme = useDarkMode()
+  const theme = useLightDarkTheme()
 
   return (
     <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
@@ -64,9 +65,9 @@ const AppProviders = ({ children }: { children: ReactNode[] }) => {
   )
 }
 
-const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement | null => {
+const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
   return (
-    <Provider store={store}>
+    <StoreHydrator>
       <Head>
         <title key="default-title">Safe 🌭</title>
         <meta name="description" content="Safe app" />
@@ -90,7 +91,7 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement | null =>
 
         <Notifications />
       </AppProviders>
-    </Provider>
+    </StoreHydrator>
   )
 }
 

@@ -8,6 +8,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { ReviewOwnerTxStep } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/ReviewOwnerTxStep'
 import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import Track from '@/components/common/Track'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 
 const ReplaceOwnerSteps: TxStepperProps['steps'] = [
   {
@@ -34,11 +36,13 @@ export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
 
   return (
     <div>
-      <Tooltip title="Replace owner">
-        <IconButton onClick={() => setOpen(true)}>
-          <ChangeCircleOutlinedIcon />
-        </IconButton>
-      </Tooltip>
+      <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
+        <Tooltip title="Replace owner">
+          <IconButton onClick={() => setOpen(true)}>
+            <ChangeCircleOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+      </Track>
       {open && <TxModal wide onClose={handleClose} steps={ReplaceOwnerSteps} initialData={[initialModalData]} />}
     </div>
   )

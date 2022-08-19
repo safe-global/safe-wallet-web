@@ -7,14 +7,29 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setCopyShortName, setDarkMode, setShowShortName } from '@/store/settingsSlice'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
+import { trackEvent } from '@/services/analytics/analytics'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const Appearance: NextPage = () => {
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
+  const isDarkMode = useDarkMode()
 
-  const handleToggle = (action: typeof setCopyShortName | typeof setDarkMode | typeof setShowShortName) => {
+  const handleToggle = (
+    action: typeof setCopyShortName | typeof setDarkMode | typeof setShowShortName,
+    event:
+      | typeof SETTINGS_EVENTS.APPEARANCE.PREPEND_PREFIXES
+      | typeof SETTINGS_EVENTS.APPEARANCE.COPY_PREFIXES
+      | typeof SETTINGS_EVENTS.APPEARANCE.DARK_MODE,
+  ) => {
     return (_: ChangeEvent<HTMLInputElement>, checked: boolean) => {
       dispatch(action(checked))
+
+      trackEvent({
+        ...event,
+        label: checked,
+      })
     }
   }
 
@@ -44,11 +59,21 @@ const Appearance: NextPage = () => {
             </Typography>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox checked={settings.shortName.show} onChange={handleToggle(setShowShortName)} />}
+                control={
+                  <Checkbox
+                    checked={settings.shortName.show}
+                    onChange={handleToggle(setShowShortName, SETTINGS_EVENTS.APPEARANCE.PREPEND_PREFIXES)}
+                  />
+                }
                 label="Prepend chain prefix to addresses"
               />
               <FormControlLabel
-                control={<Checkbox checked={settings.shortName.copy} onChange={handleToggle(setCopyShortName)} />}
+                control={
+                  <Checkbox
+                    checked={settings.shortName.copy}
+                    onChange={handleToggle(setShowShortName, SETTINGS_EVENTS.APPEARANCE.COPY_PREFIXES)}
+                  />
+                }
                 label="Copy addresses with chain prefix"
               />
             </FormGroup>
@@ -64,7 +89,12 @@ const Appearance: NextPage = () => {
 
           <Grid item xs>
             <FormControlLabel
-              control={<Checkbox checked={settings.theme.darkMode} onChange={handleToggle(setDarkMode)} />}
+              control={
+                <Checkbox
+                  checked={isDarkMode}
+                  onChange={handleToggle(setDarkMode, SETTINGS_EVENTS.APPEARANCE.DARK_MODE)}
+                />
+              }
               label="Dark mode"
             />
           </Grid>

@@ -3,7 +3,6 @@ import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { LoadSafeFormDataReview } from '@/components/load-safe'
 import { useAppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { useRouter } from 'next/router'
@@ -12,11 +11,13 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import { useCurrentChain } from '@/hooks/useChains'
+import { SafeFormData } from '@/components/create-safe/types'
+import { trackEvent } from '@/services/analytics/analytics'
+import { LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 
 type Props = {
-  params: LoadSafeFormDataReview
+  params: SafeFormData
   onBack: StepRenderProps['onBack']
 }
 
@@ -29,8 +30,8 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
   const chainId = currentChain?.chainId || ''
 
   const addSafe = () => {
-    const safeName = params.safeAddress.name
-    const safeAddress = parsePrefixedAddress(params.safeAddress.address).address
+    const safeName = params.name
+    const safeAddress = params.address
 
     dispatch(
       addOrUpdateSafe({
@@ -46,6 +47,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
         },
       }),
     )
+
     dispatch(
       upsertAddressBookEntry({
         chainId,
@@ -54,7 +56,11 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
       }),
     )
 
-    for (const { address, name } of params.owners) {
+    for (const { address, name, fallbackName } of params.owners) {
+      if (name === fallbackName) {
+        continue
+      }
+
       dispatch(
         upsertAddressBookEntry({
           chainId,
@@ -63,6 +69,18 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
         }),
       )
     }
+
+    trackEvent({
+      ...LOAD_SAFE_EVENTS.OWNERS,
+      label: params.owners.length,
+    })
+
+    trackEvent({
+      ...LOAD_SAFE_EVENTS.THRESHOLD,
+      label: params.threshold,
+    })
+
+    trackEvent(LOAD_SAFE_EVENTS.GO_TO_SAFE)
 
     router.push({
       pathname: AppRoutes.safe.index,
@@ -83,24 +101,19 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
               <ChainIndicator inline />
             </Typography>
 
-            {params.safeAddress.name && (
+            {params.name && (
               <>
                 <Typography variant="caption" color="text.secondary">
                   Name of the Safe
                 </Typography>
-                <Typography mb={3}>{params.safeAddress.name}</Typography>
+                <Typography mb={3}>{params.name}</Typography>
               </>
             )}
             <Typography variant="caption" color="text.secondary">
               Safe address
             </Typography>
             <Typography mb={3} component="div">
-              <EthHashInfo
-                key={params.safeAddress.address}
-                address={params.safeAddress.address}
-                showName={false}
-                shortAddress
-              />
+              <EthHashInfo key={params.address} address={params.address} showName={false} shortAddress />
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Connected wallet client is owner?

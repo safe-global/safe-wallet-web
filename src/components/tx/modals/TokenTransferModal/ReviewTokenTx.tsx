@@ -18,7 +18,9 @@ import SendFromBlock from '../../SendFromBlock'
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
     <Box className={css.tokenPreview}>
-      <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
+      <Box className={css.tokenIcon}>
+        <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
+      </Box>
 
       <Box mt={1} fontSize={20}>
         {params.amount} {tokenInfo.symbol}
@@ -42,7 +44,7 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
   const { decimals, address } = token?.tokenInfo || {}
 
   // Create a safeTx
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!address || !decimals) return
     const txParams = createTokenTransferParams(params.recipient, params.amount, decimals, address)
     return createTx(txParams)

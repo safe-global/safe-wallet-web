@@ -15,6 +15,9 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import useChainId from '@/hooks/useChainId'
+import { trackEvent } from '@/services/analytics/analytics'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
+import { isWalletRejection } from '@/utils/wallets'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
@@ -33,7 +36,7 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
     dispatch(
       upsertAddressBookEntry({
         chainId: chainId,
-        address: pendingSafe.safeAddress,
+        address: pendingSafe.address,
         name: pendingSafe.name,
       }),
     )
@@ -46,7 +49,7 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
       addOrUpdateSafe({
         safe: {
           ...defaultSafeInfo,
-          address: { value: pendingSafe.safeAddress, name: pendingSafe.name },
+          address: { value: pendingSafe.address, name: pendingSafe.name },
           threshold: pendingSafe.threshold,
           owners: pendingSafe.owners.map((owner) => ({
             value: owner.address,
@@ -89,6 +92,8 @@ export const useSafeCreation = () => {
 
   const safeCreationCallback = useCallback(
     (txHash: string) => {
+      trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
+
       setStatus(SafeCreationStatus.MINING)
       setPendingSafe((prev) => (prev ? { ...prev, txHash } : undefined))
     },
@@ -106,8 +111,15 @@ export const useSafeCreation = () => {
       setStatus(SafeCreationStatus.SUCCESS)
       dispatch(addSafeAndOwnersToAddressBook(pendingSafe, chainId))
     } catch (err) {
+      const _err = err as Error & { code?: number }
+
       setStatus(SafeCreationStatus.ERROR)
-      logError(Errors._800, (err as Error).message)
+
+      if (isWalletRejection(_err)) {
+        trackEvent(CREATE_SAFE_EVENTS.REJECT_CREATE_SAFE)
+      }
+
+      logError(Errors._800, _err.message)
     }
 
     setIsCreationPending(false)
@@ -133,7 +145,7 @@ export const useSafeCreation = () => {
   useEffect(() => {
     if (!pendingSafe) return
 
-    setSafeAddress(pendingSafe.safeAddress)
+    setSafeAddress(pendingSafe.address)
   }, [pendingSafe])
 
   useEffect(() => {

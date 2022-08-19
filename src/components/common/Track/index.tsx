@@ -1,6 +1,7 @@
 import { ReactElement, Fragment, useEffect, useRef } from 'react'
 
-import { EventLabel, GTM_EVENT, trackEvent } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics/analytics'
+import { EventLabel } from '@/services/analytics/types'
 
 type Props = {
   children: ReactElement
@@ -21,10 +22,7 @@ const Track = ({ children, as: Wrapper = 'div', ...trackData }: Props): typeof c
     const trackEl = el.current
 
     const handleClick = () => {
-      trackEvent({
-        event: GTM_EVENT.CLICK,
-        ...trackData,
-      })
+      trackEvent(trackData)
     }
 
     // We cannot use onClick as events in children do not always bubble up

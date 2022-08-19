@@ -4,23 +4,22 @@ import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { LoadSafeFormData } from '@/components/load-safe'
 import useAsync from '@/hooks/useAsync'
 import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { parsePrefixedAddress } from '@/utils/addresses'
 
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
 import useChainId from '@/hooks/useChainId'
+import { SafeFormData } from '@/components/create-safe/types'
 
 type Props = {
-  params: LoadSafeFormData
+  params: SafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
 }
 
 const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
   const chainId = useChainId()
-  const formMethods = useForm<LoadSafeFormData>({ defaultValues: params, mode: 'onChange' })
+  const formMethods = useForm<SafeFormData>({ defaultValues: params, mode: 'onChange' })
   const { handleSubmit, setValue, control, formState } = formMethods
 
   const { fields } = useFieldArray({
@@ -28,12 +27,11 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
     name: 'owners',
   })
 
-  const [safeInfo] = useAsync<SafeInfo | undefined>(async () => {
-    if (!params.safeAddress.address) return
-    const { address } = parsePrefixedAddress(params.safeAddress.address)
-
-    return getSafeInfo(chainId, address)
-  }, [chainId, params.safeAddress.address])
+  const [safeInfo] = useAsync<SafeInfo>(() => {
+    if (params.address) {
+      return getSafeInfo(chainId, params.address)
+    }
+  }, [chainId, params.address])
 
   useEffect(() => {
     if (!safeInfo) return
@@ -45,10 +43,20 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
     )
   }, [safeInfo, setValue])
 
+  const onFormSubmit = handleSubmit((data: SafeFormData) => {
+    onSubmit({
+      ...data,
+      owners: data.owners.map((owner) => ({
+        name: owner.name || owner.fallbackName,
+        address: owner.address,
+      })),
+    })
+  })
+
   return (
     <Paper>
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onFormSubmit}>
           <Box padding={3}>
             <Typography mb={2}>
               This Safe on <ChainIndicator inline /> has {safeInfo?.owners.length} owners. Optional: Provide a name for

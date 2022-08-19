@@ -3,16 +3,17 @@ import { ReactElement } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
-import { parsePrefixedAddress } from '@/utils/addresses'
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
+import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
+import { trackEvent } from '@/services/analytics/analytics'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 
 type Props = {
-  params: CreateSafeFormData
+  params: SafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
   setStep: StepRenderProps['setStep']
@@ -25,15 +26,14 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
 
   const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
 
-  const defaultOwner: Owner = {
+  const defaultOwner: NamedAddress = {
     name: defaultOwnerAddressBookName || wallet?.ens || '',
     address: wallet?.address || '',
-    resolving: false,
   }
 
   const defaultThreshold = params.threshold || 1
 
-  const formMethods = useForm<CreateSafeFormData>({
+  const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
     defaultValues: {
       name: params.name,
@@ -42,30 +42,41 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     },
   })
   const { register, handleSubmit, control, formState } = formMethods
+  const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'owners',
   })
 
-  const onFormSubmit = (data: CreateSafeFormData) => {
-    onSubmit({
-      ...data,
-      owners: data.owners?.map((owner) => ({
-        ...owner,
-        address: parsePrefixedAddress(owner.address).address,
-      })),
-    })
+  const addOwner = () => {
+    append({ name: '', address: '' })
   }
 
-  const addOwner = () => {
-    append({ name: '', address: '', resolving: false })
-  }
+  const onFormSubmit = handleSubmit((data: SafeFormData) => {
+    onSubmit({
+      ...data,
+      owners: data.owners.map((owner) => ({
+        name: owner.name || owner.fallbackName,
+        address: owner.address,
+      })),
+    })
+
+    trackEvent({
+      ...CREATE_SAFE_EVENTS.OWNERS,
+      label: data.owners.length,
+    })
+
+    trackEvent({
+      ...CREATE_SAFE_EVENTS.THRESHOLD,
+      label: data.threshold,
+    })
+  })
 
   return (
     <Paper>
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onFormSubmit)}>
+        <form onSubmit={onFormSubmit}>
           <Box padding={3}>
             <Typography mb={2}>
               Your Safe will have one or more owners. We have prefilled the first owner with your connected wallet
@@ -78,47 +89,56 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
               <ChainIndicator inline />
             </Typography>
           </Box>
+
           <Divider />
+
           <Grid container gap={3} flexWrap="nowrap" paddingX={3} paddingY={1}>
             <Grid item xs={12} md={4}>
               Name
             </Grid>
+
             <Grid item xs={12} md={7}>
               Address
             </Grid>
+
             <Grid item xs={1} />
           </Grid>
+
           <Divider />
+
           <Box padding={3}>
             {fields.map((field, index) => (
               <OwnerRow key={field.id} field={field} index={index} remove={remove} />
             ))}
+
             <Button onClick={addOwner} sx={{ fontWeight: 'normal' }}>
               + Add another owner
             </Button>
+
             <Typography marginTop={3} marginBottom={1}>
               Any transaction requires the confirmation of:
             </Typography>
+
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl>
                 <Select {...register('threshold')} defaultValue={defaultThreshold}>
-                  {fields.map((field, index) => {
-                    return (
-                      <MenuItem key={field.id} value={index + 1}>
-                        {index + 1}
-                      </MenuItem>
-                    )
-                  })}
+                  {fields.map((field, index) => (
+                    <MenuItem key={field.id} value={index + 1}>
+                      {index + 1}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <Typography>out of {fields.length} owner(s)</Typography>
             </Box>
+
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
                 <Button onClick={onBack}>Back</Button>
               </Grid>
+
               <Grid item>
-                <Button variant="contained" type="submit" disabled={!formState.isValid}>
+                <Button variant="contained" type="submit" disabled={!isValid}>
                   Continue
                 </Button>
               </Grid>

@@ -2,22 +2,34 @@ import { useCallback, useEffect, useState } from 'react'
 
 export type AsyncResult<T> = [result: T | undefined, error: Error | undefined, loading: boolean]
 
-const useAsync = <T>(asyncCall: () => Promise<T>, dependencies: unknown[], clearData = true): AsyncResult<T> => {
+const useAsync = <T>(
+  asyncCall: () => Promise<T> | undefined,
+  dependencies: unknown[],
+  clearData = true,
+): AsyncResult<T> => {
   const [data, setData] = useState<T | undefined>()
   const [error, setError] = useState<Error>()
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const callback = useCallback(asyncCall, dependencies)
 
   useEffect(() => {
-    let isCurrent = true
-
     clearData && setData(undefined)
     setError(undefined)
+
+    const promise = callback()
+
+    // Not a promise, exit early
+    if (!promise) {
+      setLoading(false)
+      return
+    }
+
+    let isCurrent = true
     setLoading(true)
 
-    callback()
+    promise
       .then((val: T) => {
         isCurrent && setData(val)
       })

@@ -6,6 +6,7 @@ import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/local-storage/local'
 import { logError, Errors } from '@/services/exceptions'
+import { trackWalletType } from '@/services/analytics/analytics'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 
@@ -74,10 +75,13 @@ export const useInitOnboard = () => {
   useEffect(() => {
     if (!onboard) return
 
-    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
+    const walletSubscription = onboard.state.select('wallets').subscribe(async (wallets) => {
       const newWallet = getConnectedWallet(wallets)
+
       if (newWallet) {
-        lastWalletStorage.set(newWallet?.label)
+        await trackWalletType(newWallet)
+
+        lastWalletStorage.set(newWallet.label)
       }
     })
 

@@ -6,13 +6,14 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ListItemText from '@mui/material/ListItemText'
 
-import useAddressBook from '@/hooks/useAddressBook'
 import EntryDialog from '@/components/address-book/EntryDialog'
 import SafeListRemoveDialog from '@/components/sidebar/SafeListRemoveDialog'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 
 import css from './styles.module.css'
+import { trackEvent } from '@/services/analytics/analytics'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 
 enum ModalType {
   RENAME = 'rename',
@@ -21,12 +22,17 @@ enum ModalType {
 
 const defaultOpen = { [ModalType.RENAME]: false, [ModalType.REMOVE]: false }
 
-const SafeListContextMenu = ({ address, chainId }: { address: string; chainId: string }): ReactElement => {
+const SafeListContextMenu = ({
+  name,
+  address,
+  chainId,
+}: {
+  name: string
+  address: string
+  chainId: string
+}): ReactElement => {
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const isAdded = !!addedSafes?.[address]
-
-  const addressBook = useAddressBook()
-  const name = addressBook?.[address]
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
@@ -39,10 +45,14 @@ const SafeListContextMenu = ({ address, chainId }: { address: string; chainId: s
     setAnchorEl(undefined)
   }
 
-  const handleOpenModal = (type: keyof typeof open) => () => {
-    handleCloseContextMenu()
-    setOpen((prev) => ({ ...prev, [type]: true }))
-  }
+  const handleOpenModal =
+    (type: keyof typeof open, event: typeof OVERVIEW_EVENTS.SIDEBAR_RENAME | typeof OVERVIEW_EVENTS.SIDEBAR_RENAME) =>
+    () => {
+      handleCloseContextMenu()
+      setOpen((prev) => ({ ...prev, [type]: true }))
+
+      trackEvent(event)
+    }
 
   const handleCloseModal = () => {
     setOpen(defaultOpen)
@@ -64,7 +74,7 @@ const SafeListContextMenu = ({ address, chainId }: { address: string; chainId: s
           },
         })}
       >
-        <MenuItem onClick={handleOpenModal(ModalType.RENAME)}>
+        <MenuItem onClick={handleOpenModal(ModalType.RENAME, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
           <ListItemIcon>
             <img src="/images/sidebar/safe-list/pencil.svg" alt="Rename" height="16px" width="16px" />
           </ListItemIcon>
@@ -72,7 +82,7 @@ const SafeListContextMenu = ({ address, chainId }: { address: string; chainId: s
         </MenuItem>
 
         {isAdded && (
-          <MenuItem onClick={handleOpenModal(ModalType.REMOVE)}>
+          <MenuItem onClick={handleOpenModal(ModalType.REMOVE, OVERVIEW_EVENTS.SIDEBAR_REMOVE)}>
             <ListItemIcon>
               <img src="/images/sidebar/safe-list/trash.svg" alt="Remove" height="16px" width="16px" />
             </ListItemIcon>
@@ -82,7 +92,12 @@ const SafeListContextMenu = ({ address, chainId }: { address: string; chainId: s
       </Menu>
 
       {open[ModalType.RENAME] && (
-        <EntryDialog handleClose={handleCloseModal} defaultValues={{ name, address }} disableAddressInput />
+        <EntryDialog
+          handleClose={handleCloseModal}
+          defaultValues={{ name, address }}
+          chainId={chainId}
+          disableAddressInput
+        />
       )}
 
       {open[ModalType.REMOVE] && (

@@ -1,6 +1,5 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { CreateSafeFormDataReview } from '@/components/create-safe'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -13,9 +12,10 @@ import { useMemo } from 'react'
 import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
 import { computeNewSafeAddress } from '@/components/create-safe/sender'
 import { useCurrentChain } from '@/hooks/useChains'
+import { SafeFormData } from '@/components/create-safe/types'
 
 type Props = {
-  params: CreateSafeFormDataReview
+  params: SafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
   setStep: StepRenderProps['setStep']
@@ -57,7 +57,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
 
     const safeAddress = await computeNewSafeAddress(ethersProvider, props)
 
-    setPendingSafe({ ...params, saltNonce, safeAddress })
+    setPendingSafe({ ...params, address: safeAddress, saltNonce })
     onSubmit(params)
   }
 

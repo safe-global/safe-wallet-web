@@ -10,6 +10,7 @@
   text-align: center;
 }
 
-.tokenPreview img {
-  margin: 0;
+.tokenIcon {
+  display: flex;
+  justify-content: center;
 }

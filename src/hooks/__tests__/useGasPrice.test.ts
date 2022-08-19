@@ -79,8 +79,6 @@ describe('useGasPrice', () => {
     // render the hook
     const { result } = renderHook(() => useGasPrice())
 
-    expect(result.current.gasPriceLoading).toBe(true)
-
     // wait for the hook to fetch the gas price
     await act(async () => {
       await Promise.resolve()
@@ -121,8 +119,6 @@ describe('useGasPrice', () => {
     // render the hook
     const { result } = renderHook(() => useGasPrice())
 
-    expect(result.current.gasPriceLoading).toBe(true)
-
     // wait for the hook to fetch the gas price
     await act(async () => {
       await Promise.resolve()
@@ -150,8 +146,6 @@ describe('useGasPrice', () => {
 
     // render the hook
     const { result } = renderHook(() => useGasPrice())
-
-    expect(result.current.gasPriceLoading).toBe(true)
 
     // wait for the hook to fetch the gas price
     await act(async () => {

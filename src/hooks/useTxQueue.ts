@@ -15,7 +15,7 @@ const useTxQueue = (
   const { chainId } = safe
 
   // If pageUrl is passed, load a new queue page from the API
-  const [page, error, loading] = useAsync<TransactionListPage | undefined>(async () => {
+  const [page, error, loading] = useAsync<TransactionListPage>(() => {
     if (!pageUrl || !safeLoaded) return
     return getTransactionQueue(chainId, safeAddress, pageUrl)
   }, [chainId, safeAddress, safeLoaded, pageUrl])
@@ -28,12 +28,12 @@ const useTxQueue = (
     ? {
         page,
         error: error?.message,
-        loading,
+        loading: loading || !page,
       }
     : {
         page: queueState.data,
         error: queueState.error,
-        loading: queueState.loading,
+        loading: queueState.loading || !queueState.data,
       }
 }
 

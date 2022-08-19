@@ -8,17 +8,24 @@ describe('useAsync hook', () => {
     jest.useFakeTimers()
   })
 
+  it('should not set loading state to true when callback returns undefined', async () => {
+    const { result } = renderHook(() => useAsync(() => undefined, []))
+
+    expect(result.current).toEqual([undefined, undefined, false])
+
+    await act(() => Promise.resolve())
+
+    expect(result.current).toEqual([undefined, undefined, false])
+  })
+
   it('should return the correct state when the promise resolves', async () => {
-    const { result } = renderHook(() => useAsync(() => Promise.resolve('test'), []))
+    const { result } = renderHook(() => useAsync(() => Promise.resolve('foo'), []))
 
     expect(result.current).toEqual([undefined, undefined, true])
 
-    // Wait for the promise to resolve
-    await act(async () => {
-      await Promise.resolve()
-    })
+    await act(() => Promise.resolve())
 
-    expect(result.current).toEqual(['test', undefined, false])
+    expect(result.current).toEqual(['foo', undefined, false])
   })
 
   it('should return the correct state when the promise rejects', async () => {

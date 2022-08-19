@@ -19,6 +19,8 @@ import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { parseUnits } from '@ethersproject/units'
 import { createMultiSendTx } from '@/services/tx/txSender'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { trackEvent } from '@/services/analytics/analytics'
 
 export const createNewSpendingLimitTx = async (
   data: NewSpendingLimitData,
@@ -102,12 +104,21 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
       ? 'One-time spending limit'
       : RESET_TIME_OPTIONS.find((time) => time.value === data.resetTime)?.label
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(() => {
     return createNewSpendingLimitTx(data, spendingLimits, chainId, decimals, existingSpendingLimit)
   }, [data, spendingLimits, chainId, decimals, existingSpendingLimit])
 
+  const onFormSubmit = (data: null) => {
+    trackEvent({
+      ...SETTINGS_EVENTS.SPENDING_LIMIT.RESET_PERIOD,
+      label: resetTime,
+    })
+
+    onSubmit(data)
+  }
+
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
       <Box textAlign="center" mb={3}>
         <TokenIcon logoUri={logoUri} tokenSymbol={symbol} />
 

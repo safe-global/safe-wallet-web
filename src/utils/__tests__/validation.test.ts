@@ -1,4 +1,4 @@
-import { validateAddress, validatePrefixedAddress } from '@/utils/validation'
+import { validateAddress, validateChainId, validatePrefixedAddress } from '@/utils/validation'
 
 describe('validation', () => {
   describe('Ethereum address validation', () => {
@@ -9,6 +9,17 @@ describe('validation', () => {
     it('should return an error if the address is invalid', () => {
       expect(validateAddress('0x1234567890123456789012345678901234567890x')).toBe('Invalid address format')
       expect(validateAddress('0x8Ba1f109551bD432803012645Ac136ddd64DBA72')).toBe('Invalid address checksum')
+    })
+  })
+
+  describe('Ethereum chain ID validation', () => {
+    it('should return undefined if the chain ID is valid', () => {
+      expect(validateChainId('1')).toBeUndefined()
+    })
+    it('should return an error if the chain ID is invalid', () => {
+      expect(validateChainId('0')).toBe('Invalid chain ID')
+      expect(validateChainId('34534534532634565345646456546')).toBe('Invalid chain ID')
+      expect(validateChainId('0x8Ba1f109551bD432803012645Ac136ddd64DBA72')).toBe('Invalid chain ID')
     })
   })
 

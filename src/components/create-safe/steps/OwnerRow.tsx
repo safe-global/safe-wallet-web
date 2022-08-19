@@ -1,16 +1,13 @@
+import { useCallback, useEffect } from 'react'
 import { CircularProgress, FormControl, Grid, IconButton } from '@mui/material'
 import NameInput from '@/components/common/NameInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { FieldArrayWithId, UseFieldArrayRemove, useFormContext, useWatch } from 'react-hook-form'
-import { CreateSafeFormData, Owner } from '@/components/create-safe'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
-import { useCallback, useEffect } from 'react'
-import { LoadSafeFormData } from '@/components/load-safe'
-import { useMnemonicName } from '@/hooks/useMnemonicName'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { parsePrefixedAddress } from '@/utils/addresses'
+import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
 
 export const OwnerRow = ({
   field,
@@ -18,13 +15,12 @@ export const OwnerRow = ({
   remove,
   readOnly = false,
 }: {
-  field: FieldArrayWithId<CreateSafeFormData | LoadSafeFormData, 'owners', 'id'>
+  field: FieldArrayWithId<SafeFormData, 'owners', 'id'>
   index: number
   remove?: UseFieldArrayRemove
   readOnly?: boolean
 }) => {
-  const fallbackName = useMnemonicName()
-  const { setValue, control, getValues } = useFormContext()
+  const { control, getValues, setValue } = useFormContext()
   const owner = useWatch({
     control,
     name: `owners.${index}`,
@@ -32,23 +28,21 @@ export const OwnerRow = ({
 
   const validateSafeAddress = useCallback(
     async (address: string) => {
-      const { address: safeAddress } = parsePrefixedAddress(address)
       const owners = getValues('owners')
-
-      if (owners.filter((owner: Owner) => owner.address === safeAddress).length > 1) {
+      if (owners.filter((owner: NamedAddress) => owner.address === address).length > 1) {
         return 'Owner is already added'
       }
     },
     [getValues],
   )
 
-  const { name, resolving } = useAddressResolver(owner.address)
+  const { name: fallbackName, resolving } = useAddressResolver(owner.address)
 
   useEffect(() => {
-    const ownerName = name ?? fallbackName
-    setValue(`owners.${index}.name`, ownerName, { shouldValidate: true })
-    setValue(`owners.${index}.resolving`, resolving)
-  }, [fallbackName, index, name, resolving, setValue])
+    if (!owner.name && fallbackName) {
+      setValue(`owners.${index}.fallbackName`, fallbackName)
+    }
+  }, [fallbackName, setValue, owner.name, index])
 
   return (
     <Grid
@@ -65,14 +59,14 @@ export const OwnerRow = ({
             name={`owners.${index}.name`}
             label="Owner name"
             InputLabelProps={{ shrink: true }}
+            placeholder={fallbackName}
             InputProps={{
-              endAdornment: owner.resolving ? (
+              endAdornment: resolving ? (
                 <InputAdornment position="end">
                   <CircularProgress size={20} />
                 </InputAdornment>
               ) : null,
             }}
-            required
           />
         </FormControl>
       </Grid>

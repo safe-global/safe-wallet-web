@@ -2,16 +2,15 @@ import { useEffect } from 'react'
 import { getCollectiblesPage, type SafeCollectiblesPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import useAsync, { type AsyncResult } from './useAsync'
 import { Errors, logError } from '@/services/exceptions'
-import useSafeAddress from './useSafeAddress'
-import useChainId from './useChainId'
+import useSafeInfo from './useSafeInfo'
 
 export const useCollectibles = (pageUrl?: string): AsyncResult<SafeCollectiblesPage> => {
-  const chainId = useChainId()
-  const safeAddress = useSafeAddress()
+  const { safe, safeAddress } = useSafeInfo()
 
-  const [data, error, loading] = useAsync<SafeCollectiblesPage | undefined>(async () => {
-    return getCollectiblesPage(chainId, safeAddress, undefined, pageUrl)
-  }, [safeAddress, chainId, pageUrl])
+  const [data, error, loading] = useAsync<SafeCollectiblesPage>(() => {
+    if (!safeAddress) return
+    return getCollectiblesPage(safe.chainId, safeAddress, undefined, pageUrl)
+  }, [safeAddress, safe.chainId, pageUrl])
 
   // Log errors
   useEffect(() => {
@@ -20,7 +19,7 @@ export const useCollectibles = (pageUrl?: string): AsyncResult<SafeCollectiblesP
     }
   }, [error])
 
-  return [data, error, loading]
+  return [data, error, loading || !data]
 }
 
 export default useCollectibles

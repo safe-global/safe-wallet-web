@@ -1,5 +1,4 @@
 import { render, renderHook, RenderHookOptions } from '@testing-library/react'
-import { Provider } from 'react-redux'
 import { NextRouter } from 'next/router'
 import { RouterContext } from 'next/dist/shared/lib/router-context'
 import { ThemeProvider } from '@mui/material/styles'
@@ -33,14 +32,14 @@ const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
 // (ReduxProvider, ThemeProvider, etc)
 const getProviders: (routerProps: Partial<NextRouter>) => React.FC<{ children: React.ReactElement }> = (routerProps) =>
   function ProviderComponent({ children }) {
-    const { store } = require('@/store') // require dynamically to reset the store
+    const { StoreHydrator } = require('@/store') // require dynamically to reset the store
 
     return (
-      <RouterContext.Provider value={mockRouter(routerProps)}>
-        <ThemeProvider theme={initTheme(false)}>
-          <Provider store={store}>{children}</Provider>
-        </ThemeProvider>
-      </RouterContext.Provider>
+      <StoreHydrator>
+        <RouterContext.Provider value={mockRouter(routerProps)}>
+          <ThemeProvider theme={initTheme(false)}>{children}</ThemeProvider>
+        </RouterContext.Provider>
+      </StoreHydrator>
     )
   }
 

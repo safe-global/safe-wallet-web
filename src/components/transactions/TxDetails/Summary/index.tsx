@@ -5,14 +5,14 @@ import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { dateString } from '@/utils/formatters'
 import css from './styles.module.css'
-import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
 
 interface Props {
   txDetails: TransactionDetails
+  defaultExpanded?: boolean
 }
 
-const Summary = ({ txDetails }: Props): ReactElement => {
-  const [expanded, setExpanded] = useState(false)
+const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement => {
+  const [expanded, setExpanded] = useState<boolean>(defaultExpanded)
 
   const toggleExpanded = () => {
     setExpanded((val) => !val)
@@ -29,16 +29,18 @@ const Summary = ({ txDetails }: Props): ReactElement => {
   return (
     <>
       <TxDataRow title="Transaction hash:">{generateDataRowValue(txHash, 'hash', true)}</TxDataRow>
-      <TxDataRow title="SafeTxHash:">{generateDataRowValue(safeTxHash, 'hash')}</TxDataRow>
+      <TxDataRow title="safeTxHash:">{generateDataRowValue(safeTxHash, 'hash')}</TxDataRow>
       <TxDataRow title="Created:">{submittedAt ? dateString(submittedAt) : null}</TxDataRow>
-      <TxDataRow title="Executed:">{executedAt ? dateString(executedAt) : NOT_AVAILABLE}</TxDataRow>
+      {executedAt && <TxDataRow title="Executed:">{dateString(executedAt)}</TxDataRow>}
 
       {/* Advanced TxData */}
       {txData && (
         <>
-          <Link className={css.buttonExpand} onClick={toggleExpanded} component="button" variant="body1">
-            Advanced details
-          </Link>
+          {!defaultExpanded && (
+            <Link className={css.buttonExpand} onClick={toggleExpanded} component="button" variant="body1">
+              Advanced details
+            </Link>
+          )}
 
           <div className={`${css.collapsibleSection}${expanded ? 'Expanded' : ''}`}>
             <TxDataRow title="Operation:">
