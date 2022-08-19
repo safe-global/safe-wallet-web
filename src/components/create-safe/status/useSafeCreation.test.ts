@@ -7,11 +7,12 @@ import * as wallet from '@/hooks/wallets/useWallet'
 import * as wrongChain from '@/hooks/useIsWrongChain'
 import { waitFor } from '@testing-library/react'
 import Safe from '@gnosis.pm/safe-core-sdk'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider, TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { checkSafeCreationTx } from '@/components/create-safe/status/usePendingSafeCreation'
 import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { BigNumber } from '@ethersproject/bignumber'
 
 describe('useSafeCreation', () => {
   beforeEach(() => {
@@ -117,15 +118,35 @@ describe('useSafeCreation', () => {
   })
 })
 
-const provider = new JsonRpcProvider()
+const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
 
 describe('monitorSafeCreationTx', () => {
-  let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
+  let waitForTxSpy = jest.spyOn(provider, '_waitForTransaction')
+  jest.spyOn(provider, 'getBlockNumber').mockReturnValue(Promise.resolve(4))
+  jest.spyOn(provider, 'getTransaction').mockReturnValue(
+    Promise.resolve({
+      data: '0x',
+      nonce: 1,
+      from: '0x10',
+      to: '0x11',
+      value: BigNumber.from(0),
+    } as TransactionResponse),
+  )
 
   beforeEach(() => {
     jest.resetAllMocks()
 
-    waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
+    waitForTxSpy = jest.spyOn(provider, '_waitForTransaction')
+    jest.spyOn(provider, 'getBlockNumber').mockReturnValue(Promise.resolve(4))
+    jest.spyOn(provider, 'getTransaction').mockReturnValue(
+      Promise.resolve({
+        data: '0x',
+        nonce: 1,
+        from: '0x10',
+        to: '0x11',
+        value: BigNumber.from(0),
+      } as TransactionResponse),
+    )
   })
 
   it('returns SUCCESS if promise was resolved', async () => {
@@ -135,7 +156,7 @@ describe('monitorSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    const result = await checkSafeCreationTx(provider, '0x0')
+    const result = await checkSafeCreationTx(provider, '0x0', '4')
 
     expect(result).toBe(SafeCreationStatus.SUCCESS)
   })
@@ -147,16 +168,46 @@ describe('monitorSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    const result = await checkSafeCreationTx(provider, '0x0')
+    const result = await checkSafeCreationTx(provider, '0x0', '4')
 
     expect(result).toBe(SafeCreationStatus.REVERTED)
   })
 
   it('returns TIMEOUT if transaction couldnt be found within the timout limit', async () => {
-    waitForTxSpy.mockImplementationOnce(() => Promise.reject())
+    const mockEthersError = {
+      ...new Error(),
+      code: 'TRANSACTION_REPLACED',
+    }
+    waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error()))
 
-    const result = await checkSafeCreationTx(provider, '0x0')
+    const result = await checkSafeCreationTx(provider, '0x0', '4')
 
     expect(result).toBe(SafeCreationStatus.TIMEOUT)
+  })
+
+  it('returns SUCCESS if transaction was replaced', async () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'TRANSACTION_REPLACED',
+      reason: 'repriced',
+    }
+    waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
+
+    const result = await checkSafeCreationTx(provider, '0x0', '4')
+
+    expect(result).toBe(SafeCreationStatus.SUCCESS)
+  })
+
+  it('returns ERROR if transaction was cancelled', async () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'TRANSACTION_REPLACED',
+      reason: 'cancelled',
+    }
+    waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
+
+    const result = await checkSafeCreationTx(provider, '0x0', '4')
+
+    expect(result).toBe(SafeCreationStatus.ERROR)
   })
 })
