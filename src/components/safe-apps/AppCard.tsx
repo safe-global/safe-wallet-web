@@ -6,14 +6,23 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SAFE_REACT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import ShareIcon from '@/public/images/share.svg'
 //import DeleteIcon from '@/public/images/delete.svg'
 
+export type SafeAppCardVariants = 'default' | 'compact'
+
 type AppCardProps = {
   safeApp: SafeAppData
+  variant?: SafeAppCardVariants
+}
+
+type CompactSafeAppCardProps = {
+  safeApp: SafeAppData
+  url: string
 }
 
 type AppCardContainerProps = {
@@ -21,7 +30,7 @@ type AppCardContainerProps = {
   children: ReactNode
 }
 
-export const AppCardContainer = ({ url, children }: AppCardContainerProps): ReactElement => {
+const AppCardContainer = ({ url, children }: AppCardContainerProps): ReactElement => {
   if (url) {
     return (
       <a href={url} target="_blank" rel="noreferrer">
@@ -57,7 +66,23 @@ export const AppCardContainer = ({ url, children }: AppCardContainerProps): Reac
   )
 }
 
-const AppCard = ({ safeApp }: AppCardProps): ReactElement => {
+const CompactAppCard = ({ url, safeApp }: CompactSafeAppCardProps): ReactElement => (
+  <AppCardContainer url={url}>
+    <Box
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <img src={safeApp.iconUrl} style={{ width: 64, height: 64 }} alt={`${safeApp.name} logo`} />
+    </Box>
+  </AppCardContainer>
+)
+
+const AppCard = ({ safeApp, variant = 'default' }: AppCardProps): ReactElement => {
   const router = useRouter()
   const chainId = useChainId()
 
@@ -68,6 +93,10 @@ const AppCard = ({ safeApp }: AppCardProps): ReactElement => {
     e.preventDefault()
     e.stopPropagation()
     navigator.clipboard.writeText(shareUrl)
+  }
+
+  if (variant === 'compact') {
+    return <CompactAppCard url={url} safeApp={safeApp} />
   }
 
   return (
@@ -106,4 +135,4 @@ const AppCard = ({ safeApp }: AppCardProps): ReactElement => {
   )
 }
 
-export { AppCard }
+export { AppCard, AppCardContainer }

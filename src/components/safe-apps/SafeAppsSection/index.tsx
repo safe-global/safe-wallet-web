@@ -1,4 +1,5 @@
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppCardVariants } from '../AppCard'
 import { CollapsibleSection } from './CollapsibleSection'
 import { DefaultSection } from './DefaultSection'
 
@@ -8,6 +9,7 @@ type Props = {
   prependAddCustomAppCard?: boolean
   apps: SafeAppData[]
   onAddCustomApp?: (app: SafeAppData) => void
+  cardVariant?: SafeAppCardVariants
 }
 
 const SafeAppsSection = ({
@@ -16,9 +18,10 @@ const SafeAppsSection = ({
   prependAddCustomAppCard = false,
   apps,
   onAddCustomApp,
+  cardVariant = 'default',
 }: Props) => {
   if (collapsible) {
-    return <CollapsibleSection title={title} apps={apps} />
+    return <CollapsibleSection title={title} apps={apps} cardVariant={cardVariant} />
   }
 
   return (

@@ -6,10 +6,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Grid from '@mui/material/Grid'
 import { AppCard } from '@/components/safe-apps/AppCard'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppCardVariants } from '../AppCard'
 
 type Props = {
   title: string
   apps: SafeAppData[]
+  cardVariant?: SafeAppCardVariants
 }
 
 const CollapsibleSection = ({ title, apps }: Props) => {
