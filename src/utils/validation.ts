@@ -16,6 +16,13 @@ export const validateAddress = (address: string) => {
   }
 }
 
+const chainIds = Object.values(chains)
+export const validateChainId = (chainId: string) => {
+  if (!chainIds.includes(chainId)) {
+    return 'Invalid chain ID'
+  }
+}
+
 export const validatePrefixedAddress =
   (chainShortName?: string) =>
   (value: string): string | undefined => {
