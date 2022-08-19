@@ -16,13 +16,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node.js w/ yarn cache
+      - name: Setup Node.js w/ dependencies
         uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: 'yarn'
-
-      - name: Install dependencies
         run: yarn install --verbose
 
       - name: Run ESLint
