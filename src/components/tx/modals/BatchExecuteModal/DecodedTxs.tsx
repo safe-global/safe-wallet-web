@@ -27,10 +27,10 @@ const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefine
     )
   }
 
-  return safeTxs ? (
+  return safeTxs && txs ? (
     <Box mt={1}>
-      {safeTxs.map((safeTx) => (
-        <DecodedTx key={safeTx.data.nonce} tx={safeTx} />
+      {safeTxs.map((safeTx, idx) => (
+        <DecodedTx key={safeTx.data.nonce} tx={safeTx} txId={txs[idx].txId} />
       ))}
     </Box>
   ) : null

@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import {
   type DecodedDataResponse,
