@@ -2,21 +2,43 @@ import { ReactElement, SyntheticEvent, useCallback, useEffect } from 'react'
 import groupBy from 'lodash/groupBy'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { closeNotification, Notification, selectNotifications } from '@/store/notificationsSlice'
-import { Alert, AlertColor, Snackbar, SnackbarCloseReason } from '@mui/material'
+import { Alert, AlertColor, Link, Snackbar, SnackbarCloseReason } from '@mui/material'
 import css from './styles.module.css'
+import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 const toastStyle = { position: 'static', margin: 1 }
 
-const Toast = ({ message, severity, onClose }: { message: string; severity: AlertColor; onClose: () => void }) => {
+const Toast = ({
+  message,
+  variant,
+  link,
+  onClose,
+}: {
+  message: string
+  variant: AlertColor
+  link?: Notification['link']
+  onClose: () => void
+}) => {
+  const router = useRouter()
+
   const handleClose = (_: Event | SyntheticEvent, reason?: SnackbarCloseReason) => {
     if (reason === 'clickaway') return
     onClose()
   }
 
   return (
-    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={severity === 'success' ? 5000 : null}>
-      <Alert severity={severity} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
+    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={variant === 'success' ? 5000 : null}>
+      <Alert severity={variant} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
         {message}
+        {link && (
+          <NextLink href={{ href: link.href, query: router.query }} passHref>
+            <Link className={css.link}>
+              {link.title} <ChevronRightIcon />
+            </Link>
+          </NextLink>
+        )}
       </Alert>
     </Snackbar>
   )
@@ -57,7 +79,7 @@ const Notifications = (): ReactElement | null => {
     <div className={css.container}>
       {visible.map((item) => (
         <div className={css.row} key={item.id}>
-          <Toast message={item.message} severity={item.variant || 'info'} onClose={() => handleClose(item)} />
+          <Toast {...item} onClose={() => handleClose(item)} />
         </div>
       ))}
     </div>

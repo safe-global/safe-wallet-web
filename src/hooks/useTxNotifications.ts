@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
+import { AppRoutes } from '@/config/routes'
+import useSafeAddress from './useSafeAddress'
 
 const TxNotifications: Partial<Record<TxEvent, string>> = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
@@ -25,6 +27,7 @@ enum Variant {
 
 const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
+  const safeAddress = useSafeAddress()
 
   useEffect(() => {
     const unsubFns = Object.entries(TxNotifications).map(([event, baseMessage]) =>
@@ -32,14 +35,24 @@ const useTxNotifications = (): void => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
         const message = isError ? `${baseMessage} ${detail.error.message.slice(0, 300)}` : baseMessage
+
         const txId = 'txId' in detail ? detail.txId : undefined
         const batchId = 'batchId' in detail ? detail.batchId : undefined
+
+        const shouldShowLink = event !== TxEvent.EXECUTING && txId
+        const href = AppRoutes.safe.transactions.tx.replace('/safe/', `/${safeAddress}/`).replace(/$/, `?id=${txId}`)
 
         dispatch(
           showNotification({
             message,
             groupKey: batchId || txId || '',
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
+            ...(shouldShowLink && {
+              link: {
+                href,
+                title: 'View transaction',
+              },
+            }),
           }),
         )
       }),
