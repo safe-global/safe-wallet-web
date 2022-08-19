@@ -9,8 +9,7 @@ import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-typ
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { Button, DialogContent, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { useEffect, useState } from 'react'
-import { Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
+import { useMemo, useState } from 'react'
 import { createExistingTx } from '@/services/tx/txSender'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
@@ -23,7 +22,7 @@ import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 const getSignatures = (confirmations: Record<string, string>) => {
   return Object.entries(confirmations)
     .filter(([_, signature]) => Boolean(signature))
-    .sort(([signerA, _], [signerB, __]) => signerA.toLowerCase().localeCompare(signerB.toLowerCase()))
+    .sort(([signerA], [signerB]) => signerA.toLowerCase().localeCompare(signerB.toLowerCase()))
     .reduce((prev, [_, signature]) => {
       return prev + signature.slice(2)
     }, '0x')
@@ -76,8 +75,6 @@ const getTxsWithDetails = (txs: Transaction[], chainId: string) => {
 }
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
-  const [multiSendContract, setMultiSendContract] = useState<Multi_send_call_only>()
-  const [multiSendTxData, setMultiSendTxData] = useState<string>()
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
@@ -89,19 +86,16 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     return getTxsWithDetails(data.txs, chain.chainId)
   }, [data.txs, chain?.chainId])
 
-  useEffect(() => {
+  const multiSendContract = useMemo(() => {
     if (!chain) return
-
-    setMultiSendContract(getMultiSendCallOnlyContractInstance(chain.chainId))
+    return getMultiSendCallOnlyContractInstance(chain.chainId)
   }, [chain])
 
-  useEffect(() => {
+  const multiSendTxData = useMemo(() => {
     if (!txsWithDetails || !chain) return
 
     const multiSendTxs = getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
-    const data = encodeMultiSendData(multiSendTxs)
-
-    setMultiSendTxData(data)
+    return encodeMultiSendData(multiSendTxs)
   }, [chain, safe.address.value, safe.version, txsWithDetails])
 
   const sendTx = async () => {
@@ -133,10 +127,12 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
           and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
           over the execute button.
         </Typography>
+
         <Typography color="secondary.light">Interact with:</Typography>
         {multiSendContract && (
           <EthHashInfo address={multiSendContract.address} shortAddress={false} hasExplorer showCopyButton />
         )}
+
         {multiSendTxData && (
           <>
             <Typography mt={2} color="secondary.light">
@@ -145,19 +141,27 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
             {generateDataRowValue(multiSendTxData, 'rawData')}
           </>
         )}
+
+        <Typography mt={2} color="secondary.light">
+          Batched transactions:
+        </Typography>
         <DecodedTxs txs={txsWithDetails} numberOfTxs={data.txs.length} />
+
         <Typography variant="body2" mt={2} textAlign="center">
           Be aware that if any of the included transactions revert, none of them will be executed. This will result in
           the loss of the allocated transaction fees.
         </Typography>
+
         {error && (
           <ErrorMessage error={error}>
             This transaction will most likely fail. To save gas costs, avoid creating the transaction.
           </ErrorMessage>
         )}
+
         {submitError && (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
+
         <Button
           onClick={sendTx}
           disabled={loading}

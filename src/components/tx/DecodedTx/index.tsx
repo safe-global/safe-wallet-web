@@ -9,7 +9,7 @@ import ErrorMessage from '../ErrorMessage'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
-const DecodedTx = ({ tx }: { tx: SafeTransaction }): ReactElement | null => {
+const DecodedTx = ({ tx }: { tx: SafeTransaction }): ReactElement => {
   const chainId = useChainId()
   const encodedData = tx.data.data
   const isNativeTransfer = encodedData && isNaN(parseInt(encodedData, 16))

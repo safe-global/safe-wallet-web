@@ -27,7 +27,7 @@ const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefine
 
   if (loading) {
     return (
-      <Box display="flex" flexDirection="column" gap={2} my={2}>
+      <Box display="flex" flexDirection="column" gap={2} my={1}>
         {Array.from(Array(numberOfTxs)).map((tx) => (
           <Skeleton key={tx} variant="rectangular" height={52} sx={{ borderRadius: 2 }} />
         ))}
@@ -36,7 +36,7 @@ const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefine
   }
 
   return safeTxs ? (
-    <Box mt={2}>
+    <Box mt={1}>
       {safeTxs.map((safeTx) => (
         <DecodedTx key={safeTx.data.nonce} tx={safeTx} />
       ))}
