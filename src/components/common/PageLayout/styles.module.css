@@ -31,7 +31,7 @@
   padding-top: var(--header-height);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .main {
     padding-left: 0;
   }
@@ -39,7 +39,9 @@
   .sidebar {
     display: none;
   }
+}
 
+@media (max-width: 600px) {
   .main main {
     padding: var(--space-2);
   }
