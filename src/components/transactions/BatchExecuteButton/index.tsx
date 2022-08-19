@@ -35,16 +35,18 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
           : 'All transactions highlighted in light green will be included in the batch execution.'
       }
     >
-      <Button
-        onMouseEnter={handleOnMouseEnter}
-        onMouseLeave={handleOnMouseLeave}
-        className={css.button}
-        variant="contained"
-        size="small"
-        disabled={isDisabled}
-      >
-        Execute Batch {isBatchable && ` (${batchableTransactions.length})`}
-      </Button>
+      <span>
+        <Button
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+          className={css.button}
+          variant="contained"
+          size="small"
+          disabled={isDisabled}
+        >
+          Execute Batch {isBatchable && ` (${batchableTransactions.length})`}
+        </Button>
+      </span>
     </CustomTooltip>
   )
 }
