@@ -33,7 +33,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
     if (!csvData) return [0, 0]
     const entries = csvData.data.slice(1).filter(hasEntry)
     const entryLen = entries.length
-    const chainLen = new Set(entries.map((entry) => entry[2])).size
+    const chainLen = new Set(entries.map((entry) => entry[2].replace(/\s/g, ''))).size
     return [entryLen, chainLen]
   }, [csvData])
 
@@ -132,7 +132,9 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
                     <ProgressBar />
 
                     <Typography mt={1} sx={({ palette }) => ({ color: error ? palette.error.main : undefined })}>
-                      {error ? error : `Found ${entryCount} entries on ${chainCount} chains`}
+                      {error
+                        ? error
+                        : `Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`}
                     </Typography>
                   </div>
                 ) : (
