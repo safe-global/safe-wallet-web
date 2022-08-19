@@ -130,15 +130,15 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
                     </Grid>
 
                     <ProgressBar />
-
-                    <Typography mt={1} sx={({ palette }) => ({ color: error ? palette.error.main : undefined })}>
-                      {error
-                        ? error
-                        : `Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`}
-                    </Typography>
                   </div>
                 ) : (
                   'Drop your CSV file here or click to upload.'
+                )}
+
+                {(error || acceptedFile) && (
+                  <Typography mt={1} sx={({ palette }) => ({ color: error ? palette.error.main : undefined })}>
+                    {error || `Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`}
+                  </Typography>
                 )}
               </Box>
             )
