@@ -29,7 +29,7 @@ const Toast = ({
   }
 
   return (
-    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={variant === 'success' ? 5000 : null}>
+    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={5000}>
       <Alert severity={variant} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
         {message}
         {link && (

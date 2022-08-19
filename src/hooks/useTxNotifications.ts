@@ -3,7 +3,7 @@ import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { AppRoutes } from '@/config/routes'
-import useSafeAddress from './useSafeAddress'
+import useSafeInfo from './useSafeInfo'
 
 const TxNotifications: Partial<Record<TxEvent, string>> = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
@@ -27,7 +27,7 @@ enum Variant {
 
 const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
-  const safeAddress = useSafeAddress()
+  const { safeAddress } = useSafeInfo()
 
   useEffect(() => {
     const unsubFns = Object.entries(TxNotifications).map(([event, baseMessage]) =>
