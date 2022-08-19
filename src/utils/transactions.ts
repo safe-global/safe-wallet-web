@@ -1,12 +1,18 @@
 import {
+  ChainInfo,
   DateLabel,
   ExecutionInfo,
+  getTransactionDetails,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
   Transaction,
   TransactionDetails,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isModuleExecutionInfo, isMultisigExecutionDetails, isTxQueued } from './transaction-guards'
+import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
+import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
+import extractTxInfo from '@/services/tx/extractTxInfo'
+import { createExistingTx } from '@/services/tx/txSender'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -63,4 +69,67 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
 
 export const makeDateLabelFromTx = (tx: Transaction): DateLabel => {
   return { timestamp: tx.transaction.timestamp, type: 'DATE_LABEL' }
+}
+
+const getSignatures = (confirmations: Record<string, string>) => {
+  return Object.entries(confirmations)
+    .filter(([_, signature]) => Boolean(signature))
+    .sort(([signerA], [signerB]) => signerA.toLowerCase().localeCompare(signerB.toLowerCase()))
+    .reduce((prev, [_, signature]) => {
+      return prev + signature.slice(2)
+    }, '0x')
+}
+
+export const getMultiSendTxs = (
+  txs: TransactionDetails[],
+  chain: ChainInfo,
+  safeAddress: string,
+  safeVersion: string,
+): MetaTransactionData[] => {
+  const safeContractInstance = getGnosisSafeContractInstance(chain, safeVersion)
+
+  return txs
+    .map((tx) => {
+      if (!isMultisigExecutionDetails(tx.detailedExecutionInfo)) return
+
+      const args = extractTxInfo(tx, safeAddress)
+      const sigs = getSignatures(args.signatures)
+
+      const data = safeContractInstance.interface.encodeFunctionData('execTransaction', [
+        args.txParams.to,
+        args.txParams.value,
+        args.txParams.data,
+        args.txParams.operation,
+        args.txParams.safeTxGas,
+        args.txParams.baseGas,
+        args.txParams.gasPrice,
+        args.txParams.gasToken,
+        args.txParams.refundReceiver,
+        sigs,
+      ])
+
+      return {
+        operation: OperationType.Call,
+        to: safeAddress,
+        value: '0',
+        data,
+      }
+    })
+    .filter(Boolean) as MetaTransactionData[]
+}
+
+export const getTxsWithDetails = (txs: Transaction[], chainId: string) => {
+  return Promise.all(
+    txs.map(async (tx) => {
+      return await getTransactionDetails(chainId, tx.transaction.id)
+    }),
+  )
+}
+
+export const getSafeTxs = (txs: TransactionDetails[], chainId: string, safeAddress: string) => {
+  return Promise.all(
+    txs.map(async (tx) => {
+      return await createExistingTx(chainId, safeAddress, tx.txId, tx)
+    }),
+  )
 }

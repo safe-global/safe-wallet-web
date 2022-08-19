@@ -4,7 +4,6 @@ import {
   postSafeGasEstimation,
   SafeTransactionEstimation,
   TransactionDetails,
-  TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   MetaTransactionData,
@@ -20,6 +19,10 @@ import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
 import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
+import { Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
+import { Web3Provider } from '@ethersproject/providers'
+import { ContractTransaction } from 'ethers'
+import { getSafeTxs } from '@/utils/transactions'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -109,14 +112,14 @@ export const createRejectTx = async (nonce: number): Promise<SafeTransaction> =>
 export const createExistingTx = async (
   chainId: string,
   safeAddress: string,
-  txSummary: TransactionSummary,
+  txId: string,
   txDetails?: TransactionDetails,
 ): Promise<SafeTransaction> => {
   // Get the tx details from the backend if not provided
-  txDetails = txDetails || (await getTransactionDetails(chainId, txSummary.id))
+  txDetails = txDetails || (await getTransactionDetails(chainId, txId))
 
   // Convert them to the Core SDK tx params
-  const { txParams, signatures } = extractTxInfo(txSummary, txDetails, safeAddress)
+  const { txParams, signatures } = extractTxInfo(txDetails, safeAddress)
 
   // Create a tx and add pre-approved signatures
   const safeTx = await createTx(txParams, txParams.nonce)
@@ -217,6 +220,72 @@ export const dispatchTxExecution = async (
     })
     .catch((error) => {
       txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
+    })
+
+  return result.hash
+}
+
+export const dispatchBatchExecution = async (
+  txs: TransactionDetails[],
+  multiSendContract: Multi_send_call_only,
+  multiSendTxData: string,
+  provider: Web3Provider,
+  chainId: string,
+  safeAddress: string,
+) => {
+  const safeTxs = await getSafeTxs(txs, chainId, safeAddress)
+
+  txs.forEach((tx, idx) => {
+    txDispatch(TxEvent.EXECUTING, { txId: tx.txId, tx: safeTxs[idx], batchId: multiSendTxData })
+  })
+
+  let result: ContractTransaction | undefined
+  try {
+    result = await multiSendContract.connect(provider.getSigner()).multiSend(multiSendTxData)
+  } catch (err) {
+    txs.forEach((tx, idx) => {
+      txDispatch(TxEvent.FAILED, { txId: tx.txId, tx: safeTxs[idx], error: err as Error, batchId: multiSendTxData })
+    })
+    throw err
+  }
+
+  txs.forEach((tx, idx) => {
+    txDispatch(TxEvent.MINING, { txId: tx.txId, txHash: result!.hash, tx: safeTxs[idx], batchId: multiSendTxData })
+  })
+
+  result
+    .wait()
+    .then((receipt) => {
+      if (didRevert(receipt)) {
+        txs.forEach((tx, idx) => {
+          txDispatch(TxEvent.REVERTED, {
+            txId: tx.txId,
+            receipt,
+            tx: safeTxs[idx],
+            error: new Error('Transaction reverted by EVM'),
+            batchId: multiSendTxData,
+          })
+        })
+      } else {
+        txs.forEach((tx, idx) => {
+          txDispatch(TxEvent.MINED, {
+            txId: tx.txId,
+            tx: safeTxs[idx],
+            receipt,
+            batchId: multiSendTxData,
+          })
+        })
+      }
+    })
+    .catch((err) => {
+      txs.forEach((tx, idx) => {
+        txDispatch(TxEvent.FAILED, {
+          txId: tx.txId,
+          tx: safeTxs[idx],
+          error: err as Error,
+          batchId: multiSendTxData,
+        })
+      })
     })
 
   return result.hash

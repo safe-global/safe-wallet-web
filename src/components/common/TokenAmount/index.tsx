@@ -17,13 +17,15 @@ export const TokenIcon = ({
   const FALLBACK_ICON = '/images/token-placeholder.svg'
 
   return !logoUri ? null : (
-    <ImageFallback
-      src={logoUri}
-      alt={tokenSymbol}
-      className={css.tokenIcon}
-      fallbackSrc={FALLBACK_ICON}
-      height={size}
-    />
+    <span className={css.iconWrapper}>
+      <ImageFallback
+        src={logoUri}
+        alt={tokenSymbol}
+        className={css.tokenIcon}
+        fallbackSrc={FALLBACK_ICON}
+        height={size}
+      />
+    </span>
   )
 }
 

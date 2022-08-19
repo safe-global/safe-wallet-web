@@ -79,7 +79,7 @@ export const getMultiSendCallOnlyContractAddress = (chainId: string): string | u
   return deployment?.networkAddresses[chainId]
 }
 
-const getMultiSendCallOnlyContractInstance = (chainId: string): Multi_send_call_only => {
+export const getMultiSendCallOnlyContractInstance = (chainId: string): Multi_send_call_only => {
   const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId }) || getMultiSendCallOnlyDeployment()
 
   if (!multiSendDeployment) {

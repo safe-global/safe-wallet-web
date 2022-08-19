@@ -47,6 +47,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
         },
       }),
     )
+
     dispatch(
       upsertAddressBookEntry({
         chainId,
@@ -55,7 +56,11 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
       }),
     )
 
-    for (const { address, name } of params.owners) {
+    for (const { address, name, fallbackName } of params.owners) {
+      if (name === fallbackName) {
+        continue
+      }
+
       dispatch(
         upsertAddressBookEntry({
           chainId,

@@ -1,29 +1,24 @@
-import type { TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import extractTxInfo from '../extractTxInfo'
 
 describe('extractTxInfo', () => {
   it('should extract tx info for an ETH transfer', () => {
-    const txSummary = {
-      txInfo: {
-        type: 'Transfer',
-        transferInfo: {
-          type: 'NATIVE_COIN',
-          value: '1000000000000000000',
-        },
-        recipient: {
-          value: '0x1234567890123456789012345678901234567890',
-        },
-      },
-      executionInfo: {
-        nonce: '0',
-      },
-    } as unknown as TransactionSummary
-
     const txDetails = {
       txData: {
         operation: 'CALL',
         value: '1000000000000000000',
         data: '0x1234567890123456789012345678901234567890',
+      },
+      txInfo: {
+        type: 'Transfer',
+        transferInfo: {
+          type: 'ERC20',
+          value: '1000000000000000000',
+          tokenAddress: '0x1234567890123456789012345678901234567890',
+        },
+        recipient: {
+          value: '0x1234567890123456789012345678901234567890',
+        },
       },
       detailedExecutionInfo: {
         type: 'MULTISIG',
@@ -31,6 +26,7 @@ describe('extractTxInfo', () => {
         gasPrice: '10000000000',
         safeTxGas: 11000,
         gasToken: '0x0000000000000000000000000000000000000000',
+        nonce: 0,
 
         refundReceiver: {
           type: 'Address',
@@ -42,7 +38,7 @@ describe('extractTxInfo', () => {
 
     const safeAddress = '0x1234567890123456789012345678901234567890'
 
-    expect(extractTxInfo(txSummary, txDetails, safeAddress)).toEqual({
+    expect(extractTxInfo(txDetails, safeAddress)).toEqual({
       txParams: {
         data: '0x',
         baseGas: 21000,
@@ -62,7 +58,13 @@ describe('extractTxInfo', () => {
   })
 
   it('should extract tx info for an ERC20 token transfer', () => {
-    const txSummary = {
+    const txDetails = {
+      txData: {
+        operation: 'CALL',
+        value: '0x0',
+        hexData: '0x546785',
+        data: '0x1234567890123456789012345678901234567890',
+      },
       txInfo: {
         type: 'Transfer',
         transferInfo: {
@@ -74,24 +76,13 @@ describe('extractTxInfo', () => {
           value: '0x1234567890123456789012345678901234567890',
         },
       },
-      executionInfo: {
-        nonce: '0',
-      },
-    } as unknown as TransactionSummary
-
-    const txDetails = {
-      txData: {
-        operation: 'CALL',
-        value: '0x0',
-        hexData: '0x546785',
-        data: '0x1234567890123456789012345678901234567890',
-      },
       detailedExecutionInfo: {
         type: 'MULTISIG',
         baseGas: 21000,
         gasPrice: '10000000000',
         safeTxGas: 11000,
         gasToken: '0x0000000000000000000000000000000000000000',
+        nonce: 0,
 
         refundReceiver: {
           type: 'Address',
@@ -103,7 +94,7 @@ describe('extractTxInfo', () => {
 
     const safeAddress = '0x1234567890123456789012345678901234567890'
 
-    expect(extractTxInfo(txSummary, txDetails, safeAddress)).toEqual({
+    expect(extractTxInfo(txDetails, safeAddress)).toEqual({
       txParams: {
         data: '0x546785',
         baseGas: 21000,

@@ -8,31 +8,27 @@ jobs:
     runs-on: ubuntu-20.04
     name: E2E on Chrome
     steps:
-      - uses: actions/checkout@v2
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16
-
-      - name: Yarn cache
-        uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          cache: 'yarn'
 
       - name: Yarn install
-        run: |
-          mkdir .yarncache
-          yarn install --cache-folder ./.yarncache --immutable
-          rm -rf .yarncache
-          yarn cache clean
+        run: yarn install
 
-      - name: Build & serve
-        run: |
-          yarn build
-          yarn export
-          yarn serve &
+      - name: Build
+        run: yarn build && yarn export
+
+      - name: Serve
+        run: yarn serve &
 
       - uses: cypress-io/github-action@v4
         with:
