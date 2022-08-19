@@ -33,6 +33,10 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
     return getTransactionDetails(chainId, txId)
   }, [])
 
+  if (isNativeTransfer && !txId) {
+    return null
+  }
+
   return (
     <Box mb={2}>
       <Accordion elevation={0}>
