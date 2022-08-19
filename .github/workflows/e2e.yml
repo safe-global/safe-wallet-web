@@ -21,7 +21,9 @@ jobs:
           node-version: 16
 
       - name: Yarn install
-        run: yarn install --immutable
+        run: |
+          yarn cache clean --all
+          yarn install --immutable
 
       - name: Build
         run: yarn build && yarn export
