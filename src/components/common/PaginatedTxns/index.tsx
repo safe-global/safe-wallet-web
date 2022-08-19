@@ -38,7 +38,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
       {allResults.length ? (
         <TxList items={allResults} />
       ) : error ? (
-        <ErrorMessage>Error loading the history</ErrorMessage>
+        <ErrorMessage>Error loading transactions</ErrorMessage>
       ) : loading ? (
         <SkeletonTxList />
       ) : (

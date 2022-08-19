@@ -13,25 +13,16 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16
-
-      - name: Yarn cache
-        uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          cache: 'yarn'
 
       - name: Yarn install
-        run: |
-          mkdir .yarncache
-          yarn install --cache-folder ./.yarncache --immutable
-          rm -rf .yarncache
-          yarn cache clean
+        run: yarn install
 
       - name: Build
         run: yarn build && yarn export
