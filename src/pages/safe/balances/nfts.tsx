@@ -15,7 +15,7 @@ const NftPage = ({
   pageUrl,
   onNextPage,
 }: {
-  pageUrl?: string
+  pageUrl: string
   onNextPage?: (pageUrl?: string) => void
 }): ReactElement => {
   const [collectibles, error] = useCollectibles(pageUrl)
@@ -75,11 +75,7 @@ const NFTs: NextPage = () => {
         </Alert>
 
         {pages.map((pageUrl, index) => (
-          <NftPage
-            key={index}
-            pageUrl={pageUrl}
-            onNextPage={index === pages.length - 1 ? (pageUrl) => onNextPage(pageUrl) : undefined}
-          />
+          <NftPage key={index} pageUrl={pageUrl} onNextPage={index === pages.length - 1 ? onNextPage : undefined} />
         ))}
       </Box>
     </main>

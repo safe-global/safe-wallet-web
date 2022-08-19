@@ -19,7 +19,7 @@ const TxPage = ({
   useTxns,
   onNextPage,
 }: {
-  pageUrl?: string
+  pageUrl: string
   useTxns: typeof useTxHistory | typeof useTxQueue
   onNextPage?: (pageUrl?: string) => void
 }): ReactElement => {
