@@ -35,7 +35,7 @@ const NotificationCenter = (): ReactElement => {
   const notifications = useAppSelector(selectNotifications)
   const chronologicalNotifications = useMemo(() => {
     // Clone as Redux returns read-only array
-    return [...notifications].sort((a, b) => b.timestamp - a.timestamp)
+    return notifications.slice().sort((a, b) => b.timestamp - a.timestamp)
   }, [notifications])
 
   const canExpand = notifications.length > NOTIFICATION_CENTER_LIMIT
