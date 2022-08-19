@@ -19,7 +19,7 @@ export const useDarkMode = (): boolean => {
   return isDarkMode
 }
 
-export const useDarkModeTheme = () => {
+export const useLightDarkTheme = () => {
   const isDarkMode = useDarkMode()
 
   useEffect(() => {

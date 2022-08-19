@@ -23,7 +23,7 @@ import { useInitSession } from '@/hooks/useInitSession'
 import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
-import { useDarkModeTheme } from '@/hooks/useDarkMode'
+import { useLightDarkTheme } from '@/hooks/useDarkMode'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { useTxTracking } from '@/hooks/useTxTracking'
 
@@ -54,7 +54,7 @@ const InitApp = (): null => {
 }
 
 const AppProviders = ({ children }: { children: ReactNode[] }) => {
-  const theme = useDarkModeTheme()
+  const theme = useLightDarkTheme()
 
   return (
     <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
