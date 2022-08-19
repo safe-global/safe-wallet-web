@@ -3,13 +3,14 @@ import { useRouter } from 'next/router'
 import uniqBy from 'lodash/uniqBy'
 import styled from '@emotion/styled'
 import { Skeleton, Typography } from '@mui/material'
-import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Transaction, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Card, ViewAllLink, WidgetBody, WidgetContainer } from '../styled'
 import PendingTxListItem from './PendingTxListItem'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const SkeletonWrapper = styled.div`
   border-radius: 8px;
@@ -48,21 +49,29 @@ const StyledEmptyCard = styled(Card)`
 
 const EmptyState = (
   <StyledEmptyCard>
-    <PagePlaceholder imageUrl="/images/no-transactions.svg" text="This Safe has no queued transactions" />
+    <PagePlaceholder imageUrl="/images/no-transactions.svg" text="This Safe has no actionable, queued transactions" />
   </StyledEmptyCard>
 )
 
-const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null => {
+const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement => {
   const { page, loading } = useTxQueue()
   const router = useRouter()
+  const wallet = useWallet()
   const url = `${AppRoutes.safe.transactions.queue}?safe=${router.query.safe}`
 
   const queuedTxns: Transaction[] = (page?.results || []).filter(isTransactionListItem)
 
   // Filter out duplicate nonce transactions
-  const queuedTxsToDisplay = uniqBy(queuedTxns, (item) =>
-    isMultisigExecutionInfo(item.transaction.executionInfo) ? item.transaction.executionInfo.nonce : '',
-  ).slice(0, size)
+  const queuedTxsToDisplay = uniqBy(queuedTxns, (item) => {
+    isMultisigExecutionInfo(item.transaction.executionInfo) ? item.transaction.executionInfo.nonce : ''
+  })
+    .filter(({ transaction }) => {
+      return isMultisigExecutionInfo(transaction.executionInfo) &&
+        transaction.txStatus === TransactionStatus.AWAITING_CONFIRMATIONS
+        ? transaction.executionInfo?.missingSigners?.some(({ value }) => value === wallet?.address)
+        : true
+    })
+    .slice(0, size)
 
   const totalQueuedTxs = queuedTxns.length
 
