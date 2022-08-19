@@ -28,7 +28,6 @@ export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: str
   const TIMEOUT_TIME = 6.5
 
   try {
-    const blockNumber = await provider.getBlockNumber()
     const txResponse = await provider.getTransaction(txHash)
     const proxyContractAddress = getProxyFactoryContractInstance(chainId).address
 
@@ -38,7 +37,7 @@ export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: str
       nonce: txResponse.nonce,
       to: proxyContractAddress,
       value: txResponse.value,
-      startBlock: txResponse.blockNumber || blockNumber,
+      startBlock: txResponse.blockNumber || (await provider.getBlockNumber()),
     }
 
     const receipt = await provider._waitForTransaction(txHash, 1, TIMEOUT_TIME * 60_000, replacement)
@@ -51,11 +50,10 @@ export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: str
   } catch (err) {
     const error = err as EthersError
 
-    if (error.code === 'TRANSACTION_REPLACED') {
+    if (error.code === ErrorCode.TRANSACTION_REPLACED) {
       if (error.reason === 'cancelled') {
         return SafeCreationStatus.ERROR
       } else {
-        console.log('speed-up tx found!')
         return SafeCreationStatus.SUCCESS
       }
     }
