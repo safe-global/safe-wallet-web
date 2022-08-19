@@ -5,10 +5,33 @@ import { closeNotification, Notification, selectNotifications } from '@/store/no
 import { Alert, AlertColor, Link, Snackbar, SnackbarCloseReason } from '@mui/material'
 import css from './styles.module.css'
 import NextLink from 'next/link'
-import { useRouter } from 'next/router'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import Track from '../Track'
 
 const toastStyle = { position: 'static', margin: 1 }
+
+export const NotificationLink = ({
+  link,
+  onClick,
+}: {
+  link: Notification['link']
+  onClick: (_: Event | SyntheticEvent) => void
+}): ReactElement | null => {
+  if (!link) {
+    return null
+  }
+
+  return (
+    <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title}>
+      <NextLink onClick={onClick} href={link.pathname} passHref>
+        <Link className={css.link} sx={{ mt: 1 }}>
+          {link.title} <ChevronRightIcon />
+        </Link>
+      </NextLink>
+    </Track>
+  )
+}
 
 const Toast = ({
   message,
@@ -21,8 +44,6 @@ const Toast = ({
   link?: Notification['link']
   onClose: () => void
 }) => {
-  const router = useRouter()
-
   const handleClose = (_: Event | SyntheticEvent, reason?: SnackbarCloseReason) => {
     if (reason === 'clickaway') return
     onClose()
@@ -32,13 +53,7 @@ const Toast = ({
     <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={5000}>
       <Alert severity={variant} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
         {message}
-        {link && (
-          <NextLink href={{ href: link.href, query: router.query }} passHref>
-            <Link className={css.link}>
-              {link.title} <ChevronRightIcon />
-            </Link>
-          </NextLink>
-        )}
+        <NotificationLink link={link} onClick={handleClose} />
       </Alert>
     </Snackbar>
   )

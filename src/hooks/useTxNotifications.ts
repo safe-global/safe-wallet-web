@@ -4,6 +4,7 @@ import { useAppDispatch } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { AppRoutes } from '@/config/routes'
 import useSafeInfo from './useSafeInfo'
+import { useCurrentChain } from './useChains'
 
 const TxNotifications: Partial<Record<TxEvent, string>> = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
@@ -27,6 +28,7 @@ enum Variant {
 
 const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
+  const chain = useCurrentChain()
   const { safeAddress } = useSafeInfo()
 
   useEffect(() => {
@@ -40,7 +42,6 @@ const useTxNotifications = (): void => {
         const batchId = 'batchId' in detail ? detail.batchId : undefined
 
         const shouldShowLink = event !== TxEvent.EXECUTING && txId
-        const href = AppRoutes.safe.transactions.tx.replace('/safe/', `/${safeAddress}/`).replace(/$/, `?id=${txId}`)
 
         dispatch(
           showNotification({
@@ -49,7 +50,7 @@ const useTxNotifications = (): void => {
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
             ...(shouldShowLink && {
               link: {
-                href,
+                pathname: `${AppRoutes.safe.transactions.tx}?id=${txId}&safe=${chain?.shortName}:${safeAddress}`,
                 title: 'View transaction',
               },
             }),

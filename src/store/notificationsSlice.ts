@@ -10,7 +10,7 @@ export type Notification = {
   timestamp: number
   isDismissed?: boolean
   isRead?: boolean
-  link?: { href: string; title: string }
+  link?: { pathname: string; title: string }
 }
 
 export type NotificationState = Notification[]
