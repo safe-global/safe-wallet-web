@@ -15,7 +15,6 @@ import {
   readNotification,
   closeNotification,
   deleteAllNotifications,
-  type NotificationState,
 } from '@/store/notificationsSlice'
 import NotificationCenterList from '@/components/notification-center/NotificationCenterList'
 import UnreadBadge from '@/components/common/UnreadBadge'
@@ -26,17 +25,6 @@ import { trackEvent } from '@/services/analytics/analytics'
 
 const NOTIFICATION_CENTER_LIMIT = 4
 
-export const _getSortedNotifications = (notifications: NotificationState): NotificationState => {
-  // Clone as Redux returns read-only array
-  const chronologicalNotifications = [...notifications].sort((a, b) => b.timestamp - a.timestamp)
-
-  const unreadLinkNotifications = chronologicalNotifications.filter(({ isRead, link }) => !isRead && link)
-  const unreadNotifications = chronologicalNotifications.filter(({ isRead, link }) => !isRead && !link)
-  const readNotifications = chronologicalNotifications.filter(({ isRead }) => isRead)
-
-  return [...unreadLinkNotifications, ...unreadNotifications, ...readNotifications]
-}
-
 const NotificationCenter = (): ReactElement => {
   const [showAll, setShowAll] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -45,12 +33,15 @@ const NotificationCenter = (): ReactElement => {
   const dispatch = useAppDispatch()
 
   const notifications = useAppSelector(selectNotifications)
-  const sortedNotifications = useMemo(() => _getSortedNotifications(notifications), [notifications])
+  const chronologicalNotifications = useMemo(() => {
+    // Clone as Redux returns read-only array
+    return notifications.slice().sort((a, b) => b.timestamp - a.timestamp)
+  }, [notifications])
 
   const canExpand = notifications.length > NOTIFICATION_CENTER_LIMIT
 
   const notificationsToShow =
-    canExpand && showAll ? sortedNotifications : sortedNotifications.slice(0, NOTIFICATION_CENTER_LIMIT)
+    canExpand && showAll ? chronologicalNotifications : chronologicalNotifications.slice(0, NOTIFICATION_CENTER_LIMIT)
 
   const unreadCount = useMemo(
     () => notifications.filter(({ isRead, isDismissed }) => !isRead && isDismissed).length,
@@ -147,7 +138,15 @@ const NotificationCenter = (): ReactElement => {
           {canExpand && (
             <div className={css.popoverFooter}>
               <IconButton onClick={() => setShowAll((prev) => !prev)} disableRipple className={css.expandButton}>
-                {showAll ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                <UnreadBadge
+                  invisible={unreadCount <= NOTIFICATION_CENTER_LIMIT}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                >
+                  {showAll ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </UnreadBadge>
               </IconButton>
               <Typography sx={{ color: ({ palette }) => palette.border.main }}>
                 {showAll ? 'Hide' : `${notifications.length - NOTIFICATION_CENTER_LIMIT} other notifications`}
