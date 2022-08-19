@@ -9,10 +9,12 @@ import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import { trackEvent } from '@/services/analytics/analytics'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const Appearance: NextPage = () => {
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
+  const isDarkMode = useDarkMode()
 
   const handleToggle = (
     action: typeof setCopyShortName | typeof setDarkMode | typeof setShowShortName,
@@ -89,8 +91,8 @@ const Appearance: NextPage = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={settings.theme.darkMode}
-                  onChange={handleToggle(setShowShortName, SETTINGS_EVENTS.APPEARANCE.DARK_MODE)}
+                  checked={isDarkMode}
+                  onChange={handleToggle(setDarkMode, SETTINGS_EVENTS.APPEARANCE.DARK_MODE)}
                 />
               }
               label="Dark mode"
