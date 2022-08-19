@@ -3,3 +3,9 @@
   right: 0;
   top: -50px;
 }
+
+@media (max-width: 600px) {
+  .button {
+    top: var(--space-2);
+  }
+}

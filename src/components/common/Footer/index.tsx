@@ -7,19 +7,13 @@ import { openCookieBanner } from '@/store/popupSlice'
 import { AppRoutes } from '@/config/routes'
 import packageJson from '../../../../package.json'
 
-const footerPages = [
-  AppRoutes.welcome,
-  AppRoutes.safe.settings.index,
-  AppRoutes.safe.settings.setup,
-  AppRoutes.safe.settings.modules,
-  AppRoutes.safe.settings.appearance,
-]
+const footerPages = [AppRoutes.welcome, AppRoutes.safe.settings.index]
 
 const Footer = (): ReactElement | null => {
   const router = useRouter()
   const dispatch = useAppDispatch()
 
-  if (!footerPages.includes(router.pathname)) {
+  if (!footerPages.some((path) => router.pathname.startsWith(path))) {
     return null
   }
 

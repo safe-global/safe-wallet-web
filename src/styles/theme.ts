@@ -60,7 +60,7 @@ const initTheme = (darkMode: boolean) => {
       ...Array(20).fill('none'),
     ] as Shadows,
     typography: {
-      fontFamily: 'Averta, sans-serif',
+      fontFamily: 'DM Sans, sans-serif',
       h1: {
         fontSize: '32px',
         lineHeight: '36px',

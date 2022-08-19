@@ -40,11 +40,11 @@
   --onboard-wallet-app-icon-background-transparent: transparent;
 
   /* Fonts */
-  --onboard-font-family-normal: Averta, sans-serif;
-  --onboard-font-family-semibold: Averta, sans-serif;
-  --onboard-font-family-light: Averta, sans-serif;
-  --account-select-modal-font-family-normal: Averta, sans-serif;
-  --account-select-modal-font-family-light: Averta, sans-serif;
+  --onboard-font-family-normal: DM Sans, sans-serif;
+  --onboard-font-family-semibold: DM Sans, sans-serif;
+  --onboard-font-family-light: DM Sans, sans-serif;
+  --account-select-modal-font-family-normal: DM Sans, sans-serif;
+  --account-select-modal-font-family-light: DM Sans, sans-serif;
 
   --onboard-modal-border-radius: 8px;
   --onboard-border-radius-1: 8px;
