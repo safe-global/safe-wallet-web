@@ -61,7 +61,7 @@ const useTxNotifications = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [dispatch])
+  }, [dispatch, safeAddress])
 }
 
 export default useTxNotifications
