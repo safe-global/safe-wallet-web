@@ -1,41 +1,41 @@
-name: e2e
+name: E2E
 
 on:
   pull_request:
 
 jobs:
   e2e:
-    runs-on: ubuntu-20.04
-    name: E2E on Chrome
+    runs-on: ubuntu-latest
+    name: Cypress on Chrome
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.8.0
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.10.0
         with:
           access_token: ${{ github.token }}
 
+      - name: Checkout
       - uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Setup Node.js w/ yarn cache
         uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: 'yarn'
 
-      - name: Yarn install
-        run: yarn install
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Build
         run: yarn build && yarn export
 
       - name: Serve
-        run: yarn serve &
+        run: yarn serve
 
-      - uses: cypress-io/github-action@v4
+      - uses: Run Cypress tests
         with:
           spec: cypress/e2e/smoke/*.cy.js
           browser: chrome
           record: false
           config: baseUrl=http://localhost:8080
         env:
-          CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
-          CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}
+          CYPRESS_MNEMONIC: ${{ secrets.CYPRESS_MNEMONIC }}
