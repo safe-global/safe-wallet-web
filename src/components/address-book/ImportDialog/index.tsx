@@ -33,7 +33,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
     if (!csvData) return [0, 0]
     const entries = csvData.data.slice(1).filter(hasEntry)
     const entryLen = entries.length
-    const chainLen = new Set(entries.map((entry) => entry[2].replace(/\s/g, ''))).size
+    const chainLen = new Set(entries.map((entry) => entry[2].trim())).size
     return [entryLen, chainLen]
   }, [csvData])
 
@@ -50,7 +50,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
     for (const entry of entries) {
       if (hasEntry(entry)) {
         const [address, name, chainId] = entry
-        dispatch(upsertAddressBookEntry({ address, name, chainId: chainId.replace(/\s/g, '') }))
+        dispatch(upsertAddressBookEntry({ address, name, chainId: chainId.trim() }))
       }
     }
 

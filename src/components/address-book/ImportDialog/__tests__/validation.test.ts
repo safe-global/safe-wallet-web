@@ -103,7 +103,7 @@ describe('Address book import validation', () => {
       const entries = [
         ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', '1'],
         ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', '4'],
-        ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', '   1 0   0'],
+        ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', '   100'],
       ]
 
       expect(hasValidAbEntryChainIds(entries)).toBe(true)
@@ -115,7 +115,7 @@ describe('Address book import validation', () => {
         ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', ''],
       ]
       const entries2 = [
-        ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', 'abc'],
+        ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', ' 1 0 0 '],
         ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', '4', 'extra'],
       ]
       const entries3 = [['0xAb5e3288640396C3988af5a820510682f3C58adF'], []]

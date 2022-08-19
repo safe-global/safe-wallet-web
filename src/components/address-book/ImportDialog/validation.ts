@@ -29,7 +29,7 @@ export const hasValidAbEntryChainIds = (entries: string[][]) => {
     if (entry.length < 3) {
       return false
     }
-    const chainId = entry[2].replace(/\s/g, '')
+    const chainId = entry[2].trim()
     return !validateChainId(chainId)
   })
 }
