@@ -28,10 +28,10 @@
 
 [data-theme="dark"] .iconWrapper:after {
   content: '';
-  left: 1px;
-  top: 1px;
-  right: 1px;
-  bottom: 1px;
+  left: -1px;
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
   position: absolute;
   z-index: 1;
   background: var(--color-text-primary);
