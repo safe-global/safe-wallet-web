@@ -23,8 +23,8 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   }, [router.pathname, router.query.safe])
 
   return (
-    <div className={css.container}>
-      <header>
+    <>
+      <header className={css.header}>
         <Header onMenuToggle={onMenuToggle} />
       </header>
 
@@ -43,7 +43,7 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
 
         <Footer />
       </div>
-    </div>
+    </>
   )
 }
 

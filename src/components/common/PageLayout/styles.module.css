@@ -1,38 +1,22 @@
-.container {
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: auto 1fr;
-  grid-template-areas:
-    'header header'
-    'sidebar main';
-}
-
-.container header {
-  grid-area: header;
-  position: relative;
+.header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
   z-index: 1201;
 }
 
 .main {
-  grid-area: main;
-  overflow-y: auto;
-  overflow-x: hidden;
-  min-height: calc(100vh - var(--header-height)); /* needed for scroll */
-  position: relative;
   background-color: var(--color-background-main);
+  padding-left: 230px;
+  padding-top: var(--header-height);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 .content {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-items: stretch;
 }
 
 .content main {
@@ -40,32 +24,23 @@
 }
 
 .sidebar {
-  grid-area: sidebar;
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  padding-top: var(--header-height);
 }
 
 @media (max-width: 600px) {
-  .container {
-    display: block;
-    padding-top: var(--header-height);
-    height: auto;
-  }
-
-  .container header {
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
+  .main {
+    padding-left: 0;
   }
 
   .sidebar {
     display: none;
   }
 
-  .main {
-    overflow: hidden;
-  }
-
-  .content main {
+  .main main {
     padding: var(--space-2);
   }
 }

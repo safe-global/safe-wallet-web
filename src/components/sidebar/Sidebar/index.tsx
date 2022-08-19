@@ -12,7 +12,6 @@ import SidebarFooter from '@/components/sidebar/SidebarFooter'
 
 import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
-import OwnedSafes from '../OwnedSafes'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { trackEvent } from '@/services/analytics/analytics'
 
@@ -46,9 +45,7 @@ const Sidebar = (): ReactElement => {
             <SidebarNavigation />
           </>
         ) : (
-          <div className={css.noSafeHeader}>
-            <OwnedSafes />
-          </div>
+          <div className={css.noSafeHeader} />
         )}
 
         <div style={{ flexGrow: 1 }} />
