@@ -1,53 +1,47 @@
 import * as React from 'react'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import Grid from '@mui/material/Grid'
-import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
-import { AppCard } from '@/components/safe-apps/AppCard'
-import { Typography } from '@mui/material'
-import { CollapsibleSection } from './CollapsibleSection'
+import Typography from '@mui/material/Typography'
+import { SafeAppsSection } from './SafeAppsSection'
+import { useAppsSearch } from '@/hooks/safe-apps/useAppsSearch'
+import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
+import { SafeAppsHeader } from './SafeAppsHeader'
 
-type Props = {
-  loading: boolean
-  allApps: SafeAppData[]
-  customApps: SafeAppData[]
-  hideAddCustomApp?: boolean
-  onAddCustomApp: (app: SafeAppData) => void
-}
+const SafeAppsList = () => {
+  const [searchQuery, setSearchQuery] = React.useState('')
+  const { allSafeApps, remoteSafeAppsLoading, customSafeAppsLoading, addCustomApp, customSafeApps } = useSafeApps()
+  const filteredApps = useAppsSearch(allSafeApps, searchQuery)
 
-const SafeAppsList = ({ loading, allApps, customApps, hideAddCustomApp, onAddCustomApp }: Props) => {
-  if (loading) {
+  let pageBody = (
+    <>
+      <SafeAppsSection collapsible title={`CUSTOM APPS (${customSafeApps.length})`} apps={customSafeApps} />
+      <SafeAppsSection
+        title={`ALL (${allSafeApps.length})`}
+        apps={allSafeApps}
+        prependAddCustomAppCard
+        onAddCustomApp={addCustomApp}
+      />
+    </>
+  )
+  if (searchQuery) {
+    if (filteredApps.length === 0) {
+      pageBody = (
+        <Typography variant="body1" sx={{ p: 2 }}>
+          No apps found
+        </Typography>
+      )
+    } else {
+      pageBody = <SafeAppsSection title={`SEARCH RESULTS (${filteredApps.length})`} apps={filteredApps} />
+    }
+  }
+
+  if (remoteSafeAppsLoading || customSafeAppsLoading) {
     return <Typography variant="body1">Loading...</Typography>
   }
 
   return (
     <Grid container direction="column">
-      <CollapsibleSection title="CUSTOM APPS" apps={customApps} />
-
-      <Grid
-        container
-        rowSpacing={2}
-        columnSpacing={2}
-        sx={{
-          p: 3,
-        }}
-      >
-        <Grid item xs={12}>
-          <Typography variant="caption" fontWeight={700} sx={({ palette }) => ({ color: palette.secondary.light })}>
-            ALL ({allApps.length})
-          </Typography>
-        </Grid>
-        {!hideAddCustomApp && (
-          <Grid item xs={12} sm={6} md={3} xl={1.5}>
-            <AddCustomAppCard onSave={onAddCustomApp} safeAppList={allApps} />
-          </Grid>
-        )}
-
-        {allApps.map((a) => (
-          <Grid key={a.id || a.url} item xs={12} sm={6} md={3} xl={1.5}>
-            <AppCard safeApp={a} />
-          </Grid>
-        ))}
-      </Grid>
+      <SafeAppsHeader searchQuery={searchQuery} onSearchQueryChange={setSearchQuery} />
+      {pageBody}
     </Grid>
   )
 }

@@ -11,7 +11,7 @@ const useAppsSearch = (apps: SafeAppData[], query: string): SafeAppData[] => {
         // Very naive explanation: threshold represents how accurate the search results should be. The default is 0.6
         // I tested it and found it to make the search results more accurate when the threshold is 0.2
         // 0 - 1, where 0 is the exact match and 1 matches anything
-        threshold: 0.2,
+        threshold: 0.3,
         findAllMatches: true,
       }),
     [apps],

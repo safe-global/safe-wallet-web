@@ -9,13 +9,10 @@ import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 
 type Props = {
   title: string
-  showCounterInTitle?: boolean
   apps: SafeAppData[]
 }
 
-const CollapsibleSection = ({ title, showCounterInTitle = true, apps }: Props) => {
-  const displayTitle = `${title}${showCounterInTitle ? ` (${apps.length})` : ''}`
-
+const CollapsibleSection = ({ title, apps }: Props) => {
   return (
     <Accordion
       sx={{
@@ -46,7 +43,7 @@ const CollapsibleSection = ({ title, showCounterInTitle = true, apps }: Props) =
         })}
       >
         <Typography variant="caption" fontWeight={700} sx={({ palette }) => ({ color: palette.secondary.light })}>
-          {displayTitle}
+          {title}
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
