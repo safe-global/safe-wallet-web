@@ -14,13 +14,13 @@ import ErrorMessage from '../ErrorMessage'
 import Summary from '@/components/transactions/TxDetails/Summary'
 
 type DecodedTxProps = {
-  tx?: SafeTransaction
+  tx: SafeTransaction
   txId?: string
 }
 
 const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
-  const encodedData = tx?.data.data
+  const encodedData = tx.data.data
   const isNativeTransfer = encodedData && isNaN(parseInt(encodedData, 16))
 
   const [decodedData, decodedDataError, decodedDataLoading] = useAsync<DecodedDataResponse>(() => {

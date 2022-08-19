@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Button } from '@mui/material'
 import css from './styles.module.css'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
@@ -7,8 +7,10 @@ import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import CustomTooltip from '@/components/common/CustomTooltip'
 import useBatchedTxs from '@/hooks/useBatchedTxs'
+import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
 
 const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transaction[])[] }) => {
+  const [open, setOpen] = useState(false)
   const pendingTxs = useAppSelector(selectPendingTxs)
   const hoverContext = useContext(BatchExecuteHoverContext)
   const batchableTransactions = useBatchedTxs(items)
@@ -26,28 +28,31 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
   }, [hoverContext])
 
   return (
-    <CustomTooltip
-      placement="top-start"
-      arrow
-      title={
-        isDisabled
-          ? 'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe nonce.'
-          : 'All transactions highlighted in light green will be included in the batch execution.'
-      }
-    >
-      <span>
-        <Button
-          onMouseEnter={handleOnMouseEnter}
-          onMouseLeave={handleOnMouseLeave}
-          className={css.button}
-          variant="contained"
-          size="small"
-          disabled={isDisabled}
-        >
-          Execute Batch {isBatchable && ` (${batchableTransactions.length})`}
-        </Button>
-      </span>
-    </CustomTooltip>
+    <>
+      <CustomTooltip
+        placement="top-start"
+        arrow
+        title={
+          isDisabled
+            ? 'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe nonce.'
+            : 'All transactions highlighted in light green will be included in the batch execution.'
+        }
+      >
+        <span className={css.button}>
+          <Button
+            onMouseEnter={handleOnMouseEnter}
+            onMouseLeave={handleOnMouseLeave}
+            variant="contained"
+            size="small"
+            disabled={isDisabled}
+            onClick={() => setOpen(true)}
+          >
+            Execute batch {isBatchable && ` (${batchableTransactions.length})`}
+          </Button>
+        </span>
+      </CustomTooltip>
+      {open && <BatchExecuteModal onClose={() => setOpen(false)} initialData={[{ txs: batchableTransactions }]} />}
+    </>
   )
 }
 

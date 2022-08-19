@@ -8,7 +8,7 @@ import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
 
-const getPreValidatedSignature = (from: string): string => {
+export const getPreValidatedSignature = (from: string): string => {
   return `0x000000000000000000000000${from
     .toLowerCase()
     .replace('0x', '')}000000000000000000000000000000000000000000000000000000000000000001`
