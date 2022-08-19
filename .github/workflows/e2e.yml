@@ -31,7 +31,8 @@ jobs:
       - name: Serve
         run: yarn serve
 
-      - uses: Run Cypress tests
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v4
         with:
           spec: cypress/e2e/smoke/*.cy.js
           browser: chrome
