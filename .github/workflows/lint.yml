@@ -14,7 +14,7 @@ jobs:
           access_token: ${{ github.token }}
 
       - name: Checkout
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Setup Node.js w/ yarn cache
         uses: actions/setup-node@v3
@@ -26,7 +26,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Run ESLint
-      - uses: bradennapier/eslint-plus-action@v3.4.2
+        uses: bradennapier/eslint-plus-action@v3.4.2
         with:
           npmInstall: false
 
