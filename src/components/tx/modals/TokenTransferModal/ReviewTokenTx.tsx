@@ -18,7 +18,9 @@ import SendFromBlock from '../../SendFromBlock'
 const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
   return (
     <Box className={css.tokenPreview}>
-      <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
+      <Box className={css.tokenIcon}>
+        <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
+      </Box>
 
       <Box mt={1} fontSize={20}>
         {params.amount} {tokenInfo.symbol}

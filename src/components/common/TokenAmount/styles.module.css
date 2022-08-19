@@ -7,11 +7,33 @@
   color: var(--color-text-primary);
 }
 
-.tokenIcon {
-  width: auto;
-}
-
 .symbol {
   white-space: normal;
   word-break: break-all;
+}
+
+.tokenIcon {
+  width: auto;
+  display: block;
+}
+
+.iconWrapper {
+  position: relative;
+}
+
+[data-theme="dark"] .iconWrapper img {
+  position: relative;
+  z-index: 2;
+}
+
+[data-theme="dark"] .iconWrapper:after {
+  content: '';
+  left: -1px;
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  position: absolute;
+  z-index: 1;
+  background: var(--color-text-primary);
+  border-radius: 100%;
 }

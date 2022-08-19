@@ -23,9 +23,7 @@ const initialState: SettingsState = {
     copy: true,
     qr: true,
   },
-  theme: {
-    darkMode: true,
-  },
+  theme: {},
 }
 
 export const settingsSlice = createSlice({

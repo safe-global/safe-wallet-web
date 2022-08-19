@@ -3,18 +3,28 @@ import { selectSettings } from '@/store/settingsSlice'
 import { useEffect, useMemo, useState } from 'react'
 import initTheme from '@/styles/theme'
 
-const mediaQuery = '(prefers-color-scheme: dark)'
+const isSystemDarkMode = (): boolean => {
+  const mediaQuery = '(prefers-color-scheme: dark)'
+  return typeof window !== 'undefined' && window.matchMedia(mediaQuery).matches
+}
 
-export const useDarkMode = () => {
+export const useDarkMode = (): boolean => {
   const settings = useAppSelector(selectSettings)
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
 
   useEffect(() => {
-    const systemPreference = window.matchMedia(mediaQuery)
-    setIsDarkMode(settings.theme.darkMode ?? systemPreference.matches)
+    setIsDarkMode(settings.theme.darkMode ?? isSystemDarkMode())
+  }, [settings.theme.darkMode])
 
+  return isDarkMode
+}
+
+export const useLightDarkTheme = () => {
+  const isDarkMode = useDarkMode()
+
+  useEffect(() => {
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light')
-  }, [isDarkMode, settings.theme.darkMode])
+  }, [isDarkMode])
 
   return useMemo(() => initTheme(isDarkMode), [isDarkMode])
 }
