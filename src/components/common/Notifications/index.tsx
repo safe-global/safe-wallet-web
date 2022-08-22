@@ -24,8 +24,8 @@ export const NotificationLink = ({
 
   return (
     <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title}>
-      <NextLink onClick={onClick} href={link.pathname} passHref>
-        <Link className={css.link} sx={{ mt: 1 }}>
+      <NextLink onClick={onClick} href={link.href} passHref>
+        <Link className={css.link}>
           {link.title} <ChevronRightIcon />
         </Link>
       </NextLink>

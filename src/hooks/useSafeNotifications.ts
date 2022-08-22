@@ -27,7 +27,7 @@ const useSafeNotifications = (): void => {
         message: `Your Safe version ${version} is out of date. Please update it.`,
         groupKey: 'safe-outdated-version',
         link: {
-          pathname: `${AppRoutes.safe.settings.setup}?safe=${chain?.shortName}:${safeAddress}`,
+          href: `${AppRoutes.safe.settings.setup}?safe=${chain?.shortName}:${safeAddress}`,
           title: 'Update Safe',
         },
       }),
@@ -36,7 +36,7 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, chainId, safeAddress, implementationVersionState, version])
+  }, [dispatch, chainId, safeAddress, implementationVersionState, version, chain?.shortName])
 }
 
 export default useSafeNotifications

@@ -50,7 +50,7 @@ const useTxNotifications = (): void => {
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
             ...(shouldShowLink && {
               link: {
-                pathname: `${AppRoutes.safe.transactions.tx}?id=${txId}&safe=${chain?.shortName}:${safeAddress}`,
+                href: `${AppRoutes.safe.transactions.tx}?id=${txId}&safe=${chain?.shortName}:${safeAddress}`,
                 title: 'View transaction',
               },
             }),
@@ -62,7 +62,7 @@ const useTxNotifications = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [dispatch, safeAddress])
+  }, [dispatch, safeAddress, chain?.shortName])
 }
 
 export default useTxNotifications
