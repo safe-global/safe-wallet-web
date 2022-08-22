@@ -111,10 +111,10 @@ export const TxSigners = ({
       return []
     }
 
-    const hasExecutorConfirmation =
-      !!wallet?.address && detailedExecutionInfo.confirmations.some(({ signer }) => signer.value === wallet.address)
+    const isOwner = detailedExecutionInfo.signers.some((signer) => signer.value === wallet?.address)
+    const hasConfirmation = detailedExecutionInfo.confirmations.some(({ signer }) => signer.value === wallet?.address)
 
-    if (isPending && !hasExecutorConfirmation) {
+    if (isPending && isOwner && !hasConfirmation) {
       const EXECUTOR_CONFIRMATION: MultisigConfirmation = {
         signer: { value: wallet?.address || '' },
         submittedAt: Date.now(),
