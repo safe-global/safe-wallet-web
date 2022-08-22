@@ -22,11 +22,11 @@ const RemoveOwnerSteps: TxStepperProps['steps'] = [
     render: (data, onSubmit) => <ReviewSelectedOwnerStep data={data as RemoveOwnerData} onSubmit={onSubmit} />,
   },
   {
-    label: 'Set Threshold',
+    label: 'Set threshold',
     render: (data, onSubmit) => <SetThresholdStep data={data as RemoveOwnerData} onSubmit={onSubmit} />,
   },
   {
-    label: 'Review Transaction',
+    label: 'Review transaction',
     render: (data, onSubmit) => <ReviewRemoveOwnerTxStep data={data as RemoveOwnerData} onSubmit={onSubmit} />,
   },
 ]

@@ -20,6 +20,7 @@ export const NoSpendingLimits = () => {
           </Typography>
         </Box>
       </Grid>
+
       <Grid item sm={12} md={3}>
         <Box>
           <img
@@ -34,6 +35,7 @@ export const NoSpendingLimits = () => {
           <Typography>You can set allowances for any asset stored in your Safe</Typography>
         </Box>
       </Grid>
+
       <Grid item sm={12} md={3}>
         <Box>
           <img alt="Select time" title="Time" height={75} src="/images/settings/spending-limit/time.svg" />
