@@ -46,7 +46,7 @@
   }
 
   .menuButton {
-    display: block;
+    display: flex;
   }
 }
 

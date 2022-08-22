@@ -21,6 +21,7 @@ import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import TransactionsIcon from '@/public/images/sidebar/transactions.svg'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { sameAddress } from '@/utils/addresses'
+import { AppRoutes } from '@/config/routes'
 
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
@@ -50,6 +51,7 @@ const SingleTransaction: NextPage = () => {
   )
 
   const isCurrentSafeTx = sameAddress(txDetails?.safeAddress, safeAddress)
+  const breadcrumbsLink = `${AppRoutes.safe.transactions.index}?safe=${safeAddress}`
 
   return (
     <main>
@@ -57,7 +59,7 @@ const SingleTransaction: NextPage = () => {
         <title>Safe – Transaction details</title>
       </Head>
 
-      <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" />
+      <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" firstLink={breadcrumbsLink} />
 
       {(error || !isCurrentSafeTx) && !loading ? (
         <ErrorMessage error={error}>Failed to load transaction {transactionId}</ErrorMessage>
