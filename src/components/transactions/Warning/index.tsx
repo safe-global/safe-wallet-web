@@ -9,7 +9,7 @@ const UNEXPECTED_DELEGATE_ARTICLE =
   'https://help.gnosis-safe.io/en/articles/6302452-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction'
 
 export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): ReactElement => {
-  const severity = !showWarning ? 'warning' : 'success'
+  const severity = showWarning ? 'warning' : 'success'
   return (
     <CustomTooltip
       sx={{
@@ -39,7 +39,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
         severity={severity}
         icon={<InfoOutlinedIcon />}
       >
-        <b>{!showWarning ? 'Unexpected Delegate Call' : 'Delegate Call'}</b>
+        <b>{showWarning ? 'Unexpected Delegate Call' : 'Delegate Call'}</b>
       </Alert>
     </CustomTooltip>
   )
