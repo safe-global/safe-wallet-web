@@ -7,12 +7,22 @@ import { FLOAT_REGEX } from '@/utils/validation'
 import NonceForm from '../NonceForm'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import { BASE_TX_GAS } from '@/config/constants'
+import useSafeInfo from '@/hooks/useSafeInfo'
+
+enum AdvancedField {
+  nonce = 'nonce',
+  gasLimit = 'gasLimit',
+  maxFeePerGas = 'maxFeePerGas',
+  maxPriorityFeePerGas = 'maxPriorityFeePerGas',
+  safeTxGas = 'safeTxGas',
+}
 
 export type AdvancedParameters = {
-  nonce: number
-  gasLimit?: BigNumber
-  maxFeePerGas?: BigNumber
-  maxPriorityFeePerGas?: BigNumber
+  [AdvancedField.nonce]: number
+  [AdvancedField.gasLimit]?: BigNumber
+  [AdvancedField.maxFeePerGas]?: BigNumber
+  [AdvancedField.maxPriorityFeePerGas]?: BigNumber
+  [AdvancedField.safeTxGas]?: number
 }
 
 type AdvancedParamsFormProps = AdvancedParameters & {
@@ -24,20 +34,24 @@ type AdvancedParamsFormProps = AdvancedParameters & {
 }
 
 type FormData = {
-  nonce: number
-  gasLimit?: string
-  maxFeePerGas: string
-  maxPriorityFeePerGas: string
+  [AdvancedField.nonce]: number
+  [AdvancedField.gasLimit]?: string
+  [AdvancedField.maxFeePerGas]: string
+  [AdvancedField.maxPriorityFeePerGas]: string
+  [AdvancedField.safeTxGas]: number
 }
 
 const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
+  const { safe } = useSafeInfo()
+
   const formMethods = useForm<FormData>({
     mode: 'onChange',
     defaultValues: {
       nonce: props.nonce,
-      gasLimit: props.gasLimit ? props.gasLimit.toString() : undefined,
+      gasLimit: props.gasLimit?.toString() || undefined,
       maxFeePerGas: props.maxFeePerGas ? safeFormatUnits(props.maxFeePerGas) : '',
       maxPriorityFeePerGas: props.maxPriorityFeePerGas ? safeFormatUnits(props.maxPriorityFeePerGas) : '',
+      safeTxGas: props.safeTxGas,
     },
   })
   const {
@@ -55,6 +69,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
       gasLimit: props.gasLimit,
       maxFeePerGas: props.maxFeePerGas,
       maxPriorityFeePerGas: props.maxPriorityFeePerGas,
+      safeTxGas: props.safeTxGas,
     })
   }
 
@@ -64,12 +79,13 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
       gasLimit: data.gasLimit ? BigNumber.from(data.gasLimit) : undefined,
       maxFeePerGas: safeParseUnits(data.maxFeePerGas) || props.maxFeePerGas,
       maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) || props.maxPriorityFeePerGas,
+      safeTxGas: data.safeTxGas || props.safeTxGas,
     })
   }
 
   const onResetGasLimit = () => {
-    setValue('gasLimit', props.estimatedGasLimit)
-    trigger('gasLimit')
+    setValue(AdvancedField.gasLimit, props.estimatedGasLimit)
+    trigger(AdvancedField.gasLimit)
   }
 
   const gasLimitError = errors.gasLimit
@@ -95,6 +111,25 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
               </FormControl>
             </Grid>
 
+            {!!props.safeTxGas && (
+              <>
+                <Grid item xs={6} />
+
+                <Grid item xs={6}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label={errors.safeTxGas?.message || 'safeTxGas'}
+                      error={!!errors.safeTxGas}
+                      autoComplete="off"
+                      type="number"
+                      disabled={props.nonceReadonly}
+                      {...register(AdvancedField.safeTxGas, { required: true, min: 0 })}
+                    ></TextField>
+                  </FormControl>
+                </Grid>
+              </>
+            )}
+
             {props.isExecution && (
               <>
                 <Grid item xs={6}>
@@ -112,10 +147,10 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                       }}
                       // @see https://github.com/react-hook-form/react-hook-form/issues/220
                       InputLabelProps={{
-                        shrink: watch('gasLimit') !== undefined,
+                        shrink: watch(AdvancedField.gasLimit) !== undefined,
                       }}
                       type="number"
-                      {...register('gasLimit', { required: true, min: BASE_TX_GAS })}
+                      {...register(AdvancedField.gasLimit, { required: true, min: BASE_TX_GAS })}
                     ></TextField>
                   </FormControl>
                 </Grid>
@@ -126,7 +161,11 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                       label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
                       error={!!errors.maxPriorityFeePerGas}
                       autoComplete="off"
-                      {...register('maxPriorityFeePerGas', { required: true, pattern: FLOAT_REGEX, min: 0 })}
+                      {...register(AdvancedField.maxPriorityFeePerGas, {
+                        required: true,
+                        pattern: FLOAT_REGEX,
+                        min: 0,
+                      })}
                     />
                   </FormControl>
                 </Grid>
@@ -137,7 +176,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                       label={errors.maxFeePerGas?.message || 'Max fee (Gwei)'}
                       error={!!errors.maxFeePerGas}
                       autoComplete="off"
-                      {...register('maxFeePerGas', { required: true, pattern: FLOAT_REGEX, min: 0 })}
+                      {...register(AdvancedField.maxFeePerGas, { required: true, pattern: FLOAT_REGEX, min: 0 })}
                     />
                   </FormControl>
                 </Grid>

@@ -29,6 +29,7 @@ const GasParams = ({
   gasLimit,
   maxFeePerGas,
   maxPriorityFeePerGas,
+  safeTxGas,
   isLoading,
   isExecution,
   onEdit,
@@ -83,6 +84,8 @@ const GasParams = ({
 
       <AccordionDetails>
         <GasDetail isLoading={nonce === undefined} name="Nonce" value={(nonce ?? '').toString()} />
+
+        {!!safeTxGas && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
 
         {isExecution && (
           <>

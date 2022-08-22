@@ -1,7 +1,8 @@
-import { ChangeEvent, ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from 'react'
+import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import type { SafeTransaction, TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
-import { Button, Checkbox, DialogContent, FormControlLabel } from '@mui/material'
+import { Button, DialogContent } from '@mui/material'
+import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -13,14 +14,12 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParamsForm, { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
+import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
 import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { hasFeature } from '@/utils/chains'
-import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
-import { trackEvent } from '@/services/analytics/analytics'
-import { MODALS_EVENTS } from '@/services/analytics/events/modals'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -78,6 +77,7 @@ const SignOrExecuteForm = ({
     gasLimit: manualParams?.gasLimit || gasLimit,
     maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
     maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
+    safeTxGas: manualParams?.safeTxGas || tx?.data.safeTxGas,
   }
 
   // Estimating gas limit and price
@@ -165,9 +165,9 @@ const SignOrExecuteForm = ({
 
   const onAdvancedSubmit = async (data: AdvancedParameters) => {
     // If nonce was edited, create a new with that nonce
-    if (tx && data.nonce !== tx.data.nonce) {
+    if (tx && (data.nonce !== tx.data.nonce || data.safeTxGas !== tx.data.safeTxGas)) {
       try {
-        setTx(await createTx(tx.data, data.nonce))
+        setTx(await createTx({ ...tx.data, safeTxGas: data.safeTxGas }, data.nonce))
       } catch (err) {
         logError(Errors._103, (err as Error).message)
         return
@@ -179,12 +179,6 @@ const SignOrExecuteForm = ({
     setManualParams(data)
   }
 
-  const onExecuteTxCheckbox = (_: ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    trackEvent({ ...MODALS_EVENTS.EXECUTE_TX, label: checked })
-
-    setShouldExecute(checked)
-  }
-
   const submitDisabled = !isSubmittable || isEstimating || !tx
 
   return isEditingGas ? (
@@ -193,6 +187,7 @@ const SignOrExecuteForm = ({
       gasLimit={advancedParams.gasLimit}
       maxFeePerGas={advancedParams.maxFeePerGas}
       maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
+      safeTxGas={advancedParams.safeTxGas}
       isExecution={willExecute}
       recommendedNonce={safeTx?.data.nonce}
       estimatedGasLimit={gasLimit?.toString()}
@@ -206,25 +201,18 @@ const SignOrExecuteForm = ({
 
         {tx && <DecodedTx tx={tx} txId={txId} />}
 
-        {canExecute && !onlyExecute && (
-          <FormControlLabel
-            control={<Checkbox checked={shouldExecute} onChange={onExecuteTxCheckbox} />}
-            label="Execute transaction"
-            sx={{ mb: 1 }}
-          />
-        )}
+        {canExecute && !onlyExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} />}
 
-        {tx && (
-          <GasParams
-            isExecution={willExecute}
-            isLoading={isEstimating}
-            nonce={advancedParams.nonce}
-            gasLimit={advancedParams.gasLimit}
-            maxFeePerGas={advancedParams.maxFeePerGas}
-            maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
-            onEdit={() => setEditingGas(true)}
-          />
-        )}
+        <GasParams
+          isExecution={willExecute}
+          isLoading={isEstimating}
+          nonce={advancedParams.nonce}
+          gasLimit={advancedParams.gasLimit}
+          maxFeePerGas={advancedParams.maxFeePerGas}
+          maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
+          safeTxGas={tx?.data.safeTxGas}
+          onEdit={() => setEditingGas(true)}
+        />
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>
