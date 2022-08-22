@@ -7,11 +7,12 @@ import { sameAddress } from '@/utils/addresses'
 const useSpendingLimit = (selectedToken?: TokenInfo): SpendingLimitState | undefined => {
   const wallet = useWallet()
   const spendingLimits = useSelector(selectSpendingLimits)
-  const userSpendingLimits = spendingLimits?.filter((spendingLimit) =>
-    sameAddress(spendingLimit.beneficiary, wallet?.address),
-  )
 
-  return userSpendingLimits.find((spendingLimit) => sameAddress(spendingLimit.token, selectedToken?.address))
+  return spendingLimits.find(
+    (spendingLimit) =>
+      sameAddress(spendingLimit.token, selectedToken?.address) &&
+      sameAddress(spendingLimit.beneficiary, wallet?.address),
+  )
 }
 
 export default useSpendingLimit
