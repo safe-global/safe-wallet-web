@@ -19,7 +19,7 @@ const useIsSignatureProposalPending = (txSummary: TransactionSummary) => {
   const [isSignatureProposalPending, setIsSignatureProposalPending] = useState<boolean>(false)
 
   useEffect(() => {
-    if (isSignable && isSignatureProposalPending) {
+    if (isSignable) {
       setIsSignatureProposalPending(false)
     }
   }, [isSignable])
@@ -47,7 +47,7 @@ const SignTxButton = ({
 }): ReactElement => {
   const [open, setOpen] = useState<boolean>(false)
   const wallet = useWallet()
-  const signaturePending = isSignableBy(txSummary, wallet?.address || '')
+  const isSignable = isSignableBy(txSummary, wallet?.address || '')
   const isSafeOwner = useIsSafeOwner()
   const isPending = useIsPending(txSummary.id)
   const isSignatureProposalPending = useIsSignatureProposalPending(txSummary)
@@ -58,7 +58,7 @@ const SignTxButton = ({
   }
 
   const text = isSignatureProposalPending ? CONFIRMING_TEXT : CONFIRM_TEXT
-  const isDisabled = !signaturePending || !isSafeOwner || isPending || isSignatureProposalPending
+  const isDisabled = !isSignable || !isSafeOwner || isPending || isSignatureProposalPending
 
   return (
     <>
