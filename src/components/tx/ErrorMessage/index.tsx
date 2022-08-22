@@ -23,7 +23,15 @@ const ErrorMessage = ({
         <WarningAmberIcon fontSize="small" />
 
         <div>
-          <Typography variant="body2">{children}</Typography>
+          <Typography variant="body2" component="span">
+            {children}
+          </Typography>
+
+          {error && (
+            <Link component="button" onClick={onDetailsToggle}>
+              Details
+            </Link>
+          )}
 
           {error && showDetails && (
             <Typography variant="body2" className={css.details}>
@@ -31,12 +39,6 @@ const ErrorMessage = ({
             </Typography>
           )}
         </div>
-
-        {error && (
-          <Link component="button" onClick={onDetailsToggle}>
-            Details
-          </Link>
-        )}
       </div>
     </div>
   )
