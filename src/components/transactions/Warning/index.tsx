@@ -39,7 +39,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
         severity={severity}
         icon={<InfoOutlinedIcon />}
       >
-        <b>{showWarning ? 'Unexpected Delegate Call' : 'Delegate Call'}</b>
+        <b>{showWarning ? 'Unexpected delegate call' : 'Delegate call'}</b>
       </Alert>
     </CustomTooltip>
   )
