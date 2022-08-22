@@ -225,8 +225,9 @@ const SignOrExecuteForm = ({
         )}
 
         <Typography variant="body2" color="text.disabled" textAlign="center" mt={3}>
-          You&apos;re about to {txId ? '' : 'create and'} {willExecute ? 'execute' : 'sign'} a transaction and will need
-          to confirm it with your currently connected wallet.
+          You&apos;re about to {txId ? '' : 'create and '}
+          {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
+          wallet.
         </Typography>
 
         <Button variant="contained" type="submit" disabled={submitDisabled}>
