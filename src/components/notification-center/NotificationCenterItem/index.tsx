@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemText from '@mui/material/ListItemText'
@@ -6,7 +5,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined'
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined'
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import { NotificationLink } from '@/components/common/Notifications'
 import type { AlertColor } from '@mui/material/Alert'
 import type { ReactElement } from 'react'
 
@@ -16,8 +15,6 @@ import { formatTimeInWords } from '@/utils/date'
 
 import css from './styles.module.css'
 import classnames from 'classnames'
-import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 
 const VARIANT_ICONS = {
   error: ErrorOutlineOutlinedIcon,
@@ -44,15 +41,7 @@ const NotificationCenterItem = ({
   const secondaryText = (
     <div className={css.secondaryText}>
       <span>{formatTimeInWords(timestamp)}</span>
-      {link && (
-        <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title}>
-          <Link onClick={handleClose} href={link.href} passHref>
-            <a className={css.link}>
-              {link.title} <ChevronRightIcon />
-            </a>
-          </Link>
-        </Track>
-      )}
+      <NotificationLink link={link} onClick={handleClose} />
     </div>
   )
 
