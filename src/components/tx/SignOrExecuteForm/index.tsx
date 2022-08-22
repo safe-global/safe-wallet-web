@@ -214,15 +214,17 @@ const SignOrExecuteForm = ({
           />
         )}
 
-        <GasParams
-          isExecution={willExecute}
-          isLoading={isEstimating}
-          nonce={advancedParams.nonce}
-          gasLimit={advancedParams.gasLimit}
-          maxFeePerGas={advancedParams.maxFeePerGas}
-          maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
-          onEdit={() => setEditingGas(true)}
-        />
+        {tx && (
+          <GasParams
+            isExecution={willExecute}
+            isLoading={isEstimating}
+            nonce={advancedParams.nonce}
+            gasLimit={advancedParams.gasLimit}
+            maxFeePerGas={advancedParams.maxFeePerGas}
+            maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
+            onEdit={() => setEditingGas(true)}
+          />
+        )}
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>
