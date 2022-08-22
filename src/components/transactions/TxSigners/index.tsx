@@ -124,11 +124,7 @@ export const TxSigners = ({
     }
 
     return detailedExecutionInfo.confirmations
-  }, [
-    isPending,
-    wallet?.address,
-    isMultisigExecutionDetails(detailedExecutionInfo) && detailedExecutionInfo.confirmations,
-  ])
+  }, [isPending, wallet?.address, detailedExecutionInfo])
 
   if (!detailedExecutionInfo || !isMultisigExecutionDetails(detailedExecutionInfo)) {
     return null
