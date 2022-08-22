@@ -20,6 +20,7 @@ import useBalances from '@/hooks/useBalances'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import SendFromBlock from '../../SendFromBlock'
+import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -35,16 +36,20 @@ export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }
   </Grid>
 )
 
+type SendTxType = 'multiSig' | 'spendingLimit'
+
 enum Field {
   recipient = 'recipient',
   tokenAddress = 'tokenAddress',
   amount = 'amount',
+  type = 'type',
 }
 
 export type SendAssetsFormData = {
   [Field.recipient]: string
   [Field.tokenAddress]: string
   [Field.amount]: string
+  [Field.type]: SendTxType
 }
 
 type SendAssetsFormProps = {
@@ -56,7 +61,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const { balances } = useBalances()
 
   const formMethods = useForm<SendAssetsFormData>({
-    defaultValues: formData,
+    defaultValues: { ...formData, [Field.type]: 'multiSig' },
   })
   const {
     register,
@@ -106,6 +111,8 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               ))}
             </Select>
           </FormControl>
+
+          <SpendingLimitRow selectedToken={selectedToken?.tokenInfo} />
 
           <FormControl fullWidth>
             <TextField
