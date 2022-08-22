@@ -1,4 +1,15 @@
-import { Button, DialogTitle, DialogActions, FormControl, Grid, Paper, TextField } from '@mui/material'
+import {
+  Button,
+  DialogTitle,
+  DialogActions,
+  FormControl,
+  Grid,
+  Paper,
+  TextField,
+  Link,
+  Typography,
+} from '@mui/material'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { BigNumber } from 'ethers'
 import { FormProvider, useForm } from 'react-hook-form'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
@@ -183,6 +194,13 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
               </>
             )}
           </Grid>
+
+          <Typography mt={2}>
+            <Link href="https://help.gnosis-safe.io/en/articles/4738445-advanced-transaction-parameters">
+              How can I configure these parameters manually?
+              <OpenInNewIcon fontSize="small" sx={{ verticalAlign: 'middle', marginLeft: 0.5 }} />
+            </Link>
+          </Typography>
 
           <DialogActions className={css.actions}>
             <Button color="inherit" onClick={onBack}>
