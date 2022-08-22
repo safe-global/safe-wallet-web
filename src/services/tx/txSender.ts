@@ -71,7 +71,7 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
 export const createMultiSendTx = async (txParams: MetaTransactionData[]): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
   const tx = await safeSDK.createTransaction(txParams)
-  return createTx({ ...tx.data })
+  return createTx(tx.data)
 }
 
 const withRecommendedNonce = async (
