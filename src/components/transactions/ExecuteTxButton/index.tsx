@@ -11,6 +11,8 @@ import IconButton from '@mui/material/IconButton'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
+const EXECUTE_TEXT = 'Execute'
+
 const ExecuteTxButton = ({
   txSummary,
   compact = false,
@@ -35,7 +37,7 @@ const ExecuteTxButton = ({
     <>
       <Track {...TX_LIST_EVENTS.EXECUTE}>
         {compact ? (
-          <Tooltip title="Execute" arrow placement="top">
+          <Tooltip title={EXECUTE_TEXT} arrow placement="top">
             <span>
               <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
                 <RocketLaunchIcon fontSize="small" />
@@ -44,7 +46,7 @@ const ExecuteTxButton = ({
           </Tooltip>
         ) : (
           <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
-            Execute
+            {EXECUTE_TEXT}
           </Button>
         )}
       </Track>

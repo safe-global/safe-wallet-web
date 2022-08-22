@@ -5,6 +5,11 @@ import useSafeInfo from '../useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 
+const PROPOSAL_EVENTS: (TxEvent.PROPOSED | TxEvent.SIGNATURE_PROPOSED)[] = [
+  TxEvent.PROPOSED,
+  TxEvent.SIGNATURE_PROPOSED,
+]
+
 export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
   const { chainId, txQueuedTag, txHistoryTag } = safe
@@ -12,7 +17,19 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
 
   // Listen to newly proposed txns
   useEffect(() => {
-    return txSubscribe(TxEvent.PROPOSED, ({ txId }) => setProposedTxId(txId))
+    const unsubFns = PROPOSAL_EVENTS.map((event) => {
+      return txSubscribe(event, ({ txId, tx }) => {
+        // User may propose tx, switch wallet and propose signature which would not
+        // trigger getTransactionQueue as proposedTxId wouldn't change
+        const uniqId = `${tx.signatures.size}_${txId}`
+
+        setProposedTxId(uniqId)
+      })
+    })
+
+    return () => {
+      unsubFns.forEach((unsub) => unsub())
+    }
   }, [])
 
   // Re-fetch when chainId/address, or txQueueTag change
