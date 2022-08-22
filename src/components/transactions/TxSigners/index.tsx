@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react'
+import { useMemo, useState, type ReactElement } from 'react'
 import { Box, Link, Palette, Step, StepConnector, StepContent, StepLabel, Stepper, type StepProps } from '@mui/material'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
@@ -8,6 +8,7 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import type {
   AddressEx,
   DetailedExecutionInfo,
+  MultisigConfirmation,
   TransactionDetails,
   TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -81,7 +82,7 @@ const shouldHideConfirmations = (detailedExecutionInfo?: DetailedExecutionInfo):
 }
 
 const getConfirmationStep = ({ value, name }: AddressEx, key: string | undefined = undefined): ReactElement => (
-  <StyledStep key={key} $bold $state={StepState.CONFIRMED}>
+  <StyledStep key={key} $state={StepState.CONFIRMED}>
     <StepLabel icon={<DotIcon />}>
       <EthHashInfo address={value} name={name} hasExplorer showCopyButton />
     </StepLabel>
@@ -104,12 +105,36 @@ export const TxSigners = ({
     setHideConfirmations((prev) => !prev)
   }
 
+  // If final signer executes tx, `detailedExecutionInfo.confirmations` won't contain their confirmation
+  const confirmations = useMemo(() => {
+    if (!isMultisigExecutionDetails(detailedExecutionInfo)) {
+      return []
+    }
+
+    const hasExecutorConfirmation =
+      !!wallet?.address && detailedExecutionInfo.confirmations.some(({ signer }) => signer.value === wallet.address)
+
+    if (isPending && !hasExecutorConfirmation) {
+      const EXECUTOR_CONFIRMATION: MultisigConfirmation = {
+        signer: { value: wallet?.address || '' },
+        submittedAt: Date.now(),
+      }
+
+      return [...detailedExecutionInfo.confirmations, EXECUTOR_CONFIRMATION]
+    }
+
+    return detailedExecutionInfo.confirmations
+  }, [
+    isPending,
+    wallet?.address,
+    isMultisigExecutionDetails(detailedExecutionInfo) && detailedExecutionInfo.confirmations,
+  ])
+
   if (!detailedExecutionInfo || !isMultisigExecutionDetails(detailedExecutionInfo)) {
     return null
   }
 
   const canExecute = wallet?.address ? isExecutable(txSummary, wallet.address) : false
-  const numberOfConfirmations = detailedExecutionInfo.confirmations.length
   const confirmationsNeeded = detailedExecutionInfo.confirmationsRequired - detailedExecutionInfo.confirmations.length
   const isConfirmed = confirmationsNeeded <= 0 || isPending || canExecute
   const isExecuted = !!detailedExecutionInfo.executor
@@ -134,13 +159,12 @@ export const TxSigners = ({
         <StepLabel icon={isConfirmed ? <CheckIcon /> : <CircleIcon />}>
           Confirmations{' '}
           <Box className={css.confirmationsTotal}>
-            ({`${numberOfConfirmations} of ${detailedExecutionInfo.confirmationsRequired}`})
+            ({`${confirmations.length} of ${detailedExecutionInfo.confirmationsRequired}`})
           </Box>
         </StepLabel>
       </StyledStep>
-      {!hideConfirmations &&
-        detailedExecutionInfo.confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value))}
-      {detailedExecutionInfo.confirmations.length > 0 && (
+      {!hideConfirmations && confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value))}
+      {confirmations.length > 0 && (
         <StyledStep $state={StepState.CONFIRMED}>
           <StepLabel icon={<DotIcon />}>
             <Link component="button" onClick={toggleHide} fontSize="medium">
