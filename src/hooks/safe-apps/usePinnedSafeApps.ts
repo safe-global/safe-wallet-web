@@ -2,19 +2,19 @@ import { useState, useEffect } from 'react'
 import local from '@/services/local-storage/local'
 
 type ReturnType = {
-  pinnedSafeAppIds: string[]
-  updatePinnedSafeApps: (newPinnedSafeAppIds: string[]) => void
+  pinnedSafeAppIds: Set<number>
+  updatePinnedSafeApps: (newPinnedSafeAppIds: Set<number>) => void
 }
 
 const pinnedSafeAppsIdsKey = 'pinnedSafeAppsIds'
 
 const usePinnedSafeApps = (): ReturnType => {
-  const [pinnedSafeAppIds, updatePinnedSafeApps] = useState<string[]>(
-    () => local.getItem<string[]>(pinnedSafeAppsIdsKey) || [],
+  const [pinnedSafeAppIds, updatePinnedSafeApps] = useState<Set<number>>(
+    () => new Set(local.getItem<number[]>(pinnedSafeAppsIdsKey) || []),
   )
 
   useEffect(() => {
-    local.setItem(pinnedSafeAppsIdsKey, pinnedSafeAppIds)
+    local.setItem(pinnedSafeAppsIdsKey, Array.from(pinnedSafeAppIds))
   }, [pinnedSafeAppIds])
 
   return { pinnedSafeAppIds, updatePinnedSafeApps }

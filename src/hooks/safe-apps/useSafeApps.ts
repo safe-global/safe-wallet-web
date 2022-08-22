@@ -7,6 +7,7 @@ import { usePinnedSafeApps } from '@/hooks/safe-apps/usePinnedSafeApps'
 type ReturnType = {
   allSafeApps: SafeAppData[]
   pinnedSafeApps: SafeAppData[]
+  pinnedSafeAppIds: Set<number>
   remoteSafeApps: SafeAppData[]
   customSafeApps: SafeAppData[]
   remoteSafeAppsLoading: boolean
@@ -18,16 +19,16 @@ type ReturnType = {
 
 const useDeadPinnedSafeAppsRemover = (
   remoteSafeApps: SafeAppData[],
-  pinnedSafeAppIds: string[],
-  updateCallback: (newIds: string[]) => void,
+  pinnedSafeAppIds: Set<number>,
+  updateCallback: (newIds: Set<number>) => void,
 ) => {
   React.useEffect(() => {
-    if (remoteSafeApps.length > 0 && pinnedSafeAppIds.length > 0) {
-      const filteredPinnedAppsIds = pinnedSafeAppIds.filter((pinnedAppId) =>
-        remoteSafeApps.some((app) => app.id === +pinnedAppId),
+    if (remoteSafeApps.length > 0 && pinnedSafeAppIds.size > 0) {
+      const filteredPinnedAppsIds = Array.from(pinnedSafeAppIds).filter((pinnedAppId) =>
+        remoteSafeApps.some((app) => app.id === pinnedAppId),
       )
-      if (filteredPinnedAppsIds.length !== pinnedSafeAppIds.length) {
-        updateCallback(filteredPinnedAppsIds)
+      if (filteredPinnedAppsIds.length !== pinnedSafeAppIds.size) {
+        updateCallback(new Set(filteredPinnedAppsIds))
       }
     }
   }, [remoteSafeApps, pinnedSafeAppIds, updateCallback])
@@ -46,7 +47,7 @@ const useSafeApps = (): ReturnType => {
   )
 
   const pinnedSafeApps = React.useMemo(
-    () => remoteSafeApps.filter((app) => pinnedSafeAppIds.includes(app.id.toString())),
+    () => remoteSafeApps.filter((app) => pinnedSafeAppIds.has(app.id)),
     [remoteSafeApps, pinnedSafeAppIds],
   )
 
@@ -58,18 +59,21 @@ const useSafeApps = (): ReturnType => {
   )
 
   const togglePin = (appId: number) => {
-    const alreadyPinned = pinnedSafeApps.some(({ id }) => id === appId)
+    const alreadyPinned = pinnedSafeAppIds.has(appId)
+    let newSet = new Set(pinnedSafeAppIds)
     if (alreadyPinned) {
-      updatePinnedSafeApps(pinnedSafeAppIds.filter((id) => id !== appId.toString()))
+      newSet.delete(appId)
     } else {
-      updatePinnedSafeApps([...pinnedSafeAppIds, appId.toString()])
+      newSet.add(appId)
     }
+    updatePinnedSafeApps(newSet)
   }
 
   return {
     allSafeApps,
     remoteSafeApps,
     pinnedSafeApps,
+    pinnedSafeAppIds,
     customSafeApps,
     remoteSafeAppsLoading,
     customSafeAppsLoading,

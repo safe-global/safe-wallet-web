@@ -4,7 +4,14 @@ import { AppCard } from '@/components/safe-apps/AppCard'
 import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
 import { SectionProps } from './types'
 
-const DefaultSection = ({ title, apps, prependAddCustomAppCard = false, onAddCustomApp, onPinApp }: SectionProps) => {
+const DefaultSection = ({
+  title,
+  apps,
+  prependAddCustomAppCard = false,
+  onAddCustomApp,
+  onPinApp,
+  pinnedIds,
+}: SectionProps) => {
   return (
     <Grid
       container
@@ -26,8 +33,8 @@ const DefaultSection = ({ title, apps, prependAddCustomAppCard = false, onAddCus
       )}
 
       {apps.map((a) => (
-        <Grid key={a.id || a.url} item xs={12} sm={6} md={3} xl={1.5}>
-          <AppCard safeApp={a} onPin={onPinApp} />
+        <Grid key={a.id} item xs={12} sm={6} md={3} xl={1.5}>
+          <AppCard safeApp={a} onPin={onPinApp} pinned={pinnedIds?.has(a.id)} />
         </Grid>
       ))}
     </Grid>

@@ -11,6 +11,7 @@ const SafeAppsList = () => {
   const {
     allSafeApps,
     pinnedSafeApps,
+    pinnedSafeAppIds,
     remoteSafeAppsLoading,
     customSafeAppsLoading,
     addCustomApp,
@@ -26,6 +27,7 @@ const SafeAppsList = () => {
         title={`PINNED APPS (${pinnedSafeApps.length})`}
         apps={pinnedSafeApps}
         onPinApp={togglePin}
+        pinnedIds={pinnedSafeAppIds}
       />
       <SafeAppsSection
         collapsible
@@ -34,7 +36,12 @@ const SafeAppsList = () => {
         prependAddCustomAppCard
         onAddCustomApp={addCustomApp}
       />
-      <SafeAppsSection title={`ALL (${allSafeApps.length})`} apps={allSafeApps} onPinApp={togglePin} />
+      <SafeAppsSection
+        title={`ALL (${allSafeApps.length})`}
+        apps={allSafeApps}
+        onPinApp={togglePin}
+        pinnedIds={pinnedSafeAppIds}
+      />
     </>
   )
   if (searchQuery) {

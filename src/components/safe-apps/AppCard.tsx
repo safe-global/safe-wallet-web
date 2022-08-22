@@ -12,12 +12,14 @@ import { SAFE_REACT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import ShareIcon from '@/public/images/share.svg'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
+import BookmarkIcon from '@mui/icons-material/Bookmark'
 //import DeleteIcon from '@/public/images/delete.svg'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
 type AppCardProps = {
   safeApp: SafeAppData
+  pinned?: boolean
   onPin?: (appId: number) => void
   variant?: SafeAppCardVariants
 }
@@ -25,6 +27,7 @@ type AppCardProps = {
 type CompactSafeAppCardProps = {
   safeApp: SafeAppData
   url: string
+  pinned?: boolean
   onPin?: (appId: number) => void
 }
 
@@ -85,7 +88,7 @@ const CompactAppCard = ({ url, safeApp }: CompactSafeAppCardProps): ReactElement
   </AppCardContainer>
 )
 
-const AppCard = ({ safeApp, onPin, variant = 'default' }: AppCardProps): ReactElement => {
+const AppCard = ({ safeApp, pinned, onPin, variant = 'default' }: AppCardProps): ReactElement => {
   const router = useRouter()
   const chainId = useChainId()
 
@@ -121,17 +124,17 @@ const AppCard = ({ safeApp, onPin, variant = 'default' }: AppCardProps): ReactEl
             </IconButton>
             {onPin && (
               <IconButton
-                aria-label={`Pin ${safeApp.name}`}
+                aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
                 size="small"
                 onClick={(event) => {
                   event.preventDefault()
                   event.stopPropagation()
                   onPin(safeApp.id)
                 }}
-                title="Click to pin app"
+                title={`Click to ${pinned ? 'unpin' : 'pin'} ${safeApp.name}`}
                 sx={{ width: '32px' }}
               >
-                <BookmarkBorderIcon />
+                {pinned ? <BookmarkIcon /> : <BookmarkBorderIcon />}
               </IconButton>
             )}
             {/* <IconButton aria-label={`Delete ${safeApp.name}`} size="small">

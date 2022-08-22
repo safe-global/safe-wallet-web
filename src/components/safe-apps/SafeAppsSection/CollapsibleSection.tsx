@@ -8,7 +8,14 @@ import { AppCard } from '@/components/safe-apps/AppCard'
 import { SectionProps } from './types'
 import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
 
-const CollapsibleSection = ({ title, apps, onPinApp, prependAddCustomAppCard, onAddCustomApp }: SectionProps) => {
+const CollapsibleSection = ({
+  title,
+  apps,
+  onPinApp,
+  prependAddCustomAppCard,
+  onAddCustomApp,
+  pinnedIds,
+}: SectionProps) => {
   return (
     <Accordion
       sx={{
@@ -52,8 +59,8 @@ const CollapsibleSection = ({ title, apps, onPinApp, prependAddCustomAppCard, on
           )}
 
           {apps.map((a) => (
-            <Grid key={a.id || a.url} item xs={12} sm={6} md={3} xl={1.5}>
-              <AppCard safeApp={a} onPin={onPinApp} />
+            <Grid key={a.id} item xs={12} sm={6} md={3} xl={1.5}>
+              <AppCard safeApp={a} onPin={onPinApp} pinned={pinnedIds?.has(a.id)} />
             </Grid>
           ))}
         </Grid>

@@ -5,6 +5,7 @@ type SectionProps = {
   title: string
   prependAddCustomAppCard?: boolean
   apps: SafeAppData[]
+  pinnedIds?: Set<number>
   onAddCustomApp?: (app: SafeAppData) => void
   onPinApp?: (appId: number) => void
   cardVariant?: SafeAppCardVariants
