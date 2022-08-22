@@ -36,7 +36,6 @@ const useIsSignatureProposalPending = (txSummary: TransactionSummary) => {
 }
 
 const CONFIRM_TEXT = 'Confirm'
-const CONFIRMING_TEXT = 'Confirming...'
 
 const SignTxButton = ({
   txSummary,
@@ -57,14 +56,13 @@ const SignTxButton = ({
     setOpen(true)
   }
 
-  const text = isSignatureProposalPending ? CONFIRMING_TEXT : CONFIRM_TEXT
   const isDisabled = !isSignable || !isSafeOwner || isPending || isSignatureProposalPending
 
   return (
     <>
       <Track {...TX_LIST_EVENTS.CONFIRM}>
         {compact ? (
-          <Tooltip title={text} arrow placement="top">
+          <Tooltip title={CONFIRM_TEXT} arrow placement="top">
             <span>
               <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
                 {isSignatureProposalPending ? <CircularProgress size={14} /> : <CheckIcon fontSize="small" />}
@@ -73,7 +71,7 @@ const SignTxButton = ({
           </Tooltip>
         ) : (
           <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
-            {text}
+            {CONFIRM_TEXT}
           </Button>
         )}
       </Track>
