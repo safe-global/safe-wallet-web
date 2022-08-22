@@ -2,21 +2,60 @@ import { ReactElement, SyntheticEvent, useCallback, useEffect } from 'react'
 import groupBy from 'lodash/groupBy'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { closeNotification, Notification, selectNotifications } from '@/store/notificationsSlice'
-import { Alert, AlertColor, Snackbar, SnackbarCloseReason } from '@mui/material'
+import { Alert, AlertColor, Link, Snackbar, SnackbarCloseReason } from '@mui/material'
 import css from './styles.module.css'
+import NextLink from 'next/link'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import Track from '../Track'
 
 const toastStyle = { position: 'static', margin: 1 }
 
-const Toast = ({ message, severity, onClose }: { message: string; severity: AlertColor; onClose: () => void }) => {
+export const NotificationLink = ({
+  link,
+  onClick,
+}: {
+  link: Notification['link']
+  onClick: (_: Event | SyntheticEvent) => void
+}): ReactElement | null => {
+  if (!link) {
+    return null
+  }
+
+  return (
+    <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title}>
+      <NextLink href={link.href} passHref>
+        <Link className={css.link} onClick={onClick}>
+          {link.title} <ChevronRightIcon />
+        </Link>
+      </NextLink>
+    </Track>
+  )
+}
+
+const Toast = ({
+  message,
+  variant,
+  link,
+  onClose,
+}: {
+  message: string
+  variant: AlertColor
+  link?: Notification['link']
+  onClose: () => void
+}) => {
   const handleClose = (_: Event | SyntheticEvent, reason?: SnackbarCloseReason) => {
     if (reason === 'clickaway') return
     onClose()
   }
 
+  const autoHideDuration = variant === 'info' || variant === 'success' ? 5000 : undefined
+
   return (
-    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={severity === 'success' ? 5000 : null}>
-      <Alert severity={severity} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
+    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={autoHideDuration}>
+      <Alert severity={variant} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
         {message}
+        <NotificationLink link={link} onClick={handleClose} />
       </Alert>
     </Snackbar>
   )
@@ -57,7 +96,7 @@ const Notifications = (): ReactElement | null => {
     <div className={css.container}>
       {visible.map((item) => (
         <div className={css.row} key={item.id}>
-          <Toast message={item.message} severity={item.variant || 'info'} onClose={() => handleClose(item)} />
+          <Toast {...item} onClose={() => handleClose(item)} />
         </div>
       ))}
     </div>
