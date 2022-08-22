@@ -107,7 +107,7 @@ export const TxSigners = ({
 
   // If final signer executes tx, `detailedExecutionInfo.confirmations` won't contain their confirmation
   const confirmations = useMemo(() => {
-    if (!isMultisigExecutionDetails(detailedExecutionInfo)) {
+    if (!detailedExecutionInfo || !isMultisigExecutionDetails(detailedExecutionInfo)) {
       return []
     }
 
