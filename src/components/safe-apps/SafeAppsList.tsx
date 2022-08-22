@@ -8,18 +8,33 @@ import { SafeAppsHeader } from './SafeAppsHeader'
 
 const SafeAppsList = () => {
   const [searchQuery, setSearchQuery] = React.useState('')
-  const { allSafeApps, remoteSafeAppsLoading, customSafeAppsLoading, addCustomApp, customSafeApps } = useSafeApps()
+  const {
+    allSafeApps,
+    pinnedSafeApps,
+    remoteSafeAppsLoading,
+    customSafeAppsLoading,
+    addCustomApp,
+    customSafeApps,
+    togglePin,
+  } = useSafeApps()
   const filteredApps = useAppsSearch(allSafeApps, searchQuery)
 
   let pageBody = (
     <>
-      <SafeAppsSection collapsible title={`CUSTOM APPS (${customSafeApps.length})`} apps={customSafeApps} />
       <SafeAppsSection
-        title={`ALL (${allSafeApps.length})`}
-        apps={allSafeApps}
+        collapsible
+        title={`PINNED APPS (${pinnedSafeApps.length})`}
+        apps={pinnedSafeApps}
+        onPinApp={togglePin}
+      />
+      <SafeAppsSection
+        collapsible
+        title={`CUSTOM APPS (${customSafeApps.length})`}
+        apps={customSafeApps}
         prependAddCustomAppCard
         onAddCustomApp={addCustomApp}
       />
+      <SafeAppsSection title={`ALL (${allSafeApps.length})`} apps={allSafeApps} onPinApp={togglePin} />
     </>
   )
   if (searchQuery) {

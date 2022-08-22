@@ -5,16 +5,10 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Grid from '@mui/material/Grid'
 import { AppCard } from '@/components/safe-apps/AppCard'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SafeAppCardVariants } from '../AppCard'
+import { SectionProps } from './types'
+import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
 
-type Props = {
-  title: string
-  apps: SafeAppData[]
-  cardVariant?: SafeAppCardVariants
-}
-
-const CollapsibleSection = ({ title, apps }: Props) => {
+const CollapsibleSection = ({ title, apps, onPinApp, prependAddCustomAppCard, onAddCustomApp }: SectionProps) => {
   return (
     <Accordion
       sx={{
@@ -26,6 +20,7 @@ const CollapsibleSection = ({ title, apps }: Props) => {
           pb: 1,
         },
       }}
+      defaultExpanded
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
@@ -50,9 +45,15 @@ const CollapsibleSection = ({ title, apps }: Props) => {
       </AccordionSummary>
       <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
         <Grid container rowSpacing={2} columnSpacing={2}>
+          {prependAddCustomAppCard && onAddCustomApp && (
+            <Grid item xs={12} sm={6} md={3} xl={1.5}>
+              <AddCustomAppCard onSave={onAddCustomApp} safeAppList={apps} />
+            </Grid>
+          )}
+
           {apps.map((a) => (
             <Grid key={a.id || a.url} item xs={12} sm={6} md={3} xl={1.5}>
-              <AppCard safeApp={a} />
+              <AppCard safeApp={a} onPin={onPinApp} />
             </Grid>
           ))}
         </Grid>

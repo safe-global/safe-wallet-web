@@ -11,18 +11,21 @@ import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SAFE_REACT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import ShareIcon from '@/public/images/share.svg'
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 //import DeleteIcon from '@/public/images/delete.svg'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
 type AppCardProps = {
   safeApp: SafeAppData
+  onPin?: (appId: number) => void
   variant?: SafeAppCardVariants
 }
 
 type CompactSafeAppCardProps = {
   safeApp: SafeAppData
   url: string
+  onPin?: (appId: number) => void
 }
 
 type AppCardContainerProps = {
@@ -82,7 +85,7 @@ const CompactAppCard = ({ url, safeApp }: CompactSafeAppCardProps): ReactElement
   </AppCardContainer>
 )
 
-const AppCard = ({ safeApp, variant = 'default' }: AppCardProps): ReactElement => {
+const AppCard = ({ safeApp, onPin, variant = 'default' }: AppCardProps): ReactElement => {
   const router = useRouter()
   const chainId = useChainId()
 
@@ -116,6 +119,21 @@ const AppCard = ({ safeApp, variant = 'default' }: AppCardProps): ReactElement =
             >
               <ShareIcon width={16} alt="Share icon" />
             </IconButton>
+            {onPin && (
+              <IconButton
+                aria-label={`Pin ${safeApp.name}`}
+                size="small"
+                onClick={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  onPin(safeApp.id)
+                }}
+                title="Click to pin app"
+                sx={{ width: '32px' }}
+              >
+                <BookmarkBorderIcon />
+              </IconButton>
+            )}
             {/* <IconButton aria-label={`Delete ${safeApp.name}`} size="small">
               <DeleteIcon width={16} alt="Delete icon" />
             </IconButton> */}

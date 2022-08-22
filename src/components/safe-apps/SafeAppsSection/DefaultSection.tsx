@@ -1,17 +1,10 @@
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { AppCard } from '@/components/safe-apps/AppCard'
 import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
+import { SectionProps } from './types'
 
-type Props = {
-  title: string
-  apps: SafeAppData[]
-  prependAddCustomAppCard?: boolean
-  onAddCustomApp?: (app: SafeAppData) => void
-}
-
-const DefaultSection = ({ title, apps, prependAddCustomAppCard = false, onAddCustomApp }: Props) => {
+const DefaultSection = ({ title, apps, prependAddCustomAppCard = false, onAddCustomApp, onPinApp }: SectionProps) => {
   return (
     <Grid
       container
@@ -34,7 +27,7 @@ const DefaultSection = ({ title, apps, prependAddCustomAppCard = false, onAddCus
 
       {apps.map((a) => (
         <Grid key={a.id || a.url} item xs={12} sm={6} md={3} xl={1.5}>
-          <AppCard safeApp={a} />
+          <AppCard safeApp={a} onPin={onPinApp} />
         </Grid>
       ))}
     </Grid>
