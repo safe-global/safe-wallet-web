@@ -24,7 +24,7 @@ export const RequiredConfirmation = ({
           <Typography paddingTop={3}>
             <b>{threshold}</b> out of <b>{owners}</b> owners.
           </Typography>
-          {isGranted && <ChangeThresholdDialog />}
+          {isGranted && owners > 1 && <ChangeThresholdDialog />}
         </Grid>
       </Grid>
     </Box>
