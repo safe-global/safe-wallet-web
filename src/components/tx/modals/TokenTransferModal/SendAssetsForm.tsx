@@ -15,12 +15,13 @@ import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { formatDecimals } from '@/utils/formatters'
-import { validateTokenAmount } from '@/utils/validation'
+import { validateAmount, validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import SendFromBlock from '../../SendFromBlock'
 import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
+import useSpendingLimit from '@/hooks/useSpendingLimit'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -77,9 +78,15 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
 
+  const type = watch(Field.type)
+  const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
+  const isSpendingLimitType = type === 'spendingLimit'
+
   const onMaxAmountClick = () => {
     if (!selectedToken) return
-    setValue(Field.amount, formatDecimals(selectedToken.balance, selectedToken.tokenInfo.decimals))
+
+    const amount = spendingLimit && isSpendingLimitType ? spendingLimit.amount : selectedToken.balance
+    setValue(Field.amount, formatDecimals(amount, selectedToken.tokenInfo.decimals))
   }
 
   return (
@@ -112,7 +119,9 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             </Select>
           </FormControl>
 
-          <SpendingLimitRow selectedToken={selectedToken?.tokenInfo} />
+          {!!spendingLimit && (
+            <SpendingLimitRow spendingLimit={spendingLimit} selectedToken={selectedToken?.tokenInfo} />
+          )}
 
           <FormControl fullWidth>
             <TextField
@@ -132,7 +141,10 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               }}
               {...register(Field.amount, {
                 required: true,
-                validate: (val) => validateTokenAmount(val, selectedToken),
+                validate: (val) =>
+                  isSpendingLimitType
+                    ? validateAmount(val, selectedToken?.tokenInfo.decimals, spendingLimit?.amount)
+                    : validateTokenAmount(val, selectedToken),
               })}
             />
           </FormControl>

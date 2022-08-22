@@ -1,14 +1,17 @@
 import { FormControl, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 import { formatUnits } from '@ethersproject/units'
-import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SpendingLimitState } from '@/store/spendingLimitsSlice'
 
-const SpendingLimitRow = ({ selectedToken }: { selectedToken: TokenInfo | undefined }) => {
-  const spendingLimit = useSpendingLimit(selectedToken)
+const SpendingLimitRow = ({
+  spendingLimit,
+  selectedToken,
+}: {
+  spendingLimit: SpendingLimitState
+  selectedToken: TokenInfo | undefined
+}) => {
   const { control } = useFormContext()
-
-  if (!spendingLimit) return null
 
   const formattedAmount = formatUnits(spendingLimit.amount, selectedToken?.decimals)
 
