@@ -24,8 +24,8 @@ export const NotificationLink = ({
 
   return (
     <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title}>
-      <NextLink onClick={onClick} href={link.href} passHref>
-        <Link className={css.link}>
+      <NextLink href={link.href} passHref>
+        <Link className={css.link} onClick={onClick}>
           {link.title} <ChevronRightIcon />
         </Link>
       </NextLink>
@@ -49,8 +49,10 @@ const Toast = ({
     onClose()
   }
 
+  const autoHideDuration = variant === 'info' || variant === 'success' ? 5000 : undefined
+
   return (
-    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={5000}>
+    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={autoHideDuration}>
       <Alert severity={variant} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
         {message}
         <NotificationLink link={link} onClick={handleClose} />
