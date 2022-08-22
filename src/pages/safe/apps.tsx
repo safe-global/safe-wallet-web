@@ -1,16 +1,25 @@
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
+import AppFrame from '@/components/safe-apps/AppFrame'
+import SafeAppsErrorBoundary from '@/components/safe-apps/SafeAppsErrorBoundary'
+import SafeAppsLoadError from '@/components/safe-apps/SafeAppsErrorBoundary/SafeAppsLoadError'
+import AppList from '@/components/safe-apps/AppList'
 import Head from 'next/head'
-import Grid from '@mui/material/Grid'
-import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
-import { AppCard } from '@/components/safe-apps/AppCard'
-import { SafeAppsHeader } from '@/components/safe-apps/SafeAppsHeader'
-import { IS_PRODUCTION } from '@/config/constants'
 
 const Apps: NextPage = () => {
-  const { allSafeApps, remoteSafeAppsLoading, customSafeAppsLoading, addCustomApp } = useSafeApps()
+  const router = useRouter()
+  const { appUrl } = router.query
 
-  if (remoteSafeAppsLoading || customSafeAppsLoading) {
-    return <p>Loading...</p>
+  if (!router.isReady) {
+    return null
+  }
+
+  if (appUrl) {
+    return (
+      <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => router.back()} />}>
+        <AppFrame appUrl={Array.isArray(appUrl) ? appUrl[0] : appUrl} />
+      </SafeAppsErrorBoundary>
+    )
   }
 
   return (
@@ -19,22 +28,7 @@ const Apps: NextPage = () => {
         <title>Safe Apps</title>
       </Head>
 
-      {!IS_PRODUCTION && <SafeAppsHeader onCustomAppSave={addCustomApp} safeAppList={allSafeApps} />}
-
-      <Grid
-        container
-        rowSpacing={2}
-        columnSpacing={2}
-        sx={{
-          p: 3,
-        }}
-      >
-        {allSafeApps.map((a) => (
-          <Grid key={a.id || a.url} item xs={12} sm={6} md={3} xl={1.5}>
-            <AppCard safeApp={a} />
-          </Grid>
-        ))}
-      </Grid>
+      <AppList />
     </main>
   )
 }

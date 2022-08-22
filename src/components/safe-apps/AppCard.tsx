@@ -1,5 +1,6 @@
 import { ReactElement, ReactNode, SyntheticEvent } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import Avatar from '@mui/material/Avatar'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -10,7 +11,7 @@ import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SAFE_REACT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import ShareIcon from '@/public/images/share.svg'
-//import DeleteIcon from '@/public/images/delete.svg'
+import { AppRoutes } from '@/config/routes'
 
 type AppCardProps = {
   safeApp: SafeAppData
@@ -24,20 +25,22 @@ type AppCardContainerProps = {
 export const AppCardContainer = ({ url, children }: AppCardContainerProps): ReactElement => {
   if (url) {
     return (
-      <a href={url} target="_blank" rel="noreferrer">
-        <Card
-          sx={({ palette }) => ({
-            height: 190,
-            transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
-            '&:hover': {
-              backgroundColor: palette.primary.background,
-              border: `2px solid ${palette.primary.light}`,
-            },
-          })}
-        >
-          {children}
-        </Card>
-      </a>
+      <Link href={url}>
+        <a rel="noreferrer">
+          <Card
+            sx={({ palette }) => ({
+              height: 190,
+              transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
+              '&:hover': {
+                backgroundColor: palette.primary.background,
+                border: `2px solid ${palette.primary.light}`,
+              },
+            })}
+          >
+            {children}
+          </Card>
+        </a>
+      </Link>
     )
   }
 
@@ -62,7 +65,7 @@ const AppCard = ({ safeApp }: AppCardProps): ReactElement => {
   const chainId = useChainId()
 
   const shareUrl = `${SAFE_REACT_URL}/share/safe-app?appUrl=${safeApp.url}&chainId=${chainId}`
-  const url = router.query.safe ? `${SAFE_REACT_URL}/${router.query.safe}/apps?appUrl=${safeApp.url}` : shareUrl
+  const url = router.query.safe ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${safeApp.url}` : shareUrl
 
   const onShareClick = (e: SyntheticEvent) => {
     e.preventDefault()
