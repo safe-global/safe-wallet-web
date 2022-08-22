@@ -3,7 +3,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 import { formatUnits } from '@ethersproject/units'
 import { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SpendingLimitState } from '@/store/spendingLimitsSlice'
-import { SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { SendAssetsField, SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 
 const SpendingLimitRow = ({
   spendingLimit,
@@ -23,9 +23,9 @@ const SpendingLimitRow = ({
         <Controller
           rules={{ required: true }}
           control={control}
-          name="type"
+          name={SendAssetsField.type}
           render={({ field }) => (
-            <RadioGroup {...field} defaultValue={SendTxType.multiSig} name="type-button-group">
+            <RadioGroup {...field} defaultValue={SendTxType.multiSig}>
               <FormControlLabel
                 value={SendTxType.multiSig}
                 label="Multisig Transaction"
