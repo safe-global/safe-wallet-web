@@ -13,7 +13,7 @@ export const trackEvent = ({
   label?: EventLabel
 }) => {
   if (!IS_PRODUCTION) {
-    console.info({ event, ...rest })
+    console.info('[Analytics]', { event, ...rest })
   }
 }
 
