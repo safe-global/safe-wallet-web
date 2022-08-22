@@ -17,7 +17,7 @@ const ExecuteToggle = ({
   }
 
   const infoIcon = (
-    <Tooltip title="If you want to sign the transaction now but manually execute it later, uncheck the box.">
+    <Tooltip title="If you want to sign the transaction now but manually execute it later, uncheck this box.">
       <InfoIcon fontSize="small" sx={{ verticalAlign: 'middle', marginLeft: 0.5 }} />
     </Tooltip>
   )
