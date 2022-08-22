@@ -37,7 +37,10 @@ export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }
   </Grid>
 )
 
-type SendTxType = 'multiSig' | 'spendingLimit'
+export enum SendTxType {
+  multiSig = 'multiSig',
+  spendingLimit = 'spendingLimit',
+}
 
 enum Field {
   recipient = 'recipient',
@@ -62,7 +65,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const { balances } = useBalances()
 
   const formMethods = useForm<SendAssetsFormData>({
-    defaultValues: { ...formData, [Field.type]: 'multiSig' },
+    defaultValues: { ...formData, [Field.type]: SendTxType.multiSig },
   })
   const {
     register,
@@ -80,7 +83,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
   const type = watch(Field.type)
   const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
-  const isSpendingLimitType = type === 'spendingLimit'
+  const isSpendingLimitType = type === SendTxType.spendingLimit
 
   const onMaxAmountClick = () => {
     if (!selectedToken) return
