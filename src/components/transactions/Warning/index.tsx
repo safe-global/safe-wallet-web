@@ -1,54 +1,49 @@
 import { ReactElement } from 'react'
 import { Alert, Link } from '@mui/material'
 import { tooltipClasses } from '@mui/material/Tooltip'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import css from './styles.module.css'
 import CustomTooltip from '@/components/common/CustomTooltip'
 
 const UNEXPECTED_DELEGATE_ARTICLE =
   'https://help.gnosis-safe.io/en/articles/6302452-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction'
 
-export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): ReactElement => (
-  <CustomTooltip
-    sx={{
-      [`& .${tooltipClasses.arrow}`]: {
-        left: '-46px !important', // place the arrow over the Alert icon
-      },
-    }}
-    title={
-      <>
-        This transaction calls a smart contract that will be able to modify your Safe.
-        {showWarning && (
-          <>
-            <br />
-            <Link href={UNEXPECTED_DELEGATE_ARTICLE} rel="noopener noreferrer" target="_blank">
-              Learn more
-            </Link>
-          </>
-        )}
-      </>
-    }
-    placement="top-start"
-    arrow
-  >
-    <Alert
-      className={css.alert}
-      sx={({ palette }) => ({
-        color: showWarning ? palette.warning.dark : palette.success.main,
-        backgroundColor: `${showWarning ? palette.warning.light : palette.success.background}`,
-        border: 0,
-        borderLeft: `3px solid ${showWarning ? palette.warning.dark : palette.success.main}`,
-
-        '&.MuiAlert-standardInfo .MuiAlert-icon': {
-          marginRight: '8px',
-          color: `${showWarning ? palette.warning.dark : palette.success.main}`,
+export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): ReactElement => {
+  const severity = !showWarning ? 'warning' : 'success'
+  return (
+    <CustomTooltip
+      sx={{
+        [`& .${tooltipClasses.arrow}`]: {
+          left: '-46px !important', // place the arrow over the Alert icon
         },
-      })}
-      severity="info"
+      }}
+      title={
+        <>
+          This transaction calls a smart contract that will be able to modify your Safe.
+          {showWarning && (
+            <>
+              <br />
+              <Link href={UNEXPECTED_DELEGATE_ARTICLE} rel="noopener noreferrer" target="_blank">
+                Learn more
+              </Link>
+            </>
+          )}
+        </>
+      }
+      placement="top-start"
+      arrow
     >
-      <b>{showWarning ? 'Unexpected Delegate Call' : 'Delegate Call'}</b>
-    </Alert>
-  </CustomTooltip>
-)
+      <Alert
+        className={css.alert}
+        sx={{ borderLeft: ({ palette }) => `3px solid ${palette[severity].main}` }}
+        severity={severity}
+        icon={<InfoOutlinedIcon />}
+      >
+        <b>{!showWarning ? 'Unexpected Delegate Call' : 'Delegate Call'}</b>
+      </Alert>
+    </CustomTooltip>
+  )
+}
 
 export const ThresholdWarning = (): ReactElement => (
   <CustomTooltip
@@ -63,17 +58,9 @@ export const ThresholdWarning = (): ReactElement => (
   >
     <Alert
       className={css.alert}
-      sx={({ palette }) => ({
-        color: palette.secondary.main,
-        background: palette.warning.light,
-        borderLeft: `3px solid ${palette.warning.dark}`,
-
-        '&.MuiAlert-standardInfo .MuiAlert-icon': {
-          marginRight: '8px',
-          color: palette.warning.dark,
-        },
-      })}
-      severity="info"
+      sx={{ borderLeft: ({ palette }) => `3px solid ${palette.warning.main}` }}
+      severity="warning"
+      icon={<InfoOutlinedIcon />}
     >
       <b>Confirmation policy change</b>
     </Alert>
