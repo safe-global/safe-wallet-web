@@ -30,3 +30,11 @@
 .willBeReplaced * {
   text-decoration: line-through;
 }
+
+@media (max-width: 600px) {
+  .disclaimerContainer {
+    gap: var(--space-1);
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

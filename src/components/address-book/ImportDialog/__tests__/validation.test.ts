@@ -5,6 +5,7 @@ import {
   hasValidAbEntryAddresses,
   hasValidAbEntryChainIds,
   hasValidAbHeader,
+  hasValidAbNames,
 } from '../validation'
 
 describe('Address book import validation', () => {
@@ -76,11 +77,33 @@ describe('Address book import validation', () => {
       expect(hasValidAbEntryAddresses(entries3)).toBe(false)
     })
   })
+
+  describe('hasValidAbNames', () => {
+    it('should return true if all entries have valid names', () => {
+      const entries = [
+        ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', 'chainId'],
+        ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', 'chainId1'],
+      ]
+
+      expect(hasValidAbNames(entries)).toBe(true)
+    })
+
+    it('should return false if any entry has invalid names', () => {
+      const entries = [
+        ['0xAb5e3288640396C3988af5a820510682f3C58adF', '', 'chainId'],
+        ['0x1F2504De05f5167650bEA', 'name2', 'chainId2'],
+      ]
+
+      expect(hasValidAbNames(entries)).toBe(false)
+    })
+  })
+
   describe('hasValidAbEntryChainIds', () => {
     it('should return true if all entries have valid chainIds', () => {
       const entries = [
         ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', '1'],
         ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', '4'],
+        ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', '   100'],
       ]
 
       expect(hasValidAbEntryChainIds(entries)).toBe(true)
@@ -92,7 +115,7 @@ describe('Address book import validation', () => {
         ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', ''],
       ]
       const entries2 = [
-        ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', 'abc'],
+        ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', ' 1 0 0 '],
         ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', '4', 'extra'],
       ]
       const entries3 = [['0xAb5e3288640396C3988af5a820510682f3C58adF'], []]
@@ -146,7 +169,7 @@ describe('Address book import validation', () => {
         meta: {} as ParseMeta,
       } as ParseResult<string[]>
 
-      expect(abOnUploadValidator(result)).toBe('Invalid or corrupt address book')
+      expect(abOnUploadValidator(result)).toBe('Invalid or corrupt address book header')
     })
 
     it('should return an error if no entries are present', () => {
@@ -159,7 +182,7 @@ describe('Address book import validation', () => {
       expect(abOnUploadValidator(result)).toBe('No entries found in address book')
     })
 
-    it('should return an error if some entries have empty values', () => {
+    it('should return an error if some entries have invalid addresses', () => {
       const result = {
         data: [
           ['address', 'name', 'chainId'],
@@ -169,20 +192,33 @@ describe('Address book import validation', () => {
         meta: {} as ParseMeta,
       } as ParseResult<string[]>
 
-      expect(abOnUploadValidator(result)).toBe('Address book contains invalid addresses')
+      expect(abOnUploadValidator(result)).toBe('Address book contains an invalid address on row 2')
+    })
+
+    it('should return an error if some entries have empty names', () => {
+      const result = {
+        data: [
+          ['address', 'name', 'chainId'],
+          ['0xAb5e3288640396C3988af5a820510682f3C58adF', '', '1'],
+        ],
+        errors: [],
+        meta: {} as ParseMeta,
+      } as ParseResult<string[]>
+
+      expect(abOnUploadValidator(result)).toBe('Address book contains an invalid name on row 2')
     })
 
     it('should return an error if some entries have invalid chain IDs', () => {
       const result = {
         data: [
           ['address', 'name', 'chainId'],
-          ['0x0', 'name', '2394857230948572034598723049587230495872304958704'],
+          ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', '2394857230948572034598723049587230495872304958704'],
         ],
         errors: [],
         meta: {} as ParseMeta,
       } as ParseResult<string[]>
 
-      expect(abOnUploadValidator(result)).toBe('Address book contains invalid addresses')
+      expect(abOnUploadValidator(result)).toBe('Address book contains an invalid chain ID on row 2')
     })
   })
 })

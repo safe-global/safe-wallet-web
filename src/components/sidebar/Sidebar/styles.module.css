@@ -8,7 +8,7 @@
 }
 
 .container {
-  width: 220px;
+  width: 230px;
   border-right: 1px solid var(--color-border-light);
 }
 
@@ -19,8 +19,7 @@
   max-height: calc(100vh - var(--header-height)); /* needed for scroll */
 }
 
-.drawer,
-.noSafe {
+.drawer {
   width: 400px;
   max-width: 90vw;
 }

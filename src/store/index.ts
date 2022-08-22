@@ -11,7 +11,7 @@ import { safeInfoSlice } from './safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { sessionSlice } from './sessionSlice'
 import { txHistorySlice, txHistoryMiddleware } from './txHistorySlice'
-import { txQueueSlice } from './txQueueSlice'
+import { txQueueSlice, txQueueMiddleware } from './txQueueSlice'
 import { addressBookSlice } from './addressBookSlice'
 import { notificationsSlice } from './notificationsSlice'
 import { getPreloadedState, persistState } from './persistStore'
@@ -50,7 +50,13 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   cookiesSlice.name,
 ]
 
-const middleware = [persistState(persistedSlices), txHistoryMiddleware, addedSafesMiddleware, cookiesMiddleware]
+const middleware = [
+  persistState(persistedSlices),
+  txHistoryMiddleware,
+  txQueueMiddleware,
+  addedSafesMiddleware,
+  cookiesMiddleware,
+]
 
 export const getPersistedState = () => {
   return getPreloadedState(persistedSlices)

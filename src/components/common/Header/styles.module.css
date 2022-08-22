@@ -40,6 +40,16 @@
   border-right: none;
 }
 
+@media (max-width: 900px) {
+  .logo {
+    display: none;
+  }
+
+  .menuButton {
+    display: flex;
+  }
+}
+
 @media (max-width: 600px) {
   .element {
     padding: 0 var(--space-1);
@@ -53,12 +63,7 @@
     padding-right: 0;
   }
 
-  .logo,
   .hideMobile {
     display: none;
-  }
-
-  .menuButton {
-    display: block;
   }
 }
