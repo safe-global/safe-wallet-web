@@ -1,4 +1,4 @@
-import { Box, Button, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { Box, Button, DialogContent, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import { useState } from 'react'
 
 import TxModal from '@/components/tx/TxModal'
@@ -20,7 +20,7 @@ interface ChangeThresholdData {
 
 const ChangeThresholdSteps: TxStepperProps['steps'] = [
   {
-    label: 'Change Threshold',
+    label: 'Change threshold',
     render: (data, onSubmit) => <ChangeThresholdStep data={data as ChangeThresholdData} onSubmit={onSubmit} />,
   },
 ]
@@ -50,15 +50,15 @@ export const ChangeThresholdDialog = () => {
 
 const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()
-  const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold)
+  const [selectedThreshold, setSelectedThreshold] = useState<number>()
 
   const handleChange = (event: SelectChangeEvent<number>) => {
-    setSelectedThreshold(parseInt(event.target.value.toString()))
+    const newThreshold = parseInt(event.target.value.toString())
+    setSelectedThreshold(newThreshold === data.threshold ? undefined : newThreshold)
   }
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
-    if (selectedThreshold === data.threshold) return
-
+    if (!selectedThreshold) return
     return createUpdateThresholdTx(selectedThreshold)
   }, [selectedThreshold])
 
@@ -70,28 +70,47 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
   }
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      isExecutable={safe.threshold === 1}
-      onSubmit={onChangeTheshold}
-      error={safeTxError}
-    >
-      <Typography mb={1}>Any transaction requires the confirmation of:</Typography>
+    <>
+      <DialogContent sx={{ marginTop: 4 }}>
+        <Typography mb={2}>Any transaction will require the confirmation of:</Typography>
 
-      <Grid container direction="row" gap={1} alignItems="center" mb={2}>
-        <Grid item xs={2}>
-          <Select value={selectedThreshold} onChange={handleChange} fullWidth>
-            {safe.owners.map((_, idx) => (
-              <MenuItem key={idx + 1} value={idx + 1}>
-                {idx + 1}
-              </MenuItem>
-            ))}
-          </Select>
+        <Grid container direction="row" gap={1} alignItems="center" mb={2}>
+          <Grid item xs={2}>
+            <Select value={selectedThreshold ?? data.threshold} onChange={handleChange} fullWidth>
+              {safe.owners.map((_, idx) => (
+                <MenuItem key={idx + 1} value={idx + 1}>
+                  {idx + 1}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+
+          <Grid item>
+            <Typography>out of {safe.owners.length} owner(s)</Typography>
+          </Grid>
         </Grid>
-        <Grid item>
-          <Typography>out of {safe.owners.length} owner(s)</Typography>
-        </Grid>
-      </Grid>
-    </SignOrExecuteForm>
+
+        {!selectedThreshold && (
+          <Typography mb={2}>
+            Current policy is{' '}
+            <b>
+              {data.threshold} out of {safe.owners.length}
+            </b>
+            .
+          </Typography>
+        )}
+      </DialogContent>
+
+      {selectedThreshold && (
+        <Box mt={-5}>
+          <SignOrExecuteForm
+            safeTx={safeTx}
+            isExecutable={safe.threshold === 1}
+            onSubmit={onChangeTheshold}
+            error={safeTxError}
+          />
+        </Box>
+      )}
+    </>
   )
 }
