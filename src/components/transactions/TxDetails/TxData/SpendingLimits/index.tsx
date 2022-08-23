@@ -11,6 +11,7 @@ import { sameAddress } from '@/utils/addresses'
 import { formatDecimals } from '@/utils/formatters'
 import { isSetAllowance, SpendingLimitMethods } from '@/utils/transaction-guards'
 import css from './styles.module.css'
+import chains from '@/config/chains'
 
 type SpendingLimitsProps = {
   txData?: TransactionData
@@ -27,7 +28,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
     txData?.dataDecoded?.parameters?.map(({ value }) => value) || []
 
   const resetTimeLabel = useMemo(
-    () => getResetTimeOptions(chain?.chainName).find(({ value }) => +value === +resetTimeMin)?.label,
+    () => getResetTimeOptions(chain?.chainId).find(({ value }) => +value === +resetTimeMin)?.label,
     [chain?.chainName, resetTimeMin],
   )
   const tokenInfo = useMemo(
@@ -108,9 +109,8 @@ const RINKEBY_RESET_TIME_OPTIONS = [
   { label: '1 hour', value: '60' },
 ]
 
-const getResetTimeOptions = (chainName = ''): { label: string; value: string }[] => {
-  const currentNetwork = chainName.toLowerCase()
-  return currentNetwork !== 'rinkeby' ? RESET_TIME_OPTIONS : RINKEBY_RESET_TIME_OPTIONS
+export const getResetTimeOptions = (chainId = ''): { label: string; value: string }[] => {
+  return chainId !== chains.rin ? RESET_TIME_OPTIONS : RINKEBY_RESET_TIME_OPTIONS
 }
 
 export default SpendingLimits
