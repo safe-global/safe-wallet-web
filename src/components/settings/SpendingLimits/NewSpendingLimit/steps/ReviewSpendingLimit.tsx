@@ -11,7 +11,6 @@ import { useSelector } from 'react-redux'
 import { selectSpendingLimits, SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { createAddDelegateTx, createResetAllowanceTx, createSetAllowanceTx } from '@/services/tx/spendingLimitParams'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
-import { TokenIcon } from '@/components/common/TokenAmount'
 import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from 'ethers/lib/utils'
 import { currentMinutes, relativeTime } from '@/utils/date'
@@ -21,6 +20,7 @@ import { parseUnits } from '@ethersproject/units'
 import { createMultiSendTx } from '@/services/tx/txSender'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import { trackEvent } from '@/services/analytics/analytics'
+import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 
 export const createNewSpendingLimitTx = async (
   data: NewSpendingLimitData,
@@ -120,25 +120,19 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
-      <Box textAlign="center" mb={3}>
-        <TokenIcon logoUri={logoUri} tokenSymbol={symbol} />
+      {token && (
+        <TokenTransferReview amount={data.amount} tokenInfo={token.tokenInfo}>
+          {!!existingSpendingLimit && (
+            <>
+              <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span" fontSize={20}>
+                {formatUnits(BigNumber.from(existingSpendingLimit.amount), decimals)} {symbol}
+              </Typography>
+              {' → '}
+            </>
+          )}
+        </TokenTransferReview>
+      )}
 
-        {existingSpendingLimit ? (
-          <Box display="flex" alignItems="center" justifyContent="center" gap="4px">
-            <Typography color="error" sx={{ textDecoration: 'line-through' }}>
-              {formatUnits(BigNumber.from(existingSpendingLimit.amount), decimals)} {symbol}
-            </Typography>
-            {' →'}
-            <Typography>
-              {data.amount} {symbol}
-            </Typography>
-          </Box>
-        ) : (
-          <Typography variant="h4">
-            {data.amount} {symbol}
-          </Typography>
-        )}
-      </Box>
       <Typography color={({ palette }) => palette.text.secondary} pb={1}>
         Beneficiary
       </Typography>

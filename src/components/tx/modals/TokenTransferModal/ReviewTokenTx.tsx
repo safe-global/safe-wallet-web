@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import { type ReactNode, type ReactElement } from 'react'
 import { Box, Typography } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
@@ -15,7 +15,15 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SendFromBlock from '../../SendFromBlock'
 
-const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData; tokenInfo: TokenInfo }) => {
+export const TokenTransferReview = ({
+  amount,
+  tokenInfo,
+  children,
+}: {
+  amount: number | string
+  tokenInfo: TokenInfo
+  children?: ReactNode
+}) => {
   return (
     <Box className={css.tokenPreview}>
       <Box className={css.tokenIcon}>
@@ -23,7 +31,8 @@ const TokenTransferReview = ({ params, tokenInfo }: { params: SendAssetsFormData
       </Box>
 
       <Box mt={1} fontSize={20}>
-        {params.amount} {tokenInfo.symbol}
+        {children}
+        {amount} {tokenInfo.symbol}
       </Box>
     </Box>
   )
@@ -52,7 +61,7 @@ const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement =
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
-      {token && <TokenTransferReview params={params} tokenInfo={token.tokenInfo} />}
+      {token && <TokenTransferReview amount={params.amount} tokenInfo={token.tokenInfo} />}
 
       <SendFromBlock />
 
