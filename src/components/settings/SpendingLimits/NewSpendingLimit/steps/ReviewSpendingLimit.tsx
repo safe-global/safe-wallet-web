@@ -1,6 +1,6 @@
 import { Typography, Box } from '@mui/material'
 import useBalances from '@/hooks/useBalances'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useAsync from '@/hooks/useAsync'
 import { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
@@ -10,8 +10,7 @@ import useChainId from '@/hooks/useChainId'
 import { useSelector } from 'react-redux'
 import { selectSpendingLimits, SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { createAddDelegateTx, createResetAllowanceTx, createSetAllowanceTx } from '@/services/tx/spendingLimitParams'
-import { RESET_TIME_OPTIONS } from '@/components/settings/SpendingLimits/NewSpendingLimit/steps/SpendingLimitForm'
-import { TokenIcon } from '@/components/common/TokenAmount'
+import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import { BigNumber } from '@ethersproject/bignumber'
 import { safeFormatUnits } from '@/utils/formatters'
 import { currentMinutes, relativeTime } from '@/utils/date'
@@ -21,6 +20,7 @@ import { parseUnits } from '@ethersproject/units'
 import { createMultiSendTx } from '@/services/tx/txSender'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import { trackEvent } from '@/services/analytics/analytics'
+import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 
 export const createNewSpendingLimitTx = async (
   data: NewSpendingLimitData,
@@ -99,10 +99,11 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
   const token = balances.items.find((item) => item.tokenInfo.address === data.tokenAddress)
   const { decimals, logoUri, symbol } = token?.tokenInfo || {}
 
-  const resetTime =
-    data.resetTime === '0'
+  const resetTime = useMemo(() => {
+    return data.resetTime === '0'
       ? 'One-time spending limit'
-      : RESET_TIME_OPTIONS.find((time) => time.value === data.resetTime)?.label
+      : getResetTimeOptions(chainId).find((time) => time.value === data.resetTime)?.label
+  }, [data.resetTime, chainId])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(() => {
     return createNewSpendingLimitTx(data, spendingLimits, chainId, decimals, existingSpendingLimit)
@@ -119,25 +120,18 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
-      <Box textAlign="center" mb={3}>
-        <TokenIcon logoUri={logoUri} tokenSymbol={symbol} />
-
-        {existingSpendingLimit ? (
-          <Box display="flex" alignItems="center" justifyContent="center" gap="4px">
-            <Typography color="error" sx={{ textDecoration: 'line-through' }}>
-              {safeFormatUnits(BigNumber.from(existingSpendingLimit.amount), decimals)} {symbol}
-            </Typography>
-            {' →'}
-            <Typography>
-              {data.amount} {symbol}
-            </Typography>
-          </Box>
-        ) : (
-          <Typography variant="h4">
-            {data.amount} {symbol}
-          </Typography>
-        )}
-      </Box>
+      {token && (
+        <TokenTransferReview amount={data.amount} tokenInfo={token.tokenInfo}>
+          {!!existingSpendingLimit && (
+            <>
+              <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span" fontSize={20}>
+                {safeFormatUnits(BigNumber.from(existingSpendingLimit.amount), decimals)} {symbol}
+              </Typography>
+              {' → '}
+            </>
+          )}
+        </TokenTransferReview>
+      )}
       <Typography color={({ palette }) => palette.text.secondary} pb={1}>
         Beneficiary
       </Typography>

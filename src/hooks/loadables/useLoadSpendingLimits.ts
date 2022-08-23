@@ -82,15 +82,11 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
     return txSubscribe(TxEvent.SUCCESS, () => setUpdateSpendingLimitsTag(Date.now()))
   }, [])
 
-  const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(
-    () => {
-      if (!provider || !safeLoaded || !safe.modules) return
+  const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(() => {
+    if (!provider || !safeLoaded || !safe.modules) return
 
-      return getSpendingLimits(provider, safe.modules, safeAddress, chainId)
-    },
-    [provider, safeLoaded, safe.modules?.length, safeAddress, chainId, updateSpendingLimitsTag],
-    false,
-  )
+    return getSpendingLimits(provider, safe.modules, safeAddress, chainId)
+  }, [provider, safeLoaded, safe.modules?.length, safeAddress, chainId, updateSpendingLimitsTag])
 
   useEffect(() => {
     if (error) {
