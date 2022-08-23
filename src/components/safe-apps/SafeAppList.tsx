@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useState } from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { SafeAppsSection } from './SafeAppsSection'
@@ -7,7 +7,7 @@ import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { SafeAppsHeader } from './SafeAppsHeader'
 
 const SafeAppList = () => {
-  const [searchQuery, setSearchQuery] = React.useState('')
+  const [searchQuery, setSearchQuery] = useState('')
   const {
     allSafeApps,
     pinnedSafeApps,

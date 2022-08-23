@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useEffect, useMemo, useCallback } from 'react'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { useCustomSafeApps } from '@/hooks/safe-apps/useCustomSafeApps'
@@ -22,7 +22,7 @@ const useDeadPinnedSafeAppsRemover = (
   pinnedSafeAppIds: Set<number>,
   updateCallback: (newIds: Set<number>) => void,
 ) => {
-  React.useEffect(() => {
+  useEffect(() => {
     if (remoteSafeApps.length > 0 && pinnedSafeAppIds.size > 0) {
       const filteredPinnedAppsIds = Array.from(pinnedSafeAppIds).filter((pinnedAppId) =>
         remoteSafeApps.some((app) => app.id === pinnedAppId),
@@ -41,17 +41,17 @@ const useSafeApps = (): ReturnType => {
 
   useDeadPinnedSafeAppsRemover(remoteSafeApps, pinnedSafeAppIds, updatePinnedSafeApps)
 
-  const allSafeApps = React.useMemo(
+  const allSafeApps = useMemo(
     () => remoteSafeApps.concat(customSafeApps).sort((a, b) => a.name.localeCompare(b.name)),
     [remoteSafeApps, customSafeApps],
   )
 
-  const pinnedSafeApps = React.useMemo(
+  const pinnedSafeApps = useMemo(
     () => remoteSafeApps.filter((app) => pinnedSafeAppIds.has(app.id)),
     [remoteSafeApps, pinnedSafeAppIds],
   )
 
-  const addCustomApp = React.useCallback(
+  const addCustomApp = useCallback(
     (app: SafeAppData) => {
       updateCustomSafeApps([...customSafeApps, app])
     },

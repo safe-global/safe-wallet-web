@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useState } from 'react'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useRouter } from 'next/router'
 import { Button, Box } from '@mui/material'
@@ -9,7 +9,7 @@ import { IS_PRODUCTION, SAFE_REACT_URL } from '@/config/constants'
 type Props = { onSave: (data: SafeAppData) => void; safeAppList: SafeAppData[] }
 
 const AddCustomAppCard = ({ onSave, safeAppList }: Props) => {
-  const [addCustomAppModalOpen, setAddCustomAppModalOpen] = React.useState(false)
+  const [addCustomAppModalOpen, setAddCustomAppModalOpen] = useState(false)
   const router = useRouter()
   const url = `${SAFE_REACT_URL}/${router.query.safe}/apps`
 
