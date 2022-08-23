@@ -20,7 +20,7 @@ import NonceForm from '../NonceForm'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import { BASE_TX_GAS } from '@/config/constants'
 import ModalDialog from '@/components/common/ModalDialog'
-import { AdvancedField, type AdvancedParameters } from './types'
+import { AdvancedField, type AdvancedParameters } from './types.d'
 
 const HELP_LINK = 'https://help.gnosis-safe.io/en/articles/4738445-advanced-transaction-parameters'
 
