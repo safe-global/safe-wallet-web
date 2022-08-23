@@ -41,7 +41,7 @@ type AppCardContainerProps = {
 
 const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): ReactElement => {
   const height = variant === 'compact' ? '120px' : '190px'
-  const width = variant === 'compact' ? height : 'auto'
+  const aspectRatio = variant === 'compact' ? '1 / 1' : 'auto'
 
   if (url) {
     return (
@@ -50,7 +50,7 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
           <Card
             sx={({ palette }) => ({
               height,
-              width,
+              aspectRatio,
               transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
               '&:hover': {
                 backgroundColor: palette.primary.background,
@@ -81,7 +81,7 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
   )
 }
 
-const CompactAppCard = ({ url, safeApp }: CompactSafeAppCardProps): ReactElement => (
+const CompactAppCard = ({ url, safeApp, onPin, pinned }: CompactSafeAppCardProps): ReactElement => (
   <AppCardContainer url={url} variant="compact">
     <Box
       sx={{
@@ -90,9 +90,25 @@ const CompactAppCard = ({ url, safeApp }: CompactSafeAppCardProps): ReactElement
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        position: 'relative',
       }}
     >
-      <img src={safeApp.iconUrl} style={{ width: 64, height: 64 }} alt={`${safeApp.name} logo`} />
+      <img src={safeApp.iconUrl} style={{ width: 52, height: 52 }} alt={`${safeApp.name} logo`} />
+      {onPin && (
+        <IconButton
+          aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
+          size="small"
+          onClick={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            onPin(safeApp.id)
+          }}
+          title={`Click to ${pinned ? 'unpin' : 'pin'} ${safeApp.name}`}
+          sx={{ width: '32px', position: 'absolute', top: 2, right: 2 }}
+        >
+          {pinned ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+        </IconButton>
+      )}
     </Box>
   </AppCardContainer>
 )
@@ -111,7 +127,7 @@ const AppCard = ({ safeApp, pinned, onPin, variant = 'default' }: AppCardProps):
   }
 
   if (variant === 'compact') {
-    return <CompactAppCard url={url} safeApp={safeApp} />
+    return <CompactAppCard url={url} safeApp={safeApp} pinned={pinned} onPin={onPin} />
   }
 
   return (
