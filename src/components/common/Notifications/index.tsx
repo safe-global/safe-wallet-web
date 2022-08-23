@@ -1,7 +1,7 @@
 import { ReactElement, SyntheticEvent, useCallback, useEffect } from 'react'
 import groupBy from 'lodash/groupBy'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { closeNotification, Notification, selectNotifications } from '@/store/notificationsSlice'
+import { closeNotification, Notification, readNotification, selectNotifications } from '@/store/notificationsSlice'
 import { Alert, AlertColor, Link, Snackbar, SnackbarCloseReason } from '@mui/material'
 import css from './styles.module.css'
 import NextLink from 'next/link'
@@ -38,14 +38,21 @@ const Toast = ({
   variant,
   link,
   onClose,
+  id,
 }: {
-  message: string
   variant: AlertColor
-  link?: Notification['link']
   onClose: () => void
-}) => {
+} & Notification) => {
+  const dispatch = useAppDispatch()
+
   const handleClose = (_: Event | SyntheticEvent, reason?: SnackbarCloseReason) => {
     if (reason === 'clickaway') return
+
+    // Manually closed
+    if (!reason) {
+      dispatch(readNotification({ id }))
+    }
+
     onClose()
   }
 
