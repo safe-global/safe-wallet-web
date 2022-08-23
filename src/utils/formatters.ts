@@ -1,17 +1,13 @@
 import { BigNumberish, type BigNumber } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
+import { formatAmount } from './formatNumber'
 
-const formatter = new Intl.NumberFormat([], {
-  style: 'decimal',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 8,
-})
-
-export const formatDecimals = (value: BigNumberish, decimals?: number | string): string => {
-  return formatter.format(Number(formatUnits(value, decimals)))
-}
 export const toDecimals = (value: BigNumberish, decimals?: number | string): number => {
   return Number(formatUnits(value, decimals))
+}
+
+export const formatDecimals = (value: BigNumberish, decimals?: number | string): string => {
+  return formatAmount(toDecimals(value, decimals))
 }
 
 export const toWei = (value: string, decimals?: number | string): BigNumber => {

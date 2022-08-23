@@ -17,11 +17,11 @@ describe('formatDecimals', () => {
   })
 
   it('should format a big number with custom decimals', () => {
-    expect(formatters.formatDecimals('99999910000000000000000', 6)).toEqual('99,999,910,000,000,000')
+    expect(formatters.formatDecimals('99999910000000000000000', 6)).toEqual('> 999T')
   })
 
   it('should format a fractional number with custom decimals', () => {
-    expect(formatters.formatDecimals('12000001', 6)).toEqual('12.000001')
+    expect(formatters.formatDecimals('120007', 6)).toEqual('0.12001')
   })
 })
 

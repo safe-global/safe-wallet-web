@@ -12,7 +12,7 @@ import { selectSpendingLimits, SpendingLimitState } from '@/store/spendingLimits
 import { createAddDelegateTx, createResetAllowanceTx, createSetAllowanceTx } from '@/services/tx/spendingLimitParams'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import { BigNumber } from '@ethersproject/bignumber'
-import { formatUnits } from 'ethers/lib/utils'
+import { safeFormatUnits } from '@/utils/formatters'
 import { currentMinutes, relativeTime } from '@/utils/date'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
@@ -125,14 +125,13 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
           {!!existingSpendingLimit && (
             <>
               <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span" fontSize={20}>
-                {formatUnits(BigNumber.from(existingSpendingLimit.amount), decimals)} {symbol}
+                {safeFormatUnits(BigNumber.from(existingSpendingLimit.amount), decimals)} {symbol}
               </Typography>
               {' → '}
             </>
           )}
         </TokenTransferReview>
       )}
-
       <Typography color={({ palette }) => palette.text.secondary} pb={1}>
         Beneficiary
       </Typography>
