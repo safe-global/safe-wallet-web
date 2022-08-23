@@ -14,16 +14,10 @@ import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import { txSubscribe, TxEvent } from '@/services/tx/txEvents'
 
 const useIsSignatureProposalPending = (txSummary: TransactionSummary) => {
-  const wallet = useWallet()
-  const isSignable = isSignableBy(txSummary, wallet?.address || '')
   const [isSignatureProposalPending, setIsSignatureProposalPending] = useState<boolean>(false)
 
-  useEffect(() => {
-    if (isSignable) {
-      setIsSignatureProposalPending(false)
-    }
-  }, [isSignable])
-
+  // After a signature proposal, we use the following as a loading flag
+  // because the confirmations array won't update until next poll
   useEffect(() => {
     return txSubscribe(TxEvent.SIGNATURE_PROPOSED, ({ txId }) => {
       if (txSummary.id === txId) {
