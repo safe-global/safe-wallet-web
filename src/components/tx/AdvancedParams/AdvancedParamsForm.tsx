@@ -6,10 +6,9 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 import { FLOAT_REGEX } from '@/utils/validation'
 import NonceForm from '../NonceForm'
-import InputValueHelper from '@/components/common/InputValueHelper'
-import { BASE_TX_GAS } from '@/config/constants'
 import ModalDialog from '@/components/common/ModalDialog'
 import { AdvancedField, type AdvancedParameters } from './types.d'
+import GasLimitInput from './GasLimitInput'
 
 const HELP_LINK = 'https://help.gnosis-safe.io/en/articles/4738445-advanced-transaction-parameters'
 
@@ -45,10 +44,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
   })
   const {
     register,
-    setValue,
     handleSubmit,
-    trigger,
-    watch,
     formState: { errors },
   } = formMethods
 
@@ -74,17 +70,6 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
     })
   }
 
-  const onResetGasLimit = () => {
-    setValue(AdvancedField.gasLimit, props.estimatedGasLimit)
-    trigger(AdvancedField.gasLimit)
-  }
-
-  const gasLimitError = errors.gasLimit
-    ? errors.gasLimit.type === 'min'
-      ? 'Gas limit must be at least 21000'
-      : errors.gasLimit.message
-    : undefined
-
   const onFormSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -102,7 +87,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                 <Grid item xs={6}>
                   <FormControl fullWidth>
                     <NonceForm
-                      name="nonce"
+                      name={AdvancedField.nonce}
                       nonce={params.nonce}
                       recommendedNonce={props.recommendedNonce}
                       readonly={props.nonceReadonly}
@@ -146,26 +131,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
 
                   {/* Gas limit */}
                   <Grid item xs={6}>
-                    <FormControl fullWidth>
-                      <TextField
-                        label={gasLimitError || 'Gas limit'}
-                        error={!!errors.gasLimit}
-                        autoComplete="off"
-                        InputProps={{
-                          endAdornment: (
-                            <InputValueHelper onClick={onResetGasLimit} disabled={!props.estimatedGasLimit}>
-                              Recommended
-                            </InputValueHelper>
-                          ),
-                        }}
-                        // @see https://github.com/react-hook-form/react-hook-form/issues/220
-                        InputLabelProps={{
-                          shrink: watch(AdvancedField.gasLimit) !== undefined,
-                        }}
-                        type="number"
-                        {...register(AdvancedField.gasLimit, { required: true, min: BASE_TX_GAS })}
-                      />
-                    </FormControl>
+                    <GasLimitInput recommendedGasLimit={props.estimatedGasLimit} />
                   </Grid>
 
                   {/* Gas price */}
