@@ -48,6 +48,9 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
         const amount = BigNumber.from(spendingLimit.amount)
         const formattedAmount = formatUnits(amount, token?.tokenInfo.decimals)
 
+        const spent = BigNumber.from(spendingLimit.spent)
+        const formattedSpent = formatUnits(spent, token?.tokenInfo.decimals)
+
         return {
           beneficiary: {
             rawValue: spendingLimit.beneficiary,
@@ -60,7 +63,7 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
             content: (
               <Box display="flex" alignItems="center" gap={1}>
                 <TokenIcon logoUri={token?.tokenInfo.logoUri} tokenSymbol={token?.tokenInfo.symbol} />
-                {`${spendingLimit.spent} of ${formattedAmount} ${token?.tokenInfo.symbol}`}
+                {`${formattedSpent} of ${formattedAmount} ${token?.tokenInfo.symbol}`}
               </Box>
             ),
           },

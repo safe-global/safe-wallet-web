@@ -11,7 +11,6 @@ import { AddressEx } from '@gnosis.pm/safe-react-gateway-sdk'
 import { sameAddress } from '@/utils/addresses'
 import { AllowanceModule } from '@/types/contracts'
 import { sameString } from '@gnosis.pm/safe-core-sdk/dist/src/utils'
-import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 
 const isModuleEnabled = (modules: string[], moduleAddress: string): boolean => {
   return modules?.some((module) => sameAddress(module, moduleAddress)) ?? false
@@ -76,11 +75,11 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
 
-  // Update spending limits whenever a transaction is executed
+  // Update spending limits whenever the tx history updates
   // TODO: Find a more optimised way to update them
   useEffect(() => {
-    return txSubscribe(TxEvent.SUCCESS, () => setUpdateSpendingLimitsTag(Date.now()))
-  }, [])
+    setUpdateSpendingLimitsTag(Date.now())
+  }, [safe.txHistoryTag])
 
   const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(() => {
     if (!provider || !safeLoaded || !safe.modules) return
