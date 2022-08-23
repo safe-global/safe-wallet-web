@@ -66,14 +66,14 @@ const SignOrExecuteForm = ({
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
-  const { advancedParams, setManualParams, gasPriceLoading } = useAdvancedParams({
+  const { advancedParams, setManualParams } = useAdvancedParams({
     nonce: tx?.data.nonce || 0,
     gasLimit,
     safeTxGas: tx?.data.safeTxGas,
   })
 
   // Estimating gas limit and price
-  const isEstimating = willExecute && (gasLimitLoading || gasPriceLoading)
+  const isEstimating = willExecute && gasLimitLoading
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
   const nonceReadonly = !!tx?.signatures.size || !!isRejection
 

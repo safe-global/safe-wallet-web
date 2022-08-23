@@ -5,7 +5,7 @@ import useGasPrice from '@/hooks/useGasPrice'
 const useAdvancedParams = ({ nonce, gasLimit, safeTxGas }: AdvancedParameters) => {
   const [manualParams, setManualParams] = useState<AdvancedParameters>()
 
-  const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
+  const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
 
   const advancedParams: AdvancedParameters = {
     nonce: manualParams?.nonce || nonce,
@@ -15,7 +15,7 @@ const useAdvancedParams = ({ nonce, gasLimit, safeTxGas }: AdvancedParameters) =
     safeTxGas: manualParams?.safeTxGas || safeTxGas,
   }
 
-  return { advancedParams, setManualParams, gasPriceLoading }
+  return { advancedParams, setManualParams }
 }
 
 export default useAdvancedParams
