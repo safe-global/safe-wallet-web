@@ -5,6 +5,7 @@ import { safeFormatUnits } from '@/utils/formatters'
 import { AdvancedParameters } from '../AdvancedParamsForm'
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics/events/modals'
+import { trackEvent } from '@/services/analytics/analytics'
 
 type GasParamsProps = Partial<AdvancedParameters> & {
   isLoading: boolean
@@ -38,6 +39,7 @@ const GasParams = ({
 
   const onChangeExpand = () => {
     setIsAccordionExpanded((prev) => !prev)
+    trackEvent({ ...MODALS_EVENTS.ESTIMATION, label: isAccordionExpanded ? 'Close' : 'Open' })
   }
 
   const chain = useCurrentChain()
@@ -60,27 +62,25 @@ const GasParams = ({
 
   return (
     <Accordion elevation={0} onChange={onChangeExpand}>
-      <Track {...MODALS_EVENTS.ESTIMATION} label={isAccordionExpanded ? 'Close' : 'Open'}>
-        <AccordionSummary>
-          {isExecution ? (
-            <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
-              <span>Estimated fee </span>
-              {isLoading ? (
-                <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
-              ) : (
-                <span>
-                  {totalFee} {chain?.nativeCurrency.symbol}
-                </span>
-              )}
-            </Typography>
-          ) : (
-            <Typography>
-              Signing transaction with nonce&nbsp;
-              {nonce || <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />}
-            </Typography>
-          )}
-        </AccordionSummary>
-      </Track>
+      <AccordionSummary>
+        {isExecution ? (
+          <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
+            <span>Estimated fee </span>
+            {isLoading ? (
+              <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
+            ) : (
+              <span>
+                {totalFee} {chain?.nativeCurrency.symbol}
+              </span>
+            )}
+          </Typography>
+        ) : (
+          <Typography>
+            Signing transaction with nonce&nbsp;
+            {nonce || <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />}
+          </Typography>
+        )}
+      </AccordionSummary>
 
       <AccordionDetails>
         {nonce && <GasDetail isLoading={false} name="Nonce" value={nonce.toString()} />}
