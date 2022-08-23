@@ -229,4 +229,68 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByText('Required')).toBeInTheDocument())
     })
   })
+
+  describe('Search', () => {
+    it('shows no results found text, when no results are found', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
+    })
+
+    it('shows apps matching the query', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
+    })
+  })
+
+  describe('Pinning', () => {
+    it('shows pinned apps', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
+    })
+
+    it('allows pinning apps', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
+    })
+
+    it('allows unpinning apps', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
+    })
+  })
 })
