@@ -1,5 +1,5 @@
 import { ReactNode, SyntheticEvent } from 'react'
-import { Link } from '@mui/material'
+import { InputAdornment, Link } from '@mui/material'
 
 type InputValueHelperProps = {
   children: ReactNode
@@ -14,9 +14,11 @@ const InputValueHelper = ({ children, onClick, disabled = false }: InputValueHel
   }
 
   return (
-    <Link component="button" onClick={handleClick} sx={disabled ? { visibility: 'hidden' } : undefined}>
-      {children}
-    </Link>
+    <InputAdornment position="end">
+      <Link component="button" onClick={handleClick} sx={disabled ? { visibility: 'hidden' } : undefined}>
+        {children}
+      </Link>
+    </InputAdornment>
   )
 }
 
