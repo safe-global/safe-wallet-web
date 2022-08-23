@@ -188,7 +188,6 @@ const SignOrExecuteForm = ({
           safeTxGas={advancedParams.safeTxGas}
           recommendedNonce={safeTx?.data.nonce}
           willExecute={willExecute}
-          isEstimating={isEstimating}
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
         />
@@ -203,7 +202,7 @@ const SignOrExecuteForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        <Typography variant="body2" color="text.disabled" textAlign="center" mt={3}>
+        <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
           You&apos;re about to {txId ? '' : 'create and '}
           {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
           wallet.

@@ -106,7 +106,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
     : undefined
 
   return (
-    <ModalDialog open dialogTitle="Advanced parameters">
+    <ModalDialog open dialogTitle="Advanced parameters" hideChainIndicator>
       <FormProvider {...formMethods}>
         <DialogTitle className={css.title}>Advanced parameters</DialogTitle>
         <form
@@ -118,7 +118,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
         >
           <DialogContent>
             <Grid container spacing={2}>
-              {props.nonce && (
+              {props.nonce !== undefined && (
                 <Grid item xs={6}>
                   <FormControl fullWidth>
                     <NonceForm

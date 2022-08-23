@@ -7,12 +7,6 @@ import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics/events/modals'
 import { trackEvent } from '@/services/analytics/analytics'
 
-type GasParamsProps = Partial<AdvancedParameters> & {
-  isLoading: boolean
-  isExecution: boolean
-  onEdit: () => void
-}
-
 const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
   const valueSkeleton = <Skeleton variant="text" sx={{ minWidth: '5em' }} />
   return (
@@ -25,13 +19,17 @@ const GasDetail = ({ name, value, isLoading }: { name: string; value: string; is
   )
 }
 
+type GasParamsProps = AdvancedParameters & {
+  isExecution: boolean
+  onEdit: () => void
+}
+
 const GasParams = ({
   nonce,
   gasLimit,
   maxFeePerGas,
   maxPriorityFeePerGas,
   safeTxGas,
-  isLoading,
   isExecution,
   onEdit,
 }: GasParamsProps): ReactElement => {
@@ -44,11 +42,12 @@ const GasParams = ({
 
   const chain = useCurrentChain()
 
+  const isLoading = !gasLimit || !maxFeePerGas || !maxPriorityFeePerGas
+
   // Total gas cost
-  const totalFee =
-    gasLimit && maxFeePerGas && maxPriorityFeePerGas
-      ? safeFormatUnits(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
-      : '> 0.001'
+  const totalFee = !isLoading
+    ? safeFormatUnits(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+    : '> 0.001'
 
   // Individual gas params
   const gasLimitString = gasLimit?.toString() || ''
@@ -83,7 +82,7 @@ const GasParams = ({
       </AccordionSummary>
 
       <AccordionDetails>
-        {nonce && <GasDetail isLoading={false} name="Nonce" value={nonce.toString()} />}
+        {nonce !== undefined && <GasDetail isLoading={false} name="Nonce" value={nonce.toString()} />}
 
         {!!safeTxGas && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
 

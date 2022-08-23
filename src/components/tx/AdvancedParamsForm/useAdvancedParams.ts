@@ -7,7 +7,7 @@ const useAdvancedParams = ({ nonce, gasLimit, safeTxGas }: AdvancedParameters) =
 
   const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
 
-  const advancedParams: Partial<AdvancedParameters> = {
+  const advancedParams: AdvancedParameters = {
     nonce: manualParams?.nonce || nonce,
     gasLimit: manualParams?.gasLimit || gasLimit,
     maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,

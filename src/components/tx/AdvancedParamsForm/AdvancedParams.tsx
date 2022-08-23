@@ -6,7 +6,6 @@ type Props = AdvancedParameters & {
   recommendedNonce?: number
   willExecute: boolean
   nonceReadonly: boolean
-  isEstimating: boolean
   onFormSubmit: (data: AdvancedParameters) => void
 }
 
@@ -19,18 +18,17 @@ const AdvancedParams = ({
   recommendedNonce,
   willExecute,
   nonceReadonly,
-  isEstimating,
   onFormSubmit,
 }: Props) => {
-  const [isEditingGas, setIsEditingGas] = useState<boolean>(false)
+  const [isEditing, setIsEditing] = useState<boolean>(false)
 
   const onAdvancedSubmit = (data: AdvancedParameters) => {
     onFormSubmit(data)
 
-    setIsEditingGas(false)
+    setIsEditing(false)
   }
 
-  return isEditingGas ? (
+  return isEditing ? (
     <AdvancedParamsForm
       nonce={nonce}
       gasLimit={gasLimit}
@@ -46,13 +44,12 @@ const AdvancedParams = ({
   ) : (
     <GasParams
       isExecution={willExecute}
-      isLoading={isEstimating}
       nonce={nonce}
       gasLimit={gasLimit}
       maxFeePerGas={maxFeePerGas}
       maxPriorityFeePerGas={maxPriorityFeePerGas}
       safeTxGas={safeTxGas}
-      onEdit={() => setIsEditingGas(true)}
+      onEdit={() => setIsEditing(true)}
     />
   )
 }
