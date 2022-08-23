@@ -1,20 +1,9 @@
 import { type SyntheticEvent } from 'react'
-import {
-  Button,
-  DialogTitle,
-  DialogActions,
-  FormControl,
-  Grid,
-  TextField,
-  Link,
-  Typography,
-  DialogContent,
-} from '@mui/material'
+import { Button, DialogActions, FormControl, Grid, TextField, Link, Typography, DialogContent } from '@mui/material'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { BigNumber } from 'ethers'
 import { FormProvider, useForm } from 'react-hook-form'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
-import css from './styles.module.css'
 import { FLOAT_REGEX } from '@/utils/validation'
 import NonceForm from '../NonceForm'
 import InputValueHelper from '@/components/common/InputValueHelper'
@@ -99,16 +88,14 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
   const onFormSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    handleSubmit(onSubmit)
+    handleSubmit(onSubmit)()
   }
 
   return (
     <ModalDialog open dialogTitle="Advanced parameters" hideChainIndicator>
-      <DialogContent>
-        <DialogTitle className={css.title}>Advanced parameters</DialogTitle>
-
-        <FormProvider {...formMethods}>
-          <form onSubmit={onFormSubmit}>
+      <FormProvider {...formMethods}>
+        <form onSubmit={onFormSubmit}>
+          <DialogContent>
             <Grid container spacing={2}>
               {/* Safe nonce */}
               {params.nonce !== undefined && (
@@ -218,20 +205,20 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                 <OpenInNewIcon fontSize="small" sx={{ verticalAlign: 'middle', marginLeft: 0.5 }} />
               </Link>
             </Typography>
+          </DialogContent>
 
-            {/* Buttons */}
-            <DialogActions className={css.actions}>
-              <Button color="inherit" onClick={onBack}>
-                Back
-              </Button>
+          {/* Buttons */}
+          <DialogActions>
+            <Button color="inherit" onClick={onBack}>
+              Back
+            </Button>
 
-              <Button variant="contained" type="submit">
-                Confirm
-              </Button>
-            </DialogActions>
-          </form>
-        </FormProvider>
-      </DialogContent>
+            <Button variant="contained" type="submit">
+              Confirm
+            </Button>
+          </DialogActions>
+        </form>
+      </FormProvider>
     </ModalDialog>
   )
 }
