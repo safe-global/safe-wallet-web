@@ -45,14 +45,17 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const isQueue = isTxQueued(tx.txStatus)
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
-  const submittedConfirmations = isMultisigExecutionInfo(tx.executionInfo)
-    ? tx.executionInfo.confirmationsSubmitted
-    : undefined
   const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo)
     ? tx.executionInfo.confirmationsRequired
     : undefined
+  const submittedConfirmations = isMultisigExecutionInfo(tx.executionInfo)
+    ? // Backend does not update confirmationsSubmitted for immediately executed transactions
+      isPending && tx.executionInfo.confirmationsSubmitted < tx.executionInfo.confirmationsRequired
+      ? requiredConfirmations
+      : tx.executionInfo.confirmationsSubmitted
+    : undefined
 
-  const displayConfirmations = isQueue && submittedConfirmations && requiredConfirmations
+  const displayConfirmations = isQueue && !!submittedConfirmations && !!requiredConfirmations
 
   return (
     <Box

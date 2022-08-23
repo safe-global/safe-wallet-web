@@ -21,9 +21,7 @@ jobs:
           key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Yarn install
-        run: |
-          mkdir -p .yarncache
-          yarn install --cache-folder ./.yarncache  --immutable
+        run: yarn install --immutable
 
       - name: Run tests
         run: 'yarn test:ci'

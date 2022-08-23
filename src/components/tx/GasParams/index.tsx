@@ -2,15 +2,10 @@ import { ReactElement, SyntheticEvent, useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Link, Grid } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
 import { safeFormatUnits } from '@/utils/formatters'
-import { AdvancedParameters } from '../AdvancedParamsForm'
+import { type AdvancedParameters } from '../AdvancedParams/types'
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics/events/modals'
-
-type GasParamsProps = Partial<AdvancedParameters> & {
-  isLoading: boolean
-  isExecution: boolean
-  onEdit: () => void
-}
+import { trackEvent } from '@/services/analytics/analytics'
 
 const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
   const valueSkeleton = <Skeleton variant="text" sx={{ minWidth: '5em' }} />
@@ -24,29 +19,29 @@ const GasDetail = ({ name, value, isLoading }: { name: string; value: string; is
   )
 }
 
-const GasParams = ({
-  nonce,
-  gasLimit,
-  maxFeePerGas,
-  maxPriorityFeePerGas,
-  safeTxGas,
-  isLoading,
-  isExecution,
-  onEdit,
-}: GasParamsProps): ReactElement => {
+type GasParamsProps = {
+  params: AdvancedParameters
+  isExecution: boolean
+  onEdit: () => void
+}
+
+const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElement => {
+  const { nonce, safeTxGas, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = params
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(false)
 
   const onChangeExpand = () => {
     setIsAccordionExpanded((prev) => !prev)
+    trackEvent({ ...MODALS_EVENTS.ESTIMATION, label: isAccordionExpanded ? 'Close' : 'Open' })
   }
 
   const chain = useCurrentChain()
 
+  const isLoading = !gasLimit || !maxFeePerGas || !maxPriorityFeePerGas
+
   // Total gas cost
-  const totalFee =
-    gasLimit && maxFeePerGas && maxPriorityFeePerGas
-      ? safeFormatUnits(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
-      : '> 0.001'
+  const totalFee = !isLoading
+    ? safeFormatUnits(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+    : '> 0.001'
 
   // Individual gas params
   const gasLimitString = gasLimit?.toString() || ''
@@ -60,30 +55,28 @@ const GasParams = ({
 
   return (
     <Accordion elevation={0} onChange={onChangeExpand}>
-      <Track {...MODALS_EVENTS.ESTIMATION} label={isAccordionExpanded ? 'Close' : 'Open'}>
-        <AccordionSummary>
-          {isExecution ? (
-            <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
-              <span>Estimated fee </span>
-              {isLoading ? (
-                <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
-              ) : (
-                <span>
-                  {totalFee} {chain?.nativeCurrency.symbol}
-                </span>
-              )}
-            </Typography>
-          ) : (
-            <Typography>
-              Signing the transaction with nonce&nbsp;
-              {nonce || <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />}
-            </Typography>
-          )}
-        </AccordionSummary>
-      </Track>
+      <AccordionSummary>
+        {isExecution ? (
+          <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
+            <span>Estimated fee </span>
+            {isLoading ? (
+              <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
+            ) : (
+              <span>
+                {totalFee} {chain?.nativeCurrency.symbol}
+              </span>
+            )}
+          </Typography>
+        ) : (
+          <Typography>
+            Signing the transaction with nonce&nbsp;
+            {nonce || <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />}
+          </Typography>
+        )}
+      </AccordionSummary>
 
       <AccordionDetails>
-        <GasDetail isLoading={nonce === undefined} name="Nonce" value={(nonce ?? '').toString()} />
+        {nonce !== undefined && <GasDetail isLoading={false} name="Nonce" value={nonce.toString()} />}
 
         {!!safeTxGas && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
 

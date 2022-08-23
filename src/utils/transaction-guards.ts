@@ -41,10 +41,10 @@ const isAddressEx = (owners: AddressEx[] | NamedAddress[]): owners is AddressEx[
 
 export const isOwner = (safeOwners: AddressEx[] | NamedAddress[] = [], walletAddress?: string) => {
   if (isAddressEx(safeOwners)) {
-    return safeOwners.some((owner) => owner.value.toLowerCase() === walletAddress?.toLowerCase())
+    return safeOwners.some((owner) => sameAddress(owner.value, walletAddress))
   }
 
-  return safeOwners.some((owner) => owner.address.toLowerCase() === walletAddress?.toLowerCase())
+  return safeOwners.some((owner) => sameAddress(owner.address, walletAddress))
 }
 
 export const isMultisigExecutionDetails = (value?: DetailedExecutionInfo): value is MultisigExecutionDetails => {
