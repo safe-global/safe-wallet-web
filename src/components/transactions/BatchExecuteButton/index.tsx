@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react'
+import { ReactElement, useCallback, useContext, useState } from 'react'
 import { Button } from '@mui/material'
 import css from './styles.module.css'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
@@ -8,16 +8,18 @@ import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import CustomTooltip from '@/components/common/CustomTooltip'
 import useBatchedTxs from '@/hooks/useBatchedTxs'
 import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
+import useIsGranted from '@/hooks/useIsGranted'
 
-const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transaction[])[] }) => {
+const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transaction[])[] }): ReactElement | null => {
   const [open, setOpen] = useState(false)
   const pendingTxs = useAppSelector(selectPendingTxs)
   const hoverContext = useContext(BatchExecuteHoverContext)
   const batchableTransactions = useBatchedTxs(items)
+  const isGranted = useIsGranted()
 
   const isBatchable = batchableTransactions.length > 1
   const hasPendingTx = batchableTransactions.some((tx) => pendingTxs[tx.transaction.id])
-  const isDisabled = !isBatchable || hasPendingTx
+  const isDisabled = !isBatchable || hasPendingTx || !isGranted
 
   const handleOnMouseEnter = useCallback(() => {
     hoverContext.setActiveHover(batchableTransactions.map((tx) => tx.transaction.id))
@@ -47,7 +49,7 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
             disabled={isDisabled}
             onClick={() => setOpen(true)}
           >
-            Execute batch {isBatchable && ` (${batchableTransactions.length})`}
+            Execute batch{isBatchable && ` (${batchableTransactions.length})`}
           </Button>
         </span>
       </CustomTooltip>
