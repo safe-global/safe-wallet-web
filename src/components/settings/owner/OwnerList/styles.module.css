@@ -1,9 +1,6 @@
 .actions {
-  visibility: hidden;
   display: flex;
   flex-direction: row;
-}
-
-.row:hover .actions {
-  visibility: initial;
+  justify-content: flex-end;
+  align-items: center;
 }

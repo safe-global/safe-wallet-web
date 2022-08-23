@@ -7,11 +7,9 @@ import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
-import useGasPrice from '@/hooks/useGasPrice'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import GasParams from '@/components/tx/GasParams'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import AdvancedParamsForm, { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
+import { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
@@ -20,6 +18,8 @@ import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { hasFeature } from '@/utils/chains'
+import AdvancedParams from '@/components/tx/AdvancedParamsForm/AdvancedParams'
+import useAdvancedParams from '@/components/tx/AdvancedParamsForm/useAdvancedParams'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -47,8 +47,6 @@ const SignOrExecuteForm = ({
   //
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
-  const [isEditingGas, setEditingGas] = useState<boolean>(false)
-  const [manualParams, setManualParams] = useState<AdvancedParameters>()
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
@@ -68,22 +66,16 @@ const SignOrExecuteForm = ({
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
-  // Estimate gas price
-  const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
-
-  // Take the manually set gas params or the estimated ones
-  const advancedParams: Partial<AdvancedParameters> = {
-    nonce: manualParams?.nonce || tx?.data.nonce,
-    gasLimit: manualParams?.gasLimit || gasLimit,
-    maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
-    maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
-    safeTxGas: manualParams?.safeTxGas || tx?.data.safeTxGas,
-  }
+  const { advancedParams, setManualParams } = useAdvancedParams({
+    nonce: tx?.data.nonce || 0,
+    gasLimit,
+    safeTxGas: tx?.data.safeTxGas,
+  })
 
   // Estimating gas limit and price
-  const isEstimating = willExecute && (gasLimitLoading || gasPriceLoading)
+  const isEstimating = willExecute && gasLimitLoading
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
-  const nonceReadonly = !!tx?.signatures.size || isRejection
+  const nonceReadonly = !!tx?.signatures.size || !!isRejection
 
   //
   // Callbacks
@@ -174,27 +166,12 @@ const SignOrExecuteForm = ({
       }
     }
 
-    // Close the form and remember the manually set params
-    setEditingGas(false)
     setManualParams(data)
   }
 
   const submitDisabled = !isSubmittable || isEstimating || !tx
 
-  return isEditingGas ? (
-    <AdvancedParamsForm
-      nonce={advancedParams.nonce || 0}
-      gasLimit={advancedParams.gasLimit}
-      maxFeePerGas={advancedParams.maxFeePerGas}
-      maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
-      safeTxGas={advancedParams.safeTxGas}
-      isExecution={willExecute}
-      recommendedNonce={safeTx?.data.nonce}
-      estimatedGasLimit={gasLimit?.toString()}
-      nonceReadonly={nonceReadonly}
-      onSubmit={onAdvancedSubmit}
-    />
-  ) : (
+  return (
     <form onSubmit={handleSubmit}>
       <DialogContent>
         {children}
@@ -203,15 +180,16 @@ const SignOrExecuteForm = ({
 
         {canExecute && !onlyExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} />}
 
-        <GasParams
-          isExecution={willExecute}
-          isLoading={isEstimating}
+        <AdvancedParams
           nonce={advancedParams.nonce}
           gasLimit={advancedParams.gasLimit}
           maxFeePerGas={advancedParams.maxFeePerGas}
           maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
-          safeTxGas={tx?.data.safeTxGas}
-          onEdit={() => setEditingGas(true)}
+          safeTxGas={advancedParams.safeTxGas}
+          recommendedNonce={safeTx?.data.nonce}
+          willExecute={willExecute}
+          nonceReadonly={nonceReadonly}
+          onFormSubmit={onAdvancedSubmit}
         />
 
         {(error || (willExecute && gasLimitError)) && (
@@ -224,7 +202,7 @@ const SignOrExecuteForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        <Typography variant="body2" color="text.disabled" textAlign="center" mt={3}>
+        <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
           You&apos;re about to {txId ? '' : 'create and '}
           {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
           wallet.

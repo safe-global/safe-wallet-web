@@ -103,6 +103,14 @@ const initTheme = (darkMode: boolean) => {
       },
     },
     components: {
+      MuiTableCell: {
+        styleOverrides: {
+          head: ({ theme }) => ({
+            ...theme.typography.body1,
+            color: theme.palette.secondary.light,
+          }),
+        },
+      },
       MuiButton: {
         variants: [
           {
