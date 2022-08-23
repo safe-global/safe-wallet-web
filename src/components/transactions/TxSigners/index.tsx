@@ -111,7 +111,7 @@ export const TxSigners = ({
   const { confirmations, confirmationsRequired, executor } = detailedExecutionInfo
 
   // Backend doesn't return all confirmations for immediately executed transactions
-  const numberOfConfirmations =
+  const confirmationsCount =
     isPending && confirmations.length < confirmationsRequired ? confirmationsRequired : confirmations.length
   const canExecute = wallet?.address ? isExecutable(txSummary, wallet.address) : false
   const confirmationsNeeded = confirmationsRequired - confirmations.length
@@ -137,23 +137,19 @@ export const TxSigners = ({
         <StepLabel icon={isConfirmed ? <CheckIcon /> : <CircleIcon />}>
           Confirmations{' '}
           <Box className={css.confirmationsTotal}>
-            ({`${numberOfConfirmations} of ${detailedExecutionInfo.confirmationsRequired}`})
+            ({`${confirmationsCount} of ${detailedExecutionInfo.confirmationsRequired}`})
           </Box>
         </StepLabel>
       </StyledStep>
-      {!isPending && (
-        <>
-          {!hideConfirmations && confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value))}
-          {confirmations.length > 0 && (
-            <StyledStep $state={StepState.CONFIRMED}>
-              <StepLabel icon={<DotIcon />}>
-                <Link component="button" onClick={toggleHide} fontSize="medium">
-                  {hideConfirmations ? 'Show all' : 'Hide all'}
-                </Link>
-              </StepLabel>
-            </StyledStep>
-          )}
-        </>
+      {!hideConfirmations && confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value))}
+      {confirmations.length > 0 && (
+        <StyledStep $state={StepState.CONFIRMED}>
+          <StepLabel icon={<DotIcon />}>
+            <Link component="button" onClick={toggleHide} fontSize="medium">
+              {hideConfirmations ? 'Show all' : 'Hide all'}
+            </Link>
+          </StepLabel>
+        </StyledStep>
       )}
       <StyledStep expanded $bold $state={executor ? StepState.CONFIRMED : StepState.DISABLED}>
         <StepLabel icon={executor ? <CheckIcon /> : <CircleIcon />} sx={{ marginBottom: 1, fontWeight: 'bold' }}>
