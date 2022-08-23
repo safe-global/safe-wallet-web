@@ -32,7 +32,7 @@ const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
       error={rejectError}
     >
       <Typography mb={2}>
-        This action will reject this transaction. A separate transaction will be performed to submit the rejection.
+        To reject the transaction, a separate rejection transaction will be created to replace the original one.
       </Typography>
 
       <Typography mb={2}>
@@ -40,8 +40,7 @@ const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
       </Typography>
 
       <Typography mb={2}>
-        You are about to create a rejection transaction and will have to confirm it with your currently connected
-        wallet.
+        You will need to confirm the rejection transaction with your currently connected wallet.
       </Typography>
     </SignOrExecuteForm>
   )

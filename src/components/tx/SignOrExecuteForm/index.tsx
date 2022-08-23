@@ -1,7 +1,7 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import type { SafeTransaction, TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
-import { Button, DialogContent } from '@mui/material'
+import { Button, DialogContent, Typography } from '@mui/material'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
@@ -202,6 +202,12 @@ const SignOrExecuteForm = ({
         {submitError && (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
+
+        <Typography variant="body2" color="text.disabled" textAlign="center" mt={3}>
+          You&apos;re about to {txId ? '' : 'create and '}
+          {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
+          wallet.
+        </Typography>
 
         <Button variant="contained" type="submit" disabled={submitDisabled}>
           {isEstimating ? 'Estimating...' : 'Submit'}

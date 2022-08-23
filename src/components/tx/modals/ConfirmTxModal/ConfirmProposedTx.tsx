@@ -9,11 +9,16 @@ import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { isExecutable, isSignableBy } from '@/utils/transaction-guards'
+import { Skeleton, Typography } from '@mui/material'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
   onSubmit: (data: null) => void
 }
+
+const SIGN_TEXT = 'Sign this transaction.'
+const EXECUTE_TEXT = 'Submit the form to execute this transaction.'
+const SIGN_EXECUTE_TEXT = 'Sign or immediately execute this transaction.'
 
 const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): ReactElement => {
   const wallet = useWallet()
@@ -27,6 +32,8 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
     return createExistingTx(chainId, safeAddress, txId)
   }, [txId, safeAddress, chainId])
 
+  const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
+
   return (
     <SignOrExecuteForm
       safeTx={safeTx}
@@ -35,7 +42,18 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
       isExecutable={canExecute}
       onlyExecute={!canSign}
       error={safeTxError}
-    />
+    >
+      <Typography mb={2}>{text}</Typography>
+
+      <Typography mb={3}>
+        Transaction nonce:&nbsp;
+        {safeTx ? (
+          <b>{safeTx?.data.nonce}</b>
+        ) : (
+          <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />
+        )}
+      </Typography>
+    </SignOrExecuteForm>
   )
 }
 
