@@ -23,8 +23,7 @@ jobs:
 
       - name: Yarn install
         run: |
-          mkdir -p .yarncache
-          yarn install --cache-folder ./.yarncache  --immutable
+          yarn install --immutable
           ./node_modules/.bin/cypress install
 
       - name: Build
