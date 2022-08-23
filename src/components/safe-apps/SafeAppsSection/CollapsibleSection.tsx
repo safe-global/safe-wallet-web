@@ -15,17 +15,16 @@ const CollapsibleSection = ({
   prependAddCustomAppCard,
   onAddCustomApp,
   pinnedIds,
+  cardVariant,
 }: SectionProps) => {
+  const columnSpacing = cardVariant === 'compact' ? 3 : 2
+
   return (
     <Accordion
       sx={{
         boxShadow: 'none',
         border: 'none',
         background: 'transparent',
-        '.MuiCollapse-wrapperInner': {
-          // the padding is needed to prevent the box-shadow on the app card from being cut off
-          pb: 1,
-        },
       }}
       defaultExpanded
     >
@@ -51,18 +50,28 @@ const CollapsibleSection = ({
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
-        <Grid container rowSpacing={2} columnSpacing={2}>
+        <Grid container rowSpacing={2} columnSpacing={columnSpacing}>
           {prependAddCustomAppCard && onAddCustomApp && (
             <Grid item xs={12} sm={6} md={3} xl={1.5}>
               <AddCustomAppCard onSave={onAddCustomApp} safeAppList={apps} />
             </Grid>
           )}
 
-          {apps.map((a) => (
-            <Grid key={a.id} item xs={12} sm={6} md={3} xl={1.5}>
-              <AppCard safeApp={a} onPin={onPinApp} pinned={pinnedIds?.has(a.id)} />
-            </Grid>
-          ))}
+          {apps.map((a) => {
+            if (cardVariant === 'compact') {
+              return (
+                <Grid key={a.id} item>
+                  <AppCard safeApp={a} onPin={onPinApp} pinned={pinnedIds?.has(a.id)} variant={cardVariant} />
+                </Grid>
+              )
+            }
+
+            return (
+              <Grid key={a.id} item xs={12} sm={6} md={3} xl={1.5}>
+                <AppCard safeApp={a} onPin={onPinApp} pinned={pinnedIds?.has(a.id)} variant={cardVariant} />
+              </Grid>
+            )
+          })}
         </Grid>
       </AccordionDetails>
     </Accordion>

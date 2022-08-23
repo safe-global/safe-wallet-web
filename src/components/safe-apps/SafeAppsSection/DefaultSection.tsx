@@ -11,12 +11,15 @@ const DefaultSection = ({
   onAddCustomApp,
   onPinApp,
   pinnedIds,
+  cardVariant,
 }: SectionProps) => {
+  const columnSpacing = cardVariant === 'compact' ? 3 : 2
+
   return (
     <Grid
       container
       rowSpacing={2}
-      columnSpacing={2}
+      columnSpacing={columnSpacing}
       sx={{
         p: 3,
       }}
@@ -32,13 +35,22 @@ const DefaultSection = ({
         </Grid>
       )}
 
-      {apps.map((a) => (
-        <Grid key={a.id} item xs={12} sm={6} md={3} xl={1.5}>
-          <AppCard safeApp={a} onPin={onPinApp} pinned={pinnedIds?.has(a.id)} />
-        </Grid>
-      ))}
+      {apps.map((a) => {
+        if (cardVariant === 'compact') {
+          return (
+            <Grid key={a.id} item>
+              <AppCard safeApp={a} onPin={onPinApp} pinned={pinnedIds?.has(a.id)} variant={cardVariant} />
+            </Grid>
+          )
+        }
+
+        return (
+          <Grid key={a.id} item xs={12} sm={6} md={3} xl={1.5}>
+            <AppCard safeApp={a} onPin={onPinApp} pinned={pinnedIds?.has(a.id)} variant={cardVariant} />
+          </Grid>
+        )
+      })}
     </Grid>
   )
 }
-
 export { DefaultSection }

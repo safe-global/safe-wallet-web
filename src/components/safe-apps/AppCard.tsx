@@ -36,16 +36,21 @@ type CompactSafeAppCardProps = {
 type AppCardContainerProps = {
   url?: string
   children: ReactNode
+  variant?: SafeAppCardVariants
 }
 
-const AppCardContainer = ({ url, children }: AppCardContainerProps): ReactElement => {
+const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): ReactElement => {
+  const height = variant === 'compact' ? '120px' : '190px'
+  const width = variant === 'compact' ? height : 'auto'
+
   if (url) {
     return (
       <Link href={url}>
         <a rel="noreferrer">
           <Card
             sx={({ palette }) => ({
-              height: 190,
+              height,
+              width,
               transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
               '&:hover': {
                 backgroundColor: palette.primary.background,
@@ -63,7 +68,7 @@ const AppCardContainer = ({ url, children }: AppCardContainerProps): ReactElemen
   return (
     <Card
       sx={({ palette }) => ({
-        height: 190,
+        height,
         transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
         '&:hover': {
           backgroundColor: palette.primary.background,
@@ -77,7 +82,7 @@ const AppCardContainer = ({ url, children }: AppCardContainerProps): ReactElemen
 }
 
 const CompactAppCard = ({ url, safeApp }: CompactSafeAppCardProps): ReactElement => (
-  <AppCardContainer url={url}>
+  <AppCardContainer url={url} variant="compact">
     <Box
       sx={{
         height: '100%',

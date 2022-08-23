@@ -181,6 +181,7 @@ const initTheme = (darkMode: boolean) => {
             borderRadius: theme.spacing(1),
             boxSizing: 'border-box',
             border: '2px solid transparent',
+            boxShadow: 'none',
           }),
         },
       },

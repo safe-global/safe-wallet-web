@@ -28,6 +28,7 @@ const SafeAppList = () => {
         apps={pinnedSafeApps}
         onPinApp={togglePin}
         pinnedIds={pinnedSafeAppIds}
+        cardVariant="compact"
       />
       <SafeAppsSection
         collapsible
