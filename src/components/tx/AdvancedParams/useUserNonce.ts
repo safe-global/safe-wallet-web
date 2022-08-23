@@ -2,7 +2,7 @@ import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import { getUserNonce } from '@/hooks/wallets/web3'
 
-const useUserNonce = (): number => {
+const useUserNonce = (): number | undefined => {
   const wallet = useWallet()
 
   const [userNonce] = useAsync<number>(() => {
@@ -10,7 +10,7 @@ const useUserNonce = (): number => {
     return getUserNonce(wallet.address)
   }, [wallet])
 
-  return userNonce ?? -1
+  return userNonce
 }
 
 export default useUserNonce

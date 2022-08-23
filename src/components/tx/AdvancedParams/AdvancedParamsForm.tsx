@@ -36,7 +36,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
     mode: 'onChange',
     defaultValues: {
       nonce: params.nonce,
-      userNonce: params.userNonce,
+      userNonce: params.userNonce || 0,
       gasLimit: params.gasLimit?.toString() || undefined,
       maxFeePerGas: params.maxFeePerGas ? safeFormatUnits(params.maxFeePerGas) : '',
       maxPriorityFeePerGas: params.maxPriorityFeePerGas ? safeFormatUnits(params.maxPriorityFeePerGas) : '',

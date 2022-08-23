@@ -26,7 +26,7 @@ type GasParamsProps = {
 }
 
 const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElement => {
-  const { nonce, safeTxGas, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = params
+  const { nonce, userNonce, safeTxGas, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = params
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(false)
 
   const onChangeExpand = () => {
@@ -76,7 +76,9 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
       </AccordionSummary>
 
       <AccordionDetails>
-        {nonce !== undefined && <GasDetail isLoading={false} name="Nonce" value={nonce.toString()} />}
+        {nonce !== undefined && <GasDetail isLoading={false} name="Safe transaction nonce" value={nonce.toString()} />}
+
+        {userNonce !== undefined && <GasDetail isLoading={false} name="Wallet nonce" value={userNonce.toString()} />}
 
         {!!safeTxGas && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
 
