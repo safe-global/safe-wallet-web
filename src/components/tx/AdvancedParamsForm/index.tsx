@@ -167,7 +167,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                       autoComplete="off"
                       type="number"
                       {...register(AdvancedField.userNonce)}
-                    ></TextField>
+                    />
                   </FormControl>
                 </Grid>
 
