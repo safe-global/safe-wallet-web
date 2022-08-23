@@ -7,7 +7,6 @@ import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
-import useGasPrice from '@/hooks/useGasPrice'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
@@ -67,14 +66,9 @@ const SignOrExecuteForm = ({
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
-  // Estimate gas price
-  const { maxFeePerGas, maxPriorityFeePerGas, gasPriceLoading } = useGasPrice()
-
-  const { advancedParams, setManualParams } = useAdvancedParams({
+  const { advancedParams, setManualParams, gasPriceLoading } = useAdvancedParams({
     nonce: tx?.data.nonce || 0,
     gasLimit,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
     safeTxGas: tx?.data.safeTxGas,
   })
 
