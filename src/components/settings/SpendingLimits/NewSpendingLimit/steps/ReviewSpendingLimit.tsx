@@ -98,7 +98,7 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
   }, [spendingLimits, data])
 
   const token = balances.items.find((item) => item.tokenInfo.address === data.tokenAddress)
-  const { decimals, logoUri, symbol } = token?.tokenInfo || {}
+  const { decimals, symbol } = token?.tokenInfo || {}
 
   const isOneTime = data.resetTime === '0'
   const resetTime = useMemo(() => {
@@ -149,10 +149,14 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
           <SpendingLimitLabel
             label={
               <>
-                <Typography color="error" sx={{ textDecoration: 'line-through' }} display="inline" component="span">
-                  {relativeTime(existingSpendingLimit.lastResetMin, existingSpendingLimit.resetTimeMin)}
-                </Typography>
-                {' →'}
+                {existingSpendingLimit.resetTimeMin !== data.resetTime && (
+                  <>
+                    <Typography color="error" sx={{ textDecoration: 'line-through' }} display="inline" component="span">
+                      {relativeTime(existingSpendingLimit.lastResetMin, existingSpendingLimit.resetTimeMin)}
+                    </Typography>
+                    {' → '}
+                  </>
+                )}
                 <Typography display="inline" component="span">
                   {resetTime}
                 </Typography>
