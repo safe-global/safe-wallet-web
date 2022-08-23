@@ -50,7 +50,7 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
 
   const onEditClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    !isLoading && onEdit()
+    onEdit()
   }
 
   return (
@@ -92,11 +92,15 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
           </>
         )}
 
-        <Track {...MODALS_EVENTS.EDIT_ESTIMATION}>
-          <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
-            Edit
-          </Link>
-        </Track>
+        {!isExecution || (isExecution && !isLoading) ? (
+          <Track {...MODALS_EVENTS.EDIT_ESTIMATION}>
+            <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
+              Edit
+            </Link>
+          </Track>
+        ) : (
+          <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em', mt: 2 }} />
+        )}
       </AccordionDetails>
     </Accordion>
   )
