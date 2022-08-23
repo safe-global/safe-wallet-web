@@ -12,8 +12,6 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
-const REJECT_TEXT = 'Reject'
-
 const RejectTxButton = ({
   txSummary,
   compact = false,
@@ -43,7 +41,7 @@ const RejectTxButton = ({
     <>
       <Track {...TX_LIST_EVENTS.REJECT}>
         {compact ? (
-          <Tooltip title={REJECT_TEXT} arrow placement="top">
+          <Tooltip title="Reject" arrow placement="top">
             <span>
               <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>
                 <HighlightOffIcon fontSize="small" />
@@ -52,7 +50,7 @@ const RejectTxButton = ({
           </Tooltip>
         ) : (
           <Button onClick={onClick} color="error" variant="contained" disabled={isDisabled} size="stretched">
-            {REJECT_TEXT}
+            Reject
           </Button>
         )}
       </Track>
