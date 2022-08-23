@@ -113,7 +113,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned }: CompactSafeAppCardProps
             event.stopPropagation()
             onPin(safeApp.id)
           }}
-          title={`Click to ${pinned ? 'unpin' : 'pin'} ${safeApp.name}`}
+          title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
           sx={{ width: '32px', position: 'absolute', top: 2, right: 2 }}
         >
           {pinned ? <BookmarkIcon /> : <BookmarkBorderIcon />}
