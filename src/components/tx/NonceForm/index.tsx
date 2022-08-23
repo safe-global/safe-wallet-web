@@ -40,11 +40,11 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
       label={<>{formState?.errors[name]?.message || nonceWarning || 'Safe transaction nonce'}</>}
       InputProps={{
         endAdornment: !readonly && recommendedNonce !== undefined && recommendedNonce !== currentNonce && (
-          <IconButton onClick={onResetNonce} size="small" color="primary">
-            <Tooltip title="Reset to recommended nonce">
+          <Tooltip title="Reset to recommended nonce">
+            <IconButton onClick={onResetNonce} size="small" color="primary">
               <RotateLeftIcon />
-            </Tooltip>
-          </IconButton>
+            </IconButton>
+          </Tooltip>
         ),
       }}
       // @see https://github.com/react-hook-form/react-hook-form/issues/220
