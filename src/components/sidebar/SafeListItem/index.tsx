@@ -39,7 +39,7 @@ const SafeListItem = ({
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const allAddressBooks = useAppSelector(selectAllAddressBooks)
   const currChainId = useChainId()
-  const isCurrentSafe = currChainId === currChainId && sameAddress(safeAddress, address)
+  const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const name = allAddressBooks[chainId]?.[address]
   const isOpen = sameAddress(address, safeAddress)
   const shortName = chain?.shortName || ''
