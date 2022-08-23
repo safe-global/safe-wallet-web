@@ -16,8 +16,8 @@ import { txSubscribe, TxEvent } from '@/services/tx/txEvents'
 const useIsSignatureProposalPending = (txSummary: TransactionSummary) => {
   const [isSignatureProposalPending, setIsSignatureProposalPending] = useState<boolean>(false)
 
-  // After a signature proposal, we use the following as a loading flag
-  // because the confirmations array won't update until next poll
+  // There's lag between a successful signature proposal w/ backend and the queued tx confirmation list updating
+  // so we need a local pending state until the confirmation list successfully updates
   useEffect(() => {
     return txSubscribe(TxEvent.SIGNATURE_PROPOSED, ({ txId }) => {
       if (txSummary.id === txId) {
