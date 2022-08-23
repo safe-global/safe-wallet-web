@@ -15,6 +15,7 @@ import useIsGranted from '@/hooks/useIsGranted'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import { TokenIcon } from '@/components/common/TokenAmount'
+import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 
 const headCells = [
   { id: 'beneficiary', label: 'Beneficiary' },
@@ -66,7 +67,12 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
           },
           resetTime: {
             rawValue: spendingLimit.resetTimeMin,
-            content: <div>{relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}</div>,
+            content: (
+              <SpendingLimitLabel
+                label={relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}
+                isOneTime={spendingLimit.resetTimeMin === '0'}
+              />
+            ),
           },
           actions: {
             rawValue: '',
