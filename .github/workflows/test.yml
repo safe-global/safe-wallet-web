@@ -18,7 +18,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Yarn install
         run: |
