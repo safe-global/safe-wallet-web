@@ -18,11 +18,13 @@ const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps)
         <Grid container px={1} alignItems="center" gap={2}>
           <Grid item>{steps[activeStep].label}</Grid>
 
-          <Grid item>
-            <Typography className={css.stepIndicator} variant="caption" color="border.main">
-              Step {activeStep + 1} out of {steps.length}
-            </Typography>
-          </Grid>
+          {steps.length > 1 && (
+            <Grid item>
+              <Typography className={css.stepIndicator} variant="caption" color="border.main">
+                Step {activeStep + 1} out of {steps.length}
+              </Typography>
+            </Grid>
+          )}
         </Grid>
       </ModalDialogTitle>
 

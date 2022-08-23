@@ -1,4 +1,15 @@
-import { Button, DialogTitle, DialogActions, FormControl, Grid, Paper, TextField } from '@mui/material'
+import {
+  Button,
+  DialogTitle,
+  DialogActions,
+  FormControl,
+  Grid,
+  Paper,
+  TextField,
+  Link,
+  Typography,
+} from '@mui/material'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { BigNumber } from 'ethers'
 import { FormProvider, useForm } from 'react-hook-form'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
@@ -7,7 +18,8 @@ import { FLOAT_REGEX } from '@/utils/validation'
 import NonceForm from '../NonceForm'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import { BASE_TX_GAS } from '@/config/constants'
-import useSafeInfo from '@/hooks/useSafeInfo'
+
+const HELP_LINK = 'https://help.gnosis-safe.io/en/articles/4738445-advanced-transaction-parameters'
 
 enum AdvancedField {
   nonce = 'nonce',
@@ -42,8 +54,6 @@ type FormData = {
 }
 
 const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
-  const { safe } = useSafeInfo()
-
   const formMethods = useForm<FormData>({
     mode: 'onChange',
     defaultValues: {
@@ -183,6 +193,13 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
               </>
             )}
           </Grid>
+
+          <Typography mt={2}>
+            <Link href={HELP_LINK}>
+              How can I configure these parameters manually?
+              <OpenInNewIcon fontSize="small" sx={{ verticalAlign: 'middle', marginLeft: 0.5 }} />
+            </Link>
+          </Typography>
 
           <DialogActions className={css.actions}>
             <Button color="inherit" onClick={onBack}>
