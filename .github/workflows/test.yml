@@ -22,7 +22,7 @@ jobs:
 
       - name: Yarn install
         run: |
-          mkdir .yarncache
+          mkdir -p .yarncache
           yarn install --cache-folder ./.yarncache  --immutable
 
       - name: Run tests

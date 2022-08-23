@@ -199,8 +199,6 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
             {/* Gas price */}
             {props.isExecution && (
               <>
-                <Grid item xs={12} sx={{ padding: '0 !important' }} />
-
                 <Grid item xs={6}>
                   <FormControl fullWidth>
                     <TextField

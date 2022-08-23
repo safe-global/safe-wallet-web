@@ -20,7 +20,7 @@ jobs:
 
       - name: Yarn install
         run: |
-          mkdir .yarncache
+          mkdir -p .yarncache
           yarn install --cache-folder ./.yarncache --immutable
 
       - uses: Maggi64/eslint-plus-action@master
