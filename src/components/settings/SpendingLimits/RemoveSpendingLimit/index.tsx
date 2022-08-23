@@ -12,6 +12,9 @@ import { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { relativeTime } from '@/utils/date'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import { trackEvent } from '@/services/analytics/analytics'
+import useBalances from '@/hooks/useBalances'
+import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
+import { safeFormatUnits } from '@/utils/formatters'
 
 export const RemoveSpendingLimit = ({
   data,
@@ -23,6 +26,8 @@ export const RemoveSpendingLimit = ({
   const { safe } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3()
+  const { balances } = useBalances()
+  const token = balances.items.find((item) => item.tokenInfo.address === data.token)
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     const spendingLimitAddress = getSpendingLimitModuleAddress(chainId)
@@ -48,6 +53,12 @@ export const RemoveSpendingLimit = ({
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
+      {token && (
+        <TokenTransferReview
+          amount={safeFormatUnits(data.amount, token.tokenInfo.decimals)}
+          tokenInfo={token.tokenInfo}
+        />
+      )}
       <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
       <EthHashInfo address={data.beneficiary} showCopyButton hasExplorer shortAddress={false} />
       <Typography mt={2} sx={({ palette }) => ({ color: palette.secondary.light })}>
