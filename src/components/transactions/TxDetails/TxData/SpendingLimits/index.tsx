@@ -28,7 +28,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
     txData?.dataDecoded?.parameters?.map(({ value }) => value) || []
 
   const resetTimeLabel = useMemo(
-    () => getResetTimeOptions(chain?.chainName).find(({ value }) => +value === +resetTimeMin)?.label,
+    () => getResetTimeOptions(chain?.chainId).find(({ value }) => +value === +resetTimeMin)?.label,
     [chain?.chainName, resetTimeMin],
   )
   const tokenInfo = useMemo(
