@@ -41,7 +41,6 @@ const SafeListItem = ({
   const currChainId = useChainId()
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const name = allAddressBooks[chainId]?.[address]
-  const isOpen = sameAddress(address, safeAddress)
   const shortName = chain?.shortName || ''
 
   // Scroll to the current Safe
@@ -71,8 +70,8 @@ const SafeListItem = ({
         <ListItemButton
           key={address}
           onClick={closeDrawer}
-          selected={isOpen}
-          className={classnames(css.safe, { [css.open]: isOpen })}
+          selected={isCurrentSafe}
+          className={classnames(css.safe, { [css.open]: isCurrentSafe })}
           ref={safeRef}
         >
           <ListItemIcon>
