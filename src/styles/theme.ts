@@ -341,7 +341,6 @@ const initTheme = (darkMode: boolean) => {
       MuiFilledInput: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: 10,
             backgroundColor: theme.palette.background.main,
             border: '1px solid transparent',
             transition: 'border-color 0.2s',
