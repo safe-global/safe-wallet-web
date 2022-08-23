@@ -84,9 +84,9 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
 
   const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(
     () => {
-      if (!provider || !safeLoaded || !safe.modules) return
+      if (!provider || !safeLoaded) return
 
-      return getSpendingLimits(provider, safe.modules, safeAddress, chainId)
+      return safe.modules ? getSpendingLimits(provider, safe.modules, safeAddress, chainId) : Promise.resolve([])
     },
     [provider, safeLoaded, safe.modules?.length, safeAddress, chainId, updateSpendingLimitsTag],
     false,
