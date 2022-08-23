@@ -150,7 +150,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                     type="number"
                     disabled={props.nonceReadonly}
                     {...register(AdvancedField.safeTxGas, { required: true, min: 0 })}
-                  ></TextField>
+                  />
                 </FormControl>
               )}
             </Grid>
