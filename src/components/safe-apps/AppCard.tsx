@@ -39,9 +39,19 @@ type AppCardContainerProps = {
   variant?: SafeAppCardVariants
 }
 
+const enum AppCardVariantHeights {
+  compact = '120px',
+  default = '180px',
+}
+
+const enum AppCardVariantAspectRatio {
+  compact = '1 / 1',
+  default = 'auto',
+}
+
 const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): ReactElement => {
-  const height = variant === 'compact' ? '120px' : '190px'
-  const aspectRatio = variant === 'compact' ? '1 / 1' : 'auto'
+  const height = variant === 'compact' ? AppCardVariantHeights.compact : AppCardVariantHeights.default
+  const aspectRatio = variant === 'compact' ? AppCardVariantAspectRatio.compact : AppCardVariantAspectRatio.default
 
   if (url) {
     return (
