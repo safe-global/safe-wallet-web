@@ -1,9 +1,8 @@
 import { ReactElement } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { TextField, Tooltip } from '@mui/material'
+import { IconButton, TextField, Tooltip } from '@mui/material'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import InputValueHelper from '@/components/common/InputValueHelper'
 
 type NonceFormProps = {
   name: string
@@ -41,11 +40,11 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
       label={<>{formState?.errors[name]?.message || nonceWarning || 'Safe transaction nonce'}</>}
       InputProps={{
         endAdornment: !readonly && recommendedNonce !== undefined && recommendedNonce !== currentNonce && (
-          <InputValueHelper onClick={onResetNonce}>
+          <IconButton onClick={onResetNonce} size="small" color="primary">
             <Tooltip title="Reset to recommended nonce">
               <RotateLeftIcon />
             </Tooltip>
-          </InputValueHelper>
+          </IconButton>
         ),
       }}
       // @see https://github.com/react-hook-form/react-hook-form/issues/220

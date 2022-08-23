@@ -1,7 +1,6 @@
-import { FormControl, TextField, Tooltip } from '@mui/material'
+import { FormControl, IconButton, TextField, Tooltip } from '@mui/material'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import { useFormContext } from 'react-hook-form'
-import InputValueHelper from '@/components/common/InputValueHelper'
 import { BASE_TX_GAS } from '@/config/constants'
 import { AdvancedField } from './types.d'
 
@@ -38,11 +37,11 @@ const GasLimitInput = ({ recommendedGasLimit }: { recommendedGasLimit?: string }
         autoComplete="off"
         InputProps={{
           endAdornment: recommendedGasLimit && recommendedGasLimit !== currentGasLimit.toString() && (
-            <InputValueHelper onClick={onResetGasLimit}>
-              <Tooltip title="Reset to recommended gas limit">
+            <Tooltip title="Reset to recommended gas limit">
+              <IconButton onClick={onResetGasLimit} size="small" color="primary">
                 <RotateLeftIcon />
-              </Tooltip>
-            </InputValueHelper>
+              </IconButton>
+            </Tooltip>
           ),
         }}
         // @see https://github.com/react-hook-form/react-hook-form/issues/220
