@@ -36,7 +36,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
       defaultValue={nonce || ''}
       disabled={nonce == null || readonly}
       error={!!formState?.errors[name]}
-      label={<>{formState?.errors[name]?.message || nonceWarning || 'Nonce'}</>}
+      label={<>{formState?.errors[name]?.message || nonceWarning || 'Safe transaction nonce'}</>}
       InputProps={{
         endAdornment: !readonly && (
           <InputValueHelper onClick={onResetNonce} disabled={!recommendedNonce}>

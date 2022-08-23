@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import {
   Button,
   DialogTitle,
@@ -18,11 +19,13 @@ import { FLOAT_REGEX } from '@/utils/validation'
 import NonceForm from '../NonceForm'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import { BASE_TX_GAS } from '@/config/constants'
+import useUserNonce from './useUserNonce'
 
 const HELP_LINK = 'https://help.gnosis-safe.io/en/articles/4738445-advanced-transaction-parameters'
 
 enum AdvancedField {
   nonce = 'nonce',
+  userNonce = 'userNonce',
   gasLimit = 'gasLimit',
   maxFeePerGas = 'maxFeePerGas',
   maxPriorityFeePerGas = 'maxPriorityFeePerGas',
@@ -31,13 +34,14 @@ enum AdvancedField {
 
 export type AdvancedParameters = {
   [AdvancedField.nonce]: number
+  [AdvancedField.userNonce]: number
   [AdvancedField.gasLimit]?: BigNumber
   [AdvancedField.maxFeePerGas]?: BigNumber
   [AdvancedField.maxPriorityFeePerGas]?: BigNumber
   [AdvancedField.safeTxGas]?: number
 }
 
-type AdvancedParamsFormProps = AdvancedParameters & {
+type AdvancedParamsFormProps = Omit<AdvancedParameters, AdvancedField.userNonce> & {
   onSubmit: (params: AdvancedParameters) => void
   recommendedNonce?: number
   estimatedGasLimit?: string
@@ -47,6 +51,7 @@ type AdvancedParamsFormProps = AdvancedParameters & {
 
 type FormData = {
   [AdvancedField.nonce]: number
+  [AdvancedField.userNonce]: number
   [AdvancedField.gasLimit]?: string
   [AdvancedField.maxFeePerGas]: string
   [AdvancedField.maxPriorityFeePerGas]: string
@@ -58,6 +63,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
     mode: 'onChange',
     defaultValues: {
       nonce: props.nonce,
+      userNonce: undefined,
       gasLimit: props.gasLimit?.toString() || undefined,
       maxFeePerGas: props.maxFeePerGas ? safeFormatUnits(props.maxFeePerGas) : '',
       maxPriorityFeePerGas: props.maxPriorityFeePerGas ? safeFormatUnits(props.maxPriorityFeePerGas) : '',
@@ -73,9 +79,18 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
     formState: { errors },
   } = formMethods
 
+  // Set user nonce
+  const userNonce = useUserNonce()
+  useEffect(() => {
+    if (userNonce !== undefined) {
+      setValue(AdvancedField.userNonce, userNonce)
+    }
+  }, [userNonce, setValue])
+
   const onBack = () => {
     props.onSubmit({
       nonce: props.nonce,
+      userNonce: props.nonce,
       gasLimit: props.gasLimit,
       maxFeePerGas: props.maxFeePerGas,
       maxPriorityFeePerGas: props.maxPriorityFeePerGas,
@@ -86,6 +101,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
   const onSubmit = (data: FormData) => {
     props.onSubmit({
       nonce: data.nonce,
+      userNonce: data.userNonce,
       gasLimit: data.gasLimit ? BigNumber.from(data.gasLimit) : undefined,
       maxFeePerGas: safeParseUnits(data.maxFeePerGas) || props.maxFeePerGas,
       maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) || props.maxPriorityFeePerGas,
@@ -108,7 +124,9 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
     <Paper className={css.container} elevation={0}>
       <FormProvider {...formMethods}>
         <DialogTitle className={css.title}>Advanced parameters</DialogTitle>
+
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Safe nonce */}
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <FormControl fullWidth>
@@ -121,27 +139,38 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
               </FormControl>
             </Grid>
 
-            {!!props.safeTxGas && (
-              <>
-                <Grid item xs={6} />
+            {/* safeTxGas (< v1.3.0) */}
+            <Grid item xs={6}>
+              {!!props.safeTxGas && (
+                <FormControl fullWidth>
+                  <TextField
+                    label={errors.safeTxGas?.message || 'safeTxGas'}
+                    error={!!errors.safeTxGas}
+                    autoComplete="off"
+                    type="number"
+                    disabled={props.nonceReadonly}
+                    {...register(AdvancedField.safeTxGas, { required: true, min: 0 })}
+                  ></TextField>
+                </FormControl>
+              )}
+            </Grid>
 
+            {/* User nonce & gas limit */}
+            {props.isExecution && (
+              <>
                 <Grid item xs={6}>
                   <FormControl fullWidth>
                     <TextField
-                      label={errors.safeTxGas?.message || 'safeTxGas'}
-                      error={!!errors.safeTxGas}
+                      key={userNonce}
+                      label={errors.userNonce?.message || 'Wallet nonce'}
+                      error={!!errors.userNonce}
                       autoComplete="off"
                       type="number"
-                      disabled={props.nonceReadonly}
-                      {...register(AdvancedField.safeTxGas, { required: true, min: 0 })}
+                      {...register(AdvancedField.userNonce)}
                     ></TextField>
                   </FormControl>
                 </Grid>
-              </>
-            )}
 
-            {props.isExecution && (
-              <>
                 <Grid item xs={6}>
                   <FormControl fullWidth>
                     <TextField
@@ -164,6 +193,13 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                     ></TextField>
                   </FormControl>
                 </Grid>
+              </>
+            )}
+
+            {/* Gas price */}
+            {props.isExecution && (
+              <>
+                <Grid item xs={12} sx={{ padding: '0 !important' }} />
 
                 <Grid item xs={6}>
                   <FormControl fullWidth>
@@ -194,6 +230,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
             )}
           </Grid>
 
+          {/* Buttons */}
           <Typography mt={2}>
             <Link href={HELP_LINK}>
               How can I configure these parameters manually?

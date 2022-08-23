@@ -74,6 +74,7 @@ const SignOrExecuteForm = ({
   // Take the manually set gas params or the estimated ones
   const advancedParams: Partial<AdvancedParameters> = {
     nonce: manualParams?.nonce || tx?.data.nonce,
+    userNonce: manualParams?.userNonce,
     gasLimit: manualParams?.gasLimit || gasLimit,
     maxFeePerGas: manualParams?.maxFeePerGas || maxFeePerGas,
     maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas || maxPriorityFeePerGas,
@@ -120,6 +121,7 @@ const SignOrExecuteForm = ({
       gasLimit: advancedParams.gasLimit?.toString(),
       maxFeePerGas: advancedParams.maxFeePerGas?.toString(),
       maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas?.toString(),
+      // nonce: advancedParams.userNonce?.toString(),
     }
 
     // Some chains don't support EIP-1559 gas price params
