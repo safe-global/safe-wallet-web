@@ -24,7 +24,7 @@ const SafeAppList = () => {
     <>
       <SafeAppsSection
         collapsible
-        title={`PINNED APPS (${pinnedSafeApps.length})`}
+        title={`Pinned apps (${pinnedSafeApps.length})`}
         apps={pinnedSafeApps}
         onPinApp={togglePin}
         pinnedIds={pinnedSafeAppIds}
@@ -32,13 +32,13 @@ const SafeAppList = () => {
       />
       <SafeAppsSection
         collapsible
-        title={`CUSTOM APPS (${customSafeApps.length})`}
+        title={`Custom apps (${customSafeApps.length})`}
         apps={customSafeApps}
         prependAddCustomAppCard
         onAddCustomApp={addCustomApp}
       />
       <SafeAppsSection
-        title={`ALL (${allSafeApps.length})`}
+        title={`All (${allSafeApps.length})`}
         apps={allSafeApps}
         onPinApp={togglePin}
         pinnedIds={pinnedSafeAppIds}
@@ -53,7 +53,7 @@ const SafeAppList = () => {
         </Typography>
       )
     } else {
-      pageBody = <SafeAppsSection title={`SEARCH RESULTS (${filteredApps.length})`} apps={filteredApps} />
+      pageBody = <SafeAppsSection title={`Search results (${filteredApps.length})`} apps={filteredApps} />
     }
   }
 
