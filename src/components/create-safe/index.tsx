@@ -28,7 +28,7 @@ export const CreateSafeSteps: TxStepperProps['steps'] = [
     ),
   },
   {
-    label: 'Owners and Confirmations',
+    label: 'Owners and confirmations',
     render: (data, onSubmit, onBack, setStep) => (
       <OwnerPolicyStep params={data as SafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
     ),

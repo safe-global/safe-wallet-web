@@ -25,3 +25,8 @@ export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
   '1': '0x5aFE3855358E112B5647B952709E6165e1c1eEEe',
   '4': '0xCFf1b0FdE85C102552D1D96084AF148f478F964A',
 }
+
+// Safe Apps
+export const SAFE_APPS_POLLING_INTERVAL = process.env.NODE_ENV === 'test' ? 4500 : 15000
+export const SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL = 'https://third-party-cookies-check.gnosis-safe.com'
+export const SAFE_APPS_SUPPORT_CHAT_URL = 'https://chat.gnosis-safe.io'

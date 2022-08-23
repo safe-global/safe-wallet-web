@@ -28,7 +28,7 @@ const NotificationCenterList = ({ notifications, handleClose }: NotificationCent
     <Box className={css.scrollContainer}>
       <List sx={{ p: 0 }}>
         {notifications.map((notification) => (
-          <NotificationCenterItem key={notification.timestamp} {...notification} handleClose={handleClose} />
+          <NotificationCenterItem key={notification.id} {...notification} handleClose={handleClose} />
         ))}
       </List>
     </Box>

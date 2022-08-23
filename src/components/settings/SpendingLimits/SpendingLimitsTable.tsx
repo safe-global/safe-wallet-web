@@ -14,11 +14,12 @@ import { RemoveSpendingLimit } from '@/components/settings/SpendingLimits/Remove
 import useIsGranted from '@/hooks/useIsGranted'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { TokenIcon } from '@/components/common/TokenAmount'
 
 const headCells = [
   { id: 'beneficiary', label: 'Beneficiary' },
   { id: 'spent', label: 'Spent' },
-  { id: 'resetTime', label: 'Reset Time' },
+  { id: 'resetTime', label: 'Reset time' },
   { id: 'actions', label: 'Actions' },
 ]
 
@@ -58,7 +59,7 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
             rawValue: spendingLimit.spent,
             content: (
               <Box display="flex" alignItems="center" gap={1}>
-                <img src={token?.tokenInfo.logoUri} alt={token?.tokenInfo.name} width={24} height={24} />
+                <TokenIcon logoUri={token?.tokenInfo.logoUri} tokenSymbol={token?.tokenInfo.symbol} />
                 {`${spendingLimit.spent} of ${formattedAmount} ${token?.tokenInfo.symbol}`}
               </Box>
             ),

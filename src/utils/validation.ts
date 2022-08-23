@@ -73,6 +73,22 @@ export const validateTokenAmount = (amount: string, token?: { balance: string; t
   }
 }
 
+export const validateAmount = (amount: string, decimals?: number, max?: string) => {
+  if (!decimals || !max) return
+
+  if (isNaN(Number(amount))) {
+    return 'The amount must be a number'
+  }
+
+  if (parseFloat(amount) <= 0) {
+    return 'The amount must be greater than 0'
+  }
+
+  if (toWei(amount, decimals).gt(max)) {
+    return `Maximum value is ${formatDecimals(max, decimals)}`
+  }
+}
+
 export const isValidURL = (url: string, protocolsAllowed = ['https:']): boolean => {
   try {
     const urlInfo = new URL(url)

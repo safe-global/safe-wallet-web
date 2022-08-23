@@ -2,4 +2,8 @@ const trimTrailingSlash = (url: string): string => {
   return url.replace(/\/$/, '')
 }
 
-export { trimTrailingSlash }
+const isSameUrl = (url1: string, url2: string): boolean => {
+  return trimTrailingSlash(url1) === trimTrailingSlash(url2)
+}
+
+export { trimTrailingSlash, isSameUrl }

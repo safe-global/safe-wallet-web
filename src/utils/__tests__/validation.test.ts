@@ -1,4 +1,4 @@
-import { validateAddress, validateChainId, validatePrefixedAddress } from '@/utils/validation'
+import { validateAddress, validateAmount, validateChainId, validatePrefixedAddress } from '@/utils/validation'
 
 describe('validation', () => {
   describe('Ethereum address validation', () => {
@@ -40,6 +40,27 @@ describe('validation', () => {
 
     it('should pass validation is the address has the correct prefix', () => {
       expect(validate('rin:0x1234567890123456789012345678901234567890')).toBe(undefined)
+    })
+  })
+
+  describe('Token amount validation', () => {
+    it('returns an error if its not a number', () => {
+      const result = validateAmount('abc', 18, '100')
+
+      expect(result).toBe('The amount must be a number')
+    })
+
+    it('returns an error if its a number smaller than or equal 0', () => {
+      const result1 = validateAmount('0', 18, '100')
+      expect(result1).toBe('The amount must be greater than 0')
+
+      const result2 = validateAmount('-1', 18, '100')
+      expect(result2).toBe('The amount must be greater than 0')
+    })
+
+    it('returns an error if its larger than the max', () => {
+      const result = validateAmount('101', 18, '100000000000000000000')
+      expect(result).toBe('Maximum value is 100')
     })
   })
 })

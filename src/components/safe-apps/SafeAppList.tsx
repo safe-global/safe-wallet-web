@@ -6,7 +6,7 @@ import { useAppsSearch } from '@/hooks/safe-apps/useAppsSearch'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { SafeAppsHeader } from './SafeAppsHeader'
 
-const SafeAppsList = () => {
+const SafeAppList = () => {
   const [searchQuery, setSearchQuery] = React.useState('')
   const {
     allSafeApps,
@@ -68,4 +68,4 @@ const SafeAppsList = () => {
   )
 }
 
-export { SafeAppsList }
+export { SafeAppList }

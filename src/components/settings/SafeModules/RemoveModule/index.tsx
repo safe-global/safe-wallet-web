@@ -11,7 +11,7 @@ export type RemoveModuleData = {
 
 const RemoveModuleSteps: TxStepperProps['steps'] = [
   {
-    label: 'Remove Module',
+    label: 'Remove module',
     render: (data, onSubmit) => <ReviewRemoveModule data={data as RemoveModuleData} onSubmit={onSubmit} />,
   },
 ]
