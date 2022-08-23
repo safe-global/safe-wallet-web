@@ -40,7 +40,6 @@
     "@gnosis.pm/safe-deployments": "^1.15.0",
     "@gnosis.pm/safe-ethers-lib": "^1.4.0",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
-    "@gnosis.pm/safe-react-components": "git+https://github.com/safe-global/safe-react-components#revamp-safe-react-components",
     "@gnosis.pm/safe-react-gateway-sdk": "^3.3.5",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.3",
