@@ -4,10 +4,10 @@ import {
   DialogActions,
   FormControl,
   Grid,
-  Paper,
   TextField,
   Link,
   Typography,
+  DialogContent,
 } from '@mui/material'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { BigNumber } from 'ethers'
@@ -18,6 +18,7 @@ import { FLOAT_REGEX } from '@/utils/validation'
 import NonceForm from '../NonceForm'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import { BASE_TX_GAS } from '@/config/constants'
+import ModalDialog from '@/components/common/ModalDialog'
 
 const HELP_LINK = 'https://help.gnosis-safe.io/en/articles/4738445-advanced-transaction-parameters'
 
@@ -30,7 +31,7 @@ enum AdvancedField {
 }
 
 export type AdvancedParameters = {
-  [AdvancedField.nonce]: number
+  [AdvancedField.nonce]?: number
   [AdvancedField.gasLimit]?: BigNumber
   [AdvancedField.maxFeePerGas]?: BigNumber
   [AdvancedField.maxPriorityFeePerGas]?: BigNumber
@@ -105,114 +106,124 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
     : undefined
 
   return (
-    <Paper className={css.container} elevation={0}>
+    <ModalDialog open dialogTitle="Advanced parameters" hideChainIndicator>
       <FormProvider {...formMethods}>
         <DialogTitle className={css.title}>Advanced parameters</DialogTitle>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <FormControl fullWidth>
-                <NonceForm
-                  name="nonce"
-                  nonce={props.nonce}
-                  recommendedNonce={props.recommendedNonce}
-                  readonly={props.nonceReadonly}
-                />
-              </FormControl>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            handleSubmit(onSubmit)(e)
+          }}
+        >
+          <DialogContent>
+            <Grid container spacing={2}>
+              {props.nonce !== undefined && (
+                <Grid item xs={6}>
+                  <FormControl fullWidth>
+                    <NonceForm
+                      name="nonce"
+                      nonce={props.nonce}
+                      recommendedNonce={props.recommendedNonce}
+                      readonly={props.nonceReadonly}
+                    />
+                  </FormControl>
+                </Grid>
+              )}
+
+              {!!props.safeTxGas && (
+                <>
+                  <Grid item xs={6} />
+
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <TextField
+                        label={errors.safeTxGas?.message || 'safeTxGas'}
+                        error={!!errors.safeTxGas}
+                        autoComplete="off"
+                        type="number"
+                        disabled={props.nonceReadonly}
+                        {...register(AdvancedField.safeTxGas, { required: true, min: 0 })}
+                      />
+                    </FormControl>
+                  </Grid>
+                </>
+              )}
+
+              {props.isExecution && (
+                <>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <TextField
+                        label={gasLimitError || 'Gas limit'}
+                        error={!!errors.gasLimit}
+                        autoComplete="off"
+                        InputProps={{
+                          endAdornment: (
+                            <InputValueHelper onClick={onResetGasLimit} disabled={!props.estimatedGasLimit}>
+                              Recommended
+                            </InputValueHelper>
+                          ),
+                        }}
+                        // @see https://github.com/react-hook-form/react-hook-form/issues/220
+                        InputLabelProps={{
+                          shrink: watch(AdvancedField.gasLimit) !== undefined,
+                        }}
+                        type="number"
+                        {...register(AdvancedField.gasLimit, { required: true, min: BASE_TX_GAS })}
+                      />
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <TextField
+                        label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
+                        error={!!errors.maxPriorityFeePerGas}
+                        autoComplete="off"
+                        {...register(AdvancedField.maxPriorityFeePerGas, {
+                          required: true,
+                          pattern: FLOAT_REGEX,
+                          min: 0,
+                        })}
+                      />
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <TextField
+                        label={errors.maxFeePerGas?.message || 'Max fee (Gwei)'}
+                        error={!!errors.maxFeePerGas}
+                        autoComplete="off"
+                        {...register(AdvancedField.maxFeePerGas, { required: true, pattern: FLOAT_REGEX, min: 0 })}
+                      />
+                    </FormControl>
+                  </Grid>
+                </>
+              )}
             </Grid>
 
-            {!!props.safeTxGas && (
-              <>
-                <Grid item xs={6} />
+            <Typography mt={2}>
+              <Link href={HELP_LINK}>
+                How can I configure these parameters manually?
+                <OpenInNewIcon fontSize="small" sx={{ verticalAlign: 'middle', marginLeft: 0.5 }} />
+              </Link>
+            </Typography>
 
-                <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <TextField
-                      label={errors.safeTxGas?.message || 'safeTxGas'}
-                      error={!!errors.safeTxGas}
-                      autoComplete="off"
-                      type="number"
-                      disabled={props.nonceReadonly}
-                      {...register(AdvancedField.safeTxGas, { required: true, min: 0 })}
-                    ></TextField>
-                  </FormControl>
-                </Grid>
-              </>
-            )}
+            <DialogActions className={css.actions}>
+              <Button color="inherit" onClick={onBack}>
+                Back
+              </Button>
 
-            {props.isExecution && (
-              <>
-                <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <TextField
-                      label={gasLimitError || 'Gas limit'}
-                      error={!!errors.gasLimit}
-                      autoComplete="off"
-                      InputProps={{
-                        endAdornment: (
-                          <InputValueHelper onClick={onResetGasLimit} disabled={!props.estimatedGasLimit}>
-                            Recommended
-                          </InputValueHelper>
-                        ),
-                      }}
-                      // @see https://github.com/react-hook-form/react-hook-form/issues/220
-                      InputLabelProps={{
-                        shrink: watch(AdvancedField.gasLimit) !== undefined,
-                      }}
-                      type="number"
-                      {...register(AdvancedField.gasLimit, { required: true, min: BASE_TX_GAS })}
-                    ></TextField>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <TextField
-                      label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
-                      error={!!errors.maxPriorityFeePerGas}
-                      autoComplete="off"
-                      {...register(AdvancedField.maxPriorityFeePerGas, {
-                        required: true,
-                        pattern: FLOAT_REGEX,
-                        min: 0,
-                      })}
-                    />
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <TextField
-                      label={errors.maxFeePerGas?.message || 'Max fee (Gwei)'}
-                      error={!!errors.maxFeePerGas}
-                      autoComplete="off"
-                      {...register(AdvancedField.maxFeePerGas, { required: true, pattern: FLOAT_REGEX, min: 0 })}
-                    />
-                  </FormControl>
-                </Grid>
-              </>
-            )}
-          </Grid>
-
-          <Typography mt={2}>
-            <Link href={HELP_LINK}>
-              How can I configure these parameters manually?
-              <OpenInNewIcon fontSize="small" sx={{ verticalAlign: 'middle', marginLeft: 0.5 }} />
-            </Link>
-          </Typography>
-
-          <DialogActions className={css.actions}>
-            <Button color="inherit" onClick={onBack}>
-              Back
-            </Button>
-
-            <Button variant="contained" type="submit">
-              Confirm
-            </Button>
-          </DialogActions>
+              <Button variant="contained" type="submit">
+                Confirm
+              </Button>
+            </DialogActions>
+          </DialogContent>
         </form>
       </FormProvider>
-    </Paper>
+    </ModalDialog>
   )
 }
 

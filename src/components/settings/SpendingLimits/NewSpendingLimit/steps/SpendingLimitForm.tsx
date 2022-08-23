@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FormProvider, useForm, Controller } from 'react-hook-form'
 import {
   Button,
@@ -21,12 +21,8 @@ import { validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import { formatDecimals } from '@/utils/formatters'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
-
-export const RESET_TIME_OPTIONS = [
-  { label: '1 day', value: '1440' }, // 1 day x 24h x 60min
-  { label: '1 week', value: '10080' }, // 7 days x 24h x 60min
-  { label: '1 month', value: '43200' }, // 30 days x 24h x 60min
-]
+import useChainId from '@/hooks/useChainId'
+import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 
 export type NewSpendingLimitData = {
   beneficiary: string
@@ -41,11 +37,15 @@ type Props = {
 }
 
 export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
+  const chainId = useChainId()
   const [showResetTime, setShowResetTime] = useState<boolean>(false)
   const { balances } = useBalances()
 
+  const resetTimeOptions = useMemo(() => getResetTimeOptions(chainId), [chainId])
+
   const formMethods = useForm<NewSpendingLimitData>({
     defaultValues: { ...data, resetTime: '0' },
+    mode: 'onChange',
   })
   const {
     register,
@@ -69,7 +69,7 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
   }
 
   const toggleResetTime = () => {
-    setValue('resetTime', showResetTime ? '0' : RESET_TIME_OPTIONS[0].value)
+    setValue('resetTime', showResetTime ? '0' : resetTimeOptions[0].value)
     setShowResetTime((prev) => !prev)
   }
 
@@ -141,8 +141,8 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
                 control={control}
                 name="resetTime"
                 render={({ field }) => (
-                  <RadioGroup {...field} defaultValue={RESET_TIME_OPTIONS[0].value} name="radio-buttons-group">
-                    {RESET_TIME_OPTIONS.map((resetTime) => (
+                  <RadioGroup {...field} defaultValue={resetTimeOptions[0].value} name="radio-buttons-group">
+                    {resetTimeOptions.map((resetTime) => (
                       <FormControlLabel
                         key={resetTime.value}
                         value={resetTime.value}

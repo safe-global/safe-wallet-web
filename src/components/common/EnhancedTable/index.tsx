@@ -123,46 +123,39 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }} variant={variant}>
-        <TableContainer>
-          <Table sx={{ minWidth: '650px' }} aria-labelledby="tableTitle">
-            <EnhancedTableHead
-              headCells={headCells}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-            />
-            <TableBody>
-              {pagedRows.length > 0 ? (
-                pagedRows.map((row, index) => (
-                  <TableRow tabIndex={-1} key={index}>
-                    {Object.entries(row).map(([key, cell]) => (
-                      <TableCell key={key}>{cell.content}</TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                // Prevent no `tbody` rows hydration error
-                <TableRow>
-                  <TableCell />
+      <TableContainer component={Paper} sx={{ width: '100%', mb: 2 }} variant={variant}>
+        <Table sx={{ minWidth: '650px' }} aria-labelledby="tableTitle">
+          <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
+          <TableBody>
+            {pagedRows.length > 0 ? (
+              pagedRows.map((row, index) => (
+                <TableRow tabIndex={-1} key={index}>
+                  {Object.entries(row).map(([key, cell]) => (
+                    <TableCell key={key}>{cell.content}</TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              ))
+            ) : (
+              // Prevent no `tbody` rows hydration error
+              <TableRow>
+                <TableCell />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-        {rows.length > pagedRows.length && (
-          <TablePagination
-            rowsPerPageOptions={pageSizes}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        )}
-      </Paper>
+      {rows.length > pagedRows.length && (
+        <TablePagination
+          rowsPerPageOptions={pageSizes}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      )}
     </Box>
   )
 }
