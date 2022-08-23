@@ -60,7 +60,7 @@ const useSafeApps = (): ReturnType => {
 
   const togglePin = (appId: number) => {
     const alreadyPinned = pinnedSafeAppIds.has(appId)
-    let newSet = new Set(pinnedSafeAppIds)
+    const newSet = new Set(pinnedSafeAppIds)
     if (alreadyPinned) {
       newSet.delete(appId)
     } else {
