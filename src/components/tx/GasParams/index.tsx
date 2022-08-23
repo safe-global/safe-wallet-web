@@ -2,7 +2,7 @@ import { ReactElement, SyntheticEvent, useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Link, Grid } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
 import { safeFormatUnits } from '@/utils/formatters'
-import { AdvancedParameters } from '../AdvancedParamsForm'
+import { type AdvancedParameters } from '../AdvancedParams/types'
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics/events/modals'
 import { trackEvent } from '@/services/analytics/analytics'
@@ -19,20 +19,14 @@ const GasDetail = ({ name, value, isLoading }: { name: string; value: string; is
   )
 }
 
-type GasParamsProps = AdvancedParameters & {
+type GasParamsProps = {
+  params: AdvancedParameters
   isExecution: boolean
   onEdit: () => void
 }
 
-const GasParams = ({
-  nonce,
-  gasLimit,
-  maxFeePerGas,
-  maxPriorityFeePerGas,
-  safeTxGas,
-  isExecution,
-  onEdit,
-}: GasParamsProps): ReactElement => {
+const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElement => {
+  const { nonce, userNonce, safeTxGas, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = params
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(false)
 
   const onChangeExpand = () => {
@@ -82,7 +76,9 @@ const GasParams = ({
       </AccordionSummary>
 
       <AccordionDetails>
-        {nonce !== undefined && <GasDetail isLoading={false} name="Nonce" value={nonce.toString()} />}
+        {nonce !== undefined && <GasDetail isLoading={false} name="Safe transaction nonce" value={nonce.toString()} />}
+
+        {userNonce !== undefined && <GasDetail isLoading={false} name="Wallet nonce" value={userNonce.toString()} />}
 
         {!!safeTxGas && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
 
