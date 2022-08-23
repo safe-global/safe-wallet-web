@@ -190,7 +190,7 @@ const AdvancedParamsForm = (props: AdvancedParamsFormProps) => {
                       }}
                       type="number"
                       {...register(AdvancedField.gasLimit, { required: true, min: BASE_TX_GAS })}
-                    ></TextField>
+                    />
                   </FormControl>
                 </Grid>
               </>
