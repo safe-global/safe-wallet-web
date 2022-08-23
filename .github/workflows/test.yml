@@ -18,12 +18,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Yarn install
-        run: |
-          mkdir .yarncache
-          yarn install --cache-folder ./.yarncache  --immutable
+        run: yarn install --immutable
 
       - name: Run tests
         run: 'yarn test:ci'
