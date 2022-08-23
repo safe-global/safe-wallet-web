@@ -83,7 +83,7 @@ const GasParams = ({
       </Track>
 
       <AccordionDetails>
-        <GasDetail isLoading={nonce === undefined} name="Nonce" value={(nonce ?? '').toString()} />
+        {nonce && <GasDetail isLoading={false} name="Nonce" value={nonce.toString()} />}
 
         {!!safeTxGas && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
 
