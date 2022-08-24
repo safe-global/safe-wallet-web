@@ -1,9 +1,9 @@
 import { FormControl, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
+import { safeFormatUnits } from '@/utils/formatters'
 import { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { SendAssetsField, SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
-import { safeFormatUnits } from '@/utils/formatters'
 
 const SpendingLimitRow = ({
   spendingLimit,

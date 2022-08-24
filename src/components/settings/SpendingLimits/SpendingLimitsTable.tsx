@@ -1,7 +1,7 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
 import useBalances from '@/hooks/useBalances'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
-import { formatUnits } from '@ethersproject/units'
+import { safeFormatUnits } from '@/utils/formatters'
 import { Box, IconButton } from '@mui/material'
 import { relativeTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -15,6 +15,7 @@ import useIsGranted from '@/hooks/useIsGranted'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import { TokenIcon } from '@/components/common/TokenAmount'
+import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 
 const headCells = [
   { id: 'beneficiary', label: 'Beneficiary' },
@@ -46,10 +47,10 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
       spendingLimits.map((spendingLimit) => {
         const token = balances.items.find((item) => item.tokenInfo.address === spendingLimit.token)
         const amount = BigNumber.from(spendingLimit.amount)
-        const formattedAmount = formatUnits(amount, token?.tokenInfo.decimals)
+        const formattedAmount = safeFormatUnits(amount, token?.tokenInfo.decimals)
 
         const spent = BigNumber.from(spendingLimit.spent)
-        const formattedSpent = formatUnits(spent, token?.tokenInfo.decimals)
+        const formattedSpent = safeFormatUnits(spent, token?.tokenInfo.decimals)
 
         return {
           beneficiary: {
@@ -69,7 +70,12 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
           },
           resetTime: {
             rawValue: spendingLimit.resetTimeMin,
-            content: <div>{relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}</div>,
+            content: (
+              <SpendingLimitLabel
+                label={relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}
+                isOneTime={spendingLimit.resetTimeMin === '0'}
+              />
+            ),
           },
           actions: {
             rawValue: '',
