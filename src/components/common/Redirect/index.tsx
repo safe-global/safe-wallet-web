@@ -6,7 +6,7 @@ const Redirect = ({ pathname }: { pathname: string }) => {
 
   useLayoutEffect(() => {
     router.replace({ pathname, query: router.query })
-  }, [])
+  }, [pathname, router])
 
   return null
 }
