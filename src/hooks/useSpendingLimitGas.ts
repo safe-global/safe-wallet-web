@@ -9,7 +9,7 @@ const useSpendingLimitGas = (params: SpendingLimitTxParams) => {
   const chainId = useChainId()
   const provider = useWeb3()
 
-  const [gasLimit, error, loading] = useAsync<BigNumber>(() => {
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>(() => {
     if (!provider) return
 
     const contract = getSpendingLimitContract(chainId, provider.getSigner())
@@ -26,7 +26,7 @@ const useSpendingLimitGas = (params: SpendingLimitTxParams) => {
     )
   }, [provider, chainId, params])
 
-  return { gasLimit, error, loading }
+  return { gasLimit, gasLimitError, gasLimitLoading }
 }
 
 export default useSpendingLimitGas

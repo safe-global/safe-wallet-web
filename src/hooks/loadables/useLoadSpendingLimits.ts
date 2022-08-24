@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import useAsync, { type AsyncResult } from '../useAsync'
 import useSafeInfo from '../useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
@@ -70,22 +70,15 @@ export const getSpendingLimits = async (
 }
 
 export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
-  const [updateSpendingLimitsTag, setUpdateSpendingLimitsTag] = useState<number>()
   const { safeAddress, safe, safeLoaded } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
-
-  // Update spending limits whenever the tx history updates
-  // TODO: Find a more optimised way to update them
-  useEffect(() => {
-    setUpdateSpendingLimitsTag(Date.now())
-  }, [safe.txHistoryTag])
 
   const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(() => {
     if (!provider || !safeLoaded || !safe.modules) return
 
     return getSpendingLimits(provider, safe.modules, safeAddress, chainId)
-  }, [provider, safeLoaded, safe.modules?.length, safeAddress, chainId, updateSpendingLimitsTag])
+  }, [provider, safeLoaded, safe.modules?.length, safeAddress, chainId, safe.txHistoryTag])
 
   useEffect(() => {
     if (error) {

@@ -62,16 +62,16 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
     ],
   )
 
-  const { gasLimit, loading } = useSpendingLimitGas(txParams)
+  const { gasLimit, gasLimitLoading } = useSpendingLimitGas(txParams)
 
   const [advancedParams, setManualParams] = useAdvancedParams({ gasLimit })
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
+    if (!provider) return
+
     setIsSubmittable(false)
     setSubmitError(undefined)
-
-    if (!provider) return
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
@@ -86,7 +86,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
     }
   }
 
-  const submitDisabled = !isSubmittable || loading
+  const submitDisabled = !isSubmittable || gasLimitLoading
 
   return (
     <form onSubmit={handleSubmit}>
