@@ -13,17 +13,18 @@ import css from '@/components/sidebar/SafeListContextMenu/styles.module.css'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import { Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
-import { formatEther } from '@ethersproject/units'
-import { formatUnits } from 'ethers/lib/utils'
 import { isERC20Transfer, isNativeTokenTransfer } from '@/utils/transaction-guards'
 import useIsGranted from '@/hooks/useIsGranted'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import { trackEvent } from '@/services/analytics/analytics'
+import { safeFormatUnits } from '@/utils/formatters'
 
 enum ModalType {
   SEND_AGAIN = 'SEND_AGAIN',
   ADD_TO_AB = 'ADD_TO_AB',
 }
+
+const ETHER = 'ether'
 
 const defaultOpen = { [ModalType.SEND_AGAIN]: false, [ModalType.ADD_TO_AB]: false }
 
@@ -63,9 +64,9 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
   const tokenAddress = isNativeTokenTransfer(txInfo.transferInfo) ? ZERO_ADDRESS : txInfo.transferInfo.tokenAddress
 
   const amount = isNativeTokenTransfer(txInfo.transferInfo)
-    ? formatEther(txInfo.transferInfo.value)
+    ? safeFormatUnits(txInfo.transferInfo.value, ETHER)
     : isERC20Transfer(txInfo.transferInfo)
-    ? formatUnits(txInfo.transferInfo.value, txInfo.transferInfo.decimals)
+    ? safeFormatUnits(txInfo.transferInfo.value, txInfo.transferInfo.decimals)
     : undefined
 
   const isOutgoingTx = txInfo.direction.toUpperCase() === TransferDirection.OUTGOING
