@@ -152,7 +152,7 @@ const AppCard = ({ safeApp, pinned, onPin, variant = 'default' }: AppCardProps):
               aria-label={`Share ${safeApp.name}`}
               size="small"
               onClick={onShareClick}
-              title="Click to copy share URL"
+              title="Copy share URL"
               sx={{ width: '32px' }}
             >
               <ShareIcon width={16} alt="Share icon" />
@@ -166,7 +166,7 @@ const AppCard = ({ safeApp, pinned, onPin, variant = 'default' }: AppCardProps):
                   event.stopPropagation()
                   onPin(safeApp.id)
                 }}
-                title={`Click to ${pinned ? 'unpin' : 'pin'} ${safeApp.name}`}
+                title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
                 sx={{ width: '32px' }}
               >
                 {pinned ? <BookmarkIcon /> : <BookmarkBorderIcon />}
