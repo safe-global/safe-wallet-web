@@ -93,8 +93,8 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
       <DialogContent>
         <Typography variant="body2" mb={4}>
           Spending limit transactions only appear in the interface once they are successfully mined and indexed. Pending
-          transactions can only be viewed in your signer wallet application or under your owner wallet address through a
-          Blockchain Explorer.
+          transactions can only be viewed in your signer wallet application or under your wallet address on a Blockchain
+          Explorer.
         </Typography>
         {token && <TokenTransferReview amount={params.amount} tokenInfo={token.tokenInfo} />}
 
