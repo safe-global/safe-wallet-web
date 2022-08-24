@@ -27,7 +27,7 @@ export const safeFormatUnits = (value: BigNumberish, decimals: number | string =
       decimal = decimal.substring(0, decimal.length - 1)
     }
 
-    return `${integer}.${decimal}`
+    return decimal ? `${integer}.${decimal}` : integer
   } catch (err) {
     console.error('Error formatting units', err)
     return ''
