@@ -38,6 +38,7 @@ type CustomAppFormData = {
 
 const TEXT_FIELD_HEIGHT = '56px'
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
+const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
 
 const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const chainId = useChainId()
@@ -65,7 +66,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     if (!isValidURL(debouncedUrl)) return
 
     return fetchSafeAppFromManifest(debouncedUrl, chainId).catch(() => {
-      setError('appUrl', { type: 'custom', message: "The App doesn't support Safe App functionality" })
+      setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
       return undefined
     })
   }, [chainId, debouncedUrl])
@@ -129,12 +130,12 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
                 })}
               />
             }
-            label="This app is not a Gnosis product and I agree to use this app at my own risk."
+            label="This app is not part of the Safe and I agree to use the app at my own risk."
             sx={{ mt: 2 }}
           />
           {errors.riskAcknowledgement && <FormHelperText error>Required</FormHelperText>}
           <Typography mt={2}>
-            <Link href="https://docs.gnosis-safe.io/build/sdks/safe-apps" target="_blank">
+            <Link href={HELP_LINK} target="_blank" rel="noreferrer">
               Learn more about building Safe Apps.
             </Link>
           </Typography>
