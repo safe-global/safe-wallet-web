@@ -16,10 +16,8 @@ import {
   FormGroup,
 } from '@mui/material'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import InputValueHelper from '@/components/common/InputValueHelper'
 import { validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
-import { formatDecimals } from '@/utils/formatters'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import useChainId from '@/hooks/useChainId'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
@@ -52,7 +50,6 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
     handleSubmit,
     setValue,
     watch,
-    trigger,
     control,
     formState: { errors },
   } = formMethods
@@ -61,12 +58,6 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
-
-  const onMaxAmountClick = () => {
-    if (!selectedToken) return
-    setValue('amount', formatDecimals(selectedToken.balance, selectedToken.tokenInfo.decimals))
-    trigger('amount')
-  }
 
   const toggleResetTime = () => {
     setValue('resetTime', showResetTime ? '0' : resetTimeOptions[0].value)
@@ -106,17 +97,6 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
               autoComplete="off"
-              InputProps={{
-                endAdornment: (
-                  <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
-                    Max
-                  </InputValueHelper>
-                ),
-              }}
-              // @see https://github.com/react-hook-form/react-hook-form/issues/220
-              InputLabelProps={{
-                shrink: !!watch('amount'),
-              }}
               {...register('amount', {
                 required: true,
                 validate: (val) => validateTokenAmount(val, selectedToken),
