@@ -1,6 +1,6 @@
 import { shortenText } from '@/utils/formatters'
 import { Box, Link } from '@mui/material'
-import { ReactElement, useState } from 'react'
+import { ReactElement, useState, MouseEvent } from 'react'
 import css from './styles.module.css'
 
 interface Props {
@@ -13,7 +13,10 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
   const [showTxData, setShowTxData] = useState(false)
   const showExpandBtn = hexData.length > limit
 
-  const toggleExpanded = () => {
+  const toggleExpanded = (
+    e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent> | MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>,
+  ) => {
+    e.preventDefault()
     setShowTxData((val) => !val)
   }
 
