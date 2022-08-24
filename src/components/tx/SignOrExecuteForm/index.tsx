@@ -1,8 +1,7 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import type { SafeTransaction, TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, DialogContent, Typography } from '@mui/material'
-import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -17,7 +16,7 @@ import { logError, Errors } from '@/services/exceptions'
 import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
-import { hasFeature } from '@/utils/chains'
+import { getTxOptions } from '@/utils/transactions'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -106,19 +105,7 @@ const SignOrExecuteForm = ({
       id = proposedTx.txId
     }
 
-    const txOptions: TransactionOptions = {
-      gasLimit: advancedParams.gasLimit?.toString(),
-      maxFeePerGas: advancedParams.maxFeePerGas?.toString(),
-      maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas?.toString(),
-      nonce: advancedParams.userNonce?.toString(),
-    } as TransactionOptions // @FIXME: this is a workaround until Core SDK adds nonce
-
-    // Some chains don't support EIP-1559 gas price params
-    if (currentChain && !hasFeature(currentChain, FEATURES.EIP1559)) {
-      txOptions.gasPrice = txOptions.maxFeePerGas
-      delete txOptions.maxFeePerGas
-      delete txOptions.maxPriorityFeePerGas
-    }
+    const txOptions = getTxOptions(advancedParams, currentChain)
 
     await dispatchTxExecution(id, createdTx, txOptions)
 

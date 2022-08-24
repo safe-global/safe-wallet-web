@@ -23,6 +23,8 @@ import { Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
 import { Web3Provider } from '@ethersproject/providers'
 import { ContractTransaction } from 'ethers'
 import { getSafeTxs } from '@/utils/transactions'
+import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
+import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -287,4 +289,25 @@ export const dispatchBatchExecution = async (
     })
 
   return result.hash
+}
+
+export const dispatchSpendingLimitTxExecution = (
+  txParams: SpendingLimitTxParams,
+  txOptions: TransactionOptions,
+  chainId: string,
+  provider: Web3Provider,
+) => {
+  const contract = getSpendingLimitContract(chainId, provider.getSigner())
+
+  return contract.executeAllowanceTransfer(
+    txParams.safeAddress,
+    txParams.token,
+    txParams.to,
+    txParams.amount,
+    txParams.paymentToken,
+    txParams.payment,
+    txParams.delegate,
+    txParams.signature,
+    txOptions,
+  )
 }
