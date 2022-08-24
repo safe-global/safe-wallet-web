@@ -5,6 +5,9 @@ import { Paper, Grid, Typography, Box, Link } from '@mui/material'
 import css from './styles.module.css'
 import { RemoveModule } from '@/components/settings/SafeModules/RemoveModule'
 import useIsGranted from '@/hooks/useIsGranted'
+import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
+import { sameAddress } from '@/utils/addresses'
+import { useMemo } from 'react'
 
 const NoModules = () => {
   return (
@@ -14,12 +17,22 @@ const NoModules = () => {
   )
 }
 
+const getModuleName = (chainId: string, address: string): string => {
+  if (sameAddress(getSpendingLimitModuleAddress(chainId), address)) {
+    return 'Spending limit module'
+  }
+
+  return 'Unknown module'
+}
+
 const ModuleDisplay = ({ moduleAddress, chainId }: { moduleAddress: string; chainId: string }) => {
+  const moduleName = useMemo(() => getModuleName(chainId, moduleAddress), [chainId, moduleAddress])
   const isGranted = useIsGranted()
 
   return (
     <Box className={css.container}>
       <EthHashInfo
+        name={moduleName}
         shortAddress={false}
         address={moduleAddress}
         showCopyButton
