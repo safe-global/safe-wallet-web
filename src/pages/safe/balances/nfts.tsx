@@ -18,7 +18,7 @@ const NftPage = ({
   pageUrl: string
   onNextPage?: (pageUrl?: string) => void
 }): ReactElement => {
-  const [collectibles, error] = useCollectibles(pageUrl)
+  const [collectibles, error, loading] = useCollectibles(pageUrl)
 
   if (collectibles) {
     return (
@@ -33,7 +33,7 @@ const NftPage = ({
 
         {onNextPage && collectibles.next && (
           <Box py={4} textAlign="center">
-            <LoadMoreButton onLoadMore={() => onNextPage(collectibles.next)} />
+            <LoadMoreButton onLoadMore={() => onNextPage(collectibles.next)} loading={loading} />
           </Box>
         )}
       </>

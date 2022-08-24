@@ -23,7 +23,7 @@ const TxPage = ({
   useTxns: typeof useTxHistory | typeof useTxQueue
   onNextPage?: (pageUrl?: string) => void
 }): ReactElement => {
-  const { page, error } = useTxns(pageUrl)
+  const { page, error, loading } = useTxns(pageUrl)
 
   if (page) {
     const isQueue = useTxns === useTxQueue
@@ -34,7 +34,7 @@ const TxPage = ({
 
         {onNextPage && page.next && (
           <Box my={4} textAlign="center">
-            <LoadMoreButton onLoadMore={() => onNextPage(page.next)} />
+            <LoadMoreButton onLoadMore={() => onNextPage(page.next)} loading={loading} />
           </Box>
         )}
       </>
