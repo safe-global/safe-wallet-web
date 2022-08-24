@@ -26,10 +26,10 @@ export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData;
     }
   }, [safeTxError])
 
-  const onFormSubmit = () => {
+  const onFormSubmit = (data: null) => {
     trackEvent(SETTINGS_EVENTS.MODULES.REMOVE_MODULE)
 
-    onSubmit(null)
+    onSubmit(data)
   }
 
   return (

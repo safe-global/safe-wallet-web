@@ -30,11 +30,11 @@ export const ReviewRemoveOwnerTxStep = ({
 
   const newOwnerLength = safe.owners.length - 1
 
-  const onFormSubmit = () => {
+  const onFormSubmit = (data: null) => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
 
-    onSubmit(null)
+    onSubmit(data)
   }
 
   return (
