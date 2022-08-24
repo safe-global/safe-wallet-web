@@ -8,7 +8,6 @@ import useBalances from '@/hooks/useBalances'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import useSpendingLimitGas from '@/hooks/useSpendingLimitGas'
 import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 import useChainId from '@/hooks/useChainId'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { parseUnits } from '@ethersproject/units'
@@ -16,10 +15,9 @@ import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/util
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
-import { hasFeature } from '@/utils/chains'
-import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useCurrentChain } from '@/hooks/useChains'
+import { dispatchSpendingLimitTxExecution } from '@/services/tx/txSender'
+import { getTxOptions } from '@/utils/transactions'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -73,36 +71,12 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
     setIsSubmittable(false)
     setSubmitError(undefined)
 
-    if (!provider || !spendingLimit) return
+    if (!provider) return
 
-    const contract = getSpendingLimitContract(chainId, provider.getSigner())
-
-    const txOptions = {
-      gasLimit: advancedParams.gasLimit?.toString(),
-      maxFeePerGas: advancedParams.maxFeePerGas?.toString(),
-      maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas?.toString(),
-      nonce: advancedParams.userNonce?.toString(),
-    } as TransactionOptions // @FIXME: this is a workaround until Core SDK adds nonce
-
-    // Some chains don't support EIP-1559 gas price params
-    if (currentChain && !hasFeature(currentChain, FEATURES.EIP1559)) {
-      txOptions.gasPrice = txOptions.maxFeePerGas
-      delete txOptions.maxFeePerGas
-      delete txOptions.maxPriorityFeePerGas
-    }
+    const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      await contract.executeAllowanceTransfer(
-        txParams.safeAddress,
-        txParams.token,
-        txParams.to,
-        txParams.amount,
-        txParams.paymentToken,
-        txParams.payment,
-        txParams.delegate,
-        txParams.signature,
-        txOptions,
-      )
+      await dispatchSpendingLimitTxExecution(txParams, txOptions, chainId, provider)
 
       onSubmit(null)
     } catch (err) {
