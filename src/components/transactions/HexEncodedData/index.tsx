@@ -1,6 +1,6 @@
 import { shortenText } from '@/utils/formatters'
 import { Box, Link } from '@mui/material'
-import { ReactElement, useState, SyntheticEvent } from 'react'
+import { ReactElement, useState } from 'react'
 import css from './styles.module.css'
 
 interface Props {
@@ -13,8 +13,7 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
   const [showTxData, setShowTxData] = useState(false)
   const showExpandBtn = hexData.length > limit
 
-  const toggleExpanded = (e: SyntheticEvent) => {
-    e.preventDefault()
+  const toggleExpanded = () => {
     setShowTxData((val) => !val)
   }
 
@@ -28,7 +27,7 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
       {showExpandBtn ? (
         <>
           {showTxData ? hexData : shortenText(hexData, 25)}{' '}
-          <Link component="button" onClick={toggleExpanded}>
+          <Link component="button" onClick={toggleExpanded} type="button">
             Show {showTxData ? 'less' : 'more'}
           </Link>
         </>
