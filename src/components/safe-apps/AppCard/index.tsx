@@ -7,7 +7,6 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SAFE_REACT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
@@ -16,6 +15,7 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 //import DeleteIcon from '@/public/images/delete.svg'
 import { AppRoutes } from '@/config/routes'
+import styles from './styles.module.css'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
@@ -93,16 +93,7 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
 
 const CompactAppCard = ({ url, safeApp, onPin, pinned }: CompactSafeAppCardProps): ReactElement => (
   <AppCardContainer url={url} variant="compact">
-    <Box
-      sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-      }}
-    >
+    <div className={styles.compactCardContainer}>
       <img src={safeApp.iconUrl} style={{ width: 52, height: 52 }} alt={`${safeApp.name} logo`} />
       {onPin && (
         <IconButton
@@ -119,7 +110,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned }: CompactSafeAppCardProps
           {pinned ? <BookmarkIcon /> : <BookmarkBorderIcon />}
         </IconButton>
       )}
-    </Box>
+    </div>
   </AppCardContainer>
 )
 
