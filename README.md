@@ -1,8 +1,12 @@
-# <img src="https://user-images.githubusercontent.com/381895/183839918-14f87835-3a98-4846-b83b-7fb1593ad367.png" height="60" width="60" valign="middle" /> Safe Web Core 
+# <img src="https://user-images.githubusercontent.com/381895/186411381-e05075ff-7565-4b4e-925e-bb1e85cb165b.png" height="60" width="60" valign="middle" /> Safe Web Core 
 
 The default Safe web interface.
 
-## Getting Started
+## Contributing
+
+Contributions, be it a bug report or a pull request, are very welcome. Please check our [contribution guidelines](CONTRIBUTING.md) beforehand.
+
+## Getting started with local development
 
 Install the dependencies:
 
@@ -20,7 +24,7 @@ yarn start
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
 
-## Lint & tests
+## Lint
 
 ESLint:
 ```
@@ -32,19 +36,33 @@ Prettier:
 yarn prettier
 ```
 
+## Tests
+
 Unit tests:
 ```
 yarn test --watch
 ```
 
-To test the production build locally:
+### Cypress tests
+Build and generarate a static site:
 ```
-yarn build
+yarn build && yarn export
 ```
 
-## Development
+Serve the static files:
+```
+yarn serve
+```
 
-To create a new component in the root folder:
+Launch the Cypress UI:
+```
+yarn cypress:open
+```
+
+You can then choose which e2e tests to run.
+
+## Component template
+To create a new component from a template:
 ```
 yarn cmp MyNewComponent
 ```
