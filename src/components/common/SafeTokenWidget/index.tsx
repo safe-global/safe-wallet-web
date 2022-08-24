@@ -1,7 +1,7 @@
 import { SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
-import { toDecimals } from '@/utils/formatters'
+import { formatUnits } from 'ethers/lib/utils'
 import { Box, ButtonBase, Skeleton, Typography } from '@mui/material'
 
 import SafeTokenIcon from './safe_token.svg'
@@ -23,9 +23,8 @@ const SafeTokenWidget = () => {
 
   const safeBalance = balances.balances.items.find((balanceItem) => balanceItem.tokenInfo.address === tokenAddress)
 
-  const safeBalanceDecimals = Math.floor(
-    toDecimals(safeBalance?.balance || '0', safeBalance?.tokenInfo.decimals),
-  ).toFixed(0)
+  const safeBalanceDecimals = Number(formatUnits(safeBalance?.balance || 0, safeBalance?.tokenInfo.decimals))
+  const flooeredSafeBalance = Math.floor(safeBalanceDecimals).toFixed(0)
 
   return (
     <Box className={css.buttonContainer}>
@@ -38,7 +37,7 @@ const SafeTokenWidget = () => {
         <SafeTokenIcon />
 
         <Typography lineHeight="16px" fontWeight={700}>
-          {balances.loading ? <Skeleton variant="text" width={16} /> : safeBalanceDecimals}
+          {balances.loading ? <Skeleton variant="text" width={16} /> : flooeredSafeBalance}
         </Typography>
       </ButtonBase>
     </Box>

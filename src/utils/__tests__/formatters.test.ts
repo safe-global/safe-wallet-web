@@ -34,13 +34,3 @@ describe('toWei', () => {
     expect(formatters.toWei('3', 6)).toEqual(BigNumber.from('3000000'))
   })
 })
-
-describe('toDecimals', () => {
-  it('should convert to decimals', () => {
-    expect(formatters.toDecimals('2010000000000000000')).toEqual(2.01)
-  })
-
-  it('should convert to decimals with custom decimals', () => {
-    expect(formatters.toDecimals('3000000', 6)).toEqual(3)
-  })
-})

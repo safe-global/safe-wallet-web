@@ -12,6 +12,7 @@ import {
   DialogContent,
 } from '@mui/material'
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { formatUnits } from 'ethers/lib/utils'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { formatDecimals } from '@/utils/formatters'
@@ -89,7 +90,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     if (!selectedToken) return
 
     const amount = spendingLimit && isSpendingLimitType ? spendingLimit.amount : selectedToken.balance
-    setValue(SendAssetsField.amount, formatDecimals(amount, selectedToken.tokenInfo.decimals))
+    setValue(SendAssetsField.amount, formatUnits(amount, selectedToken.tokenInfo.decimals))
   }
 
   return (

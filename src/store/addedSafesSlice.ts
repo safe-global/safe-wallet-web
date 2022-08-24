@@ -3,8 +3,7 @@ import { AddressEx, SafeBalanceResponse, SafeInfo, TokenType } from '@gnosis.pm/
 import type { RootState } from '.'
 import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
-import { formatDecimals } from '@/utils/formatters'
-import { formatAmount } from '@/utils/formatNumber'
+import { formatUnits } from 'ethers/lib/utils'
 import { Loadable } from './common'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { selectChainById } from '@/store/chainsSlice'
@@ -64,7 +63,7 @@ export const addedSafesSlice = createSlice({
           continue
         }
 
-        state[chainId][address].ethBalance = formatAmount(formatDecimals(item.balance, item.tokenInfo.decimals))
+        state[chainId][address].ethBalance = formatUnits(item.balance, item.tokenInfo.decimals)
 
         return
       }

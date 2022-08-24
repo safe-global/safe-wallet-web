@@ -1,6 +1,5 @@
 import { type ReactElement } from 'react'
 import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
-import { formatAmount } from '@/utils/formatNumber'
 import css from './styles.module.css'
 import { safeFormatUnits } from '@/utils/formatters'
 import ImageFallback from '../ImageFallback'
@@ -51,7 +50,7 @@ const TokenAmount = ({
 
       <span>
         {sign}
-        {formatAmount(amount)} <span className={css.symbol}>{tokenSymbol}</span>
+        {amount} <span className={css.symbol}>{tokenSymbol}</span>
       </span>
     </span>
   )
