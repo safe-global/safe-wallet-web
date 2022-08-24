@@ -9,7 +9,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { AdvancedParameters } from '@/components/tx/AdvancedParamsForm'
+import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
@@ -18,8 +18,6 @@ import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { hasFeature } from '@/utils/chains'
-import AdvancedParams from '@/components/tx/AdvancedParamsForm/AdvancedParams'
-import useAdvancedParams from '@/components/tx/AdvancedParamsForm/useAdvancedParams'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -66,13 +64,13 @@ const SignOrExecuteForm = ({
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
-  const { advancedParams, setManualParams } = useAdvancedParams({
+  const [advancedParams, setAdvancedParams] = useAdvancedParams({
     nonce: tx?.data.nonce || 0,
     gasLimit,
     safeTxGas: tx?.data.safeTxGas,
   })
 
-  // Estimating gas limit and price
+  // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
   const nonceReadonly = !!tx?.signatures.size || !!isRejection
@@ -112,7 +110,8 @@ const SignOrExecuteForm = ({
       gasLimit: advancedParams.gasLimit?.toString(),
       maxFeePerGas: advancedParams.maxFeePerGas?.toString(),
       maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas?.toString(),
-    }
+      nonce: advancedParams.userNonce?.toString(),
+    } as TransactionOptions // @FIXME: this is a workaround until Core SDK adds nonce
 
     // Some chains don't support EIP-1559 gas price params
     if (currentChain && !hasFeature(currentChain, FEATURES.EIP1559)) {
@@ -166,7 +165,7 @@ const SignOrExecuteForm = ({
       }
     }
 
-    setManualParams(data)
+    setAdvancedParams(data)
   }
 
   const submitDisabled = !isSubmittable || isEstimating || !tx
@@ -181,11 +180,7 @@ const SignOrExecuteForm = ({
         {canExecute && !onlyExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} />}
 
         <AdvancedParams
-          nonce={advancedParams.nonce}
-          gasLimit={advancedParams.gasLimit}
-          maxFeePerGas={advancedParams.maxFeePerGas}
-          maxPriorityFeePerGas={advancedParams.maxPriorityFeePerGas}
-          safeTxGas={advancedParams.safeTxGas}
+          params={advancedParams}
           recommendedNonce={safeTx?.data.nonce}
           willExecute={willExecute}
           nonceReadonly={nonceReadonly}

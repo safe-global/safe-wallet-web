@@ -69,6 +69,7 @@ export const ChooseOwnerStep = ({
           )}
 
           <Box display="flex" flexDirection="column" gap={2} paddingTop={2}>
+            <Typography>New owner</Typography>
             <FormControl>
               <NameInput
                 label="Owner name"
