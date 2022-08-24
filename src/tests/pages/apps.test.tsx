@@ -26,7 +26,6 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
         url: 'https://app.ens.domains',
         name: 'ENS App',
         iconUrl: 'https://app.ens.domains/android-chrome-144x144.png',
-
         description: 'Decentralised naming for wallets, websites, & more.',
         chainIds: ['1', '4'],
         provider: undefined,
@@ -227,6 +226,73 @@ describe('AppsPage', () => {
       })
 
       await waitFor(() => expect(screen.getByText('Required')).toBeInTheDocument())
+    })
+  })
+
+  describe('Search', () => {
+    it('shows no results found text, when no results are found', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByPlaceholderText('Search')).toBeInTheDocument())
+
+      const input = screen.getByPlaceholderText('Search')
+      act(() => {
+        fireEvent.change(input, { target: { value: 'gibberish gibberish' } })
+      })
+
+      await waitFor(() => expect(screen.getByText('No apps found')).toBeInTheDocument())
+    })
+
+    it('shows apps matching the query', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByPlaceholderText('Search')).toBeInTheDocument())
+
+      const input = screen.getByPlaceholderText('Search')
+      act(() => {
+        fireEvent.change(input, { target: { value: 'Compound' } })
+      })
+
+      await waitFor(() => expect(screen.getByText('Compound')).toBeInTheDocument())
+      await waitFor(() => expect(screen.queryByText('ENS App')).toBeNull())
+    })
+  })
+
+  describe('Pinning', () => {
+    it('allows pinning and unpinning apps', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByText('ENS App')).toBeInTheDocument())
+
+      const button = screen.getByTitle('Pin ENS App')
+      await act(() => {
+        fireEvent.click(button)
+      })
+
+      await waitFor(() => expect(screen.getAllByAltText(/ENS App logo/i).length).toBe(2))
+
+      await act(() => {
+        fireEvent.click(button)
+      })
+      await waitFor(() => expect(screen.getAllByAltText(/ENS App logo/i).length).toBe(1))
     })
   })
 })

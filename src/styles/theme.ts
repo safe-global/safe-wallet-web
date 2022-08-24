@@ -189,6 +189,7 @@ const initTheme = (darkMode: boolean) => {
             borderRadius: theme.spacing(1),
             boxSizing: 'border-box',
             border: '2px solid transparent',
+            boxShadow: 'none',
           }),
         },
       },
@@ -335,6 +336,21 @@ const initTheme = (darkMode: boolean) => {
             width: '1rem',
             height: '1rem',
           },
+        },
+      },
+      MuiFilledInput: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            borderRadius: 4,
+            backgroundColor: theme.palette.background.main,
+            border: '1px solid transparent',
+            transition: 'border-color 0.2s',
+
+            '&:hover, &:focus, &.Mui-focused': {
+              backgroundColor: theme.palette.background.main,
+              borderColor: theme.palette.primary.main,
+            },
+          }),
         },
       },
     },

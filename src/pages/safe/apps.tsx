@@ -3,8 +3,8 @@ import { useRouter } from 'next/router'
 import AppFrame from '@/components/safe-apps/AppFrame'
 import SafeAppsErrorBoundary from '@/components/safe-apps/SafeAppsErrorBoundary'
 import SafeAppsLoadError from '@/components/safe-apps/SafeAppsErrorBoundary/SafeAppsLoadError'
-import AppList from '@/components/safe-apps/AppList'
 import Head from 'next/head'
+import { SafeAppList } from '@/components/safe-apps/SafeAppList'
 
 const Apps: NextPage = () => {
   const router = useRouter()
@@ -28,7 +28,7 @@ const Apps: NextPage = () => {
         <title>Safe Apps</title>
       </Head>
 
-      <AppList />
+      <SafeAppList />
     </main>
   )
 }
