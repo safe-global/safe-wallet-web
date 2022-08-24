@@ -39,24 +39,14 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
     setValue('threshold', safeInfo.threshold)
     setValue(
       'owners',
-      safeInfo.owners.map((owner) => ({ address: owner.value, name: '', resolving: false })),
+      safeInfo.owners.map((owner) => ({ address: owner.value, name: '' })),
     )
   }, [safeInfo, setValue])
-
-  const onFormSubmit = handleSubmit((data: SafeFormData) => {
-    onSubmit({
-      ...data,
-      owners: data.owners.map((owner) => ({
-        name: owner.name || owner.fallbackName,
-        address: owner.address,
-      })),
-    })
-  })
 
   return (
     <Paper>
       <FormProvider {...formMethods}>
-        <form onSubmit={onFormSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Box padding={3}>
             <Typography mb={2}>
               This Safe on <ChainIndicator inline /> has {safeInfo?.owners.length} owners. Optional: Provide a name for
@@ -75,7 +65,7 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
           <Divider />
           <Box padding={3}>
             {fields.map((field, index) => (
-              <OwnerRow key={field.id} field={field} index={index} readOnly />
+              <OwnerRow key={field.id} index={index} readOnly />
             ))}
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>

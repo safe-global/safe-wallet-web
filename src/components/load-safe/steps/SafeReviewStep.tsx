@@ -56,16 +56,16 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
       }),
     )
 
-    for (const { address, name, fallbackName } of params.owners) {
-      if (name === fallbackName) {
+    for (const { address, name } of params.owners) {
+      if (!name) {
         continue
       }
 
       dispatch(
         upsertAddressBookEntry({
           chainId,
-          address: address,
-          name: name ?? '',
+          address,
+          name,
         }),
       )
     }

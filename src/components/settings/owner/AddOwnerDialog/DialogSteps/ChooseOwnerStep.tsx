@@ -7,6 +7,7 @@ import { addressIsNotCurrentSafe, uniqueAddress } from '@/utils/validation'
 import { Box, Button, CircularProgress, DialogContent, FormControl, InputAdornment, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
+import { useMnemonicName } from '@/hooks/useMnemonicName'
 
 export const ChooseOwnerStep = ({
   data,
@@ -39,7 +40,11 @@ export const ChooseOwnerStep = ({
 
   const address = watch('address')
 
-  const { name: fallbackName, resolving } = useAddressResolver(address)
+  const randomName = useMnemonicName()
+  const { name, ens, resolving } = useAddressResolver(address)
+
+  // Address book, ENS, mnemonic
+  const fallbackName = name || ens || randomName
 
   const onFormSubmit = handleSubmit((formData: OwnerData) => {
     onSubmit({
