@@ -152,7 +152,7 @@ describe('AppsPage', () => {
       expect(screen.getByText('Money markets on the Ethereum blockchain')).toBeInTheDocument()
     })
 
-    it('Shows an error message if the App doesnt support Safe App functionality', async () => {
+    it('Shows an error message if the app doesnt support Safe App functionality', async () => {
       const APP_URL = 'https://google.com'
 
       render(<AppsPage />, {
@@ -183,7 +183,7 @@ describe('AppsPage', () => {
       })
 
       await waitFor(
-        () => expect(screen.getByText("The App doesn't support Safe App functionality")).toBeInTheDocument(),
+        () => expect(screen.getByText("The app doesn't support Safe App functionality")).toBeInTheDocument(),
         { timeout: 7000 },
       )
     })
