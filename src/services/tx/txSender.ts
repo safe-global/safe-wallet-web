@@ -22,7 +22,6 @@ import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/di
 import { Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
 import { Web3Provider } from '@ethersproject/providers'
 import { ContractTransaction } from 'ethers'
-import { getSafeTxs } from '@/utils/transactions'
 import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 
@@ -149,14 +148,14 @@ export const dispatchTxProposal = async (
     proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash)
   } catch (error) {
     if (txId) {
-      txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, tx: safeTx, error: error as Error })
+      txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: error as Error })
     } else {
-      txDispatch(TxEvent.PROPOSE_FAILED, { tx: safeTx, error: error as Error })
+      txDispatch(TxEvent.PROPOSE_FAILED, { error: error as Error })
     }
     throw error
   }
 
-  txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, { txId: proposedTx.txId, tx: safeTx })
+  txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, { txId: proposedTx.txId })
 
   return proposedTx
 }
@@ -176,11 +175,11 @@ export const dispatchTxSigning = async (
   try {
     signedTx = await sdk.signTransaction(safeTx, signingMethod)
   } catch (error) {
-    txDispatch(TxEvent.SIGN_FAILED, { txId, tx: safeTx, error: error as Error })
+    txDispatch(TxEvent.SIGN_FAILED, { txId, error: error as Error })
     throw error
   }
 
-  txDispatch(TxEvent.SIGNED, { txId, tx: signedTx })
+  txDispatch(TxEvent.SIGNED, { txId })
 
   return signedTx
 }
@@ -195,31 +194,31 @@ export const dispatchTxExecution = async (
 ): Promise<string> => {
   const sdk = getAndValidateSafeSDK()
 
-  txDispatch(TxEvent.EXECUTING, { txId, tx: safeTx })
+  txDispatch(TxEvent.EXECUTING, { txId })
 
   // Execute the tx
   let result: TransactionResult | undefined
   try {
     result = await sdk.executeTransaction(safeTx, txOptions)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
+    txDispatch(TxEvent.FAILED, { txId, error: error as Error })
     throw error
   }
 
-  txDispatch(TxEvent.MINING, { txId, txHash: result.hash, tx: safeTx })
+  txDispatch(TxEvent.MINING, { txId, txHash: result.hash })
 
   // Asynchronously watch the tx to be mined
   result.transactionResponse
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, { txId, receipt, tx: safeTx, error: new Error('Transaction reverted by EVM') })
+        txDispatch(TxEvent.REVERTED, { txId, receipt, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.MINED, { txId, tx: safeTx, receipt })
+        txDispatch(TxEvent.MINED, { txId, receipt })
       }
     })
     .catch((error) => {
-      txDispatch(TxEvent.FAILED, { txId, tx: safeTx, error: error as Error })
+      txDispatch(TxEvent.FAILED, { txId, error: error as Error })
     })
 
   return result.hash
@@ -230,47 +229,41 @@ export const dispatchBatchExecution = async (
   multiSendContract: Multi_send_call_only,
   multiSendTxData: string,
   provider: Web3Provider,
-  chainId: string,
-  safeAddress: string,
 ) => {
-  const safeTxs = await getSafeTxs(txs, chainId, safeAddress)
-
-  txs.forEach((tx, idx) => {
-    txDispatch(TxEvent.EXECUTING, { txId: tx.txId, tx: safeTxs[idx], batchId: multiSendTxData })
+  txs.forEach((tx) => {
+    txDispatch(TxEvent.EXECUTING, { txId: tx.txId, batchId: multiSendTxData })
   })
 
   let result: ContractTransaction | undefined
   try {
     result = await multiSendContract.connect(provider.getSigner()).multiSend(multiSendTxData)
   } catch (err) {
-    txs.forEach((tx, idx) => {
-      txDispatch(TxEvent.FAILED, { txId: tx.txId, tx: safeTxs[idx], error: err as Error, batchId: multiSendTxData })
+    txs.forEach((tx) => {
+      txDispatch(TxEvent.FAILED, { txId: tx.txId, error: err as Error, batchId: multiSendTxData })
     })
     throw err
   }
 
-  txs.forEach((tx, idx) => {
-    txDispatch(TxEvent.MINING, { txId: tx.txId, txHash: result!.hash, tx: safeTxs[idx], batchId: multiSendTxData })
+  txs.forEach((tx) => {
+    txDispatch(TxEvent.MINING, { txId: tx.txId, txHash: result!.hash, batchId: multiSendTxData })
   })
 
   result
     .wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txs.forEach((tx, idx) => {
+        txs.forEach((tx) => {
           txDispatch(TxEvent.REVERTED, {
             txId: tx.txId,
             receipt,
-            tx: safeTxs[idx],
             error: new Error('Transaction reverted by EVM'),
             batchId: multiSendTxData,
           })
         })
       } else {
-        txs.forEach((tx, idx) => {
+        txs.forEach((tx) => {
           txDispatch(TxEvent.MINED, {
             txId: tx.txId,
-            tx: safeTxs[idx],
             receipt,
             batchId: multiSendTxData,
           })
@@ -278,10 +271,9 @@ export const dispatchBatchExecution = async (
       }
     })
     .catch((err) => {
-      txs.forEach((tx, idx) => {
+      txs.forEach((tx) => {
         txDispatch(TxEvent.FAILED, {
           txId: tx.txId,
-          tx: safeTxs[idx],
           error: err as Error,
           batchId: multiSendTxData,
         })
@@ -291,7 +283,7 @@ export const dispatchBatchExecution = async (
   return result.hash
 }
 
-export const dispatchSpendingLimitTxExecution = (
+export const dispatchSpendingLimitTxExecution = async (
   txParams: SpendingLimitTxParams,
   txOptions: TransactionOptions,
   chainId: string,
@@ -299,15 +291,47 @@ export const dispatchSpendingLimitTxExecution = (
 ) => {
   const contract = getSpendingLimitContract(chainId, provider.getSigner())
 
-  return contract.executeAllowanceTransfer(
-    txParams.safeAddress,
-    txParams.token,
-    txParams.to,
-    txParams.amount,
-    txParams.paymentToken,
-    txParams.payment,
-    txParams.delegate,
-    txParams.signature,
-    txOptions,
-  )
+  const id = JSON.stringify(txParams)
+
+  txDispatch(TxEvent.EXECUTING, { batchId: id })
+
+  let result: ContractTransaction | undefined
+  try {
+    result = await contract.executeAllowanceTransfer(
+      txParams.safeAddress,
+      txParams.token,
+      txParams.to,
+      txParams.amount,
+      txParams.paymentToken,
+      txParams.payment,
+      txParams.delegate,
+      txParams.signature,
+      txOptions,
+    )
+  } catch (error) {
+    txDispatch(TxEvent.FAILED, { batchId: id, error: error as Error })
+    throw error
+  }
+
+  txDispatch(TxEvent.MINING, {
+    batchId: id,
+    txHash: result.hash,
+    message:
+      'Your transaction has been submitted and will appear in the interface only after it has been successfully mined and indexed.',
+  })
+
+  result
+    ?.wait()
+    .then((receipt) => {
+      if (didRevert(receipt)) {
+        txDispatch(TxEvent.REVERTED, { batchId: id, receipt, error: new Error('Transaction reverted by EVM') })
+      } else {
+        txDispatch(TxEvent.MINED, { batchId: id, receipt })
+      }
+    })
+    .catch((error) => {
+      txDispatch(TxEvent.FAILED, { batchId: id, error: error as Error })
+    })
+
+  return result?.hash
 }

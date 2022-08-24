@@ -31,12 +31,15 @@ const useTxNotifications = (): void => {
   const chain = useCurrentChain()
   const { safeAddress } = useSafeInfo()
 
+  const entries = Object.entries(TxNotifications) as [TxEvent, string][]
+
   useEffect(() => {
-    const unsubFns = Object.entries(TxNotifications).map(([event, baseMessage]) =>
-      txSubscribe(event as TxEvent, (detail) => {
+    const unsubFns = entries.map(([event, baseMessage]) =>
+      txSubscribe(event, (detail) => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
-        const message = isError ? `${baseMessage} ${detail.error.message.slice(0, 300)}` : baseMessage
+        const customMessage = 'message' in detail ? detail.message : undefined
+        const message = isError ? `${baseMessage} ${detail.error.message.slice(0, 300)}` : customMessage || baseMessage
 
         const txId = 'txId' in detail ? detail.txId : undefined
         const batchId = 'batchId' in detail ? detail.batchId : undefined
