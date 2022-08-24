@@ -25,8 +25,11 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import { getAddress } from 'ethers/lib/utils'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 
-export type TransactionParams = {
-  safeTxGas?: number
+type JsonRpcResponse = {
+  jsonrpc: string
+  id: number
+  result?: any
+  error?: string
 }
 
 type AppFrameProps = {
@@ -85,7 +88,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
     communicator?.on(Methods.getSafeInfo, () => ({
       safeAddress,
       chainId: parseInt(chainId || '', 10),
-      owners: safe.owners,
+      owners: safe.owners.map((owner) => owner.value),
       threshold: safe.threshold,
       isReadOnly: !granted,
     }))
@@ -105,11 +108,9 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
       const params = msg.data.params as RPCPayload
 
       try {
-        const response = await safeAppWeb3Provider?.send(params.call, params.params)
-
-        return response
+        return await safeAppWeb3Provider?.send(params.call, params.params)
       } catch (err) {
-        return err
+        throw new Error((err as JsonRpcResponse).error)
       }
     })
 
