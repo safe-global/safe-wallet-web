@@ -1,3 +1,10 @@
-import SetupPage from './setup'
+import type { ReactElement } from 'react'
 
-export default SetupPage
+import Redirect from '@/components/common/Redirect'
+import { AppRoutes } from '@/config/routes'
+
+const Settings = (): ReactElement => {
+  return <Redirect pathname={AppRoutes.safe.settings.setup} />
+}
+
+export default Settings

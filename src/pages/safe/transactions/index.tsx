@@ -1,3 +1,10 @@
-import HistoryPage from './history'
+import type { ReactElement } from 'react'
 
-export default HistoryPage
+import Redirect from '@/components/common/Redirect'
+import { AppRoutes } from '@/config/routes'
+
+const Transactions = (): ReactElement => {
+  return <Redirect pathname={AppRoutes.safe.transactions.history} />
+}
+
+export default Transactions
