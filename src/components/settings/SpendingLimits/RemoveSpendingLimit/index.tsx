@@ -46,10 +46,10 @@ export const RemoveSpendingLimit = ({
     return createTx(txParams)
   }, [provider, chainId, data.beneficiary, data.token])
 
-  const onFormSubmit = (data: null) => {
+  const onFormSubmit = () => {
     trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
 
-    onSubmit(data)
+    onSubmit(null)
   }
 
   return (

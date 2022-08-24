@@ -111,13 +111,13 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
     return createNewSpendingLimitTx(data, spendingLimits, chainId, decimals, existingSpendingLimit)
   }, [data, spendingLimits, chainId, decimals, existingSpendingLimit])
 
-  const onFormSubmit = (data: null) => {
+  const onFormSubmit = () => {
     trackEvent({
       ...SETTINGS_EVENTS.SPENDING_LIMIT.RESET_PERIOD,
       label: resetTime,
     })
 
-    onSubmit(data)
+    onSubmit(null)
   }
 
   return (
