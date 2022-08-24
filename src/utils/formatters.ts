@@ -4,13 +4,17 @@ import { formatAmount } from './formatNumber'
 
 const GWEI = 'gwei'
 
-// safeFormatUnits => "0.000000000001"
+/**
+ * Converts value to raw, specified decimal precision
+ * @param value value in unspecified unit
+ * @param decimals decimals of the specified value or unit name
+ * @returns value at specified decimals, i.e. 0.000000000000000001
+ */
 export const safeFormatUnits = (value: BigNumberish, decimals: number | string = GWEI): string => {
   try {
     const formattedAmount = formatUnits(value, decimals)
 
     // FIXME: Temporary fix to as ethers' `formatFixed` doesn't strip trailing 0s
-    // https://github.com/5afe/safe/wiki/How-to-format-amounts
     return parseFloat(formattedAmount).toString()
   } catch (err) {
     console.error('Error formatting units', err)
@@ -18,7 +22,12 @@ export const safeFormatUnits = (value: BigNumberish, decimals: number | string =
   }
 }
 
-// formatVisualAmount => -< 0.00001
+/**
+ * Converts value to formatted (https://github.com/5afe/safe/wiki/How-to-format-amounts), specified decimal precision
+ * @param value value in unspecified unit
+ * @param decimals decimals of the specified value or unit name
+ * @returns value at specified decimals, formatted, i.e. -< 0.00001
+ */
 export const formatVisualAmount = (value: BigNumberish, decimals: number | string = GWEI): string => {
   return formatAmount(safeFormatUnits(value, decimals))
 }
