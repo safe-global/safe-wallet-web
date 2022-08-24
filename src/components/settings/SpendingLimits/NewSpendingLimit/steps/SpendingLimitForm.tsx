@@ -17,7 +17,7 @@ import {
 } from '@mui/material'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import InputValueHelper from '@/components/common/InputValueHelper'
-import { validateNumber } from '@/utils/validation'
+import { validateAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import { formatDecimals } from '@/utils/formatters'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
@@ -119,7 +119,7 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
               }}
               {...register('amount', {
                 required: true,
-                validate: validateNumber,
+                validate: validateAmount,
               })}
             />
           </FormControl>
