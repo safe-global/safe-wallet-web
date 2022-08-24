@@ -1,6 +1,5 @@
 import chains from '@/config/chains'
 import { isAddress } from '@ethersproject/address'
-import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { parsePrefixedAddress, sameAddress } from './addresses'
 import { formatDecimals, toWei } from './formatters'
 
@@ -57,31 +56,22 @@ export const addressIsNotCurrentSafe =
 
 export const FLOAT_REGEX = /^[0-9]+([,.][0-9]+)?$/
 
-export const validateTokenAmount = (amount: string, token?: { balance: string; tokenInfo: TokenInfo }) => {
-  if (!token) return
-
+export const validateAmount = (amount: string) => {
   if (isNaN(Number(amount))) {
     return 'The amount must be a number'
   }
 
   if (parseFloat(amount) <= 0) {
     return 'The amount must be greater than 0'
-  }
-
-  if (toWei(amount, token.tokenInfo.decimals).gt(token.balance)) {
-    return `Maximum value is ${formatDecimals(token.balance, token.tokenInfo.decimals)}`
   }
 }
 
-export const validateAmount = (amount: string, decimals?: number, max?: string) => {
+export const validateLimitedAmount = (amount: string, decimals?: number, max?: string) => {
   if (!decimals || !max) return
 
-  if (isNaN(Number(amount))) {
-    return 'The amount must be a number'
-  }
-
-  if (parseFloat(amount) <= 0) {
-    return 'The amount must be greater than 0'
+  const numberError = validateAmount(amount)
+  if (numberError) {
+    return numberError
   }
 
   if (toWei(amount, decimals).gt(max)) {
