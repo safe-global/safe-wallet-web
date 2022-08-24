@@ -16,14 +16,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Yarn install
-        run: |
-          mkdir .yarncache
-          yarn install --cache-folder ./.yarncache --immutable
-          rm -rf .yarncache
-          yarn cache clean
+        run: yarn install --immutable
 
       - uses: Maggi64/eslint-plus-action@master
         with:

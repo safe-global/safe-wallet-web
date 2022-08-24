@@ -33,3 +33,13 @@ export const {
   setStore: setWeb3ReadOnly,
   useStore: useWeb3ReadOnly,
 } = new ExternalStore<JsonRpcProvider>()
+
+export const getUserNonce = async (userAddress: string): Promise<number> => {
+  const web3 = getWeb3ReadOnly()
+  if (!web3) return -1
+  try {
+    return await web3.getTransactionCount(userAddress, 'pending')
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FormProvider, useForm, Controller } from 'react-hook-form'
 import {
   Button,
@@ -16,17 +16,11 @@ import {
   FormGroup,
 } from '@mui/material'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import InputValueHelper from '@/components/common/InputValueHelper'
-import { validateTokenAmount } from '@/utils/validation'
+import { validateAmount, validateDecimalLength } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
-import { formatDecimals } from '@/utils/formatters'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
-
-export const RESET_TIME_OPTIONS = [
-  { label: '1 day', value: '1440' }, // 1 day x 24h x 60min
-  { label: '1 week', value: '10080' }, // 7 days x 24h x 60min
-  { label: '1 month', value: '43200' }, // 30 days x 24h x 60min
-]
+import useChainId from '@/hooks/useChainId'
+import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 
 export type NewSpendingLimitData = {
   beneficiary: string
@@ -41,18 +35,21 @@ type Props = {
 }
 
 export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
+  const chainId = useChainId()
   const [showResetTime, setShowResetTime] = useState<boolean>(false)
   const { balances } = useBalances()
 
+  const resetTimeOptions = useMemo(() => getResetTimeOptions(chainId), [chainId])
+
   const formMethods = useForm<NewSpendingLimitData>({
     defaultValues: { ...data, resetTime: '0' },
+    mode: 'onChange',
   })
   const {
     register,
     handleSubmit,
     setValue,
     watch,
-    trigger,
     control,
     formState: { errors },
   } = formMethods
@@ -62,14 +59,8 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
 
-  const onMaxAmountClick = () => {
-    if (!selectedToken) return
-    setValue('amount', formatDecimals(selectedToken.balance, selectedToken.tokenInfo.decimals))
-    trigger('amount')
-  }
-
   const toggleResetTime = () => {
-    setValue('resetTime', showResetTime ? '0' : RESET_TIME_OPTIONS[0].value)
+    setValue('resetTime', showResetTime ? '0' : resetTimeOptions[0].value)
     setShowResetTime((prev) => !prev)
   }
 
@@ -106,20 +97,9 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
               autoComplete="off"
-              InputProps={{
-                endAdornment: (
-                  <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
-                    Max
-                  </InputValueHelper>
-                ),
-              }}
-              // @see https://github.com/react-hook-form/react-hook-form/issues/220
-              InputLabelProps={{
-                shrink: !!watch('amount'),
-              }}
               {...register('amount', {
                 required: true,
-                validate: (val) => validateTokenAmount(val, selectedToken),
+                validate: (val) => validateAmount(val) || validateDecimalLength(val, selectedToken?.tokenInfo.decimals),
               })}
             />
           </FormControl>
@@ -141,8 +121,8 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
                 control={control}
                 name="resetTime"
                 render={({ field }) => (
-                  <RadioGroup {...field} defaultValue={RESET_TIME_OPTIONS[0].value} name="radio-buttons-group">
-                    {RESET_TIME_OPTIONS.map((resetTime) => (
+                  <RadioGroup {...field} defaultValue={resetTimeOptions[0].value} name="radio-buttons-group">
+                    {resetTimeOptions.map((resetTime) => (
                       <FormControlLabel
                         key={resetTime.value}
                         value={resetTime.value}

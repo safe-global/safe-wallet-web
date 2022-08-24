@@ -3,14 +3,15 @@ import { Custom, TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { TokenIcon } from '@/components/common/TokenAmount'
-import SpeedIcon from '@mui/icons-material/Speed'
+import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { useCurrentChain } from '@/hooks/useChains'
 import { selectTokens } from '@/store/balancesSlice'
 import { useAppSelector } from '@/store'
 import { sameAddress } from '@/utils/addresses'
-import { formatDecimals } from '@/utils/formatters'
+import { formatVisualAmount } from '@/utils/formatters'
 import { isSetAllowance, SpendingLimitMethods } from '@/utils/transaction-guards'
 import css from './styles.module.css'
+import chains from '@/config/chains'
 
 type SpendingLimitsProps = {
   txData?: TransactionData
@@ -27,8 +28,8 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
     txData?.dataDecoded?.parameters?.map(({ value }) => value) || []
 
   const resetTimeLabel = useMemo(
-    () => getResetTimeOptions(chain?.chainName).find(({ value }) => +value === +resetTimeMin)?.label,
-    [chain?.chainName, resetTimeMin],
+    () => getResetTimeOptions(chain?.chainId).find(({ value }) => +value === +resetTimeMin)?.label,
+    [chain?.chainId, resetTimeMin],
   )
   const tokenInfo = useMemo(
     () => tokens.find(({ address }) => sameAddress(address, tokenAddress as string)),
@@ -70,7 +71,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
             <>
               {tokenInfo ? (
                 <Typography>
-                  {formatDecimals(amount as string, tokenInfo.decimals)} {tokenInfo.symbol}
+                  {formatVisualAmount(amount as string, tokenInfo.decimals)} {tokenInfo.symbol}
                 </Typography>
               ) : (
                 <Typography>{amount}</Typography>
@@ -82,14 +83,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
       {isSetAllowanceMethod && (
         <Box className={css.group}>
           <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Reset time</Typography>
-          {resetTimeLabel ? (
-            <Box className={css.inline}>
-              <SpeedIcon sx={({ palette }) => ({ color: palette.border.main })} />
-              <Typography variant="body2">{resetTimeLabel}</Typography>
-            </Box>
-          ) : (
-            <Typography variant="body2">One-time spending limit</Typography>
-          )}
+          <SpendingLimitLabel label={resetTimeLabel || 'One-time spending limit'} isOneTime={!resetTimeLabel} />
         </Box>
       )}
     </Box>
@@ -108,9 +102,8 @@ const RINKEBY_RESET_TIME_OPTIONS = [
   { label: '1 hour', value: '60' },
 ]
 
-const getResetTimeOptions = (chainName = ''): { label: string; value: string }[] => {
-  const currentNetwork = chainName.toLowerCase()
-  return currentNetwork !== 'rinkeby' ? RESET_TIME_OPTIONS : RINKEBY_RESET_TIME_OPTIONS
+export const getResetTimeOptions = (chainId = ''): { label: string; value: string }[] => {
+  return chainId !== chains.rin ? RESET_TIME_OPTIONS : RINKEBY_RESET_TIME_OPTIONS
 }
 
 export default SpendingLimits

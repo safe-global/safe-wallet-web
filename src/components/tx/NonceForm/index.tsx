@@ -1,8 +1,8 @@
 import { ReactElement } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { TextField } from '@mui/material'
+import { IconButton, TextField, Tooltip } from '@mui/material'
+import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import InputValueHelper from '@/components/common/InputValueHelper'
 
 type NonceFormProps = {
   name: string
@@ -16,6 +16,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
   const safeNonce = safe.nonce || 0
 
   const { register, watch, setValue, trigger, formState } = useFormContext() || {}
+  const currentNonce = watch(name)
 
   // Warn about a higher nonce
   const editableNonce = watch(name)
@@ -24,8 +25,8 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
 
   const onResetNonce = () => {
     if (recommendedNonce) {
-      setValue('nonce', recommendedNonce)
-      trigger('nonce')
+      setValue(name, recommendedNonce)
+      trigger(name)
     }
   }
 
@@ -36,17 +37,19 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
       defaultValue={nonce || ''}
       disabled={nonce == null || readonly}
       error={!!formState?.errors[name]}
-      label={<>{formState?.errors[name]?.message || nonceWarning || 'Nonce'}</>}
+      label={<>{formState?.errors[name]?.message || nonceWarning || 'Safe transaction nonce'}</>}
       InputProps={{
-        endAdornment: !readonly && (
-          <InputValueHelper onClick={onResetNonce} disabled={!recommendedNonce}>
-            Recommended
-          </InputValueHelper>
+        endAdornment: !readonly && recommendedNonce !== undefined && recommendedNonce !== currentNonce && (
+          <Tooltip title="Reset to recommended nonce">
+            <IconButton onClick={onResetNonce} size="small" color="primary">
+              <RotateLeftIcon />
+            </IconButton>
+          </Tooltip>
         ),
       }}
       // @see https://github.com/react-hook-form/react-hook-form/issues/220
       InputLabelProps={{
-        shrink: watch('nonce') !== undefined,
+        shrink: currentNonce !== undefined,
       }}
       {...register(name, {
         required: true,
