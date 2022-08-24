@@ -7,7 +7,6 @@ import { RemoveModule } from '@/components/settings/SafeModules/RemoveModule'
 import useIsGranted from '@/hooks/useIsGranted'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
-import { useMemo } from 'react'
 
 const NoModules = () => {
   return (
@@ -25,14 +24,13 @@ const getModuleName = (chainId: string, address: string): string => {
   return 'Unknown module'
 }
 
-const ModuleDisplay = ({ moduleAddress, chainId }: { moduleAddress: string; chainId: string }) => {
-  const moduleName = useMemo(() => getModuleName(chainId, moduleAddress), [chainId, moduleAddress])
+const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name: string }) => {
   const isGranted = useIsGranted()
 
   return (
     <Box className={css.container}>
       <EthHashInfo
-        name={moduleName}
+        name={name}
         shortAddress={false}
         address={moduleAddress}
         showCopyButton
@@ -71,7 +69,12 @@ const SafeModules = () => {
               <NoModules />
             ) : (
               safeModules.map((module) => (
-                <ModuleDisplay key={module.value} chainId={safe.chainId} moduleAddress={module.value} />
+                <ModuleDisplay
+                  key={module.value}
+                  chainId={safe.chainId}
+                  moduleAddress={module.value}
+                  name={module.name || getModuleName(safe.chainId, module.value)}
+                />
               ))
             )}
           </Box>
