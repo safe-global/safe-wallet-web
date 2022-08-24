@@ -1,4 +1,4 @@
-import { toWei } from '@/utils/formatters'
+import { safeParseUnits } from '@/utils/formatters'
 import { Interface } from '@ethersproject/abi'
 import { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 import chains from '@/config/chains'
@@ -32,7 +32,7 @@ export const createTokenTransferParams = (
   tokenAddress: string,
 ): MetaTransactionData => {
   const isNativeToken = parseInt(tokenAddress, 16) === 0
-  const value = toWei(amount, decimals).toString()
+  const value = safeParseUnits(amount, decimals)?.toString() || '0'
 
   return isNativeToken
     ? {

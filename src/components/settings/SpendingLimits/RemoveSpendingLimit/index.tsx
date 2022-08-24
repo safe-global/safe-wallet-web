@@ -15,6 +15,7 @@ import { trackEvent } from '@/services/analytics/analytics'
 import useBalances from '@/hooks/useBalances'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 import { safeFormatUnits } from '@/utils/formatters'
+import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 
 export const RemoveSpendingLimit = ({
   data,
@@ -62,9 +63,13 @@ export const RemoveSpendingLimit = ({
       <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
       <EthHashInfo address={data.beneficiary} showCopyButton hasExplorer shortAddress={false} />
       <Typography mt={2} sx={({ palette }) => ({ color: palette.secondary.light })}>
-        Reset Time
+        Reset time
       </Typography>
-      <Typography mb={2}>{relativeTime(data.lastResetMin, data.resetTimeMin)}</Typography>
+      <SpendingLimitLabel
+        label={relativeTime(data.lastResetMin, data.resetTimeMin)}
+        mb={2}
+        isOneTime={data.resetTimeMin === '0'}
+      />
     </SignOrExecuteForm>
   )
 }

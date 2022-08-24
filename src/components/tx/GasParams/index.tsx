@@ -1,7 +1,7 @@
 import { ReactElement, SyntheticEvent, useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Link, Grid } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
-import { safeFormatUnits } from '@/utils/formatters'
+import { formatVisualAmount } from '@/utils/formatters'
 import { type AdvancedParameters } from '../AdvancedParams/types'
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics/events/modals'
@@ -40,17 +40,17 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
 
   // Total gas cost
   const totalFee = !isLoading
-    ? safeFormatUnits(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+    ? formatVisualAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
     : '> 0.001'
 
   // Individual gas params
   const gasLimitString = gasLimit?.toString() || ''
-  const maxFeePerGasGwei = maxFeePerGas ? safeFormatUnits(maxFeePerGas) : ''
-  const maxPrioGasGwei = maxPriorityFeePerGas ? safeFormatUnits(maxPriorityFeePerGas) : ''
+  const maxFeePerGasGwei = maxFeePerGas ? formatVisualAmount(maxFeePerGas) : ''
+  const maxPrioGasGwei = maxPriorityFeePerGas ? formatVisualAmount(maxPriorityFeePerGas) : ''
 
   const onEditClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    !isLoading && onEdit()
+    onEdit()
   }
 
   return (
@@ -92,11 +92,15 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
           </>
         )}
 
-        <Track {...MODALS_EVENTS.EDIT_ESTIMATION}>
-          <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
-            Edit
-          </Link>
-        </Track>
+        {!isExecution || (isExecution && !isLoading) ? (
+          <Track {...MODALS_EVENTS.EDIT_ESTIMATION}>
+            <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
+              Edit
+            </Link>
+          </Track>
+        ) : (
+          <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em', mt: 2 }} />
+        )}
       </AccordionDetails>
     </Accordion>
   )
