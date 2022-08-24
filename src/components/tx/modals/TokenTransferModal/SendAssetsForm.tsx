@@ -15,7 +15,7 @@ import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
-import { validateLimitedAmount } from '@/utils/validation'
+import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import InputValueHelper from '@/components/common/InputValueHelper'
@@ -66,6 +66,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: { ...formData, [SendAssetsField.type]: SendTxType.multiSig },
+    mode: 'onChange',
   })
   const {
     register,
@@ -144,7 +145,11 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               }}
               {...register(SendAssetsField.amount, {
                 required: true,
-                validate: (val) => validateLimitedAmount(val, selectedToken?.tokenInfo.decimals, spendingLimit?.amount),
+                validate: (val) => {
+                  const decimals = selectedToken?.tokenInfo.decimals
+                  const max = isSpendingLimitType ? spendingLimit?.amount : selectedToken?.balance
+                  return validateLimitedAmount(val, decimals, max) || validateDecimalLength(val, decimals)
+                },
               })}
             />
           </FormControl>
