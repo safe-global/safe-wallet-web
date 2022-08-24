@@ -137,7 +137,7 @@ describe('AppsPage', () => {
 
       const appURLInput = screen.getByLabelText(/App URL/)
       const riskCheckbox = screen.getByLabelText(
-        /This app is not a Gnosis product and I agree to use this app at my own risk./,
+        /This app is not part of the Safe and I agree to use the app at my own risk./,
       )
 
       act(() => {
@@ -174,7 +174,7 @@ describe('AppsPage', () => {
 
       const appURLInput = screen.getByLabelText(/App URL/)
       const riskCheckbox = screen.getByLabelText(
-        /This app is not a Gnosis product and I agree to use this app at my own risk./,
+        /This app is not part of the Safe and I agree to use the app at my own risk./,
       )
 
       act(() => {

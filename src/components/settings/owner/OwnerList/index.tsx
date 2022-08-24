@@ -54,8 +54,8 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
 
         <Grid item xs>
           <Typography mb={2}>
-            Add, remove and replace or rename existing owners. Owner names are only stored locally and never shared with
-            Gnosis or any third parties.
+            Add, remove and replace or rename existing owners. Owner names are only stored locally and never sent to the
+            backend or any third parties.
           </Typography>
 
           <TableContainer>

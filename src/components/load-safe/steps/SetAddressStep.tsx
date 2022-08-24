@@ -73,7 +73,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
           <Box padding={3}>
             <Typography variant="body1" mb={2}>
               You are about to add an existing Safe on <ChainIndicator inline />. First, choose a name and enter the
-              Safe address. The name is only stored locally and will never be shared with Gnosis or any third parties.
+              Safe address. The name is only stored locally and will never be sent to the backend or any third parties.
               Your connected wallet does not have to be the owner of this Safe. In this case, the interface will provide
               you a read-only view.
             </Typography>
