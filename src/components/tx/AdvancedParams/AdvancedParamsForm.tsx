@@ -166,7 +166,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
 
             {/* Help link */}
             <Typography mt={2}>
-              <Link href={HELP_LINK}>
+              <Link href={HELP_LINK} target="_blank" rel="noreferrer">
                 How can I configure these parameters manually?
                 <OpenInNewIcon fontSize="small" sx={{ verticalAlign: 'middle', marginLeft: 0.5 }} />
               </Link>
