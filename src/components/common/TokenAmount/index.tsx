@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react'
 import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
-import { safeFormatAmount } from '@/utils/formatters'
+import { formatVisualAmount } from '@/utils/formatters'
 import ImageFallback from '../ImageFallback'
 
 export const TokenIcon = ({
@@ -42,7 +42,7 @@ const TokenAmount = ({
   direction?: TransferDirection
 }): ReactElement => {
   const sign = direction === TransferDirection.OUTGOING ? '-' : ''
-  const amount = decimals ? safeFormatAmount(value, decimals) : value
+  const amount = decimals ? formatVisualAmount(value, decimals) : value
 
   return (
     <span className={css.container}>

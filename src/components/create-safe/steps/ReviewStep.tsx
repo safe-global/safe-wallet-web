@@ -6,7 +6,7 @@ import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useGasPrice from '@/hooks/useGasPrice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { safeFormatAmount } from '@/utils/formatters'
+import { formatVisualAmount } from '@/utils/formatters'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useMemo } from 'react'
 import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
@@ -39,7 +39,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
 
   const totalFee =
     gasLimit && maxFeePerGas && maxPriorityFeePerGas
-      ? safeFormatAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+      ? formatVisualAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
       : '> 0.001'
 
   const createSafe = async () => {

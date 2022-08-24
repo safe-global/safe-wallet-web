@@ -1,7 +1,7 @@
 import { ReactElement, SyntheticEvent, useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Link, Grid } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
-import { safeFormatAmount } from '@/utils/formatters'
+import { formatVisualAmount } from '@/utils/formatters'
 import { type AdvancedParameters } from '../AdvancedParams/types'
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics/events/modals'
@@ -40,13 +40,13 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
 
   // Total gas cost
   const totalFee = !isLoading
-    ? safeFormatAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+    ? formatVisualAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
     : '> 0.001'
 
   // Individual gas params
   const gasLimitString = gasLimit?.toString() || ''
-  const maxFeePerGasGwei = maxFeePerGas ? safeFormatAmount(maxFeePerGas) : ''
-  const maxPrioGasGwei = maxPriorityFeePerGas ? safeFormatAmount(maxPriorityFeePerGas) : ''
+  const maxFeePerGasGwei = maxFeePerGas ? formatVisualAmount(maxFeePerGas) : ''
+  const maxPrioGasGwei = maxPriorityFeePerGas ? formatVisualAmount(maxPriorityFeePerGas) : ''
 
   const onEditClick = (e: SyntheticEvent) => {
     e.preventDefault()

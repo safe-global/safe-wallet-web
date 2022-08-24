@@ -18,8 +18,8 @@ export const safeFormatUnits = (value: BigNumberish, decimals: number | string =
   }
 }
 
-// safeFormatAmount => -< 0.00001
-export const safeFormatAmount = (value: BigNumberish, decimals: number | string = GWEI): string => {
+// formatVisualAmount => -< 0.00001
+export const formatVisualAmount = (value: BigNumberish, decimals: number | string = GWEI): string => {
   return formatAmount(safeFormatUnits(value, decimals))
 }
 
