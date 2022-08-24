@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid'
 import { AppCard } from '@/components/safe-apps/AppCard'
 import { SectionProps } from './types'
 import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
+import styles from './styles.module.css'
 
 const CollapsibleSection = ({
   title,
@@ -20,31 +21,8 @@ const CollapsibleSection = ({
   const columnSpacing = cardVariant === 'compact' ? 3 : 2
 
   return (
-    <Accordion
-      sx={{
-        boxShadow: 'none',
-        border: 'none',
-        background: 'transparent',
-      }}
-      defaultExpanded
-    >
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        sx={({ spacing }) => ({
-          padding: `0 ${spacing(3)}`,
-          justifyContent: 'flex-start',
-          background: 'transparent',
-          '& > .MuiAccordionSummary-content': {
-            flexGrow: 0,
-            '&.Mui-expanded': {
-              margin: `${spacing(2)} 0`,
-            },
-          },
-          '&.Mui-expanded': {
-            minHeight: 48,
-          },
-        })}
-      >
+    <Accordion className={styles.accordion} defaultExpanded>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography
           variant="caption"
           fontWeight={700}
