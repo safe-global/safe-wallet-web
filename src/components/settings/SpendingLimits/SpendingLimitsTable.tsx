@@ -50,7 +50,7 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
         const formattedAmount = formatVisualAmount(amount, token?.tokenInfo.decimals)
 
         const spent = BigNumber.from(spendingLimit.spent)
-        const formattedSpent = safeFormatUnits(spent, token?.tokenInfo.decimals)
+        const formattedSpent = formatVisualAmount(spent, token?.tokenInfo.decimals)
 
         return {
           beneficiary: {
