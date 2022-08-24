@@ -137,7 +137,7 @@ describe('AppsPage', () => {
 
       const appURLInput = screen.getByLabelText(/App URL/)
       const riskCheckbox = screen.getByLabelText(
-        /This app is not a Gnosis product and I agree to use this app at my own risk./,
+        /This app is not part of the Safe and I agree to use the app at my own risk./,
       )
 
       act(() => {
@@ -152,7 +152,7 @@ describe('AppsPage', () => {
       expect(screen.getByText('Money markets on the Ethereum blockchain')).toBeInTheDocument()
     })
 
-    it('Shows an error message if the App doesnt support Safe App functionality', async () => {
+    it('Shows an error message if the app doesnt support Safe App functionality', async () => {
       const APP_URL = 'https://google.com'
 
       render(<AppsPage />, {
@@ -174,7 +174,7 @@ describe('AppsPage', () => {
 
       const appURLInput = screen.getByLabelText(/App URL/)
       const riskCheckbox = screen.getByLabelText(
-        /This app is not a Gnosis product and I agree to use this app at my own risk./,
+        /This app is not part of the Safe and I agree to use the app at my own risk./,
       )
 
       act(() => {
@@ -183,7 +183,7 @@ describe('AppsPage', () => {
       })
 
       await waitFor(
-        () => expect(screen.getByText("The App doesn't support Safe App functionality")).toBeInTheDocument(),
+        () => expect(screen.getByText("The app doesn't support Safe App functionality")).toBeInTheDocument(),
         { timeout: 7000 },
       )
     })

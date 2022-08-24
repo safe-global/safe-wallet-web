@@ -21,6 +21,7 @@ import { createMultiSendTx } from '@/services/tx/txSender'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import { trackEvent } from '@/services/analytics/analytics'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
+import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 
 export const createNewSpendingLimitTx = async (
   data: NewSpendingLimitData,
@@ -97,13 +98,14 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
   }, [spendingLimits, data])
 
   const token = balances.items.find((item) => item.tokenInfo.address === data.tokenAddress)
-  const { decimals, logoUri, symbol } = token?.tokenInfo || {}
+  const { decimals, symbol } = token?.tokenInfo || {}
 
+  const isOneTime = data.resetTime === '0'
   const resetTime = useMemo(() => {
-    return data.resetTime === '0'
+    return isOneTime
       ? 'One-time spending limit'
       : getResetTimeOptions(chainId).find((time) => time.value === data.resetTime)?.label
-  }, [data.resetTime, chainId])
+  }, [isOneTime, data.resetTime, chainId])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(() => {
     return createNewSpendingLimitTx(data, spendingLimits, chainId, decimals, existingSpendingLimit)
@@ -140,22 +142,38 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
         <EthHashInfo address={data.beneficiary} shortAddress={false} hasExplorer showCopyButton />
       </Box>
 
-      <Typography color={({ palette }) => palette.text.secondary}>Reset Time</Typography>
+      <Typography color={({ palette }) => palette.text.secondary}>Reset time</Typography>
       {existingSpendingLimit ? (
         <>
-          <Box display="flex" alignItems="center" gap="4px" mb={2}>
-            <Typography color="error" sx={{ textDecoration: 'line-through' }}>
-              {relativeTime(existingSpendingLimit.lastResetMin, existingSpendingLimit.resetTimeMin)}
-            </Typography>
-            {' →'}
-            <Typography>{resetTime}</Typography>
-          </Box>
+          <SpendingLimitLabel
+            label={
+              <>
+                {existingSpendingLimit.resetTimeMin !== data.resetTime && (
+                  <>
+                    <Typography color="error" sx={{ textDecoration: 'line-through' }} display="inline" component="span">
+                      {relativeTime(existingSpendingLimit.lastResetMin, existingSpendingLimit.resetTimeMin)}
+                    </Typography>
+                    {' → '}
+                  </>
+                )}
+                <Typography display="inline" component="span">
+                  {resetTime}
+                </Typography>
+              </>
+            }
+            isOneTime={existingSpendingLimit.resetTimeMin === '0'}
+            mb={2}
+          />
           <Typography color="error" mb={2}>
             You are about to replace an existent spending limit
           </Typography>
         </>
       ) : (
-        <Typography mb={2}>{resetTime}</Typography>
+        <SpendingLimitLabel
+          label={resetTime || 'One-time spending limit'}
+          mb={2}
+          isOneTime={!!resetTime && isOneTime}
+        />
       )}
     </SignOrExecuteForm>
   )
