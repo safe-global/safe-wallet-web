@@ -79,6 +79,18 @@ export const validateLimitedAmount = (amount: string, decimals?: number, max?: s
   }
 }
 
+export const validateDecimalLength = (value: string, maxLen?: number, minLen = 1) => {
+  if (!maxLen || !value.includes('.')) {
+    return
+  }
+
+  const decimals = value.split('.')[1] || ''
+
+  if (decimals.length < +minLen || decimals.length > +maxLen) {
+    return `Should have ${minLen} to ${maxLen} decimals`
+  }
+}
+
 export const isValidURL = (url: string, protocolsAllowed = ['https:']): boolean => {
   try {
     const urlInfo = new URL(url)

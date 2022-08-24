@@ -16,7 +16,7 @@ import {
   FormGroup,
 } from '@mui/material'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import { validateAmount } from '@/utils/validation'
+import { validateAmount, validateDecimalLength } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import useChainId from '@/hooks/useChainId'
@@ -99,7 +99,7 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
               autoComplete="off"
               {...register('amount', {
                 required: true,
-                validate: validateAmount,
+                validate: (val) => validateAmount(val) || validateDecimalLength(val, selectedToken?.tokenInfo.decimals),
               })}
             />
           </FormControl>

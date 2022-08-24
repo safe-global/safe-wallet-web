@@ -4,6 +4,7 @@ import {
   validateChainId,
   validateAmount,
   validatePrefixedAddress,
+  validateDecimalLength,
 } from '@/utils/validation'
 
 describe('validation', () => {
@@ -65,7 +66,7 @@ describe('validation', () => {
     })
   })
 
-  describe('Token amount validation', () => {
+  describe('Limited amount validation', () => {
     it('returns an error if its not a number', () => {
       const result = validateLimitedAmount('abc', 18, '100')
 
@@ -83,6 +84,42 @@ describe('validation', () => {
     it('returns an error if its larger than the max', () => {
       const result = validateLimitedAmount('101', 18, '100000000000000000000')
       expect(result).toBe('Maximum value is 100')
+    })
+  })
+
+  describe('Decimal length validation', () => {
+    it('returns an error if there are insufficient decimals', () => {
+      const result1 = validateDecimalLength('1.', 18)
+      expect(result1).toBe('Should have 1 to 18 decimals')
+
+      const result2 = validateDecimalLength('1.2', 18, 3)
+      expect(result2).toBe('Should have 3 to 18 decimals')
+    })
+
+    it('returns an error if there are too many decimals', () => {
+      const result = validateDecimalLength('1.123', 2)
+
+      expect(result).toBe('Should have 1 to 2 decimals')
+    })
+
+    it('returns undefined if no maximum length is given', () => {
+      const result = validateDecimalLength('1.123')
+
+      expect(result).toBeUndefined()
+    })
+
+    it('returns undefined if the number is an integer', () => {
+      const result = validateDecimalLength('1')
+
+      expect(result).toBeUndefined()
+    })
+
+    it('returns undefined if the number has a valid length of decimals', () => {
+      const result1 = validateDecimalLength('1.234', 18)
+      expect(result1).toBeUndefined()
+
+      const result2 = validateDecimalLength('1.234', 18, 3)
+      expect(result2).toBeUndefined()
     })
   })
 })
