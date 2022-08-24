@@ -2,7 +2,7 @@ import { type ReactElement } from 'react'
 import css from './styles.module.css'
 import useBalances from '@/hooks/useBalances'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import { formatDecimals } from '@/utils/formatters'
+import { safeFormatAmount } from '@/utils/formatters'
 import { Box, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
@@ -10,7 +10,7 @@ const SendFromBlock = (): ReactElement => {
   const address = useSafeAddress()
   const { balances } = useBalances()
   const nativeToken = balances.items.find((item) => parseInt(item.tokenInfo.address, 16) === 0)
-  const nativeTokenBalance = nativeToken ? formatDecimals(nativeToken.balance, nativeToken.tokenInfo.decimals) : '0'
+  const nativeTokenBalance = nativeToken ? safeFormatAmount(nativeToken.balance, nativeToken.tokenInfo.decimals) : '0'
 
   return (
     <Box sx={{ borderBottom: ({ palette }) => `1px solid ${palette.divider}` }} pb={2} mb={2}>

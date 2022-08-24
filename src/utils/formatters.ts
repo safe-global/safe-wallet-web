@@ -2,23 +2,25 @@ import { BigNumberish, type BigNumber } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import { formatAmount } from './formatNumber'
 
-export const formatDecimals = (value: BigNumberish, decimals?: number | string): string => {
-  return formatAmount(formatUnits(value, decimals))
-}
-
-export const toWei = (value: string, decimals?: number | string): BigNumber => {
-  return parseUnits(value, decimals)
-}
-
 const GWEI = 'gwei'
 
+// safeFormatUnits => "0.000000000001"
 export const safeFormatUnits = (value: BigNumberish, decimals: number | string = GWEI): string => {
   try {
-    return formatDecimals(value, decimals)
+    const formattedAmount = formatUnits(value, decimals)
+
+    // FIXME: Temporary fix to as ethers' `formatFixed` doesn't strip trailing 0s
+    // https://github.com/5afe/safe/wiki/How-to-format-amounts
+    return parseFloat(formattedAmount).toString()
   } catch (err) {
     console.error('Error formatting units', err)
     return ''
   }
+}
+
+// safeFormatAmount => -< 0.00001
+export const safeFormatAmount = (value: BigNumberish, decimals: number | string = GWEI): string => {
+  return formatAmount(safeFormatUnits(value, decimals))
 }
 
 export const safeParseUnits = (value: string, decimals: number | string = GWEI): BigNumber | undefined => {

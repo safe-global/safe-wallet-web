@@ -12,10 +12,9 @@ import {
   DialogContent,
 } from '@mui/material'
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { formatUnits } from 'ethers/lib/utils'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
-import { formatDecimals } from '@/utils/formatters'
+import { safeFormatAmount, safeFormatUnits } from '@/utils/formatters'
 import { validateAmount, validateTokenAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import AddressBookInput from '@/components/common/AddressBookInput'
@@ -32,7 +31,7 @@ export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }
       <Typography variant="body2">{item.tokenInfo.name}</Typography>
 
       <Typography variant="caption" component="p">
-        {formatDecimals(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
+        {safeFormatAmount(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
       </Typography>
     </Grid>
   </Grid>
@@ -90,7 +89,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     if (!selectedToken) return
 
     const amount = spendingLimit && isSpendingLimitType ? spendingLimit.amount : selectedToken.balance
-    setValue(SendAssetsField.amount, formatUnits(amount, selectedToken.tokenInfo.decimals))
+    setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals))
   }
 
   return (

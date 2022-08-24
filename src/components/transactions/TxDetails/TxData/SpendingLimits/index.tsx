@@ -8,7 +8,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { selectTokens } from '@/store/balancesSlice'
 import { useAppSelector } from '@/store'
 import { sameAddress } from '@/utils/addresses'
-import { formatDecimals } from '@/utils/formatters'
+import { safeFormatAmount } from '@/utils/formatters'
 import { isSetAllowance, SpendingLimitMethods } from '@/utils/transaction-guards'
 import css from './styles.module.css'
 import chains from '@/config/chains'
@@ -71,7 +71,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
             <>
               {tokenInfo ? (
                 <Typography>
-                  {formatDecimals(amount as string, tokenInfo.decimals)} {tokenInfo.symbol}
+                  {safeFormatAmount(amount as string, tokenInfo.decimals)} {tokenInfo.symbol}
                 </Typography>
               ) : (
                 <Typography>{amount}</Typography>

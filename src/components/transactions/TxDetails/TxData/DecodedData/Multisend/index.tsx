@@ -2,7 +2,7 @@ import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import MultisendTxsDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend/MultisendTxsDecoded'
 import { useCurrentChain } from '@/hooks/useChains'
-import { toWei } from '@/utils/formatters'
+import { safeFormatAmount } from '@/utils/formatters'
 import { TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ReactElement } from 'react'
 
@@ -30,7 +30,7 @@ export const Multisend = ({ txData }: MultisendProps): ReactElement | null => {
         const actionTitle = `Action ${index + 1}`
         const method = dataDecoded?.method || ''
         const { decimals, symbol } = chain!.nativeCurrency
-        const amount = value ? toWei(value, decimals) : 0
+        const amount = value ? safeFormatAmount(value, decimals) : 0
 
         let details
         if (dataDecoded) {
