@@ -1,7 +1,7 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
 import useBalances from '@/hooks/useBalances'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
-import { safeFormatUnits } from '@/utils/formatters'
+import { formatVisualAmount } from '@/utils/formatters'
 import { Box, IconButton } from '@mui/material'
 import { relativeTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -47,7 +47,7 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
       spendingLimits.map((spendingLimit) => {
         const token = balances.items.find((item) => item.tokenInfo.address === spendingLimit.token)
         const amount = BigNumber.from(spendingLimit.amount)
-        const formattedAmount = safeFormatUnits(amount, token?.tokenInfo.decimals)
+        const formattedAmount = formatVisualAmount(amount, token?.tokenInfo.decimals)
 
         const spent = BigNumber.from(spendingLimit.spent)
         const formattedSpent = safeFormatUnits(spent, token?.tokenInfo.decimals)

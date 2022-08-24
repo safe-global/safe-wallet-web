@@ -14,8 +14,8 @@ import {
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { TokenIcon } from '@/components/common/TokenAmount'
-import { formatDecimals } from '@/utils/formatters'
-import { validateAmount, validateTokenAmount } from '@/utils/validation'
+import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
+import { validateLimitedAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import InputValueHelper from '@/components/common/InputValueHelper'
@@ -31,7 +31,7 @@ export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }
       <Typography variant="body2">{item.tokenInfo.name}</Typography>
 
       <Typography variant="caption" component="p">
-        {formatDecimals(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
+        {formatVisualAmount(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
       </Typography>
     </Grid>
   </Grid>
@@ -89,7 +89,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     if (!selectedToken) return
 
     const amount = spendingLimit && isSpendingLimitType ? spendingLimit.amount : selectedToken.balance
-    setValue(SendAssetsField.amount, formatDecimals(amount, selectedToken.tokenInfo.decimals))
+    setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals))
   }
 
   return (
@@ -144,10 +144,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               }}
               {...register(SendAssetsField.amount, {
                 required: true,
-                validate: (val) =>
-                  isSpendingLimitType
-                    ? validateAmount(val, selectedToken?.tokenInfo.decimals, spendingLimit?.amount)
-                    : validateTokenAmount(val, selectedToken),
+                validate: (val) => validateLimitedAmount(val, selectedToken?.tokenInfo.decimals, spendingLimit?.amount),
               })}
             />
           </FormControl>
