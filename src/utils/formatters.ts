@@ -14,8 +14,20 @@ export const safeFormatUnits = (value: BigNumberish, decimals: number | string =
   try {
     const formattedAmount = formatUnits(value, decimals)
 
-    // FIXME: Temporary fix to as ethers' `formatFixed` doesn't strip trailing 0s
-    return parseFloat(formattedAmount).toString()
+    if (!formattedAmount.includes('.')) {
+      return formattedAmount
+    }
+
+    // FIXME: Temporary fix as ethers' `formatFixed` doesn't strip trailing 0s
+    // for very high/low amounts, we can't `parseFloat` as it returns exponentials
+
+    let [integer, decimal] = formattedAmount.split('.')
+
+    while (decimal[decimal.length - 1] === '0') {
+      decimal = decimal.substring(0, decimal.length - 1)
+    }
+
+    return `${integer}.${decimal}`
   } catch (err) {
     console.error('Error formatting units', err)
     return ''
