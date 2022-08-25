@@ -34,13 +34,17 @@ export const OwnerRow = ({
     [getValues],
   )
 
-  const { ens, resolving } = useAddressResolver(owner.address)
+  const { ens, name, resolving } = useAddressResolver(owner.address)
 
   useEffect(() => {
     if (ens) {
       setValue(`owners.${index}.ens`, ens)
     }
-  }, [ens, setValue, index])
+
+    if (name) {
+      setValue(`owners.${index}.name`, name)
+    }
+  }, [ens, setValue, index, name])
 
   return (
     <Grid container spacing={3} alignItems="center" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
