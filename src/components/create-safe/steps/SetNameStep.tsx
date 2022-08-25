@@ -6,8 +6,7 @@ import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { SafeFormData } from '@/components/create-safe/types'
-import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
-import { trackEvent } from '@/services/analytics/analytics'
+import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
 
 type Props = {
   params: SafeFormData

@@ -15,8 +15,7 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import useChainId from '@/hooks/useChainId'
-import { trackEvent } from '@/services/analytics/analytics'
-import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
+import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { isWalletRejection } from '@/utils/wallets'
 
 export enum SafeCreationStatus {

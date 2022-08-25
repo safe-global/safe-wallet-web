@@ -7,8 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setCopyShortName, setDarkMode, setShowShortName } from '@/store/settingsSlice'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
-import { trackEvent } from '@/services/analytics/analytics'
-import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { useDarkMode } from '@/hooks/useDarkMode'
 
 const Appearance: NextPage = () => {

@@ -26,6 +26,7 @@ import CookieBanner from '@/components/common/CookieBanner'
 import { useLightDarkTheme } from '@/hooks/useDarkMode'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { useTxTracking } from '@/hooks/useTxTracking'
+import useGtm from '@/hooks/useGtm'
 
 const cssCache = createCache({
   key: 'css',
@@ -39,6 +40,7 @@ const InitApp = (): null => {
 
   usePathRewrite()
   useStorageMigration()
+  useGtm()
   useInitSession()
   useLoadableStores()
   useInitOnboard()
