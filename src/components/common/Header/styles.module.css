@@ -28,7 +28,7 @@
 .logo svg {
   width: auto;
   display: block;
-  fill: var(--color-logo-main);
+  color: var(--color-logo-main);
 }
 
 .menuButton {

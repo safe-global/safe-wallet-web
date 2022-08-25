@@ -30,7 +30,7 @@ export const txHistoryMiddleware: Middleware<{}, RootState> = (store) => (next) 
 
         const { id } = result.transaction
         if (pendingTxs[id]) {
-          txDispatch(TxEvent.SUCCESS, { txId: id, batchId: pendingTxs[id].batchId })
+          txDispatch(TxEvent.SUCCESS, { txId: id, groupKey: pendingTxs[id].groupKey })
         }
       }
     }

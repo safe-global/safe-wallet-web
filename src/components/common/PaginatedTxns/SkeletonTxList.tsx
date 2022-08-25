@@ -12,9 +12,6 @@ const SkeletonTxList = () => {
 
       {label}
       {Array.from(Array(2).keys()).map(item)}
-
-      {label}
-      {Array.from(Array(2).keys()).map(item)}
     </>
   )
 }

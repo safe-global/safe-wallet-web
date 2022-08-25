@@ -6,15 +6,17 @@ import { AppRoutes } from '@/config/routes'
 import useSafeInfo from './useSafeInfo'
 import { useCurrentChain } from './useChains'
 
-const TxNotifications: Partial<Record<TxEvent, string>> = {
+const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
   [TxEvent.PROPOSED]: 'Your transaction was successfully proposed.',
   [TxEvent.PROPOSE_FAILED]: 'Failed proposing the transaction. Please try again.',
   [TxEvent.SIGNATURE_PROPOSED]: 'You successfully signed the transaction.',
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send the signature. Please try again.',
   [TxEvent.EXECUTING]: 'Please confirm the execution in your wallet.',
-  [TxEvent.MINING]: 'Your transaction is being mined.',
-  [TxEvent.MINED]: 'Your transaction was successfully mined and is now being indexed.',
+  [TxEvent.MINING]: 'Your transaction is being processed.',
+  [TxEvent.MINING_MODULE]:
+    'Your transaction has been submitted and will appear in the interface only after it has been successfully processed and indexed.',
+  [TxEvent.MINED]: 'Your transaction was successfully processed and is now being indexed.',
   [TxEvent.REVERTED]: 'Transaction reverted. Please check your gas settings.',
   [TxEvent.SUCCESS]: 'Your transaction was successfully executed.',
   [TxEvent.FAILED]: 'Your transaction was unsuccessful.',
@@ -32,21 +34,23 @@ const useTxNotifications = (): void => {
   const { safeAddress } = useSafeInfo()
 
   useEffect(() => {
-    const unsubFns = Object.entries(TxNotifications).map(([event, baseMessage]) =>
-      txSubscribe(event as TxEvent, (detail) => {
+    const entries = Object.entries(TxNotifications) as [keyof typeof TxNotifications, string][]
+
+    const unsubFns = entries.map(([event, baseMessage]) =>
+      txSubscribe(event, (detail) => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
         const message = isError ? `${baseMessage} ${detail.error.message.slice(0, 300)}` : baseMessage
 
         const txId = 'txId' in detail ? detail.txId : undefined
-        const batchId = 'batchId' in detail ? detail.batchId : undefined
+        const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
 
         const shouldShowLink = event !== TxEvent.EXECUTING && txId
 
         dispatch(
           showNotification({
             message,
-            groupKey: batchId || txId || '',
+            groupKey,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
             ...(shouldShowLink && {
               link: {

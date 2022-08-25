@@ -4,8 +4,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { formatVisualAmount } from '@/utils/formatters'
 import { type AdvancedParameters } from '../AdvancedParams/types'
 import Track from '@/components/common/Track'
-import { MODALS_EVENTS } from '@/services/analytics/events/modals'
-import { trackEvent } from '@/services/analytics/analytics'
+import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 
 const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
   const valueSkeleton = <Skeleton variant="text" sx={{ minWidth: '5em' }} />
