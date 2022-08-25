@@ -40,7 +40,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const { safe } = useSafeInfo()
   const safeAddress = useSafeAddress()
   const chain = useCurrentChain()
-  const { nativeCurrency, chainId, chainName, shortName, blockExplorerUriTemplate, safeAppsRpcUri } = chain || {}
+  const { nativeCurrency, chainName, chainId, shortName, blockExplorerUriTemplate } = chain || { chainId: '' }
   const [remoteApps] = useRemoteSafeApps()
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
@@ -77,7 +77,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
     communicator?.on(Methods.getTxBySafeTxHash, async (msg) => {
       const { safeTxHash } = msg.data.params as GetTxBySafeTxHashParams
 
-      const tx = await getTransactionDetails(chainId || '', safeTxHash)
+      const tx = await getTransactionDetails(chainId, safeTxHash)
 
       return tx
     })
@@ -88,7 +88,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
 
     communicator?.on(Methods.getSafeInfo, () => ({
       safeAddress,
-      chainId: parseInt(chainId || '', 10),
+      chainId: parseInt(chainId, 10),
       owners: safe.owners.map((owner) => owner.value),
       threshold: safe.threshold,
       isReadOnly: !granted,
@@ -97,7 +97,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
     communicator?.on(Methods.getSafeBalances, async (msg) => {
       const { currency = 'usd' } = msg.data.params as GetBalanceParams
 
-      return getBalances(chainId || '', safeAddress, currency, {
+      return getBalances(chainId, safeAddress, currency, {
         exclude_spam: true,
         trusted: false,
       })
