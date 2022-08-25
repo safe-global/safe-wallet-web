@@ -5,7 +5,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import useTxHistory from '@/hooks/useTxHistory'
 import useTxQueue from '@/hooks/useTxQueue'
 import PagePlaceholder from '../PagePlaceholder'
-import LoadMoreButton from '../LoadMoreButton'
+import InfiniteScroll from '../InfiniteScroll'
 import SkeletonTxList from './SkeletonTxList'
 
 const NoQueuedTxns = () => (
@@ -23,7 +23,7 @@ const TxPage = ({
   useTxns: typeof useTxHistory | typeof useTxQueue
   onNextPage?: (pageUrl?: string) => void
 }): ReactElement => {
-  const { page, error, loading } = useTxns(pageUrl)
+  const { page, error } = useTxns(pageUrl)
 
   if (page) {
     const isQueue = useTxns === useTxQueue
@@ -34,7 +34,7 @@ const TxPage = ({
 
         {onNextPage && page.next && (
           <Box my={4} textAlign="center">
-            <LoadMoreButton onLoadMore={() => onNextPage(page.next)} loading={loading} />
+            <InfiniteScroll onLoadMore={() => onNextPage(page.next)} />
           </Box>
         )}
       </>
