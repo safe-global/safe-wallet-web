@@ -316,8 +316,6 @@ export const dispatchSpendingLimitTxExecution = async (
   txDispatch(TxEvent.MINING_MODULE, {
     groupKey: id,
     txHash: result.hash,
-    message:
-      'Your transaction has been submitted and will appear in the interface only after it has been successfully mined and indexed.',
   })
 
   result
