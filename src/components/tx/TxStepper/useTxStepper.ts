@@ -1,5 +1,6 @@
+import { trackEvent } from '@/services/analytics/analytics'
+import { MODALS_CATEGORY } from '@/services/analytics/events/modals'
 import { ReactElement, useState } from 'react'
-import { trackEvent, MODALS_CATEGORY } from '@/services/analytics'
 
 export type StepRenderProps = {
   data: unknown

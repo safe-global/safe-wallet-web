@@ -135,7 +135,9 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
 
       const appURLInput = screen.getByLabelText(/App URL/)
-      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
+      const riskCheckbox = screen.getByLabelText(
+        /This app is not part of the Safe and I agree to use the app at my own risk./,
+      )
 
       act(() => {
         fireEvent.change(appURLInput, { target: { value: APP_URL } })
@@ -170,7 +172,9 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
 
       const appURLInput = screen.getByLabelText(/App URL/)
-      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
+      const riskCheckbox = screen.getByLabelText(
+        /This app is not part of the Safe and I agree to use the app at my own risk./,
+      )
 
       act(() => {
         fireEvent.change(appURLInput, { target: { value: APP_URL } })

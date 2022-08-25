@@ -15,7 +15,8 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import useChainId from '@/hooks/useChainId'
-import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics/analytics'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import { isWalletRejection } from '@/utils/wallets'
 
 export enum SafeCreationStatus {
@@ -41,10 +42,7 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
     )
 
     pendingSafe.owners.forEach((owner) => {
-      const entryName = owner.name || owner.ens
-      if (entryName) {
-        dispatch(upsertAddressBookEntry({ chainId, address: owner.address, name: entryName }))
-      }
+      dispatch(upsertAddressBookEntry({ chainId: chainId, address: owner.address, name: owner.name }))
     })
 
     dispatch(
@@ -55,7 +53,7 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
           threshold: pendingSafe.threshold,
           owners: pendingSafe.owners.map((owner) => ({
             value: owner.address,
-            name: owner.name || owner.ens,
+            name: owner.name,
           })),
           chainId: chainId,
           nonce: 0,

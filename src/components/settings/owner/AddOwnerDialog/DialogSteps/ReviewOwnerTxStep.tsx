@@ -12,7 +12,8 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
 import React from 'react'
-import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics/analytics'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 
 export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (data: null) => void }) => {
   const { safe, safeAddress } = useSafeInfo()

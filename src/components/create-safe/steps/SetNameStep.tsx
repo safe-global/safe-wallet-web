@@ -6,7 +6,8 @@ import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { SafeFormData } from '@/components/create-safe/types'
-import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
+import { trackEvent } from '@/services/analytics/analytics'
 
 type Props = {
   params: SafeFormData
@@ -51,7 +52,7 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
           <Box padding={3}>
             <Typography variant="body1" mb={2}>
               You are about to create a new Safe wallet with one or more owners. First, let&apos;s give your new wallet
-              a name. This name is only stored locally and will never be shared with us or any third parties. The new
+              a name. This name is only stored locally and will never be shared with Safe or any third parties. The new
               Safe will ONLY be available on <ChainIndicator inline />
             </Typography>
 

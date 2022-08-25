@@ -130,7 +130,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
                 })}
               />
             }
-            label="This app is not part of Safe and I agree to use it at my own risk."
+            label="This app is not part of the Safe and I agree to use the app at my own risk."
             sx={{ mt: 2 }}
           />
           {errors.riskAcknowledgement && <FormHelperText error>Required</FormHelperText>}

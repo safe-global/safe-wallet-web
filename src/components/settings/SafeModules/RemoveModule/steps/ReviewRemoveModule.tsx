@@ -9,7 +9,8 @@ import { RemoveModuleData } from '@/components/settings/SafeModules/RemoveModule
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
-import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { trackEvent } from '@/services/analytics/analytics'
 
 export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData; onSubmit: (data: null) => void }) => {
   const { safe } = useSafeInfo()

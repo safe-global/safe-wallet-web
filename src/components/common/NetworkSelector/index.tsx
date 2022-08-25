@@ -7,7 +7,8 @@ import { useChainId } from '@/hooks/useChainId'
 import chains from '@/config/chains'
 import { ReactElement } from 'react'
 import { AppRoutes } from '@/config/routes'
-import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import { trackEvent } from '@/services/analytics/analytics'
 
 const NetworkSelector = (): ReactElement => {
   const { configs } = useChains()

@@ -3,7 +3,8 @@ import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RootState } from '@/store'
 import { makeLoadableSlice } from './common'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
-import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics/analytics'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
 const { slice, selector } = makeLoadableSlice('txQueue', undefined as TransactionListPage | undefined)
 

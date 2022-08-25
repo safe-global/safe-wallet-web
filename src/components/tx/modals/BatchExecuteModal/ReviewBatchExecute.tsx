@@ -42,13 +42,20 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [chain, safe.address.value, safe.version, txsWithDetails])
 
   const onExecute = async () => {
-    if (!provider || !multiSendTxData || !multiSendContract || !txsWithDetails) return
+    if (!provider || !multiSendTxData || !chain || !multiSendContract || !txsWithDetails) return
 
     setIsSubmittable(false)
     setSubmitError(undefined)
 
     try {
-      await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, provider)
+      await dispatchBatchExecution(
+        txsWithDetails,
+        multiSendContract,
+        multiSendTxData,
+        provider,
+        chain.chainId,
+        safeAddress,
+      )
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)

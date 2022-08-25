@@ -1,7 +1,7 @@
 export type NamedAddress = {
   name: string
   address: string
-  ens?: string
+  fallbackName?: string
 }
 
 export type SafeFormData = NamedAddress & {

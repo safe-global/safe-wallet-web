@@ -15,7 +15,45 @@ const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
   [TxEvent.FAILED]: null,
 }
 
-const useTxMonitor = (): void => {
+const useTxPendingStatuses = (): void => {
+  const dispatch = useAppDispatch()
+  const chainId = useChainId()
+
+  // Subscribe to pending statuses
+  useEffect(() => {
+    const unsubFns = Object.entries(pendingStatuses).map(([event, status]) =>
+      txSubscribe(event as TxEvent, (detail) => {
+        // All pending txns should have a txId
+        const txId = 'txId' in detail && detail.txId
+        if (!txId) return
+
+        // Clear the pending status if the tx is no longer pending
+        const isFinished = status === null
+        if (isFinished) {
+          dispatch(clearPendingTx({ txId }))
+          return
+        }
+
+        // Or set a new status
+        dispatch(
+          setPendingTx({
+            chainId,
+            txId,
+            status,
+            txHash: 'txHash' in detail ? detail.txHash : undefined,
+            batchId: 'batchId' in detail ? detail.batchId : undefined,
+          }),
+        )
+      }),
+    )
+
+    return () => {
+      unsubFns.forEach((unsub) => unsub())
+    }
+  }, [dispatch, chainId])
+}
+
+export const useTxMonitor = (): void => {
   const chainId = useChainId()
   const pendingTxs = useAppSelector(selectPendingTxs)
   const pendingTxEntriesOnChain = Object.entries(pendingTxs).filter(([, pendingTx]) => pendingTx.chainId === chainId)
@@ -45,45 +83,6 @@ const useTxMonitor = (): void => {
     // `provider` is updated when switching chains, re-running this effect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider])
-}
-
-const useTxPendingStatuses = (): void => {
-  const dispatch = useAppDispatch()
-  const chainId = useChainId()
-  useTxMonitor()
-
-  // Subscribe to pending statuses
-  useEffect(() => {
-    const unsubFns = Object.entries(pendingStatuses).map(([event, status]) =>
-      txSubscribe(event as TxEvent, (detail) => {
-        // All pending txns should have a txId
-        const txId = 'txId' in detail && detail.txId
-        if (!txId) return
-
-        // Clear the pending status if the tx is no longer pending
-        const isFinished = status === null
-        if (isFinished) {
-          dispatch(clearPendingTx({ txId }))
-          return
-        }
-
-        // Or set a new status
-        dispatch(
-          setPendingTx({
-            chainId,
-            txId,
-            status,
-            txHash: 'txHash' in detail ? detail.txHash : undefined,
-            groupKey: 'groupKey' in detail ? detail.groupKey : undefined,
-          }),
-        )
-      }),
-    )
-
-    return () => {
-      unsubFns.forEach((unsub) => unsub())
-    }
-  }, [dispatch, chainId])
 }
 
 export default useTxPendingStatuses

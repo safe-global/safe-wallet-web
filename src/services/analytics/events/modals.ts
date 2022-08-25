@@ -1,4 +1,4 @@
-import { EventType } from '@/services/analytics/types'
+import { GTM_EVENT } from '@/services/analytics/types'
 
 export const MODALS_CATEGORY = 'modals'
 
@@ -42,7 +42,7 @@ export const MODALS_EVENTS = {
   },
   // TODO: Does not yet exist in web-core
   USE_SPENDING_LIMIT: {
-    event: EventType.META,
+    event: GTM_EVENT.META,
     action: 'Use spending limit',
     category: MODALS_CATEGORY,
   },

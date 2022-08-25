@@ -11,7 +11,8 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import Track from '@/components/common/Track'
-import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { trackEvent } from '@/services/analytics/analytics'
 
 interface ChangeThresholdData {
   threshold: number

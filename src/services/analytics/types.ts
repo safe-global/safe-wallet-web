@@ -1,4 +1,4 @@
-export enum EventType {
+export enum GTM_EVENT {
   PAGEVIEW = 'pageview',
   CLICK = 'customClick',
   META = 'metadata',
@@ -6,10 +6,3 @@ export enum EventType {
 }
 
 export type EventLabel = string | number | boolean | null
-
-export type AnalyticsEvent = {
-  event?: EventType
-  category: string
-  action: string
-  label?: EventLabel
-}

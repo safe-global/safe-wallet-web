@@ -5,8 +5,9 @@ import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { safeFormatUnits } from '@/utils/formatters'
 import { Loadable } from './common'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { selectChainById } from '@/store/chainsSlice'
-import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics/analytics'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {

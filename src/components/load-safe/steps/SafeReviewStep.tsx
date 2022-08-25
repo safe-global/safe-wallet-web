@@ -13,7 +13,8 @@ import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SafeFormData } from '@/components/create-safe/types'
-import { trackEvent, LOAD_SAFE_EVENTS } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics/analytics'
+import { LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 
 type Props = {
   params: SafeFormData
@@ -40,7 +41,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
           threshold: params.threshold,
           owners: params.owners.map((owner) => ({
             value: owner.address,
-            name: owner.name || owner.ens,
+            name: owner.name,
           })),
           chainId,
         },
@@ -55,18 +56,16 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
       }),
     )
 
-    for (const { address, name, ens } of params.owners) {
-      const entryName = name || ens
-
-      if (!entryName) {
+    for (const { address, name, fallbackName } of params.owners) {
+      if (name === fallbackName) {
         continue
       }
 
       dispatch(
         upsertAddressBookEntry({
           chainId,
-          address,
-          name: entryName,
+          address: address,
+          name: name ?? '',
         }),
       )
     }
@@ -142,7 +141,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
             {params.owners.map((owner) => {
               return (
                 <Box key={owner.address} mb={1}>
-                  <EthHashInfo address={owner.address} name={owner.name || owner.ens} shortAddress={false} />
+                  <EthHashInfo address={owner.address} name={owner.name} shortAddress={false} />
                 </Box>
               )
             })}

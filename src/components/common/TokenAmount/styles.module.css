@@ -21,12 +21,12 @@
   position: relative;
 }
 
-[data-theme='dark'] .iconWrapper img {
+[data-theme="dark"] .iconWrapper img {
   position: relative;
   z-index: 2;
 }
 
-[data-theme='dark'] .iconWrapper:after {
+[data-theme="dark"] .iconWrapper:after {
   content: '';
   left: -1px;
   top: -1px;

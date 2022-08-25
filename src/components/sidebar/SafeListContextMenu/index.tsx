@@ -12,7 +12,8 @@ import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 
 import css from './styles.module.css'
-import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics/analytics'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 
 enum ModalType {
   RENAME = 'rename',

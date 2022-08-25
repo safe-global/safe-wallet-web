@@ -75,7 +75,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
   const listWithGroupedItems: (TransactionListItem | Transaction[])[] = useMemo(() => {
     return list.reduce((acc: (TransactionListItem | Transaction[])[], current, i) => {
       if (isConflictHeaderListItem(current)) {
-        return acc.concat([[]])
+        return acc.concat([])
       }
 
       const prev = acc[i - 1]

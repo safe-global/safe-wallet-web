@@ -39,10 +39,7 @@ export const ChooseOwnerStep = ({
 
   const address = watch('address')
 
-  const { name, ens, resolving } = useAddressResolver(address)
-
-  // Address book, ENS
-  const fallbackName = name || ens
+  const { name: fallbackName, resolving } = useAddressResolver(address)
 
   const onFormSubmit = handleSubmit((formData: OwnerData) => {
     onSubmit({
@@ -77,7 +74,7 @@ export const ChooseOwnerStep = ({
               <NameInput
                 label="Owner name"
                 name="name"
-                placeholder={fallbackName || 'New owner'}
+                placeholder={fallbackName}
                 InputLabelProps={{ shrink: true }}
                 InputProps={{
                   endAdornment: resolving && (

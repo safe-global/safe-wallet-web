@@ -7,7 +7,7 @@ import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import CustomTooltip from '@/components/common/CustomTooltip'
 import useBatchedTxs from '@/hooks/useBatchedTxs'
 import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
-import { trackEvent } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
 const BatchExecuteButton = ({

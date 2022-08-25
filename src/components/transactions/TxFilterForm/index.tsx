@@ -17,7 +17,7 @@ import DatePickerInput from '@/components/common/DatePickerInput'
 import { validateAmount } from '@/utils/validation'
 import { getFilterlessQuery, getTxFilterQuery, hasTxFilterQuery } from '@/components/transactions/TxFilterForm/utils'
 import { TxFilterType, type TxFilterFormState } from '@/components/transactions/TxFilterForm/types'
-import { trackEvent } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
 export enum TxFilterFormFieldNames {

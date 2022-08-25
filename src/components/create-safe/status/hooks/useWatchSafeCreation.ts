@@ -5,7 +5,8 @@ import { pollSafeInfo } from '@/components/create-safe/status/usePendingSafeCrea
 import { AppRoutes } from '@/config/routes'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import useChainId from '@/hooks/useChainId'
-import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics/analytics'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 
 const useWatchSafeCreation = ({
   status,

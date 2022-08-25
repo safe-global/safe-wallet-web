@@ -10,7 +10,8 @@ import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import NavTabs from '@/components/common/NavTabs'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import { useEffect } from 'react'
-import { trackEvent, ASSETS_EVENTS } from '@/services/analytics'
+import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
+import { trackEvent } from '@/services/analytics/analytics'
 
 const Balances: NextPage = () => {
   const { balances, loading } = useBalances()
