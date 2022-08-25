@@ -1,13 +1,12 @@
 import { useCallback, useContext, useState } from 'react'
-import { Button } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
-import CustomTooltip from '@/components/common/CustomTooltip'
 import useBatchedTxs from '@/hooks/useBatchedTxs'
 import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
-import { trackEvent } from '@/services/analytics/analytics'
+import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
 const BatchExecuteButton = ({
@@ -45,7 +44,7 @@ const BatchExecuteButton = ({
 
   return (
     <>
-      <CustomTooltip
+      <Tooltip
         placement="top-start"
         arrow
         title={
@@ -63,10 +62,10 @@ const BatchExecuteButton = ({
             disabled={isDisabled}
             onClick={handleOpenModal}
           >
-            Execute batch {isBatchable && ` (${batchableTransactions.length})`}
+            Execute batch{isBatchable && ` (${batchableTransactions.length})`}
           </Button>
         </span>
-      </CustomTooltip>
+      </Tooltip>
       {open && <BatchExecuteModal onClose={() => setOpen(false)} initialData={[{ txs: batchableTransactions }]} />}
     </>
   )

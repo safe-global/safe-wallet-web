@@ -1,10 +1,10 @@
-import { GTM_EVENT } from '@/services/analytics/types'
+import { EventType } from '@/services/analytics/types'
 
 const TX_LIST_CATEGORY = 'tx-list'
 
 export const TX_LIST_EVENTS = {
   QUEUED_TXS: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Queued transactions',
     category: TX_LIST_CATEGORY,
   },

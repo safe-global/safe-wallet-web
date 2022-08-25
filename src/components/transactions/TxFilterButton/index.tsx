@@ -30,7 +30,7 @@ const TxFilterButton = ({ className }: { className?: string }) => {
         query: getFilterlessQuery(router.query),
       })
     }
-  }, [hasFilter])
+  }, [hasFilter, router])
 
   return (
     <>

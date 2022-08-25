@@ -6,7 +6,8 @@ import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/local-storage/local'
 import { logError, Errors } from '@/services/exceptions'
-import { trackWalletType } from '@/services/analytics/analytics'
+import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
+import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 
@@ -43,6 +44,31 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
     ens: account.ens?.name,
     chainId: Number(primaryWallet.chains[0].id).toString(10),
     provider: primaryWallet.provider,
+  }
+}
+
+const getWalletConnectLabel = async ({ label, provider }: ConnectedWallet): Promise<string | undefined> => {
+  if (label.toUpperCase() !== WALLET_KEYS.WALLETCONNECT.toUpperCase()) return
+
+  const UNKNOWN_PEER = 'Unknown'
+  const { default: WalletConnect } = await import('@walletconnect/client')
+
+  const peerWallet =
+    ((provider as unknown as any).connector as InstanceType<typeof WalletConnect>).peerMeta?.name || UNKNOWN_PEER
+
+  return peerWallet ?? UNKNOWN_PEER
+}
+
+const trackWalletType = async (wallet: ConnectedWallet) => {
+  trackEvent({ ...WALLET_EVENTS.CONNECT, label: wallet.label })
+
+  const wcLabel = await getWalletConnectLabel(wallet)
+
+  if (wcLabel) {
+    trackEvent({
+      ...WALLET_EVENTS.WALLET_CONNECT,
+      label: wcLabel,
+    })
   }
 }
 

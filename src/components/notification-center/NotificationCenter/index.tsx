@@ -20,8 +20,7 @@ import NotificationCenterList from '@/components/notification-center/Notificatio
 import UnreadBadge from '@/components/common/UnreadBadge'
 
 import css from './styles.module.css'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
-import { trackEvent } from '@/services/analytics/analytics'
+import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 
 const NOTIFICATION_CENTER_LIMIT = 4
 
