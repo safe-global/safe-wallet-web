@@ -1,4 +1,4 @@
-import { GTM_EVENT } from '@/services/analytics/types'
+import { EventType } from '@/services/analytics/types'
 
 const CREATE_SAFE_CATEGORY = 'create-safe'
 
@@ -8,42 +8,42 @@ export const CREATE_SAFE_EVENTS = {
     category: CREATE_SAFE_CATEGORY,
   },
   NAME_SAFE: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Name Safe',
     category: CREATE_SAFE_CATEGORY,
   },
   OWNERS: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Owners',
     category: CREATE_SAFE_CATEGORY,
   },
   THRESHOLD: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Threshold',
     category: CREATE_SAFE_CATEGORY,
   },
   SUBMIT_CREATE_SAFE: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Submit Safe creation',
     category: CREATE_SAFE_CATEGORY,
   },
   REJECT_CREATE_SAFE: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Reject Safe creation',
     category: CREATE_SAFE_CATEGORY,
   },
   RETRY_CREATE_SAFE: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Retry Safe creation',
     category: CREATE_SAFE_CATEGORY,
   },
   CANCEL_CREATE_SAFE: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Cancel Safe creation',
     category: CREATE_SAFE_CATEGORY,
   },
   CREATED_SAFE: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Created Safe',
     category: CREATE_SAFE_CATEGORY,
   },
@@ -65,17 +65,17 @@ export const LOAD_SAFE_EVENTS = {
     category: LOAD_SAFE_CATEGORY,
   },
   NAME_SAFE: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Name Safe',
     category: LOAD_SAFE_CATEGORY,
   },
   OWNERS: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Owners',
     category: LOAD_SAFE_CATEGORY,
   },
   THRESHOLD: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Threshold',
     category: LOAD_SAFE_CATEGORY,
   },

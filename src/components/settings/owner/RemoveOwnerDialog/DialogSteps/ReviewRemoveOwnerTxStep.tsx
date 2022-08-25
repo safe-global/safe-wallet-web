@@ -10,8 +10,7 @@ import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
 import { RemoveOwnerData } from '..'
 import React from 'react'
-import { trackEvent } from '@/services/analytics/analytics'
-import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 
 export const ReviewRemoveOwnerTxStep = ({
   data,

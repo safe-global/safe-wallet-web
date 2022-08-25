@@ -15,8 +15,7 @@ import { Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 import { isERC20Transfer, isNativeTokenTransfer } from '@/utils/transaction-guards'
 import useIsGranted from '@/hooks/useIsGranted'
-import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
-import { trackEvent } from '@/services/analytics/analytics'
+import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 import { safeFormatUnits } from '@/utils/formatters'
 
 enum ModalType {

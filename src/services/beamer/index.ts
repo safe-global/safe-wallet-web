@@ -3,14 +3,16 @@ import Cookies from 'js-cookie'
 import { BEAMER_ID } from '@/config/constants'
 import local from '@/services/local-storage/local'
 
+export const BEAMER_SELECTOR = 'whats-new-button'
+
 // Beamer script tag singleton
 let scriptRef: HTMLScriptElement | null = null
 
 export const isBeamerLoaded = (): boolean => !!scriptRef
 
-export const BEAMER_SELECTOR = 'whats-new-button'
-
 export const loadBeamer = async (): Promise<void> => {
+  if (isBeamerLoaded()) return
+
   const BEAMER_URL = 'https://app.getbeamer.com/js/beamer-embed.js'
 
   if (!BEAMER_ID) {

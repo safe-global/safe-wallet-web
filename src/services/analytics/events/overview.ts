@@ -1,4 +1,4 @@
-import { GTM_EVENT } from '@/services/analytics/types'
+import { EventType } from '@/services/analytics/types'
 
 const OVERVIEW_CATEGORY = 'overview'
 
@@ -41,7 +41,7 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
   },
   ADDED_SAFES_ON_NETWORK: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Added Safes on', // Safe name is appended trackEvent on SafeList
     category: OVERVIEW_CATEGORY,
   },

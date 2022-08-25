@@ -4,8 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { selectCurrency, setCurrency } from '@/store/settingsSlice'
 import useCurrencies from './useCurrencies'
 import css from './styles.module.css'
-import { trackEvent } from '@/services/analytics/analytics'
-import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
+import { trackEvent, ASSETS_EVENTS } from '@/services/analytics'
 
 const CurrencySelect = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
