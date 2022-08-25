@@ -3,12 +3,11 @@ import { IS_PRODUCTION } from '@/config/constants'
 import { gtmTrack } from './gtm'
 
 export const trackEvent = (eventData: AnalyticsEvent) => {
-  if (!IS_PRODUCTION) {
-    console.info('[Analytics]', eventData)
-    return
-  }
+  console.info('[Analytics]', eventData)
 
-  gtmTrack(eventData)
+  if (IS_PRODUCTION) {
+    gtmTrack(eventData)
+  }
 }
 
 export * from './types'
