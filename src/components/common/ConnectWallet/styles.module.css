@@ -29,8 +29,8 @@
   display: block;
 }
 
-[data-theme='dark'] .imageContainer img[alt*="Trezor"],
-[data-theme='dark'] .imageContainer img[alt*="Ledger"] {
+[data-theme='dark'] .imageContainer img[alt*='Trezor'],
+[data-theme='dark'] .imageContainer img[alt*='Ledger'] {
   filter: invert(100%);
 }
 
