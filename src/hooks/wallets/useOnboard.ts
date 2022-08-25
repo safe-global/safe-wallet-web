@@ -7,6 +7,7 @@ import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/local-storage/local'
 import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
+import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 
@@ -47,7 +48,7 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
 }
 
 const getWalletConnectLabel = async ({ label, provider }: ConnectedWallet): Promise<string | undefined> => {
-  if (label.toUpperCase() !== 'WALLETCONNECT') return
+  if (label.toUpperCase() !== WALLET_KEYS.WALLETCONNECT) return
 
   const UNKNOWN_PEER = 'Unknown'
   const { default: WalletConnect } = await import('@walletconnect/client')
