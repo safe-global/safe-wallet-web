@@ -16,7 +16,7 @@
 }
 
 .accordion :global .MuiAccordionSummary-root .MuiAccordionSummary-content {
-  flexgrow: 0;
+  flex-grow: 0;
 }
 
 .accordion :global .MuiAccordionSummary-root .MuiAccordionSummary-content.Mui-expanded {
