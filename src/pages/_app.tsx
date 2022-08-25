@@ -27,6 +27,7 @@ import { useLightDarkTheme } from '@/hooks/useDarkMode'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { useTxTracking } from '@/hooks/useTxTracking'
 import useGtm from '@/hooks/useGtm'
+import useBeamer from '@/hooks/useBeamer'
 
 const cssCache = createCache({
   key: 'css',
@@ -51,6 +52,7 @@ const InitApp = (): null => {
   useTxPendingStatuses()
   useTxMonitor()
   useTxTracking()
+  useBeamer()
 
   return null
 }
