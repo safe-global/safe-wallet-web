@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { Typography } from '@mui/material'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -15,8 +15,8 @@ const abFilterOptions = createFilterOptions({
  */
 const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement => {
   const addressBook = useAddressBook()
-  const { watch, setValue } = useFormContext()
-  const addressValue = watch(name)
+  const { setValue, control } = useFormContext()
+  const addressValue = useWatch({ name, control })
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
     label: address,

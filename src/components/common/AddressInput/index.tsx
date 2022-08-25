@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useCallback, useRef, useMemo } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
-import { useFormContext, type Validate } from 'react-hook-form'
+import { useFormContext, useWatch, type Validate } from 'react-hook-form'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -15,13 +15,13 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
   const {
     register,
     setValue,
-    watch,
+    control,
     getFieldState,
     formState: { errors },
   } = useFormContext()
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
-  const watchedValue = watch(name)
+  const watchedValue = useWatch({ name, control })
   const currentShortName = currentChain?.shortName || ''
 
   // errors[name] doesn't work with nested field names like 'safe.address'.

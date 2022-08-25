@@ -18,6 +18,7 @@ import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
+import TxFilterButton from '@/components/transactions/TxFilterButton'
 
 type TxListProps = {
   items: TransactionListPage['results']
@@ -69,7 +70,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
   return (
     <>
       <BatchExecuteHoverProvider>
-        {isQueue && <BatchExecuteButton items={listWithGroupedItems} />}
+        {isQueue ? <BatchExecuteButton items={listWithGroupedItems} /> : <TxFilterButton />}
         <TxListGrid>
           {listWithGroupedItems.map((item, index) => {
             if (Array.isArray(item)) {

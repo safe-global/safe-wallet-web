@@ -32,6 +32,7 @@
     "lint"
   ],
   "dependencies": {
+    "@date-io/date-fns": "^2.15.0",
     "@emotion/cache": "^11.10.1",
     "@emotion/react": "^11.10.0",
     "@emotion/server": "^11.10.0",
@@ -43,6 +44,7 @@
     "@gnosis.pm/safe-react-gateway-sdk": "^3.3.5",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.3",
+    "@mui/x-date-pickers": "^5.0.0-beta.6",
     "@reduxjs/toolkit": "^1.8.2",
     "@sentry/react": "^7.8.1",
     "@sentry/tracing": "^7.8.1",
@@ -58,7 +60,7 @@
     "@web3-onboard/trezor": "^2.1.7",
     "@web3-onboard/walletconnect": "^2.0.8",
     "classnames": "^2.3.1",
-    "date-fns": "^2.29.1",
+    "date-fns": "^2.29.2",
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^5.6.8",
     "exponential-backoff": "^3.1.0",
