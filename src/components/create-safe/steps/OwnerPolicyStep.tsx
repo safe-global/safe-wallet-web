@@ -9,8 +9,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
 import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
-import { trackEvent } from '@/services/analytics/analytics'
-import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
+import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
 
 type Props = {
   params: SafeFormData
@@ -54,13 +53,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   }
 
   const onFormSubmit = handleSubmit((data: SafeFormData) => {
-    onSubmit({
-      ...data,
-      owners: data.owners.map((owner) => ({
-        name: owner.name || owner.fallbackName,
-        address: owner.address,
-      })),
-    })
+    onSubmit(data)
 
     trackEvent({
       ...CREATE_SAFE_EVENTS.OWNERS,
@@ -108,7 +101,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
 
           <Box padding={3}>
             {fields.map((field, index) => (
-              <OwnerRow key={field.id} field={field} index={index} remove={remove} />
+              <OwnerRow key={field.id} index={index} remove={remove} />
             ))}
 
             <Button onClick={addOwner} sx={{ fontWeight: 'normal' }}>

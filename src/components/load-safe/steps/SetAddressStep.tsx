@@ -12,8 +12,7 @@ import NameInput from '@/components/common/NameInput'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { SafeFormData } from '@/components/create-safe/types'
-import { LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
-import { trackEvent } from '@/services/analytics/analytics'
+import { trackEvent, LOAD_SAFE_EVENTS } from '@/services/analytics'
 
 type Props = {
   params: SafeFormData
@@ -41,7 +40,11 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
 
   const safeAddress = watch('address')
 
-  const { name: fallbackName, resolving } = useAddressResolver(safeAddress, useMnemonicSafeName())
+  const randomName = useMnemonicSafeName()
+  const { ens, name, resolving } = useAddressResolver(safeAddress)
+
+  // Address book, ENS, mnemonic
+  const fallbackName = name || ens || randomName
 
   const validateSafeAddress = async (address: string) => {
     if (addedSafes && Object.keys(addedSafes).includes(address)) {
