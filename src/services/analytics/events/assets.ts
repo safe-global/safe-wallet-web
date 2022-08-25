@@ -1,4 +1,4 @@
-import { GTM_EVENT } from '@/services/analytics/types'
+import { EventType } from '@/services/analytics/types'
 
 const ASSETS_CATEGORY = 'assets'
 
@@ -8,18 +8,18 @@ export const ASSETS_EVENTS = {
     category: ASSETS_CATEGORY,
   },
   CHANGE_CURRENCY: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Change currency',
     category: ASSETS_CATEGORY,
   },
   DIFFERING_TOKENS: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'Tokens',
     category: ASSETS_CATEGORY,
   },
   // TODO: How should we now track this as we paginate items?
   NFT_AMOUNT: {
-    event: GTM_EVENT.META,
+    event: EventType.META,
     action: 'NFTs',
     category: ASSETS_CATEGORY,
   },

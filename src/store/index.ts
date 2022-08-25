@@ -18,7 +18,7 @@ import { getPreloadedState, persistState } from './persistStore'
 import { pendingTxsSlice } from './pendingTxsSlice'
 import { addedSafesMiddleware, addedSafesSlice } from './addedSafesSlice'
 import { settingsSlice } from './settingsSlice'
-import { cookiesSlice, cookiesMiddleware } from './cookiesSlice'
+import { cookiesSlice } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
 import { spendingLimitSlice } from '@/store/spendingLimitsSlice'
 import { IS_PRODUCTION } from '@/config/constants'
@@ -50,13 +50,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   cookiesSlice.name,
 ]
 
-const middleware = [
-  persistState(persistedSlices),
-  txHistoryMiddleware,
-  txQueueMiddleware,
-  addedSafesMiddleware,
-  cookiesMiddleware,
-]
+const middleware = [persistState(persistedSlices), txHistoryMiddleware, txQueueMiddleware, addedSafesMiddleware]
 
 export const getPersistedState = () => {
   return getPreloadedState(persistedSlices)

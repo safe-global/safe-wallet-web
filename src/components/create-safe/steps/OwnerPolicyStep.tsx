@@ -9,8 +9,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
 import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
-import { trackEvent } from '@/services/analytics/analytics'
-import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
+import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
 
 type Props = {
   params: SafeFormData

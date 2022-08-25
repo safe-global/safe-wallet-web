@@ -1,4 +1,4 @@
-import { GTM_EVENT } from '@/services/analytics/types'
+import { EventType } from '@/services/analytics/types'
 
 const SETTINGS_CATEGORY = 'settings'
 
@@ -37,12 +37,12 @@ export const SETTINGS_EVENTS = {
       category: SETTINGS_CATEGORY,
     },
     OWNERS: {
-      event: GTM_EVENT.META,
+      event: EventType.META,
       action: 'Owners',
       category: SETTINGS_CATEGORY,
     },
     THRESHOLD: {
-      event: GTM_EVENT.META,
+      event: EventType.META,
       action: 'Threshold',
       category: SETTINGS_CATEGORY,
     },
@@ -73,7 +73,7 @@ export const SETTINGS_EVENTS = {
       category: SETTINGS_CATEGORY,
     },
     RESET_PERIOD: {
-      event: GTM_EVENT.META,
+      event: EventType.META,
       action: 'Spending limit reset period',
       category: SETTINGS_CATEGORY,
     },

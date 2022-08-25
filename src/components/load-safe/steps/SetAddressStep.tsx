@@ -12,8 +12,7 @@ import NameInput from '@/components/common/NameInput'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { SafeFormData } from '@/components/create-safe/types'
-import { LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
-import { trackEvent } from '@/services/analytics/analytics'
+import { trackEvent, LOAD_SAFE_EVENTS } from '@/services/analytics'
 
 type Props = {
   params: SafeFormData

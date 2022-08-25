@@ -13,8 +13,7 @@ import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SafeFormData } from '@/components/create-safe/types'
-import { trackEvent } from '@/services/analytics/analytics'
-import { LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
+import { trackEvent, LOAD_SAFE_EVENTS } from '@/services/analytics'
 
 type Props = {
   params: SafeFormData
