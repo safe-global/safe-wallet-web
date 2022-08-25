@@ -13,7 +13,7 @@ export type AppManifest = {
   name: string
   short_name?: string
   description: string
-  icons: AppManifestIcon[]
+  icons?: AppManifestIcon[]
   // `iconPath` a former custom property for Safe Apps, we now use `icons`
   iconPath?: string
 }
@@ -24,20 +24,20 @@ export type AppManifest = {
 // - /icon.png
 // This function calculates the absolute URL of the icon taking into account the
 // different formats.
-const getAppLogoUrl = (appUrl: string, icons: AppManifest['icons']) => {
-  const iconUrl = icons[0].src
+const getAppLogoUrl = (appUrl: string, { icons = [], iconPath = '' }: AppManifest) => {
+  const iconUrl = icons.length ? icons[0].src : iconPath
   const includesBaseUrl = iconUrl.startsWith('https://')
   if (includesBaseUrl) {
     return iconUrl
   }
 
-  const isAbsoluteUrl = iconUrl.startsWith('/')
-  if (isAbsoluteUrl) {
+  const isRelativeUrl = iconUrl.startsWith('/')
+  if (isRelativeUrl) {
     const appUrlHost = new URL(appUrl).host
     return `${appUrlHost}${iconUrl}`
   }
 
-  return `${appUrl}/${icons[0].src}`
+  return `${appUrl}/${iconUrl}`
 }
 
 const fetchAppManifest = async (appUrl: string, timeout = 5000): Promise<unknown> => {
@@ -61,7 +61,13 @@ const fetchAppManifest = async (appUrl: string, timeout = 5000): Promise<unknown
 }
 
 const isAppManifestValid = (json: unknown): json is AppManifest => {
-  return json != null && typeof json === 'object' && 'name' in json && 'description' in json && 'icons' in json
+  return (
+    json != null &&
+    typeof json === 'object' &&
+    'name' in json &&
+    'description' in json &&
+    ('icons' in json || 'iconPath' in json)
+  )
 }
 
 const fetchSafeAppFromManifest = async (appUrl: string, currentChainId: string): Promise<SafeAppData> => {
@@ -72,7 +78,7 @@ const fetchSafeAppFromManifest = async (appUrl: string, currentChainId: string):
     throw new Error('Invalid app manifest')
   }
 
-  const iconUrl = getAppLogoUrl(normalizedAppUrl, appManifest.icons)
+  const iconUrl = getAppLogoUrl(normalizedAppUrl, appManifest)
 
   return {
     id: Math.random(),
