@@ -22,7 +22,7 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
   const formMethods = useForm<SafeFormData>({ defaultValues: params, mode: 'onChange' })
   const { handleSubmit, setValue, control, formState, getValues } = formMethods
 
-  const { fields, append } = useFieldArray({
+  const { fields } = useFieldArray({
     control,
     name: 'owners',
   })
@@ -44,7 +44,7 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
     }))
 
     setValue('owners', owners)
-  }, [safeInfo, setValue])
+  }, [getValues, safeInfo, setValue])
 
   return (
     <Paper>
