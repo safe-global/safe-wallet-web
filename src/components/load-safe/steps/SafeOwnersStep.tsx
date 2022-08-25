@@ -20,9 +20,9 @@ type Props = {
 const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
   const chainId = useChainId()
   const formMethods = useForm<SafeFormData>({ defaultValues: params, mode: 'onChange' })
-  const { handleSubmit, setValue, control, formState } = formMethods
+  const { handleSubmit, setValue, control, formState, getValues } = formMethods
 
-  const { fields } = useFieldArray({
+  const { fields, append } = useFieldArray({
     control,
     name: 'owners',
   })
@@ -37,10 +37,13 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
     if (!safeInfo) return
 
     setValue('threshold', safeInfo.threshold)
-    setValue(
-      'owners',
-      safeInfo.owners.map((owner) => ({ address: owner.value, name: '' })),
-    )
+
+    const owners = safeInfo.owners.map((owner, i) => ({
+      address: owner.value,
+      name: getValues(`owners.${i}.name`) || '',
+    }))
+
+    setValue('owners', owners)
   }, [safeInfo, setValue])
 
   return (
