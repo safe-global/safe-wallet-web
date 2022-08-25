@@ -34,7 +34,7 @@ const InfiniteScroll = ({ onLoadMore }: { onLoadMore: () => void }): ReactElemen
     }
   }, [isIntersecting, onLoadMore])
 
-  return <div ref={elementRef} style={{ height: '1px' }} />
+  return <div ref={elementRef} />
 }
 
 export default InfiniteScroll
