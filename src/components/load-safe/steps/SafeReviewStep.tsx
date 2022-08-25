@@ -143,7 +143,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
             {params.owners.map((owner) => {
               return (
                 <Box key={owner.address} mb={1}>
-                  <EthHashInfo address={owner.address} name={owner.name} shortAddress={false} />
+                  <EthHashInfo address={owner.address} name={owner.name || owner.ens} shortAddress={false} />
                 </Box>
               )
             })}
