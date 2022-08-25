@@ -66,15 +66,8 @@ class AppCommunicator {
     const hasHandler = this.canHandleMessage(msg)
 
     if (validMessage && hasHandler) {
-      // TODO: Tracking
-      // trackSafeAppMessage({
-      //   app: this.app,
-      //   method: msg.data.method,
-      //   params: msg.data.params,
-      //   sdkVersion: msg.data.env.sdkVersion,
-      // })
-
       const handler = this.handlers.get(msg.data.method)
+
       try {
         // @ts-expect-error Handler existence is checked in this.canHandleMessage
         const response = await handler(msg)

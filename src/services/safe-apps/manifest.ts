@@ -14,7 +14,6 @@ export type AppManifest = {
   short_name?: string
   description: string
   icons?: AppManifestIcon[]
-  // `iconPath` a former custom property for Safe Apps, we now use `icons`
   iconPath?: string
 }
 
