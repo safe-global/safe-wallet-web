@@ -28,19 +28,14 @@ interface TxEvents {
   [TxEvent.SIGNATURE_PROPOSED]: { txId: string }
   [TxEvent.EXECUTING]: Id
   [TxEvent.MINING]: Id & { txHash: string }
+  [TxEvent.MINING_MODULE]: Id & { txHash: string; message: string }
   [TxEvent.MINED]: Id & { receipt: ContractReceipt }
   [TxEvent.REVERTED]: Id & { error: Error; receipt: ContractReceipt }
   [TxEvent.FAILED]: Id & { error: Error }
   [TxEvent.SUCCESS]: Id
 }
 
-type ModuleEvents = {
-  [TxEvent.MINING_MODULE]: Id & { txHash: string; message: string }
-}
-
-type Events = TxEvents & ModuleEvents
-
-const txEventBus = new EventBus<Events>()
+const txEventBus = new EventBus<TxEvents>()
 
 export const txDispatch = txEventBus.dispatch.bind(txEventBus)
 
