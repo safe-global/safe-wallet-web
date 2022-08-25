@@ -31,9 +31,9 @@ const useTxNotifications = (): void => {
   const chain = useCurrentChain()
   const { safeAddress } = useSafeInfo()
 
-  const entries = Object.entries(TxNotifications) as [TxEvent, string][]
-
   useEffect(() => {
+    const entries = Object.entries(TxNotifications) as [TxEvent, string][]
+
     const unsubFns = entries.map(([event, baseMessage]) =>
       txSubscribe(event, (detail) => {
         const isError = 'error' in detail
@@ -42,14 +42,14 @@ const useTxNotifications = (): void => {
         const message = isError ? `${baseMessage} ${detail.error.message.slice(0, 300)}` : customMessage || baseMessage
 
         const txId = 'txId' in detail ? detail.txId : undefined
-        const batchId = 'batchId' in detail ? detail.batchId : undefined
+        const groupKey = 'groupKey' in detail ? detail.groupKey : undefined
 
         const shouldShowLink = event !== TxEvent.EXECUTING && txId
 
         dispatch(
           showNotification({
             message,
-            groupKey: batchId || txId || '',
+            groupKey: groupKey || txId || '',
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
             ...(shouldShowLink && {
               link: {

@@ -10,30 +10,37 @@ export enum TxEvent {
   SIGNATURE_PROPOSE_FAILED = 'SIGNATURE_PROPOSE_FAILED',
   EXECUTING = 'EXECUTING',
   MINING = 'MINING',
+  MINING_MODULE = 'MINING_MODULE',
   MINED = 'MINED',
   REVERTED = 'REVERTED',
   FAILED = 'FAILED',
   SUCCESS = 'SUCCESS',
 }
 
-type Id = { txId: string; batchId?: string } | { txId?: string; batchId: string }
+type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
 
 interface TxEvents {
-  [TxEvent.SIGNED]: { txId?: string; message?: string }
-  [TxEvent.SIGN_FAILED]: { txId?: string; error: Error; message?: string }
-  [TxEvent.PROPOSE_FAILED]: { error: Error; message?: string }
-  [TxEvent.PROPOSED]: { txId: string; message?: string }
-  [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; error: Error; message?: string }
-  [TxEvent.SIGNATURE_PROPOSED]: { txId: string; message?: string }
-  [TxEvent.EXECUTING]: Id & { message?: string }
-  [TxEvent.MINING]: Id & { txHash: string; message?: string }
-  [TxEvent.MINED]: Id & { receipt: ContractReceipt; message?: string }
-  [TxEvent.REVERTED]: Id & { error: Error; receipt: ContractReceipt; message?: string }
-  [TxEvent.FAILED]: Id & { error: Error; message?: string }
-  [TxEvent.SUCCESS]: Id & { message?: string }
+  [TxEvent.SIGNED]: { txId?: string }
+  [TxEvent.SIGN_FAILED]: { txId?: string; error: Error }
+  [TxEvent.PROPOSE_FAILED]: { error: Error }
+  [TxEvent.PROPOSED]: { txId: string }
+  [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; error: Error }
+  [TxEvent.SIGNATURE_PROPOSED]: { txId: string }
+  [TxEvent.EXECUTING]: Id
+  [TxEvent.MINING]: Id & { txHash: string }
+  [TxEvent.MINED]: Id & { receipt: ContractReceipt }
+  [TxEvent.REVERTED]: Id & { error: Error; receipt: ContractReceipt }
+  [TxEvent.FAILED]: Id & { error: Error }
+  [TxEvent.SUCCESS]: Id
 }
 
-const txEventBus = new EventBus<TxEvents>()
+type ModuleEvents = {
+  [TxEvent.MINING_MODULE]: Id & { txHash: string; message: string }
+}
+
+type Events = TxEvents & ModuleEvents
+
+const txEventBus = new EventBus<Events>()
 
 export const txDispatch = txEventBus.dispatch.bind(txEventBus)
 

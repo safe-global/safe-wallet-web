@@ -231,7 +231,7 @@ export const dispatchBatchExecution = async (
   provider: Web3Provider,
 ) => {
   txs.forEach((tx) => {
-    txDispatch(TxEvent.EXECUTING, { txId: tx.txId, batchId: multiSendTxData })
+    txDispatch(TxEvent.EXECUTING, { txId: tx.txId, groupKey: multiSendTxData })
   })
 
   let result: ContractTransaction | undefined
@@ -239,13 +239,13 @@ export const dispatchBatchExecution = async (
     result = await multiSendContract.connect(provider.getSigner()).multiSend(multiSendTxData)
   } catch (err) {
     txs.forEach((tx) => {
-      txDispatch(TxEvent.FAILED, { txId: tx.txId, error: err as Error, batchId: multiSendTxData })
+      txDispatch(TxEvent.FAILED, { txId: tx.txId, error: err as Error, groupKey: multiSendTxData })
     })
     throw err
   }
 
   txs.forEach((tx) => {
-    txDispatch(TxEvent.MINING, { txId: tx.txId, txHash: result!.hash, batchId: multiSendTxData })
+    txDispatch(TxEvent.MINING, { txId: tx.txId, txHash: result!.hash, groupKey: multiSendTxData })
   })
 
   result
@@ -257,7 +257,7 @@ export const dispatchBatchExecution = async (
             txId: tx.txId,
             receipt,
             error: new Error('Transaction reverted by EVM'),
-            batchId: multiSendTxData,
+            groupKey: multiSendTxData,
           })
         })
       } else {
@@ -265,7 +265,7 @@ export const dispatchBatchExecution = async (
           txDispatch(TxEvent.MINED, {
             txId: tx.txId,
             receipt,
-            batchId: multiSendTxData,
+            groupKey: multiSendTxData,
           })
         })
       }
@@ -275,7 +275,7 @@ export const dispatchBatchExecution = async (
         txDispatch(TxEvent.FAILED, {
           txId: tx.txId,
           error: err as Error,
-          batchId: multiSendTxData,
+          groupKey: multiSendTxData,
         })
       })
     })
@@ -293,7 +293,7 @@ export const dispatchSpendingLimitTxExecution = async (
 
   const id = JSON.stringify(txParams)
 
-  txDispatch(TxEvent.EXECUTING, { batchId: id })
+  txDispatch(TxEvent.EXECUTING, { groupKey: id })
 
   let result: ContractTransaction | undefined
   try {
@@ -309,12 +309,12 @@ export const dispatchSpendingLimitTxExecution = async (
       txOptions,
     )
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { batchId: id, error: error as Error })
+    txDispatch(TxEvent.FAILED, { groupKey: id, error: error as Error })
     throw error
   }
 
-  txDispatch(TxEvent.MINING, {
-    batchId: id,
+  txDispatch(TxEvent.MINING_MODULE, {
+    groupKey: id,
     txHash: result.hash,
     message:
       'Your transaction has been submitted and will appear in the interface only after it has been successfully mined and indexed.',
@@ -324,13 +324,13 @@ export const dispatchSpendingLimitTxExecution = async (
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, { batchId: id, receipt, error: new Error('Transaction reverted by EVM') })
+        txDispatch(TxEvent.REVERTED, { groupKey: id, receipt, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.MINED, { batchId: id, receipt })
+        txDispatch(TxEvent.MINED, { groupKey: id, receipt })
       }
     })
     .catch((error) => {
-      txDispatch(TxEvent.FAILED, { batchId: id, error: error as Error })
+      txDispatch(TxEvent.FAILED, { groupKey: id, error: error as Error })
     })
 
   return result?.hash
