@@ -41,7 +41,7 @@ const useTxPendingStatuses = (): void => {
             txId,
             status,
             txHash: 'txHash' in detail ? detail.txHash : undefined,
-            batchId: 'batchId' in detail ? detail.batchId : undefined,
+            groupKey: 'groupKey' in detail ? detail.groupKey : undefined,
           }),
         )
       }),
