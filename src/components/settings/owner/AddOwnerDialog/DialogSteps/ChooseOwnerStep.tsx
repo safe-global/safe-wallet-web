@@ -41,7 +41,7 @@ export const ChooseOwnerStep = ({
 
   const { name, ens, resolving } = useAddressResolver(address)
 
-  // Address book, ENS, mnemonic
+  // Address book, ENS
   const fallbackName = name || ens
 
   const onFormSubmit = handleSubmit((formData: OwnerData) => {
