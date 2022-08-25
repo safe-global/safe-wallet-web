@@ -355,7 +355,11 @@ const initTheme = (darkMode: boolean) => {
       },
       MuiTooltip: {
         styleOverrides: {
-          tooltip: ({ theme }) => theme.typography.body2,
+          tooltip: ({ theme }) => ({
+            ...theme.typography.body2,
+            color: darkMode ? '#121312' : theme.palette.common.white,
+            backgroundColor: darkMode ? theme.palette.common.white : '#121312',
+          }),
         },
       },
     },
