@@ -41,7 +41,11 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
 
   const safeAddress = watch('address')
 
-  const { name: fallbackName, resolving } = useAddressResolver(safeAddress, useMnemonicSafeName())
+  const randomName = useMnemonicSafeName()
+  const { ens, name, resolving } = useAddressResolver(safeAddress)
+
+  // Address book, ENS, mnemonic
+  const fallbackName = name || ens || randomName
 
   const validateSafeAddress = async (address: string) => {
     if (addedSafes && Object.keys(addedSafes).includes(address)) {

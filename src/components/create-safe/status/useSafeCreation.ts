@@ -42,7 +42,10 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
     )
 
     pendingSafe.owners.forEach((owner) => {
-      dispatch(upsertAddressBookEntry({ chainId: chainId, address: owner.address, name: owner.name }))
+      const entryName = owner.name || owner.ens
+      if (entryName) {
+        dispatch(upsertAddressBookEntry({ chainId, address: owner.address, name: entryName }))
+      }
     })
 
     dispatch(
@@ -53,7 +56,7 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
           threshold: pendingSafe.threshold,
           owners: pendingSafe.owners.map((owner) => ({
             value: owner.address,
-            name: owner.name,
+            name: owner.name || owner.ens,
           })),
           chainId: chainId,
           nonce: 0,
