@@ -1,19 +1,46 @@
 import { Typography } from '@mui/material'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import Grid from '@mui/material/Grid'
+import InputAdornment from '@mui/material/InputAdornment'
+import SearchIcon from '@mui/icons-material/Search'
+import TextField from '@mui/material/TextField'
 import styles from './styles.module.css'
-import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
 
 type Props = {
-  safeAppList: SafeAppData[]
-  onCustomAppSave: (safeApp: SafeAppData) => void
+  searchQuery: string
+  onSearchQueryChange: (searchQuery: string) => void
 }
 
-const SafeAppsHeader = ({ safeAppList, onCustomAppSave }: Props) => {
+const SafeAppsHeader = ({ searchQuery, onSearchQueryChange }: Props) => {
   return (
     <div className={styles.header}>
-      <Typography variant="h1">Safe Apps</Typography>
-      <Typography variant="body1">Explore endless possibilities to manage your assets.</Typography>
-      <AddCustomAppCard onSave={onCustomAppSave} safeAppList={safeAppList} />
+      <Typography variant="h1" sx={{ mt: 5 }}>
+        Safe Apps
+      </Typography>
+      <Typography variant="body1" sx={{ mt: 1 }}>
+        Explore endless possibilities to manage your assets.
+      </Typography>
+      <Grid container rowSpacing={2} columnSpacing={2} sx={{ mt: 2.8 }}>
+        <Grid item xs={12} sm={12} md={6} xl={4.5}>
+          <TextField
+            placeholder="Search"
+            variant="filled"
+            hiddenLabel
+            value={searchQuery}
+            onChange={(e) => {
+              onSearchQueryChange(e.target.value)
+            }}
+            sx={{ width: '100%' }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+              disableUnderline: true,
+            }}
+          />
+        </Grid>
+      </Grid>
     </div>
   )
 }

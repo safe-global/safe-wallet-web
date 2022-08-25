@@ -5,7 +5,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import useTxHistory from '@/hooks/useTxHistory'
 import useTxQueue from '@/hooks/useTxQueue'
 import PagePlaceholder from '../PagePlaceholder'
-import LoadMoreButton from '../LoadMoreButton'
+import InfiniteScroll from '../InfiniteScroll'
 import SkeletonTxList from './SkeletonTxList'
 
 const NoQueuedTxns = () => (
@@ -34,7 +34,7 @@ const TxPage = ({
 
         {onNextPage && page.next && (
           <Box my={4} textAlign="center">
-            <LoadMoreButton onLoadMore={() => onNextPage(page.next)} />
+            <InfiniteScroll onLoadMore={() => onNextPage(page.next)} />
           </Box>
         )}
       </>

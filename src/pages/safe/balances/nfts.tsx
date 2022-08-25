@@ -9,7 +9,7 @@ import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import NavTabs from '@/components/common/NavTabs'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import LoadMoreButton from '@/components/common/LoadMoreButton'
+import InfiniteScroll from '@/components/common/InfiniteScroll'
 
 const NftPage = ({
   pageUrl,
@@ -33,7 +33,7 @@ const NftPage = ({
 
         {onNextPage && collectibles.next && (
           <Box py={4} textAlign="center">
-            <LoadMoreButton onLoadMore={() => onNextPage(collectibles.next)} />
+            <InfiniteScroll onLoadMore={() => onNextPage(collectibles.next)} />
           </Box>
         )}
       </>
