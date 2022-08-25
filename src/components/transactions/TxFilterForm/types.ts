@@ -1,6 +1,6 @@
 import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/api'
 
-import { FILTER_TYPE_FIELD_NAME } from '@/components/transactions/TxFilterForm'
+import { TxFilterFormFieldNames } from '@/components/transactions/TxFilterForm'
 
 export type IncomingTxFilter = operations['incoming_transfers']['parameters']['query']
 export type OutgoingTxFilter = operations['multisig_transactions']['parameters']['query']
@@ -15,7 +15,7 @@ export enum TxFilterType {
 }
 
 export type TxFilterFormState = {
-  [FILTER_TYPE_FIELD_NAME]: TxFilterType
+  [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterType
 } & IncomingTxFilter &
   OutgoingTxFilter &
   ModuleTxFilter

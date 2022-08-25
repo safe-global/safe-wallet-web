@@ -52,8 +52,7 @@ const DatePickerInput = ({ name, label }: { name: string; label: string }) => {
             }}
             renderInput={({ label, error, ...params }) => (
               <TextField
-                label={label}
-                helperText={fieldState.error?.message}
+                label={fieldState.error?.message || label}
                 {...params}
                 fullWidth
                 error={!!fieldState.error || error}
