@@ -353,6 +353,17 @@ const initTheme = (darkMode: boolean) => {
           }),
         },
       },
+      MuiSelect: {
+        defaultProps: {
+          MenuProps: {
+            sx: {
+              '& .MuiPaper-root': {
+                overflow: 'auto',
+              },
+            },
+          },
+        },
+      },
     },
   })
 }
