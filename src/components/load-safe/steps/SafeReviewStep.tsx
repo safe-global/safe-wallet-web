@@ -41,7 +41,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
           threshold: params.threshold,
           owners: params.owners.map((owner) => ({
             value: owner.address,
-            name: owner.name,
+            name: owner.name || owner.ens,
           })),
           chainId,
         },
@@ -56,8 +56,10 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
       }),
     )
 
-    for (const { address, name } of params.owners) {
-      if (!name) {
+    for (const { address, name, ens } of params.owners) {
+      const entryName = name || ens
+
+      if (!entryName) {
         continue
       }
 
@@ -65,7 +67,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
         upsertAddressBookEntry({
           chainId,
           address,
-          name,
+          name: entryName,
         }),
       )
     }
