@@ -18,7 +18,7 @@ import { useInitWeb3 } from '@/hooks/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/hooks/coreSDK/useInitSafeCoreSDK'
 import useTxNotifications from '@/hooks/useTxNotifications'
 import useSafeNotifications from '@/hooks/useSafeNotifications'
-import useTxPendingStatuses, { useTxMonitor } from '@/hooks/useTxPendingStatuses'
+import useTxPendingStatuses from '@/hooks/useTxPendingStatuses'
 import { useInitSession } from '@/hooks/useInitSession'
 import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
@@ -47,7 +47,6 @@ const InitApp = (): null => {
   useTxNotifications()
   useSafeNotifications()
   useTxPendingStatuses()
-  useTxMonitor()
   useTxTracking()
 
   return null
