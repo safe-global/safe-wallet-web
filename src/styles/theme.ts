@@ -353,6 +353,11 @@ const initTheme = (darkMode: boolean) => {
           }),
         },
       },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: ({ theme }) => theme.typography.body2,
+        },
+      },
     },
   })
 }
