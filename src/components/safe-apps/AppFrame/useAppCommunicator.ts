@@ -27,4 +27,4 @@ const useAppCommunicator = (
   return communicator
 }
 
-export { useAppCommunicator }
+export default useAppCommunicator

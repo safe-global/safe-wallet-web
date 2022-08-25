@@ -1,6 +1,14 @@
 import { ReactElement, useCallback, useEffect, useMemo } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
+import { getAddress } from 'ethers/lib/utils'
 import { getBalances, getTransactionDetails, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  GetBalanceParams,
+  GetTxBySafeTxHashParams,
+  Methods,
+  SendTransactionsParams,
+  SignMessageParams,
+} from '@gnosis.pm/safe-apps-sdk'
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -9,21 +17,13 @@ import { isSameUrl } from '@/utils/url'
 import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
-
-import css from './styles.module.css'
-import { useAppCommunicator } from './useAppCommunicator'
-import {
-  GetBalanceParams,
-  GetTxBySafeTxHashParams,
-  Methods,
-  RPCPayload,
-  SignMessageParams,
-} from '@gnosis.pm/safe-apps-sdk'
+import useAppCommunicator from './useAppCommunicator'
 import { useCurrentChain } from '@/hooks/useChains'
 import useIsGranted from '@/hooks/useIsGranted'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import { getAddress } from 'ethers/lib/utils'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
+
+import css from './styles.module.css'
 
 type JsonRpcResponse = {
   jsonrpc: string
@@ -47,6 +47,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
   const communicator = useAppCommunicator(iframeRef, safeAppFromManifest)
   const granted = useIsGranted()
+
   const safeAppWeb3Provider = useMemo(() => {
     if (!chain) {
       return
@@ -96,32 +97,21 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
     communicator?.on(Methods.getSafeBalances, async (msg) => {
       const { currency = 'usd' } = msg.data.params as GetBalanceParams
 
-      const balances = getBalances(chainId || '', safeAddress, currency, {
+      return getBalances(chainId || '', safeAddress, currency, {
         exclude_spam: true,
         trusted: false,
       })
-
-      return balances
-    })
-
-    communicator?.on(Methods.rpcCall, async (msg) => {
-      const params = msg.data.params as RPCPayload
-
-      try {
-        return await safeAppWeb3Provider?.send(params.call, params.params)
-      } catch (err) {
-        throw new Error((err as JsonRpcResponse).error)
-      }
     })
 
     communicator?.on(Methods.sendTransactions, (msg) => {
-      // @ts-expect-error explore ways to fix this
-      const transactions = (msg.data.params.txs as Transaction[]).map(({ to, ...rest }) => ({
+      const { txs, params } = msg.data.params as SendTransactionsParams
+
+      const transactions = txs.map(({ to, ...rest }) => ({
         to: getAddress(to),
         ...rest,
       }))
-      // // @ts-expect-error explore ways to fix this
-      // openConfirmationModal(transactions, msg.data.params.params, msg.data.id)
+
+      // openConfirmationModal(transactions, params, msg.data.id)
     })
 
     communicator?.on(Methods.signMessage, async (msg) => {
