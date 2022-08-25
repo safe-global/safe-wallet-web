@@ -70,7 +70,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
       }
       return acc.concat(dateLabel)
     }, [])
-  }, [items])
+  }, [items, router.query])
 
   const listWithGroupedItems: (TransactionListItem | Transaction[])[] = useMemo(() => {
     return list.reduce((acc: (TransactionListItem | Transaction[])[], current, i) => {
