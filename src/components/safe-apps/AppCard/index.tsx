@@ -13,7 +13,7 @@ import useChainId from '@/hooks/useChainId'
 import ShareIcon from '@/public/images/share.svg'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
-//import DeleteIcon from '@/public/images/delete.svg'
+import DeleteIcon from '@/public/images/delete.svg'
 import { AppRoutes } from '@/config/routes'
 import styles from './styles.module.css'
 
@@ -24,6 +24,7 @@ type AppCardProps = {
   pinned?: boolean
   onPin?: (appId: number) => void
   variant?: SafeAppCardVariants
+  onDelete?: (app: SafeAppData) => void
 }
 
 type CompactSafeAppCardProps = {
@@ -114,7 +115,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned }: CompactSafeAppCardProps
   </AppCardContainer>
 )
 
-const AppCard = ({ safeApp, pinned, onPin, variant = 'default' }: AppCardProps): ReactElement => {
+const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppCardProps): ReactElement => {
   const router = useRouter()
   const chainId = useChainId()
 
@@ -163,9 +164,19 @@ const AppCard = ({ safeApp, pinned, onPin, variant = 'default' }: AppCardProps):
                 {pinned ? <BookmarkIcon /> : <BookmarkBorderIcon />}
               </IconButton>
             )}
-            {/* <IconButton aria-label={`Delete ${safeApp.name}`} size="small">
-              <DeleteIcon width={16} alt="Delete icon" />
-            </IconButton> */}
+            {onDelete && (
+              <IconButton
+                aria-label={`Delete ${safeApp.name}`}
+                size="small"
+                onClick={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  onDelete(safeApp)
+                }}
+              >
+                <DeleteIcon width={16} alt="Delete icon" />
+              </IconButton>
+            )}
           </>
         }
       />

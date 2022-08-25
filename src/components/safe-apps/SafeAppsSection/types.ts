@@ -8,6 +8,7 @@ type SectionProps = {
   pinnedIds?: Set<number>
   onAddCustomApp?: (app: SafeAppData) => void
   onPinApp?: (appId: number) => void
+  onDeleteApp?: (app: SafeAppData) => void
   cardVariant?: SafeAppCardVariants
 }
 

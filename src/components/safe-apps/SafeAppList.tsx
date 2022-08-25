@@ -5,6 +5,8 @@ import { SafeAppsSection } from './SafeAppsSection'
 import { useAppsSearch } from '@/hooks/safe-apps/useAppsSearch'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { SafeAppsHeader } from './SafeAppsHeader'
+import { useRemoveAppModal } from '@/hooks/safe-apps/useRemoveAppModal'
+import { RemoveCustomAppModal } from '@/components/safe-apps/RemoveCustomAppModal'
 
 const SafeAppList = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -15,10 +17,17 @@ const SafeAppList = () => {
     remoteSafeAppsLoading,
     customSafeAppsLoading,
     addCustomApp,
+    removeCustomApp,
     customSafeApps,
     togglePin,
   } = useSafeApps()
   const filteredApps = useAppsSearch(allSafeApps, searchQuery)
+  const { state: removeCustomAppModalState, open: openRemoveAppModal, close } = useRemoveAppModal()
+
+  const handleCustomAppRemoval = (appId: number) => {
+    removeCustomApp(appId)
+    close()
+  }
 
   let pageBody = (
     <>
@@ -34,6 +43,7 @@ const SafeAppList = () => {
         collapsible
         title={`Custom apps (${customSafeApps.length})`}
         apps={customSafeApps}
+        onDeleteApp={openRemoveAppModal}
         prependAddCustomAppCard
         onAddCustomApp={addCustomApp}
       />
@@ -65,6 +75,14 @@ const SafeAppList = () => {
     <Grid container direction="column">
       <SafeAppsHeader searchQuery={searchQuery} onSearchQueryChange={setSearchQuery} />
       {pageBody}
+      {removeCustomAppModalState.app && (
+        <RemoveCustomAppModal
+          open={removeCustomAppModalState.isOpen}
+          app={removeCustomAppModalState.app}
+          onClose={close}
+          onConfirm={handleCustomAppRemoval}
+        />
+      )}
     </Grid>
   )
 }

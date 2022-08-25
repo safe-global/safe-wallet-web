@@ -15,6 +15,7 @@ type ReturnType = {
   remoteSafeAppsError?: Error
   addCustomApp: (app: SafeAppData) => void
   togglePin: (appId: number) => void
+  removeCustomApp: (appId: number) => void
 }
 
 const useDeadPinnedSafeAppsRemover = (
@@ -58,6 +59,13 @@ const useSafeApps = (): ReturnType => {
     [updateCustomSafeApps, customSafeApps],
   )
 
+  const removeCustomApp = useCallback(
+    (appId: number) => {
+      updateCustomSafeApps(customSafeApps.filter((app) => app.id !== appId))
+    },
+    [updateCustomSafeApps, customSafeApps],
+  )
+
   const togglePin = (appId: number) => {
     const alreadyPinned = pinnedSafeAppIds.has(appId)
     const newSet = new Set(pinnedSafeAppIds)
@@ -79,6 +87,7 @@ const useSafeApps = (): ReturnType => {
     customSafeAppsLoading,
     remoteSafeAppsError,
     addCustomApp,
+    removeCustomApp,
     togglePin,
   }
 }

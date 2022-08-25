@@ -17,7 +17,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import useChainId from '@/hooks/useChainId'
-import { trimTrailingSlash } from '@/utils/url'
+import { trimTrailingSlash, isSameUrl } from '@/utils/url'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
 import ImageFallback from '../common/ImageFallback'
@@ -78,8 +78,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     onClose()
   }
 
-  const isAppAlreadyInTheList = (appUrl: string) =>
-    safeAppsList.some((app) => trimTrailingSlash(app.url) === trimTrailingSlash(appUrl))
+  const isAppAlreadyInTheList = (appUrl: string) => safeAppsList.some((app) => isSameUrl(app.url, appUrl))
 
   return (
     <ModalDialog open={open} onClose={handleClose} dialogTitle="Add custom app">
