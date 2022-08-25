@@ -2,11 +2,9 @@ import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/ap
 
 import { TxFilterFormFieldNames } from '@/components/transactions/TxFilterForm'
 
-export type IncomingTxFilter = operations['incoming_transfers']['parameters']['query']
-export type OutgoingTxFilter = operations['multisig_transactions']['parameters']['query']
-export type ModuleTxFilter = operations['module_transactions']['parameters']['query']
-
-export type TxFilter = IncomingTxFilter | OutgoingTxFilter | ModuleTxFilter
+export type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>
+export type MultisigTxFilter = NonNullable<operations['multisig_transactions']['parameters']['query']>
+export type ModuleTxFilter = NonNullable<operations['module_transactions']['parameters']['query']>
 
 export enum TxFilterType {
   INCOMING = 'Incoming',
@@ -16,6 +14,17 @@ export enum TxFilterType {
 
 export type TxFilterFormState = {
   [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterType
-} & IncomingTxFilter &
-  OutgoingTxFilter &
-  ModuleTxFilter
+} & Omit<
+  // The filter form uses a <DatePicker> whose value is of `Date` | `null`
+  IncomingTxFilter & MultisigTxFilter & ModuleTxFilter,
+  `${TxFilterFormFieldNames.DATE_FROM_FIELD_NAME}` | `${TxFilterFormFieldNames.DATE_TO_FIELD_NAME}`
+> & {
+    [TxFilterFormFieldNames.DATE_FROM_FIELD_NAME]: Date | null
+    [TxFilterFormFieldNames.DATE_TO_FIELD_NAME]: Date | null
+  }
+
+type TxFilter = IncomingTxFilter | MultisigTxFilter | ModuleTxFilter
+
+export type TxFilterQuery = TxFilter & {
+  [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterType
+}

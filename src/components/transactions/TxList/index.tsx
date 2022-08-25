@@ -8,9 +8,9 @@ import {
 import TxListItem from '../TxListItem'
 import {
   isConflictHeaderListItem,
-  isDateLabel,
   isNoneConflictType,
   isTransactionListItem,
+  TransactionListItemType,
 } from '@/utils/transaction-guards'
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
 import css from './styles.module.css'
@@ -19,6 +19,8 @@ import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecut
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import TxFilterButton from '@/components/transactions/TxFilterButton'
+import { hasTxFilterQuery } from '@/components/transactions/TxFilterForm/utils'
+import isSameDay from 'date-fns/isSameDay'
 
 type TxListProps = {
   items: TransactionListPage['results']
@@ -30,38 +32,59 @@ export const TxListGrid = ({ children }: { children: (ReactElement | null)[] }):
 
 const TxList = ({ items }: TxListProps): ReactElement => {
   const router = useRouter()
-  // Ensure list always starts with a date label
-  const list = useMemo(() => {
-    const firstDateLabelIndex = items.findIndex(isDateLabel)
-    const firstTxIndex = items.findIndex(isTransactionListItem)
-    const shouldPrependDateLabel =
-      (firstDateLabelIndex === -1 || firstDateLabelIndex > firstTxIndex) && firstTxIndex !== -1
 
-    if (!shouldPrependDateLabel) {
+  const list = useMemo(() => {
+    if (!hasTxFilterQuery(router.query)) {
       return items
     }
 
+    // Filtered transaction lists do not contain date labels
+    // Prepend initial date label to list
+    const firstTxIndex = items.findIndex(isTransactionListItem)
+
     const dateLabel: DateLabel = {
-      type: 'DATE_LABEL',
+      type: TransactionListItemType.DATE_LABEL,
       timestamp: (items[firstTxIndex] as Transaction).transaction.timestamp,
     }
+    const prependedItems = [dateLabel, ...items]
 
-    return [dateLabel, ...items]
+    // Insert date labels between transactions on different days
+    return prependedItems.reduce<TransactionListItem[]>((acc, current, i, arr) => {
+      const prev = acc[i - 1]
+      const isLastItem = i === arr.length - 1
+
+      if (
+        isLastItem ||
+        !prev ||
+        !isTransactionListItem(prev) ||
+        !isTransactionListItem(current) ||
+        // TODO: Make comparison in UTC
+        isSameDay(prev.transaction.timestamp, current.transaction.timestamp)
+      ) {
+        return acc.concat(current)
+      }
+
+      const dateLabel: DateLabel = {
+        type: TransactionListItemType.DATE_LABEL,
+        timestamp: current.transaction.timestamp,
+      }
+      return acc.concat(dateLabel)
+    }, [])
   }, [items])
 
   const listWithGroupedItems: (TransactionListItem | Transaction[])[] = useMemo(() => {
-    return list.reduce((acc: (TransactionListItem | Transaction[])[], current) => {
+    return list.reduce((acc: (TransactionListItem | Transaction[])[], current, i) => {
       if (isConflictHeaderListItem(current)) {
-        return [...acc, []]
+        return acc.concat([])
       }
 
-      const prev = acc[acc.length - 1]
+      const prev = acc[i - 1]
       if (Array.isArray(prev) && isTransactionListItem(current) && !isNoneConflictType(current)) {
         prev.push(current)
         return acc
       }
 
-      return [...acc, current]
+      return acc.concat(current)
     }, [])
   }, [list])
 
@@ -70,7 +93,11 @@ const TxList = ({ items }: TxListProps): ReactElement => {
   return (
     <>
       <BatchExecuteHoverProvider>
-        {isQueue ? <BatchExecuteButton items={listWithGroupedItems} /> : <TxFilterButton />}
+        {isQueue ? (
+          <BatchExecuteButton items={listWithGroupedItems} className={css.button} />
+        ) : (
+          <TxFilterButton className={css.button} />
+        )}
         <TxListGrid>
           {listWithGroupedItems.map((item, index) => {
             if (Array.isArray(item)) {

@@ -1,6 +1,5 @@
 import { useCallback, useContext, useState } from 'react'
 import { Button } from '@mui/material'
-import css from './styles.module.css'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from '@/store'
@@ -8,8 +7,16 @@ import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import CustomTooltip from '@/components/common/CustomTooltip'
 import useBatchedTxs from '@/hooks/useBatchedTxs'
 import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
+import { trackEvent } from '@/services/analytics/analytics'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
-const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transaction[])[] }) => {
+const BatchExecuteButton = ({
+  items,
+  className,
+}: {
+  items: (TransactionListItem | Transaction[])[]
+  className: string
+}) => {
   const [open, setOpen] = useState(false)
   const pendingTxs = useAppSelector(selectPendingTxs)
   const hoverContext = useContext(BatchExecuteHoverContext)
@@ -27,6 +34,15 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
     hoverContext.setActiveHover([])
   }, [hoverContext])
 
+  const handleOpenModal = () => {
+    trackEvent({
+      ...TX_LIST_EVENTS.BATCH_EXECUTE,
+      label: batchableTransactions.length,
+    })
+
+    setOpen(true)
+  }
+
   return (
     <>
       <CustomTooltip
@@ -38,14 +54,14 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
             : 'All transactions highlighted in light green will be included in the batch execution.'
         }
       >
-        <span className={css.button}>
+        <span className={className}>
           <Button
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
             variant="contained"
             size="small"
             disabled={isDisabled}
-            onClick={() => setOpen(true)}
+            onClick={handleOpenModal}
           >
             Execute batch {isBatchable && ` (${batchableTransactions.length})`}
           </Button>

@@ -11,7 +11,7 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
 
-const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactElement => {
+const AddressInput = ({ name, validate, required = true, ...props }: AddressInputProps): ReactElement => {
   const {
     register,
     setValue,
@@ -78,7 +78,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
             shrink: !!watchedValue || props.focused,
           }}
           {...register(name, {
-            required: true,
+            required,
 
             setValueAs: (value: string): string => {
               const { address, prefix } = parsePrefixedAddress(value)
@@ -88,8 +88,10 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
             },
 
             validate: () => {
-              const value = rawValueRef.current
-              return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
+              if (required) {
+                const value = rawValueRef.current
+                return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
+              }
             },
           })}
         />

@@ -33,12 +33,10 @@ export const TX_LIST_EVENTS = {
     action: 'Reject transaction',
     category: TX_LIST_CATEGORY,
   },
-  // TODO: Does not yet exist in web-core
   FILTER: {
     action: 'Filter transactions',
     category: TX_LIST_CATEGORY,
   },
-  // TODO: Does not yet exist in web-core
   BATCH_EXECUTE: {
     action: 'Batch Execute',
     category: TX_LIST_CATEGORY,
