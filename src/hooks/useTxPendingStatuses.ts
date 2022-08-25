@@ -15,9 +15,42 @@ const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
   [TxEvent.FAILED]: null,
 }
 
+const useTxMonitor = (): void => {
+  const chainId = useChainId()
+  const pendingTxs = useAppSelector(selectPendingTxs)
+  const pendingTxEntriesOnChain = Object.entries(pendingTxs).filter(([, pendingTx]) => pendingTx.chainId === chainId)
+  const provider = useWeb3ReadOnly()
+
+  // Prevent `waitForTx` from monitoring the same tx more than once
+  const monitoredTxs = useRef<{ [txId: string]: boolean }>({})
+
+  // Monitor pending transaction mining progress
+  useEffect(() => {
+    if (!provider || !pendingTxEntriesOnChain) {
+      return
+    }
+
+    for (const [txId, { txHash, status }] of pendingTxEntriesOnChain) {
+      const isMining = status === PendingStatus.MINING
+      const isMonitored = monitoredTxs.current[txId]
+
+      if (!txHash || !isMining || isMonitored) {
+        continue
+      }
+
+      monitoredTxs.current[txId] = true
+
+      waitForTx(provider, txId, txHash)
+    }
+    // `provider` is updated when switching chains, re-running this effect
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider])
+}
+
 const useTxPendingStatuses = (): void => {
   const dispatch = useAppDispatch()
   const chainId = useChainId()
+  useTxMonitor()
 
   // Subscribe to pending statuses
   useEffect(() => {
@@ -51,38 +84,6 @@ const useTxPendingStatuses = (): void => {
       unsubFns.forEach((unsub) => unsub())
     }
   }, [dispatch, chainId])
-}
-
-export const useTxMonitor = (): void => {
-  const chainId = useChainId()
-  const pendingTxs = useAppSelector(selectPendingTxs)
-  const pendingTxEntriesOnChain = Object.entries(pendingTxs).filter(([, pendingTx]) => pendingTx.chainId === chainId)
-  const provider = useWeb3ReadOnly()
-
-  // Prevent `waitForTx` from monitoring the same tx more than once
-  const monitoredTxs = useRef<{ [txId: string]: boolean }>({})
-
-  // Monitor pending transaction mining progress
-  useEffect(() => {
-    if (!provider || !pendingTxEntriesOnChain) {
-      return
-    }
-
-    for (const [txId, { txHash, status }] of pendingTxEntriesOnChain) {
-      const isMining = status === PendingStatus.MINING
-      const isMonitored = monitoredTxs.current[txId]
-
-      if (!txHash || !isMining || isMonitored) {
-        continue
-      }
-
-      monitoredTxs.current[txId] = true
-
-      waitForTx(provider, txId, txHash)
-    }
-    // `provider` is updated when switching chains, re-running this effect
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider])
 }
 
 export default useTxPendingStatuses
