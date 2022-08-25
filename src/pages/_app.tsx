@@ -71,13 +71,19 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
   return (
     <StoreHydrator>
       <Head>
-        <title key="default-title">Safe 🌭</title>
+        <title key="default-title">Safe</title>
         <meta name="description" content="Safe app" />
         <meta name="viewport" content="width=device-width" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <link rel="icon" href="/favicon.ico" />
         <link rel="dns-prefetch" href={GATEWAY_URL} />
         <link rel="preconnect" href={GATEWAY_URL} crossOrigin="" />
+
+        <link rel="shortcut icon" href="/favicons/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+        <link rel="manifest" href="/favicons/site.webmanifest" />
+        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#000" />
       </Head>
 
       <AppProviders>
