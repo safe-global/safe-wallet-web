@@ -1,10 +1,10 @@
 /**
- * This hook is used to initialize GTM and anonymized page view tracking.
+ * This hook is used to initialize GTM and for anonymized page view tracking.
  * It won't initialize GTM if a consent wasn't given for analytics cookies.
  * The hook needs to be called when the app starts.
  */
 import { useEffect } from 'react'
-import { gtmClear, gtmInit, gtmTrackPageview, setChainId } from '@/services/analytics/gtm'
+import { gtmClear, gtmInit, gtmTrackPageview, gtmSetChainId } from '@/services/analytics/gtm'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
 import useChainId from '@/hooks/useChainId'
@@ -23,7 +23,7 @@ const useGtm = () => {
 
   // Set the chain ID for GTM
   useEffect(() => {
-    setChainId(chainId)
+    gtmSetChainId(chainId)
   }, [chainId])
 
   // Track page views – anononimized by default.

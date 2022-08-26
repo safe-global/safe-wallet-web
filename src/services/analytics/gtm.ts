@@ -40,7 +40,7 @@ const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
 
 let _chainId: string = ''
 
-export const setChainId = (chainId: string): void => {
+export const gtmSetChainId = (chainId: string): void => {
   _chainId = chainId
 }
 
