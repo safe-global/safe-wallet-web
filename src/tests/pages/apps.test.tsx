@@ -68,6 +68,7 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
 describe('AppsPage', () => {
   beforeEach(() => {
     jest.restoreAllMocks()
+    window.localStorage.clear()
   })
 
   describe('Remote Safe Apps', () => {
@@ -240,7 +241,7 @@ describe('AppsPage', () => {
         iconUrl: '',
       })
 
-      render(<AppsPage />, {
+      const { debug } = render(<AppsPage />, {
         routerProps: {
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
@@ -274,10 +275,14 @@ describe('AppsPage', () => {
       const removeButton = screen.getByLabelText('Delete Custom Compound')
       await act(() => {
         fireEvent.click(removeButton)
-        const confirmRemovalButton = screen.getByText('Remove')
-        fireEvent.click(confirmRemovalButton)
       })
-      await waitFor(() => expect(screen.getAllByText('Custom markets on the Ethereum blockchain').length).toBe(0))
+      await waitFor(() => expect(screen.getByText('Remove')).toBeInTheDocument())
+      const confirmRemovalButton = screen.getByText('Remove')
+      fireEvent.click(confirmRemovalButton)
+
+      await waitFor(() =>
+        expect(screen.queryByText('Custom markets on the Ethereum blockchain')).not.toBeInTheDocument(),
+      )
     })
   })
 
