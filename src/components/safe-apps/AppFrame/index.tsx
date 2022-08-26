@@ -9,9 +9,9 @@ import { isSameUrl } from '@/utils/url'
 import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
+import useAppCommunicator from './useAppCommunicator'
 
 import css from './styles.module.css'
-import useAppCommunicator from './useAppCommunicator'
 
 type AppFrameProps = {
   appUrl: string
