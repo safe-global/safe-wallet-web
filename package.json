@@ -29,7 +29,8 @@
     "serve": "npx -y http-server out"
   },
   "pre-commit": [
-    "lint"
+    "lint",
+    "prettier"
   ],
   "dependencies": {
     "@emotion/cache": "^11.10.1",
