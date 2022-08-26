@@ -8,21 +8,23 @@ import {
   MessageFormatter,
   RequestId,
 } from '@gnosis.pm/safe-apps-sdk'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Errors, logError } from '../exceptions'
 
 type MessageHandler = (
   msg: SDKMessageEvent,
 ) => void | MethodToResponse[Methods] | ErrorResponse | Promise<MethodToResponse[Methods] | ErrorResponse | void>
 
+type AppCommunicatorConfig = {
+  onError?: (error: Error, data: any) => void
+}
+
 class AppCommunicator {
   private iframeRef: MutableRefObject<HTMLIFrameElement | null>
   private handlers = new Map<Methods, MessageHandler>()
-  private app: SafeAppData
+  private config: AppCommunicatorConfig
 
-  constructor(iframeRef: MutableRefObject<HTMLIFrameElement | null>, app: SafeAppData) {
+  constructor(iframeRef: MutableRefObject<HTMLIFrameElement | null>, config?: AppCommunicatorConfig) {
     this.iframeRef = iframeRef
-    this.app = app
+    this.config = config || {}
 
     window.addEventListener('message', this.handleIncomingMessage)
   }
@@ -70,14 +72,11 @@ class AppCommunicator {
         if (typeof response !== 'undefined') {
           this.send(response, msg.data.id)
         }
-      } catch (err) {
-        this.send((err as Error).message, msg.data.id, true)
-        logError(Errors._901, (err as Error).message, {
-          contexts: {
-            safeApp: this.app,
-            request: msg.data,
-          },
-        })
+      } catch (e) {
+        const error = e as Error
+
+        this.send(error.message, msg.data.id, true)
+        this.config?.onError?.(error, msg.data)
       }
     }
   }

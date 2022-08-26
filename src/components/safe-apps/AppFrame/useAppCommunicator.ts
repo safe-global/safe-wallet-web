@@ -1,3 +1,4 @@
+import { Errors, logError } from '@/services/exceptions'
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { MutableRefObject, useEffect, useState } from 'react'
@@ -11,7 +12,17 @@ const useAppCommunicator = (
   useEffect(() => {
     let communicatorInstance: AppCommunicator
     const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app: SafeAppData) => {
-      communicatorInstance = new AppCommunicator(iframeRef, app)
+      communicatorInstance = new AppCommunicator(iframeRef, {
+        onError: (error, data) => {
+          logError(Errors._901, error.message, {
+            contexts: {
+              safeApp: app,
+              request: data,
+            },
+          })
+        },
+      })
+
       setCommunicator(communicatorInstance)
     }
 
