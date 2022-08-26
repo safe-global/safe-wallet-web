@@ -1,11 +1,6 @@
 import { MutableRefObject, useEffect, useMemo, useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
 import { getBalances, getTransactionDetails, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import useIsGranted from '@/hooks/useIsGranted'
-import { useCurrentChain } from '@/hooks/useChains'
-import useSafeAddress from '@/hooks/useSafeAddress'
-import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 import {
   GetBalanceParams,
   GetTxBySafeTxHashParams,
@@ -16,6 +11,11 @@ import {
 } from '@gnosis.pm/safe-apps-sdk'
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useIsGranted from '@/hooks/useIsGranted'
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 
 type JsonRpcResponse = {
   jsonrpc: string
