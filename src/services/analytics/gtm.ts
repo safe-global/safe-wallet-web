@@ -1,3 +1,12 @@
+/**
+ * Google Tag Manager-related functions.
+ *
+ * Initializes and un-initializes GTM in production or dev mode.
+ * Allows sending datalayer events to GTM.
+ *
+ * This service should NOT be used directly by components. Use the `analytics` service instead.
+ */
+
 import TagManager, { TagManagerArgs } from 'react-gtm-module'
 import Cookies from 'js-cookie'
 import {
@@ -31,7 +40,7 @@ const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
 
 let _chainId: string = ''
 
-export const setChainId = (chainId: string): void => {
+export const gtmSetChainId = (chainId: string): void => {
   _chainId = chainId
 }
 
@@ -54,8 +63,12 @@ export const gtmInit = (): void => {
   })
 }
 
+const isGtmLoaded = (): boolean => {
+  return typeof window !== 'undefined' && !!window.dataLayer
+}
+
 export const gtmClear = (): void => {
-  if (!window.dataLayer) return
+  if (!isGtmLoaded()) return
 
   // Delete GA cookies
   const path = '/'
@@ -68,15 +81,31 @@ export const gtmClear = (): void => {
 type GtmEvent = {
   event: EventType
   chainId: string
+}
+
+type ActionGtmEvent = GtmEvent & {
   eventCategory: string
   eventAction: string
   eventLabel?: EventLabel
 }
 
-export const gtmTrack = (eventData: AnalyticsEvent): void => {
-  if (!window.dataLayer) return
+type PageviewGtmEvent = GtmEvent & {
+  pageLocation: string
+  pagePath: string
+}
 
-  const gtmEvent: GtmEvent = {
+const gtmSend = (event: GtmEvent): void => {
+  console.info('[Analytics]', event)
+
+  if (!isGtmLoaded()) return
+
+  TagManager.dataLayer({
+    dataLayer: event,
+  })
+}
+
+export const gtmTrack = (eventData: AnalyticsEvent): void => {
+  const gtmEvent: ActionGtmEvent = {
     event: eventData.event || EventType.CLICK,
     chainId: _chainId,
     eventCategory: eventData.category,
@@ -84,7 +113,16 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
     eventLabel: eventData.label,
   }
 
-  TagManager.dataLayer({
-    dataLayer: gtmEvent,
-  })
+  gtmSend(gtmEvent)
+}
+
+export const gtmTrackPageview = (pagePath: string): void => {
+  const gtmEvent: PageviewGtmEvent = {
+    event: EventType.PAGEVIEW,
+    chainId: _chainId,
+    pageLocation: `${location.origin}${pagePath}`,
+    pagePath,
+  }
+
+  gtmSend(gtmEvent)
 }

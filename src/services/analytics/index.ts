@@ -1,14 +1,18 @@
-import { AnalyticsEvent } from './types'
-import { IS_PRODUCTION } from '@/config/constants'
+/**
+ * The analytics service.
+ *
+ * Exports `trackEvent` and event types.
+ * `trackEvent` is supposed to be called by UI components.
+ *
+ * The event definitions are in the `events` folder.
+ *
+ * Usage example:
+ *
+ * `import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'`
+ * `trackEvent(ADDRESS_BOOK_EVENTS.EXPORT)`
+ */
 import { gtmTrack } from './gtm'
 
-export const trackEvent = (eventData: AnalyticsEvent) => {
-  console.info('[Analytics]', eventData)
-
-  if (IS_PRODUCTION) {
-    gtmTrack(eventData)
-  }
-}
-
+export const trackEvent = gtmTrack
 export * from './types'
 export * from './events'

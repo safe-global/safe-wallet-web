@@ -1,6 +1,6 @@
 import useAddressBook from '@/hooks/useAddressBook'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { lookupAddress } from '@/services/domains'
+import { lookupAddress } from '@/services/ens'
 import { hasFeature } from '@/utils/chains'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useMemo } from 'react'

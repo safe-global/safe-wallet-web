@@ -1,5 +1,5 @@
 import { type JsonRpcProvider } from '@ethersproject/providers'
-import { resolveName, lookupAddress, isDomain } from '../domains'
+import { resolveName, lookupAddress, isDomain } from '../ens'
 import { logError } from '../exceptions'
 
 // mock rpcProvider

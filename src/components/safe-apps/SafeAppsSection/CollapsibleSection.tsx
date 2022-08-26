@@ -17,6 +17,7 @@ const CollapsibleSection = ({
   onAddCustomApp,
   pinnedIds,
   cardVariant,
+  onDeleteApp,
 }: SectionProps) => {
   const columnSpacing = cardVariant === 'compact' ? 3 : 2
 
@@ -50,7 +51,13 @@ const CollapsibleSection = ({
 
             return (
               <Grid key={a.id} item xs={12} sm={6} md={3} xl={1.5}>
-                <AppCard safeApp={a} onPin={onPinApp} pinned={pinnedIds?.has(a.id)} variant={cardVariant} />
+                <AppCard
+                  safeApp={a}
+                  onPin={onPinApp}
+                  pinned={pinnedIds?.has(a.id)}
+                  variant={cardVariant}
+                  onDelete={onDeleteApp}
+                />
               </Grid>
             )
           })}
