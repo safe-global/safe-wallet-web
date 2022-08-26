@@ -28,7 +28,6 @@ const TxFilterButton = ({ className }: { className?: string }) => {
       </Button>
       {showFilter && (
         <Box sx={{ pt: 1 }}>
-          test
           <TxFilterForm toggleFilter={toggleFilter} />
         </Box>
       )}
