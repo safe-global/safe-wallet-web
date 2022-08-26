@@ -1,10 +1,9 @@
 import { getTransactionHistory, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useRouter } from 'next/router'
 import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
-import { getFilteredTxHistory, useTxFilter } from '@/utils/txHistoryFilter'
+import { fetchFilteredTxHistory, useTxFilter } from '@/utils/tx-history-filter'
 
 const useTxHistory = (
   pageUrl?: string,
@@ -21,10 +20,10 @@ const useTxHistory = (
   // If filter exists or pageUrl is passed, load a new history page from the API
   const [page, error, loading] = useAsync<TransactionListPage>(
     () => {
-      if (!safeLoaded || !(filter || pageUrl)) return
+      if (!safeLoaded || !(filter.type || pageUrl)) return
 
-      return filter
-        ? getFilteredTxHistory(chainId, safeAddress, filter, pageUrl)
+      return filter.type
+        ? fetchFilteredTxHistory(chainId, safeAddress, filter, pageUrl)
         : getTransactionHistory(chainId, safeAddress, pageUrl)
     },
     [chainId, safeAddress, safeLoaded, pageUrl, filter],
@@ -35,7 +34,7 @@ const useTxHistory = (
   const historyState = useAppSelector(selectTxHistory)
 
   // Return the new page or the stored page
-  return filter || pageUrl
+  return filter.type || pageUrl
     ? {
         page,
         error: error?.message,

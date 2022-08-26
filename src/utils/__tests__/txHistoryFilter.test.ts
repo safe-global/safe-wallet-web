@@ -2,19 +2,19 @@ import { getIncomingTransfers, getMultisigTransactions, getModuleTransactions } 
 import type { ParsedUrlQuery } from 'querystring'
 
 import {
-  _hasTxFilterType,
+  isIncomingFilter,
   hasTxFilterQuery,
   omitFilterQuery,
-  _isString,
+  isDirty,
   _getDateISO,
   _getIncomingFilter,
   _getMultisigFilter,
   _getModuleFilter,
   getTxFilterQuery,
-  getFilteredTxHistory,
+  fetchFilteredTxHistory,
   getTxFilter,
   getTxFilterType,
-} from '@/utils/txHistoryFilter'
+} from '@/utils/tx-history-filter'
 import { TxFilterFormState, TxFilterFormType } from '@/components/transactions/TxFilterForm'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
@@ -26,29 +26,29 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
 describe('Transaction filter utils', () => {
   describe('hasTxFilterType', () => {
     it('should return true when a correct `type` exists', () => {
-      const result1 = _hasTxFilterType({ type: 'Incoming' })
+      const result1 = isIncomingFilter({ type: 'Incoming' })
       expect(result1).toBe(true)
 
-      const result2 = _hasTxFilterType({ type: 'Outgoing' })
+      const result2 = isIncomingFilter({ type: 'Outgoing' })
       expect(result2).toBe(true)
 
-      const result3 = _hasTxFilterType({ type: 'Module-based' })
+      const result3 = isIncomingFilter({ type: 'Module-based' })
       expect(result3).toBe(true)
     })
 
     it('should return false when no `type` exists', () => {
-      const result1 = _hasTxFilterType({ type: '' })
+      const result1 = isIncomingFilter({ type: '' })
       expect(result1).toBe(false)
 
-      const result2 = _hasTxFilterType({})
+      const result2 = isIncomingFilter({})
       expect(result2).toBe(false)
 
-      const result3 = _hasTxFilterType({ type: undefined })
+      const result3 = isIncomingFilter({ type: undefined })
       expect(result3).toBe(false)
     })
 
     it('should return false when an incorrect `type` exists', () => {
-      const result = _hasTxFilterType({ type: 'Test' })
+      const result = isIncomingFilter({ type: 'Test' })
       expect(result).toBe(false)
     })
   })
@@ -115,26 +115,26 @@ describe('Transaction filter utils', () => {
 
   describe('isString', () => {
     it('should return true if a string of at least 1 character length exists', () => {
-      const result1 = _isString('1')
+      const result1 = isDirty('1')
       expect(result1).toBe(true)
 
-      const result2 = _isString('1241245qwrafgsdfgsedt5')
+      const result2 = isDirty('1241245qwrafgsdfgsedt5')
       expect(result2).toBe(true)
     })
 
     it('should return false if it is an invalid string', () => {
-      const result = _isString('')
+      const result = isDirty('')
       expect(result).toBe(false)
     })
 
     it('should return false for non strings', () => {
-      const result1 = _isString(324523453453)
+      const result1 = isDirty(324523453453)
       expect(result1).toBe(false)
 
-      const result2 = _isString(false)
+      const result2 = isDirty(false)
       expect(result2).toBe(false)
 
-      const result3 = _isString(null)
+      const result3 = isDirty(null)
       expect(result3).toBe(false)
     })
   })
@@ -509,7 +509,7 @@ describe('Transaction filter utils', () => {
     })
 
     it('should get incoming transfers relevant to `type`', () => {
-      getFilteredTxHistory('4', '0x123', 'Incoming' as TxFilterFormType, { value: '123' }, 'pageUrl1')
+      fetchFilteredTxHistory('4', '0x123', 'Incoming' as TxFilterFormType, { value: '123' }, 'pageUrl1')
 
       expect(getIncomingTransfers).toHaveBeenCalledWith('4', '0x123', { value: '123' }, 'pageUrl1')
 
@@ -518,7 +518,7 @@ describe('Transaction filter utils', () => {
     })
 
     it('should get outgoing transfers relevant to `type`', () => {
-      getFilteredTxHistory(
+      fetchFilteredTxHistory(
         '100',
         '0x456',
         'Outgoing' as TxFilterFormType,
@@ -538,7 +538,7 @@ describe('Transaction filter utils', () => {
     })
 
     it('should get module transfers relevant to `type`', () => {
-      getFilteredTxHistory('1', '0x789', 'Module-based' as TxFilterFormType, { to: '0x123' }, 'pageUrl3')
+      fetchFilteredTxHistory('1', '0x789', 'Module-based' as TxFilterFormType, { to: '0x123' }, 'pageUrl3')
 
       expect(getModuleTransactions).toHaveBeenCalledWith('1', '0x789', { to: '0x123' }, 'pageUrl3')
 
@@ -547,7 +547,7 @@ describe('Transaction filter utils', () => {
     })
 
     it('should return undefined if invalid `type`', () => {
-      getFilteredTxHistory('1', '0x789', 'Test' as TxFilterFormType, { token_address: '0x123' }, 'pageUrl3')
+      fetchFilteredTxHistory('1', '0x789', 'Test' as TxFilterFormType, { token_address: '0x123' }, 'pageUrl3')
 
       expect(getIncomingTransfers).not.toHaveBeenCalled()
       expect(getIncomingTransfers).not.toHaveBeenCalled()

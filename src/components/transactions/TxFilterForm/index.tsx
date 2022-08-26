@@ -15,15 +15,7 @@ import DatePickerInput from '@/components/common/DatePickerInput'
 import { validateAmount } from '@/utils/validation'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
-import {
-  type IncomingTxFilter,
-  type ModuleTxFilter,
-  type MultisigTxFilter,
-  TxFilterType,
-  txFilter,
-  useTxFilter,
-  TxFilter,
-} from '@/utils/txHistoryFilter'
+import { TxFilterType, txFilter, useTxFilter, TxFilter } from '@/utils/tx-history-filter'
 
 export enum TxFilterFormFieldNames {
   FILTER_TYPE = 'type',
@@ -38,14 +30,14 @@ export enum TxFilterFormFieldNames {
 
 export type TxFilterFormState = {
   [TxFilterFormFieldNames.FILTER_TYPE]: TxFilterType
-} & Omit<
-  // The filter form uses a <DatePicker> whose value is of `Date` | `null`
-  IncomingTxFilter & MultisigTxFilter & ModuleTxFilter,
-  `${TxFilterFormFieldNames.DATE_FROM}` | `${TxFilterFormFieldNames.DATE_TO}`| `executed`
-> & {
-    [TxFilterFormFieldNames.DATE_FROM]: Date | null
-    [TxFilterFormFieldNames.DATE_TO]: Date | null
-  }
+  [TxFilterFormFieldNames.DATE_FROM]: string | null | Date
+  [TxFilterFormFieldNames.DATE_TO]: string | null | Date
+  [TxFilterFormFieldNames.RECIPIENT]: string
+  [TxFilterFormFieldNames.AMOUNT]: string
+  [TxFilterFormFieldNames.TOKEN_ADDRESS]: string
+  [TxFilterFormFieldNames.MODULE]: string
+  [TxFilterFormFieldNames.NONCE]: string
+}
 
 const defaultValues: DefaultValues<TxFilterFormState> = {
   [TxFilterFormFieldNames.FILTER_TYPE]: TxFilterType.INCOMING,
@@ -89,7 +81,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
 
   const canClear = useMemo(() => {
     const isFormDirty = dirtyFieldNames.some((name) => name !== TxFilterFormFieldNames.FILTER_TYPE)
-    return !isValid || isFormDirty || getValues(TxFilterFormFieldNames.FILTER_TYPE) !== defaultValues[TxFilterFormFieldNames.FILTER_TYPE]
+    return !isValid || isFormDirty
   }, [isValid, dirtyFieldNames])
 
   const clearFilter = () => {
@@ -109,7 +101,6 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
 
     const filterData = txFilter.parseFormData(data)
 
-    // Check if push will cause a full page reload
     setFilter(filterData)
 
     toggleFilter()

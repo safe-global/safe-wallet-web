@@ -4,26 +4,23 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
 import Box from '@mui/material/Box'
-import { useRouter } from 'next/router'
-import { hasTxFilterQuery } from '@/utils/txHistoryFilter'
-import TxFilterForm, { TxFilterFormFieldNames } from '@/components/transactions/TxFilterForm'
+import TxFilterForm from '@/components/transactions/TxFilterForm'
+import { useTxFilter } from '@/utils/tx-history-filter'
 
 const TxFilterButton = ({ className }: { className?: string }) => {
-  const router = useRouter()
+  const [filter] = useTxFilter()
 
-  const [showFilter, setShowFilter] = useState(hasTxFilterQuery(router.query))
+  const [showFilter, setShowFilter] = useState(!!filter)
 
   const toggleFilter = () => {
     setShowFilter((prev) => !prev)
   }
 
-  const hasFilter = hasTxFilterQuery(router.query)
-
   return (
     <>
       <Button variant="contained" className={className} onClick={toggleFilter} size="small">
         <FilterAltOutlinedIcon fontSize="small" />
-        {hasFilter ? router.query[TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME] : 'Filter'}
+        {filter?.type ?? 'Filter'}
         {showFilter ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
       </Button>
       {showFilter && (

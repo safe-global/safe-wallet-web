@@ -19,7 +19,7 @@ import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecut
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import TxFilterButton from '@/components/transactions/TxFilterButton'
-import { hasTxFilterQuery } from '@/utils/txHistoryFilter'
+import { useTxFilter } from '@/utils/tx-history-filter'
 import isSameDay from 'date-fns/isSameDay'
 
 type TxListProps = {
@@ -32,9 +32,10 @@ export const TxListGrid = ({ children }: { children: (ReactElement | null)[] }):
 
 const TxList = ({ items }: TxListProps): ReactElement => {
   const router = useRouter()
+  const [filter] = useTxFilter()
 
   const list = useMemo(() => {
-    if (!hasTxFilterQuery(router.query)) {
+    if (!filter.type) {
       return items
     }
 
@@ -70,7 +71,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
       }
       return resultItems.concat(dateLabel)
     }, [])
-  }, [items, router.query])
+  }, [items, filter.type])
 
   const listWithGroupedItems: (TransactionListItem | Transaction[])[] = useMemo(() => {
     return list.reduce((acc: (TransactionListItem | Transaction[])[], current, i) => {
