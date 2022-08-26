@@ -5,8 +5,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import css from './styles.module.css'
-import { trackEvent } from '@/services/analytics/analytics'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 
 const NewTxModal = dynamic(() => import('@/components/tx/modals/NewTxModal'))
 

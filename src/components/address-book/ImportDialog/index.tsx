@@ -13,8 +13,7 @@ import { useAppDispatch } from '@/store'
 import { Box, Grid, IconButton } from '@mui/material'
 
 import css from './styles.module.css'
-import { trackEvent } from '@/services/analytics/analytics'
-import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
+import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
 import { abCsvReaderValidator, abOnUploadValidator } from './validation'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']

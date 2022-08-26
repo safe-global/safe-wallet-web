@@ -29,7 +29,8 @@
     "serve": "npx -y http-server out"
   },
   "pre-commit": [
-    "lint"
+    "lint",
+    "prettier"
   ],
   "dependencies": {
     "@emotion/cache": "^11.10.1",
@@ -69,6 +70,7 @@
     "qrcode": "^1.5.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-gtm-module": "^2.0.11",
     "react-hook-form": "^7.34.0",
     "react-papaparse": "^4.0.2",
     "react-qr-reader": "2.2.1",
@@ -92,6 +94,7 @@
     "@types/qrcode": "^1.4.2",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
+    "@types/react-gtm-module": "^2.0.1",
     "@types/react-qr-reader": "^2.1.4",
     "@types/semver": "^7.3.10",
     "cross-env": "^7.0.3",

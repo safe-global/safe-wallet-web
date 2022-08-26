@@ -1,8 +1,7 @@
 import type { ChangeEvent, ReactElement } from 'react'
 import { Checkbox, FormControlLabel, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
-import { trackEvent } from '@/services/analytics/analytics'
-import { MODALS_EVENTS } from '@/services/analytics/events/modals'
+import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 
 const ExecuteToggle = ({
   checked,

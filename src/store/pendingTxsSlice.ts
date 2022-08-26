@@ -14,7 +14,7 @@ type PendingTxsState =
         chainId: string
         status: PendingStatus
         txHash?: string
-        batchId?: string
+        groupKey?: string
       }
     }
   | Record<string, never>
@@ -31,7 +31,7 @@ export const pendingTxsSlice = createSlice({
         chainId: string
         txId: string
         txHash?: string
-        batchId?: string
+        groupKey?: string
         status: PendingStatus
       }>,
     ) => {

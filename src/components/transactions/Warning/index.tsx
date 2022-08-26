@@ -1,9 +1,8 @@
 import { ReactElement } from 'react'
-import { Alert, Link } from '@mui/material'
+import { Alert, Link, Tooltip } from '@mui/material'
 import { tooltipClasses } from '@mui/material/Tooltip'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import css from './styles.module.css'
-import CustomTooltip from '@/components/common/CustomTooltip'
 
 const UNEXPECTED_DELEGATE_ARTICLE =
   'https://help.gnosis-safe.io/en/articles/6302452-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction'
@@ -11,7 +10,7 @@ const UNEXPECTED_DELEGATE_ARTICLE =
 export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): ReactElement => {
   const severity = showWarning ? 'warning' : 'success'
   return (
-    <CustomTooltip
+    <Tooltip
       sx={{
         [`& .${tooltipClasses.arrow}`]: {
           left: '-46px !important', // place the arrow over the Alert icon
@@ -41,12 +40,12 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
       >
         <b>{showWarning ? 'Unexpected delegate call' : 'Delegate call'}</b>
       </Alert>
-    </CustomTooltip>
+    </Tooltip>
   )
 }
 
 export const ThresholdWarning = (): ReactElement => (
-  <CustomTooltip
+  <Tooltip
     sx={{
       [`& .${tooltipClasses.arrow}`]: {
         left: '-93px !important', // place the arrow over the Alert icon
@@ -64,5 +63,5 @@ export const ThresholdWarning = (): ReactElement => (
     >
       <b>Confirmation policy change</b>
     </Alert>
-  </CustomTooltip>
+  </Tooltip>
 )

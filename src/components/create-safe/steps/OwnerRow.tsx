@@ -4,18 +4,16 @@ import NameInput from '@/components/common/NameInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
-import { FieldArrayWithId, UseFieldArrayRemove, useFormContext, useWatch } from 'react-hook-form'
+import { UseFieldArrayRemove, useFormContext, useWatch } from 'react-hook-form'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
+import { NamedAddress } from '@/components/create-safe/types'
 
 export const OwnerRow = ({
-  field,
   index,
   remove,
   readOnly = false,
 }: {
-  field: FieldArrayWithId<SafeFormData, 'owners', 'id'>
   index: number
   remove?: UseFieldArrayRemove
   readOnly?: boolean
@@ -36,30 +34,27 @@ export const OwnerRow = ({
     [getValues],
   )
 
-  const { name: fallbackName, resolving } = useAddressResolver(owner.address)
+  const { ens, name, resolving } = useAddressResolver(owner.address)
 
   useEffect(() => {
-    if (!owner.name && fallbackName) {
-      setValue(`owners.${index}.fallbackName`, fallbackName)
+    if (ens) {
+      setValue(`owners.${index}.ens`, ens)
     }
-  }, [fallbackName, setValue, owner.name, index])
+
+    if (name) {
+      setValue(`owners.${index}.name`, name)
+    }
+  }, [ens, setValue, index, name])
 
   return (
-    <Grid
-      container
-      key={field.id}
-      spacing={3}
-      alignItems="center"
-      marginBottom={3}
-      flexWrap={['wrap', undefined, 'nowrap']}
-    >
+    <Grid container spacing={3} alignItems="center" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
       <Grid item xs={12} md={4}>
         <FormControl fullWidth>
           <NameInput
             name={`owners.${index}.name`}
             label="Owner name"
             InputLabelProps={{ shrink: true }}
-            placeholder={fallbackName}
+            placeholder={ens || `Owner ${index + 1}`}
             InputProps={{
               endAdornment: resolving ? (
                 <InputAdornment position="end">

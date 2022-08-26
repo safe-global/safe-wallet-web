@@ -5,8 +5,7 @@ import TokenTransferModal from '../TokenTransferModal'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import NftIcon from '@/public/images/sidebar/nfts.svg'
 import NftTransferModal from '../NftTransferModal'
-import { MODALS_EVENTS } from '@/services/analytics/events/modals'
-import { trackEvent } from '@/services/analytics/analytics'
+import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 
 const TxButton = (props: ButtonProps) => <Button variant="contained" fullWidth {...props} />
 
