@@ -40,24 +40,24 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
 
   useEffect(() => {
     let communicatorInstance: AppCommunicator
-    const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app: SafeAppData) => {
+    const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onError: (error, data) => {
-          logError(Errors._901, error.message, {
-            contexts: {
-              safeApp: app,
-              request: data,
-            },
-          })
+          if (app) {
+            logError(Errors._901, error.message, {
+              contexts: {
+                safeApp: app,
+                request: data,
+              },
+            })
+          }
         },
       })
 
       setCommunicator(communicatorInstance)
     }
 
-    if (app) {
-      initCommunicator(iframeRef as MutableRefObject<HTMLIFrameElement>, app)
-    }
+    initCommunicator(iframeRef as MutableRefObject<HTMLIFrameElement>, app)
 
     return () => {
       communicatorInstance?.clear()
