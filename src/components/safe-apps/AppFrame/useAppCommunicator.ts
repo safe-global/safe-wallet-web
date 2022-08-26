@@ -43,21 +43,21 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
     const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onError: (error, data) => {
-          if (app) {
-            logError(Errors._901, error.message, {
-              contexts: {
-                safeApp: app,
-                request: data,
-              },
-            })
-          }
+          logError(Errors._901, error.message, {
+            contexts: {
+              safeApp: app || {},
+              request: data,
+            },
+          })
         },
       })
 
       setCommunicator(communicatorInstance)
     }
 
-    initCommunicator(iframeRef as MutableRefObject<HTMLIFrameElement>, app)
+    if (app) {
+      initCommunicator(iframeRef as MutableRefObject<HTMLIFrameElement>, app)
+    }
 
     return () => {
       communicatorInstance?.clear()
