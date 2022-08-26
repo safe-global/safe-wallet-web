@@ -4,7 +4,7 @@ import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
-import { getFilteredTxHistory, hasTxFilterQuery } from '@/utils/txHistoryFilter'
+import { getFilteredTxHistory, getTxFilter, getTxFilterType } from '@/utils/txHistoryFilter'
 
 const useTxHistory = (
   pageUrl?: string,
@@ -14,21 +14,26 @@ const useTxHistory = (
   loading: boolean
 } => {
   const router = useRouter()
-  const hasFilter = hasTxFilterQuery(router.query)
+  const filterType = getTxFilterType(router.query)
 
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
   const { chainId } = safe
 
-  // If pageUrl is passed, load a new history page from the API
+  // If filter exists or pageUrl is passed, load a new history page from the API
   const [page, error, loading] = useAsync<TransactionListPage>(
     () => {
-      if (!safeLoaded || !(hasFilter || pageUrl)) return
+      if (!safeLoaded || !(filterType || pageUrl)) return
 
-      return hasFilter
-        ? getFilteredTxHistory(chainId, safeAddress, router.query, pageUrl)
-        : getTransactionHistory(chainId, safeAddress, pageUrl)
+      if (!filterType) {
+        return getTransactionHistory(chainId, safeAddress, pageUrl)
+      }
+
+      const filter = getTxFilter(router.query)
+      if (filter) {
+        return getFilteredTxHistory(chainId, safeAddress, filterType, filter, pageUrl)
+      }
     },
-    [chainId, safeAddress, safeLoaded, pageUrl, router.query, hasFilter],
+    [chainId, safeAddress, safeLoaded, pageUrl, router.query, filterType],
     false,
   )
 
@@ -36,7 +41,7 @@ const useTxHistory = (
   const historyState = useAppSelector(selectTxHistory)
 
   // Return the new page or the stored page
-  return hasFilter || pageUrl
+  return filterType || pageUrl
     ? {
         page,
         error: error?.message,

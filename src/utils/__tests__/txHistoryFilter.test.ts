@@ -12,6 +12,8 @@ import {
   _getModuleFilter,
   getTxFilterQuery,
   getFilteredTxHistory,
+  getTxFilter,
+  getTxFilterType,
 } from '@/utils/txHistoryFilter'
 import { TxFilterFormState, TxFilterFormType } from '@/components/transactions/TxFilterForm'
 
@@ -48,6 +50,30 @@ describe('Transaction filter utils', () => {
     it('should return false when an incorrect `type` exists', () => {
       const result = _hasTxFilterType({ type: 'Test' })
       expect(result).toBe(false)
+    })
+  })
+
+  describe('getTxFilterType', () => {
+    it('should return the `type` if it exists', () => {
+      const result1 = getTxFilterType({ type: 'Incoming' })
+      expect(result1).toBe('Incoming')
+
+      const result2 = getTxFilterType({ type: 'Outgoing' })
+      expect(result2).toBe('Outgoing')
+
+      const result3 = getTxFilterType({ type: 'Module-based' })
+      expect(result3).toBe('Module-based')
+    })
+
+    it("should return `undefined` if the `type` doesn't exist", () => {
+      const result1 = getTxFilterType({ type: '' })
+      expect(result1).toBeUndefined()
+
+      const result2 = getTxFilterType({})
+      expect(result2).toBeUndefined()
+
+      const result3 = getTxFilterType({ type: undefined })
+      expect(result3).toBeUndefined()
     })
   })
 
@@ -249,7 +275,7 @@ describe('Transaction filter utils', () => {
   })
 
   describe('getTxFilterQuery', () => {
-    it('should return correctly formatted incoming filters', () => {
+    it('should return correctly formatted incoming filter queries', () => {
       const incomingFilter1: TxFilterFormState = {
         execution_date__gte: new Date('1970-01-01'),
         execution_date__lte: null,
@@ -278,7 +304,7 @@ describe('Transaction filter utils', () => {
       })
     })
 
-    it('should return correctly formatted multisig filters', () => {
+    it('should return correctly formatted multisig filter queries', () => {
       const multisigFilter1: TxFilterFormState = {
         to: '0x1234567890123456789012345678901234567890',
         execution_date__gte: new Date('1970-01-01'),
@@ -319,7 +345,7 @@ describe('Transaction filter utils', () => {
       })
     })
 
-    it('should return correctly formatted module filters', () => {
+    it('should return correctly formatted module filter queries', () => {
       const moduleFilter = {
         to: '0x1234567890123456789012345678901234567890',
         module: '0x1234567890123456789012345678901234567890',
@@ -365,15 +391,127 @@ describe('Transaction filter utils', () => {
     })
   })
 
+  describe('getTxFilter', () => {
+    it('should return correctly formatted incoming filters', () => {
+      const incomingFilter1: TxFilterFormState = {
+        execution_date__gte: new Date('1970-01-01'),
+        execution_date__lte: null,
+        type: TxFilterFormType.INCOMING,
+        value: '123',
+      }
+
+      const result1 = getTxFilter(incomingFilter1)
+      expect(result1).toEqual({
+        execution_date__gte: '1970-01-01T00:00:00.000Z',
+        value: '123000000000000000000',
+      })
+
+      const incomingFilter2: ParsedUrlQuery = {
+        execution_date__lte: '2000-01-01',
+        type: TxFilterFormType.INCOMING,
+        value: '123',
+      }
+
+      const result2 = getTxFilter(incomingFilter2)
+      expect(result2).toEqual({
+        execution_date__lte: '2000-01-01T00:00:00.000Z',
+        value: '123000000000000000000',
+      })
+    })
+
+    it('should return correctly formatted multisig filters', () => {
+      const multisigFilter1: TxFilterFormState = {
+        to: '0x1234567890123456789012345678901234567890',
+        execution_date__gte: new Date('1970-01-01'),
+        execution_date__lte: null,
+        type: TxFilterFormType.MULTISIG,
+        value: '123',
+        nonce: '123',
+      }
+
+      const result1 = getTxFilter(multisigFilter1)
+      expect(result1).toEqual({
+        to: '0x1234567890123456789012345678901234567890',
+        execution_date__gte: '1970-01-01T00:00:00.000Z',
+        value: '123000000000000000000',
+        nonce: '123',
+        executed: 'true',
+      })
+
+      const multisigFilter2: ParsedUrlQuery = {
+        to: '0x1234567890123456789012345678901234567890',
+        execution_date__gte: '1970-01-01',
+        execution_date__lte: '2000-01-01',
+        type: TxFilterFormType.MULTISIG,
+        value: '123',
+        nonce: '123',
+      }
+
+      const result2 = getTxFilter(multisigFilter2)
+      expect(result2).toEqual({
+        to: '0x1234567890123456789012345678901234567890',
+        execution_date__gte: '1970-01-01T00:00:00.000Z',
+        execution_date__lte: '2000-01-01T00:00:00.000Z',
+        value: '123000000000000000000',
+        nonce: '123',
+        executed: 'true',
+      })
+    })
+
+    it('should return correctly formatted module filters', () => {
+      const moduleFilter = {
+        to: '0x1234567890123456789012345678901234567890',
+        module: '0x1234567890123456789012345678901234567890',
+        type: TxFilterFormType.MODULE,
+      }
+
+      const result = getTxFilter(moduleFilter)
+      expect(result).toEqual({
+        to: '0x1234567890123456789012345678901234567890',
+        module: '0x1234567890123456789012345678901234567890',
+      })
+    })
+    it('should return undefined if an invalid or missing `type` is provided', () => {
+      const incomingFilter = {
+        execution_date__gte: new Date('1970-01-01'),
+        value: '123',
+      } as TxFilterFormState
+
+      const result1 = getTxFilter(incomingFilter)
+      expect(result1).toBeUndefined()
+
+      const multisigFilter = {
+        to: '0x1234567890123456789012345678901234567890',
+        execution_date__gte: '1970-01-01',
+        execution_date__lte: '2000-01-01',
+        value: '123',
+        nonce: '123',
+        type: undefined,
+      }
+
+      const result2 = getTxFilter(multisigFilter)
+      expect(result2).toBeUndefined()
+
+      const moduleFilter = {
+        to: '0x1234567890123456789012345678901234567890',
+        module: '0x1234567890123456789012345678901234567890',
+        type: 'Test',
+      }
+
+      const result3 = getTxFilter(moduleFilter)
+      expect(result3).toBeUndefined()
+    })
+  })
+
   describe('getFilteredTxHistory', () => {
     beforeEach(() => {
       jest.resetAllMocks()
     })
 
     it('should get incoming transfers relevant to `type`', () => {
-      getFilteredTxHistory('4', '0x123', { type: 'Incoming', value: '123' }, 'pageUrl1')
+      getFilteredTxHistory('4', '0x123', 'Incoming' as TxFilterFormType, { value: '123' }, 'pageUrl1')
 
-      expect(getIncomingTransfers).toHaveBeenCalledWith('4', '0x123', { value: '123000000000000000000' }, 'pageUrl1')
+      expect(getIncomingTransfers).toHaveBeenCalledWith('4', '0x123', { value: '123' }, 'pageUrl1')
 
       expect(getMultisigTransactions).not.toHaveBeenCalled()
       expect(getModuleTransactions).not.toHaveBeenCalled()
@@ -383,7 +521,8 @@ describe('Transaction filter utils', () => {
       getFilteredTxHistory(
         '100',
         '0x456',
-        { type: 'Outgoing', execution_date__gte: '1970-01-01T00:00:00.000Z' },
+        'Outgoing' as TxFilterFormType,
+        { execution_date__gte: '1970-01-01T00:00:00.000Z', executed: 'true' },
         'pageUrl2',
       )
 
@@ -399,7 +538,7 @@ describe('Transaction filter utils', () => {
     })
 
     it('should get module transfers relevant to `type`', () => {
-      getFilteredTxHistory('1', '0x789', { type: 'Module-based', to: '0x123' }, 'pageUrl3')
+      getFilteredTxHistory('1', '0x789', 'Module-based' as TxFilterFormType, { to: '0x123' }, 'pageUrl3')
 
       expect(getModuleTransactions).toHaveBeenCalledWith('1', '0x789', { to: '0x123' }, 'pageUrl3')
 
@@ -408,7 +547,7 @@ describe('Transaction filter utils', () => {
     })
 
     it('should return undefined if invalid `type`', () => {
-      getFilteredTxHistory('1', '0x789', { type: 'Test', token_address: '0x123' }, 'pageUrl3')
+      getFilteredTxHistory('1', '0x789', 'Test' as TxFilterFormType, { token_address: '0x123' }, 'pageUrl3')
 
       expect(getIncomingTransfers).not.toHaveBeenCalled()
       expect(getIncomingTransfers).not.toHaveBeenCalled()

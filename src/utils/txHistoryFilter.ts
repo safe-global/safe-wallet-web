@@ -42,6 +42,10 @@ export const _hasTxFilterType = <T extends ParsedUrlQuery | TxFilterFormState>(
   return isString(type) && TX_FILTER_TYPES.includes(type as TxFilterFormType)
 }
 
+export const getTxFilterType = (query: ParsedUrlQuery) => {
+  return _hasTxFilterType(query) ? query[TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME] : undefined
+}
+
 export const hasTxFilterQuery = (query: ParsedUrlQuery): boolean => {
   return (
     _hasTxFilterType(query) &&
@@ -103,9 +107,7 @@ export const _getModuleFilter = ({ to, module }: TxFilterFormState | ParsedUrlQu
   }
 }
 
-const getTxFilter = (
-  data: TxFilterFormState | ParsedUrlQuery,
-): IncomingTxFilter | MultisigTxFilter | ModuleTxFilter | undefined => {
+export const getTxFilter = (data: TxFilterFormState | ParsedUrlQuery): TxFilter | undefined => {
   switch (data.type) {
     case TxFilterFormType.INCOMING: {
       return _getIncomingFilter(data)
@@ -133,12 +135,11 @@ export const getTxFilterQuery = (data: TxFilterFormState | ParsedUrlQuery): TxFi
 export const getFilteredTxHistory = (
   chainId: string,
   safeAddress: string,
-  query: ParsedUrlQuery,
+  type: TxFilterFormType,
+  filter: TxFilter,
   pageUrl?: string,
 ): Promise<TransactionListPage> | undefined => {
-  const filter = getTxFilter(query)
-
-  switch (query[TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]) {
+  switch (type) {
     case TxFilterFormType.INCOMING: {
       return getIncomingTransfers(chainId, safeAddress, filter, pageUrl)
     }
