@@ -107,8 +107,8 @@ describe('AppsPage', () => {
       jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
         id: Math.random(),
         url: APP_URL,
-        name: 'Compound',
-        description: 'Money markets on the Ethereum blockchain',
+        name: 'Custom Compound',
+        description: 'Custom markets on the Ethereum blockchain',
         accessControl: {
           type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
         },
@@ -132,7 +132,7 @@ describe('AppsPage', () => {
         fireEvent.click(addCustomAppButton)
       })
 
-      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
+      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument())
 
       const appURLInput = screen.getByLabelText(/App URL/)
       const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
@@ -141,12 +141,13 @@ describe('AppsPage', () => {
         fireEvent.change(appURLInput, { target: { value: APP_URL } })
         fireEvent.click(riskCheckbox)
       })
-      expect(screen.getByText('Compound')).toBeInTheDocument()
+      await waitFor(() => expect(screen.getByDisplayValue('Custom Compound')).toBeInTheDocument())
 
       await act(() => {
         fireEvent.click(screen.getByText('Save'))
       })
-      expect(screen.getByText('Money markets on the Ethereum blockchain')).toBeInTheDocument()
+
+      await waitFor(() => expect(screen.getAllByText(/Custom markets on the Ethereum blockchain/).length).toBe(2))
     })
 
     it('Shows an error message if the app doesnt support Safe App functionality', async () => {
@@ -222,6 +223,61 @@ describe('AppsPage', () => {
       })
 
       await waitFor(() => expect(screen.getByText('Required')).toBeInTheDocument())
+    })
+
+    it('allows removing custom apps', async () => {
+      const APP_URL = 'https://apps.gnosis-safe.io/compound'
+      jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
+        id: Math.random(),
+        url: APP_URL,
+        name: 'Custom Compound',
+        description: 'Custom markets on the Ethereum blockchain',
+        accessControl: {
+          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
+        },
+        tags: [],
+        chainIds: ['1', '4'],
+        iconUrl: '',
+      })
+
+      render(<AppsPage />, {
+        routerProps: {
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
+
+      const addCustomAppButton = screen.getByText('Add custom app')
+      await act(() => {
+        fireEvent.click(addCustomAppButton)
+      })
+
+      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
+
+      const appURLInput = screen.getByLabelText(/App URL/)
+      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
+
+      act(() => {
+        fireEvent.change(appURLInput, { target: { value: APP_URL } })
+        fireEvent.click(riskCheckbox)
+      })
+      await waitFor(() => expect(screen.getByDisplayValue('Custom Compound')).toBeInTheDocument())
+
+      await act(() => {
+        fireEvent.click(screen.getByText('Save'))
+      })
+      await waitFor(() => expect(screen.getAllByText(/Custom markets on the Ethereum blockchain/).length).toBe(2))
+
+      const removeButton = screen.getByLabelText('Delete Custom Compound')
+      await act(() => {
+        fireEvent.click(removeButton)
+        const confirmRemovalButton = screen.getByText('Remove')
+        fireEvent.click(confirmRemovalButton)
+      })
+      await waitFor(() => expect(screen.getAllByText('Custom markets on the Ethereum blockchain').length).toBe(0))
     })
   })
 
