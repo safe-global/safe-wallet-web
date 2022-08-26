@@ -1,3 +1,12 @@
+/**
+ * Google Tag Manager-related functions.
+ *
+ * Initializes and un-initializes GTM in production or dev mode.
+ * Allows sending datalayer events to GTM.
+ *
+ * This service should NOT be used directly by components. Use the `analytics` service instead.
+ */
+
 import TagManager, { TagManagerArgs } from 'react-gtm-module'
 import Cookies from 'js-cookie'
 import {
@@ -55,7 +64,7 @@ export const gtmInit = (): void => {
 }
 
 const isGtmLoaded = (): boolean => {
-  return !!window.dataLayer
+  return typeof window !== 'undefined' && !!window.dataLayer
 }
 
 export const gtmClear = (): void => {
