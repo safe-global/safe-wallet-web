@@ -1,25 +1,37 @@
-import { safeParseUnits } from '@/utils/formatters'
-import {
-  TxFilterType,
-  type IncomingTxFilter,
-  type ModuleTxFilter,
-  type MultisigTxFilter,
-  type TxFilterFormState,
-  type TxFilterQuery,
-} from '@/components/transactions/TxFilterForm/types'
 import { isDate, isString, omit } from 'lodash'
 import { ParsedUrlQuery } from 'querystring'
-import { TxFilterFormFieldNames } from '.'
 import { getIncomingTransfers, getMultisigTransactions, getModuleTransactions } from '@gnosis.pm/safe-react-gateway-sdk'
 
+import { safeParseUnits } from '@/utils/formatters'
+import {
+  TxFilterFormType,
+  TxFilterFormFieldNames,
+  type TxFilterFormState,
+} from '@/components/transactions/TxFilterForm'
+import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/api'
+
+// Types
+
+export type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>
+export type MultisigTxFilter = NonNullable<operations['multisig_transactions']['parameters']['query']>
+export type ModuleTxFilter = NonNullable<operations['module_transactions']['parameters']['query']>
+
+type TxFilter = IncomingTxFilter | MultisigTxFilter | ModuleTxFilter
+
+export type TxFilterQuery = TxFilter & {
+  [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterFormType
+}
+
+// Utils
+
 const TX_FILTER_FIELD_NAMES = Object.values(TxFilterFormFieldNames)
-const TX_FILTER_TYPES = Object.values(TxFilterType)
+const TX_FILTER_TYPES = Object.values(TxFilterFormType)
 
 export const _hasTxFilterType = <T extends ParsedUrlQuery | TxFilterFormState>(
   query: T,
-): query is T & { [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterType } => {
+): query is T & { [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterFormType } => {
   const type = query[TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]
-  return isString(type) && TX_FILTER_TYPES.includes(type as TxFilterType)
+  return isString(type) && TX_FILTER_TYPES.includes(type as TxFilterFormType)
 }
 
 export const hasTxFilterQuery = (query: ParsedUrlQuery): boolean => {
@@ -29,7 +41,7 @@ export const hasTxFilterQuery = (query: ParsedUrlQuery): boolean => {
   )
 }
 
-export const getFilterlessQuery = (query: ParsedUrlQuery): ParsedUrlQuery => {
+export const omitFilterQuery = (query: ParsedUrlQuery): ParsedUrlQuery => {
   return omit(query, TX_FILTER_FIELD_NAMES)
 }
 
@@ -37,7 +49,7 @@ export const _isString = (value: unknown): value is string => {
   return isString(value) && value.length > 0
 }
 
-export const _getISOString = (date: Date | string): string => {
+export const _getDateISO = (date: Date | string): string => {
   return isDate(date) ? date.toISOString() : new Date(date).toISOString()
 }
 
@@ -48,10 +60,10 @@ const getStandardFilter = ({
 }: TxFilterFormState | ParsedUrlQuery): Partial<IncomingTxFilter | MultisigTxFilter> => {
   return {
     ...((_isString(execution_date__gte) || isDate(execution_date__gte)) && {
-      execution_date__gte: _getISOString(execution_date__gte),
+      execution_date__gte: _getDateISO(execution_date__gte),
     }),
     ...((_isString(execution_date__lte) || isDate(execution_date__lte)) && {
-      execution_date__lte: _getISOString(execution_date__lte),
+      execution_date__lte: _getDateISO(execution_date__lte),
     }),
     // TODO: Relevant to token decimals?
     ...(_isString(value) && { value: safeParseUnits(value, 18)?.toString() }),
@@ -87,14 +99,14 @@ const getTxFilter = (
   data: TxFilterFormState | ParsedUrlQuery,
 ): IncomingTxFilter | MultisigTxFilter | ModuleTxFilter | undefined => {
   switch (data.type) {
-    case TxFilterType.INCOMING: {
+    case TxFilterFormType.INCOMING: {
       return _getIncomingFilter(data)
     }
-    case TxFilterType.MULTISIG: {
+    case TxFilterFormType.MULTISIG: {
       // We only filter historical transactions, therefore `true`
       return _getMultisigFilter(data, true)
     }
-    case TxFilterType.MODULE: {
+    case TxFilterFormType.MODULE: {
       return _getModuleFilter(data)
     }
   }
@@ -117,13 +129,13 @@ export const getFilteredTxHistory = (chainId: string, safeAddress: string, query
   const filter = getTxFilter(query)
 
   switch (query[TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]) {
-    case TxFilterType.INCOMING: {
+    case TxFilterFormType.INCOMING: {
       return getIncomingTransfers(chainId, safeAddress, filter, pageUrl)
     }
-    case TxFilterType.MULTISIG: {
+    case TxFilterFormType.MULTISIG: {
       return getMultisigTransactions(chainId, safeAddress, filter, pageUrl)
     }
-    case TxFilterType.MODULE: {
+    case TxFilterFormType.MODULE: {
       return getModuleTransactions(chainId, safeAddress, filter, pageUrl)
     }
   }

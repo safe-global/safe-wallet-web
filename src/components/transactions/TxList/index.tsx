@@ -19,7 +19,7 @@ import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecut
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import TxFilterButton from '@/components/transactions/TxFilterButton'
-import { hasTxFilterQuery } from '@/components/transactions/TxFilterForm/utils'
+import { hasTxFilterQuery } from '@/utils/filter'
 import isSameDay from 'date-fns/isSameDay'
 
 type TxListProps = {
@@ -46,29 +46,29 @@ const TxList = ({ items }: TxListProps): ReactElement => {
       type: TransactionListItemType.DATE_LABEL,
       timestamp: (items[firstTxIndex] as Transaction).transaction.timestamp,
     }
-    const prependedItems = [dateLabel, ...items]
+    const prependedItems = ([dateLabel] as TransactionListItem[]).concat(items)
 
     // Insert date labels between transactions on different days
-    return prependedItems.reduce<TransactionListItem[]>((acc, current, i, arr) => {
-      const prev = acc[i - 1]
-      const isLastItem = i === arr.length - 1
+    return prependedItems.reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
+      const prev = resultItems[index - 1]
+      const isLastItem = index === allItems.length - 1
 
       if (
         isLastItem ||
         !prev ||
         !isTransactionListItem(prev) ||
-        !isTransactionListItem(current) ||
+        !isTransactionListItem(item) ||
         // TODO: Make comparison in UTC
-        isSameDay(prev.transaction.timestamp, current.transaction.timestamp)
+        isSameDay(prev.transaction.timestamp, item.transaction.timestamp)
       ) {
-        return acc.concat(current)
+        return resultItems.concat(item)
       }
 
       const dateLabel: DateLabel = {
         type: TransactionListItemType.DATE_LABEL,
-        timestamp: current.transaction.timestamp,
+        timestamp: item.transaction.timestamp,
       }
-      return acc.concat(dateLabel)
+      return resultItems.concat(dateLabel)
     }, [])
   }, [items, router.query])
 

@@ -10,7 +10,7 @@ import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
-import { getFilteredTxHistory, hasTxFilterQuery } from '@/components/transactions/TxFilterForm/utils'
+import { getFilteredTxHistory, hasTxFilterQuery } from '@/utils/filter'
 
 const useTxHistory = (
   pageUrl?: string,
@@ -32,6 +32,7 @@ const useTxHistory = (
     | SafeModuleTransactionsResponse
   >(
     () => {
+      console.log('useTxHistory')
       if (!pageUrl || !safeLoaded) return
 
       return hasTxFilterQuery(router.query)

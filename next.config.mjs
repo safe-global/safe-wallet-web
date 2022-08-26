@@ -18,7 +18,10 @@ const nextConfig = {
       '@mui/icons-material/?(((\\w*)?/?)*)': {
         transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}',
       },
-    }
+      lodash: {
+        transform: 'lodash/{{member}}',
+      },
+    },
   },
   async rewrites() {
     return [

@@ -1,18 +1,19 @@
-import { TxFilterFormState, TxFilterType } from '@/components/transactions/TxFilterForm/types'
+import { getIncomingTransfers, getMultisigTransactions, getModuleTransactions } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ParsedUrlQuery } from 'querystring'
+
 import {
+  _hasTxFilterType,
+  hasTxFilterQuery,
+  omitFilterQuery,
+  _isString,
+  _getDateISO,
+  _getIncomingFilter,
   _getMultisigFilter,
   _getModuleFilter,
-  _hasTxFilterType,
-  _getIncomingFilter,
-  hasTxFilterQuery,
-  _isString,
-  _getISOString,
-  getFilterlessQuery,
   getTxFilterQuery,
   getFilteredTxHistory,
-} from '@/components/transactions/TxFilterForm/utils'
-import { getIncomingTransfers, getMultisigTransactions, getModuleTransactions } from '@gnosis.pm/safe-react-gateway-sdk'
-import { ParsedUrlQuery } from 'querystring'
+} from '../filter'
+import { TxFilterFormState, TxFilterFormType } from '@/components/transactions/TxFilterForm'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   getIncomingTransfers: jest.fn(),
@@ -74,9 +75,9 @@ describe('Transaction filter utils', () => {
     })
   })
 
-  describe('getFilterlessQuery', () => {
+  describe('omitFilterQuery', () => {
     it('should remove transaction filters from queries', () => {
-      const result = getFilterlessQuery({
+      const result = omitFilterQuery({
         type: 'Outgoing',
         value: '1000000',
         test: 'query',
@@ -112,17 +113,17 @@ describe('Transaction filter utils', () => {
     })
   })
 
-  describe('getISOString', () => {
+  describe('getDateISO', () => {
     it('should return an ISOString of a date object', () => {
-      const result = _getISOString(new Date('1970-01-01'))
+      const result = _getDateISO(new Date('1970-01-01'))
       expect(result).toBe('1970-01-01T00:00:00.000Z')
     })
 
     it('should return an ISOString of string date', () => {
-      const result1 = _getISOString('1970-01-01')
+      const result1 = _getDateISO('1970-01-01')
       expect(result1).toBe('1970-01-01T00:00:00.000Z')
 
-      const result2 = _getISOString('1970-01-01T00:00:00.000Z')
+      const result2 = _getDateISO('1970-01-01T00:00:00.000Z')
       expect(result2).toBe('1970-01-01T00:00:00.000Z')
     })
   })
@@ -132,7 +133,7 @@ describe('Transaction filter utils', () => {
       const filter1: TxFilterFormState = {
         execution_date__gte: new Date('1970-01-01'),
         execution_date__lte: null,
-        type: TxFilterType.INCOMING,
+        type: TxFilterFormType.INCOMING,
         value: '123',
       }
 
@@ -144,7 +145,7 @@ describe('Transaction filter utils', () => {
 
       const filter2: ParsedUrlQuery = {
         execution_date__lte: '2000-01-01',
-        type: TxFilterType.INCOMING,
+        type: TxFilterFormType.INCOMING,
         value: '123',
       }
 
@@ -161,7 +162,7 @@ describe('Transaction filter utils', () => {
         to: '0x1234567890123456789012345678901234567890',
         execution_date__gte: new Date('1970-01-01'),
         execution_date__lte: null,
-        type: TxFilterType.MULTISIG,
+        type: TxFilterFormType.MULTISIG,
         value: '123',
         nonce: '123',
       }
@@ -178,7 +179,7 @@ describe('Transaction filter utils', () => {
         to: '0x1234567890123456789012345678901234567890',
         execution_date__gte: '1970-01-01',
         execution_date__lte: '2000-01-01',
-        type: TxFilterType.MULTISIG,
+        type: TxFilterFormType.MULTISIG,
         value: '123',
         nonce: '123',
       }
@@ -197,7 +198,7 @@ describe('Transaction filter utils', () => {
         to: '0x1234567890123456789012345678901234567890',
         execution_date__gte: new Date('1970-01-01'),
         execution_date__lte: null,
-        type: TxFilterType.MULTISIG,
+        type: TxFilterFormType.MULTISIG,
         value: '123',
         nonce: '123',
       }
@@ -214,7 +215,7 @@ describe('Transaction filter utils', () => {
       const filter2: ParsedUrlQuery = {
         to: '0x1234567890123456789012345678901234567890',
         execution_date__lte: '2000-01-01',
-        type: TxFilterType.MULTISIG,
+        type: TxFilterFormType.MULTISIG,
         value: '123',
         nonce: '123',
       }
@@ -234,7 +235,7 @@ describe('Transaction filter utils', () => {
       const filter = {
         to: '0x1234567890123456789012345678901234567890',
         module: '0x1234567890123456789012345678901234567890',
-        type: TxFilterType.MODULE,
+        type: TxFilterFormType.MODULE,
       }
 
       const result = _getModuleFilter(filter)
@@ -250,7 +251,7 @@ describe('Transaction filter utils', () => {
       const incomingFilter1: TxFilterFormState = {
         execution_date__gte: new Date('1970-01-01'),
         execution_date__lte: null,
-        type: TxFilterType.INCOMING,
+        type: TxFilterFormType.INCOMING,
         value: '123',
       }
 
@@ -263,7 +264,7 @@ describe('Transaction filter utils', () => {
 
       const incomingFilter2: ParsedUrlQuery = {
         execution_date__lte: '2000-01-01',
-        type: TxFilterType.INCOMING,
+        type: TxFilterFormType.INCOMING,
         value: '123',
       }
 
@@ -280,7 +281,7 @@ describe('Transaction filter utils', () => {
         to: '0x1234567890123456789012345678901234567890',
         execution_date__gte: new Date('1970-01-01'),
         execution_date__lte: null,
-        type: TxFilterType.MULTISIG,
+        type: TxFilterFormType.MULTISIG,
         value: '123',
         nonce: '123',
       }
@@ -299,7 +300,7 @@ describe('Transaction filter utils', () => {
         to: '0x1234567890123456789012345678901234567890',
         execution_date__gte: '1970-01-01',
         execution_date__lte: '2000-01-01',
-        type: TxFilterType.MULTISIG,
+        type: TxFilterFormType.MULTISIG,
         value: '123',
         nonce: '123',
       }
@@ -320,7 +321,7 @@ describe('Transaction filter utils', () => {
       const moduleFilter = {
         to: '0x1234567890123456789012345678901234567890',
         module: '0x1234567890123456789012345678901234567890',
-        type: TxFilterType.MODULE,
+        type: TxFilterFormType.MODULE,
       }
 
       const result = getTxFilterQuery(moduleFilter)

@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Button from '@mui/material/Button'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
 import Box from '@mui/material/Box'
 import { useRouter } from 'next/router'
-import { getFilterlessQuery, hasTxFilterQuery } from '../TxFilterForm/utils'
+import { hasTxFilterQuery } from '@/utils/filter'
 import TxFilterForm, { TxFilterFormFieldNames } from '@/components/transactions/TxFilterForm'
 
 const TxFilterButton = ({ className }: { className?: string }) => {
@@ -18,19 +18,6 @@ const TxFilterButton = ({ className }: { className?: string }) => {
   }
 
   const hasFilter = hasTxFilterQuery(router.query)
-
-  // Remove filter query when leaving the tx history list
-  useEffect(() => {
-    return () => {
-      if (!hasFilter) {
-        return
-      }
-      router.replace({
-        pathname: router.pathname,
-        query: getFilterlessQuery(router.query),
-      })
-    }
-  }, [hasFilter, router])
 
   return (
     <>

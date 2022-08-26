@@ -15,10 +15,16 @@ import type { ParsedUrlQuery } from 'querystring'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import DatePickerInput from '@/components/common/DatePickerInput'
 import { validateAmount } from '@/utils/validation'
-import { getFilterlessQuery, getTxFilterQuery, hasTxFilterQuery } from '@/components/transactions/TxFilterForm/utils'
-import { TxFilterType, type TxFilterFormState } from '@/components/transactions/TxFilterForm/types'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
+import {
+  omitFilterQuery,
+  getTxFilterQuery,
+  hasTxFilterQuery,
+  type IncomingTxFilter,
+  type ModuleTxFilter,
+  type MultisigTxFilter,
+} from '@/utils/filter'
 
 export enum TxFilterFormFieldNames {
   FILTER_TYPE_FIELD_NAME = 'type',
@@ -31,8 +37,25 @@ export enum TxFilterFormFieldNames {
   NONCE_FIELD_NAME = 'nonce',
 }
 
+export enum TxFilterFormType {
+  INCOMING = 'Incoming',
+  MULTISIG = 'Outgoing',
+  MODULE = 'Module-based',
+}
+
+export type TxFilterFormState = {
+  [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterFormType
+} & Omit<
+  // The filter form uses a <DatePicker> whose value is of `Date` | `null`
+  IncomingTxFilter & MultisigTxFilter & ModuleTxFilter,
+  `${TxFilterFormFieldNames.DATE_FROM_FIELD_NAME}` | `${TxFilterFormFieldNames.DATE_TO_FIELD_NAME}`
+> & {
+    [TxFilterFormFieldNames.DATE_FROM_FIELD_NAME]: Date | null
+    [TxFilterFormFieldNames.DATE_TO_FIELD_NAME]: Date | null
+  }
+
 const defaultValues: DefaultValues<TxFilterFormState> = {
-  [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterType.INCOMING,
+  [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterFormType.INCOMING,
   [TxFilterFormFieldNames.DATE_FROM_FIELD_NAME]: null,
   [TxFilterFormFieldNames.DATE_TO_FIELD_NAME]: null,
   [TxFilterFormFieldNames.RECIPIENT_FIELD_NAME]: '',
@@ -62,9 +85,9 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
 
   const filterType = watch(TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME)
 
-  const isIncomingFilter = filterType === TxFilterType.INCOMING
-  const isMultisigFilter = filterType === TxFilterType.MULTISIG
-  const isModuleFilter = filterType === TxFilterType.MODULE
+  const isIncomingFilter = filterType === TxFilterFormType.INCOMING
+  const isMultisigFilter = filterType === TxFilterFormType.MULTISIG
+  const isModuleFilter = filterType === TxFilterFormType.MODULE
 
   // Only subscribe to relevant `formState`
   const { dirtyFields, isValid } = useFormState({ control })
@@ -80,7 +103,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
     if (hasTxFilterQuery(router.query)) {
       router.replace({
         pathname: router.pathname,
-        query: getFilterlessQuery(router.query),
+        query: omitFilterQuery(router.query),
       })
     }
 
@@ -98,7 +121,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
     router.replace({
       pathname: router.pathname,
       query: {
-        ...getFilterlessQuery(router.query),
+        ...omitFilterQuery(router.query),
         ...getTxFilterQuery(data),
       },
     })
@@ -119,7 +142,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                   control={control}
                   render={({ field }) => (
                     <RadioGroup {...field}>
-                      {Object.values(TxFilterType).map((value) => (
+                      {Object.values(TxFilterFormType).map((value) => (
                         <FormControlLabel value={value} control={<Radio />} label={value} key={value} />
                       ))}
                     </RadioGroup>
