@@ -1,4 +1,5 @@
 import { getIncomingTransfers, getMultisigTransactions, getModuleTransactions } from '@gnosis.pm/safe-react-gateway-sdk'
+import * as router from 'next/router'
 
 import {
   fetchFilteredTxHistory,
@@ -6,7 +7,14 @@ import {
   txFilter,
   _isValidTxFilterType,
   _sanitizeFilter,
+  useTxFilter,
+  _isModuleFilter,
+  type ModuleTxFilter,
+  type IncomingTxFilter,
+  type MultisigTxFilter,
 } from '@/utils/tx-history-filter'
+import { renderHook } from '@testing-library/react'
+import type { NextRouter } from 'next/router'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   getIncomingTransfers: jest.fn(),
@@ -79,6 +87,45 @@ describe('tx-history-filter', () => {
 
       const result3 = _isValidTxFilterType(undefined)
       expect(result3).toBe(false)
+    })
+  })
+
+  describe('isModuleFilter', () => {
+    it('returns `true` for module filters', () => {
+      const filter: ModuleTxFilter = {
+        module: '0x123',
+        to: '0x123',
+      }
+      const result = _isModuleFilter(filter)
+
+      expect(result).toBe(true)
+    })
+
+    it('returns `false` for incoming filters', () => {
+      const filter: IncomingTxFilter = {
+        execution_date__gte: '1970-01-01T00:00:00.000Z',
+        execution_date__lte: '2000-01-01T00:00:00.000Z',
+        to: '0x1234567890123456789012345678901234567890',
+        token_address: '0x1234567890123456789012345678901234567890',
+        value: '123000000000000000000',
+      }
+      const result1 = _isModuleFilter(filter)
+
+      expect(result1).toBe(false)
+    })
+
+    it('returns `false` for multisig filters', () => {
+      const filter: MultisigTxFilter = {
+        execution_date__gte: '1970-01-01T00:00:00.000Z',
+        execution_date__lte: '2000-01-01T00:00:00.000Z',
+        to: '0x1234567890123456789012345678901234567890',
+        value: '123000000000000000000',
+        nonce: '123',
+        executed: 'true',
+      }
+      const result1 = _isModuleFilter(filter)
+
+      expect(result1).toBe(false)
     })
   })
 
@@ -168,7 +215,7 @@ describe('tx-history-filter', () => {
           type: 'Incoming',
           filter: {
             execution_date__gte: '1970-01-01T00:00:00.000Z',
-            value: '123',
+            value: '123000000000000000000',
           },
         })
       })
@@ -178,7 +225,7 @@ describe('tx-history-filter', () => {
           to: '0x1234567890123456789012345678901234567890',
           execution_date__gte: new Date('1970-01-01'),
           execution_date__lte: null,
-          value: '123000000000000000000',
+          value: '123',
           nonce: '123',
           type: 'Outgoing' as TxFilterType,
           executed: 'true',
@@ -234,24 +281,24 @@ describe('tx-history-filter', () => {
         })
       })
 
-      it('should throw invalid for invalid filter `type`s', () => {
-        expect(txFilter.formatUrlQuery({ type: 'Test' as TxFilterType, filter: {} })).toThrow(
-          'URL query contains and invalid `type`',
-        )
+      it('should throw invalid for invalid filter types', () => {
+        expect(() => {
+          txFilter.formatUrlQuery({ type: 'Test' as TxFilterType, filter: {} })
+        }).toThrowError('URL query contains and invalid `type`')
 
-        expect(txFilter.formatUrlQuery({ type: '' as TxFilterType, filter: {} })).toThrow(
-          'URL query contains and invalid `type`',
-        )
+        expect(() => {
+          txFilter.formatUrlQuery({ type: '' as TxFilterType, filter: {} })
+        }).toThrowError('URL query contains and invalid `type`')
 
-        expect(txFilter.formatUrlQuery({ type: undefined as any as TxFilterType, filter: {} })).toThrow(
-          'URL query contains and invalid `type`',
-        )
+        expect(() => {
+          txFilter.formatUrlQuery({ type: undefined as unknown as TxFilterType, filter: {} })
+        }).toThrowError('URL query contains and invalid `type`')
       })
     })
 
     describe('formatFormData', () => {
       it('should return a form formatted filter', () => {
-        const result = txFilter.formatUrlQuery({
+        const result = txFilter.formatFormData({
           type: 'Outgoing' as TxFilterType,
           filter: {
             execution_date__gte: '1970-01-01T00:00:00.000Z',
@@ -264,14 +311,14 @@ describe('tx-history-filter', () => {
         expect(result).toEqual({
           type: 'Outgoing',
           execution_date__gte: new Date('1970-01-01'),
-          value: '123000000000000000000',
+          value: '123',
           nonce: '123',
           executed: 'true',
         })
       })
 
       it('should default to the `TxFilterType.INCOMING` `type`', () => {
-        const result = txFilter.formatUrlQuery({
+        const result = txFilter.formatFormData({
           type: '' as TxFilterType,
           filter: {
             value: '123000000000000000000',
@@ -282,7 +329,7 @@ describe('tx-history-filter', () => {
 
         expect(result).toEqual({
           type: 'Incoming',
-          value: '123000000000000000000',
+          value: '123',
           nonce: '123',
           executed: 'true',
         })
@@ -291,11 +338,72 @@ describe('tx-history-filter', () => {
   })
 
   describe('useTxFilter', () => {
-    it.todo('returns the current filter from the URL query')
+    it('returns the current filter from the URL query', () => {
+      jest.spyOn(router, 'useRouter').mockReturnValue({
+        query: {
+          type: 'Outgoing',
+          execution_date__gte: '1970-01-01T00:00:00.000Z',
+        },
+      } as unknown as NextRouter)
 
-    it.todo('sets the filter in the URL query')
+      const { result } = renderHook(() => useTxFilter())
 
-    it.todo('remove the URL query filter')
+      expect(result.current[0]).toEqual({
+        type: 'Outgoing',
+        filter: { execution_date__gte: '1970-01-01T00:00:00.000Z' },
+      })
+    })
+
+    it('sets the filter in the URL query', () => {
+      const mockPush = jest.fn()
+      jest.spyOn(router, 'useRouter').mockReturnValue({
+        push: mockPush,
+        query: {
+          safe: '0x123',
+        },
+        pathname: '/test',
+      } as unknown as NextRouter)
+
+      const { result } = renderHook(() => useTxFilter())
+
+      result.current[1]({
+        type: 'Outgoing' as TxFilterType,
+        filter: { execution_date__gte: '1970-01-01T00:00:00.000Z' },
+      })
+
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/test',
+        query: {
+          safe: '0x123',
+          type: 'Outgoing',
+          execution_date__gte: '1970-01-01T00:00:00.000Z',
+        },
+      })
+    })
+
+    it('remove the URL query filter', () => {
+      const mockPush = jest.fn()
+      jest.spyOn(router, 'useRouter').mockReturnValue({
+        push: mockPush,
+        query: {
+          safe: '0x123',
+          type: 'Outgoing',
+          execution_date__gte: '1970-01-01T00:00:00.000Z',
+        },
+        pathname: '/test',
+      } as unknown as NextRouter)
+
+      const { result } = renderHook(() => useTxFilter())
+
+      result.current[1](null)
+
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/test',
+        query: {
+          safe: '0x123',
+        },
+      })
+    })
   })
 
   describe('fetchFilteredTxHistory', () => {

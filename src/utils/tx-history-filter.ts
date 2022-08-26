@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import {
   getIncomingTransfers,
@@ -9,8 +10,7 @@ import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/ap
 import type { ParsedUrlQuery } from 'querystring'
 
 import { TxFilterFormState } from '@/components/transactions/TxFilterForm'
-import { useMemo } from 'react'
-import { safeParseUnits } from './formatters'
+import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 
 export type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>
 export type MultisigTxFilter = NonNullable<operations['multisig_transactions']['parameters']['query']>
@@ -39,6 +39,10 @@ export const _isValidTxFilterType = (type: unknown) => {
   return !!type && Object.values(TxFilterType).includes(type as TxFilterType)
 }
 
+export const _isModuleFilter = (filter: TxFilter['filter']): filter is ModuleTxFilter => {
+  return 'module' in filter
+}
+
 // Spread TxFilter basically
 type TxFilterUrlQuery = {
   type: TxFilter['type']
@@ -61,6 +65,7 @@ export const txFilter = {
       ...formData,
       execution_date__gte: formData.execution_date__gte?.toISOString(),
       execution_date__lte: formData.execution_date__lte?.toISOString(),
+      value: !_isModuleFilter(formData) && formData.value ? safeParseUnits(formData.value, 18)?.toString() : undefined,
     }
 
     return {
@@ -81,11 +86,7 @@ export const txFilter = {
   },
 
   formatFormData: ({ type, filter }: TxFilter): TxFilterFormState => {
-    const isModuleFilter = (filter: TxFilter['filter']): filter is ModuleTxFilter => {
-      return 'module' in filter
-    }
-
-    if (isModuleFilter(filter)) {
+    if (_isModuleFilter(filter)) {
       return {
         type,
         ...filter,
@@ -97,7 +98,7 @@ export const txFilter = {
       ...filter,
       execution_date__gte: filter.execution_date__gte ? new Date(filter.execution_date__gte) : undefined,
       execution_date__lte: filter.execution_date__lte ? new Date(filter.execution_date__lte) : undefined,
-      value: filter.value ? safeParseUnits(filter.value, 18)?.toString() : undefined,
+      value: filter.value ? safeFormatUnits(filter.value, 18)?.toString() : undefined,
     }
 
     return _sanitizeFilter(formData)
