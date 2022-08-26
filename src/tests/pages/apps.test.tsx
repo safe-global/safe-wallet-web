@@ -241,7 +241,7 @@ describe('AppsPage', () => {
         iconUrl: '',
       })
 
-      const { debug } = render(<AppsPage />, {
+      render(<AppsPage />, {
         routerProps: {
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
