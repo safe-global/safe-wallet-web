@@ -1,6 +1,11 @@
 import { isDate, isString, omit } from 'lodash'
-import { ParsedUrlQuery } from 'querystring'
-import { getIncomingTransfers, getMultisigTransactions, getModuleTransactions } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  getIncomingTransfers,
+  getMultisigTransactions,
+  getModuleTransactions,
+  type TransactionListPage,
+} from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ParsedUrlQuery } from 'querystring'
 
 import { safeParseUnits } from '@/utils/formatters'
 import {
@@ -112,7 +117,6 @@ const getTxFilter = (
   }
 }
 
-// TODO: Test
 export const getTxFilterQuery = (data: TxFilterFormState | ParsedUrlQuery): TxFilterQuery | undefined => {
   if (!_hasTxFilterType(data)) {
     return undefined
@@ -124,8 +128,12 @@ export const getTxFilterQuery = (data: TxFilterFormState | ParsedUrlQuery): TxFi
   }
 }
 
-// TODO: Test
-export const getFilteredTxHistory = (chainId: string, safeAddress: string, query: ParsedUrlQuery, pageUrl?: string) => {
+export const getFilteredTxHistory = (
+  chainId: string,
+  safeAddress: string,
+  query: ParsedUrlQuery,
+  pageUrl?: string,
+): Promise<TransactionListPage> | undefined => {
   const filter = getTxFilter(query)
 
   switch (query[TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]) {

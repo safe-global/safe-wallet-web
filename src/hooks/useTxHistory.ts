@@ -1,10 +1,4 @@
-import {
-  getTransactionHistory,
-  type SafeIncomingTransfersResponse,
-  type SafeModuleTransactionsResponse,
-  type SafeMultisigTransactionsResponse,
-  type TransactionListPage,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+import { getTransactionHistory, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useRouter } from 'next/router'
 import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
@@ -20,26 +14,21 @@ const useTxHistory = (
   loading: boolean
 } => {
   const router = useRouter()
+  const hasFilter = hasTxFilterQuery(router.query)
 
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
   const { chainId } = safe
 
   // If pageUrl is passed, load a new history page from the API
-  const [page, error, loading] = useAsync<
-    | TransactionListPage
-    | SafeIncomingTransfersResponse
-    | SafeMultisigTransactionsResponse
-    | SafeModuleTransactionsResponse
-  >(
+  const [page, error, loading] = useAsync<TransactionListPage>(
     () => {
-      console.log('useTxHistory')
-      if (!pageUrl || !safeLoaded) return
+      if (!safeLoaded || !(hasFilter || pageUrl)) return
 
-      return hasTxFilterQuery(router.query)
+      return hasFilter
         ? getFilteredTxHistory(chainId, safeAddress, router.query, pageUrl)
         : getTransactionHistory(chainId, safeAddress, pageUrl)
     },
-    [chainId, safeAddress, safeLoaded, pageUrl, router.query],
+    [chainId, safeAddress, safeLoaded, pageUrl, router.query, hasFilter],
     false,
   )
 
@@ -47,7 +36,7 @@ const useTxHistory = (
   const historyState = useAppSelector(selectTxHistory)
 
   // Return the new page or the stored page
-  return pageUrl
+  return hasFilter || pageUrl
     ? {
         page,
         error: error?.message,
