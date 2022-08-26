@@ -30,7 +30,6 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
   const { safe } = useSafeInfo()
   const safeAddress = useSafeAddress()
   const chain = useCurrentChain()
-  const { nativeCurrency, chainName, chainId, shortName, blockExplorerUriTemplate } = chain || { chainId: '' }
   const granted = useIsGranted()
 
   const safeAppWeb3Provider = useMemo(() => {
@@ -68,6 +67,8 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
   }, [app, iframeRef])
 
   useEffect(() => {
+    const { nativeCurrency, chainName, chainId, shortName, blockExplorerUriTemplate } = chain || { chainId: '' }
+
     communicator?.on(Methods.getTxBySafeTxHash, async (msg) => {
       const { safeTxHash } = msg.data.params as GetTxBySafeTxHashParams
 
@@ -133,18 +134,7 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
         blockExplorerUriTemplate,
       }
     })
-  }, [
-    blockExplorerUriTemplate,
-    chainId,
-    chainName,
-    communicator,
-    granted,
-    nativeCurrency,
-    safe,
-    safeAddress,
-    safeAppWeb3Provider,
-    shortName,
-  ])
+  }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider])
 }
 
 export default useAppCommunicator
