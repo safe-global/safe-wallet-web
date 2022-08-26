@@ -14,7 +14,6 @@ import { Errors, logError } from '@/services/exceptions'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsGranted from '@/hooks/useIsGranted'
 import { useCurrentChain } from '@/hooks/useChains'
-import useSafeAddress from '@/hooks/useSafeAddress'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 
 type JsonRpcResponse = {
@@ -27,10 +26,8 @@ type JsonRpcResponse = {
 const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null>, app?: SafeAppData) => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
 
-  const { safe } = useSafeInfo()
-  const safeAddress = useSafeAddress()
+  const { safe, safeAddress } = useSafeInfo()
   const chain = useCurrentChain()
-  const { nativeCurrency, chainName, chainId, shortName, blockExplorerUriTemplate } = chain || { chainId: '' }
   const granted = useIsGranted()
 
   const safeAppWeb3Provider = useMemo(() => {
@@ -68,6 +65,8 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
   }, [app, iframeRef])
 
   useEffect(() => {
+    const { nativeCurrency, chainName, chainId, shortName, blockExplorerUriTemplate } = chain || { chainId: '' }
+
     communicator?.on(Methods.getTxBySafeTxHash, async (msg) => {
       const { safeTxHash } = msg.data.params as GetTxBySafeTxHashParams
 
@@ -133,18 +132,7 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
         blockExplorerUriTemplate,
       }
     })
-  }, [
-    blockExplorerUriTemplate,
-    chainId,
-    chainName,
-    communicator,
-    granted,
-    nativeCurrency,
-    safe,
-    safeAddress,
-    safeAppWeb3Provider,
-    shortName,
-  ])
+  }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider])
 }
 
 export default useAppCommunicator
