@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import FormControl from '@mui/material/FormControl'
@@ -10,7 +9,6 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import { Controller, FormProvider, useForm, useFormState, type DefaultValues } from 'react-hook-form'
 import { useMemo, type ReactElement } from 'react'
-import type { ParsedUrlQuery } from 'querystring'
 
 import AddressBookInput from '@/components/common/AddressBookInput'
 import DatePickerInput from '@/components/common/DatePickerInput'
@@ -18,79 +16,71 @@ import { validateAmount } from '@/utils/validation'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import {
-  omitFilterQuery,
-  getTxFilterQuery,
-  hasTxFilterQuery,
-  DEFAULT_MULTISIG_EXECUTED,
   type IncomingTxFilter,
   type ModuleTxFilter,
   type MultisigTxFilter,
+  TxFilterType,
+  txFilter,
+  useTxFilter,
+  TxFilter,
 } from '@/utils/txHistoryFilter'
 
 export enum TxFilterFormFieldNames {
-  FILTER_TYPE_FIELD_NAME = 'type',
-  DATE_FROM_FIELD_NAME = 'execution_date__gte',
-  DATE_TO_FIELD_NAME = 'execution_date__lte',
-  RECIPIENT_FIELD_NAME = 'to',
-  AMOUNT_FIELD_NAME = 'value',
-  TOKEN_ADDRESS_FIELD_NAME = 'token_address',
-  MODULE_FIELD_NAME = 'module',
-  NONCE_FIELD_NAME = 'nonce',
-  MULTISIG_EXECUTED = 'executed',
-}
-
-export enum TxFilterFormType {
-  INCOMING = 'Incoming',
-  MULTISIG = 'Outgoing',
-  MODULE = 'Module-based',
+  FILTER_TYPE = 'type',
+  DATE_FROM = 'execution_date__gte',
+  DATE_TO = 'execution_date__lte',
+  RECIPIENT = 'to',
+  AMOUNT = 'value',
+  TOKEN_ADDRESS = 'token_address',
+  MODULE = 'module',
+  NONCE = 'nonce',
 }
 
 export type TxFilterFormState = {
-  [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterFormType
+  [TxFilterFormFieldNames.FILTER_TYPE]: TxFilterType
 } & Omit<
   // The filter form uses a <DatePicker> whose value is of `Date` | `null`
   IncomingTxFilter & MultisigTxFilter & ModuleTxFilter,
-  `${TxFilterFormFieldNames.DATE_FROM_FIELD_NAME}` | `${TxFilterFormFieldNames.DATE_TO_FIELD_NAME}`
+  `${TxFilterFormFieldNames.DATE_FROM}` | `${TxFilterFormFieldNames.DATE_TO}`| `executed`
 > & {
-    [TxFilterFormFieldNames.DATE_FROM_FIELD_NAME]: Date | null
-    [TxFilterFormFieldNames.DATE_TO_FIELD_NAME]: Date | null
+    [TxFilterFormFieldNames.DATE_FROM]: Date | null
+    [TxFilterFormFieldNames.DATE_TO]: Date | null
   }
 
 const defaultValues: DefaultValues<TxFilterFormState> = {
-  [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterFormType.INCOMING,
-  [TxFilterFormFieldNames.DATE_FROM_FIELD_NAME]: null,
-  [TxFilterFormFieldNames.DATE_TO_FIELD_NAME]: null,
-  [TxFilterFormFieldNames.RECIPIENT_FIELD_NAME]: '',
-  [TxFilterFormFieldNames.AMOUNT_FIELD_NAME]: '',
-  [TxFilterFormFieldNames.TOKEN_ADDRESS_FIELD_NAME]: '',
-  [TxFilterFormFieldNames.MODULE_FIELD_NAME]: '',
-  [TxFilterFormFieldNames.NONCE_FIELD_NAME]: '',
-  [TxFilterFormFieldNames.MULTISIG_EXECUTED]: DEFAULT_MULTISIG_EXECUTED,
+  [TxFilterFormFieldNames.FILTER_TYPE]: TxFilterType.INCOMING,
+  [TxFilterFormFieldNames.DATE_FROM]: null,
+  [TxFilterFormFieldNames.DATE_TO]: null,
+  [TxFilterFormFieldNames.RECIPIENT]: '',
+  [TxFilterFormFieldNames.AMOUNT]: '',
+  [TxFilterFormFieldNames.TOKEN_ADDRESS]: '',
+  [TxFilterFormFieldNames.MODULE]: '',
+  [TxFilterFormFieldNames.NONCE]: '',
 }
 
-const getDefaultValues = (query: ParsedUrlQuery): DefaultValues<TxFilterFormState> => {
+const getInitialFormValues = (filter: TxFilter): DefaultValues<TxFilterFormState> => {
   return {
     ...defaultValues,
-    ...query,
+    ...txFilter.formatFormData(filter),
   }
 }
 
 const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElement => {
-  const router = useRouter()
+  const [filter, setFilter] = useTxFilter()
 
   const formMethods = useForm<TxFilterFormState>({
     mode: 'onChange',
     shouldUnregister: true,
-    defaultValues: getDefaultValues(router.query),
+    defaultValues: getInitialFormValues(filter),
   })
 
   const { register, control, watch, handleSubmit, reset, getValues } = formMethods
 
-  const filterType = watch(TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME)
+  const filterType = watch(TxFilterFormFieldNames.FILTER_TYPE)
 
-  const isIncomingFilter = filterType === TxFilterFormType.INCOMING
-  const isMultisigFilter = filterType === TxFilterFormType.MULTISIG
-  const isModuleFilter = filterType === TxFilterFormType.MODULE
+  const isIncomingFilter = filterType === TxFilterType.INCOMING
+  const isMultisigFilter = filterType === TxFilterType.MULTISIG
+  const isModuleFilter = filterType === TxFilterType.MODULE
 
   // Only subscribe to relevant `formState`
   const { dirtyFields, isValid } = useFormState({ control })
@@ -98,21 +88,17 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
   const dirtyFieldNames = Object.keys(dirtyFields)
 
   const canClear = useMemo(() => {
-    const isFormDirty = dirtyFieldNames.some((name) => name !== TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME)
-    return !isValid || isFormDirty || hasTxFilterQuery(router.query)
-  }, [isValid, dirtyFieldNames, router.query])
+    const isFormDirty = dirtyFieldNames.some((name) => name !== TxFilterFormFieldNames.FILTER_TYPE)
+    return !isValid || isFormDirty || getValues(TxFilterFormFieldNames.FILTER_TYPE) !== defaultValues[TxFilterFormFieldNames.FILTER_TYPE]
+  }, [isValid, dirtyFieldNames])
 
   const clearFilter = () => {
-    if (hasTxFilterQuery(router.query)) {
-      router.replace({
-        pathname: router.pathname,
-        query: omitFilterQuery(router.query),
-      })
-    }
+    setFilter(null)
 
     reset({
       ...defaultValues,
-      [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: getValues(TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME),
+      // Persist the current type
+      [TxFilterFormFieldNames.FILTER_TYPE]: getValues(TxFilterFormFieldNames.FILTER_TYPE),
     })
   }
 
@@ -121,15 +107,10 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
       trackEvent({ ...TX_LIST_EVENTS.FILTER, label: name })
     }
 
-    router.replace({
-      pathname: router.pathname,
-      query: {
-        ...omitFilterQuery(router.query),
-        ...getTxFilterQuery(data),
-        // We only filter historical multisig transactions
-        ...(isMultisigFilter && { executed: DEFAULT_MULTISIG_EXECUTED }),
-      },
-    })
+    const filterData = txFilter.parseFormData(data)
+
+    // Check if push will cause a full page reload
+    setFilter(filterData)
 
     toggleFilter()
   }
@@ -143,11 +124,11 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
               <FormControl>
                 <FormLabel>Transaction type</FormLabel>
                 <Controller
-                  name={TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME}
+                  name={TxFilterFormFieldNames.FILTER_TYPE}
                   control={control}
                   render={({ field }) => (
                     <RadioGroup {...field}>
-                      {Object.values(TxFilterFormType).map((value) => (
+                      {Object.values(TxFilterType).map((value) => (
                         <FormControlLabel value={value} control={<Radio />} label={value} key={value} />
                       ))}
                     </RadioGroup>
@@ -162,14 +143,14 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                   {!isModuleFilter && (
                     <>
                       <Grid item xs={12} md={6}>
-                        <DatePickerInput name={TxFilterFormFieldNames.DATE_FROM_FIELD_NAME} label="From" />
+                        <DatePickerInput name={TxFilterFormFieldNames.DATE_FROM} label="From" />
                       </Grid>
                       <Grid item xs={12} md={6}>
-                        <DatePickerInput name={TxFilterFormFieldNames.DATE_TO_FIELD_NAME} label="To" />
+                        <DatePickerInput name={TxFilterFormFieldNames.DATE_TO} label="To" />
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <Controller
-                          name={TxFilterFormFieldNames.AMOUNT_FIELD_NAME}
+                          name={TxFilterFormFieldNames.AMOUNT}
                           control={control}
                           rules={{
                             validate: (val: string) => {
@@ -194,7 +175,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                     <Grid item xs={12} md={6}>
                       <AddressBookInput
                         label="Token address"
-                        {...register(TxFilterFormFieldNames.TOKEN_ADDRESS_FIELD_NAME)}
+                        {...register(TxFilterFormFieldNames.TOKEN_ADDRESS)}
                         required={false}
                         fullWidth
                       />
@@ -205,14 +186,14 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                       <Grid item xs={12} md={6}>
                         <AddressBookInput
                           label="Recipient"
-                          {...register(TxFilterFormFieldNames.RECIPIENT_FIELD_NAME)}
+                          {...register(TxFilterFormFieldNames.RECIPIENT)}
                           required={false}
                           fullWidth
                         />
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <Controller
-                          name={TxFilterFormFieldNames.NONCE_FIELD_NAME}
+                          name={TxFilterFormFieldNames.NONCE}
                           control={control}
                           rules={{
                             validate: (val: string) => {
@@ -237,7 +218,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                     <Grid item xs={12} md={6}>
                       <AddressBookInput
                         label="Module"
-                        {...register(TxFilterFormFieldNames.MODULE_FIELD_NAME)}
+                        {...register(TxFilterFormFieldNames.MODULE)}
                         required={false}
                         fullWidth
                       />
