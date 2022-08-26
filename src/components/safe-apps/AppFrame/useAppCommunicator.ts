@@ -64,6 +64,9 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
     }
   }, [app, iframeRef])
 
+  // Adding communicator logic for the required SDK Methods
+  // We don't need to unsubscribe from the events because there can be just one subscription
+  // per event type and the next effect run will simply replace the handlers
   useEffect(() => {
     const { nativeCurrency, chainName, chainId, shortName, blockExplorerUriTemplate } = chain || { chainId: '' }
 
