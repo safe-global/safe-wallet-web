@@ -26,7 +26,7 @@ import CookieBanner from '@/components/common/CookieBanner'
 import { useLightDarkTheme } from '@/hooks/useDarkMode'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { useTxTracking } from '@/hooks/useTxTracking'
-import useGtm from '@/hooks/useGtm'
+import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
 
 const cssCache = createCache({

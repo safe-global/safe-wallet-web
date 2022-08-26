@@ -1,7 +1,7 @@
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import * as addressBook from '@/hooks/useAddressBook'
 import { ethers } from 'ethers'
-import * as domains from '@/services/domains'
+import * as domains from '@/services/ens'
 import * as web3 from '@/hooks/wallets/web3'
 import * as useChains from '@/hooks/useChains'
 import { renderHook, waitFor } from '@/tests/test-utils'

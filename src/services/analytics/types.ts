@@ -1,3 +1,6 @@
+/**
+ * These event names are passed straight to GTM
+ */
 export enum EventType {
   PAGEVIEW = 'pageview',
   CLICK = 'customClick',
