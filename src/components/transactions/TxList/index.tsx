@@ -19,7 +19,7 @@ import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecut
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import TxFilterButton from '@/components/transactions/TxFilterButton'
-import { hasTxFilterQuery } from '@/utils/filter'
+import { hasTxFilterQuery } from '@/utils/txHistoryFilter'
 import isSameDay from 'date-fns/isSameDay'
 
 type TxListProps = {

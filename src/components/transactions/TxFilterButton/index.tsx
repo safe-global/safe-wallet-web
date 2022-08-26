@@ -5,13 +5,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
 import Box from '@mui/material/Box'
 import { useRouter } from 'next/router'
-import { hasTxFilterQuery } from '@/utils/filter'
+import { hasTxFilterQuery } from '@/utils/txHistoryFilter'
 import TxFilterForm, { TxFilterFormFieldNames } from '@/components/transactions/TxFilterForm'
 
 const TxFilterButton = ({ className }: { className?: string }) => {
   const router = useRouter()
 
-  const [showFilter, setShowFilter] = useState(false)
+  const [showFilter, setShowFilter] = useState(hasTxFilterQuery(router.query))
 
   const toggleFilter = () => {
     setShowFilter((prev) => !prev)

@@ -27,6 +27,9 @@ export type TxFilterQuery = TxFilter & {
   [TxFilterFormFieldNames.FILTER_TYPE_FIELD_NAME]: TxFilterFormType
 }
 
+// We only filter historical multisig transactions
+export const DEFAULT_MULTISIG_EXECUTED: 'true' = 'true'
+
 // Utils
 
 const TX_FILTER_FIELD_NAMES = Object.values(TxFilterFormFieldNames)
@@ -83,13 +86,13 @@ export const _getIncomingFilter = (filter: TxFilterFormState | ParsedUrlQuery): 
   }
 }
 
-export const _getMultisigFilter = (filter: TxFilterFormState | ParsedUrlQuery, executed = false): MultisigTxFilter => {
-  const { to, nonce } = filter
+export const _getMultisigFilter = (filter: TxFilterFormState | ParsedUrlQuery): MultisigTxFilter => {
+  const { to, nonce, executed = DEFAULT_MULTISIG_EXECUTED } = filter
   return {
     ...getStandardFilter(filter),
     ...(_isString(to) && { to }),
     ...(_isString(nonce) && { nonce }),
-    ...(executed && { executed: `${executed}` }),
+    ...(_isString(executed) && { executed }),
   }
 }
 
@@ -108,8 +111,7 @@ const getTxFilter = (
       return _getIncomingFilter(data)
     }
     case TxFilterFormType.MULTISIG: {
-      // We only filter historical transactions, therefore `true`
-      return _getMultisigFilter(data, true)
+      return _getMultisigFilter(data)
     }
     case TxFilterFormType.MODULE: {
       return _getModuleFilter(data)

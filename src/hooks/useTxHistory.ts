@@ -4,7 +4,7 @@ import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
-import { getFilteredTxHistory, hasTxFilterQuery } from '@/utils/filter'
+import { getFilteredTxHistory, hasTxFilterQuery } from '@/utils/txHistoryFilter'
 
 const useTxHistory = (
   pageUrl?: string,

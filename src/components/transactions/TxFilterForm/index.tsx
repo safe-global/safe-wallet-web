@@ -21,10 +21,11 @@ import {
   omitFilterQuery,
   getTxFilterQuery,
   hasTxFilterQuery,
+  DEFAULT_MULTISIG_EXECUTED,
   type IncomingTxFilter,
   type ModuleTxFilter,
   type MultisigTxFilter,
-} from '@/utils/filter'
+} from '@/utils/txHistoryFilter'
 
 export enum TxFilterFormFieldNames {
   FILTER_TYPE_FIELD_NAME = 'type',
@@ -35,6 +36,7 @@ export enum TxFilterFormFieldNames {
   TOKEN_ADDRESS_FIELD_NAME = 'token_address',
   MODULE_FIELD_NAME = 'module',
   NONCE_FIELD_NAME = 'nonce',
+  MULTISIG_EXECUTED = 'executed',
 }
 
 export enum TxFilterFormType {
@@ -63,6 +65,7 @@ const defaultValues: DefaultValues<TxFilterFormState> = {
   [TxFilterFormFieldNames.TOKEN_ADDRESS_FIELD_NAME]: '',
   [TxFilterFormFieldNames.MODULE_FIELD_NAME]: '',
   [TxFilterFormFieldNames.NONCE_FIELD_NAME]: '',
+  [TxFilterFormFieldNames.MULTISIG_EXECUTED]: DEFAULT_MULTISIG_EXECUTED,
 }
 
 const getDefaultValues = (query: ParsedUrlQuery): DefaultValues<TxFilterFormState> => {
@@ -123,6 +126,8 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
       query: {
         ...omitFilterQuery(router.query),
         ...getTxFilterQuery(data),
+        // We only filter historical multisig transactions
+        ...(isMultisigFilter && { executed: DEFAULT_MULTISIG_EXECUTED }),
       },
     })
 

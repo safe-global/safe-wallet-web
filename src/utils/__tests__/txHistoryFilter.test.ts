@@ -12,7 +12,7 @@ import {
   _getModuleFilter,
   getTxFilterQuery,
   getFilteredTxHistory,
-} from '../filter'
+} from '@/utils/txHistoryFilter'
 import { TxFilterFormState, TxFilterFormType } from '@/components/transactions/TxFilterForm'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
@@ -173,6 +173,7 @@ describe('Transaction filter utils', () => {
         execution_date__gte: '1970-01-01T00:00:00.000Z',
         value: '123000000000000000000',
         nonce: '123',
+        executed: 'true',
       })
 
       const filter2: ParsedUrlQuery = {
@@ -191,9 +192,10 @@ describe('Transaction filter utils', () => {
         execution_date__lte: '2000-01-01T00:00:00.000Z',
         value: '123000000000000000000',
         nonce: '123',
+        executed: 'true',
       })
     })
-    it('should add the executed param if defined', () => {
+    it('should add the executed param by default', () => {
       const filter1: TxFilterFormState = {
         to: '0x1234567890123456789012345678901234567890',
         execution_date__gte: new Date('1970-01-01'),
@@ -203,7 +205,7 @@ describe('Transaction filter utils', () => {
         nonce: '123',
       }
 
-      const result1 = _getMultisigFilter(filter1, true)
+      const result1 = _getMultisigFilter(filter1)
       expect(result1).toEqual({
         to: '0x1234567890123456789012345678901234567890',
         execution_date__gte: '1970-01-01T00:00:00.000Z',
@@ -220,7 +222,7 @@ describe('Transaction filter utils', () => {
         nonce: '123',
       }
 
-      const result2 = _getMultisigFilter(filter2, true)
+      const result2 = _getMultisigFilter(filter2)
       expect(result2).toEqual({
         to: '0x1234567890123456789012345678901234567890',
         execution_date__lte: '2000-01-01T00:00:00.000Z',
