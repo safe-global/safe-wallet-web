@@ -24,7 +24,7 @@ type JsonRpcResponse = {
   error?: string
 }
 
-const useSafeAppsSDK = (iframeRef: MutableRefObject<HTMLIFrameElement | null>, app?: SafeAppData) => {
+const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null>, app?: SafeAppData) => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
 
   const { safe } = useSafeInfo()
@@ -147,4 +147,4 @@ const useSafeAppsSDK = (iframeRef: MutableRefObject<HTMLIFrameElement | null>, a
   ])
 }
 
-export default useSafeAppsSDK
+export default useAppCommunicator
