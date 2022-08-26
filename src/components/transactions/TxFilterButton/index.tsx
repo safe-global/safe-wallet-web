@@ -10,7 +10,7 @@ import { useTxFilter } from '@/utils/tx-history-filter'
 const TxFilterButton = ({ className }: { className?: string }) => {
   const [filter] = useTxFilter()
 
-  const [showFilter, setShowFilter] = useState(!!filter)
+  const [showFilter, setShowFilter] = useState(false)
 
   const toggleFilter = () => {
     setShowFilter((prev) => !prev)
@@ -25,7 +25,7 @@ const TxFilterButton = ({ className }: { className?: string }) => {
       </Button>
       {showFilter && (
         <Box sx={{ pt: 1 }}>
-          <TxFilterForm toggleFilter={toggleFilter} />
+          <TxFilterForm />
         </Box>
       )}
     </>

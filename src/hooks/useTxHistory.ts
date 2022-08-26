@@ -20,9 +20,9 @@ const useTxHistory = (
   // If filter exists or pageUrl is passed, load a new history page from the API
   const [page, error, loading] = useAsync<TransactionListPage>(
     () => {
-      if (!safeLoaded || !(filter.type || pageUrl)) return
+      if (!safeLoaded || !(filter || pageUrl)) return
 
-      return filter.type
+      return filter
         ? fetchFilteredTxHistory(chainId, safeAddress, filter, pageUrl)
         : getTransactionHistory(chainId, safeAddress, pageUrl)
     },
@@ -34,7 +34,7 @@ const useTxHistory = (
   const historyState = useAppSelector(selectTxHistory)
 
   // Return the new page or the stored page
-  return filter.type || pageUrl
+  return filter || pageUrl
     ? {
         page,
         error: error?.message,

@@ -35,7 +35,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
   const [filter] = useTxFilter()
 
   const list = useMemo(() => {
-    if (!filter.type) {
+    if (!filter) {
       return items
     }
 
@@ -71,7 +71,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
       }
       return resultItems.concat(dateLabel)
     }, [])
-  }, [items, filter.type])
+  }, [items, filter])
 
   const listWithGroupedItems: (TransactionListItem | Transaction[])[] = useMemo(() => {
     return list.reduce((acc: (TransactionListItem | Transaction[])[], current, i) => {

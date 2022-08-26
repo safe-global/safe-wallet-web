@@ -15,7 +15,15 @@ import DatePickerInput from '@/components/common/DatePickerInput'
 import { validateAmount } from '@/utils/validation'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
-import { TxFilterType, txFilter, useTxFilter, TxFilter } from '@/utils/tx-history-filter'
+import {
+  TxFilterType,
+  txFilter,
+  useTxFilter,
+  TxFilter,
+  IncomingTxFilter,
+  ModuleTxFilter,
+  MultisigTxFilter,
+} from '@/utils/tx-history-filter'
 
 export enum TxFilterFormFieldNames {
   FILTER_TYPE = 'type',
@@ -30,14 +38,9 @@ export enum TxFilterFormFieldNames {
 
 export type TxFilterFormState = {
   [TxFilterFormFieldNames.FILTER_TYPE]: TxFilterType
-  [TxFilterFormFieldNames.DATE_FROM]: string | null | Date
-  [TxFilterFormFieldNames.DATE_TO]: string | null | Date
-  [TxFilterFormFieldNames.RECIPIENT]: string
-  [TxFilterFormFieldNames.AMOUNT]: string
-  [TxFilterFormFieldNames.TOKEN_ADDRESS]: string
-  [TxFilterFormFieldNames.MODULE]: string
-  [TxFilterFormFieldNames.NONCE]: string
-}
+  [TxFilterFormFieldNames.DATE_FROM]?: null | Date
+  [TxFilterFormFieldNames.DATE_TO]?: null | Date
+} & (IncomingTxFilter | MultisigTxFilter | ModuleTxFilter)
 
 const defaultValues: DefaultValues<TxFilterFormState> = {
   [TxFilterFormFieldNames.FILTER_TYPE]: TxFilterType.INCOMING,
@@ -50,14 +53,16 @@ const defaultValues: DefaultValues<TxFilterFormState> = {
   [TxFilterFormFieldNames.NONCE]: '',
 }
 
-const getInitialFormValues = (filter: TxFilter): DefaultValues<TxFilterFormState> => {
-  return {
-    ...defaultValues,
-    ...txFilter.formatFormData(filter),
-  }
+const getInitialFormValues = (filter: TxFilter | null): DefaultValues<TxFilterFormState> => {
+  return filter
+    ? {
+        ...defaultValues,
+        ...txFilter.formatFormData(filter),
+      }
+    : defaultValues
 }
 
-const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElement => {
+const TxFilterForm = (): ReactElement => {
   const [filter, setFilter] = useTxFilter()
 
   const formMethods = useForm<TxFilterFormState>({
@@ -102,8 +107,6 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
     const filterData = txFilter.parseFormData(data)
 
     setFilter(filterData)
-
-    toggleFilter()
   }
 
   return (
