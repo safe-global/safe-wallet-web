@@ -15,15 +15,9 @@ type MessageHandler = (
   msg: SDKMessageEvent,
 ) => void | MethodToResponse[Methods] | ErrorResponse | Promise<MethodToResponse[Methods] | ErrorResponse | void>
 
-export enum LegacyMethods {
-  getEnvInfo = 'getEnvInfo',
-}
-
-type SDKMethods = Methods | LegacyMethods
-
 class AppCommunicator {
   private iframeRef: MutableRefObject<HTMLIFrameElement | null>
-  private handlers = new Map<SDKMethods, MessageHandler>()
+  private handlers = new Map<Methods, MessageHandler>()
   private app: SafeAppData
 
   constructor(iframeRef: MutableRefObject<HTMLIFrameElement | null>, app: SafeAppData) {
@@ -33,7 +27,7 @@ class AppCommunicator {
     window.addEventListener('message', this.handleIncomingMessage)
   }
 
-  on = (method: SDKMethods, handler: MessageHandler): void => {
+  on = (method: Methods, handler: MessageHandler): void => {
     this.handlers.set(method, handler)
   }
 
