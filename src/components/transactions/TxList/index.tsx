@@ -1,17 +1,6 @@
-import { useMemo, type ReactElement } from 'react'
-import {
-  type DateLabel,
-  type Transaction,
-  type TransactionListItem,
-  type TransactionListPage,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ReactElement } from 'react'
+import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
-import {
-  isConflictHeaderListItem,
-  isNoneConflictType,
-  isTransactionListItem,
-  TransactionListItemType,
-} from '@/utils/transaction-guards'
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
 import css from './styles.module.css'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
@@ -19,103 +8,51 @@ import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecut
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import TxFilterButton from '@/components/transactions/TxFilterButton'
-import { useTxFilter } from '@/utils/tx-history-filter'
-import isSameDay from 'date-fns/isSameDay'
+import useGroupedTxs from '@/hooks/useGroupedTxs'
 
 type TxListProps = {
   items: TransactionListPage['results']
+  isFirstPage: boolean
 }
 
-export const TxListGrid = ({ children }: { children: (ReactElement | null)[] }): ReactElement => {
+export const TxListGrid = ({ children }: { children: ReactElement | ReactElement[] }): ReactElement => {
   return <div className={css.listContainer}>{children}</div>
 }
 
-const groupTxItems = (list: TransactionListItem[]): Array<TransactionListItem | Transaction[]> => {
-  return list.reduce((acc: (TransactionListItem | Transaction[])[], current, i) => {
-    if (isConflictHeaderListItem(current)) {
-      return acc.concat([[]])
-    }
-
-    const prev = acc[i - 1]
-    if (Array.isArray(prev) && isTransactionListItem(current) && !isNoneConflictType(current)) {
-      prev.push(current)
-      return acc
-    }
-
-    return acc.concat(current)
-  }, [])
-}
-
-const addDateLabels = (items: TransactionListItem[]): TransactionListItem[] => {
-  if (!items.length) return items
-
-  // Filtered transaction lists do not contain date labels
-  // Prepend initial date label to list
-  const firstTxIndex = items.findIndex(isTransactionListItem)
-
-  const dateLabel: DateLabel = {
-    type: TransactionListItemType.DATE_LABEL,
-    timestamp: (items[firstTxIndex] as Transaction).transaction.timestamp,
-  }
-  const prependedItems = ([dateLabel] as TransactionListItem[]).concat(items)
-
-  // Insert date labels between transactions on different days
-  return prependedItems.reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
-    const prev = resultItems[index - 1]
-    const isLastItem = index === allItems.length - 1
-
-    if (
-      isLastItem ||
-      !prev ||
-      !isTransactionListItem(prev) ||
-      !isTransactionListItem(item) ||
-      // TODO: Make comparison in UTC
-      isSameDay(prev.transaction.timestamp, item.transaction.timestamp)
-    ) {
-      return resultItems.concat(item)
-    }
-
-    const dateLabel: DateLabel = {
-      type: TransactionListItemType.DATE_LABEL,
-      timestamp: item.transaction.timestamp,
-    }
-    return resultItems.concat(dateLabel)
-  }, [])
-}
-
-const TxList = ({ items }: TxListProps): ReactElement => {
+const TxList = ({ items, isFirstPage }: TxListProps): ReactElement => {
   const router = useRouter()
-  const [filter] = useTxFilter()
 
-  const list = useMemo(() => {
-    return filter ? addDateLabels(items) : items
-  }, [items, filter])
-
-  const listWithGroupedItems: (TransactionListItem | Transaction[])[] = useMemo(() => {
-    return groupTxItems(list)
-  }, [list])
+  const groupedTxs = useGroupedTxs(items)
 
   const isQueue = router.pathname === AppRoutes.safe.transactions.queue
 
+  const transactions = groupedTxs.map((item, index) => {
+    if (Array.isArray(item)) {
+      return <GroupedTxListItems key={index} groupedListItems={item} />
+    }
+
+    return <TxListItem key={index} item={item} />
+  })
+
+  if (!isFirstPage) {
+    return <TxListGrid>{transactions}</TxListGrid>
+  }
+
+  // We only want to render the batch/filter on first page, otherwise every `TxListGrid`
+  // will have stacked buttons, batch hover provider and filter
+
+  // TODO: Improve `BatchExecuteHoverProvider` position as our batch limit > page
   return (
-    <>
-      <BatchExecuteHoverProvider>
+    <BatchExecuteHoverProvider>
+      <TxListGrid>
         {isQueue ? (
-          <BatchExecuteButton items={listWithGroupedItems} className={css.button} />
+          <BatchExecuteButton items={groupedTxs} className={css.button} />
         ) : (
           <TxFilterButton className={css.button} />
         )}
-        <TxListGrid>
-          {listWithGroupedItems.map((item, index) => {
-            if (Array.isArray(item)) {
-              return <GroupedTxListItems key={index} groupedListItems={item} />
-            }
-
-            return <TxListItem key={index} item={item} />
-          })}
-        </TxListGrid>
-      </BatchExecuteHoverProvider>
-    </>
+        <>{transactions}</>
+      </TxListGrid>
+    </BatchExecuteHoverProvider>
   )
 }
 

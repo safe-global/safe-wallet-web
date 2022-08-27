@@ -30,7 +30,12 @@ const TxPage = ({
 
     return (
       <>
-        {page.results && (isQueue && !page.results.length ? <NoQueuedTxns /> : <TxList items={page.results} />)}
+        {page.results &&
+          (isQueue && !page.results.length ? (
+            <NoQueuedTxns />
+          ) : (
+            <TxList items={page.results} isFirstPage={!page.previous} />
+          ))}
 
         {onNextPage && page.next && (
           <Box my={4} textAlign="center">

@@ -1,11 +1,12 @@
-import { Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import { useMemo } from 'react'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import type { GroupedTxs } from '@/hooks/useGroupedTxs'
 
 const BATCH_LIMIT = 20
 
-export const getBatchableTransactions = (items: (TransactionListItem | Transaction[])[], nonce: number) => {
+export const getBatchableTransactions = (items: GroupedTxs, nonce: number) => {
   const batchableTransactions: Transaction[] = []
   let currentNonce = nonce
 
@@ -36,7 +37,7 @@ export const getBatchableTransactions = (items: (TransactionListItem | Transacti
   return batchableTransactions
 }
 
-const useBatchedTxs = (items: (TransactionListItem | Transaction[])[]) => {
+const useBatchedTxs = (items: GroupedTxs) => {
   const { safe } = useSafeInfo()
   const currentNonce = safe.nonce
 

@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from 'react'
 import { Button, Tooltip } from '@mui/material'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
-import { Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { GroupedTxs } from '@/hooks/useGroupedTxs'
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import useBatchedTxs from '@/hooks/useBatchedTxs'
@@ -9,13 +9,7 @@ import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 
-const BatchExecuteButton = ({
-  items,
-  className,
-}: {
-  items: (TransactionListItem | Transaction[])[]
-  className: string
-}) => {
+const BatchExecuteButton = ({ items, className }: { items: GroupedTxs; className: string }) => {
   const [open, setOpen] = useState(false)
   const pendingTxs = useAppSelector(selectPendingTxs)
   const hoverContext = useContext(BatchExecuteHoverContext)

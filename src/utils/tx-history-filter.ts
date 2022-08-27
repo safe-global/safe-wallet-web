@@ -66,7 +66,10 @@ export const txFilter = {
       value: formData.value ? safeParseUnits(formData.value, 18)?.toString() : undefined,
     })
 
-    return { type, filter }
+    return {
+      type,
+      filter,
+    }
   },
 
   formatUrlQuery: ({ type, filter }: TxFilter): TxFilterUrlQuery => {
