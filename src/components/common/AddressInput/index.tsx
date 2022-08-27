@@ -88,8 +88,8 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
             },
 
             validate: () => {
-              if (required) {
-                const value = rawValueRef.current
+              const value = rawValueRef.current
+              if (required || value) {
                 return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
               }
             },

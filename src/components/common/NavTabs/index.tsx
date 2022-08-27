@@ -16,7 +16,7 @@ const NavTabs = ({ tabs }: { tabs: NavItem[] }) => {
     >
       {tabs.map((tab, idx) => {
         return (
-          <Link key={tab.href} href={{ pathname: tab.href, query: router.query }} passHref>
+          <Link key={tab.href} href={{ pathname: tab.href, query: { safe: router.query.safe } }} passHref>
             <Tab
               label={
                 <Typography

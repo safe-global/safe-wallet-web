@@ -168,7 +168,7 @@ const TxFilterForm = (): ReactElement => {
                     <Grid item xs={12} md={6}>
                       <AddressBookInput
                         label="Token address"
-                        {...register(TxFilterFormFieldNames.TOKEN_ADDRESS)}
+                        name={TxFilterFormFieldNames.TOKEN_ADDRESS}
                         required={false}
                         fullWidth
                       />
@@ -180,7 +180,7 @@ const TxFilterForm = (): ReactElement => {
                       <Grid item xs={12} md={6}>
                         <AddressBookInput
                           label="Recipient"
-                          {...register(TxFilterFormFieldNames.RECIPIENT)}
+                          name={TxFilterFormFieldNames.RECIPIENT}
                           required={false}
                           fullWidth
                         />
@@ -213,7 +213,7 @@ const TxFilterForm = (): ReactElement => {
                     <Grid item xs={12} md={6}>
                       <AddressBookInput
                         label="Module"
-                        {...register(TxFilterFormFieldNames.MODULE)}
+                        name={TxFilterFormFieldNames.MODULE}
                         required={false}
                         fullWidth
                       />
