@@ -15,17 +15,9 @@ import DatePickerInput from '@/components/common/DatePickerInput'
 import { validateAmount } from '@/utils/validation'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
-import {
-  TxFilterType,
-  txFilter,
-  useTxFilter,
-  TxFilter,
-  IncomingTxFilter,
-  ModuleTxFilter,
-  MultisigTxFilter,
-} from '@/utils/tx-history-filter'
+import { txFilter, useTxFilter, TxFilterType, type TxFilter } from '@/utils/tx-history-filter'
 
-export enum TxFilterFormFieldNames {
+enum TxFilterFormFieldNames {
   FILTER_TYPE = 'type',
   DATE_FROM = 'execution_date__gte',
   DATE_TO = 'execution_date__lte',
@@ -38,9 +30,14 @@ export enum TxFilterFormFieldNames {
 
 export type TxFilterFormState = {
   [TxFilterFormFieldNames.FILTER_TYPE]: TxFilterType
-  [TxFilterFormFieldNames.DATE_FROM]?: null | Date
-  [TxFilterFormFieldNames.DATE_TO]?: null | Date
-} & (IncomingTxFilter | MultisigTxFilter | ModuleTxFilter)
+  [TxFilterFormFieldNames.DATE_FROM]: Date | null
+  [TxFilterFormFieldNames.DATE_TO]: Date | null
+  [TxFilterFormFieldNames.RECIPIENT]: string
+  [TxFilterFormFieldNames.AMOUNT]: string
+  [TxFilterFormFieldNames.TOKEN_ADDRESS]: string
+  [TxFilterFormFieldNames.MODULE]: string
+  [TxFilterFormFieldNames.NONCE]: string
+}
 
 const defaultValues: DefaultValues<TxFilterFormState> = {
   [TxFilterFormFieldNames.FILTER_TYPE]: TxFilterType.INCOMING,

@@ -6,15 +6,14 @@ import {
   TxFilterType,
   txFilter,
   _isValidTxFilterType,
-  _sanitizeFilter,
+  _omitNullish,
   useTxFilter,
   _isModuleFilter,
-  type ModuleTxFilter,
-  type IncomingTxFilter,
-  type MultisigTxFilter,
+  type TxFilter,
 } from '@/utils/tx-history-filter'
 import { renderHook } from '@testing-library/react'
 import type { NextRouter } from 'next/router'
+import { type TxFilterFormState } from '@/components/transactions/TxFilterForm'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   getIncomingTransfers: jest.fn(),
@@ -25,7 +24,7 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
 describe('tx-history-filter', () => {
   describe('sanitizeFilter', () => {
     it('should keep truthy values', () => {
-      const result1 = _sanitizeFilter({
+      const result1 = _omitNullish({
         execution_date__gte: '1970-01-01T00:00:00.000Z',
         value: '123000000000000000000',
         type: 'Incoming',
@@ -37,7 +36,7 @@ describe('tx-history-filter', () => {
         type: 'Incoming',
       })
 
-      const result2 = _sanitizeFilter({
+      const result2 = _omitNullish({
         execution_date__gte: new Date('1970-01-01'),
         outgoing: 'Incoming',
         executed: true,
@@ -51,7 +50,7 @@ describe('tx-history-filter', () => {
     })
 
     it('should remove `null`, `undefined`,  and empty strings', () => {
-      const result = _sanitizeFilter({
+      const result = _omitNullish({
         emptyString: '',
         undefinedValue: undefined,
         nullValue: null,
@@ -92,7 +91,7 @@ describe('tx-history-filter', () => {
 
   describe('isModuleFilter', () => {
     it('returns `true` for module filters', () => {
-      const filter: ModuleTxFilter = {
+      const filter: TxFilter['filter'] = {
         module: '0x123',
         to: '0x123',
       }
@@ -102,7 +101,7 @@ describe('tx-history-filter', () => {
     })
 
     it('returns `false` for incoming filters', () => {
-      const filter: IncomingTxFilter = {
+      const filter: TxFilter['filter'] = {
         execution_date__gte: '1970-01-01T00:00:00.000Z',
         execution_date__lte: '2000-01-01T00:00:00.000Z',
         to: '0x1234567890123456789012345678901234567890',
@@ -115,7 +114,7 @@ describe('tx-history-filter', () => {
     })
 
     it('returns `false` for multisig filters', () => {
-      const filter: MultisigTxFilter = {
+      const filter: TxFilter['filter'] = {
         execution_date__gte: '1970-01-01T00:00:00.000Z',
         execution_date__lte: '2000-01-01T00:00:00.000Z',
         to: '0x1234567890123456789012345678901234567890',
@@ -209,7 +208,7 @@ describe('tx-history-filter', () => {
           execution_date__gte: new Date('1970-01-01'),
           value: '123',
           type: 'Incoming' as TxFilterType,
-        })
+        } as TxFilterFormState)
 
         expect(result).toEqual({
           type: 'Incoming',
@@ -228,8 +227,7 @@ describe('tx-history-filter', () => {
           value: '123',
           nonce: '123',
           type: 'Outgoing' as TxFilterType,
-          executed: 'true',
-        })
+        } as TxFilterFormState)
 
         expect(result).toEqual({
           type: 'Outgoing',
@@ -247,8 +245,8 @@ describe('tx-history-filter', () => {
         const result = txFilter.parseFormData({
           to: '0x1234567890123456789012345678901234567890',
           module: '0x1234567890123456789012345678901234567890',
-          type: 'Module-based' as TxFilterType,
-        })
+          type: 'Module-based',
+        } as TxFilterFormState)
 
         expect(result).toEqual({
           type: 'Module-based',

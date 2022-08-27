@@ -12,9 +12,9 @@ import type { ParsedUrlQuery } from 'querystring'
 import { TxFilterFormState } from '@/components/transactions/TxFilterForm'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 
-export type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>
-export type MultisigTxFilter = NonNullable<operations['multisig_transactions']['parameters']['query']>
-export type ModuleTxFilter = NonNullable<operations['module_transactions']['parameters']['query']>
+type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>
+type MultisigTxFilter = NonNullable<operations['multisig_transactions']['parameters']['query']>
+type ModuleTxFilter = NonNullable<operations['module_transactions']['parameters']['query']>
 
 export enum TxFilterType {
   INCOMING = 'Incoming',
@@ -27,12 +27,12 @@ export type TxFilter = {
   filter: IncomingTxFilter | MultisigTxFilter | ModuleTxFilter // CGW filter
 }
 
-export const _sanitizeFilter = <T extends Record<string, unknown>>(obj: T): T => {
+export const _omitNullish = (data: { [key: string]: any }) => {
   return Object.fromEntries(
-    Object.entries(obj).filter(([_, v]) => {
-      return v !== '' && v != null
+    Object.entries(data).filter(([_, value]) => {
+      return value !== '' && value != null
     }),
-  ) as T
+  )
 }
 
 export const _isValidTxFilterType = (type: unknown) => {
@@ -50,58 +50,42 @@ type TxFilterUrlQuery = {
 
 export const txFilter = {
   parseUrlQuery: ({ type, ...filter }: ParsedUrlQuery): TxFilter | null => {
-    if (!_isValidTxFilterType(type)) {
-      return null
-    }
+    if (!_isValidTxFilterType(type)) return null
 
     return {
       type: type as TxFilterType,
-      filter: _sanitizeFilter(filter as TxFilter['filter']),
+      filter: filter as TxFilter['filter'],
     }
   },
 
   parseFormData: ({ type, ...formData }: TxFilterFormState): TxFilter => {
-    const filter = {
+    const filter: TxFilter['filter'] = _omitNullish({
       ...formData,
       execution_date__gte: formData.execution_date__gte?.toISOString(),
       execution_date__lte: formData.execution_date__lte?.toISOString(),
-      value: !_isModuleFilter(formData) && formData.value ? safeParseUnits(formData.value, 18)?.toString() : undefined,
-    }
+      value: formData.value ? safeParseUnits(formData.value, 18)?.toString() : undefined,
+    })
 
-    return {
-      type,
-      filter: _sanitizeFilter(filter),
-    }
+    return { type, filter }
   },
 
   formatUrlQuery: ({ type, filter }: TxFilter): TxFilterUrlQuery => {
-    if (!_isValidTxFilterType(type)) {
-      throw new Error('URL query contains and invalid `type`')
-    }
-
     return {
       type,
-      ..._sanitizeFilter(filter),
+      ...filter,
     }
   },
 
-  formatFormData: ({ type, filter }: TxFilter): TxFilterFormState => {
-    if (_isModuleFilter(filter)) {
-      return {
-        type,
-        ...filter,
-      }
-    }
+  formatFormData: ({ type, filter }: TxFilter): Partial<TxFilterFormState> => {
+    const isModule = _isModuleFilter(filter)
 
-    const formData = {
-      type: type || TxFilterType.INCOMING,
+    return {
+      type,
       ...filter,
-      execution_date__gte: filter.execution_date__gte ? new Date(filter.execution_date__gte) : undefined,
-      execution_date__lte: filter.execution_date__lte ? new Date(filter.execution_date__lte) : undefined,
-      value: filter.value ? safeFormatUnits(filter.value, 18)?.toString() : undefined,
+      execution_date__gte: !isModule && filter.execution_date__gte ? new Date(filter.execution_date__gte) : null,
+      execution_date__lte: !isModule && filter.execution_date__lte ? new Date(filter.execution_date__lte) : null,
+      value: !isModule && filter.value ? safeFormatUnits(filter.value, 18)?.toString() : '',
     }
-
-    return _sanitizeFilter(formData)
   },
 }
 
