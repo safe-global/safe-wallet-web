@@ -70,7 +70,7 @@ const Appearance: NextPage = () => {
                 control={
                   <Checkbox
                     checked={settings.shortName.copy}
-                    onChange={handleToggle(setShowShortName, SETTINGS_EVENTS.APPEARANCE.COPY_PREFIXES)}
+                    onChange={handleToggle(setCopyShortName, SETTINGS_EVENTS.APPEARANCE.COPY_PREFIXES)}
                   />
                 }
                 label="Copy addresses with chain prefix"
