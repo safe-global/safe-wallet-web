@@ -17,8 +17,7 @@ import { useTxFilter } from '@/utils/tx-history-filter'
 
 export type GroupedTxs = Array<TransactionListItem | Transaction[]>
 
-// TODO: Test
-const groupTxItems = (list: TransactionListItem[]): GroupedTxs => {
+export const _groupTxItems = (list: TransactionListItem[]): GroupedTxs => {
   return list.reduce<GroupedTxs>((resultItems, item) => {
     if (isConflictHeaderListItem(item)) {
       return resultItems.concat([[]])
@@ -34,8 +33,7 @@ const groupTxItems = (list: TransactionListItem[]): GroupedTxs => {
   }, [])
 }
 
-// TODO: Test
-const addDateLabels = (items: TransactionListItem[]): TransactionListItem[] => {
+export const _addDateLabels = (items: TransactionListItem[]): TransactionListItem[] => {
   const firstTx = items.find(isTransactionListItem)
 
   if (!items.length || !firstTx) {
@@ -80,11 +78,11 @@ const useGroupedTxs = (items: TransactionListPage['results']) => {
   const [filter] = useTxFilter()
 
   const list = useMemo(() => {
-    return filter ? addDateLabels(items) : items
+    return filter ? _addDateLabels(items) : items
   }, [items, filter])
 
   return useMemo(() => {
-    return groupTxItems(list)
+    return _groupTxItems(list)
   }, [list])
 }
 
