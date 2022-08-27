@@ -19,12 +19,12 @@ export type GroupedTxs = Array<TransactionListItem | Transaction[]>
 
 // TODO: Test
 const groupTxItems = (list: TransactionListItem[]): GroupedTxs => {
-  return list.reduce<GroupedTxs>((resultItems, item, index) => {
+  return list.reduce<GroupedTxs>((resultItems, item) => {
     if (isConflictHeaderListItem(item)) {
       return resultItems.concat([[]])
     }
 
-    const prevItem = resultItems[index - 1]
+    const prevItem = resultItems[resultItems.length - 1]
     if (Array.isArray(prevItem) && isTransactionListItem(item) && !isNoneConflictType(item)) {
       prevItem.push(item)
       return resultItems
@@ -52,11 +52,9 @@ const addDateLabels = (items: TransactionListItem[]): TransactionListItem[] => {
 
   // Insert date labels between transactions on different days
   return prependedItems.reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
-    const prevItem = resultItems[index - 1]
-    const isLastItem = index === allItems.length - 1
+    const prevItem = allItems[index - 1]
 
     if (
-      isLastItem ||
       !prevItem ||
       !isTransactionListItem(prevItem) ||
       !isTransactionListItem(item) ||
@@ -70,7 +68,7 @@ const addDateLabels = (items: TransactionListItem[]): TransactionListItem[] => {
       type: TransactionListItemType.DATE_LABEL,
       timestamp: item.transaction.timestamp,
     }
-    return resultItems.concat(dateLabel)
+    return resultItems.concat(dateLabel, item)
   }, [])
 }
 
