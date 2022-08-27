@@ -23,8 +23,9 @@ const TxFilterButton = ({ className }: { className?: string }) => {
         {filter?.type ?? 'Filter'}
         {showFilter ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
       </Button>
+
       {showFilter && (
-        <Box sx={{ pt: 1 }}>
+        <Box pt={1}>
           <TxFilterForm />
         </Box>
       )}

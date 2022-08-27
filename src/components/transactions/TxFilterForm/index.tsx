@@ -127,6 +127,7 @@ const TxFilterForm = (): ReactElement => {
                 />
               </FormControl>
             </Grid>
+
             <Grid item xs={12} md={9}>
               <FormControl sx={{ width: '100%' }}>
                 <FormLabel sx={{ mb: 1 }}>Parameters</FormLabel>
@@ -162,6 +163,7 @@ const TxFilterForm = (): ReactElement => {
                       </Grid>
                     </>
                   )}
+
                   {isIncomingFilter && (
                     <Grid item xs={12} md={6}>
                       <AddressBookInput
@@ -172,6 +174,7 @@ const TxFilterForm = (): ReactElement => {
                       />
                     </Grid>
                   )}
+
                   {isMultisigFilter && (
                     <>
                       <Grid item xs={12} md={6}>
@@ -205,6 +208,7 @@ const TxFilterForm = (): ReactElement => {
                       </Grid>
                     </>
                   )}
+
                   {isModuleFilter && (
                     <Grid item xs={12} md={6}>
                       <AddressBookInput
@@ -217,6 +221,7 @@ const TxFilterForm = (): ReactElement => {
                   )}
                 </Grid>
               </FormControl>
+
               <Grid item container md={6} sx={{ gap: 2, mt: 3 }}>
                 <Button variant="contained" onClick={clearFilter} disabled={!canClear}>
                   Clear

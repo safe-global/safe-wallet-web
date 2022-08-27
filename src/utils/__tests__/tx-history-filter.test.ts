@@ -236,7 +236,6 @@ describe('tx-history-filter', () => {
             execution_date__gte: '1970-01-01T00:00:00.000Z',
             value: '123000000000000000000',
             nonce: '123',
-            executed: 'true',
           },
         })
       })
@@ -278,20 +277,6 @@ describe('tx-history-filter', () => {
           executed: 'true',
         })
       })
-
-      it('should throw invalid for invalid filter types', () => {
-        expect(() => {
-          txFilter.formatUrlQuery({ type: 'Test' as TxFilterType, filter: {} })
-        }).toThrowError('URL query contains and invalid `type`')
-
-        expect(() => {
-          txFilter.formatUrlQuery({ type: '' as TxFilterType, filter: {} })
-        }).toThrowError('URL query contains and invalid `type`')
-
-        expect(() => {
-          txFilter.formatUrlQuery({ type: undefined as unknown as TxFilterType, filter: {} })
-        }).toThrowError('URL query contains and invalid `type`')
-      })
     })
 
     describe('formatFormData', () => {
@@ -302,34 +287,15 @@ describe('tx-history-filter', () => {
             execution_date__gte: '1970-01-01T00:00:00.000Z',
             value: '123000000000000000000',
             nonce: '123',
-            executed: 'true',
           },
         })
 
         expect(result).toEqual({
           type: 'Outgoing',
           execution_date__gte: new Date('1970-01-01'),
+          execution_date__lte: null,
           value: '123',
           nonce: '123',
-          executed: 'true',
-        })
-      })
-
-      it('should default to the `TxFilterType.INCOMING` `type`', () => {
-        const result = txFilter.formatFormData({
-          type: '' as TxFilterType,
-          filter: {
-            value: '123000000000000000000',
-            nonce: '123',
-            executed: 'true',
-          },
-        })
-
-        expect(result).toEqual({
-          type: 'Incoming',
-          value: '123',
-          nonce: '123',
-          executed: 'true',
         })
       })
     })
