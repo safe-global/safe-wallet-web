@@ -1,7 +1,7 @@
 import type { Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isConflictHeaderListItem, isNoneConflictType, isTransactionListItem } from '@/utils/transaction-guards'
 
-export type GroupedTxs = Array<TransactionListItem | Transaction[]>
+type GroupedTxs = Array<TransactionListItem | Transaction[]>
 
 /**
  * Group txs by conflict header

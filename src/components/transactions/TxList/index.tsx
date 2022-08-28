@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import { ReactElement, useMemo } from 'react'
 import { Box } from '@mui/material'
 import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
@@ -19,7 +19,7 @@ export const TxListGrid = ({ children }: { children: ReactElement | ReactElement
 }
 
 const TxList = ({ items }: TxListProps): ReactElement => {
-  const groupedItems = groupConflictingTxs(items)
+  const groupedItems = useMemo(() => groupConflictingTxs(items), [items])
 
   const transactions = groupedItems.map((item, index) => {
     if (Array.isArray(item)) {
