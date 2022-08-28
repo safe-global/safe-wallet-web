@@ -16,9 +16,9 @@ import type { NextRouter } from 'next/router'
 import { type TxFilterFormState } from '@/components/transactions/TxFilterForm'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
-  getIncomingTransfers: jest.fn(),
-  getMultisigTransactions: jest.fn(),
-  getModuleTransactions: jest.fn(),
+  getIncomingTransfers: jest.fn(() => Promise.resolve({ results: [] })),
+  getMultisigTransactions: jest.fn(() => Promise.resolve({ results: [] })),
+  getModuleTransactions: jest.fn(() => Promise.resolve({ results: [] })),
 }))
 
 describe('tx-history-filter', () => {
@@ -372,7 +372,7 @@ describe('tx-history-filter', () => {
 
   describe('fetchFilteredTxHistory', () => {
     beforeEach(() => {
-      jest.resetAllMocks()
+      jest.clearAllMocks()
     })
 
     it('should get incoming transfers relevant to `type`', () => {

@@ -7,7 +7,7 @@ import Box from '@mui/material/Box'
 import TxFilterForm from '@/components/transactions/TxFilterForm'
 import { useTxFilter } from '@/utils/tx-history-filter'
 
-const TxFilterButton = ({ className }: { className?: string }) => {
+const TxFilterButton = () => {
   const [filter] = useTxFilter()
 
   const [showFilter, setShowFilter] = useState(false)
@@ -18,14 +18,14 @@ const TxFilterButton = ({ className }: { className?: string }) => {
 
   return (
     <>
-      <Button variant="contained" className={className} onClick={toggleFilter} size="small">
+      <Button variant="contained" onClick={toggleFilter} size="small">
         <FilterAltOutlinedIcon fontSize="small" />
         {filter?.type ?? 'Filter'}
         {showFilter ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
       </Button>
 
       {showFilter && (
-        <Box pt={1}>
+        <Box pt={1} width="100%">
           <TxFilterForm />
         </Box>
       )}

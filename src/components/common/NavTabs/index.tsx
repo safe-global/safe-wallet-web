@@ -27,7 +27,7 @@ const NavTabs = ({ tabs }: { tabs: NavItem[] }) => {
                   {tab.label}
                 </Typography>
               }
-              sx={{ opacity: 1, paddingX: 6 }}
+              sx={{ opacity: 1, paddingX: 6, position: 'relative', zIndex: '2' }}
             />
           </Link>
         )

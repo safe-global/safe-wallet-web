@@ -1,16 +1,20 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import {
+  DateLabel,
   getIncomingTransfers,
   getModuleTransactions,
   getMultisigTransactions,
+  type TransactionListItem,
   type TransactionListPage,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/api'
 import type { ParsedUrlQuery } from 'querystring'
+import { isSameDay } from 'date-fns'
 
 import { TxFilterFormState } from '@/components/transactions/TxFilterForm'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
+import { isTransactionListItem, TransactionListItemType } from './transaction-guards'
 
 type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>
 type MultisigTxFilter = NonNullable<operations['multisig_transactions']['parameters']['query']>
@@ -109,27 +113,79 @@ export const useTxFilter = (): [TxFilter | null, (filter: TxFilter | null) => vo
   return [filter, setQuery]
 }
 
-export const fetchFilteredTxHistory = (
+/**
+ * Add date labels between transactions made on the same day.
+ */
+export const _addDateLabels = (items: TransactionListItem[]): TransactionListItem[] => {
+  const firstTx = items.find(isTransactionListItem)
+
+  if (!firstTx) {
+    return items
+  }
+
+  // Filtered transaction lists do not contain date labels
+  // Prepend initial date label to list
+  const dateLabel: DateLabel = {
+    type: TransactionListItemType.DATE_LABEL,
+    timestamp: firstTx.transaction.timestamp,
+  }
+  const prependedItems = ([dateLabel] as TransactionListItem[]).concat(items)
+
+  // Insert date labels between transactions on different days
+  return prependedItems.reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
+    const prevItem = allItems[index - 1]
+
+    if (
+      !prevItem ||
+      !isTransactionListItem(prevItem) ||
+      !isTransactionListItem(item) ||
+      // TODO: Make comparison in UTC
+      isSameDay(prevItem.transaction.timestamp, item.transaction.timestamp)
+    ) {
+      return resultItems.concat(item)
+    }
+
+    const dateLabel: DateLabel = {
+      type: TransactionListItemType.DATE_LABEL,
+      timestamp: item.transaction.timestamp,
+    }
+    return resultItems.concat(dateLabel, item)
+  }, [])
+}
+
+export const fetchFilteredTxHistory = async (
   chainId: string,
   safeAddress: string,
   filterData: TxFilter,
   pageUrl?: string,
-): Promise<TransactionListPage> | undefined => {
-  switch (filterData.type) {
-    case TxFilterType.INCOMING: {
-      return getIncomingTransfers(chainId, safeAddress, filterData.filter, pageUrl)
-    }
-    case TxFilterType.MULTISIG: {
-      const filter = {
-        ...filterData.filter,
-        // We only filter historical transactions
-        executed: 'true',
+): Promise<TransactionListPage> => {
+  const fetchPage = () => {
+    switch (filterData.type) {
+      case TxFilterType.INCOMING: {
+        return getIncomingTransfers(chainId, safeAddress, filterData.filter, pageUrl)
       }
+      case TxFilterType.MULTISIG: {
+        const filter = {
+          ...filterData.filter,
+          // We only filter historical transactions
+          executed: 'true',
+        }
 
-      return getMultisigTransactions(chainId, safeAddress, filter, pageUrl)
+        return getMultisigTransactions(chainId, safeAddress, filter, pageUrl)
+      }
+      case TxFilterType.MODULE: {
+        return getModuleTransactions(chainId, safeAddress, filterData.filter, pageUrl)
+      }
+      default: {
+        return { results: [] }
+      }
     }
-    case TxFilterType.MODULE: {
-      return getModuleTransactions(chainId, safeAddress, filterData.filter, pageUrl)
-    }
+  }
+
+  const page = await fetchPage()
+
+  return {
+    ...page,
+    results: _addDateLabels(page.results),
   }
 }
