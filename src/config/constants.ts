@@ -30,6 +30,7 @@ export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
 export const SAFE_APPS_POLLING_INTERVAL = process.env.NODE_ENV === 'test' ? 4500 : 15000
 export const SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL = 'https://third-party-cookies-check.gnosis-safe.com'
 export const SAFE_APPS_SUPPORT_CHAT_URL = 'https://chat.gnosis-safe.io'
+export const SAFE_APPS_INFURA_TOKEN = process.env.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN || ''
 
 // Google Tag Manager
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || ''

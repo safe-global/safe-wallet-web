@@ -9,12 +9,9 @@ import { isSameUrl } from '@/utils/url'
 import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
+import useAppCommunicator from './useAppCommunicator'
 
 import css from './styles.module.css'
-
-export type TransactionParams = {
-  safeTxGas?: number
-}
 
 type AppFrameProps = {
   appUrl: string
@@ -22,10 +19,13 @@ type AppFrameProps = {
 
 const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const { safe } = useSafeInfo()
+
   const [remoteApps] = useRemoteSafeApps()
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
+
+  useAppCommunicator(iframeRef, safeAppFromManifest)
 
   const remoteApp = useMemo(() => remoteApps?.find((app: SafeAppData) => app.url === appUrl), [remoteApps, appUrl])
 
