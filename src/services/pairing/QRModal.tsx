@@ -35,7 +35,7 @@ const open = (uri: string, cb: () => void) => {
 
   const root = createRoot(wrapper)
 
-  root.render(<QRModal uri={uri} cb={cb} />)
+  root.render(<Modal uri={uri} cb={cb} />)
 }
 
 const close = () => {
@@ -49,7 +49,7 @@ const close = () => {
   }
 }
 
-const QRModal = ({ uri, cb }: { uri: string; cb: () => void }) => {
+const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
   const [open, setOpen] = useState(true)
 
   const handleClose = () => {
@@ -86,4 +86,9 @@ const QRModal = ({ uri, cb }: { uri: string; cb: () => void }) => {
   )
 }
 
-export default { open, close }
+const QRModal = {
+  open,
+  close,
+}
+
+export default QRModal
