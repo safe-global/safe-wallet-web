@@ -1,24 +1,19 @@
 import QRCode from 'qrcode.react'
 import { Skeleton } from '@mui/material'
+import { useTheme } from '@mui/system'
 import type { ReactElement } from 'react'
 
 const QR_LOGO_SIZE = 30
 
-const PairingQRCode = ({
-  uri,
-  size,
-  ...color
-}: {
-  uri?: string
-  fgColor?: string
-  bgColor?: string
-  size: number
-}): ReactElement => {
+const PairingQRCode = ({ uri, size }: { uri?: string; size: number }): ReactElement => {
+  const { palette } = useTheme()
+
   return uri ? (
     <QRCode
       value={uri}
       size={size}
-      {...color}
+      bgColor={palette.background.paper}
+      fgColor={palette.text.primary}
       imageSettings={{
         src: '/logo-no-text.svg',
         width: QR_LOGO_SIZE,

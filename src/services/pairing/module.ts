@@ -2,6 +2,8 @@ import type { Chain, ProviderAccounts, WalletInit, EIP1193Provider } from '@web3
 import type { ITxData } from '@walletconnect/types'
 
 import { getPairingConnector, PAIRING_MODULE_STORAGE_ID } from '@/services/pairing/connector'
+import local from '@/services/local-storage/local'
+import { killPairingSession } from '@/services/pairing/utils'
 
 enum ProviderEvents {
   ACCOUNTS_CHANGED = 'accountsChanged',
@@ -104,10 +106,7 @@ const pairingModule = (): WalletInit => {
 
                   this.disconnected$.next(true)
 
-                  if (typeof window !== 'undefined') {
-                    // We can't use `local` here as it prepends `LS_NAMESPACE`
-                    localStorage.removeItem(PAIRING_MODULE_STORAGE_ID)
-                  }
+                  local.removeItem(PAIRING_MODULE_STORAGE_ID)
                 },
                 error: console.warn,
               })
@@ -116,15 +115,7 @@ const pairingModule = (): WalletInit => {
               this.disconnect?.()
             })
 
-            this.disconnect = () => {
-              // WalletConnect throws if no `peerId` is sett when attempting to `killSession`
-              // We therefore manually set it in order to `killSession` without throwing
-              if (this.connector.peerId) {
-                this.connector.peerId = '_willKill'
-              }
-
-              this.connector.killSession()
-            }
+            this.disconnect = () => killPairingSession(this.connector)
 
             this.request = async ({ method, params }) => {
               switch (method) {

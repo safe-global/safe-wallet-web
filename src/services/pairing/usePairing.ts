@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 import useChainId from '@/hooks/useChainId'
 import useOnboard, { getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { getPairingConnector, WalletConnectEvents } from '@/services/pairing/connector'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
-import { formatPairingUri } from '@/services/pairing/utils'
+import { formatPairingUri, killPairingSession } from '@/services/pairing/utils'
 
 const connector = getPairingConnector()
 
@@ -29,7 +29,7 @@ export const useInitPairing = () => {
 
   const canConnect = !connector.connected && !isConnecting
 
-  const createSession = () => {
+  const createSession = useCallback(() => {
     if (!canConnect) {
       return
     }
@@ -38,7 +38,7 @@ export const useInitPairing = () => {
     connector.createSession({ chainId: +chainId }).then(() => {
       isConnecting = false
     })
-  }
+  }, [canConnect, chainId])
 
   useEffect(() => {
     if (!onboard) {
@@ -73,7 +73,7 @@ export const useInitPairing = () => {
     return () => {
       subscription.unsubscribe()
     }
-  }, [onboard, chainId])
+  }, [onboard, chainId, createSession])
 
   // It's not possible to update the `chainId` of the current WC session
   // We therefore kill the current session when switching chain to triggerer
@@ -83,13 +83,7 @@ export const useInitPairing = () => {
       return
     }
 
-    // WalletConnect throws if no `peerId` is sett when attempting to `killSession`
-    // We therefore manually set it in order to `killSession` without throwing
-    if (!connector.peerId) {
-      connector.peerId = '_willKill'
-    }
-
-    connector.killSession()
+    killPairingSession(connector)
   }, [chainId, canConnect])
 }
 

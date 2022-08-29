@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { createRoot } from 'react-dom/client'
-import { useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 
 import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
@@ -50,10 +49,7 @@ const close = () => {
 }
 
 const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
-  const [open, setOpen] = useState(true)
-
   const handleClose = () => {
-    setOpen(false)
     cb()
     close()
   }
@@ -62,7 +58,7 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
   return (
     <StoreHydrator>
       <AppProviders>
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open onClose={handleClose} disablePortal>
           <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between' }}>
             {PAIRING_MODULE_LABEL}
             <IconButton

@@ -4,12 +4,31 @@ import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getAddress } from 'ethers/lib/utils'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
-import { localItem } from '@/services/local-storage/local'
+import local, { localItem } from '@/services/local-storage/local'
 import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
+import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
+import { PAIRING_MODULE_STORAGE_ID } from '@/services/pairing/connector'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
+
+const getLastUsedWallet = () => {
+  const label = lastWalletStorage.get()
+
+  if (!label) {
+    return
+  }
+
+  // We can only reconnect to last pairing session if the session cache exists
+  if (label === PAIRING_MODULE_LABEL) {
+    const pairingConfig = local.getItem(PAIRING_MODULE_STORAGE_ID)
+
+    return pairingConfig ? label : undefined
+  }
+
+  return label
+}
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
@@ -119,7 +138,7 @@ export const useInitOnboard = () => {
   // Connect to the last connected wallet
   useEffect(() => {
     if (onboard && onboard.state.get().wallets.length === 0) {
-      const label = lastWalletStorage.get()
+      const label = getLastUsedWallet()
 
       if (label) {
         onboard
