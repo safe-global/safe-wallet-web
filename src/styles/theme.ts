@@ -56,9 +56,9 @@ const initTheme = (darkMode: boolean) => {
     shadows: [
       'none',
       darkMode ? `0 0 2px ${shadowColor}` : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
-      darkMode ? '0 0 2px ${shadowColor}' : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
-      darkMode ? '0 0 2px ${shadowColor}' : `0 2px 20px ${shadowColor}0a, 0 8px 32px ${shadowColor}14`,
-      darkMode ? '0 0 2px ${shadowColor}' : `0 8px 32px ${shadowColor}0a, 0 24px 60px ${shadowColor}14`,
+      darkMode ? `0 0 2px ${shadowColor}` : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
+      darkMode ? `0 0 2px ${shadowColor}` : `0 2px 20px ${shadowColor}0a, 0 8px 32px ${shadowColor}14`,
+      darkMode ? `0 0 2px ${shadowColor}` : `0 8px 32px ${shadowColor}0a, 0 24px 60px ${shadowColor}14`,
       ...Array(20).fill('none'),
     ] as Shadows,
     typography: {
