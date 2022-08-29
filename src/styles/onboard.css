@@ -1,5 +1,5 @@
 :root {
-  --onboard-white: var(--color-background-paper);
+  --onboard-white: var(--color-background-main);
   --onboard-black: var(--color-secondary-main);
   --onboard-primary-1: var(--color-primary-main);
   --onboard-primary-100: var(--color-primary-background);
@@ -26,7 +26,7 @@
   --onboard-warning-600: var(--color-warning-main);
   --onboard-warning-700: var(--color-warning-dark);
 
-  --account-select-modal-white: var(--color-background-paper);
+  --account-select-modal-white: var(--color-background-main);
   --account-select-modal-black: var(--color-secondary-main);
   --account-select-modal-primary-100: var(--color-primary-background);
   --account-select-modal-primary-200: var(--color-background-light);

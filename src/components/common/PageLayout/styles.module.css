@@ -7,7 +7,7 @@
 }
 
 .main {
-  background-color: var(--color-background-main);
+  background-color: var(--color-background-dark);
   padding-left: 230px;
   padding-top: var(--header-height);
   min-height: 100vh;

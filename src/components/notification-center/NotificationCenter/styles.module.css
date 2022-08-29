@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-3);
-  border-bottom: 2px solid var(--color-background-main);
+  border-bottom: 2px solid var(--color-background-dark);
 }
 
 .popoverFooter {

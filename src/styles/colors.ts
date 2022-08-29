@@ -44,9 +44,8 @@ const palette = {
     background: '#FFF4E3',
   },
   background: {
-    default: '#F6F7F8',
-    main: '#F6F7F8',
-    paper: '#FFFFFF',
+    dark: '#F6F7F8',
+    main: '#FFFFFF',
     light: '#F1FAF8',
   },
   logo: {

@@ -6,7 +6,7 @@
   align-items: center;
   position: relative;
   border-radius: 0 !important;
-  background-color: var(--color-background-paper);
+  background-color: var(--color-background-main);
 }
 
 .element {
@@ -28,7 +28,11 @@
 .logo svg {
   width: auto;
   display: block;
-  color: var(--color-logo-main);
+  color: '#000';
+}
+
+[data-theme='dark'] .logo svg {
+  color: '#fff';
 }
 
 .menuButton {

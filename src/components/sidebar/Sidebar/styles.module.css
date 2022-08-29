@@ -4,7 +4,7 @@
   display: flex;
   overflow: hidden;
   flex-direction: column;
-  background-color: var(--color-background-paper);
+  background-color: var(--color-background-main);
 }
 
 .container {

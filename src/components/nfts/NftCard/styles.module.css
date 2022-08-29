@@ -20,7 +20,7 @@
 
 .card::after {
   content: '';
-  background: var(--color-background-paper);
+  background: var(--color-background-main);
   position: absolute;
   top: 0;
   left: 0;

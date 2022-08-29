@@ -21,7 +21,7 @@ export const WidgetBody = styled.div`
 `
 
 export const Card = styled.div`
-  background: var(--color-background-paper);
+  background: var(--color-background-main);
   padding: var(--space-3);
   border-radius: 8px;
   flex-grow: 1;

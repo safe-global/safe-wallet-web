@@ -11,7 +11,7 @@ import TxType from '@/components/transactions/TxType'
 const StyledContainer = styled.div`
   width: 100%;
   text-decoration: none;
-  background-color: var(--color-background-paper);
+  background-color: var(--color-background-main);
   border: 2px solid var(--color-border-light);
   border-radius: 8px;
   box-sizing: border-box;

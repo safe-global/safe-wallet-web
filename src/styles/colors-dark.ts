@@ -4,9 +4,6 @@ const darkPalette = {
     secondary: '#ffffff',
     disabled: '#ffffff4d',
   },
-  action: {
-    active: '#ffffff',
-  },
   primary: {
     dark: '#0E7361',
     main: '#008C73',
@@ -47,9 +44,8 @@ const darkPalette = {
     background: '#FFF4E3',
   },
   background: {
-    default: '#121212',
-    main: '#121212',
-    paper: '#1e1f20',
+    dark: '#121212',
+    main: '#1e1f20',
     light: '#282e2d',
   },
   logo: {
