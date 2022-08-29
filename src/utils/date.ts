@@ -1,3 +1,6 @@
+// TODO: Remove date-fns and covert to use @date-io/date-fns
+// https://github.com/dmtrKovalenko/date-io#projects
+
 import format from 'date-fns/format'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import formatRelative from 'date-fns/formatRelative'

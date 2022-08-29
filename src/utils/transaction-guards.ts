@@ -107,7 +107,7 @@ export const isCreationTxInfo = (value: TransactionInfo): value is Creation => {
 
 // TxListItem type guards
 // TODO: could be passed to Client GW SDK
-enum TransactionListItemType {
+export enum TransactionListItemType {
   TRANSACTION = 'TRANSACTION',
   LABEL = 'LABEL',
   CONFLICT_HEADER = 'CONFLICT_HEADER',

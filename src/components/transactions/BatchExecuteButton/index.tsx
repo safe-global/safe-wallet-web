@@ -1,14 +1,15 @@
 import { useCallback, useContext, useState } from 'react'
 import { Button, Tooltip } from '@mui/material'
-import css from './styles.module.css'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
-import { Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import useBatchedTxs from '@/hooks/useBatchedTxs'
 import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
+import { trackEvent } from '@/services/analytics'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
+import { TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 
-const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transaction[])[] }) => {
+const BatchExecuteButton = ({ items }: { items: TransactionListItem[] }) => {
   const [open, setOpen] = useState(false)
   const pendingTxs = useAppSelector(selectPendingTxs)
   const hoverContext = useContext(BatchExecuteHoverContext)
@@ -26,6 +27,15 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
     hoverContext.setActiveHover([])
   }, [hoverContext])
 
+  const handleOpenModal = () => {
+    trackEvent({
+      ...TX_LIST_EVENTS.BATCH_EXECUTE,
+      label: batchableTransactions.length,
+    })
+
+    setOpen(true)
+  }
+
   return (
     <>
       <Tooltip
@@ -37,14 +47,14 @@ const BatchExecuteButton = ({ items }: { items: (TransactionListItem | Transacti
             : 'All transactions highlighted in light green will be included in the batch execution.'
         }
       >
-        <span className={css.button}>
+        <span>
           <Button
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
             variant="contained"
             size="small"
             disabled={isDisabled}
-            onClick={() => setOpen(true)}
+            onClick={handleOpenModal}
           >
             Execute batch{isBatchable && ` (${batchableTransactions.length})`}
           </Button>

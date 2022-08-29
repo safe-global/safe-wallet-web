@@ -1,4 +1,6 @@
 import { createTheme, Shadows } from '@mui/material/styles'
+import type {} from '@mui/x-date-pickers/themeAugmentation'
+
 import palette from './colors'
 import darkPalette from './colors-dark'
 import { base } from './spacings'

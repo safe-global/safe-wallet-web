@@ -56,13 +56,13 @@ export const addressIsNotCurrentSafe =
 
 export const FLOAT_REGEX = /^[0-9]+([,.][0-9]+)?$/
 
-export const validateAmount = (amount: string) => {
-  if (isNaN(Number(amount))) {
-    return 'The amount must be a number'
+export const validateAmount = (amount?: string) => {
+  if (!amount || isNaN(Number(amount))) {
+    return 'The value must be a number'
   }
 
   if (parseFloat(amount) <= 0) {
-    return 'The amount must be greater than 0'
+    return 'The value must be greater than 0'
   }
 }
 

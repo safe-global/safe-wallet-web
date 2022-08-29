@@ -3,6 +3,7 @@ import {
   MultisigExecutionInfo,
   Transaction,
   TransactionInfo,
+  TransactionListItem,
   TransactionStatus,
   TransactionSummary,
   TransactionTokenType,
@@ -118,6 +119,11 @@ describe('getBatchableTransactions', () => {
       conflictType: 'None',
     }
 
+    const mockConflict: TransactionListItem = {
+      type: 'CONFLICT_HEADER',
+      nonce: 1,
+    }
+
     const mockTx1: Transaction = {
       transaction: {
         ...defaultTx,
@@ -130,7 +136,7 @@ describe('getBatchableTransactions', () => {
         timestamp: 1,
       },
       type: 'TRANSACTION',
-      conflictType: 'None',
+      conflictType: 'HasNext',
     }
 
     const mockTx2: Transaction = {
@@ -145,10 +151,10 @@ describe('getBatchableTransactions', () => {
         timestamp: 2,
       },
       type: 'TRANSACTION',
-      conflictType: 'None',
+      conflictType: 'End',
     }
 
-    const result = getBatchableTransactions([mockTx, [mockTx1, mockTx2]], 0)
+    const result = getBatchableTransactions([mockTx, mockConflict, mockTx1, mockTx2], 0)
 
     expect(result.length).toBe(2)
     expect(result).toStrictEqual([mockTx, mockTx2])

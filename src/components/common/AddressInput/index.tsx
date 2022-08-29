@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useCallback, useRef, useMemo } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
-import { useFormContext, type Validate } from 'react-hook-form'
+import { useFormContext, useWatch, type Validate } from 'react-hook-form'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -11,17 +11,17 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
 
-const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactElement => {
+const AddressInput = ({ name, validate, required = true, ...props }: AddressInputProps): ReactElement => {
   const {
     register,
     setValue,
-    watch,
+    control,
     getFieldState,
     formState: { errors },
   } = useFormContext()
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
-  const watchedValue = watch(name)
+  const watchedValue = useWatch({ name, control })
   const currentShortName = currentChain?.shortName || ''
 
   // errors[name] doesn't work with nested field names like 'safe.address'.
@@ -78,7 +78,7 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
             shrink: !!watchedValue || props.focused,
           }}
           {...register(name, {
-            required: true,
+            required,
 
             setValueAs: (value: string): string => {
               const { address, prefix } = parsePrefixedAddress(value)
@@ -89,7 +89,9 @@ const AddressInput = ({ name, validate, ...props }: AddressInputProps): ReactEle
 
             validate: () => {
               const value = rawValueRef.current
-              return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
+              if (required || value) {
+                return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
+              }
             },
           })}
         />
