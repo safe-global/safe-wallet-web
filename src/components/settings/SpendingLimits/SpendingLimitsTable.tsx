@@ -14,7 +14,7 @@ import { RemoveSpendingLimit } from '@/components/settings/SpendingLimits/Remove
 import useIsGranted from '@/hooks/useIsGranted'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
-import { TokenIcon } from '@/components/common/TokenAmount'
+import TokenIcon from '@/components/common/TokenIcon'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 
 const headCells = [

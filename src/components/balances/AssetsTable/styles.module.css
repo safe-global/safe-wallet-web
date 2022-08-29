@@ -7,8 +7,8 @@
   opacity: 1;
 }
 
-.alignCenter {
+.token {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
 }

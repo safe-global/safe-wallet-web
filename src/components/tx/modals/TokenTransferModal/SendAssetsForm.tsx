@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { TokenIcon } from '@/components/common/TokenAmount'
+import TokenIcon from '@/components/common/TokenIcon'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
