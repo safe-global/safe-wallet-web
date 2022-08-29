@@ -2,10 +2,13 @@ import { MutableRefObject, useEffect, useMemo, useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
 import { getBalances, getTransactionDetails, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
+  BaseTransaction,
   GetBalanceParams,
   GetTxBySafeTxHashParams,
   Methods,
+  RequestId,
   RPCPayload,
+  SendTransactionRequestParams,
   SendTransactionsParams,
   SignMessageParams,
 } from '@gnosis.pm/safe-apps-sdk'
@@ -23,7 +26,20 @@ type JsonRpcResponse = {
   error?: string
 }
 
-const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null>, app?: SafeAppData) => {
+type UseAppCommunicatorConfig = {
+  app?: SafeAppData
+  onConfirmTransactions: (
+    txs: BaseTransaction[],
+    params: SendTransactionRequestParams | undefined,
+    requestId: RequestId,
+  ) => void
+  onSignTransactions: (message: string, requestId: string, method: Methods) => void
+}
+
+const useAppCommunicator = (
+  iframeRef: MutableRefObject<HTMLIFrameElement | null>,
+  { app, onConfirmTransactions, onSignTransactions }: UseAppCommunicatorConfig,
+): AppCommunicator | undefined => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
 
   const { safe, safeAddress } = useSafeInfo()
@@ -117,13 +133,13 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
         ...rest,
       }))
 
-      // openConfirmationModal(transactions, params, msg.data.id)
+      onConfirmTransactions(transactions, params, msg.data.id)
     })
 
     communicator?.on(Methods.signMessage, async (msg) => {
       const { message } = msg.data.params as SignMessageParams
 
-      // openSignMessageModal(message, msg.data.id)
+      onSignTransactions(message, msg.data.id, Methods.signMessage)
     })
 
     communicator?.on(Methods.getChainInfo, async () => {
@@ -135,7 +151,9 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
         blockExplorerUriTemplate,
       }
     })
-  }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider])
+  }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider, onConfirmTransactions, onSignTransactions])
+
+  return communicator
 }
 
 export default useAppCommunicator
