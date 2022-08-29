@@ -48,9 +48,6 @@ const darkPalette = {
     main: '#1e1f20',
     light: '#282e2d',
   },
-  logo: {
-    main: '#ffffff',
-  },
 }
 
 export default darkPalette

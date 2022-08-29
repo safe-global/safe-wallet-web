@@ -48,9 +48,6 @@ const palette = {
     main: '#FFFFFF',
     light: '#F1FAF8',
   },
-  logo: {
-    main: '#000000',
-  },
 }
 
 export default palette
