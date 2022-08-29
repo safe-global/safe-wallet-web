@@ -4,7 +4,7 @@ import bowser from 'bowser'
 import packageJson from '../../../package.json'
 import { IS_PRODUCTION, LS_NAMESPACE, SAFE_REACT_URL, WC_BRIDGE } from '@/config/constants'
 
-const PAIRING_MODULE_STORAGE_ID = `${LS_NAMESPACE}pairingConnector`
+export const PAIRING_MODULE_STORAGE_ID = `${LS_NAMESPACE}pairingConnector`
 
 const getClientMeta = () => {
   const APP_META = {

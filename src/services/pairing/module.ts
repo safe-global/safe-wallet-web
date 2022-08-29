@@ -1,7 +1,7 @@
 import type { Chain, ProviderAccounts, WalletInit, EIP1193Provider } from '@web3-onboard/common'
 import type { ITxData } from '@walletconnect/types'
 
-import { getPairingConnector } from '@/services/pairing/connector'
+import { getPairingConnector, PAIRING_MODULE_STORAGE_ID } from '@/services/pairing/connector'
 
 enum ProviderEvents {
   ACCOUNTS_CHANGED = 'accountsChanged',
@@ -105,8 +105,8 @@ const pairingModule = (): WalletInit => {
                   this.disconnected$.next(true)
 
                   if (typeof window !== 'undefined') {
-                    // @ts-expect-error - `_sessionStorage` is private
-                    localStorage.removeItem(this.connector._sessionStorage.storageId)
+                    // We can't use `local` here as it prepends `LS_NAMESPACE`
+                    localStorage.removeItem(PAIRING_MODULE_STORAGE_ID)
                   }
                 },
                 error: console.warn,
@@ -116,7 +116,15 @@ const pairingModule = (): WalletInit => {
               this.disconnect?.()
             })
 
-            this.disconnect = () => this.connector.killSession()
+            this.disconnect = () => {
+              // WalletConnect throws if no `peerId` is sett when attempting to `killSession`
+              // We therefore manually set it in order to `killSession` without throwing
+              if (this.connector.peerId) {
+                this.connector.peerId = '_willKill'
+              }
+
+              this.connector.killSession()
+            }
 
             this.request = async ({ method, params }) => {
               switch (method) {
