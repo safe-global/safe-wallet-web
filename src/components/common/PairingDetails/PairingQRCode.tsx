@@ -3,7 +3,7 @@ import { Skeleton } from '@mui/material'
 import { useTheme } from '@mui/system'
 import type { ReactElement } from 'react'
 
-const QR_LOGO_SIZE = 30
+const QR_LOGO_SIZE = 20
 
 const PairingQRCode = ({ uri, size }: { uri?: string; size: number }): ReactElement => {
   const { palette } = useTheme()
