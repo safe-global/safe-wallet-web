@@ -2,7 +2,7 @@ import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
-import ConnectWallet from '@/components/common/ConnectWallet'
+import ConnectionOptions from '@/components/common/ConnectWallet/ConnectionOptions'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
@@ -19,12 +19,13 @@ export const ConnectWalletContent = ({
       {wallet && !isWrongChain && <Typography mb={2}>Wallet connected</Typography>}
       {wallet ? (
         <Typography mb={2} component="div">
-          Creating a safe on <NetworkSelector />
+          Creating a Safe on <NetworkSelector />
         </Typography>
       ) : (
         <>
-          <Typography mb={2}>In order to create a safe you need to connect a wallet</Typography>
-          <ConnectWallet />
+          <Typography mb={2}>In order to create a Safe you need to connect a wallet</Typography>
+          {/* TODO: Embed popper content here */}
+          <ConnectionOptions />
         </>
       )}
       {isWrongChain && (

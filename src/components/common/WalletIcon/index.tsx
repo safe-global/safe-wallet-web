@@ -8,7 +8,9 @@ import ledgerIcon from '@web3-onboard/ledger/dist/icon'
 import fortmaticIcon from '@web3-onboard/fortmatic/dist/icon'
 import portisIcon from '@web3-onboard/portis/dist/icon'
 import torusIcon from '@web3-onboard/torus/dist/icon'
+
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
+import pairingIcon from '@/services/pairing/icon'
 
 enum ADDITIONAL_KEYS {
   METAMASK = 'METAMASK',
@@ -31,6 +33,7 @@ const WALLET_ICONS: Props = {
   [WALLET_KEYS.FORTMATIC]: fortmaticIcon,
   [WALLET_KEYS.PORTIS]: portisIcon,
   [WALLET_KEYS.TORUS]: torusIcon,
+  [WALLET_KEYS.PAIRING]: pairingIcon,
 }
 
 const WalletIcon = ({ provider }: { provider: string }) => {

@@ -10,6 +10,8 @@ import portisModule from '@web3-onboard/portis'
 import torusModule from '@web3-onboard/torus'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
+
+import pairingModule from '@/services/pairing/module'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 export const enum WALLET_KEYS {
@@ -18,7 +20,7 @@ export const enum WALLET_KEYS {
   INJECTED = 'INJECTED',
   KEYSTONE = 'KEYSTONE',
   LEDGER = 'LEDGER',
-  // MAGIC = 'MAGIC', // Magic requires an API key
+  PAIRING = 'PAIRING',
   PORTIS = 'PORTIS',
   TORUS = 'TORUS',
   TREZOR = 'TREZOR',
@@ -31,6 +33,7 @@ const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.INJECTED]: 'detectedwallet',
   [WALLET_KEYS.KEYSTONE]: 'keystone',
   [WALLET_KEYS.LEDGER]: 'ledger',
+  [WALLET_KEYS.PAIRING]: 'safeMobile',
   [WALLET_KEYS.PORTIS]: 'portis',
   [WALLET_KEYS.TORUS]: 'torus',
   [WALLET_KEYS.TREZOR]: 'trezor',
@@ -39,6 +42,7 @@ const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
 
 const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.INJECTED]: injectedWalletModule,
+  [WALLET_KEYS.PAIRING]: pairingModule,
   [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ bridge: WC_BRIDGE }),
   [WALLET_KEYS.LEDGER]: ledgerModule,
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
