@@ -8,7 +8,6 @@ import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SAFE_REACT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import ShareIcon from '@/public/images/share.svg'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
@@ -32,6 +31,7 @@ type CompactSafeAppCardProps = {
   url: string
   pinned?: boolean
   onPin?: (appId: number) => void
+  onShareClick?: (event: SyntheticEvent) => void
 }
 
 type AppCardContainerProps = {
@@ -92,10 +92,19 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
   )
 }
 
-const CompactAppCard = ({ url, safeApp, onPin, pinned }: CompactSafeAppCardProps): ReactElement => (
+const CompactAppCard = ({ url, safeApp, onPin, pinned, onShareClick }: CompactSafeAppCardProps): ReactElement => (
   <AppCardContainer url={url} variant="compact">
     <div className={styles.compactCardContainer}>
       <img src={safeApp.iconUrl} style={{ width: 52, height: 52 }} alt={`${safeApp.name} logo`} />
+      <IconButton
+        aria-label={`Share ${safeApp.name}`}
+        size="small"
+        onClick={onShareClick}
+        title={`Copy share URL for ${safeApp.name}`}
+        sx={{ width: '32px', position: 'absolute', top: 2, left: 2 }}
+      >
+        <ShareIcon width={16} alt="Share icon" />
+      </IconButton>
       {onPin && (
         <IconButton
           aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
@@ -119,7 +128,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   const router = useRouter()
   const chainId = useChainId()
 
-  const shareUrl = `${SAFE_REACT_URL}/share/safe-app?appUrl=${safeApp.url}&chainId=${chainId}`
+  const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${safeApp.url}&chainId=${chainId}`
   const url = router.query.safe ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${safeApp.url}` : shareUrl
 
   const onShareClick = (e: SyntheticEvent) => {
@@ -129,7 +138,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   }
 
   if (variant === 'compact') {
-    return <CompactAppCard url={url} safeApp={safeApp} pinned={pinned} onPin={onPin} />
+    return <CompactAppCard url={url} safeApp={safeApp} pinned={pinned} onPin={onPin} onShareClick={onShareClick} />
   }
 
   return (

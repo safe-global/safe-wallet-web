@@ -27,4 +27,8 @@ export const AppRoutes = {
       history: '/safe/transactions/history',
     },
   },
+  share: {
+    index: '/share',
+    safeApp: '/share/safe-app',
+  },
 }
