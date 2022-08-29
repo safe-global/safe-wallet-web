@@ -38,6 +38,8 @@ const pairingModule = (): WalletInit => {
 
         const { default: WalletConnect } = await import('@walletconnect/client')
 
+        const { default: QRModal } = await import('@/services/pairing/QRModal')
+
         const { Subject, fromEvent } = await import('rxjs')
         const { takeUntil, take } = await import('rxjs/operators')
 
@@ -125,12 +127,9 @@ const pairingModule = (): WalletInit => {
                 case ProviderMethods.ETH_REQUEST_ACCOUNTS: {
                   return new Promise<ProviderAccounts>((resolve, reject) => {
                     if (!this.connector.connected) {
-                      this.connector
-                        // TODO: Connect to specific chain on session creation?
-                        .createSession()
-                        .then(() => {
-                          // TODO: Open QR modal
-                        })
+                      this.connector.createSession().then(() => {
+                        QRModal.open(this.connector.uri)
+                      })
                     } else {
                       const { accounts, chainId } = this.connector.session
 
@@ -155,7 +154,8 @@ const pairingModule = (): WalletInit => {
                           this.emit(ProviderEvents.ACCOUNTS_CHANGED, accounts)
                           this.emit(ProviderEvents.CHAIN_CHANGED, `0x${chainId.toString(16)}`)
 
-                          // TODO: Close QR modal
+                          QRModal.close()
+
                           resolve(accounts)
                         },
                         error: reject,

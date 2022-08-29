@@ -5,6 +5,7 @@ import useOnboard, { getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { getPairingConnector, WalletConnectEvents } from '@/services/pairing/connector'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
+import { formatPairingUri } from './utils'
 
 const connector = getPairingConnector()
 
@@ -47,14 +48,12 @@ export const useInitPairing = () => {
   }, [chainId])
 }
 
-const PAIRING_MODULE_URI_PREFIX = 'safe-'
-
 const usePairing = () => {
-  const [uri, setUri] = useState(connector.uri)
+  const [uri, setUri] = useState(formatPairingUri(connector.uri))
 
   useEffect(() => {
     connector.on(WalletConnectEvents.DISPLAY_URI, (_, { params }) => {
-      setUri(`${PAIRING_MODULE_URI_PREFIX}${params[0]}`)
+      setUri(formatPairingUri(params[0]))
     })
 
     return () => {
