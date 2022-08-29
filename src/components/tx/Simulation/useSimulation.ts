@@ -1,10 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
-import axios from 'axios'
 import type { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
 
 import { TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config/constants'
-import { getSimulationLink } from '@/services/simulation/utils'
-import { FETCH_STATUS, type TenderlySimulatePayload, type TenderlySimulation } from '@/services/simulation/types'
+import { getSimulationLink } from '@/components/tx/Simulation/utils'
+import { FETCH_STATUS, type TenderlySimulatePayload, type TenderlySimulation } from '@/components/tx/Simulation/types'
 
 type UseSimulationReturn =
   | {
@@ -91,7 +90,10 @@ export const useSimulation = (): UseSimulationReturn => {
       }
 
       try {
-        const { data } = await axios.post(TENDERLY_SIMULATE_ENDPOINT_URL, simulationPayload)
+        const data = (await fetch(TENDERLY_SIMULATE_ENDPOINT_URL, {
+          method: 'POST',
+          body: JSON.stringify(simulationPayload),
+        }).then((res) => res.json())) as TenderlySimulation
 
         setSimulation(data)
         setSimulationRequestStatus(FETCH_STATUS.SUCCESS)
