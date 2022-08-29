@@ -1,8 +1,13 @@
-import { Dialog, DialogContent } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { createRoot } from 'react-dom/client'
+import CloseIcon from '@mui/icons-material/Close'
 
 import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
 import { formatPairingUri } from '@/services/pairing/utils'
+import PairingDescription from '@/components/common/PairingDetails/PairingDescription'
+import { StoreHydrator } from '@/store'
+import { AppProviders } from '@/pages/_app'
+import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 
 const WRAPPER_ID = 'safe-mobile-qr-modal'
 const QR_CODE_SIZE = 200
@@ -44,12 +49,33 @@ const close = () => {
 }
 
 const QRModal = ({ uri }: { uri: string }) => {
+  // TODO: Can this be rendered inside the tree?
   return (
-    <Dialog open onClose={close}>
-      <DialogContent>
-        <PairingQRCode uri={formatPairingUri(uri)} size={QR_CODE_SIZE} />
-      </DialogContent>
-    </Dialog>
+    <StoreHydrator>
+      <AppProviders>
+        {/* TODO: Close not working */}
+        <Dialog open onClose={close}>
+          <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center' }}>
+            {PAIRING_MODULE_LABEL}
+            <IconButton
+              onClick={close}
+              size="small"
+              sx={{
+                ml: 2,
+                color: 'border.main',
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+            <PairingQRCode uri={formatPairingUri(uri)} size={QR_CODE_SIZE} />
+            <br />
+            <PairingDescription />
+          </DialogContent>
+        </Dialog>
+      </AppProviders>
+    </StoreHydrator>
   )
 }
 

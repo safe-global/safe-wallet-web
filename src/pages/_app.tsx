@@ -58,7 +58,7 @@ const InitApp = (): null => {
   return null
 }
 
-const AppProviders = ({ children }: { children: ReactNode[] }) => {
+export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }) => {
   const theme = useLightDarkTheme()
 
   return (
