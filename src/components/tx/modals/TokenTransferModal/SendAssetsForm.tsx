@@ -89,7 +89,11 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const onMaxAmountClick = () => {
     if (!selectedToken) return
 
-    const amount = spendingLimit && isSpendingLimitType ? spendingLimit.amount : selectedToken.balance
+    const amount =
+      spendingLimit && isSpendingLimitType
+        ? Math.min(+spendingLimit.amount, +selectedToken.balance).toString()
+        : selectedToken.balance
+
     setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals))
   }
 
