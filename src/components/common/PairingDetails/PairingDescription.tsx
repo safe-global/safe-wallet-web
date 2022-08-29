@@ -4,7 +4,6 @@ import type { ReactElement } from 'react'
 import AppStoreButton from '@/components/common/AppStoreButton'
 
 const HELP_ARTICLE = 'https://help.gnosis-safe.io/en/articles/5584901-desktop-pairing'
-const APPSTORE_LINK = 'https://apps.apple.com/app/apple-store/id1515759131?pt=119497694&ct=Web%20App%20Connect&mt=8'
 
 const PairingDescription = (): ReactElement => {
   return (
@@ -17,8 +16,7 @@ const PairingDescription = (): ReactElement => {
         </Link>
       </Typography>
 
-      {/* TODO: Tracking */}
-      <AppStoreButton href={APPSTORE_LINK} />
+      <AppStoreButton placement="pairing" />
     </>
   )
 }
