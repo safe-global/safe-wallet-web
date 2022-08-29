@@ -28,7 +28,6 @@ import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { useTxTracking } from '@/hooks/useTxTracking'
 import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
-import { useInitPairing } from '@/services/pairing/usePairing'
 
 const cssCache = createCache({
   key: 'css',
@@ -53,7 +52,6 @@ const InitApp = (): null => {
   useTxPendingStatuses()
   useTxTracking()
   useBeamer()
-  useInitPairing()
 
   return null
 }

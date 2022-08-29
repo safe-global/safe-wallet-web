@@ -10,6 +10,7 @@ import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { PAIRING_MODULE_STORAGE_ID } from '@/services/pairing/connector'
+import { useInitPairing } from '@/services/pairing/usePairing'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 
@@ -96,6 +97,8 @@ export const useInitOnboard = () => {
   const { configs } = useChains()
   const chain = useCurrentChain()
   const onboard = useStore()
+
+  useInitPairing()
 
   useEffect(() => {
     if (configs.length > 0) {
