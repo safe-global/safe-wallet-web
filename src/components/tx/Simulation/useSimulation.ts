@@ -2,8 +2,13 @@ import { useCallback, useMemo, useState } from 'react'
 import type { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
 
 import { TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config/constants'
-import { getSimulationLink } from '@/components/tx/Simulation/utils'
+import { getSimulationLink, getSimulationTx, isTxSimulationEnabled } from '@/components/tx/Simulation/utils'
 import { FETCH_STATUS, type TenderlySimulatePayload, type TenderlySimulation } from '@/components/tx/Simulation/types'
+import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useWeb3 } from '@/hooks/wallets/web3'
 
 type UseSimulationReturn =
   | {
@@ -14,7 +19,7 @@ type UseSimulationReturn =
         chainId: string,
         safeAddress: string,
         walletAddress: string,
-        canExecuteTx: boolean,
+        canExecute: boolean,
         gasLimit: number,
       ) => void
       simulationLink: string
@@ -29,7 +34,7 @@ type UseSimulationReturn =
         chainId: string,
         safeAddress: string,
         walletAddress: string,
-        canExecuteTx: boolean,
+        canExecute: boolean,
         gasLimit: number,
       ) => void
       simulationLink: string
@@ -56,7 +61,7 @@ export const useSimulation = (): UseSimulationReturn => {
       chainId: string,
       safeAddress: string,
       walletAddress: string,
-      canExecuteTx: boolean,
+      canExecute: boolean,
       gasLimit: number,
     ) => {
       setSimulationRequestStatus(FETCH_STATUS.LOADING)
@@ -78,7 +83,7 @@ export const useSimulation = (): UseSimulationReturn => {
              * we overwrite the threshold of the contract with 1 such that the tx can be executed with only 1 signature.
              * Otherwise the simulation would always fail when checking the owner signatures.
              */
-            storage: canExecuteTx
+            storage: canExecute
               ? undefined
               : {
                   [`0x${'4'.padStart(64, '0')}`]: `0x${'1'.padStart(64, '0')}`,
@@ -115,4 +120,27 @@ export const useSimulation = (): UseSimulationReturn => {
     requestError,
     resetSimulation,
   } as UseSimulationReturn
+}
+
+export const useSimulationTx = ({
+  safeTx,
+  canExecute,
+  isEstimating,
+}: {
+  safeTx?: SafeTransaction
+  canExecute: boolean
+  isEstimating: boolean
+}) => {
+  const chain = useCurrentChain()
+  const provider = useWeb3()
+  const wallet = useWallet()
+  const { safeAddress } = useSafeInfo()
+
+  return useMemo(() => {
+    if (!provider || !wallet?.address || !chain || !isTxSimulationEnabled(chain) || isEstimating || !safeTx) {
+      return ''
+    }
+
+    return getSimulationTx({ provider, safeAddress, canExecute, ownerAddress: wallet.address, safeTx })
+  }, [wallet?.address, chain, isEstimating, safeTx, canExecute, safeAddress, provider])
 }

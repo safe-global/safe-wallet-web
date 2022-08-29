@@ -1,29 +1,28 @@
 import { AccordionSummary, Accordion, Button, Skeleton, Typography } from '@mui/material'
 import { ReactElement } from 'react'
-import { FEATURES, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
 
 import Track from '@/components/common/Track'
-import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
 import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import { getWeb3 } from '@/hooks/wallets/web3'
 import { MODALS_EVENTS } from '@/services/analytics'
-import { hasFeature } from '@/utils/chains'
 import { SimulationResult } from '@/components/tx/Simulation/SimulationResult'
 import { FETCH_STATUS } from '@/components/tx/Simulation/types'
 import { useSimulation } from '@/components/tx/Simulation/useSimulation'
+import { isTxSimulationEnabled } from './utils'
 
 type TxSimulationProps = {
+  // TODO: May be able to use `SafeTransactionData` from SDK
   tx: Omit<BaseTransaction, 'value'>
-  canTxExecute: boolean
+  canExecute: boolean
   gasLimit?: string
   disabled: boolean
 }
 
-const TxSimulationBlock = ({ tx, canTxExecute, gasLimit, disabled }: TxSimulationProps): ReactElement => {
+const TxSimulationBlock = ({ tx, canExecute, gasLimit, disabled }: TxSimulationProps): ReactElement => {
   const { simulateTransaction, simulation, simulationRequestStatus, simulationLink, requestError, resetSimulation } =
     useSimulation()
   const { safe } = useSafeInfo()
@@ -45,7 +44,7 @@ const TxSimulationBlock = ({ tx, canTxExecute, gasLimit, disabled }: TxSimulatio
     if (!wallet) {
       return
     }
-    simulateTransaction(tx, safe.chainId, safe.address.value, wallet?.address, canTxExecute, simulationGasLimit)
+    simulateTransaction(tx, safe.chainId, safe.address.value, wallet?.address, canExecute, simulationGasLimit)
   }
 
   const isSimulationFinished =
@@ -83,13 +82,6 @@ const TxSimulationBlock = ({ tx, canTxExecute, gasLimit, disabled }: TxSimulatio
       </AccordionSummary>
     </Accordion>
   )
-}
-
-const isTxSimulationEnabled = (chain: ChainInfo): boolean => {
-  const isSimulationEnvSet =
-    Boolean(TENDERLY_SIMULATE_ENDPOINT_URL) && Boolean(TENDERLY_ORG_NAME) && Boolean(TENDERLY_PROJECT_NAME)
-
-  return isSimulationEnvSet && hasFeature(chain, FEATURES.TX_SIMULATION)
 }
 
 export const TxSimulation = (props: TxSimulationProps): ReactElement | null => {

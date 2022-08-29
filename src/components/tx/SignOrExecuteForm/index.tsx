@@ -1,7 +1,7 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, DialogContent, Typography } from '@mui/material'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -17,6 +17,8 @@ import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
+import { TxSimulation } from '@/components/tx/Simulation'
+import { useSimulationTx } from '@/components/tx/Simulation/useSimulation'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -73,6 +75,8 @@ const SignOrExecuteForm = ({
   const isEstimating = willExecute && gasLimitLoading
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
   const nonceReadonly = !!tx?.signatures.size || !!isRejection
+
+  const simulationTx = useSimulationTx({ safeTx, canExecute, isEstimating })
 
   //
   // Callbacks
@@ -174,6 +178,15 @@ const SignOrExecuteForm = ({
           onFormSubmit={onAdvancedSubmit}
         />
 
+        {safeTx && simulationTx && (
+          <TxSimulation
+            tx={safeTx.data}
+            canExecute={canExecute}
+            gasLimit={gasLimit?.toString()}
+            disabled={submitDisabled}
+          />
+        )}
+
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>
             This transaction will most likely fail. To save gas costs, avoid creating the transaction.
@@ -199,3 +212,6 @@ const SignOrExecuteForm = ({
 }
 
 export default SignOrExecuteForm
+function getEncodedSignatures(): any {
+  throw new Error('Function not implemented.')
+}
