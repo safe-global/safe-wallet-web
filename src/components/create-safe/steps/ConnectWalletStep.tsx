@@ -2,10 +2,13 @@ import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
-import ConnectionOptions from '@/components/common/ConnectWallet/ConnectionOptions'
+import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
+import PairingDetails from '@/components/common/PairingDetails'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+
+import css from '@/components/create-safe/steps/styles.module.css'
 
 export const ConnectWalletContent = ({
   wallet,
@@ -24,8 +27,15 @@ export const ConnectWalletContent = ({
       ) : (
         <>
           <Typography mb={2}>In order to create a Safe you need to connect a wallet</Typography>
-          {/* TODO: Embed popper content here */}
-          <ConnectionOptions />
+          <div className={css.connectionOptions}>
+            <div className={css.wallet}>
+              <WalletDetails />
+            </div>
+
+            <div className={css.pairing}>
+              <PairingDetails />
+            </div>
+          </div>
         </>
       )}
       {isWrongChain && (

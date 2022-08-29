@@ -8,8 +8,7 @@ import PairingDescription from './PairingDescription'
 
 const QR_CODE_SIZE = 100
 
-// TODO: Horizontal styling
-const PairingDetails = (): ReactElement => {
+const PairingDetails = ({ vertical = false }: { vertical?: boolean }): ReactElement => {
   const { palette } = useTheme()
 
   const { uri } = usePairing()
@@ -24,9 +23,21 @@ const PairingDetails = (): ReactElement => {
 
   return (
     <>
-      {title}
-      {qr}
-      {description}
+      {vertical ? (
+        <>
+          {title}
+          {qr}
+          {description}
+        </>
+      ) : (
+        <>
+          {qr}
+          <div>
+            {title}
+            {description}
+          </div>
+        </>
+      )}
     </>
   )
 }

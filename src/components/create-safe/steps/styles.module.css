@@ -1,0 +1,30 @@
+.connectionOptions {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-8);
+}
+
+.wallet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pairing {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pairing > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.pairing :global .MuiTypography-alignCenter {
+  text-align: unset;
+}

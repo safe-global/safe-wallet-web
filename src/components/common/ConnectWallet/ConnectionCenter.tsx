@@ -1,10 +1,11 @@
-import { Popover, ButtonBase, Typography, Paper } from '@mui/material'
+import { Popover, ButtonBase, Typography, Paper, Divider } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import { useState, type MouseEvent, type ReactElement } from 'react'
 
 import KeyholeIcon from '@/components/common/ConnectWallet/KeyholeIcon'
-import ConnectionOptions from '@/components/common/ConnectWallet/ConnectionOptions'
+import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
+import PairingDetails from '@/components/common/PairingDetails'
 
 import css from '@/components/common/ConnectWallet/styles.module.css'
 
@@ -54,7 +55,11 @@ const ConnectionCenter = (): ReactElement => {
         sx={{ mt: 1 }}
       >
         <Paper className={css.popoverContainer}>
-          <ConnectionOptions onConnect={handleClose} />
+          <WalletDetails onConnect={handleClose} />
+
+          <Divider flexItem />
+
+          <PairingDetails vertical />
         </Paper>
       </Popover>
     </>
