@@ -3,7 +3,8 @@ import { Button, Typography } from '@mui/material'
 import { SafeBalanceResponse, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
-import TokenAmount, { TokenIcon } from '@/components/common/TokenAmount'
+import TokenAmount from '@/components/common/TokenAmount'
+import TokenIcon from '@/components/common/TokenIcon'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import TokenExplorerLink from '@/components/common/TokenExplorerLink'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
@@ -46,7 +47,7 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
     asset: {
       rawValue: item.tokenInfo.name,
       content: (
-        <div className={css.alignCenter}>
+        <div className={css.token}>
           <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
 
           <Typography>{item.tokenInfo.name}</Typography>

@@ -4,7 +4,7 @@ import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import css from './styles.module.css'
 import { SendAssetsFormData, SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
-import { TokenIcon } from '@/components/common/TokenAmount'
+import TokenIcon from '@/components/common/TokenIcon'
 import ReviewSpendingLimitTx from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import ReviewMultisigTx from '@/components/tx/modals/TokenTransferModal/ReviewMultisigTx'
 
