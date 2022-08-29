@@ -3,7 +3,7 @@ import { FEATURES, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { hasFeature } from '@/utils/chains'
 import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
-import type { TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/Simulation/types'
+import type { TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/TxSimulation/types'
 import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import EthSafeTransaction from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'

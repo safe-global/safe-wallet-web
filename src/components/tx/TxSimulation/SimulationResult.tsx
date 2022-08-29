@@ -1,7 +1,7 @@
-import { Alert, AlertTitle, Typography } from '@mui/material'
-import Link from 'next/link'
+import { Alert, AlertTitle, Typography, Link } from '@mui/material'
 import { ReactElement } from 'react'
-import { TenderlySimulation, FETCH_STATUS } from './types'
+
+import { TenderlySimulation, FETCH_STATUS } from '@/components/tx/TxSimulation/types'
 
 type SimulationResultProps = {
   simulationRequestStatus: string
@@ -29,7 +29,15 @@ export const SimulationResult = ({
   // Error
   if (requestError || !simulation?.simulation.status) {
     return (
-      <Alert severity="error" onClose={onClose}>
+      <Alert
+        severity="error"
+        onClose={onClose}
+        sx={{
+          '&.MuiAlert-root': {
+            border: 'unset',
+          },
+        }}
+      >
         <AlertTitle>
           <Typography color="error">Failed</Typography>
         </AlertTitle>
@@ -54,9 +62,17 @@ export const SimulationResult = ({
 
   // Success
   return (
-    <Alert severity="success" onClose={onClose}>
+    <Alert
+      severity="success"
+      onClose={onClose}
+      sx={{
+        '&.MuiAlert-root': {
+          border: 'unset',
+        },
+      }}
+    >
       <AlertTitle>
-        <Typography>Success</Typography>
+        <Typography color="success">Success</Typography>
       </AlertTitle>
 
       <Typography>

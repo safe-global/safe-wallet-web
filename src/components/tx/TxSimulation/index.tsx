@@ -1,4 +1,4 @@
-import { AccordionSummary, Accordion, Button, Skeleton, Typography } from '@mui/material'
+import { AccordionSummary, Accordion, Button, Typography, CircularProgress } from '@mui/material'
 import { ReactElement } from 'react'
 import type { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
 
@@ -9,10 +9,10 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import { getWeb3 } from '@/hooks/wallets/web3'
 import { MODALS_EVENTS } from '@/services/analytics'
-import { SimulationResult } from '@/components/tx/Simulation/SimulationResult'
-import { FETCH_STATUS } from '@/components/tx/Simulation/types'
-import { useSimulation } from '@/components/tx/Simulation/useSimulation'
-import { isTxSimulationEnabled } from './utils'
+import { SimulationResult } from '@/components/tx/TxSimulation/SimulationResult'
+import { FETCH_STATUS } from '@/components/tx/TxSimulation/types'
+import { useSimulation } from '@/components/tx/TxSimulation/useSimulation'
+import { isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
 
 type TxSimulationProps = {
   // TODO: May be able to use `SafeTransactionData` from SDK
@@ -53,33 +53,39 @@ const TxSimulationBlock = ({ tx, canExecute, gasLimit, disabled }: TxSimulationP
   const showSimulationButton = !isSimulationFinished
 
   return showSimulationButton ? (
-    <Accordion expanded={false}>
-      <AccordionSummary>
+    <Accordion expanded={false} elevation={0}>
+      <AccordionSummary
+        sx={{
+          '& .MuiAccordionSummary-content': {
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          },
+        }}
+      >
         <Typography>Transaction validity</Typography>
         <Track {...MODALS_EVENTS.SIMULATE_TX}>
           <Button
             variant="text"
+            size="small"
             disabled={disabled || isSimulationLoading}
-            color="secondary"
+            color="primary"
             onClick={handleSimulation}
           >
-            {isSimulationLoading && <Skeleton />}
-            <span>Simulate</span>
+            {isSimulationLoading && <CircularProgress size={14} />}
+            <span>{isSimulationLoading ? 'Simulating...' : 'Simulate'}</span>
           </Button>
         </Track>
       </AccordionSummary>
     </Accordion>
   ) : (
-    <Accordion expanded>
-      <AccordionSummary>
-        <SimulationResult
-          onClose={resetSimulation}
-          simulation={simulation}
-          simulationRequestStatus={simulationRequestStatus}
-          simulationLink={simulationLink}
-          requestError={requestError}
-        />
-      </AccordionSummary>
+    <Accordion expanded elevation={0}>
+      <SimulationResult
+        onClose={resetSimulation}
+        simulation={simulation}
+        simulationRequestStatus={simulationRequestStatus}
+        simulationLink={simulationLink}
+        requestError={requestError}
+      />
     </Accordion>
   )
 }

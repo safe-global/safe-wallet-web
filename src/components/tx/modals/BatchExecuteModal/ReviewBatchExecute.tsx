@@ -15,12 +15,13 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/index'
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
+import { TxSimulation } from '@/components/tx/TxSimulation'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
-  const { safe, safeAddress } = useSafeInfo()
+  const { safe } = useSafeInfo()
   const provider = useWeb3()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
@@ -88,6 +89,14 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
           Batched transactions:
         </Typography>
         <DecodedTxs txs={txsWithDetails} numberOfTxs={data.txs.length} />
+
+        {multiSendTxData && multiSendContract && (
+          <TxSimulation
+            canExecute
+            tx={{ data: multiSendTxData, to: multiSendContract.address }}
+            disabled={submitDisabled}
+          />
+        )}
 
         <Typography variant="body2" mt={2} textAlign="center">
           Be aware that if any of the included transactions revert, none of them will be executed. This will result in

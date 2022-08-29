@@ -17,8 +17,8 @@ import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
-import { TxSimulation } from '@/components/tx/Simulation'
-import { useSimulationTx } from '@/components/tx/Simulation/useSimulation'
+import { TxSimulation } from '@/components/tx/TxSimulation'
+import { useSimulationTx } from '@/components/tx/TxSimulation/useSimulation'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
