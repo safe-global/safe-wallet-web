@@ -2,9 +2,10 @@ import { ReactElement } from 'react'
 import { BaseTransaction, RequestId, SendTransactionRequestParams } from '@gnosis.pm/safe-apps-sdk'
 import { DecodedDataParameterValue, DecodedDataResponse, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ModalDialog from '@/components/common/ModalDialog'
-import { SafeAppLoadError } from './SafeAppLoadError'
-import { ReviewConfirm } from './ReviewConfirm'
 import { validateAddress } from '@/utils/validation'
+import { Button, DialogActions, DialogContent } from '@mui/material'
+import SendFromBlock from '@/components/tx/SendFromBlock'
+import { Box } from '@mui/system'
 
 export type ConfirmTxModalProps = {
   isOpen: boolean
@@ -35,21 +36,41 @@ const isTxValid = (t: BaseTransaction): boolean => {
 
 export type DecodedTxDetailType = DecodedDataParameterValue | DecodedDataResponse | undefined
 
-export const ConfirmTxModal = (props: ConfirmTxModalProps): ReactElement => {
-  const invalidTransactions = !props.txs.length || props.txs.some((t) => !isTxValid(t))
+export const ConfirmTxModal = ({
+  app,
+  onClose,
+  onTxReject,
+  txs,
+  requestId,
+  isOpen,
+}: ConfirmTxModalProps): ReactElement => {
+  const invalidTransactions = !txs.length || txs.some((t) => !isTxValid(t))
 
   const rejectTransaction = () => {
-    props.onClose()
-    props.onTxReject(props.requestId)
+    onClose()
+    onTxReject(requestId)
   }
 
   return (
-    <ModalDialog dialogTitle={props?.app?.name} open={props.isOpen}>
-      {invalidTransactions ? (
-        <SafeAppLoadError {...props} />
-      ) : (
-        <ReviewConfirm {...props} onReject={rejectTransaction} />
-      )}
+    <ModalDialog dialogTitle={app?.name} open={isOpen} onClose={rejectTransaction}>
+      <DialogContent>
+        {invalidTransactions ? (
+          <p>Error</p>
+        ) : (
+          // <SafeAppLoadError  />
+          <Box py={2}>
+            <SendFromBlock />
+          </Box>
+        )}
+      </DialogContent>
+      <DialogActions disableSpacing>
+        <Button color="inherit" onClick={rejectTransaction}>
+          Back
+        </Button>
+        <Button variant="contained" onClick={() => {}}>
+          Submit
+        </Button>
+      </DialogActions>
     </ModalDialog>
   )
 }
