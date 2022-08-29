@@ -128,7 +128,14 @@ const pairingModule = (): WalletInit => {
                   return new Promise<ProviderAccounts>((resolve, reject) => {
                     if (!this.connector.connected) {
                       this.connector.createSession().then(() => {
-                        QRModal.open(this.connector.uri)
+                        QRModal.open(this.connector.uri, () =>
+                          reject(
+                            new ProviderRpcError({
+                              code: 4001,
+                              message: 'User rejected the request.',
+                            }),
+                          ),
+                        )
                       })
                     } else {
                       const { accounts, chainId } = this.connector.session

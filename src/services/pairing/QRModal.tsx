@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { createRoot } from 'react-dom/client'
+import { useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 
 import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
@@ -25,7 +26,7 @@ const renderWrapper = () => {
   return wrapper
 }
 
-const open = (uri: string) => {
+const open = (uri: string, cb: () => void) => {
   const wrapper = renderWrapper()
 
   if (!wrapper) {
@@ -34,7 +35,7 @@ const open = (uri: string) => {
 
   const root = createRoot(wrapper)
 
-  root.render(<QRModal uri={uri} />)
+  root.render(<QRModal uri={uri} cb={cb} />)
 }
 
 const close = () => {
@@ -48,20 +49,26 @@ const close = () => {
   }
 }
 
-const QRModal = ({ uri }: { uri: string }) => {
+const QRModal = ({ uri, cb }: { uri: string; cb: () => void }) => {
+  const [open, setOpen] = useState(true)
+
+  const handleClose = () => {
+    setOpen(false)
+    cb()
+    close()
+  }
+
   // TODO: Can this be rendered inside the tree?
   return (
     <StoreHydrator>
       <AppProviders>
-        {/* TODO: Close not working */}
-        <Dialog open onClose={close}>
-          <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center' }}>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between' }}>
             {PAIRING_MODULE_LABEL}
             <IconButton
-              onClick={close}
+              onClick={handleClose}
               size="small"
               sx={{
-                ml: 2,
                 color: 'border.main',
               }}
             >
