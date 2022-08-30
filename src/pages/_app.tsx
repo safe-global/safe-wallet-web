@@ -73,12 +73,16 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
     <StoreHydrator>
       <Head>
         <title key="default-title">Safe</title>
-        <meta name="description" content="Safe app" />
-        <meta name="viewport" content="width=device-width" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta
+          name="description"
+          content="Safe is the most trusted platform to manage digital assets on Ethereum (formerly known as the Gnosis Safe multisig)."
+        />
+
         <link rel="dns-prefetch" href={GATEWAY_URL} />
         <link rel="preconnect" href={GATEWAY_URL} crossOrigin="" />
 
+        <meta name="viewport" content="width=device-width" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="shortcut icon" href="/favicons/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
