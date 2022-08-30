@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
 import type { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
+import type { SafeTransaction, SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
 
 import { TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config/constants'
 import { getSimulationLink, getSimulationTx, isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
 import { FETCH_STATUS, type TenderlySimulatePayload, type TenderlySimulation } from '@/components/tx/TxSimulation/types'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -122,6 +122,10 @@ export const useSimulation = (): UseSimulationReturn => {
   } as UseSimulationReturn
 }
 
+const isSafeVersion = (value?: string): value is SafeVersion => {
+  return !!value && ['1.3.0', '1.2.0', '1.1.1'].includes(value)
+}
+
 export const useSimulationTx = ({
   safeTx,
   canExecute,
@@ -134,13 +138,28 @@ export const useSimulationTx = ({
   const chain = useCurrentChain()
   const provider = useWeb3()
   const wallet = useWallet()
-  const { safeAddress } = useSafeInfo()
+  const { safeAddress, safe } = useSafeInfo()
 
   return useMemo(() => {
-    if (!provider || !wallet?.address || !chain || !isTxSimulationEnabled(chain) || isEstimating || !safeTx) {
+    if (
+      !provider ||
+      !wallet?.address ||
+      !isSafeVersion(safe.version) ||
+      !chain ||
+      !isTxSimulationEnabled(chain) ||
+      isEstimating ||
+      !safeTx
+    ) {
       return ''
     }
 
-    return getSimulationTx({ provider, safeAddress, canExecute, ownerAddress: wallet.address, safeTx })
-  }, [wallet?.address, chain, isEstimating, safeTx, canExecute, safeAddress, provider])
+    return getSimulationTx({
+      provider,
+      safeVersion: safe.version,
+      safeAddress,
+      canExecute,
+      ownerAddress: wallet.address,
+      safeTx,
+    })
+  }, [wallet?.address, safe?.version, chain, isEstimating, safeTx, canExecute, safeAddress, provider])
 }

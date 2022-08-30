@@ -1,7 +1,9 @@
 import { Alert, AlertTitle, Typography, Link } from '@mui/material'
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 
 import { TenderlySimulation, FETCH_STATUS } from '@/components/tx/TxSimulation/types'
+
+import css from './styles.module.css'
 
 type SimulationResultProps = {
   simulationRequestStatus: string
@@ -29,29 +31,21 @@ export const SimulationResult = ({
   // Error
   if (requestError || !simulation?.simulation.status) {
     return (
-      <Alert
-        severity="error"
-        onClose={onClose}
-        sx={{
-          '&.MuiAlert-root': {
-            border: 'unset',
-          },
-        }}
-      >
-        <AlertTitle>
-          <Typography color="error">Failed</Typography>
+      <Alert severity="error" onClose={onClose} className={css.result}>
+        <AlertTitle color="error">
+          <b>Failed</b>
         </AlertTitle>
 
         {requestError ? (
           <Typography color="error">
-            An unexpected error occurred during simulation: <b>{requestError}</b>
+            An unexpected error occurred during simulation: <b>{requestError}</b>.
           </Typography>
         ) : (
           <Typography>
             The transaction failed during the simulation throwing error <b>{simulation?.transaction.error_message}</b>{' '}
             in the contract at <b>{simulation?.transaction.error_info?.address}</b>. Full simulation report is available{' '}
             <Link href={simulationLink} target="_blank" rel="noreferrer">
-              on Tenderly
+              <b>on Tenderly</b>
             </Link>
             .
           </Typography>
@@ -62,23 +56,15 @@ export const SimulationResult = ({
 
   // Success
   return (
-    <Alert
-      severity="success"
-      onClose={onClose}
-      sx={{
-        '&.MuiAlert-root': {
-          border: 'unset',
-        },
-      }}
-    >
-      <AlertTitle>
-        <Typography color="success">Success</Typography>
+    <Alert severity="success" onClose={onClose} className={css.result}>
+      <AlertTitle color="success">
+        <b>Success</b>
       </AlertTitle>
 
       <Typography>
         The transaction was successfully simulated. Full simulation report is available{' '}
         <Link href={simulationLink} target="_blank" rel="noreferrer">
-          on Tenderly
+          <b>on Tenderly</b>
         </Link>
         .
       </Typography>

@@ -5,7 +5,7 @@ import { hasFeature } from '@/utils/chains'
 import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
 import type { TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/TxSimulation/types'
 import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { SafeTransaction, SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
 import EthSafeTransaction from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
 import { generatePreValidatedSignature } from '@gnosis.pm/safe-core-sdk/dist/src/utils/signatures'
 
@@ -29,15 +29,16 @@ export const getSimulationLink = (simulationId: string): string => {
   return `https://dashboard.tenderly.co/public/${TENDERLY_ORG_NAME}/${TENDERLY_PROJECT_NAME}/simulator/${simulationId}`
 }
 
-// TODO: WIP
 export const getSimulationTx = async ({
   provider,
+  safeVersion,
   safeAddress,
   canExecute,
   ownerAddress,
   safeTx,
 }: {
   provider: Web3Provider
+  safeVersion: SafeVersion
   safeAddress: string
   canExecute: boolean
   ownerAddress: string
@@ -46,7 +47,7 @@ export const getSimulationTx = async ({
   const ethAdapter = createEthersAdapter(provider)
 
   const safeContractInstance = ethAdapter.getSafeContract({
-    safeVersion: '1.3.0', // TODO:
+    safeVersion,
     chainId: await ethAdapter.getChainId(),
     customContractAddress: safeAddress,
   })

@@ -14,8 +14,9 @@ import { FETCH_STATUS } from '@/components/tx/TxSimulation/types'
 import { useSimulation } from '@/components/tx/TxSimulation/useSimulation'
 import { isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
 
+import css from './styles.module.css'
+
 type TxSimulationProps = {
-  // TODO: May be able to use `SafeTransactionData` from SDK
   tx: Omit<BaseTransaction, 'value'>
   canExecute: boolean
   gasLimit?: string
@@ -54,14 +55,7 @@ const TxSimulationBlock = ({ tx, canExecute, gasLimit, disabled }: TxSimulationP
 
   return showSimulationButton ? (
     <Accordion expanded={false} elevation={0}>
-      <AccordionSummary
-        sx={{
-          '& .MuiAccordionSummary-content': {
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          },
-        }}
-      >
+      <AccordionSummary className={css.simulateAccordion}>
         <Typography>Transaction validity</Typography>
         <Track {...MODALS_EVENTS.SIMULATE_TX}>
           <Button
