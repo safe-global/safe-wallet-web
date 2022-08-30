@@ -17,7 +17,7 @@ const AdvancedParams = ({ params, recommendedNonce, willExecute, nonceReadonly, 
 
   const onEditOpen = () => {
     setIsEditing(true)
-    trackEvent({ ...MODALS_EVENTS.EDIT_ADVANCED_PARAMS })
+    trackEvent(MODALS_EVENTS.EDIT_ADVANCED_PARAMS)
   }
 
   const onAdvancedSubmit = (data: AdvancedParameters) => {
