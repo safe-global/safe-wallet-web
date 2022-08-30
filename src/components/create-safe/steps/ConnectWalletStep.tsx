@@ -7,6 +7,8 @@ import PairingDetails from '@/components/common/PairingDetails'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { useCurrentChain } from '@/hooks/useChains'
+import { isPairingSupported } from '@/services/pairing/utils'
 
 import css from '@/components/create-safe/steps/styles.module.css'
 
@@ -17,6 +19,9 @@ export const ConnectWalletContent = ({
   wallet: ConnectedWallet | null
   isWrongChain: boolean
 }) => {
+  const chain = useCurrentChain()
+  const isSupported = isPairingSupported(chain?.disabledWallets)
+
   return (
     <>
       {wallet && !isWrongChain && <Typography mb={2}>Wallet connected</Typography>}
@@ -32,9 +37,11 @@ export const ConnectWalletContent = ({
               <WalletDetails />
             </div>
 
-            <div className={css.pairing}>
-              <PairingDetails />
-            </div>
+            {isSupported && (
+              <div className={css.pairing}>
+                <PairingDetails />
+              </div>
+            )}
           </div>
         </>
       )}

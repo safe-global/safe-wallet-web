@@ -27,7 +27,7 @@ export const enum WALLET_KEYS {
   WALLETCONNECT = 'WALLETCONNECT',
 }
 
-const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
+export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.COINBASE]: 'coinbase',
   [WALLET_KEYS.FORTMATIC]: 'fortmatic',
   [WALLET_KEYS.INJECTED]: 'detectedwallet',

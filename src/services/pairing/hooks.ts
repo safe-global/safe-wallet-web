@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 
-import useChainId from '@/hooks/useChainId'
+import { useCurrentChain } from '@/hooks/useChains'
 import useOnboard, { getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { getPairingConnector, WalletConnectEvents } from '@/services/pairing/connector'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
-import { formatPairingUri, killPairingSession } from '@/services/pairing/utils'
+import { formatPairingUri, isPairingSupported, killPairingSession } from '@/services/pairing/utils'
 
 const connector = getPairingConnector()
 
@@ -23,28 +23,30 @@ let hasInitialized = false
 // WC has no flag to determine if a session is currently being created
 let isConnecting = false
 
+const canConnect = !connector.connected && !isConnecting
+
 export const useInitPairing = () => {
   const onboard = useOnboard()
-  const chainId = useChainId()
+  const chain = useCurrentChain()
 
-  const canConnect = !connector.connected && !isConnecting
+  const isSupported = isPairingSupported(chain?.disabledWallets)
 
   const createSession = useCallback(() => {
-    if (!canConnect) {
+    if (!canConnect || !chain || !isSupported) {
       return
     }
 
     isConnecting = true
     connector
-      .createSession({ chainId: +chainId })
+      .createSession({ chainId: +chain.chainId })
       .then(() => {
         isConnecting = false
       })
       .catch((e) => logError(Errors._303, (e as Error).message))
-  }, [canConnect, chainId])
+  }, [chain, isSupported])
 
   useEffect(() => {
-    if (!onboard) {
+    if (!onboard || !isSupported) {
       return
     }
 
@@ -75,7 +77,7 @@ export const useInitPairing = () => {
     return () => {
       subscription.unsubscribe()
     }
-  }, [onboard, createSession])
+  }, [onboard, createSession, isSupported])
 
   /**
    * It's not possible to update the `chainId` of the current WC session
@@ -83,12 +85,15 @@ export const useInitPairing = () => {
    * a new `createSession` above
    */
   useEffect(() => {
-    if (+chainId === connector.chainId || !hasInitialized || !canConnect) {
+    const isConnected = !!chain?.chainId && +chain.chainId === connector.chainId
+    const shouldKillSession = !isSupported || (!isConnected && hasInitialized && canConnect)
+
+    if (!shouldKillSession) {
       return
     }
 
     killPairingSession(connector)
-  }, [chainId, canConnect])
+  }, [chain?.chainId])
 }
 
 /**

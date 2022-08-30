@@ -1,5 +1,7 @@
 import WalletConnect from '@walletconnect/client'
 
+import { CGW_NAMES, WALLET_KEYS } from '@/hooks/wallets/wallets'
+
 export const formatPairingUri = (wcUri: string) => {
   const PAIRING_MODULE_URI_PREFIX = 'safe-'
 
@@ -21,4 +23,8 @@ export const killPairingSession = (connector: InstanceType<typeof WalletConnect>
   }
 
   return connector.killSession()
+}
+
+export const isPairingSupported = (disabledWallets?: string[]) => {
+  return !!disabledWallets?.length && !disabledWallets.includes(CGW_NAMES[WALLET_KEYS.PAIRING] as string)
 }
