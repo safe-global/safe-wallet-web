@@ -3,6 +3,6 @@
   align-items: center;
 }
 
-.result :global .MuiAlert-root {
+.result {
   border: none;
 }
