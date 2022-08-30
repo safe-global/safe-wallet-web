@@ -60,7 +60,6 @@ export const useInitPairing = () => {
         .catch((e) => logError(Errors._302, (e as Error).message))
     })
 
-    // Create new session when the mobile app disconnects
     connector.on(WalletConnectEvents.DISCONNECT, () => {
       createSession()
     })
@@ -93,10 +92,10 @@ export const useInitPairing = () => {
 }
 
 /**
- * `usePairing` is responsible for returning to pairing URI
+ * `usePairingUri` is responsible for returning to pairing URI
  * @returns uri - "safe-" prefixed WC connection URI
  */
-const usePairing = () => {
+const usePairingUri = () => {
   const [uri, setUri] = useState(formatPairingUri(connector.uri))
 
   useEffect(() => {
@@ -111,9 +110,7 @@ const usePairing = () => {
     }
   }, [])
 
-  return {
-    uri,
-  }
+  return uri
 }
 
-export default usePairing
+export default usePairingUri

@@ -10,7 +10,7 @@ import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { PAIRING_MODULE_STORAGE_ID } from '@/services/pairing/connector'
-import { useInitPairing } from '@/services/pairing/usePairing'
+import { useInitPairing } from '@/services/pairing/hooks'
 
 export const lastWalletStorage = localItem<string>('lastWallet')
 

@@ -2,7 +2,8 @@ import WalletConnect from '@walletconnect/client'
 import bowser from 'bowser'
 
 import packageJson from '../../../package.json'
-import { IS_PRODUCTION, LS_NAMESPACE, SAFE_REACT_URL, WC_BRIDGE } from '@/config/constants'
+import { IS_PRODUCTION, SAFE_REACT_URL, WC_BRIDGE } from '@/config/constants'
+import local from '@/services/local-storage/local'
 
 export const PAIRING_MODULE_STORAGE_ID = 'pairingConnector'
 
@@ -32,7 +33,7 @@ const getClientMeta = () => {
 
 const _pairingConnector = new WalletConnect({
   bridge: WC_BRIDGE,
-  storageId: `${LS_NAMESPACE}${PAIRING_MODULE_STORAGE_ID}`,
+  storageId: local.getPrefixedKey(PAIRING_MODULE_STORAGE_ID),
   clientMeta: getClientMeta(),
 })
 
