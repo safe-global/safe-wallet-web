@@ -11,8 +11,9 @@
     "build": "next build",
     "export": "next export",
     "lint": "tsc && next lint",
-    "lint:fix": "yarn lint --fix",
+    "lint:fix": "next lint --fix",
     "prettier": "prettier -w \"{src,cypress,mocks,scripts}/**/*.{ts,tsx,css,js}\"",
+    "fix": "yarn lint:fix && ts-prune && yarn prettier",
     "test": "DEBUG_PRINT_LIMIT=30000 jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
@@ -114,6 +115,7 @@
     "pre-commit": "^1.2.2",
     "prettier": "^2.7.0",
     "ts-node": "^10.8.2",
+    "ts-prune": "^0.10.3",
     "typechain": "^8.0.0",
     "typescript": "4.7.4"
   }
