@@ -7,7 +7,7 @@ import { encodeMultiSendData } from '@gnosis.pm/safe-core-sdk/dist/src/utils/tra
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { Button, DialogContent, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { dispatchBatchExecution } from '@/services/tx/txSender'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { Errors, logError } from '@/services/exceptions'
@@ -15,13 +15,22 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/index'
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
+import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
-  const { safe, safeAddress } = useSafeInfo()
+  const { safe } = useSafeInfo()
   const provider = useWeb3()
+
+  // Track the number of transactions in the batch
+  useEffect(() => {
+    trackEvent({
+      ...TX_LIST_EVENTS.BATCH_EXECUTE,
+      label: data.txs.length.toString(),
+    })
+  }, [data.txs.length])
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
