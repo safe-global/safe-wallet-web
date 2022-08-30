@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import type { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
-import type { SafeTransaction, SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import { TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config/constants'
 import { getSimulationLink, getSimulationTx, isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
@@ -9,6 +9,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import { isSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 type UseSimulationReturn =
   | {
@@ -122,10 +123,6 @@ export const useSimulation = (): UseSimulationReturn => {
   } as UseSimulationReturn
 }
 
-const isSafeVersion = (value?: string): value is SafeVersion => {
-  return !!value && ['1.3.0', '1.2.0', '1.1.1'].includes(value)
-}
-
 export const useSimulationTx = ({
   safeTx,
   canExecute,
@@ -145,7 +142,6 @@ export const useSimulationTx = ({
       !provider ||
       !wallet?.address ||
       !isSafeVersion(safe.version) ||
-      !chain ||
       !isTxSimulationEnabled(chain) ||
       isEstimating ||
       !safeTx

@@ -6,10 +6,15 @@ import semverSatisfies from 'semver/functions/satisfies'
 import chains from '@/config/chains'
 import { Web3Provider } from '@ethersproject/providers'
 import ExternalStore from '@/services/ExternalStore'
+import type { SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
 
 const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
   return semverSatisfies(safeVersion, LEGACY_VERSION)
+}
+
+export const isSafeVersion = (safeVersion?: string): safeVersion is SafeVersion => {
+  return !!safeVersion && ['1.3.0', '1.2.0', '1.1.1'].some((version) => semverSatisfies(safeVersion, version))
 }
 
 export const createEthersAdapter = (provider: Web3Provider) => {

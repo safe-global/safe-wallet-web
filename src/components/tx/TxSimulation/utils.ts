@@ -9,7 +9,11 @@ import { SafeTransaction, SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
 import EthSafeTransaction from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
 import { generatePreValidatedSignature } from '@gnosis.pm/safe-core-sdk/dist/src/utils/signatures'
 
-export const isTxSimulationEnabled = (chain: ChainInfo): boolean => {
+export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
+  if (!chain) {
+    return false
+  }
+
   const isSimulationEnvSet =
     Boolean(TENDERLY_SIMULATE_ENDPOINT_URL) && Boolean(TENDERLY_ORG_NAME) && Boolean(TENDERLY_PROJECT_NAME)
 
