@@ -12,7 +12,7 @@ export const formatPairingUri = (wcUri: string) => {
 }
 
 export const killPairingSession = (connector: InstanceType<typeof WalletConnect>) => {
-  // WalletConnect throws if no `peerId` is sett when attempting to `killSession`
+  // WalletConnect throws if no `peerId` is set when attempting to `killSession`
   // We therefore manually set it in order to `killSession` without throwing
   if (!connector.peerId) {
     connector.peerId = '_willKill'

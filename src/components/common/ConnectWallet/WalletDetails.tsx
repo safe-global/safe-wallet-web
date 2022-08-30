@@ -24,7 +24,7 @@ const WalletDetails = ({ onConnect }: { onConnect?: () => void }): ReactElement 
     <>
       <Typography variant="h5">Connect a wallet</Typography>
 
-      <KeyholeIcon height={40} width={40} />
+      <KeyholeIcon />
 
       <Button onClick={handleConnect} variant="contained" size="small" disableElevation fullWidth>
         Connect

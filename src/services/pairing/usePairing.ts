@@ -35,9 +35,12 @@ export const useInitPairing = () => {
     }
 
     isConnecting = true
-    connector.createSession({ chainId: +chainId }).then(() => {
-      isConnecting = false
-    })
+    connector
+      .createSession({ chainId: +chainId })
+      .then(() => {
+        isConnecting = false
+      })
+      .catch((e) => logError(Errors._303, (e as Error).message))
   }, [canConnect, chainId])
 
   useEffect(() => {
@@ -45,7 +48,7 @@ export const useInitPairing = () => {
       return
     }
 
-    // Upon successfuly WC connection, connect it to onboard
+    // Upon successful WC connection, connect it to onboard
     connector.on(WalletConnectEvents.CONNECT, () => {
       onboard
         .connectWallet({
@@ -57,7 +60,7 @@ export const useInitPairing = () => {
         .catch((e) => logError(Errors._302, (e as Error).message))
     })
 
-    // Create new session when app disconnects
+    // Create new session when the mobile app disconnects
     connector.on(WalletConnectEvents.DISCONNECT, () => {
       createSession()
     })
@@ -73,11 +76,13 @@ export const useInitPairing = () => {
     return () => {
       subscription.unsubscribe()
     }
-  }, [onboard, chainId, createSession])
+  }, [onboard, createSession])
 
-  // It's not possible to update the `chainId` of the current WC session
-  // We therefore kill the current session when switching chain to triggerer
-  // a new `createSession` above
+  /**
+   * It's not possible to update the `chainId` of the current WC session
+   * We therefore kill the current session when switching chain to trigger
+   * a new `createSession` above
+   */
   useEffect(() => {
     if (+chainId === connector.chainId || !hasInitialized || !canConnect) {
       return
@@ -99,6 +104,8 @@ const usePairing = () => {
       setUri(formatPairingUri(params[0]))
     })
 
+    // Prevent the `connector` from setting state when not mounted.
+    // Note: `off` clears _all_ listeners associated with that event
     return () => {
       connector.off(WalletConnectEvents.DISPLAY_URI)
     }
