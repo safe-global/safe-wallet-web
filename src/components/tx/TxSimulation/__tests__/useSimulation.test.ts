@@ -42,14 +42,14 @@ describe('useSimulation()', () => {
     const { simulateTransaction } = result.current
 
     await act(async () =>
-      simulateTransaction(
-        { data: '0x123', to: ZERO_ADDRESS },
-        '4',
-        '0x57CB13cbef735FbDD65f5f2866638c546464E45F',
-        '0x57CB13cbef735FbDD65f5f2866638c546464E45E',
-        true,
-        200_000,
-      ),
+      simulateTransaction({
+        tx: { data: '0x123', to: ZERO_ADDRESS },
+        chainId: '4',
+        safeAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45F',
+        walletAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45E',
+        canExecute: true,
+        gasLimit: 200_000,
+      }),
     )
 
     await waitFor(() => {
@@ -89,14 +89,14 @@ describe('useSimulation()', () => {
     const { simulateTransaction } = result.current
 
     await act(async () =>
-      simulateTransaction(
-        { data: '0x123', to: ZERO_ADDRESS },
-        '4',
+      simulateTransaction({
+        tx: { data: '0x123', to: ZERO_ADDRESS },
+        chainId: '4',
         safeAddress,
-        '0x57CB13cbef735FbDD65f5f2866638c546464E45E',
-        true,
-        200_000,
-      ),
+        walletAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45E',
+        canExecute: true,
+        gasLimit: 200_000,
+      }),
     )
 
     await waitFor(() => {
@@ -137,14 +137,14 @@ describe('useSimulation()', () => {
     const { simulateTransaction } = result.current
 
     await act(async () =>
-      simulateTransaction(
-        { data: '0x123', to: ZERO_ADDRESS },
-        '4',
+      simulateTransaction({
+        tx: { data: '0x123', to: ZERO_ADDRESS },
+        chainId: '4',
         safeAddress,
-        '0x57CB13cbef735FbDD65f5f2866638c546464E45E',
-        false,
-        200_000,
-      ),
+        walletAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45E',
+        canExecute: false,
+        gasLimit: 200_000,
+      }),
     )
 
     await waitFor(() => {

@@ -17,8 +17,9 @@ import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
-import { TxSimulation } from '@/components/tx/TxSimulation'
-import { useSimulationTx } from '@/components/tx/TxSimulation/useSimulation'
+import { TxSimulation, type TxSimulationProps } from '@/components/tx/TxSimulation'
+import { useWeb3 } from '@/hooks/wallets/web3'
+import { isTxSimulationEnabled, getSimulationTx } from '@/components/tx/TxSimulation/utils'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -53,6 +54,8 @@ const SignOrExecuteForm = ({
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const currentChain = useCurrentChain()
+  const chain = useCurrentChain()
+  const provider = useWeb3()
 
   // Check that the transaction is executable
   const canExecute = isExecutable && !!tx && tx.data.nonce === safe.nonce
@@ -76,7 +79,23 @@ const SignOrExecuteForm = ({
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
   const nonceReadonly = !!tx?.signatures.size || !!isRejection
 
-  const simulationTx = useSimulationTx({ safeTx, canExecute, isEstimating })
+  const canSimulate = provider && wallet?.address && isTxSimulationEnabled(chain) && !isEstimating && safeTx
+  const getSimulationTx1: TxSimulationProps['getTx'] = () => {
+    if (!canSimulate) {
+      return
+    }
+
+    return {
+      to: safeTx.data.to,
+      data: getSimulationTx({
+        provider,
+        safe,
+        canExecute,
+        ownerAddress: wallet.address,
+        safeTx,
+      }),
+    }
+  }
 
   //
   // Callbacks
@@ -178,9 +197,9 @@ const SignOrExecuteForm = ({
           onFormSubmit={onAdvancedSubmit}
         />
 
-        {safeTx && simulationTx && (
+        {safeTx && canSimulate && (
           <TxSimulation
-            tx={safeTx.data}
+            getTx={getSimulationTx1}
             canExecute={canExecute}
             gasLimit={gasLimit?.toString()}
             disabled={submitDisabled}
@@ -212,6 +231,3 @@ const SignOrExecuteForm = ({
 }
 
 export default SignOrExecuteForm
-function getEncodedSignatures(): any {
-  throw new Error('Function not implemented.')
-}

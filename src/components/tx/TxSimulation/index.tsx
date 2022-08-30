@@ -16,14 +16,14 @@ import { isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
 
 import css from './styles.module.css'
 
-type TxSimulationProps = {
-  tx: Omit<BaseTransaction, 'value'>
+export type TxSimulationProps = {
+  getTx: () => Omit<BaseTransaction, 'value'> | undefined
   canExecute: boolean
   gasLimit?: string
   disabled: boolean
 }
 
-const TxSimulationBlock = ({ tx, canExecute, gasLimit, disabled }: TxSimulationProps): ReactElement => {
+const TxSimulationBlock = ({ getTx, canExecute, gasLimit, disabled }: TxSimulationProps): ReactElement => {
   const { simulateTransaction, simulation, simulationRequestStatus, simulationLink, requestError, resetSimulation } =
     useSimulation()
   const { safe } = useSafeInfo()
@@ -42,15 +42,27 @@ const TxSimulationBlock = ({ tx, canExecute, gasLimit, disabled }: TxSimulationP
   const simulationGasLimit = Number(gasLimit) || Number(blockGasLimit) || 0
 
   const handleSimulation = async () => {
-    if (!wallet) {
+    const tx = getTx()
+
+    if (!wallet?.address || !tx) {
       return
     }
-    simulateTransaction(tx, safe.chainId, safe.address.value, wallet?.address, canExecute, simulationGasLimit)
+
+    simulateTransaction({
+      tx,
+      chainId: safe.chainId,
+      safeAddress: safe.address.value,
+      walletAddress: wallet.address,
+      canExecute,
+      gasLimit: simulationGasLimit,
+    })
   }
 
   const isSimulationFinished =
     simulationRequestStatus === FETCH_STATUS.ERROR || simulationRequestStatus === FETCH_STATUS.SUCCESS
-  const isSimulationLoading = simulationRequestStatus === FETCH_STATUS.LOADING || simulationGasLimit === 0
+  const isSimulationLoading =
+    simulationRequestStatus === FETCH_STATUS.LOADING ||
+    (simulationRequestStatus !== FETCH_STATUS.NOT_ASKED && simulationGasLimit === 0)
   const showSimulationButton = !isSimulationFinished
 
   return showSimulationButton ? (

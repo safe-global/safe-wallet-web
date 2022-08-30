@@ -14,7 +14,8 @@ const isLegacyVersion = (safeVersion: string): boolean => {
 }
 
 export const isSafeVersion = (safeVersion?: string): safeVersion is SafeVersion => {
-  return !!safeVersion && ['1.3.0', '1.2.0', '1.1.1'].some((version) => semverSatisfies(safeVersion, version))
+  const SAFE_VERSIONS: SafeVersion[] = ['1.3.0', '1.2.0', '1.1.1']
+  return !!safeVersion && SAFE_VERSIONS.some((version) => semverSatisfies(safeVersion, version))
 }
 
 export const createEthersAdapter = (provider: Web3Provider) => {
