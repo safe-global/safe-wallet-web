@@ -8,7 +8,7 @@ describe('ConnectWalletContent', () => {
     it('displays a button to connect the wallet', () => {
       const { getByText } = render(<ConnectWalletContent wallet={null} isWrongChain={false} />)
 
-      expect(getByText('Connect wallet')).toBeInTheDocument()
+      expect(getByText('Connect a wallet')).toBeInTheDocument()
     })
   })
 
@@ -27,7 +27,7 @@ describe('ConnectWalletContent', () => {
     it('displays a chain indicator', () => {
       const { getByText } = render(<ConnectWalletContent wallet={mockWallet} isWrongChain={false} />)
 
-      expect(getByText('Creating a safe on')).toBeInTheDocument()
+      expect(getByText('Creating a Safe on')).toBeInTheDocument()
     })
 
     it('displays a wallet connected message if on the correct chain', () => {

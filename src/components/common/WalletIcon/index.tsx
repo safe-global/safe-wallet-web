@@ -8,7 +8,10 @@ import ledgerIcon from '@web3-onboard/ledger/dist/icon'
 import fortmaticIcon from '@web3-onboard/fortmatic/dist/icon'
 import portisIcon from '@web3-onboard/portis/dist/icon'
 import torusIcon from '@web3-onboard/torus/dist/icon'
+
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
+import pairingIcon from '@/services/pairing/icon'
+import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 
 enum ADDITIONAL_KEYS {
   METAMASK = 'METAMASK',
@@ -31,10 +34,22 @@ const WALLET_ICONS: Props = {
   [WALLET_KEYS.FORTMATIC]: fortmaticIcon,
   [WALLET_KEYS.PORTIS]: portisIcon,
   [WALLET_KEYS.TORUS]: torusIcon,
+  [WALLET_KEYS.PAIRING]: pairingIcon,
+}
+
+// Labels may differ from ALL_WALLET_KEYS
+const WALLET_LABELS: { [label: string]: WALLET_KEYS } = {
+  [PAIRING_MODULE_LABEL]: WALLET_KEYS.PAIRING,
+}
+
+const getWalletIcon = (provider: string) => {
+  const label = WALLET_LABELS?.[provider] || provider.toUpperCase()
+
+  return WALLET_ICONS[label]
 }
 
 const WalletIcon = ({ provider }: { provider: string }) => {
-  const icon = WALLET_ICONS[provider.toUpperCase() as keyof ALL_WALLET_KEYS]
+  const icon = getWalletIcon(provider)
 
   return icon ? (
     <img width={30} height={30} src={`data:image/svg+xml;utf8,${encodeURIComponent(icon)}`} alt={`${provider} logo`} />
