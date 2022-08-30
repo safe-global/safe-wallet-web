@@ -85,7 +85,12 @@ export const useInitPairing = () => {
    * a new `createSession` above
    */
   useEffect(() => {
-    const isConnected = !!chain?.chainId && +chain.chainId === connector.chainId
+    // We need to wait for chains to have been fetched before killing the session
+    if (!chain) {
+      return
+    }
+
+    const isConnected = +chain.chainId === connector.chainId
     const shouldKillSession = !isSupported || (!isConnected && hasInitialized && canConnect)
 
     if (!shouldKillSession) {
@@ -93,7 +98,7 @@ export const useInitPairing = () => {
     }
 
     killPairingSession(connector)
-  }, [chain?.chainId])
+  }, [chain])
 }
 
 /**
