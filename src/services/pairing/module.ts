@@ -28,6 +28,7 @@ enum ProviderMethods {
 
 export const PAIRING_MODULE_LABEL = 'Safe Mobile'
 
+// Modified version of: https://github.com/blocknative/web3-onboard/blob/v2-web3-onboard-develop/packages/walletconnect/src/index.ts
 const pairingModule = (): WalletInit => {
   return () => {
     return {
