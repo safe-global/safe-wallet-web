@@ -86,7 +86,8 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
 
   const canClear = useMemo(() => {
     const isFormDirty = dirtyFieldNames.some((name) => name !== TxFilterFormFieldNames.FILTER_TYPE)
-    return !isValid || isFormDirty
+    const hasFilterInQuery = !!filter?.type
+    return !isValid || isFormDirty || hasFilterInQuery
   }, [isValid, dirtyFieldNames])
 
   const clearFilter = () => {
@@ -145,14 +146,12 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                         <DatePickerInput
                           name={TxFilterFormFieldNames.DATE_FROM}
                           label="From"
-                          rules={{
-                            deps: [TxFilterFormFieldNames.DATE_TO],
-                            validate: (val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
-                              const toDate = getValues(TxFilterFormFieldNames.DATE_TO)
-                              if (val && toDate && isBefore(toDate, val)) {
-                                return 'Must be before "To" date'
-                              }
-                            },
+                          deps={[TxFilterFormFieldNames.DATE_TO]}
+                          validate={(val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
+                            const toDate = getValues(TxFilterFormFieldNames.DATE_TO)
+                            if (val && toDate && isBefore(toDate, val)) {
+                              return 'Must be before "To" date'
+                            }
                           }}
                         />
                       </Grid>
@@ -160,14 +159,12 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                         <DatePickerInput
                           name={TxFilterFormFieldNames.DATE_TO}
                           label="To"
-                          rules={{
-                            deps: [TxFilterFormFieldNames.DATE_FROM],
-                            validate: (val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
-                              const fromDate = getValues(TxFilterFormFieldNames.DATE_FROM)
-                              if (val && fromDate && isAfter(fromDate, val)) {
-                                return 'Must be after "From" date'
-                              }
-                            },
+                          deps={[TxFilterFormFieldNames.DATE_FROM]}
+                          validate={(val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
+                            const fromDate = getValues(TxFilterFormFieldNames.DATE_FROM)
+                            if (val && fromDate && isAfter(fromDate, val)) {
+                              return 'Must be after "From" date'
+                            }
                           }}
                         />
                       </Grid>
@@ -257,7 +254,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                 <Button variant="contained" onClick={clearFilter} disabled={!canClear}>
                   Clear
                 </Button>
-                <Button type="submit" variant="contained" color="primary">
+                <Button type="submit" variant="contained" color="primary" disabled={!isValid}>
                   Apply
                 </Button>
               </Grid>
