@@ -115,6 +115,29 @@ describe('SignOrExecuteForm', () => {
     ).toBeInTheDocument()
   })
 
+  it('hides the gas limit estimation error if its not an execution', async () => {
+    jest.spyOn(useGasLimitHook, 'default').mockReturnValue({
+      gasLimit: undefined,
+      gasLimitError: new Error('Error estimating gas limit'),
+      gasLimitLoading: false,
+    })
+
+    const mockTx = createSafeTx()
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    expect(
+      result.getByText('This transaction will most likely fail. To save gas costs, avoid creating the transaction.'),
+    ).toBeInTheDocument()
+
+    await act(() => {
+      fireEvent.click(result.getByText('Execute transaction'))
+    })
+
+    expect(
+      result.queryByText('This transaction will most likely fail. To save gas costs, avoid creating the transaction.'),
+    ).not.toBeInTheDocument()
+  })
+
   it('displays an error if passed through props', () => {
     const mockTx = createSafeTx()
     const result = render(

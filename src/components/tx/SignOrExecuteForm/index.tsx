@@ -174,7 +174,7 @@ const SignOrExecuteForm = ({
           onFormSubmit={onAdvancedSubmit}
         />
 
-        {(error || gasLimitError) && (
+        {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>
             This transaction will most likely fail. To save gas costs, avoid creating the transaction.
           </ErrorMessage>
