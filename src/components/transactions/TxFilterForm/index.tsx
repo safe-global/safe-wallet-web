@@ -7,6 +7,8 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import isAfter from 'date-fns/isAfter'
+import isBefore from 'date-fns/isBefore'
 import { Controller, FormProvider, useForm, useFormState, type DefaultValues } from 'react-hook-form'
 import { useMemo, type ReactElement } from 'react'
 
@@ -68,13 +70,16 @@ const TxFilterForm = (): ReactElement => {
     defaultValues: getInitialFormValues(filter),
   })
 
-  const { register, control, watch, handleSubmit, reset, getValues } = formMethods
+  const { control, watch, handleSubmit, reset, getValues } = formMethods
 
   const filterType = watch(TxFilterFormFieldNames.FILTER_TYPE)
 
   const isIncomingFilter = filterType === TxFilterType.INCOMING
   const isMultisigFilter = filterType === TxFilterType.MULTISIG
   const isModuleFilter = filterType === TxFilterType.MODULE
+
+  const fromDate = watch(TxFilterFormFieldNames.DATE_FROM)
+  const toDate = watch(TxFilterFormFieldNames.DATE_TO)
 
   // Only subscribe to relevant `formState`
   const { dirtyFields, isValid } = useFormState({ control })
@@ -135,17 +140,39 @@ const TxFilterForm = (): ReactElement => {
                   {!isModuleFilter && (
                     <>
                       <Grid item xs={12} md={6}>
-                        <DatePickerInput name={TxFilterFormFieldNames.DATE_FROM} label="From" />
+                        <DatePickerInput
+                          name={TxFilterFormFieldNames.DATE_FROM}
+                          label="From"
+                          rules={{
+                            deps: [TxFilterFormFieldNames.DATE_TO],
+                            validate: (val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
+                              if (val && toDate && isBefore(toDate, val)) {
+                                return 'Must be before "To" date'
+                              }
+                            },
+                          }}
+                        />
                       </Grid>
                       <Grid item xs={12} md={6}>
-                        <DatePickerInput name={TxFilterFormFieldNames.DATE_TO} label="To" />
+                        <DatePickerInput
+                          name={TxFilterFormFieldNames.DATE_TO}
+                          label="To"
+                          rules={{
+                            deps: [TxFilterFormFieldNames.DATE_FROM],
+                            validate: (val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
+                              if (val && fromDate && isAfter(fromDate, val)) {
+                                return 'Must be after "From" date'
+                              }
+                            },
+                          }}
+                        />
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <Controller
                           name={TxFilterFormFieldNames.AMOUNT}
                           control={control}
                           rules={{
-                            validate: (val: string) => {
+                            validate: (val: TxFilterFormState[TxFilterFormFieldNames.AMOUNT]) => {
                               if (val.length > 0) {
                                 return validateAmount(val)
                               }
@@ -190,7 +217,7 @@ const TxFilterForm = (): ReactElement => {
                           name={TxFilterFormFieldNames.NONCE}
                           control={control}
                           rules={{
-                            validate: (val: string) => {
+                            validate: (val: TxFilterFormState[TxFilterFormFieldNames.NONCE]) => {
                               if (val.length > 0) {
                                 return validateAmount(val)
                               }
