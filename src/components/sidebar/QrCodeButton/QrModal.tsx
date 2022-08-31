@@ -3,7 +3,7 @@ import { Box, Switch, DialogContent, FormControlLabel, Typography } from '@mui/m
 import ModalDialog from '@/components/common/ModalDialog'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useCurrentChain } from '@/hooks/useChains'
-import useGenerateQrCode from '@/hooks/useGenerateQrCode'
+import QRCode from '@/components/common/QRCode'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setQrShortName } from '@/store/settingsSlice'
@@ -14,7 +14,7 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
   const settings = useAppSelector(selectSettings)
   const dispatch = useAppDispatch()
   const qrPrefix = settings.shortName.qr ? `${chain?.shortName}:` : ''
-  const qrCode = useGenerateQrCode(`${qrPrefix}${safeAddress}`)
+  const qrCode = `${qrPrefix}${safeAddress}`
   const chainName = chain?.chainName || ''
   const nativeToken = chain?.nativeCurrency.symbol || ''
 
@@ -32,7 +32,7 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
 
         <Box display="flex" flexDirection="column" flexWrap="wrap" justifyContent="center" alignItems="center" my={2}>
           <Box mt={1} mb={1} p={1} border="1px solid" borderColor="border.main" borderRadius={1}>
-            <img src={qrCode} alt="QR code" width={164} height={164} />
+            <QRCode value={qrCode} size={164} />
           </Box>
 
           <FormControlLabel
