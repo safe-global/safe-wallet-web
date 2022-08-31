@@ -43,7 +43,7 @@ describe('Load Safe', () => {
     cy.get('[id=":r1:-label"]').contains(INVALID_ADDRESS_ERROR_MSG)
     cy.get('[id=":r1:"]').clear().type(SAFE_ENS_NAME)
     //giving time to the ENS name to be translated
-    cy.get('[id=":r1:"]', {timeout:10000}).should('have.value', SAFE_ENS_NAME_TRANSLATED)
+    cy.get('[id=":r1:"]', { timeout: 10000 }).should('have.value', SAFE_ENS_NAME_TRANSLATED)
   })
 
   it('Should enter a valid QRCode', () => {

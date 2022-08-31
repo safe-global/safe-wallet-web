@@ -31,7 +31,7 @@ describe('Address book', () => {
       cy.findByText('Create entry').click()
       cy.get('[name="name"]').type(NAME)
       cy.get('[name="address"]').type(ENS_NAME)
-      cy.get('[type="submit"]',{timeout:10000}).should('be.enabled').click()
+      cy.get('[type="submit"]', { timeout: 10000 }).should('be.enabled').click()
 
       cy.findByText(NAME).should('exist')
       cy.findByText(ADDRESS).should('exist')
@@ -72,10 +72,6 @@ describe('Address book', () => {
     })
 
     it('should find Gnosis Chain imported address', () => {
-      //Test skipped because it causes an error in the simulation
-      //"Unhandled Runtime Error
-      //Error: Hydration failed because the initial UI does not match what was rendered on the server."
-
       // Go to a Safe on Gnosis Chain
       cy.get('[aria-haspopup="listbox"]').findByText('Rinkeby').click()
       cy.findByText('Gnosis Chain').click()
