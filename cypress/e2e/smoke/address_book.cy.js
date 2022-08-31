@@ -31,7 +31,8 @@ describe('Address book', () => {
       cy.findByText('Create entry').click()
       cy.get('[name="name"]').type(NAME)
       cy.get('[name="address"]').type(ENS_NAME)
-      cy.get('[type="submit"]', { timeout: 10000 }).should('be.enabled').click()
+      cy.wait(5000)
+      cy.get('[type="submit"]').click()
 
       cy.findByText(NAME).should('exist')
       cy.findByText(ADDRESS).should('exist')
