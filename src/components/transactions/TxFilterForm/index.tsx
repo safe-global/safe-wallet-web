@@ -78,9 +78,6 @@ const TxFilterForm = (): ReactElement => {
   const isMultisigFilter = filterType === TxFilterType.MULTISIG
   const isModuleFilter = filterType === TxFilterType.MODULE
 
-  const fromDate = watch(TxFilterFormFieldNames.DATE_FROM)
-  const toDate = watch(TxFilterFormFieldNames.DATE_TO)
-
   // Only subscribe to relevant `formState`
   const { dirtyFields, isValid } = useFormState({ control })
 
@@ -146,6 +143,7 @@ const TxFilterForm = (): ReactElement => {
                           rules={{
                             deps: [TxFilterFormFieldNames.DATE_TO],
                             validate: (val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
+                              const toDate = getValues(TxFilterFormFieldNames.DATE_TO)
                               if (val && toDate && isBefore(toDate, val)) {
                                 return 'Must be before "To" date'
                               }
@@ -160,6 +158,7 @@ const TxFilterForm = (): ReactElement => {
                           rules={{
                             deps: [TxFilterFormFieldNames.DATE_FROM],
                             validate: (val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
+                              const fromDate = getValues(TxFilterFormFieldNames.DATE_FROM)
                               if (val && fromDate && isAfter(fromDate, val)) {
                                 return 'Must be after "From" date'
                               }
