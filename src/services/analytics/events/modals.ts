@@ -18,12 +18,10 @@ export const MODALS_EVENTS = {
     action: 'Contract interaction',
     category: MODALS_CATEGORY,
   },
-  // TODO: !!! Cannot find implementation
-  ADVANCED_PARAMS: {
-    action: 'Advanced params',
+  TX_DETAILS: {
+    action: 'Transaction details',
     category: MODALS_CATEGORY,
   },
-  // TODO: !!! Cannot find implementation
   EDIT_ADVANCED_PARAMS: {
     action: 'Edit advanced params',
     category: MODALS_CATEGORY,

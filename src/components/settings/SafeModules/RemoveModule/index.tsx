@@ -25,8 +25,8 @@ export const RemoveModule = ({ address }: { address: string }) => {
 
   return (
     <>
-      <IconButton onClick={() => setOpen(true)} size="small">
-        <DeleteOutlineIcon color="error" fontSize="small" />
+      <IconButton onClick={() => setOpen(true)} color="error">
+        <DeleteOutlineIcon />
       </IconButton>
       {open && <TxModal onClose={() => setOpen(false)} steps={RemoveModuleSteps} initialData={[initialData]} />}
     </>

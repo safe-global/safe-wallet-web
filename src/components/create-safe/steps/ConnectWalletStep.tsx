@@ -2,10 +2,15 @@ import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
-import ConnectWallet from '@/components/common/ConnectWallet'
+import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
+import PairingDetails from '@/components/common/PairingDetails'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { useCurrentChain } from '@/hooks/useChains'
+import { isPairingSupported } from '@/services/pairing/utils'
+
+import css from '@/components/create-safe/steps/styles.module.css'
 
 export const ConnectWalletContent = ({
   wallet,
@@ -14,17 +19,30 @@ export const ConnectWalletContent = ({
   wallet: ConnectedWallet | null
   isWrongChain: boolean
 }) => {
+  const chain = useCurrentChain()
+  const isSupported = isPairingSupported(chain?.disabledWallets)
+
   return (
     <>
       {wallet && !isWrongChain && <Typography mb={2}>Wallet connected</Typography>}
       {wallet ? (
         <Typography mb={2} component="div">
-          Creating a safe on <NetworkSelector />
+          Creating a Safe on <NetworkSelector />
         </Typography>
       ) : (
         <>
-          <Typography mb={2}>In order to create a safe you need to connect a wallet</Typography>
-          <ConnectWallet />
+          <Typography mb={2}>In order to create a Safe you need to connect a wallet</Typography>
+          <div className={css.connectionOptions}>
+            <div className={css.wallet}>
+              <WalletDetails />
+            </div>
+
+            {isSupported && (
+              <div className={css.pairing}>
+                <PairingDetails />
+              </div>
+            )}
+          </div>
         </>
       )}
       {isWrongChain && (
