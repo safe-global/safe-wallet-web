@@ -15,6 +15,7 @@ import { isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
 import type { SimulationTxParams } from '@/components/tx/TxSimulation/utils'
 
 import css from './styles.module.css'
+import Box from '@mui/material/Box'
 
 export type TxSimulationProps = {
   transactions: SimulationTxParams['transactions']
@@ -63,34 +64,38 @@ const TxSimulationBlock = ({ transactions, canExecute, gasLimit, disabled }: TxS
     (simulationRequestStatus !== FETCH_STATUS.NOT_ASKED && simulationGasLimit === 0)
   const showSimulationButton = !isSimulationFinished
 
-  return showSimulationButton ? (
-    <Accordion expanded={false} elevation={0}>
-      <AccordionSummary className={css.simulateAccordion}>
-        <Typography>Transaction validity</Typography>
-        <Track {...MODALS_EVENTS.SIMULATE_TX}>
-          <Button
-            variant="text"
-            size="small"
-            disabled={disabled || isSimulationLoading}
-            color="primary"
-            onClick={handleSimulation}
-          >
-            {isSimulationLoading && <CircularProgress size={14} />}
-            <span>{isSimulationLoading ? 'Simulating...' : 'Simulate'}</span>
-          </Button>
-        </Track>
-      </AccordionSummary>
-    </Accordion>
-  ) : (
-    <Accordion expanded elevation={0}>
-      <SimulationResult
-        onClose={resetSimulation}
-        simulation={simulation}
-        simulationRequestStatus={simulationRequestStatus}
-        simulationLink={simulationLink}
-        requestError={requestError}
-      />
-    </Accordion>
+  return (
+    <Box mt={2}>
+      {showSimulationButton ? (
+        <Accordion expanded={false} elevation={0}>
+          <AccordionSummary className={css.simulateAccordion}>
+            <Typography>Transaction validity</Typography>
+            <Track {...MODALS_EVENTS.SIMULATE_TX}>
+              <Button
+                variant="text"
+                size="small"
+                disabled={disabled || isSimulationLoading}
+                color="primary"
+                onClick={handleSimulation}
+              >
+                {isSimulationLoading && <CircularProgress size={14} />}
+                <span>{isSimulationLoading ? 'Simulating...' : 'Simulate'}</span>
+              </Button>
+            </Track>
+          </AccordionSummary>
+        </Accordion>
+      ) : (
+        <Accordion expanded elevation={0}>
+          <SimulationResult
+            onClose={resetSimulation}
+            simulation={simulation}
+            simulationRequestStatus={simulationRequestStatus}
+            simulationLink={simulationLink}
+            requestError={requestError}
+          />
+        </Accordion>
+      )}
+    </Box>
   )
 }
 

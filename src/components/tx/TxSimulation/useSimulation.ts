@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config/constants'
-import { getSimulationLink } from '@/components/tx/TxSimulation/utils'
+import { getSimulation, getSimulationLink } from '@/components/tx/TxSimulation/utils'
 import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/TxSimulation/types'
 import { getSimulationPayload, type SimulationTxParams } from '@/components/tx/TxSimulation/utils'
 
@@ -40,13 +39,9 @@ export const useSimulation = (): UseSimulationReturn => {
     setSimulationRequestStatus(FETCH_STATUS.LOADING)
     setRequestError(undefined)
 
-    const simulationPayload = getSimulationPayload(params)
-
     try {
-      const data = (await fetch(TENDERLY_SIMULATE_ENDPOINT_URL, {
-        method: 'POST',
-        body: JSON.stringify(simulationPayload),
-      }).then((res) => res.json())) as TenderlySimulation
+      const simulationPayload = getSimulationPayload(params)
+      const data = await getSimulation(simulationPayload)
 
       setSimulation(data)
       setSimulationRequestStatus(FETCH_STATUS.SUCCESS)

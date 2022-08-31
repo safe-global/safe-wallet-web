@@ -9,6 +9,7 @@ import { getWeb3 } from '@/hooks/wallets/web3'
 import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
 import { hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/TxSimulation/types'
+import { getMultiSendCallOnlyDeployment } from '@gnosis.pm/safe-deployments'
 
 // TODO: Move to SDK file
 const getSafeContractInstance = (safe: SafeInfo) => {
@@ -39,6 +40,7 @@ const getMultiSendCallOnlyInstance = (safe: SafeInfo) => {
   return ethAdapter.getMultiSendCallOnlyContract({
     safeVersion: safe.version,
     chainId: +safe.chainId,
+    singletonDeployment: getMultiSendCallOnlyDeployment(),
   })
 }
 
@@ -84,13 +86,21 @@ type MultiSendTransactionSimulationParams = {
 
 export type SimulationTxParams = SingleTransactionSimulationParams | MultiSendTransactionSimulationParams
 
-const getSingleTransactionExecutionData = (params: SingleTransactionSimulationParams): string => {
-  const simulatedTransaction = new EthSafeTransaction(params.transactions.data)
-  simulatedTransaction.addSignature(generatePreValidatedSignature(params.executionOwner))
+const getSingleTransactionPayload = (
+  params: SingleTransactionSimulationParams,
+): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
+  let transaction = params.transactions
 
-  const transaction = params.canExecute ? params.transactions : simulatedTransaction
+  if (!params.canExecute) {
+    const simulatedTransaction = new EthSafeTransaction(params.transactions.data)
+    simulatedTransaction.addSignature(generatePreValidatedSignature(params.executionOwner))
 
-  return getSafeContractInstance(params.safe).encode('execTransaction', [
+    transaction = simulatedTransaction
+  }
+
+  const instance = getSafeContractInstance(params.safe)
+
+  const input = instance.encode('execTransaction', [
     transaction.data.to,
     transaction.data.value,
     transaction.data.data,
@@ -102,12 +112,23 @@ const getSingleTransactionExecutionData = (params: SingleTransactionSimulationPa
     transaction.data.refundReceiver,
     transaction.encodedSignatures(),
   ])
+
+  return {
+    to: instance.getAddress(),
+    input,
+  }
 }
 
-const getMultiSendCallOnlyExecutionData = (params: MultiSendTransactionSimulationParams): string => {
+const getMultiSendCallOnlyPayload = (
+  params: MultiSendTransactionSimulationParams,
+): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   const data = encodeMultiSendData(params.transactions)
+  const instance = getMultiSendCallOnlyInstance(params.safe)
 
-  return getMultiSendCallOnlyInstance(params.safe).encode('multiSend', [data])
+  return {
+    to: instance.getAddress(),
+    input: instance.encode('multiSend', [data]),
+  }
 }
 
 /* We need to overwrite the threshold stored in smart contract storage to 1
@@ -139,21 +160,18 @@ const isSingleTransactionSimulation = (params: SimulationTxParams): params is Si
 }
 
 export const getSimulationPayload = (params: SimulationTxParams): TenderlySimulatePayload => {
-  const executionData = isSingleTransactionSimulation(params)
-    ? getSingleTransactionExecutionData(params)
-    : getMultiSendCallOnlyExecutionData(params)
-
-  const safeAddress = params.safe.address.value
+  const payload = isSingleTransactionSimulation(params)
+    ? getSingleTransactionPayload(params)
+    : getMultiSendCallOnlyPayload(params)
 
   return {
+    ...payload,
     network_id: params.safe.chainId,
     from: params.executionOwner,
-    to: safeAddress,
-    input: executionData,
     gas: params.gasLimit,
     // With gas price 0 account don't need token for gas
     gas_price: '0',
-    state_objects: getStateOverride(safeAddress, undefined, undefined, THRESHOLD_ONE_STORAGE_OVERRIDE),
+    state_objects: getStateOverride(params.safe.address.value, undefined, undefined, THRESHOLD_ONE_STORAGE_OVERRIDE),
     save: true,
     save_if_fails: true,
   }
