@@ -89,8 +89,10 @@ export type SimulationTxParams = SingleTransactionSimulationParams | MultiSendTr
 const getSingleTransactionPayload = (
   params: SingleTransactionSimulationParams,
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
+  // If a transaction is executable we simulate with the proposed/selected gasLimit and the actual signatures
   let transaction = params.transactions
 
+  // Otherwise we overwrite the threshold to 1 on Tenderly and create a signature
   if (!params.canExecute) {
     const simulatedTransaction = new EthSafeTransaction(params.transactions.data)
     simulatedTransaction.addSignature(generatePreValidatedSignature(params.executionOwner))

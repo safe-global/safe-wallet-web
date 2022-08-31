@@ -15,7 +15,6 @@ import { isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
 import type { SimulationTxParams } from '@/components/tx/TxSimulation/utils'
 
 import css from './styles.module.css'
-import Box from '@mui/material/Box'
 
 export type TxSimulationProps = {
   transactions: SimulationTxParams['transactions']
@@ -65,25 +64,23 @@ const TxSimulationBlock = ({ transactions, canExecute, gasLimit, disabled }: TxS
   const showSimulationButton = !isSimulationFinished
 
   return (
-    <Box mt={2}>
+    <Accordion expanded={!showSimulationButton} elevation={0} sx={{ mt: 2 }}>
       {showSimulationButton ? (
-        <Accordion expanded={false} elevation={0}>
-          <AccordionSummary className={css.simulateAccordion}>
-            <Typography>Transaction validity</Typography>
-            <Track {...MODALS_EVENTS.SIMULATE_TX}>
-              <Button
-                variant="text"
-                size="small"
-                disabled={disabled || isSimulationLoading}
-                color="primary"
-                onClick={handleSimulation}
-              >
-                {isSimulationLoading && <CircularProgress size={14} />}
-                <span>{isSimulationLoading ? 'Simulating...' : 'Simulate'}</span>
-              </Button>
-            </Track>
-          </AccordionSummary>
-        </Accordion>
+        <AccordionSummary className={css.simulateAccordion}>
+          <Typography>Transaction validity</Typography>
+          <Track {...MODALS_EVENTS.SIMULATE_TX}>
+            <Button
+              variant="text"
+              size="small"
+              disabled={disabled || isSimulationLoading}
+              color="primary"
+              onClick={handleSimulation}
+            >
+              {isSimulationLoading && <CircularProgress size={14} />}
+              <span>{isSimulationLoading ? 'Simulating...' : 'Simulate'}</span>
+            </Button>
+          </Track>
+        </AccordionSummary>
       ) : (
         <Accordion expanded elevation={0}>
           <SimulationResult
@@ -95,7 +92,7 @@ const TxSimulationBlock = ({ transactions, canExecute, gasLimit, disabled }: TxS
           />
         </Accordion>
       )}
-    </Box>
+    </Accordion>
   )
 }
 
