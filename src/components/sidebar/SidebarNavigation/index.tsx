@@ -38,9 +38,10 @@ const Navigation = (): ReactElement => {
   return (
     <SidebarList>
       {navItems.map((item) => {
+        // TODO: We are aware of the submenu highlighting bug. It's insignificant as submenus will be soon removed
         if (!item.items) {
           return (
-            <ListItem key={item.href} disablePadding>
+            <ListItem key={item.href} disablePadding selected={router.pathname === item.href}>
               <SidebarListItemButton
                 onClick={() => setOpenHref(item.href)}
                 selected={isOpen(item.href)}
@@ -49,8 +50,9 @@ const Navigation = (): ReactElement => {
                 {item.icon && (
                   <SidebarListItemIcon
                     sx={{
-                      '& svg path': {
-                        fill: ({ palette }) => (isOpen(item.href) ? palette.primary.main : palette.secondary.main),
+                      '& svg': {
+                        width: '16px',
+                        height: '16px',
                       },
                     }}
                   >

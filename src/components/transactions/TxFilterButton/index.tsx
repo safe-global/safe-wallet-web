@@ -16,12 +16,14 @@ const TxFilterButton = () => {
     setShowFilter((prev) => !prev)
   }
 
+  const ExpandIcon = showFilter ? ExpandLessIcon : ExpandMoreIcon
+
   return (
     <>
       <Button variant="contained" onClick={toggleFilter} size="small">
         <FilterAltOutlinedIcon fontSize="small" />
         {filter?.type ?? 'Filter'}
-        {showFilter ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+        <ExpandIcon fontSize="small" />
       </Button>
 
       {showFilter && (

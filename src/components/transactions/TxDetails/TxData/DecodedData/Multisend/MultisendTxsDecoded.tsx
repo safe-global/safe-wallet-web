@@ -45,7 +45,7 @@ const MultisendTxsDecoded = ({ actionTitle, method, children, txDetails }: Multi
     >
       <AccordionSummary
         sx={{ '&.Mui-expanded': { minHeight: '48px' }, '& .MuiAccordionSummary-content.Mui-expanded': { margin: '0' } }}
-        expandIcon={<ExpandMoreIcon />}
+        expandIcon={<ExpandMoreIcon color="border" />}
       >
         <div className={css.summary}>
           <CodeIcon />

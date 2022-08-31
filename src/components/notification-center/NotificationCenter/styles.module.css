@@ -6,6 +6,7 @@
 
 .popoverContainer {
   width: 446px;
+  border: 1px solid var(--color-border-light);
 }
 
 .popoverHeader {

@@ -35,7 +35,7 @@ const Sidebar = (): ReactElement => {
         </div>
 
         <IconButton className={css.drawerButton} onClick={onDrawerToggle}>
-          <ChevronRight />
+          <ChevronRight color="primary" />
         </IconButton>
 
         {isSafeRoute ? (

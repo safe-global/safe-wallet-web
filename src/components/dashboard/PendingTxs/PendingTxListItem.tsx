@@ -12,7 +12,7 @@ const StyledContainer = styled.div`
   width: 100%;
   text-decoration: none;
   background-color: var(--color-background-paper);
-  border: 2px solid var(--color-border-light);
+  border: 1px solid var(--color-border-light);
   border-radius: 8px;
   box-sizing: border-box;
 `
@@ -22,7 +22,7 @@ const StyledConfirmationsCount = styled.div`
   border-radius: 8px;
   font-weight: bold;
   font-size: 12px;
-  background-color: var(--color-background-light);
+  background-color: var(--color-secondary-light);
 `
 
 const TxConfirmations = styled.div`
@@ -72,7 +72,7 @@ const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {
               ) : (
                 <Spacer />
               )}
-              <ChevronRight color="secondary" />
+              <ChevronRight color="border" />
             </TxConfirmations>
           </Grid>
         </StyledContainer>

@@ -1,60 +1,58 @@
-const darkPalette = {
+const palette = {
   text: {
-    primary: '#ffffff',
-    secondary: '#ffffff',
-    disabled: '#ffffff4d',
-  },
-  action: {
-    active: '#ffffff',
+    primary: '#FFFFFF',
+    secondary: '#636669',
+    disabled: '#ddd',
   },
   primary: {
-    dark: '#0E7361',
-    main: '#008C73',
-    light: '#92C9BE',
-    background: '#3e454d',
+    main: '#12FF80',
+    light: '#B0FFC9',
   },
   secondary: {
-    main: '#EFFAF8',
-    light: '#566976',
+    dark: '#636669',
+    main: '#FFFFFF',
+    light: '#B2BBC0',
+    background: '#0E271B',
   },
   border: {
-    main: '#ACBAC3',
-    light: '#25282b',
-    background: '#444444',
+    main: '#636669',
+    light: '#303033',
+    background: '#121312',
   },
   error: {
-    dark: '#C31717',
-    main: '#F02525',
-    light: '#FFCED6',
-    background: '#FFF3F5',
+    dark: '#CE4D5D',
+    main: '#FF5F72',
+    light: '#FFB4BD',
+    background: '#FFF0F2',
   },
   success: {
-    dark: '#027128',
-    main: '#008C30',
-    light: '#99CDAB',
-    background: '#EFFAF1',
+    dark: '#028D4C',
+    main: '#00B460',
+    light: '#72F5B8',
+    background: '#F2FFF9',
   },
   info: {
-    dark: '#247CB7',
-    main: '#3BA2E7',
-    light: '#A6D0EC',
-    background: '#EBF7FF',
+    dark: '#52BFDC',
+    main: '#5FDDFF',
+    light: '#B7F0FF',
+    background: '#EFFCFF',
   },
   warning: {
-    dark: '#E8663D',
-    main: '#FFC05F',
-    light: '#FBE5C5',
-    background: '#FFF4E3',
+    dark: '#CD674E',
+    main: '#FF8061',
+    light: '#FFB7A6',
+    background: '#FFF1EE',
   },
+  // TODO:
   background: {
-    default: '#121212',
-    main: '#121212',
-    paper: '#1e1f20',
-    light: '#282e2d',
+    default: '#121312',
+    main: '#121312',
+    paper: '#1C1C1E',
+    light: '#F1FAF8',
   },
   logo: {
-    main: '#ffffff',
+    main: '#FFFFFF',
   },
 }
 
-export default darkPalette
+export default palette

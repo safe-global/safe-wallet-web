@@ -144,6 +144,13 @@ const initTheme = (darkMode: boolean) => {
               border: '2px solid',
             },
           },
+          contained: {
+            '&:hover': {
+              color: theme.palette.text.primary,
+              backgroundColor: 'transparent',
+              outline: `2px solid ${theme.palette.primary.main}`,
+            },
+          },
           sizeLarge: { fontSize: '16px' },
         },
       },
@@ -215,6 +222,9 @@ const initTheme = (darkMode: boolean) => {
         },
       },
       MuiPaper: {
+        defaultProps: {
+          elevation: 0,
+        },
         styleOverrides: {
           outlined: ({ theme }) => ({
             borderWidth: 2,
@@ -228,7 +238,7 @@ const initTheme = (darkMode: boolean) => {
       },
       MuiPopover: {
         defaultProps: {
-          elevation: 2,
+          elevation: 0,
         },
         styleOverrides: {
           paper: {

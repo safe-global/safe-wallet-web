@@ -39,7 +39,7 @@ const KeyholeIcon = ({
             height: height / 2,
             width: width / 2,
             '& path': {
-              fill: ({ palette }) => palette.secondary.light,
+              fill: ({ palette }) => palette.primary.light,
             },
           }}
         />

@@ -109,7 +109,7 @@ const TxFilterForm = (): ReactElement => {
   }
 
   return (
-    <Paper elevation={0} variant="outlined" sx={{ p: 4 }}>
+    <Paper variant="outlined" sx={{ p: 4 }}>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3}>

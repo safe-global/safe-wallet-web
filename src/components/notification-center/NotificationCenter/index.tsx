@@ -81,6 +81,8 @@ const NotificationCenter = (): ReactElement => {
     dispatch(deleteAllNotifications())
   }
 
+  const ExpandIcon = showAll ? ExpandLessIcon : ExpandMoreIcon
+
   return (
     <>
       <ButtonBase disableRipple className={css.bell} onClick={handleClick}>
@@ -91,7 +93,7 @@ const NotificationCenter = (): ReactElement => {
             horizontal: 'right',
           }}
         >
-          <NotificationsNoneOutlinedIcon sx={({ palette }) => ({ color: palette.secondary.light })} />
+          <NotificationsNoneOutlinedIcon color="border" />
         </UnreadBadge>
       </ButtonBase>
 
@@ -107,7 +109,6 @@ const NotificationCenter = (): ReactElement => {
           vertical: 'top',
           horizontal: 'left',
         }}
-        elevation={3}
         sx={{ mt: 1 }}
       >
         <Paper className={css.popoverContainer}>
@@ -141,7 +142,7 @@ const NotificationCenter = (): ReactElement => {
                     horizontal: 'left',
                   }}
                 >
-                  {showAll ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  <ExpandIcon color="border" />
                 </UnreadBadge>
               </IconButton>
               <Typography sx={{ color: ({ palette }) => palette.border.main }}>

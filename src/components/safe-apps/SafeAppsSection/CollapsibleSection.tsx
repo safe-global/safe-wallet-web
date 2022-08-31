@@ -23,7 +23,7 @@ const CollapsibleSection = ({
 
   return (
     <Accordion className={styles.accordion} defaultExpanded>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon color="border" />}>
         <Typography
           variant="caption"
           fontWeight={700}

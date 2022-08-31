@@ -14,16 +14,17 @@ import { selectCurrency } from '@/store/settingsSlice'
 import css from './styles.module.css'
 import QrIcon from '@/public/images/sidebar/qr.svg'
 import CopyIcon from '@/public/images/sidebar/copy.svg'
+import ExplorerIcon from '@/public/images/sidebar/explorer.svg'
 
 import { selectSettings } from '@/store/settingsSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getBlockExplorerLink } from '@/utils/chains'
-import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import CopyButton from '@/components/common/CopyButton'
 import QrCodeButton from '../QrCodeButton'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import { SvgIcon } from '@mui/material'
 
 const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
   <IconButton className={css.iconButton} {...props}>
@@ -75,21 +76,21 @@ const SafeHeader = (): ReactElement => {
         <Track {...OVERVIEW_EVENTS.SHOW_QR}>
           <QrCodeButton>
             <HeaderIconButton>
-              <QrIcon />
+              <SvgIcon component={QrIcon} inheritViewBox color="primary" />
             </HeaderIconButton>
           </QrCodeButton>
         </Track>
 
         <Track {...OVERVIEW_EVENTS.COPY_ADDRESS}>
           <CopyButton text={addressCopyText} className={css.iconButton}>
-            <CopyIcon />
+            <SvgIcon component={CopyIcon} inheritViewBox color="primary" />
           </CopyButton>
         </Track>
 
         <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
           <a target="_blank" rel="noreferrer" {...(chain && getBlockExplorerLink(chain, safeAddress))}>
             <HeaderIconButton>
-              <OpenInNewRoundedIcon color="primary" fontSize="small" />
+              <SvgIcon component={ExplorerIcon} inheritViewBox />
             </HeaderIconButton>
           </a>
         </Track>

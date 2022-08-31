@@ -2,6 +2,7 @@ import { ReactElement } from 'react'
 import styled from '@emotion/styled'
 import NextLink from 'next/link'
 import { Link } from '@mui/material'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 export const WidgetContainer = styled.section`
   display: flex;
@@ -40,13 +41,13 @@ const StyledLink = styled(Link)`
   font-weight: bold;
   display: flex;
   align-items: center;
-  gap: var(--space-1);
   margin-bottom: 10px;
-  padding-right: 26px;
 `
 
 export const ViewAllLink = ({ url, text }: { url: string; text?: string }): ReactElement => (
   <NextLink href={url}>
-    <StyledLink href={url}>{text || 'View all'}</StyledLink>
+    <StyledLink href={url}>
+      {text || 'View all'} <ChevronRightIcon />
+    </StyledLink>
   </NextLink>
 )

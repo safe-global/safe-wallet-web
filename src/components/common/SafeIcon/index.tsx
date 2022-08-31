@@ -9,13 +9,7 @@ interface ThresholdProps {
   owners: number | string
 }
 const Threshold = ({ threshold, owners }: ThresholdProps): ReactElement => (
-  <Box
-    className={css.threshold}
-    sx={({ palette }) => ({
-      background: palette.primary.background,
-      color: palette.primary.main,
-    })}
-  >
+  <Box className={css.threshold}>
     {threshold}/{owners}
   </Box>
 )

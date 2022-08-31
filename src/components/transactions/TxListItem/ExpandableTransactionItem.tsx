@@ -30,7 +30,10 @@ export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }
       defaultExpanded={!!txDetails}
       className={isActive ? css.active : undefined}
     >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon color="border" />}
+        sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}
+      >
         <TxSummary item={item} isGrouped={isGrouped} />
       </AccordionSummary>
 
