@@ -1,4 +1,4 @@
-import { useFormContext, Controller } from 'react-hook-form'
+import { useFormContext, Controller, UseControllerProps } from 'react-hook-form'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -28,13 +28,22 @@ export const _getDateError = (reason: DateValidationError) => {
   }
 }
 
-const DatePickerInput = ({ name, label }: { name: string; label: string }) => {
+const DatePickerInput = ({
+  name,
+  label,
+  rules,
+}: {
+  name: string
+  label: string
+  rules?: UseControllerProps['rules']
+}) => {
   const { control, setError } = useFormContext()
 
   return (
     <Controller
       name={name}
       control={control}
+      rules={rules}
       render={({ field, fieldState }) => (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
