@@ -1,4 +1,4 @@
-import { type ReactElement, useState } from 'react'
+import { type ReactElement, useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -72,6 +72,11 @@ const TxPage = ({
 
 const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useTxQueue }): ReactElement => {
   const [pages, setPages] = useState<string[]>([''])
+  const [filter] = useTxFilter()
+
+  useEffect(() => {
+    setPages([''])
+  }, [filter])
 
   const onNextPage = (pageUrl = '') => {
     setPages((prev) => [...prev, pageUrl])
