@@ -19,7 +19,6 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -78,8 +77,6 @@ const SignOrExecuteForm = ({
   const isEstimating = willExecute && gasLimitLoading
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
   const nonceReadonly = !!tx?.signatures.size || !!isRejection
-
-  const canSimulate = provider && wallet?.address && isTxSimulationEnabled(chain) && !isEstimating && safeTx
 
   //
   // Callbacks
@@ -181,7 +178,7 @@ const SignOrExecuteForm = ({
           onFormSubmit={onAdvancedSubmit}
         />
 
-        {safeTx && canSimulate && (
+        {safeTx && (
           <TxSimulation
             transactions={safeTx}
             canExecute={canExecute}
