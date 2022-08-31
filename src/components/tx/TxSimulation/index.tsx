@@ -1,6 +1,5 @@
 import { AccordionSummary, Accordion, Button, Typography, CircularProgress } from '@mui/material'
 import { ReactElement } from 'react'
-import type { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
 
 import Track from '@/components/common/Track'
 import useAsync from '@/hooks/useAsync'
@@ -13,22 +12,24 @@ import { SimulationResult } from '@/components/tx/TxSimulation/SimulationResult'
 import { FETCH_STATUS } from '@/components/tx/TxSimulation/types'
 import { useSimulation } from '@/components/tx/TxSimulation/useSimulation'
 import { isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
+import type { SimulationTxParams } from '@/components/tx/TxSimulation/utils'
 
 import css from './styles.module.css'
 
 export type TxSimulationProps = {
-  getTx: () => Omit<BaseTransaction, 'value'> | undefined
+  transactions: SimulationTxParams['transactions']
   canExecute: boolean
   gasLimit?: string
   disabled: boolean
 }
 
-const TxSimulationBlock = ({ getTx, canExecute, gasLimit, disabled }: TxSimulationProps): ReactElement => {
+const TxSimulationBlock = ({ transactions, canExecute, gasLimit, disabled }: TxSimulationProps): ReactElement => {
+  const { safe } = useSafeInfo()
+  const wallet = useWallet()
+
   const { simulateTransaction, simulation, simulationRequestStatus, simulationLink, requestError, resetSimulation } =
     useSimulation()
-  const { safe } = useSafeInfo()
 
-  const wallet = useWallet()
   const web3 = getWeb3()
 
   const [blockGasLimit] = useAsync(async () => {
@@ -42,20 +43,17 @@ const TxSimulationBlock = ({ getTx, canExecute, gasLimit, disabled }: TxSimulati
   const simulationGasLimit = Number(gasLimit) || Number(blockGasLimit) || 0
 
   const handleSimulation = async () => {
-    const tx = getTx()
-
-    if (!wallet?.address || !tx) {
+    if (!wallet?.address) {
       return
     }
 
     simulateTransaction({
-      tx,
-      chainId: safe.chainId,
-      safeAddress: safe.address.value,
-      walletAddress: wallet.address,
+      safe,
+      executionOwner: wallet.address,
+      transactions,
       canExecute,
       gasLimit: simulationGasLimit,
-    })
+    } as SimulationTxParams)
   }
 
   const isSimulationFinished =

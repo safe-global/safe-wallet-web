@@ -17,9 +17,9 @@ import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
-import { TxSimulation, type TxSimulationProps } from '@/components/tx/TxSimulation'
+import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { isTxSimulationEnabled, getSimulationTx } from '@/components/tx/TxSimulation/utils'
+import { isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -80,22 +80,6 @@ const SignOrExecuteForm = ({
   const nonceReadonly = !!tx?.signatures.size || !!isRejection
 
   const canSimulate = provider && wallet?.address && isTxSimulationEnabled(chain) && !isEstimating && safeTx
-  const getSimulationTx1: TxSimulationProps['getTx'] = () => {
-    if (!canSimulate) {
-      return
-    }
-
-    return {
-      to: safeTx.data.to,
-      data: getSimulationTx({
-        provider,
-        safe,
-        canExecute,
-        ownerAddress: wallet.address,
-        safeTx,
-      }),
-    }
-  }
 
   //
   // Callbacks
@@ -199,7 +183,7 @@ const SignOrExecuteForm = ({
 
         {safeTx && canSimulate && (
           <TxSimulation
-            getTx={getSimulationTx1}
+            transactions={safeTx}
             canExecute={canExecute}
             gasLimit={gasLimit?.toString()}
             disabled={submitDisabled}
