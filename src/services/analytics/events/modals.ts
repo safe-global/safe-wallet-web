@@ -38,7 +38,6 @@ export const MODALS_EVENTS = {
     action: 'Execute transaction',
     category: MODALS_CATEGORY,
   },
-  // TODO: Does not yet exist in web-core
   USE_SPENDING_LIMIT: {
     event: EventType.META,
     action: 'Use spending limit',

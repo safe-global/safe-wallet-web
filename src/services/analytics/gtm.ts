@@ -110,7 +110,10 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
     chainId: _chainId,
     eventCategory: eventData.category,
     eventAction: eventData.action,
-    eventLabel: eventData.label,
+  }
+
+  if (eventData.label) {
+    gtmEvent.eventLabel = eventData.label
   }
 
   gtmSend(gtmEvent)

@@ -47,13 +47,11 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
     const [, ...entries] = csvData.data
 
     for (const entry of entries) {
-      if (hasEntry(entry)) {
-        const [address, name, chainId] = entry
-        dispatch(upsertAddressBookEntry({ address, name, chainId: chainId.trim() }))
-      }
+      const [address, name, chainId] = entry
+      dispatch(upsertAddressBookEntry({ address, name, chainId: chainId.trim() }))
     }
 
-    trackEvent({ ...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON, label: entries.length })
+    trackEvent({ ...ADDRESS_BOOK_EVENTS.IMPORT, label: entries.length })
 
     handleClose()
   }
@@ -86,12 +84,18 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
             setZoneHover(false)
             setError(undefined)
 
-            const message = abOnUploadValidator(result)
+            // Remove empty rows
+            const cleanResult = {
+              ...result,
+              data: result.data.filter(hasEntry),
+            }
+
+            const message = abOnUploadValidator(cleanResult)
 
             if (message) {
               setError(message)
             } else {
-              setCsvData(result)
+              setCsvData(cleanResult)
             }
           }}
         >
