@@ -48,6 +48,7 @@ const DatePickerInput = ({
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             label={label}
+            inputFormat="dd/MM/yyyy"
             {...field}
             disableFuture
             onError={(reason) => {

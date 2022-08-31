@@ -1,5 +1,5 @@
 import { type ReactElement, useState } from 'react'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useTxHistory from '@/hooks/useTxHistory'
@@ -9,6 +9,7 @@ import InfiniteScroll from '../InfiniteScroll'
 import SkeletonTxList from './SkeletonTxList'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
 import TxFilterButton from '@/components/transactions/TxFilterButton'
+import { useTxFilter } from '@/utils/tx-history-filter'
 
 const NoQueuedTxns = () => (
   <Box mt="5vh">
@@ -28,6 +29,7 @@ const TxPage = ({
   isFirstPage: boolean
 }): ReactElement => {
   const { page, error } = useTxns(pageUrl)
+  const [filter] = useTxFilter()
 
   if (page?.results) {
     const isQueue = useTxns === useTxQueue
@@ -38,6 +40,14 @@ const TxPage = ({
         {isFirstPage && (
           <Box display="flex" flexDirection="column" alignItems="flex-end" mt={['-94px', '-44px']} mb={['60px', 0]}>
             {isQueue ? <BatchExecuteButton items={page.results} /> : <TxFilterButton />}
+            {filter && (
+              <Typography mt={2}>
+                {(page.results.length && page.next
+                  ? `> ${page.results.length} ${filter.type} transactions found`
+                  : `${page.results.length} ${filter.type} transactions found`
+                ).toLowerCase()}
+              </Typography>
+            )}
           </Box>
         )}
 
