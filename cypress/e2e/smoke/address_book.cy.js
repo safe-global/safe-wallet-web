@@ -31,7 +31,7 @@ describe('Address book', () => {
       cy.findByText('Create entry').click()
       cy.get('[name="name"]').type(NAME)
       cy.get('[name="address"]').type(ENS_NAME)
-      cy.get('[type="submit"]').should('be.enabled').click()
+      cy.get('[type="submit"]',{timeout:10000}).should('be.enabled').click()
 
       cy.findByText(NAME).should('exist')
       cy.findByText(ADDRESS).should('exist')
@@ -68,6 +68,7 @@ describe('Address book', () => {
       cy.contains('button.MuiButton-sizeMedium', 'Import').click()
       cy.findByText(RINKEBY_CSV_ENTRY.name).should('exist')
       cy.findByText(RINKEBY_CSV_ENTRY.address).should('exist')
+      cy.wait(1000)
     })
 
     it('should find Gnosis Chain imported address', () => {
