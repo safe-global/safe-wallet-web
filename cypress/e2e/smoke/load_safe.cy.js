@@ -41,10 +41,7 @@ describe('Load Safe', () => {
     cy.get('[id=":r1:-label"]').contains(INVALID_INPUT_ERROR_MSG)
     cy.get('[id=":r1:"]').clear().type(NON_CONTRACT_ADDRESS)
     cy.get('[id=":r1:-label"]').contains(INVALID_ADDRESS_ERROR_MSG)
-    cy.get('[id=":r1:"]')
-      .clear()
-      .type(SAFE_ENS_NAME)
-      .should('have.value', SAFE_ENS_NAME_TRANSLATED)
+    cy.get('[id=":r1:"]').clear().type(SAFE_ENS_NAME).should('have.value', SAFE_ENS_NAME_TRANSLATED)
   })
 
   it('Should enter a valid QRCode', () => {
@@ -58,8 +55,10 @@ describe('Load Safe', () => {
   it('Should name the 1st owner', () => {
     // Owners
     // Checks existing default ENS Owner name in this safe
-    cy.findByPlaceholderText(OWNER_ENS_DEFAULT_NAME, {timeout:10000}).parents('.MuiGrid-spacing-xs-3').contains(OWNER_ADDRESS)
-    
+    cy.findByPlaceholderText(OWNER_ENS_DEFAULT_NAME, { timeout: 10000 })
+      .parents('.MuiGrid-spacing-xs-3')
+      .contains(OWNER_ADDRESS)
+
     cy.get('[name="owners.0.name"]').type('Test Owner Name').should('have.value', 'Test Owner Name')
     cy.findByText('Continue').click()
   })
@@ -75,6 +74,6 @@ describe('Load Safe', () => {
     // Safe loaded
     cy.get('aside').findByText('Test safe name')
     cy.get('aside').find('ul').findByText('Settings').click()
-    cy.findByText('Test Owner Name', {timeout:10000})
+    cy.findByText('Test Owner Name', { timeout: 10000 })
   })
 })
