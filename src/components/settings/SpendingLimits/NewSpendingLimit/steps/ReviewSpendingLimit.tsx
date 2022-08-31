@@ -37,7 +37,7 @@ export const createNewSpendingLimitTx = async (
 
   const isSpendingLimitEnabled = await sdk.isModuleEnabled(spendingLimitAddress)
   if (!isSpendingLimitEnabled) {
-    const enableModuleTx = await sdk.getEnableModuleTx(spendingLimitAddress)
+    const enableModuleTx = await sdk.createEnableModuleTx(spendingLimitAddress)
 
     const tx = {
       to: enableModuleTx.data.to,
