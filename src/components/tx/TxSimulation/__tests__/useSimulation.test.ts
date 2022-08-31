@@ -1,7 +1,8 @@
-import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { act, renderHook, waitFor } from '@/tests/test-utils'
 import { useSimulation } from '@/components/tx/TxSimulation/useSimulation'
+import * as utils from '@/components/tx/TxSimulation/utils'
 import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/TxSimulation/types'
 
 const setupFetchStub = (data: any) => (_url: string) => {
@@ -12,8 +13,7 @@ const setupFetchStub = (data: any) => (_url: string) => {
   })
 }
 
-// TODO:
-describe.skip('useSimulation()', () => {
+describe('useSimulation()', () => {
   afterEach(() => {
     //@ts-ignore
     global.fetch?.mockClear()
@@ -35,20 +35,45 @@ describe.skip('useSimulation()', () => {
   })
 
   it('should set simulationError on errors and errors can be reset.', async () => {
+    const safeAddress = '0x57CB13cbef735FbDD65f5f2866638c546464E45F'
+    const chainId = '4'
+
     global.fetch = jest.fn()
 
     const mockFetch = jest.spyOn(global, 'fetch')
+
     mockFetch.mockImplementation(() => Promise.reject({ message: '404 not found' }))
+
+    jest.spyOn(utils, 'getSimulationPayload').mockImplementation(() => ({
+      input: '0x123',
+      to: '0x123',
+      network_id: chainId,
+      from: safeAddress,
+      gas: 0,
+      // With gas price 0 account don't need token for gas
+      gas_price: '0',
+      state_objects: {
+        [safeAddress]: {
+          balance: '0x123',
+        },
+      },
+      save: true,
+      save_if_fails: true,
+    }))
+
     const { result } = renderHook(() => useSimulation())
     const { simulateTransaction } = result.current
 
     await act(async () =>
       simulateTransaction({
-        //@ts-ignore
-        tx: { data: '0x123', to: ZERO_ADDRESS },
-        chainId: '4',
-        safeAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45F',
-        walletAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45E',
+        transactions: [],
+        safe: {
+          address: {
+            value: safeAddress,
+          },
+          chainId,
+        } as SafeInfo,
+        executionOwner: safeAddress,
         canExecute: true,
         gasLimit: 200_000,
       }),
@@ -72,6 +97,7 @@ describe.skip('useSimulation()', () => {
 
   it('should set simulation for executable transaction on success and simulation can be reset.', async () => {
     const safeAddress = '0x57CB13cbef735FbDD65f5f2866638c546464E45F'
+    const chainId = '4'
 
     const mockAnswer: TenderlySimulation = {
       contracts: [],
@@ -87,16 +113,36 @@ describe.skip('useSimulation()', () => {
 
     const mockFetch = jest.spyOn(global, 'fetch')
 
+    jest.spyOn(utils, 'getSimulationPayload').mockImplementation(() => ({
+      input: '0x123',
+      to: '0x123',
+      network_id: chainId,
+      from: safeAddress,
+      gas: 0,
+      // With gas price 0 account don't need token for gas
+      gas_price: '0',
+      state_objects: {
+        [safeAddress]: {
+          balance: '0x123',
+        },
+      },
+      save: true,
+      save_if_fails: true,
+    }))
+
     const { result } = renderHook(() => useSimulation())
     const { simulateTransaction } = result.current
 
     await act(async () =>
       simulateTransaction({
-        //@ts-ignore
-        tx: { data: '0x123', to: ZERO_ADDRESS },
-        chainId: '4',
-        safeAddress,
-        walletAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45E',
+        transactions: [],
+        safe: {
+          address: {
+            value: safeAddress,
+          },
+          chainId,
+        } as SafeInfo,
+        executionOwner: safeAddress,
         canExecute: true,
         gasLimit: 200_000,
       }),
@@ -121,6 +167,7 @@ describe.skip('useSimulation()', () => {
 
   it('should set simulation for not-executable transaction on success', async () => {
     const safeAddress = '0x57CB13cbef735FbDD65f5f2866638c546464E45F'
+    const chainId = '4'
 
     const mockAnswer: TenderlySimulation = {
       contracts: [],
@@ -136,16 +183,36 @@ describe.skip('useSimulation()', () => {
 
     const mockFetch = jest.spyOn(global, 'fetch')
 
+    jest.spyOn(utils, 'getSimulationPayload').mockImplementation(() => ({
+      input: '0x123',
+      to: '0x123',
+      network_id: chainId,
+      from: safeAddress,
+      gas: 0,
+      // With gas price 0 account don't need token for gas
+      gas_price: '0',
+      state_objects: {
+        [safeAddress]: {
+          balance: '0x123',
+        },
+      },
+      save: true,
+      save_if_fails: true,
+    }))
+
     const { result } = renderHook(() => useSimulation())
     const { simulateTransaction } = result.current
 
     await act(async () =>
       simulateTransaction({
-        //@ts-ignore
-        tx: { data: '0x123', to: ZERO_ADDRESS },
-        chainId: '4',
-        safeAddress,
-        walletAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45E',
+        transactions: [],
+        safe: {
+          address: {
+            value: safeAddress,
+          },
+          chainId,
+        } as SafeInfo,
+        executionOwner: safeAddress,
         canExecute: false,
         gasLimit: 200_000,
       }),

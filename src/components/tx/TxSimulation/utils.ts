@@ -86,7 +86,7 @@ type MultiSendTransactionSimulationParams = {
 
 export type SimulationTxParams = SingleTransactionSimulationParams | MultiSendTransactionSimulationParams
 
-const getSingleTransactionPayload = (
+export const _getSingleTransactionPayload = (
   params: SingleTransactionSimulationParams,
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   // If a transaction is executable we simulate with the proposed/selected gasLimit and the actual signatures
@@ -121,7 +121,7 @@ const getSingleTransactionPayload = (
   }
 }
 
-const getMultiSendCallOnlyPayload = (
+export const _getMultiSendCallOnlyPayload = (
   params: MultiSendTransactionSimulationParams,
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   const data = encodeMultiSendData(params.transactions)
@@ -142,7 +142,7 @@ const THRESHOLD_ONE_STORAGE_OVERRIDE = {
   [`0x${'4'.padStart(64, '0')}`]: `0x${'1'.padStart(64, '0')}`,
 }
 
-const getStateOverride = (
+export const _getStateOverride = (
   address: string,
   balance?: string,
   code?: string,
@@ -163,8 +163,8 @@ const isSingleTransactionSimulation = (params: SimulationTxParams): params is Si
 
 export const getSimulationPayload = (params: SimulationTxParams): TenderlySimulatePayload => {
   const payload = isSingleTransactionSimulation(params)
-    ? getSingleTransactionPayload(params)
-    : getMultiSendCallOnlyPayload(params)
+    ? _getSingleTransactionPayload(params)
+    : _getMultiSendCallOnlyPayload(params)
 
   return {
     ...payload,
@@ -173,7 +173,7 @@ export const getSimulationPayload = (params: SimulationTxParams): TenderlySimula
     gas: params.gasLimit,
     // With gas price 0 account don't need token for gas
     gas_price: '0',
-    state_objects: getStateOverride(params.safe.address.value, undefined, undefined, THRESHOLD_ONE_STORAGE_OVERRIDE),
+    state_objects: _getStateOverride(params.safe.address.value, undefined, undefined, THRESHOLD_ONE_STORAGE_OVERRIDE),
     save: true,
     save_if_fails: true,
   }
