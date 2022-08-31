@@ -40,9 +40,9 @@
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@gnosis.pm/safe-apps-sdk": "^7.7.0",
-    "@gnosis.pm/safe-core-sdk": "^2.4.1",
+    "@gnosis.pm/safe-core-sdk": "^3.0.0",
     "@gnosis.pm/safe-deployments": "^1.15.0",
-    "@gnosis.pm/safe-ethers-lib": "^1.4.0",
+    "@gnosis.pm/safe-ethers-lib": "^1.5.0",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@gnosis.pm/safe-react-gateway-sdk": "^3.3.5",
     "@mui/icons-material": "^5.8.4",
@@ -83,7 +83,7 @@
     "semver": "^7.3.7"
   },
   "devDependencies": {
-    "@gnosis.pm/safe-core-sdk-types": "^1.4.0",
+    "@gnosis.pm/safe-core-sdk-types": "^1.5.0",
     "@next/bundle-analyzer": "^12.2.4",
     "@sentry/types": "^7.8.1",
     "@svgr/webpack": "^6.3.1",

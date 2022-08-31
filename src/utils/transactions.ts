@@ -139,12 +139,12 @@ export const getSafeTxs = (txs: TransactionDetails[], chainId: string, safeAddre
 }
 
 export const getTxOptions = (params: AdvancedParameters, currentChain: ChainInfo | undefined): TransactionOptions => {
-  const txOptions = {
+  const txOptions: TransactionOptions = {
     gasLimit: params.gasLimit?.toString(),
     maxFeePerGas: params.maxFeePerGas?.toString(),
     maxPriorityFeePerGas: params.maxPriorityFeePerGas?.toString(),
-    nonce: params.userNonce?.toString(),
-  } as TransactionOptions
+    nonce: params.userNonce,
+  }
 
   // Some chains don't support EIP-1559 gas price params
   if (currentChain && !hasFeature(currentChain, FEATURES.EIP1559)) {

@@ -61,7 +61,7 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
     txParams = { ...txParams, nonce }
   }
 
-  return safeSDK.createTransaction(txParams)
+  return safeSDK.createTransaction({ safeTransactionData: txParams })
 }
 
 /**
@@ -70,7 +70,7 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
  * If only one tx is passed it will be created without multiSend.
  */
 export const createMultiSendTx = async (txParams: MetaTransactionData[]): Promise<SafeTransaction> => {
-  return withRecommendedNonce((safeSDK) => safeSDK.createTransaction(txParams))
+  return withRecommendedNonce((safeSDK) => safeSDK.createTransaction({ safeTransactionData: txParams }))
 }
 
 const withRecommendedNonce = async (
@@ -82,19 +82,19 @@ const withRecommendedNonce = async (
 }
 
 export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promise<SafeTransaction> => {
-  return withRecommendedNonce((safeSDK) => safeSDK.getRemoveOwnerTx(txParams))
+  return withRecommendedNonce((safeSDK) => safeSDK.createRemoveOwnerTx(txParams))
 }
 
 export const createAddOwnerTx = async (txParams: AddOwnerTxParams): Promise<SafeTransaction> => {
-  return withRecommendedNonce((safeSDK) => safeSDK.getAddOwnerTx(txParams))
+  return withRecommendedNonce((safeSDK) => safeSDK.createAddOwnerTx(txParams))
 }
 
 export const createSwapOwnerTx = async (txParams: SwapOwnerTxParams): Promise<SafeTransaction> => {
-  return withRecommendedNonce((safeSDK) => safeSDK.getSwapOwnerTx(txParams))
+  return withRecommendedNonce((safeSDK) => safeSDK.createSwapOwnerTx(txParams))
 }
 
 export const createUpdateThresholdTx = async (threshold: number): Promise<SafeTransaction> => {
-  return withRecommendedNonce((safeSDK) => safeSDK.getChangeThresholdTx(threshold))
+  return withRecommendedNonce((safeSDK) => safeSDK.createChangeThresholdTx(threshold))
 }
 
 /**
