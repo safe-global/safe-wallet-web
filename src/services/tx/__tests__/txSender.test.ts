@@ -66,13 +66,14 @@ describe('txSender', () => {
       }
       await createTx(txParams)
 
-      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({
+      const safeTransactionData = {
         to: '0x123',
         value: '1',
         data: '0x0',
         nonce: 17,
         safeTxGas: 60000,
-      })
+      }
+      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ safeTransactionData })
     })
 
     it('should create a tx with a given nonce', async () => {
@@ -84,12 +85,13 @@ describe('txSender', () => {
       }
       await createTx(txParams, 18)
 
-      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({
+      const safeTransactionData = {
         to: '0x123',
         value: '1',
         data: '0x0',
         nonce: 18,
-      })
+      }
+      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ safeTransactionData })
     })
   })
 
