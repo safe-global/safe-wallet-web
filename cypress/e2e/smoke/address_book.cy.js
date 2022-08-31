@@ -30,9 +30,8 @@ describe('Address book', () => {
       // Add a new entry manually
       cy.findByText('Create entry').click()
       cy.get('[name="name"]').type(NAME)
-      //cy.get('[name="address"]').type(ENS_NAME) ENS names are not being translated in the simulation (sausage fork)
-      cy.get('[name="address"]').type(ADDRESS)
-      cy.get('[type="submit"]').click()
+      cy.get('[name="address"]').type(ENS_NAME)
+      cy.get('[type="submit"]').should('be.enabled').click()
 
       cy.findByText(NAME).should('exist')
       cy.findByText(ADDRESS).should('exist')
@@ -71,7 +70,7 @@ describe('Address book', () => {
       cy.findByText(RINKEBY_CSV_ENTRY.address).should('exist')
     })
 
-    it.skip('should find Gnosis Chain imported address', () => {
+    it('should find Gnosis Chain imported address', () => {
       //Test skipped because it causes an error in the simulation
       //"Unhandled Runtime Error
       //Error: Hydration failed because the initial UI does not match what was rendered on the server."
@@ -83,8 +82,6 @@ describe('Address book', () => {
       // Navigate to the Address Book page
       cy.visit(`/${GNO_TEST_SAFE}/address-book`)
 
-      // Close cookies banner
-      cy.contains('button', 'Accept selection').click()
       // Waits for the Address Book table to be in the page
       cy.contains('p', 'Address book').should('be.visible')
 
