@@ -139,6 +139,7 @@ export const getSafeTxs = (txs: TransactionDetails[], chainId: string, safeAddre
 }
 
 export const getTxOptions = (params: AdvancedParameters, currentChain: ChainInfo | undefined): TransactionOptions => {
+  // TODO: The `nonce` type will be updated to `number | string` in the next Core SDK release
   const txOptions: TransactionOptions = {
     gasLimit: params.gasLimit?.toString(),
     maxFeePerGas: params.maxFeePerGas?.toString(),
