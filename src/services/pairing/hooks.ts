@@ -23,12 +23,11 @@ let hasInitialized = false
 // WC has no flag to determine if a session is currently being created
 let isConnecting = false
 
-const canConnect = !connector.connected && !isConnecting
-
 export const useInitPairing = () => {
   const onboard = useOnboard()
   const chain = useCurrentChain()
 
+  const canConnect = !connector.connected && !isConnecting
   const isSupported = isPairingSupported(chain?.disabledWallets)
 
   const createSession = useCallback(() => {
@@ -43,7 +42,7 @@ export const useInitPairing = () => {
         isConnecting = false
       })
       .catch((e) => logError(Errors._303, (e as Error).message))
-  }, [chain, isSupported])
+  }, [chain, isSupported, canConnect])
 
   useEffect(() => {
     if (!onboard || !isSupported) {
