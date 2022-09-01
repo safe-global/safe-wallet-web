@@ -21,7 +21,7 @@ const BatchExecuteButton = ({ items }: { items: TransactionListItem[] }) => {
 
   const isBatchable = batchableTransactions.length > 1
   const hasPendingTx = batchableTransactions.some((tx) => pendingTxs[tx.transaction.id])
-  const isDisabled = !isBatchable || hasPendingTx
+  const isDisabled = !isBatchable || hasPendingTx || !wallet || isWrongChain
 
   const handleOnMouseEnter = useCallback(() => {
     hoverContext.setActiveHover(batchableTransactions.map((tx) => tx.transaction.id))
@@ -39,8 +39,6 @@ const BatchExecuteButton = ({ items }: { items: TransactionListItem[] }) => {
 
     setOpen(true)
   }
-
-  if (!wallet || isWrongChain) return null
 
   return (
     <>
