@@ -119,113 +119,112 @@ const pairingModule = (): WalletInit => {
             this.disconnect = () => killPairingSession(this.connector)
 
             this.request = async ({ method, params }) => {
-              switch (method) {
-                case ProviderMethods.ETH_CHAIN_ID: {
-                  return `0x${this.connector.chainId.toString(16)}`
-                }
+              if (method === ProviderMethods.ETH_CHAIN_ID) {
+                return `0x${this.connector.chainId.toString(16)}`
+              }
 
-                case ProviderMethods.ETH_REQUEST_ACCOUNTS: {
-                  return new Promise<ProviderAccounts>((resolve, reject) => {
-                    if (!this.connector.connected) {
-                      this.connector.createSession().then(() => {
-                        QRModal.open(this.connector.uri, () =>
-                          reject(
-                            new ProviderRpcError({
-                              code: 4001,
-                              message: 'User rejected the request.',
-                            }),
-                          ),
-                        )
-                      })
-                    } else {
-                      const { accounts, chainId } = this.connector.session
-
-                      this.emit(ProviderEvents.CHAIN_CHANGED, `0x${chainId.toString(16)}`)
-
-                      return resolve(accounts)
-                    }
-
-                    // @ts-ignore
-                    fromEvent(this.connector, ProviderEvents.CONNECT, (error, payload) => {
-                      if (error) {
-                        throw error
-                      }
-
-                      return payload
+              if (method === ProviderMethods.ETH_REQUEST_ACCOUNTS) {
+                return new Promise<ProviderAccounts>((resolve, reject) => {
+                  if (!this.connector.connected) {
+                    this.connector.createSession().then(() => {
+                      QRModal.open(this.connector.uri, () =>
+                        reject(
+                          new ProviderRpcError({
+                            code: 4001,
+                            message: 'User rejected the request.',
+                          }),
+                        ),
+                      )
                     })
-                      .pipe(take(1))
-                      .subscribe({
-                        next: ({ params }) => {
-                          const [{ accounts, chainId }] = params
+                  } else {
+                    const { accounts, chainId } = this.connector.session
 
-                          this.emit(ProviderEvents.ACCOUNTS_CHANGED, accounts)
-                          this.emit(ProviderEvents.CHAIN_CHANGED, `0x${chainId.toString(16)}`)
+                    this.emit(ProviderEvents.CHAIN_CHANGED, `0x${chainId.toString(16)}`)
 
-                          QRModal.close()
-
-                          resolve(accounts)
-                        },
-                        error: reject,
-                      })
-                  })
-                }
-
-                case ProviderMethods.ETH_SEND_TRANSACTION: {
-                  return this.connector.sendTransaction(params![0] as ITxData)
-                }
-
-                case ProviderMethods.ETH_SIGN_TRANSACTION: {
-                  return this.connector.signTransaction(params![0] as ITxData)
-                }
-
-                case ProviderMethods.PERSONAL_SIGN: {
-                  return this.connector.signPersonalMessage(params!)
-                }
-
-                case ProviderMethods.ETH_SIGN: {
-                  return this.connector.signMessage(params!)
-                }
-
-                case ProviderMethods.ETH_SIGN_TYPED_DATA: {
-                  return this.connector.signTypedData(params!)
-                }
-
-                case ProviderMethods.ETH_ACCOUNTS: {
-                  return this.connector.sendCustomRequest({
-                    id: 1337,
-                    jsonrpc: '2.0',
-                    method,
-                    params,
-                  })
-                }
-
-                case ProviderMethods.ETH_SELECT_ACCOUNTS:
-                case ProviderMethods.WALLET_SWITCH_ETHEREUM_CHAIN: {
-                  throw new ProviderRpcError({
-                    code: ProviderRpcErrorCode.UNSUPPORTED_METHOD,
-                    message: `The Provider does not support the requested method: ${method}`,
-                  })
-                }
-
-                default: {
-                  const chainId = await this.request({ method: ProviderMethods.ETH_CHAIN_ID })
-
-                  if (!this.providers[chainId]) {
-                    const currentChain = chains.find(({ id }) => id === chainId)
-
-                    if (!currentChain) {
-                      throw new ProviderRpcError({
-                        code: ProviderRpcErrorCode.CHAIN_NOT_ADDED,
-                        message: `The Provider does not have an RPC to request the method: ${method}`,
-                      })
-                    }
-
-                    this.providers[chainId] = new StaticJsonRpcProvider(currentChain.rpcUrl)
+                    return resolve(accounts)
                   }
 
-                  return this.providers[chainId].send(method, params!)
-                }
+                  // @ts-ignore
+                  fromEvent(this.connector, ProviderEvents.CONNECT, (error, payload) => {
+                    if (error) {
+                      throw error
+                    }
+
+                    return payload
+                  })
+                    .pipe(take(1))
+                    .subscribe({
+                      next: ({ params }) => {
+                        const [{ accounts, chainId }] = params
+
+                        this.emit(ProviderEvents.ACCOUNTS_CHANGED, accounts)
+                        this.emit(ProviderEvents.CHAIN_CHANGED, `0x${chainId.toString(16)}`)
+
+                        QRModal.close()
+
+                        resolve(accounts)
+                      },
+                      error: reject,
+                    })
+                })
               }
+
+              if (method === ProviderMethods.ETH_SEND_TRANSACTION) {
+                return this.connector.sendTransaction(params![0] as ITxData)
+              }
+
+              if (method === ProviderMethods.ETH_SIGN_TRANSACTION) {
+                return this.connector.signTransaction(params![0] as ITxData)
+              }
+
+              if (method === ProviderMethods.PERSONAL_SIGN) {
+                return this.connector.signPersonalMessage(params!)
+              }
+
+              if (method === ProviderMethods.ETH_SIGN) {
+                return this.connector.signMessage(params!)
+              }
+
+              // eth_signTypedData, eth_signTypedData_v2, eth_signTypedData_v3, eth_signTypedData_v4
+              if (method.includes(ProviderMethods.ETH_SIGN_TYPED_DATA)) {
+                return this.connector.signTypedData(params!)
+              }
+
+              if (method === ProviderMethods.ETH_ACCOUNTS) {
+                return this.connector.sendCustomRequest({
+                  id: 1337,
+                  jsonrpc: '2.0',
+                  method,
+                  params,
+                })
+              }
+
+              if (
+                method === ProviderMethods.ETH_SELECT_ACCOUNTS ||
+                method === ProviderMethods.WALLET_SWITCH_ETHEREUM_CHAIN
+              ) {
+                throw new ProviderRpcError({
+                  code: ProviderRpcErrorCode.UNSUPPORTED_METHOD,
+                  message: `The Provider does not support the requested method: ${method}`,
+                })
+              }
+
+              const chainId = await this.request({ method: ProviderMethods.ETH_CHAIN_ID })
+
+              if (!this.providers[chainId]) {
+                const currentChain = chains.find(({ id }) => id === chainId)
+
+                if (!currentChain) {
+                  throw new ProviderRpcError({
+                    code: ProviderRpcErrorCode.CHAIN_NOT_ADDED,
+                    message: `The Provider does not have an RPC to request the method: ${method}`,
+                  })
+                }
+
+                this.providers[chainId] = new StaticJsonRpcProvider(currentChain.rpcUrl)
+              }
+
+              return this.providers[chainId].send(method, params!)
             }
           }
         }
