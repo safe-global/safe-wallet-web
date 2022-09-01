@@ -97,7 +97,7 @@ export const useInitPairing = () => {
     }
 
     killPairingSession(connector)
-  }, [chain, isSupported])
+  }, [chain, isSupported, canConnect])
 }
 
 /**
