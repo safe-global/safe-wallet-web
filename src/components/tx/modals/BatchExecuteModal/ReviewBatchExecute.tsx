@@ -32,7 +32,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
 
   const multiSendContract = useMemo(() => {
     if (!chain?.chainId) return
-    return getMultiSendCallOnlyContractInstance(chain.chainId)
+    return getMultiSendCallOnlyContractInstance(chain.chainId, safe.version)
   }, [chain?.chainId])
 
   const multiSendTxs = useMemo(() => {
@@ -65,61 +65,59 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const submitDisabled = loading || !isSubmittable
 
   return (
-    <div>
-      <DialogContent>
-        <Typography variant="body2" mb={2}>
-          This transaction batches a total of {data.txs.length} transactions from your queue into a single Ethereum
-          transaction. Please check every included transaction carefully, especially if you have rejection transactions,
-          and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
-          over the execute button.
-        </Typography>
+    <DialogContent>
+      <Typography variant="body2" mb={2}>
+        This transaction batches a total of {data.txs.length} transactions from your queue into a single Ethereum
+        transaction. Please check every included transaction carefully, especially if you have rejection transactions,
+        and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
+        over the execute button.
+      </Typography>
 
-        <Typography color="secondary.light">Interact with:</Typography>
-        {multiSendContract && (
-          <EthHashInfo address={multiSendContract.address} shortAddress={false} hasExplorer showCopyButton />
-        )}
+      <Typography color="secondary.light">Interact with:</Typography>
+      {multiSendContract && (
+        <EthHashInfo address={multiSendContract.getAddress()} shortAddress={false} hasExplorer showCopyButton />
+      )}
 
-        {multiSendTxData && (
-          <>
-            <Typography mt={2} color="secondary.light">
-              Data (hex encoded)
-            </Typography>
-            {generateDataRowValue(multiSendTxData, 'rawData')}
-          </>
-        )}
+      {multiSendTxData && (
+        <>
+          <Typography mt={2} color="secondary.light">
+            Data (hex encoded)
+          </Typography>
+          {generateDataRowValue(multiSendTxData, 'rawData')}
+        </>
+      )}
 
-        <Typography mt={2} color="secondary.light">
-          Batched transactions:
-        </Typography>
-        <DecodedTxs txs={txsWithDetails} numberOfTxs={data.txs.length} />
+      <Typography mt={2} color="secondary.light">
+        Batched transactions:
+      </Typography>
+      <DecodedTxs txs={txsWithDetails} numberOfTxs={data.txs.length} />
 
-        {multiSendTxs && <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />}
+      {multiSendTxs && <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />}
 
-        <Typography variant="body2" mt={2} textAlign="center">
-          Be aware that if any of the included transactions revert, none of them will be executed. This will result in
-          the loss of the allocated transaction fees.
-        </Typography>
+      <Typography variant="body2" mt={2} textAlign="center">
+        Be aware that if any of the included transactions revert, none of them will be executed. This will result in the
+        loss of the allocated transaction fees.
+      </Typography>
 
-        {error && (
-          <ErrorMessage error={error}>
-            This transaction will most likely fail. To save gas costs, avoid creating the transaction.
-          </ErrorMessage>
-        )}
+      {error && (
+        <ErrorMessage error={error}>
+          This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+        </ErrorMessage>
+      )}
 
-        {submitError && (
-          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-        )}
+      {submitError && (
+        <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+      )}
 
-        <Button
-          onClick={onExecute}
-          disabled={submitDisabled}
-          variant="contained"
-          sx={{ position: 'absolute', bottom: '24px', right: '24px', zIndex: 1 }}
-        >
-          Send
-        </Button>
-      </DialogContent>
-    </div>
+      <Button
+        onClick={onExecute}
+        disabled={submitDisabled}
+        variant="contained"
+        sx={{ position: 'absolute', bottom: '24px', right: '24px', zIndex: 1 }}
+      >
+        Send
+      </Button>
+    </DialogContent>
   )
 }
 

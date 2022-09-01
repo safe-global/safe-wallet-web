@@ -15,16 +15,12 @@ export const CHANGE_FALLBACK_HANDLER_ABI = 'function setFallbackHandler(address 
 export const createUpdateSafeTxs = (safe: SafeInfo, chain: ChainInfo): MetaTransactionData[] => {
   const latestMasterCopy = getGnosisSafeContractInstance(chain, LATEST_SAFE_VERSION)
   const safeContractInstance = getGnosisSafeContractInstance(chain, safe.version)
-  const safeContractInterface = safeContractInstance.interface
+
   // @ts-expect-error this was removed in 1.3.0 but we need to support it for older safe versions
-  const changeMasterCopyCallData = safeContractInterface.encodeFunctionData('changeMasterCopy', [
-    latestMasterCopy.address,
-  ])
+  const changeMasterCopyCallData = safeContractInstance.encode('changeMasterCopy', [latestMasterCopy.getAddress()])
 
   const fallbackHandlerAddress = getFallbackHandlerContractInstance(chain.chainId).address
-  const changeFallbackHandlerCallData = safeContractInterface.encodeFunctionData('setFallbackHandler', [
-    fallbackHandlerAddress,
-  ])
+  const changeFallbackHandlerCallData = safeContractInstance.encode('setFallbackHandler', [fallbackHandlerAddress])
 
   const txs: MetaTransactionData[] = [
     {

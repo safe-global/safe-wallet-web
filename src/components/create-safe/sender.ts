@@ -38,7 +38,7 @@ export const getSafeCreationTx = ({
   const proxyContract = getProxyFactoryContractInstance(chain.chainId)
   const fallbackHandlerContract = getFallbackHandlerContractInstance(chain.chainId)
 
-  const setupData = safeContract.interface.encodeFunctionData('setup', [
+  const setupData = safeContract.encode('setup', [
     owners,
     threshold,
     ZERO_ADDRESS,
@@ -49,9 +49,5 @@ export const getSafeCreationTx = ({
     ZERO_ADDRESS,
   ])
 
-  return proxyContract.interface.encodeFunctionData('createProxyWithNonce', [
-    safeContract.address,
-    setupData,
-    saltNonce,
-  ])
+  return proxyContract.encode('createProxyWithNonce', [safeContract.getAddress(), setupData, saltNonce])
 }
