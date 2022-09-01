@@ -18,7 +18,6 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
-import { useWeb3 } from '@/hooks/wallets/web3'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -53,8 +52,6 @@ const SignOrExecuteForm = ({
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const currentChain = useCurrentChain()
-  const chain = useCurrentChain()
-  const provider = useWeb3()
 
   // Check that the transaction is executable
   const canExecute = isExecutable && !!tx && tx.data.nonce === safe.nonce
@@ -178,14 +175,7 @@ const SignOrExecuteForm = ({
           onFormSubmit={onAdvancedSubmit}
         />
 
-        {safeTx && (
-          <TxSimulation
-            transactions={safeTx}
-            canExecute={canExecute}
-            gasLimit={gasLimit?.toString()}
-            disabled={submitDisabled}
-          />
-        )}
+        {safeTx && <TxSimulation transactions={safeTx} canExecute={canExecute} disabled={submitDisabled} />}
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>

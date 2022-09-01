@@ -3,7 +3,10 @@ import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { act, renderHook, waitFor } from '@/tests/test-utils'
 import { useSimulation } from '@/components/tx/TxSimulation/useSimulation'
 import * as utils from '@/components/tx/TxSimulation/utils'
+import * as web3 from '@/hooks/wallets/web3'
 import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/TxSimulation/types'
+import { Block, JsonRpcProvider } from '@ethersproject/providers'
+import { BigNumber } from 'ethers'
 
 const setupFetchStub = (data: any) => (_url: string) => {
   return new Promise((resolve) => {
@@ -14,6 +17,14 @@ const setupFetchStub = (data: any) => (_url: string) => {
 }
 
 describe('useSimulation()', () => {
+  const mockProvider = new JsonRpcProvider()
+
+  mockProvider.getBlock = () => {
+    return Promise.resolve({
+      gasLimit: BigNumber.from(200_000),
+    } as Block)
+  }
+
   afterEach(() => {
     //@ts-ignore
     global.fetch?.mockClear()
@@ -24,7 +35,13 @@ describe('useSimulation()', () => {
     delete global.fetch
   })
 
-  it('should have the correct initital values', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+
+    jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(mockProvider)
+  })
+
+  it('should have the correct initial values', () => {
     const { result } = renderHook(() => useSimulation())
     const { simulation, simulationLink, requestError: simulationError, simulationRequestStatus } = result.current
 
@@ -75,7 +92,6 @@ describe('useSimulation()', () => {
         } as SafeInfo,
         executionOwner: safeAddress,
         canExecute: true,
-        gasLimit: 200_000,
       }),
     )
 
@@ -144,7 +160,6 @@ describe('useSimulation()', () => {
         } as SafeInfo,
         executionOwner: safeAddress,
         canExecute: true,
-        gasLimit: 200_000,
       }),
     )
 
@@ -214,7 +229,6 @@ describe('useSimulation()', () => {
         } as SafeInfo,
         executionOwner: safeAddress,
         canExecute: false,
-        gasLimit: 200_000,
       }),
     )
 

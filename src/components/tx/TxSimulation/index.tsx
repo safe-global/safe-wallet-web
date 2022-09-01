@@ -2,11 +2,9 @@ import { AccordionSummary, Accordion, Button, Typography, CircularProgress } fro
 import { ReactElement } from 'react'
 
 import Track from '@/components/common/Track'
-import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
-import { getWeb3 } from '@/hooks/wallets/web3'
 import { MODALS_EVENTS } from '@/services/analytics'
 import { SimulationResult } from '@/components/tx/TxSimulation/SimulationResult'
 import { FETCH_STATUS } from '@/components/tx/TxSimulation/types'
@@ -19,31 +17,18 @@ import css from './styles.module.css'
 export type TxSimulationProps = {
   transactions: SimulationTxParams['transactions']
   canExecute: boolean
-  gasLimit?: string
   disabled: boolean
 }
 
-const TxSimulationBlock = ({ transactions, canExecute, gasLimit, disabled }: TxSimulationProps): ReactElement => {
+const TxSimulationBlock = ({ transactions, canExecute, disabled }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
 
   const { simulateTransaction, simulation, simulationRequestStatus, simulationLink, requestError, resetSimulation } =
     useSimulation()
 
-  const web3 = getWeb3()
-
-  const [blockGasLimit] = useAsync(async () => {
-    if (!web3) {
-      return
-    }
-    const latestBlock = await web3.getBlock('latest')
-    return latestBlock.gasLimit
-  }, [web3])
-
-  const simulationGasLimit = Number(gasLimit) || Number(blockGasLimit) || 0
-
   const handleSimulation = async () => {
-    if (!wallet?.address) {
+    if (!wallet) {
       return
     }
 
@@ -52,20 +37,16 @@ const TxSimulationBlock = ({ transactions, canExecute, gasLimit, disabled }: TxS
       executionOwner: wallet.address,
       transactions,
       canExecute,
-      gasLimit: simulationGasLimit,
-    } as SimulationTxParams)
+    })
   }
 
   const isSimulationFinished =
     simulationRequestStatus === FETCH_STATUS.ERROR || simulationRequestStatus === FETCH_STATUS.SUCCESS
-  const isSimulationLoading =
-    simulationRequestStatus === FETCH_STATUS.LOADING ||
-    (simulationRequestStatus !== FETCH_STATUS.NOT_ASKED && simulationGasLimit === 0)
-  const showSimulationButton = !isSimulationFinished
+  const isSimulationLoading = simulationRequestStatus === FETCH_STATUS.LOADING
 
   return (
-    <Accordion expanded={!showSimulationButton} elevation={0} sx={{ mt: 2 }}>
-      {showSimulationButton ? (
+    <Accordion expanded={isSimulationFinished} elevation={0} sx={{ mt: 2 }}>
+      {!isSimulationFinished ? (
         <AccordionSummary className={css.simulateAccordion}>
           <Typography>Transaction validity</Typography>
           <Track {...MODALS_EVENTS.SIMULATE_TX}>
@@ -82,15 +63,13 @@ const TxSimulationBlock = ({ transactions, canExecute, gasLimit, disabled }: TxS
           </Track>
         </AccordionSummary>
       ) : (
-        <Accordion expanded elevation={0}>
-          <SimulationResult
-            onClose={resetSimulation}
-            simulation={simulation}
-            simulationRequestStatus={simulationRequestStatus}
-            simulationLink={simulationLink}
-            requestError={requestError}
-          />
-        </Accordion>
+        <SimulationResult
+          onClose={resetSimulation}
+          simulation={simulation}
+          simulationRequestStatus={simulationRequestStatus}
+          simulationLink={simulationLink}
+          requestError={requestError}
+        />
       )}
     </Accordion>
   )
