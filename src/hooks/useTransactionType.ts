@@ -9,7 +9,6 @@ import {
 import {
   isCancellationTxInfo,
   isModuleExecutionInfo,
-  hasSafeAppInfo,
   isTxQueued,
   TransactionInfoType,
 } from '@/utils/transaction-guards'
@@ -80,7 +79,7 @@ const getTxType = (tx: TransactionSummary): TxType => {
         }
       }
 
-      if (hasSafeAppInfo(tx)) {
+      if (tx.safeAppInfo) {
         return {
           icon: tx.safeAppInfo.logoUri,
           text: tx.safeAppInfo.name,

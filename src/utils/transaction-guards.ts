@@ -25,11 +25,7 @@ import {
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
 import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
-import {
-  NativeCoinTransfer,
-  SafeAppInfo,
-  TransferInfo,
-} from '@gnosis.pm/safe-react-gateway-sdk/dist/types/transactions'
+import { NativeCoinTransfer, TransferInfo } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/transactions'
 import { NamedAddress } from '@/components/create-safe/types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
@@ -103,10 +99,6 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
 
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
   return isCustomTxInfo(value) && value.isCancellation
-}
-
-export const hasSafeAppInfo = <T extends TransactionSummary>(value: T): value is T & { safeAppInfo: SafeAppInfo } => {
-  return !!value.safeAppInfo
 }
 
 export const isCreationTxInfo = (value: TransactionInfo): value is Creation => {
