@@ -169,7 +169,7 @@ export const dispatchTxSigning = async (
   txId?: string,
 ): Promise<SafeTransaction> => {
   const sdk = getAndValidateSafeSDK()
-  const signingMethod = isHardwareWallet ? 'eth_sign' : 'eth_signTypedData'
+  const signingMethod = isHardwareWallet ? 'eth_sign' : undefined
 
   let signedTx: SafeTransaction | undefined
   try {

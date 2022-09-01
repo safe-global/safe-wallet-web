@@ -22,9 +22,6 @@ enum ProviderMethods {
   ETH_SIGN_TRANSACTION = 'eth_signTransaction',
   ETH_SIGN = 'eth_sign',
   ETH_SIGN_TYPED_DATA = 'eth_signTypedData',
-  ETH_SIGN_TYPED_DATA_V2 = 'eth_signTypedData_v2',
-  ETH_SIGN_TYPED_DATA_V3 = 'eth_signTypedData_v3',
-  ETH_SIGN_TYPED_DATA_V4 = 'eth_signTypedData_v4',
   ETH_ACCOUNTS = 'eth_accounts',
   WALLET_SWITCH_ETHEREUM_CHAIN = 'wallet_switchEthereumChain',
 }
@@ -189,10 +186,7 @@ const pairingModule = (): WalletInit => {
                   return this.connector.signMessage(params!)
                 }
 
-                case ProviderMethods.ETH_SIGN_TYPED_DATA:
-                case ProviderMethods.ETH_SIGN_TYPED_DATA_V2:
-                case ProviderMethods.ETH_SIGN_TYPED_DATA_V3:
-                case ProviderMethods.ETH_SIGN_TYPED_DATA_V4: {
+                case ProviderMethods.ETH_SIGN_TYPED_DATA: {
                   return this.connector.signTypedData(params!)
                 }
 
