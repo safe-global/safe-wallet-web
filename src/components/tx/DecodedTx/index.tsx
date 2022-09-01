@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import type { SyntheticEvent, ReactElement } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import {
@@ -12,6 +12,7 @@ import useAsync from '@/hooks/useAsync'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import ErrorMessage from '../ErrorMessage'
 import Summary from '@/components/transactions/TxDetails/Summary'
+import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 
 type DecodedTxProps = {
   tx: SafeTransaction
@@ -37,9 +38,13 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
     return null
   }
 
+  const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
+    trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
+  }
+
   return (
     <Box mb={2}>
-      <Accordion elevation={0}>
+      <Accordion elevation={0} onChange={onChangeExpand}>
         <AccordionSummary>Transaction details</AccordionSummary>
 
         <AccordionDetails>

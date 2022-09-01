@@ -18,6 +18,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useCurrentChain } from '@/hooks/useChains'
 import { dispatchSpendingLimitTxExecution } from '@/services/tx/txSender'
 import { getTxOptions } from '@/utils/transactions'
+import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -69,6 +70,8 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
     if (!provider) return
+
+    trackEvent(MODALS_EVENTS.USE_SPENDING_LIMIT)
 
     setIsSubmittable(false)
     setSubmitError(undefined)

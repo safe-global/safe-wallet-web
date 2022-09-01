@@ -35,8 +35,9 @@
 }
 
 .noSafeHeader {
-  background: url('/keyhole.svg') center 10px no-repeat;
-  padding-top: 50px;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
   min-height: 80px;
 }
 

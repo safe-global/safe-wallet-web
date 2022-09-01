@@ -66,7 +66,7 @@ enum EXECUTION_INFO_TYPES {
 
 // TransactionInfo type guards
 // TODO: could be passed to Client GW SDK
-enum TransactionInfoType {
+export enum TransactionInfoType {
   TRANSFER = 'Transfer',
   SETTINGS_CHANGE = 'SettingsChange',
   CUSTOM = 'Custom',

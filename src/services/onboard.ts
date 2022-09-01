@@ -34,10 +34,9 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
 
     chains,
 
-    // TODO: Remove once containerElement is optional again
     accountCenter: {
-      mobile: { enabled: false, containerElement: 'body' },
-      desktop: { enabled: false, containerElement: 'body' },
+      mobile: { enabled: false },
+      desktop: { enabled: false },
     },
 
     appMetadata: {

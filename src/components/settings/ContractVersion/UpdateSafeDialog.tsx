@@ -5,7 +5,7 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 import TxModal from '@/components/tx/TxModal'
 
-import { createMultiSendTx } from '@/services/tx/txSender'
+import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -48,7 +48,7 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (data: null) => void }) 
     if (!chain || !safeLoaded) return
 
     const txs = createUpdateSafeTxs(safe, chain)
-    return createMultiSendTx(txs)
+    return createMultiSendCallOnlyTx(txs)
   }, [chain, safe, safeLoaded])
 
   return (

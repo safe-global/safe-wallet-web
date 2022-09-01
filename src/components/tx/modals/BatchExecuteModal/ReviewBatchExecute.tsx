@@ -20,7 +20,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
-  const { safe, safeAddress } = useSafeInfo()
+  const { safe } = useSafeInfo()
   const provider = useWeb3()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {

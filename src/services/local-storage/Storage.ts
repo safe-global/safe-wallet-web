@@ -17,12 +17,12 @@ class Storage {
     this.storage = storage
   }
 
-  private prefixKey = (key: string): string => {
+  public getPrefixedKey = (key: string): string => {
     return `${this.prefix}${key}`
   }
 
   public getItem = <T>(key: string): T | undefined => {
-    const fullKey = this.prefixKey(key)
+    const fullKey = this.getPrefixedKey(key)
     let saved: string | null = null
     try {
       saved = this.storage?.getItem(fullKey) || null
@@ -40,7 +40,7 @@ class Storage {
   }
 
   public setItem = <T>(key: string, item: T): void => {
-    const fullKey = this.prefixKey(key)
+    const fullKey = this.getPrefixedKey(key)
     try {
       this.storage?.setItem(fullKey, JSON.stringify(item))
     } catch (err) {
@@ -49,7 +49,7 @@ class Storage {
   }
 
   public removeItem = (key: string): void => {
-    const fullKey = this.prefixKey(key)
+    const fullKey = this.getPrefixedKey(key)
     try {
       this.storage?.removeItem(fullKey)
     } catch (err) {
