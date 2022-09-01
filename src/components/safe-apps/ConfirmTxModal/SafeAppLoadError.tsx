@@ -2,12 +2,7 @@ import { ReactElement } from 'react'
 import { Button, DialogActions, DialogContent, Typography } from '@mui/material'
 import { ConfirmTxModalProps } from '.'
 
-export const SafeAppLoadError = ({ onTxReject, onClose, requestId }: ConfirmTxModalProps): ReactElement => {
-  const handleTxRejection = () => {
-    onTxReject(requestId)
-    onClose()
-  }
-
+export const SafeAppLoadError = ({ requestId }: ConfirmTxModalProps): ReactElement => {
   return (
     <div>
       <DialogContent>
@@ -19,7 +14,7 @@ export const SafeAppLoadError = ({ onTxReject, onClose, requestId }: ConfirmTxMo
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={() => handleTxRejection()}>Cancel</Button>
+        <Button onClick={() => {}}>Cancel</Button>
         <Button onClick={() => {}}>Submit</Button>
       </DialogActions>
     </div>
