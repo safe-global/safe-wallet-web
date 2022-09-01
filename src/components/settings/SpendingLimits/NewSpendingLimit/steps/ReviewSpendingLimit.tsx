@@ -17,7 +17,7 @@ import { currentMinutes, relativeTime } from '@/utils/date'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { parseUnits } from '@ethersproject/units'
-import { createMultiSendTx } from '@/services/tx/txSender'
+import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
@@ -67,7 +67,7 @@ export const createNewSpendingLimitTx = async (
 
   txs.push(tx)
 
-  return createMultiSendTx(txs)
+  return createMultiSendCallOnlyTx(txs)
 }
 
 export type NewSpendingLimitData = {
