@@ -144,7 +144,7 @@ describe('txSender', () => {
       const signedTx = await dispatchTxSigning(tx, false, '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
+      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), undefined)
       expect(signedTx).not.toBe(tx)
     })
 
