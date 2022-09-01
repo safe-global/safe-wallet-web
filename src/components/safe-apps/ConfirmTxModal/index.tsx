@@ -7,9 +7,7 @@ import {
   Operation,
   SafeAppData,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import ModalDialog from '@/components/common/ModalDialog'
 import { validateAddress } from '@/utils/validation'
-import { Button, DialogActions, DialogContent } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import { Box } from '@mui/system'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
@@ -26,20 +24,18 @@ import {
 } from '@/services/contracts/safeContracts'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import { MetaTransactionData, OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { createTx } from '@/services/tx/txSender'
+import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import TxModal, { TxModalProps } from '@/components/tx/TxModal'
 
 export type ConfirmTxModalProps = {
-  isOpen: boolean
   app?: SafeAppData
   txs: BaseTransaction[]
   params?: SendTransactionRequestParams
-  safeAddress: string
   requestId: RequestId
-  ethBalance: string
-  onUserConfirm: (safeTxHash: string, requestId: RequestId) => void
-  onTxReject: (requestId: RequestId) => void
-  onClose: () => void
   appId?: string
 }
 
@@ -64,27 +60,30 @@ const parseTxValue = (value: string | number): string => {
   return BigNumber.from(value).toString()
 }
 
-export const ConfirmTxModal = ({
-  app,
-  onClose,
-  onTxReject,
-  txs,
-  requestId,
-  isOpen,
-  params,
-}: ConfirmTxModalProps): ReactElement => {
+const SafeAppsTxSteps: TxStepperProps['steps'] = [
+  {
+    label: 'Safe Apps transaction',
+    render: (data, onSubmit) => <ConfirmSafeAppsTx onSubmit={onSubmit} safeAppsTx={data as ConfirmTxModalProps} />,
+  },
+]
+
+export const ConfirmSafeAppsTxModal = (props: Omit<TxModalProps, 'steps'>) => {
+  return <TxModal {...props} steps={SafeAppsTxSteps} />
+}
+
+type ConfirmProposedTxProps = {
+  safeAppsTx: ConfirmTxModalProps
+  onSubmit: (data: null) => void
+}
+
+export const ConfirmSafeAppsTx = ({
+  onSubmit,
+  safeAppsTx: { app, txs, requestId, params },
+}: ConfirmProposedTxProps): ReactElement => {
   const isMultiSend = txs.length > 1
   const invalidTransactions = !txs.length || txs.some((t) => !isTxValid(t))
   const chainId = useChainId()
-  const {
-    safe: { nonce },
-  } = useSafeInfo()
-  const [advancedParams, setManualParams] = useAdvancedParams({ nonce })
-
-  const rejectTransaction = () => {
-    onClose()
-    onTxReject(requestId)
-  }
+  const { safe } = useSafeInfo()
 
   const multiSendContract = useMemo(() => {
     if (!chainId) return
@@ -128,49 +127,43 @@ export const ConfirmTxModal = ({
     })
   }, [txData])
 
+  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
+    if (txRecipient && txData && operation) {
+      const txParams: MetaTransactionData = {
+        to: txRecipient,
+        value: txValue,
+        data: txData,
+        operation: operation as unknown as OperationType,
+      }
+
+      return createTx(txParams)
+    }
+  }, [txRecipient])
+
   return (
-    <ModalDialog dialogTitle={app?.name} open={isOpen} onClose={rejectTransaction}>
-      <DialogContent>
-        {invalidTransactions ? (
-          <p>Error</p>
-        ) : (
-          // <SafeAppLoadError  />
-          <Box py={2}>
-            <SendFromBlock />
+    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
+      {invalidTransactions ? (
+        <p>Error</p>
+      ) : (
+        // <SafeAppLoadError  />
+        <Box py={2}>
+          <SendFromBlock />
 
-            <InfoDetails title="Interact with:">
-              <EthHashInfo address={txRecipient || ''} shortAddress={false} showCopyButton hasExplorer />
-            </InfoDetails>
+          <InfoDetails title="Interact with:">
+            <EthHashInfo address={txRecipient || ''} shortAddress={false} showCopyButton hasExplorer />
+          </InfoDetails>
 
-            <Multisend
-              txData={{
-                dataDecoded: decodedData,
-                to: { value: txRecipient || '' },
-                value: txValue,
-                operation,
-                trustedDelegateCallTarget: false,
-              }}
-            />
-
-            <Box py={2}>
-              <AdvancedParams
-                params={advancedParams}
-                willExecute={false}
-                nonceReadonly={false}
-                onFormSubmit={setManualParams}
-              />
-            </Box>
-          </Box>
-        )}
-      </DialogContent>
-      <DialogActions disableSpacing>
-        <Button color="inherit" onClick={rejectTransaction}>
-          Back
-        </Button>
-        <Button variant="contained" onClick={() => {}}>
-          Submit
-        </Button>
-      </DialogActions>
-    </ModalDialog>
+          <Multisend
+            txData={{
+              dataDecoded: decodedData,
+              to: { value: txRecipient || '' },
+              value: txValue,
+              operation,
+              trustedDelegateCallTarget: false,
+            }}
+          />
+        </Box>
+      )}
+    </SignOrExecuteForm>
   )
 }

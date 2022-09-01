@@ -9,7 +9,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { isSameUrl } from '@/utils/url'
 import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
-import { ConfirmTxModal } from '../ConfirmTxModal'
+import { ConfirmSafeAppsTxModal } from '../ConfirmTxModal'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator from './useAppCommunicator'
@@ -93,19 +93,23 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
         style={{ display: appIsLoading ? 'none' : 'block' }}
       />
 
-      <ConfirmTxModal
-        isOpen={confirmTransactionModalState.isOpen}
-        app={safeAppFromManifest}
-        appId={remoteApp?.id.toString()}
-        safeAddress={safeAddress}
-        ethBalance={nativeToken?.balance || ''}
-        txs={confirmTransactionModalState.txs}
-        onClose={closeConfirmationModal}
-        requestId={confirmTransactionModalState.requestId}
-        onUserConfirm={handleConfirmTransaction}
-        params={confirmTransactionModalState.params}
-        onTxReject={handleRejectTransaction}
-      />
+      {confirmTransactionModalState.isOpen && (
+        <ConfirmSafeAppsTxModal
+          onClose={() => {
+            handleRejectTransaction(confirmTransactionModalState.requestId)
+            closeConfirmationModal()
+          }}
+          initialData={[
+            {
+              app: safeAppFromManifest,
+              appId: remoteApp?.id.toString(),
+              txs: confirmTransactionModalState.txs,
+              requestId: confirmTransactionModalState.requestId,
+              params: confirmTransactionModalState.params,
+            },
+          ]}
+        />
+      )}
     </div>
   )
 }
