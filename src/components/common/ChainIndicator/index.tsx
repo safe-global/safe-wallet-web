@@ -11,7 +11,7 @@ type ChainIndicatorProps = {
   className?: string
 }
 
-const ChainIndicator = ({ chainId, className, inline = false }: ChainIndicatorProps): ReactElement => {
+const ChainIndicator = ({ chainId, className, inline = false }: ChainIndicatorProps): ReactElement | null => {
   const currentChainId = useChainId()
   const id = chainId || currentChainId
   const chainConfig = useAppSelector((state) => selectChainById(state, id))
@@ -25,6 +25,8 @@ const ChainIndicator = ({ chainId, className, inline = false }: ChainIndicatorPr
       color: theme.textColor,
     }
   }, [chainConfig])
+
+  if (!chainConfig?.chainName) return null
 
   return (
     <span style={style} className={classnames(inline ? css.inlineIndicator : css.indicator, className)}>

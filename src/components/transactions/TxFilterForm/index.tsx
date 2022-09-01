@@ -88,7 +88,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
     const isFormDirty = dirtyFieldNames.some((name) => name !== TxFilterFormFieldNames.FILTER_TYPE)
     const hasFilterInQuery = !!filter?.type
     return !isValid || isFormDirty || hasFilterInQuery
-  }, [isValid, dirtyFieldNames])
+  }, [dirtyFieldNames, filter?.type, isValid])
 
   const clearFilter = () => {
     setFilter(null)

@@ -9,6 +9,7 @@ import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
+import ChainIndicator from '@/components/common/ChainIndicator'
 
 type Props = {
   appUrl: string
@@ -36,9 +37,34 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => {
           </Box>
         </Box>
         <Divider />
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="body1">App URL</Typography>
+          <Typography
+            variant="body2"
+            sx={({ palette }) => ({
+              mt: 1,
+              p: 1,
+              backgroundColor: palette.primary.background,
+              display: 'inline-block',
+              borderRadius: '4px',
+            })}
+            fontWeight={700}
+          >
+            {app.url}
+          </Typography>
+        </Box>
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="body1">Available networks</Typography>
+          <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+            {app.chainIds.map((chainId) => (
+              <ChainIndicator key={chainId} chainId={chainId} inline />
+            ))}
+          </Box>
+        </Box>
+        <Divider sx={{ mt: 4 }} />
         {showDefaultListWarning && (
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ mt: 4, mb: 4 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', mt: 4 }}>
+            <Box sx={{ mb: 4 }}>
               <Box sx={{ display: 'flex' }}>
                 <WarningAmberIcon sx={({ palette }) => ({ color: palette.warning.dark })} />
                 <Typography variant="h5" sx={({ palette }) => ({ color: palette.warning.dark })}>
@@ -50,13 +76,6 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => {
               </Typography>
               <Typography variant="body2" sx={{ mt: 2 }}>
                 Check the app link and ensure it comes from a trusted source
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={({ palette }) => ({ mt: 2, backgroundColor: palette.primary.background, p: 1 })}
-                fontWeight={700}
-              >
-                {app.url}
               </Typography>
             </Box>
             <Divider />
@@ -95,7 +114,7 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
   return (
     <Grid container>
       <Grid xs md={6} mdOffset={3}>
-        <SafeAppDetails app={safeApp} showDefaultListWarning={!backendApp} />
+        <SafeAppDetails app={backendApp || safeApp} showDefaultListWarning={!backendApp} />
       </Grid>
     </Grid>
   )
