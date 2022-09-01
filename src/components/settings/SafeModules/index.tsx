@@ -8,6 +8,8 @@ import useIsGranted from '@/hooks/useIsGranted'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
 
+export const DEFAULT_MODULE_NAME = 'Unknown module'
+
 const NoModules = () => {
   return (
     <Typography mt={2} color={(theme) => theme.palette.secondary.light}>
@@ -21,7 +23,7 @@ const getModuleName = (chainId: string, address: string): string => {
     return 'Spending limit module'
   }
 
-  return 'Unknown module'
+  return DEFAULT_MODULE_NAME
 }
 
 const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name: string }) => {
