@@ -18,6 +18,8 @@ import { type Multi_send } from '@/types/contracts/Multi_send'
 import { type Proxy_factory } from '@/types/contracts/Proxy_factory'
 import { type Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
 
+// TODO: Retrieve contracts via Core SDK
+
 const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
   // We check if version is prior to v1.0.0 as they are not supported but still we want to keep a minimum compatibility
   const useOldestContractVersion = semverSatisfies(safeVersion, '<1.0.0')

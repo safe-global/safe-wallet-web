@@ -20,8 +20,8 @@ const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefine
   if (loading) {
     return (
       <Box display="flex" flexDirection="column" gap={2} my={1}>
-        {Array.from(Array(numberOfTxs)).map((tx) => (
-          <Skeleton key={tx} variant="rectangular" height={52} sx={{ borderRadius: 2 }} />
+        {Array(numberOfTxs).map((_, i) => (
+          <Skeleton key={i} variant="rectangular" height={52} sx={{ borderRadius: 2 }} />
         ))}
       </Box>
     )

@@ -8,16 +8,20 @@ import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import { TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
+import useWallet from '@/hooks/wallets/useWallet'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 const BatchExecuteButton = ({ items }: { items: TransactionListItem[] }) => {
   const [open, setOpen] = useState(false)
   const pendingTxs = useAppSelector(selectPendingTxs)
   const hoverContext = useContext(BatchExecuteHoverContext)
   const batchableTransactions = useBatchedTxs(items)
+  const wallet = useWallet()
+  const isWrongChain = useIsWrongChain()
 
   const isBatchable = batchableTransactions.length > 1
   const hasPendingTx = batchableTransactions.some((tx) => pendingTxs[tx.transaction.id])
-  const isDisabled = !isBatchable || hasPendingTx
+  const isDisabled = !isBatchable || hasPendingTx || !wallet || isWrongChain
 
   const handleOnMouseEnter = useCallback(() => {
     hoverContext.setActiveHover(batchableTransactions.map((tx) => tx.transaction.id))
