@@ -65,12 +65,17 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
 }
 
 /**
- * Create a multiSend transaction from an array of MetaTransactionData and options
+ * Create a multiSendCallOnly transaction from an array of MetaTransactionData and options
  *
- * If only one tx is passed it will be created without multiSend.
+ * If only one tx is passed it will be created without multiSend and without onlyCalls.
  */
-export const createMultiSendTx = async (txParams: MetaTransactionData[]): Promise<SafeTransaction> => {
-  return withRecommendedNonce((safeSDK) => safeSDK.createTransaction({ safeTransactionData: txParams }))
+export const createMultiSendCallOnlyTx = async (txParams: MetaTransactionData[]): Promise<SafeTransaction> => {
+  return withRecommendedNonce((safeSDK) =>
+    safeSDK.createTransaction({
+      safeTransactionData: txParams,
+      onlyCalls: true,
+    }),
+  )
 }
 
 const withRecommendedNonce = async (
