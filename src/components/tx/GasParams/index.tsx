@@ -1,4 +1,4 @@
-import { ReactElement, SyntheticEvent, useState } from 'react'
+import type { ReactElement, SyntheticEvent } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Link, Grid } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
 import { formatVisualAmount } from '@/utils/formatters'
@@ -26,11 +26,9 @@ type GasParamsProps = {
 
 const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElement => {
   const { nonce, userNonce, safeTxGas, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = params
-  const [isAccordionExpanded, setIsAccordionExpanded] = useState(false)
 
-  const onChangeExpand = () => {
-    setIsAccordionExpanded((prev) => !prev)
-    trackEvent({ ...MODALS_EVENTS.ESTIMATION, label: isAccordionExpanded ? 'Close' : 'Open' })
+  const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
+    trackEvent({ ...MODALS_EVENTS.ESTIMATION, label: expanded ? 'Open' : 'Close' })
   }
 
   const chain = useCurrentChain()
