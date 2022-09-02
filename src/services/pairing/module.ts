@@ -22,6 +22,8 @@ enum ProviderMethods {
   ETH_SIGN_TRANSACTION = 'eth_signTransaction',
   ETH_SIGN = 'eth_sign',
   ETH_SIGN_TYPED_DATA = 'eth_signTypedData',
+  ETH_SIGN_TYPED_DATA_V3 = 'eth_signTypedData_v3',
+  ETH_SIGN_TYPED_DATA_V4 = 'eth_signTypedData_v4',
   ETH_ACCOUNTS = 'eth_accounts',
   WALLET_SWITCH_ETHEREUM_CHAIN = 'wallet_switchEthereumChain',
 }
@@ -178,16 +180,10 @@ const pairingModule = (): WalletInit => {
                   return this.connector.signTransaction(params![0] as ITxData)
                 }
 
+                // Pairing only supports `eth_sign` but the emitted event is `personal_sign`
                 case ProviderMethods.PERSONAL_SIGN: {
-                  return this.connector.signPersonalMessage(params!)
-                }
-
-                case ProviderMethods.ETH_SIGN: {
-                  return this.connector.signMessage(params!)
-                }
-
-                case ProviderMethods.ETH_SIGN_TYPED_DATA: {
-                  return this.connector.signTypedData(params!)
+                  const [safeTxHash, sender] = params as [string, string]
+                  return this.connector.signMessage([sender, safeTxHash]) // `eth_sign`
                 }
 
                 case ProviderMethods.ETH_ACCOUNTS: {
@@ -199,8 +195,13 @@ const pairingModule = (): WalletInit => {
                   })
                 }
 
+                case ProviderMethods.ETH_SIGN: // Not supported by pairing
+                case ProviderMethods.ETH_SIGN_TYPED_DATA: // Not supported by pairing
+                case ProviderMethods.ETH_SIGN_TYPED_DATA_V3: // Not supported by pairing
+                case ProviderMethods.ETH_SIGN_TYPED_DATA_V4: // Not supported by pairing
                 case ProviderMethods.ETH_SELECT_ACCOUNTS:
                 case ProviderMethods.WALLET_SWITCH_ETHEREUM_CHAIN: {
+                  console.log('unsupported', method, params)
                   throw new ProviderRpcError({
                     code: ProviderRpcErrorCode.UNSUPPORTED_METHOD,
                     message: `The Provider does not support the requested method: ${method}`,

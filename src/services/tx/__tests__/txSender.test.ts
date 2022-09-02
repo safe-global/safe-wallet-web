@@ -141,21 +141,21 @@ describe('txSender', () => {
         data: '0x0',
       })
 
-      const signedTx = await dispatchTxSigning(tx, false, '0x345')
+      const signedTx = await dispatchTxSigning(tx, true, '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
       expect(signedTx).not.toBe(tx)
     })
 
-    it('should sign a tx with eth_sign if a hardware wallet is connected', async () => {
+    it('should sign a tx with eth_sign if a hardware wallet/pairing is connected', async () => {
       const tx = await createTx({
         to: '0x123',
         value: '1',
         data: '0x0',
       })
 
-      const signedTx = await dispatchTxSigning(tx, true, '0x345')
+      const signedTx = await dispatchTxSigning(tx, false, '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
