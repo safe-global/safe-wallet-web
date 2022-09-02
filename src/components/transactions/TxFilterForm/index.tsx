@@ -7,6 +7,9 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import isAfter from 'date-fns/isAfter'
+import isBefore from 'date-fns/isBefore'
 import { Controller, FormProvider, useForm, useFormState, type DefaultValues } from 'react-hook-form'
 import { useMemo, type ReactElement } from 'react'
 
@@ -59,7 +62,7 @@ const getInitialFormValues = (filter: TxFilter | null): DefaultValues<TxFilterFo
     : defaultValues
 }
 
-const TxFilterForm = (): ReactElement => {
+const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElement => {
   const [filter, setFilter] = useTxFilter()
 
   const formMethods = useForm<TxFilterFormState>({
@@ -68,7 +71,7 @@ const TxFilterForm = (): ReactElement => {
     defaultValues: getInitialFormValues(filter),
   })
 
-  const { register, control, watch, handleSubmit, reset, getValues } = formMethods
+  const { control, watch, handleSubmit, reset, getValues } = formMethods
 
   const filterType = watch(TxFilterFormFieldNames.FILTER_TYPE)
 
@@ -83,7 +86,8 @@ const TxFilterForm = (): ReactElement => {
 
   const canClear = useMemo(() => {
     const isFormDirty = dirtyFieldNames.some((name) => name !== TxFilterFormFieldNames.FILTER_TYPE)
-    return !isValid || isFormDirty
+    const hasFilterInQuery = !!filter?.type
+    return !isValid || isFormDirty || hasFilterInQuery
   }, [isValid, dirtyFieldNames])
 
   const clearFilter = () => {
@@ -104,16 +108,18 @@ const TxFilterForm = (): ReactElement => {
     const filterData = txFilter.parseFormData(data)
 
     setFilter(filterData)
+
+    toggleFilter()
   }
 
   return (
-    <Paper elevation={0} variant="outlined" sx={{ p: 4 }}>
+    <Paper elevation={0} variant="outlined">
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={3}>
+          <Grid container>
+            <Grid item xs={12} md={3} sx={{ p: 4 }}>
               <FormControl>
-                <FormLabel>Transaction type</FormLabel>
+                <FormLabel sx={{ mb: 2, color: ({ palette }) => palette.secondary.light }}>Transaction type</FormLabel>
                 <Controller
                   name={TxFilterFormFieldNames.FILTER_TYPE}
                   control={control}
@@ -128,24 +134,46 @@ const TxFilterForm = (): ReactElement => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} md={9}>
+            <Divider orientation="vertical" flexItem />
+
+            <Grid item xs={12} md={8} sx={{ p: 4 }}>
               <FormControl sx={{ width: '100%' }}>
-                <FormLabel sx={{ mb: 1 }}>Parameters</FormLabel>
+                <FormLabel sx={{ mb: 3, color: ({ palette }) => palette.secondary.light }}>Parameters</FormLabel>
                 <Grid container item spacing={2} xs={12}>
                   {!isModuleFilter && (
                     <>
                       <Grid item xs={12} md={6}>
-                        <DatePickerInput name={TxFilterFormFieldNames.DATE_FROM} label="From" />
+                        <DatePickerInput
+                          name={TxFilterFormFieldNames.DATE_FROM}
+                          label="From"
+                          deps={[TxFilterFormFieldNames.DATE_TO]}
+                          validate={(val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
+                            const toDate = getValues(TxFilterFormFieldNames.DATE_TO)
+                            if (val && toDate && isBefore(toDate, val)) {
+                              return 'Must be before "To" date'
+                            }
+                          }}
+                        />
                       </Grid>
                       <Grid item xs={12} md={6}>
-                        <DatePickerInput name={TxFilterFormFieldNames.DATE_TO} label="To" />
+                        <DatePickerInput
+                          name={TxFilterFormFieldNames.DATE_TO}
+                          label="To"
+                          deps={[TxFilterFormFieldNames.DATE_FROM]}
+                          validate={(val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
+                            const fromDate = getValues(TxFilterFormFieldNames.DATE_FROM)
+                            if (val && fromDate && isAfter(fromDate, val)) {
+                              return 'Must be after "From" date'
+                            }
+                          }}
+                        />
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <Controller
                           name={TxFilterFormFieldNames.AMOUNT}
                           control={control}
                           rules={{
-                            validate: (val: string) => {
+                            validate: (val: TxFilterFormState[TxFilterFormFieldNames.AMOUNT]) => {
                               if (val.length > 0) {
                                 return validateAmount(val)
                               }
@@ -190,7 +218,7 @@ const TxFilterForm = (): ReactElement => {
                           name={TxFilterFormFieldNames.NONCE}
                           control={control}
                           rules={{
-                            validate: (val: string) => {
+                            validate: (val: TxFilterFormState[TxFilterFormFieldNames.NONCE]) => {
                               if (val.length > 0) {
                                 return validateAmount(val)
                               }
@@ -226,7 +254,7 @@ const TxFilterForm = (): ReactElement => {
                 <Button variant="contained" onClick={clearFilter} disabled={!canClear}>
                   Clear
                 </Button>
-                <Button type="submit" variant="contained" color="primary">
+                <Button type="submit" variant="contained" color="primary" disabled={!isValid}>
                   Apply
                 </Button>
               </Grid>

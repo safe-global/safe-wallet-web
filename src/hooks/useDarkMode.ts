@@ -5,7 +5,9 @@ import initTheme from '@/styles/theme'
 
 const isSystemDarkMode = (): boolean => {
   const mediaQuery = '(prefers-color-scheme: dark)'
-  return typeof window !== 'undefined' && window.matchMedia(mediaQuery).matches
+  return (
+    typeof window !== 'undefined' && typeof window.matchMedia !== 'undefined' && window.matchMedia(mediaQuery).matches
+  )
 }
 
 export const useDarkMode = (): boolean => {

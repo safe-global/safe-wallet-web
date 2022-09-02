@@ -13,6 +13,7 @@ import SidebarFooter from '@/components/sidebar/SidebarFooter'
 import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import KeyholeIcon from '@/components/common/ConnectWallet/KeyholeIcon'
 
 const Sidebar = (): ReactElement => {
   const router = useRouter()
@@ -44,7 +45,9 @@ const Sidebar = (): ReactElement => {
             <SidebarNavigation />
           </>
         ) : (
-          <div className={css.noSafeHeader} />
+          <div className={css.noSafeHeader}>
+            <KeyholeIcon variant="standard" />
+          </div>
         )}
 
         <div style={{ flexGrow: 1 }} />

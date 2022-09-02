@@ -3,6 +3,7 @@ import { getAllowanceModuleDeployment } from '@gnosis.pm/safe-modules-deployment
 import { AllowanceModule, AllowanceModule__factory } from '@/types/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 
+// TODO: Yet to be implemented in Core SDK
 export const getSpendingLimitModuleAddress = (chainId: string): string | undefined => {
   const deployment = getAllowanceModuleDeployment({ network: chainId })
 

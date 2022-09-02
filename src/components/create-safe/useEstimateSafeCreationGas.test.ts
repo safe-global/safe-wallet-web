@@ -12,7 +12,7 @@ import { waitFor } from '@testing-library/react'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { BigNumber } from 'ethers'
-import { Proxy_factory } from '@/types/contracts/Proxy_factory'
+import GnosisSafeProxyFactoryEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/GnosisSafeProxyFactory/GnosisSafeProxyFactoryEthersContract'
 
 const mockProps = {
   owners: [],
@@ -28,7 +28,7 @@ describe('useEstimateSafeCreationGas', () => {
     jest.spyOn(chainIdModule, 'useChainId').mockReturnValue('4')
     jest
       .spyOn(safeContracts, 'getProxyFactoryContractInstance')
-      .mockReturnValue({ address: ZERO_ADDRESS } as unknown as Proxy_factory)
+      .mockReturnValue({ getAddress: () => ZERO_ADDRESS } as GnosisSafeProxyFactoryEthersContract)
     jest.spyOn(sender, 'getSafeCreationTx').mockReturnValue(EMPTY_DATA)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
   })

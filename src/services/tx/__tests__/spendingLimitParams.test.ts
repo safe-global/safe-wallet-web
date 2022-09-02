@@ -16,13 +16,13 @@ const mockData: NewSpendingLimitData = {
 }
 
 describe('createNewSpendingLimitTx', () => {
-  let mockGetEnableModuleTx: any
+  let mockCreateEnableModuleTx: any
   let mockSDK: Safe
 
   beforeEach(() => {
     jest.resetAllMocks()
 
-    mockGetEnableModuleTx = jest.fn(() => ({
+    mockCreateEnableModuleTx = jest.fn(() => ({
       data: {
         data: '0x',
         to: '0x',
@@ -31,11 +31,11 @@ describe('createNewSpendingLimitTx', () => {
 
     mockSDK = {
       isModuleEnabled: jest.fn(() => false),
-      getEnableModuleTx: mockGetEnableModuleTx,
+      createEnableModuleTx: mockCreateEnableModuleTx,
       createTransaction: jest.fn(() => 'asd'),
     } as unknown as Safe
 
-    jest.spyOn(txSender, 'createMultiSendTx').mockImplementation(jest.fn())
+    jest.spyOn(txSender, 'createMultiSendCallOnlyTx').mockImplementation(jest.fn())
     jest.spyOn(safeCoreSDK, 'getSafeSDK').mockReturnValue(mockSDK)
     jest.spyOn(spendingLimit, 'getSpendingLimitModuleAddress').mockReturnValue(ZERO_ADDRESS)
   })
@@ -58,7 +58,7 @@ describe('createNewSpendingLimitTx', () => {
   it('creates a tx to enable the spending limit module if its not registered yet', async () => {
     await createNewSpendingLimitTx(mockData, [], '4', 18)
 
-    expect(mockGetEnableModuleTx).toHaveBeenCalledTimes(1)
+    expect(mockCreateEnableModuleTx).toHaveBeenCalledTimes(1)
   })
 
   it('creates a tx to add a delegate if beneficiary is not a delegate yet', async () => {
@@ -128,7 +128,7 @@ describe('createNewSpendingLimitTx', () => {
     expect(spy).toHaveBeenCalled()
   })
   it('encodes all txs as a single multiSend tx', async () => {
-    const spy = jest.spyOn(txSender, 'createMultiSendTx')
+    const spy = jest.spyOn(txSender, 'createMultiSendCallOnlyTx')
     await createNewSpendingLimitTx(mockData, [], '4', 18)
 
     expect(spy).toHaveBeenCalled()

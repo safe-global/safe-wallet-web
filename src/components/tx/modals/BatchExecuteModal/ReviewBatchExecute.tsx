@@ -15,12 +15,13 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/index'
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
+import { TxSimulation } from '@/components/tx/TxSimulation'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
-  const { safe, safeAddress } = useSafeInfo()
+  const { safe } = useSafeInfo()
   const provider = useWeb3()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
@@ -30,16 +31,19 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [data.txs, chain?.chainId])
 
   const multiSendContract = useMemo(() => {
-    if (!chain) return
-    return getMultiSendCallOnlyContractInstance(chain.chainId)
-  }, [chain])
+    if (!chain?.chainId) return
+    return getMultiSendCallOnlyContractInstance(chain.chainId, safe.version)
+  }, [chain?.chainId, safe.version])
+
+  const multiSendTxs = useMemo(() => {
+    if (!txsWithDetails || !chain) return
+    return getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
+  }, [chain, safe.address.value, safe.version, txsWithDetails])
 
   const multiSendTxData = useMemo(() => {
-    if (!txsWithDetails || !chain) return
-
-    const multiSendTxs = getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
+    if (!txsWithDetails || !multiSendTxs) return
     return encodeMultiSendData(multiSendTxs)
-  }, [chain, safe.address.value, safe.version, txsWithDetails])
+  }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
     if (!provider || !multiSendTxData || !multiSendContract || !txsWithDetails) return
@@ -72,7 +76,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
 
         <Typography color="secondary.light">Interact with:</Typography>
         {multiSendContract && (
-          <EthHashInfo address={multiSendContract.address} shortAddress={false} hasExplorer showCopyButton />
+          <EthHashInfo address={multiSendContract.getAddress()} shortAddress={false} hasExplorer showCopyButton />
         )}
 
         {multiSendTxData && (
@@ -88,6 +92,8 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
           Batched transactions:
         </Typography>
         <DecodedTxs txs={txsWithDetails} numberOfTxs={data.txs.length} />
+
+        {multiSendTxs && <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />}
 
         <Typography variant="body2" mt={2} textAlign="center">
           Be aware that if any of the included transactions revert, none of them will be executed. This will result in

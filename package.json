@@ -11,8 +11,9 @@
     "build": "next build",
     "export": "next export",
     "lint": "tsc && next lint",
-    "lint:fix": "yarn lint --fix",
+    "lint:fix": "next lint --fix",
     "prettier": "prettier -w \"{src,cypress,mocks,scripts}/**/*.{ts,tsx,css,js}\"",
+    "fix": "yarn lint:fix && ts-prune && yarn prettier",
     "test": "DEBUG_PRINT_LIMIT=30000 jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
@@ -39,9 +40,9 @@
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@gnosis.pm/safe-apps-sdk": "^7.7.0",
-    "@gnosis.pm/safe-core-sdk": "^2.4.1",
+    "@gnosis.pm/safe-core-sdk": "^3.0.0",
     "@gnosis.pm/safe-deployments": "^1.15.0",
-    "@gnosis.pm/safe-ethers-lib": "^1.4.0",
+    "@gnosis.pm/safe-ethers-lib": "^1.5.0",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@gnosis.pm/safe-react-gateway-sdk": "^3.3.5",
     "@mui/icons-material": "^5.8.4",
@@ -70,7 +71,7 @@
     "lodash": "^4.17.21",
     "next": "12.2.0",
     "papaparse": "^5.3.2",
-    "qrcode": "^1.5.1",
+    "qrcode.react": "^3.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-gtm-module": "^2.0.11",
@@ -81,7 +82,7 @@
     "semver": "^7.3.7"
   },
   "devDependencies": {
-    "@gnosis.pm/safe-core-sdk-types": "^1.4.0",
+    "@gnosis.pm/safe-core-sdk-types": "^1.5.0",
     "@next/bundle-analyzer": "^12.2.4",
     "@sentry/types": "^7.8.1",
     "@svgr/webpack": "^6.3.1",
@@ -114,6 +115,7 @@
     "pre-commit": "^1.2.2",
     "prettier": "^2.7.0",
     "ts-node": "^10.8.2",
+    "ts-prune": "^0.10.3",
     "typechain": "^8.0.0",
     "typescript": "4.7.4"
   }

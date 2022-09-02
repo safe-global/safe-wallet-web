@@ -10,6 +10,8 @@ import EntryDialog from '@/components/address-book/EntryDialog'
 import SafeListRemoveDialog from '@/components/sidebar/SafeListRemoveDialog'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
+import PencilIcon from '@/public/images/sidebar/safe-list/pencil.svg'
+import TrashIcon from '@/public/images/sidebar/safe-list/trash.svg'
 
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
@@ -75,7 +77,7 @@ const SafeListContextMenu = ({
       >
         <MenuItem onClick={handleOpenModal(ModalType.RENAME, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
           <ListItemIcon>
-            <img src="/images/sidebar/safe-list/pencil.svg" alt="Rename" height="16px" width="16px" />
+            <PencilIcon alt="Rename" size={16} />
           </ListItemIcon>
           <ListItemText>Rename</ListItemText>
         </MenuItem>
@@ -83,7 +85,7 @@ const SafeListContextMenu = ({
         {isAdded && (
           <MenuItem onClick={handleOpenModal(ModalType.REMOVE, OVERVIEW_EVENTS.SIDEBAR_REMOVE)}>
             <ListItemIcon>
-              <img src="/images/sidebar/safe-list/trash.svg" alt="Remove" height="16px" width="16px" />
+              <TrashIcon alt="Remove" size={16} />
             </ListItemIcon>
             <ListItemText>Remove</ListItemText>
           </MenuItem>

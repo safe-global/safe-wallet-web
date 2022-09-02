@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import {
-  DateLabel,
   getIncomingTransfers,
   getModuleTransactions,
   getMultisigTransactions,
@@ -10,11 +9,13 @@ import {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/api'
 import type { ParsedUrlQuery } from 'querystring'
+import format from 'date-fns/format'
 import { isSameDay } from 'date-fns'
 
 import { TxFilterFormState } from '@/components/transactions/TxFilterForm'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
-import { isTransactionListItem, TransactionListItemType } from './transaction-guards'
+import { isTransactionListItem } from '@/utils/transaction-guards'
+import { makeDateLabelFromTx } from '@/utils/transactions'
 
 type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>
 type MultisigTxFilter = NonNullable<operations['multisig_transactions']['parameters']['query']>
@@ -63,10 +64,12 @@ export const txFilter = {
   },
 
   parseFormData: ({ type, ...formData }: TxFilterFormState): TxFilter => {
+    const DATE_FORMAT = 'yyyy-MM-dd'
+
     const filter: TxFilter['filter'] = _omitNullish({
       ...formData,
-      execution_date__gte: formData.execution_date__gte?.toISOString(),
-      execution_date__lte: formData.execution_date__lte?.toISOString(),
+      execution_date__gte: formData.execution_date__gte ? format(formData.execution_date__gte, DATE_FORMAT) : undefined,
+      execution_date__lte: formData.execution_date__lte ? format(formData.execution_date__lte, DATE_FORMAT) : undefined,
       value: formData.value ? safeParseUnits(formData.value, 18)?.toString() : undefined,
     })
 
@@ -125,11 +128,7 @@ export const _addDateLabels = (items: TransactionListItem[]): TransactionListIte
 
   // Filtered transaction lists do not contain date labels
   // Prepend initial date label to list
-  const dateLabel: DateLabel = {
-    type: TransactionListItemType.DATE_LABEL,
-    timestamp: firstTx.transaction.timestamp,
-  }
-  const prependedItems = ([dateLabel] as TransactionListItem[]).concat(items)
+  const prependedItems = ([makeDateLabelFromTx(firstTx)] as TransactionListItem[]).concat(items)
 
   // Insert date labels between transactions on different days
   return prependedItems.reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
@@ -145,11 +144,7 @@ export const _addDateLabels = (items: TransactionListItem[]): TransactionListIte
       return resultItems.concat(item)
     }
 
-    const dateLabel: DateLabel = {
-      type: TransactionListItemType.DATE_LABEL,
-      timestamp: item.transaction.timestamp,
-    }
-    return resultItems.concat(dateLabel, item)
+    return resultItems.concat(makeDateLabelFromTx(item), item)
   }, [])
 }
 
