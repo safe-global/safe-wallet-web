@@ -9,7 +9,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { isSameUrl } from '@/utils/url'
 import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
-import { ConfirmSafeAppsTxModal } from '../ConfirmTxModal'
+import SafeAppsTxModal from '../SafeAppsTxModal'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator from './useAppCommunicator'
@@ -94,7 +94,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
       />
 
       {confirmTransactionModalState.isOpen && (
-        <ConfirmSafeAppsTxModal
+        <SafeAppsTxModal
           onClose={() => {
             handleRejectTransaction(confirmTransactionModalState.requestId)
             closeConfirmationModal()

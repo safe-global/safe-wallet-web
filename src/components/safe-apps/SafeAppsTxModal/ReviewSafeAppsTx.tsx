@@ -1,43 +1,28 @@
 import { ReactElement, useMemo } from 'react'
-import { BaseTransaction, RequestId, SendTransactionRequestParams } from '@gnosis.pm/safe-apps-sdk'
-import {
-  DecodedDataParameterValue,
-  DecodedDataResponse,
-  getDecodedData,
-  Operation,
-  SafeAppData,
-} from '@gnosis.pm/safe-react-gateway-sdk'
-import { validateAddress } from '@/utils/validation'
-import SendFromBlock from '@/components/tx/SendFromBlock'
+import { BigNumber } from 'ethers'
 import { Box } from '@mui/system'
-import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
-import useAsync from '@/hooks/useAsync'
-import useChainId from '@/hooks/useChainId'
+import { DecodedDataResponse, getDecodedData, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
+import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
+import { MetaTransactionData, OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import {
   encodeMultiSendData,
   standardizeMetaTransactionData,
 } from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/utils'
-import { BigNumber } from '@ethersproject/bignumber'
+import SendFromBlock from '@/components/tx/SendFromBlock'
+import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import { InfoDetails } from '@/components/transactions/InfoDetails'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import useAsync from '@/hooks/useAsync'
+import useChainId from '@/hooks/useChainId'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { validateAddress } from '@/utils/validation'
 import {
   getMultiSendCallOnlyContractAddress,
   getMultiSendCallOnlyContractInstance,
 } from '@/services/contracts/safeContracts'
-import { InfoDetails } from '@/components/transactions/InfoDetails'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { MetaTransactionData, OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { createTx } from '@/services/tx/txSender'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import TxModal, { TxModalProps } from '@/components/tx/TxModal'
-
-export type ConfirmTxModalProps = {
-  app?: SafeAppData
-  txs: BaseTransaction[]
-  params?: SendTransactionRequestParams
-  requestId: RequestId
-  appId?: string
-}
+import { SafeAppsTxParams } from '.'
 
 const isTxValid = (t: BaseTransaction): boolean => {
   if (!['string', 'number'].includes(typeof t.value)) {
@@ -52,31 +37,18 @@ const isTxValid = (t: BaseTransaction): boolean => {
   return isAddressValid && !!t.data && typeof t.data === 'string'
 }
 
-export type DecodedTxDetailType = DecodedDataParameterValue | DecodedDataResponse | undefined
-
 const parseTxValue = (value: string | number): string => {
   if (!value) return ''
 
   return BigNumber.from(value).toString()
 }
 
-const SafeAppsTxSteps: TxStepperProps['steps'] = [
-  {
-    label: 'Safe Apps transaction',
-    render: (data, onSubmit) => <ConfirmSafeAppsTx onSubmit={onSubmit} safeAppsTx={data as ConfirmTxModalProps} />,
-  },
-]
-
-export const ConfirmSafeAppsTxModal = (props: Omit<TxModalProps, 'steps'>) => {
-  return <TxModal {...props} steps={SafeAppsTxSteps} />
-}
-
 type ConfirmProposedTxProps = {
-  safeAppsTx: ConfirmTxModalProps
+  safeAppsTx: SafeAppsTxParams
   onSubmit: (data: null) => void
 }
 
-export const ConfirmSafeAppsTx = ({
+const ReviewSafeAppsTx = ({
   onSubmit,
   safeAppsTx: { app, txs, requestId, params },
 }: ConfirmProposedTxProps): ReactElement => {
@@ -167,3 +139,5 @@ export const ConfirmSafeAppsTx = ({
     </SignOrExecuteForm>
   )
 }
+
+export default ReviewSafeAppsTx

@@ -1,8 +1,8 @@
 import { ReactElement } from 'react'
 import { Button, DialogActions, DialogContent, Typography } from '@mui/material'
-import { ConfirmTxModalProps } from '.'
+import { SafeAppsTxParams } from '.'
 
-export const SafeAppLoadError = ({ requestId }: ConfirmTxModalProps): ReactElement => {
+export const SafeAppLoadError = ({ requestId }: SafeAppsTxParams): ReactElement => {
   return (
     <div>
       <DialogContent>
