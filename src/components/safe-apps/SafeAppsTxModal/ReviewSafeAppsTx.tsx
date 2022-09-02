@@ -47,8 +47,9 @@ const ReviewSafeAppsTx = ({
 
   const multiSendContract = useMemo(() => {
     if (!chainId) return
-    return getMultiSendCallOnlyContractInstance(chainId)
-  }, [chainId])
+
+    return getMultiSendCallOnlyContractInstance(chainId, safe.version)
+  }, [chainId, safe])
 
   const txRecipient: string | undefined = useMemo(
     () => (isMultiSend ? getMultiSendCallOnlyContractAddress(chainId) : txs[0]?.to),
@@ -64,9 +65,7 @@ const ReviewSafeAppsTx = ({
 
     const standardizeTxs = txs.map((tx) => standardizeMetaTransactionData(tx))
 
-    const encodedData = multiSendContract?.interface.encodeFunctionData('multiSend', [
-      encodeMultiSendData(standardizeTxs),
-    ])
+    const encodedData = multiSendContract?.encode('multiSend', [encodeMultiSendData(standardizeTxs)])
 
     return encodedData
   }, [txs, multiSendContract, isMultiSend])
