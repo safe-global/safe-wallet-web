@@ -6,7 +6,6 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useOnboard, { lastWalletStorage } from '@/hooks/wallets/useOnboard'
-import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
@@ -19,8 +18,7 @@ const WalletIcon = dynamic(() => import('@/components/common/WalletIcon'))
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const onboard = useOnboard()
-  const chainId = useChainId()
-  const chainInfo = useAppSelector((state) => selectChainById(state, chainId))
+  const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const addressBook = useAddressBook()
 
   const handleDisconnect = () => {
@@ -60,7 +58,15 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
             </Typography>
 
             <Typography variant="caption" fontWeight="bold" className={css.address}>
-              {wallet.ens || <EthHashInfo address={wallet.address} showName={false} showAvatar avatarSize={12} />}
+              {wallet.ens || (
+                <EthHashInfo
+                  prefix={chainInfo?.shortName}
+                  address={wallet.address}
+                  showName={false}
+                  showAvatar
+                  avatarSize={12}
+                />
+              )}
             </Typography>
           </Box>
 
