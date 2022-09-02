@@ -70,13 +70,17 @@ const ReviewSafeAppsTx = ({
   const txData: string | undefined = useMemo(() => {
     if (!txs || (txs && !txs.length)) return
 
+    if (!isMultiSend) {
+      return txs[0].data
+    }
+
     const standardizeTxs = txs.map((tx) => standardizeMetaTransactionData(tx))
 
     const encodedData = multiSendContract?.interface.encodeFunctionData('multiSend', [
       encodeMultiSendData(standardizeTxs),
     ])
 
-    return isMultiSend ? encodedData : txs[0]?.data
+    return encodedData
   }, [txs, multiSendContract, isMultiSend])
 
   const txValue: string | undefined = useMemo(
@@ -100,7 +104,7 @@ const ReviewSafeAppsTx = ({
   }, [txData])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
-    if (txRecipient && txData && operation) {
+    if (txRecipient && txData && operation !== undefined) {
       const txParams: MetaTransactionData = {
         to: txRecipient,
         value: txValue,
