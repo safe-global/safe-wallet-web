@@ -88,8 +88,8 @@ const SignOrExecuteForm = ({
   const onSign = async (): Promise<string> => {
     const [connectedWallet, createdTx] = assertSubmittable()
 
-    const shouldSignTypedData = !isHardwareWallet(connectedWallet) || !isPaired(connectedWallet)
-    const signedTx = await dispatchTxSigning(createdTx, shouldSignTypedData, txId)
+    const shouldEthSign = isHardwareWallet(connectedWallet) || isPaired(connectedWallet)
+    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
     return proposedTx.txId

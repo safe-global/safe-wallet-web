@@ -141,7 +141,7 @@ describe('txSender', () => {
         data: '0x0',
       })
 
-      const signedTx = await dispatchTxSigning(tx, true, '0x345')
+      const signedTx = await dispatchTxSigning(tx, false, '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
@@ -155,7 +155,7 @@ describe('txSender', () => {
         data: '0x0',
       })
 
-      const signedTx = await dispatchTxSigning(tx, false, '0x345')
+      const signedTx = await dispatchTxSigning(tx, true, '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
