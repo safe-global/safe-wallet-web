@@ -2,7 +2,6 @@ import { ReactElement, useMemo } from 'react'
 import { BigNumber } from 'ethers'
 import { Box } from '@mui/system'
 import { DecodedDataResponse, getDecodedData, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
-import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
 import { MetaTransactionData, OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import {
   encodeMultiSendData,
@@ -16,26 +15,14 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { validateAddress } from '@/utils/validation'
 import {
   getMultiSendCallOnlyContractAddress,
   getMultiSendCallOnlyContractInstance,
 } from '@/services/contracts/safeContracts'
 import { createTx } from '@/services/tx/txSender'
 import { SafeAppsTxParams } from '.'
-
-const isTxValid = (t: BaseTransaction): boolean => {
-  if (!['string', 'number'].includes(typeof t.value)) {
-    return false
-  }
-
-  if (typeof t.value === 'string' && !/^(0x)?[0-9a-f]+$/i.test(t.value)) {
-    return false
-  }
-
-  const isAddressValid = validateAddress(t.to) === undefined
-  return isAddressValid && !!t.data && typeof t.data === 'string'
-}
+import { useCurrentChain } from '@/hooks/useChains'
+import { formatVisualAmount } from '@/utils/formatters'
 
 const parseTxValue = (value: string | number): string => {
   if (!value) return ''
@@ -43,7 +30,7 @@ const parseTxValue = (value: string | number): string => {
   return BigNumber.from(value).toString()
 }
 
-type ConfirmProposedTxProps = {
+type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
   onSubmit: (data: null) => void
 }
@@ -51,10 +38,11 @@ type ConfirmProposedTxProps = {
 const ReviewSafeAppsTx = ({
   onSubmit,
   safeAppsTx: { app, txs, requestId, params },
-}: ConfirmProposedTxProps): ReactElement => {
+}: ReviewSafeAppsTxProps): ReactElement => {
   const isMultiSend = txs.length > 1
-  const invalidTransactions = !txs.length || txs.some((t) => !isTxValid(t))
   const chainId = useChainId()
+  const chain = useCurrentChain()
+  const { decimals, symbol } = chain!.nativeCurrency
   const { safe } = useSafeInfo()
 
   const multiSendContract = useMemo(() => {
@@ -118,17 +106,18 @@ const ReviewSafeAppsTx = ({
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
-      {invalidTransactions ? (
-        <p>Error</p>
-      ) : (
-        // <SafeAppLoadError  />
-        <Box py={2}>
-          <SendFromBlock />
+      <Box py={2}>
+        <SendFromBlock />
 
-          <InfoDetails title="Interact with:">
-            <EthHashInfo address={txRecipient || ''} shortAddress={false} showCopyButton hasExplorer />
-          </InfoDetails>
+        <InfoDetails
+          title={`Interact with${
+            Number(txValue) !== 0 ? ` (and send ${formatVisualAmount(txValue, decimals)} ${symbol} to)` : ''
+          }:`}
+        >
+          <EthHashInfo address={txRecipient || ''} shortAddress={false} showCopyButton hasExplorer />
+        </InfoDetails>
 
+        {isMultiSend && (
           <Multisend
             txData={{
               dataDecoded: decodedData,
@@ -138,8 +127,8 @@ const ReviewSafeAppsTx = ({
               trustedDelegateCallTarget: false,
             }}
           />
-        </Box>
-      )}
+        )}
+      </Box>
     </SignOrExecuteForm>
   )
 }

@@ -4,7 +4,6 @@ import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
-import useBalances from '@/hooks/useBalances'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { isSameUrl } from '@/utils/url'
@@ -27,9 +26,7 @@ const REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected'
 const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const [confirmTransactionModalState, openConfirmationModal, closeConfirmationModal] = useConfirmationModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
-  const { safe, safeAddress } = useSafeInfo()
-  const { balances } = useBalances()
-  const nativeToken = balances.items.find((item) => parseInt(item.tokenInfo.address, 16) === 0)
+  const { safe } = useSafeInfo()
   const [remoteApps] = useRemoteSafeApps()
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
