@@ -122,19 +122,11 @@ const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
 
 describe('monitorSafeCreationTx', () => {
   let waitForTxSpy = jest.spyOn(provider, '_waitForTransaction')
-  jest.spyOn(provider, 'getBlockNumber').mockReturnValue(Promise.resolve(4))
-  jest.spyOn(provider, 'getTransaction').mockReturnValue(
-    Promise.resolve({
-      data: '0x',
-      nonce: 1,
-      from: '0x10',
-      to: '0x11',
-      value: BigNumber.from(0),
-    } as TransactionResponse),
-  )
 
   beforeEach(() => {
     jest.resetAllMocks()
+
+    jest.spyOn(web3, 'getWeb3').mockImplementation(() => new Web3Provider(jest.fn()))
 
     waitForTxSpy = jest.spyOn(provider, '_waitForTransaction')
     jest.spyOn(provider, 'getBlockNumber').mockReturnValue(Promise.resolve(4))

@@ -19,7 +19,7 @@ import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
 import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
-import { Multi_send_call_only } from '@/types/contracts/Multi_send_call_only'
+import MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
 import { Web3Provider } from '@ethersproject/providers'
 import { ContractTransaction } from 'ethers'
 import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
@@ -231,56 +231,59 @@ export const dispatchTxExecution = async (
 
 export const dispatchBatchExecution = async (
   txs: TransactionDetails[],
-  multiSendContract: Multi_send_call_only,
+  multiSendContract: MultiSendCallOnlyEthersContract,
   multiSendTxData: string,
   provider: Web3Provider,
 ) => {
-  txs.forEach((tx) => {
-    txDispatch(TxEvent.EXECUTING, { txId: tx.txId, groupKey: multiSendTxData })
+  const groupKey = multiSendTxData
+
+  txs.forEach(({ txId }) => {
+    txDispatch(TxEvent.EXECUTING, { txId, groupKey })
   })
 
-  let result: ContractTransaction | undefined
+  let result: TransactionResult | undefined
+
   try {
-    result = await multiSendContract.connect(provider.getSigner()).multiSend(multiSendTxData)
+    result = await multiSendContract.contract.connect(provider.getSigner()).multiSend(multiSendTxData)
   } catch (err) {
-    txs.forEach((tx) => {
-      txDispatch(TxEvent.FAILED, { txId: tx.txId, error: err as Error, groupKey: multiSendTxData })
+    txs.forEach(({ txId }) => {
+      txDispatch(TxEvent.FAILED, { txId, error: err as Error, groupKey })
     })
     throw err
   }
 
-  txs.forEach((tx) => {
-    txDispatch(TxEvent.MINING, { txId: tx.txId, txHash: result!.hash, groupKey: multiSendTxData })
+  txs.forEach(({ txId }) => {
+    txDispatch(TxEvent.MINING, { txId, txHash: result!.hash, groupKey })
   })
 
-  result
-    .wait()
+  result.transactionResponse
+    ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txs.forEach((tx) => {
+        txs.forEach(({ txId }) => {
           txDispatch(TxEvent.REVERTED, {
-            txId: tx.txId,
+            txId,
             receipt,
             error: new Error('Transaction reverted by EVM'),
-            groupKey: multiSendTxData,
+            groupKey,
           })
         })
       } else {
-        txs.forEach((tx) => {
+        txs.forEach(({ txId }) => {
           txDispatch(TxEvent.MINED, {
-            txId: tx.txId,
+            txId,
             receipt,
-            groupKey: multiSendTxData,
+            groupKey,
           })
         })
       }
     })
     .catch((err) => {
-      txs.forEach((tx) => {
+      txs.forEach(({ txId }) => {
         txDispatch(TxEvent.FAILED, {
-          txId: tx.txId,
+          txId,
           error: err as Error,
-          groupKey: multiSendTxData,
+          groupKey,
         })
       })
     })
