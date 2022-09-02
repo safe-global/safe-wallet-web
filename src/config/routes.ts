@@ -3,7 +3,6 @@ export const AppRoutes = {
   open: '/open',
   load: '/load',
   index: '/',
-  demoTheme: '/demo-theme',
   safe: {
     index: '/safe',
     home: '/safe/home',

@@ -7,6 +7,8 @@ import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest
 import { SafeAppDetails } from '@/components/safe-apps/SafeAppLandingPage/SafeAppDetails'
 import { TryDemo } from '@/components/safe-apps/SafeAppLandingPage/TryDemo.'
 import { UseApp } from '@/components/safe-apps/SafeAppLandingPage/UseApp'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useRouter } from 'next/router'
 
 type Props = {
   appUrl: string
@@ -16,6 +18,10 @@ type Props = {
 const SafeAppLanding = ({ appUrl, chainId }: Props) => {
   const { safeApp, isLoading } = useSafeAppFromManifest(appUrl, chainId)
   const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl)
+  const wallet = useWallet()
+  const demoUrl = useRouter()
+  // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
+  const showDemo = chainId === '1' && !!backendApp?.chainIds.includes('1')
 
   useEffect(() => {
     if (!isLoading && safeApp) {
@@ -47,9 +53,11 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
             <Grid xs={12} sm={12} md={6}>
               <UseApp />
             </Grid>
-            <Grid xs={12} sm={12} md={6}>
-              <TryDemo />
-            </Grid>
+            {showDemo && (
+              <Grid xs={12} sm={12} md={6}>
+                <TryDemo />
+              </Grid>
+            )}
           </Grid>
         </Paper>
       </Grid>
