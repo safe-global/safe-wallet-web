@@ -32,8 +32,8 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
 
   const multiSendContract = useMemo(() => {
     if (!chain?.chainId) return
-    return getMultiSendCallOnlyContractInstance(chain.chainId)
-  }, [chain?.chainId])
+    return getMultiSendCallOnlyContractInstance(chain.chainId, safe.version)
+  }, [chain?.chainId, safe.version])
 
   const multiSendTxs = useMemo(() => {
     if (!txsWithDetails || !chain) return
@@ -76,7 +76,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
 
         <Typography color="secondary.light">Interact with:</Typography>
         {multiSendContract && (
-          <EthHashInfo address={multiSendContract.address} shortAddress={false} hasExplorer showCopyButton />
+          <EthHashInfo address={multiSendContract.getAddress()} shortAddress={false} hasExplorer showCopyButton />
         )}
 
         {multiSendTxData && (

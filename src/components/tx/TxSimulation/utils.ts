@@ -4,45 +4,13 @@ import { encodeMultiSendData } from '@gnosis.pm/safe-core-sdk/dist/src/utils/tra
 import { FEATURES, type SafeInfo, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
-import { createEthersAdapter, isSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
-import { getWeb3 } from '@/hooks/wallets/web3'
+import {
+  getMultiSendCallOnlyContractInstance,
+  getSpecificGnosisSafeContractInstance,
+} from '@/services/contracts/safeContracts'
 import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
 import { hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/TxSimulation/types'
-import { getMultiSendCallOnlyDeployment } from '@gnosis.pm/safe-deployments'
-
-// TODO: Move to SDK file
-const getSafeContractInstance = (safe: SafeInfo) => {
-  const provider = getWeb3()
-
-  if (!provider || !isSafeVersion(safe.version)) {
-    throw new Error('Unable to get Safe contract instance')
-  }
-
-  const ethAdapter = createEthersAdapter(provider)
-
-  return ethAdapter.getSafeContract({
-    safeVersion: safe.version,
-    chainId: +safe.chainId,
-    customContractAddress: safe.address.value,
-  })
-}
-
-const getMultiSendCallOnlyInstance = (safe: SafeInfo) => {
-  const provider = getWeb3()
-
-  if (!provider || !isSafeVersion(safe.version)) {
-    throw new Error('Unable to get Safe contract instance')
-  }
-
-  const ethAdapter = createEthersAdapter(provider)
-
-  return ethAdapter.getMultiSendCallOnlyContract({
-    safeVersion: safe.version,
-    chainId: +safe.chainId,
-    singletonDeployment: getMultiSendCallOnlyDeployment(),
-  })
-}
 
 export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
   if (!chain) {
@@ -100,7 +68,7 @@ export const _getSingleTransactionPayload = (
     transaction = simulatedTransaction
   }
 
-  const instance = getSafeContractInstance(params.safe)
+  const instance = getSpecificGnosisSafeContractInstance(params.safe)
 
   const input = instance.encode('execTransaction', [
     transaction.data.to,
@@ -125,7 +93,7 @@ export const _getMultiSendCallOnlyPayload = (
   params: MultiSendTransactionSimulationParams,
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   const data = encodeMultiSendData(params.transactions)
-  const instance = getMultiSendCallOnlyInstance(params.safe)
+  const instance = getMultiSendCallOnlyContractInstance(params.safe.chainId, params.safe.version)
 
   return {
     to: instance.getAddress(),

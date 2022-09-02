@@ -99,7 +99,7 @@ export const getMultiSendTxs = (
       const args = extractTxInfo(tx, safeAddress)
       const sigs = getSignatures(args.signatures)
 
-      const data = safeContractInstance.interface.encodeFunctionData('execTransaction', [
+      const data = safeContractInstance.encode('execTransaction', [
         args.txParams.to,
         args.txParams.value,
         args.txParams.data,

@@ -29,7 +29,7 @@ export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: str
 
   try {
     const txResponse = await provider.getTransaction(txHash)
-    const proxyContractAddress = getProxyFactoryContractInstance(chainId).address
+    const proxyContractAddress = getProxyFactoryContractInstance(chainId).getAddress()
 
     const replacement = {
       data: txResponse.data,
