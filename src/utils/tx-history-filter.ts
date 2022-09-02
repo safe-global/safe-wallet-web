@@ -9,8 +9,9 @@ import {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/api'
 import type { ParsedUrlQuery } from 'querystring'
-import format from 'date-fns/format'
-import { isSameDay } from 'date-fns'
+import endOfDay from 'date-fns/endOfDay'
+import isSameDay from 'date-fns/isSameDay'
+import startOfDay from 'date-fns/startOfDay'
 
 import { TxFilterFormState } from '@/components/transactions/TxFilterForm'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
@@ -64,12 +65,14 @@ export const txFilter = {
   },
 
   parseFormData: ({ type, ...formData }: TxFilterFormState): TxFilter => {
-    const DATE_FORMAT = 'yyyy-MM-dd'
-
     const filter: TxFilter['filter'] = _omitNullish({
       ...formData,
-      execution_date__gte: formData.execution_date__gte ? format(formData.execution_date__gte, DATE_FORMAT) : undefined,
-      execution_date__lte: formData.execution_date__lte ? format(formData.execution_date__lte, DATE_FORMAT) : undefined,
+      execution_date__gte: formData.execution_date__gte
+        ? startOfDay(formData.execution_date__gte).toISOString()
+        : undefined,
+      execution_date__lte: formData.execution_date__lte
+        ? endOfDay(formData.execution_date__lte).toISOString()
+        : undefined,
       value: formData.value ? safeParseUnits(formData.value, 18)?.toString() : undefined,
     })
 

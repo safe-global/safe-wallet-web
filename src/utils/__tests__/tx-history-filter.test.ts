@@ -31,13 +31,13 @@ describe('tx-history-filter', () => {
   describe('_omitNullish', () => {
     it('should keep truthy values', () => {
       const result1 = _omitNullish({
-        execution_date__gte: '1970-01-01',
+        execution_date__gte: '1970-01-01T00:00:00.000Z',
         value: '123000000000000000000',
         type: 'Incoming',
       })
 
       expect(result1).toEqual({
-        execution_date__gte: '1970-01-01',
+        execution_date__gte: '1970-01-01T00:00:00.000Z',
         value: '123000000000000000000',
         type: 'Incoming',
       })
@@ -108,8 +108,8 @@ describe('tx-history-filter', () => {
 
     it('returns `false` for incoming filters', () => {
       const filter: TxFilter['filter'] = {
-        execution_date__gte: '1970-01-01',
-        execution_date__lte: '2000-01-01',
+        execution_date__gte: '1970-01-01T00:00:00.000Z',
+        execution_date__lte: '2000-01-01T00:00:00.000Z',
         to: '0x1234567890123456789012345678901234567890',
         token_address: '0x1234567890123456789012345678901234567890',
         value: '123000000000000000000',
@@ -121,8 +121,8 @@ describe('tx-history-filter', () => {
 
     it('returns `false` for multisig filters', () => {
       const filter: TxFilter['filter'] = {
-        execution_date__gte: '1970-01-01',
-        execution_date__lte: '2000-01-01',
+        execution_date__gte: '1970-01-01T00:00:00.000Z',
+        execution_date__lte: '2000-01-01T00:00:00.000Z',
         to: '0x1234567890123456789012345678901234567890',
         value: '123000000000000000000',
         nonce: '123',
@@ -138,7 +138,7 @@ describe('tx-history-filter', () => {
     describe('parseUrlQuery', () => {
       it('should return incoming filters', () => {
         const result = txFilter.parseUrlQuery({
-          execution_date__gte: '1970-01-01',
+          execution_date__gte: '1970-01-01T00:00:00.000Z',
           value: '123000000000000000000',
           type: 'Incoming',
         })
@@ -146,7 +146,7 @@ describe('tx-history-filter', () => {
         expect(result).toEqual({
           type: 'Incoming',
           filter: {
-            execution_date__gte: '1970-01-01',
+            execution_date__gte: '1970-01-01T00:00:00.000Z',
             value: '123000000000000000000',
           },
         })
@@ -155,8 +155,8 @@ describe('tx-history-filter', () => {
       it('should return multisig filters', () => {
         const result = txFilter.parseUrlQuery({
           to: '0x1234567890123456789012345678901234567890',
-          execution_date__gte: '1970-01-01',
-          execution_date__lte: '2000-01-01',
+          execution_date__gte: '1970-01-01T00:00:00.000Z',
+          execution_date__lte: '2000-01-01T00:00:00.000Z',
           value: '123000000000000000000',
           nonce: '123',
           type: 'Outgoing',
@@ -167,8 +167,8 @@ describe('tx-history-filter', () => {
           type: 'Outgoing',
           filter: {
             to: '0x1234567890123456789012345678901234567890',
-            execution_date__gte: '1970-01-01',
-            execution_date__lte: '2000-01-01',
+            execution_date__gte: '1970-01-01T00:00:00.000Z',
+            execution_date__lte: '2000-01-01T00:00:00.000Z',
             value: '123000000000000000000',
             nonce: '123',
             executed: 'true',
@@ -219,7 +219,7 @@ describe('tx-history-filter', () => {
         expect(result).toEqual({
           type: 'Incoming',
           filter: {
-            execution_date__gte: '1970-01-01',
+            execution_date__gte: '1969-12-31T23:00:00.000Z',
             value: '123000000000000000000',
           },
         })
@@ -239,7 +239,7 @@ describe('tx-history-filter', () => {
           type: 'Outgoing',
           filter: {
             to: '0x1234567890123456789012345678901234567890',
-            execution_date__gte: '1970-01-01',
+            execution_date__gte: '1969-12-31T23:00:00.000Z',
             value: '123000000000000000000',
             nonce: '123',
           },
@@ -268,7 +268,7 @@ describe('tx-history-filter', () => {
         const result = txFilter.formatUrlQuery({
           type: 'Outgoing' as TxFilterType,
           filter: {
-            execution_date__gte: '1970-01-01',
+            execution_date__gte: '1970-01-01T00:00:00.000Z',
             value: '123000000000000000000',
             nonce: '123',
             executed: 'true',
@@ -277,7 +277,7 @@ describe('tx-history-filter', () => {
 
         expect(result).toEqual({
           type: 'Outgoing',
-          execution_date__gte: '1970-01-01',
+          execution_date__gte: '1970-01-01T00:00:00.000Z',
           value: '123000000000000000000',
           nonce: '123',
           executed: 'true',
@@ -290,7 +290,7 @@ describe('tx-history-filter', () => {
         const result = txFilter.formatFormData({
           type: 'Outgoing' as TxFilterType,
           filter: {
-            execution_date__gte: '1970-01-01',
+            execution_date__gte: '1970-01-01T00:00:00.000Z',
             value: '123000000000000000000',
             nonce: '123',
           },
@@ -312,7 +312,7 @@ describe('tx-history-filter', () => {
       jest.spyOn(router, 'useRouter').mockReturnValue({
         query: {
           type: 'Outgoing',
-          execution_date__gte: '1970-01-01',
+          execution_date__gte: '1970-01-01T00:00:00.000Z',
         },
       } as unknown as NextRouter)
 
@@ -320,7 +320,7 @@ describe('tx-history-filter', () => {
 
       expect(result.current[0]).toEqual({
         type: 'Outgoing',
-        filter: { execution_date__gte: '1970-01-01' },
+        filter: { execution_date__gte: '1970-01-01T00:00:00.000Z' },
       })
     })
 
@@ -338,7 +338,7 @@ describe('tx-history-filter', () => {
 
       result.current[1]({
         type: 'Outgoing' as TxFilterType,
-        filter: { execution_date__gte: '1970-01-01' },
+        filter: { execution_date__gte: '1970-01-01T00:00:00.000Z' },
       })
 
       expect(mockPush).toHaveBeenCalledWith({
@@ -346,7 +346,7 @@ describe('tx-history-filter', () => {
         query: {
           safe: '0x123',
           type: 'Outgoing',
-          execution_date__gte: '1970-01-01',
+          execution_date__gte: '1970-01-01T00:00:00.000Z',
         },
       })
     })
@@ -358,7 +358,7 @@ describe('tx-history-filter', () => {
         query: {
           safe: '0x123',
           type: 'Outgoing',
-          execution_date__gte: '1970-01-01',
+          execution_date__gte: '1970-01-01T00:00:00.000Z',
         },
         pathname: '/test',
       } as unknown as NextRouter)
@@ -469,7 +469,7 @@ describe('tx-history-filter', () => {
         '0x456',
         {
           type: 'Outgoing' as TxFilterType,
-          filter: { execution_date__gte: '1970-01-01', executed: 'true' },
+          filter: { execution_date__gte: '1970-01-01T00:00:00.000Z', executed: 'true' },
         },
         'pageUrl2',
       )
@@ -477,7 +477,7 @@ describe('tx-history-filter', () => {
       expect(getMultisigTransactions).toHaveBeenCalledWith(
         '100',
         '0x456',
-        { execution_date__gte: '1970-01-01', executed: 'true' },
+        { execution_date__gte: '1970-01-01T00:00:00.000Z', executed: 'true' },
         'pageUrl2',
       )
 
