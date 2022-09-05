@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Paper } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
-import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import { OVERVIEW_EVENTS, SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import { SafeAppDetails } from '@/components/safe-apps/SafeAppLandingPage/SafeAppDetails'
@@ -10,6 +10,9 @@ import { UseApp } from '@/components/safe-apps/SafeAppLandingPage/UseApp'
 import useWallet from '@/hooks/wallets/useWallet'
 import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_DEMO_SAFE_MAINNET } from '@/config/constants'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { Errors, logError } from '@/services/exceptions'
+import useOwnedSafes from '@/hooks/useOwnedSafes'
 
 type Props = {
   appUrl: string
@@ -20,7 +23,8 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
   const { safeApp, isLoading } = useSafeAppFromManifest(appUrl, chainId)
   const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl)
   const wallet = useWallet()
-
+  const onboard = useOnboard()
+  const ownedSafes = useOwnedSafes()[chainId] ?? []
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
   const showDemo = chainId === '1' || !!backendApp?.chainIds.includes('1')
 
@@ -37,6 +41,14 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
     }
   }, [isLoading, safeApp, chainId])
 
+  const handleConnectWallet = async () => {
+    if (!onboard) return
+
+    trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
+
+    onboard.connectWallet().catch((e) => logError(Errors._302, (e as Error).message))
+  }
+
   if (isLoading || backendAppLoading) {
     return <div>Loading...</div>
   }
@@ -52,7 +64,7 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
           <SafeAppDetails app={backendApp || safeApp} showDefaultListWarning={!backendApp} />
           <Grid container sx={{ mt: 4 }} rowSpacing={{ xs: 2, sm: 2 }}>
             <Grid xs={12} sm={12} md={showDemo ? 6 : 12}>
-              <UseApp wallet={wallet} />
+              <UseApp wallet={wallet} onConnectWallet={handleConnectWallet} safes={ownedSafes} />
             </Grid>
             {showDemo && (
               <Grid xs={12} sm={12} md={6}>
