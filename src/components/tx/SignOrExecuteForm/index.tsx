@@ -2,6 +2,7 @@ import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useS
 import { useRouter } from 'next/router'
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -28,7 +29,7 @@ type SignOrExecuteProps = {
   onSubmit: (data: null) => void
   children?: ReactNode
   error?: Error
-  onSafeAppsTx?: (data: { id: string }) => void
+  requestId?: RequestId
 }
 
 const SignOrExecuteForm = ({
@@ -40,7 +41,7 @@ const SignOrExecuteForm = ({
   onSubmit,
   children,
   error,
-  onSafeAppsTx,
+  requestId,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -110,7 +111,7 @@ const SignOrExecuteForm = ({
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(id, createdTx, txOptions)
+    await dispatchTxExecution(id, createdTx, txOptions, requestId)
 
     return id
   }
@@ -134,8 +135,7 @@ const SignOrExecuteForm = ({
     // For Safe Apps:
     // - Avoid redirection
     // - Return the txId as is required for SDK responses
-    if (onSafeAppsTx) {
-      onSafeAppsTx({ id })
+    if (requestId) {
       return
     }
 

@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useMemo } from 'react'
+import { ReactElement, useMemo } from 'react'
 import { BigNumber } from 'ethers'
 import { Box } from '@mui/system'
 import { DecodedDataResponse, getDecodedData, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -37,7 +37,7 @@ type ReviewSafeAppsTxProps = {
 
 const ReviewSafeAppsTx = ({
   onSubmit,
-  safeAppsTx: { app, txs, requestId, params, onUserConfirm },
+  safeAppsTx: { app, txs, requestId, params },
 }: ReviewSafeAppsTxProps): ReactElement => {
   const isMultiSend = txs.length > 1
   const chainId = useChainId()
@@ -103,21 +103,12 @@ const ReviewSafeAppsTx = ({
     }
   }, [txRecipient])
 
-  const onSafeTxSubmit = useCallback(
-    ({ id }: { id: string }) => {
-      const safeTxHash = id.split('_').pop() || ''
-
-      onUserConfirm(safeTxHash, requestId)
-    },
-    [onUserConfirm, requestId],
-  )
-
   return (
     <SignOrExecuteForm
       safeTx={safeTx}
       isExecutable={safe.threshold === 1}
       onSubmit={onSubmit}
-      onSafeAppsTx={onSafeTxSubmit}
+      requestId={requestId}
       error={safeTxError}
     >
       <Box py={2}>

@@ -27,7 +27,6 @@ export type SafeAppsTxParams = {
   requestId: RequestId
   txs: BaseTransaction[]
   params?: SendTransactionRequestParams
-  onUserConfirm: (safeTxHash: string, requestId: RequestId) => void
 }
 
 const SafeAppsTxSteps: TxStepperProps['steps'] = [

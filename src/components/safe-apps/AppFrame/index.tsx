@@ -1,8 +1,8 @@
 import { ReactElement, useCallback, useEffect, useMemo } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
+import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
@@ -55,13 +55,21 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
     setAppIsLoading(false)
   }, [appUrl, iframeRef, setAppIsLoading])
 
-  const handleConfirmTransaction = (safeTxHash: string, requestId: RequestId) => {
-    communicator?.send({ safeTxHash }, requestId)
-    closeConfirmationModal()
-  }
+  useEffect(() => {
+    const unsubscribe = txSubscribe(TxEvent.MINING, ({ txHash, requestId }) => {
+      if (confirmTransactionModalState.requestId === requestId) {
+        communicator?.send({ safeTxHash: txHash }, confirmTransactionModalState.requestId)
+        closeConfirmationModal()
+      }
+    })
 
-  const handleRejectTransaction = (requestId: RequestId) => {
-    communicator?.send(REJECT_TRANSACTION_MESSAGE, requestId, true)
+    return () => {
+      unsubscribe()
+    }
+  }, [closeConfirmationModal, communicator, confirmTransactionModalState])
+
+  const onSafeAppsModalClose = () => {
+    communicator?.send(REJECT_TRANSACTION_MESSAGE, confirmTransactionModalState.requestId, true)
     closeConfirmationModal()
   }
 
@@ -94,9 +102,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
 
       {confirmTransactionModalState.isOpen && (
         <SafeAppsTxModal
-          onClose={() => {
-            handleRejectTransaction(confirmTransactionModalState.requestId)
-          }}
+          onClose={onSafeAppsModalClose}
           initialData={[
             {
               app: safeAppFromManifest,
@@ -104,7 +110,6 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
               txs: confirmTransactionModalState.txs,
               requestId: confirmTransactionModalState.requestId,
               params: confirmTransactionModalState.params,
-              onUserConfirm: handleConfirmTransaction,
             },
           ]}
         />

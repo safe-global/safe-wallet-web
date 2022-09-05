@@ -27,7 +27,7 @@ interface TxEvents {
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; error: Error }
   [TxEvent.SIGNATURE_PROPOSED]: { txId: string }
   [TxEvent.EXECUTING]: Id
-  [TxEvent.MINING]: Id & { txHash: string }
+  [TxEvent.MINING]: Id & { txHash: string; requestId?: string }
   [TxEvent.MINING_MODULE]: Id & { txHash: string }
   [TxEvent.MINED]: Id & { receipt: ContractReceipt }
   [TxEvent.REVERTED]: Id & { error: Error; receipt: ContractReceipt }
