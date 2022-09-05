@@ -85,7 +85,7 @@ const PrefixedEthHashInfo = ({
   const addressBook = useAddressBook()
 
   const name = showName ? props.name || addressBook[props.address] : undefined
-  const prefix = settings.shortName.show ? chain?.shortName : undefined
+  const prefix = props.address.length === 42 && settings.shortName.show ? chain?.shortName : undefined
 
   return <EthHashInfo prefix={prefix} {...props} name={name} />
 }
