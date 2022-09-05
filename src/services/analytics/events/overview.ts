@@ -3,10 +3,6 @@ import { EventType } from '@/services/analytics/types'
 const OVERVIEW_CATEGORY = 'overview'
 
 export const OVERVIEW_EVENTS = {
-  HOME: {
-    action: 'Go to Welcome page',
-    category: OVERVIEW_CATEGORY,
-  },
   // TODO: Not yet in web-core
   IPHONE_APP_BUTTON: {
     action: 'Download App',

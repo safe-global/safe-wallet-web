@@ -1,6 +1,6 @@
 import { EventType } from '@/services/analytics/types'
 
-const CREATE_SAFE_CATEGORY = 'create-safe'
+export const CREATE_SAFE_CATEGORY = 'create-safe'
 
 export const CREATE_SAFE_EVENTS = {
   CREATE_BUTTON: {
@@ -57,7 +57,7 @@ export const CREATE_SAFE_EVENTS = {
   },
 }
 
-const LOAD_SAFE_CATEGORY = 'load-safe'
+export const LOAD_SAFE_CATEGORY = 'load-safe'
 
 export const LOAD_SAFE_EVENTS = {
   LOAD_BUTTON: {
