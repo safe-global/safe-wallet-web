@@ -25,7 +25,7 @@ export const _getValidatedGetContractProps = (
   }
 
   // TODO: Implement in Core SDK
-  // Remove '+L2' metadata from version
+  // Remove '+L2'/'+Circles' metadata from version
   const [noMetadataVersion] = safeVersion.split('+')
 
   return {
