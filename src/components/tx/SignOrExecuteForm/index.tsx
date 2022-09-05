@@ -28,6 +28,7 @@ type SignOrExecuteProps = {
   onSubmit: (data: null) => void
   children?: ReactNode
   error?: Error
+  onSafeAppsTx?: (data: { id: string }) => void
 }
 
 const SignOrExecuteForm = ({
@@ -39,6 +40,7 @@ const SignOrExecuteForm = ({
   onSubmit,
   children,
   error,
+  onSafeAppsTx,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -129,11 +131,18 @@ const SignOrExecuteForm = ({
       return
     }
 
+    // For Safe Apps:
+    // - Avoid redirection
+    // - Return the txId as is required for SDK responses
+    if (onSafeAppsTx) {
+      onSafeAppsTx({ id })
+      return
+    }
+
     onSubmit(null)
 
     // If txId isn't passed in props, it's a newly created tx
     // Redirect to the single tx view
-    // @TODO: also don't redirect for Safe Apps transactions (add a new prop)
     if (!txId) {
       router.push({
         pathname: AppRoutes.safe.transactions.tx,
