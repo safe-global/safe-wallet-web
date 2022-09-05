@@ -84,6 +84,12 @@ export const formatAmount = (number: string | number): string => {
   return formatNumber(float, options)
 }
 
+export const formatAmountWithPrecision = (number: string | number, fractionDigits: number): string => {
+  const float = Number(number)
+  const options = getNumberFormatterOptions(float)
+  return formatNumber(float, { ...options, maximumFractionDigits: fractionDigits })
+}
+
 export const formatCurrency = (number: string | number, currency: string): string => {
   const float = Number(number)
   const options = getCurrencyFormatterOptions(float, currency)
