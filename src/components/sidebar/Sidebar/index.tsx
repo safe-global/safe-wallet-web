@@ -46,7 +46,7 @@ const Sidebar = (): ReactElement => {
           </>
         ) : (
           <div className={css.noSafeHeader}>
-            <KeyholeIcon variant="standard" />
+            <KeyholeIcon />
           </div>
         )}
 

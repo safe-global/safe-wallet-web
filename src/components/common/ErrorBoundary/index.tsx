@@ -18,7 +18,7 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
           please try again.
         </Typography>
         <div>
-          <WarningIcon height={80} width={80} />
+          <WarningIcon />
         </div>
         {!IS_PRODUCTION ? (
           <div>

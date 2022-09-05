@@ -1,61 +1,33 @@
-import { useTheme } from '@mui/system'
-import { Badge, Avatar, SvgIcon, type BadgeProps } from '@mui/material'
+import { SvgIcon, Palette } from '@mui/material'
 
-import css from '@/components/common/ConnectWallet/styles.module.css'
+import Box from '@mui/material/Box'
+import css from './styles.module.css'
 
 const CircularIcon = ({
   component,
-  variant = 'dot',
-  alt,
-  height = 40,
-  width = 40,
-  color,
+  size = 40,
+  badgeColor,
 }: {
   component: any // Using SvgIconProps['component'] (any) directly causes type error
-  color: NonNullable<BadgeProps['color']>
-  variant?: BadgeProps['variant']
-  alt: string
-  height?: number
-  width?: number
+  badgeColor?: keyof Palette
+  size?: number
 }) => {
-  const { palette } = useTheme()
   return (
-    <Badge
-      overlap="circular"
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      variant={variant}
-      color={color}
-      className={css.icon}
-      sx={{
-        '& .MuiBadge-badge': {
-          border: `3px solid ${palette[color].main}`,
-        },
-      }}
-    >
-      <Avatar
-        alt={alt}
+    <Box className={css.circle} width={size} height={size}>
+      <SvgIcon
+        component={component}
+        inheritViewBox
         sx={{
-          bgcolor: ({ palette }) => palette.background.main,
-          height,
-          width,
+          height: size / 2,
+          width: size / 2,
+          '& path': {
+            fill: ({ palette }) => palette.secondary.light,
+          },
         }}
-      >
-        <SvgIcon
-          component={component}
-          inheritViewBox
-          sx={{
-            height: height / 2,
-            width: width / 2,
-            '& path': {
-              fill: ({ palette }) => palette.secondary.light,
-            },
-          }}
-        />
-      </Avatar>
-    </Badge>
+      />
+      {/* @ts-expect-error TODO: Add type support */}
+      {badgeColor && <Box className={css.icon} sx={{ backgroundColor: ({ palette }) => palette[badgeColor].main }} />}
+    </Box>
   )
 }
 

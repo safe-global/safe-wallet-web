@@ -1,10 +1,9 @@
 import MuiWarningIcon from '@mui/icons-material/Warning'
-import type { ComponentProps } from 'react'
 
 import CircularIcon from '@/components/common/icons/CircularIcon'
 
-const WarningIcon = (props: Pick<ComponentProps<typeof CircularIcon>, 'height' | 'width'>) => {
-  return <CircularIcon component={MuiWarningIcon} alt="Not connected" color="warning" {...props} />
+const WarningIcon = ({ size = 80 }: { size?: number }) => {
+  return <CircularIcon component={MuiWarningIcon} badgeColor="warning" size={size} />
 }
 
 export default WarningIcon

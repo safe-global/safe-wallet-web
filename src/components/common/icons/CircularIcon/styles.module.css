@@ -1,5 +1,18 @@
-.icon :global .MuiBadge-badge {
+.icon {
   width: 16px;
   height: 16px;
   border-radius: 50%;
+  border: 2px solid var(--color-background-paper);
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  background-color: var(--color-background-main);
 }
