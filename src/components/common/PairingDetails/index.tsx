@@ -2,7 +2,7 @@ import { Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import usePairingUri from '@/services/pairing/hooks'
-import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
+import QRCode from '@/components/common/QRCode'
 import PairingDescription from './PairingDescription'
 
 const QR_CODE_SIZE = 100
@@ -12,7 +12,7 @@ const PairingDetails = ({ vertical = false }: { vertical?: boolean }): ReactElem
 
   const title = <Typography variant="h5">Connect to mobile</Typography>
 
-  const qr = <PairingQRCode uri={uri} size={QR_CODE_SIZE} />
+  const qr = <QRCode value={uri} size={QR_CODE_SIZE} />
 
   const description = <PairingDescription />
 
