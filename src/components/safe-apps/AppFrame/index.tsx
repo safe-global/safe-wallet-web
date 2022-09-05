@@ -57,10 +57,12 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
 
   const handleConfirmTransaction = (safeTxHash: string, requestId: RequestId) => {
     communicator?.send({ safeTxHash }, requestId)
+    closeConfirmationModal()
   }
 
   const handleRejectTransaction = (requestId: RequestId) => {
     communicator?.send(REJECT_TRANSACTION_MESSAGE, requestId, true)
+    closeConfirmationModal()
   }
 
   return (
@@ -94,7 +96,6 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
         <SafeAppsTxModal
           onClose={() => {
             handleRejectTransaction(confirmTransactionModalState.requestId)
-            closeConfirmationModal()
           }}
           initialData={[
             {
@@ -103,6 +104,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
               txs: confirmTransactionModalState.txs,
               requestId: confirmTransactionModalState.requestId,
               params: confirmTransactionModalState.params,
+              onUserConfirm: handleConfirmTransaction,
             },
           ]}
         />
