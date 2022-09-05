@@ -1,10 +1,11 @@
-import { SAFE_REACT_URL, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
+import { SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
 import { formatAmountWithPrecision } from '@/utils/formatNumber'
 import { safeFormatUnits } from '@/utils/formatters'
 import { Box, ButtonBase, Skeleton, Typography } from '@mui/material'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import SafeTokenIcon from './safe_token.svg'
@@ -28,10 +29,7 @@ const SafeTokenWidget = () => {
     return null
   }
 
-  const shareUrl = `${SAFE_REACT_URL}/share/safe-app?appUrl=${CLAIMING_APP_URL}&chainId=${chainId}`
-  const url = router.query.safe
-    ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${CLAIMING_APP_URL}`
-    : shareUrl
+  const url = `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${CLAIMING_APP_URL}`
 
   const safeBalance = balances.balances.items.find((balanceItem) => balanceItem.tokenInfo.address === tokenAddress)
 
@@ -40,19 +38,14 @@ const SafeTokenWidget = () => {
 
   return (
     <Box className={css.buttonContainer}>
-      <ButtonBase
-        aria-describedby={'safe-token-widget'}
-        sx={{ alignSelf: 'stretch' }}
-        className={css.tokenButton}
-        href={url}
-        rel="noref noopener"
-      >
-        <SafeTokenIcon />
-
-        <Typography lineHeight="16px" fontWeight={700}>
-          {balances.loading ? <Skeleton variant="text" width={16} /> : flooredSafeBalance}
-        </Typography>
-      </ButtonBase>
+      <Link href={url} passHref>
+        <ButtonBase aria-describedby={'safe-token-widget'} sx={{ alignSelf: 'stretch' }} className={css.tokenButton}>
+          <SafeTokenIcon />
+          <Typography lineHeight="16px" fontWeight={700}>
+            {balances.loading ? <Skeleton variant="text" width={16} /> : flooredSafeBalance}
+          </Typography>
+        </ButtonBase>
+      </Link>
     </Box>
   )
 }

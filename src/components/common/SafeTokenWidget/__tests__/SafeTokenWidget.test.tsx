@@ -1,14 +1,27 @@
 import { SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import * as useBalances from '@/hooks/useBalances'
+import * as nextRouter from 'next/router'
 import * as useChainId from '@/hooks/useChainId'
 import { render, waitFor } from '@/tests/test-utils'
 import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ethers } from 'ethers'
 import SafeTokenWidget from '..'
+import { NextRouter } from 'next/router'
+import { hexZeroPad } from 'ethers/lib/utils'
+import { AppRoutes } from '@/config/routes'
 
 describe('SafeTokenWidget', () => {
+  const fakeSafeAddress = hexZeroPad('0x1', 20)
   beforeEach(() => {
     jest.restoreAllMocks()
+    jest.spyOn(nextRouter, 'useRouter').mockImplementation(
+      () =>
+        ({
+          query: {
+            safe: fakeSafeAddress,
+          },
+        } as any as NextRouter),
+    )
   })
 
   it('Should display skeleton if balance is loading', () => {
@@ -112,7 +125,9 @@ describe('SafeTokenWidget', () => {
 
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
-      expect(result.baseElement).toContainHTML(`appUrl=https://safe-claiming-app.pages.dev/`)
+      expect(result.baseElement).toContainHTML(
+        `href="${AppRoutes.safe.apps}?safe=${fakeSafeAddress}&appUrl=https://safe-claiming-app.pages.dev/"`,
+      )
     })
   })
 })
