@@ -173,14 +173,20 @@ const pairingModule = (): WalletInit => {
                 }
 
                 case ProviderMethods.ETH_SEND_TRANSACTION: {
-                  return this.connector.sendTransaction(params![0] as ITxData)
+                  const txData = params![0] as ITxData
+
+                  return this.connector.sendTransaction({
+                    ...txData,
+                    // Mobile app expects `value`
+                    value: txData.value || '0x0',
+                  })
                 }
 
                 case ProviderMethods.ETH_SIGN_TRANSACTION: {
                   return this.connector.signTransaction(params![0] as ITxData)
                 }
 
-                // Pairing only supports `eth_sign` but the emitted event is `personal_sign`
+                // Mobile app only supports `eth_sign` but emits `personal_sign` event
                 case ProviderMethods.PERSONAL_SIGN: {
                   const [safeTxHash, sender] = params as [string, string]
                   return this.connector.signMessage([sender, safeTxHash]) // `eth_sign`
@@ -195,16 +201,17 @@ const pairingModule = (): WalletInit => {
                   })
                 }
 
-                case ProviderMethods.ETH_SIGN: // Not supported by pairing
-                case ProviderMethods.ETH_SIGN_TYPED_DATA: // Not supported by pairing
-                case ProviderMethods.ETH_SIGN_TYPED_DATA_V3: // Not supported by pairing
-                case ProviderMethods.ETH_SIGN_TYPED_DATA_V4: // Not supported by pairing
+                // Not supported by mobile app
+                case ProviderMethods.ETH_SIGN:
+                case ProviderMethods.ETH_SIGN_TYPED_DATA:
+                case ProviderMethods.ETH_SIGN_TYPED_DATA_V3:
+                case ProviderMethods.ETH_SIGN_TYPED_DATA_V4:
+                // Not supported by WC
                 case ProviderMethods.ETH_SELECT_ACCOUNTS:
                 case ProviderMethods.WALLET_SWITCH_ETHEREUM_CHAIN: {
-                  console.log('unsupported', method, params)
                   throw new ProviderRpcError({
                     code: ProviderRpcErrorCode.UNSUPPORTED_METHOD,
-                    message: `The Provider does not support the requested method: ${method}`,
+                    message: `The Mobile Safe does not support the requested method: ${method}`,
                   })
                 }
 
