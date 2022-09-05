@@ -1,18 +1,24 @@
+import { useTheme } from '@mui/system'
 import { Badge, Avatar, SvgIcon, type BadgeProps } from '@mui/material'
-
-import Keyhole from '@/components/common/ConnectWallet/keyhole.svg'
 
 import css from '@/components/common/ConnectWallet/styles.module.css'
 
-const KeyholeIcon = ({
+const CircularIcon = ({
+  component,
+  variant = 'dot',
+  alt,
   height = 40,
   width = 40,
-  variant = 'dot',
+  color,
 }: {
+  component: any // Using SvgIconProps['component'] (any) directly causes type error
+  color: NonNullable<BadgeProps['color']>
+  variant?: BadgeProps['variant']
+  alt: string
   height?: number
   width?: number
-  variant?: BadgeProps['variant']
 }) => {
+  const { palette } = useTheme()
   return (
     <Badge
       overlap="circular"
@@ -21,11 +27,16 @@ const KeyholeIcon = ({
         horizontal: 'right',
       }}
       variant={variant}
-      color="error"
-      className={css.keyhole}
+      color={color}
+      className={css.icon}
+      sx={{
+        '& .MuiBadge-badge': {
+          border: `3px solid ${palette[color].main}`,
+        },
+      }}
     >
       <Avatar
-        alt="Not connected"
+        alt={alt}
         sx={{
           bgcolor: ({ palette }) => palette.background.main,
           height,
@@ -33,7 +44,7 @@ const KeyholeIcon = ({
         }}
       >
         <SvgIcon
-          component={Keyhole}
+          component={component}
           inheritViewBox
           sx={{
             height: height / 2,
@@ -48,4 +59,4 @@ const KeyholeIcon = ({
   )
 }
 
-export default KeyholeIcon
+export default CircularIcon

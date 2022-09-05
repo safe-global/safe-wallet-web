@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
-import KeyholeIcon from '@/components/common/ConnectWallet/KeyholeIcon'
+import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import { trackEvent } from '@/services/analytics'
 
 const WalletDetails = ({ onConnect }: { onConnect?: () => void }): ReactElement => {
