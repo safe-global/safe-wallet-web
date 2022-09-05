@@ -27,6 +27,7 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
   const ownedSafes = useOwnedSafes()[chainId] ?? []
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
   const showDemo = chainId === '1' || !!backendApp?.chainIds.includes('1')
+  const createSafeHrefWithRedirect = `${AppRoutes.open}?safeViewRedirectURL=${AppRoutes.safe.apps}?appUrl=${appUrl}`
 
   useEffect(() => {
     if (!isLoading && safeApp) {
@@ -64,7 +65,12 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
           <SafeAppDetails app={backendApp || safeApp} showDefaultListWarning={!backendApp} />
           <Grid container sx={{ mt: 4 }} rowSpacing={{ xs: 2, sm: 2 }}>
             <Grid xs={12} sm={12} md={showDemo ? 6 : 12}>
-              <UseApp wallet={wallet} onConnectWallet={handleConnectWallet} safes={ownedSafes} />
+              <UseApp
+                wallet={wallet}
+                onConnectWallet={handleConnectWallet}
+                safes={ownedSafes}
+                createSafeHref={createSafeHrefWithRedirect}
+              />
             </Grid>
             {showDemo && (
               <Grid xs={12} sm={12} md={6}>

@@ -36,7 +36,18 @@ const useWatchSafeCreation = ({
     if (status === SafeCreationStatus.INDEXED) {
       trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)
 
-      safeAddress && router.push({ pathname: AppRoutes.safe.home, query: { safe: safeAddress } })
+      if (safeAddress) {
+        const redirectUrl = router.query.safeViewRedirectURL
+        if (typeof redirectUrl === 'string') {
+          // We're prepending the safe address directly here because the `router.push` doesn't parse
+          // The URL for already existing query params
+          const hasQueryParams = redirectUrl.includes('?')
+          const appendChar = hasQueryParams ? '&' : '?'
+          router.push(redirectUrl + `${appendChar}safe=${safeAddress}`)
+        } else {
+          router.push({ pathname: AppRoutes.safe.home, query: { safe: safeAddress } })
+        }
+      }
     }
 
     if (status === SafeCreationStatus.SUCCESS) {

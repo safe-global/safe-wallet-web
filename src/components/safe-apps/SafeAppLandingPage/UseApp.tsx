@@ -1,14 +1,14 @@
 import { Box, Button, Typography } from '@mui/material'
 import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { AppRoutes } from '@/config/routes'
 
 type Props = {
   wallet: ConnectedWallet | null
   onConnectWallet: () => Promise<void>
   safes: string[]
+  createSafeHref: string
 }
 
-const UseApp = ({ wallet, onConnectWallet, safes }: Props): React.ReactElement => {
+const UseApp = ({ wallet, onConnectWallet, safes, createSafeHref }: Props): React.ReactElement => {
   const hasWallet = !!wallet
   const hasSafes = safes.length > 0
   const shouldCreateSafe = hasWallet && !hasSafes
@@ -24,7 +24,7 @@ const UseApp = ({ wallet, onConnectWallet, safes }: Props): React.ReactElement =
       break
     case shouldCreateSafe:
       button = (
-        <Button variant="contained" sx={{ mt: 4, width: 186 }} href={AppRoutes.open}>
+        <Button variant="contained" sx={{ mt: 4, width: 186 }} href={createSafeHref}>
           Create new Safe
         </Button>
       )
