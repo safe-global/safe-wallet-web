@@ -1,6 +1,11 @@
 import { Box, Button, Typography } from '@mui/material'
+import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
-const UseApp = (): React.ReactElement => {
+type Props = {
+  wallet: ConnectedWallet | null
+}
+
+const UseApp = ({ wallet }: Props): React.ReactElement => {
   return (
     <Box display="flex" flexDirection="column" alignItems="center" fontWeight={700}>
       <Typography variant="h5" sx={{ mb: 3 }} fontWeight={700}>

@@ -5,10 +5,11 @@ import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import { SafeAppDetails } from '@/components/safe-apps/SafeAppLandingPage/SafeAppDetails'
-import { TryDemo } from '@/components/safe-apps/SafeAppLandingPage/TryDemo.'
+import { TryDemo } from '@/components/safe-apps/SafeAppLandingPage/TryDemo'
 import { UseApp } from '@/components/safe-apps/SafeAppLandingPage/UseApp'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
+import { SAFE_APPS_DEMO_SAFE_MAINNET } from '@/config/constants'
 
 type Props = {
   appUrl: string
@@ -19,9 +20,9 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
   const { safeApp, isLoading } = useSafeAppFromManifest(appUrl, chainId)
   const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl)
   const wallet = useWallet()
-  const demoUrl = useRouter()
+
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
-  const showDemo = chainId === '1' && !!backendApp?.chainIds.includes('1')
+  const showDemo = chainId === '1' || !!backendApp?.chainIds.includes('1')
 
   useEffect(() => {
     if (!isLoading && safeApp) {
@@ -50,12 +51,12 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
         <Paper sx={{ p: 6 }}>
           <SafeAppDetails app={backendApp || safeApp} showDefaultListWarning={!backendApp} />
           <Grid container sx={{ mt: 4 }} rowSpacing={{ xs: 2, sm: 2 }}>
-            <Grid xs={12} sm={12} md={6}>
-              <UseApp />
+            <Grid xs={12} sm={12} md={showDemo ? 6 : 12}>
+              <UseApp wallet={wallet} />
             </Grid>
             {showDemo && (
               <Grid xs={12} sm={12} md={6}>
-                <TryDemo />
+                <TryDemo demoUrl={`${AppRoutes.safe.apps}?safe=${SAFE_APPS_DEMO_SAFE_MAINNET}&appUrl=${appUrl}`} />
               </Grid>
             )}
           </Grid>
