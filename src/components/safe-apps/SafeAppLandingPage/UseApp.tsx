@@ -1,4 +1,4 @@
-import { Box, Button, MenuItem, Select, Typography, ListItemIcon, ListItemText } from '@mui/material'
+import { Box, Button, MenuItem, Select, Typography, Grid } from '@mui/material'
 import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useState } from 'react'
 import { useAppSelector } from '@/store'
@@ -6,39 +6,43 @@ import { selectAddressBookByChain } from '@/store/addressBookSlice'
 import { useLastSafe } from '@/hooks/useLastSafe'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import SafeIcon from '@/components/common/SafeIcon'
-import { shortenAddress } from '@/utils/formatters'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import { AppRoutes } from '@/config/routes'
 
 type Props = {
+  appUrl: string
   wallet: ConnectedWallet | null
   onConnectWallet: () => Promise<void>
   safes: string[]
-  createSafeHref: string
   chainId: string
+  chainPrefix?: string
 }
 
-const UseApp = ({ wallet, onConnectWallet, safes, createSafeHref, chainId }: Props): React.ReactElement => {
-  const [safeToUse, setSafeToUse] = useState<string>()
+const UseApp = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appUrl }: Props): React.ReactElement => {
   const lastUsedSafe = useLastSafe()
   const lastUsedSafeAddress = lastUsedSafe ? parsePrefixedAddress(lastUsedSafe).address : undefined
+  const [safeToUse, setSafeToUse] = useState<string>(lastUsedSafeAddress || '')
   const addressBook = useAppSelector((state) => selectAddressBookByChain(state, chainId))
   const hasWallet = !!wallet
   const hasSafes = safes.length > 0
   const shouldCreateSafe = hasWallet && !hasSafes
 
-  console.log(addressBook)
+  console.log(safeToUse)
 
   let button: React.ReactNode
   switch (true) {
     case hasWallet && hasSafes:
+      const href = `${AppRoutes.safe.apps}?appUrl=${appUrl}&safe=${chainPrefix}:${safeToUse}`
       button = (
-        <Button variant="contained" sx={{ mt: 4, width: 186 }}>
+        <Button variant="contained" sx={{ mt: 4, width: 186 }} disabled={!safeToUse} href={href}>
           Use app
         </Button>
       )
       break
     case shouldCreateSafe:
+      const createSafeHrefWithRedirect = `${AppRoutes.open}?safeViewRedirectURL=${AppRoutes.safe.apps}?appUrl=${appUrl}`
       button = (
-        <Button variant="contained" sx={{ mt: 4, width: 186 }} href={createSafeHref}>
+        <Button variant="contained" sx={{ mt: 4, width: 186 }} href={createSafeHrefWithRedirect}>
           Create new Safe
         </Button>
       )
@@ -55,16 +59,21 @@ const UseApp = ({ wallet, onConnectWallet, safes, createSafeHref, chainId }: Pro
     body = (
       <Select
         labelId="asset-label"
-        label="Select a safe"
         defaultValue={lastUsedSafeAddress}
         onChange={(e) => setSafeToUse(e.target.value)}
+        sx={({ spacing }) => ({ width: '311px', '.MuiSelect-select': { padding: `${spacing(1)} ${spacing(2)}` } })}
       >
         {safes.map((safe) => (
           <MenuItem key={safe} value={safe}>
-            <ListItemIcon>
+            <Grid container alignItems="center" gap={1}>
               <SafeIcon address={safe} />
-            </ListItemIcon>
-            <ListItemText primary={addressBook[safe]} secondary={shortenAddress(safe, 4)}></ListItemText>
+
+              <Grid item xs>
+                <Typography variant="body2">{addressBook[safe]}</Typography>
+
+                <EthHashInfo address={safe} showAvatar={false} showName={false} prefix={chainPrefix} />
+              </Grid>
+            </Grid>
           </MenuItem>
         ))}
       </Select>

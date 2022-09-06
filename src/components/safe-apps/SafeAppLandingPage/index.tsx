@@ -13,6 +13,8 @@ import { SAFE_APPS_DEMO_SAFE_MAINNET } from '@/config/constants'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { Errors, logError } from '@/services/exceptions'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
+import { useAppSelector } from '@/store'
+import { selectChainById } from '@/store/chainsSlice'
 
 type Props = {
   appUrl: string
@@ -25,9 +27,9 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
   const wallet = useWallet()
   const onboard = useOnboard()
   const ownedSafes = useOwnedSafes()[chainId] ?? []
+  const chain = useAppSelector((state) => selectChainById(state, chainId))
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
   const showDemo = chainId === '1' || !!backendApp?.chainIds.includes('1')
-  const createSafeHrefWithRedirect = `${AppRoutes.open}?safeViewRedirectURL=${AppRoutes.safe.apps}?appUrl=${appUrl}`
 
   useEffect(() => {
     if (!isLoading && safeApp) {
@@ -66,11 +68,12 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
           <Grid container sx={{ mt: 4 }} rowSpacing={{ xs: 2, sm: 2 }}>
             <Grid xs={12} sm={12} md={showDemo ? 6 : 12}>
               <UseApp
+                appUrl={appUrl}
                 wallet={wallet}
                 onConnectWallet={handleConnectWallet}
                 safes={ownedSafes}
-                createSafeHref={createSafeHrefWithRedirect}
                 chainId={chainId}
+                chainPrefix={chain?.shortName}
               />
             </Grid>
             {showDemo && (
