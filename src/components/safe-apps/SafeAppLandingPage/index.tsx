@@ -70,6 +70,7 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
                 onConnectWallet={handleConnectWallet}
                 safes={ownedSafes}
                 createSafeHref={createSafeHrefWithRedirect}
+                chainId={chainId}
               />
             </Grid>
             {showDemo && (
