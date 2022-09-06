@@ -7,19 +7,19 @@ import {
 import * as router from 'next/router'
 
 import {
-  fetchFilteredTxHistory,
   TxFilterType,
   txFilter,
   _isValidTxFilterType,
   _omitNullish,
   useTxFilter,
   _isModuleFilter,
-  _addDateLabels,
   type TxFilter,
+  fetchFilteredTxHistory,
 } from '@/utils/tx-history-filter'
 import { renderHook } from '@/tests/test-utils'
 import type { NextRouter } from 'next/router'
 import { type TxFilterFormState } from '@/components/transactions/TxFilterForm'
+import { _addDateLabels } from '../transactions'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   getIncomingTransfers: jest.fn(() => Promise.resolve({ results: [] })),

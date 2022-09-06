@@ -8,8 +8,16 @@ import {
   MultisigExecutionInfo,
   Transaction,
   TransactionDetails,
+  TransactionListItem,
+  TransactionListPage,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isModuleExecutionInfo, isMultisigExecutionDetails, isTxQueued } from './transaction-guards'
+import {
+  isDateLabel,
+  isModuleExecutionInfo,
+  isMultisigExecutionDetails,
+  isTransactionListItem,
+  isTxQueued,
+} from './transaction-guards'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
@@ -17,6 +25,7 @@ import { createExistingTx } from '@/services/tx/txSender'
 import { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
+import isSameDay from 'date-fns/isSameDay'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -73,6 +82,55 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
 
 export const makeDateLabelFromTx = (tx: Transaction): DateLabel => {
   return { timestamp: tx.transaction.timestamp, type: 'DATE_LABEL' }
+}
+
+/**
+ * Add date labels between transactions made on the same day by local timezone
+ */
+export const _addDateLabels = (
+  items: TransactionListItem[],
+  shouldAddInitialDateLabel?: boolean,
+): TransactionListItem[] => {
+  const firstTx = items.find(isTransactionListItem)
+
+  if (!firstTx) {
+    return items
+  }
+
+  // Filtered transaction lists do not contain date labels
+  const prependedItems = shouldAddInitialDateLabel
+    ? ([makeDateLabelFromTx(firstTx)] as TransactionListItem[]).concat(items)
+    : items
+
+  // Insert date labels between transactions on different days
+  return prependedItems.reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
+    const prevItem = allItems[index - 1]
+
+    if (
+      !prevItem ||
+      !isTransactionListItem(prevItem) ||
+      !isTransactionListItem(item) ||
+      // Compare in local timezone
+      isSameDay(prevItem.transaction.timestamp, item.transaction.timestamp)
+    ) {
+      return resultItems.concat(item)
+    }
+
+    return resultItems.concat(makeDateLabelFromTx(item), item)
+  }, [])
+}
+
+export const localizeTxListDateLabelTimezone = (page?: TransactionListPage): TransactionListPage | undefined => {
+  if (!page) {
+    return page
+  }
+
+  const noDateLabels = page.results.filter((item) => !isDateLabel(item))
+
+  return {
+    ...page,
+    results: _addDateLabels(noDateLabels, !page?.previous),
+  }
 }
 
 const getSignatures = (confirmations: Record<string, string>) => {
