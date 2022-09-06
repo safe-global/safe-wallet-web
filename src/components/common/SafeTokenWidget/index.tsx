@@ -2,11 +2,13 @@ import { SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
+import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { formatAmountWithPrecision } from '@/utils/formatNumber'
 import { safeFormatUnits } from '@/utils/formatters'
-import { Box, ButtonBase, Skeleton, Typography } from '@mui/material'
+import { Box, ButtonBase, Skeleton, Tooltip, Typography } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Track from '../Track'
 
 import SafeTokenIcon from './safe_token.svg'
 
@@ -38,14 +40,24 @@ const SafeTokenWidget = () => {
 
   return (
     <Box className={css.buttonContainer}>
-      <Link href={url} passHref>
-        <ButtonBase aria-describedby={'safe-token-widget'} sx={{ alignSelf: 'stretch' }} className={css.tokenButton}>
-          <SafeTokenIcon />
-          <Typography lineHeight="16px" fontWeight={700}>
-            {balances.loading ? <Skeleton variant="text" width={16} /> : flooredSafeBalance}
-          </Typography>
-        </ButtonBase>
-      </Link>
+      <Tooltip title="Open $SAFE Claiming App">
+        <span>
+          <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
+            <Link href={url} passHref>
+              <ButtonBase
+                aria-describedby={'safe-token-widget'}
+                sx={{ alignSelf: 'stretch' }}
+                className={css.tokenButton}
+              >
+                <SafeTokenIcon />
+                <Typography lineHeight="16px" fontWeight={700}>
+                  {balances.loading ? <Skeleton variant="text" width={16} /> : flooredSafeBalance}
+                </Typography>
+              </ButtonBase>
+            </Link>
+          </Track>
+        </span>
+      </Tooltip>
     </Box>
   )
 }

@@ -73,4 +73,8 @@ export const OVERVIEW_EVENTS = {
     action: 'Remove Safe from sidebar',
     category: OVERVIEW_CATEGORY,
   },
+  SAFE_TOKEN_WIDGET: {
+    action: 'Open safe claiming app from widget',
+    category: OVERVIEW_CATEGORY,
+  },
 }
