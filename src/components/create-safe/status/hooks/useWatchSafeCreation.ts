@@ -6,6 +6,8 @@ import { AppRoutes } from '@/config/routes'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import useChainId from '@/hooks/useChainId'
 import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
+import { useAppSelector } from '@/store'
+import { selectChainById } from '@/store/chainsSlice'
 
 const useWatchSafeCreation = ({
   status,
@@ -22,6 +24,7 @@ const useWatchSafeCreation = ({
 }) => {
   const router = useRouter()
   const chainId = useChainId()
+  const chain = useAppSelector((state) => selectChainById(state, chainId))
 
   useEffect(() => {
     const checkCreatedSafe = async (chainId: string, address: string) => {
@@ -35,17 +38,19 @@ const useWatchSafeCreation = ({
 
     if (status === SafeCreationStatus.INDEXED) {
       trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)
+      const chainPrefix = chain?.shortName
 
-      if (safeAddress) {
+      if (safeAddress && chainPrefix) {
+        const address = `${chainPrefix}:${safeAddress}`
         const redirectUrl = router.query.safeViewRedirectURL
         if (typeof redirectUrl === 'string') {
           // We're prepending the safe address directly here because the `router.push` doesn't parse
           // The URL for already existing query params
           const hasQueryParams = redirectUrl.includes('?')
           const appendChar = hasQueryParams ? '&' : '?'
-          router.push(redirectUrl + `${appendChar}safe=${safeAddress}`)
+          router.push(redirectUrl + `${appendChar}safe=${address}`)
         } else {
-          router.push({ pathname: AppRoutes.safe.home, query: { safe: safeAddress } })
+          router.push({ pathname: AppRoutes.safe.home, query: { safe: address } })
         }
       }
     }
@@ -62,7 +67,7 @@ const useWatchSafeCreation = ({
         setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined } : undefined))
       }
     }
-  }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId])
+  }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId, chain?.shortName])
 }
 
 export default useWatchSafeCreation

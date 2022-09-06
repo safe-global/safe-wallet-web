@@ -62,7 +62,7 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
 
   return (
     <Grid container>
-      <Grid md lg={6} lgOffset={3}>
+      <Grid sm={12} md={12} lg={8} lgOffset={2} xl={6} xlOffset={3}>
         <Paper sx={{ p: 6 }}>
           <SafeAppDetails app={backendApp || safeApp} showDefaultListWarning={!backendApp} />
           <Grid container sx={{ mt: 4 }} rowSpacing={{ xs: 2, sm: 2 }}>

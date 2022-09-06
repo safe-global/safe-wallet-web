@@ -1,4 +1,4 @@
-import { Box, Button, MenuItem, Select, Typography, Grid } from '@mui/material'
+import { Box, Button, MenuItem, Select, Typography, Grid, FormControl, InputLabel } from '@mui/material'
 import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useState } from 'react'
 import { useAppSelector } from '@/store'
@@ -8,6 +8,7 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 import SafeIcon from '@/components/common/SafeIcon'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
+import { CTA_BUTTON_WIDTH, CTA_HEIGHT } from '@/components/safe-apps/SafeAppLandingPage/constants'
 
 type Props = {
   appUrl: string
@@ -27,14 +28,12 @@ const UseApp = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appUrl }
   const hasSafes = safes.length > 0
   const shouldCreateSafe = hasWallet && !hasSafes
 
-  console.log(safeToUse)
-
   let button: React.ReactNode
   switch (true) {
     case hasWallet && hasSafes:
       const href = `${AppRoutes.safe.apps}?appUrl=${appUrl}&safe=${chainPrefix}:${safeToUse}`
       button = (
-        <Button variant="contained" sx={{ mt: 4, width: 186 }} disabled={!safeToUse} href={href}>
+        <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse} href={href}>
           Use app
         </Button>
       )
@@ -42,14 +41,14 @@ const UseApp = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appUrl }
     case shouldCreateSafe:
       const createSafeHrefWithRedirect = `${AppRoutes.open}?safeViewRedirectURL=${AppRoutes.safe.apps}?appUrl=${appUrl}`
       button = (
-        <Button variant="contained" sx={{ mt: 4, width: 186 }} href={createSafeHrefWithRedirect}>
+        <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} href={createSafeHrefWithRedirect}>
           Create new Safe
         </Button>
       )
       break
     default:
       button = (
-        <Button onClick={onConnectWallet} variant="contained" sx={{ mt: 4, width: 186 }}>
+        <Button onClick={onConnectWallet} variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>
           Connect wallet
         </Button>
       )
@@ -57,34 +56,49 @@ const UseApp = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appUrl }
   let body: React.ReactNode
   if (hasWallet && hasSafes) {
     body = (
-      <Select
-        labelId="asset-label"
-        defaultValue={lastUsedSafeAddress}
-        onChange={(e) => setSafeToUse(e.target.value)}
-        sx={({ spacing }) => ({ width: '311px', '.MuiSelect-select': { padding: `${spacing(1)} ${spacing(2)}` } })}
-      >
-        {safes.map((safe) => (
-          <MenuItem key={safe} value={safe}>
-            <Grid container alignItems="center" gap={1}>
-              <SafeIcon address={safe} />
+      <FormControl>
+        <InputLabel id="safe-select-label">Select a Safe</InputLabel>
+        <Select
+          labelId="safe-select-label"
+          defaultValue={lastUsedSafeAddress}
+          onChange={(e) => setSafeToUse(e.target.value)}
+          label="Select a Safe"
+          sx={({ spacing }) => ({
+            width: '311px',
+            minHeight: '56px',
+            '.MuiSelect-select': { padding: `${spacing(1)} ${spacing(2)}` },
+          })}
+        >
+          {safes.map((safe) => (
+            <MenuItem key={safe} value={safe}>
+              <Grid container alignItems="center" gap={1}>
+                <SafeIcon address={safe} />
 
-              <Grid item xs>
-                <Typography variant="body2">{addressBook[safe]}</Typography>
+                <Grid item xs>
+                  <Typography variant="body2">{addressBook[safe]}</Typography>
 
-                <EthHashInfo address={safe} showAvatar={false} showName={false} prefix={chainPrefix} />
+                  <EthHashInfo address={safe} showAvatar={false} showName={false} prefix={chainPrefix} />
+                </Grid>
               </Grid>
-            </Grid>
-          </MenuItem>
-        ))}
-      </Select>
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     )
   } else {
     body = <img src="/images/safe-creation.svg" alt="An icon of a physical safe with a plus sign" />
   }
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" fontWeight={700}>
-      <Typography variant="h5" sx={{ mb: 3 }} fontWeight={700}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="space-between"
+      fontWeight={700}
+      height={CTA_HEIGHT}
+    >
+      <Typography variant="h5" fontWeight={700}>
         Use the App with your Safe
       </Typography>
       {body}
