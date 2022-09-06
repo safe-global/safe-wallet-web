@@ -12,6 +12,7 @@ import { CreationStatus } from '@/components/create-safe/status/CreationStatus'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import useChainId from '@/hooks/useChainId'
 import { SafeFormData } from '@/components/create-safe/types.d'
+import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
 
 export type PendingSafeData = SafeFormData & { txHash?: string; saltNonce: number }
 export type PendingSafeByChain = Record<string, PendingSafeData | undefined>
@@ -64,7 +65,12 @@ const CreateSafe = () => {
   return safeCreationPending ? (
     <CreationStatus onClose={onClose} />
   ) : (
-    <VerticalTxStepper steps={CreateSafeSteps} onClose={onClose} onFinish={onFinish} />
+    <VerticalTxStepper
+      steps={CreateSafeSteps}
+      onClose={onClose}
+      onFinish={onFinish}
+      eventCategory={CREATE_SAFE_CATEGORY}
+    />
   )
 }
 
