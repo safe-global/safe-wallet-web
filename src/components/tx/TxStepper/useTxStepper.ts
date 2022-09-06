@@ -9,7 +9,7 @@ export type StepRenderProps = {
 }
 
 type Step = {
-  label: string
+  label: ((data: StepRenderProps['data']) => ReactElement) | string
   render: (
     data: StepRenderProps['data'],
     onSubmit: StepRenderProps['onSubmit'],

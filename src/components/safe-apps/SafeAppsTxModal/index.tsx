@@ -4,22 +4,8 @@ import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import TxModal, { TxModalProps } from '@/components/tx/TxModal'
 import ReviewSafeAppsTx from './ReviewSafeAppsTx'
 import InvalidTransaction from './InvalidTransaction'
-import { validateAddress } from '@/utils/validation'
-
-const isTxValid = (txs: BaseTransaction[]) => txs.length && txs.every((t) => validateTransaction(t))
-
-const validateTransaction = (t: BaseTransaction): boolean => {
-  if (!['string', 'number'].includes(typeof t.value)) {
-    return false
-  }
-
-  if (typeof t.value === 'string' && !/^(0x)?[0-9a-f]+$/i.test(t.value)) {
-    return false
-  }
-
-  const isAddressValid = validateAddress(t.to) === undefined
-  return isAddressValid && !!t.data && typeof t.data === 'string'
-}
+import SafeAppsTxModalLabel from './SafeAppsTxModalLabel'
+import { isTxValid } from './utils'
 
 export type SafeAppsTxParams = {
   appId?: string
@@ -31,7 +17,11 @@ export type SafeAppsTxParams = {
 
 const SafeAppsTxSteps: TxStepperProps['steps'] = [
   {
-    label: 'Safe Apps transaction',
+    label: (data) => {
+      const { app } = data as SafeAppsTxParams
+
+      return <SafeAppsTxModalLabel app={app} />
+    },
     render: (data, onSubmit) => {
       if (!isTxValid((data as SafeAppsTxParams).txs)) {
         return <InvalidTransaction />

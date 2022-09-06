@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import React, { ReactElement } from 'react'
 import { Button, DialogActions, Grid, Typography } from '@mui/material'
 import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
 import css from './styles.module.css'
@@ -12,11 +12,15 @@ const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps)
     onClose,
   })
 
+  const activeLabel = steps[activeStep].label
+
   return (
     <div className={css.container}>
       <ModalDialogTitle onClose={onClose}>
         <Grid container px={1} alignItems="center" gap={2}>
-          <Grid item>{steps[activeStep].label}</Grid>
+          <Grid item>
+            {typeof activeLabel === 'string' ? activeLabel : activeLabel(stepData[Math.max(0, activeStep)])}
+          </Grid>
 
           {steps.length > 1 && (
             <Grid item>
