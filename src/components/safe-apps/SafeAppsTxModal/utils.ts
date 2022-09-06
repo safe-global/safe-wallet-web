@@ -1,5 +1,6 @@
+import { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+import { formatVisualAmount } from '@/utils/formatters'
 import { validateAddress } from '@/utils/validation'
-import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
 
 const validateTransaction = (t: BaseTransaction): boolean => {
   if (!['string', 'number'].includes(typeof t.value)) {
@@ -15,3 +16,12 @@ const validateTransaction = (t: BaseTransaction): boolean => {
 }
 
 export const isTxValid = (txs: BaseTransaction[]) => txs.length && txs.every((t) => validateTransaction(t))
+
+export const isNativeTransfer = (encodedData: string) => encodedData && isNaN(parseInt(encodedData, 16))
+
+export const getInteractionTitle = (value?: string, chain?: ChainInfo) => {
+  const { decimals, symbol } = chain!.nativeCurrency
+  return `Interact with${
+    Number(value) !== 0 ? ` (and send ${formatVisualAmount(value || 0, decimals)} ${symbol} to)` : ''
+  }:`
+}

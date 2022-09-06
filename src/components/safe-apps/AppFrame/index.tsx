@@ -106,7 +106,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
           initialData={[
             {
               app: safeAppFromManifest,
-              appId: remoteApp?.id.toString(),
+              appId: remoteApp?.id,
               txs: confirmTransactionModalState.txs,
               requestId: confirmTransactionModalState.requestId,
               params: confirmTransactionModalState.params,
