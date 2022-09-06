@@ -148,7 +148,7 @@ describe('txSender', () => {
       expect(signedTx).not.toBe(tx)
     })
 
-    it('should sign a tx with eth_sign if a hardware wallet is connected', async () => {
+    it('should sign a tx with eth_sign if a hardware wallet/pairing is connected', async () => {
       const tx = await createTx({
         to: '0x123',
         value: '1',

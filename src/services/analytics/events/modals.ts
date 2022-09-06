@@ -30,10 +30,6 @@ export const MODALS_EVENTS = {
     action: 'Estimation',
     category: MODALS_CATEGORY,
   },
-  EDIT_ESTIMATION: {
-    action: 'Edit estimation',
-    category: MODALS_CATEGORY,
-  },
   EXECUTE_TX: {
     action: 'Execute transaction',
     category: MODALS_CATEGORY,

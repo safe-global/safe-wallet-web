@@ -3,7 +3,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import { useState, type MouseEvent, type ReactElement } from 'react'
 
-import KeyholeIcon from '@/components/common/ConnectWallet/KeyholeIcon'
+import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
 import PairingDetails from '@/components/common/PairingDetails'
 
