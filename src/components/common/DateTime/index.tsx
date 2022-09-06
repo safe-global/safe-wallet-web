@@ -9,7 +9,7 @@ const DateTime = ({ value }: { value: number }): ReactElement => {
 
   return (
     <Tooltip title={displayExactDate ? '' : formatDateTime(value)} placement="top">
-      <span>{displayExactDate ? formatDateTime(value) : formatTimeInWords(value)}</span>
+      <span>{displayExactDate ? formatDateTime(value) : formatTimeInWords(new Date(value).setHours(0, 0, 0, 0))}</span>
     </Tooltip>
   )
 }

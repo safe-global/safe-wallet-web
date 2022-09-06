@@ -81,23 +81,27 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
 }
 
 export const makeDateLabelFromTx = (tx: Transaction): DateLabel => {
-  return { timestamp: tx.transaction.timestamp, type: 'DATE_LABEL' }
+  const startOfTimestampDay = new Date(tx.transaction.timestamp).setHours(0, 0, 0, 0)
+  return { timestamp: startOfTimestampDay, type: 'DATE_LABEL' }
 }
 
 /**
  * Add date labels between transactions made on the same day by local timezone
+ * Called once per page
  */
 export const _addDateLabels = (
   items: TransactionListItem[],
   shouldAddInitialDateLabel?: boolean,
 ): TransactionListItem[] => {
   const firstTx = items.find(isTransactionListItem)
+  // debugger
 
   if (!firstTx) {
     return items
   }
 
   // Filtered transaction lists do not contain date labels
+  // Add date label before the first transaction of the first page
   const prependedItems = shouldAddInitialDateLabel
     ? ([makeDateLabelFromTx(firstTx)] as TransactionListItem[]).concat(items)
     : items
@@ -106,17 +110,30 @@ export const _addDateLabels = (
   return prependedItems.reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
     const prevItem = allItems[index - 1]
 
+    // first element of the first page
+    if (!prevItem && isDateLabel(item)) return resultItems
+
+    // first element of remaining pages
+    if (!prevItem && isTransactionListItem(item)) {
+      // TODO: DATE_LABEL can appear repeated
+      // return resultItems.concat(item)
+      return resultItems.concat(makeDateLabelFromTx(item as Transaction), item)
+    }
+
     if (
-      !prevItem ||
-      !isTransactionListItem(prevItem) ||
-      !isTransactionListItem(item) ||
-      // Compare in local timezone
+      prevItem &&
+      isTransactionListItem(prevItem) &&
+      isTransactionListItem(item) &&
       isSameDay(prevItem.transaction.timestamp, item.transaction.timestamp)
     ) {
       return resultItems.concat(item)
     }
 
-    return resultItems.concat(makeDateLabelFromTx(item), item)
+    if (isTransactionListItem(item)) {
+      return resultItems.concat(makeDateLabelFromTx(item), item)
+    }
+
+    return resultItems
   }, [])
 }
 
@@ -125,7 +142,8 @@ export const localizeTxListDateLabelTimezone = (page?: TransactionListPage): Tra
     return page
   }
 
-  const noDateLabels = page.results.filter((item) => !isDateLabel(item))
+  // Filter out date labels
+  const noDateLabels = page.results.filter((item) => !isDateLabel(item)) as (Transaction | DateLabel)[]
 
   return {
     ...page,

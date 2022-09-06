@@ -417,7 +417,7 @@ describe('tx-history-filter', () => {
       expect(result).toEqual([
         {
           type: 'DATE_LABEL',
-          timestamp: 1661305372000,
+          timestamp: 1661292000000,
         },
         {
           type: 'TRANSACTION',
@@ -427,7 +427,7 @@ describe('tx-history-filter', () => {
         },
         {
           type: 'DATE_LABEL',
-          timestamp: 1638530807000,
+          timestamp: 1638486000000,
         },
         {
           type: 'TRANSACTION',
@@ -437,7 +437,7 @@ describe('tx-history-filter', () => {
         },
         {
           type: 'DATE_LABEL',
-          timestamp: 1637069854000,
+          timestamp: 1637017200000,
         },
         {
           type: 'TRANSACTION',
