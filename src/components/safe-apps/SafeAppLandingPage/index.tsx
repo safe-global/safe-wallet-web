@@ -21,6 +21,8 @@ type Props = {
   chainId: string
 }
 
+const CHAIN_ID_WITH_A_DEMO = '1'
+
 const SafeAppLanding = ({ appUrl, chainId }: Props) => {
   const { safeApp, isLoading } = useSafeAppFromManifest(appUrl, chainId)
   const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl, chainId)
@@ -29,7 +31,7 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
   const ownedSafes = useOwnedSafes()[chainId] ?? []
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
-  const showDemo = chainId === '1' || !!backendApp?.chainIds.includes('1')
+  const showDemo = chainId === CHAIN_ID_WITH_A_DEMO || !!backendApp?.chainIds.includes(CHAIN_ID_WITH_A_DEMO)
 
   useEffect(() => {
     if (!isLoading && safeApp) {
