@@ -35,7 +35,7 @@ const DatePickerInput = ({
             return 'Invalid date'
           }
 
-          // Compare days using `startOfDay` to ignore TZ offset
+          // Compare days using `startOfDay` to ignore timezone offset
           if (disableFuture && isFuture(startOfDay(val))) {
             return 'Date cannot be in the future'
           }

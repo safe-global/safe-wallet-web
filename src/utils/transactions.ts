@@ -107,7 +107,7 @@ export const _adjustDateLabelsTimezone = (items: TransactionListItem[]): Transac
         return ([makeDateLabelFromTx(firstTx)] as TransactionListItem[]).concat(item)
       }
 
-      // Transaction is on same day as previous transaction
+      // Transaction is on different day as previous transaction
       if (
         isTransactionListItem(prevItem) &&
         isTransactionListItem(item) &&
