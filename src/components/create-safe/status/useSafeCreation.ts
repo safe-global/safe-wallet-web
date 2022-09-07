@@ -128,7 +128,7 @@ export const useSafeCreation = () => {
   }, [chainId, dispatch, isCreationPending, pendingSafe, provider, safeCreationCallback])
 
   usePendingSafeCreation({ txHash: pendingSafe?.txHash, setStatus })
-  useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus })
+  useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus, chainId })
 
   useEffect(() => {
     if (

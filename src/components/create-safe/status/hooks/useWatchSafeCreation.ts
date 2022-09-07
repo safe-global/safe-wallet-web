@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { pollSafeInfo } from '@/components/create-safe/status/usePendingSafeCreation'
 import { AppRoutes } from '@/config/routes'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
-import useChainId from '@/hooks/useChainId'
 import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
@@ -15,15 +14,16 @@ const useWatchSafeCreation = ({
   pendingSafe,
   setPendingSafe,
   setStatus,
+  chainId,
 }: {
   status: SafeCreationStatus
   safeAddress: string | undefined
   pendingSafe: PendingSafeData | undefined
   setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>
+  chainId: string
 }) => {
   const router = useRouter()
-  const chainId = useChainId()
   const chain = useAppSelector((state) => selectChainById(state, chainId))
 
   useEffect(() => {
@@ -37,12 +37,13 @@ const useWatchSafeCreation = ({
     }
 
     if (status === SafeCreationStatus.INDEXED) {
+      console.log({ chain, chainId })
       trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)
       const chainPrefix = chain?.shortName
 
       if (safeAddress && chainPrefix) {
         const address = `${chainPrefix}:${safeAddress}`
-        const redirectUrl = router.query.safeViewRedirectURL
+        const redirectUrl = router.query?.safeViewRedirectURL
         if (typeof redirectUrl === 'string') {
           // We're prepending the safe address directly here because the `router.push` doesn't parse
           // The URL for already existing query params
