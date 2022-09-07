@@ -4,6 +4,7 @@ import bowser from 'bowser'
 import packageJson from '../../../package.json'
 import { IS_PRODUCTION, SAFE_REACT_URL, WC_BRIDGE } from '@/config/constants'
 import local from '@/services/local-storage/local'
+import ExternalStore from '../ExternalStore'
 
 export const PAIRING_MODULE_STORAGE_ID = 'pairingConnector'
 
@@ -31,16 +32,6 @@ const getClientMeta = () => {
   }
 }
 
-const _pairingConnector = new WalletConnect({
-  bridge: WC_BRIDGE,
-  storageId: local.getPrefixedKey(PAIRING_MODULE_STORAGE_ID),
-  clientMeta: getClientMeta(),
-})
-
-export const getPairingConnector = () => {
-  return _pairingConnector
-}
-
 export enum WalletConnectEvents {
   CONNECT = 'connect',
   DISPLAY_URI = 'display_uri',
@@ -52,8 +43,29 @@ export enum WalletConnectEvents {
   WC_SESSION_UPDATE = 'wc_sessionUpdate',
 }
 
-if (!IS_PRODUCTION) {
-  Object.values(WalletConnectEvents).forEach((event) => {
-    _pairingConnector.on(event, (...args) => console.info('[Pairing]', event, ...args))
+export const createPairingConnector = () => {
+  const connector = new WalletConnect({
+    bridge: WC_BRIDGE,
+    storageId: local.getPrefixedKey(PAIRING_MODULE_STORAGE_ID),
+    clientMeta: getClientMeta(),
+    // TODO: add `signingMethods` here to match app's signing methods
   })
+
+  if (!IS_PRODUCTION) {
+    connector.on(WalletConnectEvents.DISPLAY_URI, (_, { event, params }) => {
+      console.log(`[Pairing] ${event} ${params[0]}`)
+    })
+  }
+
+  return connector
+}
+
+export const {
+  getStore: getPairingConnector,
+  setStore: setPairingConnector,
+  useStore: usePairingConnector,
+} = new ExternalStore<InstanceType<typeof WalletConnect>>()
+
+export const initializeNewPairingConnector = () => {
+  setPairingConnector(createPairingConnector())
 }

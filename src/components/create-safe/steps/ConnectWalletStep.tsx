@@ -8,7 +8,7 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { useCurrentChain } from '@/hooks/useChains'
-import { isPairingSupported } from '@/services/pairing/utils'
+import { isPairingSupported } from '@/hooks/wallets/wallets'
 
 import css from '@/components/create-safe/steps/styles.module.css'
 

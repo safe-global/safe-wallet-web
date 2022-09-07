@@ -1,4 +1,4 @@
-import { formatPairingUri, isPairingSupported } from '../utils'
+import { formatPairingUri } from '../utils'
 
 describe('Pairing utils', () => {
   describe('formatPairingUri', () => {
@@ -19,21 +19,6 @@ describe('Pairing utils', () => {
 
       const result = formatPairingUri(uri)
       expect(result).toBeUndefined()
-    })
-  })
-
-  describe('isPairingSupported', () => {
-    it('should return true if the wallet is enabled', () => {
-      const result = isPairingSupported(['walletConnect'])
-      expect(result).toBe(true)
-    })
-
-    it('should return false if the wallet is disabled', () => {
-      const result1 = isPairingSupported([])
-      expect(result1).toBe(false)
-
-      const result2 = isPairingSupported(['safeMobile'])
-      expect(result2).toBe(false)
     })
   })
 })

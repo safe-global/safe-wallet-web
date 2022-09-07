@@ -9,7 +9,7 @@ import PairingDetails from '@/components/common/PairingDetails'
 
 import css from '@/components/common/ConnectWallet/styles.module.css'
 import { useCurrentChain } from '@/hooks/useChains'
-import { isPairingSupported } from '@/services/pairing/utils'
+import { isPairingSupported } from '@/hooks/wallets/wallets'
 
 const ConnectionCenter = (): ReactElement => {
   const chain = useCurrentChain()

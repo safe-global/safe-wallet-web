@@ -3,53 +3,68 @@ import { useState, useEffect, useCallback } from 'react'
 import { useCurrentChain } from '@/hooks/useChains'
 import useOnboard, { getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
-import { getPairingConnector, WalletConnectEvents } from '@/services/pairing/connector'
+import { initializeNewPairingConnector, usePairingConnector, WalletConnectEvents } from '@/services/pairing/connector'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
-import { formatPairingUri, isPairingSupported, killPairingSession } from '@/services/pairing/utils'
-
-const connector = getPairingConnector()
+import { formatPairingUri } from '@/services/pairing/utils'
+import { getSupportedWallets, isPairingSupported } from '@/hooks/wallets/wallets'
 
 /**
- * `useInitPairing` is responsible for WC session management, creating a session when:
- *
+ * `useInitPairing` is responsible for WC session management, creating a session when
  * - no wallet is connected to onboard, deemed "intializing" pairing (disconnecting wallets via the UI)
- * - on WC 'disconnect' event (disconnecting via the app)
+ * - on WC 'disconnect' event (rejecting the QR code via the app)
  */
 
-// First session will be created by onboard's state subscription, only
-// when there is no connected wallet
-let hasInitialized = false
-
-// WC has no flag to determine if a session is currently being created
 let isConnecting = false
 
 export const useInitPairing = () => {
   const onboard = useOnboard()
   const chain = useCurrentChain()
+  const connector = usePairingConnector()
 
-  const canConnect = !connector.connected && !isConnecting
   const isSupported = isPairingSupported(chain?.disabledWallets)
 
   const createSession = useCallback(() => {
-    if (!canConnect || !chain || !isSupported) {
-      return
+    if (!isConnecting && !connector?.connected && chain?.chainId) {
+      isConnecting = true
+
+      connector
+        ?.createSession({ chainId: +chain?.chainId })
+        .then(() => {
+          isConnecting = false
+        })
+        .catch((e) => logError(Errors._303, (e as Error).message))
     }
+  }, [connector, chain?.chainId])
 
-    isConnecting = true
-    connector
-      .createSession({ chainId: +chain.chainId })
-      .then(() => {
-        isConnecting = false
-      })
-      .catch((e) => logError(Errors._303, (e as Error).message))
-  }, [chain, isSupported, canConnect])
-
+  // Create a session on mount
   useEffect(() => {
-    if (!onboard || !isSupported) {
+    if (connector) {
       return
     }
 
-    // Upon successful WC connection, connect it to onboard
+    initializeNewPairingConnector()
+  }, [connector])
+
+  // Load pairing module with new connector
+  useEffect(() => {
+    if (onboard && isSupported && chain?.disabledWallets) {
+      onboard.state.actions.setWalletModules(getSupportedWallets(chain.disabledWallets))
+    }
+  }, [
+    onboard,
+    isSupported,
+    chain?.disabledWallets,
+    // Wallet modules depend on connector intialization
+    connector,
+  ])
+
+  // Manage sesssions
+  useEffect(() => {
+    if (!connector || !onboard || !isSupported) {
+      return
+    }
+
+    // Link onboard to connector on successful WC connection
     connector.on(WalletConnectEvents.CONNECT, () => {
       onboard
         .connectWallet({
@@ -61,43 +76,40 @@ export const useInitPairing = () => {
         .catch((e) => logError(Errors._302, (e as Error).message))
     })
 
+    // Create session when mobile rejects QR code
     connector.on(WalletConnectEvents.DISCONNECT, () => {
       createSession()
     })
 
-    // Create new session when no wallet is connected to onboard
+    // Create session when no wallet is connected to onboard
     const subscription = onboard.state.select('wallets').subscribe((wallets) => {
       if (!getConnectedWallet(wallets)) {
         createSession()
-        hasInitialized = true
       }
     })
+
+    // Note: if the subscription above doesn't work, creating a session directly does
 
     return () => {
       subscription.unsubscribe()
     }
-  }, [onboard, createSession, isSupported])
+  }, [connector, onboard, isSupported, createSession])
 
-  /**
-   * It's not possible to update the `chainId` of the current WC session
-   * We therefore kill the current session when switching chain to trigger
-   * a new `createSession` above
-   */
-  useEffect(() => {
-    // We need to wait for chains to have been fetched before killing the session
-    if (!chain) {
-      return
-    }
+  // TODO:
+  // // Kill session when changing chain in order to create a new one on new chain
+  // useEffect(() => {
+  //   if (!chain?.chainId || !connector) {
+  //     return
+  //   }
 
-    const isConnected = +chain.chainId === connector.chainId
-    const shouldKillSession = !isSupported || (!isConnected && hasInitialized && canConnect)
+  //   const shouldKillSession =
+  //     !isSupported || (!isOnboardPaired && +chain.chainId !== connector.chainId && !connector.connected)
 
-    if (!shouldKillSession) {
-      return
-    }
-
-    killPairingSession(connector)
-  }, [chain, isSupported, canConnect])
+  //   if (shouldKillSession) {
+  //     console.log('kill session')
+  //     // killPairingSession(connector)
+  //   }
+  // }, [chain, connector, isSupported])
 }
 
 /**
@@ -105,19 +117,20 @@ export const useInitPairing = () => {
  * @returns uri - "safe-" prefixed WC connection URI
  */
 const usePairingUri = () => {
-  const [uri, setUri] = useState(formatPairingUri(connector.uri))
+  const connector = usePairingConnector()
+  const [uri, setUri] = useState(formatPairingUri(connector?.uri))
 
   useEffect(() => {
-    connector.on(WalletConnectEvents.DISPLAY_URI, (_, { params }) => {
+    connector?.on(WalletConnectEvents.DISPLAY_URI, (_, { params }) => {
       setUri(formatPairingUri(params[0]))
     })
 
     // Prevent the `connector` from setting state when not mounted.
     // Note: `off` clears _all_ listeners associated with that event
     return () => {
-      connector.off(WalletConnectEvents.DISPLAY_URI)
+      connector?.off(WalletConnectEvents.DISPLAY_URI)
     }
-  }, [])
+  }, [connector])
 
   return uri
 }

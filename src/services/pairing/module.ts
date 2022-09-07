@@ -1,9 +1,9 @@
 import type { Chain, ProviderAccounts, WalletInit, EIP1193Provider } from '@web3-onboard/common'
 import type { ITxData } from '@walletconnect/types'
+import WalletConnect from '@walletconnect/client'
 
-import { getPairingConnector, PAIRING_MODULE_STORAGE_ID } from '@/services/pairing/connector'
+import { PAIRING_MODULE_STORAGE_ID, initializeNewPairingConnector } from '@/services/pairing/connector'
 import local from '@/services/local-storage/local'
-import { killPairingSession } from '@/services/pairing/utils'
 
 enum ProviderEvents {
   ACCOUNTS_CHANGED = 'accountsChanged',
@@ -29,7 +29,7 @@ enum ProviderMethods {
 export const PAIRING_MODULE_LABEL = 'Safe Mobile'
 
 // Modified version of: https://github.com/blocknative/web3-onboard/blob/v2-web3-onboard-develop/packages/walletconnect/src/index.ts
-const pairingModule = (): WalletInit => {
+const pairingModule = ({ connector }: { connector: InstanceType<typeof WalletConnect> }): WalletInit => {
   return () => {
     return {
       label: PAIRING_MODULE_LABEL,
@@ -38,8 +38,6 @@ const pairingModule = (): WalletInit => {
         const { StaticJsonRpcProvider } = await import('@ethersproject/providers')
 
         const { ProviderRpcError, ProviderRpcErrorCode } = await import('@web3-onboard/common')
-
-        const { default: WalletConnect } = await import('@walletconnect/client')
 
         const { default: QRModal } = await import('@/services/pairing/QRModal')
 
@@ -116,7 +114,18 @@ const pairingModule = (): WalletInit => {
               this.disconnect?.()
             })
 
-            this.disconnect = () => killPairingSession(this.connector)
+            this.disconnect = () => {
+              const TEMP_PEER_ID = '_tempPeerId'
+
+              // WalletConnect throws if no `peerId` is set when attempting to `killSession`
+              // We therefore manually set it in order to `killSession` without throwing
+              if (!connector.peerId) {
+                connector.peerId = TEMP_PEER_ID
+              }
+
+              // `useInitPairing` reinitializes wallet modules when the pairing connector is reset
+              return this.connector.killSession().then(initializeNewPairingConnector)
+            }
 
             this.request = async ({ method, params }) => {
               switch (method) {
@@ -231,7 +240,7 @@ const pairingModule = (): WalletInit => {
         }
 
         return {
-          provider: new EthProvider({ chains, connector: getPairingConnector() }),
+          provider: new EthProvider({ chains, connector }),
         }
       },
     }

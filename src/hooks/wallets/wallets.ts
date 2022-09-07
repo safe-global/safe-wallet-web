@@ -13,6 +13,7 @@ import walletConnect from '@web3-onboard/walletconnect'
 
 import pairingModule from '@/services/pairing/module'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { getPairingConnector } from '@/services/pairing/connector'
 
 export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
@@ -42,7 +43,7 @@ export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
 
 const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.INJECTED]: injectedWalletModule,
-  [WALLET_KEYS.PAIRING]: pairingModule,
+  [WALLET_KEYS.PAIRING]: () => pairingModule({ connector: getPairingConnector()! }),
   [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ bridge: WC_BRIDGE }),
   [WALLET_KEYS.LEDGER]: ledgerModule,
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
@@ -65,6 +66,10 @@ export const getRecommendedInjectedWallets = (): RecommendedInjectedWallets[] =>
 export const isWalletSupported = (disabledWallets: string[], walletLabel: string): boolean => {
   const legacyWalletName = CGW_NAMES?.[walletLabel.toUpperCase() as WALLET_KEYS]
   return !disabledWallets.includes(legacyWalletName || walletLabel)
+}
+
+export const isPairingSupported = (disabledWallets?: string[]) => {
+  return !!disabledWallets && isWalletSupported(disabledWallets, CGW_NAMES[WALLET_KEYS.PAIRING] as string)
 }
 
 export const getSupportedWallets = (disabledWallets: string[]): WalletInit[] => {
