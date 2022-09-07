@@ -3,11 +3,18 @@ import { useState, useEffect, useCallback } from 'react'
 import { useCurrentChain } from '@/hooks/useChains'
 import useOnboard, { getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
-import { getPairingConnector, WalletConnectEvents } from '@/services/pairing/connector'
+import {
+  getClientMeta,
+  PAIRING_MODULE_STORAGE_ID,
+  setPairingConnector,
+  usePairingConnector,
+  WalletConnectEvents,
+} from '@/services/pairing/connector'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { formatPairingUri, isPairingSupported, killPairingSession } from '@/services/pairing/utils'
-
-const connector = getPairingConnector()
+import WalletConnect from '@walletconnect/client'
+import { WC_BRIDGE } from '@/config/constants'
+import local from '@/services/local-storage/local'
 
 /**
  * `useInitPairing` is responsible for WC session management, creating a session when:
@@ -23,27 +30,37 @@ let hasInitialized = false
 // WC has no flag to determine if a session is currently being created
 let isConnecting = false
 
-const canConnect = !connector.connected && !isConnecting
-
 export const useInitPairing = () => {
   const onboard = useOnboard()
   const chain = useCurrentChain()
+  const connector = usePairingConnector()
 
+  const canConnect = !connector?.connected && !isConnecting
   const isSupported = isPairingSupported(chain?.disabledWallets)
 
+  useEffect(() => {
+    const _pairingConnector = new WalletConnect({
+      bridge: WC_BRIDGE,
+      storageId: local.getPrefixedKey(PAIRING_MODULE_STORAGE_ID),
+      clientMeta: getClientMeta(),
+    })
+
+    setPairingConnector(_pairingConnector)
+  }, [])
+
   const createSession = useCallback(() => {
-    if (!canConnect || !chain || !isSupported) {
+    if (!canConnect || !chain || !isSupported || !onboard) {
       return
     }
 
     isConnecting = true
     connector
-      .createSession({ chainId: +chain.chainId })
+      ?.createSession({ chainId: +chain.chainId })
       .then(() => {
         isConnecting = false
       })
       .catch((e) => logError(Errors._303, (e as Error).message))
-  }, [chain, isSupported])
+  }, [canConnect, chain, isSupported, onboard, connector])
 
   useEffect(() => {
     if (!onboard || !isSupported) {
@@ -51,7 +68,7 @@ export const useInitPairing = () => {
     }
 
     // Upon successful WC connection, connect it to onboard
-    connector.on(WalletConnectEvents.CONNECT, () => {
+    connector?.on(WalletConnectEvents.CONNECT, () => {
       onboard
         .connectWallet({
           autoSelect: {
@@ -62,13 +79,13 @@ export const useInitPairing = () => {
         .catch((e) => logError(Errors._302, (e as Error).message))
     })
 
-    connector.on(WalletConnectEvents.DISCONNECT, () => {
+    connector?.on(WalletConnectEvents.DISCONNECT, () => {
       createSession()
     })
 
     // Create new session when no wallet is connected to onboard
     const subscription = onboard.state.select('wallets').subscribe((wallets) => {
-      if (!getConnectedWallet(wallets)) {
+      if (!getConnectedWallet(wallets) && !hasInitialized) {
         createSession()
         hasInitialized = true
       }
@@ -77,7 +94,7 @@ export const useInitPairing = () => {
     return () => {
       subscription.unsubscribe()
     }
-  }, [onboard, createSession, isSupported])
+  }, [onboard, createSession, isSupported, connector])
 
   /**
    * It's not possible to update the `chainId` of the current WC session
@@ -90,15 +107,15 @@ export const useInitPairing = () => {
       return
     }
 
-    const isConnected = +chain.chainId === connector.chainId
+    const isConnected = +chain.chainId === connector?.chainId
     const shouldKillSession = !isSupported || (!isConnected && hasInitialized && canConnect)
 
-    if (!shouldKillSession) {
+    if (!shouldKillSession || !connector) {
       return
     }
 
     killPairingSession(connector)
-  }, [chain, isSupported])
+  }, [chain, isSupported, canConnect, connector])
 }
 
 /**
@@ -106,19 +123,20 @@ export const useInitPairing = () => {
  * @returns uri - "safe-" prefixed WC connection URI
  */
 const usePairingUri = () => {
-  const [uri, setUri] = useState(formatPairingUri(connector.uri))
+  const connector = usePairingConnector()
+  const [uri, setUri] = useState(connector ? formatPairingUri(connector.uri) : undefined)
 
   useEffect(() => {
-    connector.on(WalletConnectEvents.DISPLAY_URI, (_, { params }) => {
+    connector?.on(WalletConnectEvents.DISPLAY_URI, (_, { params }) => {
       setUri(formatPairingUri(params[0]))
     })
 
     // Prevent the `connector` from setting state when not mounted.
     // Note: `off` clears _all_ listeners associated with that event
     return () => {
-      connector.off(WalletConnectEvents.DISPLAY_URI)
+      connector?.off(WalletConnectEvents.DISPLAY_URI)
     }
-  }, [])
+  }, [connector])
 
   return uri
 }

@@ -239,7 +239,7 @@ const pairingModule = (): WalletInit => {
         }
 
         return {
-          provider: new EthProvider({ chains, connector: getPairingConnector() }),
+          provider: new EthProvider({ chains, connector: getPairingConnector()! }),
         }
       },
     }
