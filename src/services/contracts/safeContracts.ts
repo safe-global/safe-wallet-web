@@ -21,7 +21,7 @@ export const _getValidatedGetContractProps = (
   safeVersion: string,
 ): Pick<GetContractProps, 'chainId' | 'safeVersion'> => {
   if (!isValidSafeVersion(safeVersion)) {
-    throw new Error(`${safeVersion} is not a valid Safe version`)
+    throw new Error(`${safeVersion} is not a Safe version supported by the safe-core-sdk`)
   }
 
   // TODO: Implement in Core SDK
