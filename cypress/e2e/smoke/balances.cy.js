@@ -1,7 +1,9 @@
-const balanceRowTestId = '[data-testid=balance-row]'
+const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
+const assetsTable = '[aria-labelledby="tableTitle"] > tbody'
 
-const TEST_SAFE = 'rin:0x11Df0fa87b30080d59eba632570f620e37f2a8f7'
-const ASSETS_LENGTH = 7
+const TEST_SAFE = 'rin:0x656c1121a6f40d25C5CFfF0Db08938DB7633B2A3'
+//rin:0x11Df0fa87b30080d59eba632570f620e37f2a8f7
+const ASSETS_LENGTH = 25
 const ASSET_NAME_COLUMN = 0
 const TOKEN_AMOUNT_COLUMN = 1
 const FIAT_AMOUNT_COLUMN = 2
@@ -15,12 +17,12 @@ describe('Assets > Coins', () => {
   before(() => {
     // Open the Safe used for testing
     cy.visit(`/${TEST_SAFE}/balances`)
-    cy.contains('a', 'Accept selection').click()
+    cy.contains('button', 'Accept selection').click()
   })
 
   describe('should have different tokens', () => {
     it(`should have ${ASSETS_LENGTH} entries in the table`, () => {
-      cy.get(balanceRowTestId).should('have.length', ASSETS_LENGTH)
+      cy.get(assetsTable).find('tr').should('have.length', ASSETS_LENGTH)
     })
 
     it('should have Dai', () => {
@@ -28,7 +30,7 @@ describe('Assets > Coins', () => {
       cy.contains('Dai')
         .parents('tr')
         .within(() => {
-          cy.get('img[alt="Dai"]').should('be.visible')
+          cy.get('img[alt="DAI"]').should('be.visible')
         })
 
       // Asset name column contains link to block explorer
@@ -36,7 +38,7 @@ describe('Assets > Coins', () => {
         .parents('tr')
         .find('td')
         .eq(ASSET_NAME_COLUMN)
-        .get('a[aria-label="Show details on Etherscan"]')
+        .get('a[aria-label="View on rinkeby.etherscan.io"]')
         .should('be.visible')
 
       // Balance should contain DAI
@@ -48,7 +50,7 @@ describe('Assets > Coins', () => {
       cy.contains('Wrapped Ether')
         .parents('tr')
         .within(() => {
-          cy.get('img[alt="Wrapped Ether"]').should('be.visible')
+          cy.get('img[alt="WETH"]').should('be.visible')
         })
 
       // Asset name column contains link to block explorer
@@ -56,40 +58,40 @@ describe('Assets > Coins', () => {
         .parents('tr')
         .find('td')
         .eq(ASSET_NAME_COLUMN)
-        .get('a[aria-label="Show details on Etherscan"]')
+        .get('a[aria-label="View on rinkeby.etherscan.io"]')
         .should('be.visible')
 
       // Balance should contain WETH
       cy.contains('Wrapped Ether').parents('tr').find('td').eq(TOKEN_AMOUNT_COLUMN).contains('WETH')
     })
 
-    it('should have USD Coin', () => {
-      // Row should have an image with alt text "USD Coin"
-      cy.contains('USD Coin')
+    it('should have USDT Coin', () => {
+      // Row should have an image with alt text "USDT Coin"
+      cy.contains('Compound USDT')
         .parents('tr')
         .within(() => {
-          cy.get('img[alt="USD Coin"]').should('be.visible')
+          cy.get('img[alt="USDT"]').should('be.visible')
         })
 
       // Asset name column contains link to block explorer
-      cy.contains('USD Coin')
+      cy.contains('Compound USDT')
         .parents('tr')
         .find('td')
         .eq(ASSET_NAME_COLUMN)
-        .get('a[aria-label="Show details on Etherscan"]')
+        .get('a[aria-label="View on rinkeby.etherscan.io"]')
         .should('be.visible')
 
-      // Balance should contain USDC
-      cy.contains('USD Coin').parents('tr').find('td').eq(TOKEN_AMOUNT_COLUMN).contains('USDC')
+      // Balance should contain USDT
+      cy.contains('Compound USDT').parents('tr').find('td').eq(TOKEN_AMOUNT_COLUMN).contains('USDT')
     })
   })
 
-  describe('values should be formatted as per locale', () => {
+  describe.skip('values should be formatted as per locale', () => {
     it('should have Token and Fiat balances formated as per locales', () => {
       // Verify all assets
       Array.from(Array(ASSETS_LENGTH).keys()).forEach((row) => {
         // Token balance is formatted as per tokenRegex
-        cy.get(balanceRowTestId)
+        cy.get(balanceSingleRow)
           .eq(row)
           .find('td')
           .eq(TOKEN_AMOUNT_COLUMN)
@@ -99,7 +101,7 @@ describe('Assets > Coins', () => {
           })
 
           // Fiat balance is formatted as per fiatRegex
-          .get(balanceRowTestId)
+          .get(balanceSingleRow)
           .eq(row)
           .find('td')
           .eq(FIAT_AMOUNT_COLUMN)
@@ -112,70 +114,70 @@ describe('Assets > Coins', () => {
   })
 
   describe('fiat currency can be changed', () => {
-    it('should have USD Coin as default currency', () => {
+    it('should have ETH as default currency', () => {
       // First row Fiat balance should not contain EUR
-      cy.get(balanceRowTestId).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'EUR')
-      // First row Fiat balance should contain USD
-      cy.get(balanceRowTestId).first().find('td').eq(FIAT_AMOUNT_COLUMN).contains('USD')
+      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', '€')
+      // First row Fiat balance should contain ETH
+      cy.get(balanceSingleRow).first().find('td').eq(TOKEN_AMOUNT_COLUMN).contains('ETH')
     })
 
     it('should allow changing the currency to EUR', () => {
       // Click on balances currency dropdown
-      cy.get('[data-testid=balances-currency-dropdown-btn]').click()
+      cy.get('[id="currency"]').click()
 
       // Select EUR
-      cy.get('ul[role=menu]').findByText('EUR').click()
+      cy.get('ul[role="listbox"]').findByText('EUR').click()
 
-      // First row Fiat balance should not contain USD
-      cy.get(balanceRowTestId).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'USD')
+      // First row Fiat balance should not contain USDT
+      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'USDT')
       // First row Fiat balance should contain EUR
-      cy.get(balanceRowTestId).first().find('td').eq(FIAT_AMOUNT_COLUMN).contains('EUR')
+      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).contains('€')
     })
   })
 
   describe('pagination should work', () => {
-    it('should should allow 5 rows per page and navigate to next and previous page', () => {
+    it('should should allow 25 rows per page and navigate to next and previous page', () => {
       // Click on the pagination select dropdown
-      cy.get('[aria-haspopup="listbox"]').contains('100').click()
+      cy.get('[aria-haspopup="listbox"]').contains('25').click()
 
-      // Select 5 rows per page
-      cy.get('[aria-haspopup="listbox"]').get('li[role="option"]').contains('5').click()
+      // Select 25 rows per page
+      cy.get('[aria-haspopup="listbox"]').get('li[role="option"]').contains('25').click()
 
-      // Table should have 5 rows
-      cy.contains('1-5 of 7')
-      cy.get(balanceRowTestId).should('have.length', 5)
+      // Table should have 25 rows
+      cy.contains('1–25 of 27')
+      cy.get(balanceSingleRow).should('have.length', 25)
 
       // Click on the next page button
-      cy.get('button[aria-label="Next Page"]').click()
+      cy.get('button[aria-label="Go to next page"]').click()
 
-      // Table should have 2 rows
-      cy.contains('6-7 of 7')
-      cy.get(balanceRowTestId).should('have.length', 2)
+      // Table should have 1 rows
+      cy.contains('26–27 of 27')
+      cy.get(balanceSingleRow).should('have.length', 1)
 
       // Click on the previous page button
-      cy.get('button[aria-label="Previous Page"]').click()
+      cy.get('button[aria-label="Go to previous Page"]').click()
 
-      // Table should have 5 rows
-      cy.contains('1-5 of 7')
-      cy.get(balanceRowTestId).should('have.length', 5)
+      // Table should have 25 rows
+      cy.contains('1-25 of 27')
+      cy.get(balanceSingleRow).should('have.length', 25)
     })
   })
 
   describe('should open assets modals', () => {
-    const receiveAssetsModalTestId = '[data-testid=receive-assets-modal]'
+    const receiveAssetsModalTestId = '[aria-labelledby=":rq:"]'
 
     it('should open the Receive assets modal', () => {
       // Assets table container should exist
-      cy.get('[aria-labelledby="Balances"]').should('be.visible')
+      cy.get('[data-track="overview: Show Safe QR code"]').should('be.visible')
 
       // Receive text should not exist yet
-      cy.get(balanceRowTestId).first().findByText('Receive').should('not.be.visible')
+      cy.get(balanceSingleRow).first().findByText('Receive').should('not.be.visible')
 
       // On hover, the Receive button should be visible
-      cy.get(balanceRowTestId).first().trigger('mouseover').findByText('Receive').should('exist')
+      cy.get(balanceSingleRow).first().trigger('mouseover').findByText('Receive').should('exist')
 
       // Click on the Receive button
-      cy.get(balanceRowTestId).first().findByText('Receive').click({ force: true })
+      cy.get(balanceSingleRow).first().findByText('Receive').click({ force: true })
 
       // The Receive Assets modal should be present
       cy.get(receiveAssetsModalTestId).should('be.visible')
