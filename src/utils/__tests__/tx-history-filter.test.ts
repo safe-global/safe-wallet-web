@@ -19,7 +19,7 @@ import {
 import { renderHook } from '@/tests/test-utils'
 import type { NextRouter } from 'next/router'
 import { type TxFilterFormState } from '@/components/transactions/TxFilterForm'
-import { _addDateLabels } from '../transactions'
+import { _adjustDateLabelsTimezone } from '../transactions'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   getIncomingTransfers: jest.fn(() => Promise.resolve({ results: [] })),
@@ -375,9 +375,9 @@ describe('tx-history-filter', () => {
       })
     })
   })
-  describe('addDateLabels', () => {
+  describe('adjustDateLabelsTimezone', () => {
     it('should return items as is if it is an empty array', () => {
-      const result = _addDateLabels([])
+      const result = _adjustDateLabelsTimezone([])
       expect(result).toEqual([])
     })
 
@@ -387,10 +387,11 @@ describe('tx-history-filter', () => {
         { type: 'CONFLICT_HEADER', nonce: 1571 },
       ] as TransactionListItem[]
 
-      const result = _addDateLabels(items)
+      const result = _adjustDateLabelsTimezone(items)
       expect(result).toEqual(items)
     })
 
+    // TODO: Add conflict header test
     it('should prepend and nest date labels between transactions on different days', () => {
       const items = [
         {
@@ -413,7 +414,7 @@ describe('tx-history-filter', () => {
         },
       ] as TransactionListItem[]
 
-      const result = _addDateLabels(items)
+      const result = _adjustDateLabelsTimezone(items)
       expect(result).toEqual([
         {
           type: 'DATE_LABEL',

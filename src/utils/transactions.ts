@@ -17,6 +17,7 @@ import {
   isMultisigExecutionDetails,
   isTransactionListItem,
   isTxQueued,
+  TransactionListItemType,
 } from './transaction-guards'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
@@ -26,6 +27,7 @@ import { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
 import isSameDay from 'date-fns/isSameDay'
+import startOfDay from 'date-fns/startOfDay'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -81,72 +83,54 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
 }
 
 export const makeDateLabelFromTx = (tx: Transaction): DateLabel => {
-  const startOfTimestampDay = new Date(tx.transaction.timestamp).setHours(0, 0, 0, 0)
-  return { timestamp: startOfTimestampDay, type: 'DATE_LABEL' }
+  const startOfDayTimestamp = startOfDay(tx.transaction.timestamp).getTime()
+  return { timestamp: startOfDayTimestamp, type: TransactionListItemType.DATE_LABEL }
 }
 
 /**
  * Add date labels between transactions made on the same day by local timezone
  */
-export const _addDateLabels = (
-  items: TransactionListItem[],
-  shouldAddInitialDateLabel?: boolean,
-): TransactionListItem[] => {
+export const _adjustDateLabelsTimezone = (items: TransactionListItem[]): TransactionListItem[] => {
   const firstTx = items.find(isTransactionListItem)
 
   if (!firstTx) {
     return items
   }
 
-  // Filtered transaction lists do not contain date labels
-  // Add date label before the first transaction of the first page
-  const prependedItems = shouldAddInitialDateLabel
-    ? ([makeDateLabelFromTx(firstTx)] as TransactionListItem[]).concat(items)
-    : items
-
   // Insert date labels between transactions on different days
-  return prependedItems.reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
-    const prevItem = allItems[index - 1]
+  return items
+    .filter((item) => !isDateLabel(item))
+    .reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
+      const prevItem = allItems[index - 1]
 
-    // first element of the first page
-    if (!prevItem && isDateLabel(item)) return resultItems
+      // Add date label before the first transaction of the first page
+      if (!prevItem) {
+        return ([makeDateLabelFromTx(firstTx)] as TransactionListItem[]).concat(item)
+      }
 
-    // first element of remaining pages
-    if (!prevItem) {
-      // TODO: DATE_LABEL can appear repeated
-      return resultItems.concat(makeDateLabelFromTx(item as Transaction), item)
-    }
+      // Transaction is on same day as previous transaction
+      if (
+        isTransactionListItem(prevItem) &&
+        isTransactionListItem(item) &&
+        !isSameDay(prevItem.transaction.timestamp, item.transaction.timestamp)
+      ) {
+        return resultItems.concat(makeDateLabelFromTx(item), item)
+      }
 
-    // Transaction in the same day
-    if (
-      isTransactionListItem(prevItem) &&
-      isTransactionListItem(item) &&
-      isSameDay(prevItem.transaction.timestamp, item.transaction.timestamp)
-    ) {
       return resultItems.concat(item)
-    }
-
-    // Transaction in a different day
-    if (isTransactionListItem(item)) {
-      return resultItems.concat(makeDateLabelFromTx(item), item)
-    }
-
-    // Ignore remaining TransactionListItem types
-    return resultItems
-  }, [])
+    }, [])
 }
 
+// TODO: Needs to know if previous page has same day to prevent duplicate date labels
+// Perhaps pass them to `useTxXYZ` hooks from `TxPage`
 export const localizeTxListDateLabelTimezone = (page?: TransactionListPage): TransactionListPage | undefined => {
   if (!page) {
     return page
   }
 
-  // Filter out date labels
-  const noDateLabels = page.results.filter((item) => !isDateLabel(item)) as (Transaction | DateLabel)[]
-
   return {
     ...page,
-    results: _addDateLabels(noDateLabels, !page?.previous),
+    results: _adjustDateLabelsTimezone(page.results),
   }
 }
 
