@@ -7,13 +7,13 @@ import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Mu
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { SafeAppsTxParams } from '.'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
-import { getInteractionTitle, isNativeTransfer } from './utils'
+import { getInteractionTitle, isNativeTransfer } from '../utils'
+import { SafeAppsTxParams } from '.'
 
 type ReviewSafeAppsTxProps = {
   onSubmit: (data: null) => void

@@ -5,7 +5,7 @@ import css from './styles.module.css'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
 
-const SafeAppsTxModalLabel = ({ app }: { app?: SafeAppData }) => {
+const SafeAppsModalLabel = ({ app }: { app?: SafeAppData }) => {
   if (!app) {
     return <Typography variant="h3">Safe Apps Transaction</Typography>
   }
@@ -18,4 +18,4 @@ const SafeAppsTxModalLabel = ({ app }: { app?: SafeAppData }) => {
   )
 }
 
-export default SafeAppsTxModalLabel
+export default SafeAppsModalLabel

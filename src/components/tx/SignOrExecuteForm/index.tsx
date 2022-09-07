@@ -19,6 +19,7 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -111,7 +112,7 @@ const SignOrExecuteForm = ({
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(id, createdTx, txOptions, requestId)
+    await dispatchTxExecution(id, createdTx, txOptions)
 
     return id
   }
@@ -134,8 +135,9 @@ const SignOrExecuteForm = ({
 
     // For Safe Apps:
     // - Avoid redirection
-    // - Return the txId as is required for SDK responses
+    // - Dispatch an event for return the safeTxHash to the caller
     if (requestId) {
+      txDispatch(TxEvent.SAFE_APPS_REQUEST, { txId: id, requestId })
       return
     }
 

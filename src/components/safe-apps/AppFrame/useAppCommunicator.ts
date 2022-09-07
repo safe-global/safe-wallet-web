@@ -3,6 +3,7 @@ import { getAddress } from 'ethers/lib/utils'
 import { getBalances, getTransactionDetails, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   BaseTransaction,
+  EIP712TypedData,
   GetBalanceParams,
   GetTxBySafeTxHashParams,
   Methods,
@@ -11,6 +12,7 @@ import {
   SendTransactionRequestParams,
   SendTransactionsParams,
   SignMessageParams,
+  SignTypedMessageParams,
 } from '@gnosis.pm/safe-apps-sdk'
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
@@ -33,7 +35,7 @@ type UseAppCommunicatorConfig = {
     params: SendTransactionRequestParams | undefined,
     requestId: RequestId,
   ) => void
-  onSignTransactions: (message: string, requestId: string, method: Methods) => void
+  onSignTransactions: (message: string | EIP712TypedData, requestId: string, method: Methods) => void
 }
 
 const useAppCommunicator = (
@@ -140,6 +142,12 @@ const useAppCommunicator = (
       const { message } = msg.data.params as SignMessageParams
 
       onSignTransactions(message, msg.data.id, Methods.signMessage)
+    })
+
+    communicator?.on(Methods.signTypedMessage, async (msg) => {
+      const { typedData } = msg.data.params as SignTypedMessageParams
+
+      onSignTransactions(typedData, msg.data.id, Methods.signTypedMessage)
     })
 
     communicator?.on(Methods.getChainInfo, async () => {

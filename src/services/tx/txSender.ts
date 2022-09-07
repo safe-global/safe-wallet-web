@@ -18,7 +18,6 @@ import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { didRevert } from '@/utils/ethers-utils'
 import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
-import { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
 import MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
 import { Web3Provider } from '@ethersproject/providers'
@@ -197,7 +196,6 @@ export const dispatchTxExecution = async (
   txId: string,
   safeTx: SafeTransaction,
   txOptions?: TransactionOptions,
-  requestId?: RequestId,
 ): Promise<string> => {
   const sdk = getAndValidateSafeSDK()
 
@@ -212,7 +210,7 @@ export const dispatchTxExecution = async (
     throw error
   }
 
-  txDispatch(TxEvent.MINING, { txId, txHash: result.hash, requestId })
+  txDispatch(TxEvent.MINING, { txId, txHash: result.hash })
 
   // Asynchronously watch the tx to be mined
   result.transactionResponse

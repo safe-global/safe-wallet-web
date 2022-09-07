@@ -4,8 +4,8 @@ import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import TxModal, { TxModalProps } from '@/components/tx/TxModal'
 import ReviewSafeAppsTx from './ReviewSafeAppsTx'
 import InvalidTransaction from './InvalidTransaction'
-import SafeAppsTxModalLabel from './SafeAppsTxModalLabel'
-import { isTxValid } from './utils'
+import SafeAppsTxModalLabel from '../SafeAppsModalLabel'
+import { isTxValid } from '../utils'
 
 export type SafeAppsTxParams = {
   appId?: string
