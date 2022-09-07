@@ -8,8 +8,7 @@ import {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/api'
 import type { ParsedUrlQuery } from 'querystring'
-import endOfDay from 'date-fns/endOfDay'
-import startOfDay from 'date-fns/startOfDay'
+import { startOfDay, endOfDay } from 'date-fns'
 
 import { TxFilterFormState } from '@/components/transactions/TxFilterForm'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'

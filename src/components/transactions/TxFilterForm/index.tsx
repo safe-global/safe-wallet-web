@@ -8,8 +8,7 @@ import Radio from '@mui/material/Radio'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import isAfter from 'date-fns/isAfter'
-import isBefore from 'date-fns/isBefore'
+import { isBefore, isAfter } from 'date-fns'
 import { Controller, FormProvider, useForm, useFormState, type DefaultValues } from 'react-hook-form'
 import { useMemo, type ReactElement } from 'react'
 
@@ -88,7 +87,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
     const isFormDirty = dirtyFieldNames.some((name) => name !== TxFilterFormFieldNames.FILTER_TYPE)
     const hasFilterInQuery = !!filter?.type
     return !isValid || isFormDirty || hasFilterInQuery
-  }, [isValid, dirtyFieldNames])
+  }, [dirtyFieldNames, filter?.type, isValid])
 
   const clearFilter = () => {
     setFilter(null)

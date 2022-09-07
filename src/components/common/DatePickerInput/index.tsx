@@ -3,8 +3,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import TextField from '@mui/material/TextField'
-import isFuture from 'date-fns/isFuture'
-import isValid from 'date-fns/isValid'
+import { isFuture, isValid } from 'date-fns'
 
 const DatePickerInput = ({
   name,

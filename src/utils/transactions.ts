@@ -26,8 +26,7 @@ import { createExistingTx } from '@/services/tx/txSender'
 import { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
-import isSameDay from 'date-fns/isSameDay'
-import startOfDay from 'date-fns/startOfDay'
+import { startOfDay, isSameDay } from 'date-fns'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({

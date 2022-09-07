@@ -1,8 +1,7 @@
 import { ReactElement } from 'react'
 import { Tooltip } from '@mui/material'
 import { formatDateTime, formatTimeInWords } from '@/utils/date'
-import isToday from 'date-fns/isToday'
-import startOfDay from 'date-fns/startOfDay'
+import { isToday, startOfDay } from 'date-fns'
 
 const DAYS_THRESHOLD = 60
 
