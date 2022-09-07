@@ -87,14 +87,12 @@ export const makeDateLabelFromTx = (tx: Transaction): DateLabel => {
 
 /**
  * Add date labels between transactions made on the same day by local timezone
- * Called once per page
  */
 export const _addDateLabels = (
   items: TransactionListItem[],
   shouldAddInitialDateLabel?: boolean,
 ): TransactionListItem[] => {
   const firstTx = items.find(isTransactionListItem)
-  // debugger
 
   if (!firstTx) {
     return items
@@ -114,14 +112,13 @@ export const _addDateLabels = (
     if (!prevItem && isDateLabel(item)) return resultItems
 
     // first element of remaining pages
-    if (!prevItem && isTransactionListItem(item)) {
+    if (!prevItem) {
       // TODO: DATE_LABEL can appear repeated
-      // return resultItems.concat(item)
       return resultItems.concat(makeDateLabelFromTx(item as Transaction), item)
     }
 
+    // Transaction in the same day
     if (
-      prevItem &&
       isTransactionListItem(prevItem) &&
       isTransactionListItem(item) &&
       isSameDay(prevItem.transaction.timestamp, item.transaction.timestamp)
@@ -129,10 +126,12 @@ export const _addDateLabels = (
       return resultItems.concat(item)
     }
 
+    // Transaction in a different day
     if (isTransactionListItem(item)) {
       return resultItems.concat(makeDateLabelFromTx(item), item)
     }
 
+    // Ignore remaining TransactionListItem types
     return resultItems
   }, [])
 }
