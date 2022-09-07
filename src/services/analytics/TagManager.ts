@@ -8,10 +8,6 @@ export type TagManagerArgs = {
    */
   gtmId: string
   /**
-   * Additional events such as 'gtm.start': new Date().getTime(),event:'gtm.js'.
-   */
-  events?: Record<string, unknown> | undefined
-  /**
    * Used to set environments.
    */
   auth?: string | undefined
@@ -27,16 +23,9 @@ export type TagManagerArgs = {
 
 export const DATA_LAYER_NAME = 'dataLayer'
 
-export const _getRequiredGtmArgs = ({
-  gtmId,
-  events = {},
-  dataLayer = undefined,
-  auth = '',
-  preview = '',
-}: TagManagerArgs) => {
+export const _getRequiredGtmArgs = ({ gtmId, dataLayer = undefined, auth = '', preview = '' }: TagManagerArgs) => {
   return {
     gtmId,
-    events,
     dataLayer,
     auth: auth ? `&gtm_auth=${auth}` : '',
     preview: preview ? `&gtm_preview=${preview}` : '',
@@ -46,17 +35,21 @@ export const _getRequiredGtmArgs = ({
 // Initialization scripts
 
 export const _getGtmScript = (args: TagManagerArgs) => {
-  const { gtmId, events, auth, preview } = _getRequiredGtmArgs(args)
+  const { gtmId, auth, preview } = _getRequiredGtmArgs(args)
 
   const script = document.createElement('script')
 
   const gtmScript = `
-      (function(w,d,s,l,i){w[l]=w[l]||[];
-        w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js', ${JSON.stringify(events).slice(1, -1)}});
-        var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-        j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl+'${auth}${preview}&gtm_cookies_win=x';
-        f.parentNode.insertBefore(j,f);
-      })(window,document,'script','${DATA_LAYER_NAME}','${gtmId}');`
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl + '${auth}${preview}&gtm_cookies_win=x';
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', '${DATA_LAYER_NAME}', '${gtmId}');`
 
   script.innerHTML = gtmScript
 
@@ -96,7 +89,8 @@ const TagManager = {
     const { dataLayer } = _getRequiredGtmArgs(args)
 
     if (dataLayer) {
-      document.createElement('script').innerHTML = JSON.stringify(dataLayer)
+      const gtmDataLayerScript = _getGtmDataLayerScript(dataLayer)
+      document.head.appendChild(gtmDataLayerScript)
     }
 
     const gtmScript = _getGtmScript(args)
