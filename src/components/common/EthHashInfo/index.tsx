@@ -19,6 +19,8 @@ type EthHashInfoProps = {
   showAvatar?: boolean
   showCopyButton?: boolean
   prefix?: string
+  showPrefix?: boolean
+  copyPrefix?: boolean
   shortAddress?: boolean
   customAvatar?: string
   hasExplorer?: boolean
@@ -29,6 +31,8 @@ const EthHashInfo = ({
   address,
   customAvatar,
   prefix = '',
+  copyPrefix,
+  showPrefix,
   shortAddress = true,
   showAvatar = true,
   avatarSize,
@@ -65,11 +69,11 @@ const EthHashInfo = ({
 
         <Box className={css.addressRow}>
           <Typography variant="body2" fontWeight="inherit" component="div" className={css.address}>
-            {prefix && <b>{prefix}:</b>}
-            {shortAddress ? shortenAddress(address) : address}
+            {showPrefix && prefix && <b>{prefix}:</b>}
+            {shortAddress && shortAddress ? shortenAddress(address) : address}
           </Typography>
 
-          {showCopyButton && <CopyAddressButton prefix={prefix} address={address} />}
+          {showCopyButton && <CopyAddressButton prefix={prefix} address={address} copyPrefix={copyPrefix} />}
 
           {hasExplorer && <ExplorerLink address={address} />}
         </Box>
@@ -87,10 +91,18 @@ const PrefixedEthHashInfo = ({
   const chain = useAppSelector((state) => selectChainById(state, props.chainId || currentChainId))
   const addressBook = useAddressBook()
 
+  const isAddress = props.address.length === 42
   const name = showName ? props.name || addressBook[props.address] : undefined
-  const prefix = props.address.length === 42 && settings.shortName.show ? chain?.shortName : undefined
 
-  return <EthHashInfo prefix={prefix} {...props} name={name} />
+  return (
+    <EthHashInfo
+      prefix={chain?.shortName}
+      showPrefix={isAddress && settings.shortName.show}
+      copyPrefix={isAddress && settings.shortName.copy}
+      {...props}
+      name={name}
+    />
+  )
 }
 
 export default PrefixedEthHashInfo
