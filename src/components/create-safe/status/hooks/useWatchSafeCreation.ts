@@ -37,7 +37,6 @@ const useWatchSafeCreation = ({
     }
 
     if (status === SafeCreationStatus.INDEXED) {
-      console.log({ chain, chainId })
       trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)
       const chainPrefix = chain?.shortName
 
@@ -68,7 +67,7 @@ const useWatchSafeCreation = ({
         setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined } : undefined))
       }
     }
-  }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId, chain?.shortName])
+  }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId, chain])
 }
 
 export default useWatchSafeCreation
