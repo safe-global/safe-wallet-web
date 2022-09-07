@@ -13,7 +13,6 @@ describe('TagManager', () => {
 
       expect(result1).toStrictEqual({
         gtmId: MOCK_ID,
-        events: {},
         dataLayer: undefined,
         auth: '',
         preview: '',
@@ -23,7 +22,6 @@ describe('TagManager', () => {
 
       expect(result2).toStrictEqual({
         gtmId: MOCK_ID,
-        events: {},
         dataLayer: undefined,
         auth: '&gtm_auth=abcdefg',
         preview: '&gtm_preview=env-1',
