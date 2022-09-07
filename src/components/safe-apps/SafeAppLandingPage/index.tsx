@@ -23,14 +23,14 @@ type Props = {
 
 const SafeAppLanding = ({ appUrl, chainId }: Props) => {
   const { safeApp, isLoading } = useSafeAppFromManifest(appUrl, chainId)
-  const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl)
+  const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl, chainId)
   const wallet = useWallet()
   const onboard = useOnboard()
   const ownedSafes = useOwnedSafes()[chainId] ?? []
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
   const showDemo = chainId === '1' || !!backendApp?.chainIds.includes('1')
-
+  console.log({ backendApp, safeApp })
   useEffect(() => {
     if (!isLoading && safeApp) {
       trackEvent({
@@ -50,6 +50,11 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
     trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
 
     onboard.connectWallet().catch((e) => logError(Errors._302, (e as Error).message))
+  }
+
+  const handleDemoClick = () => {
+    console.log('demo click')
+    trackEvent({ ...SAFE_APPS_EVENTS.SHARED_APP_OPEN_DEMO, label: appUrl })
   }
 
   if (isLoading || backendAppLoading) {
@@ -78,7 +83,10 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
             </Grid>
             {showDemo && (
               <Grid xs={12} sm={12} md={6}>
-                <TryDemo demoUrl={`${AppRoutes.safe.apps}?safe=${SAFE_APPS_DEMO_SAFE_MAINNET}&appUrl=${appUrl}`} />
+                <TryDemo
+                  demoUrl={`${AppRoutes.safe.apps}?safe=${SAFE_APPS_DEMO_SAFE_MAINNET}&appUrl=${appUrl}`}
+                  onClick={handleDemoClick}
+                />
               </Grid>
             )}
           </Grid>

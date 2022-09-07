@@ -1,13 +1,10 @@
 import { useEffect } from 'react'
 import { getSafeApps, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Errors, logError } from '@/services/exceptions'
-import useChainId from '@/hooks/useChainId'
 import useAsync, { AsyncResult } from '../useAsync'
 import { trimTrailingSlash } from '@/utils/url'
 
-const useSafeAppFromBackend = (url: string): AsyncResult<SafeAppData> => {
-  const chainId = useChainId()
-
+const useSafeAppFromBackend = (url: string, chainId: string): AsyncResult<SafeAppData> => {
   const [backendApp, error, loading] = useAsync(async () => {
     // We do not have a single standard for storing URLs, it may be stored with or without a trailing slash.
     // But for the request it has to be an exact match.

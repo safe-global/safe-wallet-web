@@ -19,7 +19,7 @@ type AppFrameProps = {
 const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const { safe } = useSafeInfo()
 
-  const [remoteApp] = useSafeAppFromBackend(appUrl)
+  const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
