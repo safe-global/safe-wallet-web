@@ -1,21 +1,20 @@
-import { ReactElement } from 'react'
+import { ReactElement, useMemo } from 'react'
+import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
+import { Box } from '@mui/system'
+import { TextField, Typography } from '@mui/material'
+import { isObjectEIP712TypedData, Methods } from '@gnosis.pm/safe-apps-sdk'
+import { OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { SafeAppsSignMessageParams } from '../SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { useCurrentChain } from '@/hooks/useChains'
-import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
-import { isObjectEIP712TypedData, Methods } from '@gnosis.pm/safe-apps-sdk'
-import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
-import { convertToHumanReadableMessage } from '../utils'
 import useAsync from '@/hooks/useAsync'
-import { OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
 import { createTx } from '@/services/tx/txSender'
-import { TextField, Typography } from '@mui/material'
-import { Box } from '@mui/system'
+import { convertToHumanReadableMessage } from '../utils'
 
 type ReviewSafeAppsSignMessageProps = {
   onSubmit: (data: null) => void
@@ -27,8 +26,6 @@ const ReviewSafeAppsSignMessage = ({
   safeAppsSignMessage: { message, method, requestId },
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
   const chainId = useChainId()
-  const chain = useCurrentChain()
-  const { safe } = useSafeInfo()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
@@ -36,15 +33,13 @@ const ReviewSafeAppsSignMessage = ({
   const signMessageDeploymentInstance = getSignMessageLibDeploymentContractInstance(chainId)
   const signMessageAddress = signMessageDeploymentInstance.address
 
-  let txData, readableData
-
-  if (isTextMessage) {
-    readableData = convertToHumanReadableMessage(message)
-  } else if (isTypedMessage) {
-    readableData = JSON.stringify(message, undefined, 2)
-  } else {
-    console.error('Unsupported method or message type', method, message)
-  }
+  const readableData = useMemo(() => {
+    if (isTextMessage) {
+      return convertToHumanReadableMessage(message)
+    } else if (isTypedMessage) {
+      return JSON.stringify(message, undefined, 2)
+    }
+  }, [isTextMessage, isTypedMessage, message])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     let txData
@@ -57,13 +52,6 @@ const ReviewSafeAppsSignMessage = ({
       ])
     }
 
-    console.log('tx', {
-      to: signMessageAddress,
-      value: '0',
-      data: txData || '0x',
-      operation: OperationType.DelegateCall,
-    })
-
     return createTx({
       to: signMessageAddress,
       value: '0',
@@ -71,9 +59,6 @@ const ReviewSafeAppsSignMessage = ({
       operation: OperationType.DelegateCall,
     })
   }, [])
-
-  safeTx && console.log('safeTx', safeTx)
-  safeTxError && console.log('safeTxError', safeTxError)
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable onSubmit={onSubmit} requestId={requestId} error={safeTxError}>
@@ -86,7 +71,7 @@ const ReviewSafeAppsSignMessage = ({
 
         <Box py={1}>
           <Typography>
-            <b>Signing Method:</b> {method}
+            <b>Signing Method:</b> <code>{method}</code>
           </Typography>
         </Box>
 
@@ -102,7 +87,7 @@ const ReviewSafeAppsSignMessage = ({
             fullWidth
             sx={({ palette }) => ({
               '&& .MuiInputBase-input': {
-                '-webkit-text-fill-color': palette.text.primary,
+                WebkitTextFillColor: palette.text.primary,
                 fontFamily: 'monospace',
                 fontSize: '0.85rem',
               },
