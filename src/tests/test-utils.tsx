@@ -3,6 +3,7 @@ import { NextRouter } from 'next/router'
 import { RouterContext } from 'next/dist/shared/lib/router-context'
 import { ThemeProvider } from '@mui/material/styles'
 import initTheme from '@/styles/theme'
+import { RootState } from '@/store'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   asPath: '/',
@@ -30,12 +31,15 @@ const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
 
 // Add in any providers here if necessary:
 // (ReduxProvider, ThemeProvider, etc)
-const getProviders: (routerProps: Partial<NextRouter>) => React.FC<{ children: React.ReactElement }> = (routerProps) =>
+const getProviders: (options: {
+  routerProps?: Partial<NextRouter>
+  initialReduxState?: Partial<RootState>
+}) => React.FC<{ children: React.ReactElement }> = ({ routerProps, initialReduxState }) =>
   function ProviderComponent({ children }) {
     const { StoreHydrator } = require('@/store') // require dynamically to reset the store
 
     return (
-      <StoreHydrator>
+      <StoreHydrator initialState={initialReduxState}>
         <RouterContext.Provider value={mockRouter(routerProps)}>
           <ThemeProvider theme={initTheme(false)}>{children}</ThemeProvider>
         </RouterContext.Provider>
@@ -43,17 +47,26 @@ const getProviders: (routerProps: Partial<NextRouter>) => React.FC<{ children: R
     )
   }
 
-const customRender = (ui: React.ReactElement, options?: { routerProps: Partial<NextRouter> }) => {
-  const wrapper = getProviders(options?.routerProps || {})
+const customRender = (
+  ui: React.ReactElement,
+  options?: { routerProps?: Partial<NextRouter>; initialReduxState?: Partial<RootState> },
+) => {
+  const wrapper = getProviders({
+    routerProps: options?.routerProps || {},
+    initialReduxState: options?.initialReduxState,
+  })
 
   return render(ui, { wrapper, ...options })
 }
 
 function customRenderHook<Result, Props>(
   render: (initialProps: Props) => Result,
-  options?: RenderHookOptions<Props> & { routerProps: Partial<NextRouter> },
+  options?: RenderHookOptions<Props> & { routerProps?: Partial<NextRouter>; initialReduxState?: Partial<RootState> },
 ) {
-  const wrapper = getProviders(options?.routerProps || {})
+  const wrapper = getProviders({
+    routerProps: options?.routerProps || {},
+    initialReduxState: options?.initialReduxState,
+  })
 
   return renderHook(render, { wrapper, ...options })
 }

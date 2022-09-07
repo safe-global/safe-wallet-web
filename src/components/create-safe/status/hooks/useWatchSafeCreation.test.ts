@@ -9,9 +9,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { PendingSafeData } from '@/components/create-safe'
 import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
 import { AppRoutes } from '@/config/routes'
-import { chainsSlice } from '@/store/chainsSlice'
-import { useAppDispatch } from '@/store'
-import { GAS_PRICE_TYPE, RPC_AUTHENTICATION } from '@gnosis.pm/safe-react-gateway-sdk'
+import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks'
 
 describe('useWatchSafeCreation', () => {
   beforeEach(() => {
@@ -136,69 +134,26 @@ describe('useWatchSafeCreation', () => {
     const setStatusSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 
-    renderHook(() => {
-      useAppDispatch()(
-        chainsSlice.actions.set({
-          data: [
-            {
-              chainId: '4',
-              chainName: 'Rinkeby',
-              shortName: 'rin',
-              description: 'Ethereum testnet',
-              l2: false,
-              rpcUri: {
-                authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION,
-                value: 'https://rinkeby.infura.io/v3/',
-              },
-              safeAppsRpcUri: {
-                authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION,
-                value: 'https://rinkeby.infura.io/v3/',
-              },
-              publicRpcUri: {
-                authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION,
-                value: 'https://rinkeby-light.eth.linkpool.io/',
-              },
-              blockExplorerUriTemplate: {
-                address: 'https://rinkeby.etherscan.io/address/{{address}}',
-                txHash: 'https://rinkeby.etherscan.io/tx/{{txHash}}',
-                api: 'https://api-rinkeby.etherscan.io/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}',
-              },
-              nativeCurrency: {
-                name: 'Ether',
-                symbol: 'ETH',
-                decimals: 18,
-                logoUri: 'https://safe-transaction-assets.gnosis-safe.io/chains/4/currency_logo.png',
-              },
-              transactionService: 'https://safe-transaction.rinkeby.gnosis.io',
-              theme: {
-                textColor: '#ffffff',
-                backgroundColor: '#E8673C',
-              },
-              gasPrice: [
-                {
-                  type: GAS_PRICE_TYPE.FIXED,
-                  weiValue: '24000000000',
-                },
-              ],
-              ensRegistryAddress: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-              disabledWallets: ['fortmatic', 'lattice', 'tally'],
-              features: [],
-            },
-          ],
-          error: undefined,
-          loading: false,
+    renderHook(
+      () =>
+        useWatchSafeCreation({
+          status: SafeCreationStatus.INDEXED,
+          safeAddress: '0x10',
+          pendingSafe: {} as PendingSafeData,
+          setPendingSafe: setPendingSafeSpy,
+          setStatus: setStatusSpy,
+          chainId: '4',
         }),
-      )
-
-      useWatchSafeCreation({
-        status: SafeCreationStatus.INDEXED,
-        safeAddress: '0x10',
-        pendingSafe: {} as PendingSafeData,
-        setPendingSafe: setPendingSafeSpy,
-        setStatus: setStatusSpy,
-        chainId: '4',
-      })
-    })
+      {
+        initialReduxState: {
+          chains: {
+            data: CONFIG_SERVICE_CHAINS,
+            error: undefined,
+            loading: false,
+          },
+        },
+      },
+    )
 
     expect(pushMock).toHaveBeenCalledWith({ pathname: AppRoutes.safe.home, query: { safe: 'rin:0x10' } })
   })

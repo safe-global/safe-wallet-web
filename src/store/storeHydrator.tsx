@@ -6,16 +6,16 @@ import { getPersistedState, RootState } from '@/store'
 
 export const HYDRATE_ACTION = '@@HYDRATE'
 
-type Props = { children: React.ReactElement | React.ReactElement[] }
+type Props = { children: React.ReactElement | React.ReactElement[]; initialState?: RootState }
 
-export const createStoreHydrator = (makeStore: () => Store<RootState>) => {
+export const createStoreHydrator = (makeStore: (initialState?: Partial<RootState>) => Store<RootState>) => {
   return class HydrationWrapper extends React.Component<Props> {
     private store: ReturnType<typeof makeStore>
 
     constructor(props: Props) {
       super(props)
 
-      this.store = makeStore()
+      this.store = makeStore(props.initialState)
     }
 
     componentDidMount() {
