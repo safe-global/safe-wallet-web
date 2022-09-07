@@ -12,6 +12,7 @@ import TxFilterButton from '@/components/transactions/TxFilterButton'
 import { TxFilter, useTxFilter } from '@/utils/tx-history-filter'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 
 const NoQueuedTxns = () => (
   <Box mt="5vh">
@@ -84,15 +85,17 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
 
   return (
     <Box mb={4} position="relative">
-      {pages.map((pageUrl, index) => (
-        <TxPage
-          key={pageUrl}
-          pageUrl={pageUrl}
-          useTxns={useTxns}
-          isFirstPage={index === 0}
-          onNextPage={index === pages.length - 1 ? onNextPage : undefined}
-        />
-      ))}
+      <BatchExecuteHoverProvider>
+        {pages.map((pageUrl, index) => (
+          <TxPage
+            key={pageUrl}
+            pageUrl={pageUrl}
+            useTxns={useTxns}
+            isFirstPage={index === 0}
+            onNextPage={index === pages.length - 1 ? onNextPage : undefined}
+          />
+        ))}
+      </BatchExecuteHoverProvider>
     </Box>
   )
 }
