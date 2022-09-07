@@ -3,7 +3,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import TextField from '@mui/material/TextField'
-import { isFuture, isValid } from 'date-fns'
+import { isFuture, isValid, startOfDay } from 'date-fns'
 
 const DatePickerInput = ({
   name,
@@ -35,7 +35,8 @@ const DatePickerInput = ({
             return 'Invalid date'
           }
 
-          if (disableFuture && isFuture(val)) {
+          // Compare days using `startOfDay` to ignore TZ offset
+          if (disableFuture && isFuture(startOfDay(val))) {
             return 'Date cannot be in the future'
           }
 
