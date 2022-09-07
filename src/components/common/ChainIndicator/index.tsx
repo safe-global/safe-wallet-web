@@ -30,7 +30,7 @@ const ChainIndicator = ({ chainId, className, inline = false }: ChainIndicatorPr
 
   return (
     <span style={style} className={classnames(inline ? css.inlineIndicator : css.indicator, className)}>
-      {chainConfig?.chainName || ' '}
+      {chainConfig?.chainName}
     </span>
   )
 }

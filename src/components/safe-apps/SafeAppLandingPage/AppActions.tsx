@@ -19,7 +19,7 @@ type Props = {
   chainPrefix?: string
 }
 
-const UseApp = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appUrl }: Props): React.ReactElement => {
+const AppActions = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appUrl }: Props): React.ReactElement => {
   const lastUsedSafe = useLastSafe()
   const lastUsedSafeAddress = lastUsedSafe ? parsePrefixedAddress(lastUsedSafe).address : undefined
   const [safeToUse, setSafeToUse] = useState<string>(lastUsedSafeAddress || '')
@@ -107,4 +107,4 @@ const UseApp = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appUrl }
   )
 }
 
-export { UseApp }
+export { AppActions }
