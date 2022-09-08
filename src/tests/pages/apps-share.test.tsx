@@ -7,6 +7,8 @@ import * as useOwnedSafesHook from '@/hooks/useOwnedSafes'
 import crypto from 'crypto'
 import { EIP1193Provider } from '@web3-onboard/core'
 
+const FETCH_TIMEOUT = 5000
+
 describe('Share Safe App Page', () => {
   beforeEach(() => {
     jest.restoreAllMocks()
@@ -30,13 +32,16 @@ describe('Share Safe App Page', () => {
       },
     })
 
-    await waitFor(() => {
-      expect(screen.getByText('Transaction Builder')).toBeInTheDocument()
-      expect(
-        screen.getByText('Compose custom contract interactions and batch them into a single transaction'),
-      ).toBeInTheDocument()
-      expect(screen.getByText('https://apps.gnosis-safe.io/tx-builder')).toBeInTheDocument()
-    })
+    await waitFor(
+      () => {
+        expect(screen.getByText('Transaction Builder')).toBeInTheDocument()
+        expect(
+          screen.getByText('Compose custom contract interactions and batch them into a single transaction'),
+        ).toBeInTheDocument()
+        expect(screen.getByText('https://apps.gnosis-safe.io/tx-builder')).toBeInTheDocument()
+      },
+      { timeout: FETCH_TIMEOUT },
+    )
   })
 
   it("Should suggest to connect a wallet when user hasn't connected one", async () => {
@@ -56,9 +61,12 @@ describe('Share Safe App Page', () => {
       },
     })
 
-    await waitFor(() => {
-      expect(screen.getByText('Connect wallet')).toBeInTheDocument()
-    })
+    await waitFor(
+      () => {
+        expect(screen.getByText('Connect wallet')).toBeInTheDocument()
+      },
+      { timeout: FETCH_TIMEOUT },
+    )
   })
 
   it('Should show a link to the demo on mainnet', async () => {
@@ -78,9 +86,12 @@ describe('Share Safe App Page', () => {
       },
     })
 
-    await waitFor(() => {
-      expect(screen.getByText('Try demo')).toBeInTheDocument()
-    })
+    await waitFor(
+      () => {
+        expect(screen.getByText('Try demo')).toBeInTheDocument()
+      },
+      { timeout: FETCH_TIMEOUT },
+    )
   })
 
   it('Should link to Safe Creation flow when the connected wallet has no owned Safes', async () => {
@@ -109,9 +120,12 @@ describe('Share Safe App Page', () => {
       },
     })
 
-    await waitFor(() => {
-      expect(screen.getByText('Create new Safe')).toBeInTheDocument()
-    })
+    await waitFor(
+      () => {
+        expect(screen.getByText('Create new Safe')).toBeInTheDocument()
+      },
+      { timeout: FETCH_TIMEOUT },
+    )
   })
 
   it('Should show a select input with owned safes when the connected wallet owns Safes', async () => {
@@ -144,8 +158,11 @@ describe('Share Safe App Page', () => {
       },
     })
 
-    await waitFor(() => {
-      expect(screen.getByLabelText('Select a Safe')).toBeInTheDocument()
-    })
+    await waitFor(
+      () => {
+        expect(screen.getByLabelText('Select a Safe')).toBeInTheDocument()
+      },
+      { timeout: FETCH_TIMEOUT },
+    )
   })
 })
