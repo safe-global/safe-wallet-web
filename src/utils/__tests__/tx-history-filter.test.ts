@@ -19,7 +19,7 @@ import {
 import { renderHook } from '@/tests/test-utils'
 import type { NextRouter } from 'next/router'
 import { type TxFilterFormState } from '@/components/transactions/TxFilterForm'
-import { _adjustDateLabelsTimezone } from '../transactions'
+import { adjustDateLabelsTimezone } from '../transactions'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   getIncomingTransfers: jest.fn(() => Promise.resolve({ results: [] })),
@@ -377,7 +377,7 @@ describe('tx-history-filter', () => {
   })
   describe('adjustDateLabelsTimezone', () => {
     it('should return items as is if it is an empty array', () => {
-      const result = _adjustDateLabelsTimezone([])
+      const result = adjustDateLabelsTimezone([])
       expect(result).toEqual([])
     })
 
@@ -387,7 +387,7 @@ describe('tx-history-filter', () => {
         { type: 'CONFLICT_HEADER', nonce: 1571 },
       ] as TransactionListItem[]
 
-      const result = _adjustDateLabelsTimezone(items)
+      const result = adjustDateLabelsTimezone(items)
       expect(result).toEqual(items)
     })
 
@@ -414,7 +414,7 @@ describe('tx-history-filter', () => {
         },
       ] as TransactionListItem[]
 
-      const result = _adjustDateLabelsTimezone(items)
+      const result = adjustDateLabelsTimezone(items)
       expect(result).toEqual([
         {
           type: 'DATE_LABEL',

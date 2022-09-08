@@ -13,6 +13,7 @@ import { TxFilter, useTxFilter } from '@/utils/tx-history-filter'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
+import { adjustDateLabelsTimezone } from '@/utils/transactions'
 
 const NoQueuedTxns = () => (
   <Box mt="5vh">
@@ -43,17 +44,20 @@ const TxPage = ({
   if (page?.results) {
     const isQueue = useTxns === useTxQueue
 
+    // Date labels are returned at start of UTC day. Users in UTC-n timezones would see "yesterday" for txs today
+    const localizedItems = isQueue ? page.results : adjustDateLabelsTimezone(page.results)
+
     return (
       <>
         {/* FIXME: batching will only work for the first page results */}
         {isFirstPage && (
           <Box display="flex" flexDirection="column" alignItems="flex-end" mt={['-94px', '-44px']} mb={['60px', 0]}>
-            {isQueue ? <BatchExecuteButton items={page.results} /> : <TxFilterButton />}
+            {isQueue ? <BatchExecuteButton items={localizedItems} /> : <TxFilterButton />}
             {filter && <Typography mt={2}>{getResultCount(filter, page)}</Typography>}
           </Box>
         )}
 
-        {page.results.length ? <TxList items={page.results} /> : isQueue && <NoQueuedTxns />}
+        {page.results.length ? <TxList items={localizedItems} /> : isQueue && <NoQueuedTxns />}
 
         {onNextPage && page.next && (
           <Box my={4} textAlign="center">

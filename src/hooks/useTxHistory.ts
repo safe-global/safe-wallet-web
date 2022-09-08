@@ -4,8 +4,6 @@ import useAsync from './useAsync'
 import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
 import { fetchFilteredTxHistory, useTxFilter } from '@/utils/tx-history-filter'
-import { localizeTxListDateLabelTimezone } from '@/utils/transactions'
-import { useMemo } from 'react'
 
 const useTxHistory = (
   pageUrl?: string,
@@ -36,25 +34,17 @@ const useTxHistory = (
   const historyState = useAppSelector(selectTxHistory)
 
   // Return the new page or the stored page
-  return useMemo(() => {
-    const txHistory =
-      filter || pageUrl
-        ? {
-            page,
-            error: error?.message,
-            loading: loading,
-          }
-        : {
-            page: historyState.data,
-            error: historyState.error,
-            loading: historyState.loading,
-          }
-
-    return {
-      ...txHistory,
-      page: localizeTxListDateLabelTimezone(txHistory.page),
-    }
-  }, [error?.message, filter, historyState.data, historyState.error, historyState.loading, loading, page, pageUrl])
+  return filter || pageUrl
+    ? {
+        page,
+        error: error?.message,
+        loading: loading,
+      }
+    : {
+        page: historyState.data,
+        error: historyState.error,
+        loading: historyState.loading,
+      }
 }
 
 export default useTxHistory
