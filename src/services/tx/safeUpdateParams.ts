@@ -7,11 +7,44 @@ import {
 } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
-import { Gnosis_safe__factory } from '@/types/contracts/factories/Gnosis_safe__factory'
-import { getWeb3 } from '@/hooks/wallets/web3'
+import { ethers } from 'ethers'
+import semverSatisfies from 'semver/functions/satisfies'
 
 export const CHANGE_MASTER_COPY_ABI = 'function changeMasterCopy(address _masterCopy)'
 export const CHANGE_FALLBACK_HANDLER_ABI = 'function setFallbackHandler(address handler)'
+
+const buildTransaction = (safe: SafeInfo, data: string) => ({
+  to: safe.address.value,
+  data,
+  value: '0',
+  operation: OperationType.Call,
+})
+
+const getChangeMasterCopyTransaction = (
+  safe: SafeInfo,
+  chain: ChainInfo,
+  safeContractInterface: ethers.utils.Interface,
+) => {
+  const latestMasterCopyAddress = getGnosisSafeContractInstance(chain, LATEST_SAFE_VERSION).getAddress()
+  const changeMasterCopyCallData = safeContractInterface.encodeFunctionData('changeMasterCopy', [
+    latestMasterCopyAddress,
+  ])
+
+  return buildTransaction(safe, changeMasterCopyCallData)
+}
+
+const getSetFallbackHandlerTransaction = (
+  safe: SafeInfo,
+  chain: ChainInfo,
+  safeContractInterface: ethers.utils.Interface,
+) => {
+  const fallbackHandlerContractAddress = getFallbackHandlerContractInstance(chain.chainId).address
+  const setFallbackHandlerCallData = safeContractInterface.encodeFunctionData('setFallbackHandler', [
+    fallbackHandlerContractAddress,
+  ])
+
+  return buildTransaction(safe, setFallbackHandlerCallData)
+}
 
 const getContractInterface = (chain: ChainInfo, version: string) => {
   if (isValidSafeVersion(version)) {
@@ -27,13 +60,7 @@ const getContractInterface = (chain: ChainInfo, version: string) => {
     throw new Error(`GnosisSafe contract not found for chainId: ${chain.chainId}`)
   }
 
-  const web3 = getWeb3()
-
-  if (!web3) {
-    throw new Error('No provider instance found')
-  }
-
-  return Gnosis_safe__factory.connect(contractAddress, web3).interface
+  return new ethers.Contract(contractAddress, safeDeployment.abi).interface
 }
 
 /**
@@ -43,33 +70,17 @@ const getContractInterface = (chain: ChainInfo, version: string) => {
  * Only works for safes < 1.3.0 as the changeMasterCopy function was removed
  */
 export const createUpdateSafeTxs = (safe: SafeInfo, chain: ChainInfo): MetaTransactionData[] => {
-  const latestMasterCopy = getGnosisSafeContractInstance(chain, LATEST_SAFE_VERSION)
   const safeContractInterface = getContractInterface(chain, safe.version)
 
-  // @ts-expect-error this was removed in 1.3.0 but we need to support it for older safe versions
-  const changeMasterCopyCallData = safeContractInterface.encodeFunctionData('changeMasterCopy', [
-    latestMasterCopy.getAddress(),
-  ])
+  const changeMasterCopyTx = getChangeMasterCopyTransaction(safe, chain, safeContractInterface)
 
-  const fallbackHandlerAddress = getFallbackHandlerContractInstance(chain.chainId).address
-  const changeFallbackHandlerCallData = safeContractInterface.encodeFunctionData('setFallbackHandler', [
-    fallbackHandlerAddress,
-  ])
+  const hasSetFallbackHandler = semverSatisfies(safe.version, '>=1.1.0')
 
-  const txs: MetaTransactionData[] = [
-    {
-      to: safe.address.value,
-      value: '0',
-      data: changeMasterCopyCallData,
-      operation: OperationType.Call,
-    },
-    {
-      to: safe.address.value,
-      value: '0',
-      data: changeFallbackHandlerCallData,
-      operation: OperationType.Call,
-    },
-  ]
+  if (!hasSetFallbackHandler) {
+    return [changeMasterCopyTx]
+  }
 
-  return txs
+  const setFallbackHandlerTx = getSetFallbackHandlerTransaction(safe, chain, safeContractInterface)
+
+  return [changeMasterCopyTx, setFallbackHandlerTx]
 }
