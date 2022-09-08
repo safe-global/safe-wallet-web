@@ -32,7 +32,7 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
   const showDemo = chainId === CHAIN_ID_WITH_A_DEMO || !!backendApp?.chainIds.includes(CHAIN_ID_WITH_A_DEMO)
-
+  console.log({ safeApp, backendApp, isLoading })
   useEffect(() => {
     if (!isLoading && safeApp) {
       trackEvent({
