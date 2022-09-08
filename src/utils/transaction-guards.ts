@@ -129,6 +129,12 @@ export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
   return value.type === TransactionListItemType.DATE_LABEL
 }
 
+export const isHasNextConflictTransactionListItem = <T extends TransactionListItem>(
+  value: T,
+): value is T & { conflictType: CONFLICT_TYPES.HAS_NEXT } => {
+  return isTransactionListItem(value) && value.conflictType === CONFLICT_TYPES.HAS_NEXT
+}
+
 export const isSignableBy = (txSummary: TransactionSummary, walletAddress: string): boolean => {
   const executionInfo = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo : undefined
   return !!executionInfo?.missingSigners?.some((address) => address.value === walletAddress)

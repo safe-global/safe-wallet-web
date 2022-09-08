@@ -10,7 +10,7 @@ import SkeletonTxList from './SkeletonTxList'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
 import TxFilterButton from '@/components/transactions/TxFilterButton'
 import { TxFilter, useTxFilter } from '@/utils/tx-history-filter'
-import { isTransactionListItem } from '@/utils/transaction-guards'
+import { isHasNextConflictTransactionListItem, isTransactionListItem } from '@/utils/transaction-guards'
 import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { adjustDateLabelsTimezone } from '@/utils/transactions'
@@ -42,6 +42,16 @@ const TxPage = ({
   const [filter] = useTxFilter()
 
   const isQueue = useTxns === useTxQueue
+
+  useEffect(() => {
+    // If conflict transactions split across pages, we must fetch the next page
+    const lastItem = page?.results[page.results.length - 1]
+    const hasSplitConflict = lastItem && isHasNextConflictTransactionListItem(lastItem)
+
+    if (hasSplitConflict) {
+      onNextPage?.(page?.next)
+    }
+  }, [onNextPage, page?.next, page?.results])
 
   const txListPageItems = useMemo(() => {
     if (!page?.results) {
