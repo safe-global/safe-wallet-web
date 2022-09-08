@@ -58,16 +58,16 @@ const getCurrencyFormatterOptions = (float: number, currency: string): Intl.Numb
   }
 }
 
-// TODO: Add signs in reference to final point of number formatting
-const formatNumber = (float: number, options: Intl.NumberFormatOptions): string => {
+const formatNumber = (float: number, options: Intl.NumberFormatOptions, keepSign?: boolean): string => {
   const formatter = new Intl.NumberFormat(undefined, options)
 
   if (float === 0) {
     return formatter.format(float)
   }
 
-  if (float < LOWER_LIMIT) {
-    return `< ${formatter.format(LOWER_LIMIT)}`
+  if (Math.abs(float) < LOWER_LIMIT) {
+    const sign = keepSign && Math.sign(float) > 0 ? '+' : Math.sign(float) < 0 ? '-' : ''
+    return `< ${sign}${formatter.format(LOWER_LIMIT)}`
   }
 
   if (float < UPPER_LIMIT) {
@@ -77,10 +77,10 @@ const formatNumber = (float: number, options: Intl.NumberFormatOptions): string 
   return `> ${formatter.format(UPPER_LIMIT)}`
 }
 
-export const formatAmount = (number: string | number): string => {
+export const formatAmount = (number: string | number, keepSign?: boolean): string => {
   const float = Number(number)
   const options = getNumberFormatterOptions(float)
-  return formatNumber(float, options)
+  return formatNumber(float, options, keepSign)
 }
 
 export const formatAmountWithPrecision = (number: string | number, fractionDigits: number): string => {

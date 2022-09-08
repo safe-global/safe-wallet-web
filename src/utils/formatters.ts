@@ -40,8 +40,12 @@ export const safeFormatUnits = (value: BigNumberish, decimals: number | string =
  * @param decimals decimals of the specified value or unit name
  * @returns value at specified decimals, formatted, i.e. -< 0.00001
  */
-export const formatVisualAmount = (value: BigNumberish, decimals: number | string = GWEI): string => {
-  return formatAmount(safeFormatUnits(value, decimals))
+export const formatVisualAmount = (
+  value: BigNumberish,
+  decimals: number | string = GWEI,
+  keepSign?: boolean,
+): string => {
+  return formatAmount(safeFormatUnits(value, decimals), keepSign)
 }
 
 export const safeParseUnits = (value: string, decimals: number | string = GWEI): BigNumber | undefined => {
