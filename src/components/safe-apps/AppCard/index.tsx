@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import useChainId from '@/hooks/useChainId'
 import ShareIcon from '@/public/images/share.svg'
+import CopyButton from '@/components/common/CopyButton'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import DeleteIcon from '@/public/images/delete.svg'
@@ -32,6 +33,7 @@ type CompactSafeAppCardProps = {
   pinned?: boolean
   onPin?: (appId: number) => void
   onShareClick?: (event: SyntheticEvent) => void
+  shareUrl: string
 }
 
 type AppCardContainerProps = {
@@ -92,19 +94,18 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
   )
 }
 
-const CompactAppCard = ({ url, safeApp, onPin, pinned, onShareClick }: CompactSafeAppCardProps): ReactElement => (
+const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAppCardProps): ReactElement => (
   <AppCardContainer url={url} variant="compact">
     <div className={styles.compactCardContainer}>
       <img src={safeApp.iconUrl} style={{ width: 52, height: 52 }} alt={`${safeApp.name} logo`} />
-      <IconButton
-        aria-label={`Share ${safeApp.name}`}
-        size="small"
-        onClick={onShareClick}
-        title={`Copy share URL for ${safeApp.name}`}
-        sx={{ width: '32px', position: 'absolute', top: 2, left: 2 }}
+      <CopyButton
+        text={shareUrl}
+        ariaLabel={`Share ${safeApp.name}`}
+        initialToolTipText={`Copy share URL for ${safeApp.name}`}
+        className={styles.compactShareButton}
       >
         <ShareIcon width={16} alt="Share icon" />
-      </IconButton>
+      </CopyButton>
       {onPin && (
         <IconButton
           aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
@@ -131,14 +132,8 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${safeApp.url}&chainId=${chainId}`
   const url = router.query.safe ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${safeApp.url}` : shareUrl
 
-  const onShareClick = (e: SyntheticEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    navigator.clipboard.writeText(shareUrl)
-  }
-
   if (variant === 'compact') {
-    return <CompactAppCard url={url} safeApp={safeApp} pinned={pinned} onPin={onPin} onShareClick={onShareClick} />
+    return <CompactAppCard url={url} safeApp={safeApp} pinned={pinned} onPin={onPin} shareUrl={shareUrl} />
   }
 
   return (
@@ -149,15 +144,13 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
         }
         action={
           <>
-            <IconButton
-              aria-label={`Share ${safeApp.name}`}
-              size="small"
-              onClick={onShareClick}
-              title="Copy share URL"
-              sx={{ width: '32px' }}
+            <CopyButton
+              text={shareUrl}
+              ariaLabel={`Share ${safeApp.name}`}
+              initialToolTipText={`Copy share URL for ${safeApp.name}`}
             >
               <ShareIcon width={16} alt="Share icon" />
-            </IconButton>
+            </CopyButton>
             {onPin && (
               <IconButton
                 aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}

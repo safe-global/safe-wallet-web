@@ -6,12 +6,16 @@ const CopyButton = ({
   text,
   className,
   children,
+  initialToolTipText = 'Copy to clipboard',
+  ariaLabel = 'Copy to clipboard',
 }: {
   text: string
   className?: string
   children?: ReactNode
+  initialToolTipText?: string
+  ariaLabel?: string
 }): ReactElement => {
-  const [tooltipText, setTooltipText] = useState('Copy to clipboard')
+  const [tooltipText, setTooltipText] = useState(initialToolTipText)
 
   const handleCopy = useCallback(
     (e: SyntheticEvent) => {
@@ -23,12 +27,12 @@ const CopyButton = ({
   )
 
   const handleMouseLeave = useCallback(() => {
-    setTimeout(() => setTooltipText('Copy to clipboard'), 500)
-  }, [])
+    setTimeout(() => setTooltipText(initialToolTipText), 500)
+  }, [initialToolTipText])
 
   return (
     <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
-      <IconButton onClick={handleCopy} size="small" className={className}>
+      <IconButton aria-label={ariaLabel} onClick={handleCopy} size="small" className={className}>
         {children ?? <ContentCopyIcon fontSize="small" color="border" sx={{ width: '16px', height: '16px' }} />}
       </IconButton>
     </Tooltip>
