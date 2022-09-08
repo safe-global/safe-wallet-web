@@ -43,7 +43,7 @@ const TxPage = ({
 
   const isQueue = useTxns === useTxQueue
 
-  const localizedItems = useMemo(() => {
+  const txListPageItems = useMemo(() => {
     if (!page?.results) {
       return
     }
@@ -52,18 +52,18 @@ const TxPage = ({
     return isQueue ? page.results : adjustDateLabelsTimezone(page.results)
   }, [isQueue, page?.results])
 
-  if (page && localizedItems) {
+  if (page && txListPageItems) {
     return (
       <>
         {/* FIXME: batching will only work for the first page results */}
         {isFirstPage && (
           <Box display="flex" flexDirection="column" alignItems="flex-end" mt={['-94px', '-44px']} mb={['60px', 0]}>
-            {isQueue ? <BatchExecuteButton items={localizedItems} /> : <TxFilterButton />}
+            {isQueue ? <BatchExecuteButton items={txListPageItems} /> : <TxFilterButton />}
             {filter && <Typography mt={2}>{getResultCount(filter, page)}</Typography>}
           </Box>
         )}
 
-        {page.results.length ? <TxList items={localizedItems} /> : isQueue && <NoQueuedTxns />}
+        {page.results.length ? <TxList items={txListPageItems} /> : isQueue && <NoQueuedTxns />}
 
         {onNextPage && page.next && (
           <Box my={4} textAlign="center">
