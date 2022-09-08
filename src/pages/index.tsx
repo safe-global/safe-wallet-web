@@ -6,7 +6,8 @@ import { useAppSelector } from '@/store'
 import useChainId from '@/hooks/useChainId'
 import chains from '@/config/chains'
 
-const useLastSafe = (chainId: string): string | undefined => {
+const useLastSafe = (): string | undefined => {
+  const chainId = useChainId()
   const lastSafeAddress = useAppSelector((state) => selectLastSafeAddress(state, chainId))
   const prefix = Object.keys(chains).find((prefix) => chains[prefix] === chainId)
   return prefix && lastSafeAddress ? `${prefix}:${lastSafeAddress}` : undefined
@@ -14,9 +15,8 @@ const useLastSafe = (chainId: string): string | undefined => {
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
-  const chainId = useChainId()
   const { chain } = router.query
-  const lastSafe = useLastSafe(typeof chain === 'string' ? chains[chain] : chainId)
+  const lastSafe = useLastSafe()
 
   useEffect(() => {
     router.push(lastSafe ? `/safe/home?safe=${lastSafe}` : chain ? `/welcome?chain=${chain}` : `/welcome`)
