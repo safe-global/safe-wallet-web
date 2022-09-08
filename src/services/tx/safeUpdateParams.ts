@@ -13,7 +13,7 @@ import semverSatisfies from 'semver/functions/satisfies'
 export const CHANGE_MASTER_COPY_ABI = 'function changeMasterCopy(address _masterCopy)'
 export const CHANGE_FALLBACK_HANDLER_ABI = 'function setFallbackHandler(address handler)'
 
-const buildTransaction = (safe: SafeInfo, data: string) => ({
+const buildTransaction = (safe: SafeInfo, data: string): MetaTransactionData => ({
   to: safe.address.value,
   data,
   value: '0',
@@ -24,7 +24,7 @@ const getChangeMasterCopyTransaction = (
   safe: SafeInfo,
   chain: ChainInfo,
   safeContractInterface: ethers.utils.Interface,
-) => {
+): MetaTransactionData => {
   const latestMasterCopyAddress = getGnosisSafeContractInstance(chain, LATEST_SAFE_VERSION).getAddress()
   const changeMasterCopyCallData = safeContractInterface.encodeFunctionData('changeMasterCopy', [
     latestMasterCopyAddress,
@@ -37,7 +37,7 @@ const getSetFallbackHandlerTransaction = (
   safe: SafeInfo,
   chain: ChainInfo,
   safeContractInterface: ethers.utils.Interface,
-) => {
+): MetaTransactionData => {
   const fallbackHandlerContractAddress = getFallbackHandlerContractInstance(chain.chainId).address
   const setFallbackHandlerCallData = safeContractInterface.encodeFunctionData('setFallbackHandler', [
     fallbackHandlerContractAddress,
@@ -46,7 +46,7 @@ const getSetFallbackHandlerTransaction = (
   return buildTransaction(safe, setFallbackHandlerCallData)
 }
 
-const getContractInterface = (chain: ChainInfo, version: string) => {
+const getContractInterface = (chain: ChainInfo, version: string): ethers.utils.Interface => {
   if (isValidSafeVersion(version)) {
     return getGnosisSafeContractInstance(chain, version).contract.interface
   }
