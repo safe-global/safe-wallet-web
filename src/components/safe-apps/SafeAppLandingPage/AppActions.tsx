@@ -21,7 +21,7 @@ type Props = {
 
 const AppActions = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appUrl }: Props): React.ReactElement => {
   const lastUsedSafe = useLastSafe()
-  const lastUsedSafeAddress = lastUsedSafe ? parsePrefixedAddress(lastUsedSafe).address : undefined
+  const lastUsedSafeAddress = lastUsedSafe ? parsePrefixedAddress(lastUsedSafe).address : ''
   const [safeToUse, setSafeToUse] = useState<string>(lastUsedSafeAddress || '')
   const addressBook = useAppSelector((state) => selectAddressBookByChain(state, chainId))
   const hasWallet = !!wallet

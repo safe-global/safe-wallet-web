@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '../test-utils'
 import ShareSafeApp from '@/pages/share/safe-app'
 import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
+import * as useOwnedSafesHook from '@/hooks/useOwnedSafes'
 import crypto from 'crypto'
 import { EIP1193Provider } from '@web3-onboard/core'
 
@@ -110,6 +111,41 @@ describe('Share Safe App Page', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Create new Safe')).toBeInTheDocument()
+    })
+  })
+
+  it('Should show a select input with owned safes when the connected wallet owns Safes', async () => {
+    const address = `0x${crypto.randomBytes(20).toString('hex')}`
+    const safeAddress = `0x${crypto.randomBytes(20).toString('hex')}`
+    jest.spyOn(useWalletHook, 'default').mockImplementation(() => ({
+      ens: 'craicis90.eth',
+      address,
+      provider: jest.fn() as unknown as EIP1193Provider,
+      label: 'Metamask',
+      chainId: '1',
+    }))
+    jest.spyOn(useOwnedSafesHook, 'default').mockImplementation(() => ({
+      '1': [safeAddress],
+    }))
+
+    render(<ShareSafeApp />, {
+      routerProps: {
+        query: {
+          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          chainId: '1',
+        },
+      },
+      initialReduxState: {
+        chains: {
+          data: CONFIG_SERVICE_CHAINS,
+          error: undefined,
+          loading: false,
+        },
+      },
+    })
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Select a Safe')).toBeInTheDocument()
     })
   })
 })
