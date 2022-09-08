@@ -31,7 +31,7 @@ const ReviewSafeAppsSignMessage = ({
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
 
-  const signMessageDeploymentInstance = getSignMessageLibDeploymentContractInstance(chainId)
+  const signMessageDeploymentInstance = useMemo(() => getSignMessageLibDeploymentContractInstance(chainId), [chainId])
   const signMessageAddress = signMessageDeploymentInstance.address
 
   const readableData = useMemo(() => {
@@ -45,9 +45,9 @@ const ReviewSafeAppsSignMessage = ({
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     let txData
 
-    if (method == Methods.signMessage && typeof message === 'string') {
+    if (isTextMessage) {
       txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [hashMessage(message)])
-    } else if (method == Methods.signTypedMessage && isObjectEIP712TypedData(message)) {
+    } else if (isTypedMessage) {
       txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [
         _TypedDataEncoder.hash(message.domain, message.types, message.message),
       ])
@@ -70,38 +70,34 @@ const ReviewSafeAppsSignMessage = ({
           <EthHashInfo address={signMessageAddress} shortAddress={false} showCopyButton hasExplorer />
         </InfoDetails>
 
-        <Box py={1}>
-          <Typography>
-            <b>Signing Method:</b> <code>{method}</code>
-          </Typography>
-        </Box>
+        <Typography sx={{ my: 1 }}>
+          <b>Signing Method:</b> <code>{method}</code>
+        </Typography>
 
-        <Box pt={1} pb={2}>
-          <Typography pb={1}>
-            <b>Signing message:</b>
-          </Typography>
+        <Typography sx={{ my: 2 }}>
+          <b>Signing message:</b>
+        </Typography>
 
-          <TextField
-            rows={isTextMessage ? 2 : 6}
-            multiline
-            disabled
-            fullWidth
-            sx={({ palette }) => ({
-              '&& .MuiInputBase-input': {
-                WebkitTextFillColor: palette.text.primary,
-                fontFamily: 'monospace',
-                fontSize: '0.85rem',
-              },
-            })}
-            inputProps={{
-              value: readableData,
-            }}
-          />
-        </Box>
+        <TextField
+          rows={isTextMessage ? 2 : 6}
+          multiline
+          disabled
+          fullWidth
+          sx={({ palette }) => ({
+            '&& .MuiInputBase-input': {
+              WebkitTextFillColor: palette.text.primary,
+              fontFamily: 'monospace',
+              fontSize: '0.85rem',
+            },
+          })}
+          inputProps={{
+            value: readableData,
+          }}
+        />
 
-        <Box display="flex" alignItems="center" pt={1} pb={2}>
+        <Box display="flex" alignItems="center" my={2}>
           <WarningIcon color="warning" />
-          <Typography sx={{ pl: 1 }}>
+          <Typography sx={{ ml: 1 }}>
             Signing a message with the Safe requires a transaction on the blockchain
           </Typography>
         </Box>

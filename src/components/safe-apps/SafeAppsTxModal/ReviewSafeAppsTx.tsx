@@ -30,6 +30,7 @@ const ReviewSafeAppsTx = ({
 
   const isMultiSend = txs.length > 1
   const canExecute = safe.threshold === 1
+
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
     const tx = await createMultiSendCallOnlyTx(txs)
 
@@ -58,22 +59,26 @@ const ReviewSafeAppsTx = ({
       <>
         <SendFromBlock />
 
-        <InfoDetails title={getInteractionTitle(safeTx?.data.value, chain)}>
-          <EthHashInfo address={safeTx?.data.to || ''} shortAddress={false} showCopyButton hasExplorer />
-        </InfoDetails>
+        {safeTx && (
+          <>
+            <InfoDetails title={getInteractionTitle(safeTx.data.value || '', chain)}>
+              <EthHashInfo address={safeTx.data.to} shortAddress={false} showCopyButton hasExplorer />
+            </InfoDetails>
 
-        {isMultiSend && safeTx && (
-          <Box py={1}>
-            <Multisend
-              txData={{
-                dataDecoded: decodedData,
-                to: { value: safeTx.data.to || '' },
-                value: safeTx.data.value,
-                operation: safeTx.data.operation === OperationType.Call ? Operation.CALL : Operation.DELEGATE,
-                trustedDelegateCallTarget: false,
-              }}
-            />
-          </Box>
+            {isMultiSend && (
+              <Box py={1}>
+                <Multisend
+                  txData={{
+                    dataDecoded: decodedData,
+                    to: { value: safeTx.data.to },
+                    value: safeTx.data.value,
+                    operation: safeTx.data.operation === OperationType.Call ? Operation.CALL : Operation.DELEGATE,
+                    trustedDelegateCallTarget: false,
+                  }}
+                />
+              </Box>
+            )}
+          </>
         )}
       </>
     </SignOrExecuteForm>

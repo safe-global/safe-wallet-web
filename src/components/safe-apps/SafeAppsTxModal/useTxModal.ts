@@ -17,7 +17,7 @@ const INITIAL_CONFIRM_TX_MODAL_STATE: TxModalState = {
 
 type ReturnType = [
   TxModalState,
-  (txs: BaseTransaction[], params: SendTransactionRequestParams | undefined, requestId: RequestId) => void,
+  (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => void,
   () => void,
 ]
 
@@ -25,7 +25,7 @@ const useTxModal = (): ReturnType => {
   const [txModalState, setTxModalState] = useState<TxModalState>(INITIAL_CONFIRM_TX_MODAL_STATE)
 
   const openTxModal = useCallback(
-    (txs: BaseTransaction[], params: SendTransactionRequestParams | undefined, requestId: RequestId) =>
+    (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) =>
       setTxModalState({
         isOpen: true,
         txs,

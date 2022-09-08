@@ -5,20 +5,20 @@ import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-coun
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import useChainId from '@/hooks/useChainId'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { isSameUrl } from '@/utils/url'
-import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
-import SafeAppsTxModal from '../SafeAppsTxModal'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator from './useAppCommunicator'
 import useTxModal from '../SafeAppsTxModal/useTxModal'
+import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
+import SafeAppsTxModal from '../SafeAppsTxModal'
+import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
 import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
+import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
-import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
-import useChainId from '@/hooks/useChainId'
-import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 
 type AppFrameProps = {
   appUrl: string

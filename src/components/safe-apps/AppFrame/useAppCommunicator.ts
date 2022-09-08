@@ -30,11 +30,7 @@ type JsonRpcResponse = {
 
 type UseAppCommunicatorConfig = {
   app?: SafeAppData
-  onConfirmTransactions: (
-    txs: BaseTransaction[],
-    params: SendTransactionRequestParams | undefined,
-    requestId: RequestId,
-  ) => void
+  onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => void
   onSignTransactions: (message: string | EIP712TypedData, requestId: string, method: Methods) => void
 }
 
@@ -135,7 +131,7 @@ const useAppCommunicator = (
         ...rest,
       }))
 
-      onConfirmTransactions(transactions, params, msg.data.id)
+      onConfirmTransactions(transactions, msg.data.id, params)
     })
 
     communicator?.on(Methods.signMessage, async (msg) => {
