@@ -8,7 +8,6 @@ import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import useChainId from '@/hooks/useChainId'
 import ShareIcon from '@/public/images/share.svg'
 import CopyButton from '@/components/common/CopyButton'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
@@ -16,6 +15,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark'
 import DeleteIcon from '@/public/images/delete.svg'
 import { AppRoutes } from '@/config/routes'
 import styles from './styles.module.css'
+import { useCurrentChain } from '@/hooks/useChains'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
@@ -127,9 +127,9 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
 
 const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppCardProps): ReactElement => {
   const router = useRouter()
-  const chainId = useChainId()
+  const currentChain = useCurrentChain()
 
-  const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${safeApp.url}&chainId=${chainId}`
+  const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${safeApp.url}&chainId=${currentChain?.chainId}&chain=${currentChain?.shortName}`
   const url = router.query.safe ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${safeApp.url}` : shareUrl
 
   if (variant === 'compact') {
