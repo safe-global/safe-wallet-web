@@ -12,8 +12,8 @@ import SafeAppsTxModal from '../SafeAppsTxModal'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator from './useAppCommunicator'
-import useConfirmTransactionModal from './useConfirmTransactionModal'
-import useSignMessageModal from './useSignMessageModal'
+import useTxModal from '../SafeAppsTxModal/useTxModal'
+import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
 
 import css from './styles.module.css'
 import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
@@ -28,7 +28,7 @@ const REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected'
 
 const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
-  const [confirmTransactionModalState, openConfirmationModal, closeConfirmationModal] = useConfirmTransactionModal()
+  const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe } = useSafeInfo()
   const [remoteApps] = useRemoteSafeApps()
@@ -38,7 +38,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
 
   const communicator = useAppCommunicator(iframeRef, {
     app: safeAppFromManifest,
-    onConfirmTransactions: openConfirmationModal,
+    onConfirmTransactions: openTxModal,
     onSignTransactions: openSignMessageModal,
   })
 
@@ -61,7 +61,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
 
   useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, requestId }) => {
-      const currentRequestId = signMessageModalState.requestId || confirmTransactionModalState.requestId
+      const currentRequestId = signMessageModalState.requestId || txModalState.requestId
 
       if (txId && currentRequestId === requestId) {
         const { detailedExecutionInfo } = await getTransactionDetails(chainId, txId)
@@ -70,26 +70,19 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
           communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, requestId)
         }
 
-        confirmTransactionModalState.isOpen ? closeConfirmationModal() : closeSignMessageModal()
+        txModalState.isOpen ? closeTxModal() : closeSignMessageModal()
       }
     })
 
     return () => {
       unsubscribe()
     }
-  }, [
-    chainId,
-    closeConfirmationModal,
-    closeSignMessageModal,
-    communicator,
-    confirmTransactionModalState,
-    signMessageModalState,
-  ])
+  }, [chainId, closeTxModal, closeSignMessageModal, communicator, txModalState, signMessageModalState])
 
   const onSafeAppsModalClose = () => {
-    if (confirmTransactionModalState.isOpen) {
-      communicator?.send(REJECT_TRANSACTION_MESSAGE, confirmTransactionModalState.requestId, true)
-      closeConfirmationModal()
+    if (txModalState.isOpen) {
+      communicator?.send(REJECT_TRANSACTION_MESSAGE, txModalState.requestId, true)
+      closeTxModal()
     } else {
       communicator?.send(REJECT_TRANSACTION_MESSAGE, signMessageModalState.requestId, true)
       closeSignMessageModal()
@@ -123,16 +116,16 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
         style={{ display: appIsLoading ? 'none' : 'block' }}
       />
 
-      {confirmTransactionModalState.isOpen && (
+      {txModalState.isOpen && (
         <SafeAppsTxModal
           onClose={onSafeAppsModalClose}
           initialData={[
             {
               app: safeAppFromManifest,
               appId: remoteApp?.id,
-              requestId: confirmTransactionModalState.requestId,
-              txs: confirmTransactionModalState.txs,
-              params: confirmTransactionModalState.params,
+              requestId: txModalState.requestId,
+              txs: txModalState.txs,
+              params: txModalState.params,
             },
           ]}
         />
