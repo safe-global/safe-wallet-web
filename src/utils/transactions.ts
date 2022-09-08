@@ -9,7 +9,6 @@ import {
   Transaction,
   TransactionDetails,
   TransactionListItem,
-  TransactionListPage,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   isDateLabel,
@@ -89,7 +88,8 @@ export const makeDateLabelFromTx = (tx: Transaction): DateLabel => {
 /**
  * Add date labels between transactions made on the same day by local timezone
  */
-export const _adjustDateLabelsTimezone = (items: TransactionListItem[]): TransactionListItem[] => {
+// TODO: Needs to know if previous page has same day to prevent duplicate date labels
+export const adjustDateLabelsTimezone = (items: TransactionListItem[]): TransactionListItem[] => {
   const firstTx = items.find(isTransactionListItem)
 
   if (!firstTx) {
@@ -118,19 +118,6 @@ export const _adjustDateLabelsTimezone = (items: TransactionListItem[]): Transac
 
       return resultItems.concat(item)
     }, [])
-}
-
-// TODO: Needs to know if previous page has same day to prevent duplicate date labels
-// Perhaps pass them to `useTxXYZ` hooks from `TxPage`
-export const localizeTxListDateLabelTimezone = (page?: TransactionListPage): TransactionListPage | undefined => {
-  if (!page) {
-    return page
-  }
-
-  return {
-    ...page,
-    results: _adjustDateLabelsTimezone(page.results),
-  }
 }
 
 const getSignatures = (confirmations: Record<string, string>) => {
