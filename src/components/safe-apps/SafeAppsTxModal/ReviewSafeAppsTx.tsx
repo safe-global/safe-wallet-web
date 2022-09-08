@@ -20,14 +20,26 @@ type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
 }
 
-const ReviewSafeAppsTx = ({ onSubmit, safeAppsTx: { txs, requestId } }: ReviewSafeAppsTxProps): ReactElement => {
+const ReviewSafeAppsTx = ({
+  onSubmit,
+  safeAppsTx: { txs, requestId, params },
+}: ReviewSafeAppsTxProps): ReactElement => {
   const chainId = useChainId()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
 
   const isMultiSend = txs.length > 1
   const canExecute = safe.threshold === 1
-  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => createMultiSendCallOnlyTx(txs), [])
+  const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
+    const tx = await createMultiSendCallOnlyTx(txs)
+
+    if (params?.safeTxGas) {
+      // @ts-expect-error safeTxGas readonly
+      tx.data.safeTxGas = params.safeTxGas
+    }
+
+    return tx
+  }, [])
 
   const [decodedData] = useAsync<DecodedDataResponse | undefined>(async () => {
     if (!safeTx || isNativeTransfer(safeTx.data.data)) return
