@@ -11,6 +11,7 @@ import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 import { selectChainById } from '@/store/chainsSlice'
 import useChainId from '@/hooks/useChainId'
+import { ethers } from 'ethers'
 
 type EthHashInfoProps = {
   address: string
@@ -41,7 +42,7 @@ const EthHashInfo = ({
   hasExplorer,
 }: EthHashInfoProps): ReactElement => {
   const [fallbackToIdenticon, setFallbackToIdenticon] = useState(false)
-  const isAddress = address.length === 42
+  const shouldPrefix = ethers.utils.isAddress(address)
 
   return (
     <div className={css.container}>
@@ -70,12 +71,12 @@ const EthHashInfo = ({
 
         <Box className={css.addressRow}>
           <Typography variant="body2" fontWeight="inherit" component="div" className={css.address}>
-            {isAddress && showPrefix && prefix && <b>{prefix}:</b>}
+            {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
             {shortAddress && shortAddress ? shortenAddress(address) : address}
           </Typography>
 
           {showCopyButton && (
-            <CopyAddressButton prefix={prefix} address={address} copyPrefix={isAddress && copyPrefix} />
+            <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldPrefix && copyPrefix} />
           )}
 
           {hasExplorer && <ExplorerLink address={address} />}
