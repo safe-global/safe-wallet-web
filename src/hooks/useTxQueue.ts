@@ -3,8 +3,6 @@ import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxQueue, selectQueuedTransactionsByNonce } from '@/store/txQueueSlice'
 import useSafeInfo from './useSafeInfo'
-import { localizeTxListDateLabelTimezone } from '@/utils/transactions'
-import { useMemo } from 'react'
 
 const useTxQueue = (
   pageUrl?: string,
@@ -26,24 +24,17 @@ const useTxQueue = (
   const queueState = useAppSelector(selectTxQueue)
 
   // Return the new page or the stored page
-  return useMemo(() => {
-    const txQueue = pageUrl
-      ? {
-          page,
-          error: error?.message,
-          loading: loading,
-        }
-      : {
-          page: queueState.data,
-          error: queueState.error,
-          loading: queueState.loading,
-        }
-
-    return {
-      ...txQueue,
-      page: localizeTxListDateLabelTimezone(txQueue.page),
-    }
-  }, [error?.message, loading, page, pageUrl, queueState.data, queueState.error, queueState.loading])
+  return pageUrl
+    ? {
+        page,
+        error: error?.message,
+        loading: loading,
+      }
+    : {
+        page: queueState.data,
+        error: queueState.error,
+        loading: queueState.loading,
+      }
 }
 
 export const useQueuedTxByNonce = (nonce?: number) => {
