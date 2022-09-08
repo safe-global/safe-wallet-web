@@ -44,6 +44,10 @@ const TxPage = ({
   const isQueue = useTxns === useTxQueue
 
   useEffect(() => {
+    if (!isQueue) {
+      return
+    }
+
     // If conflict transactions split across pages, we must fetch the next page
     const lastItem = page?.results[page.results.length - 1]
     const hasSplitConflict = lastItem && isHasNextConflictTransactionListItem(lastItem)
@@ -51,7 +55,7 @@ const TxPage = ({
     if (hasSplitConflict) {
       onNextPage?.(page?.next)
     }
-  }, [onNextPage, page?.next, page?.results])
+  }, [isQueue, onNextPage, page?.next, page?.results])
 
   const txListPageItems = useMemo(() => {
     if (!page?.results) {
