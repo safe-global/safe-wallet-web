@@ -8,14 +8,14 @@ import chains from '@/config/chains'
 import { ReactElement } from 'react'
 import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
-import { selectLastSafeAddress } from '@/store/sessionSlice'
-import { useAppStore } from '@/store'
+import { selectSession } from '@/store/sessionSlice'
+import { useAppSelector } from '@/store'
 
 const NetworkSelector = (): ReactElement => {
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
-  const store = useAppStore()
+  const session = useAppSelector(selectSession)
 
   const handleNetworkSwitch = (event: SelectChangeEvent) => {
     const selectedChainId = event.target.value
@@ -27,7 +27,7 @@ const NetworkSelector = (): ReactElement => {
 
     const shouldKeepPath = [AppRoutes.welcome, AppRoutes.load, AppRoutes.open].includes(router.pathname)
 
-    const lastUsedSafe = selectLastSafeAddress(store.getState(), selectedChainId)
+    const lastUsedSafe = session.lastSafeAddress[selectedChainId]
 
     const query = lastUsedSafe ? { safe: `${newShortName}:${lastUsedSafe}` } : { chain: newShortName }
 
