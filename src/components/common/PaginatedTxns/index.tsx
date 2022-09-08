@@ -1,4 +1,4 @@
-import { type ReactElement, useEffect, useState } from 'react'
+import { type ReactElement, useEffect, useState, useMemo } from 'react'
 import { Box, Typography } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -41,12 +41,18 @@ const TxPage = ({
   const { page, error } = useTxns(pageUrl)
   const [filter] = useTxFilter()
 
-  if (page?.results) {
-    const isQueue = useTxns === useTxQueue
+  const isQueue = useTxns === useTxQueue
+
+  const localizedItems = useMemo(() => {
+    if (!page?.results) {
+      return
+    }
 
     // Date labels are returned at start of UTC day. Users in UTC-n timezones would see "yesterday" for txs today
-    const localizedItems = isQueue ? page.results : adjustDateLabelsTimezone(page.results)
+    return isQueue ? page.results : adjustDateLabelsTimezone(page.results)
+  }, [isQueue, page?.results])
 
+  if (page && localizedItems) {
     return (
       <>
         {/* FIXME: batching will only work for the first page results */}
