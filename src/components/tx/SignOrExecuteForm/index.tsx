@@ -3,13 +3,19 @@ import { useRouter } from 'next/router'
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
-import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
+import {
+  dispatchTxExecution,
+  dispatchTxProposal,
+  dispatchTxSigning,
+  createTx,
+  dispatchOnChainSigning,
+} from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isHardwareWallet, isPaired } from '@/hooks/wallets/wallets'
+import { isHardwareWallet, isPaired, isSmartContractWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -89,7 +95,10 @@ const SignOrExecuteForm = ({
     const [connectedWallet, createdTx] = assertSubmittable()
 
     const shouldEthSign = isHardwareWallet(connectedWallet) || isPaired(connectedWallet)
-    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
+    const smartContractWallet = await isSmartContractWallet(connectedWallet)
+    const signedTx = smartContractWallet
+      ? await dispatchOnChainSigning(createdTx)
+      : await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
     return proposedTx.txId

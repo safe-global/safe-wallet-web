@@ -190,6 +190,23 @@ export const dispatchTxSigning = async (
 }
 
 /**
+ * On-Chain sign a transaction
+ */
+export const dispatchOnChainSigning = async (safeTx: SafeTransaction) => {
+  const sdk = getAndValidateSafeSDK()
+
+  try {
+    const safeTxHash = await sdk.getTransactionHash(safeTx)
+    await sdk.approveTransactionHash(safeTxHash)
+  } catch (err) {
+    txDispatch(TxEvent.SIGN_FAILED, { txId: undefined, error: err as Error })
+    throw err
+  }
+
+  return safeTx
+}
+
+/**
  * Execute a transaction
  */
 export const dispatchTxExecution = async (

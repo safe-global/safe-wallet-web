@@ -13,6 +13,7 @@ import walletConnect from '@web3-onboard/walletconnect'
 
 import pairingModule, { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
@@ -75,6 +76,18 @@ export const getSupportedWallets = (disabledWallets: string[]): WalletInit[] => 
 
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR].includes(wallet.label.toUpperCase() as WALLET_KEYS)
+}
+
+export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
+  const provider = getWeb3ReadOnly()
+
+  if (!provider) {
+    throw new Error('Provider not found')
+  }
+
+  const code = await provider.getCode(wallet.address)
+
+  return code !== '0x'
 }
 
 export const isPaired = (wallet: ConnectedWallet): boolean => {
