@@ -165,31 +165,31 @@ describe('Assets > Coins', () => {
       // Open the Safe used for testing pagination
       cy.visit(`/${PAGINATION_TEST_SAFE}/balances`)
       cy.contains('button', 'Accept selection').click()
-  
+
       //Ensure the table is fully loaded
-      cy.contains('Rows per page:', {timeout:10000})
-    })  
+      cy.contains('Rows per page:', { timeout: 10000 })
+    })
     it('should should allow 25 rows per page and navigate to next and previous page', () => {
       // Click on the pagination select dropdown
       cy.get('[aria-haspopup="listbox"]').contains('25').click()
-  
+
       // Select 25 rows per page
       cy.get('[aria-haspopup="listbox"]').get('li[role="option"]').contains('25').click()
-  
+
       // Table should have 25 rows
       cy.contains('1–25 of 27')
       cy.get(balanceSingleRow).should('have.length', 25)
-  
+
       // Click on the next page button
       cy.get('button[aria-label="Go to next page"]').click()
-  
+
       // Table should have 1 rows
       cy.contains('26–27 of 27')
       cy.get(balanceSingleRow).should('have.length', 2)
-  
+
       // Click on the previous page button
       cy.get('button[aria-label="Go to previous page"]').click()
-  
+
       // Table should have 25 rows
       cy.contains('1–25 of 27')
       cy.get(balanceSingleRow).should('have.length', 25)
@@ -198,29 +198,29 @@ describe('Assets > Coins', () => {
 
   describe('should open assets modals', () => {
     const receiveAssetsModalTestId = '[aria-labelledby=":r1i:"]'
-    
+
     it('should open the Receive assets modal', () => {
       // Assets table container should exist
       cy.get('[data-track="overview: Show Safe QR code"]').should('be.visible').click()
 
       // The Receive Assets modal should be present
       cy.get(receiveAssetsModalTestId).should('be.visible')
-      
+
       // Receive assets should be present
       cy.get(receiveAssetsModalTestId).findByText('Receive assets').should('be.visible')
-      
+
       // The Receive screen should have the correct address
       const [, safeAddress] = PAGINATION_TEST_SAFE.split(':')
       cy.get(receiveAssetsModalTestId).findByText(safeAddress).should('be.visible')
-      
+
       // Checking and unchecking the QR code
       cy.get(receiveAssetsModalTestId).find('[type="checkbox"]').should('be.checked')
-      
+
       cy.get(receiveAssetsModalTestId).find('[type="checkbox"]').uncheck().should('not.be.checked')
-      
+
       // Click in the Done button
       cy.get(receiveAssetsModalTestId).find('[data-testid="CloseIcon"]').click()
-      
+
       // The Receive screen should be hidden
       cy.get(receiveAssetsModalTestId).should('not.exist')
     })
