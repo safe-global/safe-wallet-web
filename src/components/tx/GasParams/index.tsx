@@ -66,7 +66,11 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
         ) : (
           <Typography>
             Signing the transaction with nonce&nbsp;
-            {nonce || <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />}
+            {nonce !== undefined ? (
+              nonce
+            ) : (
+              <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />
+            )}
           </Typography>
         )}
       </AccordionSummary>
