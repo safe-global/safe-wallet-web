@@ -20,7 +20,7 @@ describe('Share Safe App Page', () => {
       routerProps: {
         query: {
           appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
-          chainId: '1',
+          chain: 'eth',
         },
       },
       initialReduxState: {
@@ -49,7 +49,7 @@ describe('Share Safe App Page', () => {
       routerProps: {
         query: {
           appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
-          chainId: '1',
+          chain: 'eth',
         },
       },
       initialReduxState: {
@@ -74,7 +74,7 @@ describe('Share Safe App Page', () => {
       routerProps: {
         query: {
           appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
-          chainId: '1',
+          chain: 'eth',
         },
       },
       initialReduxState: {
@@ -108,7 +108,7 @@ describe('Share Safe App Page', () => {
       routerProps: {
         query: {
           appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
-          chainId: '1',
+          chain: 'rin',
         },
       },
       initialReduxState: {
@@ -146,7 +146,7 @@ describe('Share Safe App Page', () => {
       routerProps: {
         query: {
           appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
-          chainId: '1',
+          chain: 'eth',
         },
       },
       initialReduxState: {
