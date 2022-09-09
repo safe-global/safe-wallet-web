@@ -138,11 +138,13 @@ describe('formatAmount', () => {
   })
 
   it('should use < -0.00001 or < +0.00001 when the Eucledian distance of the amount is smaller than 0.00001', () => {
-    // explicitly positive numbers: keep the sign
-    expect(formatAmount('+0.000001', true)).toEqual('< +0.00001')
-    expect(formatAmount('+0.000009', true)).toEqual('< +0.00001')
+    // to keep the '+' sign the amount shall be passed as a string
+    expect(formatAmount('+0.000001')).toEqual('< +0.00001')
+    expect(formatAmount('+0.000009')).toEqual('< +0.00001')
 
-    // negative numbers
+    // negative numbers will keep the sign either way
+    expect(formatAmount(-0.000001)).toEqual('< -0.00001')
+    expect(formatAmount(-0.000009)).toEqual('< -0.00001')
     expect(formatAmount('-0.000001')).toEqual('< -0.00001')
     expect(formatAmount('-0.000009')).toEqual('< -0.00001')
   })

@@ -77,7 +77,9 @@ const formatNumber = (float: number, options: Intl.NumberFormatOptions, keepSign
   return `> ${formatter.format(UPPER_LIMIT)}`
 }
 
-export const formatAmount = (number: string | number, keepSign?: boolean): string => {
+export const formatAmount = (number: string | number): string => {
+  // to keep the '+' sign, pass the amount as a string
+  const keepSign = typeof number === 'string' && number.trim().startsWith('+')
   const float = Number(number)
   const options = getNumberFormatterOptions(float)
   return formatNumber(float, options, keepSign)
