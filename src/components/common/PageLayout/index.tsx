@@ -7,10 +7,12 @@ import Header from '@/components/common//Header'
 import css from './styles.module.css'
 import SafeLoadingError from '../SafeLoadingError'
 import Footer from '../Footer'
+import { AppRoutes } from '@/config/routes'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   const router = useRouter()
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false)
+  const showSidebar = !router.pathname.includes(AppRoutes.share.safeApp)
 
   const onMenuToggle = (): void => {
     setIsMobileDrawerOpen((prev) => !prev)
@@ -29,14 +31,14 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
       </header>
 
       {/* Desktop sidebar */}
-      <aside className={css.sidebar}>{sidebar}</aside>
+      {showSidebar && <aside className={css.sidebar}>{sidebar}</aside>}
 
       {/* Mobile sidebar */}
       <Drawer variant="temporary" anchor="left" open={isMobileDrawerOpen} onClose={onMenuToggle}>
         {sidebar}
       </Drawer>
 
-      <div className={css.main}>
+      <div className={`${css.main} ${!showSidebar ? css.mainNoSidebar : ''}`}>
         <div className={css.content}>
           <SafeLoadingError>{children}</SafeLoadingError>
         </div>
