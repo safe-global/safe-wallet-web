@@ -1,0 +1,14 @@
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  background-color: var(--color-background-main);
+}
+
+.badge :global .MuiBadge-badge {
+  border: 2px solid var(--color-background-paper);
+  border-radius: 50%;
+  box-sizing: content-box;
+}

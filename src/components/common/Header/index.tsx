@@ -11,8 +11,6 @@ import NotificationCenter from '@/components/notification-center/NotificationCen
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
 import SafeLogo from '@/public/logo.svg'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
-import Track from '../Track'
 import Link from 'next/link'
 
 type HeaderProps = {
@@ -32,13 +30,11 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
       </div>
 
       <div className={classnames(css.element, css.hideMobile, css.logo)}>
-        <Track {...OVERVIEW_EVENTS.HOME}>
-          <Link href={AppRoutes.index} passHref>
-            <a>
-              <SafeLogo alt="Safe logo" />
-            </a>
-          </Link>
-        </Track>
+        <Link href={AppRoutes.index} passHref>
+          <a>
+            <SafeLogo alt="Safe logo" />
+          </a>
+        </Link>
       </div>
 
       <div className={classnames(css.element, css.hideMobile)}>

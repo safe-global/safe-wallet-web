@@ -3,7 +3,6 @@ import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Li
 import { useCurrentChain } from '@/hooks/useChains'
 import { formatVisualAmount } from '@/utils/formatters'
 import { type AdvancedParameters } from '../AdvancedParams/types'
-import Track from '@/components/common/Track'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 
 const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
@@ -67,7 +66,11 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
         ) : (
           <Typography>
             Signing the transaction with nonce&nbsp;
-            {nonce || <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />}
+            {nonce !== undefined ? (
+              nonce
+            ) : (
+              <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />
+            )}
           </Typography>
         )}
       </AccordionSummary>
@@ -90,11 +93,9 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
         )}
 
         {!isExecution || (isExecution && !isLoading) ? (
-          <Track {...MODALS_EVENTS.EDIT_ESTIMATION}>
-            <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
-              Edit
-            </Link>
-          </Track>
+          <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
+            Edit
+          </Link>
         ) : (
           <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em', mt: 2 }} />
         )}

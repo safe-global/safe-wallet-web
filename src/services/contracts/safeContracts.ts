@@ -12,11 +12,11 @@ import { Contract } from 'ethers'
 import { Interface } from '@ethersproject/abi'
 import semverSatisfies from 'semver/functions/satisfies'
 import { SafeInfo, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import type { GetContractProps } from '@gnosis.pm/safe-core-sdk-types'
+import type { GetContractProps, SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
 import { type Compatibility_fallback_handler } from '@/types/contracts/Compatibility_fallback_handler'
 import { createEthersAdapter, isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
-const getValidatedGetContractProps = (
+export const _getValidatedGetContractProps = (
   chainId: string,
   safeVersion: string,
 ): Pick<GetContractProps, 'chainId' | 'safeVersion'> => {
@@ -24,9 +24,13 @@ const getValidatedGetContractProps = (
     throw new Error(`${safeVersion} is not a valid Safe version`)
   }
 
+  // TODO: Implement in Core SDK
+  // Remove '+L2'/'+Circles' metadata from version
+  const [noMetadataVersion] = safeVersion.split('+')
+
   return {
     chainId: +chainId,
-    safeVersion,
+    safeVersion: noMetadataVersion as SafeVersion,
   }
 }
 
@@ -37,7 +41,7 @@ export const getSpecificGnosisSafeContractInstance = (safe: SafeInfo) => {
 
   return ethAdapter.getSafeContract({
     customContractAddress: safe.address.value,
-    ...getValidatedGetContractProps(safe.chainId, safe.version),
+    ..._getValidatedGetContractProps(safe.chainId, safe.version),
   })
 }
 
@@ -71,7 +75,7 @@ export const getGnosisSafeContractInstance = (chain: ChainInfo, safeVersion: str
 
   return ethAdapter.getSafeContract({
     singletonDeployment: _getSafeContractDeployment(chain, safeVersion),
-    ...getValidatedGetContractProps(chain.chainId, safeVersion),
+    ..._getValidatedGetContractProps(chain.chainId, safeVersion),
   })
 }
 
@@ -92,7 +96,7 @@ export const getMultiSendContractInstance = (chainId: string, safeVersion: strin
 
   return ethAdapter.getMultiSendContract({
     singletonDeployment: getMultiSendContractDeployment(chainId),
-    ...getValidatedGetContractProps(chainId, safeVersion),
+    ..._getValidatedGetContractProps(chainId, safeVersion),
   })
 }
 
@@ -113,7 +117,7 @@ export const getMultiSendCallOnlyContractInstance = (chainId: string, safeVersio
 
   return ethAdapter.getMultiSendCallOnlyContract({
     singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId),
-    ...getValidatedGetContractProps(chainId, safeVersion),
+    ..._getValidatedGetContractProps(chainId, safeVersion),
   })
 }
 
@@ -136,7 +140,7 @@ export const getProxyFactoryContractInstance = (chainId: string, safeVersion: st
 
   return ethAdapter.getSafeProxyFactoryContract({
     singletonDeployment: getProxyFactoryContractDeployment(chainId),
-    ...getValidatedGetContractProps(chainId, safeVersion),
+    ..._getValidatedGetContractProps(chainId, safeVersion),
   })
 }
 

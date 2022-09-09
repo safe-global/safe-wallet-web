@@ -11,7 +11,7 @@ import torusModule from '@web3-onboard/torus'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 
-import pairingModule from '@/services/pairing/module'
+import pairingModule, { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 export const enum WALLET_KEYS {
@@ -75,4 +75,8 @@ export const getSupportedWallets = (disabledWallets: string[]): WalletInit[] => 
 
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR].includes(wallet.label.toUpperCase() as WALLET_KEYS)
+}
+
+export const isPaired = (wallet: ConnectedWallet): boolean => {
+  return wallet.label === PAIRING_MODULE_LABEL
 }

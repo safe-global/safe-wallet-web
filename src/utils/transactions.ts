@@ -8,8 +8,16 @@ import {
   MultisigExecutionInfo,
   Transaction,
   TransactionDetails,
+  TransactionListItem,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isModuleExecutionInfo, isMultisigExecutionDetails, isTxQueued } from './transaction-guards'
+import {
+  isDateLabel,
+  isModuleExecutionInfo,
+  isMultisigExecutionDetails,
+  isTransactionListItem,
+  isTxQueued,
+  TransactionListItemType,
+} from './transaction-guards'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
@@ -17,6 +25,7 @@ import { createExistingTx } from '@/services/tx/txSender'
 import { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
+import { startOfDay, isSameDay } from 'date-fns'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -72,7 +81,43 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
 }
 
 export const makeDateLabelFromTx = (tx: Transaction): DateLabel => {
-  return { timestamp: tx.transaction.timestamp, type: 'DATE_LABEL' }
+  const startOfDayTimestamp = startOfDay(tx.transaction.timestamp).getTime()
+  return { timestamp: startOfDayTimestamp, type: TransactionListItemType.DATE_LABEL }
+}
+
+/**
+ * Add date labels between transactions made on the same day by local timezone
+ */
+// TODO: Needs to know if previous page has same day to prevent duplicate date labels
+export const adjustDateLabelsTimezone = (items: TransactionListItem[]): TransactionListItem[] => {
+  const firstTx = items.find(isTransactionListItem)
+
+  if (!firstTx) {
+    return items
+  }
+
+  // Insert date labels between transactions on different days
+  return items
+    .filter((item) => !isDateLabel(item))
+    .reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
+      const prevItem = allItems[index - 1]
+
+      // Add date label before the first transaction of the first page
+      if (!prevItem) {
+        return ([makeDateLabelFromTx(firstTx)] as TransactionListItem[]).concat(item)
+      }
+
+      // Transaction is on different day as previous transaction
+      if (
+        isTransactionListItem(prevItem) &&
+        isTransactionListItem(item) &&
+        !isSameDay(prevItem.transaction.timestamp, item.transaction.timestamp)
+      ) {
+        return resultItems.concat(makeDateLabelFromTx(item), item)
+      }
+
+      return resultItems.concat(item)
+    }, [])
 }
 
 const getSignatures = (confirmations: Record<string, string>) => {

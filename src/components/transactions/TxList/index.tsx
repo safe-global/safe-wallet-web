@@ -3,7 +3,6 @@ import { Box } from '@mui/material'
 import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
-import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { groupConflictingTxs } from '@/utils/tx-list'
 
 type TxListProps = {
@@ -29,11 +28,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
     return <TxListItem key={index} item={item} />
   })
 
-  return (
-    <BatchExecuteHoverProvider>
-      <TxListGrid>{transactions}</TxListGrid>
-    </BatchExecuteHoverProvider>
-  )
+  return <TxListGrid>{transactions}</TxListGrid>
 }
 
 export default TxList

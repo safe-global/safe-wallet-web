@@ -21,6 +21,9 @@ const nextConfig = {
       lodash: {
         transform: 'lodash/{{member}}',
       },
+      'date-fns': {
+        transform: 'date-fns/{{member}}',
+      },
     },
   },
   async rewrites() {

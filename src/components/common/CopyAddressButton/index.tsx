@@ -1,13 +1,17 @@
 import { type ReactElement } from 'react'
-import { useCurrentChain } from '@/hooks/useChains'
-import { useAppSelector } from '@/store'
-import { selectSettings } from '@/store/settingsSlice'
+
 import CopyButton from '../CopyButton'
 
-const CopyAddressButton = ({ address }: { address: string }): ReactElement => {
-  const settings = useAppSelector(selectSettings)
-  const chain = useCurrentChain()
-  const addressText = settings.shortName.copy && chain ? `${chain.shortName}:${address}` : address
+const CopyAddressButton = ({
+  prefix,
+  address,
+  copyPrefix,
+}: {
+  prefix?: string
+  address: string
+  copyPrefix?: boolean
+}): ReactElement => {
+  const addressText = copyPrefix && prefix ? `${prefix}:${address}` : address
 
   return <CopyButton text={addressText} />
 }
