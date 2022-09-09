@@ -10,7 +10,7 @@ const useSafeAppFromBackend = (url: string, chainId: string): AsyncResult<SafeAp
     // But for the request it has to be an exact match.
     const retryUrl = url.endsWith('/') ? trimTrailingSlash(url) : `${url}/`
     let response = await getSafeApps(chainId, { url })
-    if (!response?.[0]) {
+    if (!response[0]) {
       response = await getSafeApps(chainId, { url: retryUrl })
     }
 
