@@ -148,6 +148,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
               text={shareUrl}
               ariaLabel={`Share ${safeApp.name}`}
               initialToolTipText={`Copy share URL for ${safeApp.name}`}
+              className={styles.shareButton}
             >
               <ShareIcon width={16} alt="Share icon" />
             </CopyButton>
