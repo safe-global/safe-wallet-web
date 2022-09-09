@@ -182,8 +182,7 @@ describe('Assets > Coins', () => {
       // Checking and unchecking the QR code
       cy.get(receiveAssetsModalTestId).find('[type="checkbox"]').should('be.checked')
 
-      cy.get(receiveAssetsModalTestId).find('[type="checkbox"]').uncheck()
-      .should('not.be.checked')
+      cy.get(receiveAssetsModalTestId).find('[type="checkbox"]').uncheck().should('not.be.checked')
 
       // Click in the Done button
       cy.get(receiveAssetsModalTestId).find('[data-testid="CloseIcon"]').click()
