@@ -2,7 +2,6 @@ const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 const assetsTable = '[aria-labelledby="tableTitle"] > tbody'
 
 const TEST_SAFE = 'rin:0x656c1121a6f40d25C5CFfF0Db08938DB7633B2A3'
-//rin:0x11Df0fa87b30080d59eba632570f620e37f2a8f7
 const ASSETS_LENGTH = 25
 const ASSET_NAME_COLUMN = 0
 const TOKEN_AMOUNT_COLUMN = 1
@@ -152,32 +151,23 @@ describe('Assets > Coins', () => {
 
       // Table should have 1 rows
       cy.contains('26–27 of 27')
-      cy.get(balanceSingleRow).should('have.length', 1)
+      cy.get(balanceSingleRow).should('have.length', 2)
 
       // Click on the previous page button
-      cy.get('button[aria-label="Go to previous Page"]').click()
+      cy.get('button[aria-label="Go to previous page"]').click()
 
       // Table should have 25 rows
-      cy.contains('1-25 of 27')
+      cy.contains('1–25 of 27')
       cy.get(balanceSingleRow).should('have.length', 25)
     })
   })
 
   describe('should open assets modals', () => {
-    const receiveAssetsModalTestId = '[aria-labelledby=":rq:"]'
+    const receiveAssetsModalTestId = '[aria-labelledby=":r1i:"]'
 
     it('should open the Receive assets modal', () => {
       // Assets table container should exist
-      cy.get('[data-track="overview: Show Safe QR code"]').should('be.visible')
-
-      // Receive text should not exist yet
-      cy.get(balanceSingleRow).first().findByText('Receive').should('not.be.visible')
-
-      // On hover, the Receive button should be visible
-      cy.get(balanceSingleRow).first().trigger('mouseover').findByText('Receive').should('exist')
-
-      // Click on the Receive button
-      cy.get(balanceSingleRow).first().findByText('Receive').click({ force: true })
+      cy.get('[data-track="overview: Show Safe QR code"]').should('be.visible').click()
 
       // The Receive Assets modal should be present
       cy.get(receiveAssetsModalTestId).should('be.visible')
@@ -189,8 +179,14 @@ describe('Assets > Coins', () => {
       const [, safeAddress] = TEST_SAFE.split(':')
       cy.get(receiveAssetsModalTestId).findByText(safeAddress).should('be.visible')
 
+      // Checking and unchecking the QR code
+      cy.get(receiveAssetsModalTestId).find('[type="checkbox"]').should('be.checked')
+
+      cy.get(receiveAssetsModalTestId).find('[type="checkbox"]').uncheck()
+      .should('not.be.checked')
+
       // Click in the Done button
-      cy.get(receiveAssetsModalTestId).findByText('Done').click({ force: true })
+      cy.get(receiveAssetsModalTestId).find('[data-testid="CloseIcon"]').click()
 
       // The Receive screen should be hidden
       cy.get(receiveAssetsModalTestId).should('not.exist')
