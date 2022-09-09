@@ -1,12 +1,13 @@
 import { ReactElement } from 'react'
 import { DecodedDataResponse, getDecodedData, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -64,6 +65,15 @@ const ReviewSafeAppsTx = ({
             <InfoDetails title={getInteractionTitle(safeTx.data.value || '', chain)}>
               <EthHashInfo address={safeTx.data.to} shortAddress={false} showCopyButton hasExplorer />
             </InfoDetails>
+
+            {safeTx && (
+              <Box pb={2}>
+                <Typography mt={2} color="secondary.light">
+                  Data (hex encoded)
+                </Typography>
+                {generateDataRowValue(safeTx.data.data, 'rawData')}
+              </Box>
+            )}
 
             {isMultiSend && (
               <Box py={1}>

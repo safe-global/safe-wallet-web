@@ -10,6 +10,7 @@ import SendFromBlock from '@/components/tx/SendFromBlock'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { SafeAppsSignMessageParams } from '../SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
@@ -79,6 +80,15 @@ const ReviewSafeAppsSignMessage = ({
         <InfoDetails title="Interact with SignMessageLib">
           <EthHashInfo address={signMessageAddress} shortAddress={false} showCopyButton hasExplorer />
         </InfoDetails>
+
+        {safeTx && (
+          <Box pb={1}>
+            <Typography mt={2} color="secondary.light">
+              Data (hex encoded)
+            </Typography>
+            {generateDataRowValue(safeTx.data.data, 'rawData')}
+          </Box>
+        )}
 
         <Typography sx={{ my: 1 }}>
           <b>Signing Method:</b> <code>{method}</code>
