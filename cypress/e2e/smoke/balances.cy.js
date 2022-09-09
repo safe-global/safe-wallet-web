@@ -1,8 +1,8 @@
 const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 const assetsTable = '[aria-labelledby="tableTitle"] > tbody'
 
-const TEST_SAFE = 'rin:0x656c1121a6f40d25C5CFfF0Db08938DB7633B2A3'
-const ASSETS_LENGTH = 25
+const TEST_SAFE = 'rin:0x11Df0fa87b30080d59eba632570f620e37f2a8f7'
+const ASSETS_LENGTH = 7
 const ASSET_NAME_COLUMN = 0
 const TOKEN_AMOUNT_COLUMN = 1
 const FIAT_AMOUNT_COLUMN = 2
@@ -10,8 +10,6 @@ const FIAT_AMOUNT_COLUMN = 2
 describe('Assets > Coins', () => {
   // Fiat balance regex
   const fiatRegex = new RegExp(`([0-9]{1,3},)*[0-9]{1,3}.[0-9]{2}`)
-  // Token balance regex
-  const tokenRegex = new RegExp(`([0-9]{1,3},)*[0-9]{1,3}.[0-9]{2,5}`)
 
   before(() => {
     // Open the Safe used for testing
@@ -64,16 +62,16 @@ describe('Assets > Coins', () => {
       cy.contains('Wrapped Ether').parents('tr').find('td').eq(TOKEN_AMOUNT_COLUMN).contains('WETH')
     })
 
-    it('should have USDT Coin', () => {
-      // Row should have an image with alt text "USDT Coin"
-      cy.contains('Compound USDT')
+    it('should have USD Coin', () => {
+      // Row should have an image with alt text "USD Coin"
+      cy.contains('USD Coin')
         .parents('tr')
         .within(() => {
-          cy.get('img[alt="USDT"]').should('be.visible')
+          cy.get('img[alt="USDC"]').should('be.visible')
         })
 
       // Asset name column contains link to block explorer
-      cy.contains('Compound USDT')
+      cy.contains('USD Coin')
         .parents('tr')
         .find('td')
         .eq(ASSET_NAME_COLUMN)
@@ -81,34 +79,61 @@ describe('Assets > Coins', () => {
         .should('be.visible')
 
       // Balance should contain USDT
-      cy.contains('Compound USDT').parents('tr').find('td').eq(TOKEN_AMOUNT_COLUMN).contains('USDT')
+      cy.contains('USD Coin').parents('tr').find('td').eq(TOKEN_AMOUNT_COLUMN).contains('USDC')
     })
   })
 
-  describe.skip('values should be formatted as per locale', () => {
-    it('should have Token and Fiat balances formated as per locales', () => {
-      // Verify all assets
-      Array.from(Array(ASSETS_LENGTH).keys()).forEach((row) => {
-        // Token balance is formatted as per tokenRegex
-        cy.get(balanceSingleRow)
-          .eq(row)
-          .find('td')
-          .eq(TOKEN_AMOUNT_COLUMN)
-          .should(($div) => {
-            const text = $div.text()
-            expect(text).to.match(tokenRegex)
-          })
+  describe('values should be formatted as per locale', () => {
+    it('should have Token and Fiat balances formated as per specification', () => {
+      cy.contains('Dai')
+        .parents('tr')
+        .within(() => {
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('803.292M DAI')
+          cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
+        })
 
-          // Fiat balance is formatted as per fiatRegex
-          .get(balanceSingleRow)
-          .eq(row)
-          .find('td')
-          .eq(FIAT_AMOUNT_COLUMN)
-          .should(($div) => {
-            const text = $div.text()
-            expect(text).to.match(fiatRegex)
-          })
-      })
+      cy.contains('Wrapped Ether')
+        .parents('tr')
+        .within(() => {
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('0.96788 WETH')
+          cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
+        })
+
+      // Strict match because other tokens contain "Ether" in their name
+      cy.contains(/^Ether$/)
+        .parents('tr')
+        .within(() => {
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('0.3 ETH')
+          cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
+        })
+
+      cy.contains('Uniswap')
+        .parents('tr')
+        .within(() => {
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('0.01828 UNI')
+          cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
+        })
+
+      cy.contains('USD Coin')
+        .parents('tr')
+        .within(() => {
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('13,636,504 USDC')
+          cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
+        })
+
+      cy.contains('Gnosis')
+        .parents('tr')
+        .within(() => {
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('< 0.00001 GNO')
+          cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
+        })
+
+      cy.contains(/^0x$/)
+        .parents('tr')
+        .within(() => {
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('1.003 ZRX')
+          cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
+        })
     })
   })
 
