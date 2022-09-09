@@ -13,25 +13,23 @@ import { SAFE_APPS_DEMO_SAFE_MAINNET } from '@/config/constants'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { Errors, logError } from '@/services/exceptions'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
-import { useAppSelector } from '@/store'
-import { selectChainById } from '@/store/chainsSlice'
+import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 type Props = {
   appUrl: string
-  chainId: string
+  chain: ChainInfo
 }
 
 const CHAIN_ID_WITH_A_DEMO = '1'
 
-const SafeAppLanding = ({ appUrl, chainId }: Props) => {
-  const { safeApp, isLoading } = useSafeAppFromManifest(appUrl, chainId)
-  const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl, chainId)
+const SafeAppLanding = ({ appUrl, chain }: Props) => {
+  const { safeApp, isLoading } = useSafeAppFromManifest(appUrl, chain.chainId)
+  const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl, chain.chainId)
   const wallet = useWallet()
   const onboard = useOnboard()
-  const ownedSafes = useOwnedSafes()[chainId] ?? []
-  const chain = useAppSelector((state) => selectChainById(state, chainId))
+  const ownedSafes = useOwnedSafes()[chain.chainId] ?? []
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
-  const showDemo = chainId === CHAIN_ID_WITH_A_DEMO || !!backendApp?.chainIds.includes(CHAIN_ID_WITH_A_DEMO)
+  const showDemo = chain.chainId === CHAIN_ID_WITH_A_DEMO || !!backendApp?.chainIds.includes(CHAIN_ID_WITH_A_DEMO)
 
   useEffect(() => {
     if (!isLoading && safeApp) {
@@ -41,10 +39,10 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
       })
       trackEvent({
         ...SAFE_APPS_EVENTS.SHARED_APP_CHAIN_ID,
-        label: chainId,
+        label: chain.chainId,
       })
     }
-  }, [isLoading, safeApp, chainId])
+  }, [isLoading, safeApp, chain.chainId])
 
   const handleConnectWallet = async () => {
     if (!onboard) return
@@ -78,8 +76,7 @@ const SafeAppLanding = ({ appUrl, chainId }: Props) => {
                 wallet={wallet}
                 onConnectWallet={handleConnectWallet}
                 safes={ownedSafes}
-                chainId={chainId}
-                chainPrefix={chain?.shortName}
+                chain={chain}
               />
             </Grid>
             {showDemo && (

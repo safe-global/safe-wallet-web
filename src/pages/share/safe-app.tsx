@@ -1,29 +1,29 @@
 import { useRouter } from 'next/router'
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
-import { useChainIdQueryParam } from '@/hooks/safe-apps/useChainIdQueryParam'
+import { useChainFromQueryParams } from '@/hooks/safe-apps/useChainFromQueryParams'
 import { SafeAppLanding } from '@/components/safe-apps/SafeAppLandingPage'
 
 const ShareSafeApp = () => {
   const router = useRouter()
   const [appUrl, routerReady] = useSafeAppUrl()
-  const { chainId, validChainId, loading: chainIdLoading, error: chainIdError } = useChainIdQueryParam()
+  const { chain, validChain, loading: chainLoading, error: chainError } = useChainFromQueryParams()
 
-  if (!routerReady || chainIdLoading) {
+  if (!routerReady || chainLoading) {
     return null
   }
 
-  if (!appUrl || !validChainId || !chainId) {
+  if (!appUrl || !validChain || !chain) {
     router.push('/')
     return null
   }
 
-  if (chainIdError) {
-    throw new Error(chainIdError)
+  if (chainError) {
+    throw new Error(chainError)
   }
 
   return (
     <main>
-      <SafeAppLanding appUrl={appUrl} chainId={chainId} />
+      <SafeAppLanding appUrl={appUrl} chain={chain} />
     </main>
   )
 }

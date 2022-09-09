@@ -129,7 +129,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   const router = useRouter()
   const currentChain = useCurrentChain()
 
-  const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${safeApp.url}&chainId=${currentChain?.chainId}&chain=${currentChain?.shortName}`
+  const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${safeApp.url}&chain=${currentChain?.shortName}`
   const url = router.query.safe ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${safeApp.url}` : shareUrl
 
   if (variant === 'compact') {

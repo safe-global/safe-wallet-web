@@ -1,6 +1,7 @@
 import { Box, Button, MenuItem, Select, Typography, Grid, FormControl, InputLabel } from '@mui/material'
-import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useState } from 'react'
+import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectAddressBookByChain } from '@/store/addressBookSlice'
 import { useLastSafe } from '@/hooks/useLastSafe'
@@ -15,15 +16,15 @@ type Props = {
   wallet: ConnectedWallet | null
   onConnectWallet: () => Promise<void>
   safes: string[]
-  chainId: string
-  chainPrefix?: string
+  chain: ChainInfo
 }
 
-const AppActions = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appUrl }: Props): React.ReactElement => {
+const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): React.ReactElement => {
   const lastUsedSafe = useLastSafe()
-  const lastUsedSafeAddress = lastUsedSafe ? parsePrefixedAddress(lastUsedSafe).address : ''
-  const [safeToUse, setSafeToUse] = useState<string>(lastUsedSafeAddress || '')
-  const addressBook = useAppSelector((state) => selectAddressBookByChain(state, chainId))
+  const lastUsedSafeAddress =
+    lastUsedSafe && safes.includes(lastUsedSafe) ? parsePrefixedAddress(lastUsedSafe).address : ''
+  const [safeToUse, setSafeToUse] = useState<string | undefined>(lastUsedSafeAddress || undefined)
+  const addressBook = useAppSelector((state) => selectAddressBookByChain(state, chain.chainId))
   const hasWallet = !!wallet
   const hasSafes = safes.length > 0
   const shouldCreateSafe = hasWallet && !hasSafes
@@ -31,7 +32,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appU
   let button: React.ReactNode
   switch (true) {
     case hasWallet && hasSafes:
-      const href = `${AppRoutes.safe.apps}?appUrl=${appUrl}&safe=${chainPrefix}:${safeToUse}`
+      const href = `${AppRoutes.safe.apps}?appUrl=${appUrl}&safe=${chain.shortName}:${safeToUse}`
       button = (
         <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse} href={href}>
           Use app
@@ -77,7 +78,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chainId, chainPrefix, appU
                 <Grid item xs>
                   <Typography variant="body2">{addressBook[safe]}</Typography>
 
-                  <EthHashInfo address={safe} showAvatar={false} showName={false} prefix={chainPrefix} />
+                  <EthHashInfo address={safe} showAvatar={false} showName={false} prefix={chain.shortName} />
                 </Grid>
               </Grid>
             </MenuItem>
