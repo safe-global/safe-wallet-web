@@ -3,7 +3,7 @@ import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   getFallbackHandlerContractInstance,
   getGnosisSafeContractInstance,
-  _getSafeContractDeployment,
+  getSafeContractDeployment,
 } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
@@ -53,7 +53,7 @@ const getContractInterface = (chain: ChainInfo, version: string): ethers.utils.I
 
   // < 1.1.1 Safes are not supported by Core SDK. We must connect to the contract directly
 
-  const safeDeployment = _getSafeContractDeployment(chain, version)
+  const safeDeployment = getSafeContractDeployment(chain, version)
   const contractAddress = safeDeployment?.networkAddresses[chain.chainId]
 
   if (!contractAddress) {
@@ -70,11 +70,13 @@ const getContractInterface = (chain: ChainInfo, version: string): ethers.utils.I
  * Only works for safes < 1.3.0 as the changeMasterCopy function was removed
  */
 export const createUpdateSafeTxs = (safe: SafeInfo, chain: ChainInfo): MetaTransactionData[] => {
+  const FALLBACK_HANDLER_CONTRACT_VERSIONS = '>=1.1.0'
+
   const safeContractInterface = getContractInterface(chain, safe.version)
 
   const changeMasterCopyTx = getChangeMasterCopyTransaction(safe, chain, safeContractInterface)
 
-  const hasSetFallbackHandler = semverSatisfies(safe.version, '>=1.1.0')
+  const hasSetFallbackHandler = semverSatisfies(safe.version, FALLBACK_HANDLER_CONTRACT_VERSIONS)
 
   if (!hasSetFallbackHandler) {
     return [changeMasterCopyTx]

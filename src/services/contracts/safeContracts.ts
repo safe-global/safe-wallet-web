@@ -21,7 +21,7 @@ export const _getValidatedGetContractProps = (
   safeVersion: string,
 ): Pick<GetContractProps, 'chainId' | 'safeVersion'> => {
   if (!isValidSafeVersion(safeVersion)) {
-    throw new Error(`${safeVersion} is not a Safe version supported by the safe-core-sdk`)
+    throw new Error(`${safeVersion} is not a Safe version supported by the Safe Core SDK`)
   }
 
   // TODO: Implement in Core SDK
@@ -45,7 +45,7 @@ export const getSpecificGnosisSafeContractInstance = (safe: SafeInfo) => {
   })
 }
 
-export const _getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
+export const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
   // We check if version is prior to v1.0.0 as they are not supported but still we want to keep a minimum compatibility
   const useOldestContractVersion = semverSatisfies(safeVersion, '<1.0.0')
 
@@ -74,7 +74,7 @@ export const getGnosisSafeContractInstance = (chain: ChainInfo, safeVersion: str
   const ethAdapter = createEthersAdapter()
 
   return ethAdapter.getSafeContract({
-    singletonDeployment: _getSafeContractDeployment(chain, safeVersion),
+    singletonDeployment: getSafeContractDeployment(chain, safeVersion),
     ..._getValidatedGetContractProps(chain.chainId, safeVersion),
   })
 }
