@@ -25,19 +25,19 @@ describe('safeContracts', () => {
     })
     it('should throw if the Safe version is invalid', () => {
       expect(() => _getValidatedGetContractProps('1', '1.3.1')).toThrow(
-        '1.3.1 is not a Safe version supported by the safe-core-sdk',
+        '1.3.1 is not a Safe version supported by the Safe Core SDK',
       )
 
       expect(() => _getValidatedGetContractProps('1', '1.4.0')).toThrow(
-        '1.4.0 is not a Safe version supported by the safe-core-sdk',
+        '1.4.0 is not a Safe version supported by the Safe Core SDK',
       )
 
       expect(() => _getValidatedGetContractProps('1', '1.0.0')).toThrow(
-        '1.0.0 is not a Safe version supported by the safe-core-sdk',
+        '1.0.0 is not a Safe version supported by the Safe Core SDK',
       )
 
       expect(() => _getValidatedGetContractProps('1', '')).toThrow(
-        ' is not a Safe version supported by the safe-core-sdk',
+        ' is not a Safe version supported by the Safe Core SDK',
       )
     })
   })

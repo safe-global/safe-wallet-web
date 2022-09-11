@@ -1,8 +1,6 @@
-import { type ReactElement, useEffect, useState, useMemo } from 'react'
-import { Box } from '@mui/material'
-import flatten from 'lodash/flatten'
+import { type ReactElement, useEffect, useState } from 'react'
+import { Box, Typography } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
-import { type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useTxHistory from '@/hooks/useTxHistory'
 import useTxQueue from '@/hooks/useTxQueue'
@@ -11,9 +9,10 @@ import InfiniteScroll from '../InfiniteScroll'
 import SkeletonTxList from './SkeletonTxList'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
 import TxFilterButton from '@/components/transactions/TxFilterButton'
-import { type TxFilter, useTxFilter } from '@/utils/tx-history-filter'
-import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
+import { TxFilter, useTxFilter } from '@/utils/tx-history-filter'
 import { isTransactionListItem } from '@/utils/transaction-guards'
+import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 
 const NoQueuedTxns = () => (
   <Box mt="5vh">
@@ -21,68 +20,82 @@ const NoQueuedTxns = () => (
   </Box>
 )
 
-const getFilterResultCount = (filter: TxFilter, page: TransactionListPage) => {
+const getResultCount = (filter: TxFilter, page: TransactionListPage) => {
   const count = page.results.filter(isTransactionListItem).length
 
   return `${page.next ? '> ' : ''}${count} ${filter.type} transactions found`.toLowerCase()
 }
 
-const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useTxQueue }): ReactElement => {
-  const [pages, setPages] = useState<Array<{ pageUrl?: string; data: TransactionListPage }>>([])
-  const [pageUrl, setPageUrl] = useState<string>()
+const TxPage = ({
+  pageUrl,
+  useTxns,
+  onNextPage,
+  isFirstPage,
+}: {
+  pageUrl: string
+  useTxns: typeof useTxHistory | typeof useTxQueue
+  onNextPage?: (pageUrl?: string) => void
+  isFirstPage: boolean
+}): ReactElement => {
+  const { page, error } = useTxns(pageUrl)
   const [filter] = useTxFilter()
+
   const isQueue = useTxns === useTxQueue
-  const allItems = useMemo(() => flatten(pages.map((page) => page.data.results)), [pages])
 
-  // Reset the pages when the filter changes
+  if (page?.results) {
+    return (
+      <>
+        {/* FIXME: batching will only work for the first page results */}
+        {isFirstPage && (
+          <Box display="flex" flexDirection="column" alignItems="flex-end" mt={['-94px', '-44px']} mb={['60px', 0]}>
+            {isQueue ? <BatchExecuteButton items={page.results} /> : <TxFilterButton />}
+            {filter && <Typography mt={2}>{getResultCount(filter, page)}</Typography>}
+          </Box>
+        )}
+
+        {page.results.length ? <TxList items={page.results} /> : isQueue && <NoQueuedTxns />}
+
+        {onNextPage && page.next && (
+          <Box my={4} textAlign="center">
+            <InfiniteScroll onLoadMore={() => onNextPage(page.next)} />
+          </Box>
+        )}
+      </>
+    )
+  }
+
+  if (error) {
+    return <ErrorMessage>Error loading transactions</ErrorMessage>
+  }
+
+  return <SkeletonTxList />
+}
+
+const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useTxQueue }): ReactElement => {
+  const [pages, setPages] = useState<string[]>([''])
+  const [filter] = useTxFilter()
+
   useEffect(() => {
-    setPages([])
-    setPageUrl(undefined)
-  }, [filter, useTxns])
+    setPages([''])
+  }, [filter])
 
-  // Load the current page
-  const { page: lastPage, error, loading } = useTxns(pageUrl)
-
-  // When a tx page is loaded, update the list of pages
-  useEffect(() => {
-    if (!lastPage) return
-
-    setPages((prevPages) => {
-      // If we're on the first page), "refresh" that page because it's polled.
-      // Otherwise, append the new page to the list of pages.
-      let pageIndex = prevPages.findIndex((page) => page.pageUrl === pageUrl)
-      if (pageIndex === -1) pageIndex = prevPages.length
-      const newPages = prevPages.slice()
-      newPages[pageIndex] = { pageUrl, data: lastPage }
-      return newPages
-    })
-  }, [lastPage, pageUrl])
+  const onNextPage = (pageUrl = '') => {
+    setPages((prev) => [...prev, pageUrl])
+  }
 
   return (
     <Box mb={4} position="relative">
-      <Box display="flex" flexDirection="column" alignItems="flex-end" mt={[3, '-44px']} mb={[0, '30px']}>
-        {isQueue ? <BatchExecuteButton items={allItems} /> : <TxFilterButton />}
-      </Box>
-
-      {filter && lastPage && (
-        <Box display="flex" flexDirection="column" alignItems="flex-end" pt={[2, 0]} pb={3}>
-          {getFilterResultCount(filter, lastPage)}
-        </Box>
-      )}
-
       <BatchExecuteHoverProvider>
-        {allItems.length ? <TxList items={allItems} /> : isQueue && !loading && <NoQueuedTxns />}
+        {pages.map((pageUrl, index) => (
+          <TxPage
+            key={pageUrl}
+            pageUrl={pageUrl}
+            useTxns={useTxns}
+            isFirstPage={index === 0}
+            onNextPage={index === pages.length - 1 ? onNextPage : undefined}
+          />
+        ))}
       </BatchExecuteHoverProvider>
-
-      {error && <ErrorMessage>Error loading transactions</ErrorMessage>}
-
-      {loading && <SkeletonTxList />}
-
-      {lastPage?.next && lastPage?.next !== pageUrl && (
-        <Box my={4} textAlign="center">
-          <InfiniteScroll onLoadMore={() => setPageUrl(lastPage.next)} />
-        </Box>
-      )}
     </Box>
   )
 }
