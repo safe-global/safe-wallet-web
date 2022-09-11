@@ -197,7 +197,7 @@ describe('Assets > Coins', () => {
   })
 
   describe('should open assets modals', () => {
-    const receiveAssetsModalTestId = '[aria-labelledby=":r1i:"]'
+    const receiveAssetsModalTestId = 'div[aria-labelledby^=":r1"]'
 
     it('should open the Receive assets modal', () => {
       // Assets table container should exist
