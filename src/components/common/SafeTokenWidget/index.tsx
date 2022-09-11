@@ -15,7 +15,7 @@ import SafeTokenIcon from './safe_token.svg'
 import css from './styles.module.css'
 
 // TODO: once listed on safe apps list, get the url from there?
-const CLAIMING_APP_URL = 'https://safe-claiming-app.pages.dev/'
+export const CLAIMING_APP_URL = 'https://safe-apps.dev.gnosisdev.com/safe-claiming-app/'
 
 export const getSafeTokenAddress = (chainId: string): string => {
   return SAFE_TOKEN_ADDRESSES[chainId]

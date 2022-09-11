@@ -5,7 +5,7 @@ import * as useChainId from '@/hooks/useChainId'
 import { render, waitFor } from '@/tests/test-utils'
 import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ethers } from 'ethers'
-import SafeTokenWidget from '..'
+import SafeTokenWidget, { CLAIMING_APP_URL } from '..'
 import { NextRouter } from 'next/router'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
@@ -126,7 +126,7 @@ describe('SafeTokenWidget', () => {
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
       expect(result.baseElement).toContainHTML(
-        `href="${AppRoutes.safe.apps}?safe=${fakeSafeAddress}&appUrl=https://safe-claiming-app.pages.dev/"`,
+        `href="${AppRoutes.safe.apps}?safe=${fakeSafeAddress}&appUrl=${CLAIMING_APP_URL}"`,
       )
     })
   })

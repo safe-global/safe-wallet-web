@@ -1,9 +1,4 @@
-import {
-  getIncomingTransfers,
-  getMultisigTransactions,
-  getModuleTransactions,
-  type TransactionListItem,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+import { getIncomingTransfers, getMultisigTransactions, getModuleTransactions } from '@gnosis.pm/safe-react-gateway-sdk'
 import * as router from 'next/router'
 
 import {
@@ -19,7 +14,6 @@ import {
 import { renderHook } from '@/tests/test-utils'
 import type { NextRouter } from 'next/router'
 import { type TxFilterFormState } from '@/components/transactions/TxFilterForm'
-import { _adjustDateLabelsTimezone } from '../transactions'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   getIncomingTransfers: jest.fn(() => Promise.resolve({ results: [] })),
@@ -373,80 +367,6 @@ describe('tx-history-filter', () => {
           safe: '0x123',
         },
       })
-    })
-  })
-  describe('adjustDateLabelsTimezone', () => {
-    it('should return items as is if it is an empty array', () => {
-      const result = _adjustDateLabelsTimezone([])
-      expect(result).toEqual([])
-    })
-
-    it('should return items as is if it contains no transactions', () => {
-      const items = [
-        { type: 'LABEL', label: 'Next' },
-        { type: 'CONFLICT_HEADER', nonce: 1571 },
-      ] as TransactionListItem[]
-
-      const result = _adjustDateLabelsTimezone(items)
-      expect(result).toEqual(items)
-    })
-
-    // TODO: Add conflict header test
-    it('should prepend and nest date labels between transactions on different days', () => {
-      const items = [
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1661305372000,
-          },
-        },
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1638530807000,
-          },
-        },
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1637069854000,
-          },
-        },
-      ] as TransactionListItem[]
-
-      const result = _adjustDateLabelsTimezone(items)
-      expect(result).toEqual([
-        {
-          type: 'DATE_LABEL',
-          timestamp: 1661292000000,
-        },
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1661305372000,
-          },
-        },
-        {
-          type: 'DATE_LABEL',
-          timestamp: 1638486000000,
-        },
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1638530807000,
-          },
-        },
-        {
-          type: 'DATE_LABEL',
-          timestamp: 1637017200000,
-        },
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1637069854000,
-          },
-        },
-      ])
     })
   })
 
