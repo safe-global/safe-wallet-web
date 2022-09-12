@@ -56,20 +56,6 @@ export const _getGtmScript = (args: TagManagerArgs) => {
   return script
 }
 
-export const _getGtmNoScript = (args: TagManagerArgs) => {
-  const { gtmId, auth, preview } = _getRequiredGtmArgs(args)
-
-  const noscript = document.createElement('noscript')
-
-  const gtmIframe = `
-      <iframe src="https://www.googletagmanager.com/ns.html?id=${gtmId}${auth}${preview}&gtm_cookies_win=x"
-        height="0" width="0" style="display:none;visibility:hidden" id="tag-manager"></iframe>`
-
-  noscript.innerHTML = gtmIframe
-
-  return noscript
-}
-
 // Data layer scripts
 
 export const _getGtmDataLayerScript = (dataLayer: DataLayer) => {
@@ -95,9 +81,6 @@ const TagManager = {
 
     const gtmScript = _getGtmScript(args)
     document.head.insertBefore(gtmScript, document.head.childNodes[0])
-
-    const gtmNoScript = _getGtmNoScript(args)
-    document.body.insertBefore(gtmNoScript, document.body.childNodes[0])
   },
   dataLayer: (dataLayer: DataLayer) => {
     if (window[DATA_LAYER_NAME]) {

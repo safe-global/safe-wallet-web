@@ -1,4 +1,4 @@
-import TagManager, { _getGtmDataLayerScript, _getGtmNoScript, _getGtmScript, _getRequiredGtmArgs } from '../TagManager'
+import TagManager, { _getGtmDataLayerScript, _getGtmScript, _getRequiredGtmArgs } from '../TagManager'
 
 const MOCK_ID = 'GTM-123456'
 
@@ -52,31 +52,6 @@ describe('TagManager', () => {
       })
 
       expect(script2.innerHTML).toContain('&gtm_auth=abcdefg&gtm_preview=env-1')
-    })
-  })
-
-  describe('getGtmNoScript', () => {
-    it('should use the id for the iframe', () => {
-      const noscript = _getGtmNoScript({ gtmId: MOCK_ID })
-
-      expect(noscript.innerHTML).toContain(`id=GTM-123456`)
-    })
-
-    it('should use the gtm_auth and gtm_preview for the iframe if present', () => {
-      const noscript1 = _getGtmNoScript({
-        gtmId: MOCK_ID,
-      })
-
-      expect(noscript1.innerHTML).not.toContain('&gtm_auth')
-      expect(noscript1.innerHTML).not.toContain('&gtm_preview')
-
-      const noscript2 = _getGtmNoScript({
-        gtmId: MOCK_ID,
-        auth: 'abcdefg',
-        preview: 'env-1',
-      })
-
-      expect(noscript2.innerHTML).toContain('&gtm_auth=abcdefg&gtm_preview=env-1')
     })
   })
 
