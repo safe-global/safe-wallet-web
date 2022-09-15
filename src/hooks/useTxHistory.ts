@@ -22,7 +22,6 @@ const useTxHistory = (
     () => {
       if (!safeLoaded || !(filter || pageUrl)) return
 
-      // TODO: pass timezone_offset param to the API
       return filter
         ? fetchFilteredTxHistory(chainId, safeAddress, filter, pageUrl)
         : getTransactionHistory(chainId, safeAddress, pageUrl)

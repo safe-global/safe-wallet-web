@@ -1,6 +1,5 @@
 import { type ReactElement, useEffect, useState, useMemo } from 'react'
 import { Box } from '@mui/material'
-import flatten from 'lodash/flatten'
 import TxList from '@/components/transactions/TxList'
 import { type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -32,7 +31,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   const [pageUrl, setPageUrl] = useState<string>()
   const [filter] = useTxFilter()
   const isQueue = useTxns === useTxQueue
-  const allItems = useMemo(() => flatten(pages.map((page) => page.data.results)), [pages])
+  const allItems = useMemo(() => pages.flatMap((page) => page.data.results), [pages])
 
   // Reset the pages when the filter changes
   useEffect(() => {
