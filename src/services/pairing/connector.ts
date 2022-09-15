@@ -17,8 +17,6 @@ export const getClientMeta = () => {
     icons: [`${host}${PairingIcon.src}`],
   }
 
-  console.log('APP_META', APP_META)
-
   if (typeof window === 'undefined') {
     return {
       description: APP_META.name,
