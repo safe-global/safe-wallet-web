@@ -82,12 +82,12 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   }
 
   return (
-    <Box mb={4} position="relative">
-      <Box display="flex" flexDirection="column" alignItems="flex-end" mt={[3, '-44px']} mb={[0, '30px']}>
-        {isQueue ? <BatchExecuteButton /> : <TxFilterButton />}
-      </Box>
+    <BatchExecuteHoverProvider>
+      <Box mb={4} position="relative">
+        <Box display="flex" flexDirection="column" alignItems="flex-end" mt={[3, '-44px']} mb={[0, '30px']}>
+          {isQueue ? <BatchExecuteButton /> : <TxFilterButton />}
+        </Box>
 
-      <BatchExecuteHoverProvider>
         {pages.map((pageUrl, index) => (
           <TxPage
             key={pageUrl}
@@ -97,8 +97,8 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
             onNextPage={index === pages.length - 1 ? onNextPage : undefined}
           />
         ))}
-      </BatchExecuteHoverProvider>
-    </Box>
+      </Box>
+    </BatchExecuteHoverProvider>
   )
 }
 
