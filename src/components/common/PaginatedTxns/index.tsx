@@ -1,4 +1,4 @@
-import { type ReactElement, useEffect, useState, useMemo } from 'react'
+import { type ReactElement, useEffect, useState, useMemo, useCallback } from 'react'
 import { Box } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
 import { type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -27,11 +27,12 @@ const getFilterResultCount = (filter: TxFilter, page: TransactionListPage) => {
 }
 
 const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useTxQueue }): ReactElement => {
-  const [pages, setPages] = useState<Array<{ pageUrl?: string; data: TransactionListPage }>>([])
+  const [pages, setPages] = useState<TransactionListPage[]>([])
   const [pageUrl, setPageUrl] = useState<string>()
+  const [pageIndex, setPageIndex] = useState<number>(0)
   const [filter] = useTxFilter()
   const isQueue = useTxns === useTxQueue
-  const allItems = useMemo(() => pages.flatMap((page) => page.data.results), [pages])
+  const allItems = useMemo(() => pages.flatMap((page) => page.results), [pages])
 
   // Reset the pages when the filter changes
   useEffect(() => {
@@ -47,15 +48,21 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
     if (!currentPage) return
 
     setPages((prevPages) => {
-      // If we're on the first page), "refresh" that page because it's polled.
-      // Otherwise, append the new page to the list of pages.
-      let pageIndex = prevPages.findIndex((page) => page.pageUrl === pageUrl)
-      if (pageIndex === -1) pageIndex = prevPages.length
       const newPages = prevPages.slice()
-      newPages[pageIndex] = { pageUrl, data: currentPage }
+      // Update the page at the current index
+      // If we're on the first page, it will be refreshed on every poll
+      newPages[pageIndex] = currentPage
       return newPages
     })
-  }, [currentPage, pageUrl])
+  }, [currentPage, pageIndex])
+
+  // Trigger the next page load
+  const onNextPage = useCallback(() => {
+    if (currentPage?.next) {
+      setPageUrl(currentPage.next)
+      setPageIndex((index) => index + 1)
+    }
+  }, [currentPage])
 
   return (
     <Box mb={4} position="relative">
@@ -79,7 +86,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
 
       {currentPage?.next && currentPage?.next !== pageUrl && (
         <Box my={4} textAlign="center">
-          <InfiniteScroll onLoadMore={() => setPageUrl(currentPage.next)} />
+          <InfiniteScroll onLoadMore={onNextPage} />
         </Box>
       )}
     </Box>
