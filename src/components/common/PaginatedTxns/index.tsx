@@ -1,4 +1,4 @@
-import { type ReactElement, useEffect, useState, useMemo, useCallback } from 'react'
+import { type ReactElement, useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
 import { type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -26,70 +26,78 @@ const getFilterResultCount = (filter: TxFilter, page: TransactionListPage) => {
   return `${page.next ? '> ' : ''}${count} ${filter.type} transactions found`.toLowerCase()
 }
 
-const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useTxQueue }): ReactElement => {
-  const [pages, setPages] = useState<TransactionListPage[]>([])
-  const [pageUrl, setPageUrl] = useState<string>()
-  const [pageIndex, setPageIndex] = useState<number>(0)
+const TxPage = ({
+  pageUrl,
+  useTxns,
+  onNextPage,
+  isFirstPage,
+}: {
+  pageUrl: string
+  useTxns: typeof useTxHistory | typeof useTxQueue
+  onNextPage?: (pageUrl: string) => void
+  isFirstPage: boolean
+}): ReactElement => {
+  const { page, error, loading } = useTxns(pageUrl)
   const [filter] = useTxFilter()
   const isQueue = useTxns === useTxQueue
-  const allItems = useMemo(() => pages.flatMap((page) => page.results), [pages])
-
-  // Reset the pages when the filter changes
-  useEffect(() => {
-    setPages([])
-    setPageUrl(undefined)
-    setPageIndex(0)
-  }, [filter, useTxns])
-
-  // Load the current page
-  const { page: currentPage, error, loading } = useTxns(pageUrl)
-
-  // When a tx page is loaded, update the list of pages
-  useEffect(() => {
-    if (!currentPage) return
-
-    setPages((prevPages) => {
-      const newPages = prevPages.slice()
-      // Update the page at the current index
-      // If we're on the first page, it will be refreshed on every poll
-      newPages[pageIndex] = currentPage
-      return newPages
-    })
-  }, [currentPage, pageIndex])
-
-  // Trigger the next page load
-  const onNextPage = useCallback(() => {
-    if (currentPage?.next) {
-      setPageUrl(currentPage.next)
-      setPageIndex((index) => index + 1)
-    }
-  }, [currentPage])
 
   return (
-    <Box mb={4} position="relative">
-      <Box display="flex" flexDirection="column" alignItems="flex-end" mt={[3, '-44px']} mb={[0, '30px']}>
-        {isQueue ? <BatchExecuteButton items={allItems} /> : <TxFilterButton />}
-      </Box>
-
-      {filter && currentPage && (
+    <>
+      {isFirstPage && filter && page && (
         <Box display="flex" flexDirection="column" alignItems="flex-end" pt={[2, 0]} pb={3}>
-          {getFilterResultCount(filter, currentPage)}
+          {getFilterResultCount(filter, page)}
         </Box>
       )}
 
-      <BatchExecuteHoverProvider>
-        {allItems.length ? <TxList items={allItems} /> : isQueue && !loading && <NoQueuedTxns />}
-      </BatchExecuteHoverProvider>
+      {page && <TxList items={page.results} />}
+
+      {isQueue && page?.results.length === 0 && <NoQueuedTxns />}
 
       {error && <ErrorMessage>Error loading transactions</ErrorMessage>}
 
       {loading && <SkeletonTxList />}
 
-      {currentPage?.next && currentPage?.next !== pageUrl && (
+      {page?.next && onNextPage && (
         <Box my={4} textAlign="center">
-          <InfiniteScroll onLoadMore={onNextPage} />
+          <InfiniteScroll onLoadMore={() => onNextPage(page.next!)} />
         </Box>
       )}
+    </>
+  )
+}
+
+const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useTxQueue }): ReactElement => {
+  const [pages, setPages] = useState<string[]>([''])
+  const [filter] = useTxFilter()
+  const isQueue = useTxns === useTxQueue
+
+  // Reset the pages when the filter changes
+  useEffect(() => {
+    setPages([''])
+  }, [filter, useTxns])
+
+  // Trigger the next page load
+  const onNextPage = (pageUrl: string) => {
+    setPages((prev) => prev.concat(pageUrl))
+  }
+
+  return (
+    <Box mb={4} position="relative">
+      <Box display="flex" flexDirection="column" alignItems="flex-end" mt={[3, '-44px']} mb={[0, '30px']}>
+        {isQueue ? <BatchExecuteButton /> : <TxFilterButton />}
+      </Box>
+
+      <BatchExecuteHoverProvider>
+        {pages.map((pageUrl, index) => (
+          <TxPage
+            key={index}
+            pageUrl={pageUrl}
+            useTxns={useTxns}
+            isFirstPage={index === 0}
+            onNextPage={index === pages.length - 1 ? onNextPage : undefined}
+          />
+        ))}
+      </BatchExecuteHoverProvider>
     </Box>
   )
 }
