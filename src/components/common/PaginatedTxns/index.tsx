@@ -40,11 +40,11 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   }, [filter, useTxns])
 
   // Load the current page
-  const { page: lastPage, error, loading } = useTxns(pageUrl)
+  const { page: currentPage, error, loading } = useTxns(pageUrl)
 
   // When a tx page is loaded, update the list of pages
   useEffect(() => {
-    if (!lastPage) return
+    if (!currentPage) return
 
     setPages((prevPages) => {
       // If we're on the first page), "refresh" that page because it's polled.
@@ -52,10 +52,10 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
       let pageIndex = prevPages.findIndex((page) => page.pageUrl === pageUrl)
       if (pageIndex === -1) pageIndex = prevPages.length
       const newPages = prevPages.slice()
-      newPages[pageIndex] = { pageUrl, data: lastPage }
+      newPages[pageIndex] = { pageUrl, data: currentPage }
       return newPages
     })
-  }, [lastPage, pageUrl])
+  }, [currentPage, pageUrl])
 
   return (
     <Box mb={4} position="relative">
@@ -63,9 +63,9 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
         {isQueue ? <BatchExecuteButton items={allItems} /> : <TxFilterButton />}
       </Box>
 
-      {filter && lastPage && (
+      {filter && currentPage && (
         <Box display="flex" flexDirection="column" alignItems="flex-end" pt={[2, 0]} pb={3}>
-          {getFilterResultCount(filter, lastPage)}
+          {getFilterResultCount(filter, currentPage)}
         </Box>
       )}
 
@@ -77,9 +77,9 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
 
       {loading && <SkeletonTxList />}
 
-      {lastPage?.next && lastPage?.next !== pageUrl && (
+      {currentPage?.next && currentPage?.next !== pageUrl && (
         <Box my={4} textAlign="center">
-          <InfiniteScroll onLoadMore={() => setPageUrl(lastPage.next)} />
+          <InfiniteScroll onLoadMore={() => setPageUrl(currentPage.next)} />
         </Box>
       )}
     </Box>
