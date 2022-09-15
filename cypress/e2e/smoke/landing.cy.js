@@ -8,7 +8,7 @@ describe('Landing page', () => {
   it('features discoverability cookies', () => {
     cy.visit('/')
 
-    let preferencesModal = cy.contains("We use cookies to provide").parent()
+    let preferencesModal = cy.contains('We use cookies to provide').parent()
 
     preferencesModal.contains('Accept selection').click()
     preferencesModal.should('not.exist')
@@ -16,7 +16,7 @@ describe('Landing page', () => {
     cy.contains("What's New").click()
 
     //The modal was closed, so the element has to be set again
-    preferencesModal = cy.contains("We use cookies to provide").parent() 
+    preferencesModal = cy.contains('We use cookies to provide').parent()
 
     preferencesModal.contains('accept the "Updates & Feedback"')
 
