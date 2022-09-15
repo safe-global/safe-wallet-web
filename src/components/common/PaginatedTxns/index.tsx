@@ -90,7 +90,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
       <BatchExecuteHoverProvider>
         {pages.map((pageUrl, index) => (
           <TxPage
-            key={index}
+            key={pageUrl}
             pageUrl={pageUrl}
             useTxns={useTxns}
             isFirstPage={index === 0}
