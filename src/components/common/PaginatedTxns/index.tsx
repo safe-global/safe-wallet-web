@@ -38,6 +38,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   useEffect(() => {
     setPages([])
     setPageUrl(undefined)
+    setPageIndex(0)
   }, [filter, useTxns])
 
   // Load the current page
