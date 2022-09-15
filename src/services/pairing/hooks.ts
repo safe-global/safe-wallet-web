@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 
 import { useCurrentChain } from '@/hooks/useChains'
-import useOnboard, { getConnectedWallet } from '@/hooks/wallets/useOnboard'
+import useOnboard, { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import {
   getClientMeta,
@@ -69,20 +69,19 @@ export const useInitPairing = () => {
 
     // Upon successful WC connection, connect it to onboard
     connector?.on(WalletConnectEvents.CONNECT, () => {
-      onboard
-        .connectWallet({
-          autoSelect: {
-            label: PAIRING_MODULE_LABEL,
-            disableModals: true,
-          },
-        })
-        .catch((e) => logError(Errors._302, (e as Error).message))
+      connectWallet(onboard, {
+        autoSelect: {
+          label: PAIRING_MODULE_LABEL,
+          disableModals: true,
+        },
+      })
     })
 
     connector?.on(WalletConnectEvents.DISCONNECT, () => {
       createSession()
     })
 
+    // TODO: set `hasInitialized` after `onboard.connectWallet` is called
     // Create new session when no wallet is connected to onboard
     const subscription = onboard.state.select('wallets').subscribe((wallets) => {
       if (!getConnectedWallet(wallets) && !hasInitialized) {
