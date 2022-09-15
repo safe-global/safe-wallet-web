@@ -1,5 +1,6 @@
 import {
   ChainInfo,
+  ConflictType,
   DateLabel,
   ExecutionInfo,
   FEATURES,
@@ -8,13 +9,9 @@ import {
   MultisigExecutionInfo,
   Transaction,
   TransactionDetails,
-} from '@gnosis.pm/safe-react-gateway-sdk'
-import {
-  isModuleExecutionInfo,
-  isMultisigExecutionDetails,
-  isTxQueued,
   TransactionListItemType,
-} from './transaction-guards'
+} from '@gnosis.pm/safe-react-gateway-sdk'
+import { isModuleExecutionInfo, isMultisigExecutionDetails, isTxQueued } from './transaction-guards'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
@@ -64,7 +61,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
     : txDetails.executedAt || now
 
   return {
-    type: 'TRANSACTION',
+    type: TransactionListItemType.TRANSACTION,
     transaction: {
       id: txDetails.txId,
       timestamp,
@@ -73,7 +70,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       executionInfo,
       safeAppInfo: txDetails?.safeAppInfo,
     },
-    conflictType: 'None',
+    conflictType: ConflictType.NONE,
   }
 }
 
