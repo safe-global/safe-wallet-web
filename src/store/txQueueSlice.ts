@@ -25,6 +25,21 @@ export const selectQueuedTransactionsByNonce = createSelector(
   },
 )
 
+const trackQueueSize = (prevState: RootState, { payload }: ReturnType<typeof txQueueSlice.actions.set>) => {
+  const txQueue = selectTxQueue(prevState)
+
+  if (isEqual(txQueue.data?.results, payload.data?.results)) {
+    return
+  }
+
+  const transactions = payload.data?.results.filter(isTransactionListItem) || []
+
+  trackEvent({
+    ...TX_LIST_EVENTS.QUEUED_TXS,
+    label: transactions.length.toString(),
+  })
+}
+
 export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
   const prevState = store.getState()
 
@@ -32,20 +47,7 @@ export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) =>
 
   switch (action.type) {
     case txQueueSlice.actions.set.type: {
-      const { payload } = action as ReturnType<typeof txQueueSlice.actions.set>
-
-      const txQueue = selectTxQueue(prevState)
-
-      if (isEqual(txQueue.data?.results, payload.data?.results)) {
-        return
-      }
-
-      const transactions = payload.data?.results.filter(isTransactionListItem) || []
-
-      trackEvent({
-        ...TX_LIST_EVENTS.QUEUED_TXS,
-        label: transactions.length.toString(),
-      })
+      trackQueueSize(prevState, action)
     }
   }
 
