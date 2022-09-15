@@ -8,7 +8,6 @@ import '@testing-library/jest-dom/extend-expect'
 jest.mock('@web3-onboard/coinbase', () => jest.fn())
 jest.mock('@web3-onboard/fortmatic', () => jest.fn())
 jest.mock('@web3-onboard/injected-wallets', () => jest.fn())
-jest.mock('@web3-onboard/keepkey', () => jest.fn())
 jest.mock('@web3-onboard/keystone/dist/index', () => jest.fn())
 jest.mock('@web3-onboard/ledger', () => jest.fn())
 jest.mock('@web3-onboard/portis', () => jest.fn())
