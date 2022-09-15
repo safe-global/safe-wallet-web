@@ -10,7 +10,7 @@ import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import { isBefore, isAfter, startOfDay } from 'date-fns'
 import { Controller, FormProvider, useForm, useFormState, type DefaultValues } from 'react-hook-form'
-import { useMemo, type ReactElement } from 'react'
+import { SyntheticEvent, useMemo, type ReactElement } from 'react'
 
 import AddressBookInput from '@/components/common/AddressBookInput'
 import DatePickerInput from '@/components/common/DatePickerInput'
@@ -111,8 +111,12 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
     toggleFilter()
   }
 
+  const onClick = (e: SyntheticEvent) => {
+    e.stopPropagation()
+  }
+
   return (
-    <Paper elevation={0} variant="outlined">
+    <Paper elevation={0} variant="outlined" onClick={onClick}>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container>

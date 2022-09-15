@@ -1,19 +1,18 @@
-import { useState } from 'react'
-import Button from '@mui/material/Button'
+import { SyntheticEvent, useState } from 'react'
+import { Button, Backdrop, Popper, Box } from '@mui/material'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
-import Box from '@mui/material/Box'
 import TxFilterForm from '@/components/transactions/TxFilterForm'
 import { useTxFilter } from '@/utils/tx-history-filter'
 
 const TxFilterButton = () => {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [filter] = useTxFilter()
+  const showFilter = Boolean(anchorEl)
 
-  const [showFilter, setShowFilter] = useState(false)
-
-  const toggleFilter = () => {
-    setShowFilter((prev) => !prev)
+  const toggleFilter = (e?: SyntheticEvent<HTMLButtonElement>) => {
+    setAnchorEl((prev) => (prev || !e ? null : e.currentTarget))
   }
 
   return (
@@ -24,11 +23,13 @@ const TxFilterButton = () => {
         {showFilter ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
       </Button>
 
-      {showFilter && (
-        <Box pt={1} width="100%">
-          <TxFilterForm toggleFilter={toggleFilter} />
-        </Box>
-      )}
+      <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={showFilter} onClick={() => toggleFilter()}>
+        <Popper open={showFilter} anchorEl={anchorEl} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+          <Box p={1}>
+            <TxFilterForm toggleFilter={toggleFilter} />
+          </Box>
+        </Popper>
+      </Backdrop>
     </>
   )
 }
