@@ -79,16 +79,38 @@ const getWalletConnectLabel = async ({ label, provider }: ConnectedWallet): Prom
   return peerWallet ?? UNKNOWN_PEER
 }
 
-const trackWalletType = async (wallet: ConnectedWallet) => {
-  trackEvent({ ...WALLET_EVENTS.CONNECT, label: wallet.label })
+const prevTrackedWallet = {
+  label: '',
+  wcLabel: '',
+}
+
+const trackWalletType = async (wallet: ReturnType<typeof getConnectedWallet>) => {
+  if (!wallet) {
+    prevTrackedWallet.label = ''
+    prevTrackedWallet.wcLabel = ''
+    return
+  }
+
+  if (wallet.label !== prevTrackedWallet.label) {
+    trackEvent({ ...WALLET_EVENTS.CONNECT, label: wallet.label })
+
+    prevTrackedWallet.label = wallet.label
+  }
 
   const wcLabel = await getWalletConnectLabel(wallet)
 
-  if (wcLabel) {
+  if (!wcLabel) {
+    prevTrackedWallet.wcLabel = ''
+    return
+  }
+
+  if (wcLabel !== prevTrackedWallet.wcLabel) {
     trackEvent({
       ...WALLET_EVENTS.WALLET_CONNECT,
       label: wcLabel,
     })
+
+    prevTrackedWallet.wcLabel = wcLabel
   }
 }
 
@@ -126,9 +148,9 @@ export const useInitOnboard = () => {
     const walletSubscription = onboard.state.select('wallets').subscribe(async (wallets) => {
       const newWallet = getConnectedWallet(wallets)
 
-      if (newWallet) {
-        await trackWalletType(newWallet)
+      await trackWalletType(newWallet)
 
+      if (newWallet) {
         lastWalletStorage.set(newWallet.label)
       }
     })
