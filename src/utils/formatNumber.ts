@@ -182,7 +182,7 @@ const getCurrencyFormatterOptions = (number: string | number, currency: string):
  * @param currency ISO 4217 currency code
  */
 export const formatCurrency = (number: string | number, currency: string): string => {
-  // Note: we be able to achieve the following once the `roundingMode` option is supported
+  // Note: we will be able to achieve the following once the `roundingMode` option is supported
   // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#parameters
 
   const minimum = getMinimumCurrencyDenominator(number, currency)
@@ -218,6 +218,5 @@ export const formatCurrency = (number: string | number, currency: string): strin
     return `${amount} ${currency.toUpperCase()}`
   }
 
-  // We format currency to currency precision, not `maximumFractionDigits`
   return format(number, currencyFormatter, minimum)
 }
