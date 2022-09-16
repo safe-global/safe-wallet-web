@@ -1,7 +1,9 @@
+import { Box, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
 import { useChainFromQueryParams } from '@/hooks/safe-apps/useChainFromQueryParams'
 import { SafeAppLanding } from '@/components/safe-apps/SafeAppLandingPage'
+import { AppRoutes } from '@/config/routes'
 
 const ShareSafeApp = () => {
   const router = useRouter()
@@ -9,11 +11,15 @@ const ShareSafeApp = () => {
   const { chain, validChain, loading: chainLoading, error: chainError } = useChainFromQueryParams()
 
   if (!routerReady || chainLoading) {
-    return null
+    return (
+      <Box py={4} textAlign="center">
+        <CircularProgress size={40} />
+      </Box>
+    )
   }
 
   if (!appUrl || !validChain || !chain) {
-    router.push('/')
+    router.push(AppRoutes.index)
     return null
   }
 

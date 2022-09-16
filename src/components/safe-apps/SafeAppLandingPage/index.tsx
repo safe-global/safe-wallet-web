@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Paper } from '@mui/material'
+import { Box, CircularProgress, Paper } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { OVERVIEW_EVENTS, SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
@@ -57,7 +57,11 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
   }
 
   if (isLoading || backendAppLoading) {
-    return <div>Loading...</div>
+    return (
+      <Box py={4} textAlign="center">
+        <CircularProgress size={40} />
+      </Box>
+    )
   }
 
   if (!safeApp) {
