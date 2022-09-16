@@ -60,7 +60,6 @@ export const txFilter = {
   },
 
   parseFormData: ({ type, ...formData }: TxFilterFormState): TxFilter => {
-    // TODO: Timestamps
     const filter: TxFilter['filter'] = _omitNullish({
       ...formData,
       execution_date__gte: formData.execution_date__gte
