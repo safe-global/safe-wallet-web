@@ -162,14 +162,14 @@ describe('formatNumber', () => {
       expect(formatCurrency(amount1, 'GBP')).toBe('1.00 GBP')
       expect(formatCurrency(amount1, 'BHD')).toBe('1.000 BHD')
 
-      const amount2 = '0.123456789'
+      const amount2 = '1.7777'
 
-      expect(formatCurrency(amount2, 'JPY')).toBe('< 1 JPY')
-      expect(formatCurrency(amount2, 'IQD')).toBe('< 1 IQD')
-      expect(formatCurrency(amount2, 'USD')).toBe('0.12 USD')
-      expect(formatCurrency(amount2, 'EUR')).toBe('0.12 EUR')
-      expect(formatCurrency(amount2, 'GBP')).toBe('0.12 GBP')
-      expect(formatCurrency(amount2, 'BHD')).toBe('0.123 BHD')
+      expect(formatCurrency(amount2, 'JPY')).toBe('2 JPY')
+      expect(formatCurrency(amount2, 'IQD')).toBe('2 IQD')
+      expect(formatCurrency(amount2, 'USD')).toBe('1.78 USD')
+      expect(formatCurrency(amount2, 'EUR')).toBe('1.78 EUR')
+      expect(formatCurrency(amount2, 'GBP')).toBe('1.78 GBP')
+      expect(formatCurrency(amount2, 'BHD')).toBe('1.778 BHD')
     })
 
     it('should use M symbol for numbers between 100,000,000 and 999,999,500', () => {
@@ -179,7 +179,7 @@ describe('formatNumber', () => {
 
       const amount2 = 123_456_789.123456789
 
-      expect(formatCurrency(amount2, 'JPY')).toBe('123M JPY')
+      expect(formatCurrency(amount2, 'JPY')).toBe('123.457M JPY')
 
       const amount3 = 999_999_500
 
@@ -193,7 +193,7 @@ describe('formatNumber', () => {
 
       const amount2 = 1_234_567_898.123456789
 
-      expect(formatCurrency(amount2, 'JPY')).toBe('1.2B JPY')
+      expect(formatCurrency(amount2, 'JPY')).toBe('1.235B JPY')
 
       const amount3 = 999_999_500_000
 
@@ -207,7 +207,7 @@ describe('formatNumber', () => {
 
       const amount2 = 1_234_567_898_765.123456789
 
-      expect(formatCurrency(amount2, 'JPY')).toBe('1.2T JPY')
+      expect(formatCurrency(amount2, 'JPY')).toBe('1.235T JPY')
 
       const amount3 = 999_999_000_000_000
 

@@ -5,35 +5,44 @@ const LOWER_LIMIT = 0.00001
 const COMPACT_LIMIT = 99_999_999.5
 const UPPER_LIMIT = 999 * 10 ** 12
 
-// Universal amount formatting options
-
 /**
- * Numbers above 99,999,999 use compact notation, e.g. 100M
+ * Formatter that restricts the upper and lower limit of numbers that can be formatted
  * @param number Number to format
+ * @param formatter Function to format number
+ * @param minimum Minimum number to format
  */
-const getNumberFormatNotation = (number: string | number): Intl.NumberFormatOptions['notation'] => {
+const format = (number: string | number, formatter: (float: number) => string, minimum = LOWER_LIMIT) => {
   const float = Number(number)
 
-  return float >= COMPACT_LIMIT ? 'compact' : undefined
+  if (float === 0) {
+    return formatter(float)
+  }
+
+  if (Math.abs(float) < minimum) {
+    return `< ${formatter(minimum * Math.sign(float))}`
+  }
+
+  if (float < UPPER_LIMIT) {
+    return formatter(float)
+  }
+
+  return `> ${formatter(UPPER_LIMIT)}`
 }
 
-/**
- * Numbers either with a +/- sign or that are negative are prepended with their relevant sign (when not 0)
- * @param number Number to prepend sign to
- */
+// Universal amount formatting options
+
+const getNumberFormatNotation = (number: string | number): Intl.NumberFormatOptions['notation'] => {
+  return Number(number) >= COMPACT_LIMIT ? 'compact' : undefined
+}
+
 const getNumberFormatSignDisplay = (number: string | number): Intl.NumberFormatOptions['signDisplay'] => {
   const shouldDisplaySign = typeof number === 'string' ? number.trim().startsWith('+') : Number(number) < 0
-
   return shouldDisplaySign ? 'exceptZero' : undefined
 }
 
-// Short amount formatting options
+// Amount formatting options
 
-/**
- * Numbers of a above/below a certain value are rounded to differing decimal places
- * @param number Number to round
- */
-const getNumberFormatMaxFractionDigits = (
+const getAmountFormatterMaxFractionDigits = (
   number: string | number,
 ): Intl.NumberFormatOptions['maximumFractionDigits'] => {
   const float = Number(number)
@@ -70,53 +79,12 @@ const getNumberFormatMaxFractionDigits = (
   return 0
 }
 
-/**
- * Formatter that restricts the upper and lower limit of numbers that can be formatted
- * @param number Number to format
- * @param formatter Function to format number
- * @param hasMaximumFractionDigits Whether the provided number is to be restricted to a certain number of decimal places
- */
-const format = (number: string | number, formatter: (float: number) => string, minimum = LOWER_LIMIT) => {
-  const float = Number(number)
-
-  if (float === 0) {
-    return formatter(float)
-  }
-
-  if (Math.abs(float) < minimum) {
-    return `< ${formatter(minimum * Math.sign(float))}`
-  }
-
-  if (float < UPPER_LIMIT) {
-    return formatter(float)
-  }
-
-  return `> ${formatter(UPPER_LIMIT)}`
-}
-
-// Amount formatting
-
-/**
- * Intl.NumberFormatOptions for number formatting
- * @param number Number to format
- */
-const getNumberFormatterOptions = (number: string | number): Intl.NumberFormatOptions => {
+const getAmountFormatterOptions = (number: string | number): Intl.NumberFormatOptions => {
   return {
-    maximumFractionDigits: getNumberFormatMaxFractionDigits(number),
+    maximumFractionDigits: getAmountFormatterMaxFractionDigits(number),
     notation: getNumberFormatNotation(number),
     signDisplay: getNumberFormatSignDisplay(number),
   }
-}
-
-/**
- * Universal Intl.NumberFormat number formatter
- * @param number Number to format
- * @param options Intl.NumberFormatOptions
- */
-const formatNumber = (number: string | number, options: Intl.NumberFormatOptions): string => {
-  const numberFormatter = new Intl.NumberFormat(undefined, options).format
-
-  return format(number, numberFormatter)
 }
 
 /**
@@ -124,8 +92,10 @@ const formatNumber = (number: string | number, options: Intl.NumberFormatOptions
  * @param number Number to format
  */
 export const formatAmount = (number: string | number): string => {
-  const options = getNumberFormatterOptions(number)
-  return formatNumber(number, options)
+  const options = getAmountFormatterOptions(number)
+  const formatter = new Intl.NumberFormat(undefined, options)
+
+  return format(number, formatter.format)
 }
 
 /**
@@ -136,17 +106,14 @@ export const formatAmountWithPrecision = (
   number: string | number,
   fractionDigits: Intl.NumberFormatOptions['maximumFractionDigits'],
 ): string => {
-  const options = getNumberFormatterOptions(number)
-  return formatNumber(number, { ...options, maximumFractionDigits: fractionDigits })
+  const options = getAmountFormatterOptions(number)
+  const formatter = new Intl.NumberFormat(undefined, { ...options, maximumFractionDigits: fractionDigits })
+
+  return format(number, formatter.format)
 }
 
 // Fiat formatting
 
-/**
- * Leverage Intl.NumberFormat to retrieve minimum demonination of a currency
- * @param number Value of currency
- * @param currency ISO 4217 currency code
- */
 const getMinimumCurrencyDenominator = (number: string | number, currency: string): number => {
   const float = Number(number)
 
@@ -161,18 +128,33 @@ const getMinimumCurrencyDenominator = (number: string | number, currency: string
   return fraction ? Number(`0.${'1'.padStart(fraction.value.length, '0')}`) : 1
 }
 
-/**
- * Intl.NumberFormatOptions for currency formatting
- * @param number Number to format
- * @param currency ISO 4217 currency code
- */
+const getCurrencyFormatterMaxFractionDigits = (
+  number: string | number,
+  currency: string,
+): Intl.NumberFormatOptions['maximumFractionDigits'] => {
+  const float = Number(number)
+
+  if (float < 1_000_000) {
+    const [, decimals] = getMinimumCurrencyDenominator(number, currency).toString().split('.')
+    return decimals?.length ?? 0
+  }
+
+  // Represents numbers like 767.343M
+  if (float < UPPER_LIMIT) {
+    return 3
+  }
+
+  return 0
+}
+
 const getCurrencyFormatterOptions = (number: string | number, currency: string): Intl.NumberFormatOptions => {
   return {
+    maximumFractionDigits: getCurrencyFormatterMaxFractionDigits(number, currency),
     notation: getNumberFormatNotation(number),
+    signDisplay: getNumberFormatSignDisplay(number),
     style: 'currency',
     currency,
     currencyDisplay: 'code',
-    signDisplay: getNumberFormatSignDisplay(number),
   }
 }
 
