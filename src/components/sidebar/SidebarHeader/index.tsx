@@ -40,7 +40,6 @@ const SafeHeader = (): ReactElement => {
   const settings = useAppSelector(selectSettings)
   const [fiatTotal, setFiatTotal] = useState<string>('')
 
-  // TODO: Format to parts w/ style
   useEffect(() => {
     setFiatTotal(balancesLoading ? '' : formatCurrency(balances.fiatTotal, currency))
   }, [currency, balances.fiatTotal, balancesLoading])
