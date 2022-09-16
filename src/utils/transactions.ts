@@ -11,7 +11,7 @@ import {
   TransactionDetails,
   TransactionListItemType,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isModuleExecutionInfo, isMultisigExecutionDetails, isTxQueued } from './transaction-guards'
+import { isModuleExecutionDetails, isMultisigExecutionDetails, isTxQueued } from './transaction-guards'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
@@ -48,7 +48,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
     }
   }
 
-  const executionInfo: ExecutionInfo | undefined = isModuleExecutionInfo(txDetails.detailedExecutionInfo)
+  const executionInfo: ExecutionInfo | undefined = isModuleExecutionDetails(txDetails.detailedExecutionInfo)
     ? (txDetails.detailedExecutionInfo as ExecutionInfo)
     : getMultisigExecutionInfo(txDetails)
 
