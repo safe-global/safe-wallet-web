@@ -2,12 +2,12 @@ import WalletConnect from '@walletconnect/client'
 import bowser from 'bowser'
 
 import packageJson from '../../../package.json'
-import { IS_PRODUCTION, SAFE_REACT_URL, WC_BRIDGE } from '@/config/constants'
-import local from '@/services/local-storage/local'
+import { IS_PRODUCTION, SAFE_REACT_URL } from '@/config/constants'
+import ExternalStore from '@/services/ExternalStore'
 
 export const PAIRING_MODULE_STORAGE_ID = 'pairingConnector'
 
-const getClientMeta = () => {
+export const getClientMeta = () => {
   const APP_META = {
     name: `Safe Web v${packageJson.version}`,
     url: SAFE_REACT_URL,
@@ -31,15 +31,11 @@ const getClientMeta = () => {
   }
 }
 
-const _pairingConnector = new WalletConnect({
-  bridge: WC_BRIDGE,
-  storageId: local.getPrefixedKey(PAIRING_MODULE_STORAGE_ID),
-  clientMeta: getClientMeta(),
-})
-
-export const getPairingConnector = () => {
-  return _pairingConnector
-}
+export const {
+  getStore: getPairingConnector,
+  setStore: setPairingConnector,
+  useStore: usePairingConnector,
+} = new ExternalStore<WalletConnect>()
 
 export enum WalletConnectEvents {
   CONNECT = 'connect',
@@ -54,6 +50,6 @@ export enum WalletConnectEvents {
 
 if (!IS_PRODUCTION) {
   Object.values(WalletConnectEvents).forEach((event) => {
-    _pairingConnector.on(event, (...args) => console.info('[Pairing]', event, ...args))
+    getPairingConnector()?.on(event, (...args) => console.info('[Pairing]', event, ...args))
   })
 }

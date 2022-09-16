@@ -10,7 +10,7 @@ type UseSafeAppFromManifestReturnType = {
 }
 
 const useSafeAppFromManifest = (appUrl: string, chainId: string): UseSafeAppFromManifestReturnType => {
-  const [data, error, loading] = useAsync<SafeAppData>(() => {
+  const [data, error, isLoading] = useAsync<SafeAppData>(() => {
     if (appUrl && chainId) return fetchSafeAppFromManifest(appUrl, chainId)
   }, [appUrl, chainId])
 
@@ -19,7 +19,7 @@ const useSafeAppFromManifest = (appUrl: string, chainId: string): UseSafeAppFrom
     logError(Errors._900, `${appUrl}, ${(error as Error).message}`)
   }, [appUrl, error])
 
-  return { safeApp: data, isLoading: loading }
+  return { safeApp: data, isLoading }
 }
 
 export { useSafeAppFromManifest }

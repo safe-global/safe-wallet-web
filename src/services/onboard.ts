@@ -26,7 +26,7 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
     token: cfg.nativeCurrency.symbol,
     color: cfg.theme.backgroundColor,
     publicRpcUrl: cfg.publicRpcUri.value,
-    // FIXME: add block explorer URL
+    blockExplorerUrl: new URL(cfg.blockExplorerUriTemplate.address).origin,
   }))
 
   onboard = Onboard({
@@ -34,10 +34,9 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
 
     chains,
 
-    // TODO: Remove once containerElement is optional again
     accountCenter: {
-      mobile: { enabled: false, containerElement: 'body' },
-      desktop: { enabled: false, containerElement: 'body' },
+      mobile: { enabled: false },
+      desktop: { enabled: false },
     },
 
     appMetadata: {

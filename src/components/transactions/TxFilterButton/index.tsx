@@ -28,7 +28,7 @@ const TxFilterButton = () => {
 
       {showFilter && (
         <Box pt={1} width="100%">
-          <TxFilterForm />
+          <TxFilterForm toggleFilter={toggleFilter} />
         </Box>
       )}
     </>

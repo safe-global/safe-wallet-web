@@ -9,7 +9,9 @@ import ExplorerLink from '@/components/common/TokenExplorerLink'
 import CopyAddressButton from '@/components/common/CopyAddressButton'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import { useCurrentChain } from '@/hooks/useChains'
+import { selectChainById } from '@/store/chainsSlice'
+import useChainId from '@/hooks/useChainId'
+import { ethers } from 'ethers'
 
 type EthHashInfoProps = {
   address: string
@@ -18,6 +20,7 @@ type EthHashInfoProps = {
   showAvatar?: boolean
   showCopyButton?: boolean
   prefix?: string
+  showPrefix?: boolean
   copyPrefix?: boolean
   shortAddress?: boolean
   customAvatar?: string
@@ -29,12 +32,17 @@ const EthHashInfo = ({
   address,
   customAvatar,
   prefix = '',
+  copyPrefix,
+  showPrefix,
   shortAddress = true,
   showAvatar = true,
   avatarSize,
-  ...props
+  name,
+  showCopyButton,
+  hasExplorer,
 }: EthHashInfoProps): ReactElement => {
   const [fallbackToIdenticon, setFallbackToIdenticon] = useState(false)
+  const shouldPrefix = ethers.utils.isAddress(address)
 
   return (
     <div className={css.container}>
@@ -55,21 +63,23 @@ const EthHashInfo = ({
       )}
 
       <div className={css.nameRow}>
-        {props.name && (
-          <Typography variant="body2" component="div" textOverflow="ellipsis" overflow="hidden" title={props.name}>
-            {props.name}
+        {name && (
+          <Typography variant="body2" component="div" textOverflow="ellipsis" overflow="hidden" title={name}>
+            {name}
           </Typography>
         )}
 
         <Box className={css.addressRow}>
           <Typography variant="body2" fontWeight="inherit" component="div" className={css.address}>
-            {prefix && <b>{prefix}:</b>}
+            {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
             {shortAddress ? shortenAddress(address) : address}
           </Typography>
 
-          {props.showCopyButton && <CopyAddressButton address={address} />}
+          {showCopyButton && (
+            <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldPrefix && copyPrefix} />
+          )}
 
-          {props.hasExplorer && <ExplorerLink address={address} />}
+          {hasExplorer && <ExplorerLink address={address} />}
         </Box>
       </div>
     </div>
@@ -81,13 +91,21 @@ const PrefixedEthHashInfo = ({
   ...props
 }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
-  const chain = useCurrentChain()
+  const currentChainId = useChainId()
+  const chain = useAppSelector((state) => selectChainById(state, props.chainId || currentChainId))
   const addressBook = useAddressBook()
 
   const name = showName ? props.name || addressBook[props.address] : undefined
-  const prefix = settings.shortName.show ? chain?.shortName : undefined
 
-  return <EthHashInfo prefix={prefix} {...props} name={name} />
+  return (
+    <EthHashInfo
+      prefix={chain?.shortName}
+      showPrefix={settings.shortName.show}
+      copyPrefix={settings.shortName.copy}
+      {...props}
+      name={name}
+    />
+  )
 }
 
 export default PrefixedEthHashInfo

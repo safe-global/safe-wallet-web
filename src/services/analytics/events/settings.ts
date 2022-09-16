@@ -3,19 +3,7 @@ import { EventType } from '@/services/analytics/types'
 const SETTINGS_CATEGORY = 'settings'
 
 export const SETTINGS_EVENTS = {
-  // TODO: Does not exist in web-core
-  DETAILS: {
-    SAFE_NAME: {
-      action: 'Name Safe',
-      category: SETTINGS_CATEGORY,
-    },
-  },
   SETUP: {
-    // TODO: Does not exist in web-core
-    REMOVE_SAFE: {
-      action: 'Remove Safe',
-      category: SETTINGS_CATEGORY,
-    },
     ADD_OWNER: {
       action: 'Add owner',
       category: SETTINGS_CATEGORY,

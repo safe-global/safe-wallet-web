@@ -26,7 +26,7 @@ const Footer = (): ReactElement | null => {
     <footer className={css.container}>
       <ul>
         <li>
-          <Typography variant="caption">&copy;2022 Safe Foundation</Typography>
+          <Typography variant="caption">&copy;2022 Safe Ecosystem Foundation</Typography>
         </li>
         <li>
           <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/terms">

@@ -1,17 +1,7 @@
 import { useEffect } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { selectLastSafeAddress } from '@/store/sessionSlice'
-import { useAppSelector } from '@/store'
-import useChainId from '@/hooks/useChainId'
-import chains from '@/config/chains'
-
-const useLastSafe = (): string | undefined => {
-  const chainId = useChainId()
-  const lastSafeAddress = useAppSelector((state) => selectLastSafeAddress(state, chainId))
-  const prefix = Object.keys(chains).find((prefix) => chains[prefix] === chainId)
-  return prefix && lastSafeAddress ? `${prefix}:${lastSafeAddress}` : undefined
-}
+import useLastSafe from '@/hooks/useLastSafe'
 
 const IndexPage: NextPage = () => {
   const router = useRouter()

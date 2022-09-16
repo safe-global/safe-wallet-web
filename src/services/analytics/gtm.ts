@@ -7,7 +7,7 @@
  * This service should NOT be used directly by components. Use the `analytics` service instead.
  */
 
-import TagManager, { TagManagerArgs } from 'react-gtm-module'
+import TagManager, { TagManagerArgs, DATA_LAYER_NAME } from './TagManager'
 import Cookies from 'js-cookie'
 import {
   IS_PRODUCTION,
@@ -64,7 +64,7 @@ export const gtmInit = (): void => {
 }
 
 const isGtmLoaded = (): boolean => {
-  return typeof window !== 'undefined' && !!window.dataLayer
+  return typeof window !== 'undefined' && !!window[DATA_LAYER_NAME]
 }
 
 export const gtmClear = (): void => {
@@ -99,9 +99,7 @@ const gtmSend = (event: GtmEvent): void => {
 
   if (!isGtmLoaded()) return
 
-  TagManager.dataLayer({
-    dataLayer: event,
-  })
+  TagManager.dataLayer(event)
 }
 
 export const gtmTrack = (eventData: AnalyticsEvent): void => {
@@ -110,7 +108,10 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
     chainId: _chainId,
     eventCategory: eventData.category,
     eventAction: eventData.action,
-    eventLabel: eventData.label,
+  }
+
+  if (eventData.label) {
+    gtmEvent.eventLabel = eventData.label
   }
 
   gtmSend(gtmEvent)

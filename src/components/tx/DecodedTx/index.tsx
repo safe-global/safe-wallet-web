@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react'
+import type { SyntheticEvent, ReactElement } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
 import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import {
@@ -20,7 +20,6 @@ type DecodedTxProps = {
 }
 
 const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
-  const [isAccordionExpanded, setIsAccordionExpanded] = useState<boolean>(false)
   const chainId = useChainId()
   const encodedData = tx.data.data
   const isNativeTransfer = encodedData && isNaN(parseInt(encodedData, 16))
@@ -39,9 +38,8 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
     return null
   }
 
-  const onChangeExpand = () => {
-    setIsAccordionExpanded((prev) => !prev)
-    trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: isAccordionExpanded ? 'Close' : 'Open' })
+  const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
+    trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
 
   return (

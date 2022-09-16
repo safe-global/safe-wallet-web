@@ -9,9 +9,15 @@ type ChainIndicatorProps = {
   chainId?: string
   inline?: boolean
   className?: string
+  renderWhiteSpaceIfNoChain?: boolean
 }
 
-const ChainIndicator = ({ chainId, className, inline = false }: ChainIndicatorProps): ReactElement => {
+const ChainIndicator = ({
+  chainId,
+  className,
+  inline = false,
+  renderWhiteSpaceIfNoChain = true,
+}: ChainIndicatorProps): ReactElement | null => {
   const currentChainId = useChainId()
   const id = chainId || currentChainId
   const chainConfig = useAppSelector((state) => selectChainById(state, id))
@@ -25,6 +31,8 @@ const ChainIndicator = ({ chainId, className, inline = false }: ChainIndicatorPr
       color: theme.textColor,
     }
   }, [chainConfig])
+
+  if (!chainConfig?.chainName && !renderWhiteSpaceIfNoChain) return null
 
   return (
     <span style={style} className={classnames(inline ? css.inlineIndicator : css.indicator, className)}>
