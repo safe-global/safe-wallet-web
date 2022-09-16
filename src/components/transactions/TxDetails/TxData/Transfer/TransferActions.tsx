@@ -42,18 +42,14 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
     setAnchorEl(undefined)
   }
 
-  const handleOpenModal =
-    (type: keyof typeof open, event?: typeof TX_LIST_EVENTS.ADDRESS_BOOK, label?: string) => () => {
-      handleCloseContextMenu()
-      setOpen((prev) => ({ ...prev, [type]: true }))
+  const handleOpenModal = (type: keyof typeof open, event?: typeof TX_LIST_EVENTS.ADDRESS_BOOK) => () => {
+    handleCloseContextMenu()
+    setOpen((prev) => ({ ...prev, [type]: true }))
 
-      if (event) {
-        trackEvent({
-          ...event,
-          label,
-        })
-      }
+    if (event) {
+      trackEvent(event)
     }
+  }
 
   const handleCloseModal = () => {
     setOpen(defaultOpen)
@@ -94,7 +90,7 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
           </MenuItem>
         )}
 
-        <MenuItem onClick={handleOpenModal(ModalType.ADD_TO_AB, TX_LIST_EVENTS.ADDRESS_BOOK, 'Add')}>
+        <MenuItem onClick={handleOpenModal(ModalType.ADD_TO_AB, TX_LIST_EVENTS.ADDRESS_BOOK)}>
           <ListItemText>Add to address book</ListItemText>
         </MenuItem>
       </Menu>
