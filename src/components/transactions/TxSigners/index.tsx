@@ -14,7 +14,7 @@ import type {
 
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsPending from '@/hooks/useIsPending'
-import { isCancellationTxInfo, isExecutable, isMultisigExecutionDetails } from '@/utils/transaction-guards'
+import { isCancellationTxInfo, isExecutable, isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 import css from './styles.module.css'
@@ -69,7 +69,7 @@ const StyledStep = ({ $bold, $state, sx, ...rest }: StyledStepProps & StepProps)
 )
 
 const shouldHideConfirmations = (detailedExecutionInfo?: DetailedExecutionInfo): boolean => {
-  if (!detailedExecutionInfo || !isMultisigExecutionDetails(detailedExecutionInfo)) {
+  if (!detailedExecutionInfo || !isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
     return true
   }
 
@@ -104,7 +104,7 @@ export const TxSigners = ({
     setHideConfirmations((prev) => !prev)
   }
 
-  if (!detailedExecutionInfo || !isMultisigExecutionDetails(detailedExecutionInfo)) {
+  if (!detailedExecutionInfo || !isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
     return null
   }
 

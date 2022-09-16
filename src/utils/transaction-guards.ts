@@ -2,30 +2,37 @@ import {
   AddressEx,
   Cancellation,
   ConflictHeader,
+  ConflictType,
   Creation,
   Custom,
   DateLabel,
   DetailedExecutionInfo,
+  DetailedExecutionInfoType,
   Erc20Transfer,
   Erc721Transfer,
+  ExecutionInfo,
   Label,
+  ModuleExecutionDetails,
   ModuleExecutionInfo,
   MultiSend,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
+  NativeCoinTransfer,
   SettingsChange,
   Transaction,
   TransactionInfo,
+  TransactionInfoType,
   TransactionListItem,
+  TransactionListItemType,
   TransactionStatus,
   TransactionSummary,
   TransactionTokenType,
   Transfer,
+  TransferInfo,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
 import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
-import { NativeCoinTransfer, TransferInfo } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/transactions'
 import { NamedAddress } from '@/components/create-safe/types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
@@ -47,32 +54,15 @@ export const isOwner = (safeOwners: AddressEx[] | NamedAddress[] = [], walletAdd
   return safeOwners.some((owner) => sameAddress(owner.address, walletAddress))
 }
 
-export const isMultisigExecutionDetails = (value?: DetailedExecutionInfo): value is MultisigExecutionDetails => {
-  return value?.type === 'MULTISIG'
+export const isMultisigDetailedExecutionInfo = (value?: DetailedExecutionInfo): value is MultisigExecutionDetails => {
+  return value?.type === DetailedExecutionInfoType.MULTISIG
 }
 
-// TODO: replace this type guard for the one guard above
-export const isMultisigExecutionInfo = (value: TransactionSummary['executionInfo']): value is MultisigExecutionInfo =>
-  value?.type === EXECUTION_INFO_TYPES.MULTISIG
-
-export const isModuleExecutionInfo = (
-  value: TransactionSummary['executionInfo'] | DetailedExecutionInfo,
-): value is ModuleExecutionInfo => value?.type === EXECUTION_INFO_TYPES.MODULE
-
-enum EXECUTION_INFO_TYPES {
-  MULTISIG = 'MULTISIG',
-  MODULE = 'MODULE',
+export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): value is ModuleExecutionDetails => {
+  return value?.type === DetailedExecutionInfoType.MODULE
 }
 
 // TransactionInfo type guards
-// TODO: could be passed to Client GW SDK
-export enum TransactionInfoType {
-  TRANSFER = 'Transfer',
-  SETTINGS_CHANGE = 'SettingsChange',
-  CUSTOM = 'Custom',
-  CREATION = 'Creation',
-}
-
 export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
   return value.type === TransactionInfoType.TRANSFER
 }
@@ -105,18 +95,7 @@ export const isCreationTxInfo = (value: TransactionInfo): value is Creation => {
   return value.type === TransactionInfoType.CREATION
 }
 
-// TxListItem type guards
-// TODO: could be passed to Client GW SDK
-export enum TransactionListItemType {
-  TRANSACTION = 'TRANSACTION',
-  LABEL = 'LABEL',
-  CONFLICT_HEADER = 'CONFLICT_HEADER',
-  DATE_LABEL = 'DATE_LABEL',
-}
-export const isTransactionListItem = (value: TransactionListItem): value is Transaction => {
-  return value.type === TransactionListItemType.TRANSACTION
-}
-
+// TransactionListItem type guards
 export const isLabelListItem = (value: TransactionListItem): value is Label => {
   return value.type === TransactionListItemType.LABEL
 }
@@ -128,6 +107,17 @@ export const isConflictHeaderListItem = (value: TransactionListItem): value is C
 export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
   return value.type === TransactionListItemType.DATE_LABEL
 }
+
+export const isTransactionListItem = (value: TransactionListItem): value is Transaction => {
+  return value.type === TransactionListItemType.TRANSACTION
+}
+
+// Narrows `Transaction`
+export const isMultisigExecutionInfo = (value?: ExecutionInfo): value is MultisigExecutionInfo =>
+  value?.type === DetailedExecutionInfoType.MULTISIG
+
+export const isModuleExecutionInfo = (value?: ExecutionInfo): value is ModuleExecutionInfo =>
+  value?.type === DetailedExecutionInfoType.MODULE
 
 export const isSignableBy = (txSummary: TransactionSummary, walletAddress: string): boolean => {
   const executionInfo = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo : undefined
@@ -179,22 +169,14 @@ export const isArrayParameter = (parameter: string): boolean => /(\[\d*])+$/.tes
 export const isAddress = (type: string): boolean => type.indexOf('address') === 0
 export const isByte = (type: string): boolean => type.indexOf('byte') === 0
 
-// Conflict types (https://safe.global/safe-client-gateway/docs/routes/transactions/models/summary/enum.ConflictType.html)
-// TODO: could be passed to Client GW SDK
-enum CONFLICT_TYPES {
-  NONE = 'None',
-  HAS_NEXT = 'HasNext',
-  END = 'End',
-}
-
 export const isNoneConflictType = (transaction: Transaction) => {
-  return transaction.conflictType === CONFLICT_TYPES.NONE
+  return transaction.conflictType === ConflictType.NONE
 }
 export const isHasNextConflictType = (transaction: Transaction) => {
-  return transaction.conflictType === CONFLICT_TYPES.HAS_NEXT
+  return transaction.conflictType === ConflictType.HAS_NEXT
 }
 export const isEndConflictType = (transaction: Transaction) => {
-  return transaction.conflictType === CONFLICT_TYPES.END
+  return transaction.conflictType === ConflictType.END
 }
 
 export const isNativeTokenTransfer = (value: TransferInfo): value is NativeCoinTransfer => {

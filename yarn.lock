@@ -2653,10 +2653,10 @@
   dependencies:
     cross-fetch "^3.1.5"
 
-"@gnosis.pm/safe-react-gateway-sdk@^3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.4.0.tgz#65079897b5d1d0fcb600015449cb41cd07f95e0d"
-  integrity sha512-HtxcXA3KHc3Z/b7jFG7fp9sVTPYyzfV2/8EAZN94qlP7GL2SqU+TuzAR7ZdgBzLhQGWwwvS5b8Ahxraqr1Fz1Q==
+"@gnosis.pm/safe-react-gateway-sdk@^3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.4.1.tgz#6864abdb28ce0487d64929dee0205e03a49e864f"
+  integrity sha512-b8i0BLEP9CC7S2N7hYDX3OXRYIb9asOMVW0QWh4jzsgT5xitUOPy4jrZL9kAmx8QgcMPYbD+Jjsq/R9ltzSmew==
   dependencies:
     cross-fetch "^3.1.5"
 
