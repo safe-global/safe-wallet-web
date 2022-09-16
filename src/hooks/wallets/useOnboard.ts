@@ -93,7 +93,7 @@ const trackWalletType = async (wallet: ConnectedWallet) => {
 }
 
 // Wrapper that tracks/sets the last used wallet
-export const connectWallet = (onboard: OnboardAPI, options: Parameters<OnboardAPI['connectWallet']>[0]) => {
+export const connectWallet = (onboard: OnboardAPI, options?: Parameters<OnboardAPI['connectWallet']>[0]) => {
   onboard
     .connectWallet(options)
     .then(async (wallets) => {
