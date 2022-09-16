@@ -16,11 +16,12 @@ import css from './styles.module.css'
 
 export type TxSimulationProps = {
   transactions: SimulationTxParams['transactions']
+  manualGasLimit?: number
   canExecute: boolean
   disabled: boolean
 }
 
-const TxSimulationBlock = ({ transactions, canExecute, disabled }: TxSimulationProps): ReactElement => {
+const TxSimulationBlock = ({ transactions, canExecute, disabled, manualGasLimit }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
 
@@ -37,6 +38,7 @@ const TxSimulationBlock = ({ transactions, canExecute, disabled }: TxSimulationP
       executionOwner: wallet.address,
       transactions,
       canExecute,
+      manualGasLimit,
     })
   }
 

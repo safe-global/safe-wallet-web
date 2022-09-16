@@ -27,7 +27,14 @@ export const getSimulation = async (tx: TenderlySimulatePayload): Promise<Tender
   const data = await fetch(TENDERLY_SIMULATE_ENDPOINT_URL, {
     method: 'POST',
     body: JSON.stringify(tx),
-  }).then((res) => res.json())
+  }).then((res) => {
+    if (res.ok) {
+      return res.json()
+    }
+    return res.json().then((data) => {
+      throw new Error(`${res.status} - ${res.statusText}: ${data?.error?.message}`)
+    })
+  })
 
   return data as TenderlySimulation
 }
@@ -61,7 +68,10 @@ export const _getSingleTransactionPayload = (
   let transaction = params.transactions
 
   // Otherwise we overwrite the threshold to 1 on Tenderly and create a signature
-  if (!params.canExecute) {
+  const hasOwnerSignature = transaction.signatures.has(params.executionOwner)
+  // If the owner's sig is missing and the tx needs more signatures than the threshold we have to add the preValidated sig
+  const needsOwnerSignature = !hasOwnerSignature && transaction.signatures.size < params.safe.threshold
+  if (needsOwnerSignature) {
     const simulatedTransaction = new EthSafeTransaction(params.transactions.data)
     simulatedTransaction.addSignature(generatePreValidatedSignature(params.executionOwner))
 
@@ -129,10 +139,22 @@ const isSingleTransactionSimulation = (params: SimulationTxParams): params is Si
   return !Array.isArray(params.transactions)
 }
 
+const isOverwriteThreshold = (params: SimulationTxParams) => {
+  if (!isSingleTransactionSimulation(params)) {
+    return false
+  }
+  const tx = params.transactions
+  const hasOwnerSig = tx.signatures.has(params.executionOwner)
+  const effectiveSigs = tx.signatures.size + (hasOwnerSig ? 0 : 1)
+  return params.safe.threshold > effectiveSigs
+}
+
 export const getSimulationPayload = (params: SimulationTxParams): TenderlySimulatePayload => {
   const payload = isSingleTransactionSimulation(params)
     ? _getSingleTransactionPayload(params)
     : _getMultiSendCallOnlyPayload(params)
+
+  const overwriteThreshold = isOverwriteThreshold(params)
 
   return {
     ...payload,
@@ -141,7 +163,9 @@ export const getSimulationPayload = (params: SimulationTxParams): TenderlySimula
     gas: params.gasLimit,
     // With gas price 0 account don't need token for gas
     gas_price: '0',
-    state_objects: _getStateOverride(params.safe.address.value, undefined, undefined, THRESHOLD_ONE_STORAGE_OVERRIDE),
+    state_objects: overwriteThreshold
+      ? _getStateOverride(params.safe.address.value, undefined, undefined, THRESHOLD_ONE_STORAGE_OVERRIDE)
+      : undefined,
     save: true,
     save_if_fails: true,
   }

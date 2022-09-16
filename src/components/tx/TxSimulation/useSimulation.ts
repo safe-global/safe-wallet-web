@@ -9,7 +9,7 @@ type UseSimulationReturn =
   | {
       simulationRequestStatus: FETCH_STATUS.NOT_ASKED | FETCH_STATUS.ERROR | FETCH_STATUS.LOADING
       simulation: undefined
-      simulateTransaction: (params: Omit<SimulationTxParams, 'gasLimit'>) => void
+      simulateTransaction: (params: Omit<SimulationTxParams, 'gasLimit'> & { manualGasLimit?: number }) => void
       simulationLink: string
       requestError?: string
       resetSimulation: () => void
@@ -17,7 +17,7 @@ type UseSimulationReturn =
   | {
       simulationRequestStatus: FETCH_STATUS.SUCCESS
       simulation: TenderlySimulation
-      simulateTransaction: (params: Omit<SimulationTxParams, 'gasLimit'>) => void
+      simulateTransaction: (params: Omit<SimulationTxParams, 'gasLimit'> & { manualGasLimit?: number }) => void
       simulationLink: string
       requestError?: string
       resetSimulation: () => void
@@ -38,17 +38,25 @@ export const useSimulation = (): UseSimulationReturn => {
   }, [])
 
   const simulateTransaction = useCallback(
-    async (params: Omit<SimulationTxParams, 'gasLimit'>) => {
+    async (params: Omit<SimulationTxParams, 'gasLimit'> & { manualGasLimit?: number }) => {
       if (!web3ReadOnly) return
 
       setSimulationRequestStatus(FETCH_STATUS.LOADING)
       setRequestError(undefined)
 
       try {
-        const { gasLimit } = await web3ReadOnly.getBlock('latest')
+        const manualGasLimit = params.manualGasLimit
+        let gasLimit: number
+        if (manualGasLimit) {
+          gasLimit = manualGasLimit
+        } else {
+          const latestBlock = await web3ReadOnly.getBlock('latest')
+          gasLimit = latestBlock.gasLimit.toNumber()
+        }
+
         const simulationPayload = getSimulationPayload({
           ...params,
-          gasLimit: gasLimit.toNumber(),
+          gasLimit,
         } as SimulationTxParams)
 
         const data = await getSimulation(simulationPayload)
