@@ -1,8 +1,7 @@
 import { Button, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import useOnboard from '@/hooks/wallets/useOnboard'
-import { logError, Errors } from '@/services/exceptions'
+import useOnboard, { connectWallet } from '@/hooks/wallets/useOnboard'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import { trackEvent } from '@/services/analytics'
@@ -17,7 +16,7 @@ const WalletDetails = ({ onConnect }: { onConnect?: () => void }): ReactElement 
     trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
 
     onConnect?.()
-    onboard.connectWallet().catch((e) => logError(Errors._302, (e as Error).message))
+    connectWallet(onboard)
   }
 
   return (
