@@ -26,7 +26,7 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
     token: cfg.nativeCurrency.symbol,
     color: cfg.theme.backgroundColor,
     publicRpcUrl: cfg.publicRpcUri.value,
-    // FIXME: add block explorer URL
+    blockExplorerUrl: new URL(cfg.blockExplorerUriTemplate.address).origin,
   }))
 
   onboard = Onboard({

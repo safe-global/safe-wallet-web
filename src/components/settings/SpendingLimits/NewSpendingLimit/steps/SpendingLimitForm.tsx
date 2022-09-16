@@ -21,6 +21,7 @@ import useBalances from '@/hooks/useBalances'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import useChainId from '@/hooks/useChainId'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
+import { defaultAbiCoder } from '@ethersproject/abi'
 
 export type NewSpendingLimitData = {
   beneficiary: string
@@ -32,6 +33,15 @@ export type NewSpendingLimitData = {
 type Props = {
   data?: NewSpendingLimitData
   onSubmit: (data: NewSpendingLimitData) => void
+}
+
+const validateUpperSpendingLimitAmount = (val: string) => {
+  // Allowance amount is uint96 https://github.com/safe-global/safe-modules/blob/master/allowances/contracts/AlowanceModule.sol#L52
+  try {
+    defaultAbiCoder.encode(['uint96'], [val])
+  } catch {
+    return 'Maximum value is 2^96 - 1'
+  }
 }
 
 export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
@@ -99,7 +109,10 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
               autoComplete="off"
               {...register('amount', {
                 required: true,
-                validate: (val) => validateAmount(val) || validateDecimalLength(val, selectedToken?.tokenInfo.decimals),
+                validate: (val) =>
+                  validateAmount(val) ||
+                  validateDecimalLength(val, selectedToken?.tokenInfo.decimals) ||
+                  validateUpperSpendingLimitAmount(val),
               })}
             />
           </FormControl>

@@ -2,8 +2,8 @@
 // https://github.com/5afe/safe/wiki/How-to-format-amounts
 
 const LOWER_LIMIT = 0.00001
-const COMPACT_LIMIT = 100_000_000
-const UPPER_LIMIT = 10 ** 15
+const COMPACT_LIMIT = 99_999_999.5
+const UPPER_LIMIT = 999 * 10 ** 12
 
 const getNumberFormatMaxFractionDigits = (float: number): Intl.NumberFormatOptions['maximumFractionDigits'] => {
   if (float < 1_000) {
@@ -30,6 +30,7 @@ const getNumberFormatMaxFractionDigits = (float: number): Intl.NumberFormatOptio
     return 0
   }
 
+  // to represent numbers like 767.343M
   if (float < UPPER_LIMIT) {
     return 3
   }
@@ -38,10 +39,10 @@ const getNumberFormatMaxFractionDigits = (float: number): Intl.NumberFormatOptio
 }
 
 const getNumberFormatNotation = (float: number): Intl.NumberFormatOptions['notation'] => {
-  return float < COMPACT_LIMIT ? undefined : 'compact'
+  return float >= COMPACT_LIMIT ? 'compact' : undefined
 }
 
-const getNumberFormatterOptions = (float: number) => {
+const getNumberFormatterOptions = (float: number): Intl.NumberFormatOptions => {
   return {
     maximumFractionDigits: getNumberFormatMaxFractionDigits(float),
     notation: getNumberFormatNotation(float),
@@ -57,31 +58,31 @@ const getCurrencyFormatterOptions = (float: number, currency: string): Intl.Numb
   }
 }
 
-// TODO: Add signs in reference to final point of number formatting
-const formatNumber = (float: number, options: Intl.NumberFormatOptions): string => {
-  const VISIBLE_UPPER_LIMIT = 999 * 10 ** 12 // 999T
-
+const formatNumber = (float: number, options: Intl.NumberFormatOptions, keepSign?: boolean): string => {
   const formatter = new Intl.NumberFormat(undefined, options)
 
   if (float === 0) {
     return formatter.format(float)
   }
 
-  if (float < LOWER_LIMIT) {
-    return `< ${formatter.format(LOWER_LIMIT)}`
+  if (Math.abs(float) < LOWER_LIMIT) {
+    const sign = keepSign && Math.sign(float) > 0 ? '+' : Math.sign(float) < 0 ? '-' : ''
+    return `< ${sign}${formatter.format(LOWER_LIMIT)}`
   }
 
   if (float < UPPER_LIMIT) {
     return formatter.format(float)
   }
 
-  return `> ${formatter.format(VISIBLE_UPPER_LIMIT)}`
+  return `> ${formatter.format(UPPER_LIMIT)}`
 }
 
 export const formatAmount = (number: string | number): string => {
+  // to keep the '+' sign, pass the amount as a string
+  const keepSign = typeof number === 'string' && number.trim().startsWith('+')
   const float = Number(number)
   const options = getNumberFormatterOptions(float)
-  return formatNumber(float, options)
+  return formatNumber(float, options, keepSign)
 }
 
 export const formatAmountWithPrecision = (number: string | number, fractionDigits: number): string => {

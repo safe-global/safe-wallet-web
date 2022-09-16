@@ -1,5 +1,6 @@
 import { createSelector, Middleware } from '@reduxjs/toolkit'
 import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import { isEqual } from 'lodash'
 import type { RootState } from '@/store'
 import { makeLoadableSlice } from './common'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
@@ -24,19 +25,29 @@ export const selectQueuedTransactionsByNonce = createSelector(
   },
 )
 
-export const txQueueMiddleware: Middleware<{}, RootState> = () => (next) => (action) => {
+const trackQueueSize = (prevState: RootState, { payload }: ReturnType<typeof txQueueSlice.actions.set>) => {
+  const txQueue = selectTxQueue(prevState)
+
+  if (isEqual(txQueue.data?.results, payload.data?.results)) {
+    return
+  }
+
+  const transactions = payload.data?.results.filter(isTransactionListItem) || []
+
+  trackEvent({
+    ...TX_LIST_EVENTS.QUEUED_TXS,
+    label: transactions.length.toString(),
+  })
+}
+
+export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
+  const prevState = store.getState()
+
   const result = next(action)
 
   switch (action.type) {
     case txQueueSlice.actions.set.type: {
-      const { payload } = action as ReturnType<typeof txQueueSlice.actions.set>
-
-      if (!payload.data) return
-
-      trackEvent({
-        ...TX_LIST_EVENTS.QUEUED_TXS,
-        label: payload.data.results.length.toString(),
-      })
+      trackQueueSize(prevState, action)
     }
   }
 

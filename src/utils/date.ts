@@ -1,5 +1,5 @@
-// TODO: Remove date-fns and covert to use @date-io/date-fns
-// https://github.com/dmtrKovalenko/date-io#projects
+// TODO: Remove date-fns and convert to use the native JS formatter
+// @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
 
 import { format, formatDistanceToNow, formatRelative } from 'date-fns'
 
