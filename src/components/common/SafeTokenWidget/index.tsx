@@ -38,7 +38,7 @@ const SafeTokenWidget = () => {
     return null
   }
 
-  const url = `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${claimingApp?.url}`
+  const url = claimingApp ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${claimingApp?.url}` : undefined
 
   const safeBalance = balances.balances.items.find((balanceItem) => balanceItem.tokenInfo.address === tokenAddress)
 
@@ -47,14 +47,15 @@ const SafeTokenWidget = () => {
 
   return (
     <Box className={css.buttonContainer}>
-      <Tooltip title="Open $SAFE Claiming App">
+      <Tooltip title={url ? 'Open $SAFE Claiming App' : ''}>
         <span>
           <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
-            <Link href={url} passHref>
+            <Link href={url || '#'} passHref>
               <ButtonBase
                 aria-describedby={'safe-token-widget'}
                 sx={{ alignSelf: 'stretch' }}
                 className={css.tokenButton}
+                disabled={url === undefined}
               >
                 <SafeTokenIcon />
                 <Typography lineHeight="16px" fontWeight={700}>
