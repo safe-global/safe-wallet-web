@@ -7,7 +7,6 @@ const CopyButton = ({
   className,
   children,
   initialToolTipText = 'Copy to clipboard',
-  ariaLabel = 'Copy to clipboard',
 }: {
   text: string
   className?: string
@@ -32,7 +31,7 @@ const CopyButton = ({
 
   return (
     <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
-      <IconButton aria-label={ariaLabel} onClick={handleCopy} size="small" className={className}>
+      <IconButton aria-label={initialToolTipText} onClick={handleCopy} size="small" className={className}>
         {children ?? <ContentCopyIcon fontSize="small" color="border" sx={{ width: '16px', height: '16px' }} />}
       </IconButton>
     </Tooltip>

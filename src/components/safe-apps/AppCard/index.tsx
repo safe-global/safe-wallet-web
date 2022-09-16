@@ -100,7 +100,6 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
       <img src={safeApp.iconUrl} style={{ width: 52, height: 52 }} alt={`${safeApp.name} logo`} />
       <CopyButton
         text={shareUrl}
-        ariaLabel={`Share ${safeApp.name}`}
         initialToolTipText={`Copy share URL for ${safeApp.name}`}
         className={styles.compactShareButton}
       >
@@ -146,7 +145,6 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
           <>
             <CopyButton
               text={shareUrl}
-              ariaLabel={`Share ${safeApp.name}`}
               initialToolTipText={`Copy share URL for ${safeApp.name}`}
               className={styles.shareButton}
             >
