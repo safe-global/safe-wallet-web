@@ -33,6 +33,7 @@ const ChainIndicator = ({
   }, [chainConfig])
 
   if (!chainConfig?.chainName && !renderWhiteSpaceIfNoChain) return null
+
   return (
     <span style={style} className={classnames(inline ? css.inlineIndicator : css.indicator, className)}>
       {chainConfig?.chainName || ' '}
