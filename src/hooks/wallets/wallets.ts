@@ -14,6 +14,7 @@ import walletConnect from '@web3-onboard/walletconnect'
 import pairingModule, { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 
 export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
@@ -87,7 +88,7 @@ export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
 
   const code = await provider.getCode(wallet.address)
 
-  return code !== '0x'
+  return code !== EMPTY_DATA
 }
 
 export const isPaired = (wallet: ConnectedWallet): boolean => {

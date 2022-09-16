@@ -1,4 +1,5 @@
 import {
+  ChainInfo,
   getTransactionDetails,
   Operation,
   postSafeGasEstimation,
@@ -21,9 +22,11 @@ import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
 import MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
 import { Web3Provider } from '@ethersproject/providers'
-import { ContractTransaction } from 'ethers'
+import { ContractTransaction, ethers } from 'ethers'
 import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
+import { getWeb3 } from '@/hooks/wallets/web3'
+import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -192,16 +195,28 @@ export const dispatchTxSigning = async (
 /**
  * On-Chain sign a transaction
  */
-export const dispatchOnChainSigning = async (safeTx: SafeTransaction) => {
+export const dispatchOnChainSigning = async (safeTx: SafeTransaction, chain?: ChainInfo, txId?: string) => {
   const sdk = getAndValidateSafeSDK()
+  const provider = getWeb3()
+
+  if (!provider || !chain) return safeTx
+
+  const signer = provider.getSigner()
+  const ethersAdapter = new EthersAdapter({
+    ethers,
+    signer: signer.connectUnchecked(),
+  })
 
   try {
     const safeTxHash = await sdk.getTransactionHash(safeTx)
-    await sdk.approveTransactionHash(safeTxHash)
+    const sdkUnchecked = await sdk.connect({ ethAdapter: ethersAdapter })
+    await sdkUnchecked.approveTransactionHash(safeTxHash)
   } catch (err) {
-    txDispatch(TxEvent.SIGN_FAILED, { txId: undefined, error: err as Error })
+    txDispatch(TxEvent.SIGN_FAILED, { txId, error: err as Error })
     throw err
   }
+
+  txDispatch(TxEvent.SIGNED, { txId })
 
   return safeTx
 }

@@ -97,7 +97,7 @@ const SignOrExecuteForm = ({
     const shouldEthSign = isHardwareWallet(connectedWallet) || isPaired(connectedWallet)
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
     const signedTx = smartContractWallet
-      ? await dispatchOnChainSigning(createdTx)
+      ? await dispatchOnChainSigning(createdTx, currentChain, txId)
       : await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
