@@ -16,7 +16,7 @@ import SafeTokenIcon from './safe_token.svg'
 
 import css from './styles.module.css'
 
-export const CLAIMING_APP_ID = 61
+const CLAIMING_APP_NAME = '$SAFE Claiming App'
 
 export const getSafeTokenAddress = (chainId: string): string => {
   return SAFE_TOKEN_ADDRESSES[chainId]
@@ -28,7 +28,10 @@ const SafeTokenWidget = () => {
   const router = useRouter()
   const apps = useSafeApps()
 
-  const claimingApp = useMemo(() => apps.allSafeApps.find((appData) => appData.id === 61), [apps.allSafeApps])
+  const claimingApp = useMemo(
+    () => apps.allSafeApps.find((appData) => appData.name === CLAIMING_APP_NAME),
+    [apps.allSafeApps],
+  )
 
   const tokenAddress = getSafeTokenAddress(chainId)
   if (!tokenAddress) {
