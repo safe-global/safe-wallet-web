@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useLastSafe } from '@/hooks/useLastSafe'
+import useLastSafe from '@/hooks/useLastSafe'
 
 const IndexPage: NextPage = () => {
   const router = useRouter()

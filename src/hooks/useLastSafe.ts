@@ -10,4 +10,4 @@ const useLastSafe = (): string | undefined => {
   return prefix && lastSafeAddress ? `${prefix}:${lastSafeAddress}` : undefined
 }
 
-export { useLastSafe }
+export default useLastSafe
