@@ -1,6 +1,3 @@
-// TODO: Remove date-fns and convert to use the native JS formatter
-// @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
-
 import { format, formatDistanceToNow, formatRelative } from 'date-fns'
 
 export const currentMinutes = (): number => Math.floor(Date.now() / (1000 * 60))
