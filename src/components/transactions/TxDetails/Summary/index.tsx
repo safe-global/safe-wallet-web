@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from 'react'
 import { Link } from '@mui/material'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
+import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { dateString } from '@/utils/formatters'
 import css from './styles.module.css'
@@ -21,7 +21,7 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
   const { txHash, detailedExecutionInfo, executedAt, txData } = txDetails
 
   let submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, refundReceiver, safeTxGas
-  if (isMultisigExecutionDetails(detailedExecutionInfo)) {
+  if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
     ;({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo)
     refundReceiver = detailedExecutionInfo.refundReceiver?.value
   }

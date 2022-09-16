@@ -55,11 +55,11 @@ export const isOwner = (safeOwners: AddressEx[] | NamedAddress[] = [], walletAdd
 }
 
 // Narrows `TransactionDetails` -> when requesting a single transaction
-export const isMultisigExecutionDetails = (value?: DetailedExecutionInfo): value is MultisigExecutionDetails => {
+export const isMultisigDetailedExecutionInfo = (value?: DetailedExecutionInfo): value is MultisigExecutionDetails => {
   return value?.type === DetailedExecutionInfoType.MULTISIG
 }
 
-export const isModuleExecutionDetails = (value?: DetailedExecutionInfo): value is ModuleExecutionDetails =>
+export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): value is ModuleExecutionDetails =>
   value?.type === DetailedExecutionInfoType.MODULE
 
 // TransactionInfo type guards

@@ -11,7 +11,7 @@ import {
   TransactionDetails,
   TransactionListItemType,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isModuleExecutionDetails, isMultisigExecutionDetails, isTxQueued } from './transaction-guards'
+import { isModuleDetailedExecutionInfo, isMultisigDetailedExecutionInfo, isTxQueued } from './transaction-guards'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
@@ -37,7 +37,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
   const getMultisigExecutionInfo = ({
     detailedExecutionInfo,
   }: TransactionDetails): MultisigExecutionInfo | undefined => {
-    if (!isMultisigExecutionDetails(detailedExecutionInfo)) return undefined
+    if (!isMultisigDetailedExecutionInfo(detailedExecutionInfo)) return undefined
 
     return {
       type: detailedExecutionInfo.type,
@@ -48,14 +48,14 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
     }
   }
 
-  const executionInfo: ExecutionInfo | undefined = isModuleExecutionDetails(txDetails.detailedExecutionInfo)
+  const executionInfo: ExecutionInfo | undefined = isModuleDetailedExecutionInfo(txDetails.detailedExecutionInfo)
     ? (txDetails.detailedExecutionInfo as ExecutionInfo)
     : getMultisigExecutionInfo(txDetails)
 
   // Will only be used as a fallback whilst waiting on backend tx creation cache
   const now = Date.now()
   const timestamp = isTxQueued(txDetails.txStatus)
-    ? isMultisigExecutionDetails(txDetails.detailedExecutionInfo)
+    ? isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
       ? txDetails.detailedExecutionInfo.submittedAt
       : now
     : txDetails.executedAt || now
@@ -98,7 +98,7 @@ export const getMultiSendTxs = (
 
   return txs
     .map((tx) => {
-      if (!isMultisigExecutionDetails(tx.detailedExecutionInfo)) return
+      if (!isMultisigDetailedExecutionInfo(tx.detailedExecutionInfo)) return
 
       const args = extractTxInfo(tx, safeAddress)
       const sigs = getSignatures(args.signatures)
