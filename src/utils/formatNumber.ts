@@ -97,47 +97,6 @@ const format = (number: string | number, formatter: (float: number) => string, h
   return `> ${formatter(UPPER_LIMIT)}`
 }
 
-// Fiat formatting
-
-/**
- * Intl.NumberFormatOptions for currency formatting
- * @param number Number to format
- * @param currency ISO 4217 currency code
- */
-const getCurrencyFormatterOptions = (number: string | number, currency: string): Intl.NumberFormatOptions => {
-  return {
-    notation: getNumberFormatNotation(number),
-    style: 'currency',
-    currency,
-    currencyDisplay: 'code',
-    signDisplay: getNumberFormatSignDisplay(number),
-  }
-}
-
-/**
- * Currency formatter that appends the currency code
- * @param number Number to format
- * @param currency ISO 4217 currency code
- */
-export const formatCurrency = (number: string | number, currency: string): string => {
-  const options = getCurrencyFormatterOptions(number, currency)
-
-  const currencyFormatter = (float: number): string => {
-    const formatter = new Intl.NumberFormat(undefined, options)
-
-    const amount = formatter
-      .formatToParts(float) // Returns an array of objects with `type` and `value` properties
-      .filter(({ type }) => type !== 'currency')
-      .reduce((acc, { value }) => acc + value, '')
-      .trim()
-
-    return `${amount} ${currency.toUpperCase()}`
-  }
-
-  // We format currency to currency precision, not `maximumFractionDigits`
-  return format(number, currencyFormatter, false)
-}
-
 // Amount formatting
 
 /**
@@ -183,4 +142,45 @@ export const formatAmountWithPrecision = (
 ): string => {
   const options = getNumberFormatterOptions(number)
   return formatNumber(number, { ...options, maximumFractionDigits: fractionDigits })
+}
+
+// Fiat formatting
+
+/**
+ * Intl.NumberFormatOptions for currency formatting
+ * @param number Number to format
+ * @param currency ISO 4217 currency code
+ */
+const getCurrencyFormatterOptions = (number: string | number, currency: string): Intl.NumberFormatOptions => {
+  return {
+    notation: getNumberFormatNotation(number),
+    style: 'currency',
+    currency,
+    currencyDisplay: 'code',
+    signDisplay: getNumberFormatSignDisplay(number),
+  }
+}
+
+/**
+ * Currency formatter that appends the currency code
+ * @param number Number to format
+ * @param currency ISO 4217 currency code
+ */
+export const formatCurrency = (number: string | number, currency: string): string => {
+  const options = getCurrencyFormatterOptions(number, currency)
+
+  const currencyFormatter = (float: number): string => {
+    const formatter = new Intl.NumberFormat(undefined, options)
+
+    const amount = formatter
+      .formatToParts(float) // Returns an array of objects with `type` and `value` properties
+      .filter(({ type }) => type !== 'currency')
+      .reduce((acc, { value }) => acc + value, '')
+      .trim()
+
+    return `${amount} ${currency.toUpperCase()}`
+  }
+
+  // We format currency to currency precision, not `maximumFractionDigits`
+  return format(number, currencyFormatter, false)
 }
