@@ -54,13 +54,13 @@ export const isOwner = (safeOwners: AddressEx[] | NamedAddress[] = [], walletAdd
   return safeOwners.some((owner) => sameAddress(owner.address, walletAddress))
 }
 
-// Narrows `TransactionDetails` -> when requesting a single transaction
 export const isMultisigDetailedExecutionInfo = (value?: DetailedExecutionInfo): value is MultisigExecutionDetails => {
   return value?.type === DetailedExecutionInfoType.MULTISIG
 }
 
-export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): value is ModuleExecutionDetails =>
-  value?.type === DetailedExecutionInfoType.MODULE
+export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): value is ModuleExecutionDetails => {
+  return value?.type === DetailedExecutionInfoType.MODULE
+}
 
 // TransactionInfo type guards
 export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
@@ -96,10 +96,6 @@ export const isCreationTxInfo = (value: TransactionInfo): value is Creation => {
 }
 
 // TransactionListItem type guards
-export const isTransactionListItem = (value: TransactionListItem): value is Transaction => {
-  return value.type === TransactionListItemType.TRANSACTION
-}
-
 export const isLabelListItem = (value: TransactionListItem): value is Label => {
   return value.type === TransactionListItemType.LABEL
 }
@@ -112,7 +108,11 @@ export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
   return value.type === TransactionListItemType.DATE_LABEL
 }
 
-// Narrows `Transaction`s -> when request a page of `TransactionListItem`
+export const isTransactionListItem = (value: TransactionListItem): value is Transaction => {
+  return value.type === TransactionListItemType.TRANSACTION
+}
+
+// Narrows `Transaction`
 export const isMultisigExecutionInfo = (value?: ExecutionInfo): value is MultisigExecutionInfo =>
   value?.type === DetailedExecutionInfoType.MULTISIG
 
