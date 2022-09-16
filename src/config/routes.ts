@@ -3,7 +3,6 @@ export const AppRoutes = {
   open: '/open',
   load: '/load',
   index: '/',
-  demoTheme: '/demo-theme',
   safe: {
     index: '/safe',
     home: '/safe/home',
@@ -26,5 +25,9 @@ export const AppRoutes = {
       index: '/safe/transactions',
       history: '/safe/transactions/history',
     },
+  },
+  share: {
+    index: '/share',
+    safeApp: '/share/safe-app',
   },
 }
