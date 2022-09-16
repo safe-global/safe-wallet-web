@@ -8,7 +8,7 @@ export const TX_LIST_EVENTS = {
     action: 'Queued transactions',
     category: TX_LIST_CATEGORY,
   },
-  // TODO: label: 'Edit' does not exist in web-core
+  // 'Edit' label does not exist in web-core
   ADDRESS_BOOK: {
     action: 'Update address book',
     category: TX_LIST_CATEGORY,

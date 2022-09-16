@@ -27,9 +27,4 @@ export const ASSETS_EVENTS = {
     action: 'Send',
     category: ASSETS_CATEGORY,
   },
-  // TODO: Does not yet exist in web-core
-  RECEIVE: {
-    action: 'Receive',
-    category: ASSETS_CATEGORY,
-  },
 }
