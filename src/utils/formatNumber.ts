@@ -8,7 +8,7 @@ const UPPER_LIMIT = 999 * 10 ** 12
 // Universal amount formatting options
 
 /**
- * Numbers aboive 99,999,999 use compact notation, e.g. 100M
+ * Numbers above 99,999,999 use compact notation, e.g. 100M
  * @param number Number to format
  */
 const getNumberFormatNotation = (number: string | number): Intl.NumberFormatOptions['notation'] => {
@@ -22,10 +22,7 @@ const getNumberFormatNotation = (number: string | number): Intl.NumberFormatOpti
  * @param number Number to prepend sign to
  */
 const getNumberFormatSignDisplay = (number: string | number): Intl.NumberFormatOptions['signDisplay'] => {
-  const float = Number(number)
-
-  const shouldDisplaySign =
-    typeof number === 'string' ? number.includes('+') || number.includes('-') : Math.sign(float) === -1
+  const shouldDisplaySign = typeof number === 'string' ? number.trim().startsWith('+') : Number(number) < 0
 
   return shouldDisplaySign ? 'exceptZero' : undefined
 }
@@ -79,15 +76,15 @@ const getNumberFormatMaxFractionDigits = (
  * @param formatter Function to format number
  * @param hasMaximumFractionDigits Whether the provided number is to be restricted to a certain number of decimal places
  */
-const format = (number: string | number, formatter: (float: number) => string, hasMaximumFractionDigits: boolean) => {
+const format = (number: string | number, formatter: (float: number) => string, minimum = LOWER_LIMIT) => {
   const float = Number(number)
 
   if (float === 0) {
     return formatter(float)
   }
 
-  if (hasMaximumFractionDigits && Math.abs(float) < LOWER_LIMIT) {
-    return `< ${formatter(LOWER_LIMIT * Math.sign(float))}`
+  if (Math.abs(float) < minimum) {
+    return `< ${formatter(minimum * Math.sign(float))}`
   }
 
   if (float < UPPER_LIMIT) {
@@ -119,8 +116,7 @@ const getNumberFormatterOptions = (number: string | number): Intl.NumberFormatOp
 const formatNumber = (number: string | number, options: Intl.NumberFormatOptions): string => {
   const numberFormatter = new Intl.NumberFormat(undefined, options).format
 
-  const hasMaximumFractionDigits = typeof options.maximumFractionDigits !== 'undefined'
-  return format(number, numberFormatter, hasMaximumFractionDigits)
+  return format(number, numberFormatter)
 }
 
 /**
@@ -147,6 +143,25 @@ export const formatAmountWithPrecision = (
 // Fiat formatting
 
 /**
+ * Leverage Intl.NumberFormat to retrieve minimum demonination of a currency
+ * @param number Value of currency
+ * @param currency ISO 4217 currency code
+ */
+const getMinimumCurrencyDenominator = (number: string | number, currency: string): number => {
+  const float = Number(number)
+
+  const formatter = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency,
+  })
+
+  const fraction = formatter.formatToParts(float).find(({ type }) => type === 'fraction')
+
+  // Currencies may not have decimals, i.e. JPY
+  return fraction ? Number(`0.${'1'.padStart(fraction.value.length, '0')}`) : 1
+}
+
+/**
  * Intl.NumberFormatOptions for currency formatting
  * @param number Number to format
  * @param currency ISO 4217 currency code
@@ -167,14 +182,33 @@ const getCurrencyFormatterOptions = (number: string | number, currency: string):
  * @param currency ISO 4217 currency code
  */
 export const formatCurrency = (number: string | number, currency: string): string => {
-  const options = getCurrencyFormatterOptions(number, currency)
+  const minimum = getMinimumCurrencyDenominator(number, currency)
 
   const currencyFormatter = (float: number): string => {
+    const options = getCurrencyFormatterOptions(number, currency)
     const formatter = new Intl.NumberFormat(undefined, options)
 
-    const amount = formatter
-      .formatToParts(float) // Returns an array of objects with `type` and `value` properties
-      .filter(({ type }) => type !== 'currency')
+    const parts = formatter.formatToParts(float) // Returns an array of objects with `type` and `value` properties
+
+    const fraction = parts.find(({ type }) => type === 'fraction')
+
+    const amount = parts
+      .filter(({ type }) => type !== 'currency' && type !== 'literal') // Remove currency code and whitespace
+      .map((part) => {
+        if (float >= minimum) {
+          return part
+        }
+
+        if (fraction && part.type === 'fraction') {
+          return { ...part, value: '1'.padStart(fraction.value.length, '0') }
+        }
+
+        if (!fraction && part.type === 'integer') {
+          return { ...part, value: minimum.toString() }
+        }
+
+        return part
+      })
       .reduce((acc, { value }) => acc + value, '')
       .trim()
 
@@ -182,5 +216,5 @@ export const formatCurrency = (number: string | number, currency: string): strin
   }
 
   // We format currency to currency precision, not `maximumFractionDigits`
-  return format(number, currencyFormatter, false)
+  return format(number, currencyFormatter, minimum)
 }
