@@ -35,12 +35,12 @@ type JsonRpcResponse = {
 type UseAppCommunicatorConfig = {
   app?: SafeAppData
   onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => void
-  onSignTransactions: (message: string | EIP712TypedData, requestId: string, method: Methods) => void
+  onSignMessage: (message: string | EIP712TypedData, requestId: string, method: Methods) => void
 }
 
 const useAppCommunicator = (
   iframeRef: MutableRefObject<HTMLIFrameElement | null>,
-  { app, onConfirmTransactions, onSignTransactions }: UseAppCommunicatorConfig,
+  { app, onConfirmTransactions, onSignMessage }: UseAppCommunicatorConfig,
 ): AppCommunicator | undefined => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
 
@@ -141,13 +141,13 @@ const useAppCommunicator = (
     communicator?.on(Methods.signMessage, async (msg) => {
       const { message } = msg.data.params as SignMessageParams
 
-      onSignTransactions(message, msg.data.id, Methods.signMessage)
+      onSignMessage(message, msg.data.id, Methods.signMessage)
     })
 
     communicator?.on(Methods.signTypedMessage, async (msg) => {
       const { typedData } = msg.data.params as SignTypedMessageParams
 
-      onSignTransactions(typedData, msg.data.id, Methods.signTypedMessage)
+      onSignMessage(typedData, msg.data.id, Methods.signTypedMessage)
     })
 
     communicator?.on(Methods.getChainInfo, async () => {
@@ -159,7 +159,7 @@ const useAppCommunicator = (
         blockExplorerUriTemplate,
       }
     })
-  }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider, onConfirmTransactions, onSignTransactions])
+  }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider, onConfirmTransactions, onSignMessage])
 
   return communicator
 }

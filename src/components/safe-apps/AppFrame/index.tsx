@@ -38,7 +38,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const communicator = useAppCommunicator(iframeRef, {
     app: safeAppFromManifest,
     onConfirmTransactions: openTxModal,
-    onSignTransactions: openSignMessageModal,
+    onSignMessage: openSignMessageModal,
   })
 
   useEffect(() => {
