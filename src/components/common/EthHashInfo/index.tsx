@@ -11,6 +11,7 @@ import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 import { selectChainById } from '@/store/chainsSlice'
 import useChainId from '@/hooks/useChainId'
+import { ethers } from 'ethers'
 
 type EthHashInfoProps = {
   address: string
@@ -19,6 +20,8 @@ type EthHashInfoProps = {
   showAvatar?: boolean
   showCopyButton?: boolean
   prefix?: string
+  showPrefix?: boolean
+  copyPrefix?: boolean
   shortAddress?: boolean
   customAvatar?: string
   hasExplorer?: boolean
@@ -29,6 +32,8 @@ const EthHashInfo = ({
   address,
   customAvatar,
   prefix = '',
+  copyPrefix,
+  showPrefix,
   shortAddress = true,
   showAvatar = true,
   avatarSize,
@@ -37,6 +42,7 @@ const EthHashInfo = ({
   hasExplorer,
 }: EthHashInfoProps): ReactElement => {
   const [fallbackToIdenticon, setFallbackToIdenticon] = useState(false)
+  const shouldPrefix = ethers.utils.isAddress(address)
 
   return (
     <div className={css.container}>
@@ -65,11 +71,13 @@ const EthHashInfo = ({
 
         <Box className={css.addressRow}>
           <Typography variant="body2" fontWeight="inherit" component="div" className={css.address}>
-            {prefix && <b>{prefix}:</b>}
+            {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
             {shortAddress ? shortenAddress(address) : address}
           </Typography>
 
-          {showCopyButton && <CopyAddressButton prefix={prefix} address={address} />}
+          {showCopyButton && (
+            <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldPrefix && copyPrefix} />
+          )}
 
           {hasExplorer && <ExplorerLink address={address} />}
         </Box>
@@ -88,9 +96,16 @@ const PrefixedEthHashInfo = ({
   const addressBook = useAddressBook()
 
   const name = showName ? props.name || addressBook[props.address] : undefined
-  const prefix = props.address.length === 42 && settings.shortName.show ? chain?.shortName : undefined
 
-  return <EthHashInfo prefix={prefix} {...props} name={name} />
+  return (
+    <EthHashInfo
+      prefix={chain?.shortName}
+      showPrefix={settings.shortName.show}
+      copyPrefix={settings.shortName.copy}
+      {...props}
+      name={name}
+    />
+  )
 }
 
 export default PrefixedEthHashInfo

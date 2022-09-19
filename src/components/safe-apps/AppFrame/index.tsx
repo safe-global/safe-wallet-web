@@ -1,12 +1,10 @@
-import { ReactElement, useCallback, useEffect, useMemo } from 'react'
+import { ReactElement, useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
 import { getTransactionDetails, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useChainId from '@/hooks/useChainId'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { isSameUrl } from '@/utils/url'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
@@ -19,6 +17,7 @@ import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
 import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
+import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 
 type AppFrameProps = {
   appUrl: string
@@ -31,7 +30,8 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe } = useSafeInfo()
-  const [remoteApps] = useRemoteSafeApps()
+
+  const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
@@ -41,8 +41,6 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
     onConfirmTransactions: openTxModal,
     onSignTransactions: openSignMessageModal,
   })
-
-  const remoteApp = useMemo(() => remoteApps?.find((app: SafeAppData) => app.url === appUrl), [remoteApps, appUrl])
 
   useEffect(() => {
     if (!remoteApp) return
@@ -106,14 +104,13 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
 
       <iframe
         className={css.iframe}
-        frameBorder="0"
         id={`iframe-${appUrl}`}
         ref={iframeRef}
         src={appUrl}
         title={safeAppFromManifest?.name}
         onLoad={onIframeLoad}
         allow="camera"
-        style={{ display: appIsLoading ? 'none' : 'block' }}
+        style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
       />
 
       {txModalState.isOpen && (

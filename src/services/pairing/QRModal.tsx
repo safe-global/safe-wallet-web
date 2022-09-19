@@ -54,7 +54,6 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
     close()
   }
 
-  // TODO: Can this be rendered inside the tree?
   return (
     <StoreHydrator>
       <AppProviders>

@@ -1,17 +1,13 @@
 import { useMemo } from 'react'
 import {
   SettingsInfoType,
+  TransactionInfoType,
   TransferDirection,
   type AddressEx,
   type TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import {
-  isCancellationTxInfo,
-  isModuleExecutionInfo,
-  isTxQueued,
-  TransactionInfoType,
-} from '@/utils/transaction-guards'
+import { isCancellationTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import { DEFAULT_MODULE_NAME } from '@/components/settings/SafeModules'
 
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {

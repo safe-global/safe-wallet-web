@@ -7,15 +7,16 @@ import useBatchedTxs from '@/hooks/useBatchedTxs'
 import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
-import { TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useTxQueue from '@/hooks/useTxQueue'
 
-const BatchExecuteButton = ({ items }: { items: TransactionListItem[] }) => {
+const BatchExecuteButton = () => {
   const [open, setOpen] = useState(false)
   const pendingTxs = useAppSelector(selectPendingTxs)
   const hoverContext = useContext(BatchExecuteHoverContext)
-  const batchableTransactions = useBatchedTxs(items)
+  const { page } = useTxQueue()
+  const batchableTransactions = useBatchedTxs(page?.results || [])
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
 

@@ -1,11 +1,17 @@
 import { type ReactElement } from 'react'
-import { useAppSelector } from '@/store'
-import { selectSettings } from '@/store/settingsSlice'
+
 import CopyButton from '../CopyButton'
 
-const CopyAddressButton = ({ prefix, address }: { prefix?: string; address: string }): ReactElement => {
-  const settings = useAppSelector(selectSettings)
-  const addressText = settings.shortName.copy && prefix ? `${prefix}:${address}` : address
+const CopyAddressButton = ({
+  prefix,
+  address,
+  copyPrefix,
+}: {
+  prefix?: string
+  address: string
+  copyPrefix?: boolean
+}): ReactElement => {
+  const addressText = copyPrefix && prefix ? `${prefix}:${address}` : address
 
   return <CopyButton text={addressText} />
 }

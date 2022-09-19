@@ -9,7 +9,7 @@ const useRemoteSafeApps = (): AsyncResult<SafeAppsResponse> => {
 
   const [remoteApps, error, loading] = useAsync(async () => {
     if (!chainId) return
-    return getSafeApps(chainId)
+    return getSafeApps(chainId, { client_url: window.location.origin })
   }, [chainId])
 
   useEffect(() => {

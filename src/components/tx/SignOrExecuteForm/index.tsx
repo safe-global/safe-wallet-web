@@ -10,7 +10,7 @@ import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isHardwareWallet, isPaired } from '@/hooks/wallets/wallets'
+import { isHardwareWallet, isSafeMobileWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -92,7 +92,7 @@ const SignOrExecuteForm = ({
   const onSign = async (): Promise<string> => {
     const [connectedWallet, createdTx] = assertSubmittable()
 
-    const shouldEthSign = isHardwareWallet(connectedWallet) || isPaired(connectedWallet)
+    const shouldEthSign = isHardwareWallet(connectedWallet) || isSafeMobileWallet(connectedWallet)
     const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)

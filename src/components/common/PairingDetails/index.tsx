@@ -18,12 +18,7 @@ const PairingDetails = ({ vertical = false }: { vertical?: boolean }): ReactElem
   const uri = usePairingUri()
   const connector = usePairingConnector()
 
-  /**
-   * TODO: Fix connector to pick up changes when creating/killing a session
-   *
-   * Workaround because the disconnect listener
-   * in useInitPairing is not picking up the event
-   */
+  // Workaround because the disconnect listener in useInitPairing is not picking up the event
   useEffect(() => {
     connector?.on(WalletConnectEvents.DISCONNECT, () => {
       setDisplayRefresh(true)

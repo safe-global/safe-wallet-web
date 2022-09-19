@@ -15,6 +15,10 @@
   flex-direction: column;
 }
 
+.mainNoSidebar {
+  padding-left: 0;
+}
+
 .content {
   flex: 1;
   position: relative;
