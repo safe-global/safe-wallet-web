@@ -11,6 +11,7 @@ import useAppCommunicator from './useAppCommunicator'
 
 import css from './styles.module.css'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
+import TransactionQueueBar from '@/components/safe-apps/TransactionQueueBar'
 
 type AppFrameProps = {
   appUrl: string
@@ -66,6 +67,8 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
         allow="camera"
         style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
       />
+
+      <TransactionQueueBar />
     </div>
   )
 }
