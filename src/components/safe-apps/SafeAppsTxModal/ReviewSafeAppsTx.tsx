@@ -16,6 +16,7 @@ import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
 import { getInteractionTitle } from '../utils'
 import { SafeAppsTxParams } from '.'
 import { isEmptyHexData } from '@/utils/hex'
+import { dispatchSafeAppsTx } from '@/services/tx/txSender'
 
 type ReviewSafeAppsTxProps = {
   onSubmit: (data: null) => void
@@ -50,13 +51,18 @@ const ReviewSafeAppsTx = ({
     return getDecodedData(chainId, safeTx.data.data)
   }, [safeTx])
 
+  const handleSubmit = (txId: string) => {
+    dispatchSafeAppsTx(txId, requestId)
+    onSubmit(null)
+  }
+
   return (
     <SignOrExecuteForm
       safeTx={safeTx}
       isExecutable={canExecute}
-      onSubmit={onSubmit}
-      safeAppRequestId={requestId}
+      onSubmit={handleSubmit}
       error={safeTxError}
+      redirectToTx={false}
     >
       <>
         <SendFromBlock />
