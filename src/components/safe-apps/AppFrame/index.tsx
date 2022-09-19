@@ -57,14 +57,14 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   }, [appUrl, iframeRef, setAppIsLoading])
 
   useEffect(() => {
-    const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, requestId }) => {
-      const currentRequestId = signMessageModalState.requestId || txModalState.requestId
+    const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, safeAppRequestId }) => {
+      const currentSafeAppRequestId = signMessageModalState.requestId || txModalState.requestId
 
-      if (txId && currentRequestId === requestId) {
+      if (txId && currentSafeAppRequestId === safeAppRequestId) {
         const { detailedExecutionInfo } = await getTransactionDetails(chainId, txId)
 
         if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
-          communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, requestId)
+          communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, safeAppRequestId)
         }
 
         txModalState.isOpen ? closeTxModal() : closeSignMessageModal()

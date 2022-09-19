@@ -35,7 +35,7 @@ interface TxEvents {
   [TxEvent.REVERTED]: Id & { error: Error; receipt: ContractReceipt }
   [TxEvent.FAILED]: Id & { error: Error }
   [TxEvent.SUCCESS]: Id
-  [TxEvent.SAFE_APPS_REQUEST]: Id & { requestId: RequestId }
+  [TxEvent.SAFE_APPS_REQUEST]: Id & { safeAppRequestId: RequestId }
 }
 
 const txEventBus = new EventBus<TxEvents>()

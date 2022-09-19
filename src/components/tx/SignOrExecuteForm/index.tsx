@@ -30,7 +30,7 @@ type SignOrExecuteProps = {
   onSubmit: (data: null) => void
   children?: ReactNode
   error?: Error
-  requestId?: RequestId
+  safeAppRequestId?: RequestId
 }
 
 const SignOrExecuteForm = ({
@@ -42,7 +42,7 @@ const SignOrExecuteForm = ({
   onSubmit,
   children,
   error,
-  requestId,
+  safeAppRequestId,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -136,8 +136,8 @@ const SignOrExecuteForm = ({
     // For Safe Apps:
     // - Avoid redirection
     // - Dispatch an event for return the safeTxHash to the caller
-    if (requestId) {
-      txDispatch(TxEvent.SAFE_APPS_REQUEST, { txId: id, requestId })
+    if (safeAppRequestId) {
+      txDispatch(TxEvent.SAFE_APPS_REQUEST, { txId: id, safeAppRequestId })
       return
     }
 

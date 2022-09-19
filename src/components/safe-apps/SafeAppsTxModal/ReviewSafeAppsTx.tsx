@@ -54,7 +54,7 @@ const ReviewSafeAppsTx = ({
       safeTx={safeTx}
       isExecutable={canExecute}
       onSubmit={onSubmit}
-      requestId={requestId}
+      safeAppRequestId={requestId}
       error={safeTxError}
     >
       <>
