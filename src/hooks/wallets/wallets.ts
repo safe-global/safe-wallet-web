@@ -1,5 +1,13 @@
-import { FORTMATIC_KEY, PORTIS_KEY, TREZOR_APP_URL, TREZOR_EMAIL, WC_BRIDGE } from '@/config/constants'
+import {
+  CYPRESS_MNEMONIC,
+  FORTMATIC_KEY,
+  PORTIS_KEY,
+  TREZOR_APP_URL,
+  TREZOR_EMAIL,
+  WC_BRIDGE,
+} from '@/config/constants'
 import { type RecommendedInjectedWallets, type WalletInit } from '@web3-onboard/common/dist/types.d'
+import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import coinbaseModule from '@web3-onboard/coinbase'
 import fortmaticModule from '@web3-onboard/fortmatic'
@@ -12,6 +20,7 @@ import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 
 import pairingModule, { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
+import e2eWallet from '@/tests/e2e-wallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 export const enum WALLET_KEYS {
@@ -67,9 +76,12 @@ export const isWalletSupported = (disabledWallets: string[], walletLabel: string
   return !disabledWallets.includes(legacyWalletName || walletLabel)
 }
 
-export const getSupportedWallets = (disabledWallets: string[]): WalletInit[] => {
+export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
+  if (window.Cypress && CYPRESS_MNEMONIC) {
+    return [e2eWallet(chain)]
+  }
   return Object.entries(WALLET_MODULES)
-    .filter(([key]) => isWalletSupported(disabledWallets, key))
+    .filter(([key]) => isWalletSupported(chain.disabledWallets, key))
     .map(([, module]) => module())
 }
 
