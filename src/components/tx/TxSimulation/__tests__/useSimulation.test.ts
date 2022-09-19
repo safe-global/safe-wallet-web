@@ -3,10 +3,7 @@ import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { act, renderHook, waitFor } from '@/tests/test-utils'
 import { useSimulation } from '@/components/tx/TxSimulation/useSimulation'
 import * as utils from '@/components/tx/TxSimulation/utils'
-import * as web3 from '@/hooks/wallets/web3'
 import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/TxSimulation/types'
-import { Block, JsonRpcProvider } from '@ethersproject/providers'
-import { BigNumber } from 'ethers'
 
 const setupFetchStub = (data: any) => (_url: string) => {
   return Promise.resolve({
@@ -17,14 +14,6 @@ const setupFetchStub = (data: any) => (_url: string) => {
 }
 
 describe('useSimulation()', () => {
-  const mockProvider = new JsonRpcProvider()
-
-  mockProvider.getBlock = () => {
-    return Promise.resolve({
-      gasLimit: BigNumber.from(200_000),
-    } as Block)
-  }
-
   afterEach(() => {
     //@ts-ignore
     global.fetch?.mockClear?.()
@@ -37,8 +26,6 @@ describe('useSimulation()', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-
-    jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(mockProvider)
   })
 
   it('should have the correct initial values', () => {

@@ -3,7 +3,6 @@ import { useCallback, useMemo, useState } from 'react'
 import { getSimulation, getSimulationLink } from '@/components/tx/TxSimulation/utils'
 import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/TxSimulation/types'
 import { getSimulationPayload, type SimulationTxParams } from '@/components/tx/TxSimulation/utils'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 type UseSimulationReturn =
   | {
@@ -27,7 +26,6 @@ export const useSimulation = (): UseSimulationReturn => {
   const [simulation, setSimulation] = useState<TenderlySimulation | undefined>()
   const [simulationRequestStatus, setSimulationRequestStatus] = useState<FETCH_STATUS>(FETCH_STATUS.NOT_ASKED)
   const [requestError, setRequestError] = useState<string | undefined>(undefined)
-  const web3ReadOnly = useWeb3ReadOnly()
 
   const simulationLink = useMemo(() => getSimulationLink(simulation?.simulation.id || ''), [simulation])
 
@@ -37,29 +35,24 @@ export const useSimulation = (): UseSimulationReturn => {
     setSimulation(undefined)
   }, [])
 
-  const simulateTransaction = useCallback(
-    async (params: SimulationTxParams) => {
-      if (!web3ReadOnly) return
+  const simulateTransaction = useCallback(async (params: SimulationTxParams) => {
+    setSimulationRequestStatus(FETCH_STATUS.LOADING)
+    setRequestError(undefined)
 
-      setSimulationRequestStatus(FETCH_STATUS.LOADING)
-      setRequestError(undefined)
+    try {
+      const simulationPayload = await getSimulationPayload(params)
 
-      try {
-        const simulationPayload = await getSimulationPayload(params)
+      const data = await getSimulation(simulationPayload)
 
-        const data = await getSimulation(simulationPayload)
+      setSimulation(data)
+      setSimulationRequestStatus(FETCH_STATUS.SUCCESS)
+    } catch (error) {
+      console.error(error)
 
-        setSimulation(data)
-        setSimulationRequestStatus(FETCH_STATUS.SUCCESS)
-      } catch (error) {
-        console.error(error)
-
-        setRequestError((error as Error).message)
-        setSimulationRequestStatus(FETCH_STATUS.ERROR)
-      }
-    },
-    [web3ReadOnly],
-  )
+      setRequestError((error as Error).message)
+      setSimulationRequestStatus(FETCH_STATUS.ERROR)
+    }
+  }, [])
 
   return {
     simulateTransaction,
