@@ -20,7 +20,7 @@ import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 
 import pairingModule, { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
-import e2eWallet from '@/tests/e2e-wallet'
+import e2eWalletModule from '@/tests/e2e-wallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 export const enum WALLET_KEYS {
@@ -78,7 +78,7 @@ export const isWalletSupported = (disabledWallets: string[], walletLabel: string
 
 export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
   if (window.Cypress && CYPRESS_MNEMONIC) {
-    return [e2eWallet(chain)]
+    return [e2eWalletModule(chain)]
   }
   return Object.entries(WALLET_MODULES)
     .filter(([key]) => isWalletSupported(chain.disabledWallets, key))

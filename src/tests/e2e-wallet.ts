@@ -6,11 +6,11 @@ import { getRpcServiceUrl } from '@/hooks/wallets/web3'
 
 const WALLET_NAME = 'E2E Wallet'
 
-const e2eWallet = ({ rpcUri }: ChainInfo): WalletInit => {
+const e2eWalletModule = ({ rpcUri }: ChainInfo): WalletInit => {
   return () => {
     return {
       label: WALLET_NAME,
-      getIcon: async () => Promise.resolve('_'),
+      getIcon: async () => '<svg />',
       getInterface: async () => {
         const { createEIP1193Provider } = await import('@web3-onboard/common')
 
@@ -32,4 +32,4 @@ const e2eWallet = ({ rpcUri }: ChainInfo): WalletInit => {
   }
 }
 
-export default e2eWallet
+export default e2eWalletModule
