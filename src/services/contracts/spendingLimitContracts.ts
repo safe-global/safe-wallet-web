@@ -3,13 +3,13 @@ import { getAllowanceModuleDeployment } from '@gnosis.pm/safe-modules-deployment
 import { AllowanceModule, AllowanceModule__factory } from '@/types/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 
-// TODO: Yet to be implemented in Core SDK
 export const getSpendingLimitModuleAddress = (chainId: string): string | undefined => {
   const deployment = getAllowanceModuleDeployment({ network: chainId })
 
   return deployment?.networkAddresses[chainId]
 }
 
+// SDK request here: https://github.com/safe-global/safe-core-sdk/issues/263
 export const getSpendingLimitContract = (
   chainId: string,
   provider: JsonRpcProvider | JsonRpcSigner,

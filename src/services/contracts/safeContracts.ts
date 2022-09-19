@@ -24,7 +24,7 @@ export const _getValidatedGetContractProps = (
     throw new Error(`${safeVersion} is not a valid Safe version`)
   }
 
-  // TODO: Implement in Core SDK
+  // SDK request here: https://github.com/safe-global/safe-core-sdk/issues/261
   // Remove '+L2'/'+Circles' metadata from version
   const [noMetadataVersion] = safeVersion.split('+')
 
@@ -158,7 +158,7 @@ const getFallbackHandlerContractDeployment = (chainId: string) => {
   )
 }
 
-// TODO: Yet to be implemented in Core SDK
+// SDK request here: https://github.com/safe-global/safe-core-sdk/issues/262
 export const getFallbackHandlerContractInstance = (chainId: string): Compatibility_fallback_handler => {
   const fallbackHandlerDeployment = getFallbackHandlerContractDeployment(chainId)
 
