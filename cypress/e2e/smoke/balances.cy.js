@@ -14,7 +14,7 @@ describe('Assets > Coins', () => {
 
   before(() => {
     // Open the Safe used for testing
-    cy.visit(`/${TEST_SAFE}/balances`)
+    cy.visit(`/${TEST_SAFE}/balances`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
     // Table is loaded
     cy.contains(/^Ether$/)
@@ -165,7 +165,7 @@ describe('Assets > Coins', () => {
   describe('pagination should work', () => {
     before(() => {
       // Open the Safe used for testing pagination
-      cy.visit(`/${PAGINATION_TEST_SAFE}/balances`)
+      cy.visit(`/${PAGINATION_TEST_SAFE}/balances`, { failOnStatusCode: false })
       // Table is loaded
       cy.contains(/^Ether$/)
     })
