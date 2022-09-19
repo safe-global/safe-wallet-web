@@ -1,9 +1,20 @@
 import * as formatters from '@/utils/formatters'
 
 describe('formatters', () => {
-  describe('safeFormatUnits', () => {
-    // FIXME: Remove when temporary fix is removed from `safeFormatUnits`
+  describe('removeTrailingZeros', () => {
     it('strips trailing 0s', () => {
+      const result1 = formatters._removeTrailingZeros('1.000000000000000000')
+      expect(result1).toBe('1')
+
+      const result2 = formatters._removeTrailingZeros('1.00001000000')
+      expect(result2).toBe('1.00001')
+
+      const result3 = formatters._removeTrailingZeros('1')
+      expect(result3).toBe('1')
+    })
+  })
+  describe('safeFormatUnits', () => {
+    it('formats to gwei by default', () => {
       const result1 = formatters.safeFormatUnits('1')
       expect(result1).toBe('0.000000001')
 
