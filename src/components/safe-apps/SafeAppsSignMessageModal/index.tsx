@@ -1,5 +1,5 @@
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { EIP712TypedData, RequestId } from '@gnosis.pm/safe-apps-sdk'
+import { EIP712TypedData, Methods, RequestId } from '@gnosis.pm/safe-apps-sdk'
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import TxModal, { TxModalProps } from '@/components/tx/TxModal'
 import SafeAppsModalLabel from '../SafeAppsModalLabel'
@@ -10,7 +10,7 @@ export type SafeAppsSignMessageParams = {
   app?: SafeAppData
   requestId: RequestId
   message: string | EIP712TypedData
-  method: string
+  method: Methods.signMessage | Methods.signTypedMessage
 }
 
 const SafeAppsSignSteps: TxStepperProps['steps'] = [
