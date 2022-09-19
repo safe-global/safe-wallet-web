@@ -11,6 +11,7 @@ import {
 import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
 import { hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/TxSimulation/types'
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
   if (!chain) {
@@ -27,7 +28,14 @@ export const getSimulation = async (tx: TenderlySimulatePayload): Promise<Tender
   const data = await fetch(TENDERLY_SIMULATE_ENDPOINT_URL, {
     method: 'POST',
     body: JSON.stringify(tx),
-  }).then((res) => res.json())
+  }).then((res) => {
+    if (res.ok) {
+      return res.json()
+    }
+    return res.json().then((data) => {
+      throw new Error(`${res.status} - ${res.statusText}: ${data?.error?.message}`)
+    })
+  })
 
   return data as TenderlySimulation
 }
@@ -40,7 +48,7 @@ type SingleTransactionSimulationParams = {
   safe: SafeInfo
   executionOwner: string
   transactions: SafeTransaction
-  gasLimit: number
+  gasLimit?: number
   canExecute: boolean
 }
 
@@ -48,7 +56,7 @@ type MultiSendTransactionSimulationParams = {
   safe: SafeInfo
   executionOwner: string
   transactions: MetaTransactionData[]
-  gasLimit: number
+  gasLimit?: number
   canExecute: boolean
 }
 
@@ -59,12 +67,12 @@ export const _getSingleTransactionPayload = (
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   // If a transaction is executable we simulate with the proposed/selected gasLimit and the actual signatures
   let transaction = params.transactions
-
-  // Otherwise we overwrite the threshold to 1 on Tenderly and create a signature
-  if (!params.canExecute) {
+  const hasOwnerSignature = transaction.signatures.has(params.executionOwner)
+  // If the owner's sig is missing and the tx threshold is not reached we add the owner's preValidated signature
+  const needsOwnerSignature = !hasOwnerSignature && transaction.signatures.size < params.safe.threshold
+  if (needsOwnerSignature) {
     const simulatedTransaction = new EthSafeTransaction(params.transactions.data)
     simulatedTransaction.addSignature(generatePreValidatedSignature(params.executionOwner))
-
     transaction = simulatedTransaction
   }
 
@@ -129,19 +137,48 @@ const isSingleTransactionSimulation = (params: SimulationTxParams): params is Si
   return !Array.isArray(params.transactions)
 }
 
-export const getSimulationPayload = (params: SimulationTxParams): TenderlySimulatePayload => {
+/**
+ * @returns true for single MultiSig transactions if the provided signatures plus the current owner's signature (if missing)
+ * do not reach the safe's threshold.
+ */
+const isOverwriteThreshold = (params: SimulationTxParams) => {
+  if (!isSingleTransactionSimulation(params)) {
+    return false
+  }
+  const tx = params.transactions
+  const hasOwnerSig = tx.signatures.has(params.executionOwner)
+  const effectiveSigs = tx.signatures.size + (hasOwnerSig ? 0 : 1)
+  return params.safe.threshold > effectiveSigs
+}
+
+const getLatestBlockGasLimit = async (): Promise<number> => {
+  const web3ReadOnly = getWeb3ReadOnly()
+  const latestBlock = await web3ReadOnly?.getBlock('latest')
+  if (!latestBlock) {
+    throw Error('Could not determine block gas limit')
+  }
+  return latestBlock.gasLimit.toNumber()
+}
+
+export const getSimulationPayload = async (params: SimulationTxParams): Promise<TenderlySimulatePayload> => {
+  const gasLimit = params.gasLimit || (await getLatestBlockGasLimit())
+
   const payload = isSingleTransactionSimulation(params)
     ? _getSingleTransactionPayload(params)
     : _getMultiSendCallOnlyPayload(params)
+
+  const overwriteThreshold = isOverwriteThreshold(params)
 
   return {
     ...payload,
     network_id: params.safe.chainId,
     from: params.executionOwner,
-    gas: params.gasLimit,
+    gas: gasLimit,
     // With gas price 0 account don't need token for gas
     gas_price: '0',
-    state_objects: _getStateOverride(params.safe.address.value, undefined, undefined, THRESHOLD_ONE_STORAGE_OVERRIDE),
+    state_objects: overwriteThreshold
+      ? _getStateOverride(params.safe.address.value, undefined, undefined, THRESHOLD_ONE_STORAGE_OVERRIDE)
+      : undefined,
     save: true,
     save_if_fails: true,
   }
