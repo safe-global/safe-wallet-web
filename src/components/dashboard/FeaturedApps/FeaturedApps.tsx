@@ -2,7 +2,6 @@ import { ReactElement, useMemo } from 'react'
 import styled from '@emotion/styled'
 import { Box, Grid, Typography } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
-import { SAFE_REACT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 
@@ -26,7 +25,8 @@ const StyledGridItem = styled(Grid)`
 `
 
 const getSafeAppUrl = (appUrl: string, chainId: string) => {
-  return `${SAFE_REACT_URL}/share/safe-app?appUrl=${appUrl}&chainId=${chainId}`
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  return `${origin}/share/safe-app?appUrl=${encodeURIComponent(appUrl)}&chainId=${chainId}`
 }
 
 export const FeaturedApps = (): ReactElement | null => {

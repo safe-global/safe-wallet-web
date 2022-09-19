@@ -1,7 +1,7 @@
 import React from 'react'
 import * as safeAppsGatewaySDK from '@gnosis.pm/safe-react-gateway-sdk'
 import { render, screen, waitFor, fireEvent, act } from '../test-utils'
-import AppsPage from '@/pages/safe/apps'
+import AppsPage from '@/pages/apps'
 import * as safeAppsService from '@/services/safe-apps/manifest'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({

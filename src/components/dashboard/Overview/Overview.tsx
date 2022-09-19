@@ -79,7 +79,7 @@ const Overview = (): ReactElement => {
   const { balances } = useBalances()
   const chain = useCurrentChain()
   const { chainId } = chain || {}
-  const assetsLink = `${AppRoutes.safe.balances.index}?safe=${router.query.safe}`
+  const assetsLink = `${AppRoutes.balances.index}?safe=${router.query.safe}`
 
   // Native token is always returned even when its balance is 0
   const tokenCount = useMemo(() => balances.items.filter((token) => token.balance !== '0').length, [balances])

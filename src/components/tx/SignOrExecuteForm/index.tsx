@@ -152,7 +152,7 @@ const SignOrExecuteForm = ({
     // Redirect to the single tx view
     if (!txId) {
       router.push({
-        pathname: AppRoutes.safe.transactions.tx,
+        pathname: AppRoutes.transactions.tx,
         query: { safe: router.query.safe, id },
       })
     }

@@ -4,6 +4,11 @@ import { formatAmount } from './formatNumber'
 
 const GWEI = 'gwei'
 
+export const _removeTrailingZeros = (value: string): string => {
+  // Match `.0` or `0*` after non-zero decimals by "Positive Lookbehind Assertion"
+  return value.replace(/(\.0*|(?<=(\..*))0*)$/, '')
+}
+
 /**
  * Converts value to raw, specified decimal precision
  * @param value value in unspecified unit
@@ -14,20 +19,8 @@ export const safeFormatUnits = (value: BigNumberish, decimals: number | string =
   try {
     const formattedAmount = formatUnits(value, decimals)
 
-    // FIXME: Temporary fix as ethers' `formatFixed` doesn't strip trailing 0s
-    // for very high/low amounts, we can't `parseFloat` as it returns exponentials
-
-    let [integer, fractions] = formattedAmount.split('.')
-
-    if (!fractions) {
-      return formattedAmount
-    }
-
-    while (fractions[fractions.length - 1] === '0') {
-      fractions = fractions.substring(0, fractions.length - 1)
-    }
-
-    return fractions ? `${integer}.${fractions}` : integer
+    // ethers' `formatFixed` doesn't remove trailing 0s and using `parseFloat` can return exponentials
+    return _removeTrailingZeros(formattedAmount)
   } catch (err) {
     console.error('Error formatting units', err)
     return ''
