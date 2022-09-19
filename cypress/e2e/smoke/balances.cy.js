@@ -141,9 +141,9 @@ describe('Assets > Coins', () => {
   describe('fiat currency can be changed', () => {
     it('should have ETH as default currency', () => {
       // First row Fiat balance should not contain EUR
-      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', '€')
+      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'EUR')
       // First row Fiat balance should contain USD
-      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).contains('$')
+      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).contains('USD')
     })
 
     it('should allow changing the currency to EUR', () => {
@@ -154,9 +154,9 @@ describe('Assets > Coins', () => {
       cy.get('ul[role="listbox"]').findByText('EUR').click()
 
       // First row Fiat balance should not contain USD
-      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', '$')
+      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'USD')
       // First row Fiat balance should contain EUR
-      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).contains('€')
+      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).contains('EUR')
     })
   })
 
