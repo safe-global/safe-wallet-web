@@ -5,30 +5,31 @@ describe('Landing page', () => {
     cy.url().should('include', '/welcome')
   })
 
-  it('features discoverability cookies', () => {
+  it('should require accept "Updates" cookies to display Beamer', () => {
     cy.visit('/')
 
-    let preferencesModal = cy.contains('We use cookies to provide').parent()
+    // Way to select the cookies banner without an id
+    cy.contains('We use cookies to provide').parent('div').should('be.visible')
+    cy.contains('We use cookies to provide').parent('div').contains('Accept selection').click()
+    cy.contains('We use cookies to provide').should('not.exist')
 
-    preferencesModal.contains('Accept selection').click()
-    preferencesModal.should('not.exist')
-
+    // Open What's New
     cy.contains("What's New").click()
 
-    //The modal was closed, so the element has to be set again
-    preferencesModal = cy.contains('We use cookies to provide').parent()
+    // Tells that the user has to accept "Updates & Feedback" cookies
+    cy.contains('We use cookies to provide').parent('div').contains('accept the "Updates & Feedback"')
 
-    preferencesModal.contains('accept the "Updates & Feedback"')
+    // "Updates" is checked when the banner opens
+    cy.contains('We use cookies to provide').parent('div').get('input[name="updates"]').should('be.checked')
+    // Accept "Updates & Feedback" cookies
+    cy.contains('We use cookies to provide').parent('div').contains('Accept selection').click()
+    cy.contains('We use cookies to provide').should('not.exist')
 
-    //TODO: understand why after every contains the next search is on the child instead of the current DOM object.
-    //Solved for now "going back" to the parent every time
-    preferencesModal.parent().contains('Updates (Beamer)').click()
-    preferencesModal.parent().contains('Accept selection').click()
-    preferencesModal.should('not.exist')
+    // wait for Beamer cookies to be set
+    cy.wait(3000)
 
-    // Open the features discoverability section
-    // cy.wait(3000) // TODO: wait for Beamer cookies to be set
-    // cy.contains("What's New").click()
-    // cy.get('#beamerOverlay .iframeCointaner').should('exist')
+    // Open What's New
+    cy.contains("What's New").click({ force: true }) // clicks through the "lastPostTitle"
+    cy.get('#beamerOverlay .iframeCointaner').should('exist')
   })
 })
