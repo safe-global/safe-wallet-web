@@ -87,7 +87,12 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
   <AppCardContainer url={url} variant="compact">
     <div className={styles.compactCardContainer}>
       {/* App logo */}
-      <img src={safeApp.iconUrl} style={{ width: 52, height: 52 }} alt={`${safeApp.name} logo`} />
+      <Avatar
+        src={safeApp.iconUrl}
+        alt={`${safeApp.name} logo`}
+        variant="square"
+        sx={{ objectFit: 'contain', width: 52, height: 52 }}
+      />
 
       {/* Share button */}
       <CopyButton
