@@ -2,7 +2,6 @@ import { useState, MouseEvent, type ReactElement } from 'react'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ListItemText from '@mui/material/ListItemText'
 
@@ -12,8 +11,7 @@ import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import PencilIcon from '@/public/images/sidebar/safe-list/pencil.svg'
 import TrashIcon from '@/public/images/sidebar/safe-list/trash.svg'
-
-import css from './styles.module.css'
+import ContextMenu from '@/components/common/ContextMenu'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 
 enum ModalType {
@@ -64,17 +62,7 @@ const SafeListContextMenu = ({
       <IconButton edge="end" size="small" onClick={handleOpenContextMenu}>
         <MoreVertIcon sx={({ palette }) => ({ color: palette.border.main })} />
       </IconButton>
-      <Menu
-        className={css.menu}
-        anchorEl={anchorEl}
-        open={!!anchorEl}
-        onClose={handleCloseContextMenu}
-        sx={({ palette }) => ({
-          '.MuiMenuItem-root:hover': {
-            backgroundColor: palette.primary.background,
-          },
-        })}
-      >
+      <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
         <MenuItem onClick={handleOpenModal(ModalType.RENAME, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
           <ListItemIcon>
             <PencilIcon alt="Rename" size={16} />
@@ -90,7 +78,7 @@ const SafeListContextMenu = ({
             <ListItemText>Remove</ListItemText>
           </MenuItem>
         )}
-      </Menu>
+      </ContextMenu>
 
       {open[ModalType.RENAME] && (
         <EntryDialog
