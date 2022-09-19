@@ -1,5 +1,6 @@
 import {
   ChainInfo,
+  ConflictType,
   DateLabel,
   ExecutionInfo,
   FEATURES,
@@ -8,13 +9,9 @@ import {
   MultisigExecutionInfo,
   Transaction,
   TransactionDetails,
-} from '@gnosis.pm/safe-react-gateway-sdk'
-import {
-  isModuleExecutionInfo,
-  isMultisigExecutionDetails,
-  isTxQueued,
   TransactionListItemType,
-} from './transaction-guards'
+} from '@gnosis.pm/safe-react-gateway-sdk'
+import { isModuleDetailedExecutionInfo, isMultisigDetailedExecutionInfo, isTxQueued } from './transaction-guards'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
@@ -40,7 +37,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
   const getMultisigExecutionInfo = ({
     detailedExecutionInfo,
   }: TransactionDetails): MultisigExecutionInfo | undefined => {
-    if (!isMultisigExecutionDetails(detailedExecutionInfo)) return undefined
+    if (!isMultisigDetailedExecutionInfo(detailedExecutionInfo)) return undefined
 
     return {
       type: detailedExecutionInfo.type,
@@ -51,20 +48,20 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
     }
   }
 
-  const executionInfo: ExecutionInfo | undefined = isModuleExecutionInfo(txDetails.detailedExecutionInfo)
+  const executionInfo: ExecutionInfo | undefined = isModuleDetailedExecutionInfo(txDetails.detailedExecutionInfo)
     ? (txDetails.detailedExecutionInfo as ExecutionInfo)
     : getMultisigExecutionInfo(txDetails)
 
   // Will only be used as a fallback whilst waiting on backend tx creation cache
   const now = Date.now()
   const timestamp = isTxQueued(txDetails.txStatus)
-    ? isMultisigExecutionDetails(txDetails.detailedExecutionInfo)
+    ? isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
       ? txDetails.detailedExecutionInfo.submittedAt
       : now
     : txDetails.executedAt || now
 
   return {
-    type: 'TRANSACTION',
+    type: TransactionListItemType.TRANSACTION,
     transaction: {
       id: txDetails.txId,
       timestamp,
@@ -73,7 +70,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       executionInfo,
       safeAppInfo: txDetails?.safeAppInfo,
     },
-    conflictType: 'None',
+    conflictType: ConflictType.NONE,
   }
 }
 
@@ -101,7 +98,7 @@ export const getMultiSendTxs = (
 
   return txs
     .map((tx) => {
-      if (!isMultisigExecutionDetails(tx.detailedExecutionInfo)) return
+      if (!isMultisigDetailedExecutionInfo(tx.detailedExecutionInfo)) return
 
       const args = extractTxInfo(tx, safeAddress)
       const sigs = getSignatures(args.signatures)
@@ -146,7 +143,6 @@ export const getSafeTxs = (txs: TransactionDetails[], chainId: string, safeAddre
 }
 
 export const getTxOptions = (params: AdvancedParameters, currentChain: ChainInfo | undefined): TransactionOptions => {
-  // TODO: The `nonce` type will be updated to `number | string` in the next Core SDK release
   const txOptions: TransactionOptions = {
     gasLimit: params.gasLimit?.toString(),
     maxFeePerGas: params.maxFeePerGas?.toString(),

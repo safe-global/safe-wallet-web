@@ -27,7 +27,7 @@ describe('useSimulation()', () => {
 
   afterEach(() => {
     //@ts-ignore
-    global.fetch?.mockClear()
+    global.fetch?.mockClear?.()
   })
 
   afterAll(() => {

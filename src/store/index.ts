@@ -66,18 +66,19 @@ const hydrationReducer: typeof rootReducer = (state, action) => {
   return rootReducer(state, action)
 }
 
-const makeStore = () => {
+const makeStore = (initialState?: Record<string, any>) => {
   return configureStore({
     reducer: hydrationReducer,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
     devTools: !IS_PRODUCTION,
+    preloadedState: initialState,
   })
 }
 
 export const StoreHydrator = createStoreHydrator(makeStore)
 
 export type AppDispatch = ReturnType<typeof makeStore>['dispatch']
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof hydrationReducer>
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AnyAction>
 

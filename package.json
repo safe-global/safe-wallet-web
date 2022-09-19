@@ -15,7 +15,7 @@
     "prettier": "prettier -w \"{src,cypress,mocks,scripts}/**/*.{ts,tsx,css,js}\"",
     "fix": "yarn lint:fix && ts-prune && yarn prettier",
     "test": "cross-env TZ=CET DEBUG_PRINT_LIMIT=30000 jest",
-    "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
+    "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
     "routes": "node scripts/generate-routes.js > src/config/routes.ts && prettier -w src/config/routes.ts && cat src/config/routes.ts",
     "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./src/styles/vars.css && prettier -w src/styles/vars.css",
@@ -44,7 +44,7 @@
     "@gnosis.pm/safe-deployments": "^1.15.0",
     "@gnosis.pm/safe-ethers-lib": "^1.5.0",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
-    "@gnosis.pm/safe-react-gateway-sdk": "^3.3.5",
+    "@gnosis.pm/safe-react-gateway-sdk": "^3.4.1",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.3",
     "@mui/x-date-pickers": "^5.0.0-beta.6",
@@ -66,6 +66,7 @@
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^5.6.8",
     "exponential-backoff": "^3.1.0",
+    "fuse.js": "^6.6.2",
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
     "next": "12.2.0",
@@ -108,7 +109,6 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "fuse.js": "^6.6.2",
     "jest": "^28.1.2",
     "jest-environment-jsdom": "^28.1.2",
     "pre-commit": "^1.2.2",
@@ -116,6 +116,7 @@
     "ts-node": "^10.8.2",
     "ts-prune": "^0.10.3",
     "typechain": "^8.0.0",
-    "typescript": "4.7.4"
+    "typescript": "4.7.4",
+    "whatwg-fetch": "3.6.2"
   }
 }

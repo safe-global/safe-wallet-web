@@ -1,15 +1,12 @@
 import { MouseEvent, type ReactElement, useState } from 'react'
 import IconButton from '@mui/material/IconButton'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ListItemText from '@mui/material/ListItemText'
 
 import useAddressBook from '@/hooks/useAddressBook'
 import EntryDialog from '@/components/address-book/EntryDialog'
-
-// TODO: We should abstract the context menu in order not to import it like this
-import css from '@/components/sidebar/SafeListContextMenu/styles.module.css'
+import ContextMenu from '@/components/common/ContextMenu'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import { Transfer, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
@@ -42,18 +39,14 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
     setAnchorEl(undefined)
   }
 
-  const handleOpenModal =
-    (type: keyof typeof open, event?: typeof TX_LIST_EVENTS.ADDRESS_BOOK, label?: string) => () => {
-      handleCloseContextMenu()
-      setOpen((prev) => ({ ...prev, [type]: true }))
+  const handleOpenModal = (type: keyof typeof open, event?: typeof TX_LIST_EVENTS.ADDRESS_BOOK) => () => {
+    handleCloseContextMenu()
+    setOpen((prev) => ({ ...prev, [type]: true }))
 
-      if (event) {
-        trackEvent({
-          ...event,
-          label,
-        })
-      }
+    if (event) {
+      trackEvent(event)
     }
+  }
 
   const handleCloseModal = () => {
     setOpen(defaultOpen)
@@ -77,27 +70,17 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
       <IconButton edge="end" size="small" onClick={handleOpenContextMenu} sx={{ ml: '4px' }}>
         <MoreHorizIcon sx={({ palette }) => ({ color: palette.border.main })} fontSize="small" />
       </IconButton>
-      <Menu
-        className={css.menu}
-        anchorEl={anchorEl}
-        open={!!anchorEl}
-        onClose={handleCloseContextMenu}
-        sx={({ palette }) => ({
-          '.MuiMenuItem-root:hover': {
-            backgroundColor: palette.primary.background,
-          },
-        })}
-      >
+      <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
         {canSendAgain && (
           <MenuItem onClick={handleOpenModal(ModalType.SEND_AGAIN, TX_LIST_EVENTS.SEND_AGAIN)} disabled={!isGranted}>
             <ListItemText>Send again</ListItemText>
           </MenuItem>
         )}
 
-        <MenuItem onClick={handleOpenModal(ModalType.ADD_TO_AB, TX_LIST_EVENTS.ADDRESS_BOOK, 'Add')}>
+        <MenuItem onClick={handleOpenModal(ModalType.ADD_TO_AB, TX_LIST_EVENTS.ADDRESS_BOOK)}>
           <ListItemText>Add to address book</ListItemText>
         </MenuItem>
-      </Menu>
+      </ContextMenu>
 
       {open[ModalType.SEND_AGAIN] && (
         <TokenTransferModal onClose={handleCloseModal} initialData={[{ recipient, tokenAddress, amount }]} />

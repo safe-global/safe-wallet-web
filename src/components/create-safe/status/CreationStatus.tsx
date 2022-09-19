@@ -133,7 +133,7 @@ export const CreationStatus = ({ onClose }: Props) => {
       {displaySafeLink && (
         <Box mt={3}>
           <Track {...CREATE_SAFE_EVENTS.GO_TO_SAFE}>
-            <Link href={{ pathname: AppRoutes.safe.home, query: { safe: safeAddress } }} passHref>
+            <Link href={{ pathname: AppRoutes.home, query: { safe: safeAddress } }} passHref>
               <Button variant="contained">Open your Safe</Button>
             </Link>
           </Track>
