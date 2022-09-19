@@ -1,10 +1,12 @@
 import { ReactElement, useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
-import { getTransactionDetails, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
+import useChainId from '@/hooks/useChainId'
 import { isSameUrl } from '@/utils/url'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
@@ -14,10 +16,9 @@ import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
 import SafeAppsTxModal from '../SafeAppsTxModal'
 import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
 import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
-import { isMultisigExecutionDetails } from '@/utils/transaction-guards'
+import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
-import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 
 type AppFrameProps = {
   appUrl: string
@@ -64,7 +65,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
       if (txId && currentRequestId === requestId) {
         const { detailedExecutionInfo } = await getTransactionDetails(chainId, txId)
 
-        if (isMultisigExecutionDetails(detailedExecutionInfo)) {
+        if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
           communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, requestId)
         }
 
