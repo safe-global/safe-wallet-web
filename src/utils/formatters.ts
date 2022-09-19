@@ -5,6 +5,7 @@ import { formatAmount } from './formatNumber'
 const GWEI = 'gwei'
 
 export const _removeTrailingZeros = (value: string): string => {
+  // Match `.0` or `0*` after non-zero decimals by "Positive Lookbehind Assertion"
   return value.replace(/(\.0*|(?<=(\..*))0*)$/, '')
 }
 
