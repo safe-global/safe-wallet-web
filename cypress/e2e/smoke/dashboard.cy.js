@@ -50,11 +50,11 @@ describe('Dashboard', () => {
 
     // Tx Builder app
     cy.contains('main p', 'Use Transaction Builder')
-    cy.get(`a[href*='/tx-builder']`).should('exist')
+    cy.get(`a[href*='tx-builder']`).should('exist')
 
     // WalletConnect app
     cy.contains('main p', 'Use WalletConnect')
-    cy.get(`a[href*='/wallet-connect']`).should('exist')
+    cy.get(`a[href*='wallet-connect']`).should('exist')
 
     // Featured apps have a Safe-specific link
     cy.get(`main section#featured-safe-apps a[href*="?appUrl=http"]`).should('have.length', 2)

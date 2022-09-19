@@ -38,7 +38,8 @@ const SafeTokenWidget = () => {
     return null
   }
 
-  const url = claimingApp ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${claimingApp?.url}` : undefined
+  const appUrl = encodeURIComponent(claimingApp?.url || '')
+  const url = claimingApp ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${appUrl}` : undefined
 
   const safeBalance = balances.balances.items.find((balanceItem) => balanceItem.tokenInfo.address === tokenAddress)
 

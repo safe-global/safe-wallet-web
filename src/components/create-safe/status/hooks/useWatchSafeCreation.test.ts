@@ -2,6 +2,7 @@ import { renderHook } from '@/tests/test-utils'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import * as router from 'next/router'
 import { NextRouter } from 'next/router'
+import { type SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import * as web3 from '@/hooks/wallets/web3'
 import * as pendingSafe from '@/components/create-safe/status/usePendingSafeCreation'
 import * as chainIdModule from '@/hooks/useChainId'
@@ -14,15 +15,13 @@ import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks'
 describe('useWatchSafeCreation', () => {
   beforeEach(() => {
     jest.resetAllMocks()
+    jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn(() => Promise.resolve({} as SafeInfo)))
 
     const mockProvider: Web3Provider = new Web3Provider(jest.fn())
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
   })
 
   it('should clear the tx hash if it exists on ERROR or REVERTED', () => {
-    // Prevent backOff logging after test is completed
-    jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn())
-
     const setStatusSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 
@@ -41,9 +40,6 @@ describe('useWatchSafeCreation', () => {
   })
 
   it('should not clear the tx hash if it doesnt exist on ERROR or REVERTED', () => {
-    // Prevent backOff logging after test is completed
-    jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn())
-
     const setStatusSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
 

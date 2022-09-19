@@ -56,32 +56,11 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
   const height = variant === 'compact' ? AppCardVariantHeights.compact : AppCardVariantHeights.default
   const aspectRatio = variant === 'compact' ? AppCardVariantAspectRatio.compact : AppCardVariantAspectRatio.default
 
-  if (url) {
-    return (
-      <Link href={url}>
-        <a rel="noreferrer">
-          <Card
-            sx={({ palette }) => ({
-              height,
-              aspectRatio,
-              transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
-              '&:hover': {
-                backgroundColor: palette.primary.background,
-                border: `2px solid ${palette.primary.light}`,
-              },
-            })}
-          >
-            {children}
-          </Card>
-        </a>
-      </Link>
-    )
-  }
-
-  return (
+  const card = (
     <Card
       sx={({ palette }) => ({
         height,
+        aspectRatio,
         transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
         '&:hover': {
           backgroundColor: palette.primary.background,
@@ -92,12 +71,30 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
       {children}
     </Card>
   )
+
+  if (url) {
+    return (
+      <Link href={url}>
+        <a rel="noreferrer">{card}</a>
+      </Link>
+    )
+  }
+
+  return card
 }
 
 const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAppCardProps): ReactElement => (
   <AppCardContainer url={url} variant="compact">
     <div className={styles.compactCardContainer}>
-      <img src={safeApp.iconUrl} style={{ width: 52, height: 52 }} alt={`${safeApp.name} logo`} />
+      {/* App logo */}
+      <Avatar
+        src={safeApp.iconUrl}
+        alt={`${safeApp.name} logo`}
+        variant="square"
+        sx={{ objectFit: 'contain', width: 52, height: 52 }}
+      />
+
+      {/* Share button */}
       <CopyButton
         text={shareUrl}
         initialToolTipText={`Copy share URL for ${safeApp.name}`}
@@ -105,6 +102,8 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
       >
         <ShareIcon width={16} alt="Share icon" />
       </CopyButton>
+
+      {/* Pin/unpin button */}
       {onPin && (
         <IconButton
           aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
@@ -127,9 +126,11 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
 const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppCardProps): ReactElement => {
   const router = useRouter()
   const currentChain = useCurrentChain()
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const appUrlQuery = encodeURIComponent(safeApp.url)
 
-  const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${safeApp.url}&chain=${currentChain?.shortName}`
-  const url = router.query.safe ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${safeApp.url}` : shareUrl
+  const shareUrl = `${origin}${AppRoutes.share.safeApp}?appUrl=${appUrlQuery}&chain=${currentChain?.shortName}`
+  const url = router.query.safe ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${appUrlQuery}` : shareUrl
 
   if (variant === 'compact') {
     return <CompactAppCard url={url} safeApp={safeApp} pinned={pinned} onPin={onPin} shareUrl={shareUrl} />
@@ -143,6 +144,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
         }
         action={
           <>
+            {/* Share button */}
             <CopyButton
               text={shareUrl}
               initialToolTipText={`Copy share URL for ${safeApp.name}`}
@@ -150,6 +152,8 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
             >
               <ShareIcon width={16} alt="Share icon" />
             </CopyButton>
+
+            {/* Pin/unpin button */}
             {onPin && (
               <IconButton
                 aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
@@ -165,6 +169,8 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
                 {pinned ? <BookmarkIcon /> : <BookmarkBorderIcon />}
               </IconButton>
             )}
+
+            {/* Delete custom app button */}
             {onDelete && (
               <IconButton
                 aria-label={`Delete ${safeApp.name}`}
