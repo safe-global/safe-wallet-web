@@ -17,16 +17,15 @@ describe('Create Safe', () => {
 
     // Name
     cy.wait(1000) // Wait for form default values to populate
-    cy.contains('button', 'Continue').click({ force: true })
+    cy.contains('button', 'Continue').click()
 
     // Owners and confirmations
-    cy.wait(1000)
+    cy.wait(1000) // Wait for form default values to populate
     cy.contains('button', 'Continue').click()
 
     // Review
     cy.wait(1000) // Not sure why without this ends with "Transaction underpriced"
     cy.contains('button', 'Create').click()
-
     cy.contains('Your Safe was successfully created!', { timeout: 60000 })
   })
 })
