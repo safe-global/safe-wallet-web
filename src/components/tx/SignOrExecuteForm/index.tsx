@@ -8,7 +8,6 @@ import {
   dispatchTxExecution,
   dispatchTxProposal,
   dispatchTxSigning,
-  dispatchSafeAppsTx,
   createTx,
 } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -32,10 +31,10 @@ type SignOrExecuteProps = {
   isExecutable: boolean
   isRejection?: boolean
   onlyExecute?: boolean
-  onSubmit: (data: null) => void
+  onSubmit: (txId: string) => void
   children?: ReactNode
   error?: Error
-  safeAppRequestId?: RequestId
+  redirectToTx?: boolean
 }
 
 const SignOrExecuteForm = ({
@@ -47,7 +46,7 @@ const SignOrExecuteForm = ({
   onSubmit,
   children,
   error,
-  safeAppRequestId,
+  redirectToTx = true,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -138,19 +137,11 @@ const SignOrExecuteForm = ({
       return
     }
 
-    // For Safe Apps:
-    // - Avoid redirection
-    // - Dispatch an event for return the safeTxHash to the caller
-    if (safeAppRequestId) {
-      dispatchSafeAppsTx(id, safeAppRequestId)
-      return
-    }
-
-    onSubmit(null)
+    onSubmit(id)
 
     // If txId isn't passed in props, it's a newly created tx
     // Redirect to the single tx view
-    if (!txId) {
+    if (redirectToTx && !txId) {
       router.push({
         pathname: AppRoutes.transactions.tx,
         query: { safe: router.query.safe, id },

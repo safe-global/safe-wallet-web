@@ -18,6 +18,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
 import { createTx } from '@/services/tx/txSender'
 import { convertToHumanReadableMessage } from '../utils'
+import { dispatchSafeAppsTx } from '@/services/tx/txSender'
 
 type ReviewSafeAppsSignMessageProps = {
   onSubmit: (data: null) => void
@@ -66,13 +67,18 @@ const ReviewSafeAppsSignMessage = ({
     })
   }, [])
 
+  const handleSubmit = (txId: string) => {
+    dispatchSafeAppsTx(txId, requestId)
+    onSubmit(null)
+  }
+
   return (
     <SignOrExecuteForm
       safeTx={safeTx}
       isExecutable={canExecute}
-      onSubmit={onSubmit}
-      safeAppRequestId={requestId}
+      onSubmit={handleSubmit}
       error={safeTxError}
+      redirectToTx={false}
     >
       <>
         <SendFromBlock />
