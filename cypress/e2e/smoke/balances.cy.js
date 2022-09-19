@@ -1,5 +1,5 @@
-const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 const assetsTable = '[aria-labelledby="tableTitle"] > tbody'
+const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 
 const TEST_SAFE = 'rin:0x11Df0fa87b30080d59eba632570f620e37f2a8f7'
 const PAGINATION_TEST_SAFE = 'rin:0x656c1121a6f40d25C5CFfF0Db08938DB7633B2A3'
@@ -14,8 +14,11 @@ describe('Assets > Coins', () => {
 
   before(() => {
     // Open the Safe used for testing
+    // Pages initially return a 404 thus we need to disable the failOnStatusCode
     cy.visit(`/${TEST_SAFE}/balances`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
+    // Table is loaded
+    cy.contains(/^Ether$/)
   })
 
   describe('should have different tokens', () => {
@@ -139,7 +142,7 @@ describe('Assets > Coins', () => {
   })
 
   describe('fiat currency can be changed', () => {
-    it('should have ETH as default currency', () => {
+    it('should have USD as default currency', () => {
       // First row Fiat balance should not contain EUR
       cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'EUR')
       // First row Fiat balance should contain USD
@@ -164,36 +167,43 @@ describe('Assets > Coins', () => {
     before(() => {
       // Open the Safe used for testing pagination
       cy.visit(`/${PAGINATION_TEST_SAFE}/balances`, { failOnStatusCode: false })
-      cy.contains('button', 'Accept selection').click()
-
-      //Ensure the table is fully loaded
-      cy.contains('Rows per page:', { timeout: 10000 })
+      // Table is loaded
+      cy.contains(/^Ether$/)
     })
-    it('should allow 25 rows per page and navigate to next and previous page', () => {
-      // Click on the pagination select dropdown
-      cy.get('[aria-haspopup="listbox"]').contains('25')
 
-      // Table should have 25 rows
+    it('should allow changing rows per page and navigate to next and previous page', () => {
+      // Table should have 25 rows inittially
+      cy.contains('Rows per page:').next().contains('25')
       cy.contains('1–25 of 27')
       cy.get(balanceSingleRow).should('have.length', 25)
 
+      // Change to 10 rows per page
+      cy.contains('Rows per page:').next().contains('25').click()
+      cy.get('ul[role="listbox"]').contains('10').click()
+
+      // Table should have 10 rows
+      cy.contains('Rows per page:').next().contains('10')
+      cy.contains('1–10 of 27')
+      cy.get(balanceSingleRow).should('have.length', 10)
+
       // Click on the next page button
       cy.get('button[aria-label="Go to next page"]').click()
+      cy.get('button[aria-label="Go to next page"]').click()
 
-      // Table should have 1 rows
-      cy.contains('26–27 of 27')
-      cy.get(balanceSingleRow).should('have.length', 2)
+      // Table should have 7 rows
+      cy.contains('21–27 of 27')
+      cy.get(balanceSingleRow).should('have.length', 7)
 
       // Click on the previous page button
       cy.get('button[aria-label="Go to previous page"]').click()
 
-      // Table should have 25 rows
-      cy.contains('1–25 of 27')
-      cy.get(balanceSingleRow).should('have.length', 25)
+      // Table should have 10 rows
+      cy.contains('11–20 of 27')
+      cy.get(balanceSingleRow).should('have.length', 10)
     })
   })
 
-  describe('should open assets modals', () => {
+  describe.skip('should open assets modals', () => {
     const receiveAssetsModalTestId = 'div[aria-labelledby^=":r1"]'
 
     it('should open the Receive assets modal', () => {
