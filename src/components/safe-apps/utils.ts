@@ -18,8 +18,6 @@ const validateTransaction = (t: BaseTransaction): boolean => {
 
 export const isTxValid = (txs: BaseTransaction[]) => txs.length && txs.every((t) => validateTransaction(t))
 
-export const isNativeTransfer = (encodedData: string) => encodedData && isNaN(parseInt(encodedData, 16))
-
 export const getInteractionTitle = (value?: string, chain?: ChainInfo) => {
   const { decimals, symbol } = chain!.nativeCurrency
   return `Interact with${

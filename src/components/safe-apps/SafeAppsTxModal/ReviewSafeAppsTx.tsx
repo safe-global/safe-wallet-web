@@ -13,8 +13,9 @@ import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
-import { getInteractionTitle, isNativeTransfer } from '../utils'
+import { getInteractionTitle } from '../utils'
 import { SafeAppsTxParams } from '.'
+import { isEmptyHexData } from '@/utils/hex'
 
 type ReviewSafeAppsTxProps = {
   onSubmit: (data: null) => void
@@ -44,7 +45,7 @@ const ReviewSafeAppsTx = ({
   }, [])
 
   const [decodedData] = useAsync<DecodedDataResponse | undefined>(async () => {
-    if (!safeTx || isNativeTransfer(safeTx.data.data)) return
+    if (!safeTx || isEmptyHexData(safeTx.data.data)) return
 
     return getDecodedData(chainId, safeTx.data.data)
   }, [safeTx])
