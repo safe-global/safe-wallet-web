@@ -202,34 +202,4 @@ describe('Assets > Coins', () => {
       cy.get(balanceSingleRow).should('have.length', 10)
     })
   })
-
-  describe.skip('should open assets modals', () => {
-    const receiveAssetsModalTestId = 'div[aria-labelledby^=":r1"]'
-
-    it('should open the Receive assets modal', () => {
-      // Assets table container should exist
-      cy.get('[data-track="overview: Show Safe QR code"]').should('be.visible').click()
-
-      // The Receive Assets modal should be present
-      cy.get(receiveAssetsModalTestId).should('be.visible')
-
-      // Receive assets should be present
-      cy.get(receiveAssetsModalTestId).findByText('Receive assets').should('be.visible')
-
-      // The Receive screen should have the correct address
-      const [, safeAddress] = PAGINATION_TEST_SAFE.split(':')
-      cy.get(receiveAssetsModalTestId).findByText(safeAddress).should('be.visible')
-
-      // Checking and unchecking the QR code
-      cy.get(receiveAssetsModalTestId).find('[type="checkbox"]').should('be.checked')
-
-      cy.get(receiveAssetsModalTestId).find('[type="checkbox"]').uncheck().should('not.be.checked')
-
-      // Click in the Done button
-      cy.get(receiveAssetsModalTestId).find('[data-testid="CloseIcon"]').click()
-
-      // The Receive screen should be hidden
-      cy.get(receiveAssetsModalTestId).should('not.exist')
-    })
-  })
 })
