@@ -163,7 +163,7 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSED', { txId: '123' })
     })
 
-    it('should fail to propose', async () => {
+    it('should fail to propose a signature', async () => {
       ;(proposeTx as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error')))
 
       const tx = await createTx({
@@ -176,6 +176,22 @@ describe('txSender', () => {
 
       expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSE_FAILED', {
         txId: '345',
+        error: new Error('error'),
+      })
+    })
+
+    it('should fail to propose a new tx', async () => {
+      ;(proposeTx as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error')))
+
+      const tx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+      })
+
+      await expect(dispatchTxProposal('4', '0x123', '0x456', tx)).rejects.toThrow('error')
+
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROPOSE_FAILED', {
         error: new Error('error'),
       })
     })
