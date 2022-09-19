@@ -3,6 +3,10 @@
   align-items: center;
 }
 
+.loadingText {
+  margin-left: var(--space-1);
+}
+
 .result {
   border: none;
 }

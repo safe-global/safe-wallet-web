@@ -9,7 +9,7 @@ type UseSimulationReturn =
   | {
       simulationRequestStatus: FETCH_STATUS.NOT_ASKED | FETCH_STATUS.ERROR | FETCH_STATUS.LOADING
       simulation: undefined
-      simulateTransaction: (params: Omit<SimulationTxParams, 'gasLimit'> & { manualGasLimit?: number }) => void
+      simulateTransaction: (params: SimulationTxParams) => void
       simulationLink: string
       requestError?: string
       resetSimulation: () => void
@@ -17,7 +17,7 @@ type UseSimulationReturn =
   | {
       simulationRequestStatus: FETCH_STATUS.SUCCESS
       simulation: TenderlySimulation
-      simulateTransaction: (params: Omit<SimulationTxParams, 'gasLimit'> & { manualGasLimit?: number }) => void
+      simulateTransaction: (params: SimulationTxParams) => void
       simulationLink: string
       requestError?: string
       resetSimulation: () => void
@@ -54,7 +54,7 @@ export const useSimulation = (): UseSimulationReturn => {
           gasLimit = latestBlock.gasLimit.toNumber()
         }
 
-        const simulationPayload = getSimulationPayload({
+        const simulationPayload = await getSimulationPayload({
           ...params,
           gasLimit,
         } as SimulationTxParams)

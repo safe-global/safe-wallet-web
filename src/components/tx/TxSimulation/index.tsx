@@ -16,12 +16,12 @@ import css from './styles.module.css'
 
 export type TxSimulationProps = {
   transactions: SimulationTxParams['transactions']
-  manualGasLimit?: number
+  gasLimit?: number
   canExecute: boolean
   disabled: boolean
 }
 
-const TxSimulationBlock = ({ transactions, canExecute, disabled, manualGasLimit }: TxSimulationProps): ReactElement => {
+const TxSimulationBlock = ({ transactions, canExecute, disabled, gasLimit }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
 
@@ -38,8 +38,8 @@ const TxSimulationBlock = ({ transactions, canExecute, disabled, manualGasLimit 
       executionOwner: wallet.address,
       transactions,
       canExecute,
-      manualGasLimit,
-    })
+      gasLimit,
+    } as SimulationTxParams)
   }
 
   const isSimulationFinished =
@@ -47,7 +47,7 @@ const TxSimulationBlock = ({ transactions, canExecute, disabled, manualGasLimit 
   const isSimulationLoading = simulationRequestStatus === FETCH_STATUS.LOADING
 
   return (
-    <Accordion expanded={isSimulationFinished} elevation={0} sx={{ mt: 2 }}>
+    <Accordion expanded={isSimulationFinished} elevation={0} sx={{ mt: '16px !important' }}>
       {!isSimulationFinished ? (
         <AccordionSummary className={css.simulateAccordion}>
           <Typography>Transaction validity</Typography>
@@ -60,7 +60,9 @@ const TxSimulationBlock = ({ transactions, canExecute, disabled, manualGasLimit 
               onClick={handleSimulation}
             >
               {isSimulationLoading && <CircularProgress size={14} />}
-              <span>{isSimulationLoading ? 'Simulating...' : 'Simulate'}</span>
+              <span className={isSimulationLoading ? css.loadingText : undefined}>
+                {isSimulationLoading ? 'Simulating...' : 'Simulate'}
+              </span>
             </Button>
           </Track>
         </AccordionSummary>

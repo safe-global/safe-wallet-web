@@ -11,6 +11,7 @@ import {
 import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
 import { hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/TxSimulation/types'
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
   if (!chain) {
@@ -47,7 +48,7 @@ type SingleTransactionSimulationParams = {
   safe: SafeInfo
   executionOwner: string
   transactions: SafeTransaction
-  gasLimit: number
+  gasLimit?: number
   canExecute: boolean
 }
 
@@ -55,7 +56,7 @@ type MultiSendTransactionSimulationParams = {
   safe: SafeInfo
   executionOwner: string
   transactions: MetaTransactionData[]
-  gasLimit: number
+  gasLimit?: number
   canExecute: boolean
 }
 
@@ -150,7 +151,15 @@ const isOverwriteThreshold = (params: SimulationTxParams) => {
   return params.safe.threshold > effectiveSigs
 }
 
-export const getSimulationPayload = (params: SimulationTxParams): TenderlySimulatePayload => {
+const getLatestBlockGasLimit = async (): Promise<number> => {
+  const web3 = getWeb3ReadOnly()
+  const latestBlock = await web3?.getBlock('latest')
+  return latestBlock?.gasLimit.toNumber() || 30_000_000
+}
+
+export const getSimulationPayload = async (params: SimulationTxParams): Promise<TenderlySimulatePayload> => {
+  const gasLimit = params.gasLimit || (await getLatestBlockGasLimit())
+
   const payload = isSingleTransactionSimulation(params)
     ? _getSingleTransactionPayload(params)
     : _getMultiSendCallOnlyPayload(params)
@@ -161,7 +170,7 @@ export const getSimulationPayload = (params: SimulationTxParams): TenderlySimula
     ...payload,
     network_id: params.safe.chainId,
     from: params.executionOwner,
-    gas: params.gasLimit,
+    gas: gasLimit,
     // With gas price 0 account don't need token for gas
     gas_price: '0',
     state_objects: overwriteThreshold

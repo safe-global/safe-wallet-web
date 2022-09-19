@@ -22,7 +22,7 @@ describe('simulation utils', () => {
     jest.spyOn(safeContracts, 'getSpecificGnosisSafeContractInstance').mockImplementation(() => safeContractMock as any)
   })
   describe('getSimulationPayload', () => {
-    it('unsigned executable multisig transaction with threshold 1', () => {
+    it('unsigned executable multisig transaction with threshold 1', async () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 1,
@@ -42,7 +42,7 @@ describe('simulation utils', () => {
         safeTxGas: 0,
       })
 
-      const tenderlyPayload = getSimulationPayload({
+      const tenderlyPayload = await getSimulationPayload({
         canExecute: true,
         executionOwner: ownerAddress,
         gasLimit: 50_000,
@@ -84,7 +84,7 @@ describe('simulation utils', () => {
       expect(tenderlyPayload.state_objects).toBeUndefined()
     })
 
-    it('fully signed executable multisig transaction with threshold 2', () => {
+    it('fully signed executable multisig transaction with threshold 2', async () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
       const otherOwnerAddress1 = ethers.utils.hexZeroPad('0x11', 20)
       const otherOwnerAddress2 = ethers.utils.hexZeroPad('0x12', 20)
@@ -110,7 +110,7 @@ describe('simulation utils', () => {
       mockTx.addSignature(generatePreValidatedSignature(otherOwnerAddress1))
       mockTx.addSignature(generatePreValidatedSignature(otherOwnerAddress2))
 
-      const tenderlyPayload = getSimulationPayload({
+      const tenderlyPayload = await getSimulationPayload({
         canExecute: true,
         executionOwner: ownerAddress,
         gasLimit: 50_000,
@@ -126,7 +126,7 @@ describe('simulation utils', () => {
       expect(tenderlyPayload.state_objects).toBeUndefined()
     })
 
-    it('partially signed executable multisig transaction with threshold 2', () => {
+    it('partially signed executable multisig transaction with threshold 2', async () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
       const otherOwnerAddress1 = ethers.utils.hexZeroPad('0x11', 20)
 
@@ -150,7 +150,7 @@ describe('simulation utils', () => {
 
       mockTx.addSignature(generatePreValidatedSignature(otherOwnerAddress1))
 
-      const tenderlyPayload = getSimulationPayload({
+      const tenderlyPayload = await getSimulationPayload({
         canExecute: true,
         executionOwner: ownerAddress,
         gasLimit: 50_000,
@@ -166,7 +166,7 @@ describe('simulation utils', () => {
       expect(tenderlyPayload.state_objects).toBeUndefined()
     })
 
-    it('unsigned signed not-executable multisig transaction with threshold 2', () => {
+    it('unsigned signed not-executable multisig transaction with threshold 2', async () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
 
       const mockSafeInfo: Partial<SafeInfo> = {
@@ -187,7 +187,7 @@ describe('simulation utils', () => {
         safeTxGas: 0,
       })
 
-      const tenderlyPayload = getSimulationPayload({
+      const tenderlyPayload = await getSimulationPayload({
         canExecute: false,
         executionOwner: ownerAddress,
         gasLimit: 50_000,
