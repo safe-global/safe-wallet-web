@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 // @see https://nextjs.org/docs/api-reference/next.config.js/runtime-config-static-paths
 // Since we cannot enumerate all the possible Safe addresses which are part of the path,
 // we need to use the `?safe=` query parameter to pass the Safe address.
-// However, the user still sees the `/safe/` path in the browser URL.
+// However, the user should still sees `/rin:0x123.../balances` in the browser URL.
 // These two hooks make it work.
 
 // This hook takes the `?safe=` query parameter and rewrites the URL to put the Safe address into the path
