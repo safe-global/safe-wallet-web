@@ -178,7 +178,8 @@ describe('Assets > Coins', () => {
       cy.get(balanceSingleRow).should('have.length', 25)
 
       // Change to 10 rows per page
-      cy.contains('Rows per page:').next().contains('25').click()
+      // force click because the center of the element is hidden from the view
+      cy.contains('Rows per page:').next().contains('25').click({ force: true })
       cy.get('ul[role="listbox"]').contains('10').click()
 
       // Table should have 10 rows
@@ -187,15 +188,15 @@ describe('Assets > Coins', () => {
       cy.get(balanceSingleRow).should('have.length', 10)
 
       // Click on the next page button
-      cy.get('button[aria-label="Go to next page"]').click()
-      cy.get('button[aria-label="Go to next page"]').click()
+      cy.get('button[aria-label="Go to next page"]').click({ force: true })
+      cy.get('button[aria-label="Go to next page"]').click({ force: true })
 
       // Table should have 7 rows
       cy.contains('21–27 of 27')
       cy.get(balanceSingleRow).should('have.length', 7)
 
       // Click on the previous page button
-      cy.get('button[aria-label="Go to previous page"]').click()
+      cy.get('button[aria-label="Go to previous page"]').click({ force: true })
 
       // Table should have 10 rows
       cy.contains('11–20 of 27')
