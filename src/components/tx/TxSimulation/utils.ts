@@ -152,9 +152,12 @@ const isOverwriteThreshold = (params: SimulationTxParams) => {
 }
 
 const getLatestBlockGasLimit = async (): Promise<number> => {
-  const web3 = getWeb3ReadOnly()
-  const latestBlock = await web3?.getBlock('latest')
-  return latestBlock?.gasLimit.toNumber() || 30_000_000
+  const web3ReadOnly = getWeb3ReadOnly()
+  const latestBlock = await web3ReadOnly?.getBlock('latest')
+  if (!latestBlock) {
+    throw Error('Could not determine block gas limit')
+  }
+  return latestBlock.gasLimit.toNumber()
 }
 
 export const getSimulationPayload = async (params: SimulationTxParams): Promise<TenderlySimulatePayload> => {
