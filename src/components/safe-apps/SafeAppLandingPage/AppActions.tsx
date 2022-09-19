@@ -32,7 +32,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
   let button: React.ReactNode
   switch (true) {
     case hasWallet && hasSafes:
-      const href = `${AppRoutes.safe.apps}?appUrl=${encodeURIComponent(appUrl)}&safe=${chain.shortName}:${safeToUse}`
+      const href = `${AppRoutes.apps}?appUrl=${encodeURIComponent(appUrl)}&safe=${chain.shortName}:${safeToUse}`
 
       button = (
         <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse} href={href}>
@@ -41,7 +41,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
       )
       break
     case shouldCreateSafe:
-      const redirect = encodeURIComponent(`${AppRoutes.safe.apps}?appUrl=${appUrl}`)
+      const redirect = encodeURIComponent(`${AppRoutes.apps}?appUrl=${appUrl}`)
       const createSafeHrefWithRedirect = `${AppRoutes.open}?safeViewRedirectURL=${redirect}`
       button = (
         <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} href={createSafeHrefWithRedirect}>

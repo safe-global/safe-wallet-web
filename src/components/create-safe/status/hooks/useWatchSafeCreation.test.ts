@@ -151,6 +151,6 @@ describe('useWatchSafeCreation', () => {
       },
     )
 
-    expect(pushMock).toHaveBeenCalledWith({ pathname: AppRoutes.safe.home, query: { safe: 'rin:0x10' } })
+    expect(pushMock).toHaveBeenCalledWith({ pathname: AppRoutes.home, query: { safe: 'rin:0x10' } })
   })
 })

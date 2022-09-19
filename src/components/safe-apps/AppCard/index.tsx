@@ -130,7 +130,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   const appUrlQuery = encodeURIComponent(safeApp.url)
 
   const shareUrl = `${origin}${AppRoutes.share.safeApp}?appUrl=${appUrlQuery}&chain=${currentChain?.shortName}`
-  const url = router.query.safe ? `${AppRoutes.safe.apps}?safe=${router.query.safe}&appUrl=${appUrlQuery}` : shareUrl
+  const url = router.query.safe ? `${AppRoutes.apps}?safe=${router.query.safe}&appUrl=${appUrlQuery}` : shareUrl
 
   if (variant === 'compact') {
     return <CompactAppCard url={url} safeApp={safeApp} pinned={pinned} onPin={onPin} shareUrl={shareUrl} />

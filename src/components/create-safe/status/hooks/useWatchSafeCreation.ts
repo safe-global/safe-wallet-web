@@ -14,11 +14,11 @@ const getRedirect = (chainId: string, safeAddress: string, redirectQuery?: strin
   const address = `${chainPrefix}:${safeAddress}`
 
   // Should never happen in practice
-  if (!chainPrefix) return AppRoutes.safe.index
+  if (!chainPrefix) return AppRoutes.index
 
   // Go to the dashboard if no specific redirect is provided
   if (!redirectUrl) {
-    return { pathname: AppRoutes.safe.home, query: { safe: address } }
+    return { pathname: AppRoutes.home, query: { safe: address } }
   }
 
   // Otherwise, redirect to the provided URL (e.g. from a Safe App)

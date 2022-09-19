@@ -55,7 +55,7 @@ const EmptyState = (
 const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null => {
   const { page, loading } = useTxQueue()
   const router = useRouter()
-  const url = `${AppRoutes.safe.transactions.queue}?safe=${router.query.safe}`
+  const url = `${AppRoutes.transactions.queue}?safe=${router.query.safe}`
 
   const queuedTxns: Transaction[] = (page?.results || []).filter(isTransactionListItem)
 
