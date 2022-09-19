@@ -1,0 +1,2 @@
+/rin:safe/* /safe/:splat?safe=rin:safe 200
+/eth:safe/* /safe/:splat?safe=eth:safe 200
