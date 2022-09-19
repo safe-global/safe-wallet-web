@@ -12,10 +12,10 @@ const INVALID_ADDRESS_ERROR_MSG = 'Address given is not a valid Safe address'
 
 describe('Load Safe', () => {
   it('Should enter Add safe form', () => {
-    cy.visit('/', { failOnStatusCode: false })
+    cy.visit('/')
     cy.findByText('Accept selection').click()
 
-    cy.get('[data-track="load-safe: Open stepper"]').click()
+    cy.contains('Add existing Safe').click()
     cy.findByText('Add existing Safe').should('exist')
     cy.wait(1000) // Have to wait because clicking the switch network fails sometimes if not
   })
@@ -69,6 +69,8 @@ describe('Load Safe', () => {
     cy.findByText('Test safe name').should('exist')
     cy.findByText('Test Owner Name').should('exist')
     cy.contains('button', 'Add').click()
+    // Wait for leaving the Review step
+    cy.contains('Review').should('not.exist')
   })
 
   it('Validates safe and owner names', () => {

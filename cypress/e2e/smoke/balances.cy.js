@@ -14,8 +14,7 @@ describe('Assets > Coins', () => {
 
   before(() => {
     // Open the Safe used for testing
-    // Pages initially return a 404 thus we need to disable the failOnStatusCode
-    cy.visit(`/${TEST_SAFE}/balances`, { failOnStatusCode: false })
+    cy.visit(`/${TEST_SAFE}/balances`)
     cy.contains('button', 'Accept selection').click()
     // Table is loaded
     cy.contains(/^Ether$/)
@@ -166,7 +165,7 @@ describe('Assets > Coins', () => {
   describe('pagination should work', () => {
     before(() => {
       // Open the Safe used for testing pagination
-      cy.visit(`/${PAGINATION_TEST_SAFE}/balances`, { failOnStatusCode: false })
+      cy.visit(`/${PAGINATION_TEST_SAFE}/balances`)
       // Table is loaded
       cy.contains(/^Ether$/)
     })
