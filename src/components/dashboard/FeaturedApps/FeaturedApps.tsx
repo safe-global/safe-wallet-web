@@ -26,7 +26,7 @@ const StyledGridItem = styled(Grid)`
 `
 
 const getSafeAppUrl = (appUrl: string, chainId: string) => {
-  return `${SAFE_REACT_URL}/share/safe-app?appUrl=${appUrl}&chainId=${chainId}`
+  return `${SAFE_REACT_URL}/share/safe-app?appUrl=${encodeURIComponent(appUrl)}&chainId=${chainId}`
 }
 
 export const FeaturedApps = (): ReactElement | null => {

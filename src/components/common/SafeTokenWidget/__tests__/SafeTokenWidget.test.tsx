@@ -126,7 +126,7 @@ describe('SafeTokenWidget', () => {
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
       expect(result.baseElement).toContainHTML(
-        `href="${AppRoutes.safe.apps}?safe=${fakeSafeAddress}&appUrl=${CLAIMING_APP_URL}"`,
+        `href="${AppRoutes.safe.apps}?safe=${fakeSafeAddress}&appUrl=${encodeURIComponent(CLAIMING_APP_URL)}"`,
       )
     })
   })
