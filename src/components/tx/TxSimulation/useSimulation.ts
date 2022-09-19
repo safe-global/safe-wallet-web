@@ -38,25 +38,15 @@ export const useSimulation = (): UseSimulationReturn => {
   }, [])
 
   const simulateTransaction = useCallback(
-    async (params: Omit<SimulationTxParams, 'gasLimit'> & { manualGasLimit?: number }) => {
+    async (params: SimulationTxParams) => {
       if (!web3ReadOnly) return
 
       setSimulationRequestStatus(FETCH_STATUS.LOADING)
       setRequestError(undefined)
 
       try {
-        const manualGasLimit = params.manualGasLimit
-        let gasLimit: number
-        if (manualGasLimit) {
-          gasLimit = manualGasLimit
-        } else {
-          const latestBlock = await web3ReadOnly.getBlock('latest')
-          gasLimit = latestBlock.gasLimit.toNumber()
-        }
-
         const simulationPayload = await getSimulationPayload({
           ...params,
-          gasLimit,
         } as SimulationTxParams)
 
         const data = await getSimulation(simulationPayload)

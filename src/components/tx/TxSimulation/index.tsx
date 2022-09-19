@@ -13,6 +13,7 @@ import { isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
 import type { SimulationTxParams } from '@/components/tx/TxSimulation/utils'
 
 import css from './styles.module.css'
+import classNames from 'classnames'
 
 export type TxSimulationProps = {
   transactions: SimulationTxParams['transactions']
@@ -60,7 +61,7 @@ const TxSimulationBlock = ({ transactions, canExecute, disabled, gasLimit }: TxS
               onClick={handleSimulation}
             >
               {isSimulationLoading && <CircularProgress size={14} />}
-              <span className={isSimulationLoading ? css.loadingText : undefined}>
+              <span className={classNames(css.loadingText, isSimulationLoading)}>
                 {isSimulationLoading ? 'Simulating...' : 'Simulate'}
               </span>
             </Button>
