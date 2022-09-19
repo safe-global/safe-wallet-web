@@ -4,7 +4,13 @@ import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
-import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
+import {
+  dispatchTxExecution,
+  dispatchTxProposal,
+  dispatchTxSigning,
+  dispatchSafeAppsTx,
+  createTx,
+} from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -19,7 +25,6 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
-import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -137,7 +142,7 @@ const SignOrExecuteForm = ({
     // - Avoid redirection
     // - Dispatch an event for return the safeTxHash to the caller
     if (safeAppRequestId) {
-      txDispatch(TxEvent.SAFE_APPS_REQUEST, { txId: id, safeAppRequestId })
+      dispatchSafeAppsTx(id, safeAppRequestId)
       return
     }
 

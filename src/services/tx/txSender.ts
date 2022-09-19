@@ -12,6 +12,7 @@ import {
   TransactionOptions,
   TransactionResult,
 } from '@gnosis.pm/safe-core-sdk-types'
+import { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
@@ -340,4 +341,8 @@ export const dispatchSpendingLimitTxExecution = async (
     })
 
   return result?.hash
+}
+
+export const dispatchSafeAppsTx = (txId: string, safeAppRequestId: RequestId) => {
+  txDispatch(TxEvent.SAFE_APPS_REQUEST, { txId, safeAppRequestId })
 }
