@@ -73,9 +73,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
       }
     })
 
-    return () => {
-      unsubscribe()
-    }
+    return unsubscribe
   }, [chainId, closeTxModal, closeSignMessageModal, communicator, txModalState, signMessageModalState])
 
   const onSafeAppsModalClose = () => {
