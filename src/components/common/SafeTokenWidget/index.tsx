@@ -47,7 +47,7 @@ const SafeTokenWidget = () => {
 
   return (
     <Box className={css.buttonContainer}>
-      <Tooltip title={url ? 'Open $SAFE Claiming App' : ''}>
+      <Tooltip title={url ? `Open ${CLAIMING_APP_NAME}` : ''}>
         <span>
           <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
             <Link href={url || '#'} passHref>
