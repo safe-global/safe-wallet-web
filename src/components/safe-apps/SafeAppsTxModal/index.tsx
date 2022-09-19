@@ -22,12 +22,12 @@ const SafeAppsTxSteps: TxStepperProps['steps'] = [
 
       return <SafeAppsTxModalLabel app={app} />
     },
-    render: (data, onSubmit) => {
+    render: (data) => {
       if (!isTxValid((data as SafeAppsTxParams).txs)) {
         return <InvalidTransaction />
       }
 
-      return <ReviewSafeAppsTx onSubmit={onSubmit} safeAppsTx={data as SafeAppsTxParams} />
+      return <ReviewSafeAppsTx safeAppsTx={data as SafeAppsTxParams} />
     },
   },
 ]

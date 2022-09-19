@@ -20,8 +20,8 @@ const SafeAppsSignSteps: TxStepperProps['steps'] = [
 
       return <SafeAppsModalLabel app={app} />
     },
-    render: (data, onSubmit) => {
-      return <ReviewSafeAppsSignMessage onSubmit={onSubmit} safeAppsSignMessage={data as SafeAppsSignMessageParams} />
+    render: (data) => {
+      return <ReviewSafeAppsSignMessage safeAppsSignMessage={data as SafeAppsSignMessageParams} />
     },
   },
 ]

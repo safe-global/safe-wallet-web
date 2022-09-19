@@ -12,7 +12,7 @@ import { type NftTransferParams } from '.'
 
 type ReviewNftTxProps = {
   params: NftTransferParams
-  onSubmit: (data: null) => void
+  onSubmit: (txId: string) => void
 }
 
 const ReviewNftTx = ({ params, onSubmit }: ReviewNftTxProps): ReactElement => {

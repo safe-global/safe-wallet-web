@@ -79,7 +79,7 @@ export type NewSpendingLimitData = {
 
 type Props = {
   data: NewSpendingLimitData
-  onSubmit: (data: null) => void
+  onSubmit: (txId: string) => void
 }
 
 export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
@@ -110,13 +110,13 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
     return createNewSpendingLimitTx(data, spendingLimits, chainId, decimals, existingSpendingLimit)
   }, [data, spendingLimits, chainId, decimals, existingSpendingLimit])
 
-  const onFormSubmit = (data: null) => {
+  const onFormSubmit = (txId: string) => {
     trackEvent({
       ...SETTINGS_EVENTS.SPENDING_LIMIT.RESET_PERIOD,
       label: resetTime,
     })
 
-    onSubmit(data)
+    onSubmit(txId)
   }
 
   return (

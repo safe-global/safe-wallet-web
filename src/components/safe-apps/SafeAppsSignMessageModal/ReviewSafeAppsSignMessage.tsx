@@ -21,12 +21,10 @@ import { convertToHumanReadableMessage } from '../utils'
 import { dispatchSafeAppsTx } from '@/services/tx/txSender'
 
 type ReviewSafeAppsSignMessageProps = {
-  onSubmit: (data: null) => void
   safeAppsSignMessage: SafeAppsSignMessageParams
 }
 
 const ReviewSafeAppsSignMessage = ({
-  onSubmit,
   safeAppsSignMessage: { message, method, requestId },
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
   const { safe } = useSafeInfo()
@@ -69,7 +67,6 @@ const ReviewSafeAppsSignMessage = ({
 
   const handleSubmit = (txId: string) => {
     dispatchSafeAppsTx(txId, requestId)
-    onSubmit(null)
   }
 
   return (

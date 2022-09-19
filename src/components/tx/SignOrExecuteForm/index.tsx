@@ -2,14 +2,8 @@ import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useS
 import { useRouter } from 'next/router'
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
-import {
-  dispatchTxExecution,
-  dispatchTxProposal,
-  dispatchTxSigning,
-  createTx,
-} from '@/services/tx/txSender'
+import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'

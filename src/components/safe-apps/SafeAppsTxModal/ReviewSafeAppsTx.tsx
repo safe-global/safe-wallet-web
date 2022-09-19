@@ -19,14 +19,10 @@ import { isEmptyHexData } from '@/utils/hex'
 import { dispatchSafeAppsTx } from '@/services/tx/txSender'
 
 type ReviewSafeAppsTxProps = {
-  onSubmit: (data: null) => void
   safeAppsTx: SafeAppsTxParams
 }
 
-const ReviewSafeAppsTx = ({
-  onSubmit,
-  safeAppsTx: { txs, requestId, params },
-}: ReviewSafeAppsTxProps): ReactElement => {
+const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params } }: ReviewSafeAppsTxProps): ReactElement => {
   const chainId = useChainId()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
@@ -53,7 +49,6 @@ const ReviewSafeAppsTx = ({
 
   const handleSubmit = (txId: string) => {
     dispatchSafeAppsTx(txId, requestId)
-    onSubmit(null)
   }
 
   return (
