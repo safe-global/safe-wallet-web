@@ -20,7 +20,7 @@ const Sidebar = (): ReactElement => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 
   // Routes with a Safe address in query
-  const isSafeRoute = router.pathname.startsWith(AppRoutes.safe.index)
+  const isSafeRoute = router.pathname.startsWith(AppRoutes.index)
 
   const onDrawerToggle = () => {
     trackEvent({ ...OVERVIEW_EVENTS.SIDEBAR, label: isDrawerOpen ? 'Close' : 'Open' })

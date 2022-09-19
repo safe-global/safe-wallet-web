@@ -136,7 +136,7 @@ const SignOrExecuteForm = ({
     // @TODO: also don't redirect for Safe Apps transactions (add a new prop)
     if (!txId) {
       router.push({
-        pathname: AppRoutes.safe.transactions.tx,
+        pathname: AppRoutes.transactions.tx,
         query: { safe: router.query.safe, id },
       })
     }

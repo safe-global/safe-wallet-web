@@ -19,7 +19,7 @@ const usePathRewrite = () => {
     if (!safe) return
 
     // Move the Safe address to the path
-    let newPath = router.pathname.replace(/\/safe(?=\/)?/, `/${safe}`)
+    let newPath = router.pathname.replace(/^\//, `/${safe}/`)
 
     // Preserve other query params
     if (Object.keys(restQuery).length) {
@@ -58,7 +58,7 @@ export const useQueryRewrite = (): boolean => {
     const [, pathSafe] = currentPath.match(/^\/([^/]+?:0x[0-9a-fA-F]{40})/) || []
 
     if (pathSafe) {
-      const newPath = currentPath.replace(pathSafe, 'safe')
+      const newPath = currentPath.replace(pathSafe, '')
 
       if (newPath !== currentPath) {
         router.replace(`${newPath}?safe=${pathSafe}${location.search ? '&' + location.search.slice(1) : ''}`)
