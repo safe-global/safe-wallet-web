@@ -21,6 +21,10 @@ import useIsGranted from '@/hooks/useIsGranted'
 import { useCurrentChain } from '@/hooks/useChains'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 
+export enum CommunicatorMessages {
+  REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
+}
+
 type JsonRpcResponse = {
   jsonrpc: string
   id: number

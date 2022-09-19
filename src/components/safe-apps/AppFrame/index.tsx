@@ -10,7 +10,7 @@ import useChainId from '@/hooks/useChainId'
 import { isSameUrl } from '@/utils/url'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
-import useAppCommunicator from './useAppCommunicator'
+import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
 import useTxModal from '../SafeAppsTxModal/useTxModal'
 import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
 import SafeAppsTxModal from '../SafeAppsTxModal'
@@ -23,8 +23,6 @@ import css from './styles.module.css'
 type AppFrameProps = {
   appUrl: string
 }
-
-const REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected'
 
 const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
@@ -78,10 +76,10 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
 
   const onSafeAppsModalClose = () => {
     if (txModalState.isOpen) {
-      communicator?.send(REJECT_TRANSACTION_MESSAGE, txModalState.requestId, true)
+      communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, txModalState.requestId, true)
       closeTxModal()
     } else {
-      communicator?.send(REJECT_TRANSACTION_MESSAGE, signMessageModalState.requestId, true)
+      communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, signMessageModalState.requestId, true)
       closeSignMessageModal()
     }
   }
