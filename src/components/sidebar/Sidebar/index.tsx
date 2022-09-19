@@ -11,16 +11,13 @@ import SidebarNavigation from '@/components/sidebar/SidebarNavigation'
 import SidebarFooter from '@/components/sidebar/SidebarFooter'
 
 import css from './styles.module.css'
-import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 
 const Sidebar = (): ReactElement => {
   const router = useRouter()
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
-
-  // Routes with a Safe address in query
-  const isSafeRoute = router.pathname.startsWith(AppRoutes.index)
+  const isSafeRoute = !!router.query?.safe
 
   const onDrawerToggle = () => {
     trackEvent({ ...OVERVIEW_EVENTS.SIDEBAR, label: isDrawerOpen ? 'Close' : 'Open' })

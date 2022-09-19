@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import useLastSafe from '@/hooks/useLastSafe'
+import { AppRoutes } from '@/config/routes'
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
@@ -9,7 +10,13 @@ const IndexPage: NextPage = () => {
   const lastSafe = useLastSafe()
 
   useEffect(() => {
-    router.push(lastSafe ? `/safe/home?safe=${lastSafe}` : chain ? `/welcome?chain=${chain}` : `/welcome`)
+    router.push(
+      lastSafe
+        ? `${AppRoutes.home}?safe=${lastSafe}`
+        : chain
+        ? `${AppRoutes.welcome}?chain=${chain}`
+        : AppRoutes.welcome,
+    )
   }, [router, lastSafe, chain])
 
   return <></>
