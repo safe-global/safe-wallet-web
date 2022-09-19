@@ -5,17 +5,7 @@ import { formatAmount } from './formatNumber'
 const GWEI = 'gwei'
 
 export const _removeTrailingZeros = (value: string): string => {
-  let [integer, fractions] = value.split('.')
-
-  if (!fractions) {
-    return value
-  }
-
-  while (fractions[fractions.length - 1] === '0') {
-    fractions = fractions.substring(0, fractions.length - 1)
-  }
-
-  return fractions ? `${integer}.${fractions}` : integer
+  return value.replace(/(\.0*|(?<=(\..*))0*)$/, '')
 }
 
 /**

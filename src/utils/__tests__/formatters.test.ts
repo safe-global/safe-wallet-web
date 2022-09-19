@@ -3,14 +3,28 @@ import * as formatters from '@/utils/formatters'
 describe('formatters', () => {
   describe('removeTrailingZeros', () => {
     it('strips trailing 0s', () => {
-      const result1 = formatters._removeTrailingZeros('1.000000000000000000')
-      expect(result1).toBe('1')
+      expect(formatters._removeTrailingZeros('0')).toBe('0')
+      expect(formatters._removeTrailingZeros('0.000')).toBe('0')
 
-      const result2 = formatters._removeTrailingZeros('1.00001000000')
-      expect(result2).toBe('1.00001')
+      expect(formatters._removeTrailingZeros('10')).toBe('10')
+      expect(formatters._removeTrailingZeros('100')).toBe('100')
 
-      const result3 = formatters._removeTrailingZeros('1')
-      expect(result3).toBe('1')
+      expect(formatters._removeTrailingZeros('0.100')).toBe('0.1')
+      expect(formatters._removeTrailingZeros('0.010')).toBe('0.01')
+
+      expect(formatters._removeTrailingZeros('1.101')).toBe('1.101')
+      expect(formatters._removeTrailingZeros('1.100')).toBe('1.1')
+      expect(formatters._removeTrailingZeros('1.100010')).toBe('1.10001')
+
+      expect(formatters._removeTrailingZeros('100.11')).toBe('100.11')
+      expect(formatters._removeTrailingZeros('100.10')).toBe('100.1')
+
+      expect(
+        formatters._removeTrailingZeros('1000000000000000000000000000000000000000000000000000000000000000001'),
+      ).toBe('1000000000000000000000000000000000000000000000000000000000000000001')
+      expect(
+        formatters._removeTrailingZeros('1000000000000000000000000000000000000000000000000000000000000000001.100'),
+      ).toBe('1000000000000000000000000000000000000000000000000000000000000000001.1')
     })
   })
   describe('safeFormatUnits', () => {
