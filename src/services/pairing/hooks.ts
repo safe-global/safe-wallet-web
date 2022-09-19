@@ -81,7 +81,6 @@ export const useInitPairing = () => {
       createSession()
     })
 
-    // TODO: set `hasInitialized` after `onboard.connectWallet` is called
     // Create new session when no wallet is connected to onboard
     const subscription = onboard.state.select('wallets').subscribe((wallets) => {
       if (!getConnectedWallet(wallets) && !hasInitialized) {
