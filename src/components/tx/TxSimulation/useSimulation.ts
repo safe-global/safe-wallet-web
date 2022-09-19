@@ -45,9 +45,7 @@ export const useSimulation = (): UseSimulationReturn => {
       setRequestError(undefined)
 
       try {
-        const simulationPayload = await getSimulationPayload({
-          ...params,
-        } as SimulationTxParams)
+        const simulationPayload = await getSimulationPayload(params)
 
         const data = await getSimulation(simulationPayload)
 
