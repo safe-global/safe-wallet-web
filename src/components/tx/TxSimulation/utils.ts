@@ -66,15 +66,12 @@ export const _getSingleTransactionPayload = (
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   // If a transaction is executable we simulate with the proposed/selected gasLimit and the actual signatures
   let transaction = params.transactions
-
-  // Otherwise we overwrite the threshold to 1 on Tenderly and create a signature
   const hasOwnerSignature = transaction.signatures.has(params.executionOwner)
-  // If the owner's sig is missing and the tx needs more signatures than the threshold we have to add the preValidated sig
+  // If the owner's sig is missing and the tx threshold is not reached we add the owner's preValidated signature
   const needsOwnerSignature = !hasOwnerSignature && transaction.signatures.size < params.safe.threshold
   if (needsOwnerSignature) {
     const simulatedTransaction = new EthSafeTransaction(params.transactions.data)
     simulatedTransaction.addSignature(generatePreValidatedSignature(params.executionOwner))
-
     transaction = simulatedTransaction
   }
 
@@ -139,6 +136,10 @@ const isSingleTransactionSimulation = (params: SimulationTxParams): params is Si
   return !Array.isArray(params.transactions)
 }
 
+/**
+ * @returns true for single MultiSig transactions if the provided signatures plus the current owner's signature (if missing)
+ * do not reach the safe's threshold.
+ */
 const isOverwriteThreshold = (params: SimulationTxParams) => {
   if (!isSingleTransactionSimulation(params)) {
     return false
