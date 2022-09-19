@@ -20,7 +20,7 @@ describe('Assets > Coins', () => {
 
   describe('should have different tokens', () => {
     it(`should have ${ASSETS_LENGTH} entries in the table`, () => {
-      cy.get(assetsTable).find('tr').should('have.length', ASSETS_LENGTH)
+      cy.get(balanceSingleRow).should('have.length', ASSETS_LENGTH)
     })
 
     it('should have Dai', () => {
@@ -142,8 +142,8 @@ describe('Assets > Coins', () => {
     it('should have ETH as default currency', () => {
       // First row Fiat balance should not contain EUR
       cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', '€')
-      // First row Fiat balance should contain DAI
-      cy.get(balanceSingleRow).first().find('td').eq(TOKEN_AMOUNT_COLUMN).contains('DAI')
+      // First row Fiat balance should contain USD
+      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).contains('$')
     })
 
     it('should allow changing the currency to EUR', () => {
@@ -153,8 +153,8 @@ describe('Assets > Coins', () => {
       // Select EUR
       cy.get('ul[role="listbox"]').findByText('EUR').click()
 
-      // First row Fiat balance should not contain USDC
-      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'USDC')
+      // First row Fiat balance should not contain USD
+      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', '$')
       // First row Fiat balance should contain EUR
       cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).contains('€')
     })
@@ -169,12 +169,9 @@ describe('Assets > Coins', () => {
       //Ensure the table is fully loaded
       cy.contains('Rows per page:', { timeout: 10000 })
     })
-    it('should should allow 25 rows per page and navigate to next and previous page', () => {
+    it('should allow 25 rows per page and navigate to next and previous page', () => {
       // Click on the pagination select dropdown
-      cy.get('[aria-haspopup="listbox"]').contains('25').click()
-
-      // Select 25 rows per page
-      cy.get('[aria-haspopup="listbox"]').get('li[role="option"]').contains('25').click()
+      cy.get('[aria-haspopup="listbox"]').contains('25')
 
       // Table should have 25 rows
       cy.contains('1–25 of 27')
