@@ -232,6 +232,39 @@ describe('EthHashInfo', () => {
       expect(container.querySelector('button')).toBeInTheDocument()
     })
 
+    it("doesn't copy the prefix with non-addresses", async () => {
+      jest.spyOn(useChainId, 'default').mockReturnValue('4')
+
+      jest.spyOn(store, 'useAppSelector').mockImplementation((selector) =>
+        selector({
+          session: {},
+          settings: {
+            shortName: {
+              show: true,
+              copy: true,
+            },
+          },
+          chains: {
+            data: [{ chainId: '4', shortName: 'rin' }],
+          },
+        } as store.RootState),
+      )
+
+      const { container } = render(
+        <EthHashInfo address={'0xe26920604f9a02c5a877d449faa71b7504f0c2508dcc7c0384078a024b8e592f'} showCopyButton />,
+      )
+
+      const button = container.querySelector('button')
+
+      await act(() => {
+        fireEvent.click(button!)
+      })
+
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+        '0xe26920604f9a02c5a877d449faa71b7504f0c2508dcc7c0384078a024b8e592f',
+      )
+    })
+
     it('copies the default prefixed address', async () => {
       jest.spyOn(useChainId, 'default').mockReturnValue('4')
 
@@ -251,6 +284,39 @@ describe('EthHashInfo', () => {
       )
 
       const { container } = render(<EthHashInfo address={MOCK_SAFE_ADDRESS} showCopyButton />)
+
+      const button = container.querySelector('button')
+
+      await act(() => {
+        fireEvent.click(button!)
+      })
+
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(`rin:${MOCK_SAFE_ADDRESS}`)
+    })
+
+    it('copies the prefix even if it is hidden', async () => {
+      jest.spyOn(useChainId, 'default').mockReturnValue('4')
+
+      jest.spyOn(store, 'useAppSelector').mockImplementation((selector) =>
+        selector({
+          session: {},
+          settings: {
+            shortName: {
+              show: true,
+              copy: true,
+            },
+          },
+          chains: {
+            data: [{ chainId: '4', shortName: 'rin' }],
+          },
+        } as store.RootState),
+      )
+
+      const { container, queryByText } = render(
+        <EthHashInfo address={MOCK_SAFE_ADDRESS} showCopyButton showPrefix={false} />,
+      )
+
+      expect(queryByText('rin:')).not.toBeInTheDocument()
 
       const button = container.querySelector('button')
 

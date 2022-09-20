@@ -79,6 +79,10 @@ export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR].includes(wallet.label.toUpperCase() as WALLET_KEYS)
 }
 
+export const isSafeMobileWallet = (wallet: ConnectedWallet): boolean => {
+  return wallet.label === PAIRING_MODULE_LABEL
+}
+
 export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
   const provider = getWeb3ReadOnly()
 
@@ -89,8 +93,4 @@ export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
   const code = await provider.getCode(wallet.address)
 
   return code !== EMPTY_DATA
-}
-
-export const isPaired = (wallet: ConnectedWallet): boolean => {
-  return wallet.label === PAIRING_MODULE_LABEL
 }

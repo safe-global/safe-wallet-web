@@ -15,7 +15,7 @@ import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isHardwareWallet, isPaired, isSmartContractWallet } from '@/hooks/wallets/wallets'
+import { isHardwareWallet, isSafeMobileWallet, isSmartContractWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -99,7 +99,7 @@ const SignOrExecuteForm = ({
   const onSign = async (): Promise<string> => {
     const [connectedWallet, createdTx, provider] = assertSubmittable()
 
-    const shouldEthSign = isHardwareWallet(connectedWallet) || isPaired(connectedWallet)
+    const shouldEthSign = isHardwareWallet(connectedWallet) || isSafeMobileWallet(connectedWallet)
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
     const signedTx = smartContractWallet
       ? await dispatchOnChainSigning(createdTx, provider, txId)
@@ -150,7 +150,7 @@ const SignOrExecuteForm = ({
     // @TODO: also don't redirect for Safe Apps transactions (add a new prop)
     if (!txId) {
       router.push({
-        pathname: AppRoutes.safe.transactions.tx,
+        pathname: AppRoutes.transactions.tx,
         query: { safe: router.query.safe, id },
       })
     }
@@ -189,7 +189,14 @@ const SignOrExecuteForm = ({
           onFormSubmit={onAdvancedSubmit}
         />
 
-        {safeTx && <TxSimulation transactions={safeTx} canExecute={canExecute} disabled={submitDisabled} />}
+        {safeTx && (
+          <TxSimulation
+            gasLimit={advancedParams.gasLimit?.toNumber()}
+            transactions={safeTx}
+            canExecute={canExecute}
+            disabled={submitDisabled}
+          />
+        )}
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>

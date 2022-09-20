@@ -3,11 +3,6 @@ import { EventType } from '@/services/analytics/types'
 const OVERVIEW_CATEGORY = 'overview'
 
 export const OVERVIEW_EVENTS = {
-  // TODO: Not yet in web-core
-  IPHONE_APP_BUTTON: {
-    action: 'Download App',
-    category: OVERVIEW_CATEGORY,
-  },
   OPEN_ONBOARD: {
     action: 'Open wallet modal',
     category: OVERVIEW_CATEGORY,

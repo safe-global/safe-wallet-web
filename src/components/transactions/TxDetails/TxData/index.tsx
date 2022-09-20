@@ -3,7 +3,7 @@ import {
   isCancellationTxInfo,
   isCustomTxInfo,
   isMultiSendTxInfo,
-  isMultisigExecutionDetails,
+  isMultisigDetailedExecutionInfo,
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
   isSupportedMultiSendAddress,
@@ -32,7 +32,7 @@ const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement 
     return <SettingsChangeTxInfo settingsInfo={txInfo.settingsInfo} />
   }
 
-  if (isCancellationTxInfo(txInfo) && isMultisigExecutionDetails(txDetails.detailedExecutionInfo)) {
+  if (isCancellationTxInfo(txInfo) && isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)) {
     return <RejectionTxInfo nonce={txDetails.detailedExecutionInfo?.nonce} isTxExecuted={!!txDetails.executedAt} />
   }
 

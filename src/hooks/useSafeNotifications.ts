@@ -27,7 +27,7 @@ const useSafeNotifications = (): void => {
         message: `Your Safe version ${version} is out of date. Please update it.`,
         groupKey: 'safe-outdated-version',
         link: {
-          href: `${AppRoutes.safe.settings.setup}?safe=${chain?.shortName}:${safeAddress}`,
+          href: `${AppRoutes.settings.setup}?safe=${chain?.shortName}:${safeAddress}`,
           title: 'Update Safe',
         },
       }),

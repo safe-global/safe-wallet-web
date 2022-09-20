@@ -4,11 +4,11 @@
 // Used for __tests__/testing-library.js
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect'
+import 'whatwg-fetch'
 
 jest.mock('@web3-onboard/coinbase', () => jest.fn())
 jest.mock('@web3-onboard/fortmatic', () => jest.fn())
 jest.mock('@web3-onboard/injected-wallets', () => jest.fn())
-jest.mock('@web3-onboard/keepkey', () => jest.fn())
 jest.mock('@web3-onboard/keystone/dist/index', () => jest.fn())
 jest.mock('@web3-onboard/ledger', () => jest.fn())
 jest.mock('@web3-onboard/portis', () => jest.fn())

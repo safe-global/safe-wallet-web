@@ -18,48 +18,48 @@ export const navItems: NavItem[] = [
   {
     label: 'Home',
     icon: <HomeIcon />,
-    href: AppRoutes.safe.home,
+    href: AppRoutes.home,
   },
   {
     label: 'Assets',
     icon: <AssetsIcon />,
-    href: AppRoutes.safe.balances.index,
+    href: AppRoutes.balances.index,
   },
   {
     label: 'Transactions',
     icon: <TransactionIcon />,
-    href: AppRoutes.safe.transactions.history,
+    href: AppRoutes.transactions.history,
   },
   {
     label: 'Address book',
     icon: <ABIcon />,
-    href: AppRoutes.safe.addressBook,
+    href: AppRoutes.addressBook,
   },
   {
     label: 'Apps',
     icon: <AppsIcon />,
-    href: AppRoutes.safe.apps,
+    href: AppRoutes.apps,
   },
   {
     label: 'Settings',
     icon: <SettingsIcon />,
-    href: AppRoutes.safe.settings.setup,
+    href: AppRoutes.settings.setup,
     items: [
       {
         label: 'Setup',
-        href: AppRoutes.safe.settings.setup,
+        href: AppRoutes.settings.setup,
       },
       {
         label: 'Appearance',
-        href: AppRoutes.safe.settings.appearance,
+        href: AppRoutes.settings.appearance,
       },
       {
         label: 'Modules',
-        href: AppRoutes.safe.settings.modules,
+        href: AppRoutes.settings.modules,
       },
       {
         label: 'Spending limits',
-        href: AppRoutes.safe.settings.spendingLimits,
+        href: AppRoutes.settings.spendingLimits,
       },
     ],
   },
@@ -68,21 +68,21 @@ export const navItems: NavItem[] = [
 export const transactionNavItems = [
   {
     label: 'Queue',
-    href: AppRoutes.safe.transactions.queue,
+    href: AppRoutes.transactions.queue,
   },
   {
     label: 'History',
-    href: AppRoutes.safe.transactions.history,
+    href: AppRoutes.transactions.history,
   },
 ]
 
 export const balancesNavItems = [
   {
     label: 'Tokens',
-    href: AppRoutes.safe.balances.index,
+    href: AppRoutes.balances.index,
   },
   {
     label: 'NFTs',
-    href: AppRoutes.safe.balances.nfts,
+    href: AppRoutes.balances.nfts,
   },
 ]

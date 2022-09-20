@@ -14,14 +14,14 @@ describe('usePathRewrite', () => {
     jest.clearAllMocks()
   })
 
-  it('should rewrite the path if there is /safe/ in path and ?safe= in the query', () => {
+  it('should rewrite the path if there is ?safe= in the query', () => {
     renderHook(() => usePathRewrite(), {
       routerProps: {
-        pathname: '/safe/balances',
+        pathname: '/balances',
         query: {
           safe: 'rin:0x0000000000000000000000000000000000000000',
         },
-        asPath: '/safe/balances?safe=rin:0x0000000000000000000000000000000000000000',
+        asPath: '/balances?safe=rin:0x0000000000000000000000000000000000000000',
         replace: jest.fn(),
       },
     })
@@ -33,22 +33,22 @@ describe('usePathRewrite', () => {
     )
   })
 
-  it('should rewrite the root /safe path', () => {
+  it('should rewrite the root path', () => {
     renderHook(() => usePathRewrite(), {
       routerProps: {
-        pathname: '/safe',
+        pathname: '/',
         query: {
           safe: 'rin:0x0000000000000000000000000000000000000000',
         },
-        asPath: '/safe?safe=rin:0x0000000000000000000000000000000000000000',
+        asPath: '/?safe=rin:0x0000000000000000000000000000000000000000',
         replace: jest.fn(),
       },
     })
 
-    expect(history.replaceState).toHaveBeenCalledWith(undefined, '', '/rin:0x0000000000000000000000000000000000000000')
+    expect(history.replaceState).toHaveBeenCalledWith(undefined, '', '/rin:0x0000000000000000000000000000000000000000/')
   })
 
-  it('should not rewrite the path if there is no /safe/ in path or ?safe= in the query', () => {
+  it('should not rewrite the path if there is no ?safe= in the query', () => {
     renderHook(() => usePathRewrite(), {
       routerProps: {
         pathname: '/welcome',
@@ -64,14 +64,13 @@ describe('usePathRewrite', () => {
   it('should preserve other query params in the URL', () => {
     renderHook(() => usePathRewrite(), {
       routerProps: {
-        pathname: '/safe/hello',
+        pathname: '/hello',
         query: {
           safe: 'rin:0x0000000000000000000000000000000000000000',
           hey: 'hi:there',
           count: ['1', '2', '3'],
         },
-        asPath:
-          '/safe/hello?safe=rin:0x0000000000000000000000000000000000000000&hey=hi%3Athere&count=1&count=2&count=3',
+        asPath: '/hello?safe=rin:0x0000000000000000000000000000000000000000&hey=hi%3Athere&count=1&count=2&count=3',
         replace: jest.fn(),
       },
     })
@@ -86,13 +85,13 @@ describe('usePathRewrite', () => {
   it('should preserve query params when &safe= is in the middle', () => {
     renderHook(() => usePathRewrite(), {
       routerProps: {
-        pathname: '/safe/hello',
+        pathname: '/hello',
         query: {
           safe: 'rin:0x0000000000000000000000000000000000000000',
           hi: 'hello',
           count: '1',
         },
-        asPath: '/safe/hello?hi=hello&safe=rin:0x0000000000000000000000000000000000000000&count=1',
+        asPath: '/hello?hi=hello&safe=rin:0x0000000000000000000000000000000000000000&count=1',
         replace: jest.fn(),
       },
     })

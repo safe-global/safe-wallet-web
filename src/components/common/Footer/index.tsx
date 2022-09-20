@@ -6,8 +6,9 @@ import { useAppDispatch } from '@/store'
 import { openCookieBanner } from '@/store/popupSlice'
 import { AppRoutes } from '@/config/routes'
 import packageJson from '../../../../package.json'
+import AppstoreButton from '../AppStoreButton'
 
-const footerPages = [AppRoutes.welcome, AppRoutes.safe.settings.index]
+const footerPages = [AppRoutes.welcome, AppRoutes.settings.index]
 
 const Footer = (): ReactElement | null => {
   const router = useRouter()
@@ -65,6 +66,9 @@ const Footer = (): ReactElement | null => {
           >
             v{packageJson.version}
           </Link>
+        </li>
+        <li>
+          <AppstoreButton placement="footer" />
         </li>
       </ul>
     </footer>

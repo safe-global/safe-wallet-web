@@ -1,0 +1,74 @@
+import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Box } from '@mui/system'
+import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import WarningAmberIcon from '@mui/icons-material/WarningAmber'
+
+type DetailsProps = {
+  app: SafeAppData
+  showDefaultListWarning: boolean
+}
+
+const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
+  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ display: 'flex', mb: 4 }}>
+      <img src={app.iconUrl} alt={app.name} width={90} height={90} />
+      <Box sx={{ ml: 8 }}>
+        <Typography variant="h3" fontWeight={700}>
+          {app.name}
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 1 }}>
+          {app.description}
+        </Typography>
+      </Box>
+    </Box>
+    <Divider />
+    <Box sx={{ mt: 4 }}>
+      <Typography variant="body1">App URL</Typography>
+      <Typography
+        variant="body2"
+        sx={({ palette }) => ({
+          mt: 1,
+          p: 1,
+          backgroundColor: palette.primary.background,
+          display: 'inline-block',
+          borderRadius: '4px',
+        })}
+        fontWeight={700}
+      >
+        {app.url}
+      </Typography>
+    </Box>
+    <Box sx={{ mt: 2 }}>
+      <Typography variant="body1">Available networks</Typography>
+      <Box sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'wrap' }}>
+        {app.chainIds.map((chainId) => (
+          <ChainIndicator key={chainId} chainId={chainId} inline renderWhiteSpaceIfNoChain={false} />
+        ))}
+      </Box>
+    </Box>
+    <Divider sx={{ mt: 4 }} />
+    {showDefaultListWarning && (
+      <Box sx={{ display: 'flex', flexDirection: 'column', mt: 4 }}>
+        <Box sx={{ mb: 4 }}>
+          <Box sx={{ display: 'flex' }}>
+            <WarningAmberIcon sx={({ palette }) => ({ color: palette.warning.dark })} />
+            <Typography variant="h5" sx={({ palette }) => ({ color: palette.warning.dark })}>
+              Warning
+            </Typography>
+          </Box>
+          <Typography variant="body1" sx={({ palette }) => ({ color: palette.warning.dark, mt: 1 })}>
+            The application is not in the default Safe App list
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            Check the app link and ensure it comes from a trusted source
+          </Typography>
+        </Box>
+        <Divider />
+      </Box>
+    )}
+  </Box>
+)
+
+export { SafeAppDetails }

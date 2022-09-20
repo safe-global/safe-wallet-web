@@ -3,12 +3,14 @@ import * as useBalances from '@/hooks/useBalances'
 import * as nextRouter from 'next/router'
 import * as useChainId from '@/hooks/useChainId'
 import { render, waitFor } from '@/tests/test-utils'
-import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppAccessPolicyTypes, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ethers } from 'ethers'
-import SafeTokenWidget, { CLAIMING_APP_URL } from '..'
-import { NextRouter } from 'next/router'
+import SafeTokenWidget from '..'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
+import * as useSafeApps from '@/hooks/safe-apps/useSafeApps'
+
+const MOCK_CLAIMING_APP_URL = 'https://fake.claiming-app.safe.global'
 
 describe('SafeTokenWidget', () => {
   const fakeSafeAddress = hexZeroPad('0x1', 20)
@@ -20,7 +22,26 @@ describe('SafeTokenWidget', () => {
           query: {
             safe: fakeSafeAddress,
           },
-        } as any as NextRouter),
+        } as any),
+    )
+    jest.spyOn(useSafeApps, 'useSafeApps').mockImplementation(
+      () =>
+        ({
+          allSafeApps: [
+            {
+              id: 61,
+              url: MOCK_CLAIMING_APP_URL,
+              chainIds: ['4'],
+              name: '$SAFE Claiming App',
+              description: '',
+              iconUrl: '',
+              tags: '',
+              accessControl: {
+                type: SafeAppAccessPolicyTypes.NoRestrictions,
+              },
+            },
+          ],
+        } as any),
     )
   })
 
@@ -126,7 +147,7 @@ describe('SafeTokenWidget', () => {
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
       expect(result.baseElement).toContainHTML(
-        `href="${AppRoutes.safe.apps}?safe=${fakeSafeAddress}&appUrl=${CLAIMING_APP_URL}"`,
+        `href="${AppRoutes.apps}?safe=${fakeSafeAddress}&appUrl=${encodeURIComponent(MOCK_CLAIMING_APP_URL)}"`,
       )
     })
   })

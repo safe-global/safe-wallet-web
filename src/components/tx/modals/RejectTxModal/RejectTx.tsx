@@ -19,7 +19,7 @@ const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
 
   const [rejectTx, rejectError] = useAsync<SafeTransaction>(() => {
-    if (txNonce) return createRejectTx(txNonce)
+    if (txNonce != undefined) return createRejectTx(txNonce)
   }, [txNonce])
 
   return (

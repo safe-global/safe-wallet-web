@@ -1,5 +1,6 @@
 import {
   ChainInfo,
+  ConflictType,
   DateLabel,
   ExecutionInfo,
   FEATURES,
@@ -8,16 +9,9 @@ import {
   MultisigExecutionInfo,
   Transaction,
   TransactionDetails,
-  TransactionListItem,
-} from '@gnosis.pm/safe-react-gateway-sdk'
-import {
-  isDateLabel,
-  isModuleExecutionInfo,
-  isMultisigExecutionDetails,
-  isTransactionListItem,
-  isTxQueued,
   TransactionListItemType,
-} from './transaction-guards'
+} from '@gnosis.pm/safe-react-gateway-sdk'
+import { isModuleDetailedExecutionInfo, isMultisigDetailedExecutionInfo, isTxQueued } from './transaction-guards'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
@@ -25,7 +19,7 @@ import { createExistingTx } from '@/services/tx/txSender'
 import { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
-import { startOfDay, isSameDay } from 'date-fns'
+import { startOfDay } from 'date-fns'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -43,7 +37,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
   const getMultisigExecutionInfo = ({
     detailedExecutionInfo,
   }: TransactionDetails): MultisigExecutionInfo | undefined => {
-    if (!isMultisigExecutionDetails(detailedExecutionInfo)) return undefined
+    if (!isMultisigDetailedExecutionInfo(detailedExecutionInfo)) return undefined
 
     return {
       type: detailedExecutionInfo.type,
@@ -54,20 +48,20 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
     }
   }
 
-  const executionInfo: ExecutionInfo | undefined = isModuleExecutionInfo(txDetails.detailedExecutionInfo)
+  const executionInfo: ExecutionInfo | undefined = isModuleDetailedExecutionInfo(txDetails.detailedExecutionInfo)
     ? (txDetails.detailedExecutionInfo as ExecutionInfo)
     : getMultisigExecutionInfo(txDetails)
 
   // Will only be used as a fallback whilst waiting on backend tx creation cache
   const now = Date.now()
   const timestamp = isTxQueued(txDetails.txStatus)
-    ? isMultisigExecutionDetails(txDetails.detailedExecutionInfo)
+    ? isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
       ? txDetails.detailedExecutionInfo.submittedAt
       : now
     : txDetails.executedAt || now
 
   return {
-    type: 'TRANSACTION',
+    type: TransactionListItemType.TRANSACTION,
     transaction: {
       id: txDetails.txId,
       timestamp,
@@ -76,48 +70,13 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       executionInfo,
       safeAppInfo: txDetails?.safeAppInfo,
     },
-    conflictType: 'None',
+    conflictType: ConflictType.NONE,
   }
 }
 
 export const makeDateLabelFromTx = (tx: Transaction): DateLabel => {
   const startOfDayTimestamp = startOfDay(tx.transaction.timestamp).getTime()
   return { timestamp: startOfDayTimestamp, type: TransactionListItemType.DATE_LABEL }
-}
-
-/**
- * Add date labels between transactions made on the same day by local timezone
- */
-// TODO: Needs to know if previous page has same day to prevent duplicate date labels
-export const adjustDateLabelsTimezone = (items: TransactionListItem[]): TransactionListItem[] => {
-  const firstTx = items.find(isTransactionListItem)
-
-  if (!firstTx) {
-    return items
-  }
-
-  // Insert date labels between transactions on different days
-  return items
-    .filter((item) => !isDateLabel(item))
-    .reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
-      const prevItem = allItems[index - 1]
-
-      // Add date label before the first transaction of the first page
-      if (!prevItem) {
-        return ([makeDateLabelFromTx(firstTx)] as TransactionListItem[]).concat(item)
-      }
-
-      // Transaction is on different day as previous transaction
-      if (
-        isTransactionListItem(prevItem) &&
-        isTransactionListItem(item) &&
-        !isSameDay(prevItem.transaction.timestamp, item.transaction.timestamp)
-      ) {
-        return resultItems.concat(makeDateLabelFromTx(item), item)
-      }
-
-      return resultItems.concat(item)
-    }, [])
 }
 
 const getSignatures = (confirmations: Record<string, string>) => {
@@ -139,7 +98,7 @@ export const getMultiSendTxs = (
 
   return txs
     .map((tx) => {
-      if (!isMultisigExecutionDetails(tx.detailedExecutionInfo)) return
+      if (!isMultisigDetailedExecutionInfo(tx.detailedExecutionInfo)) return
 
       const args = extractTxInfo(tx, safeAddress)
       const sigs = getSignatures(args.signatures)
@@ -184,7 +143,6 @@ export const getSafeTxs = (txs: TransactionDetails[], chainId: string, safeAddre
 }
 
 export const getTxOptions = (params: AdvancedParameters, currentChain: ChainInfo | undefined): TransactionOptions => {
-  // TODO: The `nonce` type will be updated to `number | string` in the next Core SDK release
   const txOptions: TransactionOptions = {
     gasLimit: params.gasLimit?.toString(),
     maxFeePerGas: params.maxFeePerGas?.toString(),
