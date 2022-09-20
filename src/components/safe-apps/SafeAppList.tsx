@@ -67,14 +67,18 @@ const SafeAppList = () => {
     }
   }
 
-  if (remoteSafeAppsLoading || customSafeAppsLoading) {
-    return <Typography variant="body1">Loading...</Typography>
-  }
-
   return (
     <Grid container direction="column">
       <SafeAppsHeader searchQuery={searchQuery} onSearchQueryChange={setSearchQuery} />
-      {pageBody}
+
+      {remoteSafeAppsLoading || customSafeAppsLoading ? (
+        <Typography variant="body1" p={2}>
+          Loading...
+        </Typography>
+      ) : (
+        pageBody
+      )}
+
       {removeCustomAppModalState.app && (
         <RemoveCustomAppModal
           open={removeCustomAppModalState.isOpen}
