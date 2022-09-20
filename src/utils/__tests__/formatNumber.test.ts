@@ -153,23 +153,32 @@ describe('formatNumber', () => {
 
   describe('formatCurrency', () => {
     it('returns the correct number of decimals', () => {
-      const amount1 = 1
+      const amount1 = 0
 
-      expect(formatCurrency(amount1, 'JPY')).toBe('1 JPY')
-      expect(formatCurrency(amount1, 'IQD')).toBe('1 IQD')
-      expect(formatCurrency(amount1, 'USD')).toBe('1.00 USD')
-      expect(formatCurrency(amount1, 'EUR')).toBe('1.00 EUR')
-      expect(formatCurrency(amount1, 'GBP')).toBe('1.00 GBP')
-      expect(formatCurrency(amount1, 'BHD')).toBe('1.000 BHD')
+      expect(formatCurrency(amount1, 'JPY')).toBe('0 JPY')
+      expect(formatCurrency(amount1, 'IQD')).toBe('0 IQD')
+      expect(formatCurrency(amount1, 'USD')).toBe('0.00 USD')
+      expect(formatCurrency(amount1, 'EUR')).toBe('0.00 EUR')
+      expect(formatCurrency(amount1, 'GBP')).toBe('0.00 GBP')
+      expect(formatCurrency(amount1, 'BHD')).toBe('0.000 BHD')
 
-      const amount2 = '1.7777'
+      const amount2 = 1
 
-      expect(formatCurrency(amount2, 'JPY')).toBe('2 JPY')
-      expect(formatCurrency(amount2, 'IQD')).toBe('2 IQD')
-      expect(formatCurrency(amount2, 'USD')).toBe('1.78 USD')
-      expect(formatCurrency(amount2, 'EUR')).toBe('1.78 EUR')
-      expect(formatCurrency(amount2, 'GBP')).toBe('1.78 GBP')
-      expect(formatCurrency(amount2, 'BHD')).toBe('1.778 BHD')
+      expect(formatCurrency(amount2, 'JPY')).toBe('1 JPY')
+      expect(formatCurrency(amount2, 'IQD')).toBe('1 IQD')
+      expect(formatCurrency(amount2, 'USD')).toBe('1.00 USD')
+      expect(formatCurrency(amount2, 'EUR')).toBe('1.00 EUR')
+      expect(formatCurrency(amount2, 'GBP')).toBe('1.00 GBP')
+      expect(formatCurrency(amount2, 'BHD')).toBe('1.000 BHD')
+
+      const amount3 = '1.7777'
+
+      expect(formatCurrency(amount3, 'JPY')).toBe('2 JPY')
+      expect(formatCurrency(amount3, 'IQD')).toBe('2 IQD')
+      expect(formatCurrency(amount3, 'USD')).toBe('1.78 USD')
+      expect(formatCurrency(amount3, 'EUR')).toBe('1.78 EUR')
+      expect(formatCurrency(amount3, 'GBP')).toBe('1.78 GBP')
+      expect(formatCurrency(amount3, 'BHD')).toBe('1.778 BHD')
     })
 
     it('should use M symbol for numbers between 100,000,000 and 999,999,500', () => {
