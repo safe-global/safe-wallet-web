@@ -2,19 +2,30 @@ describe('Create Safe', () => {
   it('should create a new safe', () => {
     cy.connectE2EWallet()
 
-    cy.visit('/')
+    cy.visit('/welcome')
 
-    cy.contains('a', 'Accept all').click()
-    cy.get('p').contains('Rinkeby').click()
-    cy.get('[data-testid=connected-wallet]').should('contain', 'E2E Wallet')
+    // Close cookie banner
+    cy.contains('button', 'Accept all').click()
+
+    // Ensure wallet is connected to correct chain via header
+    cy.contains('E2E Wallet @ Rinkeby')
+
     cy.contains('Create new Safe').click()
-    cy.contains('Continue').click()
-    cy.get('[data-testid=create-safe-name-field]').type('Test Safe')
-    cy.contains('button', 'Continue').click({ force: true })
-    cy.contains('button', 'Continue').click({ force: true })
 
-    cy.wait(500) // Not sure why without this ends with "Transaction underpriced"
+    // Connect wallet & select network
+    cy.contains('Continue').click()
+
+    // Name
+    cy.wait(1000) // Wait for form default values to populate
+    cy.contains('button', 'Continue').click()
+
+    // Owners and confirmations
+    cy.wait(1000) // Wait for form default values to populate
+    cy.contains('button', 'Continue').click()
+
+    // Review
+    cy.wait(1000) // Not sure why without this ends with "Transaction underpriced"
     cy.contains('button', 'Create').click()
-    cy.contains('Your Safe was created successfully', { timeout: 60000 })
+    cy.contains('Your Safe was successfully created!', { timeout: 60000 })
   })
 })

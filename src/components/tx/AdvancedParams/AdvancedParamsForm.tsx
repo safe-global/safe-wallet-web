@@ -16,7 +16,7 @@ type AdvancedParamsFormProps = {
   params: AdvancedParameters
   onSubmit: (params: AdvancedParameters) => void
   recommendedNonce?: number
-  estimatedGasLimit?: string
+  recommendedGasLimit?: AdvancedParameters['gasLimit']
   isExecution: boolean
   nonceReadonly?: boolean
 }
@@ -131,7 +131,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
 
                   {/* Gas limit */}
                   <Grid item xs={6}>
-                    <GasLimitInput recommendedGasLimit={props.estimatedGasLimit} />
+                    <GasLimitInput recommendedGasLimit={props.recommendedGasLimit?.toString()} />
                   </Grid>
 
                   {/* Gas price */}

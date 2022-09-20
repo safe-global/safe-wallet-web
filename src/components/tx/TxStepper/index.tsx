@@ -13,14 +13,13 @@ const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps)
   })
 
   const activeLabel = steps[activeStep].label
+  const activeStepData = stepData[Math.max(0, activeStep)]
 
   return (
     <div className={css.container}>
       <ModalDialogTitle onClose={onClose}>
         <Grid container px={1} alignItems="center" gap={2}>
-          <Grid item>
-            {typeof activeLabel === 'string' ? activeLabel : activeLabel(stepData[Math.max(0, activeStep)])}
-          </Grid>
+          <Grid item>{typeof activeLabel === 'string' ? activeLabel : activeLabel(activeStepData)}</Grid>
 
           {steps.length > 1 && (
             <Grid item>
@@ -32,7 +31,7 @@ const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps)
         </Grid>
       </ModalDialogTitle>
 
-      {steps[activeStep].render(stepData[Math.max(0, activeStep)], onSubmit, onBack, setStep)}
+      {steps[activeStep].render(activeStepData, onSubmit, onBack, setStep)}
 
       <DialogActions>
         <Button color="inherit" onClick={onBack}>

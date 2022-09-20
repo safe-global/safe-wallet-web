@@ -39,13 +39,13 @@ const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params } }: ReviewSafe
     }
 
     return tx
-  }, [])
+  }, [txs])
 
   const [decodedData] = useAsync<DecodedDataResponse | undefined>(async () => {
     if (!safeTx || isEmptyHexData(safeTx.data.data)) return
 
     return getDecodedData(chainId, safeTx.data.data)
-  }, [safeTx])
+  }, [safeTx, chainId])
 
   const handleSubmit = (txId: string) => {
     dispatchSafeAppsTx(txId, requestId)
@@ -68,14 +68,12 @@ const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params } }: ReviewSafe
               <EthHashInfo address={safeTx.data.to} shortAddress={false} showCopyButton hasExplorer />
             </InfoDetails>
 
-            {safeTx && (
-              <Box pb={2}>
-                <Typography mt={2} color="secondary.light">
-                  Data (hex encoded)
-                </Typography>
-                {generateDataRowValue(safeTx.data.data, 'rawData')}
-              </Box>
-            )}
+            <Box pb={2}>
+              <Typography mt={2} color="secondary.light">
+                Data (hex encoded)
+              </Typography>
+              {generateDataRowValue(safeTx.data.data, 'rawData')}
+            </Box>
 
             {isMultiSend && (
               <Box py={1}>
