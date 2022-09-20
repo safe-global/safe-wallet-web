@@ -101,6 +101,6 @@ describe('Load existing Safe', () => {
 
     // Safe name is present in Settings
     cy.get('aside ul').contains('Settings').click()
-    cy.contains('Test Owner Name')
+    cy.contains('Test Owner Name').should('exist')
   })
 })

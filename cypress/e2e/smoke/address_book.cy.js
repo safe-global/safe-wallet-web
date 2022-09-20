@@ -88,7 +88,7 @@ describe('Address book', () => {
       cy.findByText(GNO_CSV_ENTRY.address).should('exist')
     })
 
-    it('should download correctly the address book file', () => {
+    it.skip('should download correctly the address book file', () => {
       // Download the export file
       const date = format(new Date(), 'yyyy-MM-dd')
       const fileName = `safe-address-book-${date}.csv` //name that is given to the file automatically
