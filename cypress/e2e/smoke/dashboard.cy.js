@@ -14,8 +14,8 @@ describe('Dashboard', () => {
   it('should display the overview widget', () => {
     cy.contains('main', SAFE).should('exist')
     cy.contains('main', '1/1')
-    cy.get(`main a[href="/safe/balances?safe=${SAFE}"] button`).contains('View assets')
-    cy.get(`main a[href="/safe/balances?safe=${SAFE}"]`).contains('Tokens3')
+    cy.get(`main a[href="/balances?safe=${SAFE}"] button`).contains('View assets')
+    cy.get(`main a[href="/balances?safe=${SAFE}"]`).contains('Tokens3')
   })
 
   // it('should display the mobile banner', () => {
@@ -34,15 +34,13 @@ describe('Dashboard', () => {
     cy.contains('main', 'This Safe has no queued transactions').should('not.exist')
 
     // Queued txns
-    cy.contains(`main a[href="/safe/transactions/queue?safe=${SAFE}"]`, '0' + 'addOwnerWithThreshold' + '1/1').should(
+    cy.contains(`main a[href="/transactions/queue?safe=${SAFE}"]`, '0' + 'addOwnerWithThreshold' + '1/1').should(
       'exist',
     )
 
-    cy.contains(`main a[href="/safe/transactions/queue?safe=${SAFE}"]`, '2' + 'Send' + '-0.001 USDC' + '1/1').should(
-      'exist',
-    )
+    cy.contains(`main a[href="/transactions/queue?safe=${SAFE}"]`, '2' + 'Send' + '-0.001 USDC' + '1/1').should('exist')
 
-    cy.contains(`a[href="/safe/transactions/queue?safe=${SAFE}"]`, 'View all')
+    cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, 'View all')
   })
 
   it('should display the featured Safe Apps', () => {

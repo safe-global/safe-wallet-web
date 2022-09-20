@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 // @see https://nextjs.org/docs/api-reference/next.config.js/runtime-config-static-paths
 // Since we cannot enumerate all the possible Safe addresses which are part of the path,
 // we need to use the `?safe=` query parameter to pass the Safe address.
-// However, the user still sees the `/safe/` path in the browser URL.
+// However, the user should still sees `/rin:0x123.../balances` in the browser URL.
 // These two hooks make it work.
 
 // This hook takes the `?safe=` query parameter and rewrites the URL to put the Safe address into the path
@@ -19,7 +19,7 @@ const usePathRewrite = () => {
     if (!safe) return
 
     // Move the Safe address to the path
-    let newPath = router.pathname.replace(/\/safe(?=\/)?/, `/${safe}`)
+    let newPath = router.pathname.replace(/^\//, `/${safe}/`)
 
     // Preserve other query params
     if (Object.keys(restQuery).length) {
@@ -54,11 +54,11 @@ export const useQueryRewrite = (): boolean => {
   useEffect(() => {
     if (typeof location === 'undefined') return
     const currentPath = location.pathname
-
-    const [, pathSafe] = currentPath.match(/^\/([^/]+?:0x[0-9a-fA-F]{40})/) || []
+    const re = /^\/([^/]+?:0x[0-9a-fA-F]{40})/
+    const [, pathSafe] = currentPath.match(re) || []
 
     if (pathSafe) {
-      const newPath = currentPath.replace(pathSafe, 'safe')
+      const newPath = currentPath.replace(re, '')
 
       if (newPath !== currentPath) {
         router.replace(`${newPath}?safe=${pathSafe}${location.search ? '&' + location.search.slice(1) : ''}`)

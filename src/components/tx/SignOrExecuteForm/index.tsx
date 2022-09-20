@@ -136,7 +136,7 @@ const SignOrExecuteForm = ({
     // @TODO: also don't redirect for Safe Apps transactions (add a new prop)
     if (!txId) {
       router.push({
-        pathname: AppRoutes.safe.transactions.tx,
+        pathname: AppRoutes.transactions.tx,
         query: { safe: router.query.safe, id },
       })
     }
@@ -175,7 +175,14 @@ const SignOrExecuteForm = ({
           onFormSubmit={onAdvancedSubmit}
         />
 
-        {safeTx && <TxSimulation transactions={safeTx} canExecute={canExecute} disabled={submitDisabled} />}
+        {safeTx && (
+          <TxSimulation
+            gasLimit={advancedParams.gasLimit?.toNumber()}
+            transactions={safeTx}
+            canExecute={canExecute}
+            disabled={submitDisabled}
+          />
+        )}
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>

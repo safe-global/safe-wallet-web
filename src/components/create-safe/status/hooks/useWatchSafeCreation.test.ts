@@ -10,7 +10,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { PendingSafeData } from '@/components/create-safe'
 import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
 import { AppRoutes } from '@/config/routes'
-import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks'
+import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
 
 describe('useWatchSafeCreation', () => {
   beforeEach(() => {
@@ -151,6 +151,6 @@ describe('useWatchSafeCreation', () => {
       },
     )
 
-    expect(pushMock).toHaveBeenCalledWith({ pathname: AppRoutes.safe.home, query: { safe: 'rin:0x10' } })
+    expect(pushMock).toHaveBeenCalledWith({ pathname: AppRoutes.home, query: { safe: 'rin:0x10' } })
   })
 })

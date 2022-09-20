@@ -66,7 +66,7 @@ const SafeListItem = ({
         </Box>
       }
     >
-      <Link href={`${AppRoutes.safe.home}?safe=${shortName}:${address}`} passHref>
+      <Link href={`${AppRoutes.home}?safe=${shortName}:${address}`} passHref>
         <ListItemButton
           key={address}
           onClick={closeDrawer}

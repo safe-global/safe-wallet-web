@@ -3,28 +3,17 @@ import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { act, renderHook, waitFor } from '@/tests/test-utils'
 import { useSimulation } from '@/components/tx/TxSimulation/useSimulation'
 import * as utils from '@/components/tx/TxSimulation/utils'
-import * as web3 from '@/hooks/wallets/web3'
 import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/TxSimulation/types'
-import { Block, JsonRpcProvider } from '@ethersproject/providers'
-import { BigNumber } from 'ethers'
 
 const setupFetchStub = (data: any) => (_url: string) => {
-  return new Promise((resolve) => {
-    resolve({
-      json: () => Promise.resolve(data),
-    })
+  return Promise.resolve({
+    json: () => Promise.resolve(data),
+    status: 200,
+    ok: true,
   })
 }
 
 describe('useSimulation()', () => {
-  const mockProvider = new JsonRpcProvider()
-
-  mockProvider.getBlock = () => {
-    return Promise.resolve({
-      gasLimit: BigNumber.from(200_000),
-    } as Block)
-  }
-
   afterEach(() => {
     //@ts-ignore
     global.fetch?.mockClear?.()
@@ -37,8 +26,6 @@ describe('useSimulation()', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-
-    jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(mockProvider)
   })
 
   it('should have the correct initial values', () => {
@@ -61,22 +48,24 @@ describe('useSimulation()', () => {
 
     mockFetch.mockImplementation(() => Promise.reject({ message: '404 not found' }))
 
-    jest.spyOn(utils, 'getSimulationPayload').mockImplementation(() => ({
-      input: '0x123',
-      to: '0x123',
-      network_id: chainId,
-      from: safeAddress,
-      gas: 0,
-      // With gas price 0 account don't need token for gas
-      gas_price: '0',
-      state_objects: {
-        [safeAddress]: {
-          balance: '0x123',
+    jest.spyOn(utils, 'getSimulationPayload').mockImplementation(() =>
+      Promise.resolve({
+        input: '0x123',
+        to: '0x123',
+        network_id: chainId,
+        from: safeAddress,
+        gas: 0,
+        // With gas price 0 account don't need token for gas
+        gas_price: '0',
+        state_objects: {
+          [safeAddress]: {
+            balance: '0x123',
+          },
         },
-      },
-      save: true,
-      save_if_fails: true,
-    }))
+        save: true,
+        save_if_fails: true,
+      }),
+    )
 
     const { result } = renderHook(() => useSimulation())
     const { simulateTransaction } = result.current
@@ -129,22 +118,24 @@ describe('useSimulation()', () => {
 
     const mockFetch = jest.spyOn(global, 'fetch')
 
-    jest.spyOn(utils, 'getSimulationPayload').mockImplementation(() => ({
-      input: '0x123',
-      to: '0x123',
-      network_id: chainId,
-      from: safeAddress,
-      gas: 0,
-      // With gas price 0 account don't need token for gas
-      gas_price: '0',
-      state_objects: {
-        [safeAddress]: {
-          balance: '0x123',
+    jest.spyOn(utils, 'getSimulationPayload').mockImplementation(() =>
+      Promise.resolve({
+        input: '0x123',
+        to: '0x123',
+        network_id: chainId,
+        from: safeAddress,
+        gas: 0,
+        // With gas price 0 account don't need token for gas
+        gas_price: '0',
+        state_objects: {
+          [safeAddress]: {
+            balance: '0x123',
+          },
         },
-      },
-      save: true,
-      save_if_fails: true,
-    }))
+        save: true,
+        save_if_fails: true,
+      }),
+    )
 
     const { result } = renderHook(() => useSimulation())
     const { simulateTransaction } = result.current
@@ -198,22 +189,24 @@ describe('useSimulation()', () => {
 
     const mockFetch = jest.spyOn(global, 'fetch')
 
-    jest.spyOn(utils, 'getSimulationPayload').mockImplementation(() => ({
-      input: '0x123',
-      to: '0x123',
-      network_id: chainId,
-      from: safeAddress,
-      gas: 0,
-      // With gas price 0 account don't need token for gas
-      gas_price: '0',
-      state_objects: {
-        [safeAddress]: {
-          balance: '0x123',
+    jest.spyOn(utils, 'getSimulationPayload').mockImplementation(() =>
+      Promise.resolve({
+        input: '0x123',
+        to: '0x123',
+        network_id: chainId,
+        from: safeAddress,
+        gas: 0,
+        // With gas price 0 account don't need token for gas
+        gas_price: '0',
+        state_objects: {
+          [safeAddress]: {
+            balance: '0x123',
+          },
         },
-      },
-      save: true,
-      save_if_fails: true,
-    }))
+        save: true,
+        save_if_fails: true,
+      }),
+    )
 
     const { result } = renderHook(() => useSimulation())
     const { simulateTransaction } = result.current
