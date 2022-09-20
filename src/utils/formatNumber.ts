@@ -1,3 +1,5 @@
+import { memoize } from 'lodash'
+
 // These follow the guideline of "How to format amounts"
 // https://github.com/5afe/safe/wiki/How-to-format-amounts
 
@@ -114,7 +116,7 @@ export const formatAmountWithPrecision = (
 
 // Fiat formatting
 
-const getMinimumCurrencyDenominator = (currency: string): number => {
+const getMinimumCurrencyDenominator = memoize((currency: string): number => {
   const formatter = new Intl.NumberFormat(undefined, {
     style: 'currency',
     currency,
@@ -124,7 +126,7 @@ const getMinimumCurrencyDenominator = (currency: string): number => {
 
   // Currencies may not have decimals, i.e. JPY
   return fraction ? Number(`0.${'1'.padStart(fraction.value.length, '0')}`) : 1
-}
+})
 
 const getCurrencyFormatterMaxFractionDigits = (
   number: string | number,
