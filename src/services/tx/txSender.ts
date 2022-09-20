@@ -206,6 +206,8 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
   txDispatch(TxEvent.EXECUTING, { groupKey: safeTxHash })
 
   try {
+    // With the unchecked signer, the contract call resolves once the tx
+    // has been submitted in the wallet not when it has been executed
     const sdkUnchecked = await sdk.connect({ ethAdapter: ethersAdapter })
     await sdkUnchecked.approveTransactionHash(safeTxHash)
   } catch (err) {
