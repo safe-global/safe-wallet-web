@@ -9,7 +9,7 @@ describe('Landing page', () => {
     cy.visit('/')
 
     // Way to select the cookies banner without an id
-    cy.contains('We use cookies to provide').parent('div').should('be.visible')
+    cy.contains('We use cookies to provide')
     cy.contains('We use cookies to provide').parent('div').contains('Accept selection').click()
     cy.contains('We use cookies to provide').should('not.exist')
 
@@ -22,7 +22,7 @@ describe('Landing page', () => {
     // "Updates" is checked when the banner opens
     cy.contains('We use cookies to provide').parent('div').get('input[name="updates"]').should('be.checked')
     // Accept "Updates & Feedback" cookies
-    cy.contains('We use cookies to provide').parent('div').contains('Accept selection').click()
+    cy.contains('Accept selection').click()
     cy.contains('We use cookies to provide').should('not.exist')
 
     // wait for Beamer cookies to be set
