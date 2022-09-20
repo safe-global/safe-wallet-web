@@ -49,7 +49,7 @@ const TxPage = ({
         </Box>
       )}
 
-      {page?.results.length && <TxList items={page.results} />}
+      {!!page?.results.length && <TxList items={page.results} />}
 
       {isQueue && page?.results.length === 0 && <NoQueuedTxns />}
 

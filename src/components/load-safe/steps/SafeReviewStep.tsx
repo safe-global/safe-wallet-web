@@ -84,7 +84,7 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
     trackEvent(LOAD_SAFE_EVENTS.GO_TO_SAFE)
 
     router.push({
-      pathname: AppRoutes.index,
+      pathname: AppRoutes.home,
       query: { safe: `${currentChain?.shortName}:${safeAddress}` },
     })
   }

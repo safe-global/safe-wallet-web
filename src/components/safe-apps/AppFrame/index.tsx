@@ -43,33 +43,34 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   }, [appUrl, iframeRef, setAppIsLoading])
 
   return (
-    <div className={css.wrapper}>
-      {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
+    <>
+      <div className={css.wrapper}>
+        {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
 
-      {appIsLoading && (
-        <div className={css.loadingContainer}>
-          {isLoadingSlow && (
-            <Typography variant="h4" gutterBottom>
-              The Safe App is taking too long to load, consider refreshing.
-            </Typography>
-          )}
-          <CircularProgress size={48} color="primary" />
-        </div>
-      )}
+        {appIsLoading && (
+          <div className={css.loadingContainer}>
+            {isLoadingSlow && (
+              <Typography variant="h4" gutterBottom>
+                The Safe App is taking too long to load, consider refreshing.
+              </Typography>
+            )}
+            <CircularProgress size={48} color="primary" />
+          </div>
+        )}
 
-      <iframe
-        className={css.iframe}
-        id={`iframe-${appUrl}`}
-        ref={iframeRef}
-        src={appUrl}
-        title={safeAppFromManifest?.name}
-        onLoad={onIframeLoad}
-        allow="camera"
-        style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
-      />
-
+        <iframe
+          className={css.iframe}
+          id={`iframe-${appUrl}`}
+          ref={iframeRef}
+          src={appUrl}
+          title={safeAppFromManifest?.name}
+          onLoad={onIframeLoad}
+          allow="camera"
+          style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
+        />
+      </div>
       <TransactionQueueBar />
-    </div>
+    </>
   )
 }
 

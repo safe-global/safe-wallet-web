@@ -13,14 +13,16 @@ import { isTxSimulationEnabled } from '@/components/tx/TxSimulation/utils'
 import type { SimulationTxParams } from '@/components/tx/TxSimulation/utils'
 
 import css from './styles.module.css'
+import classNames from 'classnames'
 
 export type TxSimulationProps = {
   transactions: SimulationTxParams['transactions']
+  gasLimit?: number
   canExecute: boolean
   disabled: boolean
 }
 
-const TxSimulationBlock = ({ transactions, canExecute, disabled }: TxSimulationProps): ReactElement => {
+const TxSimulationBlock = ({ transactions, canExecute, disabled, gasLimit }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
 
@@ -37,7 +39,8 @@ const TxSimulationBlock = ({ transactions, canExecute, disabled }: TxSimulationP
       executionOwner: wallet.address,
       transactions,
       canExecute,
-    })
+      gasLimit,
+    } as SimulationTxParams)
   }
 
   const isSimulationFinished =
@@ -45,7 +48,7 @@ const TxSimulationBlock = ({ transactions, canExecute, disabled }: TxSimulationP
   const isSimulationLoading = simulationRequestStatus === FETCH_STATUS.LOADING
 
   return (
-    <Accordion expanded={isSimulationFinished} elevation={0} sx={{ mt: 2 }}>
+    <Accordion expanded={isSimulationFinished} elevation={0} sx={{ mt: '16px !important' }}>
       {!isSimulationFinished ? (
         <AccordionSummary className={css.simulateAccordion}>
           <Typography>Transaction validity</Typography>
@@ -58,7 +61,9 @@ const TxSimulationBlock = ({ transactions, canExecute, disabled }: TxSimulationP
               onClick={handleSimulation}
             >
               {isSimulationLoading && <CircularProgress size={14} />}
-              <span>{isSimulationLoading ? 'Simulating...' : 'Simulate'}</span>
+              <span className={classNames(css.loadingText, isSimulationLoading)}>
+                {isSimulationLoading ? 'Simulating...' : 'Simulate'}
+              </span>
             </Button>
           </Track>
         </AccordionSummary>
