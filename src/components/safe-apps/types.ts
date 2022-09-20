@@ -1,10 +1,10 @@
-export const enum PermissionStatus {
+export enum PermissionStatus {
   GRANTED = 'granted',
   PROMPT = 'prompt',
   DENIED = 'denied',
 }
 
-export const enum AllowedFeatures {
+export enum AllowedFeatures {
   // Standarized
   'accelerometer',
   'ambient-light-sensor',
