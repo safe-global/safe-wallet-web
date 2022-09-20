@@ -10,7 +10,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { PendingSafeData } from '@/components/create-safe'
 import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
 import { AppRoutes } from '@/config/routes'
-import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks'
+import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
 
 describe('useWatchSafeCreation', () => {
   beforeEach(() => {
