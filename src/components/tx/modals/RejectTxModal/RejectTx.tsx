@@ -11,7 +11,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 
 type RejectTxProps = {
   txSummary: TransactionSummary
-  onSubmit: (data: null) => void
+  onSubmit: (txId: string) => void
 }
 
 const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {

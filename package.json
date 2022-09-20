@@ -39,7 +39,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.0",
-    "@gnosis.pm/safe-apps-sdk": "^7.7.0",
+    "@gnosis.pm/safe-apps-sdk": "^7.8.0",
     "@gnosis.pm/safe-core-sdk": "^3.0.0",
     "@gnosis.pm/safe-deployments": "^1.15.0",
     "@gnosis.pm/safe-ethers-lib": "^1.5.0",

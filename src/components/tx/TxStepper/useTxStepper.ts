@@ -9,7 +9,9 @@ export type StepRenderProps = {
 }
 
 type Step = {
-  label: string
+  // `label` is either a string, or a dynamic render function that takes the current data
+  // E.g. to render a Safe App icon in the modal header
+  label: ((data: StepRenderProps['data']) => ReactElement) | string
   render: (
     data: StepRenderProps['data'],
     onSubmit: StepRenderProps['onSubmit'],

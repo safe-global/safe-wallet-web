@@ -1,22 +1,33 @@
 import { ReactElement, useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
+import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
+import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
+import useChainId from '@/hooks/useChainId'
 import { isSameUrl } from '@/utils/url'
-import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
-import useAppCommunicator from './useAppCommunicator'
+import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
+import useTxModal from '../SafeAppsTxModal/useTxModal'
+import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
+import SafeAppsTxModal from '../SafeAppsTxModal'
+import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
+import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
+import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
-import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 
 type AppFrameProps = {
   appUrl: string
 }
 
 const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
+  const chainId = useChainId()
+  const [txModalState, openTxModal, closeTxModal] = useTxModal()
+  const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe } = useSafeInfo()
 
   const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
@@ -24,7 +35,11 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
 
-  useAppCommunicator(iframeRef, safeAppFromManifest)
+  const communicator = useAppCommunicator(iframeRef, {
+    app: safeAppFromManifest,
+    onConfirmTransactions: openTxModal,
+    onSignMessage: openSignMessageModal,
+  })
 
   useEffect(() => {
     if (!remoteApp) return
@@ -40,6 +55,34 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
 
     setAppIsLoading(false)
   }, [appUrl, iframeRef, setAppIsLoading])
+
+  useEffect(() => {
+    const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, safeAppRequestId }) => {
+      const currentSafeAppRequestId = signMessageModalState.requestId || txModalState.requestId
+
+      if (txId && currentSafeAppRequestId === safeAppRequestId) {
+        const { detailedExecutionInfo } = await getTransactionDetails(chainId, txId)
+
+        if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
+          communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, safeAppRequestId)
+        }
+
+        txModalState.isOpen ? closeTxModal() : closeSignMessageModal()
+      }
+    })
+
+    return unsubscribe
+  }, [chainId, closeTxModal, closeSignMessageModal, communicator, txModalState, signMessageModalState])
+
+  const onSafeAppsModalClose = () => {
+    if (txModalState.isOpen) {
+      communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, txModalState.requestId, true)
+      closeTxModal()
+    } else {
+      communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, signMessageModalState.requestId, true)
+      closeSignMessageModal()
+    }
+  }
 
   return (
     <div className={css.wrapper}>
@@ -66,6 +109,36 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
         allow="camera"
         style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
       />
+
+      {txModalState.isOpen && (
+        <SafeAppsTxModal
+          onClose={onSafeAppsModalClose}
+          initialData={[
+            {
+              app: safeAppFromManifest,
+              appId: remoteApp?.id,
+              requestId: txModalState.requestId,
+              txs: txModalState.txs,
+              params: txModalState.params,
+            },
+          ]}
+        />
+      )}
+
+      {signMessageModalState.isOpen && (
+        <SafeAppsSignMessageModal
+          onClose={onSafeAppsModalClose}
+          initialData={[
+            {
+              app: safeAppFromManifest,
+              appId: remoteApp?.id,
+              requestId: signMessageModalState.requestId,
+              message: signMessageModalState.message,
+              method: signMessageModalState.method,
+            },
+          ]}
+        />
+      )}
     </div>
   )
 }
