@@ -28,7 +28,7 @@ const chooseBestIcon = (icons: AppManifestIcon[]): string => {
 
   for (const icon of icons) {
     for (const size of icon.sizes.split(' ')) {
-      if (Number(size?.split('x')[0]) >= MIN_ICON_WIDTH) {
+      if (Number(size.split('x')[0]) >= MIN_ICON_WIDTH) {
         return icon.src
       }
     }

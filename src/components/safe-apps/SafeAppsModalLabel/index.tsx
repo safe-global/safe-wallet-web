@@ -12,8 +12,8 @@ const SafeAppsModalLabel = ({ app }: { app?: SafeAppData }) => {
 
   return (
     <Box display="flex" alignItems="center">
-      <img src={app?.iconUrl || APP_LOGO_FALLBACK_IMAGE} alt={app?.name} className={css.modalLabel} />
-      <Typography variant="h4">{app?.name}</Typography>
+      <img src={app.iconUrl || APP_LOGO_FALLBACK_IMAGE} alt={app.name} className={css.modalLabel} />
+      <Typography variant="h4">{app.name}</Typography>
     </Box>
   )
 }

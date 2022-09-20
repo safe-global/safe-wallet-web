@@ -63,7 +63,7 @@ const ReviewSafeAppsSignMessage = ({
       data: txData || '0x',
       operation: OperationType.DelegateCall,
     })
-  }, [])
+  }, [message])
 
   const handleSubmit = (txId: string) => {
     dispatchSafeAppsTx(txId, requestId)
