@@ -6,7 +6,7 @@ import { getRpcServiceUrl } from '@/hooks/wallets/web3'
 
 const WALLET_NAME = 'E2E Wallet'
 
-const e2eWalletModule = ({ rpcUri }: ChainInfo): WalletInit => {
+const e2eWalletModule = (rpcUri: ChainInfo['rpcUri']): WalletInit => {
   return () => {
     return {
       label: WALLET_NAME,
