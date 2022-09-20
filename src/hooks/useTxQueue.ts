@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react'
 import { getTransactionQueue, type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxQueue, selectQueuedTransactionsByNonce } from '@/store/txQueueSlice'
 import useSafeInfo from './useSafeInfo'
-import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 
 const useTxQueue = (
   pageUrl?: string,
@@ -15,20 +13,12 @@ const useTxQueue = (
 } => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
   const { chainId } = safe
-  const [forceUpdateCount, setForceUpdateCount] = useState<number>(0)
 
   // If pageUrl is passed, load a new queue page from the API
   const [page, error, loading] = useAsync<TransactionListPage>(() => {
     if (!pageUrl || !safeLoaded) return
     return getTransactionQueue(chainId, safeAddress, pageUrl)
-  }, [chainId, safeAddress, safeLoaded, pageUrl, forceUpdateCount])
-
-  // Force an update when a tx has executed
-  useEffect(() => {
-    return txSubscribe(TxEvent.SUCCESS, () => {
-      setForceUpdateCount((count: number) => count + 1)
-    })
-  }, [])
+  }, [chainId, safeAddress, safeLoaded, pageUrl])
 
   // The latest page of the queue is always in the store
   const queueState = useAppSelector(selectTxQueue)
