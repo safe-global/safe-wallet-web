@@ -3,31 +3,27 @@ export const AppRoutes = {
   open: '/open',
   load: '/load',
   index: '/',
-  safe: {
-    index: '/safe',
-    home: '/safe/home',
-    apps: '/safe/apps',
-    addressBook: '/safe/address-book',
-    balances: {
-      nfts: '/safe/balances/nfts',
-      index: '/safe/balances',
-    },
-    settings: {
-      spendingLimits: '/safe/settings/spending-limits',
-      setup: '/safe/settings/setup',
-      modules: '/safe/settings/modules',
-      index: '/safe/settings',
-      appearance: '/safe/settings/appearance',
-    },
-    transactions: {
-      tx: '/safe/transactions/tx',
-      queue: '/safe/transactions/queue',
-      index: '/safe/transactions',
-      history: '/safe/transactions/history',
-    },
+  home: '/home',
+  apps: '/apps',
+  addressBook: '/address-book',
+  balances: {
+    nfts: '/balances/nfts',
+    index: '/balances',
+  },
+  settings: {
+    spendingLimits: '/settings/spending-limits',
+    setup: '/settings/setup',
+    modules: '/settings/modules',
+    index: '/settings',
+    appearance: '/settings/appearance',
   },
   share: {
-    index: '/share',
     safeApp: '/share/safe-app',
+  },
+  transactions: {
+    tx: '/transactions/tx',
+    queue: '/transactions/queue',
+    index: '/transactions',
+    history: '/transactions/history',
   },
 }

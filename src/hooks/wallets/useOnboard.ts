@@ -124,16 +124,16 @@ export const useInitOnboard = () => {
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
-    if (!onboard || !chain?.disabledWallets) return
+    if (!onboard || !chain) return
 
     const enableWallets = async () => {
       const { getSupportedWallets } = await import('@/hooks/wallets/wallets')
-      const supportedWallets = getSupportedWallets(chain.disabledWallets)
+      const supportedWallets = getSupportedWallets(chain)
       onboard.state.actions.setWalletModules(supportedWallets)
     }
 
     enableWallets()
-  }, [chain?.disabledWallets, onboard])
+  }, [chain, onboard])
 
   // Connect to the last connected wallet
   useEffect(() => {

@@ -25,9 +25,10 @@ type SignOrExecuteProps = {
   isExecutable: boolean
   isRejection?: boolean
   onlyExecute?: boolean
-  onSubmit: (data: null) => void
+  onSubmit: (txId: string) => void
   children?: ReactNode
   error?: Error
+  redirectToTx?: boolean
 }
 
 const SignOrExecuteForm = ({
@@ -39,6 +40,7 @@ const SignOrExecuteForm = ({
   onSubmit,
   children,
   error,
+  redirectToTx = true,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -129,14 +131,13 @@ const SignOrExecuteForm = ({
       return
     }
 
-    onSubmit(null)
+    onSubmit(id)
 
     // If txId isn't passed in props, it's a newly created tx
     // Redirect to the single tx view
-    // @TODO: also don't redirect for Safe Apps transactions (add a new prop)
-    if (!txId) {
+    if (redirectToTx && !txId) {
       router.push({
-        pathname: AppRoutes.safe.transactions.tx,
+        pathname: AppRoutes.transactions.tx,
         query: { safe: router.query.safe, id },
       })
     }
@@ -169,13 +170,21 @@ const SignOrExecuteForm = ({
 
         <AdvancedParams
           params={advancedParams}
+          recommendedGasLimit={gasLimit}
           recommendedNonce={safeTx?.data.nonce}
           willExecute={willExecute}
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
         />
 
-        {safeTx && <TxSimulation transactions={safeTx} canExecute={canExecute} disabled={submitDisabled} />}
+        {safeTx && (
+          <TxSimulation
+            gasLimit={advancedParams.gasLimit?.toNumber()}
+            transactions={safeTx}
+            canExecute={canExecute}
+            disabled={submitDisabled}
+          />
+        )}
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>

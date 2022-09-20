@@ -95,7 +95,7 @@ export const isValidURL = (url: string, protocolsAllowed = ['https:']): boolean 
   try {
     const urlInfo = new URL(url)
 
-    return protocolsAllowed.includes(urlInfo.protocol)
+    return protocolsAllowed.includes(urlInfo.protocol) || urlInfo.hostname === 'localhost'
   } catch (error) {
     return false
   }

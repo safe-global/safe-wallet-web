@@ -20,8 +20,8 @@ const VerticalTxStepper = ({ steps, initialData, initialStep, onClose, onFinish 
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map(({ label, render }, index) => {
           return (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+            <Step key={index}>
+              <StepLabel>{typeof label === 'string' ? label : label(stepData[index])}</StepLabel>
               <StepContent>{render(stepData[index], onSubmit, onBack, setStep)}</StepContent>
             </Step>
           )

@@ -51,7 +51,7 @@ const SingleTransaction: NextPage = () => {
   )
 
   const isCurrentSafeTx = sameAddress(txDetails?.safeAddress, safeAddress)
-  const breadcrumbsLink = `${AppRoutes.safe.transactions.index}?safe=${safeAddress}`
+  const breadcrumbsLink = `${AppRoutes.transactions.index}?safe=${safeAddress}`
 
   return (
     <main>
