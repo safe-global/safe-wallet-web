@@ -1,5 +1,6 @@
 import type { ContractReceipt } from 'ethers/lib/ethers'
 import EventBus from '@/services/EventBus'
+import { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 export enum TxEvent {
   SIGNED = 'SIGNED',
@@ -15,6 +16,7 @@ export enum TxEvent {
   REVERTED = 'REVERTED',
   FAILED = 'FAILED',
   SUCCESS = 'SUCCESS',
+  SAFE_APPS_REQUEST = 'SAFE_APPS_REQUEST',
 }
 
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
@@ -33,6 +35,7 @@ interface TxEvents {
   [TxEvent.REVERTED]: Id & { error: Error; receipt: ContractReceipt }
   [TxEvent.FAILED]: Id & { error: Error }
   [TxEvent.SUCCESS]: Id
+  [TxEvent.SAFE_APPS_REQUEST]: Id & { safeAppRequestId: RequestId }
 }
 
 const txEventBus = new EventBus<TxEvents>()

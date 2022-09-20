@@ -17,6 +17,26 @@ export type AppManifest = {
   iconPath?: string
 }
 
+const MIN_ICON_WIDTH = 128
+
+const chooseBestIcon = (icons: AppManifestIcon[]): string => {
+  const svgIcon = icons.find((icon) => icon?.sizes?.includes('any') || icon?.type === 'image/svg+xml')
+
+  if (svgIcon) {
+    return svgIcon.src
+  }
+
+  for (const icon of icons) {
+    for (const size of icon.sizes.split(' ')) {
+      if (Number(size.split('x')[0]) >= MIN_ICON_WIDTH) {
+        return icon.src
+      }
+    }
+  }
+
+  return icons[0].src || ''
+}
+
 // The icons URL can be any of the following format:
 // - https://example.com/icon.png
 // - icon.png
@@ -24,7 +44,7 @@ export type AppManifest = {
 // This function calculates the absolute URL of the icon taking into account the
 // different formats.
 const getAppLogoUrl = (appUrl: string, { icons = [], iconPath = '' }: AppManifest) => {
-  const iconUrl = icons.length ? icons[0].src : iconPath
+  const iconUrl = icons.length ? chooseBestIcon(icons) : iconPath
   const includesBaseUrl = iconUrl.startsWith('https://')
   if (includesBaseUrl) {
     return iconUrl
