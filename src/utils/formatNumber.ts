@@ -114,15 +114,13 @@ export const formatAmountWithPrecision = (
 
 // Fiat formatting
 
-const getMinimumCurrencyDenominator = (number: string | number, currency: string): number => {
-  const float = Number(number)
-
+const getMinimumCurrencyDenominator = (currency: string): number => {
   const formatter = new Intl.NumberFormat(undefined, {
     style: 'currency',
     currency,
   })
 
-  const fraction = formatter.formatToParts(float).find(({ type }) => type === 'fraction')
+  const fraction = formatter.formatToParts(1).find(({ type }) => type === 'fraction')
 
   // Currencies may not have decimals, i.e. JPY
   return fraction ? Number(`0.${'1'.padStart(fraction.value.length, '0')}`) : 1
@@ -135,7 +133,7 @@ const getCurrencyFormatterMaxFractionDigits = (
   const float = Number(number)
 
   if (float < 1_000_000) {
-    const [, decimals] = getMinimumCurrencyDenominator(number, currency).toString().split('.')
+    const [, decimals] = getMinimumCurrencyDenominator(currency).toString().split('.')
     return decimals?.length ?? 0
   }
 
@@ -167,7 +165,7 @@ export const formatCurrency = (number: string | number, currency: string): strin
   // Note: we will be able to achieve the following once the `roundingMode` option is supported
   // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#parameters
 
-  const minimum = getMinimumCurrencyDenominator(number, currency)
+  const minimum = getMinimumCurrencyDenominator(currency)
 
   const currencyFormatter = (float: number): string => {
     const options = getCurrencyFormatterOptions(number, currency)
@@ -180,7 +178,7 @@ export const formatCurrency = (number: string | number, currency: string): strin
     const amount = parts
       .filter(({ type }) => type !== 'currency' && type !== 'literal') // Remove currency code and whitespace
       .map((part) => {
-        if (float >= minimum) {
+        if (float >= 0) {
           return part
         }
 
