@@ -1,9 +1,8 @@
-import { ReactElement, SyntheticEvent, useState } from 'react'
+import type { ReactElement, SyntheticEvent } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Link, Grid } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
 import { formatVisualAmount } from '@/utils/formatters'
 import { type AdvancedParameters } from '../AdvancedParams/types'
-import Track from '@/components/common/Track'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 
 const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
@@ -26,11 +25,9 @@ type GasParamsProps = {
 
 const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElement => {
   const { nonce, userNonce, safeTxGas, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = params
-  const [isAccordionExpanded, setIsAccordionExpanded] = useState(false)
 
-  const onChangeExpand = () => {
-    setIsAccordionExpanded((prev) => !prev)
-    trackEvent({ ...MODALS_EVENTS.ESTIMATION, label: isAccordionExpanded ? 'Close' : 'Open' })
+  const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
+    trackEvent({ ...MODALS_EVENTS.ESTIMATION, label: expanded ? 'Open' : 'Close' })
   }
 
   const chain = useCurrentChain()
@@ -69,7 +66,11 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
         ) : (
           <Typography>
             Signing the transaction with nonce&nbsp;
-            {nonce || <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />}
+            {nonce !== undefined ? (
+              nonce
+            ) : (
+              <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />
+            )}
           </Typography>
         )}
       </AccordionSummary>
@@ -92,11 +93,9 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
         )}
 
         {!isExecution || (isExecution && !isLoading) ? (
-          <Track {...MODALS_EVENTS.EDIT_ESTIMATION}>
-            <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
-              Edit
-            </Link>
-          </Track>
+          <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
+            Edit
+          </Link>
         ) : (
           <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em', mt: 2 }} />
         )}

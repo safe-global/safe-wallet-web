@@ -9,6 +9,7 @@ export const getSpendingLimitModuleAddress = (chainId: string): string | undefin
   return deployment?.networkAddresses[chainId]
 }
 
+// SDK request here: https://github.com/safe-global/safe-core-sdk/issues/263
 export const getSpendingLimitContract = (
   chainId: string,
   provider: JsonRpcProvider | JsonRpcSigner,

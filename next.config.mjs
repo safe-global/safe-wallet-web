@@ -21,13 +21,16 @@ const nextConfig = {
       lodash: {
         transform: 'lodash/{{member}}',
       },
+      'date-fns': {
+        transform: 'date-fns/{{member}}',
+      },
     },
   },
   async rewrites() {
     return [
       {
         source: '/:safe([a-z]+\\:0x[a-fA-F0-9]{40})/:path*',
-        destination: '/safe/:path*?safe=:safe',
+        destination: '/:path*?safe=:safe',
       },
     ]
   },

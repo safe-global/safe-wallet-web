@@ -1,21 +1,15 @@
-import {
-  getIncomingTransfers,
-  getMultisigTransactions,
-  getModuleTransactions,
-  type TransactionListItem,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+import { getIncomingTransfers, getMultisigTransactions, getModuleTransactions } from '@gnosis.pm/safe-react-gateway-sdk'
 import * as router from 'next/router'
 
 import {
-  fetchFilteredTxHistory,
   TxFilterType,
   txFilter,
   _isValidTxFilterType,
   _omitNullish,
   useTxFilter,
   _isModuleFilter,
-  _addDateLabels,
   type TxFilter,
+  fetchFilteredTxHistory,
 } from '@/utils/tx-history-filter'
 import { renderHook } from '@/tests/test-utils'
 import type { NextRouter } from 'next/router'
@@ -28,7 +22,7 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
 }))
 
 describe('tx-history-filter', () => {
-  describe('sanitizeFilter', () => {
+  describe('_omitNullish', () => {
     it('should keep truthy values', () => {
       const result1 = _omitNullish({
         execution_date__gte: '1970-01-01T00:00:00.000Z',
@@ -219,7 +213,7 @@ describe('tx-history-filter', () => {
         expect(result).toEqual({
           type: 'Incoming',
           filter: {
-            execution_date__gte: '1970-01-01T00:00:00.000Z',
+            execution_date__gte: '1969-12-31T23:00:00.000Z',
             value: '123000000000000000000',
           },
         })
@@ -239,7 +233,7 @@ describe('tx-history-filter', () => {
           type: 'Outgoing',
           filter: {
             to: '0x1234567890123456789012345678901234567890',
-            execution_date__gte: '1970-01-01T00:00:00.000Z',
+            execution_date__gte: '1969-12-31T23:00:00.000Z',
             value: '123000000000000000000',
             nonce: '123',
           },
@@ -373,79 +367,6 @@ describe('tx-history-filter', () => {
           safe: '0x123',
         },
       })
-    })
-  })
-  describe('addDateLabels', () => {
-    it('should return items as is if it is an empty array', () => {
-      const result = _addDateLabels([])
-      expect(result).toEqual([])
-    })
-
-    it('should return items as is if it contains no transactions', () => {
-      const items = [
-        { type: 'LABEL', label: 'Next' },
-        { type: 'CONFLICT_HEADER', nonce: 1571 },
-      ] as TransactionListItem[]
-
-      const result = _addDateLabels(items)
-      expect(result).toEqual(items)
-    })
-
-    it('should prepend and nest date labels between transactions on different days', () => {
-      const items = [
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1661305372000,
-          },
-        },
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1638530807000,
-          },
-        },
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1637069854000,
-          },
-        },
-      ] as TransactionListItem[]
-
-      const result = _addDateLabels(items)
-      expect(result).toEqual([
-        {
-          type: 'DATE_LABEL',
-          timestamp: 1661305372000,
-        },
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1661305372000,
-          },
-        },
-        {
-          type: 'DATE_LABEL',
-          timestamp: 1638530807000,
-        },
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1638530807000,
-          },
-        },
-        {
-          type: 'DATE_LABEL',
-          timestamp: 1637069854000,
-        },
-        {
-          type: 'TRANSACTION',
-          transaction: {
-            timestamp: 1637069854000,
-          },
-        },
-      ])
     })
   })
 

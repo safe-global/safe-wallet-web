@@ -1,9 +1,13 @@
 import {
   AddressEx,
+  ConflictType,
+  DetailedExecutionInfoType,
   MultisigExecutionInfo,
   Transaction,
   TransactionInfo,
+  TransactionInfoType,
   TransactionListItem,
+  TransactionListItemType,
   TransactionStatus,
   TransactionSummary,
   TransactionTokenType,
@@ -23,7 +27,7 @@ const mockTransferInfo: TransferInfo = {
 }
 
 const mockTxInfo: TransactionInfo = {
-  type: 'Transfer',
+  type: TransactionInfoType.TRANSFER,
   sender: mockAddressEx,
   recipient: mockAddressEx,
   direction: TransferDirection.OUTGOING,
@@ -36,7 +40,7 @@ const defaultTx: TransactionSummary = {
   txInfo: mockTxInfo,
   txStatus: TransactionStatus.AWAITING_CONFIRMATIONS,
   executionInfo: {
-    type: 'MULTISIG',
+    type: DetailedExecutionInfoType.MULTISIG,
     nonce: 1,
     confirmationsRequired: 2,
     confirmationsSubmitted: 2,
@@ -52,8 +56,8 @@ const getMockTx = ({ nonce }: { nonce?: number }): Transaction => {
         nonce: nonce ?? (defaultTx.executionInfo as MultisigExecutionInfo).nonce,
       } as MultisigExecutionInfo,
     },
-    type: 'TRANSACTION',
-    conflictType: 'None',
+    type: TransactionListItemType.TRANSACTION,
+    conflictType: ConflictType.NONE,
   }
 }
 
@@ -75,8 +79,8 @@ describe('getBatchableTransactions', () => {
           confirmationsSubmitted: 2,
         } as MultisigExecutionInfo,
       },
-      type: 'TRANSACTION',
-      conflictType: 'None',
+      type: TransactionListItemType.TRANSACTION,
+      conflictType: ConflictType.NONE,
     }
     const result = getBatchableTransactions([mockTx], 0)
 
@@ -95,8 +99,8 @@ describe('getBatchableTransactions', () => {
           confirmationsSubmitted: 1,
         } as MultisigExecutionInfo,
       },
-      type: 'TRANSACTION',
-      conflictType: 'None',
+      type: TransactionListItemType.TRANSACTION,
+      conflictType: ConflictType.NONE,
     }
     const result = getBatchableTransactions([mockTx], 0)
 
@@ -115,12 +119,12 @@ describe('getBatchableTransactions', () => {
           confirmationsSubmitted: 2,
         } as MultisigExecutionInfo,
       },
-      type: 'TRANSACTION',
-      conflictType: 'None',
+      type: TransactionListItemType.TRANSACTION,
+      conflictType: ConflictType.NONE,
     }
 
     const mockConflict: TransactionListItem = {
-      type: 'CONFLICT_HEADER',
+      type: TransactionListItemType.CONFLICT_HEADER,
       nonce: 1,
     }
 
@@ -135,8 +139,8 @@ describe('getBatchableTransactions', () => {
         } as MultisigExecutionInfo,
         timestamp: 1,
       },
-      type: 'TRANSACTION',
-      conflictType: 'HasNext',
+      type: TransactionListItemType.TRANSACTION,
+      conflictType: ConflictType.HAS_NEXT,
     }
 
     const mockTx2: Transaction = {
@@ -150,8 +154,8 @@ describe('getBatchableTransactions', () => {
         } as MultisigExecutionInfo,
         timestamp: 2,
       },
-      type: 'TRANSACTION',
-      conflictType: 'End',
+      type: TransactionListItemType.TRANSACTION,
+      conflictType: ConflictType.END,
     }
 
     const result = getBatchableTransactions([mockTx, mockConflict, mockTx1, mockTx2], 0)
@@ -171,8 +175,8 @@ describe('getBatchableTransactions', () => {
           confirmationsSubmitted: 2,
         } as MultisigExecutionInfo,
       },
-      type: 'TRANSACTION',
-      conflictType: 'None',
+      type: TransactionListItemType.TRANSACTION,
+      conflictType: ConflictType.NONE,
     }
 
     const mockTx1: Transaction = {
@@ -185,8 +189,8 @@ describe('getBatchableTransactions', () => {
           confirmationsSubmitted: 2,
         } as MultisigExecutionInfo,
       },
-      type: 'TRANSACTION',
-      conflictType: 'None',
+      type: TransactionListItemType.TRANSACTION,
+      conflictType: ConflictType.NONE,
     }
 
     const result = getBatchableTransactions([mockTx, mockTx1], 0)

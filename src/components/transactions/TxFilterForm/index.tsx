@@ -8,8 +8,7 @@ import Radio from '@mui/material/Radio'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import isAfter from 'date-fns/isAfter'
-import isBefore from 'date-fns/isBefore'
+import { isBefore, isAfter, startOfDay } from 'date-fns'
 import { Controller, FormProvider, useForm, useFormState, type DefaultValues } from 'react-hook-form'
 import { useMemo, type ReactElement } from 'react'
 
@@ -88,7 +87,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
     const isFormDirty = dirtyFieldNames.some((name) => name !== TxFilterFormFieldNames.FILTER_TYPE)
     const hasFilterInQuery = !!filter?.type
     return !isValid || isFormDirty || hasFilterInQuery
-  }, [isValid, dirtyFieldNames])
+  }, [dirtyFieldNames, filter?.type, isValid])
 
   const clearFilter = () => {
     setFilter(null)
@@ -149,7 +148,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           deps={[TxFilterFormFieldNames.DATE_TO]}
                           validate={(val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
                             const toDate = getValues(TxFilterFormFieldNames.DATE_TO)
-                            if (val && toDate && isBefore(toDate, val)) {
+                            if (val && toDate && isBefore(startOfDay(toDate), startOfDay(val))) {
                               return 'Must be before "To" date'
                             }
                           }}
@@ -162,7 +161,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           deps={[TxFilterFormFieldNames.DATE_FROM]}
                           validate={(val: TxFilterFormState[TxFilterFormFieldNames.DATE_FROM]) => {
                             const fromDate = getValues(TxFilterFormFieldNames.DATE_FROM)
-                            if (val && fromDate && isAfter(fromDate, val)) {
+                            if (val && fromDate && isAfter(startOfDay(fromDate), startOfDay(val))) {
                               return 'Must be after "From" date'
                             }
                           }}

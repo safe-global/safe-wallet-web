@@ -35,7 +35,7 @@ describe('createNewSpendingLimitTx', () => {
       createTransaction: jest.fn(() => 'asd'),
     } as unknown as Safe
 
-    jest.spyOn(txSender, 'createMultiSendTx').mockImplementation(jest.fn())
+    jest.spyOn(txSender, 'createMultiSendCallOnlyTx').mockImplementation(jest.fn())
     jest.spyOn(safeCoreSDK, 'getSafeSDK').mockReturnValue(mockSDK)
     jest.spyOn(spendingLimit, 'getSpendingLimitModuleAddress').mockReturnValue(ZERO_ADDRESS)
   })
@@ -128,7 +128,7 @@ describe('createNewSpendingLimitTx', () => {
     expect(spy).toHaveBeenCalled()
   })
   it('encodes all txs as a single multiSend tx', async () => {
-    const spy = jest.spyOn(txSender, 'createMultiSendTx')
+    const spy = jest.spyOn(txSender, 'createMultiSendCallOnlyTx')
     await createNewSpendingLimitTx(mockData, [], '4', 18)
 
     expect(spy).toHaveBeenCalled()

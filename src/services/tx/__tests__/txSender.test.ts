@@ -1,8 +1,10 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import Safe from '@gnosis.pm/safe-core-sdk'
+import { type TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
 import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import extractTxInfo from '../extractTxInfo'
 import proposeTx from '../proposeTransaction'
+import * as txEvents from '../txEvents'
 import {
   createExistingTx,
   createRejectTx,
@@ -46,7 +48,13 @@ const mockSafeSDK = {
     addSignature: jest.fn(),
   })),
   signTransaction: jest.fn(),
-  executeTransaction: jest.fn(),
+  executeTransaction: jest.fn(() =>
+    Promise.resolve({
+      transactionResponse: {
+        wait: jest.fn(() => Promise.resolve({})),
+      },
+    }),
+  ),
   getChainId: jest.fn(() => Promise.resolve(4)),
   getAddress: jest.fn(() => '0x0000000000000000000000000000000000000123'),
   getTransactionHash: jest.fn(() => Promise.resolve('0x1234567890')),
@@ -55,6 +63,12 @@ const mockSafeSDK = {
 describe('txSender', () => {
   beforeAll(() => {
     setSafeSDK(mockSafeSDK)
+
+    jest.spyOn(txEvents, 'txDispatch')
+  })
+
+  beforeEach(() => {
+    jest.clearAllMocks()
   })
 
   describe('createTx', () => {
@@ -130,6 +144,56 @@ describe('txSender', () => {
 
       expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx, '0x1234567890')
       expect(proposedTx).toEqual({ txId: '123' })
+
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROPOSED', { txId: '123' })
+    })
+
+    it('should dispatch a tx proposal with a signature', async () => {
+      const tx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+      })
+
+      const proposedTx = await dispatchTxProposal('4', '0x123', '0x456', tx, '345')
+
+      expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx, '0x1234567890')
+      expect(proposedTx).toEqual({ txId: '123' })
+
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSED', { txId: '123' })
+    })
+
+    it('should fail to propose a signature', async () => {
+      ;(proposeTx as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error')))
+
+      const tx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+      })
+
+      await expect(dispatchTxProposal('4', '0x123', '0x456', tx, '345')).rejects.toThrow('error')
+
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSE_FAILED', {
+        txId: '345',
+        error: new Error('error'),
+      })
+    })
+
+    it('should fail to propose a new tx', async () => {
+      ;(proposeTx as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error')))
+
+      const tx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+      })
+
+      await expect(dispatchTxProposal('4', '0x123', '0x456', tx)).rejects.toThrow('error')
+
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROPOSE_FAILED', {
+        error: new Error('error'),
+      })
     })
   })
 
@@ -139,20 +203,23 @@ describe('txSender', () => {
         to: '0x123',
         value: '1',
         data: '0x0',
+        nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, false, '0x345')
+      const signedTx = await dispatchTxSigning(tx, false, '345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
       expect(signedTx).not.toBe(tx)
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '345' })
     })
 
-    it('should sign a tx with eth_sign if a hardware wallet is connected', async () => {
+    it('should sign a tx with eth_sign if a hardware wallet/pairing is connected', async () => {
       const tx = await createTx({
         to: '0x123',
         value: '1',
         data: '0x0',
+        nonce: 1,
       })
 
       const signedTx = await dispatchTxSigning(tx, true, '0x345')
@@ -165,20 +232,70 @@ describe('txSender', () => {
 
   describe('dispatchTxExecution', () => {
     it('should execute a tx', async () => {
-      const tx = await createTx({
+      const txId = 'tx_id_123'
+
+      const safeTx = await createTx({
         to: '0x123',
         value: '1',
         data: '0x0',
+        nonce: 1,
       })
 
-      expect(dispatchTxExecution).toBeDefined()
+      await dispatchTxExecution(txId, safeTx)
 
-      // TODO: after PromiEvent is replaced
+      expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('MINING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('MINED', { receipt: {}, txId })
+    })
 
-      // const hash = await dispatchTxExecution(tx)
+    it('should fail executing a tx', async () => {
+      jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() => Promise.reject(new Error('error')))
 
-      // expect(mockSafeSDK.executeTransaction).toHaveBeenCalledWith(tx)
-      // expect(hash).toBeDefined()
+      const txId = 'tx_id_123'
+
+      const safeTx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 1,
+      })
+
+      await expect(dispatchTxExecution(txId, safeTx)).rejects.toThrow('error')
+
+      expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', { txId, error: new Error('error') })
+    })
+
+    it('should revert a tx', async () => {
+      jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() =>
+        Promise.resolve({
+          transactionResponse: {
+            wait: jest.fn(() => Promise.resolve({ status: 0 })),
+          },
+        } as unknown as TransactionResult),
+      )
+
+      const txId = 'tx_id_123'
+
+      const safeTx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 1,
+      })
+
+      await dispatchTxExecution(txId, safeTx)
+
+      expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('MINING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('REVERTED', {
+        txId,
+        receipt: { status: 0 },
+        error: new Error('Transaction reverted by EVM'),
+      })
     })
   })
 })

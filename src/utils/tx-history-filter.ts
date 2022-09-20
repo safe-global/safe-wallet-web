@@ -4,17 +4,14 @@ import {
   getIncomingTransfers,
   getModuleTransactions,
   getMultisigTransactions,
-  type TransactionListItem,
   type TransactionListPage,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/api'
 import type { ParsedUrlQuery } from 'querystring'
-import { isSameDay } from 'date-fns'
+import { startOfDay, endOfDay } from 'date-fns'
 
 import { TxFilterFormState } from '@/components/transactions/TxFilterForm'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
-import { isTransactionListItem } from '@/utils/transaction-guards'
-import { makeDateLabelFromTx } from '@/utils/transactions'
 
 type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>
 type MultisigTxFilter = NonNullable<operations['multisig_transactions']['parameters']['query']>
@@ -65,8 +62,12 @@ export const txFilter = {
   parseFormData: ({ type, ...formData }: TxFilterFormState): TxFilter => {
     const filter: TxFilter['filter'] = _omitNullish({
       ...formData,
-      execution_date__gte: formData.execution_date__gte?.toISOString(),
-      execution_date__lte: formData.execution_date__lte?.toISOString(),
+      execution_date__gte: formData.execution_date__gte
+        ? startOfDay(formData.execution_date__gte).toISOString()
+        : undefined,
+      execution_date__lte: formData.execution_date__lte
+        ? endOfDay(formData.execution_date__lte).toISOString()
+        : undefined,
       value: formData.value ? safeParseUnits(formData.value, 18)?.toString() : undefined,
     })
 
@@ -113,38 +114,6 @@ export const useTxFilter = (): [TxFilter | null, (filter: TxFilter | null) => vo
   return [filter, setQuery]
 }
 
-/**
- * Add date labels between transactions made on the same day.
- */
-export const _addDateLabels = (items: TransactionListItem[]): TransactionListItem[] => {
-  const firstTx = items.find(isTransactionListItem)
-
-  if (!firstTx) {
-    return items
-  }
-
-  // Filtered transaction lists do not contain date labels
-  // Prepend initial date label to list
-  const prependedItems = ([makeDateLabelFromTx(firstTx)] as TransactionListItem[]).concat(items)
-
-  // Insert date labels between transactions on different days
-  return prependedItems.reduce<TransactionListItem[]>((resultItems, item, index, allItems) => {
-    const prevItem = allItems[index - 1]
-
-    if (
-      !prevItem ||
-      !isTransactionListItem(prevItem) ||
-      !isTransactionListItem(item) ||
-      // TODO: Make comparison in UTC
-      isSameDay(prevItem.transaction.timestamp, item.transaction.timestamp)
-    ) {
-      return resultItems.concat(item)
-    }
-
-    return resultItems.concat(makeDateLabelFromTx(item), item)
-  }, [])
-}
-
 export const fetchFilteredTxHistory = async (
   chainId: string,
   safeAddress: string,
@@ -174,10 +143,5 @@ export const fetchFilteredTxHistory = async (
     }
   }
 
-  const page = await fetchPage()
-
-  return {
-    ...page,
-    results: _addDateLabels(page.results),
-  }
+  return await fetchPage()
 }

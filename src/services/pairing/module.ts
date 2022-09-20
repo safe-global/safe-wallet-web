@@ -22,6 +22,8 @@ enum ProviderMethods {
   ETH_SIGN_TRANSACTION = 'eth_signTransaction',
   ETH_SIGN = 'eth_sign',
   ETH_SIGN_TYPED_DATA = 'eth_signTypedData',
+  ETH_SIGN_TYPED_DATA_V3 = 'eth_signTypedData_v3',
+  ETH_SIGN_TYPED_DATA_V4 = 'eth_signTypedData_v4',
   ETH_ACCOUNTS = 'eth_accounts',
   WALLET_SWITCH_ETHEREUM_CHAIN = 'wallet_switchEthereumChain',
 }
@@ -171,23 +173,23 @@ const pairingModule = (): WalletInit => {
                 }
 
                 case ProviderMethods.ETH_SEND_TRANSACTION: {
-                  return this.connector.sendTransaction(params![0] as ITxData)
+                  const txData = params![0] as ITxData
+
+                  return this.connector.sendTransaction({
+                    ...txData,
+                    // Mobile app expects `value`
+                    value: txData.value || '0x0',
+                  })
                 }
 
                 case ProviderMethods.ETH_SIGN_TRANSACTION: {
                   return this.connector.signTransaction(params![0] as ITxData)
                 }
 
+                // Mobile app only supports `eth_sign` but emits `personal_sign` event
                 case ProviderMethods.PERSONAL_SIGN: {
-                  return this.connector.signPersonalMessage(params!)
-                }
-
-                case ProviderMethods.ETH_SIGN: {
-                  return this.connector.signMessage(params!)
-                }
-
-                case ProviderMethods.ETH_SIGN_TYPED_DATA: {
-                  return this.connector.signTypedData(params!)
+                  const [safeTxHash, sender] = params as [string, string]
+                  return this.connector.signMessage([sender, safeTxHash]) // `eth_sign`
                 }
 
                 case ProviderMethods.ETH_ACCOUNTS: {
@@ -199,11 +201,17 @@ const pairingModule = (): WalletInit => {
                   })
                 }
 
+                // Not supported by mobile app
+                case ProviderMethods.ETH_SIGN:
+                case ProviderMethods.ETH_SIGN_TYPED_DATA:
+                case ProviderMethods.ETH_SIGN_TYPED_DATA_V3:
+                case ProviderMethods.ETH_SIGN_TYPED_DATA_V4:
+                // Not supported by WC
                 case ProviderMethods.ETH_SELECT_ACCOUNTS:
                 case ProviderMethods.WALLET_SWITCH_ETHEREUM_CHAIN: {
                   throw new ProviderRpcError({
                     code: ProviderRpcErrorCode.UNSUPPORTED_METHOD,
-                    message: `The Provider does not support the requested method: ${method}`,
+                    message: `The Mobile Safe does not support the requested method: ${method}`,
                   })
                 }
 
@@ -231,7 +239,7 @@ const pairingModule = (): WalletInit => {
         }
 
         return {
-          provider: new EthProvider({ chains, connector: getPairingConnector() }),
+          provider: new EthProvider({ chains, connector: getPairingConnector()! }),
         }
       },
     }

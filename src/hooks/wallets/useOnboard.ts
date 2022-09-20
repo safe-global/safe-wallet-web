@@ -92,6 +92,22 @@ const trackWalletType = async (wallet: ConnectedWallet) => {
   }
 }
 
+// Wrapper that tracks/sets the last used wallet
+export const connectWallet = (onboard: OnboardAPI, options?: Parameters<OnboardAPI['connectWallet']>[0]) => {
+  onboard
+    .connectWallet(options)
+    .then(async (wallets) => {
+      const newWallet = getConnectedWallet(wallets)
+
+      if (newWallet) {
+        lastWalletStorage.set(newWallet.label)
+
+        await trackWalletType(newWallet)
+      }
+    })
+    .catch((e) => logError(Errors._302, (e as Error).message))
+}
+
 // Disable/enable wallets according to chain and cache the last used wallet
 export const useInitOnboard = () => {
   const { configs } = useChains()
@@ -108,35 +124,16 @@ export const useInitOnboard = () => {
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
-    if (!onboard || !chain?.disabledWallets) return
+    if (!onboard || !chain) return
 
     const enableWallets = async () => {
       const { getSupportedWallets } = await import('@/hooks/wallets/wallets')
-      const supportedWallets = getSupportedWallets(chain.disabledWallets)
+      const supportedWallets = getSupportedWallets(chain)
       onboard.state.actions.setWalletModules(supportedWallets)
     }
 
     enableWallets()
-  }, [chain?.disabledWallets, onboard])
-
-  // Remember the last used wallet
-  useEffect(() => {
-    if (!onboard) return
-
-    const walletSubscription = onboard.state.select('wallets').subscribe(async (wallets) => {
-      const newWallet = getConnectedWallet(wallets)
-
-      if (newWallet) {
-        await trackWalletType(newWallet)
-
-        lastWalletStorage.set(newWallet.label)
-      }
-    })
-
-    return () => {
-      walletSubscription.unsubscribe()
-    }
-  }, [onboard])
+  }, [chain, onboard])
 
   // Connect to the last connected wallet
   useEffect(() => {
@@ -144,11 +141,9 @@ export const useInitOnboard = () => {
       const label = getLastUsedWallet()
 
       if (label) {
-        onboard
-          .connectWallet({
-            autoSelect: { label, disableModals: true },
-          })
-          .catch((e) => logError(Errors._302, (e as Error).message))
+        connectWallet(onboard, {
+          autoSelect: { label, disableModals: true },
+        })
       }
     }
   }, [onboard])

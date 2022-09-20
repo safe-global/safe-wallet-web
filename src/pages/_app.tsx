@@ -28,6 +28,7 @@ import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { useTxTracking } from '@/hooks/useTxTracking'
 import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
+import ErrorBoundary from '@/components/common/ErrorBoundary'
 
 const cssCache = createCache({
   key: 'css',
@@ -60,11 +61,13 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
   const theme = useLightDarkTheme()
 
   return (
-    <Sentry.ErrorBoundary showDialog fallback={({ error }) => <div>{error.message}</div>}>
-      <CacheProvider value={cssCache}>
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
-      </CacheProvider>
-    </Sentry.ErrorBoundary>
+    <CacheProvider value={cssCache}>
+      <ThemeProvider theme={theme}>
+        <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
+          {children}
+        </Sentry.ErrorBoundary>
+      </ThemeProvider>
+    </CacheProvider>
   )
 }
 

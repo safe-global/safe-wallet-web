@@ -1,7 +1,7 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { Button, DialogContent, Typography } from '@mui/material'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -9,7 +9,7 @@ import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isHardwareWallet } from '@/hooks/wallets/wallets'
+import { isHardwareWallet, isSafeMobileWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -17,6 +17,7 @@ import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
+import { TxSimulation } from '@/components/tx/TxSimulation'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -87,8 +88,8 @@ const SignOrExecuteForm = ({
   const onSign = async (): Promise<string> => {
     const [connectedWallet, createdTx] = assertSubmittable()
 
-    const hardwareWallet = isHardwareWallet(connectedWallet)
-    const signedTx = await dispatchTxSigning(createdTx, hardwareWallet, txId)
+    const shouldEthSign = isHardwareWallet(connectedWallet) || isSafeMobileWallet(connectedWallet)
+    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
     return proposedTx.txId
@@ -135,7 +136,7 @@ const SignOrExecuteForm = ({
     // @TODO: also don't redirect for Safe Apps transactions (add a new prop)
     if (!txId) {
       router.push({
-        pathname: AppRoutes.safe.transactions.tx,
+        pathname: AppRoutes.transactions.tx,
         query: { safe: router.query.safe, id },
       })
     }
@@ -173,6 +174,15 @@ const SignOrExecuteForm = ({
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
         />
+
+        {safeTx && (
+          <TxSimulation
+            gasLimit={advancedParams.gasLimit?.toNumber()}
+            transactions={safeTx}
+            canExecute={canExecute}
+            disabled={submitDisabled}
+          />
+        )}
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>
