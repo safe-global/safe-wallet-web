@@ -1,4 +1,5 @@
 import { type ReactElement } from 'react'
+import { useRouter } from 'next/router'
 import { IconButton, Paper } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import classnames from 'classnames'
@@ -20,6 +21,10 @@ type HeaderProps = {
 const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const chainId = useChainId()
   const showSafeToken = !!getSafeTokenAddress(chainId)
+  const router = useRouter()
+
+  // Logo link: if on Dashboard, link to Welcome, otherwise to the root (which redirects to either Dashboard or Welcome)
+  const logoHref = router.pathname === AppRoutes.home ? AppRoutes.welcome : AppRoutes.index
 
   return (
     <Paper className={css.container}>
@@ -30,7 +35,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
       </div>
 
       <div className={classnames(css.element, css.hideMobile, css.logo)}>
-        <Link href={AppRoutes.index} passHref>
+        <Link href={logoHref} passHref>
           <a>
             <SafeLogo alt="Safe logo" />
           </a>
