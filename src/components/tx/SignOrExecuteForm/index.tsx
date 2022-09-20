@@ -169,6 +169,7 @@ const SignOrExecuteForm = ({
 
         <AdvancedParams
           params={advancedParams}
+          recommendedGasLimit={gasLimit}
           recommendedNonce={safeTx?.data.nonce}
           willExecute={willExecute}
           nonceReadonly={nonceReadonly}
