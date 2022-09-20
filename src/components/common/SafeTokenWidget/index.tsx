@@ -1,4 +1,5 @@
-import { SAFE_TOKEN_ADDRESSES } from '@/config/constants'
+import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
+import { IS_PRODUCTION, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import useBalances from '@/hooks/useBalances'
@@ -16,7 +17,8 @@ import SafeTokenIcon from './safe_token.svg'
 
 import css from './styles.module.css'
 
-const CLAIMING_APP_NAME = '$SAFE Claiming App'
+const isStaging = !IS_PRODUCTION && !cgwDebugStorage.get()
+const CLAIMING_APP_ID = isStaging ? 61 : 95
 
 export const getSafeTokenAddress = (chainId: string): string => {
   return SAFE_TOKEN_ADDRESSES[chainId]
@@ -29,7 +31,7 @@ const SafeTokenWidget = () => {
   const apps = useSafeApps()
 
   const claimingApp = useMemo(
-    () => apps.allSafeApps.find((appData) => appData.name === CLAIMING_APP_NAME),
+    () => apps.allSafeApps.find((appData) => appData.id === CLAIMING_APP_ID),
     [apps.allSafeApps],
   )
 
@@ -48,7 +50,7 @@ const SafeTokenWidget = () => {
 
   return (
     <Box className={css.buttonContainer}>
-      <Tooltip title={url ? `Open ${CLAIMING_APP_NAME}` : ''}>
+      <Tooltip title={url ? `Open ${claimingApp?.name}` : ''}>
         <span>
           <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
             <Link href={url || '#'} passHref>

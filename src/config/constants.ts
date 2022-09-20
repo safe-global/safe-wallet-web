@@ -20,6 +20,7 @@ export const FORTMATIC_KEY = process.env.NEXT_PUBLIC_FORTMATIC_KEY || ''
 export const PORTIS_KEY = process.env.NEXT_PUBLIC_PORTIS_KEY || ''
 export const TREZOR_APP_URL = 'gnosis-safe.io'
 export const TREZOR_EMAIL = 'safe@gnosis.io'
+export const CYPRESS_MNEMONIC = process.env.NEXT_PUBLIC_CYPRESS_MNEMONIC || ''
 
 // Safe Token
 export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
