@@ -215,6 +215,8 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
     throw err
   }
 
+  txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, { groupKey: safeTxHash })
+
   return safeTx
 }
 
