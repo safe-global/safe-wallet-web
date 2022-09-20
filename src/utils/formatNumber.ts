@@ -117,12 +117,14 @@ export const formatAmountWithPrecision = (
 // Fiat formatting
 
 const getMinimumCurrencyDenominator = memoize((currency: string): number => {
+  const BASE_VALUE = 1
+
   const formatter = new Intl.NumberFormat(undefined, {
     style: 'currency',
     currency,
   })
 
-  const fraction = formatter.formatToParts(1).find(({ type }) => type === 'fraction')
+  const fraction = formatter.formatToParts(BASE_VALUE).find(({ type }) => type === 'fraction')
 
   // Currencies may not have decimals, i.e. JPY
   return fraction ? Number(`0.${'1'.padStart(fraction.value.length, '0')}`) : 1
