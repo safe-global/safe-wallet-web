@@ -1,5 +1,4 @@
 import {
-  ChainInfo,
   getTransactionDetails,
   Operation,
   postSafeGasEstimation,
@@ -25,7 +24,6 @@ import { Web3Provider } from '@ethersproject/providers'
 import { ContractTransaction, ethers } from 'ethers'
 import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
-import { getWeb3 } from '@/hooks/wallets/web3'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 
 const getAndValidateSafeSDK = (): Safe => {
@@ -195,11 +193,8 @@ export const dispatchTxSigning = async (
 /**
  * On-Chain sign a transaction
  */
-export const dispatchOnChainSigning = async (safeTx: SafeTransaction, chain?: ChainInfo, txId?: string) => {
+export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: Web3Provider, txId?: string) => {
   const sdk = getAndValidateSafeSDK()
-  const provider = getWeb3()
-
-  if (!provider || !chain) return safeTx
 
   const signer = provider.getSigner()
   const ethersAdapter = new EthersAdapter({
@@ -215,8 +210,6 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, chain?: Ch
     txDispatch(TxEvent.SIGN_FAILED, { txId, error: err as Error })
     throw err
   }
-
-  txDispatch(TxEvent.SIGNED, { txId })
 
   return safeTx
 }

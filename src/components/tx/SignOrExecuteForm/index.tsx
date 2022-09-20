@@ -24,6 +24,8 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
+import { useWeb3 } from '@/hooks/wallets/web3'
+import { Web3Provider } from '@ethersproject/providers'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -57,6 +59,7 @@ const SignOrExecuteForm = ({
   const router = useRouter()
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
+  const provider = useWeb3()
   const currentChain = useCurrentChain()
 
   // Check that the transaction is executable
@@ -84,20 +87,22 @@ const SignOrExecuteForm = ({
   //
   // Callbacks
   //
-  const assertSubmittable = (): [ConnectedWallet, SafeTransaction] => {
+  const assertSubmittable = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
     if (!wallet) throw new Error('Wallet not connected')
     if (!tx) throw new Error('Transaction not ready')
-    return [wallet, tx]
+    if (!provider) throw new Error('Provider not ready')
+
+    return [wallet, tx, provider]
   }
 
   // Sign transaction
   const onSign = async (): Promise<string> => {
-    const [connectedWallet, createdTx] = assertSubmittable()
+    const [connectedWallet, createdTx, provider] = assertSubmittable()
 
     const shouldEthSign = isHardwareWallet(connectedWallet) || isPaired(connectedWallet)
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
     const signedTx = smartContractWallet
-      ? await dispatchOnChainSigning(createdTx, currentChain, txId)
+      ? await dispatchOnChainSigning(createdTx, provider, txId)
       : await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
