@@ -195,6 +195,7 @@ export const dispatchTxSigning = async (
  */
 export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: Web3Provider, txId?: string) => {
   const sdk = getAndValidateSafeSDK()
+  const safeTxHash = await sdk.getTransactionHash(safeTx)
 
   const signer = provider.getSigner()
   const ethersAdapter = new EthersAdapter({
@@ -202,12 +203,13 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
     signer: signer.connectUnchecked(),
   })
 
+  txDispatch(TxEvent.EXECUTING, { groupKey: safeTxHash })
+
   try {
-    const safeTxHash = await sdk.getTransactionHash(safeTx)
     const sdkUnchecked = await sdk.connect({ ethAdapter: ethersAdapter })
     await sdkUnchecked.approveTransactionHash(safeTxHash)
   } catch (err) {
-    txDispatch(TxEvent.SIGN_FAILED, { txId, error: err as Error })
+    txDispatch(TxEvent.FAILED, { groupKey: safeTxHash, error: err as Error })
     throw err
   }
 
