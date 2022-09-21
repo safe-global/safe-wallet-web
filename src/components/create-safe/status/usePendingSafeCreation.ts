@@ -79,7 +79,7 @@ export const usePendingSafeCreation = ({ txHash, setStatus }: Props) => {
       setStatus(txStatus)
     }
 
-    setStatus(SafeCreationStatus.MINING)
+    setStatus(SafeCreationStatus.PROCESSING)
     monitorTx()
   }, [txHash, provider, setStatus, chainId])
 }

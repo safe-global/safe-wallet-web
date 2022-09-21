@@ -35,7 +35,7 @@ const getStep = (status: SafeCreationStatus) => {
         description: 'Waiting for wallet connection',
         instruction: 'Please make sure your wallet is connected on the correct network.',
       }
-    case SafeCreationStatus.MINING:
+    case SafeCreationStatus.PROCESSING:
       return {
         image: loading,
         description: 'Step 2/2: Transaction is being executed.',
@@ -56,7 +56,7 @@ const getStep = (status: SafeCreationStatus) => {
     case SafeCreationStatus.TIMEOUT:
       return {
         image: error,
-        description: 'Transaction was not found. Be aware that it might still be mined.',
+        description: 'Transaction was not found. Be aware that it might still be processed.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.SUCCESS:

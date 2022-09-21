@@ -46,7 +46,7 @@ describe('useSafeCreation', () => {
     expect(result.current.status).toBe(SafeCreationStatus.AWAITING)
   })
 
-  it('should return MINING if there is a txHash', async () => {
+  it('should return PROCESSING if there is a txHash', async () => {
     const mockSafe: Safe = new Safe()
     mockSafe.getAddress = jest.fn(() => '0x0')
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
@@ -63,7 +63,7 @@ describe('useSafeCreation', () => {
     ])
 
     const { result } = renderHook(() => useSafeCreation())
-    expect(result.current.status).toBe(SafeCreationStatus.MINING)
+    expect(result.current.status).toBe(SafeCreationStatus.PROCESSING)
   })
 
   it('should return SUCCESS if the safe creation promise resolves', async () => {

@@ -21,8 +21,8 @@ describe('txMonitor', () => {
   })
 
   describe('waitForTx', () => {
-    // Mined:
-    it("doesn't emit an event if the tx was successfully mined", async () => {
+    // Mined/validated:
+    it("doesn't emit an event if the tx was successfully mined/validated", async () => {
       const receipt = {
         status: 1,
       } as TransactionReceipt
@@ -34,7 +34,7 @@ describe('txMonitor', () => {
       expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
-    // Not mined:
+    // Not mined/validated:
     it("emits a FAILED event if waitForTransaction isn't blocking and no receipt was returned", async () => {
       // Can return null if waitForTransaction is non-blocking:
       // https://docs.ethers.io/v5/single-page/#/v5/api/providers/provider/-%23-Provider-waitForTransaction
@@ -47,7 +47,7 @@ describe('txMonitor', () => {
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error) })
     })
 
-    it('emits a FAILED event if the tx mining timed out', async () => {
+    it('emits a FAILED event if the tx mining/validating timed out', async () => {
       waitForTxSpy.mockImplementationOnce(
         () => Promise.resolve(null) as unknown as ReturnType<typeof provider.waitForTransaction>,
       )
@@ -56,7 +56,7 @@ describe('txMonitor', () => {
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
         txId: '0x0',
-        error: new Error('Transaction not mined in 6.5 minutes. Be aware that it might still be mined.'),
+        error: new Error('Transaction not processed in 6.5 minutes. Be aware that it might still be processed.'),
       })
     })
 
