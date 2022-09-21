@@ -13,18 +13,18 @@ const USDC = '/app/static/media/tokens/logos/0x4DBCdF9B62e891a7cec5A2568C3F4FAF9
 describe('Dashboard', () => {
   before(() => {
     // Go to the test Safe transaction history
-    cy.visit(`/${SAFE}/transactions/history`)
-    cy.contains('a', 'Accept selection').click()
+    cy.visit(`/${SAFE}/transactions/history`, { failOnStatusCode: false })
+    cy.contains('button', 'Accept selection').click()
   })
 
   it('should display June 9th transactions', () => {
     const DATE = 'Jun 9, 2022'
 
     // Date label
-    cy.contains('p', DATE).should('exist')
+    cy.contains('div', DATE).should('exist')
 
     // Transaction summaries
-    const rows = cy.contains('p', DATE).next().children()
+    const rows = cy.contains('div', DATE).next().children()
 
     rows.should('have.length', 1)
 
@@ -52,10 +52,10 @@ describe('Dashboard', () => {
     const DATE = 'Jun 8, 2022'
 
     // Date label
-    cy.contains('p', DATE).should('exist')
+    cy.contains('div', DATE).should('exist')
 
     // Transaction summaries
-    const rows = cy.contains('p', DATE).next().children()
+    const rows = cy.contains('div', DATE).next().children()
 
     rows.should('have.length', 1)
 
@@ -83,10 +83,10 @@ describe('Dashboard', () => {
     const DATE = 'May 30, 2022'
 
     // Date label
-    cy.contains('p', DATE).should('exist')
+    cy.contains('div', DATE).should('exist')
 
     // Transaction summaries
-    const rows = cy.contains('p', DATE).next().children()
+    const rows = cy.contains('div', DATE).nextAll()
 
     rows.should('have.length', 9)
 
