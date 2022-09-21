@@ -29,6 +29,7 @@ import { useTxTracking } from '@/hooks/useTxTracking'
 import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
+import { ContentSecurityPolicy } from '@/config/securityHeaders'
 
 const cssCache = createCache({
   key: 'css',
@@ -86,6 +87,7 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
 
         <meta name="viewport" content="width=device-width" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta httpEquiv="Content-Security-Policy" content={`${ContentSecurityPolicy.replace(/\s{2,}/g, ' ').trim()}`} />
         <link rel="shortcut icon" href="/favicons/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
