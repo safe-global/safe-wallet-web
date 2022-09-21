@@ -12,6 +12,8 @@ import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAM
 import { hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/TxSimulation/types'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { hexZeroPad } from 'ethers/lib/utils'
+import { BigNumber } from 'ethers'
 
 export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
   if (!chain) {
@@ -116,15 +118,6 @@ export const _getMultiSendCallOnlyPayload = (
   }
 }
 
-/* We need to overwrite the threshold stored in smart contract storage to 1
- to do a proper simulation that takes transaction guards into account.
- The threshold is stored in storage slot 4 and uses full 32 bytes slot
- Safe storage layout can be found here:
- https://github.com/gnosis/safe-contracts/blob/main/contracts/libraries/GnosisSafeStorage.sol */
-const THRESHOLD_ONE_STORAGE_OVERRIDE = {
-  [`0x${'4'.padStart(64, '0')}`]: `0x${'1'.padStart(64, '0')}`,
-}
-
 export const _getStateOverride = (
   address: string,
   balance?: string,
@@ -158,6 +151,43 @@ const isOverwriteThreshold = (params: SimulationTxParams) => {
   return params.safe.threshold > effectiveSigs
 }
 
+const getNonceOverwrite = (params: SimulationTxParams): number | undefined => {
+  if (!isSingleTransactionSimulation(params)) {
+    return
+  }
+  const txNonce = params.transactions.data.nonce
+  const safeNonce = params.safe.nonce
+  if (txNonce > safeNonce) {
+    return txNonce
+  }
+}
+
+/* We need to overwrite the threshold stored in smart contract storage to 1
+  to do a proper simulation that takes transaction guards into account.
+  The threshold is stored in storage slot 4 and uses full 32 bytes slot.
+  Safe storage layout can be found here:
+  https://github.com/gnosis/safe-contracts/blob/main/contracts/libraries/GnosisSafeStorage.sol */
+export const THRESHOLD_STORAGE_POSITION = hexZeroPad('0x4', 32)
+/* We need to overwrite the nonce if we simulate a (partially) signed transaction which is not at the top position of the tx queue.
+  The nonce can be found in storage slot 5 and uses a full 32 bytes slot. */
+export const NONCE_STORAGE_POSITION = hexZeroPad('0x5', 32)
+
+const getStateOverwrites = (params: SimulationTxParams) => {
+  const nonceOverwrite = getNonceOverwrite(params)
+  const isThresholdOverwrite = isOverwriteThreshold(params)
+
+  const storageOverwrites: Record<string, string> = {} as Record<string, string>
+
+  if (isThresholdOverwrite) {
+    storageOverwrites[THRESHOLD_STORAGE_POSITION] = hexZeroPad('0x1', 32)
+  }
+  if (nonceOverwrite) {
+    storageOverwrites[NONCE_STORAGE_POSITION] = hexZeroPad(BigNumber.from(nonceOverwrite).toHexString(), 32)
+  }
+
+  return storageOverwrites
+}
+
 const getLatestBlockGasLimit = async (): Promise<number> => {
   const web3ReadOnly = getWeb3ReadOnly()
   const latestBlock = await web3ReadOnly?.getBlock('latest')
@@ -174,7 +204,8 @@ export const getSimulationPayload = async (params: SimulationTxParams): Promise<
     ? _getSingleTransactionPayload(params)
     : _getMultiSendCallOnlyPayload(params)
 
-  const overwriteThreshold = isOverwriteThreshold(params)
+  const stateOverwrites = getStateOverwrites(params)
+  const stateOverwritesLength = Object.keys(stateOverwrites).length
 
   return {
     ...payload,
@@ -183,9 +214,10 @@ export const getSimulationPayload = async (params: SimulationTxParams): Promise<
     gas: gasLimit,
     // With gas price 0 account don't need token for gas
     gas_price: '0',
-    state_objects: overwriteThreshold
-      ? _getStateOverride(params.safe.address.value, undefined, undefined, THRESHOLD_ONE_STORAGE_OVERRIDE)
-      : undefined,
+    state_objects:
+      stateOverwritesLength > 0
+        ? _getStateOverride(params.safe.address.value, undefined, undefined, stateOverwrites)
+        : undefined,
     save: true,
     save_if_fails: true,
   }
