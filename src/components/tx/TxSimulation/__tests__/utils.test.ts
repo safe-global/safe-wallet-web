@@ -11,6 +11,8 @@ import { generatePreValidatedSignature } from '@gnosis.pm/safe-core-sdk/dist/src
 import { hexZeroPad } from 'ethers/lib/utils'
 import * as Web3 from '@/hooks/wallets/web3'
 
+const SIGNATURE_LENGTH = 65 * 2
+
 describe('simulation utils', () => {
   const safeContractInterface = new ethers.utils.Interface(getSafeSingletonDeployment({ version: '1.3.0' })?.abi || [])
   const multiSendContractInterface = new ethers.utils.Interface(
@@ -186,6 +188,7 @@ describe('simulation utils', () => {
 
       // Do add preValidatedSignature of connected owner as the tx is only partially signed
       expect(decodedTxData[9]).toContain(getPreValidatedSignature(ownerAddress))
+      expect(decodedTxData[9]).toHaveLength(SIGNATURE_LENGTH * 2 + 2)
       // Do not overwrite the threshold
       expect(tenderlyPayload.state_objects).toBeUndefined()
     })
