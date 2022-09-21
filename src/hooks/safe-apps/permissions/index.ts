@@ -1,4 +1,4 @@
-import { RestrictedMethods } from '@gnosis.pm/safe-apps-sdk'
+import { Methods, RestrictedMethods } from '@gnosis.pm/safe-apps-sdk'
 import { AllowedFeatures } from '@/components/safe-apps/types'
 
 type PermissionsDisplayType = {
@@ -9,7 +9,7 @@ type PermissionsDisplayType = {
 export * from './useBrowserPermissions'
 export * from './useSafePermissions'
 
-export const SAFE_PERMISSIONS_TEXTS = {
+export const SAFE_PERMISSIONS_TEXTS: Record<string, PermissionsDisplayType> = {
   [RestrictedMethods.requestAddressBook]: {
     displayName: 'Address Book',
     description: 'Access to your address book',
