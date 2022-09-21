@@ -6,8 +6,8 @@ const tx = {
 } as unknown as SafeTransaction
 
 describe('txEvents', () => {
-  it('should dispatch and subscribe to the MINING event', () => {
-    const event = TxEvent.MINING
+  it('should dispatch and subscribe to the PROCESSING event', () => {
+    const event = TxEvent.PROCESSING
 
     const detail = {
       txId: '123',

@@ -242,16 +242,16 @@ export const dispatchTxExecution = async (
     throw error
   }
 
-  txDispatch(TxEvent.MINING, { txId, txHash: result.hash })
+  txDispatch(TxEvent.PROCESSING, { txId, txHash: result.hash })
 
-  // Asynchronously watch the tx to be mined
+  // Asynchronously watch the tx to be mined/validated
   result.transactionResponse
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { txId, receipt, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.MINED, { txId, receipt })
+        txDispatch(TxEvent.PROCESSED, { txId, receipt })
       }
     })
     .catch((error) => {
@@ -285,7 +285,7 @@ export const dispatchBatchExecution = async (
   }
 
   txs.forEach(({ txId }) => {
-    txDispatch(TxEvent.MINING, { txId, txHash: result!.hash, groupKey })
+    txDispatch(TxEvent.PROCESSING, { txId, txHash: result!.hash, groupKey })
   })
 
   result.transactionResponse
@@ -302,7 +302,7 @@ export const dispatchBatchExecution = async (
         })
       } else {
         txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.MINED, {
+          txDispatch(TxEvent.PROCESSED, {
             txId,
             receipt,
             groupKey,
@@ -353,7 +353,7 @@ export const dispatchSpendingLimitTxExecution = async (
     throw error
   }
 
-  txDispatch(TxEvent.MINING_MODULE, {
+  txDispatch(TxEvent.PROCESSING_MODULE, {
     groupKey: id,
     txHash: result.hash,
   })
@@ -364,7 +364,7 @@ export const dispatchSpendingLimitTxExecution = async (
       if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { groupKey: id, receipt, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.MINED, { groupKey: id, receipt })
+        txDispatch(TxEvent.PROCESSED, { groupKey: id, receipt })
       }
     })
     .catch((error) => {

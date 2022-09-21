@@ -21,7 +21,7 @@ import { isWalletRejection } from '@/utils/wallets'
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
   AWAITING_WALLET = 'AWAITING_WALLET',
-  MINING = 'MINING',
+  PROCESSING = 'PROCESSING',
   ERROR = 'ERROR',
   REVERTED = 'REVERTED',
   TIMEOUT = 'TIMEOUT',
@@ -96,7 +96,7 @@ export const useSafeCreation = () => {
     (txHash: string) => {
       trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
 
-      setStatus(SafeCreationStatus.MINING)
+      setStatus(SafeCreationStatus.PROCESSING)
       setPendingSafe((prev) => (prev ? { ...prev, txHash } : undefined))
     },
     [setPendingSafe],
