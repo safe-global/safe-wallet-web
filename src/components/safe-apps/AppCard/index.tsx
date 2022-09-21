@@ -16,6 +16,7 @@ import DeleteIcon from '@/public/images/delete.svg'
 import { AppRoutes } from '@/config/routes'
 import styles from './styles.module.css'
 import { useCurrentChain } from '@/hooks/useChains'
+import { SvgIcon } from '@mui/material'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
@@ -62,9 +63,10 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
         height,
         aspectRatio,
         transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
+        border: '1px solid transparent',
         '&:hover': {
           backgroundColor: palette.background.light,
-          outline: `1px solid ${palette.secondary.main}`,
+          border: `1px solid ${palette.secondary.light}`,
         },
       })}
     >
@@ -100,7 +102,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
         initialToolTipText={`Copy share URL for ${safeApp.name}`}
         className={styles.compactShareButton}
       >
-        <ShareIcon width={16} alt="Share icon" />
+        <SvgIcon component={ShareIcon} />
       </CopyButton>
 
       {/* Pin/unpin button */}
@@ -150,7 +152,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
               initialToolTipText={`Copy share URL for ${safeApp.name}`}
               className={styles.shareButton}
             >
-              <ShareIcon width={16} alt="Share icon" />
+              <SvgIcon component={ShareIcon} inheritViewBox />
             </CopyButton>
 
             {/* Pin/unpin button */}

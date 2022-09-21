@@ -164,20 +164,20 @@ const initTheme = (darkMode: boolean) => {
             },
 
             '&:hover': {
-              borderColor: theme.palette.primary.light,
+              borderColor: theme.palette.secondary.light,
             },
 
             '&:hover > .MuiAccordionSummary-root': {
-              background: theme.palette.primary.background,
+              background: theme.palette.background.light,
             },
 
             '&.Mui-expanded': {
               margin: 0,
-              borderColor: theme.palette.primary.light,
+              borderColor: theme.palette.secondary.light,
             },
 
             '&.Mui-expanded > .MuiAccordionSummary-root': {
-              background: theme.palette.primary.background,
+              background: theme.palette.background.light,
             },
           }),
         },

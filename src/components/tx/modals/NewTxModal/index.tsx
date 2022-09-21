@@ -35,7 +35,10 @@ const NewTxModal = ({ onClose }: { onClose: () => void }): ReactElement => {
               Send tokens
             </TxButton>
 
-            <TxButton onClick={onNFTModalOpen} startIcon={<SvgIcon component={NftIcon} />}>
+            <TxButton
+              onClick={onNFTModalOpen}
+              startIcon={<SvgIcon component={NftIcon} sx={{ width: 16, height: 16 }} />}
+            >
               Send NFTs
             </TxButton>
           </Box>
