@@ -69,18 +69,16 @@ export const _getSingleTransactionPayload = (
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   // If a transaction is executable we simulate with the proposed/selected gasLimit and the actual signatures
   let transaction = params.transactions
-  console.log('Before', transaction, transaction.encodedSignatures())
   const hasOwnerSignature = transaction.signatures.has(params.executionOwner)
   // If the owner's sig is missing and the tx threshold is not reached we add the owner's preValidated signature
   const needsOwnerSignature = !hasOwnerSignature && transaction.signatures.size < params.safe.threshold
   if (needsOwnerSignature) {
-    console.log('Adding sig')
     const simulatedTransaction = new EthSafeTransaction(transaction.data)
+
     transaction.signatures.forEach((signature) => {
       simulatedTransaction.addSignature(signature)
     })
     simulatedTransaction.addSignature(generatePreValidatedSignature(params.executionOwner))
-    console.log('New', simulatedTransaction, simulatedTransaction.encodedSignatures())
 
     transaction = simulatedTransaction
   }
