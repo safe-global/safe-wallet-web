@@ -6,6 +6,7 @@
 
 .popoverContainer {
   width: 446px;
+  border: 1px solid var(--color-border-light);
 }
 
 .popoverHeader {
@@ -38,7 +39,7 @@
 
 .unreadCount {
   display: inline-block;
-  background: var(--color-primary-background);
+  background: var(--color-secondary-light);
   border-radius: 6px;
   margin-left: 9px;
   color: var(--color-primary-main);

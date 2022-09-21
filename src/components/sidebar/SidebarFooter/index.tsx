@@ -50,16 +50,10 @@ const SidebarFooter = (): ReactElement => {
       <Track {...OVERVIEW_EVENTS.WHATS_NEW}>
         <ListItem disablePadding>
           <SidebarListItemButton id={BEAMER_SELECTOR} onClick={handleBeamer}>
-            <SidebarListItemIcon
-              sx={{
-                '& svg path': {
-                  fill: ({ palette }) => palette.secondary.main,
-                },
-              }}
-            >
+            <SidebarListItemIcon color="primary">
               <BeamerIcon />
             </SidebarListItemIcon>
-            <SidebarListItemText bold>What&apos;s New</SidebarListItemText>
+            <SidebarListItemText bold>What&apos;s new</SidebarListItemText>
           </SidebarListItemButton>
         </ListItem>
       </Track>
@@ -68,16 +62,10 @@ const SidebarFooter = (): ReactElement => {
         <ListItem disablePadding>
           <a target="_blank" rel="noopener noreferrer" href={WHATS_NEW_PATH} style={{ width: '100%' }}>
             <SidebarListItemButton>
-              <SidebarListItemIcon
-                sx={{
-                  '& svg path': {
-                    fill: ({ palette }) => palette.secondary.main,
-                  },
-                }}
-              >
+              <SidebarListItemIcon color="primary">
                 <HelpCenterIcon />
               </SidebarListItemIcon>
-              <SidebarListItemText bold>Need Help?</SidebarListItemText>
+              <SidebarListItemText bold>Need help?</SidebarListItemText>
             </SidebarListItemButton>
           </a>
         </ListItem>

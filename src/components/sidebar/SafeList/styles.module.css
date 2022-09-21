@@ -28,13 +28,9 @@
   justify-content: center;
 }
 
-.ownedLabelWrapper:hover {
-  background-color: unset;
-}
-
 .ownedLabel {
   cursor: pointer;
-  color: var(--color-secondary-light);
+  color: var(--color-primary-light);
   margin-top: var(--space-1);
   margin-bottom: var(--space-1);
 }

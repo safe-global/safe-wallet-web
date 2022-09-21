@@ -32,7 +32,7 @@ const CircularIcon = ({
             height: size / 2,
             width: size / 2,
             '& path': {
-              fill: ({ palette }) => palette.secondary.light,
+              fill: ({ palette }) => palette.primary.light,
             },
           }}
         />

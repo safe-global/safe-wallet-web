@@ -80,17 +80,17 @@ const AddressBookTable = () => {
       content: (
         <div className={css.entryButtonWrapper}>
           <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
-            <Tooltip title="Edit entry">
-              <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)}>
-                <EditIcon />
+            <Tooltip title="Edit entry" placement="top">
+              <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)} size="small">
+                <EditIcon color="border" />
               </IconButton>
             </Tooltip>
           </Track>
 
           <Track {...ADDRESS_BOOK_EVENTS.DELETE_ENTRY}>
-            <Tooltip title="Delete entry">
-              <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)}>
-                <DeleteOutlineIcon />
+            <Tooltip title="Delete entry" placement="top">
+              <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)} size="small">
+                <DeleteOutlineIcon color="error" />
               </IconButton>
             </Tooltip>
           </Track>

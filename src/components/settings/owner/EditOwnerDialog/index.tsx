@@ -52,7 +52,7 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
       <Track {...SETTINGS_EVENTS.SETUP.EDIT_OWNER}>
         <Tooltip title="Edit owner">
           <IconButton onClick={() => setOpen(true)}>
-            <EditOutlinedIcon color="primary" />
+            <EditOutlinedIcon color="border" />
           </IconButton>
         </Tooltip>
       </Track>

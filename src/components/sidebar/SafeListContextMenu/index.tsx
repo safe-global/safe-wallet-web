@@ -13,6 +13,7 @@ import PencilIcon from '@/public/images/sidebar/safe-list/pencil.svg'
 import TrashIcon from '@/public/images/sidebar/safe-list/trash.svg'
 import ContextMenu from '@/components/common/ContextMenu'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import { SvgIcon } from '@mui/material'
 
 enum ModalType {
   RENAME = 'rename',
@@ -65,7 +66,7 @@ const SafeListContextMenu = ({
       <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
         <MenuItem onClick={handleOpenModal(ModalType.RENAME, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
           <ListItemIcon>
-            <PencilIcon alt="Rename" size={16} />
+            <SvgIcon component={PencilIcon} inheritViewBox sx={{ width: 16, height: 16 }} color="primary" />
           </ListItemIcon>
           <ListItemText>Rename</ListItemText>
         </MenuItem>

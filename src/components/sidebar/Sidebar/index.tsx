@@ -32,7 +32,13 @@ const Sidebar = (): ReactElement => {
         </div>
 
         <IconButton className={css.drawerButton} onClick={onDrawerToggle}>
-          <ChevronRight />
+          <ChevronRight
+            sx={({ palette }) => ({
+              '& svg path': {
+                fill: palette.background.paper,
+              },
+            })}
+          />
         </IconButton>
 
         {isSafeRoute ? (

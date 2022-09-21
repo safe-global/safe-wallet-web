@@ -11,7 +11,7 @@ import css from './styles.module.css'
 
 const COOKIE_WARNING: Record<CookieType, string> = {
   [CookieType.NECESSARY]: '',
-  [CookieType.UPDATES]: `You attempted to open the "What's New" section but need to accept the "Updates & Feedback" cookies first.`,
+  [CookieType.UPDATES]: `You attempted to open the "What's new" section but need to accept the "Updates & Feedback" cookies first.`,
   [CookieType.ANALYTICS]: '',
 }
 

@@ -16,7 +16,7 @@ const SpendingLimits = () => {
   const isEnabled = currentChain && hasFeature(currentChain, FEATURES.SPENDING_LIMIT)
 
   return (
-    <Paper sx={{ padding: 4 }} variant="outlined">
+    <Paper sx={{ padding: 4 }}>
       <Grid container direction="row" justifyContent="space-between" spacing={3} mb={2}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
@@ -33,6 +33,7 @@ const SpendingLimits = () => {
               </Typography>
 
               {isGranted && <NewSpendingLimit />}
+              {!spendingLimits.length && <NoSpendingLimits />}
             </Box>
           ) : (
             <Typography>The spending limit module is not yet available on this chain.</Typography>
@@ -40,13 +41,7 @@ const SpendingLimits = () => {
         </Grid>
       </Grid>
 
-      {isEnabled ? (
-        spendingLimits.length > 0 ? (
-          <SpendingLimitsTable spendingLimits={spendingLimits} />
-        ) : (
-          <NoSpendingLimits />
-        )
-      ) : null}
+      {spendingLimits.length > 0 && <SpendingLimitsTable spendingLimits={spendingLimits} />}
     </Paper>
   )
 }

@@ -1,7 +1,13 @@
-.active {
-  border-color: var(--color-primary-light);
+.closed:hover,
+.batched {
+  background-color: var(--color-secondary-background);
+  border-color: var(--color-secondary-light);
 }
 
-.active :global .MuiAccordionSummary-root {
-  background-color: var(--color-primary-background);
+.expanded {
+  border-color: var(--color-secondary-light) !important;
+}
+
+.expanded :global .MuiAccordionSummary-root {
+  background-color: var(--color-secondary-background);
 }

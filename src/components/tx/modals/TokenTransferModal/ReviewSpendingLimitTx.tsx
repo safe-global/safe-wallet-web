@@ -122,7 +122,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        <Typography variant="body2" color="secondary.light" textAlign="center" mt={3}>
+        <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
           You&apos;re about to create a transaction and will need to confirm it with your currently connected wallet.
         </Typography>
 

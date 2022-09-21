@@ -89,7 +89,6 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           vertical: 'top',
           horizontal: 'center',
         }}
-        elevation={3}
         sx={{ marginTop: 1 }}
       >
         <Paper className={css.popoverContainer}>
