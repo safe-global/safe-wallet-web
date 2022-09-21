@@ -9,6 +9,7 @@ import PendingTxListItem from './PendingTxListItem'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const SkeletonWrapper = styled.div`
   border-radius: 8px;
@@ -40,13 +41,19 @@ const StyledEmptyCard = styled(Card)`
   }
 `
 
-const EmptyState = (
-  <StyledEmptyCard>
-    <img src="/images/no-transactions.svg" alt="No queued transactions" />
+const EmptyState = () => {
+  const isDarkMode = useDarkMode()
+  return (
+    <StyledEmptyCard>
+      <img
+        src={isDarkMode ? '/images/no-transactions-dark.svg' : '/images/no-transactions-light.svg'}
+        alt="No queued transactions"
+      />
 
-    <Typography mt={3}>This Safe has no queued transactions</Typography>
-  </StyledEmptyCard>
-)
+      <Typography mt={3}>This Safe has no queued transactions</Typography>
+    </StyledEmptyCard>
+  )
+}
 
 const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null => {
   const { page, loading } = useTxQueue()
@@ -88,7 +95,7 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
 
   const getWidgetBody = () => {
     if (loading) return LoadingState
-    if (!queuedTxsToDisplay.length) return EmptyState
+    if (!queuedTxsToDisplay.length) return <EmptyState />
     return ResultState
   }
 

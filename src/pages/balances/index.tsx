@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Box, CircularProgress } from '@mui/material'
+import { Box, CircularProgress, Typography } from '@mui/material'
 
 import AssetsTable from '@/components/balances/AssetsTable'
 import CurrencySelect from '@/components/balances/CurrencySelect'
@@ -13,7 +13,7 @@ import { useEffect } from 'react'
 import { trackEvent, ASSETS_EVENTS } from '@/services/analytics'
 
 const Balances: NextPage = () => {
-  const { balances, loading } = useBalances()
+  const { balances, loading, error } = useBalances()
 
   useEffect(() => {
     if (!loading && balances.items.length === 0) {
@@ -34,9 +34,17 @@ const Balances: NextPage = () => {
       <CurrencySelect />
 
       <Box mt={2}>
-        <AssetsTable items={balances?.items} />
-
         {loading && <CircularProgress size={20} sx={{ marginTop: 2 }} />}
+        {!error ? (
+          <AssetsTable items={balances?.items} />
+        ) : (
+          <Box sx={{ py: 9, textAlign: 'center' }}>
+            <img src="/images/no-assets.svg" alt="An icon of missing assets" />
+            <Typography variant="body1" color="primary.light">
+              There was an error loading your assets
+            </Typography>
+          </Box>
+        )}
       </Box>
     </main>
   )
