@@ -2,6 +2,7 @@ import { MutableRefObject, useEffect, useMemo, useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
 import { getBalances, getTransactionDetails, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
+  AddressBookItem,
   BaseTransaction,
   EIP712TypedData,
   GetBalanceParams,
@@ -20,6 +21,9 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsGranted from '@/hooks/useIsGranted'
 import { useCurrentChain } from '@/hooks/useChains'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
+import { Permission, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
+import { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
+import { AddressBook } from '@/store/addressBookSlice'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -36,11 +40,21 @@ type UseAppCommunicatorConfig = {
   app?: SafeAppData
   onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => void
   onSignMessage: (message: string | EIP712TypedData, requestId: string, method: Methods) => void
+  onGetPermissions: (origin: string) => Permission[]
+  onSetPermissions: (permissionsRequest?: SafePermissionsRequest) => void
+  onRequestAddressBook: (origin: string) => AddressBookItem[]
 }
 
 const useAppCommunicator = (
   iframeRef: MutableRefObject<HTMLIFrameElement | null>,
-  { app, onConfirmTransactions, onSignMessage }: UseAppCommunicatorConfig,
+  {
+    app,
+    onConfirmTransactions,
+    onSignMessage,
+    onGetPermissions,
+    onSetPermissions,
+    onRequestAddressBook,
+  }: UseAppCommunicatorConfig,
 ): AppCommunicator | undefined => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
 
@@ -158,6 +172,22 @@ const useAppCommunicator = (
         nativeCurrency,
         blockExplorerUriTemplate,
       }
+    })
+
+    communicator?.on(Methods.wallet_getPermissions, (msg) => {
+      return onGetPermissions(msg.origin)
+    })
+
+    communicator?.on(Methods.wallet_requestPermissions, async (msg) => {
+      onSetPermissions({
+        origin: msg.origin,
+        request: msg.data.params as PermissionRequest[],
+        requestId: msg.data.id,
+      })
+    })
+
+    communicator?.on(Methods.requestAddressBook, async (msg) => {
+      onRequestAddressBook(msg.origin)
     })
   }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider, onConfirmTransactions, onSignMessage])
 

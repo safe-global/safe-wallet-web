@@ -9,7 +9,7 @@ const USER_RESTRICTED = 'userRestricted'
 
 type SafePermissions = { [origin: string]: Permission[] }
 
-type SafePermissionsRequest = {
+export type SafePermissionsRequest = {
   origin: string
   requestId: string
   request: PermissionRequest[]

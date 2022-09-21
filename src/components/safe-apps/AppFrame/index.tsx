@@ -7,6 +7,7 @@ import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import useChainId from '@/hooks/useChainId'
+import useAddressBook from '@/hooks/useAddressBook'
 import { isSameUrl } from '@/utils/url'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
@@ -19,6 +20,11 @@ import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
+import { useSafePermissions } from '@/hooks/safe-apps/permissions'
+import { AddressBookItem, Methods, RequestId } from '@gnosis.pm/safe-apps-sdk'
+import { AddressBook } from '@/store/addressBookSlice'
+import PermissionsPrompt from '../PermissionsPrompt'
+import { PermissionStatus } from '../types'
 
 type AppFrameProps = {
   appUrl: string
@@ -30,16 +36,27 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe } = useSafeInfo()
-
+  const addressBook = useAddressBook()
   const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
+  const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
+    useSafePermissions()
 
   const communicator = useAppCommunicator(iframeRef, {
     app: safeAppFromManifest,
     onConfirmTransactions: openTxModal,
     onSignMessage: openSignMessageModal,
+    onGetPermissions: getPermissions,
+    onSetPermissions: setPermissionsRequest,
+    onRequestAddressBook: (origin: string): AddressBookItem[] => {
+      if (hasPermission(origin, Methods.requestAddressBook)) {
+        return Object.entries(addressBook).map(([address, name]) => ({ address, name, chainId }))
+      }
+
+      return []
+    },
   })
 
   useEffect(() => {
@@ -82,6 +99,20 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     } else {
       communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, signMessageModalState.requestId, true)
       closeSignMessageModal()
+    }
+  }
+
+  const onAcceptPermissionRequest = (origin: string, requestId: RequestId) => {
+    const permissions = confirmPermissionRequest(PermissionStatus.GRANTED)
+    communicator?.send(permissions, requestId as string)
+  }
+
+  const onRejectPermissionRequest = (requestId?: RequestId) => {
+    if (requestId) {
+      confirmPermissionRequest(PermissionStatus.DENIED)
+      communicator?.send('Permissions were rejected', requestId as string, true)
+    } else {
+      setPermissionsRequest(undefined)
     }
   }
 
@@ -138,6 +169,17 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
               method: signMessageModalState.method,
             },
           ]}
+        />
+      )}
+
+      {permissionsRequest && (
+        <PermissionsPrompt
+          isOpen
+          origin={permissionsRequest.origin}
+          requestId={permissionsRequest.requestId}
+          onAccept={onAcceptPermissionRequest}
+          onReject={onRejectPermissionRequest}
+          permissions={permissionsRequest.request}
         />
       )}
     </div>
