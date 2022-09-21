@@ -21,3 +21,5 @@ export const ContentSecurityPolicy = `
   .trim()
 
 export const XFrameOptions = 'DENY'
+
+export const StrictTransportSecurity = 'max-age=31536000; includeSubDomains'
