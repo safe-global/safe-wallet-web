@@ -4,7 +4,7 @@ import type { RootState } from '@/store'
 
 export enum PendingStatus {
   SUBMITTING = 'SUBMITTING',
-  MINING = 'MINING',
+  PROCESSING = 'PROCESSING',
   INDEXING = 'INDEXING',
 }
 

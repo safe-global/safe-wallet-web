@@ -11,9 +11,9 @@ export enum TxEvent {
   SIGNATURE_PROPOSE_FAILED = 'SIGNATURE_PROPOSE_FAILED',
   AWAITING_ON_CHAIN_SIGNATURE = 'AWAITING_ON_CHAIN_SIGNATURE',
   EXECUTING = 'EXECUTING',
-  MINING = 'MINING',
-  MINING_MODULE = 'MINING_MODULE',
-  MINED = 'MINED',
+  PROCESSING = 'PROCESSING',
+  PROCESSING_MODULE = 'PROCESSING_MODULE',
+  PROCESSED = 'PROCESSED',
   REVERTED = 'REVERTED',
   FAILED = 'FAILED',
   SUCCESS = 'SUCCESS',
@@ -31,9 +31,9 @@ interface TxEvents {
   [TxEvent.SIGNATURE_PROPOSED]: { txId: string }
   [TxEvent.AWAITING_ON_CHAIN_SIGNATURE]: Id
   [TxEvent.EXECUTING]: Id
-  [TxEvent.MINING]: Id & { txHash: string }
-  [TxEvent.MINING_MODULE]: Id & { txHash: string }
-  [TxEvent.MINED]: Id & { receipt: ContractReceipt }
+  [TxEvent.PROCESSING]: Id & { txHash: string }
+  [TxEvent.PROCESSING_MODULE]: Id & { txHash: string }
+  [TxEvent.PROCESSED]: Id & { receipt: ContractReceipt }
   [TxEvent.REVERTED]: Id & { error: Error; receipt: ContractReceipt }
   [TxEvent.FAILED]: Id & { error: Error }
   [TxEvent.SUCCESS]: Id

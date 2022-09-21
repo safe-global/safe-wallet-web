@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 
 const events = {
   [TxEvent.SIGNED]: WALLET_EVENTS.OFF_CHAIN_SIGNATURE,
-  [TxEvent.MINING]: WALLET_EVENTS.ON_CHAIN_INTERACTION,
+  [TxEvent.PROCESSING]: WALLET_EVENTS.ON_CHAIN_INTERACTION,
 }
 
 export const useTxTracking = (): void => {

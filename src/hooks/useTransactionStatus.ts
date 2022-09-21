@@ -13,7 +13,7 @@ const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [TransactionStatus.FAILED]: 'Failed',
   [TransactionStatus.SUCCESS]: 'Success',
   [PendingStatus.SUBMITTING]: 'Submitting',
-  [PendingStatus.MINING]: 'Mining',
+  [PendingStatus.PROCESSING]: 'Processing',
   [PendingStatus.INDEXING]: 'Indexing',
 }
 
