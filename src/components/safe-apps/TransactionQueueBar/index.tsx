@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from 'react'
+import { ReactElement, useState } from 'react'
 import { Backdrop, Typography, Box, IconButton, Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ClickAwayListener } from '@mui/base'
 import CloseIcon from '@mui/icons-material/Close'
@@ -27,7 +27,7 @@ const TransactionQueueBar = (): ReactElement | null => {
           <Accordion
             data-testid="transaction-queue-bar"
             expanded={expanded}
-            onClick={toggleQueueBar}
+            onChange={toggleQueueBar}
             TransitionProps={{
               timeout: {
                 appear: 400,
@@ -61,7 +61,7 @@ const TransactionQueueBar = (): ReactElement | null => {
               </IconButton>
             </AccordionSummary>
             <AccordionDetails>
-              <PaginatedTxns useTxns={useTxQueue} negativeMarginTop={false} />
+              <PaginatedTxns useTxns={useTxQueue} disableTopActionMargins />
             </AccordionDetails>
           </Accordion>
         </ClickAwayListener>

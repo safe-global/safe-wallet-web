@@ -3,7 +3,6 @@ import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Box } from '@mui/material'
 import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
 import { AppCardContainer } from './AppCard'
-import { IS_PRODUCTION } from '@/config/constants'
 
 type Props = { onSave: (data: SafeAppData) => void; safeAppList: SafeAppData[] }
 
@@ -29,11 +28,7 @@ const AddCustomAppCard = ({ onSave, safeAppList }: Props) => {
             sx={{
               mt: 1,
             }}
-            onClick={() => {
-              if (!IS_PRODUCTION) {
-                setAddCustomAppModalOpen(true)
-              }
-            }}
+            onClick={() => setAddCustomAppModalOpen(true)}
           >
             Add custom app
           </Button>

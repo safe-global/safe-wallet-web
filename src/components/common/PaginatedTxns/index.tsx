@@ -68,10 +68,10 @@ const TxPage = ({
 
 const PaginatedTxns = ({
   useTxns,
-  negativeMarginTop = true,
+  disableTopActionMargins = false,
 }: {
   useTxns: typeof useTxHistory | typeof useTxQueue
-  negativeMarginTop?: boolean
+  disableTopActionMargins?: boolean
 }): ReactElement => {
   const [pages, setPages] = useState<string[]>([''])
   const [filter] = useTxFilter()
@@ -94,8 +94,7 @@ const PaginatedTxns = ({
           display="flex"
           flexDirection="column"
           alignItems="flex-end"
-          mt={[3, negativeMarginTop ? '-44px' : 0]}
-          mb={[0, '30px']}
+          sx={disableTopActionMargins ? {} : { mt: [3, '-44px'], mb: [0, '30px'] }}
         >
           {isQueue ? <BatchExecuteButton /> : <TxFilterButton />}
         </Box>

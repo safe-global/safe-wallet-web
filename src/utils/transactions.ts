@@ -11,7 +11,6 @@ import {
   TransactionDetails,
   TransactionListItemType,
   TransactionListPage,
-  LabelValue,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   isModuleDetailedExecutionInfo,
