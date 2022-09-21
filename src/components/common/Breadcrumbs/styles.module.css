@@ -11,7 +11,7 @@
 
 .secondaryText {
   font-size: 12px;
-  color: var(--color-secondary-light);
+  color: var(--color-primary-light);
   text-transform: uppercase;
 }
 

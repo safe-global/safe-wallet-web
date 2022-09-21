@@ -7,7 +7,7 @@
 }
 
 .title {
-  color: var(--color-secondary-light);
+  font-weight: 700;
   word-break: break-all;
 }
 

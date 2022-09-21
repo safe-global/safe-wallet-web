@@ -63,8 +63,8 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
         aspectRatio,
         transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
         '&:hover': {
-          backgroundColor: palette.primary.background,
-          border: `2px solid ${palette.primary.light}`,
+          backgroundColor: palette.background.light,
+          outline: `1px solid ${palette.secondary.main}`,
         },
       })}
     >
@@ -116,7 +116,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
           title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
           sx={{ width: '32px', position: 'absolute', top: 2, right: 2 }}
         >
-          {pinned ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+          {pinned ? <BookmarkIcon color="primary" /> : <BookmarkBorderIcon />}
         </IconButton>
       )}
     </div>
@@ -166,7 +166,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
                 title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
                 sx={{ width: '32px' }}
               >
-                {pinned ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+                {pinned ? <BookmarkIcon color="primary" /> : <BookmarkBorderIcon />}
               </IconButton>
             )}
 

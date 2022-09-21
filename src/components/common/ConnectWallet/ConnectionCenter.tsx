@@ -42,7 +42,7 @@ const ConnectionCenter = (): ReactElement => {
           </Typography>
         </Typography>
 
-        <ExpandIcon sx={({ palette }) => ({ color: palette.secondary.light })} />
+        <ExpandIcon color="border" />
       </ButtonBase>
 
       <Popover

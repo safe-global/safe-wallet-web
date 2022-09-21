@@ -19,7 +19,7 @@ const SafeAppsHeader = ({ searchQuery, onSearchQueryChange }: Props) => {
       <Typography variant="body1" sx={{ mt: 1 }}>
         Explore endless possibilities to manage your assets.
       </Typography>
-      <Grid container rowSpacing={2} columnSpacing={2} sx={{ mt: 2.8 }}>
+      <Grid container rowSpacing={2} columnSpacing={2} sx={{ mt: 1 }}>
         <Grid item xs={12} sm={12} md={6} xl={4.5}>
           <TextField
             placeholder="Search"

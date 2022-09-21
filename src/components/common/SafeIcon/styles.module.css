@@ -21,4 +21,5 @@
   align-items: center;
   line-height: 16px;
   font-weight: 700;
+  background-color: var(--color-secondary-light);
 }

@@ -1,4 +1,5 @@
 import { MenuItem, Select, SelectChangeEvent, Skeleton } from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains from '@/hooks/useChains'
 import { useRouter } from 'next/router'
 import ChainIndicator from '../ChainIndicator'
@@ -33,7 +34,27 @@ const NetworkSelector = (): ReactElement => {
   }
 
   return configs.length ? (
-    <Select value={chainId} onChange={handleNetworkSwitch} size="small" className={css.select} variant="standard">
+    <Select
+      value={chainId}
+      onChange={handleNetworkSwitch}
+      size="small"
+      className={css.select}
+      variant="standard"
+      IconComponent={ExpandMoreIcon}
+      MenuProps={{
+        sx: {
+          '& .MuiPaper-root': {
+            mt: 2,
+            border: ({ palette }) => `1px solid ${palette.border.light}`,
+          },
+        },
+      }}
+      sx={{
+        '& svg path': {
+          fill: ({ palette }) => palette.border.main,
+        },
+      }}
+    >
       {configs.map((chain) => {
         return (
           <MenuItem key={chain.chainId} value={chain.chainId}>

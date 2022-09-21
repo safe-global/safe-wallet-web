@@ -21,9 +21,9 @@
 }
 
 .list :global .MuiListItemButton-root:hover,
-.list :global .MuiListItemButton-root.Mui-selected {
-  color: var(--color-text-primary);
-  background-color: var(--color-primary-background);
+.list :global .Mui-selected {
+  border-radius: 6px;
+  background-color: var(--color-secondary-background);
 }
 
 .listItemButton :global .beamer_icon.active {
