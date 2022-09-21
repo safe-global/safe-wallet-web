@@ -22,9 +22,10 @@ import css from './styles.module.css'
 
 type AppFrameProps = {
   appUrl: string
+  allowedFeaturesList: string
 }
 
-const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
+const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
@@ -106,7 +107,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
         src={appUrl}
         title={safeAppFromManifest?.name}
         onLoad={onIframeLoad}
-        allow="camera"
+        allow={allowedFeaturesList}
         style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
       />
 

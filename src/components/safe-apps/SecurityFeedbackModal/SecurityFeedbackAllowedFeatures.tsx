@@ -15,8 +15,9 @@ const SecurityFeedbackAllowedFeatures: React.FC<SecurityFeedbackAllowedFeaturesP
 }): React.ReactElement => {
   return (
     <>
-      <ShieldOutlinedIcon />
+      <ShieldOutlinedIcon sx={{ color: '#b2bbc0' }} />
       <Typography
+        variant="body2"
         sx={{
           textAlign: 'center',
           color: '#b2bbc0',
@@ -25,7 +26,7 @@ const SecurityFeedbackAllowedFeatures: React.FC<SecurityFeedbackAllowedFeaturesP
       >
         Manage the features Safe App can use
       </Typography>
-      <Box mx={1} my={3}>
+      <Box mx={1} my={3} textAlign="left">
         <Typography>This app is requesting permission to use:</Typography>
         <br />
         <Box display="flex" flexDirection="column" ml={2}>

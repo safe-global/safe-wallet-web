@@ -25,6 +25,10 @@
 }
 
 .disclaimerContainer p,
-.disclaimerContainer h4 {
+.disclaimerContainer h3 {
   line-height: 24px;
+}
+
+.disclaimerInner p {
+  text-align: justify;
 }

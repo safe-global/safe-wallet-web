@@ -1,7 +1,6 @@
 import { memo, useMemo, useState } from 'react'
 import Slider from './Slider'
 import LegalDisclaimer from './LegalDisclaimer'
-import { SECURITY_PRACTICES } from './constants'
 import SecurityFeedbackAllowedFeatures from './SecurityFeedbackAllowedFeatures'
 import { alpha, Box } from '@mui/system'
 import { Grid, LinearProgress } from '@mui/material'
@@ -10,28 +9,19 @@ import { BrowserPermission } from '@/hooks/safe-apps/permissions'
 
 interface SecurityFeedbackModalProps {
   onCancel: () => void
-  onConfirm: (hideWarning: boolean, browserPermisisons: BrowserPermission[]) => void
-  appUrl: string
+  onConfirm: (browserPermisisons: BrowserPermission[]) => void
   features: AllowedFeatures[]
   isConsentAccepted?: boolean
-  isSafeAppInDefaultList: boolean
-  isFirstTimeAccessingApp: boolean
-  isExtendedListReviewed: boolean
   isPermissionsReviewCompleted: boolean
 }
 
 const SecurityFeedbackModal = ({
   onCancel,
   onConfirm,
-  appUrl,
   features,
   isConsentAccepted,
-  isSafeAppInDefaultList,
-  isFirstTimeAccessingApp,
-  isExtendedListReviewed,
   isPermissionsReviewCompleted,
 }: SecurityFeedbackModalProps): JSX.Element => {
-  const [hideWarning, setHideWarning] = useState(false)
   const [selectedFeatures, setSelectedFeatures] = useState<AllowedFeatureSelection[]>(
     features.map((feature) => {
       return {
@@ -49,30 +39,12 @@ const SecurityFeedbackModal = ({
       totalSlides += 1
     }
 
-    if (isFirstTimeAccessingApp && isExtendedListReviewed) {
-      totalSlides += 1
-    }
-
-    if (isFirstTimeAccessingApp && !isExtendedListReviewed) {
-      totalSlides += SECURITY_PRACTICES.length
-    }
-
-    if (!isSafeAppInDefaultList && isFirstTimeAccessingApp) {
-      totalSlides += 1
-    }
-
     if (!isPermissionsReviewCompleted) {
       totalSlides += 1
     }
 
     return totalSlides
-  }, [
-    isConsentAccepted,
-    isExtendedListReviewed,
-    isFirstTimeAccessingApp,
-    isSafeAppInDefaultList,
-    isPermissionsReviewCompleted,
-  ])
+  }, [isConsentAccepted, isPermissionsReviewCompleted])
 
   const handleSlideChange = (newStep: number) => {
     const isFirstStep = newStep === -1
@@ -84,7 +56,6 @@ const SecurityFeedbackModal = ({
 
     if (isLastStep) {
       onConfirm(
-        hideWarning,
         selectedFeatures.map(({ feature, checked }) => {
           return {
             feature,
@@ -105,11 +76,6 @@ const SecurityFeedbackModal = ({
     return currentSlide === totalSlides - 1
   }, [currentSlide, totalSlides])
 
-  const shouldShowUnknownAppWarning = useMemo(
-    () => !isSafeAppInDefaultList && isFirstTimeAccessingApp,
-    [isFirstTimeAccessingApp, isSafeAppInDefaultList],
-  )
-
   const handleFeatureSelectionChange = (feature: AllowedFeatures, checked: boolean) => {
     setSelectedFeatures(
       selectedFeatures.map((feat) => {
@@ -125,7 +91,7 @@ const SecurityFeedbackModal = ({
   }
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" height="100%">
+    <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" height="calc(100vh - 52px)">
       <Box
         sx={({ palette }) => ({
           width: '450px',
@@ -142,7 +108,7 @@ const SecurityFeedbackModal = ({
             backgroundColor: palette.background.paper,
             borderRadius: '8px 8px 0 0',
             '> .MuiLinearProgress-bar': {
-              backgroundColor: isLastSlide && shouldShowUnknownAppWarning ? palette.warning.dark : palette.primary.main,
+              backgroundColor: palette.primary.main,
               borderRadius: '8px',
             },
           })}
