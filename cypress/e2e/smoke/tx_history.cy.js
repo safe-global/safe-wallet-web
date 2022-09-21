@@ -13,7 +13,7 @@ const USDC = '/app/static/media/tokens/logos/0x4DBCdF9B62e891a7cec5A2568C3F4FAF9
 describe('Dashboard', () => {
   before(() => {
     // Go to the test Safe transaction history
-    cy.visit(`/${SAFE}/transactions/history`)
+    cy.visit(`/${SAFE}/transactions/history`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
   })
 
