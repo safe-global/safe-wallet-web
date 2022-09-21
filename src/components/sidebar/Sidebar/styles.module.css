@@ -53,12 +53,11 @@
   height: 40px;
   border: 0;
   cursor: pointer;
-  color: var(--color-secondary-main);
-  background-color: var(--color-border-light);
+  background-color: var(--color-background-main);
 }
 
 .drawerButton:hover {
-  background-color: var(--color-primary-background);
+  background-color: var(--color-secondary-background);
 }
 
 .drawerButton svg {

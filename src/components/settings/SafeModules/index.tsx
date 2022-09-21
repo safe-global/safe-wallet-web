@@ -12,7 +12,7 @@ export const DEFAULT_MODULE_NAME = 'Unknown module'
 
 const NoModules = () => {
   return (
-    <Typography mt={2} color={(theme) => theme.palette.secondary.light}>
+    <Typography mt={2} color={({ palette }) => palette.primary.light}>
       No modules enabled
     </Typography>
   )
@@ -50,7 +50,7 @@ const SafeModules = () => {
   const safeModules = safe.modules || []
 
   return (
-    <Paper sx={{ padding: 4 }} variant="outlined">
+    <Paper sx={{ padding: 4 }}>
       <Grid container direction="row" justifyContent="space-between" spacing={3}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>

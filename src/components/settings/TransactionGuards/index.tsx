@@ -7,7 +7,7 @@ import css from './styles.module.css'
 
 const NoTransactionGuard = () => {
   return (
-    <Typography mt={2} color={(theme) => theme.palette.secondary.light}>
+    <Typography mt={2} color={({ palette }) => palette.primary.light}>
       No transaction guard set
     </Typography>
   )
@@ -15,7 +15,7 @@ const NoTransactionGuard = () => {
 
 const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId: string }) => {
   return (
-    <Box className={css.guarddisplay}>
+    <Box className={css.guardDisplay}>
       <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton chainId={chainId} showAvatar={false} />
     </Box>
   )
@@ -31,11 +31,11 @@ const TransactionGuards = () => {
   }
 
   return (
-    <Paper sx={{ padding: 4 }} variant="outlined">
+    <Paper sx={{ padding: 4 }}>
       <Grid container direction="row" justifyContent="space-between" spacing={3}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
-            Transaction Guards
+            Transaction guards
           </Typography>
         </Grid>
 

@@ -45,7 +45,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
         <b>{`${isSetAllowanceMethod ? 'Modify' : 'Delete'} spending limit:`}</b>
       </Typography>
       <Box className={css.group}>
-        <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
+        <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Beneficiary</Typography>
         <EthHashInfo
           address={(beneficiary as string) || txTo?.value || '0x'}
           name={txTo.name}
@@ -56,7 +56,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
         />
       </Box>
       <Box className={css.group}>
-        <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>
+        <Typography sx={({ palette }) => ({ color: palette.primary.light })}>
           {isSetAllowanceMethod ? (tokenInfo ? 'Amount' : 'Raw Amount (in decimals)') : 'Token'}
         </Typography>
         <Box className={css.inline}>
@@ -82,7 +82,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
       </Box>
       {isSetAllowanceMethod && (
         <Box className={css.group}>
-          <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Reset time</Typography>
+          <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Reset time</Typography>
           <SpendingLimitLabel label={resetTimeLabel || 'One-time spending limit'} isOneTime={!resetTimeLabel} />
         </Box>
       )}

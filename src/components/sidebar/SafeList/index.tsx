@@ -107,7 +107,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
 
             {/* No Safes yet */}
             {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
-              <Typography variant="body2" color="secondary.light" py={2}>
+              <Typography variant="body2" color="primary.light" py={2}>
                 <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
                   Create or add
                 </Link>{' '}
