@@ -83,7 +83,7 @@ describe('Address book', () => {
       cy.contains('Gnosis Chain').click()
 
       // Navigate to the Address Book page
-      cy.visit(`/${GNO_TEST_SAFE}/address-book`)
+      cy.visit(`/${GNO_TEST_SAFE}/address-book`, { failOnStatusCode: false })
 
       // Waits for the Address Book table to be in the page
       cy.contains('p', 'Address book').should('be.visible')
