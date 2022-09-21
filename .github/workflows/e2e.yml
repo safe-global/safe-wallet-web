@@ -28,6 +28,8 @@ jobs:
 
       - name: Build
         run: yarn build && yarn export
+        env:
+          NEXT_PUBLIC_BEAMER_ID: ${{secrets.NEXT_PUBLIC_BEAMER_ID}}
 
       - name: Serve
         run: yarn serve &
