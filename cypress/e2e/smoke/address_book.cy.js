@@ -20,7 +20,7 @@ const GNO_CSV_ENTRY = {
 describe('Address book', () => {
   before(() => {
     cy.visit(`/${RINKEBY_TEST_SAFE}/address-book`, { failOnStatusCode: false })
-    cy.contains('button', 'Accept selection').click()
+    cy.contains('Accept selection').click()
     // Waits for the Address Book table to be in the page
     cy.contains('p', 'Address book').should('be.visible')
   })
@@ -28,54 +28,59 @@ describe('Address book', () => {
   describe('should add remove and edit entries in the address book', () => {
     it('should add an entry', () => {
       // Add a new entry manually
-      cy.findByText('Create entry').click()
-      cy.get('[name="name"]').type(NAME)
-      cy.get('[name="address"]').type(ENS_NAME)
-      cy.wait(5000)
-      cy.get('[type="submit"]').click()
+      cy.contains('Create entry').click()
+      cy.get('input[name="name"]').type(NAME)
+      cy.get('input[name="address"]').type(ENS_NAME)
+      // cy.wait(5000)
+      cy.contains('Save').click()
 
-      cy.findByText(NAME).should('exist')
-      cy.findByText(ADDRESS).should('exist')
+      cy.contains(NAME).should('exist')
+      cy.contains(ADDRESS).should('exist')
     })
 
-    it('should edit an entry', () => {
+    it('should save an edited entry name', () => {
       // Click the edit button in the first entry
-      cy.findByTestId('EditIcon')
-        // <div> is not visible because its parent has CSS property: visibility: hidden
-        // so we have to use {force: true}
-        .click({ force: true })
+      cy.get('button[aria-label="Edit entry"]').click({ force: true })
 
-      cy.get('[name="name"]').clear().type(EDITED_NAME)
-      cy.get('[type="submit"]').click()
-      cy.findByText(NAME).should('not.exist')
-      cy.findByText(EDITED_NAME).should('exist')
+      // Give the entry a new name
+      cy.get('input[name="name"]').clear().type(EDITED_NAME)
+      cy.contains('Save').click()
+
+      // Previous name should have been replaced by the edited one
+      cy.get(NAME).should('not.exist')
+      cy.contains(EDITED_NAME).should('exist')
     })
 
     it('should delete an entry', () => {
       // Click the delete button in the first entry
-      cy.findByTestId('DeleteOutlineIcon').click({ force: true })
-      cy.findByText('Delete').should('exist').click()
-      cy.findByText(EDITED_NAME).should('not.exist')
+      cy.get('button[aria-label="Delete entry"]').click({ force: true })
+
+      cy.get('.MuiDialogActions-root').contains('Delete').click()
+      cy.get(EDITED_NAME).should('not.exist')
     })
   })
 
   describe('should import and export address book files', () => {
     it('should import an address book csv file', () => {
-      // Import CSV
-      cy.findByText('Import').click()
+      cy.contains('Import').click()
       cy.get('[type="file"]').attachFile('../fixtures/address_book_test.csv')
-      //This is the submit button for the Import modal. It requires an actuall class or testId to differentiate
-      //from the Import button at the top of the AB table
-      cy.contains('button.MuiButton-sizeMedium', 'Import').click()
-      cy.findByText(RINKEBY_CSV_ENTRY.name).should('exist')
-      cy.findByText(RINKEBY_CSV_ENTRY.address).should('exist')
-      cy.wait(1000)
+
+      // Import button should be enabled
+      cy.get('.MuiDialogActions-root').contains('Import').should('not.be.disabled')
+      cy.get('.MuiDialogActions-root').contains('Import').click()
+
+      // The import modal should be closed
+      cy.get('Import address book').should('not.exist')
+      cy.contains(RINKEBY_CSV_ENTRY.name).should('exist')
+      cy.contains(RINKEBY_CSV_ENTRY.address).should('exist')
     })
 
     it('should find Gnosis Chain imported address', () => {
       // Go to a Safe on Gnosis Chain
-      cy.get('[aria-haspopup="listbox"]').findByText('Rinkeby').click()
-      cy.findByText('Gnosis Chain').click()
+      cy.get('header')
+        .contains(/^Rinkeby$/)
+        .click()
+      cy.contains('Gnosis Chain').click()
 
       // Navigate to the Address Book page
       cy.visit(`/${GNO_TEST_SAFE}/address-book`)
@@ -84,22 +89,25 @@ describe('Address book', () => {
       cy.contains('p', 'Address book').should('be.visible')
 
       // Finds the imported Gnosis Chain address
-      cy.findByText(GNO_CSV_ENTRY.name).should('exist')
-      cy.findByText(GNO_CSV_ENTRY.address).should('exist')
+      cy.contains(GNO_CSV_ENTRY.name).should('exist')
+      cy.contains(GNO_CSV_ENTRY.address).should('exist')
     })
 
-    it.skip('should download correctly the address book file', () => {
+    it('should download correctly the address book file', () => {
       // Download the export file
       const date = format(new Date(), 'yyyy-MM-dd')
       const fileName = `safe-address-book-${date}.csv` //name that is given to the file automatically
 
-      cy.contains('button', 'Export').click()
+      // safe-address-book-2022-09-21
+
+      cy.contains('Export').click()
       //This is the submit button for the Export modal. It requires an actuall class or testId to differentiate
       //from the Export button at the top of the AB table
-      cy.contains('button.MuiButton-sizeMedium', 'Export').click()
+      cy.get('.MuiDialogActions-root').contains('Export').click()
+
       const downloadsFolder = Cypress.config('downloadsFolder')
       //File reading is failing in the CI. Can be tested locally
-      //cy.readFile(path.join(downloadsFolder, fileName).replace('/', '\\')).should('exist')
+      cy.readFile(path.join(downloadsFolder, fileName)).should('exist')
     })
   })
 })
