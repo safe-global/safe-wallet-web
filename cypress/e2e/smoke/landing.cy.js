@@ -10,7 +10,7 @@ describe('Landing page', () => {
 
     // Way to select the cookies banner without an id
     cy.contains('We use cookies to provide')
-    cy.contains('We use cookies to provide').parent('div').contains('Accept selection').click()
+    cy.contains('Accept selection').click()
     cy.contains('We use cookies to provide').should('not.exist')
 
     // Open What's New
