@@ -3,6 +3,7 @@ import { render } from '@/tests/test-utils'
 import { useForm, FormProvider } from 'react-hook-form'
 import AddressInput, { type AddressInputProps } from '.'
 import { useCurrentChain } from '@/hooks/useChains'
+import useNameResolver from '@/components/common/AddressInput/useNameResolver'
 
 // mock useCurrentChain
 jest.mock('@/hooks/useChains', () => ({
@@ -17,8 +18,9 @@ jest.mock('@/hooks/useChains', () => ({
 // mock useNameResolver
 jest.mock('@/components/common/AddressInput/useNameResolver', () => ({
   __esModule: true,
-  default: jest.fn((val) => ({
+  default: jest.fn((val: string) => ({
     address: val === 'zero.eth' ? '0x0000000000000000000000000000000000000000' : undefined,
+    resolverError: val === 'bogus.eth' ? new Error('Failed to resolve') : undefined,
     resolving: false,
   })),
 }))
@@ -32,6 +34,7 @@ const TestForm = ({ address, validate }: { address: string; validate?: AddressIn
     defaultValues: {
       [name]: address,
     },
+    mode: 'onChange',
   })
 
   return (
@@ -58,8 +61,12 @@ const TEST_ADDRESS_A = '0x0000000000000000000000000000000000000000'
 const TEST_ADDRESS_B = '0x0000000000000000000000000000000000000001'
 
 describe('AddressInput tests', () => {
+  beforeAll(() => {
+    jest.useFakeTimers()
+  })
+
   beforeEach(() => {
-    jest.restoreAllMocks()
+    jest.clearAllMocks()
   })
 
   it('should render with a default address value', () => {
@@ -77,19 +84,21 @@ describe('AddressInput tests', () => {
 
     act(() => {
       fireEvent.change(input, { target: { value: `xyz:${TEST_ADDRESS_A}` } })
-      utils.getByText('Submit').click()
+      jest.advanceTimersByTime(1000)
     })
 
     await waitFor(() => expect(utils.getByLabelText('Invalid chain prefix "xyz"')).toBeDefined())
 
     act(() => {
       fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
+      jest.advanceTimersByTime(1000)
     })
 
     await waitFor(() => expect(utils.getByLabelText(`"eth" doesn't match the current chain`)).toBeDefined())
 
     act(() => {
       fireEvent.change(input, { target: { value: 'rin:0x123' } })
+      jest.advanceTimersByTime(1000)
     })
 
     await waitFor(() => expect(utils.getByLabelText(`Invalid address format`)).toBeDefined())
@@ -100,25 +109,40 @@ describe('AddressInput tests', () => {
 
     act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })
-      utils.getByText('Submit').click()
+      jest.advanceTimersByTime(1000)
     })
 
     await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_A} is wrong`)).toBeDefined())
 
     act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
+      jest.advanceTimersByTime(1000)
     })
 
     await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_B} is wrong`)).toBeDefined())
   })
 
-  it.only('should resolve ENS names', async () => {
+  it('should resolve ENS names', async () => {
     const { input } = setup('')
 
     await act(async () => {
       fireEvent.change(input, { target: { value: 'zero.eth' } })
       await waitFor(() => expect(input.value).toBe('0x0000000000000000000000000000000000000000'))
     })
+
+    expect(useNameResolver).toHaveBeenCalledWith('zero.eth')
+  })
+
+  it('should show an error if ENS resolution has failed', async () => {
+    const { input, utils } = setup('')
+
+    act(() => {
+      fireEvent.change(input, { target: { value: 'bogus.eth' } })
+      jest.advanceTimersByTime(1000)
+    })
+
+    expect(useNameResolver).toHaveBeenCalledWith('bogus.eth')
+    await waitFor(() => expect(utils.getByLabelText(`Failed to resolve`)).toBeDefined())
   })
 
   it('should not resolve ENS names if this feature is disabled', async () => {
@@ -129,13 +153,16 @@ describe('AddressInput tests', () => {
       features: [],
     }))
 
-    const { input } = setup('')
+    const { input, utils } = setup('')
 
     act(() => {
       fireEvent.change(input, { target: { value: 'zero.eth' } })
+      jest.advanceTimersByTime(1000)
     })
 
+    expect(useNameResolver).toHaveBeenCalledWith('')
     await waitFor(() => expect(input.value).toBe('zero.eth'))
+    await waitFor(() => expect(utils.getByLabelText('Invalid address format')).toBeDefined())
   })
 
   it('should show chain prefix in an adornment', async () => {
