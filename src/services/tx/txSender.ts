@@ -22,9 +22,10 @@ import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
 import MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
 import { Web3Provider } from '@ethersproject/providers'
-import { ContractTransaction } from 'ethers'
+import { ContractTransaction, ethers } from 'ethers'
 import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
+import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -188,6 +189,36 @@ export const dispatchTxSigning = async (
   txDispatch(TxEvent.SIGNED, { txId })
 
   return signedTx
+}
+
+/**
+ * On-Chain sign a transaction
+ */
+export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: Web3Provider, txId?: string) => {
+  const sdk = getAndValidateSafeSDK()
+  const safeTxHash = await sdk.getTransactionHash(safeTx)
+
+  const signer = provider.getSigner()
+  const ethersAdapter = new EthersAdapter({
+    ethers,
+    signer: signer.connectUnchecked(),
+  })
+
+  txDispatch(TxEvent.EXECUTING, { groupKey: safeTxHash })
+
+  try {
+    // With the unchecked signer, the contract call resolves once the tx
+    // has been submitted in the wallet not when it has been executed
+    const sdkUnchecked = await sdk.connect({ ethAdapter: ethersAdapter })
+    await sdkUnchecked.approveTransactionHash(safeTxHash)
+  } catch (err) {
+    txDispatch(TxEvent.FAILED, { groupKey: safeTxHash, error: err as Error })
+    throw err
+  }
+
+  txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, { groupKey: safeTxHash })
+
+  return safeTx
 }
 
 /**

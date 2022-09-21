@@ -3,13 +3,19 @@ import { useRouter } from 'next/router'
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
-import { dispatchTxExecution, dispatchTxProposal, dispatchTxSigning, createTx } from '@/services/tx/txSender'
+import {
+  dispatchTxExecution,
+  dispatchTxProposal,
+  dispatchTxSigning,
+  createTx,
+  dispatchOnChainSigning,
+} from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isHardwareWallet, isSafeMobileWallet } from '@/hooks/wallets/wallets'
+import { isHardwareWallet, isSafeMobileWallet, isSmartContractWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -18,6 +24,8 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
+import { useWeb3 } from '@/hooks/wallets/web3'
+import { Web3Provider } from '@ethersproject/providers'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -53,6 +61,7 @@ const SignOrExecuteForm = ({
   const router = useRouter()
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
+  const provider = useWeb3()
   const currentChain = useCurrentChain()
 
   // Check that the transaction is executable
@@ -80,18 +89,23 @@ const SignOrExecuteForm = ({
   //
   // Callbacks
   //
-  const assertSubmittable = (): [ConnectedWallet, SafeTransaction] => {
+  const assertSubmittable = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
     if (!wallet) throw new Error('Wallet not connected')
     if (!tx) throw new Error('Transaction not ready')
-    return [wallet, tx]
+    if (!provider) throw new Error('Provider not ready')
+
+    return [wallet, tx, provider]
   }
 
   // Sign transaction
   const onSign = async (): Promise<string> => {
-    const [connectedWallet, createdTx] = assertSubmittable()
+    const [connectedWallet, createdTx, provider] = assertSubmittable()
 
     const shouldEthSign = isHardwareWallet(connectedWallet) || isSafeMobileWallet(connectedWallet)
-    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
+    const smartContractWallet = await isSmartContractWallet(connectedWallet)
+    const signedTx = smartContractWallet
+      ? await dispatchOnChainSigning(createdTx, provider, txId)
+      : await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
     return proposedTx.txId

@@ -9,6 +9,7 @@ export enum TxEvent {
   PROPOSE_FAILED = 'PROPOSE_FAILED',
   SIGNATURE_PROPOSED = 'SIGNATURE_PROPOSED',
   SIGNATURE_PROPOSE_FAILED = 'SIGNATURE_PROPOSE_FAILED',
+  AWAITING_ON_CHAIN_SIGNATURE = 'AWAITING_ON_CHAIN_SIGNATURE',
   EXECUTING = 'EXECUTING',
   MINING = 'MINING',
   MINING_MODULE = 'MINING_MODULE',
@@ -28,6 +29,7 @@ interface TxEvents {
   [TxEvent.PROPOSED]: { txId: string }
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; error: Error }
   [TxEvent.SIGNATURE_PROPOSED]: { txId: string }
+  [TxEvent.AWAITING_ON_CHAIN_SIGNATURE]: Id
   [TxEvent.EXECUTING]: Id
   [TxEvent.MINING]: Id & { txHash: string }
   [TxEvent.MINING_MODULE]: Id & { txHash: string }
