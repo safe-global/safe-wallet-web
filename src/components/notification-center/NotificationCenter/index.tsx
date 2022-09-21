@@ -111,7 +111,6 @@ const NotificationCenter = (): ReactElement => {
           vertical: 'top',
           horizontal: 'left',
         }}
-        elevation={3}
         sx={{ mt: 1 }}
       >
         <Paper className={css.popoverContainer}>

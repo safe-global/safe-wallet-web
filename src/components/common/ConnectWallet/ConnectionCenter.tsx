@@ -57,7 +57,6 @@ const ConnectionCenter = (): ReactElement => {
           vertical: 'top',
           horizontal: 'center',
         }}
-        elevation={3}
         sx={{ mt: 1 }}
       >
         <Paper className={css.popoverContainer}>

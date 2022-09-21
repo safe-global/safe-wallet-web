@@ -45,7 +45,6 @@ const NetworkSelector = (): ReactElement => {
         sx: {
           '& .MuiPaper-root': {
             mt: 2,
-            border: ({ palette }) => `1px solid ${palette.border.light}`,
           },
         },
       }}

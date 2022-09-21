@@ -235,7 +235,7 @@ const initTheme = (darkMode: boolean) => {
       },
       MuiPopover: {
         defaultProps: {
-          elevation: 0,
+          elevation: 2,
         },
         styleOverrides: {
           paper: {
@@ -368,6 +368,7 @@ const initTheme = (darkMode: boolean) => {
           MenuProps: {
             sx: {
               '& .MuiPaper-root': {
+                border: ({ palette }) => `1px solid ${palette.border.light}`,
                 overflow: 'auto',
               },
             },
