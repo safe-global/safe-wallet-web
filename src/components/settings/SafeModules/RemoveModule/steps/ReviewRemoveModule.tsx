@@ -11,7 +11,13 @@ import { useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 
-export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData; onSubmit: (data: null) => void }) => {
+export const ReviewRemoveModule = ({
+  data,
+  onSubmit,
+}: {
+  data: RemoveModuleData
+  onSubmit: (txId: string) => void
+}) => {
   const { safe } = useSafeInfo()
   const sdk = useSafeSDK()
 
@@ -25,10 +31,10 @@ export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData;
     }
   }, [safeTxError])
 
-  const onFormSubmit = (data: null) => {
+  const onFormSubmit = (txId: string) => {
     trackEvent(SETTINGS_EVENTS.MODULES.REMOVE_MODULE)
 
-    onSubmit(data)
+    onSubmit(txId)
   }
 
   return (

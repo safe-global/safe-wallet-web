@@ -81,7 +81,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
     try {
       await dispatchSpendingLimitTxExecution(txParams, txOptions, chainId, provider)
 
-      onSubmit(null)
+      onSubmit('')
     } catch (err) {
       logError(Errors._801, (err as Error).message)
       setIsSubmittable(true)
