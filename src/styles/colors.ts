@@ -5,6 +5,7 @@ const palette = {
     disabled: '#DDDEE0',
   },
   primary: {
+    dark: '#3c3c3c',
     main: '#121312',
     light: '#636669',
   },

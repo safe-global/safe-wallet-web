@@ -4,6 +4,7 @@
   --color-text-primary: #121312;
   --color-text-secondary: #a1a3a7;
   --color-text-disabled: #dddee0;
+  --color-primary-dark: #3c3c3c;
   --color-primary-main: #121312;
   --color-primary-light: #636669;
   --color-secondary-dark: #0fda6d;
@@ -53,6 +54,7 @@
   --color-text-primary: #ffffff;
   --color-text-secondary: #636669;
   --color-text-disabled: #303033;
+  --color-primary-dark: #0cb259;
   --color-primary-main: #12ff80;
   --color-primary-light: #a1a3a7;
   --color-secondary-dark: #636669;
