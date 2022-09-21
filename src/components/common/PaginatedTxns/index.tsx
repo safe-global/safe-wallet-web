@@ -66,7 +66,13 @@ const TxPage = ({
   )
 }
 
-const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useTxQueue }): ReactElement => {
+const PaginatedTxns = ({
+  useTxns,
+  negativeMarginTop = true,
+}: {
+  useTxns: typeof useTxHistory | typeof useTxQueue
+  negativeMarginTop?: boolean
+}): ReactElement => {
   const [pages, setPages] = useState<string[]>([''])
   const [filter] = useTxFilter()
   const isQueue = useTxns === useTxQueue
@@ -84,7 +90,13 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   return (
     <BatchExecuteHoverProvider>
       <Box mb={4} position="relative">
-        <Box display="flex" flexDirection="column" alignItems="flex-end" mt={[3, '-44px']} mb={[0, '30px']}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="flex-end"
+          mt={[3, negativeMarginTop ? '-44px' : 0]}
+          mb={[0, '30px']}
+        >
           {isQueue ? <BatchExecuteButton /> : <TxFilterButton />}
         </Box>
 

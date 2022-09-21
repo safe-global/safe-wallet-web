@@ -1,21 +1,18 @@
 import { useState } from 'react'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useRouter } from 'next/router'
 import { Button, Box } from '@mui/material'
 import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
 import { AppCardContainer } from './AppCard'
-import { IS_PRODUCTION, SAFE_REACT_URL } from '@/config/constants'
+import { IS_PRODUCTION } from '@/config/constants'
 
 type Props = { onSave: (data: SafeAppData) => void; safeAppList: SafeAppData[] }
 
 const AddCustomAppCard = ({ onSave, safeAppList }: Props) => {
   const [addCustomAppModalOpen, setAddCustomAppModalOpen] = useState(false)
-  const router = useRouter()
-  const url = `${SAFE_REACT_URL}/${router.query.safe}/apps`
 
   return (
     <>
-      <AppCardContainer url={IS_PRODUCTION ? url : undefined}>
+      <AppCardContainer>
         <Box
           sx={{
             height: '100%',

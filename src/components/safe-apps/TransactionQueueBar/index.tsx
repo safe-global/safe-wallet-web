@@ -7,39 +7,27 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import useTxQueue from '@/hooks/useTxQueue'
 import PaginatedTxns from '@/components/common/PaginatedTxns'
 import styles from './styles.module.css'
+import { getQueuedTransactionCount } from '@/utils/transactions'
 
-const Index = (): ReactElement | null => {
+const TransactionQueueBar = (): ReactElement | null => {
   const [expanded, setExpanded] = useState(false)
   const [dismissedByUser, setDismissedByUser] = useState(false)
 
-  const onClickQueueBar = () => {
-    setExpanded(true)
+  const toggleQueueBar = (): void => {
+    setExpanded((prev) => !prev)
   }
 
-  const onCloseQueueBar = () => {
-    setExpanded(false)
-  }
+  const { page = { results: [] } } = useTxQueue()
+  const queuedTxCount = getQueuedTransactionCount(page)
 
-  const { page: { results: transactions } = { results: [] } } = useTxQueue()
-
-  const queuedTxCount = transactions.length
-  const hasPendingTransactions = queuedTxCount !== 0
-
-  // if a new transaction is proposed, we show the transaction queue bar
-  useEffect(() => {
-    if (queuedTxCount) {
-      setExpanded(true)
-    }
-  }, [queuedTxCount])
-
-  return true ? (
+  return !dismissedByUser ? (
     <>
       <Box className={styles.barWrapper}>
         <ClickAwayListener onClickAway={() => setExpanded(false)} mouseEvent="onMouseDown" touchEvent="onTouchStart">
           <Accordion
             data-testid="transaction-queue-bar"
             expanded={expanded}
-            onChange={onClickQueueBar}
+            onClick={toggleQueueBar}
             TransitionProps={{
               timeout: {
                 appear: 400,
@@ -50,13 +38,19 @@ const Index = (): ReactElement | null => {
               mountOnEnter: true,
             }}
           >
-            <AccordionSummary data-testid="transaction-queue-bar-summary">
+            <AccordionSummary
+              data-testid="transaction-queue-bar-summary"
+              sx={{ '.MuiAccordionSummary-content': { alignItems: 'center' } }}
+            >
               <Typography variant="body1" color="primary.main" fontWeight={700} sx={{ mr: 'auto' }}>
                 ({queuedTxCount}) Transaction Queue
               </Typography>
 
               <IconButton
-                onClick={onCloseQueueBar}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  toggleQueueBar()
+                }}
                 aria-label="close transaction queue bar"
                 sx={{ transform: expanded ? 'rotate(180deg)' : undefined }}
               >
@@ -67,7 +61,7 @@ const Index = (): ReactElement | null => {
               </IconButton>
             </AccordionSummary>
             <AccordionDetails>
-              <PaginatedTxns useTxns={useTxQueue} />
+              <PaginatedTxns useTxns={useTxQueue} negativeMarginTop={false} />
             </AccordionDetails>
           </Accordion>
         </ClickAwayListener>
@@ -77,4 +71,4 @@ const Index = (): ReactElement | null => {
   ) : null
 }
 
-export default Index
+export default TransactionQueueBar
