@@ -11,7 +11,7 @@ import { IS_PRODUCTION } from '@/config/constants'
 export const ContentSecurityPolicy = `
  default-src 'self';
  connect-src 'self' *;
- script-src 'self' https://www.googletagmanager.com ${!IS_PRODUCTION ? "'unsafe-eval'" : ''};
+ script-src 'self' 'unsafe-inline' https://www.googletagmanager.com ${!IS_PRODUCTION ? "'unsafe-eval'" : ''};
  frame-src *;
  style-src 'self' 'unsafe-inline';
  font-src 'self' data:; 
