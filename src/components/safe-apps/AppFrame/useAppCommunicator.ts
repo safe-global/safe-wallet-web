@@ -2,12 +2,17 @@ import { MutableRefObject, useEffect, useMemo, useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
 import { getBalances, getTransactionDetails, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
+  BaseTransaction,
+  EIP712TypedData,
   GetBalanceParams,
   GetTxBySafeTxHashParams,
   Methods,
+  RequestId,
   RPCPayload,
+  SendTransactionRequestParams,
   SendTransactionsParams,
   SignMessageParams,
+  SignTypedMessageParams,
 } from '@gnosis.pm/safe-apps-sdk'
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
@@ -16,6 +21,10 @@ import useIsGranted from '@/hooks/useIsGranted'
 import { useCurrentChain } from '@/hooks/useChains'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 
+export enum CommunicatorMessages {
+  REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
+}
+
 type JsonRpcResponse = {
   jsonrpc: string
   id: number
@@ -23,7 +32,16 @@ type JsonRpcResponse = {
   error?: string
 }
 
-const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null>, app?: SafeAppData) => {
+type UseAppCommunicatorConfig = {
+  app?: SafeAppData
+  onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => void
+  onSignMessage: (message: string | EIP712TypedData, requestId: string, method: Methods) => void
+}
+
+const useAppCommunicator = (
+  iframeRef: MutableRefObject<HTMLIFrameElement | null>,
+  { app, onConfirmTransactions, onSignMessage }: UseAppCommunicatorConfig,
+): AppCommunicator | undefined => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
 
   const { safe, safeAddress } = useSafeInfo()
@@ -117,13 +135,19 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
         ...rest,
       }))
 
-      // openConfirmationModal(transactions, params, msg.data.id)
+      onConfirmTransactions(transactions, msg.data.id, params)
     })
 
     communicator?.on(Methods.signMessage, async (msg) => {
       const { message } = msg.data.params as SignMessageParams
 
-      // openSignMessageModal(message, msg.data.id)
+      onSignMessage(message, msg.data.id, Methods.signMessage)
+    })
+
+    communicator?.on(Methods.signTypedMessage, async (msg) => {
+      const { typedData } = msg.data.params as SignTypedMessageParams
+
+      onSignMessage(typedData, msg.data.id, Methods.signTypedMessage)
     })
 
     communicator?.on(Methods.getChainInfo, async () => {
@@ -135,7 +159,9 @@ const useAppCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null
         blockExplorerUriTemplate,
       }
     })
-  }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider])
+  }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider, onConfirmTransactions, onSignMessage])
+
+  return communicator
 }
 
 export default useAppCommunicator

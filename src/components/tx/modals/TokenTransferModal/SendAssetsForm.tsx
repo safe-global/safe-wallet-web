@@ -67,6 +67,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: { ...formData, [SendAssetsField.type]: SendTxType.multiSig },
     mode: 'onChange',
+    delayError: 500,
   })
   const {
     register,

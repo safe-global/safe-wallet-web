@@ -14,7 +14,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import React from 'react'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 
-export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (data: null) => void }) => {
+export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (txId: string) => void }) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const dispatch = useAppDispatch()
@@ -37,7 +37,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
 
   const isReplace = Boolean(removedOwner)
 
-  const addAddressBookEntryAndSubmit = (dialogData: null) => {
+  const addAddressBookEntryAndSubmit = (txId: string) => {
     if (typeof newOwner.name !== 'undefined') {
       dispatch(
         upsertAddressBookEntry({
@@ -51,7 +51,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
 
-    onSubmit(dialogData)
+    onSubmit(txId)
   }
 
   return (

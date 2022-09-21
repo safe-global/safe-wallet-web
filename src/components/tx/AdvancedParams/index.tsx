@@ -7,12 +7,20 @@ import { type AdvancedParameters } from './types'
 type Props = {
   params: AdvancedParameters
   recommendedNonce?: number
+  recommendedGasLimit?: AdvancedParameters['gasLimit']
   willExecute: boolean
   nonceReadonly: boolean
   onFormSubmit: (data: AdvancedParameters) => void
 }
 
-const AdvancedParams = ({ params, recommendedNonce, willExecute, nonceReadonly, onFormSubmit }: Props) => {
+const AdvancedParams = ({
+  params,
+  recommendedNonce,
+  recommendedGasLimit,
+  willExecute,
+  nonceReadonly,
+  onFormSubmit,
+}: Props) => {
   const [isEditing, setIsEditing] = useState<boolean>(false)
 
   const onEditOpen = () => {
@@ -30,7 +38,7 @@ const AdvancedParams = ({ params, recommendedNonce, willExecute, nonceReadonly, 
       params={params}
       isExecution={willExecute}
       recommendedNonce={recommendedNonce}
-      estimatedGasLimit={params.gasLimit?.toString()}
+      recommendedGasLimit={recommendedGasLimit}
       nonceReadonly={nonceReadonly}
       onSubmit={onAdvancedSubmit}
     />

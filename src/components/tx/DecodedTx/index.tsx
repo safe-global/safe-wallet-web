@@ -13,6 +13,7 @@ import { MethodDetails } from '@/components/transactions/TxDetails/TxData/Decode
 import ErrorMessage from '../ErrorMessage'
 import Summary from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
+import { isEmptyHexData } from '@/utils/hex'
 
 type DecodedTxProps = {
   tx: SafeTransaction
@@ -22,10 +23,10 @@ type DecodedTxProps = {
 const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
   const encodedData = tx.data.data
-  const isNativeTransfer = encodedData && isNaN(parseInt(encodedData, 16))
+  const isNativeTransfer = isEmptyHexData(encodedData)
 
   const [decodedData, decodedDataError, decodedDataLoading] = useAsync<DecodedDataResponse>(() => {
-    if (!encodedData || isNativeTransfer) return
+    if (!encodedData || isEmptyHexData(encodedData)) return
     return getDecodedData(chainId, encodedData)
   }, [chainId, encodedData, isNativeTransfer])
 

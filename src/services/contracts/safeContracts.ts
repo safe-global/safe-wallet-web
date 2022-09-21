@@ -5,6 +5,7 @@ import {
   getProxyFactoryDeployment,
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
+  getSignMessageLibDeployment,
   type SingletonDeployment,
 } from '@gnosis.pm/safe-deployments'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
@@ -14,6 +15,7 @@ import semverSatisfies from 'semver/functions/satisfies'
 import { SafeInfo, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { GetContractProps, SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
 import { type Compatibility_fallback_handler } from '@/types/contracts/Compatibility_fallback_handler'
+import { type Sign_message_lib } from '@/types/contracts/Sign_message_lib'
 import { createEthersAdapter, isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 export const _getValidatedGetContractProps = (
@@ -169,4 +171,17 @@ export const getFallbackHandlerContractInstance = (chainId: string): Compatibili
   const contractAddress = fallbackHandlerDeployment.networkAddresses[chainId]
 
   return new Contract(contractAddress, new Interface(fallbackHandlerDeployment.abi)) as Compatibility_fallback_handler
+}
+
+// Sign messages deployment
+// TODO: Should this be implemented in Core SDK?
+export const getSignMessageLibDeploymentContractInstance = (chainId: string): Sign_message_lib => {
+  const signMessageLibDeployment = getSignMessageLibDeployment({ network: chainId }) || getSignMessageLibDeployment()
+  const contractAddress = signMessageLibDeployment?.networkAddresses[chainId]
+
+  if (!contractAddress) {
+    throw new Error(`SignMessageLib contract not found for chainId: ${chainId}`)
+  }
+
+  return new Contract(contractAddress, new Interface(signMessageLibDeployment?.abi)) as Sign_message_lib
 }

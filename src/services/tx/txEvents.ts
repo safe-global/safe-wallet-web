@@ -1,5 +1,6 @@
 import type { ContractReceipt } from 'ethers/lib/ethers'
 import EventBus from '@/services/EventBus'
+import { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 export enum TxEvent {
   SIGNED = 'SIGNED',
@@ -8,6 +9,7 @@ export enum TxEvent {
   PROPOSE_FAILED = 'PROPOSE_FAILED',
   SIGNATURE_PROPOSED = 'SIGNATURE_PROPOSED',
   SIGNATURE_PROPOSE_FAILED = 'SIGNATURE_PROPOSE_FAILED',
+  AWAITING_ON_CHAIN_SIGNATURE = 'AWAITING_ON_CHAIN_SIGNATURE',
   EXECUTING = 'EXECUTING',
   MINING = 'MINING',
   MINING_MODULE = 'MINING_MODULE',
@@ -15,6 +17,7 @@ export enum TxEvent {
   REVERTED = 'REVERTED',
   FAILED = 'FAILED',
   SUCCESS = 'SUCCESS',
+  SAFE_APPS_REQUEST = 'SAFE_APPS_REQUEST',
 }
 
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
@@ -26,6 +29,7 @@ interface TxEvents {
   [TxEvent.PROPOSED]: { txId: string }
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; error: Error }
   [TxEvent.SIGNATURE_PROPOSED]: { txId: string }
+  [TxEvent.AWAITING_ON_CHAIN_SIGNATURE]: Id
   [TxEvent.EXECUTING]: Id
   [TxEvent.MINING]: Id & { txHash: string }
   [TxEvent.MINING_MODULE]: Id & { txHash: string }
@@ -33,6 +37,7 @@ interface TxEvents {
   [TxEvent.REVERTED]: Id & { error: Error; receipt: ContractReceipt }
   [TxEvent.FAILED]: Id & { error: Error }
   [TxEvent.SUCCESS]: Id
+  [TxEvent.SAFE_APPS_REQUEST]: Id & { safeAppRequestId: RequestId }
 }
 
 const txEventBus = new EventBus<TxEvents>()

@@ -8,6 +8,7 @@ import useNameResolver from './useNameResolver'
 import ScanQRButton from '../ScanQRModal/ScanQRButton'
 import { hasFeature } from '@/utils/chains'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import useDebounce from '@/hooks/useDebounce'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
 
@@ -24,14 +25,19 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
   const watchedValue = useWatch({ name, control })
   const currentShortName = currentChain?.shortName || ''
 
+  // Fetch an ENS resolution for the current address
+  const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
+  const { address, resolverError, resolving } = useNameResolver(isDomainLookupEnabled ? watchedValue : '')
+
   // errors[name] doesn't work with nested field names like 'safe.address'.
   // But getFieldState doesn't trigger a re-render, which breaks tests.
   // So both are needed to get the error state and pass tests.
-  const error = getFieldState(name).error || errors[name]
+  const fieldError = resolverError || getFieldState(name).error || errors[name]
 
-  // Fetch an ENS resolution for the current address
-  const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
-  const { address, resolving } = useNameResolver(isDomainLookupEnabled ? watchedValue : '')
+  // Debounce the field error unless there's no error or it's resolving a domain
+  let error = useDebounce(fieldError, 500)
+  if (resolverError) error = resolverError
+  if (!fieldError || resolving) error = undefined
 
   // Validation function based on the current chain prefix
   const validatePrefixed = useMemo(() => validatePrefixedAddress(currentShortName), [currentShortName])
@@ -89,7 +95,7 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
 
             validate: () => {
               const value = rawValueRef.current
-              if (required || value) {
+              if (value) {
                 return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
               }
             },

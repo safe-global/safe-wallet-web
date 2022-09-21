@@ -22,6 +22,8 @@ import walletConnect from '@web3-onboard/walletconnect'
 import pairingModule, { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 
 export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
@@ -91,4 +93,16 @@ export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
 
 export const isSafeMobileWallet = (wallet: ConnectedWallet): boolean => {
   return wallet.label === PAIRING_MODULE_LABEL
+}
+
+export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
+  const provider = getWeb3ReadOnly()
+
+  if (!provider) {
+    throw new Error('Provider not found')
+  }
+
+  const code = await provider.getCode(wallet.address)
+
+  return code !== EMPTY_DATA
 }

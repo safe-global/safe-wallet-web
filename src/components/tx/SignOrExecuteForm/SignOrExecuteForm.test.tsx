@@ -5,11 +5,13 @@ import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useGasLimitHook from '@/hooks/useGasLimit'
 import * as txSender from '@/services/tx/txSender'
 import * as wallet from '@/hooks/wallets/useWallet'
+import * as web3 from '@/hooks/wallets/web3'
 import { SafeInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { waitFor } from '@testing-library/react'
 import { ConnectedWallet } from '@/services/onboard'
 import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import Safe from '@gnosis.pm/safe-core-sdk'
+import { Web3Provider } from '@ethersproject/providers'
 
 const createSafeTx = (): SafeTransaction => {
   return {
@@ -36,6 +38,7 @@ const createSafeTx = (): SafeTransaction => {
 
 describe('SignOrExecuteForm', () => {
   let mockSDK
+  const mockProvider: Web3Provider = new Web3Provider(jest.fn())
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -62,6 +65,7 @@ describe('SignOrExecuteForm', () => {
       gasLimitLoading: false,
     })
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
+    jest.spyOn(web3, 'useWeb3').mockReturnValue(mockProvider)
     jest
       .spyOn(txSender, 'dispatchTxProposal')
       .mockImplementation(jest.fn(() => Promise.resolve({ txId: '0x12' } as TransactionDetails)))

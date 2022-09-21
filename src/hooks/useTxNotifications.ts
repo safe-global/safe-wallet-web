@@ -16,6 +16,7 @@ const TxNotifications = {
   [TxEvent.MINING]: 'Your transaction is being processed.',
   [TxEvent.MINING_MODULE]:
     'Your transaction has been submitted and will appear in the interface only after it has been successfully processed and indexed.',
+  [TxEvent.AWAITING_ON_CHAIN_SIGNATURE]: 'An on-chain signature request was submitted.',
   [TxEvent.MINED]: 'Your transaction was successfully processed and is now being indexed.',
   [TxEvent.REVERTED]: 'Transaction reverted. Please check your gas settings.',
   [TxEvent.SUCCESS]: 'Your transaction was successfully executed.',
