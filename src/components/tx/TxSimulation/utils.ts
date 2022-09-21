@@ -166,6 +166,7 @@ const getNonceOverwrite = (params: SimulationTxParams): number | undefined => {
   Safe storage layout can be found here:
   https://github.com/gnosis/safe-contracts/blob/main/contracts/libraries/GnosisSafeStorage.sol */
 export const THRESHOLD_STORAGE_POSITION = hexZeroPad('0x4', 32)
+export const THRESHOLD_OVERWRITE = hexZeroPad('0x1', 32)
 /* We need to overwrite the nonce if we simulate a (partially) signed transaction which is not at the top position of the tx queue.
   The nonce can be found in storage slot 5 and uses a full 32 bytes slot. */
 export const NONCE_STORAGE_POSITION = hexZeroPad('0x5', 32)
@@ -177,7 +178,7 @@ const getStateOverwrites = (params: SimulationTxParams) => {
   const storageOverwrites: Record<string, string> = {} as Record<string, string>
 
   if (isThresholdOverwrite) {
-    storageOverwrites[THRESHOLD_STORAGE_POSITION] = hexZeroPad('0x1', 32)
+    storageOverwrites[THRESHOLD_STORAGE_POSITION] = THRESHOLD_OVERWRITE
   }
   if (nonceOverwrite) {
     storageOverwrites[NONCE_STORAGE_POSITION] = hexZeroPad(BigNumber.from(nonceOverwrite).toHexString(), 32)
