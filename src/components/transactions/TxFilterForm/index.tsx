@@ -118,7 +118,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
           <Grid container>
             <Grid item xs={12} md={3} sx={{ p: 4 }}>
               <FormControl>
-                <FormLabel sx={{ mb: 2, color: ({ palette }) => palette.secondary.light }}>Transaction type</FormLabel>
+                <FormLabel sx={{ mb: 2, color: ({ palette }) => palette.primary.light }}>Transaction type</FormLabel>
                 <Controller
                   name={TxFilterFormFieldNames.FILTER_TYPE}
                   control={control}
@@ -137,7 +137,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
 
             <Grid item xs={12} md={8} sx={{ p: 4 }}>
               <FormControl sx={{ width: '100%' }}>
-                <FormLabel sx={{ mb: 3, color: ({ palette }) => palette.secondary.light }}>Parameters</FormLabel>
+                <FormLabel sx={{ mb: 3, color: ({ palette }) => palette.primary.light }}>Parameters</FormLabel>
                 <Grid container item spacing={2} xs={12}>
                   {!isModuleFilter && (
                     <>

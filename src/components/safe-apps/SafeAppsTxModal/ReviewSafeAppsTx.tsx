@@ -69,7 +69,7 @@ const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params } }: ReviewSafe
             </InfoDetails>
 
             <Box pb={2}>
-              <Typography mt={2} color="secondary.light">
+              <Typography mt={2} color="primary.light">
                 Data (hex encoded)
               </Typography>
               {generateDataRowValue(safeTx.data.data, 'rawData')}

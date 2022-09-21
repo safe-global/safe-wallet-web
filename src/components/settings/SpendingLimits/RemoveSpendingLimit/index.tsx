@@ -59,9 +59,9 @@ export const RemoveSpendingLimit = ({
           tokenInfo={token.tokenInfo}
         />
       )}
-      <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Beneficiary</Typography>
+      <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Beneficiary</Typography>
       <EthHashInfo address={data.beneficiary} showCopyButton hasExplorer shortAddress={false} />
-      <Typography mt={2} sx={({ palette }) => ({ color: palette.secondary.light })}>
+      <Typography mt={2} sx={({ palette }) => ({ color: palette.primary.light })}>
         Reset time
       </Typography>
       <SpendingLimitLabel

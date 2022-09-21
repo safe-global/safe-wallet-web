@@ -113,7 +113,7 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           head: ({ theme }) => ({
             ...theme.typography.body1,
-            color: theme.palette.secondary.light,
+            color: theme.palette.primary.light,
           }),
         },
       },
@@ -298,7 +298,6 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             '& .MuiTableCell-root': {
-              color: theme.palette.primary.light,
               borderBottom: `2px solid ${theme.palette.border.light}`,
             },
           }),
