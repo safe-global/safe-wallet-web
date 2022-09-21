@@ -32,6 +32,11 @@ const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement =
       options={addressBookEntries}
       onInputChange={(_, value) => setValue(name, value, { shouldValidate: true })}
       filterOptions={abFilterOptions}
+      componentsProps={{
+        paper: {
+          elevation: 2,
+        },
+      }}
       renderOption={(props, option) => (
         <Typography component="li" variant="body2" {...props}>
           <EthHashInfo address={option.label} name={option.name} shortAddress={false} />

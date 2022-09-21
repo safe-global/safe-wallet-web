@@ -367,7 +367,6 @@ const initTheme = (darkMode: boolean) => {
           MenuProps: {
             sx: {
               '& .MuiPaper-root': {
-                border: ({ palette }) => `1px solid ${palette.border.light}`,
                 overflow: 'auto',
               },
             },
