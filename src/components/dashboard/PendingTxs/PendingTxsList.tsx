@@ -10,6 +10,7 @@ import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transact
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import PagePlaceholder from '@/components/common/PagePlaceholder'
 
 const SkeletonWrapper = styled.div`
   border-radius: 8px;
@@ -28,30 +29,15 @@ const StyledWidgetTitle = styled.div`
   justify-content: space-between;
 `
 
-const StyledEmptyCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: var(--space-4);
-
-  img {
-    width: 144px;
-    height: auto;
-  }
-`
-
 const EmptyState = () => {
   const isDarkMode = useDarkMode()
   return (
-    <StyledEmptyCard>
-      <img
-        src={isDarkMode ? '/images/no-transactions-dark.svg' : '/images/no-transactions-light.svg'}
-        alt="No queued transactions"
+    <Card>
+      <PagePlaceholder
+        imageUrl={isDarkMode ? '/images/no-transactions-dark.svg' : '/images/no-transactions-light.svg'}
+        text="This Safe has no queued transactions"
       />
-
-      <Typography mt={3}>This Safe has no queued transactions</Typography>
-    </StyledEmptyCard>
+    </Card>
   )
 }
 

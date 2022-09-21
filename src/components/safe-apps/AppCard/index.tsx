@@ -1,22 +1,16 @@
 import { ReactElement, ReactNode, SyntheticEvent } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import Avatar from '@mui/material/Avatar'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardHeader from '@mui/material/CardHeader'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
+import { Avatar, Card, IconButton, CardHeader, CardContent, Typography, SvgIcon } from '@mui/material'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ShareIcon from '@/public/images/share.svg'
 import CopyButton from '@/components/common/CopyButton'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
-import DeleteIcon from '@/public/images/delete.svg'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { AppRoutes } from '@/config/routes'
 import styles from './styles.module.css'
 import { useCurrentChain } from '@/hooks/useChains'
-import { SvgIcon } from '@mui/material'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
@@ -183,7 +177,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
                   onDelete(safeApp)
                 }}
               >
-                <DeleteIcon width={16} alt="Delete icon" />
+                <DeleteIcon />
               </IconButton>
             )}
           </>

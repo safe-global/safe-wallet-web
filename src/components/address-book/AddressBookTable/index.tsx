@@ -5,20 +5,18 @@ import ExportDialog from '@/components/address-book/ExportDialog'
 import ImportDialog from '@/components/address-book/ImportDialog'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
+import { Button, IconButton, Tooltip } from '@mui/material'
 import RemoveDialog from '@/components/address-book/RemoveDialog'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import Box from '@mui/material/Box'
 import useAddressBook from '@/hooks/useAddressBook'
 import Track from '@/components/common/Track'
 import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
-import { useAppSelector } from '@/store'
-import { selectAllAddressBooks } from '@/store/addressBookSlice'
+import AddressBookHeader from '../AddressBookHeader'
+import PagePlaceholder from '@/components/common/PagePlaceholder'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -26,7 +24,7 @@ const headCells = [
   { id: 'actions', label: '' },
 ]
 
-enum ModalType {
+export const enum AddressBookModalType {
   EXPORT = 'export',
   IMPORT = 'import',
   ENTRY = 'entry',
@@ -34,14 +32,16 @@ enum ModalType {
 }
 
 const defaultOpen = {
-  [ModalType.EXPORT]: false,
-  [ModalType.IMPORT]: false,
-  [ModalType.ENTRY]: false,
-  [ModalType.REMOVE]: false,
+  [AddressBookModalType.EXPORT]: false,
+  [AddressBookModalType.IMPORT]: false,
+  [AddressBookModalType.ENTRY]: false,
+  [AddressBookModalType.REMOVE]: false,
 }
 
 const AddressBookTable = () => {
+  const isDarkMode = useDarkMode()
   const isSafeOwner = useIsSafeOwner()
+  const [searchQuery, setSearchQuery] = useState('')
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>()
@@ -50,7 +50,7 @@ const AddressBookTable = () => {
     setOpen((prev) => ({ ...prev, [type]: true }))
   }
 
-  const handleOpenModalWithValues = (modal: ModalType, address: string, name: string) => {
+  const handleOpenModalWithValues = (modal: AddressBookModalType, address: string, name: string) => {
     setDefaultValues({ address, name })
     handleOpenModal(modal)()
   }
@@ -60,101 +60,94 @@ const AddressBookTable = () => {
     setDefaultValues(undefined)
   }
 
-  const allAddressBooks = useAppSelector(selectAllAddressBooks)
-  const canExport = Object.values(allAddressBooks).length > 0
-
   const addressBook = useAddressBook()
   const addressBookEntries = Object.entries(addressBook)
 
-  const rows = addressBookEntries.map(([address, name]) => ({
-    name: {
-      rawValue: name,
-      content: name,
-    },
-    address: {
-      rawValue: address,
-      content: <EthHashInfo address={address} showName={false} shortAddress={false} hasExplorer showCopyButton />,
-    },
-    actions: {
-      rawValue: '',
-      content: (
-        <div className={css.entryButtonWrapper}>
-          <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
-            <Tooltip title="Edit entry" placement="top">
-              <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)} size="small">
-                <EditIcon color="border" />
-              </IconButton>
-            </Tooltip>
-          </Track>
-
-          <Track {...ADDRESS_BOOK_EVENTS.DELETE_ENTRY}>
-            <Tooltip title="Delete entry" placement="top">
-              <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)} size="small">
-                <DeleteOutlineIcon color="error" />
-              </IconButton>
-            </Tooltip>
-          </Track>
-
-          {isSafeOwner && (
-            <Track {...ADDRESS_BOOK_EVENTS.SEND}>
-              <Button variant="contained" color="primary" onClick={() => setSelectedAddress(address)}>
-                Send
-              </Button>
+  const rows = addressBookEntries
+    .filter(([address, name]) => {
+      const query = searchQuery.toLowerCase()
+      return name.toLowerCase().includes(query) || address.toLowerCase().includes(query)
+    })
+    .map(([address, name]) => ({
+      name: {
+        rawValue: name,
+        content: name,
+      },
+      address: {
+        rawValue: address,
+        content: <EthHashInfo address={address} showName={false} shortAddress={false} hasExplorer showCopyButton />,
+      },
+      actions: {
+        rawValue: '',
+        content: (
+          <div className={css.entryButtonWrapper}>
+            <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
+              <Tooltip title="Edit entry" placement="top">
+                <IconButton
+                  onClick={() => handleOpenModalWithValues(AddressBookModalType.ENTRY, address, name)}
+                  size="small"
+                >
+                  <EditIcon color="border" />
+                </IconButton>
+              </Tooltip>
             </Track>
-          )}
-        </div>
-      ),
-    },
-  }))
+
+            <Track {...ADDRESS_BOOK_EVENTS.DELETE_ENTRY}>
+              <Tooltip title="Delete entry" placement="top">
+                <IconButton
+                  onClick={() => handleOpenModalWithValues(AddressBookModalType.REMOVE, address, name)}
+                  size="small"
+                >
+                  <DeleteOutlineIcon color="error" />
+                </IconButton>
+              </Tooltip>
+            </Track>
+
+            {isSafeOwner && (
+              <Track {...ADDRESS_BOOK_EVENTS.SEND}>
+                <Button variant="contained" color="primary" onClick={() => setSelectedAddress(address)}>
+                  Send
+                </Button>
+              </Track>
+            )}
+          </div>
+        ),
+      },
+    }))
 
   return (
-    <Box marginTop={['0', '-46px']}>
-      <div className={css.headerButtonWrapper}>
-        <Track {...ADDRESS_BOOK_EVENTS.DOWNLOAD_BUTTON}>
-          <Button
-            onClick={handleOpenModal(ModalType.EXPORT)}
-            disabled={!canExport}
-            variant="contained"
-            size="small"
-            disableElevation
-          >
-            Export
-          </Button>
-        </Track>
+    <>
+      <AddressBookHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleOpenModal={handleOpenModal} />
 
-        <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
-          <Button onClick={handleOpenModal(ModalType.IMPORT)} variant="contained" size="small" disableElevation>
-            Import
-          </Button>
-        </Track>
+      <main>
+        {rows.length > 0 ? (
+          <EnhancedTable rows={rows} headCells={headCells} />
+        ) : (
+          <PagePlaceholder
+            imageUrl={isDarkMode ? '/images/address-book-dark.svg' : '/images/address-book-light.svg'}
+            text="No entries found"
+          />
+        )}
 
-        <Track {...ADDRESS_BOOK_EVENTS.CREATE_ENTRY}>
-          <Button onClick={handleOpenModal(ModalType.ENTRY)} variant="contained" size="small" disableElevation>
-            Create entry
-          </Button>
-        </Track>
-      </div>
+        {open[AddressBookModalType.EXPORT] && <ExportDialog handleClose={handleClose} />}
 
-      <div className={css.container}>
-        <EnhancedTable rows={rows} headCells={headCells} />
-      </div>
+        {open[AddressBookModalType.IMPORT] && <ImportDialog handleClose={handleClose} />}
 
-      {open[ModalType.EXPORT] && <ExportDialog handleClose={handleClose} />}
+        {open[AddressBookModalType.ENTRY] && <EntryDialog handleClose={handleClose} defaultValues={defaultValues} />}
 
-      {open[ModalType.IMPORT] && <ImportDialog handleClose={handleClose} />}
+        {open[AddressBookModalType.REMOVE] && (
+          <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />
+        )}
 
-      {open[ModalType.ENTRY] && <EntryDialog handleClose={handleClose} defaultValues={defaultValues} />}
-
-      {open[ModalType.REMOVE] && <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />}
-
-      {/* Send funds modal */}
-      {selectedAddress && (
-        <TokenTransferModal
-          onClose={() => setSelectedAddress(undefined)}
-          initialData={[{ recipient: selectedAddress }]}
-        />
-      )}
-    </Box>
+        {/* Send funds modal */}
+        {selectedAddress && (
+          <TokenTransferModal
+            onClose={() => setSelectedAddress(undefined)}
+            initialData={[{ recipient: selectedAddress }]}
+          />
+        )}
+      </main>
+    </>
   )
 }
 

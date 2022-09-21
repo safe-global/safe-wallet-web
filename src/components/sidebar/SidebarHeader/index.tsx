@@ -67,7 +67,9 @@ const SafeHeader = (): ReactElement => {
             <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
           )}
 
-          <Typography variant="body1">{fiatTotal || <Skeleton variant="text" width={60} />}</Typography>
+          <Typography variant="body1" fontWeight={700}>
+            {fiatTotal || <Skeleton variant="text" width={60} />}
+          </Typography>
         </div>
       </div>
 

@@ -112,7 +112,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
   }
 
   return (
-    <Paper elevation={0} variant="outlined">
+    <Paper elevation={0} variant="outlined" sx={{ borderWidth: '1px' }}>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container>

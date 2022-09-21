@@ -11,9 +11,9 @@ type PagePlaceholderProps = {
 const PagePlaceholder = ({ imageUrl, text, children }: PagePlaceholderProps): ReactElement => {
   return (
     <div className={css.container}>
-      <img src={imageUrl} alt="background" />
+      <img src={imageUrl} alt="A placeholder image for an empty page" />
 
-      <Typography variant="h3" m={3}>
+      <Typography variant="body1" color="primary.light">
         {text}
       </Typography>
 

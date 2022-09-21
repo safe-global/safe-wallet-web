@@ -1,5 +1,4 @@
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
+import { Grid, Typography } from '@mui/material'
 import { AppCard } from '@/components/safe-apps/AppCard'
 import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
 import { SectionProps } from './types'
@@ -16,14 +15,7 @@ const DefaultSection = ({
   const columnSpacing = cardVariant === 'compact' ? 3 : 2
 
   return (
-    <Grid
-      container
-      rowSpacing={2}
-      columnSpacing={columnSpacing}
-      sx={{
-        p: 3,
-      }}
-    >
+    <Grid container rowSpacing={2} columnSpacing={columnSpacing} sx={{ py: 3 }}>
       <Grid item xs={12}>
         <Typography
           variant="caption"

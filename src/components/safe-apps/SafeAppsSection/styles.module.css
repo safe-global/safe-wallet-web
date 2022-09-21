@@ -5,9 +5,17 @@
 }
 
 .accordion :global .MuiAccordionSummary-root {
-  padding: 0 var(--space-3);
+  padding-left: 0;
   justify-content: flex-start;
   background: transparent;
+}
+
+.accordion :global .MuiAccordionDetails-root {
+  padding: 0;
+}
+
+.accordion :global .MuiAccordionSummary-root:hover {
+  background-color: transparent;
 }
 
 .accordion :global .MuiAccordionSummary-root.Mui-expanded {
