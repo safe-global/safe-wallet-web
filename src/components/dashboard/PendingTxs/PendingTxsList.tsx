@@ -9,7 +9,6 @@ import PendingTxListItem from './PendingTxListItem'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
-import PagePlaceholder from '@/components/common/PagePlaceholder'
 
 const SkeletonWrapper = styled.div`
   border-radius: 8px;
@@ -32,23 +31,20 @@ const StyledEmptyCard = styled(Card)`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  flex-wrap: wrap;
+  align-items: center;
   padding: var(--space-4);
 
   img {
     width: 144px;
     height: auto;
   }
-
-  h3 {
-    font-size: 16px;
-    margin-bottom: 0;
-  }
 `
 
 const EmptyState = (
   <StyledEmptyCard>
-    <PagePlaceholder imageUrl="/images/no-transactions.svg" text="This Safe has no queued transactions" />
+    <img src="/images/no-transactions.svg" alt="No queued transactions" />
+
+    <Typography mt={3}>This Safe has no queued transactions</Typography>
   </StyledEmptyCard>
 )
 
