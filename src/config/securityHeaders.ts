@@ -19,3 +19,5 @@ export const ContentSecurityPolicy = `
 `
   .replace(/\s{2,}/g, ' ')
   .trim()
+
+export const XFrameOptions = 'DENY'
