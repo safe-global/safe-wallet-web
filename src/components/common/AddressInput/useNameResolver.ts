@@ -4,17 +4,20 @@ import useAsync from '@/hooks/useAsync'
 import { isDomain, resolveName } from '@/services/ens'
 import useDebounce from '@/hooks/useDebounce'
 
-const useNameResolver = (value?: string): { address: string | undefined; resolving: boolean } => {
+const useNameResolver = (
+  value?: string,
+): { address: string | undefined; resolverError?: Error; resolving: boolean } => {
   const ethersProvider = useWeb3ReadOnly()
   const debouncedValue = useDebounce((value || '').trim(), 200)
 
   // Fetch an ENS resolution for the current address
-  const [ens, , isResolving] = useAsync<{ name: string; address: string } | undefined>(() => {
+  const [ens, resolverError, isResolving] = useAsync<{ name: string; address: string } | undefined>(() => {
     if (!ethersProvider || !debouncedValue || !isDomain(debouncedValue)) return
 
-    return resolveName(ethersProvider, debouncedValue).then((address) =>
-      address ? { name: debouncedValue, address } : undefined,
-    )
+    return resolveName(ethersProvider, debouncedValue).then((address) => {
+      if (!address) throw Error('Failed to reslove the address')
+      return { name: debouncedValue, address }
+    })
   }, [debouncedValue, ethersProvider])
 
   const resolving = isResolving && !!ethersProvider && !!debouncedValue
@@ -22,10 +25,11 @@ const useNameResolver = (value?: string): { address: string | undefined; resolvi
 
   return useMemo(
     () => ({
-      resolving,
       address,
+      resolverError,
+      resolving,
     }),
-    [resolving, address],
+    [address, resolverError, resolving],
   )
 }
 
