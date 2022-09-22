@@ -52,6 +52,7 @@ const darkPalette = {
   },
   logo: {
     main: '#FFFFFF',
+    background: '#303033',
   },
   static: {
     main: '#121312',

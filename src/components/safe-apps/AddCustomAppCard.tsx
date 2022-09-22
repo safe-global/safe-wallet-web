@@ -5,7 +5,7 @@ import { Button, Box } from '@mui/material'
 import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
 import { AppCardContainer } from './AppCard'
 import { IS_PRODUCTION, SAFE_REACT_URL } from '@/config/constants'
-import AddCustomAppIcon from '@/public/image/add-custom-app.svg'
+import AddCustomAppIcon from '@/public/images/add-custom-app.svg'
 
 type Props = { onSave: (data: SafeAppData) => void; safeAppList: SafeAppData[] }
 

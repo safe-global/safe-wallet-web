@@ -28,7 +28,7 @@ const NftPage = ({
         {collectibles.results.length > 0 ? (
           <Nfts collectibles={collectibles.results} />
         ) : (
-          <PagePlaceholder img={<NftIcon />} text="No NFTs available, or not all are detected" />
+          <PagePlaceholder img={<NftIcon />} text="No NFTs available or none detected" />
         )}
 
         {onNextPage && collectibles.next && (
