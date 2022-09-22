@@ -1,6 +1,6 @@
 import { AllowedFeatures, PermissionStatus } from '@/components/safe-apps/types'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useCallback } from 'react'
-import { usePermissions } from './usePermissions'
 
 const BROWSER_PERMISSIONS = 'BROWSER_PERMISSIONS'
 
@@ -20,7 +20,7 @@ type UseBrowserPermissionsReturnType = {
 }
 
 const useBrowserPermissions = (): UseBrowserPermissionsReturnType => {
-  const [permissions, setPermissions] = usePermissions<BrowserPermissions>(BROWSER_PERMISSIONS)
+  const [permissions, setPermissions] = useLocalStorage<BrowserPermissions>(BROWSER_PERMISSIONS, {})
 
   const getPermissions = useCallback(
     (origin: string) => {

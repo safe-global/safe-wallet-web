@@ -23,7 +23,6 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 import { Permission, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
 import { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
-import { AddressBook } from '@/store/addressBookSlice'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -187,7 +186,7 @@ const useAppCommunicator = (
     })
 
     communicator?.on(Methods.requestAddressBook, async (msg) => {
-      onRequestAddressBook(msg.origin)
+      return onRequestAddressBook(msg.origin)
     })
   }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider, onConfirmTransactions, onSignMessage])
 

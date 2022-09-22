@@ -1,13 +1,15 @@
 import { PermissionStatus } from '@/components/safe-apps/types'
+import local from '@/services/local-storage/local'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { Methods } from '@gnosis.pm/safe-apps-sdk'
 import { Permission, PermissionCaveat, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { usePermissions } from './usePermissions'
 
 const SAFE_PERMISSIONS = 'SAFE_PERMISSIONS'
 const USER_RESTRICTED = 'userRestricted'
 
-type SafePermissions = { [origin: string]: Permission[] }
+export type SafePermissions = { [origin: string]: Permission[] }
 
 export type SafePermissionsRequest = {
   origin: string
@@ -30,7 +32,8 @@ type UseSafePermissionsReturnType = {
 }
 
 const useSafePermissions = (): UseSafePermissionsReturnType => {
-  const [permissions, setPermissions] = usePermissions<SafePermissions>(SAFE_PERMISSIONS)
+  const [permissions, setPermissions] = useLocalStorage<SafePermissions>(SAFE_PERMISSIONS, {})
+
   const [permissionsRequest, setPermissionsRequest] = useState<SafePermissionsRequest | undefined>()
 
   const getPermissions = useCallback(
