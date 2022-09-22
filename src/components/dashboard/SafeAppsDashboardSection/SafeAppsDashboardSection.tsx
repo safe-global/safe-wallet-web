@@ -41,24 +41,10 @@ const ExploreSafeAppsCard = () => {
 
   return (
     <AppCardContainer url={safeAppsLink}>
-      <Box
-        sx={{
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={1}>
         <img src="/images/explore.svg" alt="Add custom app icon" />
 
-        <Button
-          variant="contained"
-          size="small"
-          sx={{
-            mt: 1,
-          }}
-        >
+        <Button variant="contained" size="small">
           Explore Safe Apps
         </Button>
       </Box>
