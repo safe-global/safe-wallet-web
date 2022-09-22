@@ -11,9 +11,11 @@ import NavTabs from '@/components/common/NavTabs'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import { useEffect } from 'react'
 import { trackEvent, ASSETS_EVENTS } from '@/services/analytics'
+import PagePlaceholder from '@/components/common/PagePlaceholder'
+import NoAssetsIcon from '@/public/images/no-assets.svg'
 
 const Balances: NextPage = () => {
-  const { balances, loading } = useBalances()
+  const { balances, loading, error } = useBalances()
 
   useEffect(() => {
     if (!loading && balances.items.length === 0) {
@@ -34,9 +36,16 @@ const Balances: NextPage = () => {
       <CurrencySelect />
 
       <Box mt={2}>
-        <AssetsTable items={balances?.items} />
-
         {loading && <CircularProgress size={20} sx={{ marginTop: 2 }} />}
+        {!error ? (
+          <AssetsTable items={balances?.items} />
+        ) : (
+          <PagePlaceholder
+            img={<NoAssetsIcon />}
+            text="
+              There was an error loading your assets"
+          />
+        )}
       </Box>
     </main>
   )

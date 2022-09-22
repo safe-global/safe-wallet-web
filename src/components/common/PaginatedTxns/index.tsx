@@ -13,12 +13,11 @@ import TxFilterButton from '@/components/transactions/TxFilterButton'
 import { type TxFilter, useTxFilter } from '@/utils/tx-history-filter'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { isTransactionListItem } from '@/utils/transaction-guards'
+import NoTransactionsIcon from '@/public/images/no-transactions.svg'
 
-const NoQueuedTxns = () => (
-  <Box mt="5vh">
-    <PagePlaceholder imageUrl="/images/no-transactions.svg" text="Queued transactions will appear here" />
-  </Box>
-)
+const NoQueuedTxns = () => {
+  return <PagePlaceholder img={<NoTransactionsIcon />} text="Queued transactions will appear here" />
+}
 
 const getFilterResultCount = (filter: TxFilter, page: TransactionListPage) => {
   const count = page.results.filter(isTransactionListItem).length

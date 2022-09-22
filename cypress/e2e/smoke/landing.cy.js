@@ -13,8 +13,8 @@ describe('Landing page', () => {
     cy.contains('Accept selection').click()
     cy.contains('We use cookies to provide').should('not.exist')
 
-    // Open What's New
-    cy.contains("What's New").click()
+    // Open What's new
+    cy.contains("What's new").click()
 
     // Tells that the user has to accept "Updates & Feedback" cookies
     cy.contains('We use cookies to provide').parent('div').contains('accept the "Updates & Feedback"')
@@ -28,8 +28,8 @@ describe('Landing page', () => {
     // wait for Beamer cookies to be set
     cy.wait(3000)
 
-    // Open What's New
-    cy.contains("What's New").click({ force: true }) // clicks through the "lastPostTitle"
+    // Open What's new
+    cy.contains("What's new").click({ force: true }) // clicks through the "lastPostTitle"
     cy.get('#beamerOverlay .iframeCointaner').should('exist')
   })
 })

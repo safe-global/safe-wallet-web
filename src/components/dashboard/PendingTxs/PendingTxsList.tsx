@@ -9,6 +9,8 @@ import PendingTxListItem from './PendingTxListItem'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
+import PagePlaceholder from '@/components/common/PagePlaceholder'
+import NoTransactionsIcon from '@/public/images/no-transactions.svg'
 
 const SkeletonWrapper = styled.div`
   border-radius: 8px;
@@ -27,26 +29,13 @@ const StyledWidgetTitle = styled.div`
   justify-content: space-between;
 `
 
-const StyledEmptyCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: var(--space-4);
-
-  img {
-    width: 144px;
-    height: auto;
-  }
-`
-
-const EmptyState = (
-  <StyledEmptyCard>
-    <img src="/images/no-transactions.svg" alt="No queued transactions" />
-
-    <Typography mt={3}>This Safe has no queued transactions</Typography>
-  </StyledEmptyCard>
-)
+const EmptyState = () => {
+  return (
+    <Card>
+      <PagePlaceholder img={<NoTransactionsIcon />} text="This Safe has no queued transactions" />
+    </Card>
+  )
+}
 
 const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null => {
   const { page, loading } = useTxQueue()
@@ -88,7 +77,7 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
 
   const getWidgetBody = () => {
     if (loading) return LoadingState
-    if (!queuedTxsToDisplay.length) return EmptyState
+    if (!queuedTxsToDisplay.length) return <EmptyState />
     return ResultState
   }
 

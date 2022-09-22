@@ -48,10 +48,11 @@ const darkPalette = {
     default: '#121312',
     main: '#121312',
     paper: '#1C1C1C',
-    light: '#1B2A22', // <- replaced myself
+    light: '#1B2A22',
   },
   logo: {
     main: '#FFFFFF',
+    background: '#303033',
   },
   static: {
     main: '#121312',
