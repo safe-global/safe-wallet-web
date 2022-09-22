@@ -1,6 +1,9 @@
 import { Grid, Typography } from '@mui/material'
 
+import { useDarkMode } from '@/hooks/useDarkMode'
+
 export const NoSpendingLimits = () => {
+  const isDarkMode = useDarkMode()
   return (
     <Grid mt={2} container direction="row" justifyContent="space-between" spacing={2}>
       <Grid item sm={2}>
@@ -8,7 +11,11 @@ export const NoSpendingLimits = () => {
           alt="Select Beneficiary"
           title="Beneficiary"
           height={75}
-          src="/images/settings/spending-limit/beneficiary.svg"
+          src={
+            isDarkMode
+              ? '/images/settings/spending-limit/beneficiary-dark.svg'
+              : '/images/settings/spending-limit/beneficiary-light.svg'
+          }
         />
       </Grid>
       <Grid item sm={10}>
@@ -26,7 +33,11 @@ export const NoSpendingLimits = () => {
           alt="Select asset and amount"
           title="Asset and amount"
           height={75}
-          src="/images/settings/spending-limit/asset-amount.svg"
+          src={
+            isDarkMode
+              ? '/images/settings/spending-limit/asset-amount-dark.svg'
+              : '/images/settings/spending-limit/asset-amount-light.svg'
+          }
         />
       </Grid>
       <Grid item sm={10}>
@@ -37,7 +48,16 @@ export const NoSpendingLimits = () => {
       </Grid>
 
       <Grid item sm={2}>
-        <img alt="Select time" title="Time" height={75} src="/images/settings/spending-limit/time.svg" />
+        <img
+          alt="Select time"
+          title="Time"
+          height={75}
+          src={
+            isDarkMode
+              ? '/images/settings/spending-limit/time-dark.svg'
+              : '/images/settings/spending-limit/time-light.svg'
+          }
+        />
       </Grid>
       <Grid item sm={10}>
         <Typography marginTop={2}>
