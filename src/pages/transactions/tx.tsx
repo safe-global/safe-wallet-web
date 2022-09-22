@@ -62,7 +62,7 @@ const SingleTransaction: NextPage = () => {
       <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" firstLink={breadcrumbsLink} />
 
       {(error || !isCurrentSafeTx) && !loading ? (
-        <ErrorMessage error={!isCurrentSafeTx ? new Error('Error: txId does not exist in this Safe') : error}>
+        <ErrorMessage error={!isCurrentSafeTx ? new Error('Error: tx Id not found in this Safe') : error}>
           Failed to load transaction {transactionId}
         </ErrorMessage>
       ) : txDetails && !loading ? (
