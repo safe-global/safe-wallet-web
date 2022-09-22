@@ -47,7 +47,7 @@ export default usePathRewrite
 // we rewrite the URL to put the Safe address into the query.
 // This must and will cause a rendering and route change.
 // Thankfully, this will only happen if you reload the page or open this URL from an external link.
-export const useQueryRewrite = (): boolean => {
+export const use404Rewrite = (): boolean => {
   const [redirecting, setRedirecting] = useState<boolean>(true)
   const router = useRouter()
 
@@ -58,7 +58,7 @@ export const useQueryRewrite = (): boolean => {
     const [, pathSafe] = currentPath.match(re) || []
 
     if (pathSafe) {
-      const newPath = currentPath.replace(re, '')
+      const newPath = currentPath.replace(re, '') || '/'
 
       if (newPath !== currentPath) {
         router.replace(`${newPath}?safe=${pathSafe}${location.search ? '&' + location.search.slice(1) : ''}`)

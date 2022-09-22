@@ -49,7 +49,7 @@ const RejectTxButton = ({
             </span>
           </Tooltip>
         ) : (
-          <Button onClick={onClick} color="error" variant="contained" disabled={isDisabled} size="stretched">
+          <Button onClick={onClick} variant="danger" disabled={isDisabled} size="stretched">
             Reject
           </Button>
         )}

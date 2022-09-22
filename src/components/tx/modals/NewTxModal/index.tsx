@@ -3,7 +3,7 @@ import { Box, Button, type ButtonProps, DialogContent, SvgIcon } from '@mui/mate
 import ModalDialog from '@/components/common/ModalDialog'
 import TokenTransferModal from '../TokenTransferModal'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
-import NftIcon from '@/public/images/sidebar/nfts.svg'
+import NftIcon from '@/public/images/nft.svg'
 import NftTransferModal from '../NftTransferModal'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 
@@ -35,10 +35,7 @@ const NewTxModal = ({ onClose }: { onClose: () => void }): ReactElement => {
               Send tokens
             </TxButton>
 
-            <TxButton
-              onClick={onNFTModalOpen}
-              startIcon={<SvgIcon component={NftIcon} sx={{ width: 16, height: 16 }} />}
-            >
+            <TxButton onClick={onNFTModalOpen} startIcon={<SvgIcon component={NftIcon} inheritViewBox />}>
               Send NFTs
             </TxButton>
           </Box>

@@ -1,4 +1,4 @@
-import usePathRewrite, { useQueryRewrite } from '@/hooks/usePathRewrite'
+import usePathRewrite, { use404Rewrite } from '@/hooks/usePathRewrite'
 import { act, renderHook } from '@/tests/test-utils'
 
 // mock window history replaceState
@@ -110,7 +110,7 @@ describe('useQueryRewrite', () => {
   })
 
   it('should not redirect if there is no Safe address in the path', async () => {
-    const { result } = renderHook(() => useQueryRewrite())
+    const { result } = renderHook(() => use404Rewrite())
     expect(result.current).toBe(false)
   })
 
@@ -122,7 +122,7 @@ describe('useQueryRewrite', () => {
       },
     })
 
-    const { result } = renderHook(() => useQueryRewrite())
+    const { result } = renderHook(() => use404Rewrite())
     expect(result.current).toBe(true)
     await act(() => Promise.resolve())
     expect(result.current).toBe(true)
