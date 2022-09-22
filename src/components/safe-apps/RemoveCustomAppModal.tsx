@@ -19,7 +19,7 @@ const RemoveCustomAppModal = ({ open, onClose, onConfirm, app }: Props) => (
     </DialogContent>
     <DialogActions disableSpacing>
       <Button onClick={onClose}>Cancel</Button>
-      <Button color="error" variant="contained" onClick={() => onConfirm(app.id)}>
+      <Button variant="danger" onClick={() => onConfirm(app.id)}>
         Remove
       </Button>
     </DialogActions>

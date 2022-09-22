@@ -125,6 +125,17 @@ const initTheme = (darkMode: boolean) => {
               padding: '12px 48px',
             },
           },
+          {
+            props: { variant: 'danger' },
+            style: ({ theme }) => ({
+              backgroundColor: theme.palette.error.background,
+              color: theme.palette.error.main,
+              '&:hover': {
+                color: theme.palette.error.dark,
+                backgroundColor: theme.palette.error.light,
+              },
+            }),
+          },
         ],
         styleOverrides: {
           sizeSmall: {
