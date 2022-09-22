@@ -13,7 +13,7 @@ const PagePlaceholder = ({ img, text, children }: PagePlaceholderProps): ReactEl
     <div className={css.container}>
       {img}
 
-      <Typography variant="body1" color="primary.light">
+      <Typography variant="body1" color="primary.light" mt={2}>
         {text}
       </Typography>
 
