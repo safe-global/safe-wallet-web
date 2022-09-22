@@ -12,9 +12,11 @@ import { IS_PRODUCTION } from '@/config/constants'
 export const ContentSecurityPolicy = `
  default-src 'self';
  connect-src 'self' *;
- script-src 'self' 'unsafe-inline' https://www.googletagmanager.com ${!IS_PRODUCTION ? "'unsafe-eval'" : ''};
+ script-src 'self' https://www.google-analytics.com https://ssl.google-analytics.com 'unsafe-inline' https://*.getbeamer.com https://www.googletagmanager.com ${
+   !IS_PRODUCTION ? "'unsafe-eval'" : ''
+ };
  frame-src *;
- style-src 'self' 'unsafe-inline';
+ style-src 'self' 'unsafe-inline' https://*.getbeamer.com https://*.googleapis.com;
  font-src 'self' data:; 
  img-src * data:;
 `
