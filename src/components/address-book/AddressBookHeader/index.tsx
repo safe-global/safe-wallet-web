@@ -1,4 +1,4 @@
-import { TextField, InputAdornment, Grid, Button } from '@mui/material'
+import { TextField, InputAdornment, Grid, Button, SvgIcon } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import type { ReactElement } from 'react'
 
@@ -8,6 +8,9 @@ import PageHeader from '@/components/common/PageHeader'
 import { AddressBookModalType } from '../AddressBookTable'
 import { useAppSelector } from '@/store'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
+import ImportIcon from '@/public/images/import.svg'
+import ExportIcon from '@/public/images/export.svg'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 type Props = {
   searchQuery: string
@@ -22,7 +25,7 @@ const AddressBookHeader = ({ searchQuery, setSearchQuery, handleOpenModal }: Pro
   return (
     <PageHeader
       title="Address book"
-      subtitle="Save frequest contacts for easy transacting"
+      subtitle="Save frequent contacts for easy transacting"
       action={
         <Grid container pb={2} px={3}>
           <Grid item xs={12} sm={9} md={6}>
@@ -44,14 +47,14 @@ const AddressBookHeader = ({ searchQuery, setSearchQuery, handleOpenModal }: Pro
             />
           </Grid>
 
-          <Grid
-            item
-            sm={12}
-            md={6}
-            sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', gap: 2 }}
-          >
+          <Grid item sm={12} md={6} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
             <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
-              <Button onClick={handleOpenModal(AddressBookModalType.IMPORT)} variant="contained" size="small">
+              <Button
+                onClick={handleOpenModal(AddressBookModalType.IMPORT)}
+                variant="text"
+                sx={{ color: 'text.primary' }}
+                startIcon={<SvgIcon component={ImportIcon} inheritViewBox />}
+              >
                 Import
               </Button>
             </Track>
@@ -60,15 +63,21 @@ const AddressBookHeader = ({ searchQuery, setSearchQuery, handleOpenModal }: Pro
               <Button
                 onClick={handleOpenModal(AddressBookModalType.EXPORT)}
                 disabled={!canExport}
-                variant="contained"
-                size="small"
+                variant="text"
+                sx={{ color: 'text.primary' }}
+                startIcon={<SvgIcon component={ExportIcon} inheritViewBox />}
               >
                 Export
               </Button>
             </Track>
 
             <Track {...ADDRESS_BOOK_EVENTS.CREATE_ENTRY}>
-              <Button onClick={handleOpenModal(AddressBookModalType.ENTRY)} variant="contained" size="small">
+              <Button
+                onClick={handleOpenModal(AddressBookModalType.ENTRY)}
+                variant="text"
+                sx={{ color: 'text.primary' }}
+                startIcon={<AddCircleOutlineIcon />}
+              >
                 Create entry
               </Button>
             </Track>
