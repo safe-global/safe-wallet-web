@@ -52,8 +52,10 @@ const ReviewSafeAppsSignMessage = ({
     if (isTextMessage) {
       txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [hashMessage(message)])
     } else if (isTypedMessage) {
+      const typesCopy = { ...message.types }
+      delete typesCopy.EIP712Domain
       txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [
-        _TypedDataEncoder.hash(message.domain, message.types, message.message),
+        _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }
 
