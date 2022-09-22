@@ -58,7 +58,7 @@ export const use404Rewrite = (): boolean => {
     const [, pathSafe] = currentPath.match(re) || []
 
     if (pathSafe) {
-      const newPath = currentPath.replace(pathSafe, '')
+      const newPath = currentPath.replace(re, '') || '/'
 
       if (newPath !== currentPath) {
         router.replace(`${newPath}?safe=${pathSafe}${location.search ? '&' + location.search.slice(1) : ''}`)
