@@ -20,7 +20,11 @@ const TransactionQueueBar = (): ReactElement | null => {
   const { page = { results: [] } } = useTxQueue()
   const queuedTxCount = getQueuedTransactionCount(page)
 
-  return !dismissedByUser ? (
+  if (dismissedByUser) {
+    return null
+  }
+
+  return (
     <>
       <Box className={styles.barWrapper}>
         <ClickAwayListener onClickAway={() => setExpanded(false)} mouseEvent="onMouseDown" touchEvent="onTouchStart">
@@ -68,7 +72,7 @@ const TransactionQueueBar = (): ReactElement | null => {
       </Box>
       <Backdrop open={expanded} />
     </>
-  ) : null
+  )
 }
 
 export default TransactionQueueBar
