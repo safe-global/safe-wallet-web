@@ -1,4 +1,4 @@
-import { Methods, RestrictedMethods } from '@gnosis.pm/safe-apps-sdk'
+import { RestrictedMethods } from '@gnosis.pm/safe-apps-sdk'
 import { AllowedFeatures } from '@/components/safe-apps/types'
 
 type PermissionsDisplayType = {

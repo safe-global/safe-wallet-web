@@ -127,7 +127,7 @@ const SafeAppsPermissions = (): ReactElement => {
               <Typography variant="body1" fontWeight={700}>
                 {appNames[domain]}
               </Typography>
-              <Typography variant="body1">{domain}</Typography>
+              <Typography variant="body2">{domain}</Typography>
             </Grid>
             <Grid container item xs={12} sm={7}>
               {safePermissions[domain]?.map(({ parentCapability, caveats }) => {
