@@ -23,6 +23,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 import { Permission, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
 import { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
+import { getLegacyChainName } from '../utils'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -119,6 +120,9 @@ const useAppCommunicator = (
       owners: safe.owners.map((owner) => owner.value),
       threshold: safe.threshold,
       isReadOnly: !granted,
+      // FIXME `network` is deprecated. we should find how many apps are still using it
+      // Apps using this property expect this to be in UPPERCASE
+      network: getLegacyChainName(chain?.chainName || '', chainId).toUpperCase(),
     }))
 
     communicator?.on(Methods.getSafeBalances, async (msg) => {
