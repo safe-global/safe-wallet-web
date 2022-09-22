@@ -188,7 +188,19 @@ const useAppCommunicator = (
     communicator?.on(Methods.requestAddressBook, async (msg) => {
       return onRequestAddressBook(msg.origin)
     })
-  }, [chain, communicator, granted, safe, safeAddress, safeAppWeb3Provider, onConfirmTransactions, onSignMessage])
+  }, [
+    chain,
+    communicator,
+    granted,
+    safe,
+    safeAddress,
+    safeAppWeb3Provider,
+    onConfirmTransactions,
+    onSignMessage,
+    onGetPermissions,
+    onSetPermissions,
+    onRequestAddressBook,
+  ])
 
   return communicator
 }

@@ -1,6 +1,8 @@
 import { ReactElement, useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
 import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { AddressBookItem, Methods, RequestId } from '@gnosis.pm/safe-apps-sdk'
+
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
@@ -8,7 +10,9 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import useChainId from '@/hooks/useChainId'
 import useAddressBook from '@/hooks/useAddressBook'
+import { useSafePermissions } from '@/hooks/safe-apps/permissions'
 import { isSameUrl } from '@/utils/url'
+import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
@@ -17,14 +21,10 @@ import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
 import SafeAppsTxModal from '../SafeAppsTxModal'
 import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
 import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
-import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
-
-import css from './styles.module.css'
-import { useSafePermissions } from '@/hooks/safe-apps/permissions'
-import { AddressBookItem, Methods, RequestId } from '@gnosis.pm/safe-apps-sdk'
-import { AddressBook } from '@/store/addressBookSlice'
 import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
+
+import css from './styles.module.css'
 
 type AppFrameProps = {
   appUrl: string
@@ -44,19 +44,24 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
     useSafePermissions()
 
-  const communicator = useAppCommunicator(iframeRef, {
-    app: safeAppFromManifest,
-    onConfirmTransactions: openTxModal,
-    onSignMessage: openSignMessageModal,
-    onGetPermissions: getPermissions,
-    onSetPermissions: setPermissionsRequest,
-    onRequestAddressBook: (origin: string): AddressBookItem[] => {
+  const getAddressBook = useCallback(
+    (origin: string): AddressBookItem[] => {
       if (hasPermission(origin, Methods.requestAddressBook)) {
         return Object.entries(addressBook).map(([address, name]) => ({ address, name, chainId }))
       }
 
       return []
     },
+    [addressBook, chainId, hasPermission],
+  )
+
+  const communicator = useAppCommunicator(iframeRef, {
+    app: safeAppFromManifest,
+    onConfirmTransactions: openTxModal,
+    onSignMessage: openSignMessageModal,
+    onGetPermissions: getPermissions,
+    onSetPermissions: setPermissionsRequest,
+    onRequestAddressBook: getAddressBook,
   })
 
   useEffect(() => {
