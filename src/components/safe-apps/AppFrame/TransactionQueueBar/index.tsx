@@ -24,12 +24,14 @@ const TransactionQueueBar = (): ReactElement | null => {
     return null
   }
 
+  // if you inline the expression, it will split put the `queuedTxCount` on a new line
+  // and make it harder to find this text for matchers in tests
+  const barTitle = `(${queuedTxCount}) Transaction Queue`
   return (
     <>
       <Box className={styles.barWrapper}>
         <ClickAwayListener onClickAway={() => setExpanded(false)} mouseEvent="onMouseDown" touchEvent="onTouchStart">
           <Accordion
-            data-testid="transaction-queue-bar"
             expanded={expanded}
             onChange={toggleQueueBar}
             TransitionProps={{
@@ -42,12 +44,9 @@ const TransactionQueueBar = (): ReactElement | null => {
               mountOnEnter: true,
             }}
           >
-            <AccordionSummary
-              data-testid="transaction-queue-bar-summary"
-              sx={{ '.MuiAccordionSummary-content': { alignItems: 'center' } }}
-            >
+            <AccordionSummary sx={{ '.MuiAccordionSummary-content': { alignItems: 'center' } }}>
               <Typography variant="body1" color="primary.main" fontWeight={700} sx={{ mr: 'auto' }}>
-                ({queuedTxCount}) Transaction Queue
+                {barTitle}
               </Typography>
 
               <IconButton
