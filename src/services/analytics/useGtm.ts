@@ -9,6 +9,7 @@ import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
 import useChainId from '@/hooks/useChainId'
 import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
 
 const useGtm = () => {
   const chainId = useChainId()
@@ -29,7 +30,9 @@ const useGtm = () => {
   // Track page views – anononimized by default.
   // Sensitive info, like the safe address or tx id, is always in the query string, which we DO NOT track.
   useEffect(() => {
-    gtmTrackPageview(router.pathname)
+    if (router.pathname !== AppRoutes['404']) {
+      gtmTrackPageview(router.pathname)
+    }
   }, [router.pathname])
 }
 
