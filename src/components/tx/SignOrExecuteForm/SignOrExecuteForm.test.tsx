@@ -5,6 +5,7 @@ import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useGasLimitHook from '@/hooks/useGasLimit'
 import * as txSender from '@/services/tx/txSender'
 import * as wallet from '@/hooks/wallets/useWallet'
+import * as walletUtils from '@/hooks/wallets/wallets'
 import * as web3 from '@/hooks/wallets/web3'
 import { SafeInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { waitFor } from '@testing-library/react'
@@ -71,6 +72,8 @@ describe('SignOrExecuteForm', () => {
       .mockImplementation(jest.fn(() => Promise.resolve({ txId: '0x12' } as TransactionDetails)))
 
     jest.spyOn(txSender, 'dispatchTxExecution').mockImplementation(jest.fn())
+    jest.spyOn(walletUtils, 'isHardwareWallet').mockImplementation(jest.fn())
+    jest.spyOn(walletUtils, 'isSafeMobileWallet').mockImplementation(jest.fn())
   })
 
   it('displays decoded data if there is a tx', () => {
@@ -209,5 +212,61 @@ describe('SignOrExecuteForm', () => {
     )
 
     expect(result.getByText('Estimating...')).toBeDisabled()
+  })
+
+  it('executes a transaction', async () => {
+    const executionSpy = jest.spyOn(txSender, 'dispatchTxExecution')
+    const mockTx = createSafeTx()
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    const submitButton = result.getByText('Submit')
+
+    await act(() => {
+      fireEvent.click(submitButton)
+    })
+
+    await waitFor(() => expect(executionSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('signs a transactions', async () => {
+    const mockTx = createSafeTx()
+    // @ts-ignore
+    mockTx.data.nonce = 101
+
+    const signSpy = jest.spyOn(txSender, 'dispatchTxSigning').mockReturnValue(Promise.resolve(mockTx))
+    const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
+    jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(false))
+
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    const submitButton = result.getByText('Submit')
+
+    await act(() => {
+      fireEvent.click(submitButton)
+    })
+
+    expect(signSpy).toHaveBeenCalledTimes(1)
+    expect(proposeSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('on-chain signs a transaction', async () => {
+    const mockTx = createSafeTx()
+    // @ts-ignore
+    mockTx.data.nonce = 101
+
+    const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning').mockReturnValue(Promise.resolve(mockTx))
+    const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
+    jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
+
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    const submitButton = result.getByText('Submit')
+
+    await act(() => {
+      fireEvent.click(submitButton)
+    })
+
+    expect(onChainSignSpy).toHaveBeenCalledTimes(1)
+    expect(proposeSpy).toHaveBeenCalledTimes(1)
   })
 })
