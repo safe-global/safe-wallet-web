@@ -3,15 +3,15 @@ import { Typography } from '@mui/material'
 import css from './styles.module.css'
 
 type PagePlaceholderProps = {
-  imageUrl: string
+  img: ReactNode
   text: string
   children?: ReactNode
 }
 
-const PagePlaceholder = ({ imageUrl, text, children }: PagePlaceholderProps): ReactElement => {
+const PagePlaceholder = ({ img, text, children }: PagePlaceholderProps): ReactElement => {
   return (
     <div className={css.container}>
-      <img src={imageUrl} alt="A placeholder image for an empty page" />
+      {img}
 
       <Typography variant="body1" color="primary.light">
         {text}

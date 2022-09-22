@@ -1,7 +1,7 @@
 import { type ReactElement, useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Alert, AlertTitle, Box, CircularProgress, Paper, Typography } from '@mui/material'
+import { Alert, AlertTitle, Box, CircularProgress } from '@mui/material'
 import useCollectibles from '@/hooks/useCollectibles'
 import Nfts from '@/components/nfts'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
@@ -10,6 +10,8 @@ import NavTabs from '@/components/common/NavTabs'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
+import PagePlaceholder from '@/components/common/PagePlaceholder'
+import NftIcon from '@/public/images/nft.svg'
 
 const NftPage = ({
   pageUrl,
@@ -26,9 +28,7 @@ const NftPage = ({
         {collectibles.results.length > 0 ? (
           <Nfts collectibles={collectibles.results} />
         ) : (
-          <Paper sx={{ py: 9, textAlign: 'center' }}>
-            <Typography variant="h3">No NFTs available</Typography>
-          </Paper>
+          <PagePlaceholder img={<NftIcon />} text="No NFTs available, or not all are detected" />
         )}
 
         {onNextPage && collectibles.next && (

@@ -9,8 +9,8 @@ import PendingTxListItem from './PendingTxListItem'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
-import { useDarkMode } from '@/hooks/useDarkMode'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
+import NoTransactionsIcon from '@/public/images/no-transactions.svg'
 
 const SkeletonWrapper = styled.div`
   border-radius: 8px;
@@ -30,13 +30,9 @@ const StyledWidgetTitle = styled.div`
 `
 
 const EmptyState = () => {
-  const isDarkMode = useDarkMode()
   return (
     <Card>
-      <PagePlaceholder
-        imageUrl={isDarkMode ? '/images/no-transactions-dark.svg' : '/images/no-transactions-light.svg'}
-        text="This Safe has no queued transactions"
-      />
+      <PagePlaceholder img={<NoTransactionsIcon />} text="This Safe has no queued transactions" />
     </Card>
   )
 }

@@ -13,18 +13,10 @@ import TxFilterButton from '@/components/transactions/TxFilterButton'
 import { type TxFilter, useTxFilter } from '@/utils/tx-history-filter'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { isTransactionListItem } from '@/utils/transaction-guards'
-import { useDarkMode } from '@/hooks/useDarkMode'
+import NoTransactionsIcon from '@/publics/images/no-transactions.svg'
 
 const NoQueuedTxns = () => {
-  const isDarkMode = useDarkMode()
-  return (
-    <Box mt="5vh">
-      <PagePlaceholder
-        imageUrl={isDarkMode ? '/images/no-transactions-dark.svg' : '/images/no-transactions-light.svg'}
-        text="Queued transactions will appear here"
-      />
-    </Box>
-  )
+  return <PagePlaceholder img={<NoTransactionsIcon />} text="Queued transactions will appear here" />
 }
 
 const getFilterResultCount = (filter: TxFilter, page: TransactionListPage) => {
