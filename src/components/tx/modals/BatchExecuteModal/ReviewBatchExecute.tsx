@@ -74,21 +74,21 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
           over the execute button.
         </Typography>
 
-        <Typography color="secondary.light">Interact with:</Typography>
+        <Typography color="primary.light">Interact with:</Typography>
         {multiSendContract && (
           <EthHashInfo address={multiSendContract.getAddress()} shortAddress={false} hasExplorer showCopyButton />
         )}
 
         {multiSendTxData && (
           <>
-            <Typography mt={2} color="secondary.light">
+            <Typography mt={2} color="primary.light">
               Data (hex encoded)
             </Typography>
             {generateDataRowValue(multiSendTxData, 'rawData')}
           </>
         )}
 
-        <Typography mt={2} color="secondary.light">
+        <Typography mt={2} color="primary.light">
           Batched transactions:
         </Typography>
         <DecodedTxs txs={txsWithDetails} numberOfTxs={data.txs.length} />

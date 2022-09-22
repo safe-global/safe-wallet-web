@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Button from '@mui/material/Button'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
 import Box from '@mui/material/Box'
 import TxFilterForm from '@/components/transactions/TxFilterForm'
 import { useTxFilter } from '@/utils/tx-history-filter'
@@ -16,12 +15,13 @@ const TxFilterButton = () => {
     setShowFilter((prev) => !prev)
   }
 
+  const ExpandIcon = showFilter ? ExpandLessIcon : ExpandMoreIcon
+
   return (
     <>
-      <Button variant="contained" onClick={toggleFilter} size="small">
-        <FilterAltOutlinedIcon fontSize="small" />
+      <Button variant="outlined" onClick={toggleFilter} size="small">
         {filter?.type ?? 'Filter'}
-        {showFilter ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+        <ExpandIcon fontSize="small" />
       </Button>
 
       {showFilter && (

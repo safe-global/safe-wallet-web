@@ -53,6 +53,9 @@ const DatePickerInput = ({
             renderInput={({ label, error: _, ...params }) => (
               <TextField label={fieldState.error?.message || label} {...params} fullWidth error={!!fieldState.error} />
             )}
+            PaperProps={{
+              elevation: 2,
+            }}
           />
         </LocalizationProvider>
       )}

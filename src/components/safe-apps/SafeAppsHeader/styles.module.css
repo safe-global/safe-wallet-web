@@ -1,4 +1,5 @@
 .header {
+  height: 218px; /* FIXME: Remove when implemmenting new header titles */
   background: var(--color-background-paper);
   padding: var(--space-2) var(--space-3);
 }

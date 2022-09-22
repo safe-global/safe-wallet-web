@@ -56,7 +56,7 @@ const CollectionMenuItem = ({ address, name }: { address: string; name: string }
       {name}
     </Grid>
     <Grid item>
-      <Typography component="span" variant="body2" color="secondary.light">
+      <Typography component="span" variant="body2" color="primary.light">
         {address}
       </Typography>
     </Grid>

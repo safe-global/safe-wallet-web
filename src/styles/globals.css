@@ -50,3 +50,28 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+.illustration-main-fill {
+  fill: var(--color-primary-main);
+}
+
+.illustration-light-fill {
+  fill: var(--color-border-main);
+}
+
+.illustration-background-fill {
+  fill: var(--color-logo-background);
+}
+
+/* Note: a fallback `stroke` property must be on the svg to work */
+.illustration-main-stroke {
+  stroke: var(--color-primary-main);
+}
+
+.illustration-light-stroke {
+  stroke: var(--color-border-main);
+}
+
+.illustration-background-stroke {
+  stroke: var(--color-logo-background);
+}

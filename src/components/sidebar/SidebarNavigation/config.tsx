@@ -6,6 +6,7 @@ import TransactionIcon from '@/public/images/sidebar/transactions.svg'
 import ABIcon from '@/public/images/sidebar/address-book.svg'
 import AppsIcon from '@/public/images/sidebar/apps.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
+import { SvgIcon } from '@mui/material'
 
 export type NavItem = {
   label: string
@@ -17,32 +18,32 @@ export type NavItem = {
 export const navItems: NavItem[] = [
   {
     label: 'Home',
-    icon: <HomeIcon />,
+    icon: <SvgIcon component={HomeIcon} inheritViewBox />,
     href: AppRoutes.home,
   },
   {
     label: 'Assets',
-    icon: <AssetsIcon />,
+    icon: <SvgIcon component={AssetsIcon} inheritViewBox />,
     href: AppRoutes.balances.index,
   },
   {
     label: 'Transactions',
-    icon: <TransactionIcon />,
+    icon: <SvgIcon component={TransactionIcon} inheritViewBox />,
     href: AppRoutes.transactions.history,
   },
   {
     label: 'Address book',
-    icon: <ABIcon />,
+    icon: <SvgIcon component={ABIcon} inheritViewBox />,
     href: AppRoutes.addressBook,
   },
   {
     label: 'Apps',
-    icon: <AppsIcon />,
+    icon: <SvgIcon component={AppsIcon} inheritViewBox />,
     href: AppRoutes.apps,
   },
   {
     label: 'Settings',
-    icon: <SettingsIcon />,
+    icon: <SvgIcon component={SettingsIcon} inheritViewBox />,
     href: AppRoutes.settings.setup,
     items: [
       {

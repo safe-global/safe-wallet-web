@@ -86,7 +86,7 @@ const ReviewSafeAppsSignMessage = ({
 
         {safeTx && (
           <Box pb={1}>
-            <Typography mt={2} color="secondary.light">
+            <Typography mt={2} color="primary.light">
               Data (hex encoded)
             </Typography>
             {generateDataRowValue(safeTx.data.data, 'rawData')}

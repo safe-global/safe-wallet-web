@@ -1,22 +1,25 @@
 :root {
   --onboard-white: var(--color-background-paper);
-  --onboard-black: var(--color-secondary-main);
-  --onboard-primary-1: var(--color-primary-main);
-  --onboard-primary-100: var(--color-primary-background);
-  --onboard-primary-200: var(--color-primary-light);
-  --onboard-primary-400: var(--color-primary-light);
-  --onboard-primary-500: var(--color-primary-main);
-  --onboard-primary-600: var(--color-primary-dark);
-  --onboard-primary-700: var(--color-primary-dark);
+  --onboard-black: var(--color-text-primary);
+
+  --onboard-primary-1: var(--color-secondary-main);
+  --onboard-primary-100: var(--color-secondary-background);
+  --onboard-primary-200: var(--color-secondary-light);
+  --onboard-primary-400: var(--color-secondary-light);
+  --onboard-primary-500: var(--color-secondary-main);
+  --onboard-primary-600: var(--color-secondary-main);
+  --onboard-primary-700: var(--color-secondary-main);
+
   --onboard-gray-100: var(--color-border-light);
   --onboard-gray-200: var(--color-border-main);
-  --onboard-gray-300: var(--color-secondary-light);
-  --onboard-gray-400: var(--color-secondary-main);
+  --onboard-gray-300: var(--color-primary-light);
+  --onboard-gray-400: var(--color-primary-main);
   --onboard-gray-500: var(--color-primary-main);
-  --onboard-gray-600: var(--color-primary-dark);
-  --onboard-gray-700: var(--color-primary-dark);
-  --onboard-success-500: var(--color-success-light);
-  --onboard-success-600: var(--color-success-main);
+  --onboard-gray-600: var(--color-border-main);
+  --onboard-gray-700: var(--color-text-primary);
+
+  --onboard-success-100: var(--color-secondary-background);
+  --onboard-success-600: var(--color-secondary-light);
   --onboard-success-700: var(--color-success-dark);
 
   --onboard-danger-500: var(--color-error-light);
@@ -27,15 +30,15 @@
   --onboard-warning-700: var(--color-warning-dark);
 
   --account-select-modal-white: var(--color-background-paper);
-  --account-select-modal-black: var(--color-secondary-main);
-  --account-select-modal-primary-100: var(--color-primary-background);
+  --account-select-modal-black: var(--color-primary-main);
+  --account-select-modal-primary-100: var(--color-secondary-background);
   --account-select-modal-primary-200: var(--color-background-light);
-  --account-select-modal-primary-300: var(--color-primary-main);
-  --account-select-modal-primary-500: var(--color-primary-main);
-  --account-select-modal-primary-600: var(--color-primary-dark);
+  --account-select-modal-primary-300: var(--color-secondary-background);
+  --account-select-modal-primary-500: var(--color-secondary-background);
+  --account-select-modal-primary-600: var(--color-secondary-light);
 
-  --onboard-connect-sidebar-color: var(--color-secondary-main);
-  --onboard-wallet-button-color: var(--color-secondary-main);
+  --onboard-connect-sidebar-color: var(--color-text-primary);
+  --onboard-wallet-button-color: var(--color-text-primary);
   --onboard-wallet-app-icon-border-color: var(--color-border-light);
   --onboard-wallet-app-icon-background-transparent: transparent;
 

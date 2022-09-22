@@ -95,9 +95,9 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
     <form onSubmit={handleSubmit}>
       <DialogContent>
         <Typography variant="body2" mb={4}>
-          Spending limit transactions only appear in the interface once they are successfully mined and indexed. Pending
-          transactions can only be viewed in your signer wallet application or under your wallet address on a Blockchain
-          Explorer.
+          Spending limit transactions only appear in the interface once they are successfully processed and indexed.
+          Pending transactions can only be viewed in your signer wallet application or under your wallet address on a
+          Blockchain Explorer.
         </Typography>
         {token && <TokenTransferReview amount={params.amount} tokenInfo={token.tokenInfo} />}
 
@@ -122,7 +122,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        <Typography variant="body2" color="secondary.light" textAlign="center" mt={3}>
+        <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
           You&apos;re about to create a transaction and will need to confirm it with your currently connected wallet.
         </Typography>
 

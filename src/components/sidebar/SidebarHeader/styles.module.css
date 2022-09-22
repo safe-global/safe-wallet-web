@@ -19,13 +19,17 @@
 .iconButton {
   border-radius: 4px;
   padding: 6px;
-  background-color: var(--color-border-background);
+  background-color: var(--color-background-main);
   width: 32px;
   height: 32px;
 }
 
 .iconButton:hover {
-  background-color: var(--color-primary-background);
+  background-color: var(--color-secondary-background);
+}
+
+.iconButton svg path {
+  fill: var(--color-primary-main);
 }
 
 .address {

@@ -19,13 +19,13 @@ import useIsPending from '@/hooks/useIsPending'
 const getStatusColor = (value: TransactionStatus, palette: Palette) => {
   switch (value) {
     case TransactionStatus.SUCCESS:
-      return palette.primary.main
+      return palette.success.main
     case TransactionStatus.FAILED:
     case TransactionStatus.CANCELLED:
       return palette.error.main
     case TransactionStatus.AWAITING_CONFIRMATIONS:
     case TransactionStatus.AWAITING_EXECUTION:
-      return palette.warning.dark
+      return palette.warning.main
     default:
       return palette.primary.main
   }

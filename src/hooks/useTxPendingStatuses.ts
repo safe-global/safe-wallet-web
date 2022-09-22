@@ -8,8 +8,8 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
   [TxEvent.EXECUTING]: PendingStatus.SUBMITTING,
-  [TxEvent.MINING]: PendingStatus.MINING,
-  [TxEvent.MINED]: PendingStatus.INDEXING,
+  [TxEvent.PROCESSING]: PendingStatus.PROCESSING,
+  [TxEvent.PROCESSED]: PendingStatus.INDEXING,
   [TxEvent.SUCCESS]: null,
   [TxEvent.REVERTED]: null,
   [TxEvent.FAILED]: null,
@@ -24,17 +24,17 @@ const useTxMonitor = (): void => {
   // Prevent `waitForTx` from monitoring the same tx more than once
   const monitoredTxs = useRef<{ [txId: string]: boolean }>({})
 
-  // Monitor pending transaction mining progress
+  // Monitor pending transaction mining/validating progress
   useEffect(() => {
     if (!provider || !pendingTxEntriesOnChain) {
       return
     }
 
     for (const [txId, { txHash, status }] of pendingTxEntriesOnChain) {
-      const isMining = status === PendingStatus.MINING
+      const isProcessing = status === PendingStatus.PROCESSING
       const isMonitored = monitoredTxs.current[txId]
 
-      if (!txHash || !isMining || isMonitored) {
+      if (!txHash || !isProcessing || isMonitored) {
         continue
       }
 

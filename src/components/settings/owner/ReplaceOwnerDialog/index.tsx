@@ -42,7 +42,7 @@ export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
             onClick={() => setOpen(true)}
             sx={{
               '& svg path': {
-                fill: ({ palette }) => palette.primary.main,
+                fill: ({ palette }) => palette.border.main,
               },
             }}
           >

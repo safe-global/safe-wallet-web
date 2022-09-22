@@ -1,4 +1,5 @@
 export const AppRoutes = {
+  '404': '/404',
   welcome: '/welcome',
   open: '/open',
   load: '/load',

@@ -8,6 +8,7 @@ import { isCreationTxInfo } from '@/utils/transaction-guards'
 import { useContext } from 'react'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import css from './styles.module.css'
+import classNames from 'classnames'
 
 interface ExpandableTransactionItemProps {
   isGrouped?: boolean
@@ -17,7 +18,8 @@ interface ExpandableTransactionItemProps {
 
 export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }: ExpandableTransactionItemProps) => {
   const hoverContext = useContext(BatchExecuteHoverContext)
-  const isActive = hoverContext.activeHover.includes(item.transaction.id)
+
+  const isBatched = hoverContext.activeHover.includes(item.transaction.id)
 
   return (
     <Accordion
@@ -28,7 +30,7 @@ export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }
       }}
       elevation={0}
       defaultExpanded={!!txDetails}
-      className={isActive ? css.active : undefined}
+      className={classNames({ [css.batched]: isBatched })}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
         <TxSummary item={item} isGrouped={isGrouped} />

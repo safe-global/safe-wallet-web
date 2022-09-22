@@ -8,12 +8,14 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
   const TIMEOUT_MINUTES = 6.5
 
   try {
-    // Return receipt after 1 additional block was mined or until timeout
+    // Return receipt after 1 additional block was mined/validated or until timeout
     // https://docs.ethers.io/v5/single-page/#/v5/api/providers/provider/-%23-Provider-waitForTransaction
     const receipt = await provider.waitForTransaction(txHash, 1, TIMEOUT_MINUTES * 60_000)
 
     if (!receipt) {
-      throw new Error(`Transaction not mined in ${TIMEOUT_MINUTES} minutes. Be aware that it might still be mined.`)
+      throw new Error(
+        `Transaction not processed in ${TIMEOUT_MINUTES} minutes. Be aware that it might still be processed.`,
+      )
     }
 
     if (didRevert(receipt)) {
@@ -24,7 +26,7 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
       })
     }
 
-    // Tx successfully mined but we don't dispatch SUCCESS as this may be faster than our indexer
+    // Tx successfully mined/validated but we don't dispatch SUCCESS as this may be faster than our indexer
   } catch (error) {
     txDispatch(TxEvent.FAILED, {
       txId,

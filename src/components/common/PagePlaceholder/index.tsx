@@ -3,17 +3,17 @@ import { Typography } from '@mui/material'
 import css from './styles.module.css'
 
 type PagePlaceholderProps = {
-  imageUrl: string
+  img: ReactNode
   text: string
   children?: ReactNode
 }
 
-const PagePlaceholder = ({ imageUrl, text, children }: PagePlaceholderProps): ReactElement => {
+const PagePlaceholder = ({ img, text, children }: PagePlaceholderProps): ReactElement => {
   return (
     <div className={css.container}>
-      <img src={imageUrl} alt="background" />
+      {img}
 
-      <Typography variant="h3" m={3}>
+      <Typography variant="body1" color="primary.light" mt={2}>
         {text}
       </Typography>
 

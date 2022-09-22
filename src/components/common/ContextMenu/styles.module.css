@@ -13,7 +13,7 @@
 }
 
 .menu :global .MuiMenuItem-root:hover {
-  background-color: var(--color-primary-background);
+  background-color: var(--color-secondary-background);
 }
 
 .menu :global .MuiListItemIcon-root {

@@ -22,9 +22,10 @@ import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
 import MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
 import { Web3Provider } from '@ethersproject/providers'
-import { ContractTransaction } from 'ethers'
+import { ContractTransaction, ethers } from 'ethers'
 import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
+import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -191,6 +192,36 @@ export const dispatchTxSigning = async (
 }
 
 /**
+ * On-Chain sign a transaction
+ */
+export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: Web3Provider, txId?: string) => {
+  const sdk = getAndValidateSafeSDK()
+  const safeTxHash = await sdk.getTransactionHash(safeTx)
+
+  const signer = provider.getSigner()
+  const ethersAdapter = new EthersAdapter({
+    ethers,
+    signer: signer.connectUnchecked(),
+  })
+
+  txDispatch(TxEvent.EXECUTING, { groupKey: safeTxHash })
+
+  try {
+    // With the unchecked signer, the contract call resolves once the tx
+    // has been submitted in the wallet not when it has been executed
+    const sdkUnchecked = await sdk.connect({ ethAdapter: ethersAdapter })
+    await sdkUnchecked.approveTransactionHash(safeTxHash)
+  } catch (err) {
+    txDispatch(TxEvent.FAILED, { groupKey: safeTxHash, error: err as Error })
+    throw err
+  }
+
+  txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, { groupKey: safeTxHash })
+
+  return safeTx
+}
+
+/**
  * Execute a transaction
  */
 export const dispatchTxExecution = async (
@@ -211,16 +242,16 @@ export const dispatchTxExecution = async (
     throw error
   }
 
-  txDispatch(TxEvent.MINING, { txId, txHash: result.hash })
+  txDispatch(TxEvent.PROCESSING, { txId, txHash: result.hash })
 
-  // Asynchronously watch the tx to be mined
+  // Asynchronously watch the tx to be mined/validated
   result.transactionResponse
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { txId, receipt, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.MINED, { txId, receipt })
+        txDispatch(TxEvent.PROCESSED, { txId, receipt })
       }
     })
     .catch((error) => {
@@ -254,7 +285,7 @@ export const dispatchBatchExecution = async (
   }
 
   txs.forEach(({ txId }) => {
-    txDispatch(TxEvent.MINING, { txId, txHash: result!.hash, groupKey })
+    txDispatch(TxEvent.PROCESSING, { txId, txHash: result!.hash, groupKey })
   })
 
   result.transactionResponse
@@ -271,7 +302,7 @@ export const dispatchBatchExecution = async (
         })
       } else {
         txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.MINED, {
+          txDispatch(TxEvent.PROCESSED, {
             txId,
             receipt,
             groupKey,
@@ -322,7 +353,7 @@ export const dispatchSpendingLimitTxExecution = async (
     throw error
   }
 
-  txDispatch(TxEvent.MINING_MODULE, {
+  txDispatch(TxEvent.PROCESSING_MODULE, {
     groupKey: id,
     txHash: result.hash,
   })
@@ -333,7 +364,7 @@ export const dispatchSpendingLimitTxExecution = async (
       if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { groupKey: id, receipt, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.MINED, { groupKey: id, receipt })
+        txDispatch(TxEvent.PROCESSED, { groupKey: id, receipt })
       }
     })
     .catch((error) => {

@@ -39,7 +39,7 @@ export const ReviewRemoveModule = ({
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
-      <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Module</Typography>
+      <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Module</Typography>
       <EthHashInfo address={data.address} showCopyButton hasExplorer shortAddress={false} />
       <Typography my={2}>
         After removing this module, any feature or app that uses this module might no longer work. If this Safe requires

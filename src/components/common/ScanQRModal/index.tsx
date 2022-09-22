@@ -85,7 +85,7 @@ const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElement => 
       <Divider />
 
       <Box display="flex" alignItems="center" justifyContent="center" padding={3} gap={2}>
-        <Button variant="text" color="secondary" onClick={onClose}>
+        <Button variant="text" color="primary" onClick={onClose}>
           Close
         </Button>
         <Button

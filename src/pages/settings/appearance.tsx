@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, FormGroup, Grid, Link, Paper, Typography } from '@mui/material'
+import { Checkbox, FormControlLabel, FormGroup, Grid, Link, Paper, Typography, Switch } from '@mui/material'
 import type { ChangeEvent } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
@@ -40,7 +40,7 @@ const Appearance: NextPage = () => {
 
       <Breadcrumbs Icon={SettingsIcon} first="Settings" second="Appearance" />
 
-      <Paper sx={{ padding: 4 }} variant="outlined">
+      <Paper sx={{ padding: 4 }}>
         <Grid container spacing={3}>
           <Grid item lg={4} xs={12}>
             <Typography variant="h4" fontWeight="bold" mb={1}>
@@ -50,7 +50,7 @@ const Appearance: NextPage = () => {
 
           <Grid item xs>
             <Typography mb={2}>
-              You can choose whether to prepend{' '}
+              Choose whether to prepend{' '}
               <Link href="https://eips.ethereum.org/EIPS/eip-3770" target="_blank" rel="noopener noreferrer">
                 EIP-3770
               </Link>{' '}
@@ -89,7 +89,7 @@ const Appearance: NextPage = () => {
           <Grid item xs>
             <FormControlLabel
               control={
-                <Checkbox
+                <Switch
                   checked={isDarkMode}
                   onChange={handleToggle(setDarkMode, SETTINGS_EVENTS.APPEARANCE.DARK_MODE)}
                 />

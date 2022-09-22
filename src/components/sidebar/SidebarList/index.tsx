@@ -34,7 +34,19 @@ export const SidebarListItemButton = ({
 }
 
 export const SidebarListItemIcon = ({ children, ...rest }: Omit<ListItemIconProps, 'className'>): ReactElement => (
-  <ListItemIcon className={css.icon} {...rest}>
+  <ListItemIcon
+    className={css.icon}
+    sx={{
+      '& svg': {
+        width: '16px',
+        height: '16px',
+        '& path': ({ palette }) => ({
+          fill: palette.logo.main,
+        }),
+      },
+    }}
+    {...rest}
+  >
     {children}
   </ListItemIcon>
 )
