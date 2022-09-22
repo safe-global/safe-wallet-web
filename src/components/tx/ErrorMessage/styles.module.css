@@ -4,7 +4,6 @@
   padding: var(--space-2);
   margin: var(--space-2) 0;
   border-radius: 4px;
-  word-break: break-all;
 }
 
 .message {
@@ -24,4 +23,5 @@
 .details {
   margin-top: var(--space-1);
   color: var(--color-primary-light);
+  word-break: break-all;
 }

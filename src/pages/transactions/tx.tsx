@@ -23,6 +23,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { sameAddress } from '@/utils/addresses'
 import { AppRoutes } from '@/config/routes'
 
+const FAILED_TO_LOAD_TX = 'Failed to load transaction'
+
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
   const dateLabel: DateLabel = makeDateLabelFromTx(tx)
@@ -38,12 +40,13 @@ const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactEl
 const SingleTransaction: NextPage = () => {
   const chainId = useChainId()
   const router = useRouter()
-  const { id = '' } = router.query
+  const { id } = router.query
   const transactionId = Array.isArray(id) ? id[0] : id
   const { safe, safeAddress } = useSafeInfo()
 
   const [txDetails, error, loading] = useAsync<TransactionDetails>(
     () => {
+      if (!id || !transactionId) return
       return getTransactionDetails(chainId, transactionId)
     },
     [transactionId, safe.txQueuedTag, safe.txHistoryTag],
@@ -61,14 +64,18 @@ const SingleTransaction: NextPage = () => {
 
       <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" firstLink={breadcrumbsLink} />
 
-      {(error || !isCurrentSafeTx) && !loading ? (
-        <ErrorMessage error={!isCurrentSafeTx ? new Error('Error: tx Id not found in this Safe') : error}>
-          Failed to load transaction {transactionId}
+      {loading ? (
+        <CircularProgress />
+      ) : !isCurrentSafeTx && transactionId ? (
+        <ErrorMessage error={Error(`Transaction with id ${transactionId} not found in this Safe `)}>
+          {FAILED_TO_LOAD_TX}
         </ErrorMessage>
-      ) : txDetails && !loading ? (
+      ) : txDetails ? (
         <SingleTxGrid txDetails={txDetails} />
       ) : (
-        loading && <CircularProgress />
+        <ErrorMessage error={error || Error('Resource not found. Please review the url.')}>
+          {FAILED_TO_LOAD_TX}
+        </ErrorMessage>
       )}
     </main>
   )
