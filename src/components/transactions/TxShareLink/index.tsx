@@ -1,5 +1,5 @@
 import { ReactElement, MouseEvent } from 'react'
-import { IconButton, Link } from '@mui/material'
+import { IconButton, Link, SvgIcon } from '@mui/material'
 import ShareIcon from '@/public/images/share.svg'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
@@ -23,7 +23,7 @@ const TxShareLink = ({ id }: { id: string }): ReactElement => {
   return (
     <Track {...TX_LIST_EVENTS.COPY_DEEPLINK}>
       <IconButton component={Link} aria-label="Share" href={href} onClick={onClick}>
-        <ShareIcon width={16} height={16} />
+        <SvgIcon component={ShareIcon} fontSize="small" />
       </IconButton>
     </Track>
   )

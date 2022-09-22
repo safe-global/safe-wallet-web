@@ -27,8 +27,7 @@ const DefaultSection = ({
       <Grid item xs={12}>
         <Typography
           variant="caption"
-          fontWeight={700}
-          sx={({ palette }) => ({ color: palette.secondary.light, textTransform: 'uppercase' })}
+          sx={({ palette }) => ({ color: palette.primary.light, textTransform: 'uppercase' })}
         >
           {title}
         </Typography>

@@ -26,7 +26,7 @@ const TransactionQueueBar = (): ReactElement | null => {
 
   // if you inline the expression, it will split put the `queuedTxCount` on a new line
   // and make it harder to find this text for matchers in tests
-  const barTitle = `(${queuedTxCount}) Transaction Queue`
+  const barTitle = `(${queuedTxCount}) Transaction queue`
   return (
     <>
       <Box className={styles.barWrapper}>
@@ -54,7 +54,7 @@ const TransactionQueueBar = (): ReactElement | null => {
                   event.stopPropagation()
                   toggleQueueBar()
                 }}
-                aria-label="close transaction queue bar"
+                aria-label={`${expanded ? 'close' : 'expand'} transaction queue bar`}
                 sx={{ transform: expanded ? 'rotate(180deg)' : undefined }}
               >
                 <ExpandLessIcon />

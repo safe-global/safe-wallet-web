@@ -86,7 +86,7 @@ const Overview = (): ReactElement => {
 
   return (
     <WidgetContainer>
-      <Typography variant="h2" mb={2}>
+      <Typography variant="subtitle1" fontWeight={700} mb={2}>
         Overview
       </Typography>
 

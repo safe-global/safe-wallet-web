@@ -1,7 +1,7 @@
 import { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber, ethers } from 'ethers'
-import { getSimulationPayload } from '../utils'
+import { getSimulationPayload, NONCE_STORAGE_POSITION, THRESHOLD_STORAGE_POSITION } from '../utils'
 import * as safeContracts from '@/services/contracts/safeContracts'
 import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@gnosis.pm/safe-deployments'
 import EthSafeTransaction from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
@@ -10,6 +10,8 @@ import { getPreValidatedSignature } from '@/hooks/useGasLimit'
 import { generatePreValidatedSignature } from '@gnosis.pm/safe-core-sdk/dist/src/utils/signatures'
 import { hexZeroPad } from 'ethers/lib/utils'
 import * as Web3 from '@/hooks/wallets/web3'
+
+const SIGNATURE_LENGTH = 65 * 2
 
 describe('simulation utils', () => {
   const safeContractInterface = new ethers.utils.Interface(getSafeSingletonDeployment({ version: '1.3.0' })?.abi || [])
@@ -50,6 +52,7 @@ describe('simulation utils', () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 1,
+        nonce: 0,
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
@@ -115,6 +118,7 @@ describe('simulation utils', () => {
 
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 2,
+        nonce: 0,
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
@@ -150,12 +154,58 @@ describe('simulation utils', () => {
       expect(tenderlyPayload.state_objects).toBeUndefined()
     })
 
-    it('partially signed executable multisig transaction with threshold 2', async () => {
+    it('partially signed multisig transaction with threshold 2 and higher nonce', async () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
       const otherOwnerAddress1 = ethers.utils.hexZeroPad('0x11', 20)
 
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 2,
+        nonce: 0,
+        chainId: '4',
+        address: { value: ethers.utils.hexZeroPad('0x123', 20) },
+      }
+      const mockTx: SafeTransaction = new EthSafeTransaction({
+        to: ZERO_ADDRESS,
+        value: '0x0',
+        data: '0x',
+        baseGas: 0,
+        gasPrice: 0,
+        gasToken: ZERO_ADDRESS,
+        nonce: 1,
+        operation: 0,
+        refundReceiver: ZERO_ADDRESS,
+        safeTxGas: 0,
+      })
+
+      mockTx.addSignature(generatePreValidatedSignature(otherOwnerAddress1))
+
+      const tenderlyPayload = await getSimulationPayload({
+        canExecute: false,
+        executionOwner: ownerAddress,
+        safe: mockSafeInfo as SafeInfo,
+        transactions: mockTx,
+      })
+
+      const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
+
+      // Do add preValidatedSignature of connected owner as the tx is only partially signed
+      expect(decodedTxData[9]).toContain(getPreValidatedSignature(ownerAddress))
+      expect(decodedTxData[9]).toHaveLength(SIGNATURE_LENGTH * 2 + 2)
+      // Do  overwrite the nonce but not the threshold
+      expect(tenderlyPayload.state_objects).toBeDefined()
+      const safeOverwrite = tenderlyPayload.state_objects![mockSafeAddress]
+      expect(safeOverwrite?.storage).toBeDefined()
+      expect(safeOverwrite.storage![NONCE_STORAGE_POSITION]).toBe(hexZeroPad('0x1', 32))
+      expect(safeOverwrite.storage![THRESHOLD_STORAGE_POSITION]).toBeUndefined()
+    })
+
+    it('partially signed executable multisig transaction with threshold 2 and matching nonce', async () => {
+      const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
+      const otherOwnerAddress1 = ethers.utils.hexZeroPad('0x11', 20)
+
+      const mockSafeInfo: Partial<SafeInfo> = {
+        threshold: 2,
+        nonce: 0,
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
@@ -186,6 +236,7 @@ describe('simulation utils', () => {
 
       // Do add preValidatedSignature of connected owner as the tx is only partially signed
       expect(decodedTxData[9]).toContain(getPreValidatedSignature(ownerAddress))
+      expect(decodedTxData[9]).toHaveLength(SIGNATURE_LENGTH * 2 + 2)
       // Do not overwrite the threshold
       expect(tenderlyPayload.state_objects).toBeUndefined()
     })
@@ -195,6 +246,7 @@ describe('simulation utils', () => {
 
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 2,
+        nonce: 0,
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
@@ -227,7 +279,8 @@ describe('simulation utils', () => {
       expect(tenderlyPayload.state_objects).toBeDefined()
       const safeOverwrite = tenderlyPayload.state_objects![mockSafeAddress]
       expect(safeOverwrite?.storage).toBeDefined()
-      expect(safeOverwrite.storage![hexZeroPad('0x4', 32)]).toBe(hexZeroPad('0x1', 32))
+      expect(safeOverwrite.storage![THRESHOLD_STORAGE_POSITION]).toBe(hexZeroPad('0x1', 32))
+      expect(safeOverwrite.storage![NONCE_STORAGE_POSITION]).toBeUndefined()
     })
 
     it('batched transaction without gas limit', async () => {
@@ -235,6 +288,7 @@ describe('simulation utils', () => {
 
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 2,
+        nonce: 0,
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }

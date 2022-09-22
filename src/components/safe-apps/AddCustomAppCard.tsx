@@ -3,6 +3,7 @@ import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Box } from '@mui/material'
 import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
 import { AppCardContainer } from './AppCard'
+import AddCustomAppIcon from '@/public/images/add-custom-app.svg'
 
 type Props = { onSave: (data: SafeAppData) => void; safeAppList: SafeAppData[] }
 
@@ -21,7 +22,7 @@ const AddCustomAppCard = ({ onSave, safeAppList }: Props) => {
             justifyContent: 'center',
           }}
         >
-          <img src="/images/add-custom-app.svg" alt="Add custom app icon" />
+          <AddCustomAppIcon />
           <Button
             variant="contained"
             size="small"

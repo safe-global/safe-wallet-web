@@ -153,7 +153,7 @@ export const TxSigners = ({
       )}
       <StyledStep expanded $bold $state={executor ? StepState.CONFIRMED : StepState.DISABLED}>
         <StepLabel icon={executor ? <CheckIcon /> : <CircleIcon />} sx={{ marginBottom: 1, fontWeight: 'bold' }}>
-          {executor ? 'Executed' : isPending ? 'Executing' : 'Execution'}
+          {executor ? 'Executed' : isPending ? 'Executing' : 'Can be executed'}
         </StepLabel>
         {executor ? (
           <StepContent>

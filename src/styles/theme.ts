@@ -9,9 +9,13 @@ declare module '@mui/material/styles' {
   // Custom color palettes
   interface Palette {
     border: Palette['primary']
+    logo: Palette['primary']
+    static: Palette['primary']
   }
   interface PaletteOptions {
     border: PaletteOptions['primary']
+    logo: PaletteOptions['primary']
+    static: PaletteOptions['primary']
   }
 
   interface TypeBackground {
@@ -45,7 +49,7 @@ export const theme = createTheme()
 
 const initTheme = (darkMode: boolean) => {
   const colors = darkMode ? darkPalette : palette
-  const shadowColor = darkMode ? colors.secondary.light : colors.secondary.main
+  const shadowColor = colors.primary.light
 
   return createTheme({
     palette: {
@@ -109,7 +113,7 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           head: ({ theme }) => ({
             ...theme.typography.body1,
-            color: theme.palette.secondary.light,
+            color: theme.palette.primary.light,
           }),
         },
       },
@@ -152,7 +156,7 @@ const initTheme = (darkMode: boolean) => {
           root: ({ theme }) => ({
             transition: 'background 0.2s, border 0.2s',
             borderRadius: '8px',
-            border: `2px solid ${theme.palette.border.light}`,
+            border: `1px solid ${theme.palette.border.light}`,
             overflow: 'hidden',
 
             '&::before': {
@@ -160,20 +164,20 @@ const initTheme = (darkMode: boolean) => {
             },
 
             '&:hover': {
-              borderColor: theme.palette.primary.light,
+              borderColor: theme.palette.secondary.light,
             },
 
             '&:hover > .MuiAccordionSummary-root': {
-              background: theme.palette.primary.background,
+              background: theme.palette.background.light,
             },
 
             '&.Mui-expanded': {
               margin: 0,
-              borderColor: theme.palette.primary.light,
+              borderColor: theme.palette.secondary.light,
             },
 
             '&.Mui-expanded > .MuiAccordionSummary-root': {
-              background: theme.palette.primary.background,
+              background: theme.palette.background.light,
             },
           }),
         },
@@ -215,6 +219,9 @@ const initTheme = (darkMode: boolean) => {
         },
       },
       MuiPaper: {
+        defaultProps: {
+          elevation: 0,
+        },
         styleOverrides: {
           outlined: ({ theme }) => ({
             borderWidth: 2,

@@ -13,10 +13,11 @@ const TxNotifications = {
   [TxEvent.SIGNATURE_PROPOSED]: 'You successfully signed the transaction.',
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send the signature. Please try again.',
   [TxEvent.EXECUTING]: 'Please confirm the execution in your wallet.',
-  [TxEvent.MINING]: 'Your transaction is being processed.',
-  [TxEvent.MINING_MODULE]:
+  [TxEvent.PROCESSING]: 'Your transaction is being processed.',
+  [TxEvent.PROCESSING_MODULE]:
     'Your transaction has been submitted and will appear in the interface only after it has been successfully processed and indexed.',
-  [TxEvent.MINED]: 'Your transaction was successfully processed and is now being indexed.',
+  [TxEvent.AWAITING_ON_CHAIN_SIGNATURE]: 'An on-chain signature request was submitted.',
+  [TxEvent.PROCESSED]: 'Your transaction was successfully processed and is now being indexed.',
   [TxEvent.REVERTED]: 'Transaction reverted. Please check your gas settings.',
   [TxEvent.SUCCESS]: 'Your transaction was successfully executed.',
   [TxEvent.FAILED]: 'Your transaction was unsuccessful.',

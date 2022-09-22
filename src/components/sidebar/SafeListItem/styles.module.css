@@ -10,15 +10,12 @@
   padding-left: 22px;
 }
 
-.safe.open {
+.open {
   padding-left: 16px;
-  border-left: 6px solid var(--color-primary-main);
-}
-
-.safe :global .Mui-selected {
-  background-color: var(--color-border-background);
+  border-left: 6px solid var(--color-secondary-light);
+  background-color: var(--color-secondary-background) !important;
 }
 
 .safe:hover {
-  background-color: var(--color-primary-background);
+  background-color: var(--color-secondary-background);
 }
