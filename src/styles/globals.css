@@ -63,14 +63,4 @@ input[type='number'] {
   fill: var(--color-logo-background);
 }
 
-.illustration-main-stroke {
-  stroke: var(--color-primary-main);
-}
-
-.illustration-light-stroke {
-  stroke: var(--color-border-main);
-}
-
-.illustration-background-stroke {
-  stroke: var(--color-logo-background);
-}
+/* It's not possible to set `stroke` via a class as it overrides other properties */
