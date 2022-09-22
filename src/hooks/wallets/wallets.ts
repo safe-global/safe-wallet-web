@@ -91,6 +91,10 @@ export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR].includes(wallet.label.toUpperCase() as WALLET_KEYS)
 }
 
+export const isWalletConnect = (wallet: ConnectedWallet): boolean => {
+  return wallet.label.toUpperCase() === WALLET_KEYS.WALLETCONNECT
+}
+
 export const isSafeMobileWallet = (wallet: ConnectedWallet): boolean => {
   return wallet.label === PAIRING_MODULE_LABEL
 }
