@@ -8,6 +8,7 @@ import { WidgetContainer } from '../styled'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppCard, AppCardContainer } from '@/components/safe-apps/AppCard'
 import { AppRoutes } from '@/config/routes'
+import ExploreSafeAppsIcon from '@/public/images/explore.svg'
 
 const SafeAppsDashboardSection = () => {
   const { rankedSafeApps } = useSafeApps()
@@ -42,7 +43,7 @@ const ExploreSafeAppsCard = () => {
   return (
     <AppCardContainer url={safeAppsLink}>
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={1}>
-        <img src="/images/explore.svg" alt="Add custom app icon" />
+        <ExploreSafeAppsIcon alt="Explore Safe Apps icon" />
 
         <Button variant="contained" size="small">
           Explore Safe Apps
