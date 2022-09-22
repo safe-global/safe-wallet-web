@@ -14,16 +14,11 @@ const SafeAppsDashboardSection = () => {
 
   return (
     <WidgetContainer>
+      <Typography component="h2" variant="h2" gutterBottom>
+        Safe Apps
+      </Typography>
+
       <Grid container rowSpacing={2} columnSpacing={2}>
-        <Grid item xs={12}>
-          <Typography
-            variant="caption"
-            fontWeight={700}
-            sx={({ palette }) => ({ color: palette.secondary.light, textTransform: 'uppercase' })}
-          >
-            Safe Apps
-          </Typography>
-        </Grid>
         {rankedSafeApps.map((rankedSafeApp) => (
           <Grid key={rankedSafeApp.id} item xs={12} sm={6} md={4} xl={4}>
             <AppCard safeApp={rankedSafeApp} />

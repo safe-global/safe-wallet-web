@@ -1,0 +1,117 @@
+import * as safeAppsGatewaySDK from '@gnosis.pm/safe-react-gateway-sdk'
+import { render, screen, waitFor } from '@/tests/test-utils'
+import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
+
+jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
+  ...jest.requireActual('@gnosis.pm/safe-react-gateway-sdk'),
+  getSafeApps: (chainId: string) =>
+    Promise.resolve([
+      {
+        id: 13,
+        url: 'https://cloudflare-ipfs.com/ipfs/QmX31xCdhFDmJzoVG33Y6kJtJ5Ujw8r5EJJBrsp8Fbjm7k',
+        name: 'Compound',
+        iconUrl: 'https://cloudflare-ipfs.com/ipfs/QmX31xCdhFDmJzoVG33Y6kJtJ5Ujw8r5EJJBrsp8Fbjm7k/Compound.png',
+        description: 'Money markets on the Ethereum blockchain',
+        chainIds: ['1', '4'],
+        provider: undefined,
+        accessControl: {
+          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
+        },
+        tags: [],
+      },
+      {
+        id: 3,
+        url: 'https://app.ens.domains',
+        name: 'ENS App',
+        iconUrl: 'https://app.ens.domains/android-chrome-144x144.png',
+        description: 'Decentralised naming for wallets, websites, & more.',
+        chainIds: ['1', '4'],
+        provider: undefined,
+        accessControl: {
+          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.DomainAllowlist,
+          value: ['https://gnosis-safe.io'],
+        },
+        tags: [],
+      },
+      {
+        id: 14,
+        url: 'https://cloudflare-ipfs.com/ipfs/QmXLxxczMH4MBEYDeeN9zoiHDzVkeBmB5rBjA3UniPEFcA',
+        name: 'Synthetix',
+        iconUrl: 'https://cloudflare-ipfs.com/ipfs/QmXLxxczMH4MBEYDeeN9zoiHDzVkeBmB5rBjA3UniPEFcA/Synthetix.png',
+        description: 'Trade synthetic assets on Ethereum',
+        chainIds: ['1', '4'],
+        provider: undefined,
+        accessControl: {
+          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
+        },
+        tags: [],
+      },
+      {
+        id: 24,
+        url: 'https://cloudflare-ipfs.com/ipfs/QmdVaZxDov4bVARScTLErQSRQoxgqtBad8anWuw3YPQHCs',
+        name: 'Transaction Builder',
+        iconUrl: 'https://cloudflare-ipfs.com/ipfs/QmdVaZxDov4bVARScTLErQSRQoxgqtBad8anWuw3YPQHCs/tx-builder.png',
+        description: 'A Safe app to compose custom transactions',
+        chainIds: ['1', '4', '56', '100', '137', '246', '73799'],
+        provider: undefined,
+        accessControl: {
+          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.DomainAllowlist,
+          value: ['https://gnosis-safe.io'],
+        },
+        tags: [],
+      },
+    ]),
+}))
+
+describe('Safe Apps Dashboard Section', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+    const mostUsedApps = JSON.stringify({
+      24: {
+        openCount: 2,
+        timestamp: 1663779409409,
+        txCount: 1,
+      },
+      3: {
+        openCount: 1,
+        timestamp: 1663779409409,
+        txCount: 0,
+      },
+    })
+    window.localStorage.setItem('SAFE_v2__APPS_DASHBOARD', mostUsedApps)
+  })
+
+  afterEach(() => {
+    window.localStorage.clear()
+  })
+
+  it('should display the Safe Apps Section', async () => {
+    render(<SafeAppsDashboardSection />)
+
+    await waitFor(() => expect(screen.getByText('Safe Apps')).toBeInTheDocument())
+  })
+
+  it('should display Safe Apps Cards (Name & Description)', async () => {
+    render(<SafeAppsDashboardSection />)
+
+    await waitFor(() => expect(screen.getByText('Compound')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('Money markets on the Ethereum blockchain')).toBeInTheDocument())
+
+    await waitFor(() => expect(screen.getByText('ENS App')).toBeInTheDocument())
+    await waitFor(() =>
+      expect(screen.getByText('Decentralised naming for wallets, websites, & more.')).toBeInTheDocument(),
+    )
+
+    await waitFor(() => expect(screen.getByText('Synthetix')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('Trade synthetic assets on Ethereum')).toBeInTheDocument())
+
+    await waitFor(() => expect(screen.getByText('Transaction Builder')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('A Safe app to compose custom transactions')).toBeInTheDocument())
+  })
+
+  it('should show the Explore Safe Apps Link', async () => {
+    render(<SafeAppsDashboardSection />)
+
+    await waitFor(() => expect(screen.getByText('Explore Safe Apps')).toBeInTheDocument())
+  })
+})
