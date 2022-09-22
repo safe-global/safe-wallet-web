@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
-import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getBalances, getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { AddressBookItem, Methods, RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
@@ -25,6 +25,9 @@ import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
+import useIsGranted from '@/hooks/useIsGranted'
+import { getLegacyChainName } from '../utils'
+import { useCurrentChain } from '@/hooks/useChains'
 
 type AppFrameProps = {
   appUrl: string
@@ -35,8 +38,10 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const addressBook = useAddressBook()
+  const chain = useCurrentChain()
+  const granted = useIsGranted()
   const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
@@ -44,24 +49,50 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
     useSafePermissions()
 
-  const getAddressBook = useCallback(
-    (origin: string): AddressBookItem[] => {
+  const communicator = useAppCommunicator(iframeRef, safeAppFromManifest, chain, {
+    onConfirmTransactions: openTxModal,
+    onSignMessage: openSignMessageModal,
+    onGetPermissions: getPermissions,
+    onSetPermissions: setPermissionsRequest,
+    onRequestAddressBook: (origin: string): AddressBookItem[] => {
       if (hasPermission(origin, Methods.requestAddressBook)) {
         return Object.entries(addressBook).map(([address, name]) => ({ address, name, chainId }))
       }
 
       return []
     },
-    [addressBook, chainId, hasPermission],
-  )
+    onGetTxBySafeTxHash: (safeTxHash) => getTransactionDetails(chainId, safeTxHash),
+    onGetEnvironmentInfo: () => ({
+      origin: document.location.origin,
+    }),
+    onGetSafeInfo: () => ({
+      safeAddress,
+      chainId: parseInt(chainId, 10),
+      owners: safe.owners.map((owner) => owner.value),
+      threshold: safe.threshold,
+      isReadOnly: !granted,
+      // FIXME `network` is deprecated. we should find how many apps are still using it
+      // Apps using this property expect this to be in UPPERCASE
+      network: getLegacyChainName(chain?.chainName || '', chainId).toUpperCase(),
+    }),
+    onGetSafeBalances: (currency) =>
+      getBalances(chainId, safeAddress, currency, {
+        exclude_spam: true,
+        trusted: false,
+      }),
+    onGetChainInfo: () => {
+      if (!chain) return
 
-  const communicator = useAppCommunicator(iframeRef, {
-    app: safeAppFromManifest,
-    onConfirmTransactions: openTxModal,
-    onSignMessage: openSignMessageModal,
-    onGetPermissions: getPermissions,
-    onSetPermissions: setPermissionsRequest,
-    onRequestAddressBook: getAddressBook,
+      const { nativeCurrency, chainName, chainId, shortName, blockExplorerUriTemplate } = chain
+
+      return {
+        chainName,
+        chainId,
+        shortName,
+        nativeCurrency,
+        blockExplorerUriTemplate,
+      }
+    },
   })
 
   useEffect(() => {
