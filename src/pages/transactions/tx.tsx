@@ -62,7 +62,9 @@ const SingleTransaction: NextPage = () => {
       <Breadcrumbs Icon={TransactionsIcon} first="Transactions" second="Details" firstLink={breadcrumbsLink} />
 
       {(error || !isCurrentSafeTx) && !loading ? (
-        <ErrorMessage error={error}>Failed to load transaction {transactionId}</ErrorMessage>
+        <ErrorMessage error={!isCurrentSafeTx ? new Error('Error: txId does not exist in this Safe') : error}>
+          Failed to load transaction {transactionId}
+        </ErrorMessage>
       ) : txDetails && !loading ? (
         <SingleTxGrid txDetails={txDetails} />
       ) : (
