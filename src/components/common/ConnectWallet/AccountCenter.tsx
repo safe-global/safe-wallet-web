@@ -113,7 +113,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
 
           <ChainSwitcher fullWidth />
 
-          <Button onClick={handleDisconnect} color="error" variant="contained" size="small" fullWidth disableElevation>
+          <Button onClick={handleDisconnect} variant="danger" size="small" fullWidth disableElevation>
             Disconnect
           </Button>
         </Paper>
