@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Third Party Cookies Test</title>
+  </head>
+
+  <body>
+    <script>
+      const COOKIE_NAME = 'testcookie'
+      const checkCookiesEnable = () => {
+        let isCookieEnabled = window.navigator.cookieEnabled ? true : false
+
+        if (window.navigator.cookieEnabled === undefined && !isCookieEnabled) {
+          document.cookie = COOKIE_NAME
+          isCookieEnabled = document.cookie.indexOf(COOKIE_NAME) != -1 ? true : false
+        }
+
+        return isCookieEnabled
+      }
+
+      ;(function () {
+        window.addEventListener('message', (event) => {
+          try {
+            let data = event.data
+            if (data.test !== 'cookie') return
+            let result = checkCookiesEnable()
+            parent.postMessage(
+              {
+                isCookieEnabled: result,
+              },
+              event.origin,
+            )
+          } catch (e) {
+            console.error(e)
+          }
+        })
+      })()
+    </script>
+  </body>
+</html>
