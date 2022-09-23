@@ -10,8 +10,14 @@ import {
   Transaction,
   TransactionDetails,
   TransactionListItemType,
+  TransactionListPage,
 } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isModuleDetailedExecutionInfo, isMultisigDetailedExecutionInfo, isTxQueued } from './transaction-guards'
+import {
+  isModuleDetailedExecutionInfo,
+  isMultisigDetailedExecutionInfo,
+  isTransactionListItem,
+  isTxQueued,
+} from './transaction-guards'
 import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
@@ -158,4 +164,15 @@ export const getTxOptions = (params: AdvancedParameters, currentChain: ChainInfo
   }
 
   return txOptions
+}
+
+export const getQueuedTransactionCount = (txPage: TransactionListPage): String => {
+  const queuedTxs = txPage.results.filter(isTransactionListItem)
+
+  // @iamacook's invention
+  if (txPage.next) {
+    return '> ${queuedTxs.length}'
+  }
+
+  return queuedTxs.length.toString()
 }

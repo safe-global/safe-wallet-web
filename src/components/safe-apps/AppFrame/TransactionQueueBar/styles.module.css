@@ -1,0 +1,10 @@
+.barWrapper {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1;
+
+  /*this rule is needed to prevent the bar from being expanded outside the screen without scrolling on mobile devices*/
+  max-height: 90vh;
+}

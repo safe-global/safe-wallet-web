@@ -36,6 +36,8 @@
   height: 100vh;
   left: 0;
   top: 0;
+  /* the z-index is required for the sidebar not to be covered by the transaction accordion on the Safe app page */
+  z-index: 1;
   padding-top: var(--header-height);
 }
 

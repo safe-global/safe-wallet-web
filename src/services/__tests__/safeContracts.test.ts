@@ -1,6 +1,52 @@
-import { _getValidatedGetContractProps } from '../contracts/safeContracts'
+import { getMasterCopies } from '@gnosis.pm/safe-react-gateway-sdk'
+import { _getValidatedGetContractProps, isValidMasterCopy } from '../contracts/safeContracts'
+
+jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
+  getMasterCopies: jest.fn(),
+}))
 
 describe('safeContracts', () => {
+  describe('isValidMasterCopy', () => {
+    it('returns false if address is not contained in result', async () => {
+      ;(getMasterCopies as jest.Mock).mockResolvedValue([
+        {
+          address: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
+          version: '1.3.0',
+          deployer: 'Gnosis',
+          deployedBlockNumber: 12504268,
+          lastIndexedBlockNumber: 14927028,
+          l2: false,
+        },
+      ])
+
+      const isValid = await isValidMasterCopy('1', '0x0000000000000000000000000000000000000005')
+      expect(isValid).toBe(false)
+    })
+
+    it('returns true if address is contained in list', async () => {
+      ;(getMasterCopies as jest.Mock).mockResolvedValue([
+        {
+          address: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
+          version: '1.3.0',
+          deployer: 'Gnosis',
+          deployedBlockNumber: 12504268,
+          lastIndexedBlockNumber: 14927028,
+          l2: false,
+        },
+        {
+          address: '0x3E5c63644E683549055b9Be8653de26E0B4CD36E',
+          version: '1.3.0+L2',
+          deployer: 'Gnosis',
+          deployedBlockNumber: 12504423,
+          lastIndexedBlockNumber: 14927028,
+          l2: true,
+        },
+      ])
+
+      const isValid = await isValidMasterCopy('1', '0x3E5c63644E683549055b9Be8653de26E0B4CD36E')
+      expect(isValid).toBe(true)
+    })
+  })
   describe('getValidatedGetContractProps', () => {
     it('should return the correct props', () => {
       expect(_getValidatedGetContractProps('1', '1.1.1')).toEqual({

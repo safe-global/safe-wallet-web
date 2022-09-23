@@ -54,6 +54,10 @@ export const SETTINGS_EVENTS = {
       action: 'Remove module',
       category: SETTINGS_CATEGORY,
     },
+    REMOVE_GUARD: {
+      action: 'Remove transaction guard',
+      category: SETTINGS_CATEGORY,
+    },
   },
   SPENDING_LIMIT: {
     NEW_LIMIT: {

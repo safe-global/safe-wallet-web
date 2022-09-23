@@ -15,7 +15,7 @@ import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isHardwareWallet, isSafeMobileWallet, isSmartContractWallet } from '@/hooks/wallets/wallets'
+import { isSmartContractWallet, shouldUseEthSignMethod } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -101,7 +101,7 @@ const SignOrExecuteForm = ({
   const onSign = async (): Promise<string> => {
     const [connectedWallet, createdTx, provider] = assertSubmittable()
 
-    const shouldEthSign = isHardwareWallet(connectedWallet) || isSafeMobileWallet(connectedWallet)
+    const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
     const signedTx = smartContractWallet
       ? await dispatchOnChainSigning(createdTx, provider, txId)

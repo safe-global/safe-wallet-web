@@ -1,7 +1,6 @@
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION
 
 export const GATEWAY_URL = IS_PRODUCTION ? 'https://safe-client.gnosis.io' : 'https://safe-client.staging.gnosisdev.com'
-export const SAFE_REACT_URL = IS_PRODUCTION ? 'https://gnosis-safe.io/app' : 'https://safe-team.dev.gnosisdev.com/app'
 
 // Magic numbers
 export const POLLING_INTERVAL = 15_000

@@ -396,6 +396,14 @@ const initTheme = (darkMode: boolean) => {
           },
         },
       },
+      MuiBackdrop: {
+        styleOverrides: {
+          root: {
+            backdropFilter: 'blur(1px)',
+            backgroundColor: 'rgba(228, 232, 241, 0.75)',
+          },
+        },
+      },
     },
   })
 }

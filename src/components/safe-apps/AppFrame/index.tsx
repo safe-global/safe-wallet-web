@@ -8,15 +8,16 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import useChainId from '@/hooks/useChainId'
 import { isSameUrl } from '@/utils/url'
+import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
-import useTxModal from '../SafeAppsTxModal/useTxModal'
 import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
 import SafeAppsTxModal from '../SafeAppsTxModal'
+import useTxModal from '../SafeAppsTxModal/useTxModal'
 import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
 import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
-import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
+import TransactionQueueBar from './TransactionQueueBar'
 
 import css from './styles.module.css'
 
@@ -109,6 +110,7 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
         allow="camera"
         style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
       />
+      <TransactionQueueBar />
 
       {txModalState.isOpen && (
         <SafeAppsTxModal
