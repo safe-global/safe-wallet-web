@@ -17,9 +17,9 @@ const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactEl
   const dateLabel: DateLabel = makeDateLabelFromTx(tx)
 
   return (
-    <TxListGrid data-testid="single-tx-grid">
+    <TxListGrid>
       <TxDateLabel item={dateLabel} />
-      <ExpandableTransactionItem item={tx} txDetails={txDetails} />
+      <ExpandableTransactionItem item={tx} txDetails={txDetails} testId="single-tx" />
     </TxListGrid>
   )
 }
