@@ -3,6 +3,7 @@ import { Grid } from '@mui/material'
 import PendingTxsList from '@/components/dashboard/PendingTxs/PendingTxsList'
 import Overview from '@/components/dashboard/Overview/Overview'
 import { FeaturedApps } from '@/components/dashboard/FeaturedApps/FeaturedApps'
+import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
 
 const Dashboard = (): ReactElement => {
   return (
@@ -15,7 +16,13 @@ const Dashboard = (): ReactElement => {
         <PendingTxsList size={4} />
       </Grid>
 
-      <FeaturedApps />
+      <Grid item xs={12}>
+        <FeaturedApps />
+      </Grid>
+
+      <Grid item xs={12}>
+        <SafeAppsDashboardSection />
+      </Grid>
     </Grid>
   )
 }
