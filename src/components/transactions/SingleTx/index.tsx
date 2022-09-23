@@ -31,7 +31,7 @@ const SingleTx = () => {
   const transactionId = Array.isArray(id) ? id[0] : id
   const { safe, safeAddress } = useSafeInfo()
 
-  const [txDetails, txDetailsError, loading] = useAsync<TransactionDetails>(
+  const [txDetails, txDetailsError] = useAsync<TransactionDetails>(
     () => {
       if (!transactionId) return
       return getTransactionDetails(chainId, transactionId)
@@ -41,20 +41,21 @@ const SingleTx = () => {
   )
   const isCurrentSafeTx = sameAddress(txDetails?.safeAddress, safeAddress)
 
-  const error =
-    transactionId && !isCurrentSafeTx
-      ? new Error(`Transaction  with id ${transactionId} not found in this Safe`)
-      : txDetailsError || new Error("Couldn't retrieve the transaction details. Please review the URL.")
+  const error = !transactionId
+    ? new Error("Couldn't retrieve the transaction details. Please review the URL.")
+    : !isCurrentSafeTx
+    ? new Error(`Transaction with id ${transactionId} not found in this Safe`)
+    : txDetailsError
 
-  if (loading) {
-    return <CircularProgress />
+  if (error) {
+    return <ErrorMessage error={error}>Failed to load transaction</ErrorMessage>
   }
 
-  if (txDetails && isCurrentSafeTx) {
+  if (txDetails) {
     return <SingleTxGrid txDetails={txDetails} />
   }
 
-  return <ErrorMessage error={error}>Failed to load transaction</ErrorMessage>
+  return <CircularProgress />
 }
 
 export default SingleTx
