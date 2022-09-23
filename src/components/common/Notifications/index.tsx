@@ -8,7 +8,7 @@ import NextLink from 'next/link'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import Track from '../Track'
-import { isRelativeUrlWithoutProtocol } from '@/utils/url'
+import { isRelativeUrl } from '@/utils/url'
 
 const toastStyle = { position: 'static', margin: 1 }
 
@@ -23,7 +23,7 @@ export const NotificationLink = ({
     return null
   }
 
-  const isExternal = !isRelativeUrlWithoutProtocol(link.href)
+  const isExternal = !isRelativeUrl(link.href)
 
   return (
     <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title}>

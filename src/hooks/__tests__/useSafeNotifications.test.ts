@@ -3,6 +3,9 @@ import { renderHook } from '@/tests//test-utils'
 import useSafeNotifications from '../../hooks/useSafeNotifications'
 import useSafeInfo from '../../hooks/useSafeInfo'
 import { showNotification } from '@/store/notificationsSlice'
+import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import * as useChains from '../../hooks/useChains'
+import * as contracts from '@/services/contracts/safeContracts'
 
 // mock showNotification
 jest.mock('@/store/notificationsSlice', () => {
@@ -21,42 +24,110 @@ describe('useSafeNotifications', () => {
     jest.clearAllMocks()
   })
 
-  it('should show a notification when the Safe version is out of date', async () => {
-    // mock useSafeInfo to return a SafeInfo with an outdated version
-    ;(useSafeInfo as jest.Mock).mockReturnValue({
-      safe: {
-        implementationVersionState: 'OUTDATED',
-        version: '1.1.1',
-      },
+  describe('Safe upgrade', () => {
+    it('should show a notification when the Safe version is out of date', async () => {
+      // mock useSafeInfo to return a SafeInfo with an outdated version
+      ;(useSafeInfo as jest.Mock).mockReturnValue({
+        safe: {
+          implementation: { value: '0x123' },
+          implementationVersionState: 'OUTDATED',
+          version: '1.1.1',
+        },
+        safeAddress: '0x123',
+      })
+      jest.spyOn(useChains, 'useCurrentChain').mockImplementation(
+        () =>
+          ({
+            shortName: 'rin',
+          } as ChainInfo),
+      )
+
+      // render the hook
+      const { result } = renderHook(() => useSafeNotifications())
+
+      // await
+      await act(async () => Promise.resolve())
+
+      // check that the notification was shown
+      expect(result.current).toBeUndefined()
+      expect(showNotification).toHaveBeenCalledWith({
+        variant: 'warning',
+        message: `Your Safe version 1.1.1 is out of date. Please update it.`,
+        groupKey: 'safe-outdated-version',
+        link: {
+          href: `/settings/setup?safe=rin:0x123`,
+          title: 'Update Safe',
+        },
+      })
     })
 
-    // render the hook
-    const { result } = renderHook(() => useSafeNotifications())
+    it('should not show a notification when the Safe version is up to date', async () => {
+      ;(useSafeInfo as jest.Mock).mockReturnValue({
+        safe: {
+          implementation: { value: '0x123' },
+          implementationVersionState: 'UP_TO_DATE',
+          version: '1.3.0',
+        },
+      })
 
-    // await
-    await act(async () => Promise.resolve())
+      // render the hook
+      const { result } = renderHook(() => useSafeNotifications())
 
-    // check that the notification was shown
-    expect(result.current).toBeUndefined()
-    expect(showNotification).toHaveBeenCalled()
+      // await
+      await act(async () => Promise.resolve())
+
+      // check that the notification was shown
+      expect(result.current).toBeUndefined()
+      expect(showNotification).not.toHaveBeenCalled()
+    })
   })
 
-  it('should not show a notification when the Safe version is up to date', async () => {
-    ;(useSafeInfo as jest.Mock).mockReturnValue({
-      safe: {
-        implementationVersionState: 'UP_TO_DATE',
-        version: '1.3.0',
-      },
+  describe('Invalid mastercopy', () => {
+    it('should show a notification when the mastercopy is invalid', async () => {
+      ;(useSafeInfo as jest.Mock).mockReturnValue({
+        safe: {
+          implementation: { value: '0x123' },
+        },
+      })
+      jest.spyOn(contracts, 'isValidMasterCopy').mockImplementation((...args: any[]) => Promise.resolve(false))
+
+      // render the hook
+      const { result } = renderHook(() => useSafeNotifications())
+
+      // await
+      await act(async () => Promise.resolve())
+
+      // check that the notification was shown
+      expect(result.current).toBeUndefined()
+      expect(showNotification).toHaveBeenCalledWith({
+        variant: 'warning',
+        message: `This Safe was created with an unsupported base contract.
+           The web interface might not work correctly.
+           We recommend using the command line interface instead.`,
+        groupKey: 'invalid-mastercopy',
+        link: {
+          href: 'https://github.com/5afe/safe-cli',
+          title: 'Get CLI',
+        },
+      })
     })
+    it('should not show a notification when the mastercopy is valid', async () => {
+      ;(useSafeInfo as jest.Mock).mockReturnValue({
+        safe: {
+          implementation: { value: '0x456' },
+        },
+      })
+      jest.spyOn(contracts, 'isValidMasterCopy').mockImplementation((...args: any[]) => Promise.resolve(true))
 
-    // render the hook
-    const { result } = renderHook(() => useSafeNotifications())
+      // render the hook
+      const { result } = renderHook(() => useSafeNotifications())
 
-    // await
-    await act(async () => Promise.resolve())
+      // await
+      await act(async () => Promise.resolve())
 
-    // check that the notification was shown
-    expect(result.current).toBeUndefined()
-    expect(showNotification).not.toHaveBeenCalled()
+      // check that the notification was shown
+      expect(result.current).toBeUndefined()
+      expect(showNotification).not.toHaveBeenCalled()
+    })
   })
 })
