@@ -74,6 +74,10 @@ const EthHashInfo = ({
             {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
             {shortAddress ? shortenAddress(address) : address}
           </Typography>
+          <Typography variant="body2" fontWeight="inherit" component="div" className={css.mobileAddress}>
+            {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
+            {shortenAddress(address)}
+          </Typography>
 
           {showCopyButton && (
             <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldPrefix && copyPrefix} />

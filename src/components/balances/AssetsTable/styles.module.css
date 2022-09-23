@@ -12,3 +12,9 @@
   align-items: center;
   gap: var(--space-1);
 }
+
+@media (max-width: 600px) {
+  .container td:last-of-type button {
+    opacity: 1;
+  }
+}
