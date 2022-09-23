@@ -14,7 +14,7 @@ const useRemoteSafeApps = (): AsyncResult<SafeAppsResponse> => {
 
   useEffect(() => {
     if (error) {
-      logError(Errors._900, error.message)
+      logError(Errors._902, error.message)
     }
   }, [error])
 
