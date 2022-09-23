@@ -11,7 +11,7 @@ const useRankedSafeApps = (safeApps: SafeAppData[], pinnedSafeApps: SafeAppData[
     if (!safeApps.length) return []
 
     const usageSafeAppsData = getAppsUsageData()
-    const mostUsedSafeAppsIds = rankSafeApps(usageSafeAppsData, pinnedSafeApps)
+    const mostUsedSafeAppsIds = rankSafeApps(usageSafeAppsData, pinnedSafeApps).slice(0, NUMBER_OF_SAFE_APPS)
     const mostUsedSafeApps = safeApps.filter((app) => mostUsedSafeAppsIds.includes(String(app.id)))
 
     // we add random Safe Apps if no enough Safe Apps are present
