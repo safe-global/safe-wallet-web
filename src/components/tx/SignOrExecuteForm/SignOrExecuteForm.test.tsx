@@ -72,8 +72,7 @@ describe('SignOrExecuteForm', () => {
       .mockImplementation(jest.fn(() => Promise.resolve({ txId: '0x12' } as TransactionDetails)))
 
     jest.spyOn(txSender, 'dispatchTxExecution').mockImplementation(jest.fn())
-    jest.spyOn(walletUtils, 'isHardwareWallet').mockImplementation(jest.fn())
-    jest.spyOn(walletUtils, 'isSafeMobileWallet').mockImplementation(jest.fn())
+    jest.spyOn(walletUtils, 'shouldUseEthSignMethod').mockImplementation(jest.fn())
   })
 
   it('displays decoded data if there is a tx', () => {
