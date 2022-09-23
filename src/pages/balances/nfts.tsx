@@ -4,10 +4,7 @@ import Head from 'next/head'
 import { Alert, AlertTitle, Box, CircularProgress } from '@mui/material'
 import useCollectibles from '@/hooks/useCollectibles'
 import Nfts from '@/components/nfts'
-import { Breadcrumbs } from '@/components/common/Breadcrumbs'
-import AssetsIcon from '@/public/images/sidebar/assets.svg'
-import NavTabs from '@/components/common/NavTabs'
-import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
+import AssetsHeader from '@/components/balances/AssetsHeader'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
@@ -59,16 +56,14 @@ const NFTs: NextPage = () => {
   }
 
   return (
-    <main>
+    <>
       <Head>
         <title>Safe – NFTs</title>
       </Head>
 
-      <Breadcrumbs Icon={AssetsIcon} first="Assets" second="NFTs" />
+      <AssetsHeader />
 
-      <NavTabs tabs={balancesNavItems} />
-
-      <Box py={3}>
+      <main>
         <Alert severity="info" sx={{ marginBottom: 6 }}>
           <AlertTitle>Use Safe Apps to view your NFT portfolio</AlertTitle>
           Get the most optimal experience with Safe Apps. View your collections, buy or sell NFTs, and more.
@@ -77,8 +72,8 @@ const NFTs: NextPage = () => {
         {pages.map((pageUrl, index) => (
           <NftPage key={index} pageUrl={pageUrl} onNextPage={index === pages.length - 1 ? onNextPage : undefined} />
         ))}
-      </Box>
-    </main>
+      </main>
+    </>
   )
 }
 
