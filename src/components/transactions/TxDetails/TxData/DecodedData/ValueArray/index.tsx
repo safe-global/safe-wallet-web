@@ -25,9 +25,8 @@ export const Value = ({ type, ...props }: ValueArrayProps): ReactElement => {
                 type,
                 ...props,
                 value: address,
-                key,
               }
-              return <Value {...newProps} />
+              return <Value key={key} {...newProps} />
             }
             return (
               <EthHashInfo
