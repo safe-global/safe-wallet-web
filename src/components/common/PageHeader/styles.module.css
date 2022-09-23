@@ -6,4 +6,5 @@
   border-bottom: 1px solid var(--color-border-light);
   background-color: var(--color-background-paper);
   z-index: 1;
+  width: 100%;
 }

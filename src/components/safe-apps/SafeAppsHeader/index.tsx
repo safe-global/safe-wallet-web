@@ -36,6 +36,7 @@ const SafeAppsHeader = ({ searchQuery, onSearchQueryChange }: Props): ReactEleme
                 disableUnderline: true,
               }}
               fullWidth
+              size="small"
             />
           </Grid>
         </Grid>
