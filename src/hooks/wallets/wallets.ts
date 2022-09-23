@@ -110,3 +110,7 @@ export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
 
   return code !== EMPTY_DATA
 }
+
+export const shouldUseEthSignMethod = (wallet: ConnectedWallet) => {
+  return isHardwareWallet(wallet) || isSafeMobileWallet(wallet) || isWalletConnect(wallet)
+}
