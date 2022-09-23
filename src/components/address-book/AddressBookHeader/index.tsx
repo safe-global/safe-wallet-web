@@ -29,7 +29,7 @@ const AddressBookHeader = ({ handleOpenModal }: Props): ReactElement => {
             <Button
               onClick={handleOpenModal(ModalType.IMPORT)}
               variant="text"
-              sx={{ color: 'text.primary' }}
+              color="primary"
               startIcon={<SvgIcon component={ImportIcon} inheritViewBox />}
             >
               Import
@@ -41,7 +41,7 @@ const AddressBookHeader = ({ handleOpenModal }: Props): ReactElement => {
               onClick={handleOpenModal(ModalType.EXPORT)}
               disabled={!canExport}
               variant="text"
-              sx={{ color: 'text.primary' }}
+              color="primary"
               startIcon={<SvgIcon component={ExportIcon} inheritViewBox />}
             >
               Export
@@ -52,7 +52,7 @@ const AddressBookHeader = ({ handleOpenModal }: Props): ReactElement => {
             <Button
               onClick={handleOpenModal(ModalType.ENTRY)}
               variant="text"
-              sx={{ color: 'text.primary' }}
+              color="primary"
               startIcon={<AddCircleOutlineIcon />}
             >
               Create entry
