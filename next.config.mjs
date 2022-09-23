@@ -3,6 +3,8 @@ import withBundleAnalyzer from '@next/bundle-analyzer'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  basePath: '/app',
+
   reactStrictMode: false,
   eslint: {
     dirs: ['src'],
@@ -29,8 +31,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/:safe([a-z]+\\:0x[a-fA-F0-9]{40})/:path*',
-        destination: '/:path*?safe=:safe',
+        source: '/app/:safe([a-z]+\\:0x[a-fA-F0-9]{40})/:path*',
+        destination: '/app/:path*?safe=:safe',
       },
     ]
   },

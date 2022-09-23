@@ -19,7 +19,7 @@ const usePathRewrite = () => {
     if (!safe) return
 
     // Move the Safe address to the path
-    let newPath = router.pathname.replace(/^\//, `/${safe}/`)
+    let newPath = router.pathname.replace(/^\//, `/app/${safe}/`)
 
     // Preserve other query params
     if (Object.keys(restQuery).length) {
@@ -54,7 +54,7 @@ export const use404Rewrite = (): boolean => {
   useEffect(() => {
     if (typeof location === 'undefined') return
     const currentPath = location.pathname
-    const re = /^\/([^/]+?:0x[0-9a-fA-F]{40})/
+    const re = /^\/app\/([^/]+?:0x[0-9a-fA-F]{40})/
     const [, pathSafe] = currentPath.match(re) || []
 
     if (pathSafe) {
