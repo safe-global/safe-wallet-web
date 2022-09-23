@@ -58,7 +58,7 @@ describe('Dashboard', () => {
     cy.get(`main section#featured-safe-apps a[href*="?appUrl=http"]`).should('have.length', 2)
   })
 
-  it('should show the Safe Apps widget', () => {
+  it('should show the Safe Apps section', () => {
     cy.contains('main section h2', 'Safe Apps')
     cy.contains('main section ', 'Explore Safe Apps')
 
