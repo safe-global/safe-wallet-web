@@ -1,13 +1,13 @@
 import { memo, useMemo, useState } from 'react'
 import Slider from './Slider'
 import LegalDisclaimer from './LegalDisclaimer'
-import SecurityFeedbackAllowedFeatures from './SecurityFeedbackAllowedFeatures'
+import AllowedFeaturesList from './AllowedFeaturesList'
 import { alpha, Box } from '@mui/system'
 import { Grid, LinearProgress } from '@mui/material'
 import { AllowedFeatures, AllowedFeatureSelection, PermissionStatus } from '../types'
 import { BrowserPermission } from '@/hooks/safe-apps/permissions'
 
-interface SecurityFeedbackModalProps {
+interface SafeAppsInfoModalProps {
   onCancel: () => void
   onConfirm: (browserPermisisons: BrowserPermission[]) => void
   features: AllowedFeatures[]
@@ -15,13 +15,13 @@ interface SecurityFeedbackModalProps {
   isPermissionsReviewCompleted: boolean
 }
 
-const SecurityFeedbackModal = ({
+const SafeAppsInfoModal = ({
   onCancel,
   onConfirm,
   features,
   isConsentAccepted,
   isPermissionsReviewCompleted,
-}: SecurityFeedbackModalProps): JSX.Element => {
+}: SafeAppsInfoModalProps): JSX.Element => {
   const [selectedFeatures, setSelectedFeatures] = useState<AllowedFeatureSelection[]>(
     features.map((feature) => {
       return {
@@ -117,7 +117,7 @@ const SecurityFeedbackModal = ({
           <Slider onSlideChange={handleSlideChange}>
             {!isConsentAccepted && <LegalDisclaimer />}
             {!isPermissionsReviewCompleted && (
-              <SecurityFeedbackAllowedFeatures
+              <AllowedFeaturesList
                 features={selectedFeatures}
                 onFeatureSelectionChange={handleFeatureSelectionChange}
               />
@@ -129,4 +129,4 @@ const SecurityFeedbackModal = ({
   )
 }
 
-export default memo(SecurityFeedbackModal)
+export default memo(SafeAppsInfoModal)

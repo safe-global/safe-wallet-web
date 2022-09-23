@@ -3,10 +3,10 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { SafeAppList } from '@/components/safe-apps/SafeAppList'
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
-import SecurityFeedbackModal from '@/components/safe-apps/SecurityFeedbackModal'
+import SafeAppsInfoModal from '@/components/safe-apps/SafeAppsInfoModal'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useChainId from '@/hooks/useChainId'
-import { useSecurityFeedbackModal } from '@/components/safe-apps/SecurityFeedbackModal/useSecurityFeedbackModal'
+import useSafeAppsInfoModal from '@/components/safe-apps/SafeAppsInfoModal/useSafeAppsInfoModal'
 import SafeAppsErrorBoundary from '@/components/safe-apps/SafeAppsErrorBoundary'
 import AppFrame from '@/components/safe-apps/AppFrame'
 import SafeAppsLoadError from '@/components/safe-apps/SafeAppsErrorBoundary/SafeAppsLoadError'
@@ -18,7 +18,7 @@ const Apps: NextPage = () => {
   const [appUrl, routerReady] = useSafeAppUrl()
   const { isLoading, safeApp } = useSafeAppFromManifest(appUrl || '', chainId)
   const { addPermissions, getPermissions, getAllowedFeaturesList } = useBrowserPermissions()
-  const { isModalVisible, isConsentAccepted, isPermissionsReviewCompleted, onComplete } = useSecurityFeedbackModal({
+  const { isModalVisible, isConsentAccepted, isPermissionsReviewCompleted, onComplete } = useSafeAppsInfoModal({
     url: appUrl || '',
     permissions: safeApp?.safeAppsPermissions || [],
     addPermissions,
@@ -32,7 +32,7 @@ const Apps: NextPage = () => {
   if (appUrl) {
     if (isModalVisible) {
       return (
-        <SecurityFeedbackModal
+        <SafeAppsInfoModal
           onCancel={() => router.back()}
           onConfirm={onComplete}
           features={safeApp?.safeAppsPermissions || []}

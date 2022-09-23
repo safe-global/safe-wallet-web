@@ -4,12 +4,12 @@ import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined'
 import PermissionsCheckbox from '../PermissionCheckbox'
 import { AllowedFeatures, AllowedFeatureSelection } from '../types'
 
-type SecurityFeedbackAllowedFeaturesProps = {
+type SafeAppsInfoAllowedFeaturesProps = {
   features: AllowedFeatureSelection[]
   onFeatureSelectionChange: (feature: AllowedFeatures, checked: boolean) => void
 }
 
-const SecurityFeedbackAllowedFeatures: React.FC<SecurityFeedbackAllowedFeaturesProps> = ({
+const AllowedFeaturesList: React.FC<SafeAppsInfoAllowedFeaturesProps> = ({
   features,
   onFeatureSelectionChange,
 }): React.ReactElement => {
@@ -45,4 +45,4 @@ const SecurityFeedbackAllowedFeatures: React.FC<SecurityFeedbackAllowedFeaturesP
   )
 }
 
-export default SecurityFeedbackAllowedFeatures
+export default AllowedFeaturesList

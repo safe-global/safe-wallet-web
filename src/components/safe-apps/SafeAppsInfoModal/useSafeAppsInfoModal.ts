@@ -1,35 +1,32 @@
 import { BrowserPermission } from '@/hooks/safe-apps/permissions'
+import useChainId from '@/hooks/useChainId'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { AllowedFeatures, PermissionStatus } from '../types'
 
 const APPS_SECURITY_FEEDBACK_MODAL = 'APPS_SECURITY_FEEDBACK_MODAL'
 
-type useSecurityFeedbackModal = {
+type useSafeAppsInfoModal = {
   url: string
   permissions: AllowedFeatures[]
   addPermissions: (origin: string, permissions: BrowserPermission[]) => void
   getPermissions: (origin: string) => BrowserPermission[]
 }
 
-const useSecurityFeedbackModal = ({
+const useSafeAppsInfoModal = ({
   url,
   permissions,
   addPermissions,
   getPermissions,
-}: useSecurityFeedbackModal): {
+}: useSafeAppsInfoModal): {
   isModalVisible: boolean
   isConsentAccepted: boolean
   isPermissionsReviewCompleted: boolean
   onComplete: (permissions: BrowserPermission[]) => void
 } => {
   const didMount = useRef(false)
-
-  const [appsReviewed, setAppsReviewed] = useState<string[]>([])
-  const [extendedListReviewed, setExtendedListReviewed] = useState(false)
-  const [customAppsReviewed, setCustomAppsReviewed] = useState<string[]>([])
+  const chainId = useChainId()
   const [consentAccepted, setConsentAccepted] = useState<boolean>(false)
-  const [isDisclaimerReadingCompleted, setIsDisclaimerReadingCompleted] = useState(false)
   const [securityStepsStatus, setSecurityStepsStatus] = useLocalStorage(APPS_SECURITY_FEEDBACK_MODAL, {
     consentAccepted: false,
   })
@@ -37,12 +34,6 @@ const useSecurityFeedbackModal = ({
   useEffect(() => {
     setConsentAccepted(securityStepsStatus.consentAccepted)
   }, [securityStepsStatus])
-
-  useEffect(() => {
-    if (!url) {
-      setIsDisclaimerReadingCompleted(false)
-    }
-  }, [url])
 
   useEffect(() => {
     if (!didMount.current) {
@@ -53,7 +44,7 @@ const useSecurityFeedbackModal = ({
     setSecurityStepsStatus({
       consentAccepted,
     })
-  }, [appsReviewed, consentAccepted, customAppsReviewed, extendedListReviewed, setSecurityStepsStatus])
+  }, [consentAccepted, setSecurityStepsStatus])
 
   const isPermissionsReviewCompleted = useMemo(() => {
     if (!url) return false
@@ -83,8 +74,6 @@ const useSecurityFeedbackModal = ({
       if (!isPermissionsReviewCompleted) {
         addPermissions(url, browserPermissions)
       }
-
-      setIsDisclaimerReadingCompleted(true)
     },
     [addPermissions, isPermissionsReviewCompleted, url],
   )
@@ -97,4 +86,4 @@ const useSecurityFeedbackModal = ({
   }
 }
 
-export { useSecurityFeedbackModal }
+export default useSafeAppsInfoModal
