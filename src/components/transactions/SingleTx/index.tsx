@@ -12,8 +12,6 @@ import { TxListGrid } from '@/components/transactions/TxList'
 import TxDateLabel from '@/components/transactions/TxDateLabel'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 
-const FAILED_TO_LOAD_TX = 'Failed to load transaction'
-
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
   const dateLabel: DateLabel = makeDateLabelFromTx(tx)
@@ -33,38 +31,30 @@ const SingleTx = () => {
   const transactionId = Array.isArray(id) ? id[0] : id
   const { safe, safeAddress } = useSafeInfo()
 
-  const [txDetails, error, loading] = useAsync<TransactionDetails>(
+  const [txDetails, txDetailsError, loading] = useAsync<TransactionDetails>(
     () => {
-      if (!id || !transactionId) return
+      if (!transactionId) return
       return getTransactionDetails(chainId, transactionId)
     },
     [transactionId, safe.txQueuedTag, safe.txHistoryTag],
     false,
   )
-
   const isCurrentSafeTx = sameAddress(txDetails?.safeAddress, safeAddress)
+
+  const error =
+    transactionId && !isCurrentSafeTx
+      ? new Error(`Transaction  with id ${transactionId} not found in this Safe`)
+      : txDetailsError || new Error("Couldn't retrieve the transaction details. Please review the URL.")
 
   if (loading) {
     return <CircularProgress />
   }
 
-  if (!isCurrentSafeTx && transactionId) {
-    return (
-      <ErrorMessage error={Error(`Transaction with id ${transactionId} not found in this Safe `)}>
-        {FAILED_TO_LOAD_TX}
-      </ErrorMessage>
-    )
-  }
-
-  if (txDetails) {
+  if (txDetails && isCurrentSafeTx) {
     return <SingleTxGrid txDetails={txDetails} />
   }
 
-  return (
-    <ErrorMessage error={error || Error('Resource not found. Please review the url.')}>
-      {FAILED_TO_LOAD_TX}
-    </ErrorMessage>
-  )
+  return <ErrorMessage error={error}>Failed to load transaction</ErrorMessage>
 }
 
 export default SingleTx
