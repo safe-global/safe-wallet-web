@@ -34,4 +34,4 @@ const sanitizeUrl = (url: string): string => {
   return sanitizedUrl
 }
 
-export { trimTrailingSlash, isSameUrl, sanitizeUrl }
+export { trimTrailingSlash, isSameUrl, sanitizeUrl, isRelativeUrlWithoutProtocol }
