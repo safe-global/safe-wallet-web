@@ -2,6 +2,8 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Paper, Grid, Link, Typography, Box } from '@mui/material'
 import { gte } from 'semver'
+import { RemoveGuard } from './RemoveGuard'
+import useIsGranted from '@/hooks/useIsGranted'
 
 import css from './styles.module.css'
 
@@ -14,17 +16,22 @@ const NoTransactionGuard = () => {
 }
 
 const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId: string }) => {
+  const isGranted = useIsGranted()
+
   return (
     <Box className={css.guardDisplay}>
       <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton chainId={chainId} showAvatar={false} />
+      {isGranted && <RemoveGuard address={guardAddress} />}
     </Box>
   )
 }
 
+const GUARD_SUPPORTED_SAFE_VERSION = '1.3.0'
+
 const TransactionGuards = () => {
   const { safe, safeLoaded } = useSafeInfo()
 
-  const isVersionWithGuards = safeLoaded && gte(safe.version, '1.3.0')
+  const isVersionWithGuards = safeLoaded && gte(safe.version, GUARD_SUPPORTED_SAFE_VERSION)
 
   if (!isVersionWithGuards) {
     return null
