@@ -1,12 +1,11 @@
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useAsync from '@/hooks/useAsync'
 import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { createTx } from '@/services/tx/txSender'
+import { createRemoveModuleTx } from '@/services/tx/txSender'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { RemoveModuleData } from '@/components/settings/SafeModules/RemoveModule'
-import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
@@ -19,11 +18,10 @@ export const ReviewRemoveModule = ({
   onSubmit: (txId: string) => void
 }) => {
   const { safe } = useSafeInfo()
-  const sdk = useSafeSDK()
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
-    return sdk?.createDisableModuleTx(data.address).then((tx) => createTx(tx.data))
-  }, [sdk, data.address])
+    return createRemoveModuleTx(data.address)
+  }, [data.address])
 
   useEffect(() => {
     if (safeTxError) {

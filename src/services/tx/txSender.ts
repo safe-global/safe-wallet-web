@@ -104,6 +104,14 @@ export const createUpdateThresholdTx = async (threshold: number): Promise<SafeTr
   return withRecommendedNonce((safeSDK) => safeSDK.createChangeThresholdTx(threshold))
 }
 
+export const createRemoveModuleTx = async (moduleAddress: string): Promise<SafeTransaction> => {
+  return withRecommendedNonce((safeSDK) => safeSDK.createDisableModuleTx(moduleAddress))
+}
+
+export const createRemoveGuardTx = async (): Promise<SafeTransaction> => {
+  return withRecommendedNonce((safeSDK) => safeSDK.createDisableGuardTx())
+}
+
 /**
  * Create a rejection tx
  */
@@ -288,7 +296,7 @@ export const dispatchBatchExecution = async (
     txDispatch(TxEvent.PROCESSING, { txId, txHash: result!.hash, groupKey })
   })
 
-  result.transactionResponse
+  result!.transactionResponse
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
@@ -320,7 +328,7 @@ export const dispatchBatchExecution = async (
       })
     })
 
-  return result.hash
+  return result!.hash
 }
 
 export const dispatchSpendingLimitTxExecution = async (
