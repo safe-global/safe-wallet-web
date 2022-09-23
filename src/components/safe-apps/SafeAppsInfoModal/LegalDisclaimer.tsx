@@ -6,21 +6,18 @@ const LegalDisclaimer = (): JSX.Element => (
   <div className={css.disclaimerContainer}>
     <Typography
       variant="body2"
+      color="text.secondary"
       sx={{
-        textAlign: 'center',
-        color: '#b2bbc0',
-        margin: '0 75px',
+        mx: 8,
       }}
     >
       Before starting to use Safe dApps...
     </Typography>
     <Typography
       variant="h3"
+      fontWeight={700}
       sx={{
-        textAlign: 'center',
-        margin: '24px 0',
-        color: 'inherit',
-        fontWeight: 'bold',
+        my: 3,
       }}
     >
       Disclaimer

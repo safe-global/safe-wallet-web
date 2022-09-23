@@ -1,3 +1,5 @@
+import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+
 export enum PermissionStatus {
   GRANTED = 'granted',
   PROMPT = 'prompt',
@@ -5,7 +7,6 @@ export enum PermissionStatus {
 }
 
 export enum AllowedFeatures {
-  // Standarized
   'accelerometer',
   'ambient-light-sensor',
   'autoplay',
@@ -41,3 +42,5 @@ export enum AllowedFeatures {
 }
 
 export type AllowedFeatureSelection = { feature: AllowedFeatures; checked: boolean }
+
+export type SafeAppDataWithPermissions = SafeAppData & { safeAppsPermissions: AllowedFeatures[] }

@@ -66,6 +66,7 @@ const useAppCommunicator = (
 
   useEffect(() => {
     let communicatorInstance: AppCommunicator
+
     const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onError: (error, data) => {

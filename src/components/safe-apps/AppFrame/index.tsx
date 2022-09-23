@@ -11,8 +11,11 @@ import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import useChainId from '@/hooks/useChainId'
 import useAddressBook from '@/hooks/useAddressBook'
 import { useSafePermissions } from '@/hooks/safe-apps/permissions'
+import useIsGranted from '@/hooks/useIsGranted'
+import { useCurrentChain } from '@/hooks/useChains'
 import { isSameUrl } from '@/utils/url'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
+import { getLegacyChainName } from '../utils'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
@@ -25,9 +28,6 @@ import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
-import useIsGranted from '@/hooks/useIsGranted'
-import { getLegacyChainName } from '../utils'
-import { useCurrentChain } from '@/hooks/useChains'
 
 type AppFrameProps = {
   appUrl: string
@@ -71,8 +71,6 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       owners: safe.owners.map((owner) => owner.value),
       threshold: safe.threshold,
       isReadOnly: !granted,
-      // FIXME `network` is deprecated. we should find how many apps are still using it
-      // Apps using this property expect this to be in UPPERCASE
       network: getLegacyChainName(chain?.chainName || '', chainId).toUpperCase(),
     }),
     onGetSafeBalances: (currency) =>

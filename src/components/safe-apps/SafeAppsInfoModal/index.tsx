@@ -1,15 +1,16 @@
 import { memo, useMemo, useState } from 'react'
+import { alpha, Box } from '@mui/system'
+import { Grid, LinearProgress } from '@mui/material'
+
+import { BrowserPermission } from '@/hooks/safe-apps/permissions'
 import Slider from './Slider'
 import LegalDisclaimer from './LegalDisclaimer'
 import AllowedFeaturesList from './AllowedFeaturesList'
-import { alpha, Box } from '@mui/system'
-import { Grid, LinearProgress } from '@mui/material'
 import { AllowedFeatures, AllowedFeatureSelection, PermissionStatus } from '../types'
-import { BrowserPermission } from '@/hooks/safe-apps/permissions'
 
 interface SafeAppsInfoModalProps {
   onCancel: () => void
-  onConfirm: (browserPermisisons: BrowserPermission[]) => void
+  onConfirm: (browserPermissions: BrowserPermission[]) => void
   features: AllowedFeatures[]
   isConsentAccepted?: boolean
   isPermissionsReviewCompleted: boolean
@@ -70,10 +71,6 @@ const SafeAppsInfoModal = ({
 
   const progressValue = useMemo(() => {
     return ((currentSlide + 1) * 100) / totalSlides
-  }, [currentSlide, totalSlides])
-
-  const isLastSlide = useMemo(() => {
-    return currentSlide === totalSlides - 1
   }, [currentSlide, totalSlides])
 
   const handleFeatureSelectionChange = (feature: AllowedFeatures, checked: boolean) => {

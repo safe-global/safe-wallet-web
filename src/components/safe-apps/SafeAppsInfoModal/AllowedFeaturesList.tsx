@@ -1,6 +1,8 @@
-import { BROWSER_PERMISSIONS_TEXTS } from '@/hooks/safe-apps/permissions'
 import { Box, Typography } from '@mui/material'
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined'
+
+import { BROWSER_PERMISSIONS_TEXTS } from '@/hooks/safe-apps/permissions'
+
 import PermissionsCheckbox from '../PermissionCheckbox'
 import { AllowedFeatures, AllowedFeatureSelection } from '../types'
 
@@ -15,12 +17,12 @@ const AllowedFeaturesList: React.FC<SafeAppsInfoAllowedFeaturesProps> = ({
 }): React.ReactElement => {
   return (
     <>
-      <ShieldOutlinedIcon sx={{ color: '#b2bbc0' }} />
+      <ShieldOutlinedIcon sx={({ palette }) => ({ color: palette.text.secondary })} />
       <Typography
         variant="body2"
+        color="text.secondary"
         sx={{
           textAlign: 'center',
-          color: '#b2bbc0',
           margin: '0 75px',
         }}
       >
