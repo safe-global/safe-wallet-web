@@ -19,11 +19,12 @@ import { getLegacyChainName } from '../utils'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
-import useTxModal from '../SafeAppsTxModal/useTxModal'
 import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
 import SafeAppsTxModal from '../SafeAppsTxModal'
+import useTxModal from '../SafeAppsTxModal/useTxModal'
 import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
 import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
+import TransactionQueueBar from './TransactionQueueBar'
 import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
 
@@ -175,6 +176,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         allow={allowedFeaturesList}
         style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
       />
+
+      <TransactionQueueBar />
 
       {txModalState.isOpen && (
         <SafeAppsTxModal

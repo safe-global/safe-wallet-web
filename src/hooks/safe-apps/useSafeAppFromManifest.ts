@@ -16,7 +16,7 @@ const useSafeAppFromManifest = (appUrl: string, chainId: string): UseSafeAppFrom
 
   useEffect(() => {
     if (!error) return
-    logError(Errors._900, `${appUrl}, ${(error as Error).message}`)
+    logError(Errors._903, `${appUrl}, ${(error as Error).message}`)
   }, [appUrl, error])
 
   return { safeApp: data, isLoading }

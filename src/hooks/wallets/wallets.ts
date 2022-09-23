@@ -91,6 +91,10 @@ export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR].includes(wallet.label.toUpperCase() as WALLET_KEYS)
 }
 
+export const isWalletConnect = (wallet: ConnectedWallet): boolean => {
+  return wallet.label.toUpperCase() === WALLET_KEYS.WALLETCONNECT
+}
+
 export const isSafeMobileWallet = (wallet: ConnectedWallet): boolean => {
   return wallet.label === PAIRING_MODULE_LABEL
 }
@@ -105,4 +109,8 @@ export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
   const code = await provider.getCode(wallet.address)
 
   return code !== EMPTY_DATA
+}
+
+export const shouldUseEthSignMethod = (wallet: ConnectedWallet) => {
+  return isHardwareWallet(wallet) || isSafeMobileWallet(wallet) || isWalletConnect(wallet)
 }
