@@ -37,10 +37,10 @@
 
 @media (max-width: 600px) {
   .mobileAddress {
-    display: block;
+    display: inline-block;
   }
 
-  .address {
+  .desktopAddress {
     display: none;
   }
 }
