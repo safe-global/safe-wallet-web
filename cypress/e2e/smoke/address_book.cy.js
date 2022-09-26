@@ -4,8 +4,8 @@ import { format } from 'date-fns'
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
-const ADDRESS = '0x61a0c717d18232711bC788F19C9Cd56a43cc8872'
 const ENS_NAME = 'test20.eth'
+const ENS_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 const GOERLI_TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
 const GOERLI_CSV_ENTRY = {
@@ -35,7 +35,7 @@ describe('Address book', () => {
       cy.contains('button', 'Save').click()
 
       cy.contains(NAME).should('exist')
-      cy.contains(ADDRESS).should('exist')
+      cy.contains(ENS_ADDRESS).should('exist')
     })
 
     it('should save an edited entry name', () => {
@@ -95,10 +95,8 @@ describe('Address book', () => {
 
     it('should download correctly the address book file', () => {
       // Download the export file
-      const date = format(new Date(), 'yyyy-MM-dd')
+      const date = format(new Date(), 'yyyy-MM-dd', { timeZone: 'UTC' })
       const fileName = `safe-address-book-${date}.csv` //name that is given to the file automatically
-
-      // safe-address-book-2022-09-21
 
       cy.contains('Export').click()
       //This is the submit button for the Export modal. It requires an actuall class or testId to differentiate
