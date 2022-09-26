@@ -9,6 +9,7 @@ import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
 import { createTx } from '@/services/tx/txSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { type NftTransferParams } from '.'
+import ImageFallback from '@/components/common/ImageFallback'
 
 type ReviewNftTxProps = {
   params: NftTransferParams
@@ -17,6 +18,7 @@ type ReviewNftTxProps = {
 
 const ReviewNftTx = ({ params, onSubmit }: ReviewNftTxProps): ReactElement => {
   const { safeAddress, safe } = useSafeInfo()
+  const { token } = params
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!safeAddress) return
@@ -26,6 +28,19 @@ const ReviewNftTx = ({ params, onSubmit }: ReviewNftTxProps): ReactElement => {
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
+      <Box display="flex" flexDirection="column" alignItems="center">
+        <ImageFallback
+          src={token.imageUri || token.logoUri}
+          fallbackSrc="/images/nft-placeholder.png"
+          alt={token.tokenSymbol}
+          height={60}
+          style={{ borderRadius: 4, marginBottom: 'var(--space-1)' }}
+        />
+
+        <Typography color="text.secondary">{token.tokenName}</Typography>
+        <Typography>{token.name || `${token.tokenName} #${token.id}`}</Typography>
+      </Box>
+
       <SendFromBlock />
 
       <Typography color={({ palette }) => palette.text.secondary} pb={1}>

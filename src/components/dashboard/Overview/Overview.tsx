@@ -12,6 +12,7 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import useCollectibles from '@/hooks/useCollectibles'
 
 const IdenticonContainer = styled.div`
   position: relative;
@@ -34,7 +35,7 @@ const NetworkLabelContainer = styled.div`
   }
 `
 
-const ValueSkeleton = <Skeleton variant="text" width={30} />
+const ValueSkeleton = () => <Skeleton variant="text" width={30} />
 
 const SkeletonOverview = (
   <Card>
@@ -60,13 +61,17 @@ const SkeletonOverview = (
         <Typography color="inputDefault" fontSize="lg">
           Tokens
         </Typography>
-        <StyledText fontSize="lg">{ValueSkeleton}</StyledText>
+        <StyledText fontSize="lg">
+          <ValueSkeleton />
+        </StyledText>
       </Grid>
       <Grid item xs={3}>
         <Typography color="inputDefault" fontSize="lg">
           NFTs
         </Typography>
-        <StyledText fontSize="lg">{ValueSkeleton}</StyledText>
+        <StyledText fontSize="lg">
+          <ValueSkeleton />
+        </StyledText>
       </Grid>
     </Grid>
   </Card>
@@ -77,12 +82,15 @@ const Overview = (): ReactElement => {
   const safeAddress = useSafeAddress()
   const { safe, safeLoading } = useSafeInfo()
   const { balances } = useBalances()
+  const [nfts] = useCollectibles()
   const chain = useCurrentChain()
   const { chainId } = chain || {}
   const assetsLink = `${AppRoutes.balances.index}?safe=${router.query.safe}`
+  const nftsLink = `${AppRoutes.balances.nfts}?safe=${router.query.safe}`
 
   // Native token is always returned even when its balance is 0
   const tokenCount = useMemo(() => balances.items.filter((token) => token.balance !== '0').length, [balances])
+  const nftsCount = useMemo(() => (nfts ? `${nfts.next ? '>' : ''}${nfts.results.length}` : ''), [nfts])
 
   return (
     <WidgetContainer>
@@ -112,13 +120,24 @@ const Overview = (): ReactElement => {
             </Box>
 
             <Grid container>
-              <Grid item xs>
+              <Grid item xs={3}>
                 <Link href={assetsLink}>
                   <a>
                     <Typography color="border.main" variant="body2">
                       Tokens
                     </Typography>
                     <StyledText fontSize="lg">{tokenCount}</StyledText>
+                  </a>
+                </Link>
+              </Grid>
+
+              <Grid item xs={3}>
+                <Link href={nftsLink}>
+                  <a>
+                    <Typography color="inputDefault" fontSize="lg">
+                      NFTs
+                    </Typography>
+                    <StyledText fontSize="lg">{nftsCount || <ValueSkeleton />}</StyledText>
                   </a>
                 </Link>
               </Grid>
