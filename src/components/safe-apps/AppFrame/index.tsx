@@ -127,6 +127,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         const { detailedExecutionInfo } = await getTransactionDetails(chainId, txId)
 
         if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
+          trackEvent({ ...SAFE_APPS_EVENTS.TRANSACTION_CONFIRMED, label: safeAppFromManifest?.name })
           communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, safeAppRequestId)
         }
 
@@ -135,14 +136,24 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     })
 
     return unsubscribe
-  }, [chainId, closeTxModal, closeSignMessageModal, communicator, txModalState, signMessageModalState])
+  }, [
+    chainId,
+    closeTxModal,
+    closeSignMessageModal,
+    communicator,
+    txModalState,
+    signMessageModalState,
+    safeAppFromManifest,
+  ])
 
   const onSafeAppsModalClose = () => {
     if (txModalState.isOpen) {
       communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, txModalState.requestId, true)
+      trackEvent({ ...SAFE_APPS_EVENTS.TRANSACTION_REJECTED, label: safeAppFromManifest?.name })
       closeTxModal()
     } else {
       communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, signMessageModalState.requestId, true)
+      trackEvent({ ...SAFE_APPS_EVENTS.TRANSACTION_REJECTED, label: safeAppFromManifest?.name })
       closeSignMessageModal()
     }
   }
