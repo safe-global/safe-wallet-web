@@ -3,6 +3,7 @@ import groupBy from 'lodash/groupBy'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import NftCard from '../NftCard'
+import ImageFallback from '@/components/common/ImageFallback'
 
 const NftGrid = ({
   collectibles,
@@ -21,16 +22,19 @@ const NftGrid = ({
           <Box key={address} pb={4}>
             <Grid container alignItems="center" pb={2}>
               <Grid item xs={1}>
-                {logoUri && (
-                  <img src={logoUri} alt={`${tokenName} collection icon`} style={{ height: '45px', width: '45px' }} />
-                )}
+                <ImageFallback
+                  src={logoUri}
+                  alt={`${tokenName} collection icon`}
+                  fallbackSrc="/images/nft-placeholder.png"
+                  height="45px"
+                />
               </Grid>
-              <Grid item xs={1}>
-                <Typography variant="h6" mb={1}>
+              <Grid item>
+                <Typography variant="h6" mb={1} mr={2}>
                   {tokenName}
                 </Typography>
               </Grid>
-              <Grid item xs={10}>
+              <Grid item xs>
                 <Divider flexItem />
               </Grid>
             </Grid>
