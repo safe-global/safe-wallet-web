@@ -1,7 +1,8 @@
 import { MutableRefObject, useEffect, useMemo, useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
-import { BigNumber } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber'
 import { SafeAppData, ChainInfo as WebCoreChainInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Permission, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
 import {
   AddressBookItem,
   BaseTransaction,
@@ -23,7 +24,6 @@ import {
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
-import { Permission, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
 import { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
 
 export enum CommunicatorMessages {
