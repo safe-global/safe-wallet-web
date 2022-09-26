@@ -51,4 +51,8 @@ export const initSafeSDK = async (
   })
 }
 
-export const { getStore: getSafeSDK, setStore: setSafeSDK, useStore: useSafeSDK } = new ExternalStore<Safe>()
+export const {
+  getStore: getSafeSDK,
+  setStore: setSafeSDK,
+  useStore: useSafeSDK,
+} = new ExternalStore<Safe | undefined>()
