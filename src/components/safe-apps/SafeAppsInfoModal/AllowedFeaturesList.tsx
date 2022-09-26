@@ -4,7 +4,7 @@ import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined'
 import { getBrowserPermissionDisplayValues } from '@/hooks/safe-apps/permissions'
 import PermissionsCheckbox from '../PermissionCheckbox'
 
-import { AllowedFeatures, AllowedFeatureSelection } from '../types'
+import { AllowedFeatures, AllowedFeatureSelection, isBrowserFeature } from '../types'
 
 type SafeAppsInfoAllowedFeaturesProps = {
   features: AllowedFeatureSelection[]
@@ -32,15 +32,17 @@ const AllowedFeaturesList: React.FC<SafeAppsInfoAllowedFeaturesProps> = ({
         <Typography>This app is requesting permission to use:</Typography>
         <br />
         <Box display="flex" flexDirection="column" ml={2}>
-          {features.map(({ feature, checked }, index) => (
-            <PermissionsCheckbox
-              key={index}
-              name="checkbox"
-              checked={checked}
-              onChange={(_, checked) => onFeatureSelectionChange(feature, checked)}
-              label={getBrowserPermissionDisplayValues(feature).displayName}
-            />
-          ))}
+          {features
+            .filter(({ feature }) => isBrowserFeature(feature))
+            .map(({ feature, checked }, index) => (
+              <PermissionsCheckbox
+                key={index}
+                name="checkbox"
+                checked={checked}
+                onChange={(_, checked) => onFeatureSelectionChange(feature, checked)}
+                label={getBrowserPermissionDisplayValues(feature).displayName}
+              />
+            ))}
         </Box>
       </Box>
     </>

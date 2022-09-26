@@ -24,7 +24,7 @@ const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
 export const getBrowserPermissionDisplayValues = (feature: AllowedFeatures) => {
   return {
-    displayName: capitalize(feature),
+    displayName: capitalize(feature).replace(/-/g, ' '),
     description: `Allow to use - ${feature}`,
   }
 }
