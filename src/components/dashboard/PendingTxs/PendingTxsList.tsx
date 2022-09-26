@@ -11,6 +11,7 @@ import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoTransactionsIcon from '@/public/images/no-transactions.svg'
+import { getQueuedTransactionCount } from '@/utils/transactions'
 
 const SkeletonWrapper = styled.div`
   border-radius: 8px;
@@ -49,7 +50,7 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
     isMultisigExecutionInfo(item.transaction.executionInfo) ? item.transaction.executionInfo.nonce : '',
   ).slice(0, size)
 
-  const totalQueuedTxs = queuedTxns.length
+  const totalQueuedTxs = getQueuedTransactionCount(page)
 
   const LoadingState = useMemo(
     () => (
@@ -87,7 +88,7 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
         <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
           Transaction queue {totalQueuedTxs ? ` (${totalQueuedTxs})` : ''}
         </Typography>
-        {totalQueuedTxs > 0 && <ViewAllLink url={url} />}
+        {totalQueuedTxs !== '0' && <ViewAllLink url={url} />}
       </StyledWidgetTitle>
       <WidgetBody>{getWidgetBody()}</WidgetBody>
     </WidgetContainer>
