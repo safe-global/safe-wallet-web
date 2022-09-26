@@ -20,6 +20,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsGranted from '@/hooks/useIsGranted'
 import { useCurrentChain } from '@/hooks/useChains'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
+import { BigNumber } from '@ethersproject/bignumber'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -130,10 +131,13 @@ const useAppCommunicator = (
     communicator?.on(Methods.sendTransactions, (msg) => {
       const { txs, params } = msg.data.params as SendTransactionsParams
 
-      const transactions = txs.map(({ to, ...rest }) => ({
-        to: getAddress(to),
-        ...rest,
-      }))
+      const transactions = txs.map(({ to, value, ...rest }) => {
+        return {
+          to: getAddress(to),
+          value: BigNumber.from(value).toString(),
+          ...rest,
+        }
+      })
 
       onConfirmTransactions(transactions, msg.data.id, params)
     })
