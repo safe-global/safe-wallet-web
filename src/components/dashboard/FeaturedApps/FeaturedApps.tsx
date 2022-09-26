@@ -39,7 +39,7 @@ export const FeaturedApps = (): ReactElement | null => {
   return (
     <Grid item xs={12} md>
       <WidgetContainer id="featured-safe-apps">
-        <Typography variant="subtitle1" fontWeight={700} mb={2}>
+        <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
           Connect &amp; transact
         </Typography>
         <WidgetBody>
