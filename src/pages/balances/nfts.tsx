@@ -65,13 +65,18 @@ const NftApps = (): ReactElement | null => {
   }
 
   return (
-    <Grid container spacing={3}>
-      {nftApps.map((nftApp) => (
-        <Grid item xs={12} md={4} lg={3} key={nftApp.id}>
-          <AppCard safeApp={nftApp} />
-        </Grid>
-      ))}
-    </Grid>
+    <>
+      <Typography component="h2" variant="subtitle1" fontWeight={700} my={2}>
+        NFT Apps
+      </Typography>
+      <Grid container spacing={3}>
+        {nftApps.map((nftApp) => (
+          <Grid item xs={12} md={4} lg={3} key={nftApp.id}>
+            <AppCard safeApp={nftApp} />
+          </Grid>
+        ))}
+      </Grid>
+    </>
   )
 }
 
@@ -98,15 +103,7 @@ const NFTs: NextPage = () => {
           Get the most optimal experience with Safe Apps. View your collections, buy or sell NFTs, and more.
         </Alert>
 
-        <Typography component="h2" variant="subtitle1" fontWeight={700} my={2}>
-          NFT Apps
-        </Typography>
-
         <NftApps />
-
-        <Typography component="h2" variant="subtitle1" fontWeight={700} my={2}>
-          NFTs
-        </Typography>
 
         {pages.map((pageUrl, index) => (
           <NftPage key={index} pageUrl={pageUrl} onNextPage={index === pages.length - 1 ? onNextPage : undefined} />
