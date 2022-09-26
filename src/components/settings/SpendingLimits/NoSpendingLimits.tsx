@@ -11,7 +11,7 @@ export const NoSpendingLimits = () => {
         <BeneficiaryIcon />
       </Grid>
       <Grid item sm={10}>
-        <Typography marginTop={2}>
+        <Typography>
           <b>Select beneficiary</b>
         </Typography>
         <Typography>
@@ -24,7 +24,7 @@ export const NoSpendingLimits = () => {
         <AssetAmountIcon />
       </Grid>
       <Grid item sm={10}>
-        <Typography marginTop={2}>
+        <Typography>
           <b>Select asset and amount</b>
         </Typography>
         <Typography>You can set allowances for any asset stored in your Safe</Typography>
@@ -34,7 +34,7 @@ export const NoSpendingLimits = () => {
         <TimeIcon />
       </Grid>
       <Grid item sm={10}>
-        <Typography marginTop={2}>
+        <Typography>
           <b>Select time</b>
         </Typography>
         <Typography>
