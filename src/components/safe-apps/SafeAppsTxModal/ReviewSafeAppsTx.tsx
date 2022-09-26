@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
 import { DecodedDataResponse, getDecodedData, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { BigNumber } from 'ethers'
 import { Box, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
@@ -31,7 +32,9 @@ const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params } }: ReviewSafe
   const canExecute = safe.threshold === 1
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
-    const tx = await createMultiSendCallOnlyTx(txs)
+    const tx = await createMultiSendCallOnlyTx(
+      isMultiSend ? txs : [{ ...txs[0], value: BigNumber.from(txs[0].value).toString() }],
+    )
 
     if (params?.safeTxGas) {
       // @ts-expect-error safeTxGas readonly
