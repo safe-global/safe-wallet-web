@@ -12,9 +12,7 @@ const useRankedSafeApps = (safeApps: SafeAppData[], pinnedSafeApps: SafeAppData[
 
     const usageSafeAppsData = getAppsUsageData()
     const mostUsedSafeAppsIds = rankSafeApps(usageSafeAppsData, pinnedSafeApps).slice(0, NUMBER_OF_SAFE_APPS)
-    const mostUsedSafeApps = mostUsedSafeAppsIds.map(
-      (SafeAppsId) => safeApps.find((safeApp) => String(safeApp.id) === SafeAppsId) as SafeAppData,
-    )
+    const mostUsedSafeApps = getSafeAppDataFromIds(mostUsedSafeAppsIds, safeApps)
 
     // we add random Safe Apps if no enough Safe Apps are present
     const numberOfRandomSafeApps = NUMBER_OF_SAFE_APPS - mostUsedSafeApps.length
@@ -28,3 +26,16 @@ const useRankedSafeApps = (safeApps: SafeAppData[], pinnedSafeApps: SafeAppData[
 }
 
 export { useRankedSafeApps }
+
+const getSafeAppDataFromIds = (safeAppIds: String[], safeApps: SafeAppData[]) => {
+  return safeAppIds.reduce<SafeAppData[]>((acc, safeAppId) => {
+    // if Safe App data is present we include it in the array
+    const safeAppData = safeApps.find((safeApp) => String(safeApp.id) === safeAppId)
+
+    if (safeAppData) {
+      return [...acc, safeAppData]
+    }
+
+    return acc
+  }, [])
+}
