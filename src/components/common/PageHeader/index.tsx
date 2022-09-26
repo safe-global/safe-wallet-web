@@ -8,10 +8,12 @@ import css from './styles.module.css'
 const PageHeader = ({
   title,
   subtitle,
+  helperText,
   action,
 }: {
   title: string
   subtitle: string
+  helperText?: string
   action?: ReactElement
 }): ReactElement => {
   const safeAddress = useSafeAddress()
@@ -33,9 +35,14 @@ const PageHeader = ({
         <Typography variant="h3" fontWeight={700} gutterBottom>
           {title}
         </Typography>
-        <Typography variant="h5" fontWeight={400} color="primary.light">
+        <Typography variant="h5" fontWeight={400} color="primary.light" gutterBottom={!!helperText}>
           {subtitle}
         </Typography>
+        {helperText && (
+          <Typography variant="body2" color="primary.light">
+            {helperText}
+          </Typography>
+        )}
       </div>
       {action}
     </Box>
