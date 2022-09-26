@@ -93,11 +93,11 @@ const ReviewSafeAppsSignMessage = ({
           </Box>
         )}
 
-        <Typography sx={{ my: 1 }}>
+        <Typography my={1}>
           <b>Signing Method:</b> <code>{method}</code>
         </Typography>
 
-        <Typography sx={{ my: 2 }}>
+        <Typography my={2}>
           <b>Signing message:</b>
         </Typography>
 
@@ -120,9 +120,7 @@ const ReviewSafeAppsSignMessage = ({
 
         <Box display="flex" alignItems="center" my={2}>
           <WarningIcon color="warning" />
-          <Typography sx={{ ml: 1 }}>
-            Signing a message with the Safe requires a transaction on the blockchain
-          </Typography>
+          <Typography ml={1}>Signing a message with the Safe requires a transaction on the blockchain</Typography>
         </Box>
       </>
     </SignOrExecuteForm>

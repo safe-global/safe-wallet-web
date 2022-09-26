@@ -11,13 +11,13 @@ import {
 
 describe('AppFrame', () => {
   it('should show the transaction queue bar', () => {
-    render(<AppFrame appUrl="https://app.url" />)
+    render(<AppFrame appUrl="https://app.url" allowedFeaturesList="" />)
 
     expect(screen.getByText('(0) Transaction queue')).toBeInTheDocument()
   })
 
   it('should show queued transactions in the queue bar', () => {
-    render(<AppFrame appUrl="https://app.url" />, {
+    render(<AppFrame appUrl="https://app.url" allowedFeaturesList="" />, {
       initialReduxState: {
         txQueue: {
           data: {
