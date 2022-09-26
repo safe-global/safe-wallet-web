@@ -1,4 +1,4 @@
-import { act, render } from '@/tests/test-utils'
+import { act, fireEvent, render } from '@/tests/test-utils'
 import SingleTx from '@/pages/transactions/tx'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import { SafeInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -54,7 +54,7 @@ describe('SingleTx', () => {
     expect(getByTestId('single-tx')).toBeInTheDocument()
   })
 
-  it('renders <ErrorMessage /> when there is an error in the URL', async () => {
+  it('renders <ErrorMessage /> and error description when there is an error in the URL', async () => {
     const useRouter = jest.spyOn(require('next/router'), 'useRouter')
 
     useRouter.mockImplementation(() => ({
@@ -66,9 +66,14 @@ describe('SingleTx', () => {
     const { queryByText } = render(<SingleTx />)
 
     expect(queryByText('Failed to load transaction')).toBeInTheDocument()
+
+    const button = queryByText('Details')
+    fireEvent.click(button!)
+
+    expect(queryByText("Couldn't retrieve the transaction details. Please review the URL.")).toBeInTheDocument()
   })
 
-  it('renders <ErrorMessage /> when the transaction is not found', async () => {
+  it('renders <ErrorMessage /> and error description when the transaction is not found', async () => {
     const useRouter = jest.spyOn(require('next/router'), 'useRouter')
     useRouter.mockImplementation(() => ({
       query: {
@@ -84,9 +89,14 @@ describe('SingleTx', () => {
     await act(() => Promise.resolve())
 
     expect(queryByText('Failed to load transaction')).toBeInTheDocument()
+
+    const button = queryByText('Details')
+    fireEvent.click(button!)
+
+    expect(queryByText('Transaction with id dummy not found in this Safe')).toBeInTheDocument()
   })
 
-  it('renders <ErrorMessage /> when transaction is not from the opened Safe', async () => {
+  it('renders <ErrorMessage /> and error description when transaction is not from the opened Safe', async () => {
     const useRouter = jest.spyOn(require('next/router'), 'useRouter')
     useRouter.mockImplementation(() => ({
       query: {
@@ -107,5 +117,14 @@ describe('SingleTx', () => {
     await act(() => Promise.resolve())
 
     expect(queryByText('Failed to load transaction')).toBeInTheDocument()
+
+    const button = queryByText('Details')
+    fireEvent.click(button!)
+
+    expect(
+      queryByText(
+        'Transaction with id multisig_0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f_0x236da79434c398bf98b204e6f3d93d not found in this Safe',
+      ),
+    ).toBeInTheDocument()
   })
 })
