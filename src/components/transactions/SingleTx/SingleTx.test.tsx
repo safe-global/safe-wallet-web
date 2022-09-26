@@ -76,7 +76,12 @@ describe('SingleTx', () => {
       },
     }))
 
+    const getTransactionDetails = jest.spyOn(require('@gnosis.pm/safe-react-gateway-sdk'), 'getTransactionDetails')
+    getTransactionDetails.mockImplementation(() => Promise.resolve([]))
+
     const { queryByText } = render(<SingleTx />)
+
+    await act(() => Promise.resolve())
 
     expect(queryByText('Failed to load transaction')).toBeInTheDocument()
   })
