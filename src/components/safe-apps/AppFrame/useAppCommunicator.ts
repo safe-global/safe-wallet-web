@@ -1,5 +1,6 @@
 import { MutableRefObject, useEffect, useMemo, useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
+import { BigNumber } from 'ethers'
 import { SafeAppData, ChainInfo as WebCoreChainInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   AddressBookItem,
@@ -124,10 +125,13 @@ const useAppCommunicator = (
     communicator?.on(Methods.sendTransactions, (msg) => {
       const { txs, params } = msg.data.params as SendTransactionsParams
 
-      const transactions = txs.map(({ to, ...rest }) => ({
-        to: getAddress(to),
-        ...rest,
-      }))
+      const transactions = txs.map(({ to, value, ...rest }) => {
+        return {
+          to: getAddress(to),
+          value: BigNumber.from(value).toString(),
+          ...rest,
+        }
+      })
 
       handlers.onConfirmTransactions(transactions, msg.data.id, params)
     })
