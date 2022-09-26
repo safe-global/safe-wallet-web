@@ -1,4 +1,4 @@
-import { AccordionSummary, Accordion, Button, Typography, CircularProgress, Skeleton, Box } from '@mui/material'
+import { AccordionSummary, Accordion, Button, Typography, CircularProgress, Skeleton } from '@mui/material'
 import { ReactElement } from 'react'
 
 import Track from '@/components/common/Track'
@@ -88,11 +88,9 @@ export const TxSimulation = (props: TxSimulationProps): ReactElement | null => {
 
   if (!props.transactions) {
     return (
-      <Box sx={{ mt: 2 }}>
-        <div className={css.skeletonWrapper}>
-          <Skeleton variant="rectangular" height={58} />
-        </div>
-      </Box>
+      <div className={css.skeletonWrapper}>
+        <Skeleton variant="rectangular" height={58} />
+      </div>
     )
   }
 
