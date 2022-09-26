@@ -16,8 +16,17 @@ const AssetsHeader = ({
   return (
     <PageHeader
       title="Assets"
-      subtitle="See all your tokens and NFTs in one place"
-      helperText={helperText}
+      subtitle={
+        <>
+          See all your tokens and NFTs in one place
+          {helperText && (
+            <>
+              <br />
+              {helperText}
+            </>
+          )}
+        </>
+      }
       action={
         <Box display="flex" justifyContent="space-between">
           <NavTabs tabs={balancesNavItems} />
