@@ -7,7 +7,7 @@ import {
   type TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { isCancellationTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
+import { isCancellationTxInfo, isERC721Transfer, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import { DEFAULT_MODULE_NAME } from '@/components/settings/SafeModules'
 
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
@@ -45,9 +45,18 @@ const getTxType = (tx: TransactionSummary): TxType => {
     case TransactionInfoType.TRANSFER: {
       const isSendTx = tx.txInfo.direction === TransferDirection.OUTGOING
 
+      const text = isSendTx ? (isTxQueued(tx.txStatus) ? 'Send' : 'Sent') : 'Received'
+
+      if (isERC721Transfer(tx.txInfo.transferInfo)) {
+        return {
+          icon: tx.txInfo.transferInfo?.logoUri || '/images/nft-placeholder.png',
+          text,
+        }
+      }
+
       return {
         icon: isSendTx ? '/images/outgoing.svg' : '/images/incoming.svg',
-        text: isSendTx ? (isTxQueued(tx.txStatus) ? 'Send' : 'Sent') : 'Received',
+        text,
       }
     }
     case TransactionInfoType.SETTINGS_CHANGE: {
