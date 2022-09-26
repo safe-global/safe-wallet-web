@@ -1,5 +1,6 @@
+import { AllowedFeatures, SafeAppDataWithPermissions } from '@/components/safe-apps/types'
 import { trimTrailingSlash } from '@/utils/url'
-import { SafeAppAccessPolicyTypes, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
 
 type AppManifestIcon = {
   src: string
@@ -15,6 +16,7 @@ export type AppManifest = {
   description: string
   icons?: AppManifestIcon[]
   iconPath?: string
+  safe_apps_permissions?: AllowedFeatures[]
 }
 
 const MIN_ICON_WIDTH = 128
@@ -89,7 +91,10 @@ const isAppManifestValid = (json: unknown): json is AppManifest => {
   )
 }
 
-const fetchSafeAppFromManifest = async (appUrl: string, currentChainId: string): Promise<SafeAppData> => {
+const fetchSafeAppFromManifest = async (
+  appUrl: string,
+  currentChainId: string,
+): Promise<SafeAppDataWithPermissions> => {
   const normalizedAppUrl = trimTrailingSlash(appUrl)
   const appManifest = await fetchAppManifest(appUrl)
 
@@ -108,6 +113,7 @@ const fetchSafeAppFromManifest = async (appUrl: string, currentChainId: string):
     tags: [],
     chainIds: [currentChainId],
     iconUrl,
+    safeAppsPermissions: appManifest.safe_apps_permissions || [],
   }
 }
 
