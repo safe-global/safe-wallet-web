@@ -88,7 +88,7 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
         <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
           Transaction queue {totalQueuedTxs ? ` (${totalQueuedTxs})` : ''}
         </Typography>
-        {totalQueuedTxs !== '0' && <ViewAllLink url={url} />}
+        {queuedTxns.length > 0 && <ViewAllLink url={url} />}
       </StyledWidgetTitle>
       <WidgetBody>{getWidgetBody()}</WidgetBody>
     </WidgetContainer>
