@@ -104,7 +104,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         <DialogContent>
           <SendFromBlock />
 
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
             <AddressBookInput name={SendAssetsField.recipient} label="Recipient" />
           </FormControl>
 
