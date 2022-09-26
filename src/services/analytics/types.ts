@@ -16,3 +16,12 @@ export type AnalyticsEvent = {
   action: string
   label?: EventLabel
 }
+
+export type SafeAppEvent = {
+  event: EventType.SAFE_APP
+  chainId: string
+  safeAppName: string
+  safeAppMethod: string
+  safeAppEthMethod?: string
+  safeAppSDKVersion?: string
+}

@@ -29,6 +29,7 @@ import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
+import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 
 type AppFrameProps = {
   appUrl: string
@@ -108,6 +109,15 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
 
     setAppIsLoading(false)
   }, [appUrl, iframeRef, setAppIsLoading])
+
+  useEffect(() => {
+    if (!appIsLoading) {
+      trackEvent({
+        ...SAFE_APPS_EVENTS.OPEN_APP,
+        label: remoteApp?.name || `${safeAppFromManifest?.name || 'unknown'} - ${appUrl}`,
+      })
+    }
+  }, [appIsLoading, remoteApp, appUrl, safeAppFromManifest?.name])
 
   useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, safeAppRequestId }) => {
