@@ -18,12 +18,13 @@ import { getInteractionTitle } from '../utils'
 import { SafeAppsTxParams } from '.'
 import { isEmptyHexData } from '@/utils/hex'
 import { dispatchSafeAppsTx } from '@/services/tx/txSender'
+import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
 }
 
-const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params } }: ReviewSafeAppsTxProps): ReactElement => {
+const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params, appId } }: ReviewSafeAppsTxProps): ReactElement => {
   const chainId = useChainId()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
@@ -51,6 +52,7 @@ const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params } }: ReviewSafe
   }, [safeTx, chainId])
 
   const handleSubmit = (txId: string) => {
+    trackSafeAppTxCount(Number(appId))
     dispatchSafeAppsTx(txId, requestId)
   }
 
