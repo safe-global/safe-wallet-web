@@ -121,7 +121,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
         <DialogContent>
           <SendFromBlock />
 
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
             <AddressBookInput name={Field.recipient} label="Recipient" />
           </FormControl>
 
