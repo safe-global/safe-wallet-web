@@ -4,31 +4,19 @@ import css from './styles.module.css'
 
 const LegalDisclaimer = (): JSX.Element => (
   <div className={css.disclaimerContainer}>
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      sx={{
-        mx: 8,
-      }}
-    >
+    <Typography variant="body2" color="text.secondary" mx={8}>
       Before starting to use Safe dApps...
     </Typography>
-    <Typography
-      variant="h3"
-      fontWeight={700}
-      sx={{
-        my: 3,
-      }}
-    >
+    <Typography variant="h3" fontWeight={700} my={3}>
       Disclaimer
     </Typography>
     <div className={css.disclaimerInner}>
-      <Typography sx={{ mb: 4 }}>
+      <Typography mb={4}>
         You are now accessing third-party apps, which we do not own, control, maintain or audit. We are not liable for
         any loss you may suffer in connection with interacting with the apps, which is at your own risk.
       </Typography>
 
-      <Typography sx={{ mb: 4 }}>
+      <Typography mb={4}>
         You must read our Terms, which contain more detailed provisions binding on you relating to the apps.
       </Typography>
 
