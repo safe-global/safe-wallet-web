@@ -93,12 +93,16 @@ const SafeAppsPermissions = (): ReactElement => {
   }
 
   return (
-    <Paper sx={{ padding: 4 }} variant="outlined">
+    <Paper sx={{ padding: 4 }}>
       <Typography variant="h4" fontWeight={700}>
         Safe Apps Permissions
       </Typography>
       <br />
-      {!domains.length && <Typography variant="body1">There are no Safe Apps using permissions</Typography>}
+      {!domains.length && (
+        <Typography variant="body1" color={({ palette }) => palette.primary.light}>
+          There are no Safe Apps using permissions.
+        </Typography>
+      )}
       {domains.map((domain) => (
         <Grid
           item
