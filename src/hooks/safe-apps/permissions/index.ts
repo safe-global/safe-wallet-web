@@ -9,23 +9,22 @@ type PermissionsDisplayType = {
 export * from './useBrowserPermissions'
 export * from './useSafePermissions'
 
-export const SAFE_PERMISSIONS_TEXTS: Record<string, PermissionsDisplayType> = {
+const SAFE_PERMISSIONS_TEXTS: Record<string, PermissionsDisplayType> = {
   [RestrictedMethods.requestAddressBook]: {
     displayName: 'Address Book',
     description: 'Access to your address book',
   },
 }
 
+export const getSafePermissionDisplayValues = (method: string) => {
+  return SAFE_PERMISSIONS_TEXTS[method]
+}
+
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
-export const BROWSER_PERMISSIONS_TEXTS = Object.values(AllowedFeatures).reduce(
-  (acc: Record<string, PermissionsDisplayType>, feature: string | AllowedFeatures) => {
-    acc[feature] = {
-      displayName: capitalize(feature.toString()),
-      description: capitalize(feature.toString()),
-    }
-
-    return acc
-  },
-  {},
-)
+export const getBrowserPermissionDisplayValues = (feature: AllowedFeatures) => {
+  return {
+    displayName: capitalize(feature),
+    description: `Allow to use - ${feature}`,
+  }
+}

@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import { PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
 import { Button, Dialog, DialogActions, DialogContent, Divider, Typography } from '@mui/material'
 import { ModalDialogTitle } from '../common/ModalDialog'
-import { SAFE_PERMISSIONS_TEXTS } from '@/hooks/safe-apps/permissions'
+import { getSafePermissionDisplayValues } from '@/hooks/safe-apps/permissions'
 
 interface PermissionsPromptProps {
   origin: string
@@ -36,7 +36,7 @@ const PermissionsPrompt = ({
         <ul>
           {permissions.map((permission, index) => (
             <li key={index}>
-              <Typography>{SAFE_PERMISSIONS_TEXTS[Object.keys(permission)[0]].description}</Typography>
+              <Typography>{getSafePermissionDisplayValues(Object.keys(permission)[0]).description}</Typography>
             </li>
           ))}
         </ul>

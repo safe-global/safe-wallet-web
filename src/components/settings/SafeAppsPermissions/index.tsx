@@ -1,7 +1,7 @@
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import {
-  BROWSER_PERMISSIONS_TEXTS,
-  SAFE_PERMISSIONS_TEXTS,
+  getBrowserPermissionDisplayValues,
+  getSafePermissionDisplayValues,
   useBrowserPermissions,
   useSafePermissions,
 } from '@/hooks/safe-apps/permissions'
@@ -135,7 +135,7 @@ const SafeAppsPermissions = (): ReactElement => {
                   <Grid key={parentCapability} item xs={12} sm={6} lg={4} xl={3}>
                     <PermissionsCheckbox
                       name={parentCapability}
-                      label={SAFE_PERMISSIONS_TEXTS[parentCapability].displayName}
+                      label={getSafePermissionDisplayValues(parentCapability).displayName}
                       onChange={(_, checked: boolean) => handleSafePermissionsChange(domain, parentCapability, checked)}
                       checked={!isUserRestricted(caveats)}
                     />
@@ -147,7 +147,7 @@ const SafeAppsPermissions = (): ReactElement => {
                   <Grid key={feature} item xs={12} sm={6} lg={4} xl={3}>
                     <PermissionsCheckbox
                       name={feature.toString()}
-                      label={BROWSER_PERMISSIONS_TEXTS[feature].displayName}
+                      label={getBrowserPermissionDisplayValues(feature).displayName}
                       onChange={(_, checked: boolean) => handleBrowserPermissionsChange(domain, feature, checked)}
                       checked={status === PermissionStatus.GRANTED ? true : false}
                     />
