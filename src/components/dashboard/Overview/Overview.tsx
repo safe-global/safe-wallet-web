@@ -134,7 +134,7 @@ const Overview = (): ReactElement => {
               <Grid item xs={3}>
                 <Link href={nftsLink}>
                   <a>
-                    <Typography color="inputDefault" fontSize="lg">
+                    <Typography color="border.main" variant="body2">
                       NFTs
                     </Typography>
                     <StyledText fontSize="lg">{nftsCount || <ValueSkeleton />}</StyledText>
