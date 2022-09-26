@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import { useMemo, type ReactElement } from 'react'
 import groupBy from 'lodash/groupBy'
 import { Box, Grid, Typography } from '@mui/material'
 import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -11,7 +11,10 @@ const NftGrid = ({
   collectibles: SafeCollectibleResponse[]
   onSendClick?: (nft: SafeCollectibleResponse) => void
 }): ReactElement => {
-  const collections: Record<string, SafeCollectibleResponse[]> = groupBy(collectibles, 'address')
+  const collections: Record<string, SafeCollectibleResponse[]> = useMemo(
+    () => groupBy(collectibles, 'address'),
+    [collectibles],
+  )
 
   return (
     <>
