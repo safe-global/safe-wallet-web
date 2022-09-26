@@ -10,13 +10,18 @@ import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecute
 import css from './styles.module.css'
 import classNames from 'classnames'
 
-interface ExpandableTransactionItemProps {
+type ExpandableTransactionItemProps = {
   isGrouped?: boolean
   item: Transaction
   txDetails?: TransactionDetails
 }
 
-export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }: ExpandableTransactionItemProps) => {
+export const ExpandableTransactionItem = ({
+  isGrouped = false,
+  item,
+  txDetails,
+  testId,
+}: ExpandableTransactionItemProps & { testId?: string }) => {
   const hoverContext = useContext(BatchExecuteHoverContext)
 
   const isBatched = hoverContext.activeHover.includes(item.transaction.id)
@@ -31,6 +36,7 @@ export const ExpandableTransactionItem = ({ isGrouped = false, item, txDetails }
       elevation={0}
       defaultExpanded={!!txDetails}
       className={classNames({ [css.batched]: isBatched })}
+      data-testid={testId}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
         <TxSummary item={item} isGrouped={isGrouped} />
