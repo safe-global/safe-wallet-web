@@ -35,9 +35,9 @@ describe('EthHashInfo', () => {
 
   describe('address', () => {
     it('renders a shortened address by default', () => {
-      const { queryByText } = render(<EthHashInfo address={MOCK_SAFE_ADDRESS} />)
+      const { queryAllByText } = render(<EthHashInfo address={MOCK_SAFE_ADDRESS} />)
 
-      expect(queryByText('0x0000...5AFE')).toBeInTheDocument()
+      expect(queryAllByText('0x0000...5AFE')[0]).toBeInTheDocument()
     })
 
     it('renders a full address', () => {
