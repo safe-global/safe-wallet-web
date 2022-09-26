@@ -17,9 +17,10 @@ import SafeAppsTxModal from '../SafeAppsTxModal'
 import useTxModal from '../SafeAppsTxModal/useTxModal'
 import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
 import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
-import TransactionQueueBar from './TransactionQueueBar'
+import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
 
 import css from './styles.module.css'
+import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTransactionQueueBarState'
 
 type AppFrameProps = {
   appUrl: string
@@ -30,6 +31,12 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe } = useSafeInfo()
+  const {
+    expanded: queueBarExpanded,
+    dismissedByUser: queueBarDismissed,
+    setExpanded,
+    dismissQueueBar,
+  } = useTransactionQueueBarState()
 
   const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
@@ -108,9 +115,17 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
         title={safeAppFromManifest?.name}
         onLoad={onIframeLoad}
         allow="camera"
-        style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
+        style={{
+          display: appIsLoading ? 'none' : 'block',
+          paddingBottom: !queueBarDismissed ? TRANSACTION_BAR_HEIGHT : 0,
+        }}
       />
-      <TransactionQueueBar />
+      <TransactionQueueBar
+        expanded={queueBarExpanded}
+        visible={!queueBarDismissed}
+        setExpanded={setExpanded}
+        onDismiss={dismissQueueBar}
+      />
 
       {txModalState.isOpen && (
         <SafeAppsTxModal
