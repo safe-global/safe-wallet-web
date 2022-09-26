@@ -1,57 +1,14 @@
-import { type ReactElement, useState, useMemo, memo } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Alert, AlertTitle, Box, CircularProgress, Grid, Typography } from '@mui/material'
-import useCollectibles from '@/hooks/useCollectibles'
-import Nfts from '@/components/nfts'
+import { Alert, AlertTitle, Box, Grid, Typography } from '@mui/material'
+import { type ReactElement, useMemo, memo } from 'react'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import NavTabs from '@/components/common/NavTabs'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import InfiniteScroll from '@/components/common/InfiniteScroll'
-import PagePlaceholder from '@/components/common/PagePlaceholder'
-import NftIcon from '@/public/images/nft.svg'
+import NftCollections from '@/components/nfts/NftCollections'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppCard } from '@/components/safe-apps/AppCard'
-
-const NftPage = ({
-  pageUrl,
-  onNextPage,
-}: {
-  pageUrl: string
-  onNextPage?: (pageUrl?: string) => void
-}): ReactElement => {
-  const [collectibles, error] = useCollectibles(pageUrl)
-
-  if (collectibles) {
-    return (
-      <>
-        {collectibles.results.length > 0 ? (
-          <Nfts collectibles={collectibles.results} />
-        ) : (
-          <PagePlaceholder img={<NftIcon />} text="No NFTs available or none detected" />
-        )}
-
-        {onNextPage && collectibles.next && (
-          <Box py={4} textAlign="center">
-            <InfiniteScroll onLoadMore={() => onNextPage(collectibles.next)} />
-          </Box>
-        )}
-      </>
-    )
-  }
-
-  if (error) {
-    return <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>
-  }
-
-  return (
-    <Box py={4} textAlign="center">
-      <CircularProgress size={40} />
-    </Box>
-  )
-}
 
 // `React.memo` requires a `displayName`
 const NftApps = memo(function NftApps(): ReactElement | null {
@@ -66,10 +23,11 @@ const NftApps = memo(function NftApps(): ReactElement | null {
   }
 
   return (
-    <>
+    <Box mb={4}>
       <Typography component="h2" variant="subtitle1" fontWeight={700} my={2}>
-        NFT Apps
+        NFT Safe Apps
       </Typography>
+
       <Grid container spacing={3}>
         {nftApps.map((nftApp) => (
           <Grid item xs={12} md={4} lg={3} key={nftApp.id}>
@@ -77,17 +35,11 @@ const NftApps = memo(function NftApps(): ReactElement | null {
           </Grid>
         ))}
       </Grid>
-    </>
+    </Box>
   )
 })
 
 const NFTs: NextPage = () => {
-  const [pages, setPages] = useState<string[]>([''])
-
-  const onNextPage = (pageUrl = '') => {
-    setPages([...pages, pageUrl])
-  }
-
   return (
     <main>
       <Head>
@@ -106,9 +58,7 @@ const NFTs: NextPage = () => {
 
         <NftApps />
 
-        {pages.map((pageUrl, index) => (
-          <NftPage key={index} pageUrl={pageUrl} onNextPage={index === pages.length - 1 ? onNextPage : undefined} />
-        ))}
+        <NftCollections />
       </Box>
     </main>
   )
