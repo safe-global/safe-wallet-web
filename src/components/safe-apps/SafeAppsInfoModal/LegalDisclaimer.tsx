@@ -23,17 +23,15 @@ const LegalDisclaimer = (): JSX.Element => (
       Disclaimer
     </Typography>
     <div className={css.disclaimerInner}>
-      <Typography>
+      <Typography sx={{ mb: 4 }}>
         You are now accessing third-party apps, which we do not own, control, maintain or audit. We are not liable for
         any loss you may suffer in connection with interacting with the apps, which is at your own risk.
       </Typography>
-      <br />
-      <br />
-      <Typography>
+
+      <Typography sx={{ mb: 4 }}>
         You must read our Terms, which contain more detailed provisions binding on you relating to the apps.
       </Typography>
-      <br />
-      <br />
+
       <Typography>
         I have read and understood the{' '}
         <Link
