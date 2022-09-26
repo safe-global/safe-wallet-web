@@ -4,6 +4,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { formatVisualAmount } from '@/utils/formatters'
 import { type AdvancedParameters } from '../AdvancedParams/types'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
   const valueSkeleton = <Skeleton variant="text" sx={{ minWidth: '5em' }} />
@@ -25,6 +26,8 @@ type GasParamsProps = {
 
 const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElement => {
   const { nonce, userNonce, safeTxGas, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = params
+  const { safe } = useSafeInfo()
+  const safeNonce = safe.nonce
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.ESTIMATION, label: expanded ? 'Open' : 'Close' })
@@ -66,7 +69,7 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
         ) : (
           <Typography>
             Signing the transaction with nonce&nbsp;
-            {nonce !== undefined ? (
+            {nonce !== 0 || safeNonce === 0 ? (
               nonce
             ) : (
               <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />
