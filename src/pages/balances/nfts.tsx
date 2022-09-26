@@ -23,10 +23,11 @@ const NftApps = memo(function NftApps(): ReactElement | null {
   }
 
   return (
-    <>
+    <Box mb={4}>
       <Typography component="h2" variant="subtitle1" fontWeight={700} my={2}>
-        NFT apps
+        NFT Safe Apps
       </Typography>
+
       <Grid container spacing={3}>
         {nftApps.map((nftApp) => (
           <Grid item xs={12} md={4} lg={3} key={nftApp.id}>
@@ -34,7 +35,7 @@ const NftApps = memo(function NftApps(): ReactElement | null {
           </Grid>
         ))}
       </Grid>
-    </>
+    </Box>
   )
 })
 
