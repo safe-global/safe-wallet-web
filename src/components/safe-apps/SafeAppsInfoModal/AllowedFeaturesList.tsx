@@ -2,8 +2,8 @@ import { Box, Typography } from '@mui/material'
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined'
 
 import { BROWSER_PERMISSIONS_TEXTS } from '@/hooks/safe-apps/permissions'
-
 import PermissionsCheckbox from '../PermissionCheckbox'
+
 import { AllowedFeatures, AllowedFeatureSelection } from '../types'
 
 type SafeAppsInfoAllowedFeaturesProps = {

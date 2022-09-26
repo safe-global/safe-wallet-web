@@ -8,7 +8,7 @@ import LegalDisclaimer from './LegalDisclaimer'
 import AllowedFeaturesList from './AllowedFeaturesList'
 import { AllowedFeatures, AllowedFeatureSelection, PermissionStatus } from '../types'
 
-interface SafeAppsInfoModalProps {
+type SafeAppsInfoModalProps = {
   onCancel: () => void
   onConfirm: (browserPermissions: BrowserPermission[]) => void
   features: AllowedFeatures[]

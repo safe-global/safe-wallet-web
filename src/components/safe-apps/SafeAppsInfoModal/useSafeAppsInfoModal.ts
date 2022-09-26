@@ -14,7 +14,7 @@ type useSafeAppsInfoModal = {
 }
 
 type ModalInfoProps = {
-  [chainId: string]: { consentsAccepted?: boolean }
+  [chainId: string]: { consentsAccepted: boolean }
 }
 
 const useSafeAppsInfoModal = ({
