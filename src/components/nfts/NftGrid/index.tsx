@@ -16,8 +16,8 @@ const NftGrid = ({
   return (
     <>
       {Object.entries(collections).map(([address, nfts]) => (
-        <Box key={address} pb={4}>
-          <Typography variant="h6" mb={1}>
+        <Box key={address}>
+          <Typography component="h2" variant="subtitle1" fontWeight={700} my={2}>
             {nfts[0].tokenName}
           </Typography>
 
