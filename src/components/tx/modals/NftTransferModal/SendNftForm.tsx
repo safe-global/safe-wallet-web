@@ -39,26 +39,20 @@ export type SendNftFormProps = {
   params?: NftTransferParams
 }
 
-const NftMenuItem = ({ image, name }: { image: string; name: string }) => (
-  <Grid container spacing={1}>
+const NftMenuItem = ({ image, name, count }: { image: string; name: string; count?: number }) => (
+  <Grid container spacing={1} alignItems="center">
     <Grid item>
       <Box width={20} height={20} overflow="hidden">
         <ImageFallback src={image} fallbackSrc="/images/nft-placeholder.png" alt={name} height={20} />
       </Box>
     </Grid>
-    <Grid item>{name}</Grid>
-  </Grid>
-)
-
-const CollectionMenuItem = ({ address, name }: { address: string; name: string }) => (
-  <Grid container>
-    <Grid item pr={1}>
-      {name}
-    </Grid>
     <Grid item>
-      <Typography component="span" variant="body2" color="primary.light">
-        {address}
-      </Typography>
+      {name}
+      {count && (
+        <Typography variant="caption" color="primary.light" display="block">
+          Count: {count} {name}
+        </Typography>
+      )}
     </Grid>
   </Grid>
 )
@@ -145,7 +139,11 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                 >
                   {collections.map((item) => (
                     <MenuItem key={item.address} value={item.address}>
-                      <CollectionMenuItem name={item.tokenName} address={item.address} />
+                      <NftMenuItem
+                        image={item.imageUri || item.logoUri}
+                        name={item.tokenName}
+                        count={allNfts.filter((nft) => nft.address === item.address).length}
+                      />
                     </MenuItem>
                   ))}
                 </Select>
@@ -167,7 +165,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                 >
                   {selectedTokens.map((item) => (
                     <MenuItem key={item.address + item.id} value={item.id}>
-                      <NftMenuItem image={item.logoUri} name={`${item.tokenName} #${item.id}`} />
+                      <NftMenuItem image={item.imageUri || item.logoUri} name={`${item.tokenName} #${item.id}`} />
                     </MenuItem>
                   ))}
                 </Select>
