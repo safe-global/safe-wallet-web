@@ -40,7 +40,7 @@ export type SendNftFormProps = {
 }
 
 const NftMenuItem = ({ image, name, description }: { image: string; name: string; description?: string }) => (
-  <Grid container spacing={1} alignItems="center" wrap="nowrap" overflow="hidden" textOverflow="ellipsis">
+  <Grid container spacing={1} alignItems="center" wrap="nowrap">
     <Grid item>
       <Box width={20} height={20} overflow="hidden">
         <ImageFallback src={image} fallbackSrc="/images/nft-placeholder.png" alt={name} height={20} />
@@ -49,7 +49,14 @@ const NftMenuItem = ({ image, name, description }: { image: string; name: string
     <Grid item>
       {name}
       {description && (
-        <Typography variant="caption" color="primary.light" display="block">
+        <Typography
+          variant="caption"
+          color="primary.light"
+          display="block"
+          width="80%"
+          overflow="hidden"
+          textOverflow="ellipsis"
+        >
           {description}
         </Typography>
       )}
