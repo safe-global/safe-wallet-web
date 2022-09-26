@@ -6,27 +6,11 @@ import PageHeader from '@/components/common/PageHeader'
 import CurrencySelect from '@/components/balances/CurrencySelect'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 
-const AssetsHeader = ({
-  helperText,
-  currencySelect = false,
-}: {
-  helperText?: string
-  currencySelect?: boolean
-}): ReactElement => {
+const AssetsHeader = ({ currencySelect = false }: { currencySelect?: boolean }): ReactElement => {
   return (
     <PageHeader
       title="Assets"
-      subtitle={
-        <>
-          See all your tokens and NFTs in one place
-          {helperText && (
-            <>
-              <br />
-              {helperText}
-            </>
-          )}
-        </>
-      }
+      subtitle="See all your tokens and NFTs in one place"
       action={
         <Box display="flex" justifyContent="space-between">
           <NavTabs tabs={balancesNavItems} />

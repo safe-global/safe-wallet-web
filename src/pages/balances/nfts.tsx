@@ -1,7 +1,7 @@
 import { type ReactElement, useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Box, CircularProgress } from '@mui/material'
+import { Alert, AlertTitle, Box, CircularProgress } from '@mui/material'
 import useCollectibles from '@/hooks/useCollectibles'
 import Nfts from '@/components/nfts'
 import AssetsHeader from '@/components/balances/AssetsHeader'
@@ -61,9 +61,14 @@ const NFTs: NextPage = () => {
         <title>Safe – NFTs</title>
       </Head>
 
-      <AssetsHeader helperText="Get the most optimal experience with Safe Apps. View your collections, buy or sell NFTs, and more." />
+      <AssetsHeader />
 
       <main>
+        <Alert severity="info" sx={{ marginBottom: 6 }}>
+          <AlertTitle>Use Safe Apps to view your NFT portfolio</AlertTitle>
+          Get the most optimal experience with Safe Apps. View your collections, buy or sell NFTs, and more.
+        </Alert>
+
         {pages.map((pageUrl, index) => (
           <NftPage key={index} pageUrl={pageUrl} onNextPage={index === pages.length - 1 ? onNextPage : undefined} />
         ))}
