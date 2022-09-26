@@ -34,7 +34,6 @@ export enum AllowedFeatures {
   'usb',
   'web-share',
   'xr-spatial-tracking',
-  // Proposed features
   'clipboard-read',
   'clipboard-write',
   'gamepad',
