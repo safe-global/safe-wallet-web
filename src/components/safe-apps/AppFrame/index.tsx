@@ -149,13 +149,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const onSafeAppsModalClose = () => {
     if (txModalState.isOpen) {
       communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, txModalState.requestId, true)
-      trackEvent({ ...SAFE_APPS_EVENTS.TRANSACTION_REJECTED, label: safeAppFromManifest?.name })
       closeTxModal()
     } else {
       communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, signMessageModalState.requestId, true)
-      trackEvent({ ...SAFE_APPS_EVENTS.TRANSACTION_REJECTED, label: safeAppFromManifest?.name })
       closeSignMessageModal()
     }
+
+    trackEvent({ ...SAFE_APPS_EVENTS.TRANSACTION_REJECTED, label: safeAppFromManifest?.name })
   }
 
   const onAcceptPermissionRequest = (origin: string, requestId: RequestId) => {
