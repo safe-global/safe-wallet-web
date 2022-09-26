@@ -10,14 +10,14 @@ const invalidProtocolRegex = /^(\W*)(javascript|data|vbscript)/im
 const ctrlCharactersRegex = /[\u0000-\u001F\u007F-\u009F\u2000-\u200D\uFEFF]/gim
 const urlSchemeRegex = /^([^:]+):/gm
 const relativeFirstCharacters = ['.', '/']
-const isRelativeUrlWithoutProtocol = (url: string): boolean => {
+const isRelativeUrl = (url: string): boolean => {
   return relativeFirstCharacters.indexOf(url[0]) > -1
 }
 
 const sanitizeUrl = (url: string): string => {
   const sanitizedUrl = url.replace(ctrlCharactersRegex, '').trim()
 
-  if (isRelativeUrlWithoutProtocol(sanitizedUrl)) {
+  if (isRelativeUrl(sanitizedUrl)) {
     return sanitizedUrl
   }
 
@@ -34,4 +34,4 @@ const sanitizeUrl = (url: string): string => {
   return sanitizedUrl
 }
 
-export { trimTrailingSlash, isSameUrl, sanitizeUrl }
+export { trimTrailingSlash, isSameUrl, sanitizeUrl, isRelativeUrl }

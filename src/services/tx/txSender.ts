@@ -30,7 +30,7 @@ import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
   if (!safeSDK) {
-    throw new Error('Safe SDK not initialized')
+    throw new Error('The Safe SDK could not be initialized. Please be aware that we only support >= v1.1.1 Safes.')
   }
   return safeSDK
 }
