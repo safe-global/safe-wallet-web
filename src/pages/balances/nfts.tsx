@@ -1,4 +1,4 @@
-import { type ReactElement, useState, useMemo } from 'react'
+import { type ReactElement, useState, useMemo, memo } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Alert, AlertTitle, Box, CircularProgress, Grid, Typography } from '@mui/material'
@@ -53,12 +53,13 @@ const NftPage = ({
   )
 }
 
-const NftApps = (): ReactElement | null => {
+// `React.memo` requires a `displayName`
+const NftApps = memo(function NftApps(): ReactElement | null {
   const NFT_APPS_TAG = 'nft'
 
   const { allSafeApps } = useSafeApps()
 
-  const nftApps = useMemo(() => allSafeApps.filter((app) => app.tags?.includes(NFT_APPS_TAG)), [allSafeApps])
+  const nftApps = useMemo(() => allSafeApps.filter((app) => app.tags.includes(NFT_APPS_TAG)), [allSafeApps])
 
   if (nftApps.length === 0) {
     return null
@@ -78,7 +79,7 @@ const NftApps = (): ReactElement | null => {
       </Grid>
     </>
   )
-}
+})
 
 const NFTs: NextPage = () => {
   const [pages, setPages] = useState<string[]>([''])
