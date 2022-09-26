@@ -58,7 +58,7 @@ const SafeAppList = () => {
   if (searchQuery) {
     if (filteredApps.length === 0) {
       pageBody = (
-        <Typography variant="body1" sx={{ p: 2 }}>
+        <Typography variant="body1" p={2}>
           No apps found
         </Typography>
       )

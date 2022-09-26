@@ -116,6 +116,7 @@ describe('AppsPage', () => {
         tags: [],
         chainIds: ['1', '4'],
         iconUrl: '',
+        safeAppsPermissions: [],
       })
 
       render(<AppsPage />, {
@@ -198,6 +199,7 @@ describe('AppsPage', () => {
         tags: [],
         chainIds: ['1', '4'],
         iconUrl: '',
+        safeAppsPermissions: [],
       })
 
       render(<AppsPage />, {
@@ -239,6 +241,7 @@ describe('AppsPage', () => {
         tags: [],
         chainIds: ['1', '4'],
         iconUrl: '',
+        safeAppsPermissions: [],
       })
 
       render(<AppsPage />, {

@@ -10,19 +10,21 @@ const TokenAmount = ({
   logoUri,
   tokenSymbol,
   direction,
+  fallbackSrc,
 }: {
   value: string
   decimals?: number
   logoUri?: string
   tokenSymbol?: string
   direction?: TransferDirection
+  fallbackSrc?: string
 }): ReactElement => {
   const sign = direction === TransferDirection.OUTGOING ? '-' : ''
   const amount = decimals ? formatVisualAmount(value, decimals) : value
 
   return (
     <span className={css.container}>
-      {logoUri && <TokenIcon logoUri={logoUri} tokenSymbol={tokenSymbol} />}
+      {logoUri && <TokenIcon logoUri={logoUri} tokenSymbol={tokenSymbol} fallbackSrc={fallbackSrc} />}
 
       <span>
         {sign}

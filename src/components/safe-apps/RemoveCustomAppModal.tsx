@@ -13,7 +13,7 @@ type Props = {
 const RemoveCustomAppModal = ({ open, onClose, onConfirm, app }: Props) => (
   <ModalDialog open={open} onClose={onClose} dialogTitle="Confirm app removal">
     <DialogContent>
-      <Typography variant="h6" sx={{ pt: 3 }}>
+      <Typography variant="h6" pt={3}>
         Are you sure you want to remove the <b>{app.name}</b> app?
       </Typography>
     </DialogContent>

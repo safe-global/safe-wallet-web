@@ -1,8 +1,9 @@
 import { useMemo, type ReactElement } from 'react'
 import groupBy from 'lodash/groupBy'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Divider, Grid, Typography } from '@mui/material'
 import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import NftCard from '../NftCard'
+import ImageFallback from '@/components/common/ImageFallback'
 
 const NftGrid = ({
   collectibles,
@@ -18,21 +19,39 @@ const NftGrid = ({
 
   return (
     <>
-      {Object.entries(collections).map(([address, nfts]) => (
-        <Box key={address} pb={4}>
-          <Typography variant="h6" mb={1}>
-            {nfts[0].tokenName}
-          </Typography>
-
-          <Grid container spacing={3}>
-            {nfts.map((nft) => (
-              <Grid item xs={12} md={4} lg={3} key={nft.address + nft.id}>
-                <NftCard nft={nft} onSendClick={onSendClick ? () => onSendClick(nft) : undefined} />
+      {Object.entries(collections).map(([address, nfts]) => {
+        const { logoUri, tokenName } = nfts[0]
+        return (
+          <Box key={address} pb={4}>
+            <Grid container alignItems="center" pb={2}>
+              <Grid item xs={1}>
+                <ImageFallback
+                  src={logoUri}
+                  alt={`${tokenName} collection icon`}
+                  fallbackSrc="/images/nft-placeholder.png"
+                  height="45px"
+                />
               </Grid>
-            ))}
-          </Grid>
-        </Box>
-      ))}
+              <Grid item>
+                <Typography variant="h6" mb={1} mr={2}>
+                  {tokenName}
+                </Typography>
+              </Grid>
+              <Grid item xs>
+                <Divider flexItem />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={3}>
+              {nfts.map((nft) => (
+                <Grid item xs={12} md={4} lg={3} key={nft.address + nft.id}>
+                  <NftCard nft={nft} onSendClick={onSendClick ? () => onSendClick(nft) : undefined} />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        )
+      })}
     </>
   )
 }

@@ -1,3 +1,17 @@
+.container {
+  border-bottom: 2px solid var(--color-border-light);
+  position: relative;
+}
+
+.arrow {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  margin-left: -12px;
+  color: var(--color-border-light);
+  background-color: var(--color-background-paper);
+}
+
 .balance {
   font-size: 12px;
   line-height: 1.08;
