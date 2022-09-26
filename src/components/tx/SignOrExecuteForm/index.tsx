@@ -191,14 +191,12 @@ const SignOrExecuteForm = ({
           onFormSubmit={onAdvancedSubmit}
         />
 
-        {safeTx && (
-          <TxSimulation
-            gasLimit={advancedParams.gasLimit?.toNumber()}
-            transactions={safeTx}
-            canExecute={canExecute}
-            disabled={submitDisabled}
-          />
-        )}
+        <TxSimulation
+          gasLimit={advancedParams.gasLimit?.toNumber()}
+          transactions={safeTx}
+          canExecute={canExecute}
+          disabled={submitDisabled}
+        />
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>

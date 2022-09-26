@@ -10,3 +10,8 @@
 .result {
   border: none;
 }
+
+.skeletonWrapper {
+  border-radius: 8px;
+  overflow: hidden;
+}
