@@ -53,12 +53,16 @@ const NftPage = ({
   )
 }
 
-const NftApps = (): ReactElement => {
+const NftApps = (): ReactElement | null => {
   const NFT_APPS_TAG = 'nft'
 
   const { allSafeApps } = useSafeApps()
 
   const nftApps = useMemo(() => allSafeApps.filter((app) => app.tags?.includes(NFT_APPS_TAG)), [allSafeApps])
+
+  if (nftApps.length === 0) {
+    return null
+  }
 
   return (
     <Grid container spacing={3}>
