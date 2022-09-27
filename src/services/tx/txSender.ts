@@ -17,7 +17,7 @@ import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import { didRevert, EthersError } from '@/utils/ethers-utils'
+import { didReprice, didRevert, EthersError } from '@/utils/ethers-utils'
 import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
 import MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
@@ -26,7 +26,6 @@ import { ContractTransaction, ethers } from 'ethers'
 import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
-import { ErrorCode } from '@ethersproject/logger'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -266,12 +265,11 @@ export const dispatchTxExecution = async (
     .catch((err) => {
       const error = err as EthersError
 
-      // Meaning the transaction was "repriced" or "replaced"
-      if (error.code === ErrorCode.TRANSACTION_REPLACED && error.reason !== 'cancelled') {
-        // TxEvent.SUCCESS is handled by txHistoryMiddleware
-        return
+      if (didReprice(error)) {
+        txDispatch(TxEvent.PROCESSED, { txId, receipt: error.receipt })
+      } else {
+        txDispatch(TxEvent.FAILED, { txId, error: error as Error })
       }
-      txDispatch(TxEvent.FAILED, { txId, error: error as Error })
     })
 
   return result.hash
@@ -327,13 +325,21 @@ export const dispatchBatchExecution = async (
       }
     })
     .catch((err) => {
-      txs.forEach(({ txId }) => {
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: err as Error,
-          groupKey,
+      const error = err as EthersError
+
+      if (didReprice(error)) {
+        txs.forEach(({ txId }) => {
+          txDispatch(TxEvent.PROCESSED, { txId, receipt: error.receipt })
         })
-      })
+      } else {
+        txs.forEach(({ txId }) => {
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: err as Error,
+            groupKey,
+          })
+        })
+      }
     })
 
   return result!.hash
