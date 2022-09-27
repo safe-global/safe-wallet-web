@@ -75,3 +75,11 @@ input[type='number'] {
 .illustration-background-stroke {
   stroke: var(--color-logo-background);
 }
+
+@media (max-width: 600px) {
+  .sticky {
+    position: sticky;
+    right: 0;
+    background: var(--color-background-paper);
+  }
+}

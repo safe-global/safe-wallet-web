@@ -3,7 +3,7 @@
 }
 
 .container tbody tr:hover {
-  background-color: var(--color-primary-background);
+  background-color: var(--color-secondary-background);
 }
 
 .container td:last-of-type button {
@@ -20,4 +20,18 @@
   justify-content: flex-end;
   align-items: center;
   gap: var(--space-1);
+}
+
+.headerButtonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 600px) {
+  .container td:last-of-type button {
+    opacity: 1;
+  }
 }

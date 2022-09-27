@@ -72,6 +72,7 @@ const AddressBookTable = () => {
     },
     actions: {
       rawValue: '',
+      sticky: true,
       content: (
         <div className={css.entryButtonWrapper}>
           <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
@@ -92,7 +93,7 @@ const AddressBookTable = () => {
 
           {isSafeOwner && (
             <Track {...ADDRESS_BOOK_EVENTS.SEND}>
-              <Button variant="contained" color="primary" onClick={() => setSelectedAddress(address)}>
+              <Button variant="contained" color="primary" size="small" onClick={() => setSelectedAddress(address)}>
                 Send
               </Button>
             </Track>

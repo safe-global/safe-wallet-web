@@ -21,7 +21,7 @@ const headCells = [
   { id: 'beneficiary', label: 'Beneficiary' },
   { id: 'spent', label: 'Spent' },
   { id: 'resetTime', label: 'Reset time' },
-  { id: 'actions', label: 'Actions' },
+  { id: 'actions', label: 'Actions', sticky: true },
 ]
 
 const RemoveSpendingLimitSteps: TxStepperProps['steps'] = [
@@ -79,6 +79,7 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
           },
           actions: {
             rawValue: '',
+            sticky: true,
             content: isGranted ? (
               <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
                 <IconButton onClick={() => onRemove(spendingLimit)} color="error">
@@ -94,7 +95,7 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
 
   return (
     <>
-      <EnhancedTable rows={rows} headCells={headCells} variant="outlined" />
+      <EnhancedTable rows={rows} headCells={headCells} />
       {open && <TxModal onClose={() => setOpen(false)} steps={RemoveSpendingLimitSteps} initialData={[initialData]} />}
     </>
   )
