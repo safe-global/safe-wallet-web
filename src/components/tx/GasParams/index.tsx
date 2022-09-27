@@ -78,12 +78,14 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
       <AccordionDetails>
         {nonce !== undefined && <GasDetail isLoading={false} name="Safe transaction nonce" value={nonce.toString()} />}
 
-        {userNonce !== undefined && <GasDetail isLoading={false} name="Wallet nonce" value={userNonce.toString()} />}
-
         {!!safeTxGas && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
 
         {isExecution && (
           <>
+            {userNonce !== undefined && (
+              <GasDetail isLoading={false} name="Wallet nonce" value={userNonce.toString()} />
+            )}
+
             <GasDetail isLoading={isLoading} name="Gas limit" value={gasLimitString} />
 
             <GasDetail isLoading={isLoading} name="Max priority fee (Gwei)" value={maxPrioGasGwei} />
