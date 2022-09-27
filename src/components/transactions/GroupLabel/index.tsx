@@ -9,7 +9,7 @@ const GroupLabel = ({ item }: { item: Label }): ReactElement => {
 
   const { page } = useTxQueue()
 
-  if (label === LabelValue.Queued) {
+  if (label === LabelValue.Queued && !page?.next) {
     const firstTx = page?.results.find(isTransactionListItem)
 
     if (firstTx && isMultisigExecutionInfo(firstTx.transaction.executionInfo)) {
