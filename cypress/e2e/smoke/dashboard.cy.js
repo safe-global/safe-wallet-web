@@ -7,10 +7,6 @@ describe('Dashboard', () => {
     cy.contains('button', 'Accept selection').click()
   })
 
-  it('should display the dashboard title', () => {
-    cy.contains('main p', 'Dashboard')
-  })
-
   it('should display the overview widget', () => {
     cy.contains('main', SAFE).should('exist')
     cy.contains('main', '1/1')
