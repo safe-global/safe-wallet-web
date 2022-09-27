@@ -45,28 +45,6 @@ export const navItems: NavItem[] = [
     label: 'Settings',
     icon: <SvgIcon component={SettingsIcon} inheritViewBox />,
     href: AppRoutes.settings.setup,
-    items: [
-      {
-        label: 'Setup',
-        href: AppRoutes.settings.setup,
-      },
-      {
-        label: 'Appearance',
-        href: AppRoutes.settings.appearance,
-      },
-      {
-        label: 'Modules',
-        href: AppRoutes.settings.modules,
-      },
-      {
-        label: 'Spending limits',
-        href: AppRoutes.settings.spendingLimits,
-      },
-      {
-        label: 'Safe Apps Permissions',
-        href: AppRoutes.settings.safeAppsPermissions,
-      },
-    ],
   },
 ]
 
@@ -89,5 +67,28 @@ export const balancesNavItems = [
   {
     label: 'NFTs',
     href: AppRoutes.balances.nfts,
+  },
+]
+
+export const settingsNavItems = [
+  {
+    label: 'Setup',
+    href: AppRoutes.settings.setup,
+  },
+  {
+    label: 'Appearance',
+    href: AppRoutes.settings.appearance,
+  },
+  {
+    label: 'Modules',
+    href: AppRoutes.settings.modules,
+  },
+  {
+    label: 'Spending limits',
+    href: AppRoutes.settings.spendingLimits,
+  },
+  {
+    label: 'Safe Apps Permissions',
+    href: AppRoutes.settings.safeAppsPermissions,
   },
 ]

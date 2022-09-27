@@ -50,13 +50,11 @@ const SafeHeader = (): ReactElement => {
   return (
     <div className={css.container}>
       <div className={css.safe}>
-        <div className={css.icon}>
-          {safeLoading ? (
-            <Skeleton variant="circular" width={40} height={40} />
-          ) : (
-            <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
-          )}
-        </div>
+        {safeLoading ? (
+          <Skeleton variant="circular" width={40} height={40} />
+        ) : (
+          <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
+        )}
 
         <div className={css.address}>
           {safeLoading ? (
@@ -67,7 +65,9 @@ const SafeHeader = (): ReactElement => {
             <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
           )}
 
-          <Typography variant="body1">{fiatTotal || <Skeleton variant="text" width={60} />}</Typography>
+          <Typography variant="body1" fontWeight={700}>
+            {fiatTotal || <Skeleton variant="text" width={60} />}
+          </Typography>
         </div>
       </div>
 

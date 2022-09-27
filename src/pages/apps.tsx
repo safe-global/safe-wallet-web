@@ -50,13 +50,13 @@ const Apps: NextPage = () => {
   }
 
   return (
-    <main style={{ padding: 0 }}>
+    <>
       <Head>
         <title>Safe Apps</title>
       </Head>
 
       <SafeAppList />
-    </main>
+    </>
   )
 }
 

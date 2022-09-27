@@ -1,11 +1,8 @@
+import { type ReactElement, useMemo, memo } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Alert, AlertTitle, Box, Grid, Typography } from '@mui/material'
-import { type ReactElement, useMemo, memo } from 'react'
-import { Breadcrumbs } from '@/components/common/Breadcrumbs'
-import AssetsIcon from '@/public/images/sidebar/assets.svg'
-import NavTabs from '@/components/common/NavTabs'
-import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
+import AssetsHeader from '@/components/balances/AssetsHeader'
 import NftCollections from '@/components/nfts/NftCollections'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppCard } from '@/components/safe-apps/AppCard'
@@ -41,17 +38,15 @@ const NftApps = memo(function NftApps(): ReactElement | null {
 
 const NFTs: NextPage = () => {
   return (
-    <main>
+    <>
       <Head>
         <title>Safe – NFTs</title>
       </Head>
 
-      <Breadcrumbs Icon={AssetsIcon} first="Assets" second="NFTs" />
+      <AssetsHeader />
 
-      <NavTabs tabs={balancesNavItems} />
-
-      <Box py={3}>
-        <Alert severity="info">
+      <main>
+        <Alert severity="info" sx={{ marginBottom: 6 }}>
           <AlertTitle>Use Safe Apps to view your NFT portfolio</AlertTitle>
           Get the most optimal experience with Safe Apps. View your collections, buy or sell NFTs, and more.
         </Alert>
@@ -59,8 +54,8 @@ const NFTs: NextPage = () => {
         <NftApps />
 
         <NftCollections />
-      </Box>
-    </main>
+      </main>
+    </>
   )
 }
 
