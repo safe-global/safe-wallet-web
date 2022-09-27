@@ -32,3 +32,17 @@ export const convertToHumanReadableMessage = (message: string): string => {
 
   return toUtf8String(message)
 }
+
+export const getLegacyChainName = (chainName: string, chainId: string): string => {
+  let network = chainName
+
+  switch (chainId) {
+    case '1':
+      network = 'MAINNET'
+      break
+    case '100':
+      network = 'XDAI'
+  }
+
+  return network
+}

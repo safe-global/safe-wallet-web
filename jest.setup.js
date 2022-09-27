@@ -50,3 +50,9 @@ jest.mock('@web3-onboard/core', () => () => ({
     get: () => mockOnboardState,
   },
 }))
+
+// to avoid failing tests in some environments
+const NumberFormat = Intl.NumberFormat
+const englishTestLocale = 'en'
+
+jest.spyOn(Intl, 'NumberFormat').mockImplementation((locale, ...rest) => new NumberFormat([englishTestLocale], ...rest))

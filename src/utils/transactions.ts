@@ -15,6 +15,7 @@ import {
 import {
   isModuleDetailedExecutionInfo,
   isMultisigDetailedExecutionInfo,
+  isMultisigExecutionInfo,
   isTransactionListItem,
   isTxQueued,
 } from './transaction-guards'
@@ -26,6 +27,7 @@ import { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
 import { startOfDay } from 'date-fns'
+import uniqBy from 'lodash/uniqBy'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -166,13 +168,20 @@ export const getTxOptions = (params: AdvancedParameters, currentChain: ChainInfo
   return txOptions
 }
 
-export const getQueuedTransactionCount = (txPage: TransactionListPage): String => {
-  const queuedTxs = txPage.results.filter(isTransactionListItem)
-
-  // @iamacook's invention
-  if (txPage.next) {
-    return '> ${queuedTxs.length}'
+export const getQueuedTransactionCount = (txPage?: TransactionListPage): string => {
+  if (!txPage) {
+    return '0'
   }
 
-  return queuedTxs.length.toString()
+  const queuedTxs = txPage.results.filter(isTransactionListItem)
+
+  const queuedTxsByNonce = uniqBy(queuedTxs, (item) =>
+    isMultisigExecutionInfo(item.transaction.executionInfo) ? item.transaction.executionInfo.nonce : '',
+  )
+
+  if (txPage.next) {
+    return `> ${queuedTxsByNonce.length}`
+  }
+
+  return queuedTxsByNonce.length.toString()
 }

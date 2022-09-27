@@ -1,4 +1,4 @@
-import { AccordionSummary, Accordion, Button, Typography, CircularProgress } from '@mui/material'
+import { AccordionSummary, Accordion, Button, Typography, CircularProgress, Skeleton } from '@mui/material'
 import { ReactElement } from 'react'
 
 import Track from '@/components/common/Track'
@@ -16,7 +16,7 @@ import css from './styles.module.css'
 import classNames from 'classnames'
 
 export type TxSimulationProps = {
-  transactions: SimulationTxParams['transactions']
+  transactions?: SimulationTxParams['transactions']
   gasLimit?: number
   canExecute: boolean
   disabled: boolean
@@ -84,6 +84,14 @@ export const TxSimulation = (props: TxSimulationProps): ReactElement | null => {
   const chain = useCurrentChain()
   if (!chain || !isTxSimulationEnabled(chain)) {
     return null
+  }
+
+  if (!props.transactions) {
+    return (
+      <div className={css.skeletonWrapper}>
+        <Skeleton variant="rectangular" height={58} />
+      </div>
+    )
   }
 
   return <TxSimulationBlock {...props} />

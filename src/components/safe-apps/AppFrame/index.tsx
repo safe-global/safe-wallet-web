@@ -1,14 +1,21 @@
 import { ReactElement, useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
-import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getBalances, getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { AddressBookItem, Methods, RequestId } from '@gnosis.pm/safe-apps-sdk'
+
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import useChainId from '@/hooks/useChainId'
+import useAddressBook from '@/hooks/useAddressBook'
+import { useSafePermissions } from '@/hooks/safe-apps/permissions'
+import useIsGranted from '@/hooks/useIsGranted'
+import { useCurrentChain } from '@/hooks/useChains'
 import { isSameUrl } from '@/utils/url'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
+import { getLegacyChainName } from '../utils'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
@@ -18,28 +25,73 @@ import useTxModal from '../SafeAppsTxModal/useTxModal'
 import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
 import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
 import TransactionQueueBar from './TransactionQueueBar'
+import PermissionsPrompt from '../PermissionsPrompt'
+import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
 
 type AppFrameProps = {
   appUrl: string
+  allowedFeaturesList: string
 }
 
-const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
+const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
-  const { safe } = useSafeInfo()
-
+  const { safe, safeAddress } = useSafeInfo()
+  const addressBook = useAddressBook()
+  const chain = useCurrentChain()
+  const granted = useIsGranted()
   const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
+  const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
+    useSafePermissions()
 
-  const communicator = useAppCommunicator(iframeRef, {
-    app: safeAppFromManifest,
+  const communicator = useAppCommunicator(iframeRef, safeAppFromManifest, chain, {
     onConfirmTransactions: openTxModal,
     onSignMessage: openSignMessageModal,
+    onGetPermissions: getPermissions,
+    onSetPermissions: setPermissionsRequest,
+    onRequestAddressBook: (origin: string): AddressBookItem[] => {
+      if (hasPermission(origin, Methods.requestAddressBook)) {
+        return Object.entries(addressBook).map(([address, name]) => ({ address, name, chainId }))
+      }
+
+      return []
+    },
+    onGetTxBySafeTxHash: (safeTxHash) => getTransactionDetails(chainId, safeTxHash),
+    onGetEnvironmentInfo: () => ({
+      origin: document.location.origin,
+    }),
+    onGetSafeInfo: () => ({
+      safeAddress,
+      chainId: parseInt(chainId, 10),
+      owners: safe.owners.map((owner) => owner.value),
+      threshold: safe.threshold,
+      isReadOnly: !granted,
+      network: getLegacyChainName(chain?.chainName || '', chainId).toUpperCase(),
+    }),
+    onGetSafeBalances: (currency) =>
+      getBalances(chainId, safeAddress, currency, {
+        exclude_spam: true,
+        trusted: false,
+      }),
+    onGetChainInfo: () => {
+      if (!chain) return
+
+      const { nativeCurrency, chainName, chainId, shortName, blockExplorerUriTemplate } = chain
+
+      return {
+        chainName,
+        chainId,
+        shortName,
+        nativeCurrency,
+        blockExplorerUriTemplate,
+      }
+    },
   })
 
   useEffect(() => {
@@ -85,6 +137,20 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
     }
   }
 
+  const onAcceptPermissionRequest = (origin: string, requestId: RequestId) => {
+    const permissions = confirmPermissionRequest(PermissionStatus.GRANTED)
+    communicator?.send(permissions, requestId as string)
+  }
+
+  const onRejectPermissionRequest = (requestId?: RequestId) => {
+    if (requestId) {
+      confirmPermissionRequest(PermissionStatus.DENIED)
+      communicator?.send('Permissions were rejected', requestId as string, true)
+    } else {
+      setPermissionsRequest(undefined)
+    }
+  }
+
   return (
     <div className={css.wrapper}>
       {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
@@ -107,9 +173,10 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
         src={appUrl}
         title={safeAppFromManifest?.name}
         onLoad={onIframeLoad}
-        allow="camera"
+        allow={allowedFeaturesList}
         style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
       />
+
       <TransactionQueueBar />
 
       {txModalState.isOpen && (
@@ -139,6 +206,17 @@ const AppFrame = ({ appUrl }: AppFrameProps): ReactElement => {
               method: signMessageModalState.method,
             },
           ]}
+        />
+      )}
+
+      {permissionsRequest && (
+        <PermissionsPrompt
+          isOpen
+          origin={permissionsRequest.origin}
+          requestId={permissionsRequest.requestId}
+          onAccept={onAcceptPermissionRequest}
+          onReject={onRejectPermissionRequest}
+          permissions={permissionsRequest.request}
         />
       )}
     </div>

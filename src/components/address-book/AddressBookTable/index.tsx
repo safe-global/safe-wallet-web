@@ -13,12 +13,10 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import Box from '@mui/material/Box'
+import AddressBookHeader from '../AddressBookHeader'
 import useAddressBook from '@/hooks/useAddressBook'
 import Track from '@/components/common/Track'
 import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
-import { useAppSelector } from '@/store'
-import { selectAllAddressBooks } from '@/store/addressBookSlice'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -26,7 +24,7 @@ const headCells = [
   { id: 'actions', label: '' },
 ]
 
-enum ModalType {
+export enum ModalType {
   EXPORT = 'export',
   IMPORT = 'import',
   ENTRY = 'entry',
@@ -59,9 +57,6 @@ const AddressBookTable = () => {
     setOpen(defaultOpen)
     setDefaultValues(undefined)
   }
-
-  const allAddressBooks = useAppSelector(selectAllAddressBooks)
-  const canExport = Object.values(allAddressBooks).length > 0
 
   const addressBook = useAddressBook()
   const addressBookEntries = Object.entries(addressBook)
@@ -109,36 +104,11 @@ const AddressBookTable = () => {
   }))
 
   return (
-    <Box marginTop={['0', '-46px']}>
-      <div className={css.headerButtonWrapper}>
-        <Track {...ADDRESS_BOOK_EVENTS.DOWNLOAD_BUTTON}>
-          <Button
-            onClick={handleOpenModal(ModalType.EXPORT)}
-            disabled={!canExport}
-            variant="contained"
-            size="small"
-            disableElevation
-          >
-            Export
-          </Button>
-        </Track>
-
-        <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
-          <Button onClick={handleOpenModal(ModalType.IMPORT)} variant="contained" size="small" disableElevation>
-            Import
-          </Button>
-        </Track>
-
-        <Track {...ADDRESS_BOOK_EVENTS.CREATE_ENTRY}>
-          <Button onClick={handleOpenModal(ModalType.ENTRY)} variant="contained" size="small" disableElevation>
-            Create entry
-          </Button>
-        </Track>
-      </div>
-
-      <div className={css.container}>
+    <>
+      <AddressBookHeader handleOpenModal={handleOpenModal} />
+      <main>
         <EnhancedTable rows={rows} headCells={headCells} />
-      </div>
+      </main>
 
       {open[ModalType.EXPORT] && <ExportDialog handleClose={handleClose} />}
 
@@ -155,7 +125,7 @@ const AddressBookTable = () => {
           initialData={[{ recipient: selectedAddress }]}
         />
       )}
-    </Box>
+    </>
   )
 }
 
