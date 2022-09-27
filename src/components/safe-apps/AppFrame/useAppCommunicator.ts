@@ -125,11 +125,11 @@ const useAppCommunicator = (
     communicator?.on(Methods.sendTransactions, (msg) => {
       const { txs, params } = msg.data.params as SendTransactionsParams
 
-      const transactions = txs.map(({ to, value, ...rest }) => {
+      const transactions = txs.map(({ to, value, data }) => {
         return {
           to: getAddress(to),
           value: BigNumber.from(value).toString(),
-          ...rest,
+          data,
         }
       })
 
