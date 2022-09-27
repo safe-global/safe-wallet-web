@@ -40,7 +40,7 @@ export type SendNftFormProps = {
 }
 
 const NftMenuItem = ({ image, name, description }: { image: string; name: string; description?: string }) => (
-  <Grid container spacing={1} alignItems="center" wrap="nowrap" overflow="hidden">
+  <Grid container spacing={1} alignItems="center" wrap="nowrap">
     <Grid item>
       <Box width={20} height={20}>
         <ImageFallback src={image} fallbackSrc="/images/nft-placeholder.png" alt={name} height={20} />
@@ -136,6 +136,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                       </InputAdornment>
                     )
                   }
+                  sx={{ '&.MuiMenu-paper': { overflow: 'hidden' } }}
                 >
                   {collections.map((item) => {
                     const count = allNfts.filter((nft) => nft.address === item.address).length
@@ -165,6 +166,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                   labelId="asset-label"
                   label={errors.tokenId?.message || 'Select an NFT'}
                   error={!!errors.tokenId}
+                  sx={{ '&.MuiMenu-paper': { overflow: 'hidden' } }}
                 >
                   {selectedTokens.map((item) => (
                     <MenuItem key={item.address + item.id} value={item.id}>
