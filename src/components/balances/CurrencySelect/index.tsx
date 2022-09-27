@@ -42,7 +42,7 @@ const CurrencySelect = (): ReactElement => {
         onClose={() => handleTrack('Close')}
       >
         {fiatCurrencies.map((item) => (
-          <MenuItem key={item} value={item}>
+          <MenuItem key={item} value={item} sx={{ overflow: 'hidden' }}>
             {item.toUpperCase()}
           </MenuItem>
         ))}
