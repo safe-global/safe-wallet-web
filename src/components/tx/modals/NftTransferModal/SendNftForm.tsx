@@ -143,7 +143,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                       <MenuItem key={item.address} value={item.address}>
                         <NftMenuItem
                           image={item.imageUri || item.logoUri}
-                          name={item.tokenName || 'Unknown collection'}
+                          name={item.tokenName || item.tokenSymbol || 'Unknown collection'}
                           description={`Count: ${count} ${name}`}
                         />
                       </MenuItem>
@@ -170,7 +170,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                     <MenuItem key={item.address + item.id} value={item.id}>
                       <NftMenuItem
                         image={item.imageUri || item.logoUri}
-                        name={item.name || 'Unknown NFT'}
+                        name={item.name || (item.tokenName || item.tokenSymbol || '') + item.id}
                         description={`Token ID: ${item.id}`}
                       />
                     </MenuItem>
