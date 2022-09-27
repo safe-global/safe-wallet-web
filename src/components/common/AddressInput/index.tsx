@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useCallback, useRef, useMemo } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
-import _get from 'lodash/get'
-import { useFormContext, useWatch, type Validate } from 'react-hook-form'
+import { useFormContext, useWatch, type Validate, get } from 'react-hook-form'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -31,7 +30,7 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
   const { address, resolverError, resolving } = useNameResolver(isDomainLookupEnabled ? watchedValue : '')
 
   // errors[name] doesn't work with nested field names like 'safe.address', need to use the lodash get
-  const fieldError = resolverError || _get(errors, name)
+  const fieldError = resolverError || get(errors, name)
 
   // Debounce the field error unless there's no error or it's resolving a domain
   let error = useDebounce(fieldError, 500)
@@ -45,6 +44,7 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
   const setAddressValue = useCallback(
     (value: string) => {
       setValue(name, value)
+      // Workaround for a bug in react-hook-form that it restores a cached error state on blur
       trigger(name)
     },
     [setValue, trigger, name],
