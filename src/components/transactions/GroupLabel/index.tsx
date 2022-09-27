@@ -9,16 +9,17 @@ const GroupLabel = ({ item }: { item: Label }): ReactElement => {
 
   const { page } = useTxQueue()
 
-  const labels = page?.results.filter(isLabelListItem)
+  // 'Queued' is returned when there is one tx in queue OR after the 'Next' tx when there is > 1 tx in queue
+  // We're dealing with 'Queued' txs that can be executed only after 'Next' txs
+  if (label === LabelValue.Queued) {
+    const hasNext = page?.results.some((tx) => isLabelListItem(tx) && tx !== item)
 
-  // First page has both 'Queued' and 'Next' labels
-  const hasBothLabels = labels && labels.length > 1
+    if (hasNext) {
+      const firstTx = page?.results.find(isTransactionListItem)
 
-  if (hasBothLabels && label === LabelValue.Queued) {
-    const firstTx = page?.results.find(isTransactionListItem)
-
-    if (firstTx && isMultisigExecutionInfo(firstTx.transaction.executionInfo)) {
-      label = `${label} - transaction with nonce ${firstTx.transaction.executionInfo.nonce} needs to be executed first`
+      if (firstTx && isMultisigExecutionInfo(firstTx.transaction.executionInfo)) {
+        label = `${label} - transaction with nonce ${firstTx.transaction.executionInfo.nonce} needs to be executed first`
+      }
     }
   }
 
