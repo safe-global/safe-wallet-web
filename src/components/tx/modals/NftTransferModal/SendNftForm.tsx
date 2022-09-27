@@ -39,26 +39,27 @@ export type SendNftFormProps = {
   params?: NftTransferParams
 }
 
-const NftMenuItem = ({ image, name }: { image: string; name: string }) => (
-  <Grid container spacing={1}>
+const NftMenuItem = ({ image, name, description }: { image: string; name: string; description?: string }) => (
+  <Grid container spacing={1} alignItems="center" wrap="nowrap">
     <Grid item>
       <Box width={20} height={20} overflow="hidden">
         <ImageFallback src={image} fallbackSrc="/images/nft-placeholder.png" alt={name} height={20} />
       </Box>
     </Grid>
-    <Grid item>{name}</Grid>
-  </Grid>
-)
-
-const CollectionMenuItem = ({ address, name }: { address: string; name: string }) => (
-  <Grid container>
-    <Grid item pr={1}>
-      {name}
-    </Grid>
     <Grid item>
-      <Typography component="span" variant="body2" color="primary.light">
-        {address}
-      </Typography>
+      {name}
+      {description && (
+        <Typography
+          variant="caption"
+          color="primary.light"
+          display="block"
+          width="80%"
+          overflow="hidden"
+          textOverflow="ellipsis"
+        >
+          {description}
+        </Typography>
+      )}
     </Grid>
   </Grid>
 )
@@ -120,7 +121,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
         <DialogContent>
           <SendFromBlock />
 
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
             <AddressBookInput name={Field.recipient} label="Recipient" />
           </FormControl>
 
@@ -143,11 +144,18 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                     )
                   }
                 >
-                  {collections.map((item) => (
-                    <MenuItem key={item.address} value={item.address}>
-                      <CollectionMenuItem name={item.tokenName} address={item.address} />
-                    </MenuItem>
-                  ))}
+                  {collections.map((item) => {
+                    const count = allNfts.filter((nft) => nft.address === item.address).length
+                    return (
+                      <MenuItem key={item.address} value={item.address}>
+                        <NftMenuItem
+                          image={item.imageUri || item.logoUri}
+                          name={item.tokenName}
+                          description={`Count: ${count} ${name}`}
+                        />
+                      </MenuItem>
+                    )
+                  })}
                 </Select>
               )}
             />
@@ -167,7 +175,11 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                 >
                   {selectedTokens.map((item) => (
                     <MenuItem key={item.address + item.id} value={item.id}>
-                      <NftMenuItem image={item.logoUri} name={`${item.tokenName} #${item.id}`} />
+                      <NftMenuItem
+                        image={item.imageUri || item.logoUri}
+                        name={item.name || item.tokenName}
+                        description={`Token ID: ${item.id}`}
+                      />
                     </MenuItem>
                   ))}
                 </Select>

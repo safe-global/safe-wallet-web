@@ -2,7 +2,7 @@ const darkPalette = {
   text: {
     primary: '#FFFFFF',
     secondary: '#636669',
-    disabled: '#303033',
+    disabled: '#636669',
   },
   primary: {
     dark: '#0cb259',

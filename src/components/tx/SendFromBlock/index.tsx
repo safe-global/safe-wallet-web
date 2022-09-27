@@ -1,9 +1,10 @@
 import { type ReactElement } from 'react'
+import { Box, Typography } from '@mui/material'
+import SouthIcon from '@mui/icons-material/South'
 import css from './styles.module.css'
 import useBalances from '@/hooks/useBalances'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { formatVisualAmount } from '@/utils/formatters'
-import { Box, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 const SendFromBlock = (): ReactElement => {
@@ -13,7 +14,7 @@ const SendFromBlock = (): ReactElement => {
   const nativeTokenBalance = nativeToken ? formatVisualAmount(nativeToken.balance, nativeToken.tokenInfo.decimals) : '0'
 
   return (
-    <Box sx={{ borderBottom: ({ palette }) => `1px solid ${palette.divider}` }} pb={2} mb={2}>
+    <Box className={css.container} pb={2} mb={2}>
       <Typography color={({ palette }) => palette.text.secondary} pb={1}>
         Sending from
       </Typography>
@@ -30,6 +31,8 @@ const SendFromBlock = (): ReactElement => {
           </b>
         </Box>
       )}
+
+      <SouthIcon className={css.arrow} />
     </Box>
   )
 }

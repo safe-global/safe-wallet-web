@@ -8,6 +8,8 @@ import useTxQueue from '@/hooks/useTxQueue'
 import PaginatedTxns from '@/components/common/PaginatedTxns'
 import styles from './styles.module.css'
 import { getQueuedTransactionCount } from '@/utils/transactions'
+import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
+import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
 
 type Props = {
   expanded: boolean
@@ -71,7 +73,12 @@ const TransactionQueueBar = ({ expanded, visible, setExpanded, onDismiss }: Prop
               </IconButton>
             </AccordionSummary>
             <AccordionDetails>
-              <PaginatedTxns useTxns={useTxQueue} disableTopActionMargins />
+              <BatchExecuteHoverProvider>
+                <Box display="flex" flexDirection="column" alignItems="flex-end">
+                  <BatchExecuteButton />
+                </Box>
+                <PaginatedTxns useTxns={useTxQueue} />
+              </BatchExecuteHoverProvider>
             </AccordionDetails>
           </Accordion>
         </ClickAwayListener>

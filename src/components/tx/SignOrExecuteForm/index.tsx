@@ -76,7 +76,7 @@ const SignOrExecuteForm = ({
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
   const [advancedParams, setAdvancedParams] = useAdvancedParams({
-    nonce: tx?.data.nonce || 0,
+    nonce: tx?.data.nonce,
     gasLimit,
     safeTxGas: tx?.data.safeTxGas,
   })
@@ -191,14 +191,12 @@ const SignOrExecuteForm = ({
           onFormSubmit={onAdvancedSubmit}
         />
 
-        {safeTx && (
-          <TxSimulation
-            gasLimit={advancedParams.gasLimit?.toNumber()}
-            transactions={safeTx}
-            canExecute={canExecute}
-            disabled={submitDisabled}
-          />
-        )}
+        <TxSimulation
+          gasLimit={advancedParams.gasLimit?.toNumber()}
+          transactions={safeTx}
+          canExecute={canExecute}
+          disabled={submitDisabled}
+        />
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>
