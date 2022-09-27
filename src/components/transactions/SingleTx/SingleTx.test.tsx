@@ -45,6 +45,7 @@ describe('SingleTx', () => {
       query: {
         id: 'multisig_0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f_0x236da79434c398bf98b204e6f3d93d',
       },
+      pathname: '',
     }))
 
     const { getByTestId } = render(<SingleTx />)
@@ -61,6 +62,7 @@ describe('SingleTx', () => {
       query: {
         foo: 'multisig_0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f_0x236da79434c398bf98b204e6f3d93d',
       },
+      pathname: '',
     }))
 
     const { queryByText } = render(<SingleTx />)
@@ -79,6 +81,7 @@ describe('SingleTx', () => {
       query: {
         id: 'dummy',
       },
+      pathname: '',
     }))
 
     const getTransactionDetails = jest.spyOn(require('@gnosis.pm/safe-react-gateway-sdk'), 'getTransactionDetails')
@@ -102,6 +105,7 @@ describe('SingleTx', () => {
       query: {
         id: 'multisig_0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f_0x236da79434c398bf98b204e6f3d93d',
       },
+      pathname: '',
     }))
 
     jest.spyOn(useSafeInfo, 'default').mockImplementation(() => ({
