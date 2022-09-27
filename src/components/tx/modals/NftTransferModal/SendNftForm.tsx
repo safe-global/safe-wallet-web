@@ -166,15 +166,23 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                   label={errors.tokenId?.message || 'Select an NFT'}
                   error={!!errors.tokenId}
                 >
-                  {selectedTokens.map((item) => (
-                    <MenuItem key={item.address + item.id} value={item.id}>
-                      <NftMenuItem
-                        image={item.imageUri || item.logoUri}
-                        name={item.name || `${item.tokenName || item.tokenSymbol || ''} #${item.id}`}
-                        description={`Token ID: ${item.id}`}
-                      />
-                    </MenuItem>
-                  ))}
+                  {selectedTokens.map((item) => {
+                    const name =
+                      item.name ||
+                      `${item.tokenName ? `${item.tokenName} ` : item.tokenSymbol ? `${item.tokenSymbol} ` : ''}#${
+                        item.id
+                      }`
+
+                    return (
+                      <MenuItem key={item.address + item.id} value={item.id}>
+                        <NftMenuItem
+                          image={item.imageUri || item.logoUri}
+                          name={name}
+                          description={`Token ID: ${item.id}`}
+                        />
+                      </MenuItem>
+                    )
+                  })}
                 </Select>
               )}
             />
