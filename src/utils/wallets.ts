@@ -1,3 +1,4 @@
+import { ProviderLabel } from '@web3-onboard/injected-wallets'
 import { hasStoredPairingSession } from '@/services/pairing/connector'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 
@@ -23,7 +24,7 @@ export const isWalletRejection = (err: Error & { code?: number }): boolean => {
 }
 
 const WalletNames = {
-  METAMASK: 'MetaMask',
+  METAMASK: ProviderLabel.MetaMask,
   WALLET_CONNECT: 'WalletConnect',
   SAFE_MOBILE_PAIRING: PAIRING_MODULE_LABEL,
 }
