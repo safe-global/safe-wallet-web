@@ -11,7 +11,7 @@ const GroupLabel = ({ item }: { item: Label }): ReactElement => {
 
   const labels = page?.results.filter(isLabelListItem)
 
-  // Current page has both 'Queued' and 'Next' labels
+  // First page has both 'Queued' and 'Next' labels
   const hasBothLabels = labels && labels.length > 1
 
   if (hasBothLabels && label === LabelValue.Queued) {
