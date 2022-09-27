@@ -17,7 +17,7 @@ import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import { didRevert } from '@/utils/ethers-utils'
+import { didRevert, EthersError } from '@/utils/ethers-utils'
 import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
 import MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
@@ -26,6 +26,7 @@ import { ContractTransaction, ethers } from 'ethers'
 import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
+import { ErrorCode } from '@ethersproject/logger'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -262,7 +263,14 @@ export const dispatchTxExecution = async (
         txDispatch(TxEvent.PROCESSED, { txId, receipt })
       }
     })
-    .catch((error) => {
+    .catch((err) => {
+      const error = err as EthersError
+
+      // Meaning the transaction was "repriced" or "replaced"
+      if (error.code === ErrorCode.TRANSACTION_REPLACED && error.reason !== 'cancelled') {
+        // TxEvent.SUCCESS is handled by txHistoryMiddleware
+        return
+      }
       txDispatch(TxEvent.FAILED, { txId, error: error as Error })
     })
 
