@@ -21,7 +21,7 @@ const DateTime = ({ value }: { value: number }): ReactElement => {
   const showTime = router.pathname === AppRoutes.transactions.history && !filter
 
   const isOld = Math.floor((Date.now() - value) / 1000 / 60 / 60 / 24) > DAYS_THRESHOLD
-  const showDateTime = isOld || filter
+  const showDateTime = isOld
 
   return (
     <Tooltip title={showDateTime ? '' : formatDateTime(value)} placement="top">
