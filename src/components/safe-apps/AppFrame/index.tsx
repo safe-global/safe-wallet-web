@@ -203,7 +203,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
               appId: remoteApp?.id,
               requestId: signMessageModalState.requestId,
               message: signMessageModalState.message,
-              method: signMessageModalState.method,
+              method: signMessageModalState.method as Methods.signMessage | Methods.signTypedMessage,
             },
           ]}
         />

@@ -39,7 +39,11 @@ type JsonRpcResponse = {
 
 type UseAppCommunicatorHandlers = {
   onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => void
-  onSignMessage: (message: string | EIP712TypedData, requestId: string, method: Methods) => void
+  onSignMessage: (
+    message: string | EIP712TypedData,
+    requestId: string,
+    method: Methods.signMessage | Methods.signTypedMessage,
+  ) => void
   onGetTxBySafeTxHash: (transactionId: string) => Promise<TransactionDetails>
   onGetEnvironmentInfo: () => EnvironmentInfo
   onGetSafeBalances: (currency: string) => Promise<SafeBalances>
