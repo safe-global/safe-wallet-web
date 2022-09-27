@@ -68,14 +68,14 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
   const [pageUrl, setPageUrl] = useState<string>()
   const [combinedNfts, setCombinedNfts] = useState<SafeCollectibleResponse[]>()
   const [nftData, nftError, nftLoading] = useCollectibles(pageUrl)
-  const allNfts = useMemo(() => combinedNfts ?? (params ? [params.token] : []), [combinedNfts, params])
+  const allNfts = useMemo(() => combinedNfts ?? (params?.token ? [params.token] : []), [combinedNfts, params?.token])
   const disabled = nftLoading && !allNfts.length
 
   const formMethods = useForm<FormData>({
     defaultValues: {
       [Field.recipient]: params?.recipient || '',
-      [Field.tokenAddress]: params?.token.address || '',
-      [Field.tokenId]: params?.token.id || '',
+      [Field.tokenAddress]: params?.token?.address || '',
+      [Field.tokenId]: params?.token?.id || '',
     },
   })
   const {

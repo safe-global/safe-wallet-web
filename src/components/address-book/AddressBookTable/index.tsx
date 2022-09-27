@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import RemoveDialog from '@/components/address-book/RemoveDialog'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
+import NewTxModal from '@/components/tx/modals/NewTxModal'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import AddressBookHeader from '../AddressBookHeader'
@@ -118,12 +118,7 @@ const AddressBookTable = () => {
       {open[ModalType.REMOVE] && <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />}
 
       {/* Send funds modal */}
-      {selectedAddress && (
-        <TokenTransferModal
-          onClose={() => setSelectedAddress(undefined)}
-          initialData={[{ recipient: selectedAddress }]}
-        />
-      )}
+      {selectedAddress && <NewTxModal onClose={() => setSelectedAddress(undefined)} recipient={selectedAddress} />}
     </>
   )
 }
