@@ -10,7 +10,9 @@ const DateTime = ({ value }: { value: number }): ReactElement => {
   const router = useRouter()
   const isHistory = router.pathname.includes(AppRoutes.transactions.history)
 
-  const displayExactDate = Math.floor((Date.now() - value) / 1000 / 60 / 60 / 24) > DAYS_THRESHOLD || isHistory
+  const isOld = Math.floor((Date.now() - value) / 1000 / 60 / 60 / 24) > DAYS_THRESHOLD
+
+  const displayExactDate = isOld || isHistory
 
   return (
     <Tooltip title={displayExactDate ? '' : formatDateTime(value)} placement="top">
