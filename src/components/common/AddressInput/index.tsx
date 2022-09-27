@@ -1,5 +1,6 @@
 import { ReactElement, useEffect, useCallback, useRef, useMemo } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
+import _get from 'lodash/get'
 import { useFormContext, useWatch, type Validate } from 'react-hook-form'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { validatePrefixedAddress } from '@/utils/validation'
@@ -17,8 +18,8 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
     register,
     setValue,
     control,
-    getFieldState,
     formState: { errors },
+    trigger,
   } = useFormContext()
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
@@ -29,10 +30,8 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
   const { address, resolverError, resolving } = useNameResolver(isDomainLookupEnabled ? watchedValue : '')
 
-  // errors[name] doesn't work with nested field names like 'safe.address'.
-  // But getFieldState doesn't trigger a re-render, which breaks tests.
-  // So both are needed to get the error state and pass tests.
-  const fieldError = resolverError || getFieldState(name).error || errors[name]
+  // errors[name] doesn't work with nested field names like 'safe.address', need to use the lodash get
+  const fieldError = resolverError || _get(errors, name)
 
   // Debounce the field error unless there's no error or it's resolving a domain
   let error = useDebounce(fieldError, 500)
@@ -45,9 +44,10 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
   // Update the input value
   const setAddressValue = useCallback(
     (value: string) => {
-      setValue(name, value, { shouldValidate: true })
+      setValue(name, value)
+      trigger(name)
     },
-    [setValue, name],
+    [setValue, trigger, name],
   )
 
   // On ENS resolution, update the input value
