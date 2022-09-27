@@ -7,19 +7,25 @@ import { useTxFilter } from '@/utils/tx-history-filter'
 
 const DAYS_THRESHOLD = 60
 
+/**
+ * If queue, show relative time until threshold then show full date and time
+ * If history, show time (as date labels are present)
+ * If filter, show full date and time
+ */
+
 const DateTime = ({ value }: { value: number }): ReactElement => {
   const [filter] = useTxFilter()
-
   const router = useRouter()
-  const isHistory = router.pathname === AppRoutes.transactions.history
+
+  // (non-filtered) history is the endpoint that returns date labels
+  const showTime = router.pathname === AppRoutes.transactions.history && !filter
 
   const isOld = Math.floor((Date.now() - value) / 1000 / 60 / 60 / 24) > DAYS_THRESHOLD
-
-  const displayExactDate = isOld || isHistory
+  const showDateTime = isOld || filter
 
   return (
-    <Tooltip title={displayExactDate ? '' : formatDateTime(value)} placement="top">
-      <span>{filter ? formatDateTime(value) : displayExactDate ? formatTime(value) : formatTimeInWords(value)}</span>
+    <Tooltip title={showDateTime ? '' : formatDateTime(value)} placement="top">
+      <span>{showTime ? formatTime(value) : showDateTime ? formatDateTime(value) : formatTimeInWords(value)}</span>
     </Tooltip>
   )
 }
