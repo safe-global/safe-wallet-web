@@ -30,7 +30,7 @@ import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
   if (!safeSDK) {
-    throw new Error('Safe SDK not initialized')
+    throw new Error('The Safe SDK could not be initialized. Please be aware that we only support >= v1.1.1 Safes.')
   }
   return safeSDK
 }
@@ -102,6 +102,14 @@ export const createSwapOwnerTx = async (txParams: SwapOwnerTxParams): Promise<Sa
 
 export const createUpdateThresholdTx = async (threshold: number): Promise<SafeTransaction> => {
   return withRecommendedNonce((safeSDK) => safeSDK.createChangeThresholdTx(threshold))
+}
+
+export const createRemoveModuleTx = async (moduleAddress: string): Promise<SafeTransaction> => {
+  return withRecommendedNonce((safeSDK) => safeSDK.createDisableModuleTx(moduleAddress))
+}
+
+export const createRemoveGuardTx = async (): Promise<SafeTransaction> => {
+  return withRecommendedNonce((safeSDK) => safeSDK.createDisableGuardTx())
 }
 
 /**
@@ -288,7 +296,7 @@ export const dispatchBatchExecution = async (
     txDispatch(TxEvent.PROCESSING, { txId, txHash: result!.hash, groupKey })
   })
 
-  result.transactionResponse
+  result!.transactionResponse
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
@@ -320,7 +328,7 @@ export const dispatchBatchExecution = async (
       })
     })
 
-  return result.hash
+  return result!.hash
 }
 
 export const dispatchSpendingLimitTxExecution = async (

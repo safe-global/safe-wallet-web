@@ -7,10 +7,6 @@ describe('Dashboard', () => {
     cy.contains('button', 'Accept selection').click()
   })
 
-  it('should display the dashboard title', () => {
-    cy.contains('main p', 'Dashboard')
-  })
-
   it('should display the overview widget', () => {
     cy.contains('main', SAFE).should('exist')
     cy.contains('main', '1/1')
@@ -58,11 +54,11 @@ describe('Dashboard', () => {
     cy.get(`main section#featured-safe-apps a[href*="?appUrl=http"]`).should('have.length', 2)
   })
 
-  // it('should show the Safe Apps widget', () => {
-  //   cy.contains('main section#safe-apps h2', 'Safe Apps')
-  //   cy.contains('main section#safe-apps a[href="/app/apps"] button', 'Explore Safe Apps')
+  it('should show the Safe Apps Section', () => {
+    cy.contains('main section h2', 'Safe Apps')
+    cy.contains('main section ', 'Explore Safe Apps')
 
-  //   // Regular safe apps
-  //   cy.get(`main section#safe-apps a[href^="/app/${SAFE}/apps?appUrl=http"]`).should('have.length', 5)
-  // })
+    // Regular safe apps
+    cy.get(`main section a[href^="/apps?safe=${SAFE}&appUrl=http"]`).should('have.length', 5)
+  })
 })

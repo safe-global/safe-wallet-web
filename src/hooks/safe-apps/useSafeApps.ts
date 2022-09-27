@@ -3,6 +3,8 @@ import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { useCustomSafeApps } from '@/hooks/safe-apps/useCustomSafeApps'
 import { usePinnedSafeApps } from '@/hooks/safe-apps/usePinnedSafeApps'
+import { useBrowserPermissions, useSafePermissions } from './permissions'
+import { useRankedSafeApps } from '@/hooks/safe-apps/useRankedSafeApps'
 
 type ReturnType = {
   allSafeApps: SafeAppData[]
@@ -10,6 +12,7 @@ type ReturnType = {
   pinnedSafeAppIds: Set<number>
   remoteSafeApps: SafeAppData[]
   customSafeApps: SafeAppData[]
+  rankedSafeApps: SafeAppData[]
   remoteSafeAppsLoading: boolean
   customSafeAppsLoading: boolean
   remoteSafeAppsError?: Error
@@ -39,6 +42,8 @@ const useSafeApps = (): ReturnType => {
   const [remoteSafeApps = [], remoteSafeAppsError, remoteSafeAppsLoading] = useRemoteSafeApps()
   const { customSafeApps, loading: customSafeAppsLoading, updateCustomSafeApps } = useCustomSafeApps()
   const { pinnedSafeAppIds, updatePinnedSafeApps } = usePinnedSafeApps()
+  const { removePermissions: removeSafePermissions } = useSafePermissions()
+  const { removePermissions: removeBrowserPermissions } = useBrowserPermissions()
 
   useDeadPinnedSafeAppsRemover(remoteSafeApps, pinnedSafeAppIds, updatePinnedSafeApps)
 
@@ -52,6 +57,8 @@ const useSafeApps = (): ReturnType => {
     [remoteSafeApps, pinnedSafeAppIds],
   )
 
+  const rankedSafeApps = useRankedSafeApps(allSafeApps, pinnedSafeApps)
+
   const addCustomApp = useCallback(
     (app: SafeAppData) => {
       updateCustomSafeApps([...customSafeApps, app])
@@ -62,8 +69,14 @@ const useSafeApps = (): ReturnType => {
   const removeCustomApp = useCallback(
     (appId: number) => {
       updateCustomSafeApps(customSafeApps.filter((app) => app.id !== appId))
+      const app = customSafeApps.find((app) => app.id === appId)
+
+      if (app) {
+        removeSafePermissions(app.url)
+        removeBrowserPermissions(app.url)
+      }
     },
-    [updateCustomSafeApps, customSafeApps],
+    [updateCustomSafeApps, customSafeApps, removeSafePermissions, removeBrowserPermissions],
   )
 
   const togglePin = (appId: number) => {
@@ -83,6 +96,7 @@ const useSafeApps = (): ReturnType => {
     pinnedSafeApps,
     pinnedSafeAppIds,
     customSafeApps,
+    rankedSafeApps,
     remoteSafeAppsLoading,
     customSafeAppsLoading,
     remoteSafeAppsError,

@@ -12,11 +12,17 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { Contract } from 'ethers'
 import { Interface } from '@ethersproject/abi'
 import semverSatisfies from 'semver/functions/satisfies'
-import { SafeInfo, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getMasterCopies, SafeInfo, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { GetContractProps, SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
 import { type Compatibility_fallback_handler } from '@/types/contracts/Compatibility_fallback_handler'
 import { type Sign_message_lib } from '@/types/contracts/Sign_message_lib'
 import { createEthersAdapter, isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
+import { sameAddress } from '@/utils/addresses'
+
+export const isValidMasterCopy = async (chainId: string, address: string): Promise<boolean> => {
+  const masterCopies = await getMasterCopies(chainId)
+  return masterCopies.some((masterCopy) => sameAddress(masterCopy.address, address))
+}
 
 export const _getValidatedGetContractProps = (
   chainId: string,

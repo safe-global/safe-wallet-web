@@ -21,12 +21,12 @@ const OwnerRow = ({
   isGranted: boolean
 }): ReactElement => {
   return (
-    <TableRow className={css.row}>
+    <TableRow>
       <TableCell>
         <EthHashInfo address={address} showCopyButton shortAddress={false} showName={true} hasExplorer />
       </TableCell>
 
-      <TableCell>
+      <TableCell className="sticky">
         <div className={css.actions}>
           {isGranted && <ReplaceOwnerDialog address={address} />}
           <EditOwnerDialog address={address} name={name} chainId={chainId} />

@@ -58,7 +58,7 @@ const SafeAppList = () => {
   if (searchQuery) {
     if (filteredApps.length === 0) {
       pageBody = (
-        <Typography variant="body1" sx={{ p: 2 }}>
+        <Typography variant="body1" p={2}>
           No apps found
         </Typography>
       )
@@ -68,26 +68,30 @@ const SafeAppList = () => {
   }
 
   return (
-    <Grid container direction="column">
+    <>
       <SafeAppsHeader searchQuery={searchQuery} onSearchQueryChange={setSearchQuery} />
 
-      {remoteSafeAppsLoading || customSafeAppsLoading ? (
-        <Typography variant="body1" p={2}>
-          Loading...
-        </Typography>
-      ) : (
-        pageBody
-      )}
+      <main style={{ padding: 0 }}>
+        <Grid container direction="column">
+          {remoteSafeAppsLoading || customSafeAppsLoading ? (
+            <Typography variant="body1" p={2}>
+              Loading...
+            </Typography>
+          ) : (
+            pageBody
+          )}
 
-      {removeCustomAppModalState.app && (
-        <RemoveCustomAppModal
-          open={removeCustomAppModalState.isOpen}
-          app={removeCustomAppModalState.app}
-          onClose={close}
-          onConfirm={handleCustomAppRemoval}
-        />
-      )}
-    </Grid>
+          {removeCustomAppModalState.app && (
+            <RemoveCustomAppModal
+              open={removeCustomAppModalState.isOpen}
+              app={removeCustomAppModalState.app}
+              onClose={close}
+              onConfirm={handleCustomAppRemoval}
+            />
+          )}
+        </Grid>
+      </main>
+    </>
   )
 }
 

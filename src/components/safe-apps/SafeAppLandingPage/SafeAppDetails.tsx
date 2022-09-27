@@ -18,7 +18,7 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
         <Typography variant="h3" fontWeight={700}>
           {app.name}
         </Typography>
-        <Typography variant="body2" sx={{ mt: 1 }}>
+        <Typography variant="body2" mt={1}>
           {app.description}
         </Typography>
       </Box>
@@ -58,10 +58,10 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
               Warning
             </Typography>
           </Box>
-          <Typography variant="body1" sx={({ palette }) => ({ color: palette.warning.dark, mt: 1 })}>
+          <Typography variant="body1" mt={1} sx={({ palette }) => ({ color: palette.warning.dark })}>
             The application is not in the default Safe App list
           </Typography>
-          <Typography variant="body2" sx={{ mt: 2 }}>
+          <Typography variant="body2" mt={2}>
             Check the app link and ensure it comes from a trusted source
           </Typography>
         </Box>
