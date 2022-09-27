@@ -5,35 +5,41 @@ import useTxQueue from '@/hooks/useTxQueue'
 import { isLabelListItem, isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-const GroupLabel = ({ item }: { item: Label }): ReactElement => {
-  let label: string | LabelValue = item.label
-
+export const useGroupLabel = (item: Label): string => {
   const { page } = useTxQueue()
   const { safe } = useSafeInfo()
 
-  /**
-   * 'Next' label is returned when the first transaction has a correct nonce
-   * 'Queued' label is returned after 'Next' OR when the first transaction has an out of order nonce
-   *
-   * We want to append to the 'Queue' label if:
-   * - There is a 'Next' label on the first page
-   * - The first transaction has an out of order nonce
-   */
+  const { label } = item
 
-  if (label === LabelValue.Queued && page) {
-    const hasNext = page.results.some((tx) => isLabelListItem(tx) && tx !== item)
-    const firstTx = page.results.find(isTransactionListItem)
-
-    if (
-      firstTx &&
-      isMultisigExecutionInfo(firstTx.transaction.executionInfo) &&
-      (hasNext || firstTx.transaction.executionInfo.nonce !== safe.nonce)
-    ) {
-      const nextNonce = hasNext ? firstTx.transaction.executionInfo.nonce : safe.nonce
-
-      label = `${label} - transaction with nonce ${nextNonce} needs to be executed first`
-    }
+  if (label !== LabelValue.Queued || !page) {
+    return label
   }
+
+  const firstTx = page.results.find(isTransactionListItem)
+
+  if (!firstTx || !isMultisigExecutionInfo(firstTx.transaction.executionInfo)) {
+    return label
+  }
+
+  const getQueueLabel = (nonce: number) => {
+    return `${label} - transaction with nonce ${nonce} needs to be executed first`
+  }
+
+  // There is also a 'Next' label on the page of the queue
+  if (page.results.some((tx) => isLabelListItem(tx) && tx !== item)) {
+    return getQueueLabel(firstTx.transaction.executionInfo.nonce)
+  }
+
+  // First transaction has an out of order nonce
+  if (firstTx.transaction.executionInfo.nonce !== safe.nonce) {
+    return getQueueLabel(safe.nonce)
+  }
+
+  return label
+}
+
+const GroupLabel = ({ item }: { item: Label }): ReactElement => {
+  const label = useGroupLabel(item)
 
   return <div className={css.container}>{label}</div>
 }
