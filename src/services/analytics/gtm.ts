@@ -9,6 +9,7 @@
 
 import TagManager, { TagManagerArgs, DATA_LAYER_NAME } from './TagManager'
 import Cookies from 'js-cookie'
+import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   IS_PRODUCTION,
   GOOGLE_TAG_MANAGER_ID,
@@ -17,7 +18,6 @@ import {
   GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH,
 } from '@/config/constants'
 import { AnalyticsEvent, EventLabel, EventType, SafeAppEvent } from './types'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>

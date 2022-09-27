@@ -5,6 +5,7 @@ import { AddressBookItem, Methods, RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
+import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
@@ -29,7 +30,8 @@ import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
-import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+
+const UNKNOWN_APP = 'unknown'
 
 type AppFrameProps = {
   appUrl: string
@@ -114,10 +116,10 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     if (!appIsLoading) {
       trackEvent({
         ...SAFE_APPS_EVENTS.OPEN_APP,
-        label: remoteApp?.name || `${safeAppFromManifest?.name || 'unknown'} - ${appUrl}`,
+        label: remoteApp?.name || `${safeAppFromManifest?.name || UNKNOWN_APP} - ${appUrl}`,
       })
     }
-  }, [appIsLoading, remoteApp, appUrl, safeAppFromManifest?.name])
+  }, [appIsLoading, remoteApp, appUrl, safeAppFromManifest])
 
   useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, safeAppRequestId }) => {

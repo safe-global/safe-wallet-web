@@ -6,9 +6,9 @@ import { useAppsSearch } from '@/hooks/safe-apps/useAppsSearch'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { SafeAppsHeader } from './SafeAppsHeader'
 import { useRemoveAppModal } from '@/hooks/safe-apps/useRemoveAppModal'
+import useDebounce from '@/hooks/useDebounce'
 import { RemoveCustomAppModal } from '@/components/safe-apps/RemoveCustomAppModal'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
-import useDebounce from '@/hooks/useDebounce'
 
 const SafeAppList = () => {
   const [searchQuery, setSearchQuery] = useState('')

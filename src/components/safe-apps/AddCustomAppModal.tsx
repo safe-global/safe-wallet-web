@@ -20,8 +20,8 @@ import useChainId from '@/hooks/useChainId'
 import { trimTrailingSlash, isSameUrl } from '@/utils/url'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
-import ImageFallback from '../common/ImageFallback'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import ImageFallback from '../common/ImageFallback'
 
 type Props = {
   open: boolean
