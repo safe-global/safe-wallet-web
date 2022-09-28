@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useCallback, useRef, useMemo } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
-import { useFormContext, useWatch, type Validate } from 'react-hook-form'
+import { useFormContext, useWatch, type Validate, get } from 'react-hook-form'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -17,8 +17,8 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
     register,
     setValue,
     control,
-    getFieldState,
     formState: { errors },
+    trigger,
   } = useFormContext()
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
@@ -29,10 +29,8 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
   const { address, resolverError, resolving } = useNameResolver(isDomainLookupEnabled ? watchedValue : '')
 
-  // errors[name] doesn't work with nested field names like 'safe.address'.
-  // But getFieldState doesn't trigger a re-render, which breaks tests.
-  // So both are needed to get the error state and pass tests.
-  const fieldError = resolverError || getFieldState(name).error || errors[name]
+  // errors[name] doesn't work with nested field names like 'safe.address', need to use the lodash get
+  const fieldError = resolverError || get(errors, name)
 
   // Debounce the field error unless there's no error or it's resolving a domain
   let error = useDebounce(fieldError, 500)
@@ -52,8 +50,10 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
 
   // On ENS resolution, update the input value
   useEffect(() => {
-    address && setAddressValue(address)
-  }, [address, setAddressValue])
+    if (address) {
+      setAddressValue(`${currentShortName}:${address}`)
+    }
+  }, [address, currentShortName, setAddressValue])
 
   return (
     <Grid container alignItems="center" gap={1}>
@@ -99,6 +99,9 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
                 return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
               }
             },
+
+            // Workaround for a bug in react-hook-form that it restores a cached error state on blur
+            onBlur: () => setTimeout(() => trigger(name), 100),
           })}
         />
       </Grid>

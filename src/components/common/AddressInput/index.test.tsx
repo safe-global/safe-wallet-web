@@ -127,7 +127,7 @@ describe('AddressInput tests', () => {
 
     await act(async () => {
       fireEvent.change(input, { target: { value: 'zero.eth' } })
-      await waitFor(() => expect(input.value).toBe('0x0000000000000000000000000000000000000000'))
+      await waitFor(() => expect(input.value).toBe('rin:0x0000000000000000000000000000000000000000'))
     })
 
     expect(useNameResolver).toHaveBeenCalledWith('zero.eth')
