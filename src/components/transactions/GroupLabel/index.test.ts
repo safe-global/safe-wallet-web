@@ -5,6 +5,10 @@ import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useTxQueueHook from '@/hooks/useTxQueue'
 
 describe('GroupLabel', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
   describe('useGroupLabel', () => {
     it('should return Next if given a Next label', () => {
       const label = {
@@ -77,6 +81,15 @@ describe('GroupLabel', () => {
             } as Transaction,
           ],
         },
+      }))
+
+      jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
+        safeAddress: '0x0',
+        safeLoaded: true,
+        safeLoading: false,
+        safe: {
+          nonce: 1,
+        } as SafeInfo,
       }))
 
       const { result } = renderHook(() => useGroupLabel(label))

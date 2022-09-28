@@ -21,21 +21,16 @@ export const useGroupLabel = (item: Label): string => {
     return label
   }
 
-  const getQueueLabel = (nonce: number) => {
-    return `${label} - transaction with nonce ${nonce} needs to be executed first`
+  const hasNextLabel = page.results.some((tx) => isLabelListItem(tx) && tx !== item)
+  const nonceInFuture = firstTx.transaction.executionInfo.nonce !== safe.nonce
+
+  if (!hasNextLabel && !nonceInFuture) {
+    return label
   }
 
-  // There is also a 'Next' label on the page of the queue
-  if (page.results.some((tx) => isLabelListItem(tx) && tx !== item)) {
-    return getQueueLabel(firstTx.transaction.executionInfo.nonce)
-  }
+  const nextNonce = nonceInFuture ? safe.nonce : firstTx.transaction.executionInfo.nonce
 
-  // First transaction has an out of order nonce
-  if (firstTx.transaction.executionInfo.nonce !== safe.nonce) {
-    return getQueueLabel(safe.nonce)
-  }
-
-  return label
+  return `${label} - transaction with nonce ${nextNonce} needs to be executed first`
 }
 
 const GroupLabel = ({ item }: { item: Label }): ReactElement => {
