@@ -24,11 +24,12 @@ import SafeAppsTxModal from '../SafeAppsTxModal'
 import useTxModal from '../SafeAppsTxModal/useTxModal'
 import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
 import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
-import TransactionQueueBar from './TransactionQueueBar'
+import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
 import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
+import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTransactionQueueBarState'
 
 type AppFrameProps = {
   appUrl: string
@@ -43,6 +44,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const addressBook = useAddressBook()
   const chain = useCurrentChain()
   const granted = useIsGranted()
+  const {
+    expanded: queueBarExpanded,
+    dismissedByUser: queueBarDismissed,
+    setExpanded,
+    dismissQueueBar,
+  } = useTransactionQueueBarState()
+
   const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
@@ -174,10 +182,18 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         title={safeAppFromManifest?.name}
         onLoad={onIframeLoad}
         allow={allowedFeaturesList}
-        style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
+        style={{
+          display: appIsLoading ? 'none' : 'block',
+          paddingBottom: !queueBarDismissed ? TRANSACTION_BAR_HEIGHT : 0,
+        }}
       />
 
-      <TransactionQueueBar />
+      <TransactionQueueBar
+        expanded={queueBarExpanded}
+        visible={!queueBarDismissed}
+        setExpanded={setExpanded}
+        onDismiss={dismissQueueBar}
+      />
 
       {txModalState.isOpen && (
         <SafeAppsTxModal
