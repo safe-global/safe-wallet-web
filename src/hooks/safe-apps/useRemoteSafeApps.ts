@@ -4,12 +4,27 @@ import { Errors, logError } from '@/services/exceptions'
 import useChainId from '@/hooks/useChainId'
 import useAsync, { AsyncResult } from '../useAsync'
 
+// To avoid multiple simultaneous requests (e.g. the Dashboard and the SAFE header widget),
+// cache the request promise for 100ms
+let cache: Promise<SafeAppsResponse> | undefined
+const cachedGetSafeApps = (chainId: string): ReturnType<typeof getSafeApps> => {
+  if (!cache) {
+    cache = getSafeApps(chainId, { client_url: window.location.origin })
+
+    // Clear the cache the promise resolves with a small delay
+    cache.finally(() => {
+      setTimeout(() => (cache = undefined), 100)
+    })
+  }
+  return cache
+}
+
 const useRemoteSafeApps = (): AsyncResult<SafeAppsResponse> => {
   const chainId = useChainId()
 
   const [remoteApps, error, loading] = useAsync(async () => {
     if (!chainId) return
-    return getSafeApps(chainId, { client_url: window.location.origin })
+    return cachedGetSafeApps(chainId)
   }, [chainId])
 
   useEffect(() => {
