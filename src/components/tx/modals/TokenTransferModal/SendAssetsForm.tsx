@@ -81,7 +81,6 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     formState: { errors },
   } = formMethods
 
-  // Recipient
   const recipient = watch(SendAssetsField.recipient)
 
   // Selected token
