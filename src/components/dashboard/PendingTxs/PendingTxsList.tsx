@@ -43,18 +43,12 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
   const url = `${AppRoutes.transactions.queue}?safe=${router.query.safe}`
 
   const queuedTxns = useMemo(() => {
-    return groupConflictingTxs(page?.results || [])
-      .map((group) => {
-        if (Array.isArray(group)) {
-          const latestTx = group.reduce((prev, curr) => {
-            return curr.transaction.timestamp > prev.transaction.timestamp ? curr : prev
-          })
-
-          return latestTx
-        }
-        return group
-      })
-      .filter(isTransactionListItem)
+    return (
+      groupConflictingTxs(page?.results || [])
+        // Get latest transaction if there are conflicting ones
+        .map((group) => (Array.isArray(group) ? group[0] : group))
+        .filter(isTransactionListItem)
+    )
   }, [page?.results])
 
   const queuedTxsToDisplay = queuedTxns.slice(0, size)
