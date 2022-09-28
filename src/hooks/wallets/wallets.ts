@@ -11,7 +11,7 @@ import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import coinbaseModule from '@web3-onboard/coinbase'
 import fortmaticModule from '@web3-onboard/fortmatic'
-import injectedWalletModule from '@web3-onboard/injected-wallets'
+import injectedWalletModule, { ProviderLabel } from '@web3-onboard/injected-wallets'
 import keystoneModule from '@web3-onboard/keystone/dist/index'
 import ledgerModule from '@web3-onboard/ledger'
 import portisModule from '@web3-onboard/portis'
@@ -24,6 +24,7 @@ import e2eWalletModule from '@/tests/e2e-wallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { InjectedWalletOptions } from '@web3-onboard/injected-wallets/dist/types'
 
 export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
@@ -38,6 +39,9 @@ export const enum WALLET_KEYS {
   WALLETCONNECT = 'WALLETCONNECT',
 }
 
+// These are only the modules/providers present in the current CGW version
+
+// Note: 'lattice', 'operaTouch', 'walletLink', 'authereum' are also present in CGW
 export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.COINBASE]: 'coinbase',
   [WALLET_KEYS.FORTMATIC]: 'fortmatic',
@@ -51,18 +55,27 @@ export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.WALLETCONNECT]: 'walletConnect',
 }
 
-const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
-  [WALLET_KEYS.INJECTED]: injectedWalletModule,
-  [WALLET_KEYS.PAIRING]: pairingModule,
+// Note: other `ProviderLabel`s can be injected by @web3-onboard
+const INJECTED_CGW_NAMES = {
+  [ProviderLabel.Tally]: 'tally',
+  [ProviderLabel.Frame]: 'frame',
+  [ProviderLabel.Opera]: 'opera',
+  [ProviderLabel.Trust]: 'trust',
+  [ProviderLabel.MetaMask]: 'metamask',
+}
+
+const WALLET_MODULES: { [key in WALLET_KEYS]: (chain?: ChainInfo) => WalletInit } = {
+  [WALLET_KEYS.INJECTED]: (chain) => injectedWalletModule({ filter: getInjectWalletFilter(chain) }),
+  [WALLET_KEYS.PAIRING]: () => pairingModule(),
   [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ bridge: WC_BRIDGE }),
-  [WALLET_KEYS.LEDGER]: ledgerModule,
+  [WALLET_KEYS.LEDGER]: () => ledgerModule(),
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
-  [WALLET_KEYS.KEYSTONE]: keystoneModule,
+  [WALLET_KEYS.KEYSTONE]: () => keystoneModule(),
   [WALLET_KEYS.COINBASE]: () =>
     coinbaseModule({ darkMode: !!window?.matchMedia('(prefers-color-scheme: dark)')?.matches }),
   [WALLET_KEYS.FORTMATIC]: () => fortmaticModule({ apiKey: FORTMATIC_KEY }),
   [WALLET_KEYS.PORTIS]: () => portisModule({ apiKey: PORTIS_KEY }),
-  [WALLET_KEYS.TORUS]: torusModule,
+  [WALLET_KEYS.TORUS]: () => torusModule(),
 }
 
 export const getAllWallets = (): WalletInit[] => {
@@ -71,6 +84,20 @@ export const getAllWallets = (): WalletInit[] => {
 
 export const getRecommendedInjectedWallets = (): RecommendedInjectedWallets[] => {
   return [{ name: 'MetaMask', url: 'https://metamask.io' }]
+}
+
+const getInjectWalletFilter = (chain?: ChainInfo): InjectedWalletOptions['filter'] => {
+  if (!chain) {
+    return undefined
+  }
+
+  return Object.entries(INJECTED_CGW_NAMES).reduce<InjectedWalletOptions['filter']>((acc, [label, cgwName]) => {
+    if (!chain.disabledWallets.includes(cgwName)) {
+      return acc
+    } else {
+      return { ...(acc || {}), [label]: false }
+    }
+  }, undefined)
 }
 
 export const isWalletSupported = (disabledWallets: string[], walletLabel: string): boolean => {
@@ -84,7 +111,7 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
   }
   return Object.entries(WALLET_MODULES)
     .filter(([key]) => isWalletSupported(chain.disabledWallets, key))
-    .map(([, module]) => module())
+    .map(([, module]) => module(chain))
 }
 
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
