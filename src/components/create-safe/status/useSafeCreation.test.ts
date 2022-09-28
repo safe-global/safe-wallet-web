@@ -166,10 +166,6 @@ describe('monitorSafeCreationTx', () => {
   })
 
   it('returns TIMEOUT if transaction couldnt be found within the timout limit', async () => {
-    const mockEthersError = {
-      ...new Error(),
-      code: 'TRANSACTION_REPLACED',
-    }
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error()))
 
     const result = await checkSafeCreationTx(provider, '0x0', '4')

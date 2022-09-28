@@ -13,6 +13,8 @@ import {
   dispatchTxProposal,
   dispatchTxSigning,
 } from '../txSender'
+import { ErrorCode } from '@ethersproject/logger'
+import { waitFor } from '@/tests/test-utils'
 
 // Mock getTransactionDetails
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
@@ -296,6 +298,64 @@ describe('txSender', () => {
         receipt: { status: 0 },
         error: new Error('Transaction reverted by EVM'),
       })
+    })
+
+    it('should cancel a tx', async () => {
+      jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() =>
+        Promise.resolve({
+          transactionResponse: {
+            wait: jest.fn(() => Promise.reject({ code: ErrorCode.TRANSACTION_REPLACED, reason: 'cancelled' })),
+          },
+        } as unknown as TransactionResult),
+      )
+
+      const txId = 'tx_id_123'
+
+      const safeTx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 1,
+      })
+
+      await dispatchTxExecution(txId, safeTx)
+
+      expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { txId })
+
+      await waitFor(() =>
+        expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', {
+          txId: 'tx_id_123',
+          error: { code: ErrorCode.TRANSACTION_REPLACED, reason: 'cancelled' },
+        }),
+      )
+    })
+
+    it('should reprice a tx', async () => {
+      jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() =>
+        Promise.resolve({
+          transactionResponse: {
+            wait: jest.fn(() => Promise.reject({ code: ErrorCode.TRANSACTION_REPLACED, reason: 'repriced' })),
+          },
+        } as unknown as TransactionResult),
+      )
+
+      const txId = 'tx_id_123'
+
+      const safeTx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 1,
+      })
+
+      await dispatchTxExecution(txId, safeTx)
+
+      expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { txId })
+      expect(txEvents.txDispatch).not.toHaveBeenCalledWith('FAILED')
     })
   })
 })

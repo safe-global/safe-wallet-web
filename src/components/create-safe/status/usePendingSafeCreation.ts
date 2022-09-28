@@ -1,6 +1,6 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { backOff } from 'exponential-backoff'
-import { didRevert } from '@/utils/ethers-utils'
+import { didRevert, EthersError } from '@/utils/ethers-utils'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import { useEffect } from 'react'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
@@ -8,8 +8,6 @@ import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getProxyFactoryContractInstance } from '@/services/contracts/safeContracts'
 import useChainId from '@/hooks/useChainId'
 import { ErrorCode } from '@ethersproject/logger'
-
-type EthersError = Error & { code: ErrorCode; reason: string }
 
 export const pollSafeInfo = async (chainId: string, safeAddress: string): Promise<SafeInfo> => {
   // exponential delay between attempts for around 4 min
