@@ -43,17 +43,17 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
   // Update the input value
   const setAddressValue = useCallback(
     (value: string) => {
-      setValue(name, value)
-      // Workaround for a bug in react-hook-form that it restores a cached error state on blur
-      trigger(name)
+      setValue(name, value, { shouldValidate: true })
     },
-    [setValue, trigger, name],
+    [setValue, name],
   )
 
   // On ENS resolution, update the input value
   useEffect(() => {
-    address && setAddressValue(address)
-  }, [address, setAddressValue])
+    if (address) {
+      setAddressValue(`${currentShortName}:${address}`)
+    }
+  }, [address, currentShortName, setAddressValue])
 
   return (
     <Grid container alignItems="center" gap={1}>
@@ -99,6 +99,9 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
                 return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
               }
             },
+
+            // Workaround for a bug in react-hook-form that it restores a cached error state on blur
+            onBlur: () => setTimeout(() => trigger(name), 100),
           })}
         />
       </Grid>
