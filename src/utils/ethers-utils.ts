@@ -15,5 +15,5 @@ export const didRevert = (receipt: TransactionReceipt): boolean => {
 }
 
 export const didReprice = (error: EthersError): boolean => {
-  return error.code === ErrorCode.TRANSACTION_REPLACED && error.reason === EthersTxReplacedReason.repriced
+  return error.reason === EthersTxReplacedReason.repriced
 }
