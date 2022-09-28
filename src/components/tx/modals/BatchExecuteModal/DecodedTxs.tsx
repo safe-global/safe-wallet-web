@@ -32,14 +32,14 @@ const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefine
     return (
       <Box display="flex" flexDirection="column" gap={1} my={1}>
         {Array.from(Array(numberOfTxs)).map((_, i) => (
-          <Skeleton key={i} variant="rectangular" height={48} />
+          <Skeleton key={i} variant="rectangular" height={48} sx={{ borderRadius: 2 }} />
         ))}
       </Box>
     )
   }
 
   return safeTx ? (
-    <Box py={1}>
+    <Box mt={1} display="flex" flexDirection="column" gap={1}>
       <Multisend
         txData={{
           dataDecoded: decodedData,
@@ -48,6 +48,7 @@ const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefine
           operation: safeTx.data.operation === OperationType.Call ? Operation.CALL : Operation.DELEGATE,
           trustedDelegateCallTarget: false,
         }}
+        variant="outlined"
       />
     </Box>
   ) : null

@@ -1,16 +1,25 @@
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
-import MultisendTxsDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend/MultisendTxsDecoded'
 import { useCurrentChain } from '@/hooks/useChains'
 import { formatVisualAmount } from '@/utils/formatters'
-import { TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Operation, TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ReactElement } from 'react'
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import css from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend/styles.module.css'
+import CodeIcon from '@mui/icons-material/Code'
+import { DelegateCallWarning } from '@/components/transactions/Warning'
+import { InfoDetails } from '@/components/transactions/InfoDetails'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
+import { AccordionProps } from '@mui/material/Accordion/Accordion'
 
 type MultisendProps = {
   txData?: TransactionData
+  variant?: AccordionProps['variant']
 }
 
-export const Multisend = ({ txData }: MultisendProps): ReactElement | null => {
+export const Multisend = ({ txData, variant = 'elevation' }: MultisendProps): ReactElement | null => {
   const chain = useCurrentChain()
 
   if (!txData) return null
@@ -45,15 +54,39 @@ export const Multisend = ({ txData }: MultisendProps): ReactElement | null => {
         const avatarUrl = addressInfo?.logoUri
 
         const title = `Interact with${Number(amount) !== 0 ? ` (and send ${amount} ${symbol} to)` : ''}:`
+        const isDelegateCall = operation === Operation.DELEGATE
+        const isSpendingLimitMethod = isSetAllowance(dataDecoded?.method) || isDeleteAllowance(dataDecoded?.method)
+
         return (
-          <MultisendTxsDecoded
-            key={`${data ?? to}-${index}`}
-            actionTitle={actionTitle}
-            method={method}
-            txDetails={{ title, address: to, dataDecoded, name, avatarUrl, operation }}
-          >
-            {details}
-          </MultisendTxsDecoded>
+          <Accordion key={`${data ?? to}-${index}`} variant={variant} defaultExpanded={isDelegateCall}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <div className={css.summary}>
+                <CodeIcon />
+                <Typography>{actionTitle}</Typography>
+                <Typography ml="8px">
+                  <b>{method}</b>
+                </Typography>
+              </div>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              {/* We always warn of nested delegate calls */}
+              {isDelegateCall && <DelegateCallWarning showWarning={isDelegateCall} />}
+              {!isSpendingLimitMethod && (
+                <InfoDetails title={title}>
+                  <EthHashInfo
+                    address={to}
+                    name={name}
+                    customAvatar={avatarUrl}
+                    shortAddress={false}
+                    showCopyButton
+                    hasExplorer
+                  />
+                </InfoDetails>
+              )}
+              {details}
+            </AccordionDetails>
+          </Accordion>
         )
       })}
     </>
