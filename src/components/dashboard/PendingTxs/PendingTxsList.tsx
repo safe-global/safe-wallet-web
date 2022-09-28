@@ -1,6 +1,6 @@
 import { ReactElement, useMemo } from 'react'
 import { useRouter } from 'next/router'
-import uniqBy from 'lodash/uniqBy'
+import { uniqWith } from 'lodash'
 import styled from '@emotion/styled'
 import { Skeleton, Typography } from '@mui/material'
 import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -46,9 +46,18 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
   const queuedTxns: Transaction[] = (page?.results || []).filter(isTransactionListItem)
 
   // Filter out duplicate nonce transactions
-  const queuedTxsToDisplay = uniqBy(queuedTxns, (item) =>
-    isMultisigExecutionInfo(item.transaction.executionInfo) ? item.transaction.executionInfo.nonce : '',
-  ).slice(0, size)
+  const queuedTxsToDisplay = uniqWith(queuedTxns, (a, b) => {
+    if (
+      isMultisigExecutionInfo(a.transaction.executionInfo) &&
+      isMultisigExecutionInfo(b.transaction.executionInfo) &&
+      a.transaction.executionInfo.nonce === b.transaction.executionInfo.nonce
+    ) {
+      // preferring newest transaction
+      return a.transaction.timestamp < b.transaction.timestamp
+    }
+
+    return false
+  }).slice(0, size)
 
   const totalQueuedTxs = getQueuedTransactionCount(page)
 
