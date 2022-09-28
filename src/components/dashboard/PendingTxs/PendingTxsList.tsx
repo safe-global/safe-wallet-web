@@ -46,8 +46,8 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
     return groupConflictingTxs(page?.results || [])
       .map((group) => {
         if (Array.isArray(group)) {
-          const latestTx = group.reduce((acc, tx) => {
-            return tx.transaction.timestamp > acc.transaction.timestamp ? tx : acc
+          const latestTx = group.reduce((prev, curr) => {
+            return curr.transaction.timestamp > prev.transaction.timestamp ? curr : prev
           }, group[0])
 
           return latestTx
