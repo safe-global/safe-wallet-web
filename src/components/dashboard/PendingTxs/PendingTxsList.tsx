@@ -48,7 +48,7 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
         if (Array.isArray(group)) {
           const latestTx = group.reduce((prev, curr) => {
             return curr.transaction.timestamp > prev.transaction.timestamp ? curr : prev
-          }, group[0])
+          })
 
           return latestTx
         }
