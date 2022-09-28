@@ -4,10 +4,10 @@
 
   --onboard-primary-1: var(--color-secondary-main);
   --onboard-primary-100: var(--color-secondary-background);
-  --onboard-primary-200: var(--color-secondary-light);
-  --onboard-primary-400: var(--color-secondary-light);
-  --onboard-primary-500: var(--color-secondary-main);
-  --onboard-primary-600: var(--color-secondary-main);
+  --onboard-primary-200: var(--color-primary-light);
+  --onboard-primary-400: var(--color-primary-light);
+  --onboard-primary-500: var(--color-primary-main);
+  --onboard-primary-600: var(--color-primary-main);
   --onboard-primary-700: var(--color-secondary-main);
 
   --onboard-gray-100: var(--color-border-light);
@@ -25,9 +25,12 @@
   --onboard-danger-500: var(--color-error-light);
   --onboard-danger-600: var(--color-error-main);
   --onboard-danger-700: var(--color-error-dark);
-  --onboard-warning-500: var(--color-warning-light);
-  --onboard-warning-600: var(--color-warning-main);
-  --onboard-warning-700: var(--color-warning-dark);
+
+  --onboard-warning-100: var(--color-error-background);
+  --onboard-warning-400: var(--color-error-light);
+  --onboard-warning-500: var(--color-error-light);
+  --onboard-warning-600: var(--color-error-main);
+  --onboard-warning-700: var(--color-error-dark);
 
   --account-select-modal-white: var(--color-background-paper);
   --account-select-modal-black: var(--color-primary-main);
@@ -37,10 +40,17 @@
   --account-select-modal-primary-500: var(--color-secondary-background);
   --account-select-modal-primary-600: var(--color-secondary-light);
 
+  --account-select-primary-300: var(--color-primary-main);
+  --account-select-primary-500: var(--color-primary-main);
+
   --onboard-connect-sidebar-color: var(--color-text-primary);
   --onboard-wallet-button-color: var(--color-text-primary);
   --onboard-wallet-app-icon-border-color: var(--color-border-light);
-  --onboard-wallet-app-icon-background-transparent: transparent;
+  --onboard-wallet-app-icon-background-white: #fff;
+  --onboard-wallet-app-icon-background-transparent: #fff;
+  --onboard-wallet-app-icon-background-light-gray: rgba(255, 255, 255, 0.5);
+  --onboard-wallet-button-border-color: var(--color-border-light);
+  --onboard-wallet-button-border-radius: 8px;
 
   /* Fonts */
   --onboard-font-family-normal: DM Sans, sans-serif;
@@ -65,10 +75,6 @@
 
 #walletconnect-wrapper {
   color: #162d45;
-}
-
-[data-theme='dark'] {
-  --onboard-wallet-app-icon-background-transparent: var(--color-secondary-main);
 }
 
 /* Keystone modal */
