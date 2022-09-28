@@ -1,4 +1,4 @@
-import { useState, type ReactElement, SyntheticEvent } from 'react'
+import { useState, type ReactElement, SyntheticEvent, useContext } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Tooltip } from '@mui/material'
 
@@ -10,6 +10,7 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import IconButton from '@mui/material/IconButton'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
+import { WillReplaceContext } from '../GroupedTxListItems/WillReplaceProvider'
 
 const ExecuteTxButton = ({
   txSummary,
@@ -22,6 +23,7 @@ const ExecuteTxButton = ({
   const { safe } = useSafeInfo()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const isPending = useIsPending(txSummary.id)
+  const { setWillExecute } = useContext(WillReplaceContext)
 
   const isNext = txNonce !== undefined && txNonce === safe.nonce
   const isDisabled = !isNext || isPending
@@ -31,19 +33,41 @@ const ExecuteTxButton = ({
     setOpen(true)
   }
 
+  const onMouseOver = () => {
+    setWillExecute(txSummary.id)
+  }
+
+  const onMouseLeave = () => {
+    setWillExecute(undefined)
+  }
+
   return (
     <>
       <Track {...TX_LIST_EVENTS.EXECUTE}>
         {compact ? (
           <Tooltip title="Execute" arrow placement="top">
             <span>
-              <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
+              <IconButton
+                onClick={onClick}
+                onMouseOver={onMouseOver}
+                onMouseLeave={onMouseLeave}
+                color="primary"
+                disabled={isDisabled}
+                size="small"
+              >
                 <RocketLaunchIcon fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
         ) : (
-          <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
+          <Button
+            onClick={onClick}
+            onMouseOver={onMouseOver}
+            onMouseLeave={onMouseLeave}
+            variant="contained"
+            disabled={isDisabled}
+            size="stretched"
+          >
             Execute
           </Button>
         )}

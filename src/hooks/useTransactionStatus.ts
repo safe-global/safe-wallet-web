@@ -1,8 +1,12 @@
+import { WillReplaceContext } from '@/components/transactions/GroupedTxListItems/WillReplaceProvider'
 import { useAppSelector } from '@/store'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
 import { isSignableBy } from '@/utils/transaction-guards'
 import { TransactionSummary, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import { useContext } from 'react'
 import useWallet from './wallets/useWallet'
+
+const REPLACEMENT_STATUS = 'Transaction will be replaced'
 
 type TxLocalStatus = TransactionStatus | PendingStatus
 
@@ -25,8 +29,13 @@ const WALLET_STATUS_LABELS: Record<TxLocalStatus, string> = {
 const useTransactionStatus = (txSummary: TransactionSummary): string => {
   const { txStatus, id } = txSummary
 
+  const { willReplace } = useContext(WillReplaceContext)
   const wallet = useWallet()
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, id))
+
+  if (willReplace.includes(id)) {
+    return REPLACEMENT_STATUS
+  }
 
   const statuses = wallet?.address && isSignableBy(txSummary, wallet.address) ? WALLET_STATUS_LABELS : STATUS_LABELS
 
