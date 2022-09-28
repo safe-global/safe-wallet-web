@@ -32,6 +32,10 @@ a {
   text-decoration: none;
 }
 
+button {
+  font: inherit;
+}
+
 * {
   box-sizing: border-box;
 }

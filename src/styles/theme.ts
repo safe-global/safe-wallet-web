@@ -162,13 +162,6 @@ const initTheme = (darkMode: boolean) => {
           sizeLarge: { fontSize: '16px' },
         },
       },
-      MuiLink: {
-        styleOverrides: {
-          button: ({ theme }) => ({
-            fontFamily: theme.typography.fontFamily,
-          }),
-        },
-      },
       MuiAccordion: {
         styleOverrides: {
           root: ({ theme }) => ({
