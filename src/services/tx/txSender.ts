@@ -57,7 +57,12 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
   // Set the recommended nonce and safeTxGas if not provided
   if (nonce === undefined) {
     const chainId = await safeSDK.getChainId()
-    const estimation = await estimateSafeTxGas(String(chainId), safeSDK.getAddress(), txParams)
+    let estimation: SafeTransactionEstimation
+    try {
+      estimation = await estimateSafeTxGas(String(chainId), safeSDK.getAddress(), txParams)
+    } catch (e) {
+      estimation = { currentNonce: 0, recommendedNonce: 0, safeTxGas: '0' }
+    }
     txParams = { ...txParams, nonce: estimation.recommendedNonce, safeTxGas: Number(estimation.safeTxGas) }
   } else {
     txParams = { ...txParams, nonce }
