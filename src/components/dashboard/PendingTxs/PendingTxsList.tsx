@@ -1,12 +1,11 @@
 import { ReactElement, useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { uniqWith } from 'lodash'
+import { groupConflictingTxs } from '@/utils/tx-list'
 import styled from '@emotion/styled'
 import { Skeleton, Typography } from '@mui/material'
-import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Card, ViewAllLink, WidgetBody, WidgetContainer } from '../styled'
 import PendingTxListItem from './PendingTxListItem'
-import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
+import { isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
@@ -43,21 +42,22 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
   const router = useRouter()
   const url = `${AppRoutes.transactions.queue}?safe=${router.query.safe}`
 
-  const queuedTxns: Transaction[] = (page?.results || []).filter(isTransactionListItem)
+  const queuedTxns = useMemo(() => {
+    return groupConflictingTxs(page?.results || [])
+      .map((group) => {
+        if (Array.isArray(group)) {
+          const latestTx = group.reduce((acc, tx) => {
+            return tx.transaction.timestamp > acc.transaction.timestamp ? tx : acc
+          }, group[0])
 
-  // Filter out duplicate nonce transactions
-  const queuedTxsToDisplay = uniqWith(queuedTxns, (a, b) => {
-    if (
-      isMultisigExecutionInfo(a.transaction.executionInfo) &&
-      isMultisigExecutionInfo(b.transaction.executionInfo) &&
-      a.transaction.executionInfo.nonce === b.transaction.executionInfo.nonce
-    ) {
-      // preferring newest transaction
-      return a.transaction.timestamp < b.transaction.timestamp
-    }
+          return latestTx
+        }
+        return group
+      })
+      .filter(isTransactionListItem)
+  }, [page?.results])
 
-    return false
-  }).slice(0, size)
+  const queuedTxsToDisplay = queuedTxns.slice(0, size)
 
   const totalQueuedTxs = getQueuedTransactionCount(page)
 
