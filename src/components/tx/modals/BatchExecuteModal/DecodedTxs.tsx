@@ -1,37 +1,54 @@
-import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { DecodedDataResponse, getDecodedData, Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Skeleton } from '@mui/material'
 import useAsync from '@/hooks/useAsync'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import DecodedTx from '@/components/tx/DecodedTx'
+import { OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { getSafeTxs } from '@/utils/transactions'
+import extractTxInfo from '@/services/tx/extractTxInfo'
+import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
+import { isEmptyHexData } from '@/utils/hex'
+import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import { standardizeMetaTransactionData } from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/utils'
 
 const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefined; numberOfTxs: number }) => {
   const chainId = useChainId()
   const { safeAddress } = useSafeInfo()
 
-  const [safeTxs, _, loading] = useAsync<SafeTransaction[]>(() => {
+  const [safeTx, , safeTxLoading] = useAsync<SafeTransaction | undefined>(async () => {
     if (!txs) return
 
-    return getSafeTxs(txs, chainId, safeAddress)
-  }, [txs, chainId, safeAddress])
+    const safeTxs = txs.map((txDetails) => extractTxInfo(txDetails, safeAddress).txParams)
+    const baseTxs = safeTxs.map((tx) => standardizeMetaTransactionData(tx))
+    return createMultiSendCallOnlyTx(baseTxs)
+  }, [txs, safeAddress])
 
-  if (loading) {
+  const [decodedData, , decodedDataLoading] = useAsync<DecodedDataResponse | undefined>(async () => {
+    if (!safeTx || isEmptyHexData(safeTx.data.data)) return
+
+    return getDecodedData(chainId, safeTx.data.data)
+  }, [chainId, safeTx])
+
+  if (safeTxLoading || decodedDataLoading) {
     return (
-      <Box display="flex" flexDirection="column" gap={2} my={1}>
-        {Array(numberOfTxs).map((_, i) => (
-          <Skeleton key={i} variant="rectangular" height={52} sx={{ borderRadius: 2 }} />
+      <Box display="flex" flexDirection="column" gap={1} my={1}>
+        {Array.from(Array(numberOfTxs)).map((_, i) => (
+          <Skeleton key={i} variant="rectangular" height={48} />
         ))}
       </Box>
     )
   }
 
-  return safeTxs && txs ? (
-    <Box mt={1}>
-      {safeTxs.map((safeTx, idx) => (
-        <DecodedTx key={safeTx.data.nonce} tx={safeTx} txId={txs[idx].txId} />
-      ))}
+  return safeTx ? (
+    <Box py={1}>
+      <Multisend
+        txData={{
+          dataDecoded: decodedData,
+          to: { value: safeTx.data.to },
+          value: safeTx.data.value,
+          operation: safeTx.data.operation === OperationType.Call ? Operation.CALL : Operation.DELEGATE,
+          trustedDelegateCallTarget: false,
+        }}
+      />
     </Box>
   ) : null
 }
