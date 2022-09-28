@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import RemoveDialog from '@/components/address-book/RemoveDialog'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
+import NewTxModal from '@/components/tx/modals/NewTxModal'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import AddressBookHeader from '../AddressBookHeader'
@@ -72,6 +72,7 @@ const AddressBookTable = () => {
     },
     actions: {
       rawValue: '',
+      sticky: true,
       content: (
         <div className={css.entryButtonWrapper}>
           <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
@@ -92,7 +93,7 @@ const AddressBookTable = () => {
 
           {isSafeOwner && (
             <Track {...ADDRESS_BOOK_EVENTS.SEND}>
-              <Button variant="contained" color="primary" onClick={() => setSelectedAddress(address)}>
+              <Button variant="contained" color="primary" size="small" onClick={() => setSelectedAddress(address)}>
                 Send
               </Button>
             </Track>
@@ -118,12 +119,7 @@ const AddressBookTable = () => {
       {open[ModalType.REMOVE] && <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />}
 
       {/* Send funds modal */}
-      {selectedAddress && (
-        <TokenTransferModal
-          onClose={() => setSelectedAddress(undefined)}
-          initialData={[{ recipient: selectedAddress }]}
-        />
-      )}
+      {selectedAddress && <NewTxModal onClose={() => setSelectedAddress(undefined)} recipient={selectedAddress} />}
     </>
   )
 }

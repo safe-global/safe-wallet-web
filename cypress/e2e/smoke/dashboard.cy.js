@@ -5,14 +5,13 @@ describe('Dashboard', () => {
     // Go to the test Safe home page
     cy.visit(`/${SAFE}/home`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
-  })
-
-  it('should display the dashboard title', () => {
-    cy.contains('main p', 'Dashboard')
+    // Wait for dashboard to initialize
+    cy.wait(500)
   })
 
   it('should display the overview widget', () => {
-    cy.contains('main', SAFE).should('exist')
+    // Prefix is separated across elements in EthHashInfo
+    cy.contains('main', '0xB5ef359e8eBDAd1cd7695FFEF3f6F6D7d5e79B08').should('exist')
     cy.contains('main', '1/1')
     cy.get(`main a[href="/balances?safe=${SAFE}"] button`).contains('View assets')
     cy.get(`main a[href="/balances?safe=${SAFE}"]`).contains('Tokens3')

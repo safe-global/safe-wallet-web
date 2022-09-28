@@ -4,14 +4,15 @@ import ModalDialog from '@/components/common/ModalDialog'
 import TokenTransferModal from '../TokenTransferModal'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import NftIcon from '@/public/images/nft.svg'
-import NftTransferModal from '../NftTransferModal'
+import NftTransferModal, { NftTransferParams } from '../NftTransferModal'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
+import { SendAssetsField } from '../TokenTransferModal/SendAssetsForm'
 
 const TxButton = (props: ButtonProps) => (
   <Button variant="contained" sx={{ '& svg path': { fill: 'currentColor' } }} fullWidth {...props} />
 )
 
-const NewTxModal = ({ onClose }: { onClose: () => void }): ReactElement => {
+const NewTxModal = ({ onClose, recipient }: { onClose: () => void; recipient?: string }): ReactElement => {
   const [tokenModalOpen, setTokenModalOpen] = useState<boolean>(false)
   const [nftsModalOpen, setNftModalOpen] = useState<boolean>(false)
 
@@ -42,9 +43,11 @@ const NewTxModal = ({ onClose }: { onClose: () => void }): ReactElement => {
         </DialogContent>
       </ModalDialog>
 
-      {tokenModalOpen && <TokenTransferModal onClose={onClose} />}
+      {tokenModalOpen && (
+        <TokenTransferModal onClose={onClose} initialData={[{ [SendAssetsField.recipient]: recipient }]} />
+      )}
 
-      {nftsModalOpen && <NftTransferModal onClose={onClose} />}
+      {nftsModalOpen && <NftTransferModal onClose={onClose} initialData={[{ recipient } as NftTransferParams]} />}
     </>
   )
 }

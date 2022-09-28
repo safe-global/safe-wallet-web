@@ -36,6 +36,7 @@ const headCells = [
     id: 'actions',
     label: '',
     width: '20%',
+    sticky: true,
   },
 ]
 
@@ -68,11 +69,17 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
     },
     actions: {
       rawValue: '',
+      sticky: true,
       content: (
         <>
           {isSafeOwner && (
             <Track {...ASSETS_EVENTS.SEND}>
-              <Button variant="contained" color="primary" onClick={() => setSelectedAsset(item.tokenInfo.address)}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => setSelectedAsset(item.tokenInfo.address)}
+              >
                 Send
               </Button>
             </Track>

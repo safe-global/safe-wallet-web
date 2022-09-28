@@ -30,3 +30,17 @@
 .nameRow {
   overflow: hidden;
 }
+
+.mobileAddress {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .mobileAddress {
+    display: inline-block;
+  }
+
+  .desktopAddress {
+    display: none;
+  }
+}

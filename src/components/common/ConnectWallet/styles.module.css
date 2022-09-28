@@ -21,6 +21,13 @@
   border: 1px solid var(--color-border-light);
 }
 
+.addressName {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
 .imageContainer {
   position: relative;
   font-size: 16px;

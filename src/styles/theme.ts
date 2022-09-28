@@ -311,6 +311,21 @@ const initTheme = (darkMode: boolean) => {
             '& .MuiTableCell-root': {
               borderBottom: `2px solid ${theme.palette.border.light}`,
             },
+
+            [theme.breakpoints.down('sm')]: {
+              '& .MuiTableCell-root:first-child': {
+                paddingRight: theme.spacing(1),
+              },
+
+              '& .MuiTableCell-root:not(:first-child):not(:last-child)': {
+                paddingLeft: theme.spacing(1),
+                paddingRight: theme.spacing(1),
+              },
+
+              '& .MuiTableCell-root:last-child': {
+                paddingLeft: theme.spacing(1),
+              },
+            },
           }),
         },
       },
@@ -321,6 +336,21 @@ const initTheme = (darkMode: boolean) => {
               paddingTop: theme.spacing(1),
               paddingBottom: theme.spacing(1),
               borderBottom: `1px solid ${theme.palette.border.light}`,
+            },
+
+            [theme.breakpoints.down('sm')]: {
+              '& .MuiTableCell-root:first-child': {
+                paddingRight: theme.spacing(1),
+              },
+
+              '& .MuiTableCell-root:not(:first-child):not(:last-child)': {
+                paddingLeft: theme.spacing(1),
+                paddingRight: theme.spacing(1),
+              },
+
+              '& .MuiTableCell-root:last-child': {
+                paddingLeft: theme.spacing(1),
+              },
             },
 
             '& .MuiTableRow-root': {
