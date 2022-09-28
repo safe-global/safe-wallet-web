@@ -4,50 +4,50 @@ import type { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 
-export const WillReplaceContext = createContext<{
-  willReplace: string[]
-  setWillExecute: Dispatch<SetStateAction<string | undefined>>
+export const ReplaceTxHoverContext = createContext<{
+  replacedTxIds: string[]
+  setExecutoryTxId: Dispatch<SetStateAction<string | undefined>>
 }>({
-  willReplace: [],
-  setWillExecute: () => {},
+  replacedTxIds: [],
+  setExecutoryTxId: () => {},
 })
 
 // Used for striking through transactions that will be replaced
-export const WillReplaceProvider = ({
+export const ReplaceTxHoverProvider = ({
   groupedListItems,
   children,
 }: {
   groupedListItems: Transaction[]
   children: ReactElement
 }): ReactElement => {
-  const [willExecute, setWillExecute] = useState<string>()
+  const [executoryTxId, setExecutoryTxId] = useState<string>()
   const pendingTxs = useAppSelector(selectPendingTxs)
 
-  const willReplace = useMemo(() => {
+  const replacedTxIds = useMemo(() => {
     const pendingTxInGroup = groupedListItems.find((item) => pendingTxs[item.transaction.id])
 
     const disabledItems = groupedListItems
       .filter((item) => {
         const { id } = item.transaction
 
-        const willReplace = willExecute && willExecute !== id
+        const willBeReplaced = executoryTxId && executoryTxId !== id
         const isReplacing = pendingTxInGroup && id !== pendingTxInGroup.transaction.id
 
-        return willReplace || isReplacing
+        return willBeReplaced || isReplacing
       })
       .map((item) => item.transaction.id)
 
     return disabledItems
-  }, [groupedListItems, pendingTxs, willExecute])
+  }, [groupedListItems, pendingTxs, executoryTxId])
 
   return (
-    <WillReplaceContext.Provider
+    <ReplaceTxHoverContext.Provider
       value={{
-        willReplace,
-        setWillExecute,
+        replacedTxIds,
+        setExecutoryTxId,
       }}
     >
       {children}
-    </WillReplaceContext.Provider>
+    </ReplaceTxHoverContext.Provider>
   )
 }

@@ -5,7 +5,7 @@ import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import css from './styles.module.css'
-import { WillReplaceContext, WillReplaceProvider } from './WillReplaceProvider'
+import { ReplaceTxHoverContext, ReplaceTxHoverProvider } from './ReplaceTxHoverProvider'
 
 const Disclaimer = ({ nonce }: { nonce?: number }) => (
   <Box className={css.disclaimerContainer}>
@@ -32,13 +32,13 @@ const TxGroup = ({ groupedListItems }: { groupedListItems: Transaction[] }): Rea
     ? groupedListItems[0].transaction.executionInfo.nonce
     : undefined
 
-  const { willReplace } = useContext(WillReplaceContext)
+  const { replacedTxIds } = useContext(ReplaceTxHoverContext)
 
   return (
     <Paper className={css.container} variant="outlined">
       <Disclaimer nonce={nonce} />
       {groupedListItems.map((tx) => (
-        <div key={tx.transaction.id} className={willReplace.includes(tx.transaction.id) ? css.willBeReplaced : ''}>
+        <div key={tx.transaction.id} className={replacedTxIds.includes(tx.transaction.id) ? css.willBeReplaced : ''}>
           <ExpandableTransactionItem item={tx} isGrouped />
         </div>
       ))}
@@ -48,9 +48,9 @@ const TxGroup = ({ groupedListItems }: { groupedListItems: Transaction[] }): Rea
 
 const GroupedTxListItems = ({ groupedListItems }: { groupedListItems: Transaction[] }): ReactElement => {
   return (
-    <WillReplaceProvider groupedListItems={groupedListItems}>
+    <ReplaceTxHoverProvider groupedListItems={groupedListItems}>
       <TxGroup groupedListItems={groupedListItems} />
-    </WillReplaceProvider>
+    </ReplaceTxHoverProvider>
   )
 }
 

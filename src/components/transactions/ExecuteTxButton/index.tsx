@@ -10,7 +10,7 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import IconButton from '@mui/material/IconButton'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
-import { WillReplaceContext } from '../GroupedTxListItems/WillReplaceProvider'
+import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvider'
 
 const ExecuteTxButton = ({
   txSummary,
@@ -23,7 +23,7 @@ const ExecuteTxButton = ({
   const { safe } = useSafeInfo()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const isPending = useIsPending(txSummary.id)
-  const { setWillExecute } = useContext(WillReplaceContext)
+  const { setExecutoryTxId } = useContext(ReplaceTxHoverContext)
 
   const isNext = txNonce !== undefined && txNonce === safe.nonce
   const isDisabled = !isNext || isPending
@@ -33,12 +33,12 @@ const ExecuteTxButton = ({
     setOpen(true)
   }
 
-  const onMouseOver = () => {
-    setWillExecute(txSummary.id)
+  const onMouseEnter = () => {
+    setExecutoryTxId(txSummary.id)
   }
 
   const onMouseLeave = () => {
-    setWillExecute(undefined)
+    setExecutoryTxId(undefined)
   }
 
   return (
@@ -49,7 +49,7 @@ const ExecuteTxButton = ({
             <span>
               <IconButton
                 onClick={onClick}
-                onMouseOver={onMouseOver}
+                onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
                 color="primary"
                 disabled={isDisabled}
@@ -62,7 +62,7 @@ const ExecuteTxButton = ({
         ) : (
           <Button
             onClick={onClick}
-            onMouseOver={onMouseOver}
+            onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             variant="contained"
             disabled={isDisabled}
