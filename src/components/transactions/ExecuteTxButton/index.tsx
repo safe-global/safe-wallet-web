@@ -23,7 +23,7 @@ const ExecuteTxButton = ({
   const { safe } = useSafeInfo()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const isPending = useIsPending(txSummary.id)
-  const { setExecutoryTxId } = useContext(ReplaceTxHoverContext)
+  const { setSelectedTxId } = useContext(ReplaceTxHoverContext)
 
   const isNext = txNonce !== undefined && txNonce === safe.nonce
   const isDisabled = !isNext || isPending
@@ -34,11 +34,11 @@ const ExecuteTxButton = ({
   }
 
   const onMouseEnter = () => {
-    setExecutoryTxId(txSummary.id)
+    setSelectedTxId(txSummary.id)
   }
 
   const onMouseLeave = () => {
-    setExecutoryTxId(undefined)
+    setSelectedTxId(undefined)
   }
 
   return (

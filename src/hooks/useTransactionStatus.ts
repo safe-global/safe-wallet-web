@@ -6,7 +6,9 @@ import { TransactionSummary, TransactionStatus } from '@gnosis.pm/safe-react-gat
 import { useContext } from 'react'
 import useWallet from './wallets/useWallet'
 
-type TxLocalStatus = TransactionStatus | PendingStatus | 'WILL_BE_REPLACED'
+const ReplacedStatus = 'WILL_BE_REPLACED'
+
+type TxLocalStatus = TransactionStatus | PendingStatus | typeof ReplacedStatus
 
 const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [TransactionStatus.AWAITING_CONFIRMATIONS]: 'Awaiting confirmations',
@@ -17,7 +19,7 @@ const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [PendingStatus.SUBMITTING]: 'Submitting',
   [PendingStatus.PROCESSING]: 'Processing',
   [PendingStatus.INDEXING]: 'Indexing',
-  WILL_BE_REPLACED: 'Transaction will be replaced',
+  [ReplacedStatus]: 'Transaction will be replaced',
 }
 
 const WALLET_STATUS_LABELS: Record<TxLocalStatus, string> = {
@@ -33,7 +35,7 @@ const useTransactionStatus = (txSummary: TransactionSummary): string => {
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, id))
 
   if (replacedTxIds.includes(id)) {
-    return STATUS_LABELS['WILL_BE_REPLACED']
+    return STATUS_LABELS[ReplacedStatus]
   }
 
   const statuses = wallet?.address && isSignableBy(txSummary, wallet.address) ? WALLET_STATUS_LABELS : STATUS_LABELS

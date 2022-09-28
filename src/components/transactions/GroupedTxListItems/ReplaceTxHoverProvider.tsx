@@ -6,10 +6,10 @@ import { selectPendingTxs } from '@/store/pendingTxsSlice'
 
 export const ReplaceTxHoverContext = createContext<{
   replacedTxIds: string[]
-  setExecutoryTxId: Dispatch<SetStateAction<string | undefined>>
+  setSelectedTxId: Dispatch<SetStateAction<string | undefined>>
 }>({
   replacedTxIds: [],
-  setExecutoryTxId: () => {},
+  setSelectedTxId: () => {},
 })
 
 // Used for striking through transactions that will be replaced
@@ -20,7 +20,7 @@ export const ReplaceTxHoverProvider = ({
   groupedListItems: Transaction[]
   children: ReactElement
 }): ReactElement => {
-  const [executoryTxId, setExecutoryTxId] = useState<string>()
+  const [selectedTxId, setSelectedTxId] = useState<string>()
   const pendingTxs = useAppSelector(selectPendingTxs)
 
   const replacedTxIds = useMemo(() => {
@@ -30,7 +30,7 @@ export const ReplaceTxHoverProvider = ({
       .filter((item) => {
         const { id } = item.transaction
 
-        const willBeReplaced = executoryTxId && executoryTxId !== id
+        const willBeReplaced = selectedTxId && selectedTxId !== id
         const isReplacing = pendingTxInGroup && id !== pendingTxInGroup.transaction.id
 
         return willBeReplaced || isReplacing
@@ -38,13 +38,13 @@ export const ReplaceTxHoverProvider = ({
       .map((item) => item.transaction.id)
 
     return disabledItems
-  }, [groupedListItems, pendingTxs, executoryTxId])
+  }, [groupedListItems, pendingTxs, selectedTxId])
 
   return (
     <ReplaceTxHoverContext.Provider
       value={{
         replacedTxIds,
-        setExecutoryTxId,
+        setSelectedTxId,
       }}
     >
       {children}
