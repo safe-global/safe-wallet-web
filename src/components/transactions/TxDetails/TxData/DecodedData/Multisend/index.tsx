@@ -71,7 +71,7 @@ export const Multisend = ({ txData, variant = 'elevation' }: MultisendProps): Re
 
             <AccordionDetails>
               {/* We always warn of nested delegate calls */}
-              {isDelegateCall && <DelegateCallWarning showWarning={isDelegateCall} />}
+              {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget} />}
               {!isSpendingLimitMethod && (
                 <InfoDetails title={title}>
                   <EthHashInfo

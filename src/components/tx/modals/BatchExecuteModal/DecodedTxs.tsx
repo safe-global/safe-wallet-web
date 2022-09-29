@@ -5,7 +5,7 @@ import { OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import extractTxInfo from '@/services/tx/extractTxInfo'
-import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
+import { createMultiSendTx } from '@/services/tx/txSender'
 import { isEmptyHexData } from '@/utils/hex'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import { standardizeMetaTransactionData } from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/utils'
@@ -19,7 +19,7 @@ const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefine
 
     const safeTxs = txs.map((txDetails) => extractTxInfo(txDetails, safeAddress).txParams)
     const baseTxs = safeTxs.map((tx) => standardizeMetaTransactionData(tx))
-    return createMultiSendCallOnlyTx(baseTxs)
+    return createMultiSendTx(baseTxs)
   }, [txs, safeAddress])
 
   const [decodedData, , decodedDataLoading] = useAsync<DecodedDataResponse | undefined>(async () => {
