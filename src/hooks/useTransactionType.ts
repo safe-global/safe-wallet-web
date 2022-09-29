@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import {
   SettingsInfoType,
   TransactionInfoType,
@@ -8,7 +7,7 @@ import {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { isCancellationTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
-import { DEFAULT_MODULE_NAME } from '@/components/settings/SafeModules'
+import useAddressBook from './useAddressBook'
 
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
@@ -32,8 +31,10 @@ type TxType = {
   text: string
 }
 
-const getTxType = (tx: TransactionSummary): TxType => {
+export const useTransactionType = (tx: TransactionSummary): TxType => {
   const toAddress = getTxTo(tx)
+  const addressBook = useAddressBook()
+  const addressBookName = toAddress?.value ? addressBook[toAddress.value] : undefined
 
   switch (tx.txInfo.type) {
     case TransactionInfoType.CREATION: {
@@ -64,7 +65,7 @@ const getTxType = (tx: TransactionSummary): TxType => {
       if (isModuleExecutionInfo(tx.executionInfo)) {
         return {
           icon: toAddress?.logoUri || '/images/transactions/settings.svg',
-          text: toAddress?.name || DEFAULT_MODULE_NAME,
+          text: toAddress?.name || '',
         }
       }
 
@@ -84,20 +85,14 @@ const getTxType = (tx: TransactionSummary): TxType => {
 
       return {
         icon: toAddress?.logoUri || '/images/transactions/custom.svg',
-        text: toAddress?.name || 'Contract interaction',
+        text: addressBookName || toAddress?.name || 'Contract interaction',
       }
     }
     default: {
       return {
         icon: '/images/transactions/custom.svg',
-        text: 'Contract interaction',
+        text: addressBookName || 'Contract interaction',
       }
     }
   }
-}
-
-export const useTransactionType = (tx: TransactionSummary): TxType => {
-  return useMemo(() => {
-    return getTxType(tx)
-  }, [tx])
 }

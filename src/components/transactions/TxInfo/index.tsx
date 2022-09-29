@@ -87,13 +87,11 @@ const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
 }
 
 const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
-  const UNKNOWN_MODULE = 'Unknown module'
-
   if (
     info.settingsInfo?.type === SettingsInfoType.ENABLE_MODULE ||
     info.settingsInfo?.type === SettingsInfoType.DISABLE_MODULE
   ) {
-    return <>{info.settingsInfo.module.name || UNKNOWN_MODULE}</>
+    return <>{info.settingsInfo.module.name}</>
   }
 
   return <></>
