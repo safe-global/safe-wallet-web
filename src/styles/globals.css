@@ -87,3 +87,7 @@ input[type='number'] {
     background: var(--color-background-paper);
   }
 }
+
+#beamerLastPostTitle {
+  left: 330px !important;
+}
