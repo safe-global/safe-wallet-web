@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import useSafeAddress from '@/hooks/useSafeAddress'
@@ -8,8 +8,9 @@ import { createExistingTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { isExecutable, isSignableBy } from '@/utils/transaction-guards'
+import { isExecutable, isSignableBy, isNextTx } from '@/utils/transaction-guards'
 import { Skeleton, Typography } from '@mui/material'
+import useTxQueue from '@/hooks/useTxQueue'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
@@ -24,8 +25,10 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
   const wallet = useWallet()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
+  const { page } = useTxQueue()
+
   const txId = txSummary.id
-  const canExecute = isExecutable(txSummary, wallet?.address || '')
+  const canExecute = isExecutable(txSummary, wallet?.address || '') && isNextTx(txId, page?.results || [])
   const canSign = isSignableBy(txSummary, wallet?.address || '')
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {

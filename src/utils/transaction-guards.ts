@@ -12,6 +12,7 @@ import {
   Erc721Transfer,
   ExecutionInfo,
   Label,
+  LabelValue,
   ModuleExecutionDetails,
   ModuleExecutionInfo,
   MultiSend,
@@ -133,6 +134,13 @@ export const isExecutable = (txSummary: TransactionSummary, walletAddress: strin
     confirmationsSubmitted >= confirmationsRequired ||
     (confirmationsSubmitted === confirmationsRequired - 1 && isSignableBy(txSummary, walletAddress))
   )
+}
+
+export const isNextTx = (txId: string, items: TransactionListItem[]) => {
+  const hasNextLabel = items.find(isLabelListItem)?.label === LabelValue.Next
+  const isFirstTx = items.find(isTransactionListItem)?.transaction.id === txId
+
+  return hasNextLabel && isFirstTx
 }
 
 // Spending limits
