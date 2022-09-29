@@ -1,5 +1,5 @@
 import { Box, Button, Divider, FormControl, Grid, MenuItem, Paper, Select, Typography } from '@mui/material'
-import { ReactElement } from 'react'
+import { ReactElement, useEffect } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
@@ -30,7 +30,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     address: wallet?.address || '',
   }
 
-  const defaultThreshold = params.threshold || 1
+  const defaultThreshold = 1
 
   const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
@@ -40,7 +40,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
       threshold: defaultThreshold,
     },
   })
-  const { register, handleSubmit, control, formState } = formMethods
+  const { register, handleSubmit, control, formState, watch, setValue } = formMethods
   const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
   const { fields, append, remove } = useFieldArray({
@@ -51,6 +51,11 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
   const addOwner = () => {
     append({ name: '', address: '' })
   }
+
+  const threshold = watch('threshold')
+  useEffect(() => {
+    setValue('threshold', threshold > fields.length ? fields.length : threshold)
+  }, [fields, setValue, threshold])
 
   const onFormSubmit = handleSubmit((data: SafeFormData) => {
     onSubmit(data)
@@ -114,7 +119,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
 
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl>
-                <Select {...register('threshold')} defaultValue={defaultThreshold}>
+                <Select {...register('threshold')} defaultValue={defaultThreshold} value={threshold}>
                   {fields.map((field, index) => (
                     <MenuItem key={field.id} value={index + 1}>
                       {index + 1}
