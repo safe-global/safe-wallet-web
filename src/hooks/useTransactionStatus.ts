@@ -1,10 +1,14 @@
+import { ReplaceTxHoverContext } from '@/components/transactions/GroupedTxListItems/ReplaceTxHoverProvider'
 import { useAppSelector } from '@/store'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
 import { isSignableBy } from '@/utils/transaction-guards'
 import { TransactionSummary, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import { useContext } from 'react'
 import useWallet from './wallets/useWallet'
 
-type TxLocalStatus = TransactionStatus | PendingStatus
+const ReplacedStatus = 'WILL_BE_REPLACED'
+
+type TxLocalStatus = TransactionStatus | PendingStatus | typeof ReplacedStatus
 
 const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [TransactionStatus.AWAITING_CONFIRMATIONS]: 'Awaiting confirmations',
@@ -15,6 +19,7 @@ const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [PendingStatus.SUBMITTING]: 'Submitting',
   [PendingStatus.PROCESSING]: 'Processing',
   [PendingStatus.INDEXING]: 'Indexing',
+  [ReplacedStatus]: 'Transaction will be replaced',
 }
 
 const WALLET_STATUS_LABELS: Record<TxLocalStatus, string> = {
@@ -25,8 +30,13 @@ const WALLET_STATUS_LABELS: Record<TxLocalStatus, string> = {
 const useTransactionStatus = (txSummary: TransactionSummary): string => {
   const { txStatus, id } = txSummary
 
+  const { replacedTxIds } = useContext(ReplaceTxHoverContext)
   const wallet = useWallet()
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, id))
+
+  if (replacedTxIds.includes(id)) {
+    return STATUS_LABELS[ReplacedStatus]
+  }
 
   const statuses = wallet?.address && isSignableBy(txSummary, wallet.address) ? WALLET_STATUS_LABELS : STATUS_LABELS
 

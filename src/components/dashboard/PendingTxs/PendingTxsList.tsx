@@ -2,14 +2,13 @@ import { ReactElement, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import uniqBy from 'lodash/uniqBy'
 import styled from '@emotion/styled'
-import { Skeleton, Typography } from '@mui/material'
+import { Box, Skeleton, Typography } from '@mui/material'
 import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Card, ViewAllLink, WidgetBody, WidgetContainer } from '../styled'
 import PendingTxListItem from './PendingTxListItem'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
-import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoTransactionsIcon from '@/public/images/no-transactions.svg'
 import { getQueuedTransactionCount } from '@/utils/transactions'
 
@@ -33,7 +32,13 @@ const StyledWidgetTitle = styled.div`
 const EmptyState = () => {
   return (
     <Card>
-      <PagePlaceholder img={<NoTransactionsIcon />} text="This Safe has no queued transactions" />
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={2}>
+        <NoTransactionsIcon />
+
+        <Typography variant="body1" color="primary.light">
+          This Safe has no queued transactions
+        </Typography>
+      </Box>
     </Card>
   )
 }
