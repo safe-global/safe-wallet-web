@@ -11,6 +11,7 @@ export default class WebCoreDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+          <title>Safe</title>
           <meta name="emotion-insertion-point" content="" />
           {(this.props as any).emotionStyleTags}
         </Head>
