@@ -19,7 +19,7 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
 
   return (
     <>
-      <Typography>{message}</Typography>
+      <Typography mr={2}>{message}</Typography>
       {!isTxExecuted && (
         <Box mt={2} sx={{ width: 'fit-content' }}>
           <Link
