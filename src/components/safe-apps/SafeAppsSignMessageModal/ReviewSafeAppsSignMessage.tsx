@@ -52,8 +52,15 @@ const ReviewSafeAppsSignMessage = ({
     if (isTextMessage) {
       txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [hashMessage(message)])
     } else if (isTypedMessage) {
+      const typesCopy = { ...message.types }
+
+      // We need to remove the EIP712Domain type from the types object
+      // Because it's a part of the JSON-RPC payload, but for the `.hash` in ethers.js
+      // The types are not allowed to be recursive, so ever type must either be used by another type, or be
+      // the primary type. And there must only be one type that is not used by any other type.
+      delete typesCopy.EIP712Domain
       txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [
-        _TypedDataEncoder.hash(message.domain, message.types, message.message),
+        _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }
 
