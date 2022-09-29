@@ -29,6 +29,7 @@ const NetworkSelector = (): ReactElement => {
       pathname: shouldKeepPath ? router.pathname : '/',
       query: {
         chain: newShortName,
+        safeViewRedirectURL: router.query?.safeViewRedirectURL,
       },
     })
   }
