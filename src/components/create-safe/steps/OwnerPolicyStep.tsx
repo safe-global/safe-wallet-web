@@ -30,7 +30,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     address: wallet?.address || '',
   }
 
-  const defaultThreshold = 1
+  const defaultThreshold = params.threshold || 1
 
   const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
