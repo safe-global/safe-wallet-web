@@ -108,7 +108,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
             <Button
               onClick={addOwner}
               sx={{ fontWeight: 'normal' }}
-              startIcon={<SvgIcon component={AddIcon} fontSize="small" />}
+              startIcon={<SvgIcon component={AddIcon} fontSize="small" inheritViewBox />}
             >
               Add another owner
             </Button>
