@@ -220,7 +220,7 @@ export const dispatchTxSigning = async (
 /**
  * On-Chain sign a transaction
  */
-export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: Web3Provider, txId?: string) => {
+export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: Web3Provider) => {
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
 
