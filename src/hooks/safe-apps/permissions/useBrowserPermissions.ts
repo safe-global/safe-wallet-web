@@ -1,6 +1,7 @@
 import { AllowedFeatures, PermissionStatus } from '@/components/safe-apps/types'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useCallback } from 'react'
+import { trimTrailingSlash } from '../../../utils/url'
 
 const BROWSER_PERMISSIONS = 'BROWSER_PERMISSIONS'
 
@@ -24,16 +25,18 @@ const useBrowserPermissions = (): UseBrowserPermissionsReturnType => {
 
   const getPermissions = useCallback(
     (origin: string) => {
-      return permissions[origin] || []
+      return permissions[trimTrailingSlash(origin)] || []
     },
     [permissions],
   )
 
   const updatePermission = useCallback(
     (origin: string, changeset: BrowserPermissionChangeSet) => {
+      const appUrl = trimTrailingSlash(origin)
+
       setPermissions({
         ...permissions,
-        [origin]: permissions[origin].map((p) => {
+        [appUrl]: permissions[appUrl].map((p) => {
           const change = changeset.find((change) => change.feature === p.feature)
 
           if (change) {
@@ -49,7 +52,7 @@ const useBrowserPermissions = (): UseBrowserPermissionsReturnType => {
 
   const removePermissions = useCallback(
     (origin: string) => {
-      delete permissions[origin]
+      delete permissions[trimTrailingSlash(origin)]
       setPermissions({ ...permissions })
     },
     [permissions, setPermissions],
@@ -57,7 +60,7 @@ const useBrowserPermissions = (): UseBrowserPermissionsReturnType => {
 
   const addPermissions = useCallback(
     (origin: string, selectedPermissions: BrowserPermission[]) => {
-      setPermissions({ ...permissions, [origin]: selectedPermissions })
+      setPermissions({ ...permissions, [trimTrailingSlash(origin)]: selectedPermissions })
     },
     [permissions, setPermissions],
   )

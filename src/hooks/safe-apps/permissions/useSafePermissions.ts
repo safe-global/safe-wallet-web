@@ -4,6 +4,7 @@ import { Permission, PermissionCaveat, PermissionRequest } from '@gnosis.pm/safe
 
 import { PermissionStatus } from '@/components/safe-apps/types'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { trimTrailingSlash } from '../../../utils/url'
 
 const SAFE_PERMISSIONS = 'SAFE_PERMISSIONS'
 const USER_RESTRICTED = 'userRestricted'
@@ -37,16 +38,18 @@ const useSafePermissions = (): UseSafePermissionsReturnType => {
 
   const getPermissions = useCallback(
     (origin: string) => {
-      return permissions[origin] || []
+      return permissions[trimTrailingSlash(origin)] || []
     },
     [permissions],
   )
 
   const updatePermission = useCallback(
     (origin: string, changeset: SafePermissionChangeSet) => {
+      const appUrl = trimTrailingSlash(origin)
+
       setPermissions({
         ...permissions,
-        [origin]: permissions[origin].map((permission) => {
+        [appUrl]: permissions[appUrl].map((permission) => {
           const change = changeset.find((change) => change.capability === permission.parentCapability)
 
           if (change) {
@@ -72,7 +75,7 @@ const useSafePermissions = (): UseSafePermissionsReturnType => {
 
   const removePermissions = useCallback(
     (origin: string) => {
-      delete permissions[origin]
+      delete permissions[trimTrailingSlash(origin)]
       setPermissions({ ...permissions })
     },
     [permissions, setPermissions],
@@ -80,14 +83,16 @@ const useSafePermissions = (): UseSafePermissionsReturnType => {
 
   const hasPermission = useCallback(
     (origin: string, permission: Methods) => {
-      return permissions[origin]?.some((p) => p.parentCapability === permission && !isUserRestricted(p.caveats))
+      return permissions[trimTrailingSlash(origin)]?.some(
+        (p) => p.parentCapability === permission && !isUserRestricted(p.caveats),
+      )
     },
     [permissions],
   )
 
   const hasCapability = useCallback(
     (origin: string, permission: Methods) => {
-      return permissions[origin]?.some((p) => p.parentCapability === permission)
+      return permissions[trimTrailingSlash(origin)]?.some((p) => p.parentCapability === permission)
     },
     [permissions],
   )
