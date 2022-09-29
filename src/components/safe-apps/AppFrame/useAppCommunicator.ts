@@ -25,6 +25,7 @@ import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 import { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
+import { gtmTrackSafeAppMessage } from '@/services/analytics/gtm'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -39,7 +40,11 @@ type JsonRpcResponse = {
 
 type UseAppCommunicatorHandlers = {
   onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => void
-  onSignMessage: (message: string | EIP712TypedData, requestId: string, method: Methods) => void
+  onSignMessage: (
+    message: string | EIP712TypedData,
+    requestId: string,
+    method: Methods.signMessage | Methods.signTypedMessage,
+  ) => void
   onGetTxBySafeTxHash: (transactionId: string) => Promise<TransactionDetails>
   onGetEnvironmentInfo: () => EnvironmentInfo
   onGetSafeBalances: (currency: string) => Promise<SafeBalances>
@@ -70,6 +75,14 @@ const useAppCommunicator = (
 
     const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
+        onMessage: (msg) => {
+          gtmTrackSafeAppMessage({
+            app,
+            method: msg.data.method,
+            params: msg.data.params,
+            sdkVersion: msg.data.env.sdkVersion,
+          })
+        },
         onError: (error, data) => {
           logError(Errors._901, error.message, {
             contexts: {
@@ -125,11 +138,11 @@ const useAppCommunicator = (
     communicator?.on(Methods.sendTransactions, (msg) => {
       const { txs, params } = msg.data.params as SendTransactionsParams
 
-      const transactions = txs.map(({ to, value, ...rest }) => {
+      const transactions = txs.map(({ to, value, data }) => {
         return {
           to: getAddress(to),
           value: BigNumber.from(value).toString(),
-          ...rest,
+          data,
         }
       })
 

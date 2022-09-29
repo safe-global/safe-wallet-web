@@ -74,7 +74,7 @@ export const ReviewRemoveOwnerTxStep = ({
             .map((owner) => (
               <div key={owner.value}>
                 <Box padding={2} key={owner.value}>
-                  <EthHashInfo address={owner.value} shortAddress={false} />
+                  <EthHashInfo address={owner.value} shortAddress={false} showCopyButton hasExplorer />
                 </Box>
                 <Divider />
               </div>
@@ -86,7 +86,7 @@ export const ReviewRemoveOwnerTxStep = ({
               </div>
               <Divider />
               <Box bgcolor="error.light" padding={2}>
-                <EthHashInfo address={removedOwner.address} shortAddress={false} />
+                <EthHashInfo address={removedOwner.address} shortAddress={false} showCopyButton hasExplorer />
               </Box>
               <Divider />
             </>

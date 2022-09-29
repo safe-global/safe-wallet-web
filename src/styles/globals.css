@@ -32,6 +32,10 @@ a {
   text-decoration: none;
 }
 
+button {
+  font: inherit;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -74,4 +78,16 @@ input[type='number'] {
 
 .illustration-background-stroke {
   stroke: var(--color-logo-background);
+}
+
+@media (max-width: 600px) {
+  .sticky {
+    position: sticky;
+    right: 0;
+    background: var(--color-background-paper);
+  }
+}
+
+#beamerLastPostTitle {
+  left: 330px !important;
 }

@@ -6,7 +6,7 @@ import SafeAppsModalLabel from '../SafeAppsModalLabel'
 import ReviewSafeAppsSignMessage from './ReviewSafeAppsSignMessage'
 
 export type SafeAppsSignMessageParams = {
-  appId?: string
+  appId?: number
   app?: SafeAppData
   requestId: RequestId
   message: string | EIP712TypedData
@@ -26,7 +26,9 @@ const SafeAppsSignSteps: TxStepperProps['steps'] = [
   },
 ]
 
-const SafeAppsSignMessageModal = (props: Omit<TxModalProps, 'steps'>) => {
+const SafeAppsSignMessageModal = (
+  props: Omit<TxModalProps, 'steps'> & { initialData: [SafeAppsSignMessageParams] },
+) => {
   return <TxModal {...props} steps={SafeAppsSignSteps} />
 }
 

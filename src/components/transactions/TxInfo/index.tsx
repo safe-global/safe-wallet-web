@@ -62,7 +62,7 @@ export const TransferTx = ({
         value="1"
         direction={undefined}
         logoUri={withLogo ? transfer?.logoUri : undefined}
-        fallbackSrc="/images/nft-placeholder.png"
+        fallbackSrc="/images/common/nft-placeholder.png"
       />
     )
   }

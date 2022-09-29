@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Grid, Paper, Typography } from '@mui/material'
+import { Box, Grid, Paper, Tooltip, Typography } from '@mui/material'
+import InfoIcon from '@mui/icons-material/Info'
 import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
@@ -34,8 +35,20 @@ const Setup: NextPage = () => {
             <Grid item lg={4} xs={12}>
               <Typography variant="h4" fontWeight={700}>
                 Safe nonce
+                <Tooltip
+                  placement="top"
+                  title="For security reasons, transactions made with Safe need to be executed in order. The nonce shows you which transaction will be executed next. You can find the nonce for a transaction in the transaction details."
+                >
+                  <InfoIcon fontSize="small" sx={{ verticalAlign: 'middle', ml: 0.5 }} />
+                </Tooltip>
               </Typography>
-              <Typography paddingTop={1}>Current nonce: {nonce}</Typography>
+
+              <Box pt={1}>
+                <Typography color="text.secondary" component="span">
+                  Current nonce:
+                </Typography>{' '}
+                {nonce}
+              </Box>
             </Grid>
 
             <Grid item xs>

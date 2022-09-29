@@ -32,7 +32,7 @@ describe('Address book', () => {
       cy.get('input[name="name"]').type(NAME)
       cy.get('input[name="address"]').type(ENS_NAME)
       // cy.wait(5000)
-      cy.contains('Save').click()
+      cy.contains('button', 'Save').click()
 
       cy.contains(NAME).should('exist')
       cy.contains(ADDRESS).should('exist')
@@ -44,7 +44,7 @@ describe('Address book', () => {
 
       // Give the entry a new name
       cy.get('input[name="name"]').clear().type(EDITED_NAME)
-      cy.contains('Save').click()
+      cy.contains('button', 'Save').click()
 
       // Previous name should have been replaced by the edited one
       cy.get(NAME).should('not.exist')

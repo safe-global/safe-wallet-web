@@ -82,6 +82,12 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
         <form onSubmit={onFormSubmit}>
           <DialogContent>
             <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="body1" fontWeight={700}>
+                  Safe transaction
+                </Typography>
+              </Grid>
+
               {/* Safe nonce */}
               {params.nonce !== undefined && (
                 <Grid item xs={6}>
@@ -112,10 +118,14 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                 </Grid>
               )}
 
-              <Grid item xs={12} sx={{ padding: '0 !important' }} />
-
               {props.isExecution && (
                 <>
+                  <Grid item xs={12}>
+                    <Typography variant="body1" fontWeight={700}>
+                      Owner transaction (Execution)
+                    </Typography>
+                  </Grid>
+
                   {/* User nonce */}
                   <Grid item xs={6}>
                     <FormControl fullWidth>
