@@ -21,6 +21,8 @@ import { type NftTransferParams } from '.'
 import useCollectibles from '@/hooks/useCollectibles'
 import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import ImageFallback from '@/components/common/ImageFallback'
+import useAddressBook from '@/hooks/useAddressBook'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 enum Field {
   recipient = 'recipient',
@@ -58,6 +60,7 @@ const NftMenuItem = ({ image, name, description }: { image: string; name: string
 )
 
 const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
+  const addressBook = useAddressBook()
   const [pageUrl, setPageUrl] = useState<string>()
   const [combinedNfts, setCombinedNfts] = useState<SafeCollectibleResponse[]>()
   const [nftData, nftError, nftLoading] = useCollectibles(pageUrl)
@@ -77,6 +80,8 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
     setValue,
     formState: { errors },
   } = formMethods
+
+  const recipient = watch(Field.recipient)
 
   // Collections
   const collections = useMemo(() => uniqBy(allNfts, 'address'), [allNfts])
@@ -115,7 +120,13 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
           <SendFromBlock />
 
           <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
-            <AddressBookInput name={Field.recipient} label="Recipient" />
+            {addressBook[recipient] ? (
+              <Box onClick={() => setValue(Field.recipient, '')}>
+                <EthHashInfo address={recipient} shortAddress={false} hasExplorer showCopyButton />
+              </Box>
+            ) : (
+              <AddressBookInput name={Field.recipient} label="Recipient" />
+            )}
           </FormControl>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
