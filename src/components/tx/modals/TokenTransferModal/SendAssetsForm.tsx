@@ -115,6 +115,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               label={errors.tokenAddress?.message || 'Select an asset'}
               defaultValue={formData?.tokenAddress || ''}
               error={!!errors.tokenAddress}
+              required
               {...register(SendAssetsField.tokenAddress, {
                 required: true,
                 onChange: () => setValue(SendAssetsField.amount, ''),
@@ -148,6 +149,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               InputLabelProps={{
                 shrink: !!watch(SendAssetsField.amount),
               }}
+              required
               {...register(SendAssetsField.amount, {
                 required: true,
                 validate: (val) => {

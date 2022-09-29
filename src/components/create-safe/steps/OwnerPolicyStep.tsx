@@ -114,7 +114,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
 
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl>
-                <Select {...register('threshold')} defaultValue={defaultThreshold}>
+                <Select {...register('threshold')} defaultValue={defaultThreshold} required>
                   {fields.map((field, index) => (
                     <MenuItem key={field.id} value={index + 1}>
                       {index + 1}

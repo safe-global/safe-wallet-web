@@ -89,6 +89,7 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
               label={errors.tokenAddress?.message || 'Select an asset'}
               defaultValue={data?.tokenAddress || ''}
               error={!!errors.tokenAddress}
+              required
               {...register('tokenAddress', {
                 required: true,
                 onChange: () => setValue('amount', ''),
@@ -107,6 +108,7 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
               autoComplete="off"
+              required
               {...register('amount', {
                 required: true,
                 validate: (val) =>

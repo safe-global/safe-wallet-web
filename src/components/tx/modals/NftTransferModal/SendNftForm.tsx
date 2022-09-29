@@ -126,6 +126,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
               render={({ field }) => (
                 <Select
                   {...field}
+                  required
                   labelId="asset-label"
                   label={errors.tokenAddress?.message || 'Select an NFT collection'}
                   error={!!errors.tokenAddress}
@@ -163,6 +164,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
               render={({ field }) => (
                 <Select
                   {...field}
+                  required
                   labelId="asset-label"
                   label={errors.tokenId?.message || 'Select an NFT'}
                   error={!!errors.tokenId}

@@ -83,6 +83,7 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
             ...(props.InputLabelProps || {}),
             shrink: !!watchedValue || props.focused,
           }}
+          required={required}
           {...register(name, {
             required,
 

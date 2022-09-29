@@ -75,7 +75,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
 
         <Grid container direction="row" gap={1} alignItems="center" mb={2}>
           <Grid item xs={2}>
-            <Select value={selectedThreshold ?? data.threshold} onChange={handleChange} fullWidth>
+            <Select value={selectedThreshold ?? data.threshold} onChange={handleChange} fullWidth required>
               {safe.owners.map((_, idx) => (
                 <MenuItem key={idx + 1} value={idx + 1}>
                   {idx + 1}

@@ -33,7 +33,7 @@ export const SetThresholdStep = ({
 
         <Grid container direction="row" alignItems="center" gap={1} mt={1}>
           <Grid item xs={1.5}>
-            <Select value={selectedThreshold} onChange={handleChange} fullWidth>
+            <Select value={selectedThreshold} onChange={handleChange} fullWidth required>
               {safe.owners.slice(1).map((_, idx) => (
                 <MenuItem key={idx + 1} value={idx + 1}>
                   {idx + 1}
