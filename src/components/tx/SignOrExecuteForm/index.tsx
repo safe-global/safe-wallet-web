@@ -113,7 +113,7 @@ const SignOrExecuteForm = ({
 
   // Execute transaction
   const onExecute = async (): Promise<string> => {
-    const [connectedWallet, createdTx] = assertSubmittable()
+    const [connectedWallet, createdTx, provider] = assertSubmittable()
 
     // If no txId was provided, it's an immediate execution of a new tx
     let id = txId
@@ -124,7 +124,7 @@ const SignOrExecuteForm = ({
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(id, createdTx, txOptions)
+    await dispatchTxExecution(id, createdTx, provider, txOptions)
 
     return id
   }

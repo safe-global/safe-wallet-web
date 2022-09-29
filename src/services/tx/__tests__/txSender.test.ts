@@ -15,6 +15,7 @@ import {
 } from '../txSender'
 import { ErrorCode } from '@ethersproject/logger'
 import { waitFor } from '@/tests/test-utils'
+import { Web3Provider } from '@ethersproject/providers'
 
 // Mock getTransactionDetails
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
@@ -57,6 +58,7 @@ const mockSafeSDK = {
       },
     }),
   ),
+  connect: jest.fn(() => Promise.resolve(mockSafeSDK)),
   getChainId: jest.fn(() => Promise.resolve(4)),
   getAddress: jest.fn(() => '0x0000000000000000000000000000000000000123'),
   getTransactionHash: jest.fn(() => Promise.resolve('0x1234567890')),
@@ -233,6 +235,8 @@ describe('txSender', () => {
   })
 
   describe('dispatchTxExecution', () => {
+    const mockProvider: Web3Provider = new Web3Provider(jest.fn())
+
     it('should execute a tx', async () => {
       const txId = 'tx_id_123'
 
@@ -243,7 +247,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx)
+      await dispatchTxExecution(txId, safeTx, mockProvider)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -263,7 +267,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await expect(dispatchTxExecution(txId, safeTx)).rejects.toThrow('error')
+      await expect(dispatchTxExecution(txId, safeTx, mockProvider)).rejects.toThrow('error')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -288,7 +292,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx)
+      await dispatchTxExecution(txId, safeTx, mockProvider)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -318,7 +322,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx)
+      await dispatchTxExecution(txId, safeTx, mockProvider)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -350,7 +354,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx)
+      await dispatchTxExecution(txId, safeTx, mockProvider)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
