@@ -49,6 +49,7 @@ const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefine
           trustedDelegateCallTarget: false,
         }}
         variant="outlined"
+        showDelegateCallWarning={false}
       />
     </Box>
   ) : null

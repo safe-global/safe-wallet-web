@@ -17,9 +17,14 @@ import { AccordionProps } from '@mui/material/Accordion/Accordion'
 type MultisendProps = {
   txData?: TransactionData
   variant?: AccordionProps['variant']
+  showDelegateCallWarning?: boolean
 }
 
-export const Multisend = ({ txData, variant = 'elevation' }: MultisendProps): ReactElement | null => {
+export const Multisend = ({
+  txData,
+  variant = 'elevation',
+  showDelegateCallWarning = true,
+}: MultisendProps): ReactElement | null => {
   const chain = useCurrentChain()
 
   if (!txData) return null
@@ -54,7 +59,7 @@ export const Multisend = ({ txData, variant = 'elevation' }: MultisendProps): Re
         const avatarUrl = addressInfo?.logoUri
 
         const title = `Interact with${Number(amount) !== 0 ? ` (and send ${amount} ${symbol} to)` : ''}:`
-        const isDelegateCall = operation === Operation.DELEGATE
+        const isDelegateCall = operation === Operation.DELEGATE && showDelegateCallWarning
         const isSpendingLimitMethod = isSetAllowance(dataDecoded?.method) || isDeleteAllowance(dataDecoded?.method)
 
         return (
