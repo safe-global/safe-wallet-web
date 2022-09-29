@@ -1,3 +1,4 @@
+import { setOpacity } from '@/utils/style'
 import { createTheme, Shadows } from '@mui/material/styles'
 import type {} from '@mui/x-date-pickers/themeAugmentation'
 
@@ -428,10 +429,10 @@ const initTheme = (darkMode: boolean) => {
       },
       MuiBackdrop: {
         styleOverrides: {
-          root: {
+          root: ({ theme }) => ({
             backdropFilter: 'blur(1px)',
-            backgroundColor: 'rgba(228, 232, 241, 0.75)',
-          },
+            backgroundColor: setOpacity(theme.palette.secondary.background || '', 0.75),
+          }),
         },
       },
     },
