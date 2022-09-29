@@ -14,7 +14,7 @@ const NoModules = () => {
   )
 }
 
-const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name: string }) => {
+const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name?: string }) => {
   const isGranted = useIsGranted()
 
   return (
@@ -63,7 +63,7 @@ const SafeModules = () => {
                   key={module.value}
                   chainId={safe.chainId}
                   moduleAddress={module.value}
-                  name={module.name || ''}
+                  name={module.name}
                 />
               ))
             )}
