@@ -1,5 +1,5 @@
 import { TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
-import { isNextTx } from '../transaction-guards'
+import { _isNextTx } from '../transaction-guards'
 
 describe('transaction-guards', () => {
   describe('isNextTx', () => {
@@ -19,7 +19,7 @@ describe('transaction-guards', () => {
         },
       ] as TransactionListItem[]
 
-      expect(isNextTx(txId, items)).toBe(true)
+      expect(_isNextTx(txId, items)).toBe(true)
     })
     it('returns false if the first transaction is not the next one', () => {
       const txId = 'id456'
@@ -48,7 +48,7 @@ describe('transaction-guards', () => {
         },
       ] as TransactionListItem[]
 
-      expect(isNextTx(txId, items)).toBe(false)
+      expect(_isNextTx(txId, items)).toBe(false)
     })
   })
 })

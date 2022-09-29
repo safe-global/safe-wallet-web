@@ -8,7 +8,7 @@ import { createExistingTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { isExecutable, isSignableBy, isNextTx } from '@/utils/transaction-guards'
+import { isExecutable, isSignableBy } from '@/utils/transaction-guards'
 import { Skeleton, Typography } from '@mui/material'
 import useTxQueue from '@/hooks/useTxQueue'
 
@@ -28,7 +28,7 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
   const { page } = useTxQueue()
 
   const txId = txSummary.id
-  const canExecute = isExecutable(txSummary, wallet?.address || '') && isNextTx(txId, page?.results || [])
+  const canExecute = isExecutable(txSummary, wallet?.address || '', page?.results)
   const canSign = isSignableBy(txSummary, wallet?.address || '')
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {

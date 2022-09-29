@@ -125,8 +125,24 @@ export const isSignableBy = (txSummary: TransactionSummary, walletAddress: strin
   return !!executionInfo?.missingSigners?.some((address) => address.value === walletAddress)
 }
 
-export const isExecutable = (txSummary: TransactionSummary, walletAddress: string): boolean => {
-  if (!txSummary.executionInfo || !isMultisigExecutionInfo(txSummary.executionInfo)) {
+export const _isNextTx = (txId: string, items: TransactionListItem[]) => {
+  const hasNextLabel = items.find(isLabelListItem)?.label === LabelValue.Next
+  const isFirstTx = items.find(isTransactionListItem)?.transaction.id === txId
+
+  return hasNextLabel && isFirstTx
+}
+
+export const isExecutable = (
+  txSummary: TransactionSummary,
+  walletAddress: string,
+  items?: TransactionListItem[],
+): boolean => {
+  if (
+    !items ||
+    !_isNextTx(txSummary.id, items) ||
+    !txSummary.executionInfo ||
+    !isMultisigExecutionInfo(txSummary.executionInfo)
+  ) {
     return false
   }
   const { confirmationsRequired, confirmationsSubmitted } = txSummary.executionInfo
@@ -134,13 +150,6 @@ export const isExecutable = (txSummary: TransactionSummary, walletAddress: strin
     confirmationsSubmitted >= confirmationsRequired ||
     (confirmationsSubmitted === confirmationsRequired - 1 && isSignableBy(txSummary, walletAddress))
   )
-}
-
-export const isNextTx = (txId: string, items: TransactionListItem[]) => {
-  const hasNextLabel = items.find(isLabelListItem)?.label === LabelValue.Next
-  const isFirstTx = items.find(isTransactionListItem)?.transaction.id === txId
-
-  return hasNextLabel && isFirstTx
 }
 
 // Spending limits
