@@ -1,10 +1,14 @@
 import { useEffect } from 'react'
-import { showNotification } from '@/store/notificationsSlice'
-import { useAppDispatch } from '@/store'
+import { selectNotifications, showNotification } from '@/store/notificationsSlice'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { AppRoutes } from '@/config/routes'
 import useSafeInfo from './useSafeInfo'
 import { useCurrentChain } from './useChains'
+import useTxQueue from './useTxQueue'
+import { isTransactionListItem } from '@/utils/transaction-guards'
+import { TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import { selectPendingTxs } from '@/store/pendingTxsSlice'
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
@@ -33,6 +37,10 @@ const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
   const { safeAddress } = useSafeInfo()
+
+  /**
+   * Show notifications of a transaction's lifecycle
+   */
 
   useEffect(() => {
     const entries = Object.entries(TxNotifications) as [keyof typeof TxNotifications, string][]
@@ -68,6 +76,44 @@ const useTxNotifications = (): void => {
       unsubFns.forEach((unsub) => unsub())
     }
   }, [dispatch, safeAddress, chain?.shortName])
+
+  /**
+   * Show a notification when a transaction is awaiting confirmation on Safe load
+   */
+
+  const { page } = useTxQueue()
+  const pendingTxs = useAppSelector(selectPendingTxs)
+  const notifications = useAppSelector(selectNotifications)
+
+  useEffect(() => {
+    const items = page?.results?.filter(isTransactionListItem)
+
+    if (!items || items.length === 0) {
+      return
+    }
+
+    const { transaction } = items[0]
+
+    if (transaction.txStatus !== TransactionStatus.AWAITING_CONFIRMATIONS || pendingTxs[transaction.id]) {
+      return
+    }
+
+    const hasNotified = notifications.some(({ groupKey }) => groupKey === transaction.id)
+
+    if (!hasNotified) {
+      dispatch(
+        showNotification({
+          variant: 'info',
+          message: 'A transaction requires your confirmation.',
+          link: {
+            href: `${AppRoutes.transactions.tx}?id=${transaction.id}&safe=${chain?.shortName}:${safeAddress}`,
+            title: 'View transaction',
+          },
+          groupKey: transaction.id,
+        }),
+      )
+    }
+  }, [dispatch, safeAddress, chain?.shortName, notifications, page?.results, pendingTxs])
 }
 
 export default useTxNotifications
