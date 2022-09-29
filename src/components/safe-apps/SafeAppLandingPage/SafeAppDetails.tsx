@@ -3,7 +3,8 @@ import { Box } from '@mui/system'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import WarningAmberIcon from '@mui/icons-material/WarningAmber'
+import WarningIcon from '@/public/images/notifications/warning.svg'
+import SvgIcon from '@mui/material/SvgIcon'
 
 type DetailsProps = {
   app: SafeAppData
@@ -53,7 +54,9 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
       <Box sx={{ display: 'flex', flexDirection: 'column', mt: 4 }}>
         <Box sx={{ mb: 4 }}>
           <Box sx={{ display: 'flex' }}>
-            <WarningAmberIcon sx={({ palette }) => ({ color: palette.warning.dark })} />
+            {/* 
+            //@ts-ignore - "warning.dark" is a present in the palette */}
+            <SvgIcon component={WarningIcon} inheritViewBox color="warning.dark" />
             <Typography variant="h5" sx={({ palette }) => ({ color: palette.warning.dark })}>
               Warning
             </Typography>

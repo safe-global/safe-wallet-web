@@ -3,8 +3,8 @@ import { useState } from 'react'
 import EntryDialog, { AddressEntry } from '@/components/address-book/EntryDialog'
 import ExportDialog from '@/components/address-book/ExportDialog'
 import ImportDialog from '@/components/address-book/ImportDialog'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
+import EditIcon from '@/public/images/common/edit.svg'
+import DeleteIcon from '@/public/images/common/delete.svg'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
@@ -17,6 +17,7 @@ import AddressBookHeader from '../AddressBookHeader'
 import useAddressBook from '@/hooks/useAddressBook'
 import Track from '@/components/common/Track'
 import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
+import SvgIcon from '@mui/material/SvgIcon'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -78,7 +79,7 @@ const AddressBookTable = () => {
           <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
             <Tooltip title="Edit entry" placement="top">
               <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)} size="small">
-                <EditIcon color="border" />
+                <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
               </IconButton>
             </Tooltip>
           </Track>
@@ -86,7 +87,7 @@ const AddressBookTable = () => {
           <Track {...ADDRESS_BOOK_EVENTS.DELETE_ENTRY}>
             <Tooltip title="Delete entry" placement="top">
               <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)} size="small">
-                <DeleteOutlineIcon color="error" />
+                <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
               </IconButton>
             </Tooltip>
           </Track>

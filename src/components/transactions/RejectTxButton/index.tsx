@@ -1,5 +1,5 @@
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Button, Tooltip } from '@mui/material'
+import { Button, Tooltip, SvgIcon } from '@mui/material'
 
 import { useState, type ReactElement, SyntheticEvent } from 'react'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
@@ -7,7 +7,7 @@ import { isCustomTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-gua
 import RejectTxModal from '@/components/tx/modals/RejectTxModal'
 import useIsPending from '@/hooks/useIsPending'
 import IconButton from '@mui/material/IconButton'
-import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import ErrorIcon from '@/public/images/notifications/error.svg'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
@@ -44,7 +44,7 @@ const RejectTxButton = ({
           <Tooltip title="Reject" arrow placement="top">
             <span>
               <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>
-                <HighlightOffIcon fontSize="small" />
+                <SvgIcon component={ErrorIcon} inheritViewBox fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
