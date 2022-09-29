@@ -45,7 +45,7 @@ const NftMenuItem = ({ image, name, description }: { image: string; name: string
   <Grid container spacing={1} alignItems="center" wrap="nowrap">
     <Grid item>
       <Box width={20} height={20}>
-        <ImageFallback src={image} fallbackSrc="/images/nft-placeholder.png" alt={name} height={20} />
+        <ImageFallback src={image} fallbackSrc="/images/common/nft-placeholder.png" alt={name} height={20} />
       </Box>
     </Grid>
     <Grid item overflow="hidden">

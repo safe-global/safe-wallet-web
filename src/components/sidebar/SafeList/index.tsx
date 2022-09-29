@@ -8,6 +8,8 @@ import Button from '@mui/material/Button'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
+import SvgIcon from '@mui/material/SvgIcon'
+import AddIcon from '@/public/images/common/add.svg'
 
 import useChains from '@/hooks/useChains'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
@@ -73,8 +75,15 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
         </Typography>
         <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
           <Link href={{ pathname: AppRoutes.welcome }} passHref>
-            <Button disableElevation size="small" variant="outlined" onClick={closeDrawer} className={css.addButton}>
-              + Add
+            <Button
+              disableElevation
+              size="small"
+              variant="outlined"
+              onClick={closeDrawer}
+              className={css.addButton}
+              startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+            >
+              Add
             </Button>
           </Link>
         </Track>

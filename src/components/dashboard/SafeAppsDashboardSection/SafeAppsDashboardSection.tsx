@@ -8,7 +8,7 @@ import { WidgetContainer } from '../styled'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppCard, AppCardContainer } from '@/components/safe-apps/AppCard'
 import { AppRoutes } from '@/config/routes'
-import ExploreSafeAppsIcon from '@/public/images/explore.svg'
+import ExploreSafeAppsIcon from '@/public/images/apps/explore.svg'
 
 const SafeAppsDashboardSection = () => {
   const { rankedSafeApps } = useSafeApps()

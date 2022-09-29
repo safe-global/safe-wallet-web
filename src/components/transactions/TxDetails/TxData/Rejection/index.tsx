@@ -1,7 +1,6 @@
 import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
 import { MultisigExecutionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Link, Typography } from '@mui/material'
-import LinkIcon from '@mui/icons-material/Link'
 import React from 'react'
 
 interface Props {
@@ -33,7 +32,6 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
               <Typography sx={{ textDecoration: 'underline' }}>
                 Why do I need to pay for rejecting a transaction?
               </Typography>
-              <LinkIcon />
             </Box>
           </Link>
         </>

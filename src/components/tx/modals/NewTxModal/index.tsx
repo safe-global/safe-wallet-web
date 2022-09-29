@@ -3,7 +3,7 @@ import { Box, Button, type ButtonProps, DialogContent, SvgIcon } from '@mui/mate
 import ModalDialog from '@/components/common/ModalDialog'
 import TokenTransferModal from '../TokenTransferModal'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
-import NftIcon from '@/public/images/nft.svg'
+import NftIcon from '@/public/images/common/nft.svg'
 import NftTransferModal, { NftTransferParams } from '../NftTransferModal'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import { SendAssetsField } from '../TokenTransferModal/SendAssetsForm'

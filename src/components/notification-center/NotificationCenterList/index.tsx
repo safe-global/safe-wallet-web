@@ -5,7 +5,7 @@ import Box from '@mui/material/Box'
 
 import { NotificationState } from '@/store/notificationsSlice'
 import NotificationCenterItem from '@/components/notification-center/NotificationCenterItem'
-import Bell from '@/public/images/bell.svg'
+import Bell from '@/public/images/notifications/bell.svg'
 
 import css from './styles.module.css'
 

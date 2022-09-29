@@ -38,7 +38,7 @@ type CustomAppFormData = {
 }
 
 const TEXT_FIELD_HEIGHT = '56px'
-const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
+const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
 
 const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
