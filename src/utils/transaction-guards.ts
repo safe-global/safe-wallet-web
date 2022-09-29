@@ -12,13 +12,13 @@ import {
   Erc721Transfer,
   ExecutionInfo,
   Label,
-  LabelValue,
   ModuleExecutionDetails,
   ModuleExecutionInfo,
   MultiSend,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
   NativeCoinTransfer,
+  SafeInfo,
   SettingsChange,
   Transaction,
   TransactionInfo,
@@ -125,23 +125,11 @@ export const isSignableBy = (txSummary: TransactionSummary, walletAddress: strin
   return !!executionInfo?.missingSigners?.some((address) => address.value === walletAddress)
 }
 
-export const _isNextTx = (txId: string, items: TransactionListItem[]) => {
-  const hasNextLabel = items.find(isLabelListItem)?.label === LabelValue.Next
-  const isFirstTx = items.find(isTransactionListItem)?.transaction.id === txId
-
-  return hasNextLabel && isFirstTx
-}
-
-export const isExecutable = (
-  txSummary: TransactionSummary,
-  walletAddress: string,
-  items?: TransactionListItem[],
-): boolean => {
+export const isExecutable = (txSummary: TransactionSummary, walletAddress: string, safe: SafeInfo): boolean => {
   if (
-    !items ||
-    !_isNextTx(txSummary.id, items) ||
     !txSummary.executionInfo ||
-    !isMultisigExecutionInfo(txSummary.executionInfo)
+    !isMultisigExecutionInfo(txSummary.executionInfo) ||
+    safe.nonce !== txSummary.executionInfo.nonce
   ) {
     return false
   }
