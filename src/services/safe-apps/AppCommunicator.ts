@@ -14,6 +14,7 @@ type MessageHandler = (
 ) => void | MethodToResponse[Methods] | ErrorResponse | Promise<MethodToResponse[Methods] | ErrorResponse | void>
 
 type AppCommunicatorConfig = {
+  onMessage?: (msg: SDKMessageEvent) => void
   onError?: (error: Error, data: any) => void
 }
 
@@ -63,6 +64,8 @@ class AppCommunicator {
 
     if (validMessage && hasHandler) {
       const handler = this.handlers.get(msg.data.method)
+
+      this.config?.onMessage?.(msg)
 
       try {
         // @ts-expect-error Handler existence is checked in this.canHandleMessage

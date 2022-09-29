@@ -20,6 +20,7 @@ import useChainId from '@/hooks/useChainId'
 import { trimTrailingSlash, isSameUrl } from '@/utils/url'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
+import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import ImageFallback from '../common/ImageFallback'
 
 type Props = {
@@ -55,6 +56,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const onSubmit: SubmitHandler<CustomAppFormData> = (_, __) => {
     if (safeApp) {
       onSave(safeApp)
+      trackEvent(SAFE_APPS_EVENTS.ADD_CUSTOM_APP)
       onClose()
     }
   }
