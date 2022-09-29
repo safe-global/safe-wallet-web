@@ -109,13 +109,14 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
           </FormControl>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="asset-label">Select an asset</InputLabel>
+            <InputLabel id="asset-label" required>
+              Select an asset
+            </InputLabel>
             <Select
               labelId="asset-label"
               label={errors.tokenAddress?.message || 'Select an asset'}
               defaultValue={formData?.tokenAddress || ''}
               error={!!errors.tokenAddress}
-              required
               {...register(SendAssetsField.tokenAddress, {
                 required: true,
                 onChange: () => setValue(SendAssetsField.amount, ''),

@@ -83,13 +83,14 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
           </FormControl>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="asset-label">Select an asset</InputLabel>
+            <InputLabel id="asset-label" required>
+              Select an asset
+            </InputLabel>
             <Select
               labelId="asset-label"
               label={errors.tokenAddress?.message || 'Select an asset'}
               defaultValue={data?.tokenAddress || ''}
               error={!!errors.tokenAddress}
-              required
               {...register('tokenAddress', {
                 required: true,
                 onChange: () => setValue('amount', ''),
