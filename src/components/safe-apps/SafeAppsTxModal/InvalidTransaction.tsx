@@ -1,12 +1,12 @@
 import { ReactElement } from 'react'
-import { Box, Typography } from '@mui/material'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import { Box, SvgIcon, Typography } from '@mui/material'
+import ErrorIcon from '@/public/images/notifications/error.svg'
 
 const InvalidTransaction = (): ReactElement => {
   return (
     <Box p={4} alignItems="center" justifyContent="center">
       <Box display="flex" alignItems="center">
-        <ErrorOutlineIcon color="error" />
+        <SvgIcon component={ErrorIcon} inheritViewBox color="error" />
         <Typography variant="h4">Transaction error</Typography>
       </Box>
       <br />

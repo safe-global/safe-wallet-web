@@ -1,6 +1,6 @@
-import { Button } from '@mui/material'
+import { Button, SvgIcon } from '@mui/material'
 import { useState } from 'react'
-import AddIcon from '@mui/icons-material/Add'
+import AddIcon from '@/public/images/common/add.svg'
 import { ChooseOwnerStep } from './DialogSteps/ChooseOwnerStep'
 
 import TxModal from '@/components/tx/TxModal'
@@ -41,8 +41,12 @@ export const AddOwnerDialog = () => {
     <Box paddingTop={2}>
       <div>
         <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
-          <Button onClick={() => setOpen(true)} variant="text">
-            <AddIcon fontSize="small" sx={{ mr: 1 }} /> Add new owner
+          <Button
+            onClick={() => setOpen(true)}
+            variant="text"
+            startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+          >
+            Add new owner
           </Button>
         </Track>
       </div>

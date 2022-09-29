@@ -1,12 +1,13 @@
-import { Typography, Link as MuiLink } from '@mui/material'
+import { Typography, Link as MuiLink, SvgIcon } from '@mui/material'
 import Link from 'next/link'
 import type { FallbackRender } from '@sentry/react'
 
 import { IS_PRODUCTION } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import WarningIcon from '@/components/common/icons/WarningIcon'
+import WarningIcon from '@/public/images/notifications/warning.svg'
 
 import css from '@/components/common/ErrorBoundary/styles.module.css'
+import CircularIcon from '../icons/CircularIcon'
 
 const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
   return (
@@ -18,7 +19,7 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
           please try again.
         </Typography>
 
-        <WarningIcon />
+        <CircularIcon icon={<SvgIcon component={WarningIcon} inheritViewBox />} badgeColor="warning" />
 
         {IS_PRODUCTION ? (
           <Typography color="text.primary">

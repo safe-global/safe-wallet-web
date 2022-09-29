@@ -8,7 +8,7 @@ const NftCard = ({ nft, onSendClick }: { nft: SafeCollectibleResponse; onSendCli
   <Card className={css.card}>
     <CardContent>
       <div className={css.imageWrapper}>
-        <img src={nft.imageUri || '/images/nft-placeholder.png'} alt={`${nft.tokenName} #${nft.id}`} />
+        <img src={nft.imageUri || '/images/common/nft-placeholder.png'} alt={`${nft.tokenName} #${nft.id}`} />
       </div>
 
       <Typography fontWeight="bold" variant="body2">

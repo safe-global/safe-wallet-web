@@ -16,7 +16,7 @@ const SafeAppsLoadError = ({ onBackToApps }: SafeAppsLoadErrorProps): React.Reac
       <div className={css.content}>
         <Typography variant="h1">Safe App could not be loaded</Typography>
 
-        <img src="/images/network-error.svg" alt="Safe Apps load error" className={css.image} />
+        <img src="/images/apps/network-error.svg" alt="Safe Apps load error" className={css.image} />
 
         <div>
           <Typography component="span">In case the problem persists, please reach out to us via </Typography>

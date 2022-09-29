@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
-import { Alert, Link, Tooltip } from '@mui/material'
+import { Alert, Link, SvgIcon, Tooltip } from '@mui/material'
 import { tooltipClasses } from '@mui/material/Tooltip'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import InfoOutlinedIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
 
 const UNEXPECTED_DELEGATE_ARTICLE =
@@ -36,7 +36,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
         className={css.alert}
         sx={{ borderLeft: ({ palette }) => `3px solid ${palette[severity].main}` }}
         severity={severity}
-        icon={<InfoOutlinedIcon />}
+        icon={<SvgIcon component={InfoOutlinedIcon} inheritViewBox color={severity} />}
       >
         <b>{showWarning ? 'Unexpected delegate call' : 'Delegate call'}</b>
       </Alert>
@@ -59,7 +59,7 @@ export const ThresholdWarning = (): ReactElement => (
       className={css.alert}
       sx={{ borderLeft: ({ palette }) => `3px solid ${palette.warning.main}` }}
       severity="warning"
-      icon={<InfoOutlinedIcon />}
+      icon={<SvgIcon component={InfoOutlinedIcon} inheritViewBox color="warning" />}
     >
       <b>Confirmation policy change</b>
     </Alert>

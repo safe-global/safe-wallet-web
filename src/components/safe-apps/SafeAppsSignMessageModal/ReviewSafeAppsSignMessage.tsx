@@ -1,8 +1,8 @@
 import { ReactElement, useMemo } from 'react'
 import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
 import { Box } from '@mui/system'
-import { TextField, Typography } from '@mui/material'
-import WarningIcon from '@mui/icons-material/Warning'
+import { TextField, Typography, SvgIcon } from '@mui/material'
+import WarningIcon from '@/public/images/notifications/warning.svg'
 import { isObjectEIP712TypedData, Methods } from '@gnosis.pm/safe-apps-sdk'
 import { OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
@@ -119,7 +119,7 @@ const ReviewSafeAppsSignMessage = ({
         />
 
         <Box display="flex" alignItems="center" my={2}>
-          <WarningIcon color="warning" />
+          <SvgIcon component={WarningIcon} inheritViewBox color="warning" />
           <Typography ml={1}>Signing a message with the Safe requires a transaction on the blockchain</Typography>
         </Box>
       </>
