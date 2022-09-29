@@ -431,7 +431,7 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             backdropFilter: 'blur(1px)',
-            backgroundColor: setOpacity(theme.palette.secondary.background || '', 0.75),
+            backgroundColor: setOpacity(theme.palette.background.main || '', 0.75),
           }),
         },
       },
