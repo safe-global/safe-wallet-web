@@ -21,8 +21,7 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
     <>
       <Typography>{message}</Typography>
       {!isTxExecuted && (
-        <>
-          <br />
+        <Box mt={2} sx={{ width: 'fit-content' }}>
           <Link
             href="https://help.gnosis-safe.io/en/articles/4738501-why-do-i-need-to-pay-for-cancelling-a-transaction"
             target="_blank"
@@ -36,7 +35,7 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
               <LinkIcon />
             </Box>
           </Link>
-        </>
+        </Box>
       )}
     </>
   )
