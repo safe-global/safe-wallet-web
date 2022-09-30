@@ -27,6 +27,7 @@ import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 import { Errors, logError } from '@/services/exceptions'
+import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -67,7 +68,7 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
         /* If the initial transaction data causes the estimation to fail
          we retry the request with an empty transaction to obtain the
          recommendedNonce even if the original transaction will likely fail */
-        const minTxParams = { ...txParams, data: '0x', to: safeAddress, value: '0' }
+        const minTxParams = { ...txParams, data: EMPTY_DATA, to: safeAddress, value: '0' }
         estimation = await estimateSafeTxGas(String(chainId), safeAddress, minTxParams)
       } catch (e) {
         logError(Errors._616, (e as Error).message)
