@@ -34,7 +34,7 @@ export const OwnerRow = ({
         return 'Owner is already added'
       }
     },
-    [getValues],
+    [getValues, groupName],
   )
 
   const { ens, name, resolving } = useAddressResolver(owner.address)
@@ -47,7 +47,7 @@ export const OwnerRow = ({
     if (name) {
       setValue(`${fieldName}.name`, name)
     }
-  }, [ens, setValue, index, name])
+  }, [ens, setValue, index, name, fieldName])
 
   return (
     <Grid container spacing={3} alignItems="center" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>

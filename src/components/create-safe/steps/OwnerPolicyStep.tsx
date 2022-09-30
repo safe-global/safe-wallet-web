@@ -141,9 +141,9 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl>
                 <Select {...register(FieldName.threshold, { valueAsNumber: true })} value={currentThreshold}>
-                  {Array.from(Array(ownerLength).keys()).map((count) => (
-                    <MenuItem key={count} value={count + 1}>
-                      {count + 1}
+                  {ownerFields.map((_, index) => (
+                    <MenuItem key={index} value={index + 1}>
+                      {index + 1}
                     </MenuItem>
                   ))}
                 </Select>
