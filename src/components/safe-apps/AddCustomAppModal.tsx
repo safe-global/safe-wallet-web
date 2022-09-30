@@ -128,7 +128,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
               sx={({ palette }) => ({
                 width: '100%',
                 ml: 2,
-                WebkitTextFillColor: safeApp?.name ? palette.text.primary : palette.text.secondary,
+                WebkitTextFillColor: palette.text.secondary,
                 '&& input': {
                   WebkitTextFillColor: safeApp?.name && palette.text.primary,
                 },
