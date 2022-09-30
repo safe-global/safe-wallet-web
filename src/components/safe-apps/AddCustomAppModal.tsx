@@ -22,6 +22,7 @@ import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import ImageFallback from '../common/ImageFallback'
+import { useDarkMode } from '../../hooks/useDarkMode'
 
 type Props = {
   open: boolean
@@ -39,11 +40,12 @@ type CustomAppFormData = {
 
 const TEXT_FIELD_HEIGHT = '56px'
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
+const APP_LOGO_FALLBACK_DARK_IMAGE = '/images/apps/apps-icon-dark.svg'
 const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
 
 const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
+  const isDarkMode = useDarkMode()
   const chainId = useChainId()
-
   const {
     register,
     handleSubmit,
@@ -73,7 +75,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     })
   }, [chainId, debouncedUrl])
 
-  const appLogoUrl = safeApp?.iconUrl || APP_LOGO_FALLBACK_IMAGE
+  const appLogoUrl = safeApp?.iconUrl || (isDarkMode ? APP_LOGO_FALLBACK_DARK_IMAGE : APP_LOGO_FALLBACK_IMAGE)
 
   const handleClose = () => {
     reset()
