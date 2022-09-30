@@ -17,25 +17,25 @@ const Navigation = (): ReactElement => {
   const router = useRouter()
   const { safe } = useSafeInfo()
 
-  const needsUpdate = safe.implementationVersionState === ImplementationVersionState.OUTDATED
+  // Indicate whether the current Safe needs an upgrade
+  const setupItem = navItems.find((item) => item.href === AppRoutes.settings.setup)
+  if (setupItem) {
+    setupItem.badge = safe.implementationVersionState === ImplementationVersionState.OUTDATED
+  }
 
   return (
     <SidebarList>
-      {navItems.map((item) => {
-        const isSettings = item.href === AppRoutes.settings.setup
-
-        return (
-          <ListItem key={item.href} disablePadding selected={router.pathname === item.href}>
-            <SidebarListItemButton
-              selected={router.pathname === item.href}
-              href={{ pathname: item.href, query: { safe: router.query.safe } }}
-            >
-              {item.icon && <SidebarListItemIcon badge={isSettings && needsUpdate}>{item.icon}</SidebarListItemIcon>}
-              <SidebarListItemText bold>{item.label}</SidebarListItemText>
-            </SidebarListItemButton>
-          </ListItem>
-        )
-      })}
+      {navItems.map((item) => (
+        <ListItem key={item.href} disablePadding selected={router.pathname === item.href}>
+          <SidebarListItemButton
+            selected={router.pathname === item.href}
+            href={{ pathname: item.href, query: { safe: router.query.safe } }}
+          >
+            {item.icon && <SidebarListItemIcon badge={item.badge}>{item.icon}</SidebarListItemIcon>}
+            <SidebarListItemText bold>{item.label}</SidebarListItemText>
+          </SidebarListItemButton>
+        </ListItem>
+      ))}
     </SidebarList>
   )
 }
