@@ -65,7 +65,7 @@ const SignOrExecuteForm = ({
   const currentChain = useCurrentChain()
 
   // Check that the transaction is executable
-  const isNewExecutableTx = (!txId || isRejection) && safe.threshold === 1
+  const isNewExecutableTx = !txId && safe.threshold === 1
   const isCorrectNonce = tx?.data.nonce === safe.nonce
   const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
 
@@ -87,7 +87,7 @@ const SignOrExecuteForm = ({
   // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
-  const nonceReadonly = !!tx?.signatures.size || !!isRejection
+  const nonceReadonly = !!tx?.signatures.size || isRejection
 
   //
   // Callbacks
