@@ -12,7 +12,11 @@ const INITIAL_MODAL_STATE: StateType = {
 
 type ReturnType = [
   StateType,
-  (message: string | EIP712TypedData, requestId: string, method: Methods) => void,
+  (
+    message: string | EIP712TypedData,
+    requestId: string,
+    method: Methods.signMessage | Methods.signTypedMessage,
+  ) => void,
   () => void,
 ]
 

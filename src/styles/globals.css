@@ -32,6 +32,10 @@ a {
   text-decoration: none;
 }
 
+button {
+  font: inherit;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -82,4 +86,8 @@ input[type='number'] {
     right: 0;
     background: var(--color-background-paper);
   }
+}
+
+#beamerLastPostTitle {
+  left: 330px !important;
 }

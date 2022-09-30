@@ -8,11 +8,10 @@ import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import ShareIcon from '@/public/images/share.svg'
+import ShareIcon from '@/public/images/common/share.svg'
 import CopyButton from '@/components/common/CopyButton'
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
-import BookmarkIcon from '@mui/icons-material/Bookmark'
-import DeleteIcon from '@/public/images/delete.svg'
+import BookmarkIcon from '@/public/images/apps/bookmark.svg'
+import DeleteIcon from '@/public/images/common/delete.svg'
 import { AppRoutes } from '@/config/routes'
 import styles from './styles.module.css'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -102,7 +101,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
         initialToolTipText={`Copy share URL for ${safeApp.name}`}
         className={styles.compactShareButton}
       >
-        <SvgIcon component={ShareIcon} />
+        <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
       </CopyButton>
 
       {/* Pin/unpin button */}
@@ -116,9 +115,9 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
             onPin(safeApp.id)
           }}
           title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
-          sx={{ width: '32px', position: 'absolute', top: 2, right: 2 }}
+          sx={{ position: 'absolute', top: 2, right: 2 }}
         >
-          {pinned ? <BookmarkIcon color="primary" /> : <BookmarkBorderIcon />}
+          <SvgIcon component={BookmarkIcon} inheritViewBox color={pinned ? 'primary' : 'border'} fontSize="small" />
         </IconButton>
       )}
     </div>
@@ -147,28 +146,28 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
         action={
           <>
             {/* Share button */}
-            <CopyButton
-              text={shareUrl}
-              initialToolTipText={`Copy share URL for ${safeApp.name}`}
-              className={styles.shareButton}
-            >
-              <SvgIcon component={ShareIcon} inheritViewBox />
+            <CopyButton text={shareUrl} initialToolTipText={`Copy share URL for ${safeApp.name}`}>
+              <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
             </CopyButton>
 
             {/* Pin/unpin button */}
             {onPin && (
               <IconButton
                 aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
-                size="small"
                 onClick={(event) => {
                   event.preventDefault()
                   event.stopPropagation()
                   onPin(safeApp.id)
                 }}
                 title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
-                sx={{ width: '32px' }}
+                size="small"
               >
-                {pinned ? <BookmarkIcon color="primary" /> : <BookmarkBorderIcon />}
+                <SvgIcon
+                  component={BookmarkIcon}
+                  inheritViewBox
+                  color={pinned ? 'primary' : 'border'}
+                  fontSize="small"
+                />
               </IconButton>
             )}
 
@@ -183,7 +182,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
                   onDelete(safeApp)
                 }}
               >
-                <DeleteIcon width={16} alt="Delete icon" />
+                <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
               </IconButton>
             )}
           </>

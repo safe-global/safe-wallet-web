@@ -89,7 +89,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
       </FormControl>
     )
   } else {
-    body = <img src="/images/safe-creation.svg" alt="An icon of a physical safe with a plus sign" />
+    body = <img src="/images/open/safe-creation.svg" alt="An icon of a physical safe with a plus sign" />
   }
 
   return (

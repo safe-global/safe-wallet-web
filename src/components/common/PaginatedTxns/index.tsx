@@ -10,7 +10,7 @@ import InfiniteScroll from '../InfiniteScroll'
 import SkeletonTxList from './SkeletonTxList'
 import { type TxFilter, useTxFilter } from '@/utils/tx-history-filter'
 import { isTransactionListItem } from '@/utils/transaction-guards'
-import NoTransactionsIcon from '@/public/images/no-transactions.svg'
+import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 
 const NoQueuedTxns = () => {
   return <PagePlaceholder img={<NoTransactionsIcon />} text="Queued transactions will appear here" />

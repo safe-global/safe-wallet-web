@@ -11,7 +11,7 @@ import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import coinbaseModule from '@web3-onboard/coinbase'
 import fortmaticModule from '@web3-onboard/fortmatic'
-import injectedWalletModule from '@web3-onboard/injected-wallets'
+import injectedWalletModule, { ProviderLabel } from '@web3-onboard/injected-wallets'
 import keystoneModule from '@web3-onboard/keystone/dist/index'
 import ledgerModule from '@web3-onboard/ledger'
 import portisModule from '@web3-onboard/portis'
@@ -70,7 +70,7 @@ export const getAllWallets = (): WalletInit[] => {
 }
 
 export const getRecommendedInjectedWallets = (): RecommendedInjectedWallets[] => {
-  return [{ name: 'MetaMask', url: 'https://metamask.io' }]
+  return [{ name: ProviderLabel.MetaMask, url: 'https://metamask.io' }]
 }
 
 export const isWalletSupported = (disabledWallets: string[], walletLabel: string): boolean => {
