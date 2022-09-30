@@ -1,6 +1,8 @@
-import { TextField, TextFieldProps } from '@mui/material'
+import type { TextFieldProps } from '@mui/material'
+import { TextField } from '@mui/material'
 import get from 'lodash/get'
-import { FieldError, useFormContext, Validate } from 'react-hook-form'
+import type { FieldError, Validate } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 
 const NameInput = ({
   name,

@@ -1,6 +1,6 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import TxStepper from '../TxStepper'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import ModalDialog from '@/components/common/ModalDialog'
 
 export type TxModalProps = {

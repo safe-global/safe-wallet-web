@@ -1,5 +1,6 @@
-import { ReactElement } from 'react'
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import type { ReactElement } from 'react'
+import type { SelectChangeEvent } from '@mui/material'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectCurrency, setCurrency } from '@/store/settingsSlice'
 import useCurrencies from './useCurrencies'

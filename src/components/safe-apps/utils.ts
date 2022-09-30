@@ -1,4 +1,4 @@
-import { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+import type { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { formatVisualAmount } from '@/utils/formatters'
 import { validateAddress } from '@/utils/validation'
 import { isHexString, toUtf8String } from 'ethers/lib/utils'

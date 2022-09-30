@@ -1,4 +1,5 @@
-import React, { type ReactElement, ReactNode, type SyntheticEvent, useCallback, useState } from 'react'
+import type { ReactNode } from 'react'
+import React, { type ReactElement, type SyntheticEvent, useCallback, useState } from 'react'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { IconButton, Tooltip } from '@mui/material'
 

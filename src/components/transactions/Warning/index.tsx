@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { Alert, Link, SvgIcon, Tooltip } from '@mui/material'
 import { tooltipClasses } from '@mui/material/Tooltip'
 import InfoOutlinedIcon from '@/public/images/notifications/info.svg'

@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { IconButton, TextField, Tooltip } from '@mui/material'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'

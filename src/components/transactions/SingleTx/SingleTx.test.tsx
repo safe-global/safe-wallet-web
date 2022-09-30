@@ -1,7 +1,7 @@
 import { act, fireEvent, render } from '@/tests/test-utils'
 import SingleTx from '@/pages/transactions/tx'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
-import { SafeInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 const SAFE_ADDRESS = 'rin:0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f'

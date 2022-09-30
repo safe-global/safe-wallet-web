@@ -1,8 +1,8 @@
-import { BigNumber } from 'ethers'
+import type { BigNumber } from 'ethers'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 import useAsync from '@/hooks/useAsync'
-import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
+import type { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import useChainId from '@/hooks/useChainId'
 
 const useSpendingLimitGas = (params: SpendingLimitTxParams) => {
