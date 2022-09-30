@@ -120,7 +120,19 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
               fallbackSrc={APP_LOGO_FALLBACK_IMAGE}
               alt="Apps icon"
             />
-            <TextField label="App name" disabled sx={{ width: '100%', ml: 2 }} value={safeApp?.name || ''} />
+            <TextField
+              label="App name"
+              disabled
+              sx={({ palette }) => ({
+                width: '100%',
+                ml: 2,
+                WebkitTextFillColor: safeApp?.name ? palette.text.primary : palette.text.secondary,
+                '&& input': {
+                  WebkitTextFillColor: safeApp?.name && palette.text.primary,
+                },
+              })}
+              value={safeApp?.name || ''}
+            />
           </Box>
           <FormControlLabel
             aria-required
