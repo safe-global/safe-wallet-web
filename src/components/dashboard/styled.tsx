@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 import styled from '@emotion/styled'
-import NextLink from 'next/link'
+import NextLink, { LinkProps } from 'next/link'
 import { Link } from '@mui/material'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
@@ -46,9 +46,9 @@ const StyledLink = styled(Link)`
   padding-right: 26px;
 `
 
-export const ViewAllLink = ({ url, text }: { url: string; text?: string }): ReactElement => (
-  <NextLink href={url}>
-    <StyledLink href={url}>
+export const ViewAllLink = ({ url, text }: { url: LinkProps['href']; text?: string }): ReactElement => (
+  <NextLink href={url} passHref>
+    <StyledLink>
       {text || 'View all'} <ChevronRightIcon />
     </StyledLink>
   </NextLink>

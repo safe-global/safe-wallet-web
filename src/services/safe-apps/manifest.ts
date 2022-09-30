@@ -1,5 +1,5 @@
 import { AllowedFeatures, SafeAppDataWithPermissions } from '@/components/safe-apps/types'
-import { trimTrailingSlash } from '@/utils/url'
+import { isRelativeUrl, trimTrailingSlash } from '@/utils/url'
 import { SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
 
 type AppManifestIcon = {
@@ -52,8 +52,7 @@ const getAppLogoUrl = (appUrl: string, { icons = [], iconPath = '' }: AppManifes
     return iconUrl
   }
 
-  const isRelativeUrl = iconUrl.startsWith('/')
-  if (isRelativeUrl) {
+  if (isRelativeUrl(iconUrl)) {
     const appUrlHost = new URL(appUrl).host
     return `${appUrlHost}${iconUrl}`
   }

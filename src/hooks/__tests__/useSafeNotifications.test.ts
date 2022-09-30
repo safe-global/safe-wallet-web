@@ -55,7 +55,10 @@ describe('useSafeNotifications', () => {
         message: `Your Safe version 1.1.1 is out of date. Please update it.`,
         groupKey: 'safe-outdated-version',
         link: {
-          href: `/settings/setup?safe=rin:0x123`,
+          href: {
+            pathname: '/settings/setup',
+            query: { safe: 'rin:0x123' },
+          },
           title: 'Update Safe',
         },
       })
