@@ -50,6 +50,32 @@ const estimateSafeTxGas = async (
   })
 }
 
+const getEstimation = async (txParams: SafeTransactionDataPartial): Promise<SafeTransactionEstimation | undefined> => {
+  const safeSDK = getAndValidateSafeSDK()
+
+  const chainId = await safeSDK.getChainId()
+  const safeAddress = safeSDK.getAddress()
+
+  let estimation: SafeTransactionEstimation | undefined
+
+  try {
+    estimation = await estimateSafeTxGas(String(chainId), safeAddress, txParams)
+  } catch (e) {
+    try {
+      /* If the initial transaction data causes the estimation to fail
+         we retry the request with a cancellation transaction to get the
+         recommendedNonce even if the original transaction will likely fail */
+      const cancellationTxParams = { ...txParams, data: EMPTY_DATA, to: safeAddress, value: '0' }
+
+      estimation = await estimateSafeTxGas(String(chainId), safeAddress, cancellationTxParams)
+    } catch (e) {
+      logError(Errors._616, (e as Error).message)
+    }
+  }
+
+  return estimation
+}
+
 /**
  * Create a transaction from raw params
  */
@@ -58,24 +84,11 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
 
   // Set the recommended nonce and safeTxGas if not provided
   if (nonce === undefined) {
-    const chainId = await safeSDK.getChainId()
-    const safeAddress = safeSDK.getAddress()
-    let estimation: SafeTransactionEstimation
-    try {
-      estimation = await estimateSafeTxGas(String(chainId), safeAddress, txParams)
-    } catch (e) {
-      try {
-        /* If the initial transaction data causes the estimation to fail
-         we retry the request with a cancellation transaction to get the
-         recommendedNonce even if the original transaction will likely fail */
-        const cancellationTxParams = { ...txParams, data: EMPTY_DATA, to: safeAddress, value: '0' }
-        estimation = await estimateSafeTxGas(String(chainId), safeAddress, cancellationTxParams)
-      } catch (e) {
-        logError(Errors._616, (e as Error).message)
-        return safeSDK.createTransaction({ safeTransactionData: txParams })
-      }
+    const estimation = await getEstimation(txParams)
+
+    if (estimation) {
+      txParams = { ...txParams, nonce: estimation.recommendedNonce, safeTxGas: Number(estimation.safeTxGas) }
     }
-    txParams = { ...txParams, nonce: estimation.recommendedNonce, safeTxGas: Number(estimation.safeTxGas) }
   } else {
     txParams = { ...txParams, nonce }
   }
