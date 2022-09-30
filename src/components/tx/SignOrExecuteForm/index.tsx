@@ -66,6 +66,9 @@ const SignOrExecuteForm = ({
 
   // Check that the transaction is executable
   const isNewExecutableTx = !txId && safe.threshold === 1
+
+  console.log('threshold', safe.threshold)
+
   const isCorrectNonce = tx?.data.nonce === safe.nonce
   const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
 

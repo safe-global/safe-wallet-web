@@ -54,6 +54,7 @@ describe('SignOrExecuteForm', () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
         nonce: 100,
+        threshold: 2,
       } as SafeInfo,
       safeAddress: '0x123',
       safeError: undefined,
@@ -90,18 +91,48 @@ describe('SignOrExecuteForm', () => {
 
   it('displays an execute checkbox if tx can be executed', () => {
     const mockTx = createSafeTx()
-    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+    const result = render(<SignOrExecuteForm isExecutable={true} txId="123" onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(result.getByText('Execute transaction')).toBeInTheDocument()
   })
 
-  it('doesnt display an execute checkbox if execution is the only option', () => {
+  it("doesn't display an execute checkbox if execution is the only option", () => {
     const mockTx = createSafeTx()
     const result = render(
       <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} />,
     )
 
     expect(result.queryByText('Execute transaction')).not.toBeInTheDocument()
+  })
+
+  it("doesn't display an execute checkbox if nonce is incorrect", () => {
+    const mockTx = createSafeTx()
+
+    // @ts-ignore
+    mockTx.data.nonce = 10
+
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    expect(result.queryByText('Execute transaction')).not.toBeInTheDocument()
+  })
+
+  it('displays an execute checkbox if safe threshold is 1', () => {
+    jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
+      safe: {
+        nonce: 100,
+        threshold: 1,
+      } as SafeInfo,
+      safeAddress: '0x123',
+      safeError: undefined,
+      safeLoading: false,
+      safeLoaded: true,
+    }))
+
+    const mockTx = createSafeTx()
+
+    const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
+
+    expect(result.queryByText('Execute transaction')).toBeInTheDocument()
   })
 
   it('displays an error if gas limit estimation fails', () => {
@@ -229,14 +260,11 @@ describe('SignOrExecuteForm', () => {
 
   it('signs a transactions', async () => {
     const mockTx = createSafeTx()
-    // @ts-ignore
-    mockTx.data.nonce = 101
-
     const signSpy = jest.spyOn(txSender, 'dispatchTxSigning').mockReturnValue(Promise.resolve(mockTx))
     const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(false))
 
-    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+    const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
 
     const submitButton = result.getByText('Submit')
 
@@ -250,14 +278,11 @@ describe('SignOrExecuteForm', () => {
 
   it('on-chain signs a transaction', async () => {
     const mockTx = createSafeTx()
-    // @ts-ignore
-    mockTx.data.nonce = 101
-
     const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning').mockReturnValue(Promise.resolve(mockTx))
     const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
 
-    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+    const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
 
     const submitButton = result.getByText('Submit')
 
