@@ -155,7 +155,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
         </DialogContent>
         <DialogActions disableSpacing>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" disabled={!safeApp}>
             Save
           </Button>
         </DialogActions>
