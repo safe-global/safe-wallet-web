@@ -52,7 +52,7 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (txId: string) => void }
   }, [chain, safe, safeLoaded])
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>
       <Typography mb={2}>
         Update now to take advantage of new features and the highest security standards available.
       </Typography>

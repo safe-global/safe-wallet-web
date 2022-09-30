@@ -55,12 +55,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
   }
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      onSubmit={addAddressBookEntryAndSubmit}
-      isExecutable={safe.threshold === 1}
-      error={safeTxError}
-    >
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={addAddressBookEntryAndSubmit} error={safeTxError}>
       <Grid
         container
         mt={-3}

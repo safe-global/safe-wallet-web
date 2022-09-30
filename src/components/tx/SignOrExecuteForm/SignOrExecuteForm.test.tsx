@@ -72,7 +72,7 @@ describe('SignOrExecuteForm', () => {
       .mockImplementation(jest.fn(() => Promise.resolve({ txId: '0x12' } as TransactionDetails)))
 
     jest.spyOn(txSender, 'dispatchTxExecution').mockImplementation(jest.fn())
-    jest.spyOn(walletUtils, 'shouldUseEthSignMethod').mockImplementation(jest.fn())
+    jest.spyOn(walletUtils, 'shouldUseEthSignMethod').mockImplementation(jest.fn(() => false))
   })
 
   it('displays decoded data if there is a tx', () => {
@@ -121,7 +121,7 @@ describe('SignOrExecuteForm', () => {
     ).toBeInTheDocument()
   })
 
-  it('hides the gas limit estimation error if its not an execution', async () => {
+  it('hides the gas limit estimation error if its not an execution', () => {
     jest.spyOn(useGasLimitHook, 'default').mockReturnValue({
       gasLimit: undefined,
       gasLimitError: new Error('Error estimating gas limit'),
@@ -135,7 +135,7 @@ describe('SignOrExecuteForm', () => {
       result.getByText('This transaction will most likely fail. To save gas costs, avoid creating the transaction.'),
     ).toBeInTheDocument()
 
-    await act(() => {
+    act(() => {
       fireEvent.click(result.getByText('Execute transaction'))
     })
 
@@ -167,7 +167,7 @@ describe('SignOrExecuteForm', () => {
 
     const submitButton = result.getByText('Submit')
 
-    await act(() => {
+    act(() => {
       fireEvent.click(submitButton)
     })
 
@@ -176,7 +176,7 @@ describe('SignOrExecuteForm', () => {
     })
   })
 
-  it('disables the submit button if there is no tx', async () => {
+  it('disables the submit button if there is no tx', () => {
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={undefined} />)
 
     expect(result.getByText('Submit')).toBeDisabled()
@@ -190,7 +190,7 @@ describe('SignOrExecuteForm', () => {
 
     const submitButton = result.getByText('Submit')
 
-    await act(() => {
+    act(() => {
       expect(submitButton).not.toBeDisabled()
       fireEvent.click(submitButton)
     })
@@ -198,7 +198,7 @@ describe('SignOrExecuteForm', () => {
     await waitFor(() => expect(submitButton).toBeDisabled())
   })
 
-  it('disables the submit button if gas limit is estimating', async () => {
+  it('disables the submit button if gas limit is estimating', () => {
     jest.spyOn(useGasLimitHook, 'default').mockReturnValue({
       gasLimit: undefined,
       gasLimitError: undefined,
@@ -220,7 +220,7 @@ describe('SignOrExecuteForm', () => {
 
     const submitButton = result.getByText('Submit')
 
-    await act(() => {
+    act(() => {
       fireEvent.click(submitButton)
     })
 
@@ -240,11 +240,11 @@ describe('SignOrExecuteForm', () => {
 
     const submitButton = result.getByText('Submit')
 
-    await act(() => {
+    act(() => {
       fireEvent.click(submitButton)
     })
 
-    expect(signSpy).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(signSpy).toHaveBeenCalledTimes(1))
     expect(proposeSpy).toHaveBeenCalledTimes(1)
   })
 
@@ -261,11 +261,11 @@ describe('SignOrExecuteForm', () => {
 
     const submitButton = result.getByText('Submit')
 
-    await act(() => {
+    act(() => {
       fireEvent.click(submitButton)
     })
 
-    expect(onChainSignSpy).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
     expect(proposeSpy).toHaveBeenCalledTimes(1)
   })
 })

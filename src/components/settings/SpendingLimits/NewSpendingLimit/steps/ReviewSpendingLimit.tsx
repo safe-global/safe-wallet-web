@@ -1,7 +1,6 @@
 import { Typography, Box } from '@mui/material'
 import useBalances from '@/hooks/useBalances'
 import { useEffect, useMemo, useState } from 'react'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import useAsync from '@/hooks/useAsync'
 import { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -85,7 +84,6 @@ type Props = {
 export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
   const [existingSpendingLimit, setExistingSpendingLimit] = useState<SpendingLimitState>()
   const spendingLimits = useSelector(selectSpendingLimits)
-  const { safe } = useSafeInfo()
   const chainId = useChainId()
   const { balances } = useBalances()
 
@@ -120,7 +118,7 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} error={safeTxError}>
       {token && (
         <TokenTransferReview amount={data.amount} tokenInfo={token.tokenInfo}>
           {!!existingSpendingLimit && (

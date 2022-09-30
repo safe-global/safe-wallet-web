@@ -30,24 +30,24 @@ import { Web3Provider } from '@ethersproject/providers'
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
-  isExecutable: boolean
-  isRejection?: boolean
-  onlyExecute?: boolean
   onSubmit: (txId: string) => void
   children?: ReactNode
   error?: Error
+  isExecutable?: boolean
+  isRejection?: boolean
+  onlyExecute?: boolean
   redirectToTx?: boolean
 }
 
 const SignOrExecuteForm = ({
   safeTx,
   txId,
-  isExecutable,
-  isRejection,
   onlyExecute,
   onSubmit,
   children,
   error,
+  isExecutable = false,
+  isRejection = false,
   redirectToTx = true,
 }: SignOrExecuteProps): ReactElement => {
   //
@@ -65,7 +65,10 @@ const SignOrExecuteForm = ({
   const currentChain = useCurrentChain()
 
   // Check that the transaction is executable
-  const canExecute = isExecutable && !!tx && tx.data.nonce === safe.nonce
+  const isNewExecutableTx = (!txId || isRejection) && safe.threshold === 1
+  const isCorrectNonce = tx?.data.nonce === safe.nonce
+  const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
+
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = shouldExecute && canExecute
 
@@ -103,6 +106,7 @@ const SignOrExecuteForm = ({
 
     const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
+
     const signedTx = smartContractWallet
       ? await dispatchOnChainSigning(createdTx, provider, txId)
       : await dispatchTxSigning(createdTx, shouldEthSign, txId)
@@ -147,9 +151,8 @@ const SignOrExecuteForm = ({
 
     onSubmit(id)
 
-    // If txId isn't passed in props, it's a newly created tx
     // Redirect to the single tx view
-    if (redirectToTx && (!txId || isRejection)) {
+    if (redirectToTx) {
       router.push({
         pathname: AppRoutes.transactions.tx,
         query: { safe: router.query.safe, id },
