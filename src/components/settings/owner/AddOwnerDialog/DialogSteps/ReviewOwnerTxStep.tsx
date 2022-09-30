@@ -96,7 +96,15 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
             {safe.owners
               .filter((owner) => !removedOwner || !sameAddress(owner.value, removedOwner.address))
               .map((owner) => {
-                return <EthHashInfo key={owner.value} address={owner.value} shortAddress={false} />
+                return (
+                  <EthHashInfo
+                    key={owner.value}
+                    address={owner.value}
+                    shortAddress={false}
+                    showCopyButton
+                    hasExplorer
+                  />
+                )
               })}
           </Box>
           {removedOwner && (
@@ -106,7 +114,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
               </div>
               <Divider />
               <Box bgcolor="error.light" padding={2}>
-                <EthHashInfo address={removedOwner.address} shortAddress={false} />
+                <EthHashInfo address={removedOwner.address} shortAddress={false} showCopyButton hasExplorer />
               </Box>
               <Divider />
             </>
@@ -116,7 +124,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           </div>
           <Divider />
           <Box padding={2}>
-            <EthHashInfo address={newOwner.address} shortAddress={false} />
+            <EthHashInfo address={newOwner.address} shortAddress={false} showCopyButton hasExplorer />
           </Box>
         </Grid>
       </Grid>

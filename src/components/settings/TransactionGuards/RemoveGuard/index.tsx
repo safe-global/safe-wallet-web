@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { IconButton } from '@mui/material'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
+import { IconButton, SvgIcon } from '@mui/material'
+import DeleteIcon from '@/public/images/common/delete.svg'
 
 import TxModal from '@/components/tx/TxModal'
 import { ReviewRemoveGuard } from '@/components/settings/TransactionGuards/RemoveGuard/steps/ReviewRemoveGuard'
@@ -26,8 +26,8 @@ export const RemoveGuard = ({ address }: { address: string }) => {
 
   return (
     <>
-      <IconButton onClick={() => setOpen(true)} color="error">
-        <DeleteOutlineIcon />
+      <IconButton onClick={() => setOpen(true)} color="error" size="small">
+        <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
       </IconButton>
       {open && <TxModal onClose={() => setOpen(false)} steps={RemoveGuardSteps} initialData={[initialData]} />}
     </>

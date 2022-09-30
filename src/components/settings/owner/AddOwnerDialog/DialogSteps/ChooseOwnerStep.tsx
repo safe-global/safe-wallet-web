@@ -67,7 +67,7 @@ export const ChooseOwnerStep = ({
           {removedOwner && (
             <Box my={2}>
               <Typography mb={1}>Current owner</Typography>
-              <EthHashInfo address={removedOwner.address} showCopyButton shortAddress={false} />
+              <EthHashInfo address={removedOwner.address} showCopyButton shortAddress={false} hasExplorer />
             </Box>
           )}
 

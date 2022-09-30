@@ -1,4 +1,4 @@
-import { IconButton, Tooltip } from '@mui/material'
+import { IconButton, Tooltip, SvgIcon } from '@mui/material'
 import { useState } from 'react'
 import { ChooseOwnerStep } from '../AddOwnerDialog/DialogSteps/ChooseOwnerStep'
 
@@ -9,7 +9,7 @@ import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/Dial
 import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
-import ReplaceOwnerIcon from './replace-owner.svg'
+import ReplaceOwnerIcon from '@/public/images/settings/setup/replace-owner.svg'
 
 const ReplaceOwnerSteps: TxStepperProps['steps'] = [
   {
@@ -38,15 +38,8 @@ export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
     <div>
       <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
         <Tooltip title="Replace owner">
-          <IconButton
-            onClick={() => setOpen(true)}
-            sx={{
-              '& svg path': {
-                fill: ({ palette }) => palette.border.main,
-              },
-            }}
-          >
-            <ReplaceOwnerIcon />
+          <IconButton onClick={() => setOpen(true)} size="small">
+            <SvgIcon component={ReplaceOwnerIcon} inheritViewBox color="border" fontSize="small" />
           </IconButton>
         </Tooltip>
       </Track>

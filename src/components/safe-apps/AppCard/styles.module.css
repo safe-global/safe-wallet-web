@@ -8,12 +8,7 @@
 }
 
 .compactShareButton {
-  width: 32px;
   position: absolute;
   top: 2px;
   left: 2px;
-}
-
-.shareButton {
-  width: 32px;
 }

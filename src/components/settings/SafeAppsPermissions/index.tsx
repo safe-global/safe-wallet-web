@@ -8,9 +8,9 @@ import {
 import { ReactElement, useCallback, useMemo } from 'react'
 import { AllowedFeatures, PermissionStatus } from '@/components/safe-apps/types'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Grid, Link, Paper, Typography } from '@mui/material'
+import { Grid, Link, Paper, SvgIcon, Typography } from '@mui/material'
 import PermissionsCheckbox from '@/components/safe-apps/PermissionCheckbox'
-import DeleteIcon from '@mui/icons-material/DeleteOutlined'
+import DeleteIcon from '@/public/images/common/delete.svg'
 
 const SafeAppsPermissions = (): ReactElement => {
   const { allSafeApps } = useSafeApps()
@@ -181,7 +181,7 @@ const SafeAppsPermissions = (): ReactElement => {
               Clear all
             </Link>
             <Link href="#" color="error" onClick={(event) => handleRemoveApp(event, domain)} ml={2}>
-              <DeleteIcon color="error" />
+              <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
             </Link>
           </Grid>
         </Grid>

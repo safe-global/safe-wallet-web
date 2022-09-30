@@ -9,7 +9,7 @@ import PendingTxListItem from './PendingTxListItem'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
-import NoTransactionsIcon from '@/public/images/no-transactions.svg'
+import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 import { getQueuedTransactionCount } from '@/utils/transactions'
 
 const SkeletonWrapper = styled.div`
