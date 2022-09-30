@@ -67,10 +67,10 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
     } catch (e) {
       try {
         /* If the initial transaction data causes the estimation to fail
-         we retry the request with an empty transaction to obtain the
+         we retry the request with a cancellation transaction to get the
          recommendedNonce even if the original transaction will likely fail */
-        const minTxParams = { ...txParams, data: EMPTY_DATA, to: safeAddress, value: '0' }
-        estimation = await estimateSafeTxGas(String(chainId), safeAddress, minTxParams)
+        const cancellationTxParams = { ...txParams, data: EMPTY_DATA, to: safeAddress, value: '0' }
+        estimation = await estimateSafeTxGas(String(chainId), safeAddress, cancellationTxParams)
       } catch (e) {
         logError(Errors._616, (e as Error).message)
         estimation = { currentNonce: safeNonce, recommendedNonce: safeNonce, safeTxGas: '0' }
