@@ -110,9 +110,9 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
               {...register('amount', {
                 required: true,
                 validate: (val) =>
-                  validateAmount(val) ||
-                  validateDecimalLength(val, selectedToken?.tokenInfo.decimals) ||
-                  validateUpperSpendingLimitAmount(val),
+                  validateAmount(val) || Number(val) < 1
+                    ? validateDecimalLength(val, selectedToken?.tokenInfo.decimals)
+                    : validateUpperSpendingLimitAmount(val),
               })}
             />
           </FormControl>
