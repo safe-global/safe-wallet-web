@@ -20,6 +20,7 @@ import useChainId from '@/hooks/useChainId'
 import { trimTrailingSlash, isSameUrl } from '@/utils/url'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
+import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import ImageFallback from '../common/ImageFallback'
 
 type Props = {
@@ -37,7 +38,7 @@ type CustomAppFormData = {
 }
 
 const TEXT_FIELD_HEIGHT = '56px'
-const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
+const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
 
 const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
@@ -55,6 +56,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const onSubmit: SubmitHandler<CustomAppFormData> = (_, __) => {
     if (safeApp) {
       onSave(safeApp)
+      trackEvent(SAFE_APPS_EVENTS.ADD_CUSTOM_APP)
       onClose()
     }
   }

@@ -5,10 +5,13 @@ describe('Dashboard', () => {
     // Go to the test Safe home page
     cy.visit(`/${SAFE}/home`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
+    // Wait for dashboard to initialize
+    cy.wait(500)
   })
 
   it('should display the overview widget', () => {
-    cy.contains('main', SAFE).should('exist')
+    // Prefix is separated across elements in EthHashInfo
+    cy.contains('main', '0xB5ef359e8eBDAd1cd7695FFEF3f6F6D7d5e79B08').should('exist')
     cy.contains('main', '1/1')
     cy.get(`main a[href="/balances?safe=${SAFE}"] button`).contains('View assets')
     cy.get(`main a[href="/balances?safe=${SAFE}"]`).contains('Tokens3')
@@ -51,7 +54,7 @@ describe('Dashboard', () => {
     cy.get(`a[href*='wallet-connect']`).should('exist')
 
     // Featured apps have a Safe-specific link
-    cy.get(`main section#featured-safe-apps a[href*="?appUrl=http"]`).should('have.length', 2)
+    cy.get(`main section#featured-safe-apps a[href*="&appUrl=http"]`).should('have.length', 2)
   })
 
   it('should show the Safe Apps Section', () => {

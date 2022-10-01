@@ -83,7 +83,7 @@ export const getAllWallets = (): WalletInit[] => {
 }
 
 export const getRecommendedInjectedWallets = (): RecommendedInjectedWallets[] => {
-  return [{ name: 'MetaMask', url: 'https://metamask.io' }]
+  return [{ name: ProviderLabel.MetaMask, url: 'https://metamask.io' }]
 }
 
 const getInjectWalletFilter = (chain?: ChainInfo): InjectedWalletOptions['filter'] => {

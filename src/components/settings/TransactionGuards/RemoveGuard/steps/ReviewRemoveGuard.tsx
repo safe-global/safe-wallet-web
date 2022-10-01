@@ -32,7 +32,7 @@ export const ReviewRemoveGuard = ({ data, onSubmit }: { data: RemoveGuardData; o
 
   return (
     <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
-      <Typography sx={({ palette }) => ({ color: palette.secondary.light })}>Transaction guard</Typography>
+      <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Transaction guard</Typography>
       <EthHashInfo address={data.address} showCopyButton hasExplorer shortAddress={false} />
       <Typography my={2}>
         Once the transaction guard has been removed, checks by the transaction guard will not be conducted before or

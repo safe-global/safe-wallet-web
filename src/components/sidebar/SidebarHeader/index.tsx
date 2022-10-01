@@ -2,6 +2,7 @@ import { ReactElement, useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
+import Tooltip from '@mui/material/Tooltip'
 
 import { formatCurrency } from '@/utils/formatNumber'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -26,10 +27,16 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { SvgIcon } from '@mui/material'
 
-const HeaderIconButton = ({ children, ...props }: Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
-  <IconButton className={css.iconButton} {...props}>
-    {children}
-  </IconButton>
+const HeaderIconButton = ({
+  title,
+  children,
+  ...props
+}: { title: string } & Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
+  <Tooltip title={title} placement="top">
+    <IconButton className={css.iconButton} {...props}>
+      {children}
+    </IconButton>
+  </Tooltip>
 )
 
 const SafeHeader = (): ReactElement => {
@@ -46,6 +53,8 @@ const SafeHeader = (): ReactElement => {
   }, [currency, balances.fiatTotal, balancesLoading])
 
   const addressCopyText = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
+
+  const blockExplorerLink = chain ? getBlockExplorerLink(chain, safeAddress) : undefined
 
   return (
     <div className={css.container}>
@@ -74,7 +83,7 @@ const SafeHeader = (): ReactElement => {
       <div className={css.iconButtons}>
         <Track {...OVERVIEW_EVENTS.SHOW_QR}>
           <QrCodeButton>
-            <HeaderIconButton>
+            <HeaderIconButton title="Open QR code">
               <SvgIcon component={QrIcon} inheritViewBox color="primary" />
             </HeaderIconButton>
           </QrCodeButton>
@@ -87,8 +96,8 @@ const SafeHeader = (): ReactElement => {
         </Track>
 
         <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
-          <a target="_blank" rel="noreferrer" {...(chain && getBlockExplorerLink(chain, safeAddress))}>
-            <HeaderIconButton>
+          <a target="_blank" rel="noreferrer" href={blockExplorerLink?.href || '#'}>
+            <HeaderIconButton title={blockExplorerLink?.title || ''}>
               <SvgIcon component={LinkIcon} inheritViewBox />
             </HeaderIconButton>
           </a>

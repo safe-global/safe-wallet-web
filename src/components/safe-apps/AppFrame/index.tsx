@@ -5,6 +5,7 @@ import { AddressBookItem, Methods, RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
+import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
@@ -24,11 +25,14 @@ import SafeAppsTxModal from '../SafeAppsTxModal'
 import useTxModal from '../SafeAppsTxModal/useTxModal'
 import SafeAppsSignMessageModal from '../SafeAppsSignMessageModal'
 import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
-import TransactionQueueBar from './TransactionQueueBar'
+import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
 import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
+import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTransactionQueueBarState'
+
+const UNKNOWN_APP = 'unknown'
 
 type AppFrameProps = {
   appUrl: string
@@ -43,6 +47,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const addressBook = useAddressBook()
   const chain = useCurrentChain()
   const granted = useIsGranted()
+  const {
+    expanded: queueBarExpanded,
+    dismissedByUser: queueBarDismissed,
+    setExpanded,
+    dismissQueueBar,
+  } = useTransactionQueueBarState()
+
   const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
@@ -110,6 +121,15 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   }, [appUrl, iframeRef, setAppIsLoading])
 
   useEffect(() => {
+    if (!appIsLoading) {
+      trackEvent({
+        ...SAFE_APPS_EVENTS.OPEN_APP,
+        label: remoteApp?.name || `${safeAppFromManifest?.name || UNKNOWN_APP} - ${appUrl}`,
+      })
+    }
+  }, [appIsLoading, remoteApp, appUrl, safeAppFromManifest])
+
+  useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, safeAppRequestId }) => {
       const currentSafeAppRequestId = signMessageModalState.requestId || txModalState.requestId
 
@@ -117,6 +137,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         const { detailedExecutionInfo } = await getTransactionDetails(chainId, txId)
 
         if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
+          trackEvent({ ...SAFE_APPS_EVENTS.TRANSACTION_CONFIRMED, label: safeAppFromManifest?.name })
           communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, safeAppRequestId)
         }
 
@@ -125,7 +146,15 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     })
 
     return unsubscribe
-  }, [chainId, closeTxModal, closeSignMessageModal, communicator, txModalState, signMessageModalState])
+  }, [
+    chainId,
+    closeTxModal,
+    closeSignMessageModal,
+    communicator,
+    txModalState,
+    signMessageModalState,
+    safeAppFromManifest,
+  ])
 
   const onSafeAppsModalClose = () => {
     if (txModalState.isOpen) {
@@ -135,6 +164,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, signMessageModalState.requestId, true)
       closeSignMessageModal()
     }
+
+    trackEvent({ ...SAFE_APPS_EVENTS.TRANSACTION_REJECTED, label: safeAppFromManifest?.name })
   }
 
   const onAcceptPermissionRequest = (origin: string, requestId: RequestId) => {
@@ -174,10 +205,18 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         title={safeAppFromManifest?.name}
         onLoad={onIframeLoad}
         allow={allowedFeaturesList}
-        style={{ display: appIsLoading ? 'none' : 'block', border: 'none' }}
+        style={{
+          display: appIsLoading ? 'none' : 'block',
+          paddingBottom: !queueBarDismissed ? TRANSACTION_BAR_HEIGHT : 0,
+        }}
       />
 
-      <TransactionQueueBar />
+      <TransactionQueueBar
+        expanded={queueBarExpanded}
+        visible={!queueBarDismissed}
+        setExpanded={setExpanded}
+        onDismiss={dismissQueueBar}
+      />
 
       {txModalState.isOpen && (
         <SafeAppsTxModal
@@ -203,7 +242,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
               appId: remoteApp?.id,
               requestId: signMessageModalState.requestId,
               message: signMessageModalState.message,
-              method: signMessageModalState.method,
+              method: signMessageModalState.method as Methods.signMessage | Methods.signTypedMessage,
             },
           ]}
         />

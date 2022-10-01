@@ -7,6 +7,9 @@ declare global {
     ethereum?: {
       autoRefreshOnNetworkChange: boolean
       isMetaMask: boolean
+      _metamask: {
+        isUnlocked: () => Promise<boolean>
+      }
     }
     beamer_config?: BeamerConfig
     Beamer?: BeamerMethods

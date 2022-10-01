@@ -10,6 +10,7 @@ import {
   Typography,
   TextField,
   DialogContent,
+  Box,
 } from '@mui/material'
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -22,6 +23,8 @@ import InputValueHelper from '@/components/common/InputValueHelper'
 import SendFromBlock from '../../SendFromBlock'
 import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import useAddressBook from '@/hooks/useAddressBook'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -63,6 +66,7 @@ type SendAssetsFormProps = {
 
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
   const { balances } = useBalances()
+  const addressBook = useAddressBook()
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: { ...formData, [SendAssetsField.type]: SendTxType.multiSig },
@@ -76,6 +80,8 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     watch,
     formState: { errors },
   } = formMethods
+
+  const recipient = watch(SendAssetsField.recipient)
 
   // Selected token
   const tokenAddress = watch(SendAssetsField.tokenAddress)
@@ -105,7 +111,13 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
           <SendFromBlock />
 
           <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
-            <AddressBookInput name={SendAssetsField.recipient} label="Recipient" />
+            {addressBook[recipient] ? (
+              <Box onClick={() => setValue(SendAssetsField.recipient, '')}>
+                <EthHashInfo address={recipient} shortAddress={false} hasExplorer showCopyButton />
+              </Box>
+            ) : (
+              <AddressBookInput name={SendAssetsField.recipient} label="Recipient" />
+            )}
           </FormControl>
 
           <FormControl fullWidth sx={{ mb: 2 }}>

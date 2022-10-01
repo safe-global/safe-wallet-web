@@ -17,7 +17,7 @@ import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import { didRevert } from '@/utils/ethers-utils'
+import { didReprice, didRevert, EthersError } from '@/utils/ethers-utils'
 import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
 import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
 import MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
@@ -262,8 +262,14 @@ export const dispatchTxExecution = async (
         txDispatch(TxEvent.PROCESSED, { txId, receipt })
       }
     })
-    .catch((error) => {
-      txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+    .catch((err) => {
+      const error = err as EthersError
+
+      if (didReprice(error)) {
+        txDispatch(TxEvent.PROCESSED, { txId, receipt: error.receipt })
+      } else {
+        txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+      }
     })
 
   return result.hash
@@ -319,13 +325,21 @@ export const dispatchBatchExecution = async (
       }
     })
     .catch((err) => {
-      txs.forEach(({ txId }) => {
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: err as Error,
-          groupKey,
+      const error = err as EthersError
+
+      if (didReprice(error)) {
+        txs.forEach(({ txId }) => {
+          txDispatch(TxEvent.PROCESSED, { txId, receipt: error.receipt })
         })
-      })
+      } else {
+        txs.forEach(({ txId }) => {
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: err as Error,
+            groupKey,
+          })
+        })
+      }
     })
 
   return result!.hash

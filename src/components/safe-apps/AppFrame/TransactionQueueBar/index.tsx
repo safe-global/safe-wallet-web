@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { Dispatch, ReactElement, SetStateAction } from 'react'
 import { Backdrop, Typography, Box, IconButton, Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ClickAwayListener } from '@mui/base'
 import CloseIcon from '@mui/icons-material/Close'
@@ -11,18 +11,18 @@ import { getQueuedTransactionCount } from '@/utils/transactions'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
 
-const TransactionQueueBar = (): ReactElement | null => {
-  const [expanded, setExpanded] = useState(false)
-  const [dismissedByUser, setDismissedByUser] = useState(false)
+type Props = {
+  expanded: boolean
+  visible: boolean
+  setExpanded: Dispatch<SetStateAction<boolean>>
+  onDismiss: () => void
+}
 
-  const toggleQueueBar = (): void => {
-    setExpanded((prev) => !prev)
-  }
-
+const TransactionQueueBar = ({ expanded, visible, setExpanded, onDismiss }: Props): ReactElement | null => {
   const { page = { results: [] } } = useTxQueue()
   const queuedTxCount = getQueuedTransactionCount(page)
 
-  if (dismissedByUser) {
+  if (!visible) {
     return null
   }
 
@@ -35,7 +35,7 @@ const TransactionQueueBar = (): ReactElement | null => {
         <ClickAwayListener onClickAway={() => setExpanded(false)} mouseEvent="onMouseDown" touchEvent="onTouchStart">
           <Accordion
             expanded={expanded}
-            onChange={toggleQueueBar}
+            onChange={() => setExpanded((prev) => !prev)}
             TransitionProps={{
               timeout: {
                 appear: 400,
@@ -45,8 +45,15 @@ const TransactionQueueBar = (): ReactElement | null => {
               unmountOnExit: true,
               mountOnEnter: true,
             }}
+            sx={{
+              // there are very specific rules for the border radius that we have to override
+              borderBottomLeftRadius: '0 !important',
+              borderBottomRightRadius: '0 !important',
+            }}
           >
-            <AccordionSummary sx={{ '.MuiAccordionSummary-content': { alignItems: 'center' } }}>
+            <AccordionSummary
+              sx={{ '.MuiAccordionSummary-content': { alignItems: 'center' }, height: TRANSACTION_BAR_HEIGHT }}
+            >
               <Typography variant="body1" color="primary.main" fontWeight={700} sx={{ mr: 'auto' }}>
                 {barTitle}
               </Typography>
@@ -54,14 +61,14 @@ const TransactionQueueBar = (): ReactElement | null => {
               <IconButton
                 onClick={(event) => {
                   event.stopPropagation()
-                  toggleQueueBar()
+                  setExpanded((prev) => !prev)
                 }}
                 aria-label={`${expanded ? 'close' : 'expand'} transaction queue bar`}
                 sx={{ transform: expanded ? 'rotate(180deg)' : undefined }}
               >
                 <ExpandLessIcon />
               </IconButton>
-              <IconButton onClick={() => setDismissedByUser(true)} aria-label="dismiss transaction queue bar">
+              <IconButton onClick={onDismiss} aria-label="dismiss transaction queue bar">
                 <CloseIcon />
               </IconButton>
             </AccordionSummary>
@@ -80,5 +87,7 @@ const TransactionQueueBar = (): ReactElement | null => {
     </>
   )
 }
+
+export const TRANSACTION_BAR_HEIGHT = '64px'
 
 export default TransactionQueueBar
