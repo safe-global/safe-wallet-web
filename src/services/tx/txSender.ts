@@ -50,30 +50,33 @@ const estimateSafeTxGas = async (
   })
 }
 
-const getEstimation = async (txParams: SafeTransactionDataPartial): Promise<SafeTransactionEstimation | undefined> => {
+const getRecommendedTxParams = async (
+  txParams: SafeTransactionDataPartial,
+): Promise<{ nonce: number; safeTxGas: number } | undefined> => {
   const safeSDK = getAndValidateSafeSDK()
-
   const chainId = await safeSDK.getChainId()
   const safeAddress = safeSDK.getAddress()
-
   let estimation: SafeTransactionEstimation | undefined
 
   try {
     estimation = await estimateSafeTxGas(String(chainId), safeAddress, txParams)
   } catch (e) {
     try {
-      /* If the initial transaction data causes the estimation to fail
-         we retry the request with a cancellation transaction to get the
-         recommendedNonce even if the original transaction will likely fail */
+      // If the initial transaction data causes the estimation to fail,
+      // we retry the request with a cancellation transaction to get the
+      // recommendedNonce, even if the original transaction will likely fail
       const cancellationTxParams = { ...txParams, data: EMPTY_DATA, to: safeAddress, value: '0' }
-
       estimation = await estimateSafeTxGas(String(chainId), safeAddress, cancellationTxParams)
     } catch (e) {
       logError(Errors._616, (e as Error).message)
+      return
     }
   }
 
-  return estimation
+  return {
+    nonce: estimation.recommendedNonce,
+    safeTxGas: Number(estimation.safeTxGas),
+  }
 }
 
 /**
@@ -82,14 +85,12 @@ const getEstimation = async (txParams: SafeTransactionDataPartial): Promise<Safe
 export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: number): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
 
-  // Set the recommended nonce and safeTxGas if not provided
+  // If the nonce is not provided, we get the recommended one
   if (nonce === undefined) {
-    const estimation = await getEstimation(txParams)
-
-    if (estimation) {
-      txParams = { ...txParams, nonce: estimation.recommendedNonce, safeTxGas: Number(estimation.safeTxGas) }
-    }
+    const recParams = (await getRecommendedTxParams(txParams)) || {}
+    txParams = { ...txParams, ...recParams }
   } else {
+    // Othrwise, we use the provided one
     txParams = { ...txParams, nonce }
   }
 
