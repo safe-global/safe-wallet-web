@@ -2,11 +2,12 @@ import { memo, useMemo, useState } from 'react'
 import { alpha, Box } from '@mui/system'
 import { Grid, LinearProgress } from '@mui/material'
 
-import { BrowserPermission } from '@/hooks/safe-apps/permissions'
+import type { BrowserPermission } from '@/hooks/safe-apps/permissions'
 import Slider from './Slider'
 import LegalDisclaimer from './LegalDisclaimer'
 import AllowedFeaturesList from './AllowedFeaturesList'
-import { AllowedFeatures, AllowedFeatureSelection, PermissionStatus } from '../types'
+import type { AllowedFeatures, AllowedFeatureSelection } from '../types'
+import { PermissionStatus } from '../types'
 
 type SafeAppsInfoModalProps = {
   onCancel: () => void

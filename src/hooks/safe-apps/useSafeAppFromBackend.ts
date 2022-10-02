@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
-import { getSafeApps, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getSafeApps } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Errors, logError } from '@/services/exceptions'
-import useAsync, { AsyncResult } from '../useAsync'
+import type { AsyncResult } from '../useAsync'
+import useAsync from '../useAsync'
 import { trimTrailingSlash } from '@/utils/url'
 
 const useSafeAppFromBackend = (url: string, chainId: string): AsyncResult<SafeAppData> => {

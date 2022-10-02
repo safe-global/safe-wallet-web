@@ -1,7 +1,8 @@
 import { type ReactElement } from 'react'
 import { type SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import TxModal, { TxModalProps } from '@/components/tx/TxModal'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { TxModalProps } from '@/components/tx/TxModal'
+import TxModal from '@/components/tx/TxModal'
 import SendNftForm from './SendNftForm'
 import ReviewNftTx from './ReviewNftTx'
 

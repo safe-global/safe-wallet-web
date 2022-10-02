@@ -1,16 +1,18 @@
-import {
+import type {
   ChainInfo,
-  ConflictType,
   DateLabel,
   ExecutionInfo,
-  FEATURES,
-  getTransactionDetails,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
   Transaction,
   TransactionDetails,
-  TransactionListItemType,
   TransactionListPage,
+} from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  ConflictType,
+  FEATURES,
+  getTransactionDetails,
+  TransactionListItemType,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   isModuleDetailedExecutionInfo,
@@ -19,12 +21,13 @@ import {
   isTransactionListItem,
   isTxQueued,
 } from './transaction-guards'
-import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
+import type { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
+import { OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import { createExistingTx } from '@/services/tx/txSender'
-import { AdvancedParameters } from '@/components/tx/AdvancedParams'
-import { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
+import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
+import type { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
 import { startOfDay } from 'date-fns'
 import uniqBy from 'lodash/uniqBy'

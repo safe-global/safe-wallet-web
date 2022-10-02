@@ -1,6 +1,7 @@
 import { shortenText } from '@/utils/formatters'
 import { Box, Link } from '@mui/material'
-import { ReactElement, useState } from 'react'
+import type { ReactElement } from 'react'
+import { useState } from 'react'
 import css from './styles.module.css'
 
 interface Props {

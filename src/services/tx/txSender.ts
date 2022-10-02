@@ -1,29 +1,27 @@
-import {
-  getTransactionDetails,
-  Operation,
-  postSafeGasEstimation,
-  SafeTransactionEstimation,
-  TransactionDetails,
-} from '@gnosis.pm/safe-react-gateway-sdk'
-import {
+import type { SafeTransactionEstimation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getTransactionDetails, Operation, postSafeGasEstimation } from '@gnosis.pm/safe-react-gateway-sdk'
+import type {
   MetaTransactionData,
   SafeTransaction,
   SafeTransactionDataPartial,
   TransactionOptions,
   TransactionResult,
 } from '@gnosis.pm/safe-core-sdk-types'
-import { RequestId } from '@gnosis.pm/safe-apps-sdk'
+import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import { didReprice, didRevert, EthersError } from '@/utils/ethers-utils'
-import Safe, { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
-import { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
-import MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
-import { Web3Provider } from '@ethersproject/providers'
-import { ContractTransaction, ethers } from 'ethers'
-import { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
+import type { EthersError } from '@/utils/ethers-utils'
+import { didReprice, didRevert } from '@/utils/ethers-utils'
+import type { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
+import type Safe from '@gnosis.pm/safe-core-sdk'
+import type { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
+import type MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
+import type { Web3Provider } from '@ethersproject/providers'
+import type { ContractTransaction } from 'ethers'
+import { ethers } from 'ethers'
+import type { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 

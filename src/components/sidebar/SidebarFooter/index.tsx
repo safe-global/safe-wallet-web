@@ -1,4 +1,5 @@
-import { ReactElement, useCallback, useEffect } from 'react'
+import type { ReactElement } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import {
   SidebarList,

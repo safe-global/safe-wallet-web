@@ -1,13 +1,13 @@
 import { type ReactElement } from 'react'
-import {
+import type {
   Transfer,
   Custom,
   Creation,
   TransactionInfo,
   MultiSend,
   SettingsChange,
-  SettingsInfoType,
 } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SettingsInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 import {
   isCreationTxInfo,

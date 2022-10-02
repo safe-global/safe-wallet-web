@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import useAsync from '../useAsync'
-import { SafeAppDataWithPermissions } from '@/components/safe-apps/types'
+import type { SafeAppDataWithPermissions } from '@/components/safe-apps/types'
 
 type UseSafeAppFromManifestReturnType = {
   safeApp?: SafeAppDataWithPermissions

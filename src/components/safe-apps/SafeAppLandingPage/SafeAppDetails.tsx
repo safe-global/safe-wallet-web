@@ -1,4 +1,4 @@
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box } from '@mui/system'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'

@@ -3,8 +3,8 @@ import { MethodDetails } from '@/components/transactions/TxDetails/TxData/Decode
 import MultisendTxsDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend/MultisendTxsDecoded'
 import { useCurrentChain } from '@/hooks/useChains'
 import { formatVisualAmount } from '@/utils/formatters'
-import { TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { ReactElement } from 'react'
+import type { TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ReactElement } from 'react'
 
 type MultisendProps = {
   txData?: TransactionData

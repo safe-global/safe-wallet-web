@@ -1,11 +1,11 @@
-import { NewSpendingLimitData } from '@/components/settings/SpendingLimits/NewSpendingLimit'
+import type { NewSpendingLimitData } from '@/components/settings/SpendingLimits/NewSpendingLimit'
 import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import * as spendingLimit from '@/services/contracts/spendingLimitContracts'
 import * as txSender from '@/services/tx/txSender'
 import * as spendingLimitParams from '@/services/tx/spendingLimitParams'
-import Safe from '@gnosis.pm/safe-core-sdk'
-import { SpendingLimitState } from '@/store/spendingLimitsSlice'
+import type Safe from '@gnosis.pm/safe-core-sdk'
+import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { createNewSpendingLimitTx } from '@/components/settings/SpendingLimits/NewSpendingLimit/steps/ReviewSpendingLimit'
 
 const mockData: NewSpendingLimitData = {
