@@ -42,7 +42,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
       break
     case shouldCreateSafe:
       const redirect = encodeURIComponent(`${AppRoutes.apps}?appUrl=${appUrl}`)
-      const createSafeHrefWithRedirect = `${AppRoutes.open}?safeViewRedirectURL=${redirect}`
+      const createSafeHrefWithRedirect = `${AppRoutes.open}?chain=${chain.shortName}&safeViewRedirectURL=${redirect}`
       button = (
         <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} href={createSafeHrefWithRedirect}>
           Create new Safe
