@@ -90,7 +90,7 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
     const recParams = (await getRecommendedTxParams(txParams)) || {}
     txParams = { ...txParams, ...recParams }
   } else {
-    // Othrwise, we use the provided one
+    // Otherwise, we use the provided one
     txParams = { ...txParams, nonce }
   }
 
