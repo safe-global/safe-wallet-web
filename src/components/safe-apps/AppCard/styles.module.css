@@ -12,3 +12,10 @@
   top: 2px;
   left: 2px;
 }
+
+.truncateDescription {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}

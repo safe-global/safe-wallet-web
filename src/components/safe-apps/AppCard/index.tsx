@@ -193,7 +193,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
         <Typography gutterBottom variant="h5">
           {safeApp.name}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography className={styles.truncateDescription} variant="body2" color="text.secondary">
           {safeApp.description}
         </Typography>
       </CardContent>
