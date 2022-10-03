@@ -1,7 +1,6 @@
 import type { ReactElement, ReactNode, SyntheticEvent } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import Avatar from '@mui/material/Avatar'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -88,12 +87,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
   <AppCardContainer url={url} variant="compact">
     <div className={styles.compactCardContainer}>
       {/* App logo */}
-      <Avatar
-        src={safeApp.iconUrl}
-        alt={`${safeApp.name} logo`}
-        variant="square"
-        sx={{ objectFit: 'contain', width: 52, height: 52 }}
-      />
+      <img src={safeApp.iconUrl} alt={`${safeApp.name} logo`} className={styles.safeAppLogo} />
 
       {/* Share button */}
       <CopyButton
@@ -140,9 +134,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   return (
     <AppCardContainer url={url}>
       <CardHeader
-        avatar={
-          <Avatar src={safeApp.iconUrl} alt={`${safeApp.name} logo`} variant="square" sx={{ objectFit: 'contain' }} />
-        }
+        avatar={<img src={safeApp.iconUrl} alt={`${safeApp.name} logo`} className={styles.safeAppLogo} />}
         action={
           <>
             {/* Share button */}
