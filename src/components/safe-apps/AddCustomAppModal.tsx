@@ -11,6 +11,7 @@ import {
   Link,
   Box,
   FormHelperText,
+  SvgIcon,
 } from '@mui/material'
 import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ModalDialog from '@/components/common/ModalDialog'
@@ -21,7 +22,7 @@ import { trimTrailingSlash, isSameUrl } from '@/utils/url'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
-import ImageFallback from '../common/ImageFallback'
+import SafeAppIcon from '@/public/images/apps/apps-icon.svg'
 import { useDarkMode } from '../../hooks/useDarkMode'
 
 type Props = {
@@ -38,9 +39,7 @@ type CustomAppFormData = {
   safeApp: SafeAppData
 }
 
-const TEXT_FIELD_HEIGHT = '56px'
-const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
-const APP_LOGO_FALLBACK_DARK_IMAGE = '/images/apps/apps-icon-dark.svg'
+const TEXT_FIELD_SIZE = '56px'
 const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
 
 const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
@@ -74,8 +73,6 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
       return undefined
     })
   }, [chainId, debouncedUrl])
-
-  const appLogoUrl = safeApp?.iconUrl || (isDarkMode ? APP_LOGO_FALLBACK_DARK_IMAGE : APP_LOGO_FALLBACK_IMAGE)
 
   const handleClose = () => {
     reset()
@@ -116,11 +113,11 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
               mt: 2,
             }}
           >
-            <ImageFallback
-              height={TEXT_FIELD_HEIGHT}
-              src={appLogoUrl}
-              fallbackSrc={APP_LOGO_FALLBACK_IMAGE}
-              alt="Apps icon"
+            <SvgIcon
+              component={SafeAppIcon}
+              inheritViewBox
+              color={isDarkMode ? 'primary' : 'inherit'}
+              sx={{ height: TEXT_FIELD_SIZE, width: TEXT_FIELD_SIZE }}
             />
             <TextField
               label="App name"
