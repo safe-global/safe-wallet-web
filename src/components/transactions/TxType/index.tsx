@@ -1,6 +1,6 @@
 import ImageFallback from '@/components/common/ImageFallback'
 import { useTransactionType } from '@/hooks/useTransactionType'
-import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box } from '@mui/material'
 import css from './styles.module.css'
 
@@ -13,7 +13,13 @@ const TxType = ({ tx }: TxTypeProps) => {
 
   return (
     <Box className={css.txType}>
-      <ImageFallback src={type.icon} fallbackSrc="/images/custom.svg" alt="Transaction type" width={16} height={16} />
+      <ImageFallback
+        src={type.icon}
+        fallbackSrc="/images/transactions/custom.svg"
+        alt="Transaction type"
+        width={16}
+        height={16}
+      />
       {type.text}
     </Box>
   )

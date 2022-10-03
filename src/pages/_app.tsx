@@ -1,12 +1,12 @@
 import Sentry from '@/services/sentry' // needs to be imported first
-import { type ReactElement, ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
-import { CacheProvider } from '@emotion/react'
-import createCache from '@emotion/cache'
+import { CacheProvider, type EmotionCache } from '@emotion/react'
 import '@/styles/globals.css'
 import { IS_PRODUCTION, GATEWAY_URL } from '@/config/constants'
 import { StoreHydrator } from '@/store'
@@ -30,11 +30,7 @@ import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securityHeaders'
-
-const cssCache = createCache({
-  key: 'css',
-  prepend: true,
-})
+import createEmotionCache from '@/utils/createEmotionCache'
 
 const InitApp = (): null => {
   if (!IS_PRODUCTION && !cgwDebugStorage.get()) {
@@ -58,21 +54,26 @@ const InitApp = (): null => {
   return null
 }
 
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache()
+
 export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }) => {
   const theme = useLightDarkTheme()
 
   return (
-    <CacheProvider value={cssCache}>
-      <ThemeProvider theme={theme}>
-        <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-          {children}
-        </Sentry.ErrorBoundary>
-      </ThemeProvider>
-    </CacheProvider>
+    <ThemeProvider theme={theme}>
+      <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
+        {children}
+      </Sentry.ErrorBoundary>
+    </ThemeProvider>
   )
 }
 
-const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
+interface WebCoreAppProps extends AppProps {
+  emotionCache?: EmotionCache
+}
+
+const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: WebCoreAppProps): ReactElement => {
   return (
     <StoreHydrator>
       <Head>
@@ -97,21 +98,23 @@ const SafeWebCore = ({ Component, pageProps }: AppProps): ReactElement => {
         <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#000" />
       </Head>
 
-      <AppProviders>
-        <CssBaseline />
+      <CacheProvider value={emotionCache}>
+        <AppProviders>
+          <CssBaseline />
 
-        <InitApp />
+          <InitApp />
 
-        <PageLayout>
-          <Component {...pageProps} />
-        </PageLayout>
+          <PageLayout>
+            <Component {...pageProps} />
+          </PageLayout>
 
-        <CookieBanner />
+          <CookieBanner />
 
-        <Notifications />
-      </AppProviders>
+          <Notifications />
+        </AppProviders>
+      </CacheProvider>
     </StoreHydrator>
   )
 }
 
-export default SafeWebCore
+export default WebCoreApp

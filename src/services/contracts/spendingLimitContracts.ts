@@ -1,7 +1,8 @@
 import { getAllowanceModuleDeployment } from '@gnosis.pm/safe-modules-deployments'
 
-import { AllowanceModule, AllowanceModule__factory } from '@/types/contracts'
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
+import type { AllowanceModule } from '@/types/contracts'
+import { AllowanceModule__factory } from '@/types/contracts'
+import type { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 
 export const getSpendingLimitModuleAddress = (chainId: string): string | undefined => {
   const deployment = getAllowanceModuleDeployment({ network: chainId })

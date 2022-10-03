@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
 import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'

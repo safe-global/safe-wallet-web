@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { AppCard } from '@/components/safe-apps/AppCard'
 import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
-import { SectionProps } from './types'
+import type { SectionProps } from './types'
 
 const DefaultSection = ({
   title,

@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { CookieType } from './cookiesSlice'
-import { RootState } from '.'
+import type { PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
+import type { CookieType } from './cookiesSlice'
+import type { RootState } from '.'
 
 export enum PopupType {
   COOKIES = 'cookies',

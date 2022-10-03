@@ -1,9 +1,9 @@
 import { isHexString, toUtf8String } from 'ethers/lib/utils'
-import { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { formatVisualAmount } from '@/utils/formatters'
 import { validateAddress } from '@/utils/validation'
-import { SafeAppDataWithPermissions } from './types'
+import type { SafeAppDataWithPermissions } from './types'
 
 const validateTransaction = (t: BaseTransaction): boolean => {
   if (!['string', 'number'].includes(typeof t.value)) {

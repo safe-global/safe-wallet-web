@@ -1,7 +1,7 @@
 import { Box, Button, MenuItem, Select, Typography, Grid, FormControl, InputLabel } from '@mui/material'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useState } from 'react'
-import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectAddressBookByChain } from '@/store/addressBookSlice'
 import useLastSafe from '@/hooks/useLastSafe'
@@ -89,7 +89,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
       </FormControl>
     )
   } else {
-    body = <img src="/images/safe-creation.svg" alt="An icon of a physical safe with a plus sign" />
+    body = <img src="/images/open/safe-creation.svg" alt="An icon of a physical safe with a plus sign" />
   }
 
   return (

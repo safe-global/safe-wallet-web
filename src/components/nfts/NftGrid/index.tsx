@@ -1,7 +1,7 @@
 import { useMemo, type ReactElement } from 'react'
 import groupBy from 'lodash/groupBy'
 import { Box, Divider, Grid, Typography } from '@mui/material'
-import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import NftCard from '../NftCard'
 import ImageFallback from '@/components/common/ImageFallback'
 
@@ -28,7 +28,7 @@ const NftGrid = ({
                 <ImageFallback
                   src={logoUri}
                   alt={`${tokenName} collection icon`}
-                  fallbackSrc="/images/nft-placeholder.png"
+                  fallbackSrc="/images/common/nft-placeholder.png"
                   height="45px"
                 />
               </Grid>

@@ -1,8 +1,9 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useState } from 'react'
-import { Link, Typography } from '@mui/material'
-import WarningAmberIcon from '@mui/icons-material/WarningAmber'
+import { Link, Typography, SvgIcon } from '@mui/material'
+import WarningIcon from '@/public/images/notifications/warning.svg'
 import css from './styles.module.css'
 
+// TODO: Replace with notification
 const ErrorMessage = ({
   children,
   error,
@@ -20,7 +21,7 @@ const ErrorMessage = ({
   return (
     <div className={css.container}>
       <div className={css.message}>
-        <WarningAmberIcon fontSize="small" />
+        <SvgIcon component={WarningIcon} inheritViewBox fontSize="small" />
 
         <div>
           <Typography variant="body2" component="span">

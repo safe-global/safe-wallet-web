@@ -3,14 +3,14 @@ import { Box } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
 import { type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import useTxHistory from '@/hooks/useTxHistory'
+import type useTxHistory from '@/hooks/useTxHistory'
 import useTxQueue from '@/hooks/useTxQueue'
 import PagePlaceholder from '../PagePlaceholder'
 import InfiniteScroll from '../InfiniteScroll'
 import SkeletonTxList from './SkeletonTxList'
 import { type TxFilter, useTxFilter } from '@/utils/tx-history-filter'
 import { isTransactionListItem } from '@/utils/transaction-guards'
-import NoTransactionsIcon from '@/public/images/no-transactions.svg'
+import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 
 const NoQueuedTxns = () => {
   return <PagePlaceholder img={<NoTransactionsIcon />} text="Queued transactions will appear here" />

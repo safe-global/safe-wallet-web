@@ -1,8 +1,9 @@
 import Grid from '@mui/material/Grid'
 import InputAdornment from '@mui/material/InputAdornment'
-import SearchIcon from '@mui/icons-material/Search'
+import SearchIcon from '@/public/images/common/search.svg'
 import type { ReactElement } from 'react'
 import TextField from '@mui/material/TextField'
+import SvgIcon from '@mui/material/SvgIcon'
 
 import PageHeader from '@/components/common/PageHeader'
 
@@ -30,7 +31,7 @@ const SafeAppsHeader = ({ searchQuery, onSearchQueryChange }: Props): ReactEleme
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon />
+                    <SvgIcon component={SearchIcon} inheritViewBox color="border" />
                   </InputAdornment>
                 ),
                 disableUnderline: true,

@@ -1,5 +1,6 @@
 import { type AddressBookState } from '@/store/addressBookSlice'
-import { LOCAL_STORAGE_DATA, parseLsValue } from './common'
+import type { LOCAL_STORAGE_DATA } from './common'
+import { parseLsValue } from './common'
 
 const OLD_LS_KEY = 'SAFE__addressBook'
 

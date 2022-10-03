@@ -19,7 +19,7 @@ import SendFromBlock from '../../SendFromBlock'
 import ErrorMessage from '../../ErrorMessage'
 import { type NftTransferParams } from '.'
 import useCollectibles from '@/hooks/useCollectibles'
-import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import ImageFallback from '@/components/common/ImageFallback'
 import useAddressBook from '@/hooks/useAddressBook'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -45,7 +45,7 @@ const NftMenuItem = ({ image, name, description }: { image: string; name: string
   <Grid container spacing={1} alignItems="center" wrap="nowrap">
     <Grid item>
       <Box width={20} height={20}>
-        <ImageFallback src={image} fallbackSrc="/images/nft-placeholder.png" alt={name} height={20} />
+        <ImageFallback src={image} fallbackSrc="/images/common/nft-placeholder.png" alt={name} height={20} />
       </Box>
     </Grid>
     <Grid item overflow="hidden">

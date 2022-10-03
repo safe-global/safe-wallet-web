@@ -1,5 +1,5 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import Safe from '@gnosis.pm/safe-core-sdk'
+import type Safe from '@gnosis.pm/safe-core-sdk'
 import { type TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
 import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import extractTxInfo from '../extractTxInfo'

@@ -2,7 +2,8 @@ import { ReplaceTxHoverContext } from '@/components/transactions/GroupedTxListIt
 import { useAppSelector } from '@/store'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
 import { isSignableBy } from '@/utils/transaction-guards'
-import { TransactionSummary, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useContext } from 'react'
 import useWallet from './wallets/useWallet'
 

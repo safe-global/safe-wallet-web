@@ -1,4 +1,5 @@
-import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery, ModalProps } from '@mui/material'
+import type { ModalProps } from '@mui/material'
+import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import { theme } from '@/styles/theme'

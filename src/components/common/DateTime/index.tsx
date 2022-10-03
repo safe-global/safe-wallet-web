@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { Tooltip } from '@mui/material'
 import { formatDateTime, formatTime, formatTimeInWords } from '@/utils/date'
 import { useRouter } from 'next/router'

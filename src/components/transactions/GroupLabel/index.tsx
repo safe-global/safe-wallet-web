@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react'
-import { Label, LabelValue } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { Label } from '@gnosis.pm/safe-react-gateway-sdk'
+import { LabelValue } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
 import useTxQueue from '@/hooks/useTxQueue'
 import { isLabelListItem, isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
