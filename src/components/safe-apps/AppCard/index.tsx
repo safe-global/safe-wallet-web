@@ -87,7 +87,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
   <AppCardContainer url={url} variant="compact">
     <div className={styles.compactCardContainer}>
       {/* App logo */}
-      <img src={safeApp.iconUrl} alt={`${safeApp.name} logo`} className={styles.safeAppLogo} />
+      <img src={safeApp.iconUrl} alt={`${safeApp.name} logo`} className={styles.safeAppLogoCompact} />
 
       {/* Share button */}
       <CopyButton
@@ -134,7 +134,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   return (
     <AppCardContainer url={url}>
       <CardHeader
-        avatar={<img src={safeApp.iconUrl} alt={`${safeApp.name} logo`} className={styles.safeAppLogo} />}
+        avatar={<img src={safeApp.iconUrl} alt={`${safeApp.name} logo`} className={styles.safeAppLogoDefault} />}
         action={
           <>
             {/* Share button */}
