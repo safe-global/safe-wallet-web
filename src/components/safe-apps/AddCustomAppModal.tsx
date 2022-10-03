@@ -23,7 +23,6 @@ import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import SafeAppIcon from '@/public/images/apps/apps-icon.svg'
-import { useDarkMode } from '../../hooks/useDarkMode'
 
 type Props = {
   open: boolean
@@ -43,7 +42,6 @@ const TEXT_FIELD_SIZE = '56px'
 const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
 
 const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
-  const isDarkMode = useDarkMode()
   const chainId = useChainId()
   const {
     register,
@@ -113,12 +111,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
               mt: 2,
             }}
           >
-            <SvgIcon
-              component={SafeAppIcon}
-              inheritViewBox
-              color={isDarkMode ? 'primary' : 'inherit'}
-              sx={{ height: TEXT_FIELD_SIZE, width: TEXT_FIELD_SIZE }}
-            />
+            <SvgIcon component={SafeAppIcon} inheritViewBox sx={{ height: TEXT_FIELD_SIZE, width: TEXT_FIELD_SIZE }} />
             <TextField
               label="App name"
               disabled
