@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Safe App</title>
+  </head>
+  <body>
+    <h1>Cypress Test App</h1>
+    <script type="text/javascript">
+      const sendMessage = (method, params, delay = 0) => {
+        setTimeout(() => {
+          window.parent.postMessage(
+            {
+              id: 'id',
+              method,
+              params,
+              env: { sdkVersion: 'sdkVersion' },
+            },
+            '*',
+          )
+        }, delay)
+      }
+
+      window.onload = function () {
+        const path = window.location.pathname
+        switch (path.split('/')[1]) {
+          case 'dummy':
+            sendMessage('sendTransactions', {
+              txs: [{ to: '0x11Df0fa87b30080d59eba632570f620e37f2a8f7', value: '0', data: '0x' }],
+              params: { safeTxGas: 70000 },
+            })
+            break
+        }
+      }
+    </script>
+  </body>
+</html>
