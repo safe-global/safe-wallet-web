@@ -11,7 +11,7 @@ const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement =
 
   return (
     <PagePlaceholder
-      img={<img src="/images/error.png" alt="A vault with a red icon in the bottom right corner" />}
+      img={<img src="/images/common/error.png" alt="A vault with a red icon in the bottom right corner" />}
       text="This Safe couldn't be loaded"
     >
       <Button variant="contained" color="primary" size="large" href={AppRoutes.welcome}>

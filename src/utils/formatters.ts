@@ -1,4 +1,5 @@
-import { BigNumberish, type BigNumber } from 'ethers'
+import type { BigNumberish } from 'ethers'
+import { type BigNumber } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import { formatAmount } from './formatNumber'
 

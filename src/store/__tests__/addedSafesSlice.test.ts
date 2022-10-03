@@ -1,11 +1,6 @@
-import { SafeBalanceResponse, SafeInfo, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
-import {
-  addOrUpdateSafe,
-  removeSafe,
-  addedSafesSlice,
-  AddedSafesState,
-  updateAddedSafeBalance,
-} from '../addedSafesSlice'
+import type { SafeBalanceResponse, SafeInfo, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { AddedSafesState } from '../addedSafesSlice'
+import { addOrUpdateSafe, removeSafe, addedSafesSlice, updateAddedSafeBalance } from '../addedSafesSlice'
 
 describe('addedSafesSlice', () => {
   it('should add a Safe to the store', () => {

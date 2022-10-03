@@ -1,17 +1,19 @@
-import { ReactElement, useMemo } from 'react'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
 import { Box } from '@mui/system'
-import { TextField, Typography } from '@mui/material'
-import WarningIcon from '@mui/icons-material/Warning'
+import { TextField, Typography, SvgIcon } from '@mui/material'
+import WarningIcon from '@/public/images/notifications/warning.svg'
 import { isObjectEIP712TypedData, Methods } from '@gnosis.pm/safe-apps-sdk'
-import { OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { OperationType } from '@gnosis.pm/safe-core-sdk-types'
 
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import { SafeAppsSignMessageParams } from '../SafeAppsSignMessageModal'
+import type { SafeAppsSignMessageParams } from '../SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -52,8 +54,15 @@ const ReviewSafeAppsSignMessage = ({
     if (isTextMessage) {
       txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [hashMessage(message)])
     } else if (isTypedMessage) {
+      const typesCopy = { ...message.types }
+
+      // We need to remove the EIP712Domain type from the types object
+      // Because it's a part of the JSON-RPC payload, but for the `.hash` in ethers.js
+      // The types are not allowed to be recursive, so ever type must either be used by another type, or be
+      // the primary type. And there must only be one type that is not used by any other type.
+      delete typesCopy.EIP712Domain
       txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [
-        _TypedDataEncoder.hash(message.domain, message.types, message.message),
+        _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }
 
@@ -119,7 +128,7 @@ const ReviewSafeAppsSignMessage = ({
         />
 
         <Box display="flex" alignItems="center" my={2}>
-          <WarningIcon color="warning" />
+          <SvgIcon component={WarningIcon} inheritViewBox color="warning" />
           <Typography ml={1}>Signing a message with the Safe requires a transaction on the blockchain</Typography>
         </Box>
       </>

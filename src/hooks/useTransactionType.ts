@@ -38,7 +38,7 @@ const getTxType = (tx: TransactionSummary): TxType => {
   switch (tx.txInfo.type) {
     case TransactionInfoType.CREATION: {
       return {
-        icon: toAddress?.logoUri || '/images/settings.svg',
+        icon: toAddress?.logoUri || '/images/transactions/settings.svg',
         text: 'Safe created',
       }
     }
@@ -46,7 +46,7 @@ const getTxType = (tx: TransactionSummary): TxType => {
       const isSendTx = tx.txInfo.direction === TransferDirection.OUTGOING
 
       return {
-        icon: isSendTx ? '/images/outgoing.svg' : '/images/incoming.svg',
+        icon: isSendTx ? '/images/transactions/outgoing.svg' : '/images/transactions/incoming.svg',
         text: isSendTx ? (isTxQueued(tx.txStatus) ? 'Send' : 'Sent') : 'Received',
       }
     }
@@ -56,21 +56,21 @@ const getTxType = (tx: TransactionSummary): TxType => {
       const isDeleteGuard = tx.txInfo.settingsInfo?.type === SettingsInfoType.DELETE_GUARD
 
       return {
-        icon: '/images/settings.svg',
+        icon: '/images/transactions/settings.svg',
         text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.dataDecoded.method,
       }
     }
     case TransactionInfoType.CUSTOM: {
       if (isModuleExecutionInfo(tx.executionInfo)) {
         return {
-          icon: toAddress?.logoUri || '/images/settings.svg',
+          icon: toAddress?.logoUri || '/images/transactions/settings.svg',
           text: toAddress?.name || DEFAULT_MODULE_NAME,
         }
       }
 
       if (isCancellationTxInfo(tx.txInfo)) {
         return {
-          icon: '/images/circle-cross-red.svg',
+          icon: '/images/transactions/circle-cross-red.svg',
           text: 'On-chain rejection',
         }
       }
@@ -83,13 +83,13 @@ const getTxType = (tx: TransactionSummary): TxType => {
       }
 
       return {
-        icon: toAddress?.logoUri || '/images/custom.svg',
+        icon: toAddress?.logoUri || '/images/transactions/custom.svg',
         text: toAddress?.name || 'Contract interaction',
       }
     }
     default: {
       return {
-        icon: '/images/custom.svg',
+        icon: '/images/transactions/custom.svg',
         text: 'Contract interaction',
       }
     }

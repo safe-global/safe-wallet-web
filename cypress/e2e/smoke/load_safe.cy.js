@@ -57,7 +57,7 @@ describe('Load existing Safe', () => {
     // Type a ENS name
     cy.get('input[name="address"]').clear().type(SAFE_ENS_NAME)
     // giving time to the ENS name to be translated
-    cy.get('input[name="address"]', { timeout: 10000 }).should('have.value', SAFE_ENS_NAME_TRANSLATED)
+    cy.get('input[name="address"]', { timeout: 10000 }).should('have.value', `rin:${SAFE_ENS_NAME_TRANSLATED}`)
 
     // Uploading a QR code
     cy.findByTestId('QrCodeIcon').click()
@@ -66,6 +66,7 @@ describe('Load existing Safe', () => {
 
     // The address field should be filled with the QR code's address
     cy.get('input[name="address"]').should('have.value', SAFE_QR_CODE_ADDRESS)
+
     cy.contains('Continue').click()
   })
 

@@ -8,7 +8,7 @@ import useBalances from '@/hooks/useBalances'
 import { useEffect } from 'react'
 import { trackEvent, ASSETS_EVENTS } from '@/services/analytics'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
-import NoAssetsIcon from '@/public/images/no-assets.svg'
+import NoAssetsIcon from '@/public/images/balances/no-assets.svg'
 
 const Balances: NextPage = () => {
   const { balances, loading, error } = useBalances()

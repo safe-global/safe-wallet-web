@@ -1,7 +1,7 @@
 import * as spendingLimit from '@/services/contracts/spendingLimitContracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
-import { AllowanceModule } from '@/types/contracts'
+import type { AllowanceModule } from '@/types/contracts'
 import {
   getSpendingLimits,
   getTokenAllowanceForDelegate,

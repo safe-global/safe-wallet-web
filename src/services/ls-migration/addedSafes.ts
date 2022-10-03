@@ -1,5 +1,6 @@
 import { type AddedSafesState, type AddedSafesOnChain } from '@/store/addedSafesSlice'
-import { LOCAL_STORAGE_DATA, parseLsValue } from './common'
+import type { LOCAL_STORAGE_DATA } from './common'
+import { parseLsValue } from './common'
 
 const IMMORTAL_PREFIX = '_immortal|v2_'
 

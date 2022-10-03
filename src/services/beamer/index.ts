@@ -25,6 +25,7 @@ export const loadBeamer = async (): Promise<void> => {
     selector: BEAMER_SELECTOR,
     display: 'left',
     bounce: false,
+    display_position: 'right',
   }
 
   scriptRef = document.createElement('script')

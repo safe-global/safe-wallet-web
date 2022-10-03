@@ -13,7 +13,7 @@ import { SAFE_APPS_DEMO_SAFE_MAINNET } from '@/config/constants'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { Errors, logError } from '@/services/exceptions'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 type Props = {
   appUrl: string

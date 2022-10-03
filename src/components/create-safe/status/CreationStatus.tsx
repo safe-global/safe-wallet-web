@@ -17,10 +17,10 @@ type Props = {
 
 const getStep = (status: SafeCreationStatus) => {
   const loading = (
-    <img src="/images/safe-creation-process.gif" alt="Image of a vault that is loading" className={css.loading} />
+    <img src="/images/open/safe-creation-process.gif" alt="Image of a vault that is loading" className={css.loading} />
   )
-  const indexed = <img src="/images/safe-creation.svg" alt="Image of a vault" />
-  const error = <img src="/images/safe-creation-error.svg" alt="Image of a vault with a red error sign" />
+  const indexed = <img src="/images/open/safe-creation.svg" alt="Image of a vault" />
+  const error = <img src="/images/open/safe-creation-error.svg" alt="Image of a vault with a red error sign" />
 
   switch (status) {
     case SafeCreationStatus.AWAITING:

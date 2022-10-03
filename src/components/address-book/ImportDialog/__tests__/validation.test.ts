@@ -1,4 +1,4 @@
-import { ParseMeta, ParseResult } from 'papaparse'
+import type { ParseMeta, ParseResult } from 'papaparse'
 import {
   abCsvReaderValidator,
   abOnUploadValidator,

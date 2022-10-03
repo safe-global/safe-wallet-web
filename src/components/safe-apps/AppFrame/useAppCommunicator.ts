@@ -1,16 +1,16 @@
-import { MutableRefObject, useEffect, useMemo, useState } from 'react'
+import type { MutableRefObject } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
 import { BigNumber } from '@ethersproject/bignumber'
-import { SafeAppData, ChainInfo as WebCoreChainInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Permission, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
-import {
+import type { SafeAppData, ChainInfo as WebCoreChainInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { Permission, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
+import type {
   AddressBookItem,
   BaseTransaction,
   EIP712TypedData,
   EnvironmentInfo,
   GetBalanceParams,
   GetTxBySafeTxHashParams,
-  Methods,
   RequestId,
   RPCPayload,
   SafeInfo,
@@ -21,10 +21,11 @@ import {
   ChainInfo,
   SafeBalances,
 } from '@gnosis.pm/safe-apps-sdk'
+import { Methods } from '@gnosis.pm/safe-apps-sdk'
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
-import { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
+import type { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
 import { gtmTrackSafeAppMessage } from '@/services/analytics/gtm'
 
 export enum CommunicatorMessages {
@@ -40,7 +41,11 @@ type JsonRpcResponse = {
 
 type UseAppCommunicatorHandlers = {
   onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => void
-  onSignMessage: (message: string | EIP712TypedData, requestId: string, method: Methods) => void
+  onSignMessage: (
+    message: string | EIP712TypedData,
+    requestId: string,
+    method: Methods.signMessage | Methods.signTypedMessage,
+  ) => void
   onGetTxBySafeTxHash: (transactionId: string) => Promise<TransactionDetails>
   onGetEnvironmentInfo: () => EnvironmentInfo
   onGetSafeBalances: (currency: string) => Promise<SafeBalances>
