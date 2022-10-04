@@ -14,7 +14,7 @@ const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement =
       img={<img src="/images/common/error.png" alt="A vault with a red icon in the bottom right corner" />}
       text="This Safe couldn't be loaded"
     >
-      <Button variant="contained" color="primary" size="large" href={AppRoutes.welcome}>
+      <Button variant="contained" color="primary" size="large" href={AppRoutes.welcome} sx={{ mt: 2 }}>
         Go to the main page
       </Button>
     </PagePlaceholder>
