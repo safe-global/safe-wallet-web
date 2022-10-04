@@ -2,7 +2,7 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useGasPrice from '@/hooks/useGasPrice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
@@ -12,7 +12,7 @@ import { useMemo } from 'react'
 import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
 import { computeNewSafeAddress } from '@/components/create-safe/sender'
 import { useCurrentChain } from '@/hooks/useChains'
-import { SafeFormData } from '@/components/create-safe/types'
+import type { SafeFormData } from '@/components/create-safe/types'
 
 type Props = {
   params: SafeFormData

@@ -25,7 +25,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { Web3Provider } from '@ethersproject/providers'
+import type { Web3Provider } from '@ethersproject/providers'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction

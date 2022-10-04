@@ -1,6 +1,7 @@
 import { type EIP1193Provider } from '@web3-onboard/core'
 import Safe from '@gnosis.pm/safe-core-sdk'
 import { ethers } from 'ethers'
+import { Web3Provider } from '@ethersproject/providers'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 import semverSatisfies from 'semver/functions/satisfies'
 import chains from '@/config/chains'
@@ -43,7 +44,7 @@ export const initSafeSDK = async (
     isL1SafeMasterCopy = true
   }
 
-  const ethersProvider = new ethers.providers.Web3Provider(provider)
+  const ethersProvider = new Web3Provider(provider)
   return Safe.create({
     ethAdapter: createEthersAdapter(ethersProvider),
     safeAddress,

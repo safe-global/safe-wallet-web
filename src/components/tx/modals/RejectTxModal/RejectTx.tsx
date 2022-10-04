@@ -1,7 +1,7 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { Typography } from '@mui/material'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { createRejectTx } from '@/services/tx/txSender'

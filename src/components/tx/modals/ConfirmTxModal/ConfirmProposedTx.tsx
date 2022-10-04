@@ -1,8 +1,8 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
-import useSafeAddress from '@/hooks/useSafeAddress'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { useChainId } from '@/hooks/useChainId'
 import { createExistingTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
@@ -22,10 +22,11 @@ const SIGN_EXECUTE_TEXT = 'Sign or immediately execute this transaction.'
 
 const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): ReactElement => {
   const wallet = useWallet()
-  const safeAddress = useSafeAddress()
+  const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
+
   const txId = txSummary.id
-  const canExecute = isExecutable(txSummary, wallet?.address || '')
+  const canExecute = isExecutable(txSummary, wallet?.address || '', safe)
   const canSign = isSignableBy(txSummary, wallet?.address || '')
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {

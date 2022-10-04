@@ -1,5 +1,6 @@
-import { ComponentProps, ReactElement } from 'react'
-import { SettingsChange, SettingsInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ComponentProps, ReactElement } from 'react'
+import type { SettingsChange } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SettingsInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import { ThresholdWarning } from '@/components/transactions/Warning'

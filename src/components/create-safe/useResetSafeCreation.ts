@@ -1,4 +1,4 @@
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useEffect } from 'react'

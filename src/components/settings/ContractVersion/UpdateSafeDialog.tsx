@@ -9,8 +9,8 @@ import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 
 import useSafeInfo from '@/hooks/useSafeInfo'

@@ -1,4 +1,5 @@
-import { ReactElement, useState } from 'react'
+import type { ReactElement } from 'react'
+import { useState } from 'react'
 import { trackEvent, MODALS_CATEGORY } from '@/services/analytics'
 
 export type StepRenderProps = {

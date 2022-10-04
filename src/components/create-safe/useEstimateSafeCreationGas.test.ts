@@ -12,7 +12,7 @@ import { waitFor } from '@testing-library/react'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { BigNumber } from 'ethers'
-import GnosisSafeProxyFactoryEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/GnosisSafeProxyFactory/GnosisSafeProxyFactoryEthersContract'
+import type GnosisSafeProxyFactoryEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/GnosisSafeProxyFactory/GnosisSafeProxyFactoryEthersContract'
 
 const mockProps = {
   owners: [],

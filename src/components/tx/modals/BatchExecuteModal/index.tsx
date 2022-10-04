@@ -1,8 +1,9 @@
 import React from 'react'
 
-import TxModal, { TxModalProps } from '@/components/tx/TxModal'
-import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { TxModalProps } from '@/components/tx/TxModal'
+import TxModal from '@/components/tx/TxModal'
+import type { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import ReviewBatchExecute from '@/components/tx/modals/BatchExecuteModal/ReviewBatchExecute'
 
 export type BatchExecuteData = {

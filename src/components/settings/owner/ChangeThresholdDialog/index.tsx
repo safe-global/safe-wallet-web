@@ -1,4 +1,5 @@
-import { Box, Button, DialogContent, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import type { SelectChangeEvent } from '@mui/material'
+import { Box, Button, DialogContent, Grid, MenuItem, Select, Typography } from '@mui/material'
 import { useState } from 'react'
 
 import TxModal from '@/components/tx/TxModal'
@@ -8,8 +9,8 @@ import { createUpdateThresholdTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import Track from '@/components/common/Track'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 

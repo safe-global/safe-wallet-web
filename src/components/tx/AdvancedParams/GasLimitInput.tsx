@@ -49,6 +49,7 @@ const GasLimitInput = ({ recommendedGasLimit }: { recommendedGasLimit?: string }
           shrink: currentGasLimit !== undefined,
         }}
         type="number"
+        required
         {...register(AdvancedField.gasLimit, { required: true, min: BASE_TX_GAS })}
       />
     </FormControl>

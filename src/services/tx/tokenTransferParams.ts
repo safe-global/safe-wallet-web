@@ -1,6 +1,6 @@
 import { safeParseUnits } from '@/utils/formatters'
 import { Interface } from '@ethersproject/abi'
-import { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
+import type { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
 import chains from '@/config/chains'
 import { sameAddress } from '@/utils/addresses'
 
