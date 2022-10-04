@@ -10,6 +10,7 @@ import SafeIcon from '@/components/common/SafeIcon'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
 import { CTA_BUTTON_WIDTH, CTA_HEIGHT } from '@/components/safe-apps/SafeAppLandingPage/constants'
+import CreateNewSafeSVG from '@/public/images/open/safe-creation.svg'
 
 type Props = {
   appUrl: string
@@ -89,7 +90,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
       </FormControl>
     )
   } else {
-    body = <img src="/images/open/safe-creation.svg" alt="An icon of a physical safe with a plus sign" />
+    body = <CreateNewSafeSVG alt="An icon of a physical safe with a plus sign" />
   }
 
   return (
