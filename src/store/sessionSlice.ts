@@ -1,5 +1,5 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from '.'
+import type { RootState } from '.'
 
 type SessionState = {
   lastChainId: string

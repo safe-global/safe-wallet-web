@@ -1,5 +1,5 @@
 import { AccordionSummary, Accordion, Button, Typography, CircularProgress, Skeleton } from '@mui/material'
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 
 import Track from '@/components/common/Track'
 import { useCurrentChain } from '@/hooks/useChains'

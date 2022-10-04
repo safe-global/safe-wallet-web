@@ -1,4 +1,5 @@
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
+import type { SpendingLimitMethods } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
   isCustomTxInfo,
@@ -9,10 +10,9 @@ import {
   isSupportedMultiSendAddress,
   isSupportedSpendingLimitAddress,
   isTransferTxInfo,
-  SpendingLimitMethods,
 } from '@/utils/transaction-guards'
 import { SpendingLimits } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
-import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { type ReactElement } from 'react'
 import RejectionTxInfo from '@/components/transactions/TxDetails/TxData/Rejection'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'

@@ -1,9 +1,9 @@
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Typography, Box } from '@mui/material'
 
 import css from './styles.module.css'
 
-const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
+const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 
 const SafeAppsModalLabel = ({ app }: { app?: SafeAppData }) => {
   if (!app) {

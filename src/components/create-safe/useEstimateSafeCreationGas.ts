@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers'
+import type { BigNumber } from 'ethers'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'

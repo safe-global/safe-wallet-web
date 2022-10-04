@@ -2,12 +2,12 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
+import type { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import { createAddOwnerTx, createSwapOwnerTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -96,7 +96,15 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
             {safe.owners
               .filter((owner) => !removedOwner || !sameAddress(owner.value, removedOwner.address))
               .map((owner) => {
-                return <EthHashInfo key={owner.value} address={owner.value} shortAddress={false} />
+                return (
+                  <EthHashInfo
+                    key={owner.value}
+                    address={owner.value}
+                    shortAddress={false}
+                    showCopyButton
+                    hasExplorer
+                  />
+                )
               })}
           </Box>
           {removedOwner && (
@@ -106,7 +114,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
               </div>
               <Divider />
               <Box bgcolor="error.light" padding={2}>
-                <EthHashInfo address={removedOwner.address} shortAddress={false} />
+                <EthHashInfo address={removedOwner.address} shortAddress={false} showCopyButton hasExplorer />
               </Box>
               <Divider />
             </>
@@ -116,7 +124,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           </div>
           <Divider />
           <Box padding={2}>
-            <EthHashInfo address={newOwner.address} shortAddress={false} />
+            <EthHashInfo address={newOwner.address} shortAddress={false} showCopyButton hasExplorer />
           </Box>
         </Grid>
       </Grid>

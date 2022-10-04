@@ -7,8 +7,10 @@
  * This service should NOT be used directly by components. Use the `analytics` service instead.
  */
 
-import TagManager, { TagManagerArgs, DATA_LAYER_NAME } from './TagManager'
+import type { TagManagerArgs } from './TagManager'
+import TagManager, { DATA_LAYER_NAME } from './TagManager'
 import Cookies from 'js-cookie'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   IS_PRODUCTION,
   GOOGLE_TAG_MANAGER_ID,
@@ -16,12 +18,14 @@ import {
   GOOGLE_TAG_MANAGER_AUTH_LATEST,
   GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH,
 } from '@/config/constants'
-import { AnalyticsEvent, EventLabel, EventType } from './types'
+import type { AnalyticsEvent, EventLabel, SafeAppEvent } from './types'
+import { EventType } from './types'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
 
 const GOOGLE_ANALYTICS_COOKIE_LIST = ['_ga', '_gat', '_gid']
+const EMPTY_SAFE_APP = 'unknown'
 
 const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
   LIVE: {
@@ -123,6 +127,29 @@ export const gtmTrackPageview = (pagePath: string): void => {
     chainId: _chainId,
     pageLocation: `${location.origin}${pagePath}`,
     pagePath,
+  }
+
+  gtmSend(gtmEvent)
+}
+
+export const gtmTrackSafeAppMessage = ({
+  app,
+  method,
+  params,
+  sdkVersion,
+}: {
+  app?: SafeAppData
+  method: string
+  params?: any
+  sdkVersion?: string
+}): void => {
+  const gtmEvent: SafeAppEvent = {
+    event: EventType.SAFE_APP,
+    chainId: _chainId,
+    safeAppName: app?.name || EMPTY_SAFE_APP,
+    safeAppMethod: method,
+    safeAppEthMethod: params?.call,
+    safeAppSDKVersion: sdkVersion,
   }
 
   gtmSend(gtmEvent)

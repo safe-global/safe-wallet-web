@@ -1,10 +1,10 @@
-import { IconButton, Tooltip } from '@mui/material'
+import { IconButton, Tooltip, SvgIcon } from '@mui/material'
 import { useState } from 'react'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
+import DeleteIcon from '@/public/images/common/delete.svg'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import { OwnerData } from './DialogSteps/types'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { OwnerData } from './DialogSteps/types'
 import { ReviewSelectedOwnerStep } from './DialogSteps/ReviewSelectedOwnerStep'
 import { SetThresholdStep } from './DialogSteps/SetThresholdStep'
 import { ReviewRemoveOwnerTxStep } from './DialogSteps/ReviewRemoveOwnerTxStep'
@@ -53,8 +53,8 @@ export const RemoveOwnerDialog = ({ owner }: { owner: OwnerData }) => {
     <div>
       <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
         <Tooltip title="Remove owner">
-          <IconButton onClick={() => setOpen(true)} color="error">
-            <DeleteOutlineIcon />
+          <IconButton onClick={() => setOpen(true)} size="small">
+            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
           </IconButton>
         </Tooltip>
       </Track>

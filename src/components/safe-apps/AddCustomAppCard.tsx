@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Box } from '@mui/material'
 import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
 import { AppCardContainer } from './AppCard'
-import AddCustomAppIcon from '@/public/images/add-custom-app.svg'
+import AddCustomAppIcon from '@/public/images/apps/add-custom-app.svg'
 
 type Props = { onSave: (data: SafeAppData) => void; safeAppList: SafeAppData[] }
 

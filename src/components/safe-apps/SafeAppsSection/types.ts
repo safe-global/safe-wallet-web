@@ -1,5 +1,5 @@
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SafeAppCardVariants } from '@/components/safe-apps/AppCard'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppCardVariants } from '@/components/safe-apps/AppCard'
 
 type SectionProps = {
   title: string

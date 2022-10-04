@@ -1,4 +1,5 @@
-import { ReactElement, useMemo, CSSProperties } from 'react'
+import type { ReactElement, CSSProperties } from 'react'
+import { useMemo } from 'react'
 import makeBlockie from 'ethereum-blockies-base64'
 import Skeleton from '@mui/material/Skeleton'
 

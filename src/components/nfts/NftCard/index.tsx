@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react'
 import { Button, Card, CardContent, Typography } from '@mui/material'
-import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
 import { ellipsis } from '@/utils/formatters'
 
@@ -8,7 +8,7 @@ const NftCard = ({ nft, onSendClick }: { nft: SafeCollectibleResponse; onSendCli
   <Card className={css.card}>
     <CardContent>
       <div className={css.imageWrapper}>
-        <img src={nft.imageUri || '/images/nft-placeholder.png'} alt={`${nft.tokenName} #${nft.id}`} />
+        <img src={nft.imageUri || '/images/common/nft-placeholder.png'} alt={`${nft.tokenName} #${nft.id}`} />
       </div>
 
       <Typography fontWeight="bold" variant="body2">

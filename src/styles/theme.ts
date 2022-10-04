@@ -1,4 +1,5 @@
-import { alpha, createTheme, Shadows } from '@mui/material/styles'
+import { alpha, createTheme } from '@mui/material/styles'
+import type { Shadows } from '@mui/material/styles'
 import type {} from '@mui/x-date-pickers/themeAugmentation'
 
 import palette from './colors'

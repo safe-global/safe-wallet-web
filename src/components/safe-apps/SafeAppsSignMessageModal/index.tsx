@@ -1,12 +1,13 @@
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { EIP712TypedData, Methods, RequestId } from '@gnosis.pm/safe-apps-sdk'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import TxModal, { TxModalProps } from '@/components/tx/TxModal'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { EIP712TypedData, Methods, RequestId } from '@gnosis.pm/safe-apps-sdk'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { TxModalProps } from '@/components/tx/TxModal'
+import TxModal from '@/components/tx/TxModal'
 import SafeAppsModalLabel from '../SafeAppsModalLabel'
 import ReviewSafeAppsSignMessage from './ReviewSafeAppsSignMessage'
 
 export type SafeAppsSignMessageParams = {
-  appId?: string
+  appId?: number
   app?: SafeAppData
   requestId: RequestId
   message: string | EIP712TypedData
@@ -26,7 +27,9 @@ const SafeAppsSignSteps: TxStepperProps['steps'] = [
   },
 ]
 
-const SafeAppsSignMessageModal = (props: Omit<TxModalProps, 'steps'>) => {
+const SafeAppsSignMessageModal = (
+  props: Omit<TxModalProps, 'steps'> & { initialData: [SafeAppsSignMessageParams] },
+) => {
   return <TxModal {...props} steps={SafeAppsSignSteps} />
 }
 

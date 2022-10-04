@@ -1,5 +1,6 @@
-import { PendingSafeData } from '@/components/create-safe'
-import { Dispatch, SetStateAction, useEffect } from 'react'
+import type { PendingSafeData } from '@/components/create-safe'
+import type { Dispatch, SetStateAction } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { type UrlObject } from 'url'
 import { pollSafeInfo } from '@/components/create-safe/status/usePendingSafeCreation'

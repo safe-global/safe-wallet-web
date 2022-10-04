@@ -54,7 +54,7 @@ describe('Dashboard', () => {
     cy.get(`a[href*='wallet-connect']`).should('exist')
 
     // Featured apps have a Safe-specific link
-    cy.get(`main section#featured-safe-apps a[href*="?appUrl=http"]`).should('have.length', 2)
+    cy.get(`main section#featured-safe-apps a[href*="&appUrl=http"]`).should('have.length', 2)
   })
 
   it('should show the Safe Apps Section', () => {
