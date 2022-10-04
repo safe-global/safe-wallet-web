@@ -19,15 +19,3 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-
-.safeAppLogoCompact {
-  width: 52px;
-  height: 52px;
-  object-fit: contain;
-}
-
-.safeAppLogoDefault {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-}
