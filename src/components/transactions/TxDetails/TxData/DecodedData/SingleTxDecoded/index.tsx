@@ -1,5 +1,5 @@
-import { InternalTransaction, Operation, TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { AccordionProps } from '@mui/material/Accordion/Accordion'
+import { type InternalTransaction, Operation, type TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import { useCurrentChain } from '@/hooks/useChains'
 import { formatVisualAmount } from '@/utils/formatters'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
