@@ -1,4 +1,5 @@
-import { useState, MouseEvent, type ReactElement } from 'react'
+import type { MouseEvent } from 'react'
+import { useState, type ReactElement } from 'react'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'

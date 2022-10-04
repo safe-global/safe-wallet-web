@@ -1,5 +1,5 @@
 import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
-import { ErrorCode } from '@ethersproject/logger'
+import type { ErrorCode } from '@ethersproject/logger'
 
 // https://docs.ethers.io/v5/api/providers/types/#providers-TransactionResponse
 export enum EthersTxReplacedReason {

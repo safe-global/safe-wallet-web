@@ -1,4 +1,4 @@
-import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { act, renderHook, waitFor } from '@/tests/test-utils'
 import { useSimulation } from '@/components/tx/TxSimulation/useSimulation'

@@ -1,4 +1,5 @@
-import React, { ReactElement } from 'react'
+import type { ReactElement } from 'react'
+import React from 'react'
 import { AppRoutes } from '@/config/routes'
 import HomeIcon from '@/public/images/sidebar/home.svg'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'

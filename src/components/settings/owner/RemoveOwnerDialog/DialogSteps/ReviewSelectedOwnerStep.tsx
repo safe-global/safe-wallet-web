@@ -1,6 +1,6 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Button, DialogContent, Typography } from '@mui/material'
-import { RemoveOwnerData } from '..'
+import type { RemoveOwnerData } from '..'
 
 export const ReviewSelectedOwnerStep = ({
   data,

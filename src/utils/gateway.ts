@@ -1,4 +1,4 @@
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const _replaceTemplate = (uri: string, data: Record<string, string>): string => {
   // Template syntax returned from gateway is {{this}}

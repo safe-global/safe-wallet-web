@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
-import { getSafeApps, SafeAppsResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppsResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getSafeApps } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Errors, logError } from '@/services/exceptions'
 import useChainId from '@/hooks/useChainId'
-import useAsync, { AsyncResult } from '../useAsync'
+import type { AsyncResult } from '../useAsync'
+import useAsync from '../useAsync'
 
 // To avoid multiple simultaneous requests (e.g. the Dashboard and the SAFE header widget),
 // cache the request promise for 100ms

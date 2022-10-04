@@ -1,5 +1,5 @@
 import React from 'react'
-import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box } from '@mui/system'
 import css from './styles.module.css'
 import { InfoDetails } from '@/components/transactions/InfoDetails'

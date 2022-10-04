@@ -1,4 +1,4 @@
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { useState } from 'react'
 import { IconButton, SvgIcon } from '@mui/material'
 import TxModal from '@/components/tx/TxModal'

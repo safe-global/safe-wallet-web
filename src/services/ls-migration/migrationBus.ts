@@ -1,4 +1,4 @@
-import { LOCAL_STORAGE_DATA } from './common'
+import type { LOCAL_STORAGE_DATA } from './common'
 import { IFRAME_HOST, IFRAME_PATH } from './config'
 import { createIframe, receiveMessage, sendReadyMessage } from './iframe'
 

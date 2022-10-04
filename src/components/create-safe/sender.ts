@@ -1,7 +1,9 @@
-import { Web3Provider } from '@ethersproject/providers'
-import Safe, { DeploySafeProps, SafeFactory } from '@gnosis.pm/safe-core-sdk'
+import type { Web3Provider } from '@ethersproject/providers'
+import type { DeploySafeProps } from '@gnosis.pm/safe-core-sdk'
+import type Safe from '@gnosis.pm/safe-core-sdk'
+import { SafeFactory } from '@gnosis.pm/safe-core-sdk'
 import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 import {
   getFallbackHandlerContractInstance,
@@ -9,8 +11,8 @@ import {
   getProxyFactoryContractInstance,
 } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
-import { SafeCreationProps } from '@/components/create-safe/useEstimateSafeCreationGas'
-import { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
+import type { SafeCreationProps } from '@/components/create-safe/useEstimateSafeCreationGas'
+import type { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
 
 export const createNewSafe = async (ethersProvider: Web3Provider, props: DeploySafeProps): Promise<Safe> => {
   const ethAdapter = createEthersAdapter(ethersProvider)

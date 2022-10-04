@@ -5,10 +5,6 @@ import { Paper, Grid, Typography, Box, Link } from '@mui/material'
 import css from './styles.module.css'
 import { RemoveModule } from '@/components/settings/SafeModules/RemoveModule'
 import useIsGranted from '@/hooks/useIsGranted'
-import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
-import { sameAddress } from '@/utils/addresses'
-
-export const DEFAULT_MODULE_NAME = 'Unknown module'
 
 const NoModules = () => {
   return (
@@ -18,15 +14,7 @@ const NoModules = () => {
   )
 }
 
-const getModuleName = (chainId: string, address: string): string => {
-  if (sameAddress(getSpendingLimitModuleAddress(chainId), address)) {
-    return 'Spending limit module'
-  }
-
-  return DEFAULT_MODULE_NAME
-}
-
-const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name: string }) => {
+const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name?: string }) => {
   const isGranted = useIsGranted()
 
   return (
@@ -75,7 +63,7 @@ const SafeModules = () => {
                   key={module.value}
                   chainId={safe.chainId}
                   moduleAddress={module.value}
-                  name={module.name || getModuleName(safe.chainId, module.value)}
+                  name={module.name}
                 />
               ))
             )}

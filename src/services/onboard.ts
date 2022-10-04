@@ -1,5 +1,5 @@
 import Onboard, { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { hexValue } from '@ethersproject/bytes'
 import { getAllWallets, getRecommendedInjectedWallets } from '@/hooks/wallets/wallets'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'

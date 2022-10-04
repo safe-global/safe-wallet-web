@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, SyntheticEvent } from 'react'
+import type { ReactElement, ReactNode, SyntheticEvent } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Avatar from '@mui/material/Avatar'
@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ShareIcon from '@/public/images/common/share.svg'
 import CopyButton from '@/components/common/CopyButton'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
@@ -92,7 +92,11 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
         src={safeApp.iconUrl}
         alt={`${safeApp.name} logo`}
         variant="square"
-        sx={{ objectFit: 'contain', width: 52, height: 52 }}
+        sx={{
+          '.MuiAvatar-img': {
+            objectFit: 'contain',
+          },
+        }}
       />
 
       {/* Share button */}
@@ -141,7 +145,16 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
     <AppCardContainer url={url}>
       <CardHeader
         avatar={
-          <Avatar src={safeApp.iconUrl} alt={`${safeApp.name} logo`} variant="square" sx={{ objectFit: 'contain' }} />
+          <Avatar
+            src={safeApp.iconUrl}
+            alt={`${safeApp.name} logo`}
+            variant="square"
+            sx={{
+              '.MuiAvatar-img': {
+                objectFit: 'contain',
+              },
+            }}
+          />
         }
         action={
           <>
@@ -193,7 +206,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
         <Typography gutterBottom variant="h5">
           {safeApp.name}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography className={styles.truncateDescription} variant="body2" color="text.secondary">
           {safeApp.description}
         </Typography>
       </CardContent>
