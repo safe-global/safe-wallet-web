@@ -1,14 +1,10 @@
 name: Deploy to staging
 
 on:
-  push:
-    branches:
-      - staging
-
-  # workflow_run:
-  #   workflows: [Build]
-  #   branches: [staging]
-  #   types: [completed]
+  workflow_run:
+    workflows: ["Build"]
+    branches: [staging]
+    types: [completed]
 
 jobs:
   deploy-staging:
@@ -25,7 +21,7 @@ jobs:
       - name: Download the build artifact
         uses: actions/download-artifact@v3
         with:
-          name: next-export
+          name: next-export-${{ github.sha }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
