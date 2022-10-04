@@ -1,6 +1,8 @@
-import React, { ReactElement } from 'react'
+import type { ReactElement } from 'react'
+import React from 'react'
 import { Button, DialogActions, Grid, Typography } from '@mui/material'
-import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import { useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
 import css from './styles.module.css'
 import { ModalDialogTitle } from '@/components/common/ModalDialog'
 

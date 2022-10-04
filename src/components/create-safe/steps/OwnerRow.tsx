@@ -4,10 +4,11 @@ import NameInput from '@/components/common/NameInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import DeleteIcon from '@/public/images/common/delete.svg'
-import { UseFieldArrayRemove, useFormContext, useWatch } from 'react-hook-form'
+import type { UseFieldArrayRemove } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { NamedAddress } from '@/components/create-safe/types'
+import type { NamedAddress } from '@/components/create-safe/types'
 
 export const OwnerRow = ({
   index,

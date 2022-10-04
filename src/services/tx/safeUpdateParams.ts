@@ -1,5 +1,6 @@
-import { MetaTransactionData, OperationType } from '@gnosis.pm/safe-core-sdk-types'
-import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
+import { OperationType } from '@gnosis.pm/safe-core-sdk-types'
+import type { ChainInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getFallbackHandlerContractInstance, getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 

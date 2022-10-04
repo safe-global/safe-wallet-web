@@ -1,4 +1,5 @@
-import { ReactElement, useMemo } from 'react'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import styled from '@emotion/styled'
@@ -13,7 +14,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useCollectibles from '@/hooks/useCollectibles'
-import { UrlObject } from 'url'
+import type { UrlObject } from 'url'
 
 const IdenticonContainer = styled.div`
   position: relative;

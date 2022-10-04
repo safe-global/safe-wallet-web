@@ -1,4 +1,4 @@
-import { AllowedFeatures, SafeAppDataWithPermissions } from '@/components/safe-apps/types'
+import type { AllowedFeatures, SafeAppDataWithPermissions } from '@/components/safe-apps/types'
 import { isRelativeUrl, trimTrailingSlash } from '@/utils/url'
 import { SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
 

@@ -1,8 +1,9 @@
-import { BrowserPermission } from '@/hooks/safe-apps/permissions'
+import type { BrowserPermission } from '@/hooks/safe-apps/permissions'
 import useChainId from '@/hooks/useChainId'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useEffect, useCallback, useMemo, useRef } from 'react'
-import { AllowedFeatures, PermissionStatus } from '../types'
+import type { AllowedFeatures } from '../types'
+import { PermissionStatus } from '../types'
 
 const SAFE_APPS_INFO_MODAL = 'SAFE_APPS_INFO_MODAL'
 

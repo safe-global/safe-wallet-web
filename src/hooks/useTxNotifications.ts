@@ -1,10 +1,16 @@
-import { useEffect } from 'react'
-import { showNotification } from '@/store/notificationsSlice'
-import { useAppDispatch } from '@/store'
+import { useEffect, useMemo } from 'react'
+import { selectNotifications, showNotification } from '@/store/notificationsSlice'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { AppRoutes } from '@/config/routes'
 import useSafeInfo from './useSafeInfo'
 import { useCurrentChain } from './useChains'
+import useTxQueue from './useTxQueue'
+import { isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
+import { TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import { selectPendingTxs } from '@/store/pendingTxsSlice'
+import useIsGranted from './useIsGranted'
+import useWallet from './wallets/useWallet'
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
@@ -33,6 +39,10 @@ const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
   const { safeAddress } = useSafeInfo()
+
+  /**
+   * Show notifications of a transaction's lifecycle
+   */
 
   useEffect(() => {
     const entries = Object.entries(TxNotifications) as [keyof typeof TxNotifications, string][]
@@ -71,6 +81,52 @@ const useTxNotifications = (): void => {
       unsubFns.forEach((unsub) => unsub())
     }
   }, [dispatch, safeAddress, chain?.shortName])
+
+  /**
+   * If there's at least one transaction awaiting confirmations, show a notification for it
+   */
+
+  const { page } = useTxQueue()
+  const isGranted = useIsGranted()
+  const pendingTxs = useAppSelector(selectPendingTxs)
+  const notifications = useAppSelector(selectNotifications)
+  const wallet = useWallet()
+
+  const txsAwaitingConfirmation = useMemo(() => {
+    if (!page?.results) {
+      return []
+    }
+
+    return page.results.filter(isTransactionListItem).filter(({ transaction }) => {
+      const isAwaitingConfirmations = transaction.txStatus === TransactionStatus.AWAITING_CONFIRMATIONS
+      const isPending = !!pendingTxs[transaction.id]
+      const canSign = isSignableBy(transaction, wallet?.address || '')
+      return isAwaitingConfirmations && !isPending && canSign
+    })
+  }, [page?.results, pendingTxs, wallet?.address])
+
+  useEffect(() => {
+    if (!isGranted || txsAwaitingConfirmation.length === 0) {
+      return
+    }
+
+    const txId = txsAwaitingConfirmation[0].transaction.id
+    const hasNotified = notifications.some(({ groupKey }) => groupKey === txId)
+
+    if (!hasNotified) {
+      dispatch(
+        showNotification({
+          variant: 'info',
+          message: 'A transaction requires your confirmation.',
+          link: {
+            href: `${AppRoutes.transactions.tx}?id=${txId}&safe=${chain?.shortName}:${safeAddress}`,
+            title: 'View transaction',
+          },
+          groupKey: txId,
+        }),
+      )
+    }
+  }, [chain?.shortName, dispatch, isGranted, notifications, safeAddress, txsAwaitingConfirmation])
 }
 
 export default useTxNotifications

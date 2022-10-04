@@ -112,6 +112,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                       autoComplete="off"
                       type="number"
                       disabled={props.nonceReadonly}
+                      required
                       {...register(AdvancedField.safeTxGas, { required: true, min: 0 })}
                     />
                   </FormControl>
@@ -151,6 +152,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                         label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
                         error={!!errors.maxPriorityFeePerGas}
                         autoComplete="off"
+                        required
                         {...register(AdvancedField.maxPriorityFeePerGas, {
                           required: true,
                           pattern: FLOAT_REGEX,
@@ -166,6 +168,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                         label={errors.maxFeePerGas?.message || 'Max fee (Gwei)'}
                         error={!!errors.maxFeePerGas}
                         autoComplete="off"
+                        required
                         {...register(AdvancedField.maxFeePerGas, { required: true, pattern: FLOAT_REGEX, min: 0 })}
                       />
                     </FormControl>

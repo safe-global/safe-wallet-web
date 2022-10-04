@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { AlertColor } from '@mui/material'
+import type { AlertColor } from '@mui/material'
 import type { AppThunk, RootState } from '@/store'
-import { LinkProps } from 'next/link'
+import type { LinkProps } from 'next/link'
 
 export type Notification = {
   id: string

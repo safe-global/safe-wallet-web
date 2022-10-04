@@ -1,13 +1,11 @@
-import {
+import type {
   AddressEx,
   Cancellation,
   ConflictHeader,
-  ConflictType,
   Creation,
   Custom,
   DateLabel,
   DetailedExecutionInfo,
-  DetailedExecutionInfoType,
   Erc20Transfer,
   Erc721Transfer,
   ExecutionInfo,
@@ -21,19 +19,23 @@ import {
   SettingsChange,
   Transaction,
   TransactionInfo,
-  TransactionInfoType,
   TransactionListItem,
-  TransactionListItemType,
-  TransactionStatus,
   TransactionSummary,
-  TransactionTokenType,
   Transfer,
   TransferInfo,
+} from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  ConflictType,
+  DetailedExecutionInfoType,
+  TransactionInfoType,
+  TransactionListItemType,
+  TransactionStatus,
+  TransactionTokenType,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
 import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
-import { NamedAddress } from '@/components/create-safe/types'
+import type { NamedAddress } from '@/components/create-safe/types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)

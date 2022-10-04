@@ -1,7 +1,8 @@
-import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Tooltip, SvgIcon } from '@mui/material'
 
-import { useState, type ReactElement, SyntheticEvent } from 'react'
+import type { SyntheticEvent } from 'react'
+import { useState, type ReactElement } from 'react'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isCustomTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import RejectTxModal from '@/components/tx/modals/RejectTxModal'

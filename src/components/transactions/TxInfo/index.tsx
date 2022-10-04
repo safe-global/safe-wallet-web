@@ -1,13 +1,13 @@
 import { type ReactElement } from 'react'
-import {
+import type {
   Transfer,
   Custom,
   Creation,
   TransactionInfo,
   MultiSend,
   SettingsChange,
-  SettingsInfoType,
 } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SettingsInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 import {
   isCreationTxInfo,
@@ -87,13 +87,11 @@ const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
 }
 
 const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
-  const UNKNOWN_MODULE = 'Unknown module'
-
   if (
     info.settingsInfo?.type === SettingsInfoType.ENABLE_MODULE ||
     info.settingsInfo?.type === SettingsInfoType.DISABLE_MODULE
   ) {
-    return <>{info.settingsInfo.module.name || UNKNOWN_MODULE}</>
+    return <>{info.settingsInfo.module.name}</>
   }
 
   return <></>

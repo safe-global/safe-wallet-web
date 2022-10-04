@@ -3,7 +3,7 @@ import { renderHook } from '@/tests//test-utils'
 import useSafeNotifications from '../../hooks/useSafeNotifications'
 import useSafeInfo from '../../hooks/useSafeInfo'
 import { showNotification } from '@/store/notificationsSlice'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import * as useChains from '../../hooks/useChains'
 import * as contracts from '@/services/contracts/safeContracts'
 

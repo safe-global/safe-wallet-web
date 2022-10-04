@@ -1,6 +1,7 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import styled from '@emotion/styled'
-import NextLink, { LinkProps } from 'next/link'
+import NextLink from 'next/link'
+import type { LinkProps } from 'next/link'
 import { Link } from '@mui/material'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 

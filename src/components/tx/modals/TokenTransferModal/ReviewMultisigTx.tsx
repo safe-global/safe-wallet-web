@@ -10,7 +10,8 @@ import { createTx } from '@/services/tx/txSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SendFromBlock from '../../SendFromBlock'
-import { ReviewTokenTxProps, TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
+import type { ReviewTokenTxProps } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
+import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 
 const ReviewMultisigTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement => {
   const { safe } = useSafeInfo()

@@ -1,4 +1,4 @@
-import { ConflictHeader, DateLabel, Label, Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ConflictHeader, DateLabel, Label, Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getQueuedTransactionCount } from '../transactions'
 
 describe('transactions', () => {

@@ -19,7 +19,7 @@ import SendFromBlock from '../../SendFromBlock'
 import ErrorMessage from '../../ErrorMessage'
 import { type NftTransferParams } from '.'
 import useCollectibles from '@/hooks/useCollectibles'
-import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import ImageFallback from '@/components/common/ImageFallback'
 import useAddressBook from '@/hooks/useAddressBook'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -130,7 +130,9 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
           </FormControl>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="asset-label">Select an NFT collection</InputLabel>
+            <InputLabel id="asset-label" required>
+              Select an NFT collection
+            </InputLabel>
             <Controller
               rules={{ required: true, onChange: () => setValue(Field.tokenId, '') }}
               name={Field.tokenAddress}
@@ -167,7 +169,9 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
           </FormControl>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="asset-label">Select an NFT</InputLabel>
+            <InputLabel id="asset-label" required>
+              Select an NFT
+            </InputLabel>
             <Controller
               rules={{ required: true }}
               name={Field.tokenId}

@@ -3,7 +3,8 @@ import List, { type ListProps } from '@mui/material/List'
 import ListItemButton, { type ListItemButtonProps } from '@mui/material/ListItemButton'
 import ListItemIcon, { type ListItemIconProps } from '@mui/material/ListItemIcon'
 import ListItemText, { type ListItemTextProps } from '@mui/material/ListItemText'
-import Link, { type LinkProps } from 'next/link'
+import Link from 'next/link'
+import type { LinkProps } from 'next/link'
 
 import css from './styles.module.css'
 

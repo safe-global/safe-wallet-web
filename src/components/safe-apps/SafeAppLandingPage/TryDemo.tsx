@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from '@mui/material'
 import { CTA_HEIGHT, CTA_BUTTON_WIDTH } from '@/components/safe-apps/SafeAppLandingPage/constants'
-import Link, { LinkProps } from 'next/link'
+import Link from 'next/link'
+import type { LinkProps } from 'next/link'
 
 type Props = {
   demoUrl: LinkProps['href']

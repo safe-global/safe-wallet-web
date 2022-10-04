@@ -1,5 +1,5 @@
-import { ReactElement } from 'react'
-import { PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
+import type { ReactElement } from 'react'
+import type { PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
 import { Button, Dialog, DialogActions, DialogContent, Divider, Typography } from '@mui/material'
 import { ModalDialogTitle } from '../common/ModalDialog'
 import { getSafePermissionDisplayValues } from '@/hooks/safe-apps/permissions'

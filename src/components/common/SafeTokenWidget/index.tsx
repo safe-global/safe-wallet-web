@@ -11,7 +11,7 @@ import { Box, ButtonBase, Skeleton, Tooltip, Typography } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
-import { UrlObject } from 'url'
+import type { UrlObject } from 'url'
 import Track from '../Track'
 
 import SafeTokenIcon from './safe_token.svg'

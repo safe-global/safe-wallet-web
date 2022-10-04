@@ -5,9 +5,11 @@ import {
   useBrowserPermissions,
   useSafePermissions,
 } from '@/hooks/safe-apps/permissions'
-import { ReactElement, useCallback, useMemo } from 'react'
-import { AllowedFeatures, PermissionStatus } from '@/components/safe-apps/types'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ReactElement } from 'react'
+import { useCallback, useMemo } from 'react'
+import type { AllowedFeatures } from '@/components/safe-apps/types'
+import { PermissionStatus } from '@/components/safe-apps/types'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Grid, Link, Paper, SvgIcon, Typography } from '@mui/material'
 import PermissionsCheckbox from '@/components/safe-apps/PermissionCheckbox'
 import DeleteIcon from '@/public/images/common/delete.svg'
