@@ -2,7 +2,8 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import type { Store } from 'redux'
 
-import { getPersistedState, RootState } from '@/store'
+import type { RootState } from '@/store'
+import { getPersistedState } from '@/store'
 
 export const HYDRATE_ACTION = '@@HYDRATE'
 

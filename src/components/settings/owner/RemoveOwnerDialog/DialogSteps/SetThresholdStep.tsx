@@ -1,7 +1,9 @@
-import { Button, DialogContent, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
-import { SyntheticEvent, useState } from 'react'
+import type { SelectChangeEvent } from '@mui/material'
+import { Button, DialogContent, Grid, MenuItem, Select, Typography } from '@mui/material'
+import type { SyntheticEvent } from 'react'
+import { useState } from 'react'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { RemoveOwnerData } from '..'
+import type { RemoveOwnerData } from '..'
 
 export const SetThresholdStep = ({
   data,

@@ -1,5 +1,5 @@
 import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
-import { MultisigExecutionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { MultisigExecutionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Link, Typography } from '@mui/material'
 import React from 'react'
 
@@ -18,10 +18,9 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
 
   return (
     <>
-      <Typography>{message}</Typography>
+      <Typography mr={2}>{message}</Typography>
       {!isTxExecuted && (
-        <>
-          <br />
+        <Box mt={2} sx={{ width: 'fit-content' }}>
           <Link
             href="https://help.gnosis-safe.io/en/articles/4738501-why-do-i-need-to-pay-for-cancelling-a-transaction"
             target="_blank"
@@ -34,7 +33,7 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
               </Typography>
             </Box>
           </Link>
-        </>
+        </Box>
       )}
     </>
   )

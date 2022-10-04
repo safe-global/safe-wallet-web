@@ -1,4 +1,5 @@
-import { useState, type ReactElement, SyntheticEvent, useEffect } from 'react'
+import type { SyntheticEvent } from 'react'
+import { useState, type ReactElement, useEffect } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, CircularProgress, Tooltip } from '@mui/material'
 

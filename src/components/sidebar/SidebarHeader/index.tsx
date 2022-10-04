@@ -1,6 +1,8 @@
-import { ReactElement, useEffect, useState } from 'react'
+import type { ReactElement } from 'react'
+import { useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
-import IconButton, { IconButtonProps } from '@mui/material/IconButton'
+import type { IconButtonProps } from '@mui/material/IconButton'
+import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 import Tooltip from '@mui/material/Tooltip'
 

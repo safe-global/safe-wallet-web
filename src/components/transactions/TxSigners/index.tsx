@@ -1,5 +1,6 @@
 import { useState, type ReactElement } from 'react'
-import { Box, Link, Palette, Step, StepConnector, StepContent, StepLabel, Stepper, type StepProps } from '@mui/material'
+import type { Palette } from '@mui/material'
+import { Box, Link, Step, StepConnector, StepContent, StepLabel, Stepper, type StepProps } from '@mui/material'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUncheckedOutlined'

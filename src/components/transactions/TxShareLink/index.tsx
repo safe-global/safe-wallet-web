@@ -1,4 +1,4 @@
-import { ReactElement, MouseEvent } from 'react'
+import type { ReactElement, MouseEvent } from 'react'
 import { IconButton, Link, SvgIcon } from '@mui/material'
 import ShareIcon from '@/public/images/common/share.svg'
 import { AppRoutes } from '@/config/routes'

@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import styled from '@emotion/styled'
 import NextLink from 'next/link'
 import { Link } from '@mui/material'

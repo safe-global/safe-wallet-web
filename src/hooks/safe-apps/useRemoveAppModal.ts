@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 
 type ModalState =
   | {

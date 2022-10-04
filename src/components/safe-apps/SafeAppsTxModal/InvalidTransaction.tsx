@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { Box, SvgIcon, Typography } from '@mui/material'
 import ErrorIcon from '@/public/images/notifications/error.svg'
 

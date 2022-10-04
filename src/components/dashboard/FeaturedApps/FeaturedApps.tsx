@@ -1,4 +1,5 @@
-import { ReactElement, useMemo } from 'react'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 import styled from '@emotion/styled'
 import { Box, Grid, Typography } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'

@@ -1,4 +1,5 @@
-import { ReactElement, useCallback, useEffect } from 'react'
+import type { ReactElement } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import {
   SidebarList,
@@ -6,7 +7,7 @@ import {
   SidebarListItemIcon,
   SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
-import { BEAMER_SELECTOR, isBeamerLoaded, loadBeamer } from '@/services/beamer'
+import { BEAMER_SELECTOR, loadBeamer } from '@/services/beamer'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectCookies, CookieType } from '@/store/cookiesSlice'
 import { openCookieBanner } from '@/store/popupSlice'
@@ -17,21 +18,23 @@ import DebugToggle from '../DebugToggle'
 import { IS_PRODUCTION } from '@/config/constants'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import { useCurrentChain } from '@/hooks/useChains'
 
 const WHATS_NEW_PATH = 'https://help.gnosis-safe.io/en/'
 
 const SidebarFooter = (): ReactElement => {
   const dispatch = useAppDispatch()
   const cookies = useAppSelector(selectCookies)
+  const chain = useCurrentChain()
 
   const hasBeamerConsent = useCallback(() => cookies[CookieType.UPDATES], [cookies])
 
   useEffect(() => {
     // Initialise Beamer when consent was previously given
-    if (hasBeamerConsent() && !isBeamerLoaded()) {
-      loadBeamer()
+    if (hasBeamerConsent() && chain?.shortName) {
+      loadBeamer(chain.shortName)
     }
-  }, [hasBeamerConsent])
+  }, [hasBeamerConsent, chain?.shortName])
 
   const handleBeamer = () => {
     if (!hasBeamerConsent()) {

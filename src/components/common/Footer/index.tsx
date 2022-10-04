@@ -1,4 +1,4 @@
-import { SyntheticEvent, ReactElement } from 'react'
+import type { SyntheticEvent, ReactElement } from 'react'
 import { Link, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'

@@ -1,6 +1,6 @@
 import ImageFallback from '@/components/common/ImageFallback'
 import { useTransactionType } from '@/hooks/useTransactionType'
-import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box } from '@mui/material'
 import css from './styles.module.css'
 
