@@ -1,9 +1,11 @@
 name: Deploy to staging
 
 on:
-  push:
-    branches:
-      - staging
+  workflow_run:
+    workflows: ["Build"]
+    branches: [staging]
+    types:
+      - completed
 
 jobs:
   deploy-staging:
