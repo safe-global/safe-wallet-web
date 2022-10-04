@@ -1,4 +1,5 @@
-import { MouseEvent, useState, Suspense } from 'react'
+import type { MouseEvent } from 'react'
+import { useState, Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import { Box, Button, ButtonBase, Paper, Popover, Typography } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'

@@ -1,6 +1,7 @@
 import { useState, type ReactElement } from 'react'
 import { Button, Typography } from '@mui/material'
-import { SafeBalanceResponse, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount from '@/components/common/TokenAmount'

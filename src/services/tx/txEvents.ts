@@ -1,6 +1,6 @@
 import type { ContractReceipt } from 'ethers/lib/ethers'
 import EventBus from '@/services/EventBus'
-import { RequestId } from '@gnosis.pm/safe-apps-sdk'
+import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 export enum TxEvent {
   SIGNED = 'SIGNED',

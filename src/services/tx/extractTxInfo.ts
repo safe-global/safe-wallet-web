@@ -1,5 +1,7 @@
-import { OperationType, type SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types'
-import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { OperationType } from '@gnosis.pm/safe-core-sdk-types'
+import { type SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types'
+import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isMultisigDetailedExecutionInfo, isNativeTokenTransfer } from '@/utils/transaction-guards'
 
 const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000'

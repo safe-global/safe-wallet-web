@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material'
-import { ReactElement, ReactNode } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
 
 type InfoDetailsProps = {

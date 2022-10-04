@@ -1,8 +1,10 @@
-import React, { ReactElement, useState } from 'react'
+import type { ReactElement } from 'react'
+import React, { useState } from 'react'
 import { Link } from '@mui/material'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
-import { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { dateString } from '@/utils/formatters'
 import css from './styles.module.css'
 

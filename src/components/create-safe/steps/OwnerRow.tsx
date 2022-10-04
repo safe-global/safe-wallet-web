@@ -7,7 +7,7 @@ import DeleteIcon from '@/public/images/common/delete.svg'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { NamedAddress } from '@/components/create-safe/types'
+import type { NamedAddress } from '@/components/create-safe/types'
 
 export const OwnerRow = ({
   index,

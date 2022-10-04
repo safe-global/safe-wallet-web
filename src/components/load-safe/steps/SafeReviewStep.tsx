@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useAppDispatch } from '@/store'
@@ -12,7 +12,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { useCurrentChain } from '@/hooks/useChains'
-import { SafeFormData } from '@/components/create-safe/types'
+import type { SafeFormData } from '@/components/create-safe/types'
 import { trackEvent, LOAD_SAFE_EVENTS } from '@/services/analytics'
 
 type Props = {

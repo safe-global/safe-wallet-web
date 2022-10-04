@@ -1,5 +1,5 @@
 import { renderHook } from '@/tests/test-utils'
-import { Label, SafeInfo, Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { Label, SafeInfo, Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useGroupLabel } from '.'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useTxQueueHook from '@/hooks/useTxQueue'

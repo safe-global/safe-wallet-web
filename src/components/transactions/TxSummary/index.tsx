@@ -1,5 +1,6 @@
-import { Box, CircularProgress, Palette, SvgIcon, Typography } from '@mui/material'
-import { ReactElement } from 'react'
+import type { Palette } from '@mui/material'
+import { Box, CircularProgress, SvgIcon, Typography } from '@mui/material'
+import type { ReactElement } from 'react'
 import { type Transaction, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import DateTime from '@/components/common/DateTime'
@@ -59,16 +60,22 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
 
   return (
     <Box
-      className={`${css.gridContainer} ${nonce && !isGrouped ? css.columnTemplate : css.columnTemplateWithoutNonce}`}
+      className={`${css.gridContainer} ${
+        isQueue
+          ? nonce && !isGrouped
+            ? css.columnTemplate
+            : css.columnTemplateWithoutNonce
+          : css.columnTemplateTxHistory
+      }`}
       id={tx.id}
     >
       {nonce && !isGrouped && <Box gridArea="nonce">{nonce}</Box>}
 
-      <Box gridArea="type">
+      <Box gridArea="type" className={css.columnWrap}>
         <TxType tx={tx} />
       </Box>
 
-      <Box gridArea="info">
+      <Box gridArea="info" className={css.columnWrap}>
         <TxInfo info={tx.txInfo} />
       </Box>
 
@@ -90,7 +97,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       )}
 
       {wallet && !isWrongChain && isQueue && (
-        <Box gridArea="actions" display="flex" justifyContent="center" gap={1}>
+        <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
           {awaitingExecution ? (
             <ExecuteTxButton txSummary={item.transaction} compact />
           ) : (
@@ -102,7 +109,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
 
       <Box
         gridArea="status"
-        marginLeft={{ md: 'auto' }}
+        marginLeft={{ sm: 'auto' }}
         marginRight={1}
         display="flex"
         alignItems="center"

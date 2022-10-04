@@ -1,14 +1,14 @@
 import { Box, Button, Divider, FormControl, Grid, MenuItem, Paper, Select, Typography, SvgIcon } from '@mui/material'
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
-import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
+import type { NamedAddress, SafeFormData } from '@/components/create-safe/types'
 import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
 import AddIcon from '@/public/images/common/add.svg'
 

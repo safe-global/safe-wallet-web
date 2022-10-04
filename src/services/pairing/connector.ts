@@ -1,4 +1,4 @@
-import WalletConnect from '@walletconnect/client'
+import type WalletConnect from '@walletconnect/client'
 import bowser from 'bowser'
 
 import packageJson from '../../../package.json'
