@@ -4,7 +4,6 @@ import NameInput from '@/components/common/NameInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import DeleteIcon from '@/public/images/common/delete.svg'
-import type { UseFieldArrayRemove } from 'react-hook-form'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -12,47 +11,50 @@ import type { NamedAddress } from '@/components/create-safe/types'
 
 export const OwnerRow = ({
   index,
+  groupName,
   remove,
   readOnly = false,
 }: {
   index: number
-  remove?: UseFieldArrayRemove
+  groupName: string
+  remove?: (index: number) => void
   readOnly?: boolean
 }) => {
+  const fieldName = `${groupName}.${index}`
   const { control, getValues, setValue } = useFormContext()
   const owner = useWatch({
     control,
-    name: `owners.${index}`,
+    name: fieldName,
   })
 
   const validateSafeAddress = useCallback(
     async (address: string) => {
-      const owners = getValues('owners')
+      const owners = getValues(groupName)
       if (owners.filter((owner: NamedAddress) => owner.address === address).length > 1) {
         return 'Owner is already added'
       }
     },
-    [getValues],
+    [getValues, groupName],
   )
 
   const { ens, name, resolving } = useAddressResolver(owner.address)
 
   useEffect(() => {
     if (ens) {
-      setValue(`owners.${index}.ens`, ens)
+      setValue(`${fieldName}.ens`, ens)
     }
 
     if (name) {
-      setValue(`owners.${index}.name`, name)
+      setValue(`${fieldName}.name`, name)
     }
-  }, [ens, setValue, index, name])
+  }, [ens, setValue, index, name, fieldName])
 
   return (
     <Grid container spacing={3} alignItems="center" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
       <Grid item xs={12} md={4}>
         <FormControl fullWidth>
           <NameInput
-            name={`owners.${index}.name`}
+            name={`${fieldName}.name`}
             label="Owner name"
             InputLabelProps={{ shrink: true }}
             placeholder={ens || `Owner ${index + 1}`}
@@ -71,7 +73,7 @@ export const OwnerRow = ({
           <EthHashInfo address={owner.address} shortAddress={false} hasExplorer showCopyButton />
         ) : (
           <FormControl fullWidth>
-            <AddressBookInput name={`owners.${index}.address`} label="Owner address" validate={validateSafeAddress} />
+            <AddressBookInput name={`${fieldName}.address`} label="Owner address" validate={validateSafeAddress} />
           </FormControl>
         )}
       </Grid>
