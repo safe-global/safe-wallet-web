@@ -18,6 +18,7 @@ import { validateAmount } from '@/utils/validation'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import { txFilter, useTxFilter, TxFilterType, type TxFilter } from '@/utils/tx-history-filter'
+import { useCurrentChain } from '@/hooks/useChains'
 
 enum TxFilterFormFieldNames {
   FILTER_TYPE = 'type',
@@ -63,6 +64,7 @@ const getInitialFormValues = (filter: TxFilter | null): DefaultValues<TxFilterFo
 
 const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElement => {
   const [filter, setFilter] = useTxFilter()
+  const chain = useCurrentChain()
 
   const formMethods = useForm<TxFilterFormState>({
     mode: 'onChange',
@@ -190,7 +192,10 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           }}
                           render={({ field, fieldState }) => (
                             <TextField
-                              label={fieldState.error?.message || 'Amount'}
+                              label={
+                                fieldState.error?.message ||
+                                `Amount${isMultisigFilter && chain ? ` (only ${chain.nativeCurrency.symbol})` : ''}`
+                              }
                               error={!!fieldState.error}
                               {...field}
                               fullWidth
