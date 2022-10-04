@@ -43,6 +43,7 @@ jobs:
           NEXT_PUBLIC_FORTMATIC_KEY: ${{ secrets.NEXT_PUBLIC_FORTMATIC_KEY }}
           NEXT_PUBLIC_PORTIS_KEY: ${{ secrets.NEXT_PUBLIC_PORTIS_KEY }}
           NEXT_PUBLIC_CYPRESS_MNEMONIC: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}
+          NEXT_PUBLIC_IS_PRODUCTION: ${{ true }}
 
       - name: Serve
         run: yarn serve &
