@@ -1,6 +1,8 @@
 import { Box, Button, MenuItem, Select, Typography, Grid, FormControl, InputLabel } from '@mui/material'
 import type { ChainInfo, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
+import type { UrlObject } from 'url'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
@@ -50,24 +52,34 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
 
   let button: React.ReactNode
   switch (true) {
-    case hasWallet && hasSafes:
-      const href = `${AppRoutes.apps}?appUrl=${encodeURIComponent(appUrl)}&safe=${safeToUse?.shortName}:${
-        safeToUse?.address
-      }`
+    case hasWallet && hasSafes && !!safeToUse:
+      const safe = `${safeToUse?.shortName}:${safeToUse?.address}`
+      const href: UrlObject = {
+        pathname: AppRoutes.apps,
+        query: { safe, appUrl },
+      }
 
       button = (
-        <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse} href={href}>
-          Use app
-        </Button>
+        <Link href={href} passHref>
+          <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse}>
+            Use app
+          </Button>
+        </Link>
       )
       break
     case shouldCreateSafe:
-      const redirect = encodeURIComponent(`${AppRoutes.apps}?appUrl=${appUrl}`)
-      const createSafeHrefWithRedirect = `${AppRoutes.open}?safeViewRedirectURL=${redirect}`
+      const redirect = `${AppRoutes.apps}?appUrl=${appUrl}`
+      const createSafeHrefWithRedirect: UrlObject = {
+        pathname: AppRoutes.open,
+        query: { safeViewRedirectURL: redirect },
+      }
+
       button = (
-        <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} href={createSafeHrefWithRedirect}>
-          Create new Safe
-        </Button>
+        <Link href={createSafeHrefWithRedirect} passHref>
+          <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>
+            Create new Safe
+          </Button>
+        </Link>
       )
       break
     default:
