@@ -1,5 +1,5 @@
-import { DateLabel } from '@gnosis.pm/safe-react-gateway-sdk'
-import { ReactElement } from 'react'
+import type { DateLabel } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ReactElement } from 'react'
 import css from './styles.module.css'
 import { formatWithSchema } from '@/utils/date'
 

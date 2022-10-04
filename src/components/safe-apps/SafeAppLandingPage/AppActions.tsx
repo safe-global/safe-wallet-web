@@ -1,7 +1,7 @@
 import { Box, Button, MenuItem, Select, Typography, Grid, FormControl, InputLabel } from '@mui/material'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useState } from 'react'
-import { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectAddressBookByChain } from '@/store/addressBookSlice'
 import useLastSafe from '@/hooks/useLastSafe'
@@ -42,7 +42,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
       break
     case shouldCreateSafe:
       const redirect = encodeURIComponent(`${AppRoutes.apps}?appUrl=${appUrl}`)
-      const createSafeHrefWithRedirect = `${AppRoutes.open}?safeViewRedirectURL=${redirect}`
+      const createSafeHrefWithRedirect = `${AppRoutes.open}?chain=${chain.shortName}&safeViewRedirectURL=${redirect}`
       button = (
         <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} href={createSafeHrefWithRedirect}>
           Create new Safe

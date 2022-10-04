@@ -1,6 +1,7 @@
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
-import { MasterCopyReponse, getMasterCopies } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { MasterCopyReponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getMasterCopies } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export enum MasterCopyDeployer {
   GNOSIS = 'Gnosis',

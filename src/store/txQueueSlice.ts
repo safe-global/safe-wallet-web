@@ -1,5 +1,6 @@
-import { createSelector, Middleware } from '@reduxjs/toolkit'
-import { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { Middleware } from '@reduxjs/toolkit'
+import { createSelector } from '@reduxjs/toolkit'
+import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isEqual } from 'lodash'
 import type { RootState } from '@/store'
 import { makeLoadableSlice } from './common'

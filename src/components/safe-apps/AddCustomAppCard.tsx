@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Button, Box } from '@mui/material'
 import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
 import { AppCardContainer } from './AppCard'

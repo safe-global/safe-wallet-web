@@ -2,7 +2,8 @@
  * This file is needed to embed MUI theme CSS into the pre-built HTML files
  * @see https://github.com/mui/material-ui/tree/master/examples/nextjs-with-typescript
  */
-import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document'
+import type { DocumentContext } from 'next/document'
+import Document, { Html, Head, Main, NextScript } from 'next/document'
 import createEmotionServer from '@emotion/server/create-instance'
 import createEmotionCache from '@/utils/createEmotionCache'
 

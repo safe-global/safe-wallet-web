@@ -1,4 +1,5 @@
-import { ReactElement, useCallback } from 'react'
+import type { ReactElement } from 'react'
+import { useCallback } from 'react'
 import { Box, Button } from '@mui/material'
 import { hexValue } from 'ethers/lib/utils'
 import { useCurrentChain } from '@/hooks/useChains'

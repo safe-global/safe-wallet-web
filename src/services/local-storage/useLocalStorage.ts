@@ -1,4 +1,5 @@
-import { useState, useCallback, Dispatch, SetStateAction, useEffect } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import local from './local'
 
 const useLocalStorage = <T>(key: string, initialState: T): [T, Dispatch<SetStateAction<T>>] => {

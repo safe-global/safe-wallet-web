@@ -1,7 +1,8 @@
 import { Alert, AlertTitle, Typography, Link } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import { TenderlySimulation, FETCH_STATUS } from '@/components/tx/TxSimulation/types'
+import type { TenderlySimulation } from '@/components/tx/TxSimulation/types'
+import { FETCH_STATUS } from '@/components/tx/TxSimulation/types'
 
 import css from './styles.module.css'
 

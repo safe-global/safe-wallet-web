@@ -10,7 +10,7 @@ import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/ap
 import type { ParsedUrlQuery } from 'querystring'
 import { startOfDay, endOfDay } from 'date-fns'
 
-import { TxFilterFormState } from '@/components/transactions/TxFilterForm'
+import type { TxFilterFormState } from '@/components/transactions/TxFilterForm'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 
 type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>

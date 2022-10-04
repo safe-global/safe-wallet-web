@@ -85,7 +85,9 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
           </FormControl>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="asset-label">Select an asset</InputLabel>
+            <InputLabel id="asset-label" required>
+              Select an asset
+            </InputLabel>
             <Select
               labelId="asset-label"
               label={errors.tokenAddress?.message || 'Select an asset'}
@@ -109,6 +111,7 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
               autoComplete="off"
+              required
               {...register('amount', {
                 required: true,
                 validate: (val) =>

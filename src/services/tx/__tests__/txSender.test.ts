@@ -1,7 +1,7 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import Safe from '@gnosis.pm/safe-core-sdk'
+import type Safe from '@gnosis.pm/safe-core-sdk'
 import { type TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
-import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getTransactionDetails, postSafeGasEstimation } from '@gnosis.pm/safe-react-gateway-sdk'
 import extractTxInfo from '../extractTxInfo'
 import proposeTx from '../proposeTransaction'
 import * as txEvents from '../txEvents'
@@ -107,6 +107,26 @@ describe('txSender', () => {
         data: '0x0',
         nonce: 18,
       }
+      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ safeTransactionData })
+    })
+
+    it('should create a tx with initial txParams if gas estimation fails', async () => {
+      // override postSafeGasEstimation default implementation
+      ;(postSafeGasEstimation as jest.Mock)
+        .mockImplementationOnce(() => Promise.reject(new Error('Failed to retrieve recommended nonce #1')))
+        .mockImplementationOnce(() => Promise.reject(new Error('Failed to retrieve recommended nonce #2')))
+
+      const txParams = {
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+      }
+      await createTx(txParams)
+
+      // Shallow copy of txParams
+      const safeTransactionData = Object.assign({}, txParams)
+
+      // calls SDK createTransaction withouth recommended nonce
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ safeTransactionData })
     })
   })

@@ -1,4 +1,4 @@
-import WalletConnect from '@walletconnect/client'
+import type WalletConnect from '@walletconnect/client'
 
 import { CGW_NAMES, WALLET_KEYS } from '@/hooks/wallets/wallets'
 

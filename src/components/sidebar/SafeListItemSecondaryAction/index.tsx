@@ -1,6 +1,7 @@
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Link, { LinkProps } from 'next/link'
+import type { LinkProps } from 'next/link'
+import Link from 'next/link'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 
 import { useAppSelector } from '@/store'
