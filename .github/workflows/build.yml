@@ -43,5 +43,5 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: next-export-${{ github.sha }}
+          name: next-export
           path: out

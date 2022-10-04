@@ -32,7 +32,7 @@ jobs:
       - name: Download the build artifact
         uses: actions/download-artifact@v3
         with:
-          name: next-export-${{ github.sha }}
+          name: next-export
 
       - name: Serve
         run: yarn serve &
