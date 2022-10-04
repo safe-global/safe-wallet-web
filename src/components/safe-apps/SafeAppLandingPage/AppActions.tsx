@@ -66,6 +66,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
           labelId="safe-select-label"
           defaultValue={lastUsedSafeAddress}
           onChange={(e) => setSafeToUse(e.target.value)}
+          autoWidth
           label="Select a Safe"
           sx={({ spacing }) => ({
             width: '311px',
