@@ -43,7 +43,6 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
       isExecutable={canExecute}
       onlyExecute={!canSign}
       error={safeTxError}
-      redirectToTx={false}
     >
       <Typography mb={2}>{text}</Typography>
 

@@ -1,5 +1,4 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
@@ -19,7 +18,6 @@ import { isSmartContractWallet, shouldUseEthSignMethod } from '@/hooks/wallets/w
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
-import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
@@ -36,7 +34,6 @@ type SignOrExecuteProps = {
   isExecutable?: boolean
   isRejection?: boolean
   onlyExecute?: boolean
-  redirectToTx?: boolean
 }
 
 const SignOrExecuteForm = ({
@@ -48,7 +45,6 @@ const SignOrExecuteForm = ({
   error,
   isExecutable = false,
   isRejection = false,
-  redirectToTx = true,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -58,7 +54,6 @@ const SignOrExecuteForm = ({
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
-  const router = useRouter()
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const provider = useWeb3()
@@ -153,14 +148,6 @@ const SignOrExecuteForm = ({
     }
 
     onSubmit(id)
-
-    // Redirect to the single tx view
-    if (redirectToTx) {
-      router.push({
-        pathname: AppRoutes.transactions.tx,
-        query: { safe: router.query.safe, id },
-      })
-    }
   }
 
   const onAdvancedSubmit = async (data: AdvancedParameters) => {

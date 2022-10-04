@@ -54,7 +54,7 @@ const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params, appId } }: Rev
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError} redirectToTx={false}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError}>
       <>
         <SendFromBlock />
 
