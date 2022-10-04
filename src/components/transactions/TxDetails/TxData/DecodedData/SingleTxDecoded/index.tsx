@@ -13,7 +13,7 @@ import { DelegateCallWarning } from '@/components/transactions/Warning'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
-type SingleTxDecoded = {
+type SingleTxDecodedProps = {
   tx: InternalTransaction
   txData: TransactionData
   actionTitle: string
@@ -21,7 +21,13 @@ type SingleTxDecoded = {
   variant?: AccordionProps['variant']
 }
 
-export const SingleTxDecoded = ({ tx, txData, actionTitle, showDelegateCallWarning, variant }: SingleTxDecoded) => {
+export const SingleTxDecoded = ({
+  tx,
+  txData,
+  actionTitle,
+  showDelegateCallWarning,
+  variant,
+}: SingleTxDecodedProps) => {
   const chain = useCurrentChain()
   const method = tx.dataDecoded?.method || ''
   const { decimals, symbol } = chain!.nativeCurrency
