@@ -1,7 +1,9 @@
-import { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+import { isHexString, toUtf8String } from 'ethers/lib/utils'
+import { SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { formatVisualAmount } from '@/utils/formatters'
 import { validateAddress } from '@/utils/validation'
-import { isHexString, toUtf8String } from 'ethers/lib/utils'
+import type { SafeAppDataWithPermissions } from './types'
 
 const validateTransaction = (t: BaseTransaction): boolean => {
   if (!['string', 'number'].includes(typeof t.value)) {
@@ -45,4 +47,20 @@ export const getLegacyChainName = (chainName: string, chainId: string): string =
   }
 
   return network
+}
+
+export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
+  return {
+    id: Math.random(),
+    url,
+    name: 'unknown',
+    iconUrl: '/images/apps-icon.svg',
+    description: '',
+    chainIds: [],
+    accessControl: {
+      type: SafeAppAccessPolicyTypes.NoRestrictions,
+    },
+    tags: [],
+    safeAppsPermissions: [],
+  }
 }

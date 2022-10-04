@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react'
-import { CaptureContext } from '@sentry/types'
+import type { CaptureContext } from '@sentry/types'
 import { IS_PRODUCTION } from '@/config/constants'
 import ErrorCodes from './ErrorCodes'
 

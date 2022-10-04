@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { DialogActions, DialogContent, Typography, Button } from '@mui/material'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ModalDialog from '@/components/common/ModalDialog'
 
 type Props = {

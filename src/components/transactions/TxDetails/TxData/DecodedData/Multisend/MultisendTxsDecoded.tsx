@@ -1,5 +1,6 @@
-import { ReactElement, ReactNode } from 'react'
-import { DataDecoded, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ReactElement, ReactNode } from 'react'
+import type { DataDecoded } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
 import CodeIcon from '@mui/icons-material/Code'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'

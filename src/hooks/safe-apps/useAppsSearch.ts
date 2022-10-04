@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import Fuse from 'fuse.js'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 
 const useAppsSearch = (apps: SafeAppData[], query: string): SafeAppData[] => {
   const fuse = useMemo(

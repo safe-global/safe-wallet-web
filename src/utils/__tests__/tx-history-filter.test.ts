@@ -1,8 +1,8 @@
 import { getIncomingTransfers, getMultisigTransactions, getModuleTransactions } from '@gnosis.pm/safe-react-gateway-sdk'
 import * as router from 'next/router'
 
+import type { TxFilterType } from '@/utils/tx-history-filter'
 import {
-  TxFilterType,
   txFilter,
   _isValidTxFilterType,
   _omitNullish,

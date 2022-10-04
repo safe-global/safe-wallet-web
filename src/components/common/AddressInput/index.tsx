@@ -1,4 +1,5 @@
-import { ReactElement, useEffect, useCallback, useRef, useMemo } from 'react'
+import type { ReactElement } from 'react'
+import { useEffect, useCallback, useRef, useMemo } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
 import { useFormContext, useWatch, type Validate, get } from 'react-hook-form'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -83,6 +84,7 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
             ...(props.InputLabelProps || {}),
             shrink: !!watchedValue || props.focused,
           }}
+          required={required}
           {...register(name, {
             required,
 

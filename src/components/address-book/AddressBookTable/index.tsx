@@ -1,6 +1,7 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
 import { useState } from 'react'
-import EntryDialog, { AddressEntry } from '@/components/address-book/EntryDialog'
+import type { AddressEntry } from '@/components/address-book/EntryDialog'
+import EntryDialog from '@/components/address-book/EntryDialog'
 import ExportDialog from '@/components/address-book/ExportDialog'
 import ImportDialog from '@/components/address-book/ImportDialog'
 import EditIcon from '@/public/images/common/edit.svg'

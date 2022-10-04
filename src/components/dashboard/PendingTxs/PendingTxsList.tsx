@@ -1,4 +1,5 @@
-import { ReactElement, useMemo } from 'react'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { groupConflictingTxs } from '@/utils/tx-list'
 import styled from '@emotion/styled'

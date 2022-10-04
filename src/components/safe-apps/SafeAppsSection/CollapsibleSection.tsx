@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Grid from '@mui/material/Grid'
 import { AppCard } from '@/components/safe-apps/AppCard'
-import { SectionProps } from './types'
+import type { SectionProps } from './types'
 import { AddCustomAppCard } from '@/components/safe-apps/AddCustomAppCard'
 import styles from './styles.module.css'
 

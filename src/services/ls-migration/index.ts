@@ -6,7 +6,7 @@ import { addressBookSlice } from '@/store/addressBookSlice'
 import { addedSafesSlice } from '@/store/addedSafesSlice'
 import { migrateAddressBook } from './addressBook'
 import { migrateAddedSafes } from './addedSafes'
-import { LOCAL_STORAGE_DATA } from './common'
+import type { LOCAL_STORAGE_DATA } from './common'
 import createMigrationBus from './migrationBus'
 import { MIGRATION_KEY } from './config'
 

@@ -1,4 +1,5 @@
-import { useEffect, ReactElement } from 'react'
+import type { ReactElement } from 'react'
+import { useEffect } from 'react'
 import { Button, Checkbox, FormControlLabel, Link, Typography, Paper, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import { useForm } from 'react-hook-form'

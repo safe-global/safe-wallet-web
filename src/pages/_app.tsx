@@ -1,5 +1,6 @@
 import Sentry from '@/services/sentry' // needs to be imported first
-import { type ReactElement, ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import CssBaseline from '@mui/material/CssBaseline'

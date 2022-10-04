@@ -1,7 +1,8 @@
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { PendingSafeByChain, PendingSafeData } from '@/components/create-safe/index'
+import type { PendingSafeByChain, PendingSafeData } from '@/components/create-safe/index'
 import useChainId from '@/hooks/useChainId'
-import { Dispatch, SetStateAction, useCallback } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
+import { useCallback } from 'react'
 
 const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 

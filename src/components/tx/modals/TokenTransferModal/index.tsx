@@ -1,9 +1,11 @@
 import React from 'react'
 
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import SendAssetsForm, { SendAssetsFormData } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { SendAssetsFormData } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import SendAssetsForm from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import ReviewTokenTx from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
-import TxModal, { TxModalProps } from '@/components/tx/TxModal'
+import type { TxModalProps } from '@/components/tx/TxModal'
+import TxModal from '@/components/tx/TxModal'
 
 export const TokenTransferSteps: TxStepperProps['steps'] = [
   {
