@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { sampleSize } from 'lodash'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getAppsUsageData, rankSafeApps } from '@/services/safe-apps/track-app-usage-count'
 
 // number of ranked Safe Apps that we include in the array

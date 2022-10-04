@@ -5,12 +5,16 @@ import local from '@/services/local-storage/local'
 
 export const BEAMER_SELECTOR = 'whats-new-button'
 
+const enum CustomBeamerAttribute {
+  CHAIN = 'chain',
+}
+
 // Beamer script tag singleton
 let scriptRef: HTMLScriptElement | null = null
 
-export const isBeamerLoaded = (): boolean => !!scriptRef
+const isBeamerLoaded = (): boolean => !!scriptRef
 
-export const loadBeamer = async (): Promise<void> => {
+export const loadBeamer = async (shortName: string): Promise<void> => {
   if (isBeamerLoaded()) return
 
   const BEAMER_URL = 'https://app.getbeamer.com/js/beamer-embed.js'
@@ -25,6 +29,8 @@ export const loadBeamer = async (): Promise<void> => {
     selector: BEAMER_SELECTOR,
     display: 'left',
     bounce: false,
+    display_position: 'right',
+    [CustomBeamerAttribute.CHAIN]: shortName,
   }
 
   scriptRef = document.createElement('script')
@@ -36,6 +42,16 @@ export const loadBeamer = async (): Promise<void> => {
   firstScript?.parentNode?.insertBefore(scriptRef, firstScript)
 
   scriptRef.addEventListener('load', () => window.Beamer?.init(), { once: true })
+}
+
+export const updateBeamer = async (shortName: string): Promise<void> => {
+  if (!isBeamerLoaded() || !window?.Beamer) {
+    return
+  }
+
+  window.Beamer.update({
+    [CustomBeamerAttribute.CHAIN]: shortName,
+  })
 }
 
 export const unloadBeamer = (): void => {

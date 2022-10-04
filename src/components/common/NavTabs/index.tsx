@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Tab, Tabs, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
-import { NavItem } from '@/components/sidebar/SidebarNavigation/config'
+import type { NavItem } from '@/components/sidebar/SidebarNavigation/config'
 
 const NavTabs = ({ tabs }: { tabs: NavItem[] }) => {
   const router = useRouter()

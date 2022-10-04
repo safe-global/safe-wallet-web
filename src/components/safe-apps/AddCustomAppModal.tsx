@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import type { SubmitHandler } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import {
   DialogActions,
   DialogContent,
@@ -12,7 +13,7 @@ import {
   Box,
   FormHelperText,
 } from '@mui/material'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
@@ -38,7 +39,7 @@ type CustomAppFormData = {
 }
 
 const TEXT_FIELD_HEIGHT = '56px'
-const APP_LOGO_FALLBACK_IMAGE = '/images/apps-icon.svg'
+const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
 
 const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {

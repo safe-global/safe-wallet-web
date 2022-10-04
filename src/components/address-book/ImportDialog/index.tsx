@@ -4,7 +4,7 @@ import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { useCSVReader, formatFileSize } from 'react-papaparse'
-import { ParseResult } from 'papaparse'
+import type { ParseResult } from 'papaparse'
 import { type ReactElement, useState, type MouseEvent, useMemo } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'

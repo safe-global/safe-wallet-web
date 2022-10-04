@@ -1,7 +1,7 @@
 import { shouldUseEthSignMethod } from '@/hooks/wallets/wallets'
-import { ConnectedWallet } from '@/services/onboard'
+import type { ConnectedWallet } from '@/services/onboard'
 import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
-import { EIP1193Provider } from '@web3-onboard/core'
+import type { EIP1193Provider } from '@web3-onboard/core'
 
 describe('shouldUseEthSignMethod', () => {
   it('returns true for Ledger wallets', () => {

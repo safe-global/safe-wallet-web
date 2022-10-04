@@ -1,18 +1,20 @@
-import {
+import type {
   AddressEx,
-  ConflictType,
-  DetailedExecutionInfoType,
   MultisigExecutionInfo,
   Transaction,
   TransactionInfo,
-  TransactionInfoType,
   TransactionListItem,
+  TransactionSummary,
+  TransferInfo,
+} from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  ConflictType,
+  DetailedExecutionInfoType,
+  TransactionInfoType,
   TransactionListItemType,
   TransactionStatus,
-  TransactionSummary,
   TransactionTokenType,
   TransferDirection,
-  TransferInfo,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getBatchableTransactions } from '@/hooks/useBatchedTxs'
 

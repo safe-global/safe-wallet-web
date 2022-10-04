@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import NetworkSelector from '@/components/common/NetworkSelector'
 
 type Props = {

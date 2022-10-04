@@ -1,6 +1,8 @@
-import { Button, DialogContent, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
-import { SyntheticEvent, useState } from 'react'
-import { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
+import type { SelectChangeEvent } from '@mui/material'
+import { Button, DialogContent, Grid, MenuItem, Select, Typography } from '@mui/material'
+import type { SyntheticEvent } from 'react'
+import { useState } from 'react'
+import type { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
 export const SetThresholdStep = ({

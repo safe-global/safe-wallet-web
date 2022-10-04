@@ -1,4 +1,5 @@
-import { ReactElement, useMemo } from 'react'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 import classnames from 'classnames'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'

@@ -1,5 +1,6 @@
-import { Box, CircularProgress, Palette, Typography } from '@mui/material'
-import { ReactElement } from 'react'
+import type { Palette } from '@mui/material'
+import { Box, CircularProgress, SvgIcon, Typography } from '@mui/material'
+import type { ReactElement } from 'react'
 import { type Transaction, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import DateTime from '@/components/common/DateTime'
@@ -12,7 +13,7 @@ import { isAwaitingExecution, isMultisigExecutionInfo, isTxQueued } from '@/util
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
-import GroupIcon from '@mui/icons-material/Group'
+import OwnersIcon from '@/public/images/common/owners.svg'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsPending from '@/hooks/useIsPending'
 
@@ -59,16 +60,22 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
 
   return (
     <Box
-      className={`${css.gridContainer} ${nonce && !isGrouped ? css.columnTemplate : css.columnTemplateWithoutNonce}`}
+      className={`${css.gridContainer} ${
+        isQueue
+          ? nonce && !isGrouped
+            ? css.columnTemplate
+            : css.columnTemplateWithoutNonce
+          : css.columnTemplateTxHistory
+      }`}
       id={tx.id}
     >
       {nonce && !isGrouped && <Box gridArea="nonce">{nonce}</Box>}
 
-      <Box gridArea="type">
+      <Box gridArea="type" className={css.columnWrap}>
         <TxType tx={tx} />
       </Box>
 
-      <Box gridArea="info">
+      <Box gridArea="info" className={css.columnWrap}>
         <TxInfo info={tx.txInfo} />
       </Box>
 
@@ -78,7 +85,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
 
       {displayConfirmations && (
         <Box gridArea="confirmations" display="flex" alignItems="center" gap={1}>
-          <GroupIcon fontSize="small" color="border" />
+          <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" color="border" />
           <Typography
             variant="caption"
             fontWeight="bold"
@@ -90,7 +97,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       )}
 
       {wallet && !isWrongChain && isQueue && (
-        <Box gridArea="actions" display="flex" justifyContent="center" gap={1}>
+        <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
           {awaitingExecution ? (
             <ExecuteTxButton txSummary={item.transaction} compact />
           ) : (
@@ -102,7 +109,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
 
       <Box
         gridArea="status"
-        marginLeft={{ md: 'auto' }}
+        marginLeft={{ sm: 'auto' }}
         marginRight={1}
         display="flex"
         alignItems="center"

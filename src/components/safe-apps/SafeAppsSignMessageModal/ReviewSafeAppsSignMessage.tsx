@@ -1,17 +1,19 @@
-import { ReactElement, useMemo } from 'react'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
 import { Box } from '@mui/system'
-import { TextField, Typography } from '@mui/material'
-import WarningIcon from '@mui/icons-material/Warning'
+import { TextField, Typography, SvgIcon } from '@mui/material'
+import WarningIcon from '@/public/images/notifications/warning.svg'
 import { isObjectEIP712TypedData, Methods } from '@gnosis.pm/safe-apps-sdk'
-import { OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { OperationType } from '@gnosis.pm/safe-core-sdk-types'
 
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import { SafeAppsSignMessageParams } from '../SafeAppsSignMessageModal'
+import type { SafeAppsSignMessageParams } from '../SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -126,7 +128,7 @@ const ReviewSafeAppsSignMessage = ({
         />
 
         <Box display="flex" alignItems="center" my={2}>
-          <WarningIcon color="warning" />
+          <SvgIcon component={WarningIcon} inheritViewBox color="warning" />
           <Typography ml={1}>Signing a message with the Safe requires a transaction on the blockchain</Typography>
         </Box>
       </>

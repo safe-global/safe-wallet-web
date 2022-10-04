@@ -2,7 +2,7 @@ import CopyButton from '@/components/common/CopyButton'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
-import { ReactElement, ReactNode } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 

@@ -94,6 +94,7 @@ const NotificationCenter = (): ReactElement => {
           }}
         >
           {/*
+          TODO: Get icon exported from Figma without badge
           // @ts-expect-error - "background.paper" is not a standard icon `color` option */}
           <NotificationsNoneOutlinedIcon color="background.paper" />
         </UnreadBadge>

@@ -4,11 +4,11 @@ import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { createRemoveOwnerTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
-import { RemoveOwnerData } from '..'
+import type { RemoveOwnerData } from '..'
 import React from 'react'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 
@@ -74,7 +74,7 @@ export const ReviewRemoveOwnerTxStep = ({
             .map((owner) => (
               <div key={owner.value}>
                 <Box padding={2} key={owner.value}>
-                  <EthHashInfo address={owner.value} shortAddress={false} />
+                  <EthHashInfo address={owner.value} shortAddress={false} showCopyButton hasExplorer />
                 </Box>
                 <Divider />
               </div>
@@ -86,7 +86,7 @@ export const ReviewRemoveOwnerTxStep = ({
               </div>
               <Divider />
               <Box bgcolor="error.light" padding={2}>
-                <EthHashInfo address={removedOwner.address} shortAddress={false} />
+                <EthHashInfo address={removedOwner.address} shortAddress={false} showCopyButton hasExplorer />
               </Box>
               <Divider />
             </>

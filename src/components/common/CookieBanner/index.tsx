@@ -1,6 +1,7 @@
-import { useEffect, ReactElement } from 'react'
-import { Button, Checkbox, FormControlLabel, Link, Typography, Paper } from '@mui/material'
-import WarningAmberIcon from '@mui/icons-material/WarningAmber'
+import type { ReactElement } from 'react'
+import { useEffect } from 'react'
+import { Button, Checkbox, FormControlLabel, Link, Typography, Paper, SvgIcon } from '@mui/material'
+import WarningIcon from '@/public/images/notifications/warning.svg'
 import { useForm } from 'react-hook-form'
 
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -46,7 +47,7 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
     <Paper className={css.container} elevation={3}>
       {warning && (
         <Typography align="center" paddingBottom="8px">
-          <WarningAmberIcon fontSize="small" sx={({ palette }) => ({ fill: palette.error.main })} /> {warning}
+          <SvgIcon component={WarningIcon} inheritViewBox fontSize="small" color="error" /> {warning}
         </Typography>
       )}
 

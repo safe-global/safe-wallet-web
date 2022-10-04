@@ -5,7 +5,7 @@ import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
 import * as useOwnedSafesHook from '@/hooks/useOwnedSafes'
 import crypto from 'crypto'
-import { EIP1193Provider } from '@web3-onboard/core'
+import type { EIP1193Provider } from '@web3-onboard/core'
 
 const FETCH_TIMEOUT = 5000
 

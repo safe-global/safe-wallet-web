@@ -1,15 +1,15 @@
-import { ReactElement, useMemo } from 'react'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
-import uniqBy from 'lodash/uniqBy'
+import { groupConflictingTxs } from '@/utils/tx-list'
 import styled from '@emotion/styled'
 import { Box, Skeleton, Typography } from '@mui/material'
-import { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Card, ViewAllLink, WidgetBody, WidgetContainer } from '../styled'
 import PendingTxListItem from './PendingTxListItem'
-import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
+import { isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
-import NoTransactionsIcon from '@/public/images/no-transactions.svg'
+import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 import { getQueuedTransactionCount } from '@/utils/transactions'
 
 const SkeletonWrapper = styled.div`
@@ -48,12 +48,16 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
   const router = useRouter()
   const url = `${AppRoutes.transactions.queue}?safe=${router.query.safe}`
 
-  const queuedTxns: Transaction[] = (page?.results || []).filter(isTransactionListItem)
+  const queuedTxns = useMemo(() => {
+    return (
+      groupConflictingTxs(page?.results || [])
+        // Get latest transaction if there are conflicting ones
+        .map((group) => (Array.isArray(group) ? group[0] : group))
+        .filter(isTransactionListItem)
+    )
+  }, [page?.results])
 
-  // Filter out duplicate nonce transactions
-  const queuedTxsToDisplay = uniqBy(queuedTxns, (item) =>
-    isMultisigExecutionInfo(item.transaction.executionInfo) ? item.transaction.executionInfo.nonce : '',
-  ).slice(0, size)
+  const queuedTxsToDisplay = queuedTxns.slice(0, size)
 
   const totalQueuedTxs = getQueuedTransactionCount(page)
 

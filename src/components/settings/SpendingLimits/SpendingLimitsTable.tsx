@@ -1,14 +1,14 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
 import useBalances from '@/hooks/useBalances'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
+import DeleteIcon from '@/public/images/common/delete.svg'
 import { safeFormatUnits } from '@/utils/formatters'
-import { Box, IconButton } from '@mui/material'
+import { Box, IconButton, SvgIcon } from '@mui/material'
 import { relativeTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useMemo, useState } from 'react'
-import { SpendingLimitState } from '@/store/spendingLimitsSlice'
+import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { BigNumber } from '@ethersproject/bignumber'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import TxModal from '@/components/tx/TxModal'
 import { RemoveSpendingLimit } from '@/components/settings/SpendingLimits/RemoveSpendingLimit'
 import useIsGranted from '@/hooks/useIsGranted'
@@ -82,8 +82,8 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
             sticky: true,
             content: isGranted ? (
               <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
-                <IconButton onClick={() => onRemove(spendingLimit)} color="error">
-                  <DeleteOutlineIcon />
+                <IconButton onClick={() => onRemove(spendingLimit)} color="error" size="small">
+                  <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
                 </IconButton>
               </Track>
             ) : null,

@@ -1,15 +1,17 @@
-import React, { ReactElement, useEffect } from 'react'
+import type { ReactElement } from 'react'
+import React, { useEffect } from 'react'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useAsync from '@/hooks/useAsync'
-import { getSafeInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getSafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
 import useChainId from '@/hooks/useChainId'
-import { SafeFormData } from '@/components/create-safe/types'
+import type { SafeFormData } from '@/components/create-safe/types'
 
 type Props = {
   params: SafeFormData
@@ -68,7 +70,7 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
           <Divider />
           <Box padding={3}>
             {fields.map((field, index) => (
-              <OwnerRow key={field.id} index={index} readOnly />
+              <OwnerRow key={field.id} index={index} groupName="owners" readOnly />
             ))}
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
