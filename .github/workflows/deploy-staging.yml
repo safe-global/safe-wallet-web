@@ -2,10 +2,9 @@ name: Deploy to staging
 
 on:
   workflow_run:
-    workflows: ["Build"]
+    workflows: [Build]
     branches: [staging]
-    types:
-      - completed
+    types: [completed]
 
 jobs:
   deploy-staging:
@@ -22,7 +21,7 @@ jobs:
       - name: Download the build artifact
         uses: actions/download-artifact@v3
         with:
-          name: next-export
+          name: next-export-${{ github.sha }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -32,6 +31,7 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Deploy to the staging S3
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         # A hack to achieve blue-green deployments: run the sync command twice.
         # First time to upload new files, second time to upload the new files AND clean up old files.
         run: |
