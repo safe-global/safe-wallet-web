@@ -55,5 +55,4 @@ jobs:
           config: baseUrl=http://localhost:8080
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
-          CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}
+          CYPRESS_MNEMONIC: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}
