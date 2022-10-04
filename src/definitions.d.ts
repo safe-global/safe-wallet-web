@@ -1,5 +1,5 @@
-import React from 'react'
-import { BeamerConfig, BeamerMethods } from '@services/beamer/types'
+import type React from 'react'
+import type { BeamerConfig, BeamerMethods } from '@services/beamer/types'
 
 declare global {
   interface Window {
@@ -7,6 +7,9 @@ declare global {
     ethereum?: {
       autoRefreshOnNetworkChange: boolean
       isMetaMask: boolean
+      _metamask: {
+        isUnlocked: () => Promise<boolean>
+      }
     }
     beamer_config?: BeamerConfig
     Beamer?: BeamerMethods

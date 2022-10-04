@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 import { useState } from 'react'
 import TxModal from '@/components/tx/TxModal'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { SpendingLimitForm } from '@/components/settings/SpendingLimits/NewSpendingLimit/steps/SpendingLimitForm'
 import { ReviewSpendingLimit } from '@/components/settings/SpendingLimits/NewSpendingLimit/steps/ReviewSpendingLimit'
 import Track from '@/components/common/Track'

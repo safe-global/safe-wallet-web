@@ -1,10 +1,11 @@
-import { Box, Typography } from '@mui/material'
-import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined'
+import { Box, Typography, SvgIcon } from '@mui/material'
+import ShieldIcon from '@/public/images/settings/permissions/shield.svg'
 
 import { getBrowserPermissionDisplayValues } from '@/hooks/safe-apps/permissions'
 import PermissionsCheckbox from '../PermissionCheckbox'
 
-import { AllowedFeatures, AllowedFeatureSelection, isBrowserFeature } from '../types'
+import type { AllowedFeatures, AllowedFeatureSelection } from '../types'
+import { isBrowserFeature } from '../types'
 
 type SafeAppsInfoAllowedFeaturesProps = {
   features: AllowedFeatureSelection[]
@@ -17,7 +18,7 @@ const AllowedFeaturesList: React.FC<SafeAppsInfoAllowedFeaturesProps> = ({
 }): React.ReactElement => {
   return (
     <>
-      <ShieldOutlinedIcon sx={({ palette }) => ({ color: palette.text.secondary })} />
+      <SvgIcon component={ShieldIcon} inheritViewBox color="secondary" />
       <Typography
         variant="body2"
         color="text.secondary"

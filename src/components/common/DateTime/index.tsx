@@ -1,20 +1,31 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { Tooltip } from '@mui/material'
-import { formatDateTime, formatTimeInWords } from '@/utils/date'
-import { isToday, startOfDay } from 'date-fns'
+import { formatDateTime, formatTime, formatTimeInWords } from '@/utils/date'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
+import { useTxFilter } from '@/utils/tx-history-filter'
 
 const DAYS_THRESHOLD = 60
 
-const getRelevantTimestamp = (value: number) => {
-  return isToday(new Date(value)) ? value : startOfDay(value).getTime()
-}
+/**
+ * If queue, show relative time until threshold then show full date and time
+ * If history, show time (as date labels are present)
+ * If filter, show full date and time
+ */
 
 const DateTime = ({ value }: { value: number }): ReactElement => {
-  const displayExactDate = Math.floor((Date.now() - value) / 1000 / 60 / 60 / 24) > DAYS_THRESHOLD
+  const [filter] = useTxFilter()
+  const router = useRouter()
+
+  // (non-filtered) history is the endpoint that returns date labels
+  const showTime = router.pathname === AppRoutes.transactions.history && !filter
+
+  const isOld = Math.floor((Date.now() - value) / 1000 / 60 / 60 / 24) > DAYS_THRESHOLD
+  const showDateTime = isOld
 
   return (
-    <Tooltip title={displayExactDate ? '' : formatDateTime(value)} placement="top">
-      <span>{displayExactDate ? formatDateTime(value) : formatTimeInWords(getRelevantTimestamp(value))}</span>
+    <Tooltip title={showDateTime ? '' : formatDateTime(value)} placement="top">
+      <span>{showTime ? formatTime(value) : showDateTime ? formatDateTime(value) : formatTimeInWords(value)}</span>
     </Tooltip>
   )
 }

@@ -7,9 +7,9 @@ import PageHeader from '@/components/common/PageHeader'
 import { ModalType } from '../AddressBookTable'
 import { useAppSelector } from '@/store'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
-import ImportIcon from '@/public/images/import.svg'
-import ExportIcon from '@/public/images/export.svg'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import ImportIcon from '@/public/images/address-book/import.svg'
+import ExportIcon from '@/public/images/address-book/export.svg'
+import AddCircleIcon from '@/public/images/common/add-outlined.svg'
 
 type Props = {
   handleOpenModal: (type: ModalType) => () => void
@@ -53,7 +53,7 @@ const AddressBookHeader = ({ handleOpenModal }: Props): ReactElement => {
               onClick={handleOpenModal(ModalType.ENTRY)}
               variant="text"
               color="primary"
-              startIcon={<AddCircleOutlineIcon />}
+              startIcon={<SvgIcon component={AddCircleIcon} inheritViewBox />}
             >
               Create entry
             </Button>

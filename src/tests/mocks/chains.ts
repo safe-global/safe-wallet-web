@@ -1,4 +1,5 @@
-import { ChainInfo, FEATURES, GAS_PRICE_TYPE, RPC_AUTHENTICATION } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { FEATURES, GAS_PRICE_TYPE, RPC_AUTHENTICATION } from '@gnosis.pm/safe-react-gateway-sdk'
 
 const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   {

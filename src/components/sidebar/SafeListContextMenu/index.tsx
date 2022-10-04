@@ -1,4 +1,5 @@
-import { useState, MouseEvent, type ReactElement } from 'react'
+import type { MouseEvent } from 'react'
+import { useState, type ReactElement } from 'react'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -9,8 +10,8 @@ import EntryDialog from '@/components/address-book/EntryDialog'
 import SafeListRemoveDialog from '@/components/sidebar/SafeListRemoveDialog'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
-import PencilIcon from '@/public/images/sidebar/safe-list/pencil.svg'
-import TrashIcon from '@/public/images/sidebar/safe-list/trash.svg'
+import EditIcon from '@/public/images/common/edit.svg'
+import DeleteIcon from '@/public/images/common/delete.svg'
 import ContextMenu from '@/components/common/ContextMenu'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import { SvgIcon } from '@mui/material'
@@ -66,7 +67,7 @@ const SafeListContextMenu = ({
       <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
         <MenuItem onClick={handleOpenModal(ModalType.RENAME, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
           <ListItemIcon>
-            <SvgIcon component={PencilIcon} inheritViewBox sx={{ width: 16, height: 16 }} color="primary" />
+            <SvgIcon component={EditIcon} inheritViewBox fontSize="small" color="success" />
           </ListItemIcon>
           <ListItemText>Rename</ListItemText>
         </MenuItem>
@@ -74,7 +75,7 @@ const SafeListContextMenu = ({
         {isAdded && (
           <MenuItem onClick={handleOpenModal(ModalType.REMOVE, OVERVIEW_EVENTS.SIDEBAR_REMOVE)}>
             <ListItemIcon>
-              <TrashIcon alt="Remove" size={16} />
+              <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" color="error" />
             </ListItemIcon>
             <ListItemText>Remove</ListItemText>
           </MenuItem>

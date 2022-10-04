@@ -1,7 +1,7 @@
 import AddressBookInput from '@/components/common/AddressBookInput'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import NameInput from '@/components/common/NameInput'
-import { ChangeOwnerData, OwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
+import type { ChangeOwnerData, OwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { addressIsNotCurrentSafe, uniqueAddress } from '@/utils/validation'
 import { Box, Button, CircularProgress, DialogContent, FormControl, InputAdornment, Typography } from '@mui/material'
@@ -67,7 +67,7 @@ export const ChooseOwnerStep = ({
           {removedOwner && (
             <Box my={2}>
               <Typography mb={1}>Current owner</Typography>
-              <EthHashInfo address={removedOwner.address} showCopyButton shortAddress={false} />
+              <EthHashInfo address={removedOwner.address} showCopyButton shortAddress={false} hasExplorer />
             </Box>
           )}
 

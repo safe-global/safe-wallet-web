@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useCallback } from 'react'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { useCustomSafeApps } from '@/hooks/safe-apps/useCustomSafeApps'
 import { usePinnedSafeApps } from '@/hooks/safe-apps/usePinnedSafeApps'
 import { useBrowserPermissions, useSafePermissions } from './permissions'
 import { useRankedSafeApps } from '@/hooks/safe-apps/useRankedSafeApps'
+import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 
 type ReturnType = {
   allSafeApps: SafeAppData[]
@@ -82,10 +83,14 @@ const useSafeApps = (): ReturnType => {
   const togglePin = (appId: number) => {
     const alreadyPinned = pinnedSafeAppIds.has(appId)
     const newSet = new Set(pinnedSafeAppIds)
+    const appName = allSafeApps.find((app) => app.id === appId)?.name
+
     if (alreadyPinned) {
       newSet.delete(appId)
+      trackEvent({ ...SAFE_APPS_EVENTS.UNPIN, label: appName })
     } else {
       newSet.add(appId)
+      trackEvent({ ...SAFE_APPS_EVENTS.PIN, label: appName })
     }
     updatePinnedSafeApps(newSet)
   }

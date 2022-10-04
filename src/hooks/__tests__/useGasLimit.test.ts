@@ -1,4 +1,4 @@
-import { SafeSignature, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeSignature, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { _encodeSignatures } from '../useGasLimit'
 
 const createSafeTx = (): SafeTransaction => {

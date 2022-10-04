@@ -1,4 +1,4 @@
-import { DataDecoded, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { DataDecoded, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box } from '@mui/material'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import extractTxInfo from '@/services/tx/extractTxInfo'

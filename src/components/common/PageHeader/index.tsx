@@ -16,17 +16,15 @@ const PageHeader = ({
 }): ReactElement => {
   const safeAddress = useSafeAddress()
   const addressBook = useAddressBook()
-
   const isNamedSafe = !!addressBook[safeAddress]
+  const nameHeight = isNamedSafe ? 20 : 0
 
   return (
     <Box
       className={css.container}
       sx={{
-        // Doesn't work in module
-        position: 'sticky',
-        top: -96,
-        height: isNamedSafe ? '219px' : '199px',
+        height: `${199 + nameHeight}.5px`,
+        top: `-${76 + nameHeight}px`,
       }}
     >
       <div>

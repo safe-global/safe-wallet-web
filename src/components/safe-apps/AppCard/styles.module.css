@@ -8,12 +8,14 @@
 }
 
 .compactShareButton {
-  width: 32px;
   position: absolute;
   top: 2px;
   left: 2px;
 }
 
-.shareButton {
-  width: 32px;
+.truncateDescription {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

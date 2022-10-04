@@ -1,21 +1,27 @@
-import { Box, Button, Divider, FormControl, Grid, MenuItem, Paper, Select, Typography } from '@mui/material'
-import { ReactElement } from 'react'
+import { Box, Button, Divider, FormControl, Grid, MenuItem, Paper, Select, Typography, SvgIcon } from '@mui/material'
+import type { ReactElement } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
-import { NamedAddress, SafeFormData } from '@/components/create-safe/types'
+import type { NamedAddress, SafeFormData } from '@/components/create-safe/types'
 import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
+import AddIcon from '@/public/images/common/add.svg'
 
 type Props = {
   params: SafeFormData
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
   setStep: StepRenderProps['setStep']
+}
+
+enum FieldName {
+  owners = 'owners',
+  threshold = 'threshold',
 }
 
 const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactElement => {
@@ -40,16 +46,31 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
       threshold: defaultThreshold,
     },
   })
-  const { register, handleSubmit, control, formState } = formMethods
+  const { register, handleSubmit, control, formState, watch, setValue } = formMethods
+  const currentThreshold = watch(FieldName.threshold)
   const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: ownerFields,
+    append,
+    remove,
+  } = useFieldArray({
     control,
-    name: 'owners',
+    name: FieldName.owners,
   })
+  const ownerLength = ownerFields.length
 
   const addOwner = () => {
     append({ name: '', address: '' })
+  }
+
+  const removeOwner = (index: number) => {
+    remove(index)
+
+    // Make sure the threshold is not higher than the number of owners
+    if (currentThreshold >= ownerLength) {
+      setValue<'threshold'>(FieldName.threshold, ownerLength - 1)
+    }
   }
 
   const onFormSubmit = handleSubmit((data: SafeFormData) => {
@@ -75,6 +96,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
               Your Safe will have one or more owners. We have prefilled the first owner with your connected wallet
               details, but you are free to change this to a different owner.
             </Typography>
+
             <Typography>
               Add additional owners (e.g. wallets of your teammates) and specify how many of them have to confirm a
               transaction before it gets executed. In general, the more confirmations required, the more secure your
@@ -100,12 +122,16 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
           <Divider />
 
           <Box padding={3}>
-            {fields.map((field, index) => (
-              <OwnerRow key={field.id} index={index} remove={remove} />
+            {ownerFields.map((field, index) => (
+              <OwnerRow key={field.id} index={index} groupName={FieldName.owners} remove={removeOwner} />
             ))}
 
-            <Button onClick={addOwner} sx={{ fontWeight: 'normal' }}>
-              + Add another owner
+            <Button
+              onClick={addOwner}
+              sx={{ fontWeight: 'normal' }}
+              startIcon={<SvgIcon component={AddIcon} fontSize="small" inheritViewBox />}
+            >
+              Add another owner
             </Button>
 
             <Typography marginTop={3} marginBottom={1}>
@@ -114,15 +140,17 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
 
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl>
-                <Select {...register('threshold')} defaultValue={defaultThreshold}>
-                  {fields.map((field, index) => (
-                    <MenuItem key={field.id} value={index + 1}>
+                <Select {...register(FieldName.threshold, { valueAsNumber: true })} value={currentThreshold}>
+                  {ownerFields.map((_, index) => (
+                    <MenuItem key={index} value={index + 1}>
                       {index + 1}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
-              <Typography>out of {fields.length} owner(s)</Typography>
+              <Typography>
+                out of {ownerLength} owner{ownerLength > 1 && 's'}
+              </Typography>
             </Box>
 
             <Grid container alignItems="center" justifyContent="center" spacing={3}>

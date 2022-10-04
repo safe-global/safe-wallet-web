@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { SafeAppsSection } from './SafeAppsSection'
@@ -6,7 +6,9 @@ import { useAppsSearch } from '@/hooks/safe-apps/useAppsSearch'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { SafeAppsHeader } from './SafeAppsHeader'
 import { useRemoveAppModal } from '@/hooks/safe-apps/useRemoveAppModal'
+import useDebounce from '@/hooks/useDebounce'
 import { RemoveCustomAppModal } from '@/components/safe-apps/RemoveCustomAppModal'
+import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 
 const SafeAppList = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -23,6 +25,14 @@ const SafeAppList = () => {
   } = useSafeApps()
   const filteredApps = useAppsSearch(allSafeApps, searchQuery)
   const { state: removeCustomAppModalState, open: openRemoveAppModal, close } = useRemoveAppModal()
+
+  const debouncedSearchQuery = useDebounce(searchQuery, 500)
+
+  useEffect(() => {
+    if (debouncedSearchQuery) {
+      trackEvent({ ...SAFE_APPS_EVENTS.SEARCH, label: debouncedSearchQuery })
+    }
+  }, [debouncedSearchQuery])
 
   const handleCustomAppRemoval = (appId: number) => {
     removeCustomApp(appId)

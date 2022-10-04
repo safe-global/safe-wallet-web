@@ -1,19 +1,13 @@
-import { MutableRefObject } from 'react'
-import {
-  getSDKVersion,
-  SDKMessageEvent,
-  MethodToResponse,
-  Methods,
-  ErrorResponse,
-  MessageFormatter,
-  RequestId,
-} from '@gnosis.pm/safe-apps-sdk'
+import type { MutableRefObject } from 'react'
+import type { SDKMessageEvent, MethodToResponse, ErrorResponse, RequestId } from '@gnosis.pm/safe-apps-sdk'
+import { getSDKVersion, Methods, MessageFormatter } from '@gnosis.pm/safe-apps-sdk'
 
 type MessageHandler = (
   msg: SDKMessageEvent,
 ) => void | MethodToResponse[Methods] | ErrorResponse | Promise<MethodToResponse[Methods] | ErrorResponse | void>
 
 type AppCommunicatorConfig = {
+  onMessage?: (msg: SDKMessageEvent) => void
   onError?: (error: Error, data: any) => void
 }
 
@@ -63,6 +57,8 @@ class AppCommunicator {
 
     if (validMessage && hasHandler) {
       const handler = this.handlers.get(msg.data.method)
+
+      this.config?.onMessage?.(msg)
 
       try {
         // @ts-expect-error Handler existence is checked in this.canHandleMessage

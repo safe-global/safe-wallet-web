@@ -5,8 +5,8 @@ import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
-import { Box, Button, DialogActions, DialogContent, IconButton, Tooltip } from '@mui/material'
+import EditIcon from '@/public/images/common/edit.svg'
+import { Box, Button, DialogActions, DialogContent, IconButton, Tooltip, SvgIcon } from '@mui/material'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -51,8 +51,8 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
     <>
       <Track {...SETTINGS_EVENTS.SETUP.EDIT_OWNER}>
         <Tooltip title="Edit owner">
-          <IconButton onClick={() => setOpen(true)}>
-            <EditOutlinedIcon color="border" />
+          <IconButton onClick={() => setOpen(true)} size="small">
+            <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
           </IconButton>
         </Tooltip>
       </Track>

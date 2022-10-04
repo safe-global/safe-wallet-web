@@ -1,6 +1,6 @@
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { ReactElement } from 'react'
+import type { TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ReactElement } from 'react'
 import { AccordionProps } from '@mui/material/Accordion/Accordion'
 import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
 

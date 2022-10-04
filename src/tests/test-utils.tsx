@@ -1,9 +1,10 @@
-import { render, renderHook, RenderHookOptions } from '@testing-library/react'
-import { NextRouter } from 'next/router'
+import type { RenderHookOptions } from '@testing-library/react'
+import { render, renderHook } from '@testing-library/react'
+import type { NextRouter } from 'next/router'
 import { RouterContext } from 'next/dist/shared/lib/router-context'
 import { ThemeProvider } from '@mui/material/styles'
 import initTheme from '@/styles/theme'
-import { RootState } from '@/store'
+import type { RootState } from '@/store'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   asPath: '/',

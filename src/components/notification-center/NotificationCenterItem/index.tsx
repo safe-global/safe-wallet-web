@@ -1,31 +1,31 @@
 import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemText from '@mui/material/ListItemText'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined'
-import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined'
-import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import WarningIcon from '@/public/images/notifications/warning.svg'
+import ErrorIcon from '@/public/images/notifications/error.svg'
+import SuccessIcon from '@/public/images/notifications/success.svg'
 import { NotificationLink } from '@/components/common/Notifications'
 import type { AlertColor } from '@mui/material/Alert'
 import type { ReactElement } from 'react'
 
-import { Notification } from '@/store/notificationsSlice'
+import type { Notification } from '@/store/notificationsSlice'
 import UnreadBadge from '@/components/common/UnreadBadge'
 import { formatTimeInWords } from '@/utils/date'
 
 import css from './styles.module.css'
 import classnames from 'classnames'
+import SvgIcon from '@mui/material/SvgIcon'
 
 const VARIANT_ICONS = {
-  error: ErrorOutlineOutlinedIcon,
-  info: InfoOutlinedIcon,
-  success: TaskAltOutlinedIcon,
-  warning: WarningAmberOutlinedIcon,
+  error: ErrorIcon,
+  info: InfoIcon,
+  success: SuccessIcon,
+  warning: WarningIcon,
 }
 
 const getNotificationIcon = (variant: AlertColor): ReactElement => {
-  const Icon = VARIANT_ICONS[variant]
-  return <Icon color={variant} />
+  return <SvgIcon component={VARIANT_ICONS[variant]} inheritViewBox color={variant} />
 }
 
 const NotificationCenterItem = ({
