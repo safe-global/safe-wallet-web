@@ -25,6 +25,7 @@ const NameInput = ({
       label={<>{fieldError?.type === 'maxLength' ? 'Maximum 50 symbols' : fieldError?.message || props.label}</>}
       error={Boolean(fieldError)}
       fullWidth
+      required={required}
       {...register(name, { maxLength: 50, required })}
     />
   )
