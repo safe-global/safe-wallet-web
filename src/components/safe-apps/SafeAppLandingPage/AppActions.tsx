@@ -40,9 +40,9 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
   const [safeToUse, setSafeToUse] = useState<CompatibleSafesType>()
 
   useEffect(() => {
-    const selectedSafe = getDefaultSafe(compatibleSafes, chain.chainId, lastUsedSafe)
-    if (selectedSafe) {
-      setSafeToUse(selectedSafe)
+    const defaultSafe = getDefaultSafe(compatibleSafes, chain.chainId, lastUsedSafe)
+    if (defaultSafe) {
+      setSafeToUse(defaultSafe)
     }
   }, [compatibleSafes, chain.chainId, lastUsedSafe])
 
