@@ -74,7 +74,7 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
             ))}
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
-                <Button onClick={onBack}>Back</Button>
+                <Button onClick={() => onBack()}>Back</Button>
               </Grid>
               <Grid item>
                 <Button variant="contained" type="submit" disabled={!formState.isValid}>

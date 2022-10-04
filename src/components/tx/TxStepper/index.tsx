@@ -36,7 +36,7 @@ const TxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps)
       {steps[activeStep].render(activeStepData, onSubmit, onBack, setStep)}
 
       <DialogActions>
-        <Button color="inherit" onClick={onBack}>
+        <Button color="inherit" onClick={() => onBack()}>
           {firstStep ? 'Cancel' : 'Back'}
         </Button>
       </DialogActions>
