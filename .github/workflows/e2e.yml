@@ -44,11 +44,6 @@ jobs:
           NEXT_PUBLIC_PORTIS_KEY: ${{ secrets.NEXT_PUBLIC_PORTIS_KEY }}
           NEXT_PUBLIC_CYPRESS_MNEMONIC: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}
 
-      - name: Download the build artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: next-export-${{ github.sha }}
-
       - name: Serve
         run: yarn serve &
 
