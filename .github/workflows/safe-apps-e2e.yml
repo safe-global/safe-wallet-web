@@ -1,7 +1,8 @@
-name: e2e
+name: Safe Apps e2e
 
 on:
   pull_request:
+  push:
   workflow_dispatch:
 
 jobs:
