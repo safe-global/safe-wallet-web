@@ -1,5 +1,5 @@
 import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
-import { MultisigExecutionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { MultisigExecutionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, Link, Typography } from '@mui/material'
 import React from 'react'
 

@@ -1,6 +1,10 @@
 import { useState, useCallback } from 'react'
-import { Methods } from '@gnosis.pm/safe-apps-sdk'
-import { Permission, PermissionCaveat, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
+import type { Methods } from '@gnosis.pm/safe-apps-sdk'
+import type {
+  Permission,
+  PermissionCaveat,
+  PermissionRequest,
+} from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
 
 import { PermissionStatus } from '@/components/safe-apps/types'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'

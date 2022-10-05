@@ -1,11 +1,10 @@
-import useSafeInfo from '@/hooks/useSafeInfo'
 import useAsync from '@/hooks/useAsync'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { createRemoveModuleTx } from '@/services/tx/txSender'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { RemoveModuleData } from '@/components/settings/SafeModules/RemoveModule'
+import type { RemoveModuleData } from '@/components/settings/SafeModules/RemoveModule'
 import { useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
@@ -17,8 +16,6 @@ export const ReviewRemoveModule = ({
   data: RemoveModuleData
   onSubmit: (txId: string) => void
 }) => {
-  const { safe } = useSafeInfo()
-
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createRemoveModuleTx(data.address)
   }, [data.address])
@@ -36,7 +33,7 @@ export const ReviewRemoveModule = ({
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} error={safeTxError}>
       <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Module</Typography>
       <EthHashInfo address={data.address} showCopyButton hasExplorer shortAddress={false} />
       <Typography my={2}>

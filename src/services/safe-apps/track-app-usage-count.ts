@@ -1,5 +1,5 @@
 import local from '@/services/local-storage/local'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const APPS_DASHBOARD = 'APPS_DASHBOARD'
 

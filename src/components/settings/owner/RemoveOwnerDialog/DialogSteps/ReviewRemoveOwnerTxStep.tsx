@@ -4,11 +4,11 @@ import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { createRemoveOwnerTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
-import { RemoveOwnerData } from '..'
+import type { RemoveOwnerData } from '..'
 import React from 'react'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 
@@ -37,7 +37,7 @@ export const ReviewRemoveOwnerTxStep = ({
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} isExecutable={safe.threshold === 1} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} error={safeTxError}>
       <Grid
         container
         mt={-3}

@@ -1,6 +1,8 @@
-import { ReactElement, useEffect, useState } from 'react'
+import type { ReactElement } from 'react'
+import { useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
-import IconButton, { IconButtonProps } from '@mui/material/IconButton'
+import type { IconButtonProps } from '@mui/material/IconButton'
+import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 import Tooltip from '@mui/material/Tooltip'
 
@@ -59,11 +61,13 @@ const SafeHeader = (): ReactElement => {
   return (
     <div className={css.container}>
       <div className={css.safe}>
-        {safeLoading ? (
-          <Skeleton variant="circular" width={40} height={40} />
-        ) : (
-          <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
-        )}
+        <div>
+          {safeLoading ? (
+            <Skeleton variant="circular" width={40} height={40} />
+          ) : (
+            <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
+          )}
+        </div>
 
         <div className={css.address}>
           {safeLoading ? (

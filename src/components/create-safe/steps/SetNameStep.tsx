@@ -1,11 +1,11 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
 import NameInput from '@/components/common/NameInput'
 import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
-import { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
-import { SafeFormData } from '@/components/create-safe/types'
+import type { SafeFormData } from '@/components/create-safe/types'
 import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
 
 type Props = {

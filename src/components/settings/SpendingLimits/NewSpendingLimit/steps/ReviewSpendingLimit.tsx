@@ -1,14 +1,14 @@
 import { Typography, Box } from '@mui/material'
 import useBalances from '@/hooks/useBalances'
 import { useEffect, useMemo, useState } from 'react'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import useAsync from '@/hooks/useAsync'
-import { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useChainId from '@/hooks/useChainId'
 import { useSelector } from 'react-redux'
-import { selectSpendingLimits, SpendingLimitState } from '@/store/spendingLimitsSlice'
+import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
+import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import { createAddDelegateTx, createResetAllowanceTx, createSetAllowanceTx } from '@/services/tx/spendingLimitParams'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -85,7 +85,6 @@ type Props = {
 export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
   const [existingSpendingLimit, setExistingSpendingLimit] = useState<SpendingLimitState>()
   const spendingLimits = useSelector(selectSpendingLimits)
-  const { safe } = useSafeInfo()
   const chainId = useChainId()
   const { balances } = useBalances()
 
@@ -120,7 +119,7 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} error={safeTxError}>
       {token && (
         <TokenTransferReview amount={data.amount} tokenInfo={token.tokenInfo}>
           {!!existingSpendingLimit && (

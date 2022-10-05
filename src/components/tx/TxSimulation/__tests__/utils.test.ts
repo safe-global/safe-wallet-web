@@ -1,5 +1,5 @@
-import { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber, ethers } from 'ethers'
 import { getSimulationPayload, NONCE_STORAGE_POSITION, THRESHOLD_STORAGE_POSITION } from '../utils'
 import * as safeContracts from '@/services/contracts/safeContracts'

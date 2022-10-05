@@ -1,4 +1,4 @@
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { txDispatch, txSubscribe, TxEvent } from '../txEvents'
 
 const tx = {

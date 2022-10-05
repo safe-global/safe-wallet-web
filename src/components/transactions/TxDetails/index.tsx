@@ -1,10 +1,6 @@
 import React, { type ReactElement } from 'react'
-import {
-  getTransactionDetails,
-  Operation,
-  TransactionDetails,
-  TransactionSummary,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getTransactionDetails, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Box, CircularProgress } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'

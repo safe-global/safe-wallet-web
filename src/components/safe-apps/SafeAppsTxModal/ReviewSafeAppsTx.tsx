@@ -1,6 +1,8 @@
-import { ReactElement } from 'react'
-import { DecodedDataResponse, getDecodedData, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
-import { OperationType, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { ReactElement } from 'react'
+import type { DecodedDataResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getDecodedData, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { OperationType } from '@gnosis.pm/safe-core-sdk-types'
 import { Box, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
@@ -10,11 +12,10 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
 import { getInteractionTitle } from '../utils'
-import { SafeAppsTxParams } from '.'
+import type { SafeAppsTxParams } from '.'
 import { isEmptyHexData } from '@/utils/hex'
 import { dispatchSafeAppsTx } from '@/services/tx/txSender'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
@@ -26,15 +27,14 @@ type ReviewSafeAppsTxProps = {
 const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params, appId } }: ReviewSafeAppsTxProps): ReactElement => {
   const chainId = useChainId()
   const chain = useCurrentChain()
-  const { safe } = useSafeInfo()
 
   const isMultiSend = txs.length > 1
-  const canExecute = safe.threshold === 1
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
     const tx = await createMultiSendCallOnlyTx(txs)
 
     if (params?.safeTxGas) {
+      // FIXME: do it properly via the Core SDK
       // @ts-expect-error safeTxGas readonly
       tx.data.safeTxGas = params.safeTxGas
     }
@@ -54,13 +54,7 @@ const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params, appId } }: Rev
   }
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      isExecutable={canExecute}
-      onSubmit={handleSubmit}
-      error={safeTxError}
-      redirectToTx={false}
-    >
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError}>
       <>
         <SendFromBlock />
 

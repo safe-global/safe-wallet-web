@@ -1,10 +1,11 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import Box from '@mui/material/Box'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import { StepContent } from '@mui/material'
-import { TxStepperProps, useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import { useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
 
 const VerticalTxStepper = ({ steps, initialData, initialStep, onClose, onFinish }: TxStepperProps): ReactElement => {
   const { onBack, onSubmit, setStep, activeStep, stepData } = useTxStepper({

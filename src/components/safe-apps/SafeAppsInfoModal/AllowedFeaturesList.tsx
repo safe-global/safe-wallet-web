@@ -4,7 +4,8 @@ import ShieldIcon from '@/public/images/settings/permissions/shield.svg'
 import { getBrowserPermissionDisplayValues } from '@/hooks/safe-apps/permissions'
 import PermissionsCheckbox from '../PermissionCheckbox'
 
-import { AllowedFeatures, AllowedFeatureSelection, isBrowserFeature } from '../types'
+import type { AllowedFeatures, AllowedFeatureSelection } from '../types'
+import { isBrowserFeature } from '../types'
 
 type SafeAppsInfoAllowedFeaturesProps = {
   features: AllowedFeatureSelection[]

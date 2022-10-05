@@ -1,7 +1,7 @@
 import { useMemo, type ReactElement } from 'react'
 import groupBy from 'lodash/groupBy'
 import { Box, Divider, Grid, Typography } from '@mui/material'
-import { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import NftCard from '../NftCard'
 import ImageFallback from '@/components/common/ImageFallback'
 
@@ -23,8 +23,8 @@ const NftGrid = ({
         const { logoUri, tokenName } = nfts[0]
         return (
           <Box key={address} pb={4}>
-            <Grid container alignItems="center" pb={2}>
-              <Grid item xs={1}>
+            <Grid container alignItems="center" pb={2} spacing={2}>
+              <Grid item>
                 <ImageFallback
                   src={logoUri}
                   alt={`${tokenName} collection icon`}
@@ -33,7 +33,7 @@ const NftGrid = ({
                 />
               </Grid>
               <Grid item>
-                <Typography variant="h6" mb={1} mr={2}>
+                <Typography variant="h6" mb={1}>
                   {tokenName}
                 </Typography>
               </Grid>

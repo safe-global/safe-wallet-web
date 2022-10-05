@@ -1,4 +1,5 @@
-import { createContext, ReactElement, ReactNode, useState } from 'react'
+import type { ReactElement, ReactNode } from 'react'
+import { createContext, useState } from 'react'
 
 export const BatchExecuteHoverContext = createContext<{
   activeHover: string[]

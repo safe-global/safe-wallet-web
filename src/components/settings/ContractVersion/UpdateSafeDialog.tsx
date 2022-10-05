@@ -9,8 +9,8 @@ import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -52,7 +52,7 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (txId: string) => void }
   }, [chain, safe, safeLoaded])
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>
       <Typography mb={2}>
         Update now to take advantage of new features and the highest security standards available.
       </Typography>

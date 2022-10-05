@@ -1,4 +1,5 @@
-import { AllowedFeatures, PermissionStatus } from '@/components/safe-apps/types'
+import type { AllowedFeatures } from '@/components/safe-apps/types'
+import { PermissionStatus } from '@/components/safe-apps/types'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useCallback } from 'react'
 import { trimTrailingSlash } from '@/utils/url'

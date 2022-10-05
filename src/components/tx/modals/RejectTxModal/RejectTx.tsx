@@ -1,13 +1,12 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { Typography } from '@mui/material'
-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { createRejectTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import useSafeInfo from '@/hooks/useSafeInfo'
 
 type RejectTxProps = {
   txSummary: TransactionSummary
@@ -15,7 +14,6 @@ type RejectTxProps = {
 }
 
 const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
-  const { safe } = useSafeInfo()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
 
   const [rejectTx, rejectError] = useAsync<SafeTransaction>(() => {
@@ -23,14 +21,7 @@ const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
   }, [txNonce])
 
   return (
-    <SignOrExecuteForm
-      safeTx={rejectTx}
-      txId={txSummary.id}
-      isExecutable={safe.threshold === 1}
-      isRejection
-      onSubmit={onSubmit}
-      error={rejectError}
-    >
+    <SignOrExecuteForm safeTx={rejectTx} isRejection onSubmit={onSubmit} error={rejectError}>
       <Typography mb={2}>
         To reject the transaction, a separate rejection transaction will be created to replace the original one.
       </Typography>

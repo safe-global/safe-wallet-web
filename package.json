@@ -102,6 +102,7 @@
     "@types/react-gtm-module": "^2.0.1",
     "@types/react-qr-reader": "^2.1.4",
     "@types/semver": "^7.3.10",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
     "cross-env": "^7.0.3",
     "cypress": "^10.6.0",
     "cypress-file-upload": "^5.0.8",

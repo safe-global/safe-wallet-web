@@ -9,7 +9,7 @@ import { NotificationLink } from '@/components/common/Notifications'
 import type { AlertColor } from '@mui/material/Alert'
 import type { ReactElement } from 'react'
 
-import { Notification } from '@/store/notificationsSlice'
+import type { Notification } from '@/store/notificationsSlice'
 import UnreadBadge from '@/components/common/UnreadBadge'
 import { formatTimeInWords } from '@/utils/date'
 
