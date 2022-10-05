@@ -422,9 +422,9 @@ const initTheme = (darkMode: boolean) => {
             color: theme.palette.background.main,
             backgroundColor: theme.palette.text.primary,
           }),
-          arrow: {
-            color: theme.palette.background.main,
-          },
+          arrow: ({ theme }) => ({
+            color: theme.palette.text.primary,
+          }),
         },
       },
       MuiBackdrop: {
