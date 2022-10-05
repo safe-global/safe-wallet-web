@@ -175,7 +175,7 @@ const SignOrExecuteForm = ({
 
         {canExecute && !onlyExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} />}
 
-        {safeTx && (
+        {tx && (
           <AdvancedParams
             params={advancedParams}
             recommendedGasLimit={gasLimit}
@@ -203,13 +203,11 @@ const SignOrExecuteForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        {safeTx && (
-          <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
-            You&apos;re about to {txId ? '' : 'create and '}
-            {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
-            wallet.
-          </Typography>
-        )}
+        <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
+          You&apos;re about to {txId ? '' : 'create and '}
+          {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
+          wallet.
+        </Typography>
 
         <Button variant="contained" type="submit" disabled={submitDisabled}>
           {isEstimating ? 'Estimating...' : 'Submit'}
