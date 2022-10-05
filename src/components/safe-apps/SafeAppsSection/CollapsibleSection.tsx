@@ -23,10 +23,10 @@ const CollapsibleSection = ({
 
   return (
     <Accordion className={styles.accordion} defaultExpanded>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: ({ palette }) => palette.primary.light }} />}>
         <Typography
           variant="caption"
-          sx={({ palette }) => ({ color: palette.primary.light, textTransform: 'uppercase' })}
+          sx={({ palette }) => ({ color: palette.primary.light, textTransform: 'uppercase', fontWeight: 700 })}
         >
           {title}
         </Typography>

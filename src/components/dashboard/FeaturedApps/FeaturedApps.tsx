@@ -57,7 +57,11 @@ export const FeaturedApps = (): ReactElement | null => {
                             <Typography fontSize="lg">{app.description}</Typography>
                           </Box>
 
-                          <Typography color="primary.main" fontWeight="bold">
+                          <Typography
+                            color="primary.main"
+                            fontWeight="bold"
+                            sx={{ '&:hover': { color: ({ palette }) => palette.primary.light } }}
+                          >
                             Use {app.name}
                           </Typography>
                         </Grid>
