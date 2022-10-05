@@ -18,6 +18,8 @@ export const BEAMER_ID = process.env.NEXT_PUBLIC_BEAMER_ID || ''
 export const WC_BRIDGE = process.env.NEXT_PUBLIC_WC_BRIDGE || 'https://safe-walletconnect.gnosis.io/'
 export const TREZOR_APP_URL = 'app.safe.global'
 export const TREZOR_EMAIL = 'support@safe.global'
+export const FORTMATIC_KEY = process.env.NEXT_PUBLIC_FORTMATIC_KEY || ''
+export const PORTIS_KEY = process.env.NEXT_PUBLIC_PORTIS_KEY || ''
 
 // Cypress
 export const CYPRESS_MNEMONIC = process.env.NEXT_PUBLIC_CYPRESS_MNEMONIC || ''
