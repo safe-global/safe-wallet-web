@@ -17,7 +17,7 @@ const PageHeader = ({
   subtitle: string | ReactElement
   action?: ReactElement
 }): ReactElement => {
-  const isRetinaDisplay = useMediaQuery(RETINATA_DISPLAY_MEDIA_QUERY)
+  const isRetinaDisplay = useMediaQuery(RETINA_DISPLAY_MEDIA_QUERY)
 
   const safeAddress = useSafeAddress()
   const addressBook = useAddressBook()
