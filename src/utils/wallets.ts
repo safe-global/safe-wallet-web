@@ -27,14 +27,11 @@ const WalletNames = {
   METAMASK: ProviderLabel.MetaMask,
   WALLET_CONNECT: 'WalletConnect',
   SAFE_MOBILE_PAIRING: PAIRING_MODULE_LABEL,
-  E2E: 'E2E Wallet',
 }
 
 /* Check if the wallet is unlocked. */
 export const isWalletUnlocked = async (walletName: string): Promise<boolean> => {
   if (typeof window === 'undefined') return false
-
-  if (walletName === WalletNames.E2E) return true
 
   // Only MetaMask exposes a method to check if the wallet is unlocked
   if (walletName === WalletNames.METAMASK) {
