@@ -1,59 +1,48 @@
 import { CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import useChainId from '@/hooks/useChainId'
-import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useAsync from '@/hooks/useAsync'
-import type { DateLabel, Transaction, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { sameAddress } from '@/utils/addresses'
+import type { Transaction, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { DetailedExecutionInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { ReactElement } from 'react'
-import { makeDateLabelFromTx, makeTxFromDetails } from '@/utils/transactions'
+import { makeTxFromDetails } from '@/utils/transactions'
 import { TxListGrid } from '@/components/transactions/TxList'
-import TxDateLabel from '@/components/transactions/TxDateLabel'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
+import { useTxDetails } from '@/hooks/useTxDetails'
+import css from './styles.module.css'
 
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
-  const dateLabel: DateLabel = makeDateLabelFromTx(tx)
 
   return (
     <TxListGrid>
-      <TxDateLabel item={dateLabel} />
       <ExpandableTransactionItem item={tx} txDetails={txDetails} testId="single-tx" />
     </TxListGrid>
   )
 }
 
 const SingleTx = () => {
-  const chainId = useChainId()
-  const router = useRouter()
-  const { id } = router.query
-  const transactionId = Array.isArray(id) ? id[0] : id
-  const { safe, safeAddress } = useSafeInfo()
+  const [txDetails, error] = useTxDetails()
 
-  const [txDetails, txDetailsError] = useAsync<TransactionDetails>(
-    () => {
-      if (!transactionId) return
-      return getTransactionDetails(chainId, transactionId)
-    },
-    [transactionId, safe.txQueuedTag, safe.txHistoryTag],
-    false,
-  )
-  const isCurrentSafeTx = sameAddress(txDetails?.safeAddress, safeAddress)
+  const { safe } = useSafeInfo()
 
-  const error = !transactionId
-    ? new Error("Couldn't retrieve the transaction details. Please review the URL.")
-    : !isCurrentSafeTx
-    ? new Error(`Transaction with id ${transactionId} not found in this Safe`)
-    : txDetailsError
+  let nonceWarning: string | undefined = undefined
+  if (txDetails?.detailedExecutionInfo?.type === DetailedExecutionInfoType.MULTISIG) {
+    if (txDetails.detailedExecutionInfo.nonce > safe.nonce) {
+      nonceWarning = `- Transaction with nonce ${txDetails.detailedExecutionInfo.nonce - 1} needs to be executed first`
+    }
+  }
 
   if (error) {
     return <ErrorMessage error={error}>Failed to load transaction</ErrorMessage>
   }
 
   if (txDetails) {
-    return <SingleTxGrid txDetails={txDetails} />
+    return (
+      <div>
+        <div className={css.container}>Queue {nonceWarning || ''}</div>
+        <SingleTxGrid txDetails={txDetails} />
+      </div>
+    )
   }
 
   return <CircularProgress />
