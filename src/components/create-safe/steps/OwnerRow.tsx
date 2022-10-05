@@ -41,7 +41,7 @@ export const OwnerRow = ({
         return 'Owner is already added'
       }
     },
-    [owners, groupName],
+    [owners],
   )
 
   const { ens, name, resolving } = useAddressResolver(owner.address)
