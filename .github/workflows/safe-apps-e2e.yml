@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     name: E2E on Chrome
     steps:
+      - uses: actions/checkout@v3
+
       - name: Build
         uses: ./.github/actions/build
 
