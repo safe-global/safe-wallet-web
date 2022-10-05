@@ -11,9 +11,9 @@ import { hasFeature } from '@/utils/chains'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import useDebounce from '@/hooks/useDebounce'
 
-export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
+export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string>; deps?: string | string[] }
 
-const AddressInput = ({ name, validate, required = true, ...props }: AddressInputProps): ReactElement => {
+const AddressInput = ({ name, validate, required = true, deps, ...props }: AddressInputProps): ReactElement => {
   const {
     register,
     setValue,
@@ -86,6 +86,8 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
           }}
           required={required}
           {...register(name, {
+            deps,
+
             required,
 
             setValueAs: (value: string): string => {

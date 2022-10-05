@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { CircularProgress, FormControl, Grid, IconButton, SvgIcon } from '@mui/material'
 import NameInput from '@/components/common/NameInput'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -21,20 +21,27 @@ export const OwnerRow = ({
   readOnly?: boolean
 }) => {
   const fieldName = `${groupName}.${index}`
-  const { control, getValues, setValue } = useFormContext()
+  const { control, setValue } = useFormContext()
+  const owners = useWatch({
+    control,
+    name: groupName,
+  })
   const owner = useWatch({
     control,
     name: fieldName,
   })
 
+  const deps = useMemo(() => {
+    return Array.from({ length: owners.length }, (_, i) => `${groupName}.${i}`)
+  }, [owners, groupName])
+
   const validateSafeAddress = useCallback(
     async (address: string) => {
-      const owners = getValues(groupName)
       if (owners.filter((owner: NamedAddress) => owner.address === address).length > 1) {
         return 'Owner is already added'
       }
     },
-    [getValues, groupName],
+    [owners, groupName],
   )
 
   const { ens, name, resolving } = useAddressResolver(owner.address)
@@ -73,7 +80,12 @@ export const OwnerRow = ({
           <EthHashInfo address={owner.address} shortAddress={false} hasExplorer showCopyButton />
         ) : (
           <FormControl fullWidth>
-            <AddressBookInput name={`${fieldName}.address`} label="Owner address" validate={validateSafeAddress} />
+            <AddressBookInput
+              name={`${fieldName}.address`}
+              label="Owner address"
+              validate={validateSafeAddress}
+              deps={deps}
+            />
           </FormControl>
         )}
       </Grid>
