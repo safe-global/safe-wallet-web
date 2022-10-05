@@ -51,6 +51,7 @@ export const ChangeThresholdDialog = () => {
 const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (txId: string) => void }) => {
   const { safe } = useSafeInfo()
   const [selectedThreshold, setSelectedThreshold] = useState<number>()
+  const isSameThreshold = selectedThreshold === safe.threshold
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     const newThreshold = parseInt(event.target.value.toString())
@@ -101,11 +102,13 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
         )}
       </DialogContent>
 
-      {selectedThreshold && (
-        <Box mt={-5}>
-          <SignOrExecuteForm safeTx={safeTx} onSubmit={onChangeTheshold} error={safeTxError} />
-        </Box>
-      )}
+      <Box mt={-5}>
+        <SignOrExecuteForm
+          safeTx={!isSameThreshold ? safeTx : undefined}
+          onSubmit={onChangeTheshold}
+          error={safeTxError}
+        />
+      </Box>
     </>
   )
 }

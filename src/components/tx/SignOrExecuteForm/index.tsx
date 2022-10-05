@@ -175,14 +175,16 @@ const SignOrExecuteForm = ({
 
         {canExecute && !onlyExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} />}
 
-        <AdvancedParams
-          params={advancedParams}
-          recommendedGasLimit={gasLimit}
-          recommendedNonce={safeTx?.data.nonce}
-          willExecute={willExecute}
-          nonceReadonly={nonceReadonly}
-          onFormSubmit={onAdvancedSubmit}
-        />
+        {safeTx && (
+          <AdvancedParams
+            params={advancedParams}
+            recommendedGasLimit={gasLimit}
+            recommendedNonce={safeTx?.data.nonce}
+            willExecute={willExecute}
+            nonceReadonly={nonceReadonly}
+            onFormSubmit={onAdvancedSubmit}
+          />
+        )}
 
         <TxSimulation
           gasLimit={advancedParams.gasLimit?.toNumber()}
@@ -201,11 +203,13 @@ const SignOrExecuteForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
-          You&apos;re about to {txId ? '' : 'create and '}
-          {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
-          wallet.
-        </Typography>
+        {safeTx && (
+          <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
+            You&apos;re about to {txId ? '' : 'create and '}
+            {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
+            wallet.
+          </Typography>
+        )}
 
         <Button variant="contained" type="submit" disabled={submitDisabled}>
           {isEstimating ? 'Estimating...' : 'Submit'}
