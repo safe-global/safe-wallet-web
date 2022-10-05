@@ -1,5 +1,6 @@
 .container {
   padding: var(--space-5) var(--space-3) 0;
+  box-sizing: content-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -13,7 +14,6 @@
 /* Retina display */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .container {
-    box-sizing: content-box;
-    padding-top: var(--space-5) + 0.5;
+    padding-bottom: 0.5px;
   }
 }

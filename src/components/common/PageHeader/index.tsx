@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 
 import css from './styles.module.css'
 
-const SIDEBAR_HEADER_HEIGHT = 199
+const SIDEBAR_HEADER_HEIGHT = 158
 
 const PageHeader = ({
   title,
