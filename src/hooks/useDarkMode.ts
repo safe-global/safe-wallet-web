@@ -4,10 +4,8 @@ import { useEffect, useMemo, useState } from 'react'
 import initTheme from '@/styles/theme'
 
 const isSystemDarkMode = (): boolean => {
-  const mediaQuery = '(prefers-color-scheme: dark)'
-  return (
-    typeof window !== 'undefined' && typeof window.matchMedia !== 'undefined' && window.matchMedia(mediaQuery).matches
-  )
+  if (typeof window === 'undefined' || !window.matchMedia) return false
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
 }
 
 export const useDarkMode = (): boolean => {

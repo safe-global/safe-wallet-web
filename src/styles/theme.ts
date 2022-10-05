@@ -1,5 +1,5 @@
+import { alpha, createTheme } from '@mui/material/styles'
 import type { Shadows } from '@mui/material/styles'
-import { createTheme } from '@mui/material/styles'
 import type {} from '@mui/x-date-pickers/themeAugmentation'
 
 import palette from './colors'
@@ -419,20 +419,20 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           tooltip: ({ theme }) => ({
             ...theme.typography.body2,
-            color: darkMode ? '#121312' : '#fff',
-            backgroundColor: darkMode ? '#fff' : '#121312',
+            color: darkMode ? darkPalette.background.main : palette.text.primary,
+            backgroundColor: darkMode ? darkPalette.text.primary : palette.background.main,
           }),
           arrow: {
-            color: darkMode ? '#fff' : '#121312',
+            color: darkMode ? darkPalette.text.primary : palette.background.main,
           },
         },
       },
       MuiBackdrop: {
         styleOverrides: {
-          root: {
+          root: ({ theme }) => ({
             backdropFilter: 'blur(1px)',
-            backgroundColor: 'rgba(228, 232, 241, 0.75)',
-          },
+            backgroundColor: alpha(theme.palette.background.main, 0.75),
+          }),
         },
       },
     },

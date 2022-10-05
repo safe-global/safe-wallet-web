@@ -27,6 +27,13 @@ ${cssVars.join('\n')}
 [data-theme="dark"] {
 ${darkColorVars.join('\n')}
 }
+
+/* The same as above for the brief moment before JS loads */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    ${darkColorVars.join('\n')}
+  }
+}
 `
 
 console.log(css)
