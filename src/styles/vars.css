@@ -89,3 +89,45 @@
   --color-logo-background: #303033;
   --color-static-main: #121312;
 }
+
+/* The same as above for the brief moment before JS loads */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #636669;
+    --color-text-disabled: #636669;
+    --color-primary-dark: #0cb259;
+    --color-primary-main: #12ff80;
+    --color-primary-light: #a1a3a7;
+    --color-secondary-dark: #636669;
+    --color-secondary-main: #ffffff;
+    --color-secondary-light: #12ff80;
+    --color-secondary-background: #303033;
+    --color-border-main: #636669;
+    --color-border-light: #303033;
+    --color-border-background: #121312;
+    --color-error-dark: #ac2c3b;
+    --color-error-main: #ff5f72;
+    --color-error-light: #ffb4bd;
+    --color-error-background: #2f2527;
+    --color-success-dark: #028d4c;
+    --color-success-main: #00b460;
+    --color-success-light: #81c784;
+    --color-success-background: #1f2920;
+    --color-info-dark: #52bfdc;
+    --color-info-main: #5fddff;
+    --color-info-light: #b7f0ff;
+    --color-info-background: #19252c;
+    --color-warning-dark: #cd674e;
+    --color-warning-main: #ff8061;
+    --color-warning-light: #ffb7a6;
+    --color-warning-background: #2f2318;
+    --color-background-default: #121312;
+    --color-background-main: #121312;
+    --color-background-paper: #1c1c1c;
+    --color-background-light: #1b2a22;
+    --color-logo-main: #ffffff;
+    --color-logo-background: #303033;
+    --color-static-main: #121312;
+  }
+}
