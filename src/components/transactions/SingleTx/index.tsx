@@ -28,7 +28,7 @@ const SingleTx = () => {
   let nonceWarning: string | undefined = undefined
   if (txDetails?.detailedExecutionInfo?.type === DetailedExecutionInfoType.MULTISIG) {
     if (txDetails.detailedExecutionInfo.nonce > safe.nonce) {
-      nonceWarning = `- Transaction with nonce ${txDetails.detailedExecutionInfo.nonce - 1} needs to be executed first`
+      nonceWarning = `Transaction with nonce ${safe.nonce} needs to be executed first`
     }
   }
 
@@ -39,7 +39,7 @@ const SingleTx = () => {
   if (txDetails) {
     return (
       <div>
-        <div className={css.container}>Queue {nonceWarning || ''}</div>
+        {nonceWarning && <div className={css.container}>{nonceWarning}</div>}
         <SingleTxGrid txDetails={txDetails} />
       </div>
     )
