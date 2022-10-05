@@ -37,9 +37,9 @@ const SafeAppList = () => {
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
 
   const wcLink: LinkProps['href'] = useMemo(() => {
-    const WC_APP_NAME = 'WalletConnect'
+    const WC_APP_ID = 11
 
-    const wc = allSafeApps.find((app) => app.name === WC_APP_NAME)
+    const wc = allSafeApps.find((app) => app.id === WC_APP_ID)
 
     if (!wc) {
       return ''
