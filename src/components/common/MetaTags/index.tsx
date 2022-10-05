@@ -1,9 +1,9 @@
-import { IS_PRODUCTION, GATEWAY_URL } from '@/config/constants'
+import { IS_PRODUCTION } from '@/config/constants'
 import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securityHeaders'
 import palette from '@/styles/colors'
 import darkPalette from '@/styles/colors-dark'
 
-const MetaTags = () => (
+const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
   <>
     <meta
       name="description"
@@ -15,8 +15,8 @@ const MetaTags = () => (
     {IS_PRODUCTION && <meta httpEquiv="Strict-Transport-Security" content={StrictTransportSecurity} />}
 
     {/* Prefetch the backend domain */}
-    <link rel="dns-prefetch" href={GATEWAY_URL} />
-    <link rel="preconnect" href={GATEWAY_URL} crossOrigin="" />
+    <link rel="dns-prefetch" href={prefetchUrl} />
+    <link rel="preconnect" href={prefetchUrl} crossOrigin="" />
 
     {/* Mobile tags */}
     <meta name="viewport" content="width=device-width" />
