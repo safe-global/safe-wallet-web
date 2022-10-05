@@ -5,7 +5,6 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 import { createTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Typography } from '@mui/material'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
@@ -23,7 +22,6 @@ export const RemoveSpendingLimit = ({
   data: SpendingLimitState
   onSubmit: (txId: string) => void
 }) => {
-  const { safe } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3()
   const { balances } = useBalances()
@@ -52,7 +50,7 @@ export const RemoveSpendingLimit = ({
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} error={safeTxError}>
       {token && (
         <TokenTransferReview
           amount={safeFormatUnits(data.amount, token.tokenInfo.decimals)}

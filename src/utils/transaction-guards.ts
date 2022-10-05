@@ -16,6 +16,7 @@ import type {
   MultisigExecutionDetails,
   MultisigExecutionInfo,
   NativeCoinTransfer,
+  SafeInfo,
   SettingsChange,
   Transaction,
   TransactionInfo,
@@ -126,8 +127,12 @@ export const isSignableBy = (txSummary: TransactionSummary, walletAddress: strin
   return !!executionInfo?.missingSigners?.some((address) => address.value === walletAddress)
 }
 
-export const isExecutable = (txSummary: TransactionSummary, walletAddress: string): boolean => {
-  if (!txSummary.executionInfo || !isMultisigExecutionInfo(txSummary.executionInfo)) {
+export const isExecutable = (txSummary: TransactionSummary, walletAddress: string, safe: SafeInfo): boolean => {
+  if (
+    !txSummary.executionInfo ||
+    !isMultisigExecutionInfo(txSummary.executionInfo) ||
+    safe.nonce !== txSummary.executionInfo.nonce
+  ) {
     return false
   }
   const { confirmationsRequired, confirmationsSubmitted } = txSummary.executionInfo

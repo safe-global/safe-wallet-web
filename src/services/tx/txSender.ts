@@ -24,6 +24,8 @@ import { ethers } from 'ethers'
 import type { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
+import { Errors, logError } from '@/services/exceptions'
+import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -46,18 +48,47 @@ const estimateSafeTxGas = async (
   })
 }
 
+const getRecommendedTxParams = async (
+  txParams: SafeTransactionDataPartial,
+): Promise<{ nonce: number; safeTxGas: number } | undefined> => {
+  const safeSDK = getAndValidateSafeSDK()
+  const chainId = await safeSDK.getChainId()
+  const safeAddress = safeSDK.getAddress()
+  let estimation: SafeTransactionEstimation | undefined
+
+  try {
+    estimation = await estimateSafeTxGas(String(chainId), safeAddress, txParams)
+  } catch (e) {
+    try {
+      // If the initial transaction data causes the estimation to fail,
+      // we retry the request with a cancellation transaction to get the
+      // recommendedNonce, even if the original transaction will likely fail
+      const cancellationTxParams = { ...txParams, data: EMPTY_DATA, to: safeAddress, value: '0' }
+      estimation = await estimateSafeTxGas(String(chainId), safeAddress, cancellationTxParams)
+    } catch (e) {
+      logError(Errors._616, (e as Error).message)
+      return
+    }
+  }
+
+  return {
+    nonce: estimation.recommendedNonce,
+    safeTxGas: Number(estimation.safeTxGas),
+  }
+}
+
 /**
  * Create a transaction from raw params
  */
 export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: number): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
 
-  // Set the recommended nonce and safeTxGas if not provided
+  // If the nonce is not provided, we get the recommended one
   if (nonce === undefined) {
-    const chainId = await safeSDK.getChainId()
-    const estimation = await estimateSafeTxGas(String(chainId), safeSDK.getAddress(), txParams)
-    txParams = { ...txParams, nonce: estimation.recommendedNonce, safeTxGas: Number(estimation.safeTxGas) }
+    const recParams = (await getRecommendedTxParams(txParams)) || {}
+    txParams = { ...txParams, ...recParams }
   } else {
+    // Otherwise, we use the provided one
     txParams = { ...txParams, nonce }
   }
 
@@ -210,7 +241,7 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
     signer: signer.connectUnchecked(),
   })
 
-  txDispatch(TxEvent.EXECUTING, { groupKey: safeTxHash })
+  txDispatch(TxEvent.EXECUTING, { txId, groupKey: safeTxHash })
 
   try {
     // With the unchecked signer, the contract call resolves once the tx
@@ -218,11 +249,11 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
     const sdkUnchecked = await sdk.connect({ ethAdapter: ethersAdapter })
     await sdkUnchecked.approveTransactionHash(safeTxHash)
   } catch (err) {
-    txDispatch(TxEvent.FAILED, { groupKey: safeTxHash, error: err as Error })
+    txDispatch(TxEvent.FAILED, { txId, groupKey: safeTxHash, error: err as Error })
     throw err
   }
 
-  txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, { groupKey: safeTxHash })
+  txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, { txId, groupKey: safeTxHash })
 
   return safeTx
 }

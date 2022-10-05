@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
-import useSafeInfo from '@/hooks/useSafeInfo'
 import useAsync from '@/hooks/useAsync'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -12,8 +11,6 @@ import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createRemoveGuardTx } from '@/services/tx/txSender'
 
 export const ReviewRemoveGuard = ({ data, onSubmit }: { data: RemoveGuardData; onSubmit: (txId: string) => void }) => {
-  const { safe } = useSafeInfo()
-
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createRemoveGuardTx()
   }, [])
@@ -31,7 +28,7 @@ export const ReviewRemoveGuard = ({ data, onSubmit }: { data: RemoveGuardData; o
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onFormSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} error={safeTxError}>
       <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Transaction guard</Typography>
       <EthHashInfo address={data.address} showCopyButton hasExplorer shortAddress={false} />
       <Typography my={2}>

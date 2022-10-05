@@ -49,7 +49,7 @@ const TestForm = ({ address, validate }: { address: string; validate?: AddressIn
 
 const setup = (address: string, validate?: AddressInputProps['validate']) => {
   const utils = render(<TestForm address={address} validate={validate} />)
-  const input = utils.getByLabelText('Recipient address')
+  const input = utils.getByLabelText('Recipient address', { exact: false })
 
   return {
     input: input as HTMLInputElement,
@@ -87,21 +87,23 @@ describe('AddressInput tests', () => {
       jest.advanceTimersByTime(1000)
     })
 
-    await waitFor(() => expect(utils.getByLabelText('Invalid chain prefix "xyz"')).toBeDefined())
+    await waitFor(() => expect(utils.getByLabelText('Invalid chain prefix "xyz"', { exact: false })).toBeDefined())
 
     act(() => {
       fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
       jest.advanceTimersByTime(1000)
     })
 
-    await waitFor(() => expect(utils.getByLabelText(`"eth" doesn't match the current chain`)).toBeDefined())
+    await waitFor(() =>
+      expect(utils.getByLabelText(`"eth" doesn't match the current chain`, { exact: false })).toBeDefined(),
+    )
 
     act(() => {
       fireEvent.change(input, { target: { value: 'rin:0x123' } })
       jest.advanceTimersByTime(1000)
     })
 
-    await waitFor(() => expect(utils.getByLabelText(`Invalid address format`)).toBeDefined())
+    await waitFor(() => expect(utils.getByLabelText(`Invalid address format`, { exact: false })).toBeDefined())
   })
 
   it('should accept a custom validate function', async () => {
@@ -112,14 +114,14 @@ describe('AddressInput tests', () => {
       jest.advanceTimersByTime(1000)
     })
 
-    await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_A} is wrong`)).toBeDefined())
+    await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_A} is wrong`, { exact: false })).toBeDefined())
 
     act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_B}` } })
       jest.advanceTimersByTime(1000)
     })
 
-    await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_B} is wrong`)).toBeDefined())
+    await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_B} is wrong`, { exact: false })).toBeDefined())
   })
 
   it('should resolve ENS names', async () => {
@@ -142,7 +144,7 @@ describe('AddressInput tests', () => {
     })
 
     expect(useNameResolver).toHaveBeenCalledWith('bogus.eth')
-    await waitFor(() => expect(utils.getByLabelText(`Failed to resolve`)).toBeDefined())
+    await waitFor(() => expect(utils.getByLabelText(`Failed to resolve`, { exact: false })).toBeDefined())
   })
 
   it('should not resolve ENS names if this feature is disabled', async () => {
@@ -162,7 +164,7 @@ describe('AddressInput tests', () => {
 
     expect(useNameResolver).toHaveBeenCalledWith('')
     await waitFor(() => expect(input.value).toBe('zero.eth'))
-    await waitFor(() => expect(utils.getByLabelText('Invalid address format')).toBeDefined())
+    await waitFor(() => expect(utils.getByLabelText('Invalid address format', { exact: false })).toBeDefined())
   })
 
   it('should show chain prefix in an adornment', async () => {
@@ -207,7 +209,7 @@ describe('AddressInput tests', () => {
     }
 
     const utils = render(<Form />)
-    const input = utils.getByLabelText('Recipient') as HTMLInputElement
+    const input = utils.getByLabelText('Recipient', { exact: false }) as HTMLInputElement
 
     act(() => {
       fireEvent.change(input, { target: { value: `rin:${TEST_ADDRESS_A}` } })

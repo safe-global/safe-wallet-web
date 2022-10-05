@@ -51,6 +51,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
       InputLabelProps={{
         shrink: currentNonce !== undefined,
       }}
+      required
       {...register(name, {
         required: true,
         valueAsNumber: true,

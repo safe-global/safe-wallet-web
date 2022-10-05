@@ -10,21 +10,28 @@ import styles from './styles.module.css'
 import { getQueuedTransactionCount } from '@/utils/transactions'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
+import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 
 type Props = {
   expanded: boolean
   visible: boolean
   setExpanded: Dispatch<SetStateAction<boolean>>
   onDismiss: () => void
+  transactions: TransactionListPage
 }
 
-const TransactionQueueBar = ({ expanded, visible, setExpanded, onDismiss }: Props): ReactElement | null => {
-  const { page = { results: [] } } = useTxQueue()
-  const queuedTxCount = getQueuedTransactionCount(page)
-
-  if (!visible) {
+const TransactionQueueBar = ({
+  expanded,
+  visible,
+  setExpanded,
+  onDismiss,
+  transactions,
+}: Props): ReactElement | null => {
+  if (!visible || transactions.results.length === 0) {
     return null
   }
+
+  const queuedTxCount = getQueuedTransactionCount(transactions)
 
   // if you inline the expression, it will split put the `queuedTxCount` on a new line
   // and make it harder to find this text for matchers in tests

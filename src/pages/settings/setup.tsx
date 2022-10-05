@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Box, Grid, Paper, Tooltip, Typography } from '@mui/material'
+import { Grid, Paper, Tooltip, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
@@ -43,12 +43,9 @@ const Setup: NextPage = () => {
                 </Tooltip>
               </Typography>
 
-              <Box pt={1}>
-                <Typography color="text.secondary" component="span">
-                  Current nonce:
-                </Typography>{' '}
-                {nonce}
-              </Box>
+              <Typography pt={1}>
+                Current nonce: <b>{nonce}</b>
+              </Typography>
             </Grid>
 
             <Grid item xs>
