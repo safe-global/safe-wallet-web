@@ -23,7 +23,7 @@ const PageHeader = ({
     <Box
       className={css.container}
       sx={{
-        height: `${199 + nameHeight}.5px`,
+        height: `${199 + nameHeight}px`,
         top: `-${76 + nameHeight}px`,
       }}
     >
