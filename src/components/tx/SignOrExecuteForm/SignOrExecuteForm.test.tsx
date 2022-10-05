@@ -14,12 +14,12 @@ import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@gnosis.pm/safe-core-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 
-const createSafeTx = (): SafeTransaction => {
+const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
     data: {
       to: '0x0000000000000000000000000000000000000000',
       value: '0x0',
-      data: '0x',
+      data,
       operation: 0,
       nonce: 100,
     },
@@ -77,14 +77,16 @@ describe('SignOrExecuteForm', () => {
   })
 
   it('displays decoded data if there is a tx', () => {
-    const mockTx = createSafeTx()
+    const mockTx = createSafeTx('0x123')
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} txId="mockTxId" />)
 
     expect(result.getByText('Transaction details')).toBeInTheDocument()
   })
 
-  it('doesnt display decoded data if there is no tx', () => {
-    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={undefined} />)
+  it("doesn't display decoded data if tx is a native transfer", () => {
+    const mockTx = createSafeTx()
+
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(result.queryByText('Transaction details')).not.toBeInTheDocument()
   })
