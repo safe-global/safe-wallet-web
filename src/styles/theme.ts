@@ -419,11 +419,11 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           tooltip: ({ theme }) => ({
             ...theme.typography.body2,
-            color: darkMode ? '#121312' : '#fff',
-            backgroundColor: darkMode ? '#fff' : '#121312',
+            color: darkMode ? darkPalette.background.main : palette.text.primary,
+            backgroundColor: darkMode ? darkPalette.text.primary : palette.background.main,
           }),
           arrow: {
-            color: darkMode ? '#fff' : '#121312',
+            color: darkMode ? darkPalette.text.primary : palette.background.main,
           },
         },
       },

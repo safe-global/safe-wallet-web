@@ -29,8 +29,8 @@ import { useTxTracking } from '@/hooks/useTxTracking'
 import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
-import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securityHeaders'
 import createEmotionCache from '@/utils/createEmotionCache'
+import MetaTags from '@/components/common/MetaTags'
 
 const InitApp = (): null => {
   if (!IS_PRODUCTION && !cgwDebugStorage.get()) {
@@ -78,34 +78,7 @@ const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCach
     <StoreHydrator>
       <Head>
         <title key="default-title">Safe</title>
-        <meta
-          name="description"
-          content="Safe is the most trusted platform to manage digital assets on Ethereum (formerly known as the Gnosis Safe multisig)."
-        />
-
-        {/* CSP */}
-        <meta httpEquiv="Content-Security-Policy" content={ContentSecurityPolicy} />
-        {IS_PRODUCTION && <meta httpEquiv="Strict-Transport-Security" content={StrictTransportSecurity} />}
-
-        {/* Prefetch the backend domain */}
-        <link rel="dns-prefetch" href={GATEWAY_URL} />
-        <link rel="preconnect" href={GATEWAY_URL} crossOrigin="" />
-
-        {/* Mobile tags */}
-        <meta name="viewport" content="width=device-width" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-        {/* PWA primary color and manifest */}
-        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#121312" media="(prefers-color-scheme: dark)" />
-        <link rel="manifest" href="/manifest.json" />
-
-        {/* Favicons */}
-        <link rel="shortcut icon" href="/favicons/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
-        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#000" />
+        <MetaTags />
       </Head>
 
       <CacheProvider value={emotionCache}>
