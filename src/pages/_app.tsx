@@ -5,10 +5,10 @@ import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
-import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
+import { setBaseUrl as setGatewayBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
 import { CacheProvider, type EmotionCache } from '@emotion/react'
 import '@/styles/globals.css'
-import { IS_PRODUCTION, GATEWAY_URL } from '@/config/constants'
+import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION } from '@/config/constants'
 import { StoreHydrator } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import useLoadableStores from '@/hooks/useLoadableStores'
@@ -32,11 +32,10 @@ import ErrorBoundary from '@/components/common/ErrorBoundary'
 import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securityHeaders'
 import createEmotionCache from '@/utils/createEmotionCache'
 
-const InitApp = (): null => {
-  if (!IS_PRODUCTION && !cgwDebugStorage.get()) {
-    setBaseUrl(GATEWAY_URL)
-  }
+const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
+const InitApp = (): null => {
+  setGatewayBaseUrl(GATEWAY_URL)
   usePathRewrite()
   useStorageMigration()
   useGtm()

@@ -1,23 +1,14 @@
-import {
-  CYPRESS_MNEMONIC,
-  FORTMATIC_KEY,
-  PORTIS_KEY,
-  TREZOR_APP_URL,
-  TREZOR_EMAIL,
-  WC_BRIDGE,
-} from '@/config/constants'
+import { CYPRESS_MNEMONIC, TREZOR_APP_URL, TREZOR_EMAIL, WC_BRIDGE } from '@/config/constants'
 import { type RecommendedInjectedWallets, type WalletInit } from '@web3-onboard/common/dist/types.d'
 import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import coinbaseModule from '@web3-onboard/coinbase'
-import fortmaticModule from '@web3-onboard/fortmatic'
 import injectedWalletModule, { ProviderLabel } from '@web3-onboard/injected-wallets'
 import keystoneModule from '@web3-onboard/keystone/dist/index'
 import ledgerModule from '@web3-onboard/ledger'
-import portisModule from '@web3-onboard/portis'
-import torusModule from '@web3-onboard/torus'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
+import tallyhoModule from '@web3-onboard/tallyho'
 
 import pairingModule, { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
@@ -27,28 +18,24 @@ import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 
 export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
-  FORTMATIC = 'FORTMATIC',
   INJECTED = 'INJECTED',
   KEYSTONE = 'KEYSTONE',
   LEDGER = 'LEDGER',
   PAIRING = 'PAIRING',
-  PORTIS = 'PORTIS',
-  TORUS = 'TORUS',
   TREZOR = 'TREZOR',
   WALLETCONNECT = 'WALLETCONNECT',
+  TALLYHO = 'TALLYHO',
 }
 
 export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.COINBASE]: 'coinbase',
-  [WALLET_KEYS.FORTMATIC]: 'fortmatic',
   [WALLET_KEYS.INJECTED]: 'detectedwallet',
   [WALLET_KEYS.KEYSTONE]: 'keystone',
   [WALLET_KEYS.LEDGER]: 'ledger',
   [WALLET_KEYS.PAIRING]: 'safeMobile',
-  [WALLET_KEYS.PORTIS]: 'portis',
-  [WALLET_KEYS.TORUS]: 'torus',
   [WALLET_KEYS.TREZOR]: 'trezor',
   [WALLET_KEYS.WALLETCONNECT]: 'walletConnect',
+  [WALLET_KEYS.TALLYHO]: 'tally',
 }
 
 const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
@@ -58,11 +45,9 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.LEDGER]: ledgerModule,
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
   [WALLET_KEYS.KEYSTONE]: keystoneModule,
+  [WALLET_KEYS.TALLYHO]: tallyhoModule,
   [WALLET_KEYS.COINBASE]: () =>
     coinbaseModule({ darkMode: !!window?.matchMedia('(prefers-color-scheme: dark)')?.matches }),
-  [WALLET_KEYS.FORTMATIC]: () => fortmaticModule({ apiKey: FORTMATIC_KEY }),
-  [WALLET_KEYS.PORTIS]: () => portisModule({ apiKey: PORTIS_KEY }),
-  [WALLET_KEYS.TORUS]: torusModule,
 }
 
 export const getAllWallets = (): WalletInit[] => {
