@@ -9,3 +9,11 @@
   width: 100%;
   position: sticky !important;
 }
+
+/* Retina display */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .container {
+    box-sizing: content-box;
+    padding-top: var(--space-5) + 0.5;
+  }
+}
