@@ -52,3 +52,14 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
           CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}
+
+      - uses: cypress-io/github-action@v4
+        with:
+          spec: cypress/e2e/safe-apps/*.cy.js
+          browser: chrome
+          record: true
+          config: baseUrl=http://localhost:8080
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_SAFE_APPS_RECORD_KEY }}
+          CYPRESS_ENV: ${{ env.REACT_APP_ENV}}
+          CYPRESS_MNEMONIC: ${{secrets.CYPRESS_MNEMONIC}}
