@@ -1,12 +1,11 @@
-const TEST_SAFE = 'rin:0x4483bAaB2c2EB667f0541464266a1c1a8778151a'
+import { TEST_SAFE } from '../e2e/safe-apps/constants'
 
 Cypress.Commands.add('visitSafeApp', (appUrl, testSafe = TEST_SAFE) => {
   cy.on('window:before:load', (window) => {
-    // Does not work unless `JSON.stringify` is used
     window.localStorage.setItem(
       'SAFE_v2__SAFE_APPS_INFO_MODAL',
       JSON.stringify({
-        4: { consentsAccepted: true },
+        5: { consentsAccepted: true },
       }),
     )
   })

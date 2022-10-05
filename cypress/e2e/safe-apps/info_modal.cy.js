@@ -1,27 +1,25 @@
-const RINKEBY_TEST_SAFE = 'rin:0x11Df0fa87b30080d59eba632570f620e37f2a8f7'
-const BROWSER_PERMISSIONS_KEY = 'SAFE_v2__BROWSER_PERMISSIONS'
-const INFO_MODAL_KEY = 'SAFE_v2__SAFE_APPS_INFO_MODAL'
+import { TEST_SAFE, BROWSER_PERMISSIONS_KEY, INFO_MODAL_KEY } from './constants'
 
-describe('Safe Apps Info Modal', () => {
+describe('The Safe Apps info modal', () => {
   before(() => {
-    cy.visit(`/${RINKEBY_TEST_SAFE}/apps`, { failOnStatusCode: false })
-    cy.contains('button', 'Accept selection').click()
+    cy.visit(`/${TEST_SAFE}/apps`, { failOnStatusCode: false })
+    cy.findByText(/accept selection/i).click()
   })
 
   describe('when opening a Safe App', () => {
     it('should show the disclaimer', () => {
-      cy.contains('WalletConnect').click()
-      cy.contains('Disclaimer').should('be.visible')
+      cy.findByRole('link', { name: /logo.*walletconnect/i }).click()
+      cy.findByRole('heading', { name: /disclaimer/i }).should('exist')
     })
 
     it('should show the permissions slide if the app require permissions', () => {
-      cy.contains('button', 'Continue').click()
+      cy.findByRole('button', { name: /continue/i }).click()
       cy.wait(500) // wait for the animation to finish
-      cy.contains('Camera').should('be.visible')
+      cy.findByRole('checkbox', { name: /camera/i }).should('exist')
     })
 
     it('should store the permissions and consents decision when accepted', () => {
-      cy.contains('button', 'Continue')
+      cy.findByRole('button', { name: /continue/i })
         .click()
         .should(() => {
           const storedBrowserPermissions = JSON.parse(localStorage.getItem(BROWSER_PERMISSIONS_KEY))
@@ -30,7 +28,7 @@ describe('Safe Apps Info Modal', () => {
 
           expect(browserPermissions.feature).to.eq('camera')
           expect(browserPermissions.status).to.eq('granted')
-          expect(storedInfoModal['4'].consentsAccepted).to.eq(true)
+          expect(storedInfoModal['5'].consentsAccepted).to.eq(true)
         })
     })
   })

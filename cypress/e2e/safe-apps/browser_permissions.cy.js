@@ -1,4 +1,5 @@
-const RINKEBY_TEST_SAFE = 'rin:0x4483bAaB2c2EB667f0541464266a1c1a8778151a'
+import { BROWSER_PERMISSIONS_KEY } from './constants'
+
 const appUrl = 'https://safe-test-app.com'
 
 describe('The Browser permissions system', () => {
@@ -18,18 +19,18 @@ describe('The Browser permissions system', () => {
     it('should show a permissions slide to the user', () => {
       cy.visitSafeApp(`${appUrl}/app`)
 
-      cy.contains('Camera').should('be.visible')
-      cy.contains('Microphone').should('be.visible')
+      cy.findByRole('checkbox', { name: /camera/i }).should('exist')
+      cy.findByRole('checkbox', { name: /microphone/i }).should('exist')
     })
 
     it('should allow to change, accept and store the selection', () => {
-      cy.contains('Accept selection').click()
+      cy.findByText(/accept selection/i).click()
 
-      cy.contains('Microphone').click()
-      cy.contains('Continue')
+      cy.findByRole('checkbox', { name: /microphone/i }).click()
+      cy.findByRole('button', { name: /continue/i })
         .click()
         .should(() => {
-          expect(window.localStorage.getItem('SAFE_v2__BROWSER_PERMISSIONS')).to.eq(
+          expect(window.localStorage.getItem(BROWSER_PERMISSIONS_KEY)).to.eq(
             '{"https://safe-test-app.com/app":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}',
           )
         })

@@ -1,4 +1,4 @@
-const RINKEBY_TEST_SAFE = 'rin:0x4483bAaB2c2EB667f0541464266a1c1a8778151a'
+import { SAFE_PERMISSIONS_KEY } from './constants'
 const appUrl = 'https://safe-test-app.com'
 
 describe('The Safe permissions system', () => {
@@ -17,11 +17,10 @@ describe('The Safe permissions system', () => {
     it('should show the permissions prompt and return the permissions on accept', () => {
       cy.visitSafeApp(`${appUrl}/request-permissions`)
 
-      cy.contains('Permissions Request').should('be.visible')
-      cy.contains(`${appUrl} is requesting permissions for`).should('be.visible')
-      cy.contains('Access to your address book').should('be.visible')
+      cy.findByRole('heading', { name: /permissions request/i }).should('exist')
+      cy.findByText(/access to your address book/i).should('exist')
 
-      cy.contains('Accept').click()
+      cy.findByRole('button', { name: /accept/i }).click()
 
       cy.get('@safeAppsMessage').should('have.been.calledWithMatch', {
         data: [
@@ -40,7 +39,7 @@ describe('The Safe permissions system', () => {
     it('should return the current permissions', () => {
       cy.on('window:before:load', (window) => {
         window.localStorage.setItem(
-          'SAFE_v2__SAFE_PERMISSIONS',
+          SAFE_PERMISSIONS_KEY,
           JSON.stringify({
             [appUrl]: [
               {
