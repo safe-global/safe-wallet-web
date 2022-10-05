@@ -7,9 +7,9 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useAsync from '@/hooks/useAsync'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
 import { createTx } from '@/services/tx/txSender'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import { type NftTransferParams } from '.'
 import ImageFallback from '@/components/common/ImageFallback'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 type ReviewNftTxProps = {
   params: NftTransferParams
@@ -17,17 +17,16 @@ type ReviewNftTxProps = {
 }
 
 const ReviewNftTx = ({ params, onSubmit }: ReviewNftTxProps): ReactElement => {
-  const { safeAddress, safe } = useSafeInfo()
+  const safeAddress = useSafeAddress()
   const { token } = params
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
-    if (!safeAddress) return
     const transferParams = createNftTransferParams(safeAddress, params.recipient, params.token.id, params.token.address)
     return createTx(transferParams)
   }, [safeAddress, params])
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} isExecutable={safe.threshold === 1} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>
       <Box display="flex" flexDirection="column" alignItems="center">
         <ImageFallback
           src={token.imageUri || token.logoUri}

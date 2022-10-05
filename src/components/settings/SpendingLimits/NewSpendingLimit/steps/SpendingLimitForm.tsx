@@ -16,12 +16,13 @@ import {
   FormGroup,
 } from '@mui/material'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import { validateAmount, validateDecimalLength } from '@/utils/validation'
+import { validateAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import useChainId from '@/hooks/useChainId'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import { defaultAbiCoder } from '@ethersproject/abi'
+import { parseUnits } from 'ethers/lib/utils'
 
 export type NewSpendingLimitData = {
   beneficiary: string
@@ -35,12 +36,13 @@ type Props = {
   onSubmit: (data: NewSpendingLimitData) => void
 }
 
-const validateUpperSpendingLimitAmount = (val: string) => {
+export const _validateSpendingLimit = (val: string, decimals?: number) => {
   // Allowance amount is uint96 https://github.com/safe-global/safe-modules/blob/master/allowances/contracts/AlowanceModule.sol#L52
   try {
-    defaultAbiCoder.encode(['uint96'], [val])
-  } catch {
-    return 'Maximum value is 2^96 - 1'
+    const amount = parseUnits(val, decimals)
+    defaultAbiCoder.encode(['int96'], [amount])
+  } catch (e) {
+    return Number(val) > 1 ? 'Amount is too big' : 'Amount is too small'
   }
 }
 
@@ -83,7 +85,9 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
           </FormControl>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="asset-label">Select an asset</InputLabel>
+            <InputLabel id="asset-label" required>
+              Select an asset
+            </InputLabel>
             <Select
               labelId="asset-label"
               label={errors.tokenAddress?.message || 'Select an asset'}
@@ -107,12 +111,11 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
               autoComplete="off"
+              required
               {...register('amount', {
                 required: true,
                 validate: (val) =>
-                  validateAmount(val) ||
-                  validateDecimalLength(val, selectedToken?.tokenInfo.decimals) ||
-                  validateUpperSpendingLimitAmount(val),
+                  validateAmount(val) || _validateSpendingLimit(val, selectedToken?.tokenInfo.decimals),
               })}
             />
           </FormControl>

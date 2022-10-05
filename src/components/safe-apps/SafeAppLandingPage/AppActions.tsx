@@ -71,9 +71,8 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
       const redirect = `${AppRoutes.apps}?appUrl=${appUrl}`
       const createSafeHrefWithRedirect: UrlObject = {
         pathname: AppRoutes.open,
-        query: { safeViewRedirectURL: redirect },
+        query: { safeViewRedirectURL: redirect, chain: chain.shortName },
       }
-
       button = (
         <Link href={createSafeHrefWithRedirect} passHref>
           <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>

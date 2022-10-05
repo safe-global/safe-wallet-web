@@ -23,19 +23,19 @@ type DecodedTxProps = {
 const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
   const encodedData = tx.data.data
-  const isNativeTransfer = isEmptyHexData(encodedData)
+  const isEmptyData = isEmptyHexData(encodedData)
 
   const [decodedData, decodedDataError, decodedDataLoading] = useAsync<DecodedDataResponse>(() => {
-    if (!encodedData || isEmptyHexData(encodedData)) return
+    if (!encodedData || isEmptyData) return
     return getDecodedData(chainId, encodedData)
-  }, [chainId, encodedData, isNativeTransfer])
+  }, [chainId, encodedData, isEmptyData])
 
   const [txDetails, txDetailsError, txDetailsLoading] = useAsync<TransactionDetails>(() => {
     if (!txId) return
     return getTransactionDetails(chainId, txId)
   }, [])
 
-  if (isNativeTransfer && !txId) {
+  if (isEmptyData && !txId) {
     return null
   }
 
