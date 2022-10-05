@@ -10,7 +10,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import NameInput from '@/components/common/NameInput'
 import useChainId from '@/hooks/useChainId'
 import { useAppDispatch } from '@/store'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { removeAddressBookEntry, upsertAddressBookEntry } from '@/store/addressBookSlice'
 
 export type AddressEntry = {
   name: string
@@ -41,6 +41,9 @@ const EntryDialog = ({
   const { handleSubmit, formState } = methods
 
   const onSubmit = (data: AddressEntry) => {
+    if (defaultValues.address !== data.address) {
+      dispatch(removeAddressBookEntry({ address: defaultValues.address, chainId: chainId || currentChainId }))
+    }
     dispatch(upsertAddressBookEntry({ ...data, chainId: chainId || currentChainId }))
 
     handleClose()
