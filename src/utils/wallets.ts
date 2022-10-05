@@ -48,5 +48,9 @@ export const isWalletUnlocked = async (walletName: string): Promise<boolean> => 
     return hasStoredPairingSession()
   }
 
+  if (walletName === 'E2E Wallet') {
+    return Boolean(window.Cypress)
+  }
+
   return false
 }
