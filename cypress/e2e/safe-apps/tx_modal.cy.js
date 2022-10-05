@@ -1,4 +1,3 @@
-import { TEST_SAFE } from './constants'
 const appUrl = 'http://safe-test-app.com'
 
 describe('The transaction modal', () => {
