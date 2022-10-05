@@ -2,6 +2,7 @@ name: e2e
 
 on:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   e2e:
