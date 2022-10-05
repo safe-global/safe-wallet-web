@@ -1,5 +1,4 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
@@ -19,7 +18,6 @@ import { isSmartContractWallet, shouldUseEthSignMethod } from '@/hooks/wallets/w
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
-import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
@@ -30,25 +28,23 @@ import type { Web3Provider } from '@ethersproject/providers'
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
-  isExecutable: boolean
-  isRejection?: boolean
-  onlyExecute?: boolean
   onSubmit: (txId: string) => void
   children?: ReactNode
   error?: Error
-  redirectToTx?: boolean
+  isExecutable?: boolean
+  isRejection?: boolean
+  onlyExecute?: boolean
 }
 
 const SignOrExecuteForm = ({
   safeTx,
   txId,
-  isExecutable,
-  isRejection,
   onlyExecute,
   onSubmit,
   children,
   error,
-  redirectToTx = true,
+  isExecutable = false,
+  isRejection = false,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -58,14 +54,19 @@ const SignOrExecuteForm = ({
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
-  const router = useRouter()
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const provider = useWeb3()
   const currentChain = useCurrentChain()
 
   // Check that the transaction is executable
-  const canExecute = isExecutable && !!tx && tx.data.nonce === safe.nonce
+  const isNewExecutableTx = !txId && safe.threshold === 1
+
+  console.log('threshold', safe.threshold)
+
+  const isCorrectNonce = tx?.data.nonce === safe.nonce
+  const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
+
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = shouldExecute && canExecute
 
@@ -84,7 +85,7 @@ const SignOrExecuteForm = ({
   // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
-  const nonceReadonly = !!tx?.signatures.size || !!isRejection
+  const nonceReadonly = !!tx?.signatures.size || isRejection
 
   //
   // Callbacks
@@ -103,6 +104,7 @@ const SignOrExecuteForm = ({
 
     const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
+
     const signedTx = smartContractWallet
       ? await dispatchOnChainSigning(createdTx, provider, txId)
       : await dispatchTxSigning(createdTx, shouldEthSign, txId)
@@ -146,15 +148,6 @@ const SignOrExecuteForm = ({
     }
 
     onSubmit(id)
-
-    // If txId isn't passed in props, it's a newly created tx
-    // Redirect to the single tx view
-    if (redirectToTx && (!txId || isRejection)) {
-      router.push({
-        pathname: AppRoutes.transactions.tx,
-        query: { safe: router.query.safe, id },
-      })
-    }
   }
 
   const onAdvancedSubmit = async (data: AdvancedParameters) => {
