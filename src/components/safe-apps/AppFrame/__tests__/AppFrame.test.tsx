@@ -10,10 +10,10 @@ import {
 } from '@gnosis.pm/safe-react-gateway-sdk'
 
 describe('AppFrame', () => {
-  it('should show the transaction queue bar', () => {
+  it('should not show the transaction queue bar when there are no queued transactions', () => {
     render(<AppFrame appUrl="https://app.url" allowedFeaturesList="" />)
 
-    expect(screen.getByText('(0) Transaction queue')).toBeInTheDocument()
+    expect(screen.queryAllByText('(0) Transaction queue').length).toBe(0)
   })
 
   it('should show queued transactions in the queue bar', () => {

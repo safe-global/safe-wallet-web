@@ -419,12 +419,12 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           tooltip: ({ theme }) => ({
             ...theme.typography.body2,
-            color: darkMode ? darkPalette.background.main : palette.text.primary,
-            backgroundColor: darkMode ? darkPalette.text.primary : palette.background.main,
+            color: theme.palette.background.main,
+            backgroundColor: theme.palette.text.primary,
           }),
-          arrow: {
-            color: darkMode ? darkPalette.text.primary : palette.background.main,
-          },
+          arrow: ({ theme }) => ({
+            color: theme.palette.text.primary,
+          }),
         },
       },
       MuiBackdrop: {
