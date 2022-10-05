@@ -6,7 +6,7 @@ import type { ReactElement } from 'react'
 import css from './styles.module.css'
 
 const SIDEBAR_HEADER_HEIGHT = 199
-const RETINATA_DISPLAY_MEDIA_QUERY = '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)'
+const RETINA_DISPLAY_MEDIA_QUERY = '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)'
 
 const PageHeader = ({
   title,
