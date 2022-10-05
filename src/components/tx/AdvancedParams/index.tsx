@@ -1,5 +1,8 @@
 import GasParams from '@/components/tx/GasParams'
+import { useCurrentChain } from '@/hooks/useChains'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
+import { hasFeature } from '@/utils/chains'
+import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useState } from 'react'
 import AdvancedParamsForm from './AdvancedParamsForm'
 import { type AdvancedParameters } from './types'
@@ -22,6 +25,8 @@ const AdvancedParams = ({
   onFormSubmit,
 }: Props) => {
   const [isEditing, setIsEditing] = useState<boolean>(false)
+  const chain = useCurrentChain()
+  const isEIP1559 = !!chain && hasFeature(chain, FEATURES.EIP1559)
 
   const onEditOpen = () => {
     setIsEditing(true)
@@ -41,9 +46,10 @@ const AdvancedParams = ({
       recommendedGasLimit={recommendedGasLimit}
       nonceReadonly={nonceReadonly}
       onSubmit={onAdvancedSubmit}
+      isEIP1559={isEIP1559}
     />
   ) : (
-    <GasParams params={params} isExecution={willExecute} onEdit={onEditOpen} />
+    <GasParams params={params} isExecution={willExecute} isEIP1559={isEIP1559} onEdit={onEditOpen} />
   )
 }
 
