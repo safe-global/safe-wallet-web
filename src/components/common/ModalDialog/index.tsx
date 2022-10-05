@@ -70,7 +70,7 @@ const ModalDialog = ({
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
-    <StyledDialog {...restProps} fullScreen={fullScreen} onClick={(e) => e.stopPropagation()}>
+    <StyledDialog {...restProps} fullScreen={fullScreen} scroll="body" onClick={(e) => e.stopPropagation()}>
       {dialogTitle && (
         <ModalDialogTitle onClose={restProps.onClose} hideChainIndicator={hideChainIndicator}>
           {dialogTitle}
