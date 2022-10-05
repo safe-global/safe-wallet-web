@@ -50,12 +50,14 @@ export const ChangeThresholdDialog = () => {
 
 const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (txId: string) => void }) => {
   const { safe } = useSafeInfo()
-  const [selectedThreshold, setSelectedThreshold] = useState<number>()
+  const [selectedThreshold, setSelectedThreshold] = useState<number>(safe.threshold)
+  const [isChanged, setChanged] = useState<boolean>(false)
   const isSameThreshold = selectedThreshold === safe.threshold
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     const newThreshold = parseInt(event.target.value.toString())
-    setSelectedThreshold(newThreshold === data.threshold ? undefined : newThreshold)
+    setSelectedThreshold(newThreshold)
+    setChanged(true)
   }
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
@@ -77,7 +79,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
 
         <Grid container direction="row" gap={1} alignItems="center" mb={2}>
           <Grid item xs={2}>
-            <Select value={selectedThreshold ?? data.threshold} onChange={handleChange} fullWidth>
+            <Select value={selectedThreshold} onChange={handleChange} fullWidth>
               {safe.owners.map((_, idx) => (
                 <MenuItem key={idx + 1} value={idx + 1}>
                   {idx + 1}
@@ -91,9 +93,13 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
           </Grid>
         </Grid>
 
-        {!selectedThreshold && (
+        {isChanged && isSameThreshold ? (
+          <Typography color="error" mb={2}>
+            Current policy is already set to {data.threshold}
+          </Typography>
+        ) : (
           <Typography mb={2}>
-            Current policy is{' '}
+            {isChanged ? 'Previous policy was ' : 'Current policy is '}
             <b>
               {data.threshold} out of {safe.owners.length}
             </b>
@@ -104,9 +110,10 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
 
       <Box mt={-5}>
         <SignOrExecuteForm
-          safeTx={!isSameThreshold ? safeTx : undefined}
+          safeTx={safeTx}
           onSubmit={onChangeTheshold}
           error={safeTxError}
+          disableSubmit={isSameThreshold}
         />
       </Box>
     </>

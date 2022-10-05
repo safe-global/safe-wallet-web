@@ -89,7 +89,7 @@ export const settingsNavItems = [
     href: AppRoutes.settings.spendingLimits,
   },
   {
-    label: 'Safe Apps Permissions',
+    label: 'Safe Apps permissions',
     href: AppRoutes.settings.safeAppsPermissions,
   },
 ]
