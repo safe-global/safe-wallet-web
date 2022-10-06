@@ -116,7 +116,7 @@ const Overview = (): ReactElement => {
               </Grid>
             </Grid>
 
-            <Box my={2}>
+            <Box mt={2} mb={4}>
               <EthHashInfo showAvatar={false} address={safeAddress} shortAddress={false} />
             </Box>
 
@@ -142,6 +142,7 @@ const Overview = (): ReactElement => {
                   </a>
                 </Link>
               </Grid>
+              <Grid item xs />
 
               <Grid item>
                 <Box display="flex" height={1} alignItems="flex-end" justifyContent="flex-end">

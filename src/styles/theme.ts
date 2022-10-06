@@ -312,7 +312,7 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             '& .MuiTableCell-root': {
-              borderBottom: `2px solid ${theme.palette.border.light}`,
+              borderBottom: `1px solid ${theme.palette.border.light}`,
             },
 
             [theme.breakpoints.down('sm')]: {
@@ -435,7 +435,6 @@ const initTheme = (darkMode: boolean) => {
       MuiBackdrop: {
         styleOverrides: {
           root: ({ theme }) => ({
-            backdropFilter: 'blur(1px)',
             backgroundColor: alpha(theme.palette.background.main, 0.75),
           }),
         },
@@ -445,6 +444,16 @@ const initTheme = (darkMode: boolean) => {
           thumb: ({ theme }) => ({
             boxShadow:
               '0px 2px 6px -1px rgba(0, 0, 0, 0.2), 0px 1px 4px rgba(0, 0, 0, 0.14), 0px 1px 4px rgba(0, 0, 0, 0.14)',
+          }),
+        },
+      },
+      MuiLink: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            textDecoration: 'none',
+            '&:hover': {
+              color: theme.palette.primary.light,
+            },
           }),
         },
       },

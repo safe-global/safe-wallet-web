@@ -1,11 +1,11 @@
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import styled from '@emotion/styled'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid, Typography, Link } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import { useRouter } from 'next/router'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { AppRoutes } from '@/config/routes'
 
 export const FEATURED_APPS_TAG = 'dashboard-widgets'
@@ -13,10 +13,6 @@ export const FEATURED_APPS_TAG = 'dashboard-widgets'
 const StyledImage = styled.img`
   width: 64px;
   height: 64px;
-`
-
-const StyledLink = styled.a`
-  text-decoration: none;
 `
 
 const StyledGrid = styled(Grid)`
@@ -44,8 +40,8 @@ export const FeaturedApps = (): ReactElement | null => {
           <StyledGrid container>
             {featuredApps.map((app) => (
               <StyledGridItem item xs md key={app.id}>
-                <Link passHref href={{ pathname: AppRoutes.apps, query: { ...router.query, appUrl: app.url } }}>
-                  <StyledLink>
+                <NextLink passHref href={{ pathname: AppRoutes.apps, query: { ...router.query, appUrl: app.url } }}>
+                  <a>
                     <Card>
                       <Grid container alignItems="center" spacing={3}>
                         <Grid item xs={12} md={3}>
@@ -57,18 +53,14 @@ export const FeaturedApps = (): ReactElement | null => {
                             <Typography fontSize="lg">{app.description}</Typography>
                           </Box>
 
-                          <Typography
-                            color="primary.main"
-                            fontWeight="bold"
-                            sx={{ '&:hover': { color: ({ palette }) => palette.primary.light } }}
-                          >
+                          <Link color="primary.main" fontWeight="bold">
                             Use {app.name}
-                          </Typography>
+                          </Link>
                         </Grid>
                       </Grid>
                     </Card>
-                  </StyledLink>
-                </Link>
+                  </a>
+                </NextLink>
               </StyledGridItem>
             ))}
           </StyledGrid>
