@@ -1,3 +1,5 @@
+import { TEST_SAFE } from './constants'
+
 const appUrl = 'http://safe-test-app.com'
 
 describe('The transaction modal', () => {
@@ -18,7 +20,14 @@ describe('The transaction modal', () => {
 
   describe('When sending a transaction from an app', () => {
     it('should show the transaction popup', () => {
-      cy.findByRole('heading', { name: /cypress test app cypress test app goerli/i }).should('exist')
+      cy.findByRole('dialog').within(() => {
+        cy.findByText(/sending from/i)
+
+        const testSafeParts = TEST_SAFE.split(':')
+
+        cy.findByText(`${testSafeParts[0]}:`)
+        cy.findByText(testSafeParts[1])
+      })
     })
   })
 })
