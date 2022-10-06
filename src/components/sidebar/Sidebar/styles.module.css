@@ -13,6 +13,9 @@
 }
 
 .scroll {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -47,7 +50,7 @@
   z-index: 2;
   right: 0;
   transform: translateX(50%);
-  margin-top: 18px;
+  margin-top: 54px;
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -76,6 +79,6 @@
   .drawerButton {
     width: 60px;
     height: 60px;
-    margin-top: 40px;
+    margin-top: 44px;
   }
 }
