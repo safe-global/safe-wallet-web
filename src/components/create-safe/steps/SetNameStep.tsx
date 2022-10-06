@@ -44,13 +44,6 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
     }
   })
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
-    onBack({
-      ...data,
-      name: data.name || fallbackName,
-    })
-  })
-
   return (
     <Paper>
       <FormProvider {...formMethods}>
@@ -81,7 +74,7 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
           <Box padding={3}>
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
-                <Button onClick={onFormBack}>Back</Button>
+                <Button onClick={onBack}>Back</Button>
               </Grid>
 
               <Grid item>

@@ -48,10 +48,6 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
     setValue('owners', owners)
   }, [getValues, safeInfo, setValue])
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
-    onBack(data)
-  })
-
   return (
     <Paper>
       <FormProvider {...formMethods}>
@@ -78,7 +74,7 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
             ))}
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
-                <Button onClick={onFormBack}>Back</Button>
+                <Button onClick={onBack}>Back</Button>
               </Grid>
               <Grid item>
                 <Button variant="contained" type="submit" disabled={!formState.isValid}>

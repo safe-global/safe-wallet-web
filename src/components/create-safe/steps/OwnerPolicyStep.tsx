@@ -87,10 +87,6 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     })
   })
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
-    onBack(data)
-  })
-
   return (
     <Paper>
       <FormProvider {...formMethods}>
@@ -159,7 +155,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
 
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
-                <Button onClick={onFormBack}>Back</Button>
+                <Button onClick={onBack}>Back</Button>
               </Grid>
 
               <Grid item>

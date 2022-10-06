@@ -1,12 +1,11 @@
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import { trackEvent, MODALS_CATEGORY } from '@/services/analytics'
-import { merge } from 'lodash'
 
 export type StepRenderProps = {
   data: unknown
   onSubmit: (data: unknown) => void
-  onBack: (data?: unknown) => void
+  onBack: () => void
   setStep: (step: number) => void
 }
 
@@ -47,20 +46,9 @@ export const useTxStepper = ({
     trackEvent({ category: eventCategory, action: lastStep ? 'Submit' : 'Next' })
   }
 
-  const handleBack = (data?: unknown) => {
+  const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
     trackEvent({ category: eventCategory, action: firstStep ? 'Cancel' : 'Back' })
-
-    if (data) {
-      updateStepData(data)
-    }
-  }
-
-  const updateStepData = (data: unknown) => {
-    const allData = [...stepData]
-    allData[activeStep] = data
-    allData[activeStep + 1] = merge(allData[activeStep + 1], data)
-    setStepData(allData)
   }
 
   const setStep = (step: number) => {
@@ -77,7 +65,10 @@ export const useTxStepper = ({
       onFinish ? onFinish() : onClose()
       return
     }
-    updateStepData(data)
+    const allData = [...stepData]
+    allData[activeStep] = data
+    allData[activeStep + 1] = data
+    setStepData(allData)
     handleNext()
   }
 
