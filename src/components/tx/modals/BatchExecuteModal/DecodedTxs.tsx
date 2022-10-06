@@ -1,39 +1,55 @@
-import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Box, Skeleton } from '@mui/material'
-import useAsync from '@/hooks/useAsync'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import DecodedTx from '@/components/tx/DecodedTx'
-import useChainId from '@/hooks/useChainId'
+import type { DataDecoded, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Box } from '@mui/material'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { getSafeTxs } from '@/utils/transactions'
+import extractTxInfo from '@/services/tx/extractTxInfo'
+import { isCustomTxInfo, isNativeTokenTransfer, isTransferTxInfo } from '@/utils/transaction-guards'
+import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
 
-const DecodedTxs = ({ txs, numberOfTxs }: { txs: TransactionDetails[] | undefined; numberOfTxs: number }) => {
-  const chainId = useChainId()
+const DecodedTxs = ({ txs }: { txs: TransactionDetails[] | undefined }) => {
   const { safeAddress } = useSafeInfo()
 
-  const [safeTxs, _, loading] = useAsync<SafeTransaction[]>(() => {
-    if (!txs) return
+  if (!txs) return null
 
-    return getSafeTxs(txs, chainId, safeAddress)
-  }, [txs, chainId, safeAddress])
+  return (
+    <Box mt={1} display="flex" flexDirection="column" gap={1}>
+      {txs.map((transaction, idx) => {
+        if (!transaction.txData) return null
 
-  if (loading) {
-    return (
-      <Box display="flex" flexDirection="column" gap={2} my={1}>
-        {Array(numberOfTxs).map((_, i) => (
-          <Skeleton key={i} variant="rectangular" height={52} sx={{ borderRadius: 2 }} />
-        ))}
-      </Box>
-    )
-  }
+        const { txParams } = extractTxInfo(transaction, safeAddress)
 
-  return safeTxs && txs ? (
-    <Box mt={1}>
-      {safeTxs.map((safeTx, idx) => (
-        <DecodedTx key={safeTx.data.nonce} tx={safeTx} txId={txs[idx].txId} />
-      ))}
+        let decodedDataParams: DataDecoded = {
+          method: '',
+          parameters: undefined,
+        }
+
+        if (isCustomTxInfo(transaction.txInfo) && transaction.txInfo.isCancellation) {
+          decodedDataParams.method = 'On-chain rejection'
+        }
+
+        if (isTransferTxInfo(transaction.txInfo) && isNativeTokenTransfer(transaction.txInfo.transferInfo)) {
+          decodedDataParams.method = 'transfer'
+        }
+
+        const dataDecoded = transaction.txData.dataDecoded || decodedDataParams
+
+        return (
+          <SingleTxDecoded
+            key={transaction.txId}
+            tx={{
+              dataDecoded,
+              data: txParams.data,
+              value: txParams.value,
+              to: txParams.to,
+              operation: 0,
+            }}
+            txData={transaction.txData}
+            actionTitle={`Action ${idx + 1}`}
+            showDelegateCallWarning={false}
+          />
+        )
+      })}
     </Box>
-  ) : null
+  )
 }
 
 export default DecodedTxs

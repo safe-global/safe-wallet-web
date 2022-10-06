@@ -69,6 +69,13 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     }
   })
 
+  const onFormBack = handleSubmit((data: SafeFormData) => {
+    onBack({
+      ...data,
+      [FormField.name]: data[FormField.name] || fallbackName,
+    })
+  })
+
   return (
     <FormProvider {...formMethods}>
       <Paper>
@@ -130,7 +137,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
           <Box padding={3}>
             <Grid container alignItems="center" justifyContent="center" spacing={3}>
               <Grid item>
-                <Button onClick={onBack}>Back</Button>
+                <Button onClick={onFormBack}>Back</Button>
               </Grid>
               <Grid item>
                 <Button variant="contained" type="submit" disabled={!formState.isValid}>

@@ -111,7 +111,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
       <Box padding={3}>
         <Grid container alignItems="center" justifyContent="center" spacing={3}>
           <Grid item>
-            <Button onClick={onBack}>Back</Button>
+            <Button onClick={() => onBack()}>Back</Button>
           </Grid>
           <Grid item>
             <Button variant="contained" onClick={createSafe}>

@@ -146,7 +146,7 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByDisplayValue('Custom Compound')).toBeInTheDocument())
 
       await act(() => {
-        fireEvent.click(screen.getByText('Save'))
+        fireEvent.click(screen.getByText('Add'))
       })
 
       await waitFor(() => expect(screen.getAllByText(/Custom markets on the Ethereum blockchain/).length).toBe(2))
@@ -220,9 +220,13 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
 
       const appURLInput = screen.getByLabelText(/App URL/)
+      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
+
       await act(() => {
         fireEvent.change(appURLInput, { target: { value: APP_URL } })
-        fireEvent.click(screen.getByText('Save'))
+        fireEvent.click(riskCheckbox)
+        fireEvent.click(riskCheckbox)
+        fireEvent.click(screen.getByText('Add'))
       })
 
       await waitFor(() => expect(screen.getByText('Required')).toBeInTheDocument())
@@ -271,7 +275,7 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByDisplayValue('Custom Compound')).toBeInTheDocument())
 
       await act(() => {
-        fireEvent.click(screen.getByText('Save'))
+        fireEvent.click(screen.getByText('Add'))
       })
       await waitFor(() => expect(screen.getAllByText(/Custom markets on the Ethereum blockchain/).length).toBe(2))
 
