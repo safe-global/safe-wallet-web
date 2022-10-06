@@ -14,6 +14,11 @@ import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@gnosis.pm/safe-core-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 
+jest.mock('@/hooks/useIsWrongChain', () => ({
+  __esModule: true,
+  default: jest.fn(() => false),
+}))
+
 const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
     data: {
