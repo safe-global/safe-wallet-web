@@ -9,6 +9,7 @@ import ExpandableTransactionItem from '@/components/transactions/TxListItem/Expa
 import { useTxDetails } from '@/hooks/useTxDetails'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import { GroupLabelTypography, useFutureNonceLabel } from '../GroupLabel'
+import { useRouter } from 'next/router'
 
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
@@ -21,7 +22,9 @@ const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactEl
 }
 
 const SingleTx = () => {
-  const [txDetails, error] = useTxDetails()
+  const router = useRouter()
+  const { id } = router.query
+  const [txDetails, error] = useTxDetails(Array.isArray(id) ? id[0] : id)
   const futureNonceLabel = useFutureNonceLabel()
 
   const { safe } = useSafeInfo()
