@@ -106,7 +106,7 @@ const SignOrExecuteForm = ({
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
 
     const signedTx = smartContractWallet
-      ? await dispatchOnChainSigning(createdTx, provider, txId)
+      ? await dispatchOnChainSigning(createdTx, provider)
       : await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
@@ -115,7 +115,7 @@ const SignOrExecuteForm = ({
 
   // Execute transaction
   const onExecute = async (): Promise<string> => {
-    const [connectedWallet, createdTx] = assertSubmittable()
+    const [connectedWallet, createdTx, provider] = assertSubmittable()
 
     // If no txId was provided, it's an immediate execution of a new tx
     let id = txId
@@ -126,7 +126,7 @@ const SignOrExecuteForm = ({
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(id, createdTx, txOptions)
+    await dispatchTxExecution(id, createdTx, provider, txOptions)
 
     return id
   }
