@@ -10,6 +10,7 @@ import SafeIcon from '@/components/common/SafeIcon'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
 import { CTA_BUTTON_WIDTH, CTA_HEIGHT } from '@/components/safe-apps/SafeAppLandingPage/constants'
+import Link from 'next/link'
 
 type Props = {
   appUrl: string
@@ -35,18 +36,22 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
       const href = `${AppRoutes.apps}?appUrl=${encodeURIComponent(appUrl)}&safe=${chain.shortName}:${safeToUse}`
 
       button = (
-        <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse} href={href}>
-          Use app
-        </Button>
+        <Link href={href} passHref>
+          <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse}>
+            Use app
+          </Button>
+        </Link>
       )
       break
     case shouldCreateSafe:
       const redirect = encodeURIComponent(`${AppRoutes.apps}?appUrl=${appUrl}`)
       const createSafeHrefWithRedirect = `${AppRoutes.open}?chain=${chain.shortName}&safeViewRedirectURL=${redirect}`
       button = (
-        <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} href={createSafeHrefWithRedirect}>
-          Create new Safe
-        </Button>
+        <Link href={createSafeHrefWithRedirect} passHref>
+          <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>
+            Create new Safe
+          </Button>
+        </Link>
       )
       break
     default:
