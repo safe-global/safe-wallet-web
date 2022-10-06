@@ -14,6 +14,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import { CTA_BUTTON_WIDTH, CTA_HEIGHT } from '@/components/safe-apps/SafeAppLandingPage/constants'
+import CreateNewSafeSVG from '@/public/images/open/safe-creation.svg'
 
 type Props = {
   appUrl: string
@@ -100,6 +101,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
             const safeToUse = compatibleSafes.find(({ address }) => address === e.target.value)
             setSafeToUse(safeToUse)
           }}
+          autoWidth
           label="Select a Safe"
           sx={({ spacing }) => ({
             width: '311px',
@@ -124,7 +126,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
       </FormControl>
     )
   } else {
-    body = <img src="/images/open/safe-creation.svg" alt="An icon of a physical safe with a plus sign" />
+    body = <CreateNewSafeSVG alt="An icon of a physical safe with a plus sign" />
   }
 
   return (
