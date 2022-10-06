@@ -55,7 +55,7 @@ describe('The Safe Apps list', () => {
       cy.contains("The app doesn't support Safe App functionality").should('exist')
     })
 
-    it('should be appended to the list in the custom apps section', () => {
+    it('should be added to the list within the custom apps section', () => {
       cy.intercept('GET', 'https://my-valid-custom-app.com/manifest.json', {
         name: 'My Custom App',
         description: 'My Custom App Description',
