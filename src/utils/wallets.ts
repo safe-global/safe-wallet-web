@@ -1,6 +1,7 @@
 import { ProviderLabel } from '@web3-onboard/injected-wallets'
 import { hasStoredPairingSession } from '@/services/pairing/connector'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
+import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 
 const isKeystoneError = (err: unknown): boolean => {
   if (err instanceof Error) {
@@ -48,7 +49,7 @@ export const isWalletUnlocked = async (walletName: string): Promise<boolean> => 
     return hasStoredPairingSession()
   }
 
-  if (walletName === 'E2E Wallet') {
+  if (walletName === E2E_WALLET_NAME) {
     return Boolean(window.Cypress)
   }
 
