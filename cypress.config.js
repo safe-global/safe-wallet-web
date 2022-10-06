@@ -1,7 +1,4 @@
 import { defineConfig } from 'cypress'
-import { config } from 'dotenv'
-
-config()
 
 export default defineConfig({
   projectId: 'exhdra',
