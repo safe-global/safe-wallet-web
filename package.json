@@ -30,8 +30,7 @@
     "serve": "npx -y http-server out"
   },
   "pre-commit": [
-    "lint",
-    "prettier"
+    "lint"
   ],
   "dependencies": {
     "@date-io/date-fns": "^2.15.0",
