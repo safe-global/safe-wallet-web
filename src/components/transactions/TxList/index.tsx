@@ -5,17 +5,14 @@ import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import TxListItem from '../TxListItem'
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
 import { groupConflictingTxs } from '@/utils/tx-list'
+import css from './styles.module.css'
 
 type TxListProps = {
   items: TransactionListPage['results']
 }
 
 export const TxListGrid = ({ children }: { children: ReactElement | ReactElement[] }): ReactElement => {
-  return (
-    <Box display="flex" flexDirection="column" gap="6px">
-      {children}
-    </Box>
-  )
+  return <Box className={css.container}>{children}</Box>
 }
 
 const TxList = ({ items }: TxListProps): ReactElement => {
