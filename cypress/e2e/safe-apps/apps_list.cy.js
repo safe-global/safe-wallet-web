@@ -16,6 +16,11 @@ describe('The Safe Apps list', () => {
       cy.findByRole('textbox').clear().type('compose custom contract')
       cy.findAllByRole('link', { name: /logo/i }).should('have.length', 1)
     })
+
+    it('should show a not found text when no match', () => {
+      cy.findByRole('textbox').clear().type('atextwithoutresults')
+      cy.findByText(/no apps found/i).should('exist')
+    })
   })
 
   describe('When browsing the apps list', () => {
@@ -54,7 +59,7 @@ describe('The Safe Apps list', () => {
       cy.intercept('GET', 'https://my-valid-custom-app.com/manifest.json', {
         name: 'My Custom App',
         description: 'My Custom App Description',
-        iconPath: 'http://via.placeholder.com/32',
+        icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
       })
 
       cy.findByLabelText(/app url/i)
@@ -62,7 +67,7 @@ describe('The Safe Apps list', () => {
         .type('https://my-valid-custom-app.com')
       cy.findByRole('textbox', { name: /app name/i }).should('have.value', 'My Custom App')
       cy.findByRole('checkbox').click()
-      cy.findByRole('button', { name: /save/i }).click()
+      cy.findByRole('button', { name: /add/i }).click()
       cy.findByText(/pinned apps \(0\)/i).should('exist')
     })
   })

@@ -9,7 +9,7 @@ describe('The transaction modal', () => {
       cy.intercept('GET', `*/manifest.json`, {
         name: 'Cypress Test App',
         description: 'Cypress Test App Description',
-        iconPath: 'http://via.placeholder.com/32',
+        icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
       })
     })
 
