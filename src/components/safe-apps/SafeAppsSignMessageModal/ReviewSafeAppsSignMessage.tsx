@@ -16,7 +16,6 @@ import { generateDataRowValue } from '@/components/transactions/TxDetails/Summar
 import type { SafeAppsSignMessageParams } from '../SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
 import { createTx } from '@/services/tx/txSender'
 import { convertToHumanReadableMessage } from '../utils'
@@ -29,7 +28,6 @@ type ReviewSafeAppsSignMessageProps = {
 const ReviewSafeAppsSignMessage = ({
   safeAppsSignMessage: { message, method, requestId },
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
-  const { safe } = useSafeInfo()
   const chainId = useChainId()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
@@ -37,8 +35,6 @@ const ReviewSafeAppsSignMessage = ({
 
   const signMessageDeploymentInstance = useMemo(() => getSignMessageLibDeploymentContractInstance(chainId), [chainId])
   const signMessageAddress = signMessageDeploymentInstance.address
-
-  const canExecute = safe.threshold === 1
 
   const readableData = useMemo(() => {
     if (isTextMessage) {
@@ -79,13 +75,7 @@ const ReviewSafeAppsSignMessage = ({
   }
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      isExecutable={canExecute}
-      onSubmit={handleSubmit}
-      error={safeTxError}
-      redirectToTx={false}
-    >
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError}>
       <>
         <SendFromBlock />
 

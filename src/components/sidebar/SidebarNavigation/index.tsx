@@ -1,6 +1,7 @@
-import React, { useState, type ReactElement, useEffect } from 'react'
+import React, { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import ListItem from '@mui/material/ListItem'
+import { ImplementationVersionState } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import {
   SidebarList,
@@ -9,26 +10,28 @@ import {
   SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
 import { navItems } from './config'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { AppRoutes } from '@/config/routes'
 
 const Navigation = (): ReactElement => {
   const router = useRouter()
-  const query = { safe: router.query.safe }
-  const [openHref, setOpenHref] = useState<string>(router.pathname)
+  const { safe } = useSafeInfo()
 
-  useEffect(() => {
-    setOpenHref(router.pathname)
-  }, [router.pathname, query.safe])
+  // Indicate whether the current Safe needs an upgrade
+  const setupItem = navItems.find((item) => item.href === AppRoutes.settings.setup)
+  if (setupItem) {
+    setupItem.badge = safe.implementationVersionState === ImplementationVersionState.OUTDATED
+  }
 
   return (
     <SidebarList>
       {navItems.map((item) => (
         <ListItem key={item.href} disablePadding selected={router.pathname === item.href}>
           <SidebarListItemButton
-            onClick={() => setOpenHref(item.href)}
-            selected={openHref === item.href}
-            href={{ pathname: item.href, query }}
+            selected={router.pathname === item.href}
+            href={{ pathname: item.href, query: { safe: router.query.safe } }}
           >
-            {item.icon && <SidebarListItemIcon>{item.icon}</SidebarListItemIcon>}
+            {item.icon && <SidebarListItemIcon badge={item.badge}>{item.icon}</SidebarListItemIcon>}
             <SidebarListItemText bold>{item.label}</SidebarListItemText>
           </SidebarListItemButton>
         </ListItem>

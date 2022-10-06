@@ -116,7 +116,13 @@ const AddressBookTable = () => {
 
       {open[ModalType.IMPORT] && <ImportDialog handleClose={handleClose} />}
 
-      {open[ModalType.ENTRY] && <EntryDialog handleClose={handleClose} defaultValues={defaultValues} />}
+      {open[ModalType.ENTRY] && (
+        <EntryDialog
+          handleClose={handleClose}
+          defaultValues={defaultValues}
+          disableAddressInput={Boolean(defaultValues?.name)}
+        />
+      )}
 
       {open[ModalType.REMOVE] && <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />}
 
