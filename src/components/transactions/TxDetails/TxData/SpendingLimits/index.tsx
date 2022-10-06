@@ -98,14 +98,14 @@ const RESET_TIME_OPTIONS = [
   { label: '1 month', value: '43200' },
 ]
 
-const RINKEBY_RESET_TIME_OPTIONS = [
+const TEST_RESET_TIME_OPTIONS = [
   { label: '5 minutes', value: '5' },
   { label: '30 minutes', value: '30' },
   { label: '1 hour', value: '60' },
 ]
 
 export const getResetTimeOptions = (chainId = ''): { label: string; value: string }[] => {
-  return chainId !== chains.rin ? RESET_TIME_OPTIONS : RINKEBY_RESET_TIME_OPTIONS
+  return chainId === chains.gor ? TEST_RESET_TIME_OPTIONS : RESET_TIME_OPTIONS
 }
 
 export default SpendingLimits

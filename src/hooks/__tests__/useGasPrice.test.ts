@@ -7,7 +7,7 @@ jest.mock('../wallets/web3', () => {
   const provider = {
     getFeeData: jest.fn(() =>
       Promise.resolve({
-        gasPrice: BigNumber.from('0x956f'),
+        gasPrice: undefined,
         maxFeePerGas: BigNumber.from('0x956e'),
         maxPriorityFeePerGas: BigNumber.from('0x136f'),
       }),

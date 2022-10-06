@@ -20,10 +20,11 @@ const GasDetail = ({ name, value, isLoading }: { name: string; value: string; is
 type GasParamsProps = {
   params: AdvancedParameters
   isExecution: boolean
+  isEIP1559: boolean
   onEdit: () => void
 }
 
-const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElement => {
+const GasParams = ({ params, isExecution, isEIP1559, onEdit }: GasParamsProps): ReactElement => {
   const { nonce, userNonce, safeTxGas, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = params
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
@@ -31,7 +32,6 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
   }
 
   const chain = useCurrentChain()
-
   const isLoading = !gasLimit || !maxFeePerGas || !maxPriorityFeePerGas
 
   // Total gas cost
@@ -88,9 +88,14 @@ const GasParams = ({ params, isExecution, onEdit }: GasParamsProps): ReactElemen
 
             <GasDetail isLoading={isLoading} name="Gas limit" value={gasLimitString} />
 
-            <GasDetail isLoading={isLoading} name="Max priority fee (Gwei)" value={maxPrioGasGwei} />
-
-            <GasDetail isLoading={isLoading} name="Max fee (Gwei)" value={maxFeePerGasGwei} />
+            {isEIP1559 ? (
+              <>
+                <GasDetail isLoading={isLoading} name="Max priority fee (Gwei)" value={maxPrioGasGwei} />
+                <GasDetail isLoading={isLoading} name="Max fee (Gwei)" value={maxFeePerGasGwei} />
+              </>
+            ) : (
+              <GasDetail isLoading={isLoading} name="Gas price (Gwei)" value={maxFeePerGasGwei} />
+            )}
           </>
         )}
 

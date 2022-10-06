@@ -91,7 +91,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         <Typography mt={2} color="primary.light">
           Batched transactions:
         </Typography>
-        <DecodedTxs txs={txsWithDetails} numberOfTxs={data.txs.length} />
+        <DecodedTxs txs={txsWithDetails} />
 
         {multiSendTxs && <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />}
 
