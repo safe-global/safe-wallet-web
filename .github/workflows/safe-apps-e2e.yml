@@ -1,7 +1,6 @@
 name: Safe Apps e2e
 
 on:
-  push:
   pull_request:
   workflow_dispatch:
 
