@@ -90,6 +90,6 @@ export const settingsNavItems = [
   },
   {
     label: 'Safe Apps permissions',
-    href: AppRoutes.settings['safe-apps'].index,
+    href: AppRoutes.settings.safeApps.index,
   },
 ]
