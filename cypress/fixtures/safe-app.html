@@ -8,8 +8,8 @@
   <body>
     <h1>Cypress Test App</h1>
     <script type="text/javascript">
-      // We need to disable web security for spying on iframe.contentWindow.postMessage (chromeWebSecurity)
-      // For avoiding that as needs to be global we emit web responses and will spy on main window received messages
+      // We'd need to disable web security (chromeWebSecurity) for spying on iframe.contentWindow.postMessage
+      // In order to avoid it we emit again received responses for spying them on main window
       window.addEventListener('message', (msg) => {
         window.parent.postMessage(msg.data.data, '*')
       })
