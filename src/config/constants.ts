@@ -1,3 +1,5 @@
+import chains from './chains'
+
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION
 
 export const GATEWAY_URL_PRODUCTION = process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.gnosis.io'
@@ -26,8 +28,8 @@ export const CYPRESS_MNEMONIC = process.env.NEXT_PUBLIC_CYPRESS_MNEMONIC || ''
 
 // Safe Token
 export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
-  '1': '0x5aFE3855358E112B5647B952709E6165e1c1eEEe',
-  '4': '0xCFf1b0FdE85C102552D1D96084AF148f478F964A',
+  [chains.eth]: '0x5aFE3855358E112B5647B952709E6165e1c1eEEe',
+  [chains.rin]: '0xCFf1b0FdE85C102552D1D96084AF148f478F964A',
 }
 
 // Safe Apps

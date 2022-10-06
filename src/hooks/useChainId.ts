@@ -5,7 +5,7 @@ import { useAppSelector } from '@/store'
 import { selectSession } from '@/store/sessionSlice'
 import { parsePrefixedAddress } from '@/utils/addresses'
 
-const defaultChainId = IS_PRODUCTION ? chains.eth : chains.rin
+const defaultChainId = IS_PRODUCTION ? chains.eth : chains.gor
 
 export const useChainId = (): string => {
   const router = useRouter()
