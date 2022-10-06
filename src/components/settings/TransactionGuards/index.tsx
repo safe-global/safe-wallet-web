@@ -20,7 +20,7 @@ const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId
 
   return (
     <Box className={css.guardDisplay}>
-      <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton chainId={chainId} showAvatar={false} />
+      <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton chainId={chainId} />
       {isGranted && <RemoveGuard address={guardAddress} />}
     </Box>
   )
