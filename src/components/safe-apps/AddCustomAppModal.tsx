@@ -111,7 +111,21 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
               mt: 2,
             }}
           >
-            <SvgIcon component={SafeAppIcon} inheritViewBox sx={{ height: TEXT_FIELD_SIZE, width: TEXT_FIELD_SIZE }} />
+            {safeApp?.iconUrl ? (
+              <img
+                src={safeApp.iconUrl}
+                alt="Apps icon"
+                height={TEXT_FIELD_SIZE}
+                width={TEXT_FIELD_SIZE}
+                style={{ transition: 'all ease-in 1s' }}
+              />
+            ) : (
+              <SvgIcon
+                component={SafeAppIcon}
+                inheritViewBox
+                sx={{ height: TEXT_FIELD_SIZE, width: TEXT_FIELD_SIZE }}
+              />
+            )}
             <TextField
               label="App name"
               disabled
