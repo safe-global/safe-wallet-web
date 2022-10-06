@@ -1,14 +1,14 @@
-import { CircularProgress } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import type { Transaction, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { DetailedExecutionInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { ReactElement } from 'react'
 import { makeTxFromDetails } from '@/utils/transactions'
 import { TxListGrid } from '@/components/transactions/TxList'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import { useTxDetails } from '@/hooks/useTxDetails'
-import css from './styles.module.css'
+import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
+import { GroupLabelTypography, useFutureNonceLabel } from '../GroupLabel'
 
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
@@ -22,13 +22,15 @@ const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactEl
 
 const SingleTx = () => {
   const [txDetails, error] = useTxDetails()
+  const futureNonceLabel = useFutureNonceLabel()
 
   const { safe } = useSafeInfo()
 
   let nonceWarning: string | undefined = undefined
-  if (txDetails?.detailedExecutionInfo?.type === DetailedExecutionInfoType.MULTISIG) {
-    if (txDetails.detailedExecutionInfo.nonce > safe.nonce) {
-      nonceWarning = `Transaction with nonce ${safe.nonce} needs to be executed first`
+  const executionInfo = txDetails?.detailedExecutionInfo
+  if (isMultisigDetailedExecutionInfo(executionInfo)) {
+    if (executionInfo.nonce > safe.nonce) {
+      nonceWarning = futureNonceLabel
     }
   }
 
@@ -38,10 +40,10 @@ const SingleTx = () => {
 
   if (txDetails) {
     return (
-      <div>
-        {nonceWarning && <div className={css.container}>{nonceWarning}</div>}
+      <Box display="flex" flexDirection="column" gap={1}>
+        {nonceWarning && <GroupLabelTypography label={nonceWarning} />}
         <SingleTxGrid txDetails={txDetails} />
-      </div>
+      </Box>
     )
   }
 

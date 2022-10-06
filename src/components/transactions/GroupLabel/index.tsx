@@ -6,9 +6,15 @@ import useTxQueue from '@/hooks/useTxQueue'
 import { isLabelListItem, isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
+export const useFutureNonceLabel = () => {
+  const { safe } = useSafeInfo()
+  return `transaction with nonce ${safe.nonce} needs to be executed first`
+}
+
 export const useGroupLabel = (item: Label): string => {
   const { page } = useTxQueue()
   const { safe } = useSafeInfo()
+  const futureNonceLabel = useFutureNonceLabel()
 
   const { label } = item
 
@@ -29,15 +35,17 @@ export const useGroupLabel = (item: Label): string => {
     return label
   }
 
-  const nextNonce = nonceInFuture ? safe.nonce : firstTx.transaction.executionInfo.nonce
+  return `${label} - ${futureNonceLabel}`
+}
 
-  return `${label} - transaction with nonce ${nextNonce} needs to be executed first`
+export const GroupLabelTypography = ({ label }: { label: string }) => {
+  return <div className={css.container}>{label}</div>
 }
 
 const GroupLabel = ({ item }: { item: Label }): ReactElement => {
   const label = useGroupLabel(item)
 
-  return <div className={css.container}>{label}</div>
+  return <GroupLabelTypography label={label} />
 }
 
 export default GroupLabel
