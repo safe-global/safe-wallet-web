@@ -93,7 +93,7 @@ const SignOrExecuteForm = ({
   //
   const assertSubmittable = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
     if (!wallet) throw new Error('Wallet not connected')
-    if (!isWrongChain) throw new Error('Connected to the wrong chain')
+    if (isWrongChain) throw new Error('Connected to the wrong chain')
     if (!tx) throw new Error('Transaction not ready')
     if (!provider) throw new Error('Provider not ready')
 
