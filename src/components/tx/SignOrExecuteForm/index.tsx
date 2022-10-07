@@ -166,9 +166,8 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
-  const walletIsWrongChain = currentChain?.chainId != wallet?.chainId
-  const walletIsNoOwner = !safe.owners.some((owner) => owner.value === wallet?.address)
-  const submitDisabled = !isSubmittable || isEstimating || !tx || walletIsWrongChain || walletIsNoOwner || disableSubmit
+  const isWalletAllowed = willExecute || safe.owners.some((owner) => owner.value === wallet?.address)
+  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || !isWalletAllowed
 
   return (
     <form onSubmit={handleSubmit}>
@@ -195,9 +194,9 @@ const SignOrExecuteForm = ({
           disabled={submitDisabled}
         />
 
-        {walletIsWrongChain && <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>}
+        {isWrongChain && <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>}
 
-        {walletIsNoOwner && (
+        {!isWalletAllowed && (
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
           </ErrorMessage>

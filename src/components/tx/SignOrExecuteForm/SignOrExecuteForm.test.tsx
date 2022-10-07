@@ -7,15 +7,14 @@ import * as txSender from '@/services/tx/txSender'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as walletUtils from '@/hooks/wallets/wallets'
 import * as web3 from '@/hooks/wallets/web3'
-import * as useChains from '@/hooks/useChains'
-import type { SafeInfo, TransactionDetails, ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { waitFor } from '@testing-library/react'
 import type { ConnectedWallet } from '@/services/onboard'
 import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@gnosis.pm/safe-core-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
-import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
+import * as wrongChain from '@/hooks/useIsWrongChain'
 
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
@@ -76,14 +75,10 @@ describe('SignOrExecuteForm', () => {
       gasLimitLoading: false,
     })
     jest.spyOn(wallet, 'default').mockReturnValue({
-      chainId: '1',
       address: ethers.utils.hexZeroPad('0x123', 20),
     } as ConnectedWallet)
     jest.spyOn(web3, 'useWeb3').mockReturnValue(mockProvider)
-    jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({
-      features: [FEATURES.EIP1559],
-      chainId: '1',
-    } as ChainInfo)
+    jest.spyOn(wrongChain, 'default').mockReturnValue(false)
     jest
       .spyOn(txSender, 'dispatchTxProposal')
       .mockImplementation(jest.fn(() => Promise.resolve({ txId: '0x12' } as TransactionDetails)))
@@ -212,7 +207,7 @@ describe('SignOrExecuteForm', () => {
     } as ConnectedWallet)
 
     const mockTx = createSafeTx()
-    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+    const result = render(<SignOrExecuteForm isExecutable={false} onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(
       result.getByText("You are currently not an owner of this Safe and won't be able to submit this transaction."),
@@ -221,10 +216,7 @@ describe('SignOrExecuteForm', () => {
   })
 
   it('displays an error and disables the submit button if connected wallet is on a different chain', () => {
-    jest.spyOn(wallet, 'default').mockReturnValue({
-      chainId: '100',
-      address: ethers.utils.hexZeroPad('0x123', 20),
-    } as ConnectedWallet)
+    jest.spyOn(wrongChain, 'default').mockReturnValue(true)
 
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
