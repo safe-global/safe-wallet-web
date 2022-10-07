@@ -14,7 +14,6 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import { CTA_BUTTON_WIDTH, CTA_HEIGHT } from '@/components/safe-apps/SafeAppLandingPage/constants'
-import Link from 'next/link'
 import CreateNewSafeSVG from '@/public/images/open/safe-creation.svg'
 
 type Props = {
