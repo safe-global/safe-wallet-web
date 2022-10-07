@@ -6,8 +6,8 @@ const TxHeader = ({ action }: { action?: ReactElement }): ReactElement => {
   return (
     <PageHeader
       title="Transactions"
-      subtitle="Confirm queued transactions and view all those in the past"
       action={action}
+      sx={{ borderBottom: ({ palette }) => `1px solid ${palette.border.light}` }}
     />
   )
 }

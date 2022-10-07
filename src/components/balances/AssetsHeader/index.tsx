@@ -10,9 +10,9 @@ const AssetsHeader = ({ currencySelect = false }: { currencySelect?: boolean }):
   return (
     <PageHeader
       title="Assets"
-      subtitle="See all your tokens and NFTs in one place"
+      sx={{ borderBottom: ({ palette }) => `1px solid ${palette.border.light}` }}
       action={
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" justifyContent="space-between" alignItems="center">
           <NavTabs tabs={balancesNavItems} />
           {currencySelect && <CurrencySelect />}
         </Box>

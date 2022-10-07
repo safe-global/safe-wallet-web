@@ -8,8 +8,8 @@ const SettingsHeader = (): ReactElement => {
   return (
     <PageHeader
       title="Settings"
-      subtitle="Customize and manage your Safe"
       action={<NavTabs tabs={settingsNavItems} />}
+      sx={{ borderBottom: ({ palette }) => `1px solid ${palette.border.light}` }}
     />
   )
 }

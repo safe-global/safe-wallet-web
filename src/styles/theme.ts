@@ -423,12 +423,12 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             borderRadius: 4,
-            backgroundColor: theme.palette.background.main,
+            backgroundColor: theme.palette.background.paper,
             border: '1px solid transparent',
             transition: 'border-color 0.2s',
 
             '&:hover, &:focus, &.Mui-focused': {
-              backgroundColor: theme.palette.background.main,
+              backgroundColor: theme.palette.background.paper,
               borderColor: theme.palette.primary.main,
             },
           }),
