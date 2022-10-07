@@ -53,12 +53,6 @@ describe('useGasPrice', () => {
   beforeEach(() => {
     jest.useFakeTimers()
     jest.clearAllMocks()
-
-    // Mock fetch
-    Object.defineProperty(window, 'fetch', {
-      writable: true,
-      value: jest.fn(() => Promise.reject()),
-    })
   })
 
   it('should return the fetched gas price from the first oracle', async () => {
@@ -100,11 +94,10 @@ describe('useGasPrice', () => {
 
   it('should return the fetched gas price from the second oracle if the first one fails', async () => {
     // Mock fetch
-    Object.defineProperty(window, 'fetch', {
-      writable: true,
-      value: jest
+    jest.spyOn(window, 'fetch').mockImplementation(
+      jest
         .fn()
-        .mockImplementationOnce(() => Promise.reject())
+        .mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch')))
         .mockImplementationOnce(() =>
           Promise.resolve({
             ok: true,
@@ -116,7 +109,7 @@ describe('useGasPrice', () => {
               }),
           }),
         ),
-    })
+    )
 
     // render the hook
     const { result } = renderHook(() => useGasPrice())
@@ -141,10 +134,12 @@ describe('useGasPrice', () => {
 
   it('should fallback to a fixed gas price if the oracles fail', async () => {
     // Mock fetch
-    Object.defineProperty(window, 'fetch', {
-      writable: true,
-      value: jest.fn(() => Promise.reject()),
-    })
+    jest.spyOn(window, 'fetch').mockImplementation(
+      jest
+        .fn()
+        .mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch')))
+        .mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch'))),
+    )
 
     // render the hook
     const { result } = renderHook(() => useGasPrice())
