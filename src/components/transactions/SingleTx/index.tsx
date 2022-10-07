@@ -36,8 +36,6 @@ const SingleTx = () => {
     () => {
       if (!transactionId) return
 
-      console.log(safeAddress, transactionId)
-
       return getTransactionDetails(chainId, transactionId).then((details) => {
         // If the transaction is not related to the current safe, throw an error
         if (!sameAddress(details.safeAddress, safeAddress)) {
