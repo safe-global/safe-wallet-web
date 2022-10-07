@@ -20,7 +20,7 @@ const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactEl
   return (
     <TxListGrid>
       <TxDateLabel item={dateLabel} />
-      <ExpandableTransactionItem item={tx} txDetails={txDetails} testId="single-tx" />
+      <ExpandableTransactionItem item={tx} txDetails={txDetails} />
     </TxListGrid>
   )
 }
@@ -32,17 +32,23 @@ const SingleTx = () => {
   const transactionId = Array.isArray(id) ? id[0] : id
   const { safe, safeAddress } = useSafeInfo()
 
-  const [txDetails, txDetailsError] = useAsync<TransactionDetails>(() => {
-    if (!transactionId) return
+  const [txDetails, txDetailsError] = useAsync<TransactionDetails>(
+    () => {
+      if (!transactionId) return
 
-    return getTransactionDetails(chainId, transactionId).then((details) => {
-      // If the transaction is not related to the current safe, throw an error
-      if (!sameAddress(details.safeAddress, safeAddress)) {
-        return Promise.reject(new Error(`Transaction with this id was not found in this Safe`))
-      }
-      return details
-    })
-  }, [transactionId, safe.txQueuedTag, safe.txHistoryTag, safeAddress])
+      console.log(safeAddress, transactionId)
+
+      return getTransactionDetails(chainId, transactionId).then((details) => {
+        // If the transaction is not related to the current safe, throw an error
+        if (!sameAddress(details.safeAddress, safeAddress)) {
+          return Promise.reject(new Error('Transaction with this id was not found in this Safe'))
+        }
+        return details
+      })
+    },
+    [transactionId, safe.txQueuedTag, safe.txHistoryTag, safeAddress],
+    false,
+  )
 
   if (txDetailsError) {
     return <ErrorMessage error={txDetailsError}>Failed to load transaction</ErrorMessage>

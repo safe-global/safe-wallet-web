@@ -4,12 +4,28 @@ import * as useSafeInfo from '@/hooks/useSafeInfo'
 import type { SafeInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
-const SAFE_ADDRESS = 'rin:0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f'
+const SAFE_ADDRESS = '0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f'
+
+// Minimum mock to render <SingleTx />
+const txDetails = {
+  txId: 'multisig_0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f_0x236da79434c398bf98b204e6f3d93d',
+  safeAddress: SAFE_ADDRESS,
+  txInfo: {
+    type: 'Custom',
+    to: {
+      value: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+    },
+  },
+} as TransactionDetails
 
 jest.mock('next/router', () => ({
   useRouter() {
     return {
-      query: '',
+      pathname: '/transactions/tx',
+      query: {
+        safe: `gor:${SAFE_ADDRESS}`,
+        id: 'multisig_0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f_0x236da79434c398bf98b204e6f3d93d',
+      },
     }
   },
 }))
@@ -27,104 +43,52 @@ jest.spyOn(useSafeInfo, 'default').mockImplementation(() => ({
   safeLoaded: true,
 }))
 
-// Minimum mock to render <SingleTx />
-const txDetails = {
-  safeAddress: SAFE_ADDRESS,
-  txInfo: {
-    type: 'Custom',
-    to: {
-      value: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
-    },
-  },
-} as TransactionDetails
-
 describe('SingleTx', () => {
   it('renders <SingleTx />', async () => {
-    const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-    useRouter.mockImplementation(() => ({
-      query: {
-        id: 'multisig_0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f_0x236da79434c398bf98b204e6f3d93d',
-      },
-    }))
-
-    const { getByTestId } = render(<SingleTx />)
+    const screen = render(<SingleTx />)
 
     await act(() => Promise.resolve())
 
-    expect(getByTestId('single-tx')).toBeInTheDocument()
+    const button = screen.queryByText('Details')
+    expect(button).not.toBeInTheDocument()
+
+    expect(screen.getByText('Contract interaction')).toBeInTheDocument()
   })
 
-  it('renders <ErrorMessage /> and error description when there is an error in the URL', async () => {
-    const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-
-    useRouter.mockImplementation(() => ({
-      query: {
-        foo: 'multisig_0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f_0x236da79434c398bf98b204e6f3d93d',
-      },
-    }))
-
-    const { queryByText } = render(<SingleTx />)
-
-    expect(queryByText('Failed to load transaction')).toBeInTheDocument()
-
-    const button = queryByText('Details')
-    fireEvent.click(button!)
-
-    expect(queryByText("Couldn't retrieve the transaction details. Please review the URL.")).toBeInTheDocument()
-  })
-
-  it('renders <ErrorMessage /> and error description when the transaction is not found', async () => {
-    const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-    useRouter.mockImplementation(() => ({
-      query: {
-        id: 'dummy',
-      },
-    }))
-
+  it('shows an error when the transaction has failed to load', async () => {
     const getTransactionDetails = jest.spyOn(require('@gnosis.pm/safe-react-gateway-sdk'), 'getTransactionDetails')
-    getTransactionDetails.mockImplementation(() => Promise.resolve([]))
+    getTransactionDetails.mockImplementation(() => Promise.reject(new Error('Server error')))
 
-    const { queryByText } = render(<SingleTx />)
+    const screen = render(<SingleTx />)
 
     await act(() => Promise.resolve())
 
-    expect(queryByText('Failed to load transaction')).toBeInTheDocument()
+    expect(screen.getByText('Failed to load transaction')).toBeInTheDocument()
 
-    const button = queryByText('Details')
+    const button = screen.getByText('Details')
     fireEvent.click(button!)
 
-    expect(queryByText('Transaction with id dummy not found in this Safe')).toBeInTheDocument()
+    expect(screen.getByText('Server error')).toBeInTheDocument()
   })
 
-  it('renders <ErrorMessage /> and error description when transaction is not from the opened Safe', async () => {
-    const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-    useRouter.mockImplementation(() => ({
-      query: {
-        id: 'multisig_0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f_0x236da79434c398bf98b204e6f3d93d',
-      },
-    }))
+  it('shows an error when transaction is not from the opened Safe', async () => {
+    const getTransactionDetails = jest.spyOn(require('@gnosis.pm/safe-react-gateway-sdk'), 'getTransactionDetails')
+    getTransactionDetails.mockImplementation(() =>
+      Promise.resolve({
+        ...txDetails,
+        safeAddress: MOCK_SAFE_ADDRESS,
+      }),
+    )
 
-    jest.spyOn(useSafeInfo, 'default').mockImplementation(() => ({
-      safeAddress: MOCK_SAFE_ADDRESS,
-      safe: {} as SafeInfo,
-      safeError: undefined,
-      safeLoading: false,
-      safeLoaded: true,
-    }))
-
-    const { queryByText } = render(<SingleTx />)
+    const screen = render(<SingleTx />)
 
     await act(() => Promise.resolve())
 
-    expect(queryByText('Failed to load transaction')).toBeInTheDocument()
+    expect(screen.getByText('Failed to load transaction')).toBeInTheDocument()
 
-    const button = queryByText('Details')
+    const button = screen.getByText('Details')
     fireEvent.click(button!)
 
-    expect(
-      queryByText(
-        'Transaction with id multisig_0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f_0x236da79434c398bf98b204e6f3d93d not found in this Safe',
-      ),
-    ).toBeInTheDocument()
+    expect(screen.getByText('Transaction with this id was not found in this Safe')).toBeInTheDocument()
   })
 })
