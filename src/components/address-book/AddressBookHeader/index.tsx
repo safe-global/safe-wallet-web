@@ -22,6 +22,7 @@ const AddressBookHeader = ({ handleOpenModal }: Props): ReactElement => {
   return (
     <PageHeader
       title="Address book"
+      noBorder
       action={
         <Box display="flex" justifyContent="flex-end" alignItems="center" pb={1}>
           <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>

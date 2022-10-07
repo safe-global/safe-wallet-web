@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material'
-import type { BoxProps } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import css from './styles.module.css'
@@ -7,22 +6,21 @@ import css from './styles.module.css'
 const PageHeader = ({
   title,
   action,
-  sx = {},
+  noBorder,
 }: {
   title: string
   action?: ReactElement
-  sx?: BoxProps['sx']
+  noBorder?: boolean
 }): ReactElement => {
   return (
     <Box
       className={css.container}
       sx={{
-        height: '88px',
         top: '-12px',
-        ...sx,
+        borderBottom: !noBorder ? ({ palette }) => `1px solid ${palette.border.light}` : undefined,
       }}
     >
-      <Typography variant="h3" fontWeight={700}>
+      <Typography variant="h3" fontWeight={700} gutterBottom>
         {title}
       </Typography>
       {action}

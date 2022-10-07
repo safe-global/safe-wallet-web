@@ -10,7 +10,6 @@ const AssetsHeader = ({ currencySelect = false }: { currencySelect?: boolean }):
   return (
     <PageHeader
       title="Assets"
-      sx={{ borderBottom: ({ palette }) => `1px solid ${palette.border.light}` }}
       action={
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <NavTabs tabs={balancesNavItems} />
