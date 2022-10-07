@@ -55,12 +55,14 @@ const normalizeBetweenTwoRanges = (
   return newMin + ((val - minVal) * (newMax - newMin)) / (maxVal - minVal)
 }
 
-export const rankSafeApps = (apps: AppTrackData): string[] => {
+export const rankSafeApps = (safeApps: SafeAppData[]) => {
+  const apps = getAppsUsageData()
   const appsWithScore = computeTrackedSafeAppsScore(apps)
 
   return Object.entries(appsWithScore)
     .sort((a, b) => b[1] - a[1])
-    .map((app) => app[0])
+    .map((app) => safeApps.find((safeApp) => String(safeApp.id) === app[0]))
+    .filter(Boolean) as SafeAppData[]
 }
 
 export const computeTrackedSafeAppsScore = (apps: AppTrackData): Record<string, number> => {
