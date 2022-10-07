@@ -235,6 +235,7 @@ const chains: Record<string, string> = {
   pc: '42069',
   arb1: '42161',
   celo: '42220',
+  alfajores: '44787',
   emerald: '42261',
   oasis: '42262',
   avaeth: '43110',
