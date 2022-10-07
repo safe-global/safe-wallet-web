@@ -53,4 +53,5 @@ export const TENDERLY_ORG_NAME = process.env.NEXT_PUBLIC_TENDERLY_ORG_NAME || ''
 export enum SafeAppsTag {
   TX_BUILDER = 'transaction-builder',
   DASHBOARD_FEATURED = 'dashboard-widgets',
+  SAFE_CLAIMING_APP = 'safe-claiming-app',
 }
