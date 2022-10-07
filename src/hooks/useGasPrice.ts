@@ -10,6 +10,7 @@ import { useCurrentChain } from './useChains'
 import useIntervalCounter from './useIntervalCounter'
 import { useWeb3ReadOnly } from '../hooks/wallets/web3'
 import { hasFeature } from '@/utils/chains'
+import { Errors, logError } from '@/services/exceptions'
 
 // Updat gas fees every 20 seconds
 const REFRESH_DELAY = 20e3
@@ -42,7 +43,7 @@ const getGasPrice = async (gasPriceConfigs: GasPrice): Promise<BigNumber | undef
         return await fetchGasOracle(config)
       } catch (err) {
         error = err as Error
-        console.error('Error fetching gas price from oracle', err)
+        logError(Errors._611, error.message)
         // Continue to the next oracle
         continue
       }
