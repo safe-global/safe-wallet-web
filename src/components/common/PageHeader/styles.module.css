@@ -8,4 +8,5 @@
   z-index: 1;
   width: calc(100% - var(--space-6));
   position: sticky !important;
+  top: -12px;
 }

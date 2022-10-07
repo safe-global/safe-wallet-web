@@ -16,8 +16,7 @@ const PageHeader = ({
     <Box
       className={css.container}
       sx={{
-        top: '-12px',
-        borderBottom: !noBorder ? ({ palette }) => `1px solid ${palette.border.light}` : undefined,
+        borderBottom: noBorder ? undefined : ({ palette }) => `1px solid ${palette.border.light}`,
       }}
     >
       <Typography variant="h3" fontWeight={700} gutterBottom>
