@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { AlertColor } from '@mui/material'
 import type { AppThunk, RootState } from '@/store'
+import type { LinkProps } from 'next/link'
 
 export type Notification = {
   id: string
@@ -10,7 +11,7 @@ export type Notification = {
   timestamp: number
   isDismissed?: boolean
   isRead?: boolean
-  link?: { href: string; title: string }
+  link?: { href: LinkProps['href']; title: string }
 }
 
 export type NotificationState = Notification[]

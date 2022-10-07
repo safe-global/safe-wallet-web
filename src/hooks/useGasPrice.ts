@@ -71,10 +71,12 @@ const useGasPrice = (): {
 
   // Save the previous gas price so that we don't return undefined each time it's polled
   const lastPrice = useRef<BigNumber>()
-  lastPrice.current = gasPrice || feeData?.maxFeePerGas || lastPrice.current
+  // Fallback to feeData.gasPrice for non-EIP-1559 networks
+  lastPrice.current = gasPrice || feeData?.maxFeePerGas || feeData?.gasPrice || lastPrice.current
 
   const lastPrioFee = useRef<BigNumber>()
-  lastPrioFee.current = feeData?.maxPriorityFeePerGas || lastPrioFee.current
+  // Fallback to 0 for non-EIP-1559 networks
+  lastPrioFee.current = feeData ? feeData.maxPriorityFeePerGas || BigNumber.from(0) : lastPrioFee.current
 
   return {
     maxFeePerGas: lastPrice.current,

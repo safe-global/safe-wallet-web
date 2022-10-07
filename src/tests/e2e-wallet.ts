@@ -4,12 +4,12 @@ import type { WalletInit } from '@web3-onboard/common'
 import { CYPRESS_MNEMONIC } from '@/config/constants'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'
 
-const WALLET_NAME = 'E2E Wallet'
+export const E2E_WALLET_NAME = 'E2E Wallet'
 
 const e2eWalletModule = (rpcUri: ChainInfo['rpcUri']): WalletInit => {
   return () => {
     return {
-      label: WALLET_NAME,
+      label: E2E_WALLET_NAME,
       getIcon: async () => '<svg />',
       getInterface: async () => {
         const { createEIP1193Provider } = await import('@web3-onboard/common')

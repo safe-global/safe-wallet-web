@@ -72,7 +72,7 @@ const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params, appId } }: Rev
             </Box>
 
             {isMultiSend && (
-              <Box py={1}>
+              <Box mb={2} display="flex" flexDirection="column" gap={1}>
                 <Multisend
                   txData={{
                     dataDecoded: decodedData,
@@ -81,6 +81,7 @@ const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params, appId } }: Rev
                     operation: safeTx.data.operation === OperationType.Call ? Operation.CALL : Operation.DELEGATE,
                     trustedDelegateCallTarget: false,
                   }}
+                  variant="outlined"
                 />
               </Box>
             )}

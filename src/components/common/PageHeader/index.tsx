@@ -5,6 +5,8 @@ import type { ReactElement } from 'react'
 
 import css from './styles.module.css'
 
+const SIDEBAR_HEADER_HEIGHT = 158
+
 const PageHeader = ({
   title,
   subtitle,
@@ -23,7 +25,7 @@ const PageHeader = ({
     <Box
       className={css.container}
       sx={{
-        height: `${199 + nameHeight}.5px`,
+        height: `${SIDEBAR_HEADER_HEIGHT + nameHeight}px`,
         top: `-${76 + nameHeight}px`,
       }}
     >

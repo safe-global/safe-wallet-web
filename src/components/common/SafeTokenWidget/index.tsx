@@ -11,6 +11,7 @@ import { Box, ButtonBase, Skeleton, Tooltip, Typography } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
+import type { UrlObject } from 'url'
 import Track from '../Track'
 
 import SafeTokenIcon from './safe_token.svg'
@@ -40,8 +41,12 @@ const SafeTokenWidget = () => {
     return null
   }
 
-  const appUrl = encodeURIComponent(claimingApp?.url || '')
-  const url = claimingApp ? `${AppRoutes.apps}?safe=${router.query.safe}&appUrl=${appUrl}` : undefined
+  const url: UrlObject | undefined = claimingApp
+    ? {
+        pathname: AppRoutes.apps,
+        query: { safe: router.query.safe, appUrl: claimingApp?.url },
+      }
+    : undefined
 
   const safeBalance = balances.balances.items.find((balanceItem) => balanceItem.tokenInfo.address === tokenAddress)
 

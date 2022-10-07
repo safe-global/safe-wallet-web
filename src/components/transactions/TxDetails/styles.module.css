@@ -38,7 +38,7 @@
 }
 
 .txData {
-  border-bottom: 2px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .txSummary,
@@ -51,7 +51,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: var(--space-3);
-  border-left: 2px solid var(--color-border-light);
+  border-left: 1px solid var(--color-border-light);
 }
 
 .delegateCall .alert {
@@ -60,12 +60,12 @@
 }
 
 .multiSend {
-  border-top: 2px solid var(--color-border-light);
+  border-top: 1px solid var(--color-border-light);
 }
 
 @media (max-width: 600px) {
   .txSigners {
     border-left: 0;
-    border-top: 2px solid var(--color-border-light);
+    border-top: 1px solid var(--color-border-light);
   }
 }

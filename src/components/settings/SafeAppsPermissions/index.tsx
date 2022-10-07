@@ -97,7 +97,7 @@ const SafeAppsPermissions = (): ReactElement => {
   return (
     <Paper sx={{ padding: 4 }}>
       <Typography variant="h4" fontWeight={700}>
-        Safe Apps Permissions
+        Safe Apps permissions
       </Typography>
       <br />
       {!domains.length && (
