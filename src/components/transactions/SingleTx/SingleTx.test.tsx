@@ -37,7 +37,9 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
 
 jest.spyOn(useSafeInfo, 'default').mockImplementation(() => ({
   safeAddress: SAFE_ADDRESS,
-  safe: {} as SafeInfo,
+  safe: {
+    chainId: '5',
+  } as SafeInfo,
   safeError: undefined,
   safeLoading: false,
   safeLoaded: true,

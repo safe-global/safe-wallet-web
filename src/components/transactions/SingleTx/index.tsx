@@ -1,6 +1,5 @@
 import { CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import useChainId from '@/hooks/useChainId'
 import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useAsync from '@/hooks/useAsync'
@@ -26,7 +25,6 @@ const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactEl
 }
 
 const SingleTx = () => {
-  const chainId = useChainId()
   const router = useRouter()
   const { id } = router.query
   const transactionId = Array.isArray(id) ? id[0] : id
@@ -34,9 +32,9 @@ const SingleTx = () => {
 
   const [txDetails, txDetailsError] = useAsync<TransactionDetails>(
     () => {
-      if (!transactionId) return
+      if (!transactionId || !safeAddress) return
 
-      return getTransactionDetails(chainId, transactionId).then((details) => {
+      return getTransactionDetails(safe.chainId, transactionId).then((details) => {
         // If the transaction is not related to the current safe, throw an error
         if (!sameAddress(details.safeAddress, safeAddress)) {
           return Promise.reject(new Error('Transaction with this id was not found in this Safe'))
@@ -44,7 +42,7 @@ const SingleTx = () => {
         return details
       })
     },
-    [transactionId, safe.txQueuedTag, safe.txHistoryTag, safeAddress],
+    [transactionId, safe.chainId, safe.txQueuedTag, safe.txHistoryTag, safeAddress],
     false,
   )
 
