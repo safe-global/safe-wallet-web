@@ -52,7 +52,7 @@ type PendingTxType = {
 
 const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {
   return (
-    <NextLink href={url}>
+    <NextLink href={url} passHref>
       <a>
         <StyledContainer>
           <Grid container py={1} px={2} alignItems="center" gap={1}>
