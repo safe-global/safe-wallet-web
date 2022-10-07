@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import { act, renderHook } from '@/tests/test-utils'
-import useGasPrice from '@/hooks/useGasPrice'
+import useGasPrice, { _getFeeData } from '@/hooks/useGasPrice'
 
 // mock useWeb3Readonly
 jest.mock('../wallets/web3', () => {
@@ -40,6 +41,7 @@ jest.mock('@/hooks/useChains', () => {
         weiValue: '24000000000',
       },
     ],
+    features: ['EIP1559'],
   }
 
   return {
@@ -218,5 +220,30 @@ describe('useGasPrice', () => {
     })
 
     expect(result2.current.maxFeePerGas?.toString()).toBe('22000000000')
+  })
+
+  describe('getFeeData', () => {
+    const provider = {
+      getFeeData: () =>
+        Promise.resolve({
+          gasPrice: BigNumber.from(21000000000),
+          maxFeePerGas: BigNumber.from(20000000000),
+          maxPriorityFeePerGas: BigNumber.from(1000000000),
+        }),
+    } as unknown as JsonRpcProvider
+
+    it('should return the correct fee data', async () => {
+      const feeData = await _getFeeData(provider, true)
+
+      expect(feeData.maxFeePerGas?.toString()).toEqual('20000000000')
+      expect(feeData.maxPriorityFeePerGas?.toString()).toEqual('1000000000')
+    })
+
+    it('should return the fee data for non-EIP-1559 chains', async () => {
+      const feeData = await _getFeeData(provider, false)
+
+      expect(feeData.maxFeePerGas?.toString()).toEqual('21000000000')
+      expect(feeData.maxPriorityFeePerGas?.toString()).toEqual('0')
+    })
   })
 })
