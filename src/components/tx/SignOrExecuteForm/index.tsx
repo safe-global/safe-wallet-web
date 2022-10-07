@@ -1,5 +1,4 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
@@ -19,36 +18,36 @@ import { isSmartContractWallet, shouldUseEthSignMethod } from '@/hooks/wallets/w
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
-import { AppRoutes } from '@/config/routes'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import type { Web3Provider } from '@ethersproject/providers'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
-  isExecutable: boolean
-  isRejection?: boolean
-  onlyExecute?: boolean
   onSubmit: (txId: string) => void
   children?: ReactNode
   error?: Error
-  redirectToTx?: boolean
+  isExecutable?: boolean
+  isRejection?: boolean
+  onlyExecute?: boolean
+  disableSubmit?: boolean
 }
 
 const SignOrExecuteForm = ({
   safeTx,
   txId,
-  isExecutable,
-  isRejection,
   onlyExecute,
   onSubmit,
   children,
   error,
-  redirectToTx = true,
+  isExecutable = false,
+  isRejection = false,
+  disableSubmit = false,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -58,14 +57,17 @@ const SignOrExecuteForm = ({
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
-  const router = useRouter()
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
+  const isWrongChain = useIsWrongChain()
   const provider = useWeb3()
   const currentChain = useCurrentChain()
 
   // Check that the transaction is executable
-  const canExecute = isExecutable && !!tx && tx.data.nonce === safe.nonce
+  const isNewExecutableTx = !txId && safe.threshold === 1
+  const isCorrectNonce = tx?.data.nonce === safe.nonce
+  const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
+
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = shouldExecute && canExecute
 
@@ -84,13 +86,14 @@ const SignOrExecuteForm = ({
   // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
-  const nonceReadonly = !!tx?.signatures.size || !!isRejection
+  const nonceReadonly = !!tx?.signatures.size || isRejection
 
   //
   // Callbacks
   //
   const assertSubmittable = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
     if (!wallet) throw new Error('Wallet not connected')
+    if (isWrongChain) throw new Error('Connected to the wrong chain')
     if (!tx) throw new Error('Transaction not ready')
     if (!provider) throw new Error('Provider not ready')
 
@@ -103,8 +106,9 @@ const SignOrExecuteForm = ({
 
     const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
+
     const signedTx = smartContractWallet
-      ? await dispatchOnChainSigning(createdTx, provider, txId)
+      ? await dispatchOnChainSigning(createdTx, provider)
       : await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
@@ -113,7 +117,7 @@ const SignOrExecuteForm = ({
 
   // Execute transaction
   const onExecute = async (): Promise<string> => {
-    const [connectedWallet, createdTx] = assertSubmittable()
+    const [connectedWallet, createdTx, provider] = assertSubmittable()
 
     // If no txId was provided, it's an immediate execution of a new tx
     let id = txId
@@ -124,7 +128,7 @@ const SignOrExecuteForm = ({
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(id, createdTx, txOptions)
+    await dispatchTxExecution(id, createdTx, provider, txOptions)
 
     return id
   }
@@ -146,15 +150,6 @@ const SignOrExecuteForm = ({
     }
 
     onSubmit(id)
-
-    // If txId isn't passed in props, it's a newly created tx
-    // Redirect to the single tx view
-    if (redirectToTx && (!txId || isRejection)) {
-      router.push({
-        pathname: AppRoutes.transactions.tx,
-        query: { safe: router.query.safe, id },
-      })
-    }
   }
 
   const onAdvancedSubmit = async (data: AdvancedParameters) => {
@@ -171,14 +166,14 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
-  const submitDisabled = !isSubmittable || isEstimating || !tx
+  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit
 
   return (
     <form onSubmit={handleSubmit}>
       <DialogContent>
         {children}
 
-        {tx && <DecodedTx tx={tx} txId={txId} />}
+        <DecodedTx tx={tx} txId={txId} />
 
         {canExecute && !onlyExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} />}
 

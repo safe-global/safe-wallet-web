@@ -5,6 +5,7 @@ import ListItemIcon, { type ListItemIconProps } from '@mui/material/ListItemIcon
 import ListItemText, { type ListItemTextProps } from '@mui/material/ListItemText'
 import Link from 'next/link'
 import type { LinkProps } from 'next/link'
+import Badge from '@mui/material/Badge'
 
 import css from './styles.module.css'
 
@@ -34,7 +35,11 @@ export const SidebarListItemButton = ({
   )
 }
 
-export const SidebarListItemIcon = ({ children, ...rest }: Omit<ListItemIconProps, 'className'>): ReactElement => (
+export const SidebarListItemIcon = ({
+  children,
+  badge = false,
+  ...rest
+}: Omit<ListItemIconProps, 'className'> & { badge?: boolean }): ReactElement => (
   <ListItemIcon
     className={css.icon}
     sx={{
@@ -48,7 +53,9 @@ export const SidebarListItemIcon = ({ children, ...rest }: Omit<ListItemIconProp
     }}
     {...rest}
   >
-    {children}
+    <Badge color="error" variant="dot" invisible={!badge} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+      {children}
+    </Badge>
   </ListItemIcon>
 )
 

@@ -61,11 +61,13 @@ const SafeHeader = (): ReactElement => {
   return (
     <div className={css.container}>
       <div className={css.safe}>
-        {safeLoading ? (
-          <Skeleton variant="circular" width={40} height={40} />
-        ) : (
-          <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
-        )}
+        <div>
+          {safeLoading ? (
+            <Skeleton variant="circular" width={40} height={40} />
+          ) : (
+            <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
+          )}
+        </div>
 
         <div className={css.address}>
           {safeLoading ? (

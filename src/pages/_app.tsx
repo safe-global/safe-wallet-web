@@ -5,10 +5,10 @@ import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
-import { setBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
+import { setBaseUrl as setGatewayBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
 import { CacheProvider, type EmotionCache } from '@emotion/react'
 import '@/styles/globals.css'
-import { IS_PRODUCTION, GATEWAY_URL } from '@/config/constants'
+import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION } from '@/config/constants'
 import { StoreHydrator } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import useLoadableStores from '@/hooks/useLoadableStores'
@@ -29,14 +29,13 @@ import { useTxTracking } from '@/hooks/useTxTracking'
 import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
-import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securityHeaders'
 import createEmotionCache from '@/utils/createEmotionCache'
+import MetaTags from '@/components/common/MetaTags'
+
+const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
 const InitApp = (): null => {
-  if (!IS_PRODUCTION && !cgwDebugStorage.get()) {
-    setBaseUrl(GATEWAY_URL)
-  }
-
+  setGatewayBaseUrl(GATEWAY_URL)
   usePathRewrite()
   useStorageMigration()
   useGtm()
@@ -78,24 +77,7 @@ const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCach
     <StoreHydrator>
       <Head>
         <title key="default-title">Safe</title>
-        <meta
-          name="description"
-          content="Safe is the most trusted platform to manage digital assets on Ethereum (formerly known as the Gnosis Safe multisig)."
-        />
-
-        <link rel="dns-prefetch" href={GATEWAY_URL} />
-        <link rel="preconnect" href={GATEWAY_URL} crossOrigin="" />
-
-        <meta name="viewport" content="width=device-width" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta httpEquiv="Content-Security-Policy" content={ContentSecurityPolicy} />
-        {IS_PRODUCTION && <meta httpEquiv="Strict-Transport-Security" content={StrictTransportSecurity} />}
-        <link rel="shortcut icon" href="/favicons/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
-        <link rel="manifest" href="/favicons/site.webmanifest" />
-        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#000" />
+        <MetaTags prefetchUrl={GATEWAY_URL} />
       </Head>
 
       <CacheProvider value={emotionCache}>

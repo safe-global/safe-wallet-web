@@ -2,7 +2,6 @@ import { useState, type ReactElement } from 'react'
 import { Divider, Drawer, IconButton } from '@mui/material'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 import { useRouter } from 'next/router'
-import classnames from 'classnames'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SidebarHeader from '@/components/sidebar/SidebarHeader'
@@ -25,20 +24,14 @@ const Sidebar = (): ReactElement => {
   }
 
   return (
-    <div className={classnames(css.container, { [css.noSafe]: !isSafeRoute })}>
+    <div className={css.container}>
       <div className={css.scroll}>
         <div className={css.chain}>
           <ChainIndicator />
         </div>
 
         <IconButton className={css.drawerButton} onClick={onDrawerToggle}>
-          <ChevronRight
-            sx={({ palette }) => ({
-              '& svg path': {
-                fill: palette.background.paper,
-              },
-            })}
-          />
+          <ChevronRight />
         </IconButton>
 
         {isSafeRoute ? (

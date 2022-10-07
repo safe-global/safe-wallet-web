@@ -35,6 +35,24 @@ const getAndValidateSafeSDK = (): Safe => {
   return safeSDK
 }
 
+/**
+ * https://docs.ethers.io/v5/api/providers/jsonrpc-provider/#UncheckedJsonRpcSigner
+ * This resolves the promise sooner when executing a tx and mocks
+ * most of the values of transactionResponse which is needed when
+ * dealing with smart-contract wallet owners
+ */
+const getUncheckedSafeSDK = (provider: Web3Provider): Promise<Safe> => {
+  const sdk = getAndValidateSafeSDK()
+
+  const signer = provider.getSigner()
+  const ethAdapter = new EthersAdapter({
+    ethers,
+    signer: signer.connectUnchecked(),
+  })
+
+  return sdk.connect({ ethAdapter })
+}
+
 const estimateSafeTxGas = async (
   chainId: string,
   safeAddress: string,
@@ -231,22 +249,15 @@ export const dispatchTxSigning = async (
 /**
  * On-Chain sign a transaction
  */
-export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: Web3Provider, txId?: string) => {
-  const sdk = getAndValidateSafeSDK()
-  const safeTxHash = await sdk.getTransactionHash(safeTx)
-
-  const signer = provider.getSigner()
-  const ethersAdapter = new EthersAdapter({
-    ethers,
-    signer: signer.connectUnchecked(),
-  })
+export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: Web3Provider) => {
+  const sdkUnchecked = await getUncheckedSafeSDK(provider)
+  const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
 
   txDispatch(TxEvent.EXECUTING, { groupKey: safeTxHash })
 
   try {
     // With the unchecked signer, the contract call resolves once the tx
     // has been submitted in the wallet not when it has been executed
-    const sdkUnchecked = await sdk.connect({ ethAdapter: ethersAdapter })
     await sdkUnchecked.approveTransactionHash(safeTxHash)
   } catch (err) {
     txDispatch(TxEvent.FAILED, { groupKey: safeTxHash, error: err as Error })
@@ -264,16 +275,17 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
 export const dispatchTxExecution = async (
   txId: string,
   safeTx: SafeTransaction,
+  provider: Web3Provider,
   txOptions?: TransactionOptions,
 ): Promise<string> => {
-  const sdk = getAndValidateSafeSDK()
+  const sdkUnchecked = await getUncheckedSafeSDK(provider)
 
   txDispatch(TxEvent.EXECUTING, { txId })
 
   // Execute the tx
   let result: TransactionResult | undefined
   try {
-    result = await sdk.executeTransaction(safeTx, txOptions)
+    result = await sdkUnchecked.executeTransaction(safeTx, txOptions)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, error: error as Error })
     throw error
