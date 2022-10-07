@@ -12,7 +12,6 @@ import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_DEMO_SAFE_MAINNET } from '@/config/constants'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { Errors, logError } from '@/services/exceptions'
-import useOwnedSafes from '@/hooks/useOwnedSafes'
 import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 type Props = {
@@ -27,7 +26,6 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
   const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl, chain.chainId)
   const wallet = useWallet()
   const onboard = useOnboard()
-  const ownedSafes = useOwnedSafes()[chain.chainId] ?? []
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
   const showDemo = chain.chainId === CHAIN_ID_WITH_A_DEMO || !!backendApp?.chainIds.includes(CHAIN_ID_WITH_A_DEMO)
 
@@ -79,14 +77,17 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
                 appUrl={appUrl}
                 wallet={wallet}
                 onConnectWallet={handleConnectWallet}
-                safes={ownedSafes}
                 chain={chain}
+                app={backendApp || safeApp}
               />
             </Grid>
             {showDemo && (
               <Grid xs={12} sm={12} md={6}>
                 <TryDemo
-                  demoUrl={`${AppRoutes.apps}?safe=${SAFE_APPS_DEMO_SAFE_MAINNET}&appUrl=${encodeURIComponent(appUrl)}`}
+                  demoUrl={{
+                    pathname: AppRoutes.apps,
+                    query: { safe: SAFE_APPS_DEMO_SAFE_MAINNET, appUrl },
+                  }}
                   onClick={handleDemoClick}
                 />
               </Grid>

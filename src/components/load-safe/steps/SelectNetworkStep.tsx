@@ -19,7 +19,7 @@ const SelectNetworkStep = ({ onSubmit, onBack }: Props) => {
       <Box padding={3}>
         <Grid container alignItems="center" justifyContent="center" spacing={3}>
           <Grid item>
-            <Button onClick={onBack}>Cancel</Button>
+            <Button onClick={() => onBack()}>Cancel</Button>
           </Grid>
           <Grid item>
             <Button variant="contained" onClick={() => onSubmit(undefined)}>

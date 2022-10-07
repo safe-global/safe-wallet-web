@@ -13,7 +13,7 @@ export type NavItem = {
   label: string
   icon?: ReactElement
   href: string
-  items?: NavItem[]
+  badge?: boolean
 }
 
 export const navItems: NavItem[] = [
@@ -89,7 +89,7 @@ export const settingsNavItems = [
     href: AppRoutes.settings.spendingLimits,
   },
   {
-    label: 'Safe Apps Permissions',
-    href: AppRoutes.settings.safeAppsPermissions,
+    label: 'Safe Apps permissions',
+    href: AppRoutes.settings.safeApps.index,
   },
 ]

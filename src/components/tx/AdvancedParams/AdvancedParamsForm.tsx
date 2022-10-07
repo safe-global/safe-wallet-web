@@ -18,6 +18,7 @@ type AdvancedParamsFormProps = {
   recommendedNonce?: number
   recommendedGasLimit?: AdvancedParameters['gasLimit']
   isExecution: boolean
+  isEIP1559: boolean
   nonceReadonly?: boolean
 }
 
@@ -146,26 +147,28 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                   </Grid>
 
                   {/* Gas price */}
-                  <Grid item xs={6}>
-                    <FormControl fullWidth>
-                      <TextField
-                        label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
-                        error={!!errors.maxPriorityFeePerGas}
-                        autoComplete="off"
-                        required
-                        {...register(AdvancedField.maxPriorityFeePerGas, {
-                          required: true,
-                          pattern: FLOAT_REGEX,
-                          min: 0,
-                        })}
-                      />
-                    </FormControl>
-                  </Grid>
+                  {props.isEIP1559 && (
+                    <Grid item xs={6}>
+                      <FormControl fullWidth>
+                        <TextField
+                          label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
+                          error={!!errors.maxPriorityFeePerGas}
+                          autoComplete="off"
+                          required
+                          {...register(AdvancedField.maxPriorityFeePerGas, {
+                            required: true,
+                            pattern: FLOAT_REGEX,
+                            min: 0,
+                          })}
+                        />
+                      </FormControl>
+                    </Grid>
+                  )}
 
                   <Grid item xs={6}>
                     <FormControl fullWidth>
                       <TextField
-                        label={errors.maxFeePerGas?.message || 'Max fee (Gwei)'}
+                        label={errors.maxFeePerGas?.message || props.isEIP1559 ? 'Max fee (Gwei)' : 'Gas price (Gwei)'}
                         error={!!errors.maxFeePerGas}
                         autoComplete="off"
                         required

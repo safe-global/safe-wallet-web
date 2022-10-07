@@ -65,7 +65,10 @@ const useTxNotifications = (): void => {
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
             ...(shouldShowLink && {
               link: {
-                href: `${AppRoutes.transactions.tx}?id=${txId}&safe=${chain?.shortName}:${safeAddress}`,
+                href: {
+                  pathname: AppRoutes.transactions.tx,
+                  query: { id: txId, safe: `${chain?.shortName}:${safeAddress}` },
+                },
                 title: 'View transaction',
               },
             }),

@@ -26,7 +26,7 @@ export const NotificationLink = ({
     return null
   }
 
-  const isExternal = !isRelativeUrl(link.href)
+  const isExternal = typeof link.href === 'string' ? !isRelativeUrl(link.href) : link.href.host || link.href.hostname
 
   return (
     <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title}>
