@@ -5,7 +5,6 @@ export const APPS_DASHBOARD = 'APPS_DASHBOARD'
 
 const TX_COUNT_WEIGHT = 2
 const OPEN_COUNT_WEIGHT = 1
-const PINNED_WEIGHT = 10
 
 export type AppTrackData = {
   [safeAppId: string]: {
@@ -56,16 +55,8 @@ const normalizeBetweenTwoRanges = (
   return newMin + ((val - minVal) * (newMax - newMin)) / (maxVal - minVal)
 }
 
-export const rankSafeApps = (apps: AppTrackData, pinnedSafeApps: SafeAppData[]): string[] => {
+export const rankSafeApps = (apps: AppTrackData): string[] => {
   const appsWithScore = computeTrackedSafeAppsScore(apps)
-
-  for (const app of pinnedSafeApps) {
-    if (appsWithScore[app.id]) {
-      appsWithScore[app.id] += PINNED_WEIGHT
-    } else {
-      appsWithScore[app.id] = PINNED_WEIGHT
-    }
-  }
 
   return Object.entries(appsWithScore)
     .sort((a, b) => b[1] - a[1])
