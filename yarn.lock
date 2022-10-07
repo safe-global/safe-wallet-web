@@ -3587,7 +3587,7 @@
     web3-eth-contract "^1.7.4"
     web3-utils "^1.7.4"
 
-"@toruslabs/http-helpers@^3.0.0", "@toruslabs/http-helpers@^3.1.0":
+"@toruslabs/http-helpers@^3.1.0", "@toruslabs/http-helpers@^3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@toruslabs/http-helpers/-/http-helpers-3.2.0.tgz#9e33dd23936ef90852133372c831f03b7a8badc5"
   integrity sha512-fCfvBHfYzd7AyOYlBo7wihh5nj6+4Ik6V5+nI7H63oiKICjMlByTXSauTUa/qm2mjZJn/OmVYeV5guPIgxoW1w==
@@ -3640,18 +3640,18 @@
     pump "^3.0.0"
 
 "@toruslabs/torus.js@^6.1.0":
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/@toruslabs/torus.js/-/torus.js-6.1.0.tgz#cc8e8192964664b99c7442309d78fd961ea5ace8"
-  integrity sha512-HI6zShOcG44pV382dHyhvdNawUxHtdP/HD9IE3ofasIrL308n/Wa/VuTS/VlaoYuQoBtPQZ1HYrKxlyIy2vXLA==
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@toruslabs/torus.js/-/torus.js-6.2.0.tgz#c3eba9dea53338d49cb1ee9d0ea80c06f2111082"
+  integrity sha512-syjZmlZedfaL9CnCatvUmTX4kgzkgs1jSGDgLXNcorH3A1pL5Ufp6+iwecaIk2QgPVT7FQNPLkAtAsiZMx8b2Q==
   dependencies:
     "@toruslabs/eccrypto" "^1.1.8"
-    "@toruslabs/http-helpers" "^3.0.0"
+    "@toruslabs/http-helpers" "^3.2.0"
     bn.js "^5.2.1"
     elliptic "^6.5.4"
     json-stable-stringify "^1.0.1"
     keccak "^3.0.2"
     loglevel "^1.8.0"
-    web3-utils "^1.7.4"
+    web3-utils "^1.8.0"
 
 "@truffle/hdwallet-provider@^2.0.14":
   version "2.0.15"
@@ -4403,6 +4403,15 @@
     "@portis/web3" "^4.0.6"
     "@web3-onboard/common" "^2.2.3"
 
+"@web3-onboard/tallyho@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/tallyho/-/tallyho-2.0.1.tgz#0d5987377436a0c7c249e90e9664e0c53d2b4641"
+  integrity sha512-JgntTyJvFSk0MOJjZauL5sqSG9e3ENURN7I/H+3GCMIkEGJChsVHaZZcy7D6zFNgwUreztv8tg7DSoal//iizg==
+  dependencies:
+    "@web3-onboard/common" "^2.2.3"
+    tallyho-detect-provider "^1.0.0"
+    tallyho-onboarding "^1.0.2"
+
 "@web3-onboard/torus@^2.1.3":
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@web3-onboard/torus/-/torus-2.1.3.tgz#c8604f6a9c24f31c107a781c9a25f8dd1beaaa59"
@@ -5048,7 +5057,7 @@ borsh@^0.7.0:
     bs58 "^4.0.0"
     text-encoding-utf-8 "^1.0.2"
 
-bowser@^2.11.0:
+bowser@^2.11.0, bowser@^2.9.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.11.0.tgz#5ca3c35757a7aa5771500c70a73a9f91ef420a8f"
   integrity sha512-AlcaJBi/pqqJBIQ8U9Mcpc9i8Aqxn88Skv5d+xBX006BY5u8N3mGLHa5Lgppa7L/HfwgwLgZ6NYs+Ag6uUmJRA==
@@ -11064,6 +11073,18 @@ table-layout@^1.0.2:
     deep-extend "~0.6.0"
     typical "^5.2.0"
     wordwrapjs "^4.0.0"
+
+tallyho-detect-provider@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/tallyho-detect-provider/-/tallyho-detect-provider-1.0.2.tgz#6e462c34494217d39a83e22709dd855488b2d32d"
+  integrity sha512-VUGZiWUrKJUUjtnkib09tuNO7Kld4UWLs54nnNYP0tewvzmeb1VWDK0UTv88bEUcuRKx2YWGDIuOuK9v270Ewg==
+
+tallyho-onboarding@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/tallyho-onboarding/-/tallyho-onboarding-1.0.2.tgz#afc7dc4eb05b3a7861ead215e798585e1cbe2e91"
+  integrity sha512-bdFT/fNrFrq1BYVgjl/JKtwDmeS+z2u0415PoxmGmmYYRfdcKqXtEPImMoEbVwGtOeN0iFVohuS8ESrrAe+w7w==
+  dependencies:
+    bowser "^2.9.0"
 
 terminal-link@^2.0.0:
   version "2.1.1"

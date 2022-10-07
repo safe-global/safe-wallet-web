@@ -1,5 +1,5 @@
-import usePathRewrite, { use404Rewrite } from '@/hooks/usePathRewrite'
-import { act, renderHook } from '@/tests/test-utils'
+import usePathRewrite from '@/hooks/usePathRewrite'
+import { renderHook } from '@/tests/test-utils'
 
 // mock window history replaceState
 Object.defineProperty(window, 'history', {
@@ -101,30 +101,5 @@ describe('usePathRewrite', () => {
       '',
       '/rin:0x0000000000000000000000000000000000000000/hello?hi=hello&count=1',
     )
-  })
-})
-
-describe('useQueryRewrite', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
-  it('should not redirect if there is no Safe address in the path', async () => {
-    const { result } = renderHook(() => use404Rewrite())
-    expect(result.current).toBe(false)
-  })
-
-  it('should redirect if there is a Safe address in the path', async () => {
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        pathname: '/rin:0x0000000000000000000000000000000000000000/balances',
-      },
-    })
-
-    const { result } = renderHook(() => use404Rewrite())
-    expect(result.current).toBe(true)
-    await act(() => Promise.resolve())
-    expect(result.current).toBe(true)
   })
 })

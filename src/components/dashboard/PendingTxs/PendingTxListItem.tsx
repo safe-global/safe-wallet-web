@@ -1,5 +1,6 @@
-import type { ReactElement } from 'react'
 import NextLink from 'next/link'
+import type { LinkProps } from 'next/link'
+import type { ReactElement } from 'react'
 import styled from '@emotion/styled'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -46,7 +47,7 @@ const Spacer = styled.div`
 
 type PendingTxType = {
   transaction: TransactionSummary
-  url: string
+  url: LinkProps['href']
 }
 
 const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {

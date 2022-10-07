@@ -1,5 +1,6 @@
 import { AccordionSummary, Accordion, Button, Typography, CircularProgress, Skeleton } from '@mui/material'
 import type { ReactElement } from 'react'
+import { useEffect } from 'react'
 
 import Track from '@/components/common/Track'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -42,6 +43,11 @@ const TxSimulationBlock = ({ transactions, canExecute, disabled, gasLimit }: TxS
       gasLimit,
     } as SimulationTxParams)
   }
+
+  // Reset simulation if gas limit changes
+  useEffect(() => {
+    resetSimulation()
+  }, [gasLimit, resetSimulation])
 
   const isSimulationFinished =
     simulationRequestStatus === FETCH_STATUS.ERROR || simulationRequestStatus === FETCH_STATUS.SUCCESS

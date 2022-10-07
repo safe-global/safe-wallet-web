@@ -1,39 +1,65 @@
 import { Box, Button, MenuItem, Select, Typography, Grid, FormControl, InputLabel } from '@mui/material'
-import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useState } from 'react'
+import type { ChainInfo, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
+import type { UrlObject } from 'url'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
-import { selectAddressBookByChain } from '@/store/addressBookSlice'
+import { selectAllAddressBooks } from '@/store/addressBookSlice'
+import { selectChains } from '@/store/chainsSlice'
 import useLastSafe from '@/hooks/useLastSafe'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import SafeIcon from '@/components/common/SafeIcon'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
+import useOwnedSafes from '@/hooks/useOwnedSafes'
 import { CTA_BUTTON_WIDTH, CTA_HEIGHT } from '@/components/safe-apps/SafeAppLandingPage/constants'
 import Link from 'next/link'
+import CreateNewSafeSVG from '@/public/images/open/safe-creation.svg'
 
 type Props = {
   appUrl: string
   wallet: ConnectedWallet | null
   onConnectWallet: () => Promise<void>
-  safes: string[]
   chain: ChainInfo
+  app: SafeAppData
 }
 
-const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): React.ReactElement => {
+type CompatibleSafesType = { address: string; chainId: string; shortName?: string }
+
+const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): React.ReactElement => {
   const lastUsedSafe = useLastSafe()
-  const lastUsedSafeAddress =
-    lastUsedSafe && safes.includes(lastUsedSafe) ? parsePrefixedAddress(lastUsedSafe).address : ''
-  const [safeToUse, setSafeToUse] = useState<string | undefined>(lastUsedSafeAddress || undefined)
-  const addressBook = useAppSelector((state) => selectAddressBookByChain(state, chain.chainId))
+  const ownedSafes = useOwnedSafes()
+  const addressBook = useAppSelector(selectAllAddressBooks)
+  const chains = useAppSelector(selectChains)
+  const compatibleChains = app.chainIds
+
+  const compatibleSafes = useMemo(
+    () => getCompatibleSafes(ownedSafes, compatibleChains, chains.data),
+    [ownedSafes, compatibleChains, chains.data],
+  )
+
+  const [safeToUse, setSafeToUse] = useState<CompatibleSafesType>()
+
+  useEffect(() => {
+    const defaultSafe = getDefaultSafe(compatibleSafes, chain.chainId, lastUsedSafe)
+    if (defaultSafe) {
+      setSafeToUse(defaultSafe)
+    }
+  }, [compatibleSafes, chain.chainId, lastUsedSafe])
+
   const hasWallet = !!wallet
-  const hasSafes = safes.length > 0
+  const hasSafes = compatibleSafes.length > 0
   const shouldCreateSafe = hasWallet && !hasSafes
 
   let button: React.ReactNode
   switch (true) {
-    case hasWallet && hasSafes:
-      const href = `${AppRoutes.apps}?appUrl=${encodeURIComponent(appUrl)}&safe=${chain.shortName}:${safeToUse}`
+    case hasWallet && hasSafes && !!safeToUse:
+      const safe = `${safeToUse?.shortName}:${safeToUse?.address}`
+      const href: UrlObject = {
+        pathname: AppRoutes.apps,
+        query: { safe, appUrl },
+      }
 
       button = (
         <Link href={href} passHref>
@@ -44,8 +70,11 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
       )
       break
     case shouldCreateSafe:
-      const redirect = encodeURIComponent(`${AppRoutes.apps}?appUrl=${appUrl}`)
-      const createSafeHrefWithRedirect = `${AppRoutes.open}?chain=${chain.shortName}&safeViewRedirectURL=${redirect}`
+      const redirect = `${AppRoutes.apps}?appUrl=${appUrl}`
+      const createSafeHrefWithRedirect: UrlObject = {
+        pathname: AppRoutes.open,
+        query: { safeViewRedirectURL: redirect, chain: chain.shortName },
+      }
       button = (
         <Link href={createSafeHrefWithRedirect} passHref>
           <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>
@@ -68,8 +97,12 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
         <InputLabel id="safe-select-label">Select a Safe</InputLabel>
         <Select
           labelId="safe-select-label"
-          defaultValue={lastUsedSafeAddress}
-          onChange={(e) => setSafeToUse(e.target.value)}
+          value={safeToUse?.address || ''}
+          onChange={(e) => {
+            const safeToUse = compatibleSafes.find(({ address }) => address === e.target.value)
+            setSafeToUse(safeToUse)
+          }}
+          autoWidth
           label="Select a Safe"
           sx={({ spacing }) => ({
             width: '311px',
@@ -77,15 +110,15 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
             '.MuiSelect-select': { padding: `${spacing(1)} ${spacing(2)}` },
           })}
         >
-          {safes.map((safe) => (
-            <MenuItem key={safe} value={safe}>
+          {compatibleSafes.map(({ address, chainId, shortName }) => (
+            <MenuItem key={`${chainId}:${address}`} value={address}>
               <Grid container alignItems="center" gap={1}>
-                <SafeIcon address={safe} />
+                <SafeIcon address={address} />
 
                 <Grid item xs>
-                  <Typography variant="body2">{addressBook[safe]}</Typography>
+                  <Typography variant="body2">{addressBook?.[chainId]?.[address]}</Typography>
 
-                  <EthHashInfo address={safe} showAvatar={false} showName={false} prefix={chain.shortName} />
+                  <EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />
                 </Grid>
               </Grid>
             </MenuItem>
@@ -94,7 +127,7 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
       </FormControl>
     )
   } else {
-    body = <img src="/images/open/safe-creation.svg" alt="An icon of a physical safe with a plus sign" />
+    body = <CreateNewSafeSVG alt="An icon of a physical safe with a plus sign" />
   }
 
   return (
@@ -116,3 +149,45 @@ const AppActions = ({ wallet, onConnectWallet, safes, chain, appUrl }: Props): R
 }
 
 export { AppActions }
+
+const getCompatibleSafes = (
+  ownedSafes: { [chainId: string]: string[] },
+  compatibleChains: string[],
+  chainsData: ChainInfo[],
+): CompatibleSafesType[] => {
+  return compatibleChains.reduce<CompatibleSafesType[]>((safes, chainId) => {
+    const chainData = chainsData.find((chain: ChainInfo) => chain.chainId === chainId)
+
+    return [
+      ...safes,
+      ...(ownedSafes[chainId] || []).map((address) => ({
+        address,
+        chainId,
+        shortName: chainData?.shortName,
+      })),
+    ]
+  }, [])
+}
+
+const getDefaultSafe = (
+  compatibleSafes: CompatibleSafesType[],
+  chainId: string,
+  lastUsedSafe = '',
+): CompatibleSafesType => {
+  // as a first option, we use the last used Safe in the provided chain
+  const lastViewedSafe = compatibleSafes.find((safe) => safe.address === parsePrefixedAddress(lastUsedSafe).address)
+
+  if (lastViewedSafe) {
+    return lastViewedSafe
+  }
+
+  // as a second option, we use any user Safe in the provided chain
+  const safeInTheSameChain = compatibleSafes.find((safe) => safe.chainId === chainId)
+
+  if (safeInTheSameChain) {
+    return safeInTheSameChain
+  }
+
+  // as a fallback we salect a random compatible user Safe
+  return compatibleSafes[0]
+}

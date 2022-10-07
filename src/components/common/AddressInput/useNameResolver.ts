@@ -15,7 +15,7 @@ const useNameResolver = (
     if (!ethersProvider || !debouncedValue || !isDomain(debouncedValue)) return
 
     return resolveName(ethersProvider, debouncedValue).then((address) => {
-      if (!address) throw Error('Failed to reslove the address')
+      if (!address) throw Error('Failed to resolve the address')
       return { name: debouncedValue, address }
     })
   }, [debouncedValue, ethersProvider])

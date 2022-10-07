@@ -6,24 +6,24 @@ describe('Tx Simulation', () => {
     cy.connectE2EWallet()
 
     // Open the Safe used for testing
-    cy.visit(`/${TEST_SAFE}`)
-    cy.contains('a', 'Accept selection').click()
+    cy.visit(`/${TEST_SAFE}/home`, { failOnStatusCode: false })
+    cy.contains('button', 'Accept selection').click()
 
     // Open Send Funds Modal
-    cy.contains('New Transaction').click()
-    cy.contains('Send funds').click()
+    cy.contains('New transaction').click()
+    cy.contains('Send tokens').click()
 
     // Choose recipient
-    cy.get('#address-book-input').should('be.visible')
-    cy.get('#address-book-input').type(RECIPIENT_ADDRESS, { force: true })
+    cy.get('input[name="recipient"]').should('be.visible')
+    cy.get('input[name="recipient"]').type(RECIPIENT_ADDRESS, { force: true })
 
     // Select asset and amount
-    cy.contains('Select an asset*').click()
+    cy.get('input[name="tokenAddress"]').parent().click()
     cy.get('ul[role="listbox"]').contains('Gnosis').click()
-    cy.contains('Send max').click()
+    cy.contains('Max').click()
 
     // go to review step
-    cy.contains('Review').click()
+    cy.contains('Next').click()
   })
   it('should initially have a successful simulation', () => {
     // Simulate
@@ -35,9 +35,9 @@ describe('Tx Simulation', () => {
 
   it('should show unexpected error for a very low gas limit', () => {
     // Set Gas Limit to too low
-    cy.contains('Estimated fee price').click()
+    cy.contains('Estimated fee').click()
     cy.contains('Edit').click()
-    cy.get('input[placeholder="Gas limit"]').clear().type('69')
+    cy.get('input[name="gasLimit"]').clear().type('21000')
     cy.contains('Confirm').click()
 
     // Simulate
@@ -49,9 +49,9 @@ describe('Tx Simulation', () => {
 
   it('should simulate with failed transaction for a slightly too low gas limit', () => {
     // Set Gas Limit to too low
-    cy.contains('Estimated fee price').click()
+    cy.contains('Estimated fee').click()
     cy.contains('Edit').click()
-    cy.get('input[placeholder="Gas limit"]').clear().type('75000')
+    cy.get('input[name="gasLimit"]').clear().type('75000')
     cy.contains('Confirm').click()
 
     // Simulate

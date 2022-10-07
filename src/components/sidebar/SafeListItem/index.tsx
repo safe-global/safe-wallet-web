@@ -60,13 +60,16 @@ const SafeListItem = ({
             chainId={chainId}
             address={address}
             onClick={closeDrawer}
-            href={`${AppRoutes.load}?chain=${shortName}&address=${address}`}
+            href={{
+              pathname: AppRoutes.load,
+              query: { chain: shortName, address },
+            }}
           />
           <SafeListContextMenu name={name} address={address} chainId={chainId} />
         </Box>
       }
     >
-      <Link href={`${AppRoutes.home}?safe=${shortName}:${address}`} passHref>
+      <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
         <ListItemButton
           key={address}
           onClick={closeDrawer}

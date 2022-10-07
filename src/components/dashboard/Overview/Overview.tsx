@@ -14,6 +14,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useCollectibles from '@/hooks/useCollectibles'
+import type { UrlObject } from 'url'
 
 const IdenticonContainer = styled.div`
   position: relative;
@@ -86,8 +87,15 @@ const Overview = (): ReactElement => {
   const [nfts] = useCollectibles()
   const chain = useCurrentChain()
   const { chainId } = chain || {}
-  const assetsLink = `${AppRoutes.balances.index}?safe=${router.query.safe}`
-  const nftsLink = `${AppRoutes.balances.nfts}?safe=${router.query.safe}`
+
+  const assetsLink: UrlObject = {
+    pathname: AppRoutes.balances.index,
+    query: { safe: router.query.safe },
+  }
+  const nftsLink: UrlObject = {
+    pathname: AppRoutes.balances.nfts,
+    query: { safe: router.query.safe },
+  }
 
   // Native token is always returned even when its balance is 0
   const tokenCount = useMemo(() => balances.items.filter((token) => token.balance !== '0').length, [balances])

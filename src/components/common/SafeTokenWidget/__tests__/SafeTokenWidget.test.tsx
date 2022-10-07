@@ -1,7 +1,7 @@
 import { SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import * as useBalances from '@/hooks/useBalances'
 import * as nextRouter from 'next/router'
-import * as useChainId from '@/hooks/useChainId'
+import useChainId from '@/hooks/useChainId'
 import { render, waitFor } from '@/tests/test-utils'
 import { SafeAppAccessPolicyTypes, TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ethers } from 'ethers'
@@ -12,7 +12,13 @@ import * as useSafeApps from '@/hooks/safe-apps/useSafeApps'
 
 const MOCK_CLAIMING_APP_URL = 'https://fake.claiming-app.safe.global'
 
+jest.mock('@/hooks/useChainId')
+
 describe('SafeTokenWidget', () => {
+  beforeAll(() => {
+    ;(useChainId as jest.Mock).mockImplementation(jest.fn(() => '4'))
+  })
+
   const fakeSafeAddress = hexZeroPad('0x1', 20)
   beforeEach(() => {
     jest.restoreAllMocks()
@@ -60,7 +66,7 @@ describe('SafeTokenWidget', () => {
   })
 
   it('Should render nothing for unsupported chains', () => {
-    jest.spyOn(useChainId, 'default').mockImplementation(() => '100')
+    ;(useChainId as jest.Mock).mockImplementationOnce(jest.fn(() => '100'))
 
     jest.spyOn(useBalances, 'default').mockImplementation(() => ({
       balances: {

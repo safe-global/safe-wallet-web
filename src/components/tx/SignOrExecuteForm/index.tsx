@@ -24,6 +24,7 @@ import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import type { Web3Provider } from '@ethersproject/providers'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -34,6 +35,7 @@ type SignOrExecuteProps = {
   isExecutable?: boolean
   isRejection?: boolean
   onlyExecute?: boolean
+  disableSubmit?: boolean
 }
 
 const SignOrExecuteForm = ({
@@ -45,6 +47,7 @@ const SignOrExecuteForm = ({
   error,
   isExecutable = false,
   isRejection = false,
+  disableSubmit = false,
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -56,14 +59,12 @@ const SignOrExecuteForm = ({
 
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
+  const isWrongChain = useIsWrongChain()
   const provider = useWeb3()
   const currentChain = useCurrentChain()
 
   // Check that the transaction is executable
   const isNewExecutableTx = !txId && safe.threshold === 1
-
-  console.log('threshold', safe.threshold)
-
   const isCorrectNonce = tx?.data.nonce === safe.nonce
   const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
 
@@ -92,6 +93,7 @@ const SignOrExecuteForm = ({
   //
   const assertSubmittable = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
     if (!wallet) throw new Error('Wallet not connected')
+    if (isWrongChain) throw new Error('Connected to the wrong chain')
     if (!tx) throw new Error('Transaction not ready')
     if (!provider) throw new Error('Provider not ready')
 
@@ -106,7 +108,7 @@ const SignOrExecuteForm = ({
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
 
     const signedTx = smartContractWallet
-      ? await dispatchOnChainSigning(createdTx, provider, txId)
+      ? await dispatchOnChainSigning(createdTx, provider)
       : await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
@@ -115,7 +117,7 @@ const SignOrExecuteForm = ({
 
   // Execute transaction
   const onExecute = async (): Promise<string> => {
-    const [connectedWallet, createdTx] = assertSubmittable()
+    const [connectedWallet, createdTx, provider] = assertSubmittable()
 
     // If no txId was provided, it's an immediate execution of a new tx
     let id = txId
@@ -126,7 +128,7 @@ const SignOrExecuteForm = ({
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(id, createdTx, txOptions)
+    await dispatchTxExecution(id, createdTx, provider, txOptions)
 
     return id
   }
@@ -164,14 +166,14 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
-  const submitDisabled = !isSubmittable || isEstimating || !tx
+  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit
 
   return (
     <form onSubmit={handleSubmit}>
       <DialogContent>
         {children}
 
-        {tx && <DecodedTx tx={tx} txId={txId} />}
+        <DecodedTx tx={tx} txId={txId} />
 
         {canExecute && !onlyExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} />}
 

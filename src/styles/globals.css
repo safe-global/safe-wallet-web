@@ -88,6 +88,10 @@ input[type='number'] {
   }
 }
 
+body.beamerAnnouncementBarTopActive {
+  padding-top: 0px !important;
+}
+
 #beamerLastPostTitle {
   left: 330px !important;
 }

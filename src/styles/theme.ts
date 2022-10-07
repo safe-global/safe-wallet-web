@@ -164,6 +164,22 @@ const initTheme = (darkMode: boolean) => {
         },
       },
       MuiAccordion: {
+        variants: [
+          {
+            props: { variant: 'elevation' },
+            style: ({ theme }) => ({
+              border: 'none',
+              boxShadow: '0',
+              '&:not(:last-child)': {
+                borderRadius: '0 !important',
+                borderBottom: `2px solid ${theme.palette.border.light}`,
+              },
+              '&:last-of-type': {
+                borderBottomLeftRadius: '8px',
+              },
+            }),
+          },
+        ],
         styleOverrides: {
           root: ({ theme }) => ({
             transition: 'background 0.2s, border 0.2s',
@@ -192,6 +208,20 @@ const initTheme = (darkMode: boolean) => {
               background: theme.palette.background.light,
             },
           }),
+        },
+      },
+      MuiAccordionSummary: {
+        styleOverrides: {
+          root: {
+            '&.Mui-expanded': {
+              minHeight: '48px',
+            },
+          },
+          content: {
+            '&.Mui-expanded': {
+              margin: 0,
+            },
+          },
         },
       },
       MuiAccordionDetails: {
