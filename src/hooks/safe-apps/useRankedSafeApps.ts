@@ -9,14 +9,11 @@ const NUMBER_OF_SAFE_APPS = 5
 const useRankedSafeApps = (safeApps: SafeAppData[], pinnedSafeApps: SafeAppData[]): SafeAppData[] => {
   if (!safeApps.length) return []
 
-  const mostUsedApps = difference(rankSafeApps(safeApps), pinnedSafeApps)
-  const randomApps = sampleSize(difference(safeApps, mostUsedApps, pinnedSafeApps), NUMBER_OF_SAFE_APPS)
+  const nonFeaturedSafeApps = safeApps.filter((app) => !app.tags.includes(FEATURED_APPS_TAG))
+  const mostUsedApps = difference(rankSafeApps(nonFeaturedSafeApps), pinnedSafeApps)
+  const randomApps = sampleSize(difference(nonFeaturedSafeApps, mostUsedApps, pinnedSafeApps), NUMBER_OF_SAFE_APPS)
 
-  return pinnedSafeApps
-    .concat(mostUsedApps)
-    .concat(randomApps)
-    .filter((app) => !app.tags.includes(FEATURED_APPS_TAG))
-    .slice(0, NUMBER_OF_SAFE_APPS)
+  return pinnedSafeApps.concat(mostUsedApps, randomApps).slice(0, NUMBER_OF_SAFE_APPS)
 }
 
 export { useRankedSafeApps }
