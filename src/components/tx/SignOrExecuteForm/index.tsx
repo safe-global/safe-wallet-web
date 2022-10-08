@@ -166,6 +166,7 @@ const SignOrExecuteForm = ({
   }
 
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
+  console.log('isOwner', isOwner, 'onlyExecute', onlyExecute, 'cannotPropose', cannotPropose)
   const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose
   const error = props.error || (willExecute && gasLimitError)
 
@@ -200,7 +201,7 @@ const SignOrExecuteForm = ({
 
         {cannotPropose && (
           <ErrorMessage>
-            You are currently not an owner of this Safe and won&apos;t be able to sign this transaction.
+            You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
           </ErrorMessage>
         )}
 

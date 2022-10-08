@@ -215,6 +215,21 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Submit')).toBeDisabled()
   })
 
+  it('allows execution for non-owners', () => {
+    jest.spyOn(wallet, 'default').mockReturnValue({
+      chainId: '1',
+      address: ethers.utils.hexZeroPad('0x789', 20),
+    } as ConnectedWallet)
+
+    const mockTx = createSafeTx()
+    const result = render(<SignOrExecuteForm isExecutable onlyExecute onSubmit={jest.fn} safeTx={mockTx} />)
+
+    expect(
+      result.queryByText("You are currently not an owner of this Safe and won't be able to submit this transaction."),
+    ).not.toBeInTheDocument()
+    expect(result.getByText('Submit')).not.toBeDisabled()
+  })
+
   it('displays an error and disables the submit button if connected wallet is on a different chain', () => {
     jest.spyOn(wrongChain, 'default').mockReturnValue(true)
 
