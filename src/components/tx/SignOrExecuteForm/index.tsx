@@ -166,7 +166,8 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
-  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit
+  const isWalletAllowed = willExecute || safe.owners.some((owner) => owner.value === wallet?.address)
+  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || !isWalletAllowed
 
   return (
     <form onSubmit={handleSubmit}>
@@ -192,6 +193,14 @@ const SignOrExecuteForm = ({
           canExecute={canExecute}
           disabled={submitDisabled}
         />
+
+        {isWrongChain && <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>}
+
+        {!isWalletAllowed && (
+          <ErrorMessage>
+            You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
+          </ErrorMessage>
+        )}
 
         {(error || (willExecute && gasLimitError)) && (
           <ErrorMessage error={error || gasLimitError}>
