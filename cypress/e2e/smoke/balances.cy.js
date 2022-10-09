@@ -1,7 +1,8 @@
 const assetsTable = '[aria-labelledby="tableTitle"] > tbody'
 const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 
-const TEST_SAFE = 'rin:0x11Df0fa87b30080d59eba632570f620e37f2a8f7'
+const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
+// TODO: replace PAGINATION_TEST_SAFE for a Goerli safe with > 25 tokens
 const PAGINATION_TEST_SAFE = 'rin:0x656c1121a6f40d25C5CFfF0Db08938DB7633B2A3'
 const ASSETS_LENGTH = 7
 const ASSET_NAME_COLUMN = 0
@@ -17,7 +18,7 @@ describe('Assets > Coins', () => {
     cy.visit(`/${TEST_SAFE}/balances`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
     // Table is loaded
-    cy.contains(/^Ether$/)
+    cy.contains('Görli Ether')
   })
 
   describe('should have different tokens', () => {
@@ -38,7 +39,7 @@ describe('Assets > Coins', () => {
         .parents('tr')
         .find('td')
         .eq(ASSET_NAME_COLUMN)
-        .get('a[aria-label="View on rinkeby.etherscan.io"]')
+        .get('a[aria-label="View on goerli.etherscan.io"]')
         .should('be.visible')
 
       // Balance should contain DAI
@@ -58,7 +59,7 @@ describe('Assets > Coins', () => {
         .parents('tr')
         .find('td')
         .eq(ASSET_NAME_COLUMN)
-        .get('a[aria-label="View on rinkeby.etherscan.io"]')
+        .get('a[aria-label="View on goerli.etherscan.io"]')
         .should('be.visible')
 
       // Balance should contain WETH
@@ -78,7 +79,7 @@ describe('Assets > Coins', () => {
         .parents('tr')
         .find('td')
         .eq(ASSET_NAME_COLUMN)
-        .get('a[aria-label="View on rinkeby.etherscan.io"]')
+        .get('a[aria-label="View on goerli.etherscan.io"]')
         .should('be.visible')
 
       // Balance should contain USDT
@@ -91,22 +92,23 @@ describe('Assets > Coins', () => {
       cy.contains('Dai')
         .parents('tr')
         .within(() => {
-          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('803.292M DAI')
+          // cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('803.292M DAI')
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('120,497.61 DAI')
           cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
         })
 
       cy.contains('Wrapped Ether')
         .parents('tr')
         .within(() => {
-          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('0.96788 WETH')
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('0.05918 WETH')
           cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
         })
 
       // Strict match because other tokens contain "Ether" in their name
-      cy.contains(/^Ether$/)
+      cy.contains('Görli Ether')
         .parents('tr')
         .within(() => {
-          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('0.3 ETH')
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('0.14 GOR')
           cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
         })
 
@@ -120,7 +122,8 @@ describe('Assets > Coins', () => {
       cy.contains('USD Coin')
         .parents('tr')
         .within(() => {
-          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('13,636,504 USDC')
+          // cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('13,636,504 USDC')
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('131,364 USDC')
           cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
         })
 
@@ -162,12 +165,12 @@ describe('Assets > Coins', () => {
     })
   })
 
-  describe('pagination should work', () => {
+  describe.skip('pagination should work', () => {
     before(() => {
       // Open the Safe used for testing pagination
       cy.visit(`/${PAGINATION_TEST_SAFE}/balances`, { failOnStatusCode: false })
       // Table is loaded
-      cy.contains(/^Ether$/)
+      cy.contains('Görli Ether')
     })
 
     it('should allow changing rows per page and navigate to next and previous page', () => {
