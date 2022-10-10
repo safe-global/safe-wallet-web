@@ -18,18 +18,18 @@ import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
+import { useCurrentChain } from '@/hooks/useChains'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import useChainId from '@/hooks/useChainId'
 import { trimTrailingSlash, isSameUrl } from '@/utils/url'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
+import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import CustomAppPlaceholder from './CustomAppPlaceholder'
 import CustomApp from './CustomApp'
 
 import css from './styles.module.css'
-import { AppRoutes } from '../../../config/routes'
-import { useCurrentChain } from '../../../hooks/useChains'
 
 type Props = {
   open: boolean

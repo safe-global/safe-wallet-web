@@ -54,6 +54,10 @@
   padding: 16px 12px;
 }
 
-.customAppPlaceholderIcon {
-  opacity: 0.5;
+.customAppPlaceholderIconDefault > path {
+  fill: var(--color-text-secondary);
+}
+
+.customAppPlaceholderIconError > path {
+  fill: var(--color-error-main);
 }
