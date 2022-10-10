@@ -26,11 +26,6 @@ const Setup: NextPage = () => {
 
       <main>
         <Paper sx={{ p: 4, mb: 2 }}>
-          <OwnerList isGranted={isGranted} />
-          <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />
-        </Paper>
-
-        <Paper sx={{ p: 4 }}>
           <Grid container spacing={3}>
             <Grid item lg={4} xs={12}>
               <Typography variant="h4" fontWeight={700}>
@@ -52,6 +47,11 @@ const Setup: NextPage = () => {
               <ContractVersion isGranted={isGranted} />
             </Grid>
           </Grid>
+        </Paper>
+
+        <Paper sx={{ p: 4 }}>
+          <OwnerList isGranted={isGranted} />
+          <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />
         </Paper>
       </main>
     </>

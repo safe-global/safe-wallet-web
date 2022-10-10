@@ -124,13 +124,13 @@ const Overview = (): ReactElement => {
               </Grid>
             </Grid>
 
-            <Box my={2}>
+            <Box mt={2} mb={4}>
               <EthHashInfo showAvatar={false} address={safeAddress} shortAddress={false} />
             </Box>
 
             <Grid container>
               <Grid item xs={3}>
-                <Link href={assetsLink}>
+                <Link href={assetsLink} passHref>
                   <a>
                     <Typography color="border.main" variant="body2">
                       Tokens
@@ -141,7 +141,7 @@ const Overview = (): ReactElement => {
               </Grid>
 
               <Grid item xs={3}>
-                <Link href={nftsLink}>
+                <Link href={nftsLink} passHref>
                   <a>
                     <Typography color="border.main" variant="body2">
                       NFTs
@@ -150,10 +150,11 @@ const Overview = (): ReactElement => {
                   </a>
                 </Link>
               </Grid>
+              <Grid item xs />
 
               <Grid item>
                 <Box display="flex" height={1} alignItems="flex-end" justifyContent="flex-end">
-                  <Link href={assetsLink}>
+                  <Link href={assetsLink} passHref>
                     <a>
                       <Button size="medium" variant="contained" color="primary">
                         View assets

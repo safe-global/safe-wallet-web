@@ -17,7 +17,7 @@ const StyledContainer = styled.div`
   border-radius: 8px;
   box-sizing: border-box;
   &:hover {
-    background-color: var(--color-secondary-background);
+    background-color: var(--color-background-light);
     border-color: var(--color-secondary-light);
   }
 `
@@ -52,7 +52,7 @@ type PendingTxType = {
 
 const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {
   return (
-    <NextLink href={url}>
+    <NextLink href={url} passHref>
       <a>
         <StyledContainer>
           <Grid container py={1} px={2} alignItems="center" gap={1}>

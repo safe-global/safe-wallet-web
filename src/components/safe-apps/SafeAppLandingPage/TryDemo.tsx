@@ -14,9 +14,7 @@ const TryDemo = ({ demoUrl, onClick }: Props) => (
     <Typography variant="h5" fontWeight={700}>
       Try the app before using it
     </Typography>
-
     <DemoAppSVG alt="An icon of a internet browser" />
-
     <Link href={demoUrl} passHref>
       <Button variant="outlined" sx={{ width: CTA_BUTTON_WIDTH }} onClick={onClick}>
         Try demo

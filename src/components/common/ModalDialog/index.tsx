@@ -1,8 +1,7 @@
 import type { ModalProps } from '@mui/material'
 import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
-import { theme } from '@/styles/theme'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import * as React from 'react'
 
@@ -67,6 +66,7 @@ const ModalDialog = ({
   children,
   ...restProps
 }: ModalDialogProps): React.ReactElement => {
+  const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (

@@ -33,10 +33,6 @@
   border-right: 1px solid var(--color-border-light);
 }
 
-.chain > * {
-  padding: 3px;
-}
-
 .noSafeHeader {
   display: flex;
   justify-content: center;
