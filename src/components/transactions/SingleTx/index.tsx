@@ -26,7 +26,7 @@ const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactEl
 
   return (
     <TxListGrid>
-      {label && <GroupLabel item={{ label } as Label} />}
+      {label ? <GroupLabel item={{ label } as Label} /> : null}
 
       <ExpandableTransactionItem item={tx} txDetails={txDetails} />
     </TxListGrid>
