@@ -20,7 +20,6 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
     control,
     formState: { errors },
     trigger,
-    setFocus,
   } = useFormContext()
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
