@@ -1,4 +1,4 @@
-import { IS_PRODUCTION } from '@/config/constants'
+import { CYPRESS_MNEMONIC, IS_PRODUCTION } from '@/config/constants'
 
 /**
  * CSP Header notes:
@@ -12,8 +12,10 @@ import { IS_PRODUCTION } from '@/config/constants'
 export const ContentSecurityPolicy = `
  default-src 'self';
  connect-src 'self' *;
- script-src 'self' https://www.google-analytics.com https://ssl.google-analytics.com 'unsafe-inline' https://*.getbeamer.com https://www.googletagmanager.com ${
-   !IS_PRODUCTION ? "'unsafe-eval'" : ''
+ script-src 'self' https://www.google-analytics.com https://ssl.google-analytics.com 'unsafe-inline' https://*.getbeamer.com https://www.googletagmanager.com https://*.ingest.sentry.io https://sentry.io ${
+   !IS_PRODUCTION || /* TODO: remove after moving cypress to görli and testing in staging again!! */ CYPRESS_MNEMONIC
+     ? "'unsafe-eval'"
+     : ''
  };
  frame-src *;
  style-src 'self' 'unsafe-inline' https://*.getbeamer.com https://*.googleapis.com;

@@ -13,8 +13,9 @@ const iterate = (folderName, parentRoute, root) => {
 
       // A folder, continue iterating
       if (!isFile(item)) {
-        root[item] = {}
-        iterate(`${folderName}/${item}`, `${parentRoute}/${item}`, root[item])
+        const key = item.replace(/-\w/g, (match) => match.replace(/-/g, '').toUpperCase()) // spending-limit -> spendingLimit
+        root[key] = {}
+        iterate(`${folderName}/${item}`, `${parentRoute}/${item}`, root[key])
         return
       }
 

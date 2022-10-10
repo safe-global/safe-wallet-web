@@ -1,0 +1,33 @@
+.tabs {
+  overflow: initial;
+}
+
+/* Scroll buttons */
+.tabs :global .MuiTabs-scrollButtons.Mui-disabled {
+  opacity: 0.3;
+}
+
+.tabs :global .MuiTabScrollButton-root ~ .MuiTabs-scroller p {
+  padding-bottom: 0;
+}
+
+.tabs :global .MuiTabScrollButton-root:first-of-type {
+  margin-left: -24px;
+}
+
+.tabs :global .MuiTabScrollButton-root:last-of-type {
+  margin-right: -24px;
+}
+
+.tab {
+  opacity: 1;
+  padding: 0 var(--space-2);
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+}
+
+.label {
+  text-transform: none;
+  padding-bottom: 6px;
+}

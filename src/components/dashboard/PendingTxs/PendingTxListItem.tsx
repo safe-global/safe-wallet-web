@@ -1,5 +1,6 @@
-import type { ReactElement } from 'react'
 import NextLink from 'next/link'
+import type { LinkProps } from 'next/link'
+import type { ReactElement } from 'react'
 import styled from '@emotion/styled'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -16,7 +17,7 @@ const StyledContainer = styled.div`
   border-radius: 8px;
   box-sizing: border-box;
   &:hover {
-    background-color: var(--color-secondary-background);
+    background-color: var(--color-background-light);
     border-color: var(--color-secondary-light);
   }
 `
@@ -46,12 +47,12 @@ const Spacer = styled.div`
 
 type PendingTxType = {
   transaction: TransactionSummary
-  url: string
+  url: LinkProps['href']
 }
 
 const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {
   return (
-    <NextLink href={url}>
+    <NextLink href={url} passHref>
       <a>
         <StyledContainer>
           <Grid container py={1} px={2} alignItems="center" gap={1}>
