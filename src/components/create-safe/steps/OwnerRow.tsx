@@ -21,7 +21,7 @@ export const OwnerRow = ({
   readOnly?: boolean
 }) => {
   const fieldName = `${groupName}.${index}`
-  const { control, setValue } = useFormContext()
+  const { control, getValues, setValue } = useFormContext()
   const owners = useWatch({
     control,
     name: groupName,
