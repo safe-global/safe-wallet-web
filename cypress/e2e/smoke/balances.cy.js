@@ -161,7 +161,7 @@ describe('Assets > Coins', () => {
       // First row Fiat balance should not contain USD
       cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'USD')
       // First row Fiat balance should contain EUR
-      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).contains('EUR')
+      cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('contain', 'EUR')
     })
   })
 
