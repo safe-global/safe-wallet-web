@@ -123,7 +123,7 @@ describe('Assets > Coins', () => {
         .parents('tr')
         .within(() => {
           // cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('13,636,504 USDC')
-          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('131,364 USDC')
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('131,363 USDC')
           cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
         })
 

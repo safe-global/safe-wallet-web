@@ -78,7 +78,7 @@ describe('Address book', () => {
     it('should find Gnosis Chain imported address', () => {
       // Go to a Safe on Gnosis Chain
       cy.get('header')
-        .contains(/^Görli$/)
+        .contains(/^G(ö|oe)rli$/)
         .click()
       cy.contains('Gnosis Chain').click()
 
