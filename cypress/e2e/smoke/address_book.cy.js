@@ -75,7 +75,7 @@ describe('Address book', () => {
       cy.contains(GOERLI_CSV_ENTRY.address).should('exist')
     })
 
-    it('should find Gnosis Chain imported address', () => {
+    it.skip('should find Gnosis Chain imported address', () => {
       // Go to a Safe on Gnosis Chain
       cy.get('header')
         .contains(/^G(ö|oe)rli$/)
