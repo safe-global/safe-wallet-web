@@ -25,9 +25,6 @@ describe('Dashboard', () => {
   })
 
   it('should display the tx queue widget', () => {
-    // TODO: remove toggle click when staging endpoint is working
-    cy.contains('Use prod CGW').click()
-
     // Alias for the featured Safe Apps section
     cy.contains('h2', 'Transaction queue').parents('section').as('txQueueSection')
 

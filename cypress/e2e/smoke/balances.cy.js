@@ -2,7 +2,7 @@ const assetsTable = '[aria-labelledby="tableTitle"] > tbody'
 const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 
 const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
-// TODO: replace PAGINATION_TEST_SAFE for a Goerli safe with > 25 tokens
+// TODO: replace PAGINATION_TEST_SAFE for a Görli safe with > 25 tokens
 const PAGINATION_TEST_SAFE = 'rin:0x656c1121a6f40d25C5CFfF0Db08938DB7633B2A3'
 const ASSETS_LENGTH = 7
 const ASSET_NAME_COLUMN = 0
@@ -93,7 +93,7 @@ describe('Assets > Coins', () => {
         .parents('tr')
         .within(() => {
           // cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('803.292M DAI')
-          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('120,497.61 DAI')
+          cy.get('td').eq(TOKEN_AMOUNT_COLUMN).contains('120,496.61 DAI')
           cy.get('td').eq(FIAT_AMOUNT_COLUMN).contains(fiatRegex)
         })
 

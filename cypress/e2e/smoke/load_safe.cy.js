@@ -26,7 +26,7 @@ describe('Load existing Safe', () => {
 
   it('should allow choosing the network where the Safe exists', () => {
     // Click the network selector inside the Stepper content
-    cy.contains('Select network on which the Safe was created:').contains('span', 'Goerli').click()
+    cy.contains('Select network on which the Safe was created:').contains('span', 'Görli').click()
 
     // Selects Ethereum
     cy.get('ul li').contains('Ethereum').click()
@@ -34,8 +34,8 @@ describe('Load existing Safe', () => {
 
     // Selects Rinkeby
     cy.contains('Select network on which the Safe was created:').contains('span', 'Ethereum').click()
-    cy.get('ul li').contains('Goerli').click()
-    cy.contains('Select network on which the Safe was created:').contains('span', 'Goerli')
+    cy.get('ul li').contains('Görli').click()
+    cy.contains('Select network on which the Safe was created:').contains('span', 'Görli')
 
     cy.contains('Continue').click()
   })
@@ -45,7 +45,7 @@ describe('Load existing Safe', () => {
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
     // Name input should have a placeholder ending in 'rinkeby-safe'
-    cy.get('input[name="name"]').should('have.attr', 'placeholder').should('contain', 'goerli-safe')
+    cy.get('input[name="name"]').should('have.attr', 'placeholder').should('contain', 'görli-safe')
     // Input a custom name
     cy.get('input[name="name"]').type('Test safe name').should('have.value', 'Test safe name')
 
