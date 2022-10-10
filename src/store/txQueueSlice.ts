@@ -6,7 +6,7 @@ import type { RootState } from '@/store'
 import { makeLoadableSlice } from './common'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
-import { selectPendingTxs } from './pendingTxsSlice'
+import { PendingStatus, selectPendingTxs } from './pendingTxsSlice'
 import { sameAddress } from '@/utils/addresses'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
@@ -31,7 +31,6 @@ export const selectQueuedTransactionsByNonce = createSelector(
 
 const trackQueueSize = (prevState: RootState, { payload }: ReturnType<typeof txQueueSlice.actions.set>) => {
   const txQueue = selectTxQueue(prevState)
-
   if (isEqual(txQueue.data?.results, payload.data?.results)) {
     return
   }
@@ -67,11 +66,10 @@ export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) =>
         if (!isTransactionListItem(result)) {
           continue
         }
-
         const id = result.transaction.id
 
         const pendingTx = pendingTxs[id]
-        if (!pendingTx) {
+        if (!pendingTx || pendingTx.status !== PendingStatus.SIGNING) {
           continue
         }
 
@@ -79,7 +77,6 @@ export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) =>
         if (!awaitingSigner) {
           continue
         }
-
         // The transaction is waiting for a signature of awaitingSigner
         if (
           isMultisigExecutionInfo(result.transaction.executionInfo) &&
