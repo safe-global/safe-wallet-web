@@ -22,7 +22,6 @@ describe('Dashboard', () => {
       cy.contains('p', 'Tokens').next().contains('3')
       cy.contains('p', 'NFTs').next().contains('0')
     })
-
   })
 
   it('should display the tx queue widget', () => {
@@ -35,13 +34,11 @@ describe('Dashboard', () => {
     cy.get('@txQueueSection').within(() => {
       // There should be queued transactions
       cy.contains('This Safe has no queued transactions').should('not.exist')
-  
+
       // Queued txns
-      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '0' + 'addOwnerWithThreshold' + '1/1').should(
-        'exist',
-      )
+      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '0' + 'addOwnerWithThreshold' + '1/1').should('exist')
       cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '2' + 'Send' + '-1 USDC' + '1/1').should('exist')
-  
+
       cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, 'View all')
     })
   })
