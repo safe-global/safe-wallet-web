@@ -1,22 +1,36 @@
-import { Box, CircularProgress } from '@mui/material'
+import { CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import type { Transaction, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import useAsync from '@/hooks/useAsync'
+import type { Label, Transaction, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { LabelValue } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { sameAddress } from '@/utils/addresses'
 import type { ReactElement } from 'react'
 import { makeTxFromDetails } from '@/utils/transactions'
 import { TxListGrid } from '@/components/transactions/TxList'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
-import { useTxDetails } from '@/hooks/useTxDetails'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
-import { GroupLabelTypography, useFutureNonceLabel } from '../GroupLabel'
-import { useRouter } from 'next/router'
+import GroupLabel from '../GroupLabel'
 
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
+  const { safe } = useSafeInfo()
+
+  let nonceWarning = false
+  const executionInfo = txDetails?.detailedExecutionInfo
+  if (isMultisigDetailedExecutionInfo(executionInfo)) {
+    if (executionInfo.nonce > safe.nonce) {
+      nonceWarning = true
+    }
+  }
 
   return (
     <TxListGrid>
-      <ExpandableTransactionItem item={tx} txDetails={txDetails} testId="single-tx" />
+      {nonceWarning && <GroupLabel item={{ label: LabelValue.Queued } as Label} />}
+
+      <ExpandableTransactionItem item={tx} txDetails={txDetails} />
     </TxListGrid>
   )
 }
@@ -24,30 +38,31 @@ const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactEl
 const SingleTx = () => {
   const router = useRouter()
   const { id } = router.query
-  const [txDetails, error] = useTxDetails(Array.isArray(id) ? id[0] : id)
-  const futureNonceLabel = useFutureNonceLabel()
+  const transactionId = Array.isArray(id) ? id[0] : id
+  const { safe, safeAddress } = useSafeInfo()
 
-  const { safe } = useSafeInfo()
+  const [txDetails, txDetailsError] = useAsync<TransactionDetails>(
+    () => {
+      if (!transactionId || !safeAddress) return
 
-  let nonceWarning: string | undefined = undefined
-  const executionInfo = txDetails?.detailedExecutionInfo
-  if (isMultisigDetailedExecutionInfo(executionInfo)) {
-    if (executionInfo.nonce > safe.nonce) {
-      nonceWarning = futureNonceLabel
-    }
-  }
+      return getTransactionDetails(safe.chainId, transactionId).then((details) => {
+        // If the transaction is not related to the current safe, throw an error
+        if (!sameAddress(details.safeAddress, safeAddress)) {
+          return Promise.reject(new Error('Transaction with this id was not found in this Safe'))
+        }
+        return details
+      })
+    },
+    [transactionId, safe.chainId, safe.txQueuedTag, safe.txHistoryTag, safeAddress],
+    false,
+  )
 
-  if (error) {
-    return <ErrorMessage error={error}>Failed to load transaction</ErrorMessage>
+  if (txDetailsError) {
+    return <ErrorMessage error={txDetailsError}>Failed to load transaction</ErrorMessage>
   }
 
   if (txDetails) {
-    return (
-      <Box display="flex" flexDirection="column" gap={1}>
-        {nonceWarning && <GroupLabelTypography label={nonceWarning} />}
-        <SingleTxGrid txDetails={txDetails} />
-      </Box>
-    )
+    return <SingleTxGrid txDetails={txDetails} />
   }
 
   return <CircularProgress />

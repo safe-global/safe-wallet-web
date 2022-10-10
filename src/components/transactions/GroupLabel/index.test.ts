@@ -1,6 +1,6 @@
 import { renderHook } from '@/tests/test-utils'
 import type { Label, SafeInfo, Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
-import { useGroupLabel } from '.'
+import { _useGroupLabel as useGroupLabel } from '.'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useTxQueueHook from '@/hooks/useTxQueue'
 
@@ -11,18 +11,18 @@ describe('GroupLabel', () => {
 
   describe('useGroupLabel', () => {
     it('should return Next if given a Next label', () => {
-      const label = {
+      const labelItem = {
         label: 'Next',
         type: 'LABEL',
       } as Label
 
-      const { result } = renderHook(() => useGroupLabel(label))
+      const { result } = renderHook(() => useGroupLabel(labelItem.label))
 
       expect(result.current).toBe('Next')
     })
 
     it('should return Next if given there is no multisig transaction in the page', () => {
-      const label = {
+      const labelItem = {
         label: 'Next',
         type: 'LABEL',
       } as Label
@@ -32,7 +32,7 @@ describe('GroupLabel', () => {
         page: {
           results: [
             // Label
-            label,
+            labelItem,
             // Module transaction
             {
               transaction: {
@@ -43,13 +43,13 @@ describe('GroupLabel', () => {
         },
       }))
 
-      const { result } = renderHook(() => useGroupLabel(label))
+      const { result } = renderHook(() => useGroupLabel(labelItem.label))
 
       expect(result.current).toBe('Next')
     })
 
     it('should return a modified Queue label when there is a Queued and Next label in the page', () => {
-      const label = {
+      const labelItem = {
         label: 'Queued',
         type: 'LABEL',
       } as Label
@@ -71,7 +71,7 @@ describe('GroupLabel', () => {
               type: 'TRANSACTION',
             } as Transaction,
             // Label
-            label,
+            labelItem,
             // Multisig transaction
             {
               transaction: {
@@ -92,13 +92,13 @@ describe('GroupLabel', () => {
         } as SafeInfo,
       }))
 
-      const { result } = renderHook(() => useGroupLabel(label))
+      const { result } = renderHook(() => useGroupLabel(labelItem.label))
 
       expect(result.current).toBe('Queued - transaction with nonce 1 needs to be executed first')
     })
 
     it('should return a modified Queue label when there is a transaction with an out of order nonce in the page', () => {
-      const label = {
+      const labelItem = {
         label: 'Queued',
         type: 'LABEL',
       } as Label
@@ -108,7 +108,7 @@ describe('GroupLabel', () => {
         page: {
           results: [
             // Label
-            label,
+            labelItem,
             // Multisig transaction
             {
               transaction: {
@@ -129,7 +129,7 @@ describe('GroupLabel', () => {
         } as SafeInfo,
       }))
 
-      const { result } = renderHook(() => useGroupLabel(label))
+      const { result } = renderHook(() => useGroupLabel(labelItem.label))
 
       expect(result.current).toBe('Queued - transaction with nonce 7 needs to be executed first')
     })
