@@ -2,14 +2,11 @@ import { useMemo } from 'react'
 import { BigNumber } from 'ethers'
 import type { FeeData } from '@ethersproject/providers'
 import type { GasPrice, GasPriceOracle } from '@gnosis.pm/safe-react-gateway-sdk'
-import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { GAS_PRICE_TYPE } from '@gnosis.pm/safe-react-gateway-sdk'
-import type { JsonRpcProvider } from '@ethersproject/providers'
 import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from './useChains'
 import useIntervalCounter from './useIntervalCounter'
 import { useWeb3ReadOnly } from '../hooks/wallets/web3'
-import { hasFeature } from '@/utils/chains'
 import { Errors, logError } from '@/services/exceptions'
 
 // Updat gas fees every 20 seconds
@@ -56,20 +53,6 @@ const getGasPrice = async (gasPriceConfigs: GasPrice): Promise<BigNumber | undef
   }
 }
 
-// Get the fee data from the blockchain.
-// Ethers.js always returns 1.5 gwei for maxPriorityFeePerGas, so we need to set it to 0 for non-EIP1559 chains.
-export const _getFeeData = async (provider: JsonRpcProvider, isEIP1559: boolean): Promise<FeeData> => {
-  const feeData = await provider.getFeeData()
-
-  // Adjust for non-EIP-1559 chains
-  if (feeData && !isEIP1559) {
-    feeData.maxFeePerGas = feeData.gasPrice || feeData.maxFeePerGas
-    feeData.maxPriorityFeePerGas = BigNumber.from(0)
-  }
-
-  return feeData
-}
-
 const useGasPrice = (): {
   maxFeePerGas?: BigNumber
   maxPriorityFeePerGas?: BigNumber
@@ -94,16 +77,13 @@ const useGasPrice = (): {
 
   // Fetch the gas fees from the blockchain itself
   const [feeData, feeDataError, feeDataLoading] = useAsync<FeeData>(
-    () => {
-      if (!chain || !provider) return
-      return _getFeeData(provider, hasFeature(chain, FEATURES.EIP1559))
-    },
-    [chain, provider, counter],
+    () => provider?.getFeeData(),
+    [provider, counter],
     false,
   )
 
   // Prepare the return values
-  const maxFee = gasPrice || feeData?.maxFeePerGas || undefined
+  const maxFee = gasPrice || feeData?.maxFeePerGas || feeData?.gasPrice || undefined
   const maxPrioFee = feeData?.maxPriorityFeePerGas || undefined
   const error = gasPriceError || feeDataError
   const loading = gasPriceLoading || feeDataLoading
