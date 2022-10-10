@@ -13,8 +13,10 @@ import {
   Box,
   FormHelperText,
   SvgIcon,
+  InputAdornment,
 } from '@mui/material'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
@@ -112,23 +114,15 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
               mt: 2,
             }}
           >
-            {safeApp?.iconUrl ? (
-              <img
+            {/* <img
                 src={safeApp.iconUrl}
                 alt="Apps icon"
                 height={TEXT_FIELD_SIZE}
                 width={TEXT_FIELD_SIZE}
                 style={{ transition: 'all ease-in 1s' }}
-              />
-            ) : (
-              <SvgIcon
-                component={SafeAppIcon}
-                inheritViewBox
-                sx={{ height: TEXT_FIELD_SIZE, width: TEXT_FIELD_SIZE }}
-              />
-            )}
+              /> */}
+
             <TextField
-              label="App name"
               disabled
               sx={({ palette }) => ({
                 width: '100%',
@@ -138,7 +132,15 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
                   WebkitTextFillColor: safeApp?.name && palette.text.primary,
                 },
               })}
-              value={safeApp?.name || ''}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SvgIcon component={SafeAppIcon} inheritViewBox />
+                  </InputAdornment>
+                ),
+                disableUnderline: true,
+              }}
+              value="App card"
             />
           </Box>
           <FormControlLabel
@@ -154,11 +156,20 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
             sx={{ mt: 2 }}
           />
           {errors.riskAcknowledgement && <FormHelperText error>Required</FormHelperText>}
-          <Typography mt={2}>
-            <Link href={HELP_LINK} target="_blank" rel="noreferrer">
-              Learn more about building Safe Apps.
+          <Box display="flex" alignItems="center" mt={2}>
+            <InfoOutlinedIcon />
+            <Typography ml={1}>Learn more about building</Typography>
+            <Link
+              href={HELP_LINK}
+              target="_blank"
+              rel="noreferrer"
+              fontWeight={700}
+              sx={{ textDecoration: 'none' }}
+              ml={1}
+            >
+              Safe Apps.
             </Link>
-          </Typography>
+          </Box>
         </DialogContent>
         <DialogActions disableSpacing>
           <Button onClick={handleClose}>Cancel</Button>
