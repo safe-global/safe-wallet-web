@@ -79,7 +79,7 @@ describe('Adding an owner', () => {
         cy.get('label').contains('Max fee').next().get('input[aria-invalid="true"]')
         cy.get('label').contains('Max fee').next().clear().type('5')
         cy.get('label').contains('Max fee').next().get('input[aria-invalid="false"]')
-        
+
         // Max prio fee
         cy.get('label').contains('Max priority fee').next().clear().type('-100')
         cy.get('label').contains('Max priority fee').next().get('input[aria-invalid="true"]')
