@@ -2,16 +2,22 @@ import { type ChangeEvent, type ReactElement } from 'react'
 import { Box, FormControlLabel, Switch } from '@mui/material'
 import { localItem } from '@/services/local-storage/local'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { setDarkMode } from '@/store/settingsSlice'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import { useAppDispatch } from '@/store'
 
 const LS_KEY = 'debugProdCgw'
 
 export const cgwDebugStorage = localItem<boolean>(LS_KEY)
 
 const DebugToggle = (): ReactElement => {
-  const [enabled, setEnabled] = useLocalStorage<boolean>(LS_KEY, false)
+  const dispatch = useAppDispatch()
+  const isDarkMode = useDarkMode()
+
+  const [isProdGateway, setIsProdGateway] = useLocalStorage<boolean>(LS_KEY, false)
 
   const onToggle = (event: ChangeEvent<HTMLInputElement>) => {
-    setEnabled(event.target.checked)
+    setIsProdGateway(event.target.checked)
 
     setTimeout(() => {
       location.reload()
@@ -20,7 +26,11 @@ const DebugToggle = (): ReactElement => {
 
   return (
     <Box py={2} ml={2}>
-      <FormControlLabel control={<Switch checked={enabled} onChange={onToggle} />} label="Use prod CGW" />
+      <FormControlLabel
+        control={<Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} />}
+        label="Dark mode"
+      />
+      <FormControlLabel control={<Switch checked={isProdGateway} onChange={onToggle} />} label="Use prod CGW" />
     </Box>
   )
 }

@@ -10,7 +10,7 @@ const IndexPage: NextPage = () => {
   const lastSafe = useLastSafe()
 
   useEffect(() => {
-    router.push(
+    router.replace(
       lastSafe
         ? `${AppRoutes.home}?safe=${lastSafe}`
         : chain

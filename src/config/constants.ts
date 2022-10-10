@@ -1,6 +1,9 @@
+import chains from './chains'
+
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION
 
-export const GATEWAY_URL = IS_PRODUCTION ? 'https://safe-client.gnosis.io' : 'https://safe-client.staging.5afe.dev'
+export const GATEWAY_URL_PRODUCTION = process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.gnosis.io'
+export const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'https://safe-client.staging.5afe.dev'
 
 // Magic numbers
 export const POLLING_INTERVAL = 15_000
@@ -15,23 +18,24 @@ export const BEAMER_ID = process.env.NEXT_PUBLIC_BEAMER_ID || ''
 
 // Wallets
 export const WC_BRIDGE = process.env.NEXT_PUBLIC_WC_BRIDGE || 'https://safe-walletconnect.gnosis.io/'
+export const TREZOR_APP_URL = 'app.safe.global'
+export const TREZOR_EMAIL = 'support@safe.global'
 export const FORTMATIC_KEY = process.env.NEXT_PUBLIC_FORTMATIC_KEY || ''
 export const PORTIS_KEY = process.env.NEXT_PUBLIC_PORTIS_KEY || ''
-export const TREZOR_APP_URL = 'gnosis-safe.io'
-export const TREZOR_EMAIL = 'safe@gnosis.io'
+
+// Cypress
 export const CYPRESS_MNEMONIC = process.env.NEXT_PUBLIC_CYPRESS_MNEMONIC || ''
 
 // Safe Token
 export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
-  '1': '0x5aFE3855358E112B5647B952709E6165e1c1eEEe',
-  '4': '0xCFf1b0FdE85C102552D1D96084AF148f478F964A',
+  [chains.eth]: '0x5aFE3855358E112B5647B952709E6165e1c1eEEe',
+  [chains.rin]: '0xCFf1b0FdE85C102552D1D96084AF148f478F964A',
 }
 
 // Safe Apps
-export const SAFE_APPS_POLLING_INTERVAL = process.env.NODE_ENV === 'test' ? 4500 : 15000
+export const SAFE_APPS_INFURA_TOKEN = process.env.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN || INFURA_TOKEN
 export const SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL = 'https://third-party-cookies-check.gnosis-safe.com'
 export const SAFE_APPS_SUPPORT_CHAT_URL = 'https://chat.gnosis-safe.io'
-export const SAFE_APPS_INFURA_TOKEN = process.env.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN || ''
 export const SAFE_APPS_DEMO_SAFE_MAINNET = 'eth:0xfF501B324DC6d78dC9F983f140B9211c3EdB4dc7'
 
 // Google Tag Manager

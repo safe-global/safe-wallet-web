@@ -51,10 +51,10 @@ export const OwnerRow = ({
       setValue(`${fieldName}.ens`, ens)
     }
 
-    if (name) {
+    if (name && !getValues(`${fieldName}.name`)) {
       setValue(`${fieldName}.name`, name)
     }
-  }, [ens, setValue, index, name, fieldName])
+  }, [ens, setValue, getValues, name, fieldName])
 
   return (
     <Grid container spacing={3} alignItems="center" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>

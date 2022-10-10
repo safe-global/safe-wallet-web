@@ -16,14 +16,14 @@ import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import { isEmptyHexData } from '@/utils/hex'
 
 type DecodedTxProps = {
-  tx: SafeTransaction
+  tx?: SafeTransaction
   txId?: string
 }
 
 const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
-  const encodedData = tx.data.data
-  const isEmptyData = isEmptyHexData(encodedData)
+  const encodedData = tx?.data.data
+  const isEmptyData = !!encodedData && isEmptyHexData(encodedData)
 
   const [decodedData, decodedDataError, decodedDataLoading] = useAsync<DecodedDataResponse>(() => {
     if (!encodedData || isEmptyData) return
@@ -45,7 +45,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
 
   return (
     <Box mb={2}>
-      <Accordion elevation={0} onChange={onChangeExpand}>
+      <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
         <AccordionSummary>Transaction details</AccordionSummary>
 
         <AccordionDetails>

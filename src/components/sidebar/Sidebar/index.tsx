@@ -26,9 +26,7 @@ const Sidebar = (): ReactElement => {
   return (
     <div className={css.container}>
       <div className={css.scroll}>
-        <div className={css.chain}>
-          <ChainIndicator />
-        </div>
+        <ChainIndicator />
 
         <IconButton className={css.drawerButton} onClick={onDrawerToggle}>
           <ChevronRight />

@@ -54,7 +54,9 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     dismissedByUser: queueBarDismissed,
     setExpanded,
     dismissQueueBar,
+    transactions,
   } = useTransactionQueueBarState()
+  const queueBarVisible = transactions.results.length > 0 && !queueBarDismissed
 
   const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
@@ -209,7 +211,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         allow={allowedFeaturesList}
         style={{
           display: appIsLoading ? 'none' : 'block',
-          paddingBottom: !queueBarDismissed ? TRANSACTION_BAR_HEIGHT : 0,
+          paddingBottom: queueBarVisible ? TRANSACTION_BAR_HEIGHT : 0,
         }}
       />
 
@@ -218,6 +220,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         visible={!queueBarDismissed}
         setExpanded={setExpanded}
         onDismiss={dismissQueueBar}
+        transactions={transactions}
       />
 
       {txModalState.isOpen && (

@@ -3,7 +3,7 @@ name: Deploy to staging
 on:
   push:
     branches:
-      - staging
+      - main
 
 jobs:
   deploy-staging:
@@ -45,8 +45,13 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Deploy to the staging S3
-        # A hack to achieve blue-green deployments: run the sync command twice.
-        # First time to upload new files, second time to upload the new files AND clean up old files.
         run: |
-          aws s3 sync ./out s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current
-          aws s3 sync ./out s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
+          cd out
+
+          aws s3 sync . s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current
+          aws s3 sync . s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
+
+          for file in $(find . -name '*.html' | sed 's|^\./||'); do
+              aws s3 cp ${file%} s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current/${file%.*} --content-type 'text/html'
+          done
+

@@ -46,8 +46,6 @@ declare module '@mui/material/Button' {
   }
 }
 
-export const theme = createTheme()
-
 const initTheme = (darkMode: boolean) => {
   const colors = darkMode ? darkPalette : palette
   const shadowColor = colors.primary.light
@@ -101,6 +99,7 @@ const initTheme = (darkMode: boolean) => {
       caption: {
         fontSize: '12px',
         lineHeight: '16px',
+        letterSpacing: '0.4px',
       },
       overline: {
         fontSize: '11px',
@@ -153,6 +152,9 @@ const initTheme = (darkMode: boolean) => {
             lineHeight: 1.25,
             borderColor: theme.palette.primary.main,
             textTransform: 'none',
+            '&:hover': {
+              boxShadow: 'none',
+            },
           }),
           outlined: {
             border: '2px solid',
@@ -164,6 +166,22 @@ const initTheme = (darkMode: boolean) => {
         },
       },
       MuiAccordion: {
+        variants: [
+          {
+            props: { variant: 'elevation' },
+            style: ({ theme }) => ({
+              border: 'none',
+              boxShadow: '0',
+              '&:not(:last-child)': {
+                borderRadius: '0 !important',
+                borderBottom: `1px solid ${theme.palette.border.light}`,
+              },
+              '&:last-of-type': {
+                borderBottomLeftRadius: '8px',
+              },
+            }),
+          },
+        ],
         styleOverrides: {
           root: ({ theme }) => ({
             transition: 'background 0.2s, border 0.2s',
@@ -192,6 +210,20 @@ const initTheme = (darkMode: boolean) => {
               background: theme.palette.background.light,
             },
           }),
+        },
+      },
+      MuiAccordionSummary: {
+        styleOverrides: {
+          root: {
+            '&.Mui-expanded': {
+              minHeight: '48px',
+            },
+          },
+          content: {
+            '&.Mui-expanded': {
+              margin: 0,
+            },
+          },
         },
       },
       MuiAccordionDetails: {
@@ -310,7 +342,7 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             '& .MuiTableCell-root': {
-              borderBottom: `2px solid ${theme.palette.border.light}`,
+              borderBottom: `1px solid ${theme.palette.border.light}`,
             },
 
             [theme.breakpoints.down('sm')]: {
@@ -336,7 +368,7 @@ const initTheme = (darkMode: boolean) => {
             '& .MuiTableCell-root': {
               paddingTop: theme.spacing(1),
               paddingBottom: theme.spacing(1),
-              borderBottom: `1px solid ${theme.palette.border.light}`,
+              borderBottom: 'none',
             },
 
             [theme.breakpoints.down('sm')]: {
@@ -356,6 +388,9 @@ const initTheme = (darkMode: boolean) => {
 
             '& .MuiTableRow-root': {
               transition: 'background-color 0.2s',
+              '&:not(:last-child)': {
+                borderBottom: `1px solid ${theme.palette.border.light}`,
+              },
             },
 
             '& .MuiTableRow-root:hover': {
@@ -393,12 +428,12 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             borderRadius: 4,
-            backgroundColor: theme.palette.background.main,
+            backgroundColor: theme.palette.background.paper,
             border: '1px solid transparent',
             transition: 'border-color 0.2s',
 
             '&:hover, &:focus, &.Mui-focused': {
-              backgroundColor: theme.palette.background.main,
+              backgroundColor: theme.palette.background.paper,
               borderColor: theme.palette.primary.main,
             },
           }),
@@ -419,19 +454,36 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           tooltip: ({ theme }) => ({
             ...theme.typography.body2,
-            color: darkMode ? darkPalette.background.main : palette.text.primary,
-            backgroundColor: darkMode ? darkPalette.text.primary : palette.background.main,
+            color: theme.palette.background.main,
+            backgroundColor: theme.palette.text.primary,
           }),
-          arrow: {
-            color: darkMode ? darkPalette.text.primary : palette.background.main,
-          },
+          arrow: ({ theme }) => ({
+            color: theme.palette.text.primary,
+          }),
         },
       },
       MuiBackdrop: {
         styleOverrides: {
           root: ({ theme }) => ({
-            backdropFilter: 'blur(1px)',
             backgroundColor: alpha(theme.palette.background.main, 0.75),
+          }),
+        },
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          thumb: ({ theme }) => ({
+            boxShadow:
+              '0px 2px 6px -1px rgba(0, 0, 0, 0.2), 0px 1px 4px rgba(0, 0, 0, 0.14), 0px 1px 4px rgba(0, 0, 0, 0.14)',
+          }),
+        },
+      },
+      MuiLink: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            textDecoration: 'none',
+            '&:hover': {
+              color: theme.palette.primary.light,
+            },
           }),
         },
       },
