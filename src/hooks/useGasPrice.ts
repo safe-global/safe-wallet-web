@@ -2,12 +2,14 @@ import { useMemo } from 'react'
 import { BigNumber } from 'ethers'
 import type { FeeData } from '@ethersproject/providers'
 import type { GasPrice, GasPriceOracle } from '@gnosis.pm/safe-react-gateway-sdk'
+import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { GAS_PRICE_TYPE } from '@gnosis.pm/safe-react-gateway-sdk'
 import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from './useChains'
 import useIntervalCounter from './useIntervalCounter'
 import { useWeb3ReadOnly } from '../hooks/wallets/web3'
 import { Errors, logError } from '@/services/exceptions'
+import { hasFeature } from '@/utils/chains'
 
 // Updat gas fees every 20 seconds
 const REFRESH_DELAY = 20e3
@@ -63,6 +65,7 @@ const useGasPrice = (): {
   const gasPriceConfigs = chain?.gasPrice
   const [counter] = useIntervalCounter(REFRESH_DELAY)
   const provider = useWeb3ReadOnly()
+  const isEIP1559 = !!chain && hasFeature(chain, FEATURES.EIP1559)
 
   // Fetch gas price from oracles or get a fixed value
   const [gasPrice, gasPriceError, gasPriceLoading] = useAsync<BigNumber | undefined>(
@@ -83,8 +86,8 @@ const useGasPrice = (): {
   )
 
   // Prepare the return values
-  const maxFee = gasPrice || feeData?.maxFeePerGas || feeData?.gasPrice || undefined
-  const maxPrioFee = feeData?.maxPriorityFeePerGas || undefined
+  const maxFee = gasPrice || (isEIP1559 ? feeData?.maxFeePerGas : feeData?.gasPrice) || undefined
+  const maxPrioFee = (isEIP1559 && feeData?.maxPriorityFeePerGas) || undefined
   const error = gasPriceError || feeDataError
   const loading = gasPriceLoading || feeDataLoading
 
