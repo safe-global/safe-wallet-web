@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import type { ReactNode, ReactElement } from 'react'
 import type { Label } from '@gnosis.pm/safe-react-gateway-sdk'
 import { LabelValue } from '@gnosis.pm/safe-react-gateway-sdk'
 import css from './styles.module.css'
@@ -6,9 +6,15 @@ import useTxQueue from '@/hooks/useTxQueue'
 import { isLabelListItem, isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-const useGroupLabel = (label: LabelValue): string => {
+export const useFutureNonceLabel = () => {
+  const { safe } = useSafeInfo()
+  return `${LabelValue.Queued} - transaction with nonce ${safe.nonce} needs to be executed first`
+}
+
+export const _useGroupLabel = (label: LabelValue): string => {
   const { page } = useTxQueue()
   const { safe } = useSafeInfo()
+  const futureNonceLabel = useFutureNonceLabel()
 
   if (label !== LabelValue.Queued || !page) {
     return label
@@ -27,15 +33,17 @@ const useGroupLabel = (label: LabelValue): string => {
     return label
   }
 
-  return `${label} – transaction with nonce ${safe.nonce} needs to be executed first`
+  return futureNonceLabel
+}
+
+export const GroupLabelTypography = ({ children }: { children: ReactNode }) => {
+  return <div className={css.container}>{children}</div>
 }
 
 const GroupLabel = ({ item }: { item: Label }): ReactElement => {
-  const label = useGroupLabel(item.label)
+  const label = _useGroupLabel(item.label)
 
-  return <div className={css.container}>{label}</div>
+  return <GroupLabelTypography>{label}</GroupLabelTypography>
 }
 
 export default GroupLabel
-
-export const _useGroupLabel = useGroupLabel
