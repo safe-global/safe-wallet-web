@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { type EIP1193Provider, type WalletState, type OnboardAPI } from '@web3-onboard/core'
+import { getDevice } from '@web3-onboard/core/dist/utils'
 import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getAddress } from 'ethers/lib/utils'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
@@ -9,7 +10,7 @@ import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { useInitPairing } from '@/services/pairing/hooks'
-import { isWalletUnlocked } from '@/utils/wallets'
+import { isWalletUnlocked, WalletNames } from '@/utils/wallets'
 
 export type ConnectedWallet = {
   label: string
@@ -76,6 +77,13 @@ const trackWalletType = async (wallet: ConnectedWallet) => {
 
 // Wrapper that tracks/sets the last used wallet
 export const connectWallet = (onboard: OnboardAPI, options?: Parameters<OnboardAPI['connectWallet']>[0]) => {
+  // On mobile/tablet, automatically choose WalletConnect
+  if (!options && getDevice().type !== 'desktop') {
+    options = {
+      autoSelect: WalletNames.WALLET_CONNECT,
+    }
+  }
+
   onboard
     .connectWallet(options)
     .then(async (wallets) => {
