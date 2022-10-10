@@ -48,3 +48,9 @@ export const GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH = process.env.NEXT_PUBLIC_GOOGL
 export const TENDERLY_SIMULATE_ENDPOINT_URL = process.env.NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL || ''
 export const TENDERLY_PROJECT_NAME = process.env.NEXT_PUBLIC_TENDERLY_PROJECT_NAME || ''
 export const TENDERLY_ORG_NAME = process.env.NEXT_PUBLIC_TENDERLY_ORG_NAME || ''
+
+// Safe Apps tags
+export enum SafeAppsTag {
+  TX_BUILDER = 'transaction-builder',
+  DASHBOARD_FEATURED = 'dashboard-widgets',
+}
