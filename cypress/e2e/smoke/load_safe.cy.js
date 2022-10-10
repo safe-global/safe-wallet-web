@@ -51,7 +51,7 @@ describe('Load existing Safe', () => {
     // Name input should have a placeholder ending in 'rinkeby-safe'
     cy.get('input[name="name"]')
       .should('have.attr', 'placeholder')
-      .should('contain', /g(ö|oe)rli-safe/)
+      .should('match', /g(ö|oe)rli-safe/)
     // Input a custom name
     cy.get('input[name="name"]').type('Test safe name').should('have.value', 'Test safe name')
 
