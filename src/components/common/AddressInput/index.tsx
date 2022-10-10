@@ -20,6 +20,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
     control,
     formState: { errors },
     trigger,
+    setFocus,
   } = useFormContext()
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
@@ -44,9 +45,12 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
   // Update the input value
   const setAddressValue = useCallback(
     (value: string) => {
-      setValue(name, value, { shouldValidate: true })
+      setValue(name, value)
+
+      // Workaround for a bug in react-hook-form that it restores a cached error state on set
+      setTimeout(() => trigger(name), 100)
     },
-    [setValue, name],
+    [setValue, name, trigger],
   )
 
   // On ENS resolution, update the input value

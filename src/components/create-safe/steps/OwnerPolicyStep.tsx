@@ -46,7 +46,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
       threshold: defaultThreshold,
     },
   })
-  const { register, handleSubmit, control, formState, watch, setValue } = formMethods
+  const { register, handleSubmit, control, formState, watch, setValue, trigger } = formMethods
   const currentThreshold = watch(FieldName.threshold)
   const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
@@ -71,6 +71,9 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     if (currentThreshold >= ownerLength) {
       setValue<'threshold'>(FieldName.threshold, ownerLength - 1)
     }
+
+    // Workaround for a bug in react-hook-form that it restores a cached error state on set
+    setTimeout(() => trigger(), 100)
   }
 
   const onFormSubmit = handleSubmit((data: SafeFormData) => {
