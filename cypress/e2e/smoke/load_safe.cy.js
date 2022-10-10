@@ -26,25 +26,17 @@ describe('Load existing Safe', () => {
 
   it('should allow choosing the network where the Safe exists', () => {
     // Click the network selector inside the Stepper content
-    cy.contains('Select network on which the Safe was created:')
-      .contains('span', /^G(ö|oe)rli$/)
-      .click()
-
-    // Selects Ethereum
-    cy.get('ul li').contains('Ethereum').click()
-    cy.contains('Select network on which the Safe was created:').contains('span', 'Ethereum')
-
-    // Selects Rinkeby
     cy.contains('Select network on which the Safe was created:').contains('span', 'Ethereum').click()
+
+    // Selects Goerli
     cy.get('ul li')
       .contains(/^G(ö|oe)rli$/)
       .click()
     cy.contains('Select network on which the Safe was created:').contains('span', /^G(ö|oe)rli$/)
-
-    cy.contains('Continue').click()
   })
 
   it('should accept name the Safe', () => {
+    cy.contains('Continue').click()
     // alias the address input label
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
