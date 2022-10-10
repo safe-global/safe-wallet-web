@@ -58,7 +58,6 @@ const useTxPendingStatuses = (): void => {
   useEffect(() => {
     const unsubFns = Object.entries(pendingStatuses).map(([event, status]) =>
       txSubscribe(event as TxEvent, (detail) => {
-        console.log('Tx Event:', detail)
         // All pending txns should have a txId
         const txId = 'txId' in detail && detail.txId
         if (!txId) return
@@ -66,11 +65,9 @@ const useTxPendingStatuses = (): void => {
         // Clear the pending status if the tx is no longer pending
         const isFinished = status === null
         if (isFinished) {
-          console.log('Tx finished')
           dispatch(clearPendingTx({ txId }))
           return
         }
-        console.log('Tx in status', status)
 
         // Or set a new status
         dispatch(
