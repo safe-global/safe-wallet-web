@@ -12,6 +12,7 @@ import styles from './styles.module.css'
 const CollapsibleSection = ({
   title,
   apps,
+  allApps,
   onPinApp,
   prependAddCustomAppCard,
   onAddCustomApp,
@@ -35,7 +36,7 @@ const CollapsibleSection = ({
         <Grid container rowSpacing={2} columnSpacing={columnSpacing}>
           {prependAddCustomAppCard && onAddCustomApp && (
             <Grid item xs={12} sm={6} md={3} xl={1.5}>
-              <AddCustomAppCard onSave={onAddCustomApp} safeAppList={apps} />
+              <AddCustomAppCard onSave={onAddCustomApp} safeAppList={allApps} />
             </Grid>
           )}
 
