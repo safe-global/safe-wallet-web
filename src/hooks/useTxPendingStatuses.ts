@@ -7,6 +7,8 @@ import { waitForTx } from '@/services/tx/txMonitor'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
+  [TxEvent.SIGNATURE_PROPOSED]: PendingStatus.SIGNING,
+  [TxEvent.SIGNATURE_INDEXED]: null,
   [TxEvent.EXECUTING]: PendingStatus.SUBMITTING,
   [TxEvent.PROCESSING]: PendingStatus.PROCESSING,
   [TxEvent.PROCESSED]: PendingStatus.INDEXING,
@@ -56,6 +58,7 @@ const useTxPendingStatuses = (): void => {
   useEffect(() => {
     const unsubFns = Object.entries(pendingStatuses).map(([event, status]) =>
       txSubscribe(event as TxEvent, (detail) => {
+        console.log('Tx Event:', detail)
         // All pending txns should have a txId
         const txId = 'txId' in detail && detail.txId
         if (!txId) return
@@ -63,9 +66,11 @@ const useTxPendingStatuses = (): void => {
         // Clear the pending status if the tx is no longer pending
         const isFinished = status === null
         if (isFinished) {
+          console.log('Tx finished')
           dispatch(clearPendingTx({ txId }))
           return
         }
+        console.log('Tx in status', status)
 
         // Or set a new status
         dispatch(
@@ -75,6 +80,7 @@ const useTxPendingStatuses = (): void => {
             status,
             txHash: 'txHash' in detail ? detail.txHash : undefined,
             groupKey: 'groupKey' in detail ? detail.groupKey : undefined,
+            signerAddress: `signerAddress` in detail ? detail.signerAddress : undefined,
           }),
         )
       }),

@@ -3,6 +3,7 @@ import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolki
 import type { RootState } from '@/store'
 
 export enum PendingStatus {
+  SIGNING = 'SIGNING',
   SUBMITTING = 'SUBMITTING',
   PROCESSING = 'PROCESSING',
   INDEXING = 'INDEXING',
@@ -15,6 +16,7 @@ type PendingTxsState =
         status: PendingStatus
         txHash?: string
         groupKey?: string
+        signerAddress?: string
       }
     }
   | Record<string, never>
@@ -33,6 +35,7 @@ export const pendingTxsSlice = createSlice({
         txHash?: string
         groupKey?: string
         status: PendingStatus
+        signerAddress?: string
       }>,
     ) => {
       const { txId, ...pendingTx } = action.payload

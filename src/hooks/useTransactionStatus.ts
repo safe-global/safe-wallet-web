@@ -20,6 +20,7 @@ const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [PendingStatus.SUBMITTING]: 'Submitting',
   [PendingStatus.PROCESSING]: 'Processing',
   [PendingStatus.INDEXING]: 'Indexing',
+  [PendingStatus.SIGNING]: 'Signing',
   [ReplacedStatus]: 'Transaction will be replaced',
 }
 
