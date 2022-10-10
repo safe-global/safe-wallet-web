@@ -58,7 +58,7 @@ const StyledStep = ({ $bold, $state, sx, ...rest }: StyledStepProps & StepProps)
     sx={({ palette }) => ({
       '.MuiStepLabel-label': {
         fontWeight: `${$bold ? 'bold' : 'normal'} !important`,
-        color: `${getStepColor($state, palette)} !important`,
+        color: palette.text.primary,
         fontSize: '16px !important',
       },
       '.MuiStepLabel-iconContainer': {
