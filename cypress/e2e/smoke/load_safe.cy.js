@@ -27,7 +27,7 @@ describe('Load existing Safe', () => {
   it('should allow choosing the network where the Safe exists', () => {
     // Click the network selector inside the Stepper content
     cy.contains('Select network on which the Safe was created:')
-      .contains('span', /^G(ö|oe)rli$/)
+      .contains(/^G(ö|oe)rli$/)
       .click()
 
     // Selects Ethereum
