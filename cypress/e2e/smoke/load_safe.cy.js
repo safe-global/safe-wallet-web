@@ -40,7 +40,7 @@ describe('Load existing Safe', () => {
     cy.contains('Continue').click()
   })
 
-  it('should accept name the safe', () => {
+  it('should accept name the Safe', () => {
     // alias the address input label
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
@@ -89,7 +89,7 @@ describe('Load existing Safe', () => {
     cy.contains('Continue').click()
   })
 
-  it('should have safe and owner names in the Review step', () => {
+  it('should have Safe and owner names in the Review step', () => {
     // Finds Safe name
     cy.findByText('Test safe name').should('exist')
     // Finds custom owner name
