@@ -12,11 +12,10 @@ const SingleTransaction: NextPage = () => {
       </Head>
 
       <main>
-        <div>
-          <Typography variant="h3" fontWeight={700} mb={3}>
-            Transaction details
-          </Typography>
-        </div>
+        <Typography variant="h3" fontWeight={700} mb={3}>
+          Transaction details
+        </Typography>
+
         <SingleTx />
       </main>
     </>
