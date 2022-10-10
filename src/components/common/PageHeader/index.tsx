@@ -19,7 +19,7 @@ const PageHeader = ({
         borderBottom: noBorder ? undefined : ({ palette }) => `1px solid ${palette.border.light}`,
       }}
     >
-      <Typography variant="h3" fontWeight={700} gutterBottom>
+      <Typography variant="h3" className={css.title}>
         {title}
       </Typography>
       {action}

@@ -10,3 +10,8 @@
   position: sticky !important;
   top: -12px;
 }
+
+.title {
+  padding-bottom: 12px;
+  font-weight: 700;
+}
