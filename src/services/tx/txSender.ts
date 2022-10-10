@@ -217,7 +217,10 @@ export const dispatchTxProposal = async (
     throw error
   }
 
-  txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, { txId: proposedTx.txId, signerAddress: sender })
+  txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
+    txId: proposedTx.txId,
+    signerAddress: txId ? sender : undefined,
+  })
 
   return proposedTx
 }
