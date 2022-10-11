@@ -6,15 +6,18 @@
  */
 enum ErrorCodes {
   ___0 = '0: No such error code',
+
   _100 = '100: Invalid input in the address field',
   _101 = '101: Failed to resolve the address',
   _102 = '102: Error getting an address checksum',
   _103 = '103: Error creating a SafeTransaction',
   _104 = '104: Error upserting an addressbook entry',
+
   _300 = '300: Error switching the wallet network',
   _301 = '301: Error adding a new wallet network',
   _302 = '302: Error connecting to the wallet',
   _303 = '303: Error creating pairing session',
+
   _600 = '600: Error fetching token list',
   _601 = '601: Error fetching balances',
   _602 = '602: Error fetching history txs',
@@ -34,10 +37,14 @@ enum ErrorCodes {
   _616 = '616: Failed to retrieve recommended nonce',
   _617 = '617: Error fetching safeTxGas',
   _618 = '618: Error fetching fee history',
+  _619 = '619: Error fetching data from master-copies',
+  _620 = '620: Error loading chains',
+
   _700 = '700: Failed to read from local/session storage',
   _701 = '701: Failed to write to local/session storage',
   _702 = '702: Failed to remove from local/session storage',
   _703 = '703: Failed to parse cookie',
+
   _800 = '800: Safe creation tx failed',
   _801 = '801: Failed to send a tx with a spending limit',
   _802 = '802: Error submitting a transaction, safeAddress not found',
@@ -57,11 +64,11 @@ enum ErrorCodes {
   _816 = '816: Error saving transaction to history',
   _817 = '817: Unable to decode contract error message',
   _818 = '818: Error submitting a multi-send transaction',
+
   _900 = '900: Error loading Safe App',
   _901 = '901: Error processing Safe Apps SDK request',
   _902 = '902: Error loading Safe Apps list',
   _903 = '903: Error loading Safe App manifest',
-  _904 = '904: Error loading chains',
   _905 = '905: Third party cookies are disabled',
 }
 

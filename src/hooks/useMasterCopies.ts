@@ -1,5 +1,6 @@
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
+import { Errors, logError } from '@/services/exceptions'
 import type { MasterCopyReponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getMasterCopies } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -35,7 +36,7 @@ export const useMasterCopies = () => {
       const res = await getMasterCopies(chainId)
       return res.map(extractMasterCopyInfo)
     } catch (error) {
-      console.error('Fetching data from master-copies errored', error)
+      logError(Errors._619, (error as Error).message)
     }
   }
   return useAsync(fetchMasterCopies, [chainId])

@@ -32,11 +32,11 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit }: GasParamsProps): 
   }
 
   const chain = useCurrentChain()
-  const isLoading = !gasLimit || !maxFeePerGas || !maxPriorityFeePerGas
+  const isLoading = !gasLimit || !maxFeePerGas
 
   // Total gas cost
   const totalFee = !isLoading
-    ? formatVisualAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+    ? formatVisualAmount(maxFeePerGas.mul(gasLimit), chain?.nativeCurrency.decimals)
     : '> 0.001'
 
   // Individual gas params
@@ -50,7 +50,7 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit }: GasParamsProps): 
   }
 
   return (
-    <Accordion elevation={0} onChange={onChangeExpand}>
+    <Accordion elevation={0} onChange={onChangeExpand} sx={nonce === undefined ? { pointerEvents: 'none' } : undefined}>
       <AccordionSummary>
         {isExecution ? (
           <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>

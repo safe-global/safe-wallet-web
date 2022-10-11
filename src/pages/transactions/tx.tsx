@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 
-import TxHeader from '@/components/transactions/TxHeader'
 import SingleTx from '@/components/transactions/SingleTx'
+import Typography from '@mui/material/Typography'
 
 const SingleTransaction: NextPage = () => {
   return (
@@ -11,9 +11,11 @@ const SingleTransaction: NextPage = () => {
         <title>Safe – Transaction details</title>
       </Head>
 
-      <TxHeader />
-
       <main>
+        <Typography variant="h3" fontWeight={700} mb={3}>
+          Transaction details
+        </Typography>
+
         <SingleTx />
       </main>
     </>

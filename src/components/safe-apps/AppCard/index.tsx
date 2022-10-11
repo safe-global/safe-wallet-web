@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode, SyntheticEvent } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import type { LinkProps } from 'next/link'
 import Avatar from '@mui/material/Avatar'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -16,6 +17,8 @@ import { AppRoutes } from '@/config/routes'
 import styles from './styles.module.css'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SvgIcon } from '@mui/material'
+import type { UrlObject } from 'url'
+import { resolveHref } from 'next/dist/shared/lib/router/router'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
@@ -29,7 +32,7 @@ type AppCardProps = {
 
 type CompactSafeAppCardProps = {
   safeApp: SafeAppData
-  url: string
+  url: LinkProps['href']
   pinned?: boolean
   onPin?: (appId: number) => void
   onShareClick?: (event: SyntheticEvent) => void
@@ -37,7 +40,7 @@ type CompactSafeAppCardProps = {
 }
 
 type AppCardContainerProps = {
-  url?: string
+  url?: LinkProps['href']
   children: ReactNode
   variant?: SafeAppCardVariants
 }
@@ -75,7 +78,7 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
 
   if (url) {
     return (
-      <Link href={url}>
+      <Link href={url} passHref>
         <a rel="noreferrer">{card}</a>
       </Link>
     )
@@ -131,11 +134,19 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
 const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppCardProps): ReactElement => {
   const router = useRouter()
   const currentChain = useCurrentChain()
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
-  const appUrlQuery = encodeURIComponent(safeApp.url)
 
-  const shareUrl = `${origin}${AppRoutes.share.safeApp}?appUrl=${appUrlQuery}&chain=${currentChain?.shortName}`
-  const url = router.query.safe ? `${AppRoutes.apps}?safe=${router.query.safe}&appUrl=${appUrlQuery}` : shareUrl
+  const shareUrlObj: UrlObject = {
+    protocol: typeof window !== 'undefined' ? window.location.protocol : '',
+    host: typeof window !== 'undefined' ? window.location.host : '',
+    pathname: AppRoutes.share.safeApp,
+    query: { appUrl: safeApp.url, chain: currentChain?.shortName },
+  }
+
+  const url: UrlObject = router.query.safe
+    ? { pathname: AppRoutes.apps, query: { safe: router.query.safe, appUrl: safeApp.url } }
+    : shareUrlObj
+
+  const shareUrl = resolveHref(router, shareUrlObj)
 
   if (variant === 'compact') {
     return <CompactAppCard url={url} safeApp={safeApp} pinned={pinned} onPin={onPin} shareUrl={shareUrl} />

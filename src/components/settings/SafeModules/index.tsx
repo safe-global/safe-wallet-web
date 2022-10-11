@@ -25,7 +25,6 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
         address={moduleAddress}
         showCopyButton
         chainId={chainId}
-        showAvatar={false}
         hasExplorer
       />
       {isGranted && <RemoveModule address={moduleAddress} />}

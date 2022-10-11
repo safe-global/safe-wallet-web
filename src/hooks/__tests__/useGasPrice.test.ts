@@ -40,6 +40,7 @@ jest.mock('@/hooks/useChains', () => {
         weiValue: '24000000000',
       },
     ],
+    features: ['EIP1559'],
   }
 
   return {
@@ -51,12 +52,6 @@ describe('useGasPrice', () => {
   beforeEach(() => {
     jest.useFakeTimers()
     jest.clearAllMocks()
-
-    // Mock fetch
-    Object.defineProperty(window, 'fetch', {
-      writable: true,
-      value: jest.fn(() => Promise.reject()),
-    })
   })
 
   it('should return the fetched gas price from the first oracle', async () => {
@@ -86,9 +81,6 @@ describe('useGasPrice', () => {
 
     expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
 
-    expect(result.current.gasPriceLoading).toBe(false)
-    expect(result.current.gasPriceError).toBe(undefined)
-
     // assert the gas price is correct
     expect(result.current.maxFeePerGas?.toString()).toBe('47000000000')
 
@@ -98,11 +90,10 @@ describe('useGasPrice', () => {
 
   it('should return the fetched gas price from the second oracle if the first one fails', async () => {
     // Mock fetch
-    Object.defineProperty(window, 'fetch', {
-      writable: true,
-      value: jest
+    jest.spyOn(window, 'fetch').mockImplementation(
+      jest
         .fn()
-        .mockImplementationOnce(() => Promise.reject())
+        .mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch')))
         .mockImplementationOnce(() =>
           Promise.resolve({
             ok: true,
@@ -114,7 +105,7 @@ describe('useGasPrice', () => {
               }),
           }),
         ),
-    })
+    )
 
     // render the hook
     const { result } = renderHook(() => useGasPrice())
@@ -126,9 +117,6 @@ describe('useGasPrice', () => {
 
     expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
     expect(fetch).toHaveBeenCalledWith('https://ethgasstation.info/json/ethgasAPI.json')
-
-    expect(result.current.gasPriceLoading).toBe(false)
-    expect(result.current.gasPriceError).toBe(undefined)
 
     // assert the gas price is correct
     expect(result.current.maxFeePerGas?.toString()).toBe('60000000000')
@@ -139,10 +127,12 @@ describe('useGasPrice', () => {
 
   it('should fallback to a fixed gas price if the oracles fail', async () => {
     // Mock fetch
-    Object.defineProperty(window, 'fetch', {
-      writable: true,
-      value: jest.fn(() => Promise.reject()),
-    })
+    jest.spyOn(window, 'fetch').mockImplementation(
+      jest
+        .fn()
+        .mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch')))
+        .mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch'))),
+    )
 
     // render the hook
     const { result } = renderHook(() => useGasPrice())
@@ -154,9 +144,6 @@ describe('useGasPrice', () => {
 
     expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
     expect(fetch).toHaveBeenCalledWith('https://ethgasstation.info/json/ethgasAPI.json')
-
-    expect(result.current.gasPriceLoading).toBe(false)
-    expect(result.current.gasPriceError).toBe(undefined)
 
     // assert the gas price is correct
     expect(result.current.maxFeePerGas?.toString()).toBe('24000000000')

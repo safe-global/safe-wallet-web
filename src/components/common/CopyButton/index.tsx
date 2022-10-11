@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import React, { type ReactElement, type SyntheticEvent, useCallback, useState } from 'react'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import { IconButton, Tooltip } from '@mui/material'
+import CopyIcon from '@/public/images/sidebar/copy.svg'
+import { IconButton, SvgIcon, Tooltip } from '@mui/material'
 
 const CopyButton = ({
   text,
@@ -33,7 +33,19 @@ const CopyButton = ({
   return (
     <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
       <IconButton aria-label={initialToolTipText} onClick={handleCopy} size="small" className={className}>
-        {children ?? <ContentCopyIcon fontSize="small" color="border" sx={{ width: '16px', height: '16px' }} />}
+        {children ?? (
+          <SvgIcon
+            component={CopyIcon}
+            inheritViewBox
+            color="primary"
+            fontSize="small"
+            sx={{
+              '& path': {
+                fill: ({ palette }) => palette.border.main,
+              },
+            }}
+          />
+        )}
       </IconButton>
     </Tooltip>
   )
