@@ -166,7 +166,6 @@ const SignOrExecuteForm = ({
   }
 
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
-  console.log('isOwner', isOwner, 'onlyExecute', onlyExecute, 'cannotPropose', cannotPropose)
   const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose
   const error = props.error || (willExecute && gasLimitError)
 
