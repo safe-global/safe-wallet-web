@@ -11,6 +11,10 @@ export const MODALS_EVENTS = {
     action: 'Send NFTs',
     category: MODALS_CATEGORY,
   },
+  CONTRACT_INTERACTION: {
+    action: 'Contract interaction',
+    category: MODALS_CATEGORY,
+  },
   TX_DETAILS: {
     action: 'Transaction details',
     category: MODALS_CATEGORY,

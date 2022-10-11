@@ -7,8 +7,7 @@ import { useRouter } from 'next/router'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import NextLink from 'next/link'
 import { AppRoutes } from '@/config/routes'
-
-export const FEATURED_APPS_TAG = 'dashboard-widgets'
+import { SafeAppsTag } from '@/config/constants'
 
 const StyledImage = styled.img`
   width: 64px;
@@ -26,7 +25,10 @@ const StyledGridItem = styled(Grid)`
 export const FeaturedApps = (): ReactElement | null => {
   const [allApps = [], , isLoading] = useRemoteSafeApps()
   const router = useRouter()
-  const featuredApps = useMemo(() => allApps.filter((app) => app.tags?.includes(FEATURED_APPS_TAG)), [allApps])
+  const featuredApps = useMemo(
+    () => allApps.filter((app) => app.tags?.includes(SafeAppsTag.DASHBOARD_FEATURED)),
+    [allApps],
+  )
 
   if (!featuredApps.length && !isLoading) return null
 
