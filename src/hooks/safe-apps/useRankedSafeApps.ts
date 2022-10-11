@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { rankSafeApps } from '@/services/safe-apps/track-app-usage-count'
-import { FEATURED_APPS_TAG } from '@/components/dashboard/FeaturedApps/FeaturedApps'
+import { SafeAppsTag } from '@/config/constants'
 
 // number of ranked Safe Apps that we want to display
 const NUMBER_OF_SAFE_APPS = 5
@@ -17,7 +17,7 @@ const useRankedSafeApps = (safeApps: SafeAppData[], pinnedSafeApps: SafeAppData[
     const allRankedApps = rankedPinnedApps
       .concat(pinnedSafeApps, mostUsedApps, randomApps)
       // Filter out Featured Apps because they are in their own section
-      .filter((app) => !app.tags.includes(FEATURED_APPS_TAG))
+      .filter((app) => !app.tags.includes(SafeAppsTag.DASHBOARD_FEATURED))
 
     // Use a Set to remove duplicates
     return [...new Set(allRankedApps)].slice(0, NUMBER_OF_SAFE_APPS)

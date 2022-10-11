@@ -1,7 +1,7 @@
 import { renderHook } from '@/tests/test-utils'
 import { useRankedSafeApps } from '@/hooks/safe-apps/useRankedSafeApps'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { FEATURED_APPS_TAG } from '@/components/dashboard/FeaturedApps/FeaturedApps'
+import { SafeAppsTag } from '@/config/constants'
 
 const getMockSafeApp = (props: Partial<SafeAppData>) => {
   return {
@@ -33,8 +33,8 @@ describe('useRankedSafeApps', () => {
   })
 
   it('excludes featured safe apps', () => {
-    const mockSafeApp1 = getMockSafeApp({ id: 1, tags: [FEATURED_APPS_TAG] })
-    const mockSafeApp2 = getMockSafeApp({ id: 2, tags: [FEATURED_APPS_TAG] })
+    const mockSafeApp1 = getMockSafeApp({ id: 1, tags: [SafeAppsTag.DASHBOARD_FEATURED] })
+    const mockSafeApp2 = getMockSafeApp({ id: 2, tags: [SafeAppsTag.DASHBOARD_FEATURED] })
     const mockSafeApp3 = getMockSafeApp({ id: 3 })
     const mockSafeApp4 = getMockSafeApp({ id: 4 })
     const mockSafeApp5 = getMockSafeApp({ id: 5 })
