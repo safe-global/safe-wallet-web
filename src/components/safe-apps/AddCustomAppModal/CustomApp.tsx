@@ -17,7 +17,7 @@ const CustomApp = ({ safeApp, shareUrl }: CustomAppProps) => {
     <div className={css.customAppContainer}>
       <img className={css.customAppIcon} src={safeApp.iconUrl} alt={safeApp.name}></img>
 
-      <Typography mt={2} color="text.primary" fontWeight={700}>
+      <Typography component="h2" mt={2} color="text.primary" fontWeight={700}>
         {safeApp.name}
       </Typography>
 
