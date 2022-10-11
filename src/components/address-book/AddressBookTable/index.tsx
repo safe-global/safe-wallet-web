@@ -65,10 +65,12 @@ const AddressBookTable = () => {
 
   const addressBook = useAddressBook()
   const addressBookEntries = Object.entries(addressBook)
-  const filteredEntries = addressBookEntries.filter(([address, name]) => {
-    const query = searchQuery.toLowerCase()
-    return address.toLowerCase().includes(query) || name.toLowerCase().includes(query)
-  })
+  const filteredEntries = searchQuery
+    ? addressBookEntries.filter(([address, name]) => {
+        const query = searchQuery.toLowerCase()
+        return address.toLowerCase().includes(query) || name.toLowerCase().includes(query)
+      })
+    : addressBookEntries
 
   const rows = filteredEntries.map(([address, name]) => ({
     name: {
