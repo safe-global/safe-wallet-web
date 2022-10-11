@@ -1,4 +1,4 @@
-import { Button, SvgIcon, Grid, IconButton, useMediaQuery } from '@mui/material'
+import { Button, SvgIcon, Grid, IconButton, useMediaQuery, Tooltip } from '@mui/material'
 import { useTheme } from '@mui/system'
 import type { ReactElement, ElementType } from 'react'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -33,9 +33,11 @@ const HeaderButton = ({
 
   if (isMobile) {
     return (
-      <IconButton onClick={onClick} disabled={disabled} size="small">
-        {svg}
-      </IconButton>
+      <Tooltip title={children} placement="top">
+        <IconButton onClick={onClick} disabled={disabled} size="small">
+          {svg}
+        </IconButton>
+      </Tooltip>
     )
   }
 
