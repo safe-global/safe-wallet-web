@@ -15,7 +15,7 @@ const useRankedSafeApps = (safeApps: SafeAppData[], pinnedSafeApps: SafeAppData[
     const randomApps = safeApps.slice().sort(() => Math.random() - 0.5)
 
     const allRankedApps = rankedPinnedApps
-      .concat(mostUsedApps, randomApps)
+      .concat(pinnedSafeApps, mostUsedApps, randomApps)
       // Filter out Featured Apps because they are in their own section
       .filter((app) => !app.tags.includes(FEATURED_APPS_TAG))
 
