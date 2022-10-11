@@ -19,13 +19,13 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
-import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import useChainId from '@/hooks/useChainId'
-import { trimTrailingSlash, isSameUrl } from '@/utils/url'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
-import { AppRoutes } from '@/config/routes'
+import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import { trimTrailingSlash, isSameUrl } from '@/utils/url'
+import { AppRoutes } from '@/config/routes'
 import CustomAppPlaceholder from './CustomAppPlaceholder'
 import CustomApp from './CustomApp'
 
@@ -63,6 +63,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     if (safeApp) {
       onSave(safeApp)
       trackEvent(SAFE_APPS_EVENTS.ADD_CUSTOM_APP)
+      reset()
       onClose()
     }
   }
@@ -88,7 +89,6 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${encodeURIComponent(
     safeApp?.url || '',
   )}&chain=${currentChain?.shortName}`
-
   const isSafeAppValid = isValid && safeApp
   const isCustomAppInTheDefaultList = errors?.appUrl?.type === 'doesntExist'
 

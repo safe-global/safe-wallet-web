@@ -1,6 +1,6 @@
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+
 import { Typography, SvgIcon } from '@mui/material'
-import Box from '@mui/system/Box'
 import CheckIcon from '@mui/icons-material/Check'
 import CopyButton from '@/components/common/CopyButton'
 import ShareIcon from '@/public/images/common/share.svg'
@@ -14,7 +14,7 @@ type CustomAppProps = {
 
 const CustomApp = ({ safeApp, shareUrl }: CustomAppProps) => {
   return (
-    <Box className={css.customAppContainer}>
+    <div className={css.customAppContainer}>
       <img className={css.customAppIcon} src={safeApp.iconUrl} alt={safeApp.name}></img>
 
       <Typography mt={2} color="text.primary" fontWeight={700}>
@@ -36,7 +36,7 @@ const CustomApp = ({ safeApp, shareUrl }: CustomAppProps) => {
       ) : (
         <CheckIcon color="success" className={css.customAppCheckIcon} />
       )}
-    </Box>
+    </div>
   )
 }
 
