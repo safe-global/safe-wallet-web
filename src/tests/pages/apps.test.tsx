@@ -137,13 +137,20 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument())
 
       const appURLInput = screen.getByLabelText(/App URL/)
-      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
 
-      act(() => {
-        fireEvent.change(appURLInput, { target: { value: APP_URL } })
-        fireEvent.click(riskCheckbox)
-      })
-      await waitFor(() => expect(screen.getByDisplayValue('Custom Compound')).toBeInTheDocument())
+      fireEvent.change(appURLInput, { target: { value: APP_URL } })
+
+      const riskCheckbox = await screen.findByRole('checkbox')
+
+      fireEvent.click(riskCheckbox)
+
+      await waitFor(() =>
+        expect(
+          screen.getByRole('heading', {
+            name: /custom compound/i,
+          }),
+        ).toBeInTheDocument(),
+      )
 
       await act(() => {
         fireEvent.click(screen.getByText('Add'))
@@ -173,17 +180,10 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
 
       const appURLInput = screen.getByLabelText(/App URL/)
-      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
 
-      act(() => {
-        fireEvent.change(appURLInput, { target: { value: APP_URL } })
-        fireEvent.click(riskCheckbox)
-      })
+      fireEvent.change(appURLInput, { target: { value: APP_URL } })
 
-      await waitFor(
-        () => expect(screen.getByText("The app doesn't support Safe App functionality")).toBeInTheDocument(),
-        { timeout: 7000 },
-      )
+      await screen.findByText(/the app doesn't support safe app functionality/i)
     })
 
     it('Requires risk acknowledgment checkbox to add the app', async () => {
@@ -220,16 +220,17 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
 
       const appURLInput = screen.getByLabelText(/App URL/)
-      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
 
-      await act(() => {
-        fireEvent.change(appURLInput, { target: { value: APP_URL } })
-        fireEvent.click(riskCheckbox)
-        fireEvent.click(riskCheckbox)
-        fireEvent.click(screen.getByText('Add'))
-      })
+      fireEvent.change(appURLInput, { target: { value: APP_URL } })
 
-      await waitFor(() => expect(screen.getByText('Required')).toBeInTheDocument())
+      const riskCheckbox = await screen.findByText(
+        /This app is not part of Safe and I agree to use it at my own risk\./,
+      )
+      fireEvent.click(riskCheckbox)
+      fireEvent.click(riskCheckbox)
+      fireEvent.click(screen.getByText('Add'))
+
+      await waitFor(() => expect(screen.getByText('Accepting the disclaimer is mandatory')).toBeInTheDocument())
     })
 
     it('allows removing custom apps', async () => {
@@ -266,13 +267,14 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
 
       const appURLInput = screen.getByLabelText(/App URL/)
-      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
 
-      act(() => {
-        fireEvent.change(appURLInput, { target: { value: APP_URL } })
-        fireEvent.click(riskCheckbox)
-      })
-      await waitFor(() => expect(screen.getByDisplayValue('Custom Compound')).toBeInTheDocument())
+      fireEvent.change(appURLInput, { target: { value: APP_URL } })
+
+      const riskCheckbox = await screen.findByText(/This app is not part of Safe and I agree to use it at my own risk./)
+
+      fireEvent.click(riskCheckbox)
+
+      await waitFor(() => expect(screen.getByRole('heading', { name: 'Custom Compound' })).toBeInTheDocument())
 
       await act(() => {
         fireEvent.click(screen.getByText('Add'))
