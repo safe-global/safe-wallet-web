@@ -31,15 +31,9 @@ const History: NextPage = () => {
 
       <TxHeader
         action={
-          <Box display="flex" justifyContent="space-between">
+          <Box display="flex" justifyContent="space-between" alignItems="center">
             <NavTabs tabs={transactionNavItems} />
-            <Button
-              variant="contained"
-              onClick={toggleFilter}
-              size="small"
-              endIcon={<ExpandIcon />}
-              sx={{ height: '36px' }}
-            >
+            <Button variant="outlined" onClick={toggleFilter} size="small" endIcon={<ExpandIcon />}>
               {filter?.type ?? 'Filter'}
             </Button>
           </Box>

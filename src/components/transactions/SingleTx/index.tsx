@@ -3,22 +3,31 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useAsync from '@/hooks/useAsync'
-import type { DateLabel, Transaction, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { Label, Transaction, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { LabelValue } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { sameAddress } from '@/utils/addresses'
 import type { ReactElement } from 'react'
-import { makeDateLabelFromTx, makeTxFromDetails } from '@/utils/transactions'
+import { makeTxFromDetails } from '@/utils/transactions'
 import { TxListGrid } from '@/components/transactions/TxList'
-import TxDateLabel from '@/components/transactions/TxDateLabel'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
+import GroupLabel from '../GroupLabel'
+import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
 const SingleTxGrid = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const tx: Transaction = makeTxFromDetails(txDetails)
-  const dateLabel: DateLabel = makeDateLabelFromTx(tx)
+
+  // Show a label for the transaction if it's a queued transaction
+  const { safe } = useSafeInfo()
+  const nonce = isMultisigDetailedExecutionInfo(txDetails?.detailedExecutionInfo)
+    ? txDetails?.detailedExecutionInfo.nonce
+    : -1
+  const label = nonce === safe.nonce ? LabelValue.Next : nonce > safe.nonce ? LabelValue.Queued : undefined
 
   return (
     <TxListGrid>
-      <TxDateLabel item={dateLabel} />
+      {label ? <GroupLabel item={{ label } as Label} /> : null}
+
       <ExpandableTransactionItem item={tx} txDetails={txDetails} />
     </TxListGrid>
   )

@@ -25,17 +25,22 @@ const Navigation = (): ReactElement => {
 
   return (
     <SidebarList>
-      {navItems.map((item) => (
-        <ListItem key={item.href} disablePadding selected={router.pathname === item.href}>
-          <SidebarListItemButton
-            selected={router.pathname === item.href}
-            href={{ pathname: item.href, query: { safe: router.query.safe } }}
-          >
-            {item.icon && <SidebarListItemIcon badge={item.badge}>{item.icon}</SidebarListItemIcon>}
-            <SidebarListItemText bold>{item.label}</SidebarListItemText>
-          </SidebarListItemButton>
-        </ListItem>
-      ))}
+      {navItems.map((item) => {
+        const subdirectory = item.href.split('/')[1]
+        const isSelected = router.pathname.includes(subdirectory)
+
+        return (
+          <ListItem key={item.href} disablePadding selected={isSelected}>
+            <SidebarListItemButton
+              selected={isSelected}
+              href={{ pathname: item.href, query: { safe: router.query.safe } }}
+            >
+              {item.icon && <SidebarListItemIcon badge={item.badge}>{item.icon}</SidebarListItemIcon>}
+              <SidebarListItemText bold>{item.label}</SidebarListItemText>
+            </SidebarListItemButton>
+          </ListItem>
+        )
+      })}
     </SidebarList>
   )
 }

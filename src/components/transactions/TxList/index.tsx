@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import { useMemo } from 'react'
 import { Box } from '@mui/material'
 import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -11,7 +11,7 @@ type TxListProps = {
   items: TransactionListPage['results']
 }
 
-export const TxListGrid = ({ children }: { children: ReactElement | ReactElement[] }): ReactElement => {
+export const TxListGrid = ({ children }: { children: ReactNode }): ReactElement => {
   return <Box className={css.container}>{children}</Box>
 }
 

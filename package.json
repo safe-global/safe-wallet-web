@@ -24,7 +24,7 @@
     "generate-types": "yarn generate-types:safeDeployments && yarn generate-types:spendingLimit",
     "postinstall": "yarn generate-types && yarn css-vars",
     "analyze": "cross-env ANALYZE=true yarn build",
-    "cypress:open": "cypress open",
+    "cypress:open": "cross-env TZ=UTC cypress open",
     "cypress:run": "cypress run",
     "cypress:ci": "yarn cypress:run --config baseUrl=http://localhost:8080 --spec cypress/e2e/smoke/*.cy.js",
     "serve": "npx -y http-server out"
