@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { type EIP1193Provider, type WalletState, type OnboardAPI } from '@web3-onboard/core'
-import { getDevice } from '@web3-onboard/core/dist/utils'
 import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getAddress } from 'ethers/lib/utils'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
@@ -75,10 +74,13 @@ const trackWalletType = async (wallet: ConnectedWallet) => {
   }
 }
 
+// Detect mobile devices
+const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+
 // Wrapper that tracks/sets the last used wallet
 export const connectWallet = (onboard: OnboardAPI, options?: Parameters<OnboardAPI['connectWallet']>[0]) => {
-  // On mobile/tablet, automatically choose WalletConnect
-  if (!options && getDevice().type !== 'desktop') {
+  // On mobile, automatically choose WalletConnect
+  if (!options && isMobile()) {
     options = {
       autoSelect: WalletNames.WALLET_CONNECT,
     }
