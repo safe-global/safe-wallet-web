@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { SafeAppsSection } from './SafeAppsSection'
@@ -9,8 +9,17 @@ import { useRemoveAppModal } from '@/hooks/safe-apps/useRemoveAppModal'
 import useDebounce from '@/hooks/useDebounce'
 import { RemoveCustomAppModal } from '@/components/safe-apps/RemoveCustomAppModal'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import PagePlaceholder from '../common/PagePlaceholder'
+import { Button } from '@mui/material'
+import AddCustomAppIcon from '@/public/images/apps/add-custom-app.svg'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
+import Link from 'next/link'
+import type { LinkProps } from 'next/link'
+import { SafeAppsTag } from '@/config/constants'
 
 const SafeAppList = () => {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const {
     allSafeApps,
@@ -27,6 +36,22 @@ const SafeAppList = () => {
   const { state: removeCustomAppModalState, open: openRemoveAppModal, close } = useRemoveAppModal()
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
+
+  const wcLink: LinkProps['href'] = useMemo(() => {
+    const wc = allSafeApps.find((app) => app.tags.includes(SafeAppsTag.WALLET_CONNECT))
+
+    if (!wc) {
+      return '#'
+    }
+
+    return {
+      pathname: AppRoutes.apps,
+      query: {
+        safe: router.query.safe,
+        appUrl: wc.url,
+      },
+    }
+  }, [allSafeApps, router.query.safe])
 
   useEffect(() => {
     if (debouncedSearchQuery) {
@@ -68,9 +93,21 @@ const SafeAppList = () => {
   if (searchQuery) {
     if (filteredApps.length === 0) {
       pageBody = (
-        <Typography variant="body1" p={2}>
-          No apps found
-        </Typography>
+        <PagePlaceholder
+          img={<AddCustomAppIcon />}
+          text={
+            <Typography variant="body1" color="primary.light" m={2}>
+              No apps found matching <strong>{searchQuery}</strong>. Connect to dApps that haven&apos;t yet been
+              integrated with the Safe using the WalletConnect App.
+            </Typography>
+          }
+        >
+          <Link href={wcLink} passHref>
+            <Button variant="contained" disableElevation size="small">
+              Use WalletConnect
+            </Button>
+          </Link>
+        </PagePlaceholder>
       )
     } else {
       pageBody = <SafeAppsSection title={`Search results (${filteredApps.length})`} apps={filteredApps} />
