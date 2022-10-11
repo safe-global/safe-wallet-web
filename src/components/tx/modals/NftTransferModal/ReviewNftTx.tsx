@@ -13,7 +13,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 
 type ReviewNftTxProps = {
   params: NftTransferParams
-  onSubmit: (txId: string) => void
+  onSubmit: (txId?: string) => void
 }
 
 const ReviewNftTx = ({ params, onSubmit }: ReviewNftTxProps): ReactElement => {
