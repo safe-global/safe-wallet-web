@@ -32,11 +32,11 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit }: GasParamsProps): 
   }
 
   const chain = useCurrentChain()
-  const isLoading = !gasLimit || !maxFeePerGas || !maxPriorityFeePerGas
+  const isLoading = !gasLimit || !maxFeePerGas
 
   // Total gas cost
   const totalFee = !isLoading
-    ? formatVisualAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+    ? formatVisualAmount(maxFeePerGas.mul(gasLimit), chain?.nativeCurrency.decimals)
     : '> 0.001'
 
   // Individual gas params
