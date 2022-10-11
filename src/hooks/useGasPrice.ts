@@ -1,15 +1,22 @@
+import { useMemo } from 'react'
 import { BigNumber } from 'ethers'
 import type { FeeData } from '@ethersproject/providers'
 import type { GasPrice, GasPriceOracle } from '@gnosis.pm/safe-react-gateway-sdk'
+import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { GAS_PRICE_TYPE } from '@gnosis.pm/safe-react-gateway-sdk'
 import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from './useChains'
 import useIntervalCounter from './useIntervalCounter'
-import { useRef } from 'react'
 import { useWeb3ReadOnly } from '../hooks/wallets/web3'
+import { Errors, logError } from '@/services/exceptions'
+import { hasFeature } from '@/utils/chains'
 
-const REFRESH_DELAY = 20e3 // 20 seconds
+// Updat gas fees every 20 seconds
+const REFRESH_DELAY = 20e3
 
+// Loop over the oracles and return the first one that works.
+// Or return a fixed value if specified.
+// If none of them work, throw an error.
 const fetchGasOracle = async (gasPriceOracle: GasPriceOracle): Promise<BigNumber> => {
   const { uri, gasParameter, gweiFactor } = gasPriceOracle
   const response = await fetch(uri)
@@ -35,7 +42,7 @@ const getGasPrice = async (gasPriceConfigs: GasPrice): Promise<BigNumber | undef
         return await fetchGasOracle(config)
       } catch (err) {
         error = err as Error
-        console.error('Error fetching gas price from oracle', err)
+        logError(Errors._611, error.message)
         // Continue to the next oracle
         continue
       }
@@ -51,39 +58,38 @@ const getGasPrice = async (gasPriceConfigs: GasPrice): Promise<BigNumber | undef
 const useGasPrice = (): {
   maxFeePerGas?: BigNumber
   maxPriorityFeePerGas?: BigNumber
-  gasPriceError?: Error
-  gasPriceLoading: boolean
 } => {
   const chain = useCurrentChain()
   const gasPriceConfigs = chain?.gasPrice
   const [counter] = useIntervalCounter(REFRESH_DELAY)
   const provider = useWeb3ReadOnly()
+  const isEIP1559 = !!chain && hasFeature(chain, FEATURES.EIP1559)
 
-  const [gasPrice, gasPriceError, gasPriceLoading] = useAsync<BigNumber | undefined>(() => {
-    if (gasPriceConfigs) {
-      return getGasPrice(gasPriceConfigs)
-    }
-  }, [gasPriceConfigs, counter])
+  // Fetch gas price from oracles or get a fixed value
+  const [gasPrice] = useAsync<BigNumber | undefined>(
+    () => {
+      if (gasPriceConfigs) {
+        return getGasPrice(gasPriceConfigs)
+      }
+    },
+    [gasPriceConfigs, counter],
+    false,
+  )
 
-  const [feeData, feeDataError, feeDataLoading] = useAsync<FeeData>(() => {
-    return provider?.getFeeData()
-  }, [provider, counter])
+  // Fetch the gas fees from the blockchain itself
+  const [feeData] = useAsync<FeeData>(() => provider?.getFeeData(), [provider, counter], false)
 
-  // Save the previous gas price so that we don't return undefined each time it's polled
-  const lastPrice = useRef<BigNumber>()
-  // Fallback to feeData.gasPrice for non-EIP-1559 networks
-  lastPrice.current = gasPrice || feeData?.maxFeePerGas || feeData?.gasPrice || lastPrice.current
+  // Prepare the return values
+  const maxFee = gasPrice || (isEIP1559 ? feeData?.maxFeePerGas : feeData?.gasPrice) || undefined
+  const maxPrioFee = (isEIP1559 && feeData?.maxPriorityFeePerGas) || undefined
 
-  const lastPrioFee = useRef<BigNumber>()
-  // Fallback to 0 for non-EIP-1559 networks
-  lastPrioFee.current = feeData ? feeData.maxPriorityFeePerGas || BigNumber.from(0) : lastPrioFee.current
-
-  return {
-    maxFeePerGas: lastPrice.current,
-    maxPriorityFeePerGas: lastPrioFee.current,
-    gasPriceError: gasPriceError || feeDataError,
-    gasPriceLoading: gasPriceLoading || feeDataLoading,
-  }
+  return useMemo(
+    () => ({
+      maxFeePerGas: maxFee,
+      maxPriorityFeePerGas: maxPrioFee,
+    }),
+    [maxFee, maxPrioFee],
+  )
 }
 
 export default useGasPrice

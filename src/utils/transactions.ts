@@ -1,6 +1,5 @@
 import type {
   ChainInfo,
-  DateLabel,
   ExecutionInfo,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
@@ -29,7 +28,6 @@ import { createExistingTx } from '@/services/tx/txSender'
 import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import type { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
-import { startOfDay } from 'date-fns'
 import uniqBy from 'lodash/uniqBy'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
@@ -83,11 +81,6 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
     },
     conflictType: ConflictType.NONE,
   }
-}
-
-export const makeDateLabelFromTx = (tx: Transaction): DateLabel => {
-  const startOfDayTimestamp = startOfDay(tx.transaction.timestamp).getTime()
-  return { timestamp: startOfDayTimestamp, type: TransactionListItemType.DATE_LABEL }
 }
 
 const getSignatures = (confirmations: Record<string, string>) => {

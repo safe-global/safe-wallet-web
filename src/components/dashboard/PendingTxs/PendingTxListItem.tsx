@@ -17,7 +17,7 @@ const StyledContainer = styled.div`
   border-radius: 8px;
   box-sizing: border-box;
   &:hover {
-    background-color: var(--color-secondary-background);
+    background-color: var(--color-background-light);
     border-color: var(--color-secondary-light);
   }
 `

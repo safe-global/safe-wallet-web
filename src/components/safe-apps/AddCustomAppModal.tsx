@@ -12,6 +12,7 @@ import {
   Link,
   Box,
   FormHelperText,
+  SvgIcon,
 } from '@mui/material'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ModalDialog from '@/components/common/ModalDialog'
@@ -22,7 +23,7 @@ import { trimTrailingSlash, isSameUrl } from '@/utils/url'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
-import ImageFallback from '../common/ImageFallback'
+import SafeAppIcon from '@/public/images/apps/apps-icon.svg'
 
 type Props = {
   open: boolean
@@ -38,17 +39,15 @@ type CustomAppFormData = {
   safeApp: SafeAppData
 }
 
-const TEXT_FIELD_HEIGHT = '56px'
-const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
+const TEXT_FIELD_SIZE = '56px'
 const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
 
 const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const chainId = useChainId()
-
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
     setError,
     reset,
@@ -73,8 +72,6 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
       return undefined
     })
   }, [chainId, debouncedUrl])
-
-  const appLogoUrl = safeApp?.iconUrl || APP_LOGO_FALLBACK_IMAGE
 
   const handleClose = () => {
     reset()
@@ -115,13 +112,34 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
               mt: 2,
             }}
           >
-            <ImageFallback
-              height={TEXT_FIELD_HEIGHT}
-              src={appLogoUrl}
-              fallbackSrc={APP_LOGO_FALLBACK_IMAGE}
-              alt="Apps icon"
+            {safeApp?.iconUrl ? (
+              <img
+                src={safeApp.iconUrl}
+                alt="Apps icon"
+                height={TEXT_FIELD_SIZE}
+                width={TEXT_FIELD_SIZE}
+                style={{ transition: 'all ease-in 1s' }}
+              />
+            ) : (
+              <SvgIcon
+                component={SafeAppIcon}
+                inheritViewBox
+                sx={{ height: TEXT_FIELD_SIZE, width: TEXT_FIELD_SIZE }}
+              />
+            )}
+            <TextField
+              label="App name"
+              disabled
+              sx={({ palette }) => ({
+                width: '100%',
+                ml: 2,
+                WebkitTextFillColor: palette.text.secondary,
+                '&& input': {
+                  WebkitTextFillColor: safeApp?.name && palette.text.primary,
+                },
+              })}
+              value={safeApp?.name || ''}
             />
-            <TextField label="App name" disabled sx={{ width: '100%', ml: 2 }} value={safeApp?.name || ''} />
           </Box>
           <FormControlLabel
             aria-required
@@ -144,8 +162,8 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
         </DialogContent>
         <DialogActions disableSpacing>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit" variant="contained">
-            Save
+          <Button type="submit" variant="contained" disabled={!isValid || !safeApp}>
+            Add
           </Button>
         </DialogActions>
       </form>

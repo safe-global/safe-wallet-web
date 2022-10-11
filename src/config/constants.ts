@@ -34,7 +34,6 @@ export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
 
 // Safe Apps
 export const SAFE_APPS_INFURA_TOKEN = process.env.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN || INFURA_TOKEN
-export const SAFE_APPS_POLLING_INTERVAL = 15_000
 export const SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL = 'https://third-party-cookies-check.gnosis-safe.com'
 export const SAFE_APPS_SUPPORT_CHAT_URL = 'https://chat.gnosis-safe.io'
 export const SAFE_APPS_DEMO_SAFE_MAINNET = 'eth:0xfF501B324DC6d78dC9F983f140B9211c3EdB4dc7'

@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react'
-import { IconButton, Tooltip } from '@mui/material'
+import { IconButton, Tooltip, SvgIcon } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
-import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
+import LinkIcon from '@/public/images/sidebar/link.svg'
 import { getBlockExplorerLink } from '@/utils/chains'
 
 const ExplorerLink = ({ address }: { address: string }): ReactElement | null => {
@@ -13,7 +13,17 @@ const ExplorerLink = ({ address }: { address: string }): ReactElement | null => 
   return (
     <Tooltip title={link.title} placement="top">
       <IconButton href={link.href} target="_blank" rel="noopener noreferrer" size="small">
-        <OpenInNewRoundedIcon fontSize="small" color="border" sx={{ width: '16px', height: '16px' }} />
+        <SvgIcon
+          component={LinkIcon}
+          inheritViewBox
+          color="primary"
+          fontSize="small"
+          sx={{
+            '& path': {
+              fill: ({ palette }) => palette.border.main,
+            },
+          }}
+        />
       </IconButton>
     </Tooltip>
   )
