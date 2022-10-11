@@ -2,6 +2,7 @@ import { useState, type ReactElement } from 'react'
 import { Box, Button, type ButtonProps, DialogContent, SvgIcon } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import type { UrlObject } from 'url'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ModalDialog from '@/components/common/ModalDialog'
 import TokenTransferModal from '../TokenTransferModal'
@@ -19,16 +20,24 @@ const TxButton = (props: ButtonProps) => (
   <Button variant="contained" sx={{ '& svg path': { fill: 'currentColor' } }} fullWidth {...props} />
 )
 
-const useTxBuilderApp = (): SafeAppData | undefined => {
+const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
   const [remoteApps] = useRemoteSafeApps()
-  return remoteApps?.find((app) => app.tags?.includes(SafeAppsTag.TX_BUILDER))
+  const router = useRouter()
+  const app = remoteApps?.find((app) => app.tags?.includes(SafeAppsTag.TX_BUILDER))
+
+  return {
+    app,
+    link: {
+      pathname: AppRoutes.apps,
+      query: { safe: router.query.safe, appUrl: app?.url },
+    },
+  }
 }
 
 const NewTxModal = ({ onClose, recipient }: { onClose: () => void; recipient?: string }): ReactElement => {
   const [tokenModalOpen, setTokenModalOpen] = useState<boolean>(false)
   const [nftsModalOpen, setNftModalOpen] = useState<boolean>(false)
-  const router = useRouter()
-  const txBuilderApp = useTxBuilderApp()
+  const txBuilder = useTxBuilderApp()
 
   // These cannot be Track components as they intefere with styling
   const onTokenModalOpen = () => {
@@ -59,16 +68,11 @@ const NewTxModal = ({ onClose, recipient }: { onClose: () => void; recipient?: s
               Send NFTs
             </TxButton>
 
-            {txBuilderApp && (
-              <Link
-                href={{
-                  pathname: AppRoutes.apps,
-                  query: { safe: router.query.safe, appUrl: txBuilderApp.url },
-                }}
-                passHref
-              >
+            {/* Contract interaction via Transaction Builder */}
+            {txBuilder.app && !recipient && (
+              <Link href={txBuilder.link} passHref>
                 <TxButton
-                  startIcon={<img src={txBuilderApp.iconUrl} height={20} width="auto" alt={txBuilderApp.name} />}
+                  startIcon={<img src={txBuilder.app.iconUrl} height={20} width="auto" alt={txBuilder.app.name} />}
                   variant="outlined"
                   onClick={onContractInteraction}
                 >
