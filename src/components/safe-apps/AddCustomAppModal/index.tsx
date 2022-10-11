@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useCallback } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import {
@@ -85,7 +85,11 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     onClose()
   }
 
-  const isAppAlreadyInTheList = (appUrl: string) => safeAppsList.some((app) => isSameUrl(app.url, appUrl))
+  const isAppAlreadyInTheList = useCallback(
+    (appUrl: string) => safeAppsList.some((app) => isSameUrl(app.url, appUrl)),
+    [],
+  )
+
   const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${encodeURIComponent(
     safeApp?.url || '',
   )}&chain=${currentChain?.shortName}`
