@@ -6,14 +6,13 @@ import AssetsHeader from '@/components/balances/AssetsHeader'
 import NftCollections from '@/components/nfts/NftCollections'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppCard } from '@/components/safe-apps/AppCard'
+import { SafeAppsTag } from '@/config/constants'
 
 // `React.memo` requires a `displayName`
 const NftApps = memo(function NftApps(): ReactElement | null {
-  const NFT_APPS_TAG = 'nft'
-
   const { allSafeApps } = useSafeApps()
 
-  const nftApps = useMemo(() => allSafeApps.filter((app) => app.tags.includes(NFT_APPS_TAG)), [allSafeApps])
+  const nftApps = useMemo(() => allSafeApps.filter((app) => app.tags.includes(SafeAppsTag.NFT)), [allSafeApps])
 
   if (nftApps.length === 0) {
     return null

@@ -1,30 +1,29 @@
 import { useMemo } from 'react'
-import { sampleSize } from 'lodash'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getAppsUsageData, rankSafeApps } from '@/services/safe-apps/track-app-usage-count'
+import { rankSafeApps } from '@/services/safe-apps/track-app-usage-count'
+import { SafeAppsTag } from '@/config/constants'
 
-// number of ranked Safe Apps that we include in the array
+// number of ranked Safe Apps that we want to display
 const NUMBER_OF_SAFE_APPS = 5
 
 const useRankedSafeApps = (safeApps: SafeAppData[], pinnedSafeApps: SafeAppData[]): SafeAppData[] => {
   return useMemo(() => {
     if (!safeApps.length) return []
 
-    const usageSafeAppsData = getAppsUsageData()
-    const mostUsedSafeAppsIds = rankSafeApps(usageSafeAppsData, pinnedSafeApps).slice(0, NUMBER_OF_SAFE_APPS)
-    const mostUsedSafeApps = mostUsedSafeAppsIds
-      .map((id) => safeApps.find((safeApp) => String(safeApp.id) === id))
-      .filter(Boolean) as SafeAppData[]
+    const mostUsedApps = rankSafeApps(safeApps)
+    const rankedPinnedApps = rankSafeApps(pinnedSafeApps)
+    const randomApps = safeApps.slice().sort(() => Math.random() - 0.5)
+    const safeClaimingApp = safeApps?.filter((app) => app.tags?.includes(SafeAppsTag.SAFE_CLAIMING_APP)) || []
 
-    // we add random Safe Apps if no enough Safe Apps are present
-    const numberOfRandomSafeApps = NUMBER_OF_SAFE_APPS - mostUsedSafeApps.length
-    const nonRankedApps = safeApps.filter((app) => !mostUsedSafeAppsIds.includes(String(app.id)))
-    const randomSafeApps = sampleSize(nonRankedApps, numberOfRandomSafeApps)
+    const allRankedApps = safeClaimingApp
+      .concat(rankedPinnedApps, pinnedSafeApps, mostUsedApps, randomApps)
+      // Filter out Featured Apps because they are in their own section
+      .filter((app) => !app.tags.includes(SafeAppsTag.DASHBOARD_FEATURED))
 
-    const rankedSafeApps = [...mostUsedSafeApps, ...randomSafeApps]
-
-    return rankedSafeApps
-  }, [safeApps, pinnedSafeApps])
+    // Use a Set to remove duplicates
+    return [...new Set(allRankedApps)].slice(0, NUMBER_OF_SAFE_APPS)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safeApps])
 }
 
 export { useRankedSafeApps }
