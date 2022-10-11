@@ -12,7 +12,7 @@ const SingleTransaction: NextPage = () => {
       </Head>
 
       <main>
-        <Typography variant="h3" fontWeight={700} mb={3}>
+        <Typography variant="h3" fontWeight={700} pt={1} mb={3}>
           Transaction details
         </Typography>
 

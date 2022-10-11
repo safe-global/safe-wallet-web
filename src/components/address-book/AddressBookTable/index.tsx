@@ -19,6 +19,8 @@ import useAddressBook from '@/hooks/useAddressBook'
 import Track from '@/components/common/Track'
 import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
 import SvgIcon from '@mui/material/SvgIcon'
+import PagePlaceholder from '@/components/common/PagePlaceholder'
+import AddressBookIcon from '@/public/images/address-book/address-book.svg'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -43,6 +45,7 @@ const defaultOpen = {
 const AddressBookTable = () => {
   const isSafeOwner = useIsSafeOwner()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
+  const [searchQuery, setSearchQuery] = useState('')
   const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>()
 
@@ -62,8 +65,12 @@ const AddressBookTable = () => {
 
   const addressBook = useAddressBook()
   const addressBookEntries = Object.entries(addressBook)
+  const filteredEntries = addressBookEntries.filter(([address, name]) => {
+    const query = searchQuery.toLowerCase()
+    return address.toLowerCase().includes(query) || name.toLowerCase().includes(query)
+  })
 
-  const rows = addressBookEntries.map(([address, name]) => ({
+  const rows = filteredEntries.map(([address, name]) => ({
     name: {
       rawValue: name,
       content: name,
@@ -107,9 +114,18 @@ const AddressBookTable = () => {
 
   return (
     <>
-      <AddressBookHeader handleOpenModal={handleOpenModal} />
+      <AddressBookHeader
+        handleOpenModal={handleOpenModal}
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+      />
+
       <main>
-        <EnhancedTable rows={rows} headCells={headCells} />
+        {filteredEntries.length > 0 ? (
+          <EnhancedTable rows={rows} headCells={headCells} />
+        ) : (
+          <PagePlaceholder img={<AddressBookIcon />} text="No entries found" />
+        )}
       </main>
 
       {open[ModalType.EXPORT] && <ExportDialog handleClose={handleClose} />}
