@@ -4,17 +4,18 @@ import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useAppSelector } from '@/store'
 import { selectChainById, selectChains } from '@/store/chainsSlice'
 import { useChainId } from './useChainId'
+import { PULSE_CHAIN } from '../config/pulseChain'
 
 const useChains = (): { configs: ChainInfo[]; error?: string; loading?: boolean } => {
   const state = useAppSelector(selectChains, isEqual)
 
   return useMemo(
     () => ({
-      configs: state.data,
+      configs: PULSE_CHAIN,
       error: state.error,
       loading: state.loading,
     }),
-    [state.data, state.error, state.loading],
+    [state.error, state.loading],
   )
 }
 

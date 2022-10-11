@@ -150,7 +150,7 @@ const chains: Record<string, string> = {
   'gar-test-s1': '901',
   'gar-test-s2': '902',
   'gar-test-s3': '903',
-  tpls: '940',
+  tpls: '941',
   yeti: '977',
   ln: '998',
   twan: '999',
