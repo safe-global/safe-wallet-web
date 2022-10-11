@@ -1,5 +1,5 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { AddressEntry } from '@/components/address-book/EntryDialog'
 import EntryDialog from '@/components/address-book/EntryDialog'
 import ExportDialog from '@/components/address-book/ExportDialog'
@@ -65,12 +65,16 @@ const AddressBookTable = () => {
 
   const addressBook = useAddressBook()
   const addressBookEntries = Object.entries(addressBook)
-  const filteredEntries = searchQuery
-    ? addressBookEntries.filter(([address, name]) => {
-        const query = searchQuery.toLowerCase()
-        return address.toLowerCase().includes(query) || name.toLowerCase().includes(query)
-      })
-    : addressBookEntries
+  const filteredEntries = useMemo(() => {
+    if (!searchQuery) {
+      return addressBookEntries
+    }
+
+    return addressBookEntries.filter(([address, name]) => {
+      const query = searchQuery.toLowerCase()
+      return address.toLowerCase().includes(query) || name.toLowerCase().includes(query)
+    })
+  }, [addressBookEntries, searchQuery])
 
   const rows = filteredEntries.map(([address, name]) => ({
     name: {
