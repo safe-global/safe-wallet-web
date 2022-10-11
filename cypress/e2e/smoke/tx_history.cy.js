@@ -1,234 +1,117 @@
-const SAFE = 'rin:0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f'
+const SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 
-// Logo pathnames
-const CONTRACT_INTERACTION = '/app/static/media/custom' // partial filename as build compiles to 'custom.123XYZ.svg'
-const WRAPPED_ETH = '/tokens/logos/0xc778417E063141139Fce010982780140Aa0cD5Ab.png'
-const MULTI_SEND_CONTRACT = '/contracts/logos/0x40A2aCCbd92BCA938b02010E17A5b8929b49130D.png'
-const OUTGOING = '/app/static/media/outgoing' // partial filename as build compiles to 'outgoing.123XYZ.svg'
-const ETH = '/chains/4/currency_logo.png'
-const INCOMING = '/app/static/media/incoming' // partial filename as build compiles to 'incoming.123XYZ.svg'
-const NFT = '/tokens/logos/0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b.png'
-const USDC = '/app/static/media/tokens/logos/0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b.png'
+const INCOMING = '/images/transactions/incoming.svg'
+const OUTGOING = '/images/transactions/outgoing.svg'
+const CONTRACT_INTERACTION = '/images/transactions/custom.svg'
 
-describe('Dashboard', () => {
+describe('Transaction history', () => {
   before(() => {
     // Go to the test Safe transaction history
     cy.visit(`/${SAFE}/transactions/history`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
   })
 
-  it('should display June 9th transactions', () => {
-    const DATE = 'Jun 9, 2022'
+  it('should display October 9th transactions', () => {
+    const DATE = 'Oct 9, 2022'
+    const NEXT_DATE_LABEL = 'Feb 8, 2022'
 
     // Date label
     cy.contains('div', DATE).should('exist')
 
-    // Transaction summaries
-    const rows = cy.contains('div', DATE).next().children()
+    // Transaction summaries from October 9th
+    const rows = cy.contains('div', DATE).nextUntil(`div:contains(${NEXT_DATE_LABEL})`)
 
-    rows.should('have.length', 1)
+    rows.should('have.length', 19)
 
     rows
-      // testBool contract interaction w/ rin:0x49d4450977E2c95362C13D3a31a09311E0Ea26A6
-      .first(($tx) => {
-        // Nonce
-        cy.wrap($tx).contains('p', '6').should('exist')
-
+      // Receive 0.25 GOR
+      .last()
+      .within(() => {
         // Type
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', CONTRACT_INTERACTION)
-        cy.wrap($tx).contains('p', 'Contract interaction').should('exist')
+        cy.get('img').should('have.attr', 'src', INCOMING)
+        cy.contains('div', 'Received').should('exist')
 
         // Info
-        cy.wrap($tx).contains('span', 'testBool').should('exist')
+        cy.get('img[alt="GOR"]').should('be.visible')
+        cy.contains('span', '0.25 GOR').should('exist')
 
         // Time
-        cy.wrap($tx).contains('p', '1:53 PM').should('exist')
+        cy.contains('span', '4:56 PM').should('exist')
 
         // Status
-        cy.wrap($tx).contains('p', 'Success').should('exist')
+        cy.contains('span', 'Success').should('exist')
       })
-  })
-  it('should display June 8th transactions', () => {
-    const DATE = 'Jun 8, 2022'
-
-    // Date label
-    cy.contains('div', DATE).should('exist')
-
-    // Transaction summaries
-    const rows = cy.contains('div', DATE).next().children()
-
-    rows.should('have.length', 1)
-
-    rows
-      // testBool contract interaction
-      .first(($tx) => {
+      // CowSwap deposit of Wrapped Ether
+      .prev()
+      .within(() => {
         // Nonce
-        cy.wrap($tx).contains('p', '5').should('exist')
+        cy.contains('0')
 
         // Type
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', CONTRACT_INTERACTION)
-        cy.wrap($tx).contains('p', 'Contract interaction').should('exist')
+        // TODO: update next line after fixing the logo
+        // cy.find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
+        cy.contains('div', 'Wrapped Ether').should('exist')
 
         // Info
-        cy.wrap($tx).contains('span', 'testBool').should('exist')
+        cy.contains('div', 'deposit').should('exist')
 
         // Time
-        cy.wrap($tx).contains('p', '5:24 PM').should('exist')
+        cy.contains('span', '4:59 PM').should('exist')
 
         // Status
-        cy.wrap($tx).contains('p', 'Success').should('exist')
-      })
-  })
-  it('should display May 30th transactions', () => {
-    const DATE = 'May 30, 2022'
-
-    // Date label
-    cy.contains('div', DATE).should('exist')
-
-    // Transaction summaries
-    const rows = cy.contains('div', DATE).nextAll()
-
-    rows.should('have.length', 9)
-
-    rows
-      // CowSwap approval of Wrapped Ether
-      .first(($tx) => {
-        // Nonce
-        cy.wrap($tx).contains('p', '4').should('exist')
-
-        // Type
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
-        cy.wrap($tx).contains('p', 'Wrapped Ether').should('exist')
-
-        // Info
-        cy.wrap($tx).contains('span', 'approve').should('exist')
-
-        // Time
-        cy.wrap($tx).contains('p', '3:27 PM').should('exist')
-
-        // Status
-        cy.wrap($tx).contains('p', 'Success').should('exist')
+        cy.contains('span', 'Success').should('exist')
       })
       // CowSwap approval of Wrapped Ether
-      .next(($tx) => {
+      .prev()
+      .within(() => {
         // Nonce
-        cy.wrap($tx).contains('p', '3').should('exist')
+        cy.contains('1')
 
         // Type
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
-        cy.wrap($tx).contains('p', 'Wrapped Ether').should('exist')
+        // TODO: update next line after fixing the logo
+        // cy.find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
+        cy.contains('div', 'Wrapped Ether').should('exist')
 
         // Info
-        cy.wrap($tx).contains('span', 'approve').should('exist')
+        cy.contains('div', 'approve').should('exist')
 
         // Time
-        cy.wrap($tx).contains('p', '3:26 PM').should('exist')
+        cy.contains('span', '5:00 PM').should('exist')
 
         // Status
-        cy.wrap($tx).contains('p', 'Success').should('exist')
+        cy.contains('span', 'Success').should('exist')
       })
-      // 3 x MultiSendCallOnly actions
-      .next(($tx) => {
+      // Contract interaction
+      .prev()
+      .within(() => {
         // Nonce
-        cy.wrap($tx).contains('p', '2').should('exist')
+        cy.contains('2')
 
         // Type
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', MULTI_SEND_CONTRACT)
-        cy.wrap($tx).contains('p', 'Gnosis Safe: MultiSendCallOnly').should('exist')
-
-        // Info
-        cy.wrap($tx).contains('span', '3 actions').should('exist')
+        cy.contains('div', 'Contract interaction').should('exist')
 
         // Time
-        cy.wrap($tx).contains('p', '3:25 PM').should('exist')
+        cy.contains('span', '5:01 PM').should('exist')
 
         // Status
-        cy.wrap($tx).contains('p', 'Success').should('exist')
+        cy.contains('span', 'Success').should('exist')
       })
-      // testBool contract interaction
-      .next(($tx) => {
-        // Nonce
-        cy.wrap($tx).contains('p', '1').should('exist')
-
+      // Send 0.11 WETH
+      .prev()
+      .prev()
+      .within(() => {
         // Type
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', CONTRACT_INTERACTION)
-        cy.wrap($tx).contains('p', 'Contract interaction').should('exist')
+        cy.get('img').should('have.attr', 'src', OUTGOING)
+        cy.contains('div', 'Sent').should('exist')
 
         // Info
-        cy.wrap($tx).contains('span', 'testBool').should('exist')
+        cy.contains('span', '-0.11 WETH').should('exist')
 
         // Time
-        cy.wrap($tx).contains('p', '3:23 PM').should('exist')
+        cy.contains('span', '5:01 PM').should('exist')
 
         // Status
-        cy.wrap($tx).contains('p', 'Success').should('exist')
-      })
-      // Send 0.1 ETH
-      .next(($tx) => {
-        // Nonce
-        cy.wrap($tx).contains('p', '0').should('exist')
-
-        // Type
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', OUTGOING)
-        cy.wrap($tx).contains('p', 'Sent').should('exist')
-
-        // Info
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', ETH)
-        cy.wrap($tx).contains('span', '-0.1 ETH').should('exist')
-
-        // Time
-        cy.wrap($tx).contains('p', '3:22 PM').should('exist')
-
-        // Status
-        cy.wrap($tx).contains('p', 'Success').should('exist')
-      })
-      // Receive 1 ZORB NFT
-      .next(($tx) => {
-        // Type
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', '/app/static/media/incoming.1bf5be26.svg')
-        cy.wrap($tx).contains('p', 'Received').should('exist')
-
-        // Info
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', '/app/static/media/nft_icon.85f106fa.png')
-        cy.wrap($tx).contains('span', '+1 ZORB (#3)').should('exist')
-
-        // Time
-        cy.wrap($tx).contains('p', '3:21 PM').should('exist')
-
-        // Status
-        cy.wrap($tx).contains('p', 'Success').should('exist')
-      })
-      // Receive 0.3 USDC
-      .next(($tx) => {
-        // Type
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', INCOMING)
-        cy.wrap($tx).contains('p', 'Received').should('exist')
-
-        // Info
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', NFT)
-        cy.wrap($tx).contains('span', '+0.3 USDC').should('exist')
-
-        // Time
-        cy.wrap($tx).contains('p', '3:20 PM').should('exist')
-
-        // Status
-        cy.wrap($tx).contains('p', 'Success').should('exist')
-      })
-      // Receive 0.1 ETH
-      .next(($tx) => {
-        // Type
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', USDC)
-        cy.wrap($tx).contains('p', 'Received').should('exist')
-
-        // Info
-        cy.wrap($tx).find('img').should('have.attr', 'src').should('include', ETH)
-        cy.wrap($tx).contains('span', '+0.1 ETH').should('exist')
-
-        // Time
-        cy.wrap($tx).contains('p', '3:19 PM').should('exist')
-
-        // Status
-        cy.wrap($tx).contains('p', 'Success').should('exist')
+        cy.contains('span', 'Success').should('exist')
       })
   })
 })
