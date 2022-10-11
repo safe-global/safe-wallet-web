@@ -1,5 +1,4 @@
-import { Button, SvgIcon, Grid, IconButton, useMediaQuery, Tooltip } from '@mui/material'
-import { useTheme } from '@mui/system'
+import { Button, SvgIcon, Grid, IconButton } from '@mui/material'
 import type { ReactElement, ElementType } from 'react'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@/public/images/common/search.svg'
@@ -15,6 +14,8 @@ import ImportIcon from '@/public/images/address-book/import.svg'
 import ExportIcon from '@/public/images/address-book/export.svg'
 import AddCircleIcon from '@/public/images/common/add-outlined.svg'
 
+import css from './styles.module.css'
+
 const HeaderButton = ({
   icon,
   onClick,
@@ -26,25 +27,24 @@ const HeaderButton = ({
   disabled?: boolean
   children: string
 }): ReactElement => {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-
-  const svg = <SvgIcon component={icon} inheritViewBox fontSize={isMobile ? 'small' : undefined} />
-
-  if (isMobile) {
-    return (
-      <Tooltip title={children} placement="top">
-        <IconButton onClick={onClick} disabled={disabled} size="small">
-          {svg}
-        </IconButton>
-      </Tooltip>
-    )
-  }
-
   return (
-    <Button onClick={onClick} disabled={disabled} variant="text" color="primary" size="small" startIcon={svg}>
-      {children}
-    </Button>
+    <>
+      <IconButton color="primary" onClick={onClick} disabled={disabled} size="small" className={css.iconButton}>
+        <SvgIcon component={icon} inheritViewBox fontSize="small" />
+      </IconButton>
+
+      <Button
+        onClick={onClick}
+        disabled={disabled}
+        variant="text"
+        color="primary"
+        size="small"
+        startIcon={<SvgIcon component={icon} inheritViewBox />}
+        className={css.button}
+      >
+        {children}
+      </Button>
+    </>
   )
 }
 

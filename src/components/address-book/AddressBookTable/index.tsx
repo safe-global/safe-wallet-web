@@ -70,8 +70,8 @@ const AddressBookTable = () => {
       return addressBookEntries
     }
 
+    const query = searchQuery.toLowerCase()
     return addressBookEntries.filter(([address, name]) => {
-      const query = searchQuery.toLowerCase()
       return address.toLowerCase().includes(query) || name.toLowerCase().includes(query)
     })
   }, [addressBookEntries, searchQuery])
