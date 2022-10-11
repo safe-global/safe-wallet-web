@@ -58,8 +58,6 @@ const getGasPrice = async (gasPriceConfigs: GasPrice): Promise<BigNumber | undef
 const useGasPrice = (): {
   maxFeePerGas?: BigNumber
   maxPriorityFeePerGas?: BigNumber
-  gasPriceError?: Error
-  gasPriceLoading: boolean
 } => {
   const chain = useCurrentChain()
   const gasPriceConfigs = chain?.gasPrice
@@ -68,7 +66,7 @@ const useGasPrice = (): {
   const isEIP1559 = !!chain && hasFeature(chain, FEATURES.EIP1559)
 
   // Fetch gas price from oracles or get a fixed value
-  const [gasPrice, gasPriceError, gasPriceLoading] = useAsync<BigNumber | undefined>(
+  const [gasPrice] = useAsync<BigNumber | undefined>(
     () => {
       if (gasPriceConfigs) {
         return getGasPrice(gasPriceConfigs)
@@ -79,26 +77,18 @@ const useGasPrice = (): {
   )
 
   // Fetch the gas fees from the blockchain itself
-  const [feeData, feeDataError, feeDataLoading] = useAsync<FeeData>(
-    () => provider?.getFeeData(),
-    [provider, counter],
-    false,
-  )
+  const [feeData] = useAsync<FeeData>(() => provider?.getFeeData(), [provider, counter], false)
 
   // Prepare the return values
   const maxFee = gasPrice || (isEIP1559 ? feeData?.maxFeePerGas : feeData?.gasPrice) || undefined
   const maxPrioFee = (isEIP1559 && feeData?.maxPriorityFeePerGas) || undefined
-  const error = gasPriceError || feeDataError
-  const loading = gasPriceLoading || feeDataLoading
 
   return useMemo(
     () => ({
       maxFeePerGas: maxFee,
       maxPriorityFeePerGas: maxPrioFee,
-      gasPriceError: error,
-      gasPriceLoading: loading,
     }),
-    [maxFee, maxPrioFee, error, loading],
+    [maxFee, maxPrioFee],
   )
 }
 

@@ -81,9 +81,6 @@ describe('useGasPrice', () => {
 
     expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
 
-    expect(result.current.gasPriceLoading).toBe(false)
-    expect(result.current.gasPriceError).toBe(undefined)
-
     // assert the gas price is correct
     expect(result.current.maxFeePerGas?.toString()).toBe('47000000000')
 
@@ -121,9 +118,6 @@ describe('useGasPrice', () => {
     expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
     expect(fetch).toHaveBeenCalledWith('https://ethgasstation.info/json/ethgasAPI.json')
 
-    expect(result.current.gasPriceLoading).toBe(false)
-    expect(result.current.gasPriceError).toBe(undefined)
-
     // assert the gas price is correct
     expect(result.current.maxFeePerGas?.toString()).toBe('60000000000')
 
@@ -150,9 +144,6 @@ describe('useGasPrice', () => {
 
     expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
     expect(fetch).toHaveBeenCalledWith('https://ethgasstation.info/json/ethgasAPI.json')
-
-    expect(result.current.gasPriceLoading).toBe(false)
-    expect(result.current.gasPriceError).toBe(undefined)
 
     // assert the gas price is correct
     expect(result.current.maxFeePerGas?.toString()).toBe('24000000000')
