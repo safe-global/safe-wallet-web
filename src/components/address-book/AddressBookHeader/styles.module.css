@@ -1,0 +1,17 @@
+.button {
+  display: flex;
+}
+
+.iconButton {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .button {
+    display: none;
+  }
+
+  .iconButton {
+    display: flex;
+  }
+}

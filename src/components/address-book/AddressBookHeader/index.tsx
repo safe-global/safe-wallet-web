@@ -1,5 +1,8 @@
-import { Box, Button, SvgIcon } from '@mui/material'
-import type { ReactElement } from 'react'
+import { Button, SvgIcon, Grid, IconButton } from '@mui/material'
+import type { ReactElement, ElementType } from 'react'
+import InputAdornment from '@mui/material/InputAdornment'
+import SearchIcon from '@/public/images/common/search.svg'
+import TextField from '@mui/material/TextField'
 
 import Track from '@/components/common/Track'
 import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
@@ -11,11 +14,47 @@ import ImportIcon from '@/public/images/address-book/import.svg'
 import ExportIcon from '@/public/images/address-book/export.svg'
 import AddCircleIcon from '@/public/images/common/add-outlined.svg'
 
-type Props = {
-  handleOpenModal: (type: ModalType) => () => void
+import css from './styles.module.css'
+
+const HeaderButton = ({
+  icon,
+  onClick,
+  disabled,
+  children,
+}: {
+  icon: ElementType
+  onClick: () => void
+  disabled?: boolean
+  children: string
+}): ReactElement => {
+  return (
+    <>
+      <IconButton color="primary" onClick={onClick} disabled={disabled} size="small" className={css.iconButton}>
+        <SvgIcon component={icon} inheritViewBox fontSize="small" />
+      </IconButton>
+
+      <Button
+        onClick={onClick}
+        disabled={disabled}
+        variant="text"
+        color="primary"
+        size="small"
+        startIcon={<SvgIcon component={icon} inheritViewBox />}
+        className={css.button}
+      >
+        {children}
+      </Button>
+    </>
+  )
 }
 
-const AddressBookHeader = ({ handleOpenModal }: Props): ReactElement => {
+type Props = {
+  handleOpenModal: (type: ModalType) => () => void
+  searchQuery: string
+  onSearchQueryChange: (searchQuery: string) => void
+}
+
+const AddressBookHeader = ({ handleOpenModal, searchQuery, onSearchQueryChange }: Props): ReactElement => {
   const allAddressBooks = useAppSelector(selectAllAddressBooks)
   const canExport = Object.values(allAddressBooks).length > 0
 
@@ -24,41 +63,48 @@ const AddressBookHeader = ({ handleOpenModal }: Props): ReactElement => {
       title="Address book"
       noBorder
       action={
-        <Box display="flex" justifyContent="flex-end" alignItems="center" pb={1}>
-          <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
-            <Button
-              onClick={handleOpenModal(ModalType.IMPORT)}
-              variant="text"
-              color="primary"
-              startIcon={<SvgIcon component={ImportIcon} inheritViewBox />}
-            >
-              Import
-            </Button>
-          </Track>
+        <Grid container pb={1}>
+          <Grid item xs={9} md={5} xl={4.5}>
+            <TextField
+              placeholder="Search"
+              variant="filled"
+              hiddenLabel
+              value={searchQuery}
+              onChange={(e) => {
+                onSearchQueryChange(e.target.value)
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SvgIcon component={SearchIcon} inheritViewBox color="border" />
+                  </InputAdornment>
+                ),
+                disableUnderline: true,
+              }}
+              fullWidth
+              size="small"
+            />
+          </Grid>
+          <Grid xs={3} md={7} display="flex" justifyContent="flex-end" alignItems="center">
+            <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
+              <HeaderButton onClick={handleOpenModal(ModalType.IMPORT)} icon={ImportIcon}>
+                Import
+              </HeaderButton>
+            </Track>
 
-          <Track {...ADDRESS_BOOK_EVENTS.DOWNLOAD_BUTTON}>
-            <Button
-              onClick={handleOpenModal(ModalType.EXPORT)}
-              disabled={!canExport}
-              variant="text"
-              color="primary"
-              startIcon={<SvgIcon component={ExportIcon} inheritViewBox />}
-            >
-              Export
-            </Button>
-          </Track>
+            <Track {...ADDRESS_BOOK_EVENTS.DOWNLOAD_BUTTON}>
+              <HeaderButton onClick={handleOpenModal(ModalType.EXPORT)} icon={ExportIcon} disabled={!canExport}>
+                Export
+              </HeaderButton>
+            </Track>
 
-          <Track {...ADDRESS_BOOK_EVENTS.CREATE_ENTRY}>
-            <Button
-              onClick={handleOpenModal(ModalType.ENTRY)}
-              variant="text"
-              color="primary"
-              startIcon={<SvgIcon component={AddCircleIcon} inheritViewBox />}
-            >
-              Create entry
-            </Button>
-          </Track>
-        </Box>
+            <Track {...ADDRESS_BOOK_EVENTS.CREATE_ENTRY}>
+              <HeaderButton onClick={handleOpenModal(ModalType.ENTRY)} icon={AddCircleIcon}>
+                Create entry
+              </HeaderButton>
+            </Track>
+          </Grid>
+        </Grid>
       }
     />
   )
