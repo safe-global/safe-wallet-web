@@ -13,7 +13,7 @@ import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 const useWCAppLink = (): LinkProps['href'] => {
   const router = useRouter()
   const { allSafeApps } = useSafeApps()
-  const app = allSafeApps.find((app) => app.tags?.includes(SafeAppsTag.TX_BUILDER))
+  const app = allSafeApps.find((app) => app.tags?.includes(SafeAppsTag.WALLET_CONNECT))
 
   return useMemo(
     () => ({
