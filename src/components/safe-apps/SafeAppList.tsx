@@ -9,6 +9,7 @@ import { useRemoveAppModal } from '@/hooks/safe-apps/useRemoveAppModal'
 import useDebounce from '@/hooks/useDebounce'
 import { RemoveCustomAppModal } from '@/components/safe-apps/RemoveCustomAppModal'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import SafeAppsSearchPlaceholder from './SafeAppsSearchPlaceholder'
 
 const SafeAppList = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -67,11 +68,7 @@ const SafeAppList = () => {
   )
   if (searchQuery) {
     if (filteredApps.length === 0) {
-      pageBody = (
-        <Typography variant="body1" p={2}>
-          No apps found
-        </Typography>
-      )
+      pageBody = <SafeAppsSearchPlaceholder searchQuery={searchQuery} />
     } else {
       pageBody = <SafeAppsSection title={`Search results (${filteredApps.length})`} apps={filteredApps} />
     }
