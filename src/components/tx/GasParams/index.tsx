@@ -22,9 +22,10 @@ type GasParamsProps = {
   isExecution: boolean
   isEIP1559: boolean
   onEdit: () => void
+  gasLimitError?: Error
 }
 
-const GasParams = ({ params, isExecution, isEIP1559, onEdit }: GasParamsProps): ReactElement => {
+const GasParams = ({ params, isExecution, isEIP1559, onEdit, gasLimitError }: GasParamsProps): ReactElement => {
   const { nonce, userNonce, safeTxGas, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = params
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
@@ -55,7 +56,7 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit }: GasParamsProps): 
         {isExecution ? (
           <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
             <span>Estimated fee </span>
-            {isLoading ? (
+            {gasLimitError ? null : isLoading ? (
               <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
             ) : (
               <span>
@@ -86,7 +87,11 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit }: GasParamsProps): 
               <GasDetail isLoading={false} name="Wallet nonce" value={userNonce.toString()} />
             )}
 
-            <GasDetail isLoading={isLoading} name="Gas limit" value={gasLimitString} />
+            <GasDetail
+              isLoading={isLoading}
+              name="Gas limit"
+              value={gasLimitError ? 'Cannot estimate' : gasLimitString}
+            />
 
             {isEIP1559 ? (
               <>
@@ -99,7 +104,7 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit }: GasParamsProps): 
           </>
         )}
 
-        {!isExecution || (isExecution && !isLoading) ? (
+        {gasLimitError || !isExecution || (isExecution && !isLoading) ? (
           <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
             Edit
           </Link>

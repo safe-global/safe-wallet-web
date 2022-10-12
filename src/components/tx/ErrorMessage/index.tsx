@@ -26,13 +26,13 @@ const ErrorMessage = ({
         <div>
           <Typography variant="body2" component="span">
             {children}
-          </Typography>
 
-          {error && (
-            <Link component="button" onClick={onDetailsToggle}>
-              Details
-            </Link>
-          )}
+            {error && (
+              <Link component="button" onClick={onDetailsToggle}>
+                Details
+              </Link>
+            )}
+          </Typography>
 
           {error && showDetails && (
             <Typography variant="body2" className={css.details}>
