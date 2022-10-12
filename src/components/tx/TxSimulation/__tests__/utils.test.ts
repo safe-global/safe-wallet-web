@@ -6,12 +6,13 @@ import * as safeContracts from '@/services/contracts/safeContracts'
 import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@gnosis.pm/safe-deployments'
 import EthSafeTransaction from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
 import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
-import { getPreValidatedSignature } from '@/hooks/useGasLimit'
 import { generatePreValidatedSignature } from '@gnosis.pm/safe-core-sdk/dist/src/utils/signatures'
 import { hexZeroPad } from 'ethers/lib/utils'
 import * as Web3 from '@/hooks/wallets/web3'
 
 const SIGNATURE_LENGTH = 65 * 2
+
+const getPreValidatedSignature = (addr: string): string => generatePreValidatedSignature(addr).data
 
 describe('simulation utils', () => {
   const safeContractInterface = new ethers.utils.Interface(getSafeSingletonDeployment({ version: '1.3.0' })?.abi || [])
