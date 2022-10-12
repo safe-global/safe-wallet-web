@@ -126,12 +126,10 @@ const SignOrExecuteForm = ({
     const [, createdTx, provider] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
-    let id = txId
-    if (!id) id = await proposeTx(createdTx)
-
+    const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(id, createdTx, provider, txOptions)
+    await dispatchTxExecution(createdTx, provider, txOptions, id)
 
     return id
   }

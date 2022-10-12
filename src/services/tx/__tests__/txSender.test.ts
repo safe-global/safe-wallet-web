@@ -267,7 +267,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx, mockProvider)
+      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -287,7 +287,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await expect(dispatchTxExecution(txId, safeTx, mockProvider)).rejects.toThrow('error')
+      await expect(dispatchTxExecution(safeTx, mockProvider, {}, txId)).rejects.toThrow('error')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -312,7 +312,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx, mockProvider)
+      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -342,7 +342,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx, mockProvider)
+      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -374,7 +374,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx, mockProvider)
+      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })

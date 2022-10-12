@@ -272,10 +272,10 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
  * Execute a transaction
  */
 export const dispatchTxExecution = async (
-  txId: string,
   safeTx: SafeTransaction,
   provider: Web3Provider,
-  txOptions?: TransactionOptions,
+  txOptions: TransactionOptions,
+  txId: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
 
