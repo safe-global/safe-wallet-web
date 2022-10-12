@@ -26,6 +26,8 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 import type { Web3Provider } from '@ethersproject/providers'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { sameString } from '@gnosis.pm/safe-core-sdk/dist/src/utils'
+import useSafeTxGas from '@/hooks/useSafeTxGas'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -78,6 +80,9 @@ const SignOrExecuteForm = ({
 
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
+
+  // FIXME: Can we validate this elsewhere?
+  const { safeTxGasError } = useSafeTxGas({ isRejection, safeTx })
 
   const [advancedParams, setAdvancedParams] = useAdvancedParams({
     nonce: tx?.data.nonce,
@@ -167,7 +172,8 @@ const SignOrExecuteForm = ({
 
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose
-  const error = props.error || (willExecute && gasLimitError)
+  const error = props.error || safeTxGasError || (willExecute ? gasLimitError : undefined)
+  const isSendingToSelf = wallet ? sameString(wallet?.address, safeAddress) : false
 
   return (
     <form onSubmit={handleSubmit}>
@@ -196,23 +202,26 @@ const SignOrExecuteForm = ({
         />
 
         {/* Error messages */}
-        {isWrongChain && <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>}
-
-        {cannotPropose && (
+        {isWrongChain ? (
+          <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>
+        ) : cannotPropose ? (
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
           </ErrorMessage>
-        )}
-
-        {error && (
-          <ErrorMessage error={error}>
-            This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+        ) : isSendingToSelf ? (
+          <ErrorMessage>
+            Cannot execute a transaction from the Safe itself, please connect a different account.
           </ErrorMessage>
-        )}
-
-        {submitError && (
+        ) : error ? (
+          <ErrorMessage error={error}>
+            This transaction will most likely fail.{' '}
+            {isNewExecutableTx
+              ? 'To save gas costs, avoid creating the transaction.'
+              : 'To save gas costs, reject this transaction.'}
+          </ErrorMessage>
+        ) : submitError ? (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-        )}
+        ) : null}
 
         {/* Info text */}
         <Typography variant="body2" color="border.main" textAlign="center" mt={3}>

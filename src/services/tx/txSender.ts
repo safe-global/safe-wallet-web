@@ -53,7 +53,7 @@ const getUncheckedSafeSDK = (provider: Web3Provider): Promise<Safe> => {
   return sdk.connect({ ethAdapter })
 }
 
-const estimateSafeTxGas = async (
+export const estimateSafeTxGas = async (
   chainId: string,
   safeAddress: string,
   txParams: MetaTransactionData,
