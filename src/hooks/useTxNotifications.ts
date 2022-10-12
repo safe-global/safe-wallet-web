@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import type { EthersError } from '@/utils/ethers-utils'
 import { capitalize } from '@/utils/formatters'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -37,6 +36,14 @@ enum Variant {
   ERROR = 'error',
 }
 
+// Format the error message
+const formatError = (error: Error & { reason?: string }): string => {
+  let { reason } = error
+  if (!reason) return ''
+  if (!reason.endsWith('.')) reason += '.'
+  return capitalize(reason)
+}
+
 const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
@@ -54,7 +61,7 @@ const useTxNotifications = (): void => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
         const message = isError
-          ? `${baseMessage} ${capitalize((detail.error as EthersError).reason || '')}`
+          ? `${baseMessage} ${formatError(detail.error)}`
           : baseMessage
 
         const txId = 'txId' in detail ? detail.txId : undefined
