@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { BigNumber } from 'ethers'
 import type Safe from '@gnosis.pm/safe-core-sdk'
+import { generatePreValidatedSignature } from '@gnosis.pm/safe-core-sdk/dist/src/utils/signatures'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { OperationType } from '@gnosis.pm/safe-core-sdk-types'
 import useAsync from '@/hooks/useAsync'
@@ -10,26 +11,14 @@ import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import useIsSafeOwner from './useIsSafeOwner'
 
-export const getPreValidatedSignature = (from: string): string => {
-  return `0x000000000000000000000000${from
-    .toLowerCase()
-    .replace('0x', '')}000000000000000000000000000000000000000000000000000000000000000001`
-}
-
 export const _encodeSignatures = (safeTx: SafeTransaction, from?: string): string => {
   const owner = from?.toLowerCase()
   const needsOwnerSig = owner && !safeTx.signatures.has(owner)
 
   // https://docs.gnosis.io/safe/docs/contracts_signatures/#pre-validated-signatures
   if (needsOwnerSig) {
-    const ownerSig = getPreValidatedSignature(owner)
-
-    safeTx.addSignature({
-      signer: owner,
-      data: ownerSig,
-      staticPart: () => ownerSig,
-      dynamicPart: () => '',
-    })
+    const ownerSig = generatePreValidatedSignature(owner)
+    safeTx.addSignature(ownerSig)
   }
 
   const encoded = safeTx.encodedSignatures()
