@@ -21,12 +21,12 @@ const Dashboard = (): ReactElement => {
         <FeaturedApps />
       </Grid>
 
-      <Grid item xs={12} md={6}>
-        <GovernanceSection />
+      <Grid item xs={12}>
+        <SafeAppsDashboardSection />
       </Grid>
 
       <Grid item xs={12}>
-        <SafeAppsDashboardSection />
+        <GovernanceSection />
       </Grid>
     </Grid>
   )

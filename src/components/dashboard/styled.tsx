@@ -37,6 +37,19 @@ export const Card = styled.div`
   }
 `
 
+export const StyledContainer = styled.div`
+  width: 100%;
+  background-color: var(--color-background-paper);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  box-sizing: border-box;
+
+  &:hover {
+    background-color: var(--color-background-light);
+    border-color: var(--color-secondary-light);
+  }
+`
+
 const StyledLink = styled(Link)`
   text-decoration: none;
   font-weight: bold;

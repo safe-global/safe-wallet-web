@@ -3,53 +3,45 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
-import styled from '@emotion/styled'
+import { Card, StyledContainer, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
+import { Chip } from '@mui/material'
 
-import { Card, WidgetBody, WidgetContainer } from '../styled'
+const SNAPSHOT_SPACE = 'gnosis.eth'
 
-const StyledGrid = styled(Grid)`
-  gap: 24px;
-`
+const GovernanceSection = () => (
+  <Grid item xs={12} md>
+    <WidgetContainer>
+      <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
+        Governance
+      </Typography>
 
-const StyledGridItem = styled(Grid)`
-  min-width: 300px;
-`
-
-const GovernanceSection = () => {
-  return (
-    <>
-      <WidgetContainer>
-        <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
-          Governance
-        </Typography>
-
-        <WidgetBody>
-          <StyledGrid container>
-            <StyledGridItem item xs md>
-              <ClaimTokensCard />
-            </StyledGridItem>
-            <StyledGridItem item xs md>
-              <SnapshotCard />
-            </StyledGridItem>
-          </StyledGrid>
-        </WidgetBody>
-      </WidgetContainer>
-    </>
-  )
-}
-
-export default GovernanceSection
+      <WidgetBody>
+        <Grid gap="24px" container>
+          <Grid minWidth="200px" item xs md>
+            <ClaimTokensCard />
+          </Grid>
+          <Grid minWidth="200px" item xs md>
+            <SnapshotCard />
+          </Grid>
+        </Grid>
+      </WidgetBody>
+    </WidgetContainer>
+  </Grid>
+)
 
 const ClaimTokensCard = () => {
   return (
-    <Card style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-      <Box mt={2} mb={4} justifyContent="center">
+    <Card style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box mt={2} mb={4}>
         <Typography variant="h3">
           <strong>7338,87 SAFE</strong>
         </Typography>
       </Box>
       <Box mt={2} mb={4}>
         <Typography>delegated to</Typography>
+      </Box>
+      <Box mt={2} mb={4}>
+        <Typography>0</Typography>
       </Box>
       <Button variant="contained" size="small">
         Claim
@@ -59,80 +51,78 @@ const ClaimTokensCard = () => {
 }
 
 type ProposalType = {
-  proposals: {
-    id: string
-    title: string
-    state: string
-    author: string
-  }[]
+  proposals: Array<Record<string, string>>
 }
 
-const SnapshotCard = () => {
-  const ProposalsQuery = `
-    query {
-      proposals (first: 5,
-      skip: 0,
-      where: {
-        space_in: ["gnosis.eth"],
-        state: "closed"
-      },
-      orderBy: "created",
-      orderDirection: desc)
-      {
-        id
-        title
-        state
-        author
-      }
+const ProposalsQuery = `
+  query {
+    proposals (first: 5,
+    skip: 0,
+    where: {
+      space_in: ["${SNAPSHOT_SPACE}"],
+    },
+    orderBy: "created",
+    orderDirection: desc)
+    {
+      id
+      title
+      state
+      author
     }
-  `
+  }
+`
 
+const SnapshotCard = () => {
   const [result] = useQuery<ProposalType>({
     query: ProposalsQuery,
   })
 
   const { data, fetching, error } = result
-  console.log('data', data)
 
+  if (error) return <p>Error fetching data... {error.message}</p>
   if (fetching) return <p>Loading...</p>
-  if (error) return <p>Oh no... {error.message}</p>
 
   return (
-    <Card style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-      <Box mt={2} mb={4} justifyContent="center">
+    <Card
+      style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
+    >
+      <Box mt={2} mb={4} justifyContent="center" display="flex">
+        <img src="/images/common/snapshot-icon.png" alt="snapshot icon" width="24px" />
         <Typography variant="h3">
           <strong>snapshot</strong>
         </Typography>
       </Box>
-      <StyledContainer>
-        {data?.proposals.map((proposal) => {
-          console.log(proposal)
-          return (
-            <Grid container py={1} px={2} alignItems="center" gap={1} key={proposal.id}>
-              <Typography fontSize="lg" component="span">
-                {proposal.title}
-              </Typography>
-
-              <Typography fontSize="lg" component="span">
-                {proposal.state}
-              </Typography>
-            </Grid>
-          )
-        })}
-      </StyledContainer>
+      {data?.proposals.map((proposal, idx) => {
+        // TODO: for demo purposes only. remove next line before open PR
+        proposal = { ...proposal, state: idx % 2 === 0 ? 'active' : 'closed' }
+        const { id, title, state } = proposal
+        return (
+          <StyledContainer key={proposal.id}>
+            <a
+              href={`https://snapshot.org/#/${SNAPSHOT_SPACE}/proposal/${id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Grid container py={1} px={2} alignItems="top" gap={1}>
+                <Grid xs={8} item>
+                  <Typography fontSize="lg" component="span">
+                    {title}
+                  </Typography>
+                </Grid>
+                <Grid xs={3} item>
+                  <Chip
+                    label={state}
+                    color={`${state === 'closed' ? 'error' : 'success'}`}
+                    sx={{ pointerEvents: 'none' }}
+                  />
+                </Grid>
+              </Grid>
+            </a>
+          </StyledContainer>
+        )
+      })}
     </Card>
   )
 }
 
-const StyledContainer = styled.div`
-  width: 100%;
-  text-decoration: none;
-  background-color: var(--color-background-paper);
-  border: 1px solid var(--color-border-light);
-  border-radius: 8px;
-  box-sizing: border-box;
-  &:hover {
-    background-color: var(--color-background-light);
-    border-color: var(--color-secondary-light);
-  }
-`
+export default GovernanceSection

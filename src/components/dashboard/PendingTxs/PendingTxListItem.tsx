@@ -8,19 +8,7 @@ import { Grid, Typography } from '@mui/material'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import TxInfo from '@/components/transactions/TxInfo'
 import TxType from '@/components/transactions/TxType'
-
-const StyledContainer = styled.div`
-  width: 100%;
-  text-decoration: none;
-  background-color: var(--color-background-paper);
-  border: 1px solid var(--color-border-light);
-  border-radius: 8px;
-  box-sizing: border-box;
-  &:hover {
-    background-color: var(--color-background-light);
-    border-color: var(--color-secondary-light);
-  }
-`
+import { StyledContainer } from '@/components/dashboard/styled'
 
 const StyledConfirmationsCount = styled.div`
   padding: 8px 12px;
