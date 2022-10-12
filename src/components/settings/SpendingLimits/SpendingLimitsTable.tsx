@@ -17,13 +17,6 @@ import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import TokenIcon from '@/components/common/TokenIcon'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 
-const headCells = [
-  { id: 'beneficiary', label: 'Beneficiary' },
-  { id: 'spent', label: 'Spent' },
-  { id: 'resetTime', label: 'Reset time' },
-  { id: 'actions', label: 'Actions', sticky: true },
-]
-
 const RemoveSpendingLimitSteps: TxStepperProps['steps'] = [
   {
     label: 'Remove spending limit',
@@ -37,10 +30,22 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
   const { balances } = useBalances()
   const isGranted = useIsGranted()
 
+  const shouldHideactions = !isGranted
+
   const onRemove = (spendingLimit: SpendingLimitState) => {
     setOpen(true)
     setInitialData(spendingLimit)
   }
+
+  const headCells = useMemo(
+    () => [
+      { id: 'beneficiary', label: 'Beneficiary' },
+      { id: 'spent', label: 'Spent' },
+      { id: 'resetTime', label: 'Reset time' },
+      { id: 'actions', label: 'Actions', sticky: true, hide: shouldHideactions },
+    ],
+    [isGranted],
+  )
 
   const rows = useMemo(
     () =>
@@ -80,17 +85,18 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
           actions: {
             rawValue: '',
             sticky: true,
-            content: isGranted ? (
+            hide: shouldHideactions,
+            content: (
               <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
                 <IconButton onClick={() => onRemove(spendingLimit)} color="error" size="small">
                   <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
                 </IconButton>
               </Track>
-            ) : null,
+            ),
           },
         }
       }),
-    [balances.items, isGranted, spendingLimits],
+    [balances.items, shouldHideactions, spendingLimits],
   )
 
   return (

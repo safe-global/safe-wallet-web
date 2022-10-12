@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react'
+import { useState, type ReactElement, useMemo } from 'react'
 import { Button, Tooltip, Typography, SvgIcon } from '@mui/material'
 import type { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -13,38 +13,46 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import Track from '@/components/common/Track'
 import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import useIsMobile from '@/hooks/useIsMobile'
 
 interface AssetsTableProps {
   items?: SafeBalanceResponse['items']
 }
 
-const headCells = [
-  {
-    id: 'asset',
-    label: 'Asset',
-    width: '60%',
-  },
-  {
-    id: 'balance',
-    label: 'Balance',
-    width: '20%',
-  },
-  {
-    id: 'value',
-    label: 'Value',
-    width: '20%',
-  },
-  {
-    id: 'actions',
-    label: '',
-    width: '20%',
-    sticky: true,
-  },
-]
-
 const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
   const isSafeOwner = useIsSafeOwner()
+  const isMobile = useIsMobile()
+
+  const shouldHideActions = !isSafeOwner || isMobile
+
+  const headCells = useMemo(
+    () => [
+      {
+        id: 'asset',
+        label: 'Asset',
+        width: '60%',
+      },
+      {
+        id: 'balance',
+        label: 'Balance',
+        width: '20%',
+      },
+      {
+        id: 'value',
+        label: 'Value',
+        width: '20%',
+      },
+      {
+        id: 'actions',
+        label: '',
+        width: '20%',
+        hide: shouldHideActions,
+        sticky: true,
+      },
+    ],
+    [shouldHideActions],
+  )
 
   const rows = (items || []).map((item) => {
     const rawFiatValue = parseFloat(item.fiatBalance)
@@ -92,21 +100,18 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
       actions: {
         rawValue: '',
         sticky: true,
+        hide: shouldHideActions,
         content: (
-          <>
-            {isSafeOwner && (
-              <Track {...ASSETS_EVENTS.SEND}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={() => setSelectedAsset(item.tokenInfo.address)}
-                >
-                  Send
-                </Button>
-              </Track>
-            )}
-          </>
+          <Track {...ASSETS_EVENTS.SEND}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => setSelectedAsset(item.tokenInfo.address)}
+            >
+              Send
+            </Button>
+          </Track>
         ),
       },
     }

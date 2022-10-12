@@ -15,12 +15,15 @@ import { visuallyHidden } from '@mui/utils'
 import type { PaperTypeMap } from '@mui/material/Paper/Paper'
 import classNames from 'classnames'
 
+import css from './styles.module.css'
+
 type EnhancedRow = Record<
   string,
   {
     content: ReactNode
     rawValue: string | number
     sticky?: boolean
+    hide?: boolean
   }
 >
 
@@ -29,6 +32,7 @@ type EnhancedHeadCell = {
   label: string
   width?: string
   sticky?: boolean
+  hide?: boolean
 }
 
 function descendingComparator(a: EnhancedRow, b: EnhancedRow, orderBy: string) {
@@ -70,7 +74,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
             padding="normal"
             sortDirection={orderBy === headCell.id ? order : false}
             sx={headCell.width ? { width: headCell.width } : undefined}
-            className={classNames({ sticky: headCell.sticky })}
+            className={classNames({ sticky: headCell.sticky, [css.hide]: headCell.hide })}
           >
             {headCell.label && (
               <>
@@ -137,7 +141,7 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
               pagedRows.map((row, index) => (
                 <TableRow tabIndex={-1} key={index}>
                   {Object.entries(row).map(([key, cell]) => (
-                    <TableCell key={key} className={classNames({ sticky: cell.sticky })}>
+                    <TableCell key={key} className={classNames({ sticky: cell.sticky, [css.hide]: cell.hide })}>
                       {cell.content}
                     </TableCell>
                   ))}

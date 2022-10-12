@@ -2,46 +2,47 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
 import useAddressBook from '@/hooks/useAddressBook'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import type { ReactElement } from 'react'
+import { Box, Grid, Typography } from '@mui/material'
+import { useMemo } from 'react'
 import { EditOwnerDialog } from '../EditOwnerDialog'
 import { RemoveOwnerDialog } from '../RemoveOwnerDialog'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import css from './styles.module.css'
+import EnhancedTable from '@/components/common/EnhancedTable'
 
-const OwnerRow = ({
-  name,
-  address,
-  chainId,
-  isGranted,
-}: {
-  name?: string
-  address: string
-  chainId: string
-  isGranted: boolean
-}): ReactElement => {
-  return (
-    <TableRow>
-      <TableCell>
-        <EthHashInfo address={address} showCopyButton shortAddress={false} showName={true} hasExplorer />
-      </TableCell>
-
-      <TableCell className="sticky">
-        <div className={css.actions}>
-          {isGranted && <ReplaceOwnerDialog address={address} />}
-          <EditOwnerDialog address={address} name={name} chainId={chainId} />
-          {isGranted && <RemoveOwnerDialog owner={{ address, name }} />}
-        </div>
-      </TableCell>
-    </TableRow>
-  )
-}
+const headCells = [
+  { id: 'owner', label: 'Name' },
+  { id: 'actions', label: '', sticky: true },
+]
 
 export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
   const addressBook = useAddressBook()
   const { safe } = useSafeInfo()
-  const { chainId } = safe
-  const owners = safe.owners.map((item) => item.value)
+
+  const rows = useMemo(() => {
+    return safe.owners.map((owner) => {
+      const address = owner.value
+      const name = addressBook[address]
+
+      return {
+        owner: {
+          rawValue: address,
+          content: <EthHashInfo address={address} showCopyButton shortAddress={false} showName={true} hasExplorer />,
+        },
+        actions: {
+          rawValue: '',
+          sticky: true,
+          content: (
+            <div className={css.actions}>
+              {isGranted && <ReplaceOwnerDialog address={address} />}
+              <EditOwnerDialog address={address} name={name} chainId={safe.chainId} />
+              {isGranted && <RemoveOwnerDialog owner={{ address, name }} />}
+            </div>
+          ),
+        },
+      }
+    })
+  }, [safe, addressBook, isGranted])
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
@@ -58,27 +59,7 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
             shared with us or any third parties.
           </Typography>
 
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell colSpan={2}>Name</TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {owners.map((owner) => (
-                  <OwnerRow
-                    key={owner}
-                    address={owner}
-                    name={addressBook[owner]}
-                    chainId={chainId}
-                    isGranted={isGranted}
-                  />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <EnhancedTable rows={rows} headCells={headCells} />
           {isGranted && <AddOwnerDialog />}
         </Grid>
       </Grid>
