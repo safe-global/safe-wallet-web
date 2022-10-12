@@ -60,9 +60,7 @@ const useTxNotifications = (): void => {
       txSubscribe(event, (detail) => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
-        const message = isError
-          ? `${baseMessage} ${formatError(detail.error)}`
-          : baseMessage
+        const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
 
         const txId = 'txId' in detail ? detail.txId : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
