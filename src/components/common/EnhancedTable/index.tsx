@@ -134,7 +134,7 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
   return (
     <Box sx={{ width: '100%' }}>
       <TableContainer component={Paper} sx={{ width: '100%', mb: 2 }} variant={variant}>
-        <Table sx={{ minWidth: '650px' }} aria-labelledby="tableTitle">
+        <Table aria-labelledby="tableTitle">
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
             {pagedRows.length > 0 ? (
