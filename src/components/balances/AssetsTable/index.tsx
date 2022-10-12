@@ -13,7 +13,6 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import Track from '@/components/common/Track'
 import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import useIsMobile from '@/hooks/useIsMobile'
 
 interface AssetsTableProps {
   items?: SafeBalanceResponse['items']
@@ -22,9 +21,8 @@ interface AssetsTableProps {
 const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
   const isSafeOwner = useIsSafeOwner()
-  const isMobile = useIsMobile()
 
-  const shouldHideActions = !isSafeOwner || isMobile
+  const shouldHideActions = !isSafeOwner
 
   const headCells = useMemo(
     () => [
