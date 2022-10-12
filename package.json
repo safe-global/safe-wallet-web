@@ -68,6 +68,7 @@
     "ethers": "^5.6.8",
     "exponential-backoff": "^3.1.0",
     "fuse.js": "^6.6.2",
+    "graphql": "^16.6.0",
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
     "next": "12.2.0",
@@ -80,7 +81,8 @@
     "react-papaparse": "^4.0.2",
     "react-qr-reader": "2.2.1",
     "react-redux": "^8.0.2",
-    "semver": "^7.3.7"
+    "semver": "^7.3.7",
+    "urql": "^3.0.3"
   },
   "devDependencies": {
     "@gnosis.pm/safe-core-sdk-types": "^1.6.1",
