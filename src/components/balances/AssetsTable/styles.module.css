@@ -14,7 +14,8 @@
 }
 
 @media (max-width: 600px) {
-  .container td:last-of-type button {
-    opacity: 1;
+  .container td:last-of-type,
+  .container th:last-of-type {
+    display: none;
   }
 }
