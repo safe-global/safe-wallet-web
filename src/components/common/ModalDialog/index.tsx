@@ -15,7 +15,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     borderTop: `2px solid ${theme.palette.divider}`,
     padding: theme.spacing(3),
 
-    '& > :last-child:not(:first-of-type)': {
+    '& > :last-of-type:not(:first-of-type)': {
       order: 2,
     },
     '&:after': {
