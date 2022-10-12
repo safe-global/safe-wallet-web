@@ -1,4 +1,6 @@
 import { useEffect, useMemo } from 'react'
+import type { EthersError } from '@/utils/ethers-utils'
+import { capitalize } from '@/utils/formatters'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
@@ -51,7 +53,9 @@ const useTxNotifications = (): void => {
       txSubscribe(event, (detail) => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
-        const message = isError ? `${baseMessage} ${detail.error.message.slice(0, 300)}` : baseMessage
+        const message = isError
+          ? `${baseMessage} ${capitalize((detail.error as EthersError).reason || '')}`
+          : baseMessage
 
         const txId = 'txId' in detail ? detail.txId : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
@@ -61,6 +65,7 @@ const useTxNotifications = (): void => {
         dispatch(
           showNotification({
             message,
+            detailedMessage: isError ? detail.error.message : undefined,
             groupKey,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
             ...(shouldShowLink && {
