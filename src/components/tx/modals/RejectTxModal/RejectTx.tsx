@@ -10,7 +10,7 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 
 type RejectTxProps = {
   txSummary: TransactionSummary
-  onSubmit: (txId?: string) => void
+  onSubmit: (txId: string) => void
 }
 
 const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {

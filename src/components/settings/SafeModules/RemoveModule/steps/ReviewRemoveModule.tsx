@@ -14,7 +14,7 @@ export const ReviewRemoveModule = ({
   onSubmit,
 }: {
   data: RemoveModuleData
-  onSubmit: (txId?: string) => void
+  onSubmit: (txId: string) => void
 }) => {
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createRemoveModuleTx(data.address)
@@ -26,7 +26,7 @@ export const ReviewRemoveModule = ({
     }
   }, [safeTxError])
 
-  const onFormSubmit = (txId?: string) => {
+  const onFormSubmit = (txId: string) => {
     trackEvent(SETTINGS_EVENTS.MODULES.REMOVE_MODULE)
 
     onSubmit(txId)

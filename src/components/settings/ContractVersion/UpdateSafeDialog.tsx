@@ -40,7 +40,7 @@ const UpdateSafeDialog = () => {
   )
 }
 
-const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (txId?: string) => void }) => {
+const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (txId: string) => void }) => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
 

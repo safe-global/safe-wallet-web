@@ -285,7 +285,7 @@ describe('SignOrExecuteForm', () => {
 
   it('on-chain signs a transaction', async () => {
     const mockTx = createSafeTx()
-    const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning')
+    const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning').mockReturnValue(Promise.resolve(mockTx))
     const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
 
@@ -298,8 +298,6 @@ describe('SignOrExecuteForm', () => {
     })
 
     await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
-
-    // We allow our indexer to handle the 'proposal' of on-chain signatures
-    expect(proposeSpy).not.toHaveBeenCalled()
+    expect(proposeSpy).toHaveBeenCalledTimes(1)
   })
 })

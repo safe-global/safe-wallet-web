@@ -29,7 +29,7 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
-  onSubmit: (txId?: string) => void
+  onSubmit: (txId: string) => void
   children?: ReactNode
   error?: Error
   isExecutable?: boolean
@@ -101,22 +101,17 @@ const SignOrExecuteForm = ({
   }
 
   // Sign transaction
-  const onSign = async (): Promise<string | undefined> => {
+  const onSign = async (): Promise<string> => {
     const [connectedWallet, createdTx, provider] = assertSubmittable()
 
     const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
 
-    // The on-chain signature may be queued or not fully processed yet
-    // Our indexer will verify the signature when it's on chain
-    if (smartContractWallet) {
-      await dispatchOnChainSigning(createdTx, provider)
-      return
-    }
+    const signedTx = smartContractWallet
+      ? await dispatchOnChainSigning(createdTx, provider)
+      : await dispatchTxSigning(createdTx, shouldEthSign, txId)
 
-    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
-
     return proposedTx.txId
   }
 
@@ -144,7 +139,7 @@ const SignOrExecuteForm = ({
     setIsSubmittable(false)
     setSubmitError(undefined)
 
-    let id: string | undefined
+    let id: string
     try {
       id = await (willExecute ? onExecute() : onSign())
     } catch (err) {

@@ -265,6 +265,8 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
   }
 
   txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, { groupKey: safeTxHash })
+
+  return safeTx
 }
 
 /**
@@ -435,7 +437,6 @@ export const dispatchSpendingLimitTxExecution = async (
   return result?.hash
 }
 
-export const dispatchSafeAppsTx = (safeAppRequestId: RequestId, txId?: string) => {
-  const payload = txId ? { txId, safeAppRequestId } : { safeAppRequestId, groupKey: safeAppRequestId }
-  txDispatch(TxEvent.SAFE_APPS_REQUEST, payload)
+export const dispatchSafeAppsTx = (txId: string, safeAppRequestId: RequestId) => {
+  txDispatch(TxEvent.SAFE_APPS_REQUEST, { txId, safeAppRequestId })
 }

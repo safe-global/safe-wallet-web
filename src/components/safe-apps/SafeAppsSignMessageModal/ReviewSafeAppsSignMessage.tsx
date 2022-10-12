@@ -70,8 +70,8 @@ const ReviewSafeAppsSignMessage = ({
     })
   }, [message])
 
-  const handleSubmit = (txId?: string) => {
-    dispatchSafeAppsTx(requestId, txId)
+  const handleSubmit = (txId: string) => {
+    dispatchSafeAppsTx(txId, requestId)
   }
 
   return (

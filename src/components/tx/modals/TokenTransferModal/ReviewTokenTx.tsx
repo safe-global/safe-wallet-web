@@ -34,7 +34,7 @@ export const TokenTransferReview = ({
 
 export type ReviewTokenTxProps = {
   params: SendAssetsFormData
-  onSubmit: (txId?: string) => void
+  onSubmit: (txId: string) => void
 }
 
 const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement => {

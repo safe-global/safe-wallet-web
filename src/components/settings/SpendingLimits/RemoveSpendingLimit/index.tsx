@@ -20,7 +20,7 @@ export const RemoveSpendingLimit = ({
   onSubmit,
 }: {
   data: SpendingLimitState
-  onSubmit: (txId?: string) => void
+  onSubmit: (txId: string) => void
 }) => {
   const chainId = useChainId()
   const provider = useWeb3()
@@ -43,7 +43,7 @@ export const RemoveSpendingLimit = ({
     return createTx(txParams)
   }, [provider, chainId, data.beneficiary, data.token])
 
-  const onFormSubmit = (txId?: string) => {
+  const onFormSubmit = (txId: string) => {
     trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
 
     onSubmit(txId)
