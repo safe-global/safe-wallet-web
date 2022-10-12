@@ -172,7 +172,7 @@ const initTheme = (darkMode: boolean) => {
             style: ({ theme }) => ({
               border: 'none',
               boxShadow: '0',
-              '&:not(:last-child)': {
+              '&:not(:last-of-type)': {
                 borderRadius: '0 !important',
                 borderBottom: `1px solid ${theme.palette.border.light}`,
               },
@@ -346,16 +346,16 @@ const initTheme = (darkMode: boolean) => {
             },
 
             [theme.breakpoints.down('sm')]: {
-              '& .MuiTableCell-root:first-child': {
+              '& .MuiTableCell-root:first-of-type': {
                 paddingRight: theme.spacing(1),
               },
 
-              '& .MuiTableCell-root:not(:first-child):not(:last-child)': {
+              '& .MuiTableCell-root:not(:first-of-type):not(:last-of-type)': {
                 paddingLeft: theme.spacing(1),
                 paddingRight: theme.spacing(1),
               },
 
-              '& .MuiTableCell-root:last-child': {
+              '& .MuiTableCell-root:last-of-type': {
                 paddingLeft: theme.spacing(1),
               },
             },
@@ -372,23 +372,23 @@ const initTheme = (darkMode: boolean) => {
             },
 
             [theme.breakpoints.down('sm')]: {
-              '& .MuiTableCell-root:first-child': {
+              '& .MuiTableCell-root:first-of-type': {
                 paddingRight: theme.spacing(1),
               },
 
-              '& .MuiTableCell-root:not(:first-child):not(:last-child)': {
+              '& .MuiTableCell-root:not(:first-of-type):not(:last-of-type)': {
                 paddingLeft: theme.spacing(1),
                 paddingRight: theme.spacing(1),
               },
 
-              '& .MuiTableCell-root:last-child': {
+              '& .MuiTableCell-root:last-of-type': {
                 paddingLeft: theme.spacing(1),
               },
             },
 
             '& .MuiTableRow-root': {
               transition: 'background-color 0.2s',
-              '&:not(:last-child)': {
+              '&:not(:last-of-type)': {
                 borderBottom: `1px solid ${theme.palette.border.light}`,
               },
             },

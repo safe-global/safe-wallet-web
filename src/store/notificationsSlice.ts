@@ -6,6 +6,7 @@ import type { LinkProps } from 'next/link'
 export type Notification = {
   id: string
   message: string
+  detailedMessage?: string
   groupKey: string
   variant: AlertColor
   timestamp: number

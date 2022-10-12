@@ -59,7 +59,9 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
             </Typography>
 
             <Typography variant="caption" fontWeight="bold">
-              {wallet.ens || (
+              {wallet.ens ? (
+                <div>{wallet.ens}</div>
+              ) : (
                 <EthHashInfo
                   prefix={chainInfo?.shortName}
                   address={wallet.address}

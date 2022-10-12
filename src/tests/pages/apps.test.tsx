@@ -310,7 +310,7 @@ describe('AppsPage', () => {
         fireEvent.change(input, { target: { value: 'gibberish gibberish' } })
       })
 
-      await waitFor(() => expect(screen.getByText('No apps found')).toBeInTheDocument())
+      await waitFor(() => expect(screen.getByText('No apps found', { exact: false })).toBeInTheDocument())
     })
 
     it('shows apps matching the query', async () => {

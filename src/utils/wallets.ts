@@ -24,7 +24,7 @@ export const isWalletRejection = (err: Error & { code?: number }): boolean => {
   return isMMRejection(err) || isWCRejection(err) || isKeystoneError(err)
 }
 
-const WalletNames = {
+export const WalletNames = {
   METAMASK: ProviderLabel.MetaMask,
   WALLET_CONNECT: 'WalletConnect',
   SAFE_MOBILE_PAIRING: PAIRING_MODULE_LABEL,

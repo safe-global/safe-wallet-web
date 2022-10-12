@@ -41,7 +41,7 @@ describe('SafeTokenWidget', () => {
               name: '$SAFE Claiming App',
               description: '',
               iconUrl: '',
-              tags: '',
+              tags: ['safe-claiming-app'],
               accessControl: {
                 type: SafeAppAccessPolicyTypes.NoRestrictions,
               },

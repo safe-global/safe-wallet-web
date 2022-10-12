@@ -25,6 +25,7 @@ import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import type { Web3Provider } from '@ethersproject/providers'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -44,10 +45,10 @@ const SignOrExecuteForm = ({
   onlyExecute,
   onSubmit,
   children,
-  error,
   isExecutable = false,
   isRejection = false,
   disableSubmit = false,
+  ...props
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -60,6 +61,7 @@ const SignOrExecuteForm = ({
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
+  const isOwner = useIsSafeOwner()
   const provider = useWeb3()
   const currentChain = useCurrentChain()
 
@@ -88,21 +90,17 @@ const SignOrExecuteForm = ({
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
   const nonceReadonly = !!tx?.signatures.size || isRejection
 
-  //
-  // Callbacks
-  //
-  const assertSubmittable = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
+  // Assert that wallet, tx and provider are defined
+  const assertDependencies = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
     if (!wallet) throw new Error('Wallet not connected')
-    if (isWrongChain) throw new Error('Connected to the wrong chain')
     if (!tx) throw new Error('Transaction not ready')
     if (!provider) throw new Error('Provider not ready')
-
     return [wallet, tx, provider]
   }
 
   // Sign transaction
   const onSign = async (): Promise<string> => {
-    const [connectedWallet, createdTx, provider] = assertSubmittable()
+    const [connectedWallet, createdTx, provider] = assertDependencies()
 
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
 
@@ -132,7 +130,7 @@ const SignOrExecuteForm = ({
 
   // Execute transaction
   const onExecute = async (): Promise<string> => {
-    const [connectedWallet, createdTx, provider] = assertSubmittable()
+    const [connectedWallet, createdTx, provider] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
     let id = txId
@@ -167,8 +165,9 @@ const SignOrExecuteForm = ({
     onSubmit(id)
   }
 
+  // On advanced params submit (nonce, gas limit, price, etc)
   const onAdvancedSubmit = async (data: AdvancedParameters) => {
-    // If nonce was edited, create a new with that nonce
+    // If nonce was edited, create a new tx with that nonce
     if (tx && (data.nonce !== tx.data.nonce || data.safeTxGas !== tx.data.safeTxGas)) {
       try {
         setTx(await createTx({ ...tx.data, safeTxGas: data.safeTxGas }, data.nonce))
@@ -181,7 +180,9 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
-  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit
+  const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
+  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose
+  const error = props.error || (willExecute && gasLimitError)
 
   return (
     <form onSubmit={handleSubmit}>
@@ -199,6 +200,7 @@ const SignOrExecuteForm = ({
           willExecute={willExecute}
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
+          gasLimitError={gasLimitError}
         />
 
         <TxSimulation
@@ -208,8 +210,17 @@ const SignOrExecuteForm = ({
           disabled={submitDisabled}
         />
 
-        {(error || (willExecute && gasLimitError)) && (
-          <ErrorMessage error={error || gasLimitError}>
+        {/* Error messages */}
+        {isWrongChain && <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>}
+
+        {cannotPropose && (
+          <ErrorMessage>
+            You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
+          </ErrorMessage>
+        )}
+
+        {error && (
+          <ErrorMessage error={error}>
             This transaction will most likely fail. To save gas costs, avoid creating the transaction.
           </ErrorMessage>
         )}
@@ -218,12 +229,14 @@ const SignOrExecuteForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
+        {/* Info text */}
         <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
           You&apos;re about to {txId ? '' : 'create and '}
           {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
           wallet.
         </Typography>
 
+        {/* Submit button */}
         <Button variant="contained" type="submit" disabled={submitDisabled}>
           {isEstimating ? 'Estimating...' : 'Submit'}
         </Button>

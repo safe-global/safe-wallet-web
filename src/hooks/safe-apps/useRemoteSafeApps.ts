@@ -8,17 +8,18 @@ import useAsync from '../useAsync'
 
 // To avoid multiple simultaneous requests (e.g. the Dashboard and the SAFE header widget),
 // cache the request promise for 100ms
-let cache: Promise<SafeAppsResponse> | undefined
-const cachedGetSafeApps = (chainId: string): ReturnType<typeof getSafeApps> => {
-  if (!cache) {
-    cache = getSafeApps(chainId, { client_url: window.location.origin })
+let cache: Record<string, Promise<SafeAppsResponse> | undefined> = {}
+const cachedGetSafeApps = (chainId: string): ReturnType<typeof getSafeApps> | undefined => {
+  if (!cache[chainId]) {
+    cache[chainId] = getSafeApps(chainId, { client_url: window.location.origin })
 
     // Clear the cache the promise resolves with a small delay
-    cache.finally(() => {
-      setTimeout(() => (cache = undefined), 100)
+    cache[chainId]?.finally(() => {
+      setTimeout(() => (cache[chainId] = undefined), 100)
     })
   }
-  return cache
+
+  return cache[chainId]
 }
 
 const useRemoteSafeApps = (): AsyncResult<SafeAppsResponse> => {

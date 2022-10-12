@@ -78,7 +78,6 @@ const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElement => 
           onScan={onFileScannedResolve}
           ref={scannerRef}
           style={{ width: '400px', height: '400px' }}
-          facingMode="user"
         />
       </Box>
 

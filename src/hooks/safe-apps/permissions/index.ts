@@ -1,5 +1,6 @@
 import { RestrictedMethods } from '@gnosis.pm/safe-apps-sdk'
 import type { AllowedFeatures } from '@/components/safe-apps/types'
+import { capitalize } from '@/utils/formatters'
 
 type PermissionsDisplayType = {
   displayName: string
@@ -19,8 +20,6 @@ const SAFE_PERMISSIONS_TEXTS: Record<string, PermissionsDisplayType> = {
 export const getSafePermissionDisplayValues = (method: string) => {
   return SAFE_PERMISSIONS_TEXTS[method]
 }
-
-const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
 export const getBrowserPermissionDisplayValues = (feature: AllowedFeatures) => {
   return {
