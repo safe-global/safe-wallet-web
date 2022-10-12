@@ -3,7 +3,6 @@ import { Link, Typography, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import css from './styles.module.css'
 
-// TODO: Replace with notification
 const ErrorMessage = ({
   children,
   error,

@@ -77,3 +77,7 @@ export const camelCaseToSpaces = (str: string): string => {
 export const ellipsis = (str: string, length: number): string => {
   return str.length > length ? `${str.slice(0, length)}...` : str
 }
+
+export const capitalize = (str: string): string => {
+  return str.slice(0, 1).toUpperCase() + str.slice(1)
+}
