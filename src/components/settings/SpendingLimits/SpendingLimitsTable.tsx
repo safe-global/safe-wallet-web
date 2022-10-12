@@ -44,7 +44,7 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
       { id: 'resetTime', label: 'Reset time' },
       { id: 'actions', label: 'Actions', sticky: true, hide: shouldHideactions },
     ],
-    [isGranted],
+    [shouldHideactions],
   )
 
   const rows = useMemo(
