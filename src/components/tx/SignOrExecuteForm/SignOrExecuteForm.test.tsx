@@ -283,9 +283,9 @@ describe('SignOrExecuteForm', () => {
     expect(proposeSpy).toHaveBeenCalledTimes(1)
   })
 
-  it('on-chain signs a transaction', async () => {
+  it('smart contract wallets propose and sign new transactions on-chain', async () => {
     const mockTx = createSafeTx()
-    const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning').mockReturnValue(Promise.resolve(mockTx))
+    const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning')
     const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
 
@@ -299,5 +299,23 @@ describe('SignOrExecuteForm', () => {
 
     await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
     expect(proposeSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it("smart contract wallets dont't propose, but sign existing transactions on-chain", async () => {
+    const mockTx = createSafeTx()
+    const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning')
+    const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
+    jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
+
+    const result = render(<SignOrExecuteForm txId="0x123" onSubmit={jest.fn} safeTx={mockTx} />)
+
+    const submitButton = result.getByText('Submit')
+
+    act(() => {
+      fireEvent.click(submitButton)
+    })
+
+    await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
+    expect(proposeSpy).not.toHaveBeenCalled()
   })
 })

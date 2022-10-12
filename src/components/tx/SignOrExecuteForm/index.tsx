@@ -104,15 +104,30 @@ const SignOrExecuteForm = ({
   const onSign = async (): Promise<string> => {
     const [connectedWallet, createdTx, provider] = assertSubmittable()
 
-    const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
     const smartContractWallet = await isSmartContractWallet(connectedWallet)
 
-    const signedTx = smartContractWallet
-      ? await dispatchOnChainSigning(createdTx, provider)
-      : await dispatchTxSigning(createdTx, shouldEthSign, txId)
+    // Sign the transaction off-chain and propose it to backend
+    if (!smartContractWallet) {
+      const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
 
-    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
-    return proposedTx.txId
+      const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
+      const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
+
+      return proposedTx.txId
+    }
+
+    // If no txId was provided, it's a newly created tx
+    let id = txId
+    if (!id) {
+      // We propose without the signature as on-chain signing may queued/still processing
+      // We wait for our indexer to pick up the signature on-chain instead
+      const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, createdTx)
+      id = proposedTx.txId
+    }
+
+    await dispatchOnChainSigning(id, createdTx, provider)
+
+    return id
   }
 
   // Execute transaction
