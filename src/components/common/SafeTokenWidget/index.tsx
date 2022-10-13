@@ -13,7 +13,7 @@ import { useMemo } from 'react'
 import type { UrlObject } from 'url'
 import Track from '../Track'
 
-import SafeTokenIcon from './safe_token.svg'
+import SafeTokenIcon from '@/public/images/safe_token.svg'
 
 import css from './styles.module.css'
 

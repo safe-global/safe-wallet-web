@@ -1,10 +1,7 @@
 import { useQuery } from 'urql'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Grid from '@mui/material/Grid'
+import { Typography, Box, Grid, Chip } from '@mui/material'
 import { Card, StyledContainer, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
-import { Chip } from '@mui/material'
+import ClaimTokensCard from '@/components/dashboard/GovernanceSection/ClaimTokensCard'
 
 const SNAPSHOT_SPACE = 'gnosis.eth'
 
@@ -28,27 +25,6 @@ const GovernanceSection = () => (
     </WidgetContainer>
   </Grid>
 )
-
-const ClaimTokensCard = () => {
-  return (
-    <Card style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
-      <Box mt={2} mb={4}>
-        <Typography variant="h3">
-          <strong>7338,87 SAFE</strong>
-        </Typography>
-      </Box>
-      <Box mt={2} mb={4}>
-        <Typography>delegated to</Typography>
-      </Box>
-      <Box mt={2} mb={4}>
-        <Typography>0</Typography>
-      </Box>
-      <Button variant="contained" size="small">
-        Claim
-      </Button>
-    </Card>
-  )
-}
 
 type ProposalType = {
   proposals: Array<Record<string, string>>
