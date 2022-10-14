@@ -223,6 +223,13 @@ export const dispatchTxProposal = async (
 }
 
 /**
+ * Draft a transaction
+ */
+export const dispatchDraftTx = async (txId: string) => {
+  txDispatch(TxEvent.DRAFT_CREATED, { txId })
+}
+
+/**
  * Sign a transaction
  */
 export const dispatchTxSigning = async (

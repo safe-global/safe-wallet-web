@@ -18,6 +18,7 @@ const Queue: NextPage = () => {
 
       <BatchExecuteHoverProvider>
         <TxHeader
+          title="Transaction queue"
           action={
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <NavTabs tabs={transactionNavItems} />

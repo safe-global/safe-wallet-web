@@ -8,6 +8,7 @@ import {
   dispatchTxSigning,
   createTx,
   dispatchOnChainSigning,
+  dispatchDraftTx,
 } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
@@ -26,6 +27,7 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 import type { Web3Provider } from '@ethersproject/providers'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import SignCheckbox from '../SignCheckbox'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -54,6 +56,7 @@ const SignOrExecuteForm = ({
   // Hooks & variables
   //
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [shouldSign, setShouldSign] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
@@ -66,12 +69,13 @@ const SignOrExecuteForm = ({
   const currentChain = useCurrentChain()
 
   // Check that the transaction is executable
-  const isNewExecutableTx = !txId && safe.threshold === 1
+  const isNewTx = !txId
+  const isNewExecutableTx = isNewTx && safe.threshold === 1
   const isCorrectNonce = tx?.data.nonce === safe.nonce
   const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
-  const willExecute = shouldExecute && canExecute
+  const willExecute = shouldExecute && shouldSign && canExecute
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -102,6 +106,14 @@ const SignOrExecuteForm = ({
   const proposeTx = async (newTx: SafeTransaction): Promise<string> => {
     const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, wallet!.address, newTx, txId)
     return proposedTx.txId
+  }
+
+  // Create a draft transaction
+  const onDraft = async (): Promise<string> => {
+    const [_, createdTx] = assertDependencies()
+    const id = await proposeTx(createdTx)
+    if (id) await dispatchDraftTx(id)
+    return id
   }
 
   // Sign transaction
@@ -142,7 +154,7 @@ const SignOrExecuteForm = ({
 
     let id: string
     try {
-      id = await (willExecute ? onExecute() : onSign())
+      id = await (willExecute ? onExecute() : shouldSign ? onSign() : onDraft())
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
@@ -179,7 +191,13 @@ const SignOrExecuteForm = ({
 
         <DecodedTx tx={tx} txId={txId} />
 
-        {canExecute && !onlyExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} />}
+        {/* Draft or signed? */}
+        {isNewTx && <SignCheckbox checked={shouldSign} onChange={setShouldSign} />}
+
+        {/* Execute or just sign? */}
+        {canExecute && !onlyExecute && shouldSign && (
+          <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} />
+        )}
 
         <AdvancedParams
           params={advancedParams}

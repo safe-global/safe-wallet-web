@@ -3,6 +3,7 @@ import EventBus from '@/services/EventBus'
 import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 export enum TxEvent {
+  DRAFT_CREATED = 'DRAFT_CREATED',
   SIGNED = 'SIGNED',
   SIGN_FAILED = 'SIGN_FAILED',
   PROPOSED = 'PROPOSED',
@@ -23,6 +24,7 @@ export enum TxEvent {
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
 
 interface TxEvents {
+  [TxEvent.DRAFT_CREATED]: { txId: string }
   [TxEvent.SIGNED]: { txId?: string }
   [TxEvent.SIGN_FAILED]: { txId?: string; error: Error }
   [TxEvent.PROPOSE_FAILED]: { error: Error }

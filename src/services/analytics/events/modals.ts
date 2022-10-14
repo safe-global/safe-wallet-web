@@ -31,6 +31,10 @@ export const MODALS_EVENTS = {
     action: 'Execute transaction',
     category: MODALS_CATEGORY,
   },
+  UNCHECK_SIGN: {
+    action: 'Uncheck sign transaction',
+    category: MODALS_CATEGORY,
+  },
   USE_SPENDING_LIMIT: {
     event: EventType.META,
     action: 'Use spending limit',

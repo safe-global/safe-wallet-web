@@ -51,6 +51,10 @@ export const navItems: NavItem[] = [
 
 export const transactionNavItems = [
   {
+    label: 'Drafts',
+    href: AppRoutes.transactions.drafts,
+  },
+  {
     label: 'Queue',
     href: AppRoutes.transactions.queue,
   },

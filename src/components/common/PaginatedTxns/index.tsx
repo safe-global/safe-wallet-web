@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
 import { type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import type useTxHistory from '@/hooks/useTxHistory'
+import useTxHistory from '@/hooks/useTxHistory'
 import useTxQueue from '@/hooks/useTxQueue'
 import PagePlaceholder from '../PagePlaceholder'
 import InfiniteScroll from '../InfiniteScroll'
@@ -12,9 +12,12 @@ import { type TxFilter, useTxFilter } from '@/utils/tx-history-filter'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 
-const NoQueuedTxns = () => {
-  return <PagePlaceholder img={<NoTransactionsIcon />} text="Queued transactions will appear here" />
-}
+const NoQueuedTxns = ({ isQueue }: { isQueue: boolean }) => (
+  <PagePlaceholder
+    img={<NoTransactionsIcon />}
+    text={isQueue ? 'Queued transactions will appear here' : 'No draft transactions'}
+  />
+)
 
 const getFilterResultCount = (filter: TxFilter, page: TransactionListPage) => {
   const count = page.results.filter(isTransactionListItem).length
@@ -35,7 +38,7 @@ const TxPage = ({
 }): ReactElement => {
   const { page, error, loading } = useTxns(pageUrl)
   const [filter] = useTxFilter()
-  const isQueue = useTxns === useTxQueue
+  const isHistory = useTxns === useTxHistory
 
   return (
     <>
@@ -47,7 +50,7 @@ const TxPage = ({
 
       {page && page.results.length > 0 && <TxList items={page.results} />}
 
-      {isQueue && page?.results.length === 0 && <NoQueuedTxns />}
+      {!loading && !isHistory && page?.results.length === 0 && <NoQueuedTxns isQueue={useTxns === useTxQueue} />}
 
       {error && <ErrorMessage>Error loading transactions</ErrorMessage>}
 
@@ -62,16 +65,9 @@ const TxPage = ({
   )
 }
 
-const PaginatedTxns = ({
-  useTxns,
-  disableTopActionMargins = false,
-}: {
-  useTxns: typeof useTxHistory | typeof useTxQueue
-  disableTopActionMargins?: boolean
-}): ReactElement => {
+const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useTxQueue }): ReactElement => {
   const [pages, setPages] = useState<string[]>([''])
   const [filter] = useTxFilter()
-  const isQueue = useTxns === useTxQueue
 
   // Reset the pages when the filter changes
   useEffect(() => {

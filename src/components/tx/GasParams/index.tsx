@@ -66,7 +66,7 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit, gasLimitError }: Ga
           </Typography>
         ) : (
           <Typography>
-            Signing the transaction with nonce&nbsp;
+            Transaction nonce: &nbsp;
             {nonce !== undefined ? (
               nonce
             ) : (
