@@ -47,23 +47,31 @@
   .columnTemplate {
     grid-template-columns: repeat(12, auto);
     grid-template-areas:
-      'nonce type type type type type info info info info info info'
-      'date date date date date date confirmations confirmations confirmations confirmations confirmations confirmations'
-      'status status status status status status actions actions actions actions actions actions';
-  }
-
+      'nonce type type type type type type type type type type type'
+      'empty info info info info info info info info info info info'
+      'empty date date date date date date date date date date date'
+      'empty confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations'
+      'empty status status status status status status status status status status status'
+      'empty actions actions actions actions actions actions actions actions actions actions actions';
+    }
+    
   .columnTemplateWithoutNonce {
     grid-template-columns: repeat(12, 1fr);
     grid-template-areas:
-      'type type type type type type info info info info info info'
-      'date date date date date date confirmations confirmations confirmations confirmations confirmations confirmations'
-      'status status status status status status actions actions actions actions actions actions';
+      'nonce type type type type type type type type type type type'
+      'empty info info info info info info info info info info info'
+      'empty date date date date date date date date date date date'
+      'empty confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations'
+      'empty status status status status status status status status status status status'
+      'empty actions actions actions actions actions actions actions actions actions actions actions';
   }
 
   .columnTemplateTxHistory {
     grid-template-columns: repeat(12, 1fr);
     grid-template-areas:
-      'nonce type type type type type info info info info info info'
-      'date date date date date date status status status status status status';
+      'nonce type type type type type type type type type type type' 
+      'empty info info info info info info info info info info info'
+      'empty date date date date date date date date date date date'
+      'empty status status status status status status status status status status status';
   }
 }
