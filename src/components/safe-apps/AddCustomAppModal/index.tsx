@@ -70,9 +70,9 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const debouncedUrl = useDebounce(trimTrailingSlash(appUrl || ''), 300)
 
   const [safeApp] = useAsync<SafeAppData | undefined>(() => {
-    if (!isValidURL(debouncedUrl) || !currentChain) return
+    if (!isValidURL(debouncedUrl)) return
 
-    return fetchSafeAppFromManifest(debouncedUrl, currentChain.chainId).catch(() => {
+    return fetchSafeAppFromManifest(debouncedUrl, currentChain?.chainId || '').catch(() => {
       setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
       return undefined
     })
