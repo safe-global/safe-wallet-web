@@ -42,10 +42,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
   const validatePrefixed = useMemo(() => validatePrefixedAddress(currentShortName), [currentShortName])
 
   // Update the input value
-  const setAddressValue = useCallback(
-    (value: string) => setValue(name, value),
-    [setValue, name],
-  )
+  const setAddressValue = useCallback((value: string) => setValue(name, value), [setValue, name])
 
   // On ENS resolution, update the input value
   useEffect(() => {
