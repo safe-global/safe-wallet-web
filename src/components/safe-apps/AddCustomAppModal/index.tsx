@@ -19,7 +19,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
-import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
@@ -48,7 +47,6 @@ type CustomAppFormData = {
 const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
 
 const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
-  const chainId = useChainId()
   const currentChain = useCurrentChain()
   const {
     register,
@@ -72,13 +70,13 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const debouncedUrl = useDebounce(trimTrailingSlash(appUrl || ''), 300)
 
   const [safeApp] = useAsync<SafeAppData | undefined>(() => {
-    if (!isValidURL(debouncedUrl)) return
+    if (!isValidURL(debouncedUrl) || !currentChain) return
 
-    return fetchSafeAppFromManifest(debouncedUrl, chainId).catch(() => {
+    return fetchSafeAppFromManifest(debouncedUrl, currentChain.chainId).catch(() => {
       setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
       return undefined
     })
-  }, [chainId, debouncedUrl])
+  }, [currentChain, debouncedUrl])
 
   const handleClose = () => {
     reset()
@@ -87,20 +85,20 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
 
   const isAppAlreadyInTheList = useCallback(
     (appUrl: string) => safeAppsList.some((app) => isSameUrl(app.url, appUrl)),
-    [],
+    [safeAppsList],
   )
 
   const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${encodeURIComponent(
     safeApp?.url || '',
   )}&chain=${currentChain?.shortName}`
   const isSafeAppValid = isValid && safeApp
-  const isCustomAppInTheDefaultList = errors?.appUrl?.type === 'doesntExist'
+  const isCustomAppInTheDefaultList = errors?.appUrl?.type === 'alreadyExists'
 
   return (
     <ModalDialog open={open} onClose={handleClose} dialogTitle="Add custom app">
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent className={css.addCustomAppContainer}>
-          <section className={css.addCustomAppFields}>
+          <div className={css.addCustomAppFields}>
             <TextField
               required
               label="App URL"
@@ -111,7 +109,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
                 required: true,
                 validate: {
                   validUrl: (val: string) => (isValidURL(val) ? undefined : 'Invalid URL'),
-                  doesntExist: (val: string) =>
+                  alreadyExists: (val: string) =>
                     isAppAlreadyInTheList(val) ? 'This app is already in the list' : undefined,
                 },
               })}
@@ -150,9 +148,9 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
                 <CustomAppPlaceholder error={errors?.appUrl?.type === 'custom' ? errors.appUrl.message : ''} />
               )}
             </Box>
-          </section>
+          </div>
 
-          <section className={css.addCustomAppHelp}>
+          <div className={css.addCustomAppHelp}>
             <InfoOutlinedIcon className={css.addCustomAppHelpIcon} />
             <Typography ml={0.5}>Learn more about building</Typography>
             <Link
@@ -164,7 +162,7 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
             >
               Safe Apps.
             </Link>
-          </section>
+          </div>
         </DialogContent>
 
         <DialogActions disableSpacing>
