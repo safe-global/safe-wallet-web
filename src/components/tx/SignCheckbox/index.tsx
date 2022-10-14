@@ -16,7 +16,10 @@ const SignCheckbox = ({
   }
 
   const infoIcon = (
-    <Tooltip title="Create a signed transaction or a draft? A draft can be signed later. Once signed, the transaction cannot be removed or edited.">
+    <Tooltip
+      title="Create a signed transaction or a draft? A draft can be signed later. Once signed, the transaction cannot be removed or edited."
+      placement="right"
+    >
       <InfoIcon fontSize="small" sx={{ verticalAlign: 'middle', marginLeft: 0.5 }} />
     </Tooltip>
   )
