@@ -6,6 +6,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import ChainSwitcher from '@/components/common/ChainSwitcher'
 
 const NewTxModal = dynamic(() => import('@/components/tx/modals/NewTxModal'))
 
@@ -21,6 +22,8 @@ const NewTxButton = (): ReactElement => {
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 
+  if (isWrongChain) return <ChainSwitcher fullWidth />
+
   return (
     <>
       <Button
@@ -32,13 +35,7 @@ const NewTxButton = (): ReactElement => {
         className={css.button}
         disableElevation
       >
-        {!wallet
-          ? 'Not connected'
-          : isWrongChain
-          ? 'Wrong wallet chain'
-          : isSafeOwner
-          ? 'New transaction'
-          : 'Read only'}
+        {!wallet ? 'Not connected' : isSafeOwner ? 'New transaction' : 'Read only'}
       </Button>
 
       {txOpen && (
