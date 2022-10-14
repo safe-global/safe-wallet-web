@@ -4,7 +4,6 @@ import { format } from 'date-fns'
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
-const ENS_NAME = 'test20.eth'
 const ENS_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 const GOERLI_TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -30,8 +29,7 @@ describe('Address book', () => {
       // Add a new entry manually
       cy.contains('Create entry').click()
       cy.get('input[name="name"]').type(NAME)
-      cy.get('input[name="address"]').type(ENS_NAME)
-      // cy.wait(5000)
+      cy.get('input[name="address"]').type(`gor:${ENS_ADDRESS}`)
       cy.contains('button', 'Save').click()
 
       cy.contains(NAME).should('exist')
