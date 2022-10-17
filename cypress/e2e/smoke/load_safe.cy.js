@@ -16,8 +16,6 @@ const OWNER_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 describe('Load existing Safe', () => {
   before(() => {
-    window.localStorage.setItem('SAFE_v2__debugProdCgw', 'true')
-
     cy.visit('/welcome?chain=matic')
     cy.contains('Accept selection').click()
 
