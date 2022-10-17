@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { BigNumber } from 'ethers'
 import type Safe from '@gnosis.pm/safe-core-sdk'
 import { generatePreValidatedSignature } from '@gnosis.pm/safe-core-sdk/dist/src/utils/signatures'
@@ -10,6 +10,7 @@ import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import useIsSafeOwner from './useIsSafeOwner'
+import { Errors, logError } from '@/services/exceptions'
 
 export const _encodeSignatures = (safeTx: SafeTransaction, from?: string): string => {
   const owner = from?.toLowerCase()
@@ -86,6 +87,12 @@ const useGasLimit = (
       type: operationType,
     })
   }, [safeAddress, walletAddress, encodedSafeTx, web3ReadOnly, operationType])
+
+  useEffect(() => {
+    if (gasLimitError) {
+      logError(Errors._612, gasLimitError.message)
+    }
+  }, [gasLimitError])
 
   return { gasLimit, gasLimitError, gasLimitLoading }
 }
