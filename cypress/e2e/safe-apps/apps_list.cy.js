@@ -65,7 +65,7 @@ describe('The Safe Apps list', () => {
       cy.findByLabelText(/app url/i)
         .clear()
         .type('https://my-valid-custom-app.com')
-      cy.findByRole('textbox', { name: /app name/i }).should('have.value', 'My Custom App')
+      cy.findByRole('heading', { name: /my custom app/i }).should('exist')
       cy.findByRole('checkbox').click()
       cy.findByRole('button', { name: /add/i }).click()
       cy.findByText(/pinned apps \(0\)/i).should('exist')

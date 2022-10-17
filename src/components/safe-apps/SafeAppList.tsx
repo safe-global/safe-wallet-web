@@ -46,6 +46,7 @@ const SafeAppList = () => {
         collapsible
         title={`Pinned apps (${pinnedSafeApps.length})`}
         apps={pinnedSafeApps}
+        allApps={allSafeApps}
         onPinApp={togglePin}
         pinnedIds={pinnedSafeAppIds}
         cardVariant="compact"
@@ -54,6 +55,7 @@ const SafeAppList = () => {
         collapsible
         title={`Custom apps (${customSafeApps.length})`}
         apps={customSafeApps}
+        allApps={allSafeApps}
         onDeleteApp={openRemoveAppModal}
         prependAddCustomAppCard
         onAddCustomApp={addCustomApp}
@@ -61,6 +63,7 @@ const SafeAppList = () => {
       <SafeAppsSection
         title={`All (${allSafeApps.length})`}
         apps={allSafeApps}
+        allApps={allSafeApps}
         onPinApp={togglePin}
         pinnedIds={pinnedSafeAppIds}
       />
@@ -70,7 +73,9 @@ const SafeAppList = () => {
     if (filteredApps.length === 0) {
       pageBody = <SafeAppsSearchPlaceholder searchQuery={searchQuery} />
     } else {
-      pageBody = <SafeAppsSection title={`Search results (${filteredApps.length})`} apps={filteredApps} />
+      pageBody = (
+        <SafeAppsSection title={`Search results (${filteredApps.length})`} apps={filteredApps} allApps={allSafeApps} />
+      )
     }
   }
 
