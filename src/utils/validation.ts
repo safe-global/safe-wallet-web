@@ -4,7 +4,7 @@ import { parsePrefixedAddress, sameAddress } from './addresses'
 import { safeFormatUnits, safeParseUnits } from './formatters'
 
 export const validateAddress = (address: string) => {
-  const ADDRESS_RE = /^0x[0-9a-zA-Z]{40}$/
+  const ADDRESS_RE = /^0x[0-9a-f]{40}$/i
 
   if (!ADDRESS_RE.test(address)) {
     return 'Invalid address format'
