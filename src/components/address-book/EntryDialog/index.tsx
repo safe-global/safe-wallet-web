@@ -3,6 +3,7 @@ import Button from '@mui/material/Button'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import type { ReactElement } from 'react'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import AddressInput from '@/components/common/AddressInput'
@@ -38,7 +39,16 @@ const EntryDialog = ({
     defaultValues,
     mode: 'onChange',
   })
-  const { handleSubmit, formState } = methods
+
+  const { handleSubmit, formState, watch, trigger } = methods
+
+  const address = watch('address')
+
+  useEffect(() => {
+    if (address) {
+      trigger('address')
+    }
+  }, [address, trigger])
 
   const onSubmit = (data: AddressEntry) => {
     dispatch(upsertAddressBookEntry({ ...data, chainId: chainId || currentChainId }))
