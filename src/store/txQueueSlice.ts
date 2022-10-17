@@ -6,6 +6,9 @@ import type { RootState } from '@/store'
 import { makeLoadableSlice } from './common'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
+import { PendingStatus, selectPendingTxs } from './pendingTxsSlice'
+import { sameAddress } from '@/utils/addresses'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 const { slice, selector } = makeLoadableSlice('txQueue', undefined as TransactionListPage | undefined)
 
@@ -28,7 +31,6 @@ export const selectQueuedTransactionsByNonce = createSelector(
 
 const trackQueueSize = (prevState: RootState, { payload }: ReturnType<typeof txQueueSlice.actions.set>) => {
   const txQueue = selectTxQueue(prevState)
-
   if (isEqual(txQueue.data?.results, payload.data?.results)) {
     return
   }
@@ -49,6 +51,42 @@ export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) =>
   switch (action.type) {
     case txQueueSlice.actions.set.type: {
       trackQueueSize(prevState, action)
+
+      // Update proposed txs if signature was added successfully
+      const state = store.getState()
+      const pendingTxs = selectPendingTxs(state)
+
+      const { payload } = action as ReturnType<typeof txQueueSlice.actions.set>
+      const results = payload.data?.results
+      if (!results) {
+        return
+      }
+
+      for (const result of results) {
+        if (!isTransactionListItem(result)) {
+          continue
+        }
+        const id = result.transaction.id
+
+        const pendingTx = pendingTxs[id]
+        if (!pendingTx || pendingTx.status !== PendingStatus.SIGNING) {
+          continue
+        }
+
+        const awaitingSigner = pendingTx.signerAddress
+        if (!awaitingSigner) {
+          continue
+        }
+        // The transaction is waiting for a signature of awaitingSigner
+        if (
+          isMultisigExecutionInfo(result.transaction.executionInfo) &&
+          !result.transaction.executionInfo.missingSigners?.some((address) =>
+            sameAddress(address.value, awaitingSigner),
+          )
+        ) {
+          txDispatch(TxEvent.SIGNATURE_INDEXED, { txId: id })
+        }
+      }
     }
   }
 

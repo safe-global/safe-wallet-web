@@ -108,7 +108,13 @@ const AddressBookTable = () => {
 
           {isSafeOwner && (
             <Track {...ADDRESS_BOOK_EVENTS.SEND}>
-              <Button variant="contained" color="primary" size="small" onClick={() => setSelectedAddress(address)}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => setSelectedAddress(address)}
+                className={css.sendButton}
+              >
                 Send
               </Button>
             </Track>

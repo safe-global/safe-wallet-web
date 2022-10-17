@@ -55,7 +55,7 @@ export const FeaturedApps = (): ReactElement | null => {
                             <Typography fontSize="lg">{app.description}</Typography>
                           </Box>
 
-                          <Link color="primary.main" fontWeight="bold">
+                          <Link color="primary.main" fontWeight="bold" component="span">
                             Use {app.name}
                           </Link>
                         </Grid>
