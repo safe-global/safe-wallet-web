@@ -42,6 +42,24 @@ describe('useChainId hook', () => {
     expect(result.current).toEqual('43114')
   })
 
+  it('should read location.search if useRouter query.safe is empty', () => {
+    ;(useRouter as any).mockImplementation(() => ({
+      query: {},
+    }))
+
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        pathname: '/balances',
+        search: '?safe=avax:0x0000000000000000000000000000000000000123&redirect=true',
+      },
+    })
+
+    const { result } = renderHook(() => useChainId())
+
+    expect(result.current).toEqual('43114')
+  })
+
   it('should read location.search if useRouter query.chain is empty', () => {
     ;(useRouter as any).mockImplementation(() => ({
       query: {},

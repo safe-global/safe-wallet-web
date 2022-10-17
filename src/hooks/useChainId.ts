@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { parse } from 'querystring'
+import { parse, type ParsedUrlQuery } from 'querystring'
 import { IS_PRODUCTION } from '@/config/constants'
 import chains from '@/config/chains'
 import { useAppSelector } from '@/store'
@@ -8,24 +8,32 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 
 const defaultChainId = IS_PRODUCTION ? chains.eth : chains.gor
 
-// Use the location object directly because Next.js's router.query is not available initially
-const getUrlSafeParam = (): string => {
-  if (typeof location === 'undefined') return ''
-  const pathParam = location.pathname.split('/')[1]
-  const safeParam = /[a-z0-9-]+\:0x[a-f0-9]{40}/i.test(pathParam) ? pathParam : ''
-  return safeParam
-}
+// Use the location object directly because Next.js's router.query is available only in an effect
+const getLocationQuery = (): ParsedUrlQuery => {
+  if (typeof location === 'undefined') return {}
 
-const getUrlChainParam = (): string => {
-  if (typeof location === 'undefined') return ''
   const query = parse(location.search.slice(1))
-  return query.chain ? query.chain.toString() : ''
+
+  if (!query.safe) {
+    const prefixedAddressRe = /[a-z0-9-]+\:0x[a-f0-9]{40}/i
+    const pathParam = location.pathname.split('/')[1]
+    const safeParam = prefixedAddressRe.test(pathParam) ? pathParam : ''
+
+    // Path param -> query param
+    if (prefixedAddressRe.test(pathParam)) {
+      query.safe = safeParam
+    }
+  }
+
+  return query
 }
 
 export const useUrlChainId = (): string | undefined => {
   const router = useRouter()
-  const chain = router.query.chain?.toString() || getUrlChainParam()
-  const safe = router.query.safe?.toString() || getUrlSafeParam()
+  // Dynamic query params are available only in an effect
+  const query = router.query.safe || router.query.chain ? router.query : getLocationQuery()
+  const chain = query.chain?.toString() || ''
+  const safe = query.safe?.toString() || ''
 
   const { prefix } = parsePrefixedAddress(safe)
   const shortName = prefix || chain
