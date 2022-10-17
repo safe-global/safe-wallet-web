@@ -14,7 +14,7 @@ import Track from '../Track'
 import SafeTokenIcon from './safe_token.svg'
 import css from './styles.module.css'
 
-const DECIMALS = 18
+const TOKEN_DECIMALS = 18
 
 export const getSafeTokenAddress = (chainId: string): string => {
   return SAFE_TOKEN_ADDRESSES[chainId]
@@ -44,7 +44,7 @@ const SafeTokenWidget = () => {
       }
     : undefined
 
-  const flooredSafeBalance = formatVisualAmount(allocation, DECIMALS)
+  const flooredSafeBalance = formatVisualAmount(allocation, TOKEN_DECIMALS, 2)
 
   return (
     <Box className={css.buttonContainer}>
