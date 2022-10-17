@@ -73,7 +73,7 @@ describe('SafeTokenWidget', () => {
   })
 
   it('Should display the value formatted correctly', async () => {
-    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => BigNumber.from('420000691000000000000000'))
+    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => BigNumber.from('472238796133701648384'))
 
     // to avoid failing tests in some environments
     const NumberFormat = Intl.NumberFormat
@@ -83,8 +83,8 @@ describe('SafeTokenWidget', () => {
 
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
-      expect(result.baseElement).toHaveTextContent('420,000.69')
-      expect(result.baseElement).not.toHaveTextContent('420,000.691')
+      expect(result.baseElement).toHaveTextContent('472.24')
+      expect(result.baseElement).not.toHaveTextContent('472.2388')
     })
   })
 

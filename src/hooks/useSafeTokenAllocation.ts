@@ -18,18 +18,22 @@ export type VestingData = {
   proof: string[]
 }
 
-const fetchAllocation = async (chainId: string, safeAddress: string) => {
+const fetchAllocation = async (chainId: string, safeAddress: string): Promise<VestingData[]> => {
   try {
     const response = await fetch(`${VESTING_URL}${chainId}/${safeAddress}.json`)
 
-    if (response.ok) {
-      return response.json() as Promise<VestingData[]>
-    }
-
+    // No file exists => the safe is not part of any vesting
     if (response.status === 404) {
-      // No file exists => the safe is not part of any vesting
       return Promise.resolve([]) as Promise<VestingData[]>
     }
+
+    // Some other error
+    if (!response.ok) {
+      throw Error(`Error fetching vestings: ${response.statusText}`)
+    }
+
+    // Success
+    return response.json() as Promise<VestingData[]>
   } catch (err) {
     throw Error(`Error fetching vestings: ${err}`)
   }
@@ -40,10 +44,10 @@ const useSafeTokenAllocation = (): BigNumber | undefined => {
   const { safe, safeAddress } = useSafeInfo()
   const chainId = safe.chainId
 
-  const [allocationData] = useAsync<VestingData[] | undefined>(
-    () => fetchAllocation(chainId, safeAddress),
-    [chainId, safeAddress],
-  )
+  const [allocationData] = useAsync<VestingData[]>(() => {
+    if (!safeAddress) return
+    return fetchAllocation(chainId, safeAddress)
+  }, [chainId, safeAddress])
 
   useEffect(() => {
     if (!allocationData) return
