@@ -46,7 +46,7 @@ type CustomAppFormData = {
 
 const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
 
-const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
+export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const currentChain = useCurrentChain()
   const {
     register,
@@ -175,5 +175,3 @@ const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
     </ModalDialog>
   )
 }
-
-export { AddCustomAppModal }
