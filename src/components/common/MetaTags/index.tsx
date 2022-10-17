@@ -7,7 +7,7 @@ const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
   <>
     <meta
       name="description"
-      content="Safe is the most trusted platform to manage digital assets on Ethereum (formerly known as the Gnosis Safe multisig)."
+      content="Celo Safe is the most trusted platform to manage digital assets on Celo (forked of the Gnosis Safe multisig project)."
     />
 
     {/* CSP */}
