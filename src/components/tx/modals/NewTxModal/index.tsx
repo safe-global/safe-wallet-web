@@ -21,9 +21,9 @@ const TxButton = (props: ButtonProps) => (
 )
 
 const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
-  const [remoteApps] = useRemoteSafeApps()
+  const [matchingApps] = useRemoteSafeApps(SafeAppsTag.TX_BUILDER)
   const router = useRouter()
-  const app = remoteApps?.find((app) => app.tags?.includes(SafeAppsTag.TX_BUILDER))
+  const app = matchingApps?.[0] || undefined
 
   return {
     app,

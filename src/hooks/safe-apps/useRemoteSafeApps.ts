@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { SafeAppsResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getSafeApps } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Errors, logError } from '@/services/exceptions'
 import useChainId from '@/hooks/useChainId'
 import type { AsyncResult } from '../useAsync'
 import useAsync from '../useAsync'
+import type { SafeAppsTag } from '@/config/constants'
 
 // To avoid multiple simultaneous requests (e.g. the Dashboard and the SAFE header widget),
 // cache the request promise for 100ms
@@ -22,7 +23,7 @@ const cachedGetSafeApps = (chainId: string): ReturnType<typeof getSafeApps> | un
   return cache[chainId]
 }
 
-const useRemoteSafeApps = (): AsyncResult<SafeAppsResponse> => {
+const useRemoteSafeApps = (tag?: SafeAppsTag): AsyncResult<SafeAppsResponse> => {
   const chainId = useChainId()
 
   const [remoteApps, error, loading] = useAsync(async () => {
@@ -36,7 +37,12 @@ const useRemoteSafeApps = (): AsyncResult<SafeAppsResponse> => {
     }
   }, [error])
 
-  return [remoteApps, error, loading]
+  const apps = useMemo(() => {
+    if (!remoteApps) return
+    return tag ? remoteApps.filter((app) => app.tags.includes(tag)) : remoteApps
+  }, [remoteApps, tag])
+
+  return [apps, error, loading]
 }
 
 export { useRemoteSafeApps }

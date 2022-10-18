@@ -53,8 +53,8 @@
       'empty confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations'
       'empty status status status status status status status status status status status'
       'empty actions actions actions actions actions actions actions actions actions actions actions';
-    }
-    
+  }
+
   .columnTemplateWithoutNonce {
     grid-template-columns: repeat(12, 1fr);
     grid-template-areas:
@@ -69,7 +69,7 @@
   .columnTemplateTxHistory {
     grid-template-columns: repeat(12, 1fr);
     grid-template-areas:
-      'nonce type type type type type type type type type type type' 
+      'nonce type type type type type type type type type type type'
       'empty info info info info info info info info info info info'
       'empty date date date date date date date date date date date'
       'empty status status status status status status status status status status status';
