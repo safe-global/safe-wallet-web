@@ -99,11 +99,9 @@ type PageviewGtmEvent = GtmEvent & {
 }
 
 const gtmSend = (event: GtmEvent): void => {
-  console.info('[Analytics]', event)
-
-  if (!isGtmLoaded()) return
-
-  TagManager.dataLayer(event)
+  // console.info('[Analytics]', event)
+  // if (!isGtmLoaded()) return
+  // TagManager.dataLayer(event)
 }
 
 export const gtmTrack = (eventData: AnalyticsEvent): void => {

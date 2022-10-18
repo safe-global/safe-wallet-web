@@ -3,22 +3,20 @@ import { INFURA_TOKEN, SAFE_APPS_INFURA_TOKEN } from '@/config/constants'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { JsonRpcProvider, Web3Provider, Formatter } from '@ethersproject/providers'
 import ExternalStore from '@/services/ExternalStore'
-import { BigNumber, providers, utils } from "ethers";
+import { BigNumber, Contract, providers, utils } from 'ethers'
+import * as gasPriceMinimumInfo from '@/contracts/gas_price_minimum'
+import * as blockchainParametersInfo from '@/contracts/blockchain_parameters'
 
 class CeloJsonRpcProvider extends JsonRpcProvider {
-  
-  constructor(
-    url?: utils.ConnectionInfo | string,
-    network?: providers.Networkish
-  ) {
-    super(url, network);
+  constructor(url?: utils.ConnectionInfo | string, network?: providers.Networkish) {
+    super(url, network)
 
     // Override certain block formatting properties that don't exist on Celo blocks
     // Reaches into https://github.com/ethers-io/ethers.js/blob/master/packages/providers/src.ts/formatter.ts
-    const blockFormat = this.formatter.formats.block;
-    blockFormat.gasLimit = () => BigNumber.from(0);
-    blockFormat.nonce = () => "";
-    blockFormat.difficulty = () => 0;
+    const blockFormat = this.formatter.formats.block
+    blockFormat.gasLimit = () => BigNumber.from(0)
+    blockFormat.nonce = () => ''
+    blockFormat.difficulty = () => 0
   }
 
   // _block(value: any, format: any): any {
@@ -32,13 +30,12 @@ class CeloJsonRpcProvider extends JsonRpcProvider {
   //   return result
   // }
 
-
   async getGasPrice(): Promise<BigNumber> {
     await this.getNetwork()
 
     const result = await this.perform('getGasPrice', {})
     console.log(result, BigNumber.from(result))
-    debugger
+    // debugger
     try {
       return BigNumber.from(result)
     } catch (error) {
@@ -48,26 +45,57 @@ class CeloJsonRpcProvider extends JsonRpcProvider {
 
   async getFeeData(): Promise<any> {
     const { block, gasPrice } = {
-        block: await this.getBlock("latest"),
-        gasPrice: await this.getGasPrice().catch((error) => {
-            // @TODO: Why is this now failing on Calaveras?
-            //console.log(error);
-            return null;
-        })
+      block: await this.getBlock('latest'),
+      gasPrice: await this.getGasPrice().catch((error) => {
+        // @TODO: Why is this now failing on Calaveras?
+        //console.log(error);
+        return null
+      }),
     }
 
-    let lastBaseFeePerGas = null, maxFeePerGas = null, maxPriorityFeePerGas = null;
+    let lastBaseFeePerGas = null,
+      maxFeePerGas = null,
+      maxPriorityFeePerGas = null
 
-    if (block && block.baseFeePerGas) {
-        // We may want to compute this more accurately in the future,
-        // using the formula "check if the base fee is correct".
-        // See: https://eips.ethereum.org/EIPS/eip-1559
-        lastBaseFeePerGas = block.baseFeePerGas;
-        maxPriorityFeePerGas = BigNumber.from("1500000000");
-        maxFeePerGas = block.baseFeePerGas.mul(2).add(maxPriorityFeePerGas);
+    const gasPriceMinimumContract = new Contract(gasPriceMinimumInfo.proxyAddress, gasPriceMinimumInfo.ABI, this)
+    const blockchainParametersContract = new Contract(
+      blockchainParametersInfo.proxyAddress,
+      blockchainParametersInfo.ABI,
+      this,
+    )
+    const gasPriceMinimum: BigNumber = await gasPriceMinimumContract.getGasPriceMinimum(
+      '0x471EcE3750Da237f93B8E339c536989b8978a438',
+    ) // TODO: replace GoldToken address
+
+    // TODO: try to use getUpdatedGasPriceMinimum(uint256 blockGasTotal, uint256 blockGasLimit) instead
+
+    // if (block && block.baseFeePerGas) {
+    //   // We may want to compute this more accurately in the future,
+    //   // using the formula "check if the base fee is correct".
+    //   // See: https://eips.ethereum.org/EIPS/eip-1559
+    //   lastBaseFeePerGas = block.baseFeePerGas
+    //   maxPriorityFeePerGas = BigNumber.from('1500000000')
+    //   maxFeePerGas = block.baseFeePerGas.mul(2).add(maxPriorityFeePerGas)
+    // }
+
+    console.log(gasPriceMinimum)
+
+    return { lastBaseFeePerGas, maxFeePerGas, maxPriorityFeePerGas, gasPrice: gasPriceMinimum }
+  }
+
+  async estimateGas(transaction) {
+    await this.getNetwork()
+    const params = {
+      transaction: await this._getTransactionRequest(transaction),
     }
 
-    return { lastBaseFeePerGas, maxFeePerGas, maxPriorityFeePerGas, gasPrice };
+    const result = await this.perform('estimateGas', params)
+    try {
+      debugger
+      return BigNumber.from(result)
+    } catch (error) {
+      debugger
+    }
   }
 }
 

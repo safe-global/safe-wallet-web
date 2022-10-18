@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { BigNumber } from 'ethers'
+import { BigNumber } from 'ethers'
 import type Safe from '@gnosis.pm/safe-core-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { OperationType } from '@gnosis.pm/safe-core-sdk-types'
@@ -85,19 +85,15 @@ const useGasLimit = (
     [safeTx?.data.operation],
   )
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>( () => {
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync(() => {
     if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return
 
-    // console.log("")
-    // console.log(web3ReadOnly.getFeeData(), "volpe")
-    web3ReadOnly.getFeeData().then(console.log).catch(console.error)
     return web3ReadOnly.estimateGas({
       to: safeAddress,
       from: walletAddress,
       data: encodedSafeTx,
       type: operationType,
     })
-    // return Promise.resolve(BigNumber.from("20000000"))
   }, [safeAddress, walletAddress, encodedSafeTx, web3ReadOnly, operationType])
 
   return { gasLimit, gasLimitError, gasLimitLoading }
