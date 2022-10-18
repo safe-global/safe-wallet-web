@@ -9,6 +9,7 @@ import { Errors, logError } from '@/services/exceptions'
 import { POLLING_INTERVAL } from '@/config/constants'
 
 export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
+  // setBaseUrl()
   const address = useSafeAddress()
   const chainId = useChainId()
   const [pollCount, resetPolling] = useIntervalCounter(POLLING_INTERVAL)

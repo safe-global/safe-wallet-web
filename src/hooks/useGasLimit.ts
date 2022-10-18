@@ -85,15 +85,19 @@ const useGasLimit = (
     [safeTx?.data.operation],
   )
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>(() => {
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>( () => {
     if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return
 
+    // console.log("")
+    // console.log(web3ReadOnly.getFeeData(), "volpe")
+    web3ReadOnly.getFeeData().then(console.log).catch(console.error)
     return web3ReadOnly.estimateGas({
       to: safeAddress,
       from: walletAddress,
       data: encodedSafeTx,
       type: operationType,
     })
+    // return Promise.resolve(BigNumber.from("20000000"))
   }, [safeAddress, walletAddress, encodedSafeTx, web3ReadOnly, operationType])
 
   return { gasLimit, gasLimitError, gasLimitLoading }

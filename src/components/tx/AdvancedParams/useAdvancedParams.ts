@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import useGasPrice from '@/hooks/useGasPrice'
 import { type AdvancedParameters } from './types'
 import useUserNonce from './useUserNonce'
+import { BigNumber } from 'ethers'
 
 export const useAdvancedParams = ({
   nonce,
@@ -16,9 +17,9 @@ export const useAdvancedParams = ({
     () => ({
       nonce: manualParams?.nonce ?? nonce,
       userNonce: manualParams?.userNonce ?? userNonce,
-      gasLimit: manualParams?.gasLimit ?? gasLimit,
-      maxFeePerGas: manualParams?.maxFeePerGas ?? maxFeePerGas,
-      maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas ?? maxPriorityFeePerGas,
+      gasLimit: BigNumber.from(0), //"manualParams?.gasLimit ?? gasLimit",
+      maxFeePerGas: BigNumber.from(100000000),
+      maxPriorityFeePerGas: BigNumber.from(100000000),
       safeTxGas: manualParams?.safeTxGas ?? safeTxGas,
     }),
     [manualParams, nonce, userNonce, gasLimit, maxFeePerGas, maxPriorityFeePerGas, safeTxGas],
