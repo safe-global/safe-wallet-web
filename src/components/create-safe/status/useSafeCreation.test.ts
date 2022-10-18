@@ -220,4 +220,14 @@ describe('getTransactionByHash', () => {
       expect((err as Error).message).toBe('Transaction not found')
     }
   })
+
+  it('throws an error if getTransaction returns undefined', async () => {
+    jest.spyOn(provider, 'getTransaction').mockImplementationOnce(() => Promise.resolve(undefined) as any)
+
+    try {
+      await _getTransactionByHash(provider, '0x0')
+    } catch (err) {
+      expect((err as Error).message).toBe('Transaction not found')
+    }
+  })
 })

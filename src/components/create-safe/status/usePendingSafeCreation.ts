@@ -26,11 +26,11 @@ export const pollSafeInfo = async (chainId: string, safeAddress: string): Promis
 }
 
 export const _getTransactionByHash = (provider: JsonRpcProvider, txHash: string) => {
-  return provider.getTransaction(txHash).then((resp) => {
-    if (resp === null) {
+  return provider.getTransaction(txHash).then((response) => {
+    if (response === null || response === undefined) {
       throw new Error('Transaction not found')
     }
-    return resp
+    return response
   })
 }
 
