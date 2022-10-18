@@ -4,10 +4,10 @@ import styled from '@emotion/styled'
 import { Box, Grid, Typography, Link } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import { useRouter } from 'next/router'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import NextLink from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
+import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 
 const StyledImage = styled.img`
   width: 64px;
@@ -23,14 +23,14 @@ const StyledGridItem = styled(Grid)`
 `
 
 export const FeaturedApps = (): ReactElement | null => {
-  const [allApps = [], , isLoading] = useRemoteSafeApps()
+  const { remoteSafeApps, remoteSafeAppsLoading } = useSafeApps()
   const router = useRouter()
   const featuredApps = useMemo(
-    () => allApps.filter((app) => app.tags?.includes(SafeAppsTag.DASHBOARD_FEATURED)),
-    [allApps],
+    () => remoteSafeApps.filter((app) => app.tags?.includes(SafeAppsTag.DASHBOARD_FEATURED)),
+    [remoteSafeApps],
   )
 
-  if (!featuredApps.length && !isLoading) return null
+  if (!featuredApps.length && !remoteSafeAppsLoading) return null
 
   return (
     <Grid item xs={12} md>
