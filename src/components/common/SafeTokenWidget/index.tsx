@@ -1,6 +1,6 @@
 import { SafeAppsTag, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import useChainId from '@/hooks/useChainId'
 import useSafeTokenAllocation from '@/hooks/useSafeTokenAllocation'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
@@ -8,7 +8,6 @@ import { formatVisualAmount } from '@/utils/formatters'
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useMemo } from 'react'
 import type { UrlObject } from 'url'
 import Track from '../Track'
 import SafeTokenIcon from './safe_token.svg'
@@ -23,12 +22,8 @@ export const getSafeTokenAddress = (chainId: string): string => {
 const SafeTokenWidget = () => {
   const chainId = useChainId()
   const router = useRouter()
-  const apps = useSafeApps()
-
-  const claimingApp = useMemo(
-    () => apps.allSafeApps.find((appData) => appData.tags.includes(SafeAppsTag.SAFE_CLAIMING_APP)),
-    [apps.allSafeApps],
-  )
+  const [apps] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
+  const claimingApp = apps?.[0]
 
   const allocation = useSafeTokenAllocation()
 
@@ -40,7 +35,7 @@ const SafeTokenWidget = () => {
   const url: UrlObject | undefined = claimingApp
     ? {
         pathname: AppRoutes.apps,
-        query: { safe: router.query.safe, appUrl: claimingApp?.url },
+        query: { safe: router.query.safe, appUrl: claimingApp.url },
       }
     : undefined
 

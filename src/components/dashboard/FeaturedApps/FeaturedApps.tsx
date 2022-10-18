@@ -1,13 +1,12 @@
 import type { ReactElement } from 'react'
-import { useMemo } from 'react'
 import styled from '@emotion/styled'
 import { Box, Grid, Typography, Link } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import { useRouter } from 'next/router'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import NextLink from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 
 const StyledImage = styled.img`
   width: 64px;
@@ -23,14 +22,10 @@ const StyledGridItem = styled(Grid)`
 `
 
 export const FeaturedApps = (): ReactElement | null => {
-  const [allApps = [], , isLoading] = useRemoteSafeApps()
   const router = useRouter()
-  const featuredApps = useMemo(
-    () => allApps.filter((app) => app.tags?.includes(SafeAppsTag.DASHBOARD_FEATURED)),
-    [allApps],
-  )
+  const [featuredApps, _, remoteSafeAppsLoading] = useRemoteSafeApps(SafeAppsTag.DASHBOARD_FEATURED)
 
-  if (!featuredApps.length && !isLoading) return null
+  if (!featuredApps?.length && !remoteSafeAppsLoading) return null
 
   return (
     <Grid item xs={12} md>
@@ -40,7 +35,7 @@ export const FeaturedApps = (): ReactElement | null => {
         </Typography>
         <WidgetBody>
           <StyledGrid container>
-            {featuredApps.map((app) => (
+            {featuredApps?.map((app) => (
               <StyledGridItem item xs md key={app.id}>
                 <NextLink passHref href={{ pathname: AppRoutes.apps, query: { ...router.query, appUrl: app.url } }}>
                   <a>
