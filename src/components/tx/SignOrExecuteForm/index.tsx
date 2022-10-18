@@ -169,18 +169,21 @@ const SignOrExecuteForm = ({
   }
 
   // On advanced params submit (nonce, gas limit, price, etc)
-  const onAdvancedSubmit = useCallback(async (data: AdvancedParameters) => {
-    // If nonce was edited, create a new tx with that nonce
-    if (tx && (data.nonce !== tx.data.nonce || data.safeTxGas !== tx.data.safeTxGas)) {
-      try {
-        setTx(await createTx({ ...tx.data, safeTxGas: data.safeTxGas }, data.nonce))
-      } catch (err) {
-        logError(Errors._103, (err as Error).message)
-        return
+  const onAdvancedSubmit = useCallback(
+    async (data: AdvancedParameters) => {
+      // If nonce was edited, create a new tx with that nonce
+      if (tx && (data.nonce !== tx.data.nonce || data.safeTxGas !== tx.data.safeTxGas)) {
+        try {
+          setTx(await createTx({ ...tx.data, safeTxGas: data.safeTxGas }, data.nonce))
+        } catch (err) {
+          logError(Errors._103, (err as Error).message)
+          return
+        }
       }
-    }
-    setAdvancedParams(data)
-  }, [tx])
+      setAdvancedParams(data)
+    },
+    [tx, setAdvancedParams],
+  )
 
   // Update the nonce when making a draft tx
   useEffect(() => {
