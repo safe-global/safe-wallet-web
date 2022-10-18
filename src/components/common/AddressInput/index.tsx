@@ -11,9 +11,9 @@ import { hasFeature } from '@/utils/chains'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import useDebounce from '@/hooks/useDebounce'
 
-export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
+export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string>; deps?: string | string[] }
 
-const AddressInput = ({ name, validate, required = true, ...props }: AddressInputProps): ReactElement => {
+const AddressInput = ({ name, validate, required = true, deps, ...props }: AddressInputProps): ReactElement => {
   const {
     register,
     setValue,
@@ -42,12 +42,7 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
   const validatePrefixed = useMemo(() => validatePrefixedAddress(currentShortName), [currentShortName])
 
   // Update the input value
-  const setAddressValue = useCallback(
-    (value: string) => {
-      setValue(name, value, { shouldValidate: true })
-    },
-    [setValue, name],
-  )
+  const setAddressValue = useCallback((value: string) => setValue(name, value), [setValue, name])
 
   // On ENS resolution, update the input value
   useEffect(() => {
@@ -86,6 +81,8 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
           }}
           required={required}
           {...register(name, {
+            deps,
+
             required,
 
             setValueAs: (value: string): string => {

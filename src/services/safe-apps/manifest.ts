@@ -52,12 +52,7 @@ const getAppLogoUrl = (appUrl: string, { icons = [], iconPath = '' }: AppManifes
     return iconUrl
   }
 
-  if (isRelativeUrl(iconUrl)) {
-    const appUrlHost = new URL(appUrl).host
-    return `${appUrlHost}${iconUrl}`
-  }
-
-  return `${appUrl}/${iconUrl}`
+  return `${appUrl}${isRelativeUrl(iconUrl) ? '' : '/'}${iconUrl}`
 }
 
 const fetchAppManifest = async (appUrl: string, timeout = 5000): Promise<unknown> => {

@@ -7,6 +7,7 @@ import type { SectionProps } from './types'
 const DefaultSection = ({
   title,
   apps,
+  allApps,
   prependAddCustomAppCard = false,
   onAddCustomApp,
   onPinApp,
@@ -34,7 +35,7 @@ const DefaultSection = ({
       </Grid>
       {prependAddCustomAppCard && onAddCustomApp && (
         <Grid item xs={12} sm={6} md={3} xl={1.5}>
-          <AddCustomAppCard onSave={onAddCustomApp} safeAppList={apps} />
+          <AddCustomAppCard onSave={onAddCustomApp} safeAppList={allApps} />
         </Grid>
       )}
 
