@@ -7,6 +7,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
+import type { IconButtonTypeMap } from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ShareIcon from '@/public/images/common/share.svg'
@@ -54,6 +55,60 @@ const enum AppCardVariantAspectRatio {
   compact = '1 / 1',
   default = 'auto',
 }
+
+const DeleteButton = ({ safeApp, onDelete }: { safeApp: SafeAppData; onDelete: (app: SafeAppData) => void }) => (
+  <IconButton
+    aria-label={`Delete ${safeApp.name}`}
+    size="small"
+    onClick={(event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      onDelete(safeApp)
+    }}
+  >
+    <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
+  </IconButton>
+)
+
+const ShareButton = ({
+  className,
+  shareUrl,
+  appName,
+}: {
+  className?: string
+  shareUrl: string
+  appName: string
+}): ReactElement => (
+  <CopyButton text={shareUrl} initialToolTipText={`Copy share URL for ${appName}`} className={className}>
+    <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
+  </CopyButton>
+)
+
+const PinButton = ({
+  pinned,
+  safeApp,
+  onPin,
+  sx,
+}: {
+  pinned: boolean
+  safeApp: SafeAppData
+  onPin: (id: SafeAppData['id']) => void
+  sx?: IconButtonTypeMap['props']['sx']
+}) => (
+  <IconButton
+    aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
+    size="small"
+    onClick={(event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      onPin(safeApp.id)
+    }}
+    title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
+    sx={sx}
+  >
+    <SvgIcon component={BookmarkIcon} inheritViewBox color={pinned ? 'primary' : 'border'} fontSize="small" />
+  </IconButton>
+)
 
 const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): ReactElement => {
   const height = variant === 'compact' ? AppCardVariantHeights.compact : AppCardVariantHeights.default
@@ -103,29 +158,16 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
       />
 
       {/* Share button */}
-      <CopyButton
-        text={shareUrl}
-        initialToolTipText={`Copy share URL for ${safeApp.name}`}
-        className={styles.compactShareButton}
-      >
-        <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
-      </CopyButton>
+      <ShareButton className={styles.compactShareButton} shareUrl={shareUrl} appName={safeApp.name} />
 
       {/* Pin/unpin button */}
       {onPin && (
-        <IconButton
-          aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
-          size="small"
-          onClick={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            onPin(safeApp.id)
-          }}
-          title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
+        <PinButton
+          pinned={Boolean(pinned)}
+          safeApp={safeApp}
+          onPin={onPin}
           sx={{ position: 'absolute', top: 2, right: 2 }}
-        >
-          <SvgIcon component={BookmarkIcon} inheritViewBox color={pinned ? 'primary' : 'border'} fontSize="small" />
-        </IconButton>
+        />
       )}
     </div>
   </AppCardContainer>
@@ -170,45 +212,13 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
         action={
           <>
             {/* Share button */}
-            <CopyButton text={shareUrl} initialToolTipText={`Copy share URL for ${safeApp.name}`}>
-              <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
-            </CopyButton>
+            <ShareButton shareUrl={shareUrl} appName={safeApp.name} />
 
             {/* Pin/unpin button */}
-            {onPin && (
-              <IconButton
-                aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
-                onClick={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  onPin(safeApp.id)
-                }}
-                title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
-                size="small"
-              >
-                <SvgIcon
-                  component={BookmarkIcon}
-                  inheritViewBox
-                  color={pinned ? 'primary' : 'border'}
-                  fontSize="small"
-                />
-              </IconButton>
-            )}
+            {onPin && <PinButton pinned={Boolean(pinned)} safeApp={safeApp} onPin={onPin} />}
 
             {/* Delete custom app button */}
-            {onDelete && (
-              <IconButton
-                aria-label={`Delete ${safeApp.name}`}
-                size="small"
-                onClick={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  onDelete(safeApp)
-                }}
-              >
-                <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
-              </IconButton>
-            )}
+            {onDelete && <DeleteButton onDelete={onDelete} safeApp={safeApp} />}
           </>
         }
       />
