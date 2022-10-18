@@ -25,6 +25,27 @@ export const pollSafeInfo = async (chainId: string, safeAddress: string): Promis
   })
 }
 
+export const _getTransactionByHash = (provider: JsonRpcProvider, txHash: string) => {
+  return provider.getTransaction(txHash).then((resp) => {
+    if (resp === null) {
+      throw new Error('Transaction not found')
+    }
+    return resp
+  })
+}
+
+const pollTransaction = async (provider: JsonRpcProvider, txHash: string) => {
+  return backOff(() => _getTransactionByHash(provider, txHash), {
+    startingDelay: 750,
+    maxDelay: 10000,
+    numOfAttempts: 10,
+    retry: (e) => {
+      console.info('waiting for transaction', e)
+      return true
+    },
+  })
+}
+
 export const checkSafeCreationTx = async (
   provider: JsonRpcProvider,
   txHash: string,
@@ -33,15 +54,7 @@ export const checkSafeCreationTx = async (
   const TIMEOUT_TIME = 6.5 * 60 * 1000 // 6.5 minutes
 
   try {
-    const txResponse = await provider.getTransaction(txHash)
-
-    if (!txResponse) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(SafeCreationStatus.TIMEOUT)
-        }, TIMEOUT_TIME)
-      })
-    }
+    const txResponse = await pollTransaction(provider, txHash)
 
     const proxyContractAddress = getProxyFactoryContractInstance(chainId).getAddress()
 
