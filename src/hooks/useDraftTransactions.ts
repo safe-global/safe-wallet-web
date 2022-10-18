@@ -7,7 +7,8 @@ import type { Transaction, TransactionListItem, TransactionListPage } from '@gno
 import { getTransactionQueue } from '@gnosis.pm/safe-react-gateway-sdk'
 import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
-import { isTransactionListItem } from '@/utils/transaction-guards'
+import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
+import useTxQueue from './useTxQueue'
 
 export const useInitDraftTransactions = () => {
   const chainId = useChainId()
@@ -75,3 +76,25 @@ const useDraftTransactions = (
 }
 
 export default useDraftTransactions
+
+export const useLatestDraftNonce = (): number => {
+  const { safe } = useSafeInfo()
+  const { page: draftsPage } = useDraftTransactions()
+  const { page: queuePage } = useTxQueue()
+
+  const latestNonce = useMemo(() => {
+    if (!safe || !draftsPage || !queuePage) return safe.nonce
+
+    const allResults = draftsPage.results.concat(queuePage.results)
+
+    return allResults.reduce((acc, item) => {
+      if (isTransactionListItem(item) && isMultisigExecutionInfo(item.transaction.executionInfo)) {
+        const { nonce } = item.transaction.executionInfo
+        return nonce > acc ? nonce : acc
+      }
+      return acc
+    }, safe.nonce - 1)
+  }, [safe, draftsPage, queuePage])
+
+  return latestNonce + 1
+}

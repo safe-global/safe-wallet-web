@@ -28,6 +28,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import SignCheckbox from '../SignCheckbox'
+import { useLatestDraftNonce } from '@/hooks/useDraftTransactions'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -60,6 +61,8 @@ const SignOrExecuteForm = ({
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const latestDraftNonce = useLatestDraftNonce()
+  const initialNonce = safeTx?.data.nonce
 
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
@@ -180,6 +183,12 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
+  // Update the nonce when making a draft tx
+  useEffect(() => {
+    if (!tx) return
+    onAdvancedSubmit({ ...tx.data, nonce: shouldSign ? initialNonce : latestDraftNonce })
+  }, [shouldSign, tx, initialNonce])
+
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose
   const error = props.error || (willExecute && gasLimitError)
@@ -202,7 +211,7 @@ const SignOrExecuteForm = ({
         <AdvancedParams
           params={advancedParams}
           recommendedGasLimit={gasLimit}
-          recommendedNonce={safeTx?.data.nonce}
+          recommendedNonce={initialNonce}
           willExecute={willExecute}
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
