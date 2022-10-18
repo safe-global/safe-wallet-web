@@ -27,8 +27,7 @@
 .columnTemplate {
   grid-template-columns: repeat(12, 1fr);
   grid-template-areas:
-    'nonce type type type type type type type type type confirmations icon'
-    'empty info info info info info info info info info info info';
+    'nonce type type type type type type info info info confirmations icon';
 }
 
 .columnWrap {
@@ -39,5 +38,11 @@
 @media (max-width: 600px) {
   .confirmationsCount {
     padding: 4px var(--space-1);
+  }
+
+  .columnTemplate {
+    grid-template-areas:
+      'nonce type type type type type type type type type confirmations icon'
+      'empty info info info info info info info info info info info';
   }
 }
