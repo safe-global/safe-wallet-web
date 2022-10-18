@@ -21,6 +21,7 @@
   font-size: 12px;
   background-color: var(--color-secondary-light);
   color: var(--color-static-main);
+  text-align: center;
 }
 
 .columnTemplate {
