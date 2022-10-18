@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
+import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState, useCallback } from 'react'
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
@@ -169,7 +169,7 @@ const SignOrExecuteForm = ({
   }
 
   // On advanced params submit (nonce, gas limit, price, etc)
-  const onAdvancedSubmit = async (data: AdvancedParameters) => {
+  const onAdvancedSubmit = useCallback(async (data: AdvancedParameters) => {
     // If nonce was edited, create a new tx with that nonce
     if (tx && (data.nonce !== tx.data.nonce || data.safeTxGas !== tx.data.safeTxGas)) {
       try {
@@ -179,15 +179,14 @@ const SignOrExecuteForm = ({
         return
       }
     }
-
     setAdvancedParams(data)
-  }
+  }, [tx])
 
   // Update the nonce when making a draft tx
   useEffect(() => {
     if (!tx) return
     onAdvancedSubmit({ ...tx.data, nonce: shouldSign ? initialNonce : latestDraftNonce })
-  }, [shouldSign, tx, initialNonce])
+  }, [shouldSign, tx, initialNonce, latestDraftNonce, onAdvancedSubmit])
 
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose
