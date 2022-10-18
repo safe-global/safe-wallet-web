@@ -59,6 +59,9 @@ const NetworkSelector = (): ReactElement => {
         },
       }}
       sx={{
+        '& .MuiSelect-select': {
+          py: 0,
+        },
         '& svg path': {
           fill: ({ palette }) => palette.border.main,
         },
