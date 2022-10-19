@@ -18,33 +18,35 @@ type PendingTxType = {
 const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {
   return (
     <NextLink href={url} passHref>
-      <Box className={classNames(css.gridContainer, css.columnTemplate)}>
-        <Box gridArea="nonce">
-          {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
-        </Box>
+      <a>
+        <Box className={classNames(css.gridContainer, css.columnTemplate)}>
+          <Box gridArea="nonce">
+            {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
+          </Box>
 
-        <Box gridArea="type" className={css.columnWrap}>
-          <TxType tx={transaction} />
-        </Box>
+          <Box gridArea="type" className={css.columnWrap}>
+            <TxType tx={transaction} />
+          </Box>
 
-        <Box gridArea="info" className={css.columnWrap}>
-          <TxInfo info={transaction.txInfo} />
-        </Box>
+          <Box gridArea="info" className={css.columnWrap}>
+            <TxInfo info={transaction.txInfo} />
+          </Box>
 
-        <Box gridArea="confirmations">
-          {isMultisigExecutionInfo(transaction.executionInfo) ? (
-            <Box className={css.confirmationsCount}>
-              {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
-            </Box>
-          ) : (
-            <Box flexGrow={1} />
-          )}
-        </Box>
+          <Box gridArea="confirmations">
+            {isMultisigExecutionInfo(transaction.executionInfo) ? (
+              <Box className={css.confirmationsCount}>
+                {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
+              </Box>
+            ) : (
+              <Box flexGrow={1} />
+            )}
+          </Box>
 
-        <Box gridArea="icon" marginLeft="12px">
-          <ChevronRight color="border" />
+          <Box gridArea="icon" marginLeft="12px">
+            <ChevronRight color="border" />
+          </Box>
         </Box>
-      </Box>
+      </a>
     </NextLink>
   )
 }

@@ -3,7 +3,7 @@
   display:grid;
   grid-gap: 4px;
   align-items: center;
-  padding: 12px 16px;
+  padding: 8px 16px;
   background-color: var(--color-background-paper);
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
