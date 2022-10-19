@@ -23,7 +23,7 @@ import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
-import { isSameUrl } from '@/utils/url'
+import { isSameUrl, trimTrailingSlash } from '@/utils/url'
 import { AppRoutes } from '@/config/routes'
 import CustomAppPlaceholder from './CustomAppPlaceholder'
 import CustomApp from './CustomApp'
@@ -45,6 +45,9 @@ type CustomAppFormData = {
 }
 
 const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
+const APP_ALREADY_IN_THE_LIST_ERROR = 'This app is already in the list'
+const MANIFEST_ERROR = "The app doesn't support Safe App functionality"
+const INVALID_URL_ERROR = 'The url is invalid'
 
 export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const currentChain = useCurrentChain()
@@ -53,7 +56,6 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
     handleSubmit,
     formState: { errors, isValid },
     watch,
-    setError,
     reset,
   } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false }, mode: 'onChange' })
 
@@ -67,15 +69,12 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
   }
 
   const appUrl = watch('appUrl')
-  const debouncedUrl = useDebounce(appUrl, 300)
+  const debouncedUrl = useDebounce(trimTrailingSlash(appUrl || ''), 300)
 
-  const [safeApp] = useAsync<SafeAppData | undefined>(() => {
+  const [safeApp, manifestError] = useAsync<SafeAppData | undefined>(() => {
     if (!isValidURL(debouncedUrl)) return
 
-    return fetchSafeAppFromManifest(debouncedUrl, currentChain?.chainId || '').catch(() => {
-      setError('appUrl', { type: 'custom', message: "The app doesn't support Safe App functionality" })
-      return undefined
-    })
+    return fetchSafeAppFromManifest(debouncedUrl, currentChain?.chainId || '')
   }, [currentChain, debouncedUrl])
 
   const handleClose = () => {
@@ -108,9 +107,9 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
               {...register('appUrl', {
                 required: true,
                 validate: {
-                  validUrl: (val: string) => (isValidURL(val) ? undefined : 'Invalid URL'),
+                  validUrl: (val: string) => (isValidURL(val) ? undefined : INVALID_URL_ERROR),
                   alreadyExists: (val: string) =>
-                    isAppAlreadyInTheList(val) ? 'This app is already in the list' : undefined,
+                    isAppAlreadyInTheList(val) ? APP_ALREADY_IN_THE_LIST_ERROR : undefined,
                 },
               })}
             />
@@ -145,7 +144,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
                   )}
                 </>
               ) : (
-                <CustomAppPlaceholder error={errors?.appUrl?.type === 'custom' ? errors.appUrl.message : ''} />
+                <CustomAppPlaceholder error={isValidURL(debouncedUrl) && manifestError ? MANIFEST_ERROR : ''} />
               )}
             </Box>
           </div>
