@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -22,12 +22,12 @@ export const ConnectWalletContent = ({
   wallet: ConnectedWallet | null
   isWrongChain: boolean
 }) => {
-  const showDownload = useRef(false)
+  const [showDownload, setShowDownload] = useState(false)
   const chain = useCurrentChain()
   const isSupported = isPairingSupported(chain?.disabledWallets)
 
   setTimeout(() => {
-    showDownload.current = isAppleMobileDevice()
+    setShowDownload(isAppleMobileDevice())
   })
 
   return (
@@ -51,7 +51,7 @@ export const ConnectWalletContent = ({
               </div>
             )}
 
-            {showDownload.current && (
+            {showDownload && (
               <Box className={css.showMobile}>
                 <Divider flexItem />
                 <Typography variant="h5">Download the app</Typography>
