@@ -27,7 +27,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@gnosis.pm/safe-core-sdk/dist/src/utils'
-import useSafeTxGas from '@/hooks/useSafeTxGas'
+import useIsValidExecution from '@/hooks/useIsValidExecution'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -81,8 +81,8 @@ const SignOrExecuteForm = ({
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
-  // FIXME: Can we validate this elsewhere?
-  const { safeTxGasError } = useSafeTxGas({ isRejection, safeTx })
+  // Check if transaction will fail
+  const { isValidExecutionError, isValidExecutionLoading } = useIsValidExecution(willExecute ? tx : undefined)
 
   const [advancedParams, setAdvancedParams] = useAdvancedParams({
     nonce: tx?.data.nonce,
@@ -91,7 +91,7 @@ const SignOrExecuteForm = ({
   })
 
   // Estimating gas
-  const isEstimating = willExecute && gasLimitLoading
+  const isEstimating = willExecute && gasLimitLoading && isValidExecutionLoading
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
   const nonceReadonly = !!tx?.signatures.size || isRejection
 
@@ -172,7 +172,7 @@ const SignOrExecuteForm = ({
 
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose
-  const error = props.error || safeTxGasError || (willExecute ? gasLimitError : undefined)
+  const error = props.error || (willExecute ? gasLimitError || isValidExecutionError : undefined)
   const isSendingToSelf = wallet ? sameString(wallet?.address, safeAddress) : false
 
   return (
