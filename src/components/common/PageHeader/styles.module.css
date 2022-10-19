@@ -12,6 +12,6 @@
 }
 
 .title {
-  padding-bottom: 12px;
   font-weight: 700;
+  margin-bottom: var(--space-3);
 }
