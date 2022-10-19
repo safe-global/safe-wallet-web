@@ -76,6 +76,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
 
             // csvReaderValidator error
             const error = result?.[0].errors?.pop()
+            console.error(error)
 
             if (error) {
               setError(error instanceof Error ? error.message : error.toString())
