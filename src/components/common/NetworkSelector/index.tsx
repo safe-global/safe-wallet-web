@@ -26,13 +26,21 @@ const NetworkSelector = (): ReactElement => {
 
     const shouldKeepPath = [AppRoutes.load, AppRoutes.open].includes(router.pathname)
 
-    return router.push({
+    const newRoute = {
       pathname: shouldKeepPath ? router.pathname : '/',
       query: {
         chain: newShortName,
-        safeViewRedirectURL: router.query?.safeViewRedirectURL,
+      } as {
+        chain: string
+        safeViewRedirectURL?: string
       },
-    })
+    }
+
+    if (router.query?.safeViewRedirectURL) {
+      newRoute.query.safeViewRedirectURL = router.query?.safeViewRedirectURL.toString()
+    }
+
+    return router.push(newRoute)
   }
 
   return configs.length ? (
@@ -51,6 +59,9 @@ const NetworkSelector = (): ReactElement => {
         },
       }}
       sx={{
+        '& .MuiSelect-select': {
+          py: 0,
+        },
         '& svg path': {
           fill: ({ palette }) => palette.border.main,
         },

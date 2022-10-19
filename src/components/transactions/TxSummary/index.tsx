@@ -9,13 +9,14 @@ import SignTxButton from '@/components/transactions/SignTxButton'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
-import { isAwaitingExecution, isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
+import { isAwaitingExecution, isMultisigExecutionInfo, isTxQueued, isUnsigned } from '@/utils/transaction-guards'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 import OwnersIcon from '@/public/images/common/owners.svg'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsPending from '@/hooks/useIsPending'
+import DeleteTxButton from '../DeleteTxButton'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette) => {
   switch (value) {
@@ -100,7 +101,12 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
           ) : (
             <SignTxButton txSummary={item.transaction} compact />
           )}
-          <RejectTxButton txSummary={item.transaction} compact />
+
+          {isUnsigned(item.transaction) ? (
+            <DeleteTxButton txSummary={item.transaction} compact />
+          ) : (
+            <RejectTxButton txSummary={item.transaction} compact />
+          )}
         </Box>
       )}
 

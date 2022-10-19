@@ -8,7 +8,7 @@ import { transactionNavItems } from '@/components/sidebar/SidebarNavigation/conf
 import useDraftTransactions from '@/hooks/useDraftTransactions'
 import ShareIcon from '@/public/images/common/share.svg'
 
-const History: NextPage = () => {
+const DraftTxs: NextPage = () => {
   return (
     <>
       <Head>
@@ -38,4 +38,4 @@ const History: NextPage = () => {
   )
 }
 
-export default History
+export default DraftTxs

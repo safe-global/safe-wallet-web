@@ -52,14 +52,14 @@ const useDraftTransactions = (
   // If pageUrl is passed, load a new queue page from the API
   const [page, dataError, dataLoading] = useAsync<TransactionListPage>(
     () => {
-      if (!safeLoaded || !draftTxs.length) return
+      if (!safeAddress) return
       return getTransactionQueue(chainId, safeAddress, pageUrl, false)
     },
-    [chainId, safeAddress, safeLoaded, pageUrl, draftTxs],
+    [chainId, safeAddress, pageUrl],
     false,
   )
 
-  const loading = !safeLoaded || dataLoading
+  const loading = dataLoading || !safeLoaded
   const error = dataError?.message
 
   return useMemo(() => {

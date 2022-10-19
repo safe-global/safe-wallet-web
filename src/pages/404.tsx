@@ -7,7 +7,7 @@ const getRedirectUrl = (): string | undefined => {
   if (typeof location === 'undefined') return
 
   const { pathname, search } = location
-  const re = /^\/([^/]+?:0x[0-9a-fA-F]{40})/
+  const re = /^\/([^/]+?:0x[0-9a-f]{40})/i
   const [, pathSafe] = pathname.match(re) || []
 
   if (pathSafe) {

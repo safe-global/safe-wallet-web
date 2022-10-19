@@ -2,6 +2,8 @@ const SAFE = 'gor:0xCD4FddB8FfA90012DFE11eD4bf258861204FeEAE'
 
 describe('Dashboard', () => {
   before(() => {
+    window.localStorage.setItem('SAFE_v2__debugProdCgw', 'true')
+
     // Go to the test Safe home page
     cy.visit(`/${SAFE}/home`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()

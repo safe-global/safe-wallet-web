@@ -6,6 +6,8 @@ const CONTRACT_INTERACTION = '/images/transactions/custom.svg'
 
 describe('Transaction history', () => {
   before(() => {
+    window.localStorage.setItem('SAFE_v2__debugProdCgw', 'true')
+
     // Go to the test Safe transaction history
     cy.visit(`/${SAFE}/transactions/history`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()

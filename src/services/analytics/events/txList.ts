@@ -32,6 +32,10 @@ export const TX_LIST_EVENTS = {
     action: 'Reject transaction',
     category: TX_LIST_CATEGORY,
   },
+  DELETE: {
+    action: 'Delete draft transaction',
+    category: TX_LIST_CATEGORY,
+  },
   FILTER: {
     action: 'Filter transactions',
     category: TX_LIST_CATEGORY,

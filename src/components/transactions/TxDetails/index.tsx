@@ -15,6 +15,7 @@ import {
   isMultisigExecutionInfo,
   isSupportedMultiSendAddress,
   isTxQueued,
+  isUnsigned,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -29,6 +30,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { DelegateCallWarning } from '@/components/transactions/Warning'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import DeleteTxButton from '../DeleteTxButton'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -99,7 +101,12 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           {wallet && !isWrongChain && isQueue && (
             <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
               {awaitingExecution ? <ExecuteTxButton txSummary={txSummary} /> : <SignTxButton txSummary={txSummary} />}
-              <RejectTxButton txSummary={txSummary} />
+
+              {isUnsigned(txSummary) ? (
+                <DeleteTxButton txSummary={txSummary} />
+              ) : (
+                <RejectTxButton txSummary={txSummary} />
+              )}
             </Box>
           )}
         </div>
