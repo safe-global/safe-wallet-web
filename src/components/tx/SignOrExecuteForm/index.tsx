@@ -82,7 +82,10 @@ const SignOrExecuteForm = ({
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
   // Check if transaction will fail
-  const { isValidExecutionError, isValidExecutionLoading } = useIsValidExecution(willExecute ? tx : undefined)
+  const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(
+    willExecute ? tx : undefined,
+    gasLimit,
+  )
 
   const [advancedParams, setAdvancedParams] = useAdvancedParams({
     nonce: tx?.data.nonce,
@@ -175,7 +178,7 @@ const SignOrExecuteForm = ({
 
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose
-  const error = props.error || (willExecute ? gasLimitError || isValidExecutionError : undefined)
+  const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
   const isSendingToSelf = wallet ? sameString(wallet?.address, safeAddress) : false
 
   return (

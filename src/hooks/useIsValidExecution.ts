@@ -1,31 +1,52 @@
+import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { BigNumber } from 'ethers'
 
-import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import useAsync from './useAsync'
+import { useCurrentChain } from './useChains'
+import useSafeInfo from './useSafeInfo'
+import useWallet from './wallets/useWallet'
+import { encodeSignatures } from '@/services/tx/encodeSignatures'
 
 const useIsValidExecution = (
   safeTx?: SafeTransaction,
+  gasLimit?: BigNumber,
 ): {
   isValidExecution?: boolean
-  isValidExecutionError?: Error
+  executionValidationError?: Error
   isValidExecutionLoading: boolean
 } => {
-  const safeSDK = useSafeSDK()
+  const wallet = useWallet()
+  const chain = useCurrentChain()
+  const { safe } = useSafeInfo()
 
-  const [isValidExecution, isValidExecutionError, isValidExecutionLoading] = useAsync(() => {
-    if (!safeTx || !safeSDK) {
+  const [isValidExecution, executionValidationError, isValidExecutionLoading] = useAsync(() => {
+    if (!safeTx || !wallet?.address || !gasLimit || !chain) {
       return
     }
 
-    return safeSDK
-      .getContractManager()
-      .safeContract.execTransaction(safeTx)
+    const { contract } = getGnosisSafeContractInstance(chain, safe.version)
+
+    return contract.callStatic
+      .execTransaction(
+        safeTx.data.to,
+        safeTx.data.value,
+        safeTx.data.data,
+        safeTx.data.operation,
+        safeTx.data.safeTxGas,
+        safeTx.data.baseGas,
+        safeTx.data.gasPrice,
+        safeTx.data.gasToken,
+        safeTx.data.refundReceiver,
+        encodeSignatures(safeTx, wallet.address),
+        { from: wallet.address, gasLimit: gasLimit.toString() },
+      )
       .then(() => {
         return true
       })
-  }, [safeTx, safeSDK])
+  }, [safeTx, wallet?.address, gasLimit, chain])
 
-  return { isValidExecution, isValidExecutionError, isValidExecutionLoading }
+  return { isValidExecution, executionValidationError, isValidExecutionLoading }
 }
 
 export default useIsValidExecution
