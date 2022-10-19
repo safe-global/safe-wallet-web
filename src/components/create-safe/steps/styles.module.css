@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  justify-content: center;
   gap: var(--space-12);
   padding: var(--space-2) var(--space-6);
 }
@@ -40,5 +39,9 @@
 @media (max-width: 600px) {
   .pairing {
     display: none;
+  }
+
+  .connectionOptions {
+    justify-content: center;
   }
 }
