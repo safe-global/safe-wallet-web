@@ -36,6 +36,7 @@ jobs:
           NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL }}
           NEXT_PUBLIC_FORTMATIC_KEY: ${{ secrets.NEXT_PUBLIC_FORTMATIC_KEY }}
           NEXT_PUBLIC_PORTIS_KEY: ${{ secrets.NEXT_PUBLIC_PORTIS_KEY }}
+          NEXT_PUBLIC_WC_BRIDGE: ${{ secrets.NEXT_PUBLIC_WC_BRIDGE }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1

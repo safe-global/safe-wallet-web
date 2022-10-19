@@ -5,6 +5,7 @@ import useChainId from '@/hooks/useChainId'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import useWallet from '@/hooks/wallets/useWallet'
 import useAsync from './useAsync'
+import { Errors, logError } from '@/services/exceptions'
 
 const CACHE_KEY = 'ownedSafes'
 
@@ -19,7 +20,7 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const { address: walletAddress } = useWallet() || {}
   const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY, {})
 
-  const [ownedSafes] = useAsync<OwnedSafes>(() => {
+  const [ownedSafes, error] = useAsync<OwnedSafes>(() => {
     if (!chainId || !walletAddress) return
     return getOwnedSafes(chainId, walletAddress)
   }, [chainId, walletAddress])
@@ -35,6 +36,12 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
       },
     }))
   }, [ownedSafes, setOwnedSafesCache, walletAddress, chainId])
+
+  useEffect(() => {
+    if (error) {
+      logError(Errors._610, error.message)
+    }
+  }, [error])
 
   return ownedSafesCache[walletAddress || ''] ?? {}
 }

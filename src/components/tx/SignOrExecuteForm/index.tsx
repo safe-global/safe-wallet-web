@@ -103,35 +103,38 @@ const SignOrExecuteForm = ({
     return [wallet, tx, provider]
   }
 
+  // Propose transaction if no txId
+  const proposeTx = async (newTx: SafeTransaction): Promise<string> => {
+    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, wallet!.address, newTx, txId)
+    return proposedTx.txId
+  }
+
   // Sign transaction
   const onSign = async (): Promise<string> => {
     const [connectedWallet, createdTx, provider] = assertDependencies()
 
+    // Smart contract wallets must sign via an on-chain tx
+    if (await isSmartContractWallet(connectedWallet)) {
+      const id = txId || (await proposeTx(createdTx))
+      await dispatchOnChainSigning(createdTx, provider, id)
+      return id
+    }
+
+    // Otherwise, sign off-chain
     const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
-    const smartContractWallet = await isSmartContractWallet(connectedWallet)
-
-    const signedTx = smartContractWallet
-      ? await dispatchOnChainSigning(createdTx, provider)
-      : await dispatchTxSigning(createdTx, shouldEthSign, txId)
-
-    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
-    return proposedTx.txId
+    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
+    return await proposeTx(signedTx)
   }
 
   // Execute transaction
   const onExecute = async (): Promise<string> => {
-    const [connectedWallet, createdTx, provider] = assertDependencies()
+    const [, createdTx, provider] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
-    let id = txId
-    if (!id) {
-      const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, createdTx)
-      id = proposedTx.txId
-    }
-
+    const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(id, createdTx, provider, txOptions)
+    await dispatchTxExecution(createdTx, provider, txOptions, id)
 
     return id
   }

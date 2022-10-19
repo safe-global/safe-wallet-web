@@ -7,6 +7,8 @@ import { waitForTx } from '@/services/tx/txMonitor'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
+  [TxEvent.SIGNATURE_PROPOSED]: PendingStatus.SIGNING,
+  [TxEvent.SIGNATURE_INDEXED]: null,
   [TxEvent.EXECUTING]: PendingStatus.SUBMITTING,
   [TxEvent.PROCESSING]: PendingStatus.PROCESSING,
   [TxEvent.PROCESSED]: PendingStatus.INDEXING,
@@ -75,6 +77,7 @@ const useTxPendingStatuses = (): void => {
             status,
             txHash: 'txHash' in detail ? detail.txHash : undefined,
             groupKey: 'groupKey' in detail ? detail.groupKey : undefined,
+            signerAddress: `signerAddress` in detail ? detail.signerAddress : undefined,
           }),
         )
       }),

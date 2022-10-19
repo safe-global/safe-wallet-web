@@ -184,7 +184,7 @@ describe('txSender', () => {
       expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx, '0x1234567890')
       expect(proposedTx).toEqual({ txId: '123' })
 
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSED', { txId: '123' })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSED', { txId: '123', signerAddress: '0x456' })
     })
 
     it('should fail to propose a signature', async () => {
@@ -267,7 +267,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx, mockProvider)
+      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -287,7 +287,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await expect(dispatchTxExecution(txId, safeTx, mockProvider)).rejects.toThrow('error')
+      await expect(dispatchTxExecution(safeTx, mockProvider, {}, txId)).rejects.toThrow('error')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -312,7 +312,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx, mockProvider)
+      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -342,7 +342,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx, mockProvider)
+      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -374,7 +374,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(txId, safeTx, mockProvider)
+      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })

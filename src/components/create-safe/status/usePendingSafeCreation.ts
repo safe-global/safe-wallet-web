@@ -10,6 +10,7 @@ import { getSafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getProxyFactoryContractInstance } from '@/services/contracts/safeContracts'
 import useChainId from '@/hooks/useChainId'
 import { ErrorCode } from '@ethersproject/logger'
+import { Errors, logError } from '@/services/exceptions'
 
 export const pollSafeInfo = async (chainId: string, safeAddress: string): Promise<SafeInfo> => {
   // exponential delay between attempts for around 4 min
@@ -24,11 +25,24 @@ export const pollSafeInfo = async (chainId: string, safeAddress: string): Promis
   })
 }
 
-export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: string, chainId: string) => {
-  const TIMEOUT_TIME = 6.5
+export const checkSafeCreationTx = async (
+  provider: JsonRpcProvider,
+  txHash: string,
+  chainId: string,
+): Promise<SafeCreationStatus> => {
+  const TIMEOUT_TIME = 6.5 * 60 * 1000 // 6.5 minutes
 
   try {
     const txResponse = await provider.getTransaction(txHash)
+
+    if (!txResponse) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(SafeCreationStatus.TIMEOUT)
+        }, TIMEOUT_TIME)
+      })
+    }
+
     const proxyContractAddress = getProxyFactoryContractInstance(chainId).getAddress()
 
     const replacement = {
@@ -40,7 +54,7 @@ export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: str
       startBlock: txResponse.blockNumber || (await provider.getBlockNumber()),
     }
 
-    const receipt = await provider._waitForTransaction(txHash, 1, TIMEOUT_TIME * 60_000, replacement)
+    const receipt = await provider._waitForTransaction(txHash, 1, TIMEOUT_TIME, replacement)
 
     if (didRevert(receipt)) {
       return SafeCreationStatus.REVERTED
@@ -49,6 +63,8 @@ export const checkSafeCreationTx = async (provider: JsonRpcProvider, txHash: str
     return SafeCreationStatus.SUCCESS
   } catch (err) {
     const error = err as EthersError
+
+    logError(Errors._800, error.message)
 
     if (error.code === ErrorCode.TRANSACTION_REPLACED) {
       if (error.reason === 'cancelled') {

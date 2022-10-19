@@ -16,7 +16,7 @@ const OWNER_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 describe('Load existing Safe', () => {
   before(() => {
-    cy.visit('/welcome')
+    cy.visit('/welcome?chain=matic')
     cy.contains('Accept selection').click()
 
     // Enters Loading Safe form
@@ -26,7 +26,7 @@ describe('Load existing Safe', () => {
 
   it('should allow choosing the network where the Safe exists', () => {
     // Click the network selector inside the Stepper content
-    cy.contains('Select network on which the Safe was created:').contains('span', 'Ethereum').click()
+    cy.contains('Select network on which the Safe was created:').contains('span', 'Polygon').click()
 
     // Selects Goerli
     cy.get('ul li')
