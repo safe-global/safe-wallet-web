@@ -10,8 +10,8 @@ import Safe from '@gnosis.pm/safe-core-sdk'
 import type { TransactionResponse } from '@ethersproject/providers'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { _getTransactionByHash, checkSafeCreationTx } from '@/components/create-safe/status/usePendingSafeCreation'
-import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { checkSafeCreationTx } from '@/components/create-safe/status/usePendingSafeCreation'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -120,11 +120,21 @@ describe('useSafeCreation', () => {
 })
 
 const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
+
 const mockTransaction = {
-  data: '0x',
+  data: EMPTY_DATA,
   nonce: 1,
   from: '0x10',
   to: '0x11',
+  value: BigNumber.from(0),
+}
+
+const mockPendingTx = {
+  data: EMPTY_DATA,
+  from: ZERO_ADDRESS,
+  to: ZERO_ADDRESS,
+  nonce: 0,
+  startBlock: 0,
   value: BigNumber.from(0),
 }
 
@@ -148,7 +158,7 @@ describe('monitorSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    const result = await checkSafeCreationTx(provider, '0x0', '4')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
     expect(result).toBe(SafeCreationStatus.SUCCESS)
   })
@@ -160,7 +170,7 @@ describe('monitorSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    const result = await checkSafeCreationTx(provider, '0x0', '4')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
     expect(result).toBe(SafeCreationStatus.REVERTED)
   })
@@ -168,7 +178,7 @@ describe('monitorSafeCreationTx', () => {
   it('returns TIMEOUT if transaction couldnt be found within the timout limit', async () => {
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error()))
 
-    const result = await checkSafeCreationTx(provider, '0x0', '4')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
     expect(result).toBe(SafeCreationStatus.TIMEOUT)
   })
@@ -181,7 +191,7 @@ describe('monitorSafeCreationTx', () => {
     }
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
 
-    const result = await checkSafeCreationTx(provider, '0x0', '4')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
     expect(result).toBe(SafeCreationStatus.SUCCESS)
   })
@@ -194,40 +204,8 @@ describe('monitorSafeCreationTx', () => {
     }
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
 
-    const result = await checkSafeCreationTx(provider, '0x0', '4')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
     expect(result).toBe(SafeCreationStatus.ERROR)
-  })
-})
-
-describe('getTransactionByHash', () => {
-  it('returns a transaction response', async () => {
-    jest
-      .spyOn(provider, 'getTransaction')
-      .mockImplementationOnce(() => Promise.resolve(mockTransaction as TransactionResponse))
-
-    const result = await _getTransactionByHash(provider, '0x0')
-
-    expect(result).toStrictEqual(mockTransaction)
-  })
-
-  it('throws an error if getTransaction returns null', async () => {
-    jest.spyOn(provider, 'getTransaction').mockImplementationOnce(() => Promise.resolve(null) as any)
-
-    try {
-      await _getTransactionByHash(provider, '0x0')
-    } catch (err) {
-      expect((err as Error).message).toBe('Transaction not found')
-    }
-  })
-
-  it('throws an error if getTransaction returns undefined', async () => {
-    jest.spyOn(provider, 'getTransaction').mockImplementationOnce(() => Promise.resolve(undefined) as any)
-
-    try {
-      await _getTransactionByHash(provider, '0x0')
-    } catch (err) {
-      expect((err as Error).message).toBe('Transaction not found')
-    }
   })
 })

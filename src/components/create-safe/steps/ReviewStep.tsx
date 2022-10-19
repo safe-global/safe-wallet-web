@@ -10,9 +10,10 @@ import { formatVisualAmount } from '@/utils/formatters'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useMemo } from 'react'
 import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
-import { computeNewSafeAddress } from '@/components/create-safe/sender'
+import { computeNewSafeAddress, getSafeCreationTxInfo } from '@/components/create-safe/sender'
 import { useCurrentChain } from '@/hooks/useChains'
 import type { SafeFormData } from '@/components/create-safe/types'
+import { getFallbackHandlerContractInstance } from '@/services/contracts/safeContracts'
 
 type Props = {
   params: SafeFormData
@@ -43,12 +44,15 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
       : '> 0.001'
 
   const createSafe = async () => {
-    if (!wallet || !ethersProvider) return
+    if (!wallet || !ethersProvider || !chain) return
+
+    const fallbackHandler = getFallbackHandlerContractInstance(chain.chainId)
 
     const props = {
       safeAccountConfig: {
         threshold: params.threshold,
         owners: params.owners.map((owner) => owner.address),
+        fallbackHandler: fallbackHandler.address,
       },
       safeDeploymentConfig: {
         saltNonce: saltNonce.toString(),
@@ -57,7 +61,9 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
 
     const safeAddress = await computeNewSafeAddress(ethersProvider, props)
 
-    setPendingSafe({ ...params, address: safeAddress, saltNonce })
+    const tx = await getSafeCreationTxInfo(ethersProvider, params, chain, saltNonce, wallet)
+
+    setPendingSafe({ ...params, address: safeAddress, saltNonce, tx })
     onSubmit(params)
   }
 

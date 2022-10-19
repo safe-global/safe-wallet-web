@@ -18,6 +18,7 @@ import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import useChainId from '@/hooks/useChainId'
 import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { isWalletRejection } from '@/utils/wallets'
+import { getFallbackHandlerContractInstance } from '@/services/contracts/safeContracts'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
@@ -69,11 +70,15 @@ export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chai
 export const getSafeDeployProps = (
   pendingSafe: PendingSafeData,
   callback: (txHash: string) => void,
+  chainId: string,
 ): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
+  const fallbackHandler = getFallbackHandlerContractInstance(chainId)
+
   return {
     safeAccountConfig: {
       threshold: pendingSafe.threshold,
       owners: pendingSafe.owners.map((owner) => owner.address),
+      fallbackHandler: fallbackHandler.address,
     },
     safeDeploymentConfig: {
       saltNonce: pendingSafe.saltNonce.toString(),
@@ -110,7 +115,7 @@ export const useSafeCreation = () => {
     setIsCreationPending(true)
 
     try {
-      await createNewSafe(provider, getSafeDeployProps(pendingSafe, safeCreationCallback))
+      await createNewSafe(provider, getSafeDeployProps(pendingSafe, safeCreationCallback, chainId))
       setStatus(SafeCreationStatus.SUCCESS)
       dispatch(addSafeAndOwnersToAddressBook(pendingSafe, chainId))
     } catch (err) {
@@ -128,7 +133,7 @@ export const useSafeCreation = () => {
     setIsCreationPending(false)
   }, [chainId, dispatch, isCreationPending, pendingSafe, provider, safeCreationCallback])
 
-  usePendingSafeCreation({ txHash: pendingSafe?.txHash, setStatus })
+  usePendingSafeCreation({ status, pendingSafe, setStatus })
   useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus, chainId })
 
   useEffect(() => {
@@ -136,7 +141,9 @@ export const useSafeCreation = () => {
       pendingSafe?.txHash ||
       status === SafeCreationStatus.ERROR ||
       status === SafeCreationStatus.REVERTED ||
-      status === SafeCreationStatus.SUCCESS
+      status === SafeCreationStatus.SUCCESS ||
+      status === SafeCreationStatus.INDEXED ||
+      status === SafeCreationStatus.INDEX_FAILED
     ) {
       return
     }
