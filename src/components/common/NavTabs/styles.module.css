@@ -21,10 +21,9 @@
 
 .tab {
   opacity: 1;
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-3);
   position: relative;
   z-index: 2;
-  min-width: 0;
 }
 
 .label {
