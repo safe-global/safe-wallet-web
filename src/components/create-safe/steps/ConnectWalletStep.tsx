@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -10,10 +9,8 @@ import NetworkSelector from '@/components/common/NetworkSelector'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isPairingSupported } from '@/services/pairing/utils'
-import { isAppleMobileDevice } from '@/utils/detectMobileDevices'
-import AppStoreButton from '@/components/common/AppStoreButton'
 
-import css from './styles.module.css'
+import css from '@/components/create-safe/steps/styles.module.css'
 
 export const ConnectWalletContent = ({
   wallet,
@@ -22,13 +19,8 @@ export const ConnectWalletContent = ({
   wallet: ConnectedWallet | null
   isWrongChain: boolean
 }) => {
-  const [showDownload, setShowDownload] = useState(false)
   const chain = useCurrentChain()
   const isSupported = isPairingSupported(chain?.disabledWallets)
-
-  setTimeout(() => {
-    setShowDownload(isAppleMobileDevice())
-  })
 
   return (
     <>
@@ -49,14 +41,6 @@ export const ConnectWalletContent = ({
               <div className={css.pairing}>
                 <PairingDetails />
               </div>
-            )}
-
-            {showDownload && (
-              <Box className={css.showMobile}>
-                <Divider flexItem />
-                <Typography variant="h5">Download the app</Typography>
-                <AppStoreButton placement="pairing" />
-              </Box>
             )}
           </div>
         </>

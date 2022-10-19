@@ -10,16 +10,9 @@ import PairingDetails from '@/components/common/PairingDetails'
 import css from '@/components/common/ConnectWallet/styles.module.css'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isPairingSupported } from '@/services/pairing/utils'
-import AppStoreButton from '@/components/common/AppStoreButton'
-import { isAppleMobileDevice } from '@/utils/detectMobileDevices'
 
 const ConnectionCenter = (): ReactElement => {
   const chain = useCurrentChain()
-  const [showDownload, setShowDownload] = useState(false)
-
-  setTimeout(() => {
-    setShowDownload(isAppleMobileDevice())
-  })
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = !!anchorEl
@@ -74,14 +67,6 @@ const ConnectionCenter = (): ReactElement => {
               <Divider flexItem />
 
               <PairingDetails vertical />
-            </Box>
-          )}
-
-          {showDownload && (
-            <Box className={css.showMobile}>
-              <Divider flexItem />
-              <Typography variant="h5">Download the app</Typography>
-              <AppStoreButton placement="pairing" />
             </Box>
           )}
         </Paper>

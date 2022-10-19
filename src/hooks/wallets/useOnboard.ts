@@ -10,7 +10,6 @@ import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { useInitPairing } from '@/services/pairing/hooks'
 import { isWalletUnlocked, WalletNames } from '@/utils/wallets'
-import { isMobileDevice } from '@/utils/detectMobileDevices'
 
 export type ConnectedWallet = {
   label: string
@@ -75,10 +74,13 @@ const trackWalletType = async (wallet: ConnectedWallet) => {
   }
 }
 
+// Detect mobile devices
+const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+
 // Wrapper that tracks/sets the last used wallet
 export const connectWallet = (onboard: OnboardAPI, options?: Parameters<OnboardAPI['connectWallet']>[0]) => {
   // On mobile, automatically choose WalletConnect
-  if (!options && isMobileDevice()) {
+  if (!options && isMobile()) {
     options = {
       autoSelect: WalletNames.WALLET_CONNECT,
     }
