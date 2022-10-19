@@ -1,7 +1,7 @@
 import { Popover, ButtonBase, Typography, Paper, Divider, Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-import { useState, type MouseEvent, type ReactElement } from 'react'
+import { useRef, useState, type MouseEvent, type ReactElement } from 'react'
 
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
@@ -15,10 +15,10 @@ import { isAppleMobileDevice } from '@/utils/detectMobileDevices'
 
 const ConnectionCenter = (): ReactElement => {
   const chain = useCurrentChain()
-  const [showDownload, setShowDownload] = useState(false)
+  const showDownload = useRef(false)
 
   setTimeout(() => {
-    setShowDownload(isAppleMobileDevice())
+    showDownload.current = isAppleMobileDevice()
   })
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -77,7 +77,7 @@ const ConnectionCenter = (): ReactElement => {
             </Box>
           )}
 
-          {showDownload && (
+          {showDownload.current && (
             <Box className={css.showMobile}>
               <Divider flexItem />
               <Typography variant="h5">Download the app</Typography>
