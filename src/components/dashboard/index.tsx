@@ -18,15 +18,15 @@ const Dashboard = (): ReactElement => {
       </Grid>
 
       <Grid item xs={12}>
+        <GovernanceSection />
+      </Grid>
+
+      <Grid item xs={12}>
         <FeaturedApps />
       </Grid>
 
       <Grid item xs={12}>
         <SafeAppsDashboardSection />
-      </Grid>
-
-      <Grid item xs={12}>
-        <GovernanceSection />
       </Grid>
     </Grid>
   )
