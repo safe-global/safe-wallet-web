@@ -20,6 +20,14 @@ import { Errors, logError } from '@/services/exceptions'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']
 
+// https://react-papaparse.js.org/docs#errors
+type PapaparseErrorType = {
+  type: string
+  code: string
+  message: string
+  row: number
+}
+
 const hasEntry = (entry: string[]) => {
   return entry.length === 3 && entry[0] && entry[1] && entry[2]
 }
@@ -71,7 +79,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
             setZoneHover(false)
           }}
           validator={abCsvReaderValidator}
-          onUploadRejected={(result: { file: File; errors?: Array<Error | string> }[]) => {
+          onUploadRejected={(result: { file: File; errors?: Array<Error | string | PapaparseErrorType> }[]) => {
             setZoneHover(false)
             setError(undefined)
 
