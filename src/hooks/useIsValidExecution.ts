@@ -31,10 +31,8 @@ const useIsValidExecution = (
 
     const { contract } = getSpecificGnosisSafeContractInstance(safe)
 
-    console.log('======================================== contract', contract)
-
     try {
-      const test = await contract.callStatic.execTransaction(
+      return await contract.callStatic.execTransaction(
         safeTx.data.to,
         safeTx.data.value,
         safeTx.data.data,
@@ -47,8 +45,6 @@ const useIsValidExecution = (
         encodeSignatures(safeTx, wallet.address),
         { from: wallet.address, gasLimit: gasLimit.toString() },
       )
-
-      return test
     } catch (_err) {
       const err = _err as EthersError
 

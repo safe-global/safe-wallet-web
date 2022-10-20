@@ -1,15 +1,13 @@
+import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import type { SafeTransaction, SafeSignature } from '@gnosis.pm/safe-core-sdk-types'
 
 import * as safeContracts from '@/services/contracts/safeContracts'
-import { renderHook, waitFor } from '@/tests/test-utils'
+import * as useWalletHook from '@/hooks/wallets/useWallet'
+import { act, renderHook } from '@/tests/test-utils'
 import useIsValidExecution from '../useIsValidExecution'
 import type { EthersError } from '@/utils/ethers-utils'
-
-jest.mock('@/hooks/wallets/useWallet', () => ({
-  __esModule: true,
-  default: jest.fn(() => ({ address: '0x123' })),
-}))
+import type { ConnectedWallet } from '../wallets/useOnboard'
 
 const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
@@ -34,9 +32,16 @@ const createSafeTx = (data = '0x'): SafeTransaction => {
   } as SafeTransaction
 }
 
+const mockTx = createSafeTx()
+const mockGas = BigNumber.from(1000)
+
 describe('useIsValidExecution', () => {
   beforeEach(() => {
     jest.resetAllMocks()
+
+    jest.spyOn(useWalletHook, 'default').mockReturnValue({
+      address: ethers.utils.hexZeroPad('0x123', 20),
+    } as ConnectedWallet)
   })
 
   it('should return a boolean if the transaction is valid', async () => {
@@ -49,19 +54,23 @@ describe('useIsValidExecution', () => {
       },
     })
 
-    const { result } = renderHook(() => useIsValidExecution(createSafeTx(), BigNumber.from(1_000)))
+    const { result } = renderHook(() => useIsValidExecution(mockTx, mockGas))
 
-    expect(result.current.isValidExecution).toEqual(undefined)
-    expect(result.current.executionValidationError).toBe(undefined)
-    expect(result.current.isValidExecutionLoading).toBe(true)
+    var { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
 
-    const { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
+    expect(isValidExecution).toEqual(undefined)
+    expect(executionValidationError).toBe(undefined)
+    expect(isValidExecutionLoading).toBe(true)
 
-    await waitFor(() => {
-      expect(isValidExecution).toBe(true)
-      expect(executionValidationError).toBe(undefined)
-      expect(isValidExecutionLoading).toBe(false)
+    await act(async () => {
+      await new Promise(process.nextTick)
     })
+
+    var { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
+
+    expect(isValidExecution).toBe(true)
+    expect(executionValidationError).toBe(undefined)
+    expect(isValidExecutionLoading).toBe(false)
   })
 
   it('should throw if the transaction is invalid', async () => {
@@ -69,24 +78,28 @@ describe('useIsValidExecution', () => {
       contract: {
         // @ts-expect-error
         callStatic: {
-          execTransaction: jest.fn(() => Promise.reject(new Error('Some error'))),
+          execTransaction: jest.fn(() => Promise.reject('Some error')),
         },
       },
     })
 
-    const { result } = renderHook(() => useIsValidExecution(createSafeTx(), BigNumber.from(1_000)))
+    const { result } = renderHook(() => useIsValidExecution(mockTx, mockGas))
 
-    const { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
+    var { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
 
     expect(isValidExecution).toEqual(undefined)
     expect(executionValidationError).toBe(undefined)
     expect(isValidExecutionLoading).toBe(true)
 
-    await waitFor(() => {
-      expect(isValidExecution).toBe(undefined)
-      expect(executionValidationError).toThrow('Some error')
-      expect(isValidExecutionLoading).toBe(false)
+    await act(async () => {
+      await new Promise(process.nextTick)
     })
+
+    var { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
+
+    expect(isValidExecution).toBe(undefined)
+    expect(executionValidationError).toBe('Some error')
+    expect(isValidExecutionLoading).toBe(false)
   })
 
   it('should append the error code description to the error thrown', async () => {
@@ -102,18 +115,22 @@ describe('useIsValidExecution', () => {
       },
     })
 
-    const { result } = renderHook(() => useIsValidExecution(createSafeTx(), BigNumber.from(1_000)))
+    const { result } = renderHook(() => useIsValidExecution(mockTx, mockGas))
 
-    const { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
+    var { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
 
     expect(isValidExecution).toEqual(undefined)
     expect(executionValidationError).toBe(undefined)
     expect(isValidExecutionLoading).toBe(true)
 
-    await waitFor(() => {
-      expect(isValidExecution).toBe(undefined)
-      expect((executionValidationError as EthersError)?.reason).toBe('GS026: Invalid owner provided')
-      expect(isValidExecutionLoading).toBe(false)
+    await act(async () => {
+      await new Promise(process.nextTick)
     })
+
+    var { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
+
+    expect(isValidExecution).toBe(undefined)
+    expect((executionValidationError as EthersError)?.reason).toBe('GS026: Invalid owner provided')
+    expect(isValidExecutionLoading).toBe(false)
   })
 })
