@@ -35,3 +35,13 @@
 .pairing :global .MuiTypography-alignCenter {
   text-align: unset;
 }
+
+@media (max-width: 600px) {
+  .pairing {
+    display: none;
+  }
+
+  .connectionOptions {
+    justify-content: center;
+  }
+}

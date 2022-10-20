@@ -62,13 +62,21 @@
   border-bottom: 1px solid var(--color-border-light);
 }
 
+.pairingDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 @media (max-width: 600px) {
   .buttonContainer button {
     font-size: 12px;
   }
 
   .imageContainer,
-  .walletDetails {
+  .walletDetails,
+  .pairingDetails {
     display: none;
   }
 }
