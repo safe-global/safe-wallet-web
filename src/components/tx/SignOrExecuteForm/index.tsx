@@ -179,7 +179,7 @@ const SignOrExecuteForm = ({
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
-  const isExecutingSelf = wallet ? sameString(wallet?.address, safeAddress) : false
+  const isExecutionLoop = wallet ? sameString(wallet.address, safeAddress) : false // Can't execute own transaction
 
   return (
     <form onSubmit={handleSubmit}>
@@ -214,7 +214,7 @@ const SignOrExecuteForm = ({
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
           </ErrorMessage>
-        ) : isExecutingSelf ? (
+        ) : isExecutionLoop ? (
           <ErrorMessage>
             Cannot execute a transaction from the Safe itself, please connect a different account.
           </ErrorMessage>

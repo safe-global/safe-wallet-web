@@ -1,4 +1,4 @@
-import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
+import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import type { BigNumber } from 'ethers'
 import type { EthersError } from '@/utils/ethers-utils'
@@ -31,10 +31,10 @@ const useIsValidExecution = (
       return
     }
 
-    const { contract } = getGnosisSafeContractInstance(chain, safe.version)
+    const { contract } = getSpecificGnosisSafeContractInstance(safe)
 
     try {
-      await contract.callStatic.execTransaction(
+      return await contract.callStatic.execTransaction(
         safeTx.data.to,
         safeTx.data.value,
         safeTx.data.data,
@@ -47,7 +47,6 @@ const useIsValidExecution = (
         encodeSignatures(safeTx, wallet.address),
         { from: wallet.address, gasLimit: gasLimit.toString() },
       )
-      return true
     } catch (_err) {
       const err = _err as EthersError
 
