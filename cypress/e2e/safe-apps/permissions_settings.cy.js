@@ -41,7 +41,7 @@ describe('The Safe Apps permissions settings section', () => {
       )
     })
 
-    cy.visit(`${TEST_SAFE}/settings/safe-apps`)
+    cy.visit(`${TEST_SAFE}/settings/safe-apps`, { failOnStatusCode: false })
   })
 
   it('should show the dApps with allowed permissions', () => {
