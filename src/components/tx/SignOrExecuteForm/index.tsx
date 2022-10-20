@@ -94,7 +94,7 @@ const SignOrExecuteForm = ({
   })
 
   // Estimating gas
-  const isEstimating = willExecute && gasLimitLoading && isValidExecutionLoading
+  const isEstimating = willExecute && gasLimitLoading
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
   const nonceReadonly = !!tx?.signatures.size || isRejection
 
@@ -176,10 +176,18 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
-  const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
-  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose
-  const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
   const isExecutionLoop = wallet ? sameString(wallet.address, safeAddress) : false // Can't execute own transaction
+  const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
+  const submitDisabled =
+    !isSubmittable ||
+    isEstimating ||
+    !tx ||
+    disableSubmit ||
+    isWrongChain ||
+    cannotPropose ||
+    isExecutionLoop ||
+    isValidExecutionLoading
+  const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
   return (
     <form onSubmit={handleSubmit}>

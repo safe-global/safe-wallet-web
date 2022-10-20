@@ -4,7 +4,6 @@ import type { BigNumber } from 'ethers'
 import type { EthersError } from '@/utils/ethers-utils'
 
 import useAsync from './useAsync'
-import { useCurrentChain } from './useChains'
 import useSafeInfo from './useSafeInfo'
 import useWallet from './wallets/useWallet'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
@@ -23,18 +22,19 @@ const useIsValidExecution = (
   isValidExecutionLoading: boolean
 } => {
   const wallet = useWallet()
-  const chain = useCurrentChain()
   const { safe } = useSafeInfo()
 
   const [isValidExecution, executionValidationError, isValidExecutionLoading] = useAsync(async () => {
-    if (!safeTx || !wallet?.address || !gasLimit || !chain) {
+    if (!safeTx || !wallet?.address || !gasLimit) {
       return
     }
 
     const { contract } = getSpecificGnosisSafeContractInstance(safe)
 
+    console.log('======================================== contract', contract)
+
     try {
-      return await contract.callStatic.execTransaction(
+      const test = await contract.callStatic.execTransaction(
         safeTx.data.to,
         safeTx.data.value,
         safeTx.data.data,
@@ -47,6 +47,8 @@ const useIsValidExecution = (
         encodeSignatures(safeTx, wallet.address),
         { from: wallet.address, gasLimit: gasLimit.toString() },
       )
+
+      return test
     } catch (_err) {
       const err = _err as EthersError
 
@@ -56,7 +58,7 @@ const useIsValidExecution = (
 
       throw err
     }
-  }, [safeTx, wallet?.address, gasLimit, chain])
+  }, [safeTx, wallet?.address, gasLimit, safe])
 
   return { isValidExecution, executionValidationError, isValidExecutionLoading }
 }
