@@ -11,13 +11,39 @@ import {
   getProxyFactoryContractInstance,
 } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
-import type { SafeCreationProps } from '@/components/create-safe/useEstimateSafeCreationGas'
 import type { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
 import type { SafeFormData } from '@/components/create-safe/types'
 import type { ConnectedWallet } from '@/services/onboard'
 import { getUserNonce } from '@/hooks/wallets/web3'
 import { BigNumber } from '@ethersproject/bignumber'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
+/**
+ * Prepare data for creating a Safe for the Core SDK
+ */
+export const getSafeDeployProps = (
+  safeParams: SafeCreationProps,
+  callback: (txHash: string) => void,
+  chainId: string,
+): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
+  const fallbackHandler = getFallbackHandlerContractInstance(chainId)
+
+  return {
+    safeAccountConfig: {
+      threshold: safeParams.threshold,
+      owners: safeParams.owners,
+      fallbackHandler: fallbackHandler.address,
+    },
+    safeDeploymentConfig: {
+      saltNonce: safeParams.saltNonce.toString(),
+    },
+    callback,
+  }
+}
+
+/**
+ * Create a Safe creation transaction via Core SDK and submits it to the wallet
+ */
 export const createNewSafe = async (ethersProvider: Web3Provider, props: DeploySafeProps): Promise<Safe> => {
   const ethAdapter = createEthersAdapter(ethersProvider)
 
@@ -25,6 +51,9 @@ export const createNewSafe = async (ethersProvider: Web3Provider, props: DeployS
   return safeFactory.deploySafe(props)
 }
 
+/**
+ * Compute the new counterfactual Safe address before it is actually created
+ */
 export const computeNewSafeAddress = async (ethersProvider: Web3Provider, props: PredictSafeProps): Promise<string> => {
   const ethAdapter = createEthersAdapter(ethersProvider)
 
@@ -32,7 +61,11 @@ export const computeNewSafeAddress = async (ethersProvider: Web3Provider, props:
   return safeFactory.predictSafeAddress(props)
 }
 
-export const getSafeCreationTx = ({
+/**
+ * Encode a Safe creation transaction NOT using the Core SDK because it doesn't support that
+ * This is used for gas estimation.
+ */
+export const encodeSafeCreationTx = ({
   owners,
   threshold,
   saltNonce,
@@ -56,8 +89,9 @@ export const getSafeCreationTx = ({
   return proxyContract.encode('createProxyWithNonce', [safeContract.getAddress(), setupData, saltNonce])
 }
 
-// Returns an object that can be used to detect a replacement tx
-// via ethers _waitForTransaction
+/**
+ * Encode a Safe creation tx in a way that we can store locally and monitor using _waitForTransaction
+ */
 export const getSafeCreationTxInfo = async (
   provider: Web3Provider,
   params: SafeFormData,
@@ -67,7 +101,7 @@ export const getSafeCreationTxInfo = async (
 ) => {
   const proxyContract = getProxyFactoryContractInstance(chain.chainId)
 
-  const data = getSafeCreationTx({
+  const data = encodeSafeCreationTx({
     owners: params.owners.map((owner) => owner.address),
     threshold: params.threshold,
     saltNonce,
@@ -82,4 +116,26 @@ export const getSafeCreationTxInfo = async (
     value: BigNumber.from(0),
     startBlock: await provider.getBlockNumber(),
   }
+}
+
+export type SafeCreationProps = {
+  owners: string[]
+  threshold: number
+  saltNonce: number
+}
+
+export const estimateSafeCreationGas = async (
+  chain: ChainInfo,
+  provider: JsonRpcProvider,
+  from: string,
+  safeParams: SafeCreationProps,
+): Promise<BigNumber> => {
+  const proxyFactoryContract = getProxyFactoryContractInstance(chain.chainId)
+  const encodedSafeCreationTx = encodeSafeCreationTx({ ...safeParams, chain })
+
+  return provider.estimateGas({
+    from: from,
+    to: proxyFactoryContract.getAddress(),
+    data: encodedSafeCreationTx,
+  })
 }

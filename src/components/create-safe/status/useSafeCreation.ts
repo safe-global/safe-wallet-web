@@ -1,24 +1,16 @@
-import type { PendingSafeData } from '@/components/create-safe'
 import { createNewSafe } from '@/components/create-safe/sender'
 import { usePendingSafeCreation } from '@/components/create-safe/status/usePendingSafeCreation'
 import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import type { DeploySafeProps } from '@gnosis.pm/safe-core-sdk'
 import { useCallback, useEffect, useState } from 'react'
-import type { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
-import type { AppThunk } from '@/store'
-import { useAppDispatch } from '@/store'
 import { Errors, logError } from '@/services/exceptions'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import useChainId from '@/hooks/useChainId'
 import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { isWalletRejection } from '@/utils/wallets'
-import { getFallbackHandlerContractInstance } from '@/services/contracts/safeContracts'
+import { getSafeDeployProps } from '../logic'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
@@ -32,61 +24,6 @@ export enum SafeCreationStatus {
   INDEX_FAILED = 'INDEX_FAILED',
 }
 
-export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chainId: string): AppThunk => {
-  return (dispatch) => {
-    dispatch(
-      upsertAddressBookEntry({
-        chainId: chainId,
-        address: pendingSafe.address,
-        name: pendingSafe.name,
-      }),
-    )
-
-    pendingSafe.owners.forEach((owner) => {
-      const entryName = owner.name || owner.ens
-      if (entryName) {
-        dispatch(upsertAddressBookEntry({ chainId, address: owner.address, name: entryName }))
-      }
-    })
-
-    dispatch(
-      addOrUpdateSafe({
-        safe: {
-          ...defaultSafeInfo,
-          address: { value: pendingSafe.address, name: pendingSafe.name },
-          threshold: pendingSafe.threshold,
-          owners: pendingSafe.owners.map((owner) => ({
-            value: owner.address,
-            name: owner.name || owner.ens,
-          })),
-          chainId: chainId,
-          nonce: 0,
-        },
-      }),
-    )
-  }
-}
-
-export const getSafeDeployProps = (
-  pendingSafe: PendingSafeData,
-  callback: (txHash: string) => void,
-  chainId: string,
-): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
-  const fallbackHandler = getFallbackHandlerContractInstance(chainId)
-
-  return {
-    safeAccountConfig: {
-      threshold: pendingSafe.threshold,
-      owners: pendingSafe.owners.map((owner) => owner.address),
-      fallbackHandler: fallbackHandler.address,
-    },
-    safeDeploymentConfig: {
-      saltNonce: pendingSafe.saltNonce.toString(),
-    },
-    callback,
-  }
-}
-
 export const useSafeCreation = () => {
   const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING_WALLET)
   const [safeAddress, setSafeAddress] = useState<string>()
@@ -96,7 +33,6 @@ export const useSafeCreation = () => {
   const chainId = useChainId()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
-  const dispatch = useAppDispatch()
 
   const safeCreationCallback = useCallback(
     (txHash: string) => {
@@ -115,9 +51,20 @@ export const useSafeCreation = () => {
     setIsCreationPending(true)
 
     try {
-      await createNewSafe(provider, getSafeDeployProps(pendingSafe, safeCreationCallback, chainId))
+      await createNewSafe(
+        provider,
+        getSafeDeployProps(
+          {
+            threshold: pendingSafe.threshold,
+            owners: pendingSafe.owners.map((owner) => owner.address),
+            saltNonce: pendingSafe.saltNonce,
+          },
+          safeCreationCallback,
+          chainId,
+        ),
+      )
+
       setStatus(SafeCreationStatus.SUCCESS)
-      dispatch(addSafeAndOwnersToAddressBook(pendingSafe, chainId))
     } catch (err) {
       const _err = err as Error & { code?: number }
 
@@ -131,7 +78,7 @@ export const useSafeCreation = () => {
     }
 
     setIsCreationPending(false)
-  }, [chainId, dispatch, isCreationPending, pendingSafe, provider, safeCreationCallback])
+  }, [chainId, isCreationPending, pendingSafe, provider, safeCreationCallback])
 
   usePendingSafeCreation({ status, pendingSafe, setStatus })
   useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus, chainId })

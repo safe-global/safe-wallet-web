@@ -8,6 +8,9 @@ const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 
 type Props = PendingSafeData | undefined
 
+/**
+ * A hook to store and retrieve all the Safe creation data so that we can resume the creation if the user didn't finish it
+ */
 export const usePendingSafe = (): [Props, Dispatch<SetStateAction<Props>>] => {
   const chainId = useChainId()
   const [pendingSafes, setPendingSafes] = useLocalStorage<PendingSafeByChain | undefined>(

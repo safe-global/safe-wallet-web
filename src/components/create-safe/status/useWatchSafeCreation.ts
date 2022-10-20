@@ -8,6 +8,8 @@ import { AppRoutes } from '@/config/routes'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import { CREATE_SAFE_EVENTS, SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import chains from '@/config/chains'
+import { updateAddressBook } from '../logic/address-book'
+import { useAppDispatch } from '@/store'
 
 const getRedirect = (chainId: string, safeAddress: string, redirectQuery?: string | string[]): UrlObject | string => {
   const redirectUrl = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery
@@ -52,6 +54,7 @@ const useWatchSafeCreation = ({
   chainId: string
 }) => {
   const router = useRouter()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (status === SafeCreationStatus.INDEXED) {
@@ -64,6 +67,13 @@ const useWatchSafeCreation = ({
 
     if (status === SafeCreationStatus.SUCCESS) {
       trackEvent(CREATE_SAFE_EVENTS.CREATED_SAFE)
+
+      // Add the Safe and add names to the address book
+      if (pendingSafe) {
+        dispatch(
+          updateAddressBook(chainId, pendingSafe.address, pendingSafe.name, pendingSafe.owners, pendingSafe.threshold),
+        )
+      }
 
       setPendingSafe(undefined)
 
@@ -84,7 +94,7 @@ const useWatchSafeCreation = ({
         setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined } : undefined))
       }
     }
-  }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId])
+  }, [router, dispatch, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId])
 }
 
 export default useWatchSafeCreation
