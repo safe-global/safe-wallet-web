@@ -31,7 +31,7 @@ enum ErrorCodes {
   _700 = '700: Failed to read from local/session storage',
   _701 = '701: Failed to write to local/session storage',
   _702 = '702: Failed to remove from local/session storage',
-  _703 = '703: Error uploading a file',
+  _703 = '703: Error importing an address book',
 
   _800 = '800: Safe creation tx failed',
   _801 = '801: Failed to send a tx with a spending limit',

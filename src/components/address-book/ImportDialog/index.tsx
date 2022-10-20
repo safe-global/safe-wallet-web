@@ -22,10 +22,11 @@ type AddressBookCSVRow = ['address', 'name', 'chainId']
 
 // https://react-papaparse.js.org/docs#errors
 type PapaparseErrorType = {
-  type: string
-  code: string
+  type: 'Quotes' | 'Delimiter' | 'FieldMismatch'
+  code: 'MissingQuotes' | 'UndetectableDelimiter' | 'TooFewFields' | 'TooManyFields'
   message: string
-  row: number
+  row?: number
+  index?: number
 }
 
 const hasEntry = (entry: string[]) => {
