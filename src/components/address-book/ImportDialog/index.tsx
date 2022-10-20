@@ -16,6 +16,7 @@ import css from './styles.module.css'
 import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
 import { abCsvReaderValidator, abOnUploadValidator } from './validation'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { Errors, logError } from '@/services/exceptions'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']
 
@@ -76,10 +77,11 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
 
             // csvReaderValidator error
             const error = result?.[0].errors?.pop()
-            console.error(error)
 
             if (error) {
-              setError(error instanceof Error ? error.message : error.toString())
+              const errorDescription = error instanceof Error ? error.message : JSON.stringify(error)
+              setError(errorDescription)
+              logError(Errors._703, errorDescription)
             }
           }}
           onUploadAccepted={(result: ParseResult<['address', 'name', 'chainId']>) => {
