@@ -16,8 +16,18 @@ import css from './styles.module.css'
 import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
 import { abCsvReaderValidator, abOnUploadValidator } from './validation'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { Errors, logError } from '@/services/exceptions'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']
+
+// https://react-papaparse.js.org/docs#errors
+type PapaparseErrorType = {
+  type: 'Quotes' | 'Delimiter' | 'FieldMismatch'
+  code: 'MissingQuotes' | 'UndetectableDelimiter' | 'TooFewFields' | 'TooManyFields'
+  message: string
+  row?: number
+  index?: number
+}
 
 const hasEntry = (entry: string[]) => {
   return entry.length === 3 && entry[0] && entry[1] && entry[2]
@@ -70,7 +80,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
             setZoneHover(false)
           }}
           validator={abCsvReaderValidator}
-          onUploadRejected={(result: { file: File; errors?: Array<Error | string> }[]) => {
+          onUploadRejected={(result: { file: File; errors?: Array<Error | string | PapaparseErrorType> }[]) => {
             setZoneHover(false)
             setError(undefined)
 
@@ -78,7 +88,9 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
             const error = result?.[0].errors?.pop()
 
             if (error) {
-              setError(error instanceof Error ? error.message : error.toString())
+              const errorDescription = typeof error === 'string' ? error.toString() : error.message
+              setError(errorDescription)
+              logError(Errors._703, errorDescription)
             }
           }}
           onUploadAccepted={(result: ParseResult<['address', 'name', 'chainId']>) => {
