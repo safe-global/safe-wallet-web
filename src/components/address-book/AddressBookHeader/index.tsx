@@ -56,7 +56,7 @@ type Props = {
 
 const AddressBookHeader = ({ handleOpenModal, searchQuery, onSearchQueryChange }: Props): ReactElement => {
   const allAddressBooks = useAppSelector(selectAllAddressBooks)
-  const canExport = Object.values(allAddressBooks).length > 0
+  const canExport = Object.values(allAddressBooks).some((addressBook) => Object.keys(addressBook || {}).length > 0)
 
   return (
     <PageHeader

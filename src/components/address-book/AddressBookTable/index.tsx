@@ -21,6 +21,7 @@ import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
 import SvgIcon from '@mui/material/SvgIcon'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import AddressBookIcon from '@/public/images/address-book/address-book.svg'
+import { useCurrentChain } from '@/hooks/useChains'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -43,6 +44,7 @@ const defaultOpen = {
 }
 
 const AddressBookTable = () => {
+  const chain = useCurrentChain()
   const isSafeOwner = useIsSafeOwner()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const [searchQuery, setSearchQuery] = useState('')
@@ -136,7 +138,10 @@ const AddressBookTable = () => {
         {filteredEntries.length > 0 ? (
           <EnhancedTable rows={rows} headCells={headCells} />
         ) : (
-          <PagePlaceholder img={<AddressBookIcon />} text="No entries found" />
+          <PagePlaceholder
+            img={<AddressBookIcon />}
+            text={`No entries found${chain ? ` on ${chain.chainName}` : ''}`}
+          />
         )}
       </main>
 
