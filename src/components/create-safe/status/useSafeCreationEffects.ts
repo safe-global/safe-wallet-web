@@ -1,15 +1,15 @@
-import type { PendingSafeData } from '@/components/create-safe'
 import type { Dispatch, SetStateAction } from 'react'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { type UrlObject } from 'url'
-import { pollSafeInfo } from '@/components/create-safe/status/usePendingSafeCreation'
+import { pollSafeInfo } from '@/components/create-safe/logic'
 import { AppRoutes } from '@/config/routes'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import { CREATE_SAFE_EVENTS, SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import chains from '@/config/chains'
 import { updateAddressBook } from '../logic/address-book'
 import { useAppDispatch } from '@/store'
+import type { PendingSafeData } from '@/components/create-safe'
 
 const getRedirect = (chainId: string, safeAddress: string, redirectQuery?: string | string[]): UrlObject | string => {
   const redirectUrl = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery
@@ -38,18 +38,18 @@ const getRedirect = (chainId: string, safeAddress: string, redirectQuery?: strin
   return redirectUrl + `${appendChar}safe=${address}`
 }
 
-const useWatchSafeCreation = ({
-  status,
-  safeAddress,
+const useSafeCreationEffects = ({
   pendingSafe,
   setPendingSafe,
+  status,
+  safeAddress,
   setStatus,
   chainId,
 }: {
-  status: SafeCreationStatus
-  safeAddress: string | undefined
   pendingSafe: PendingSafeData | undefined
   setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>
+  status: SafeCreationStatus
+  safeAddress: string | undefined
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>
   chainId: string
 }) => {
@@ -78,7 +78,7 @@ const useWatchSafeCreation = ({
       setPendingSafe(undefined)
 
       // Asynchronously wait for Safe creation
-      if (safeAddress && pendingSafe) {
+      if (safeAddress) {
         pollSafeInfo(chainId, safeAddress)
           .then(() => setStatus(SafeCreationStatus.INDEXED))
           .catch(() => setStatus(SafeCreationStatus.INDEX_FAILED))
@@ -91,10 +91,14 @@ const useWatchSafeCreation = ({
       status === SafeCreationStatus.TIMEOUT
     ) {
       if (pendingSafe?.txHash) {
-        setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined } : undefined))
+        setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined, tx: undefined } : undefined))
       }
+    }
+
+    if (status === SafeCreationStatus.WALLET_REJECTED) {
+      trackEvent(CREATE_SAFE_EVENTS.REJECT_CREATE_SAFE)
     }
   }, [router, dispatch, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId])
 }
 
-export default useWatchSafeCreation
+export default useSafeCreationEffects

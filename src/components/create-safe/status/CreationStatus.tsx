@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
-import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
+import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import useChainId from '@/hooks/useChainId'
@@ -10,10 +10,13 @@ import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
 import Track from '@/components/common/Track'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
-
-type Props = {
-  onClose: () => void
-}
+import ComputedSafeAddress from '@/components/create-safe/status/ComputedSafeAddress'
+import useSafeCreationEffects from '@/components/create-safe/status/useSafeCreationEffects'
+import { useCallback, useState } from 'react'
+import { useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
+import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
+import type { PendingSafeData } from '@/components/create-safe'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 
 const getStep = (status: SafeCreationStatus) => {
   const loading = (
@@ -34,6 +37,12 @@ const getStep = (status: SafeCreationStatus) => {
         image: loading,
         description: 'Waiting for wallet connection',
         instruction: 'Please make sure your wallet is connected on the correct network.',
+      }
+    case SafeCreationStatus.WALLET_REJECTED:
+      return {
+        image: loading,
+        description: 'Transaction was rejected.',
+        instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.PROCESSING:
       return {
@@ -81,12 +90,41 @@ const getStep = (status: SafeCreationStatus) => {
   }
 }
 
-export const CreationStatus = ({ onClose }: Props) => {
-  const { status, createSafe, txHash, safeAddress } = useSafeCreation()
-  const stepInfo = getStep(status)
+export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
+
+type Props = {
+  params: PendingSafeData
+  onSubmit: StepRenderProps['onSubmit']
+  onBack: StepRenderProps['onBack']
+  setStep: StepRenderProps['setStep']
+}
+
+export const CreationStatus = ({ params, setStep }: Props) => {
+  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
+  const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(
+    SAFE_PENDING_CREATION_STORAGE_KEY,
+    params,
+  )
   const chainId = useChainId()
   const chain = useAppSelector((state) => selectChainById(state, chainId))
 
+  const { createSafe, txHash } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus)
+
+  useSafeCreationEffects({
+    pendingSafe,
+    setPendingSafe,
+    status,
+    safeAddress: pendingSafe?.safeAddress,
+    setStatus,
+    chainId,
+  })
+
+  const onClose = useCallback(() => {
+    setPendingSafe(undefined)
+    setStep(0)
+  }, [setPendingSafe, setStep])
+
+  const stepInfo = getStep(status)
   const displaySafeLink = status === SafeCreationStatus.INDEX_FAILED
 
   const displayActions =
@@ -119,21 +157,13 @@ export const CreationStatus = ({ onClose }: Props) => {
           </Box>
         </Box>
       )}
-      {safeAddress && !displaySafeLink && (
-        <Box display="flex" flexDirection="column" alignItems="center" px={3}>
-          <Typography>Your safe will have the following address after creation:</Typography>
-          <EthHashInfo
-            address={safeAddress}
-            hasExplorer={status === SafeCreationStatus.SUCCESS}
-            shortAddress={false}
-            showCopyButton
-          />
-        </Box>
-      )}
+
+      {pendingSafe?.safeAddress && <ComputedSafeAddress safeAddress={pendingSafe.safeAddress} />}
+
       {displaySafeLink && (
         <Box mt={3}>
           <Track {...CREATE_SAFE_EVENTS.GO_TO_SAFE}>
-            <Link href={{ pathname: AppRoutes.home, query: { safe: safeAddress } }} passHref>
+            <Link href={{ pathname: AppRoutes.home, query: { safe: pendingSafe?.safeAddress } }} passHref>
               <Button variant="contained">Open your Safe</Button>
             </Link>
           </Track>

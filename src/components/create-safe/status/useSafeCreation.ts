@@ -1,20 +1,23 @@
-import { createNewSafe } from '@/components/create-safe/sender'
-import { usePendingSafeCreation } from '@/components/create-safe/status/usePendingSafeCreation'
-import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
-import { useWeb3 } from '@/hooks/wallets/web3'
+import type { Dispatch, SetStateAction } from 'react'
 import { useCallback, useEffect, useState } from 'react'
-import useWallet from '@/hooks/wallets/useWallet'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
-import { Errors, logError } from '@/services/exceptions'
-import useChainId from '@/hooks/useChainId'
-import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
+import {
+  createNewSafe,
+  getSafeCreationTxInfo,
+  getSafeDeployProps,
+  checkSafeCreationTx,
+} from '@/components/create-safe/logic'
 import { isWalletRejection } from '@/utils/wallets'
-import { getSafeDeployProps } from '../logic'
+import { Errors, logError } from '@/services/exceptions'
+import { useWeb3 } from '@/hooks/wallets/web3'
+import useChainId from '@/hooks/useChainId'
+import { useCurrentChain } from '@/hooks/useChains'
+import useWallet from '@/hooks/wallets/useWallet'
+import type { PendingSafeData } from '@/components/create-safe'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
   AWAITING_WALLET = 'AWAITING_WALLET',
+  WALLET_REJECTED = 'WALLET_REJECTED',
   PROCESSING = 'PROCESSING',
   ERROR = 'ERROR',
   REVERTED = 'REVERTED',
@@ -24,96 +27,85 @@ export enum SafeCreationStatus {
   INDEX_FAILED = 'INDEX_FAILED',
 }
 
-export const useSafeCreation = () => {
-  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING_WALLET)
-  const [safeAddress, setSafeAddress] = useState<string>()
+export const useSafeCreation = (
+  pendingSafe: PendingSafeData | undefined,
+  setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>,
+  status: SafeCreationStatus,
+  setStatus: Dispatch<SetStateAction<SafeCreationStatus>>,
+) => {
   const [isCreationPending, setIsCreationPending] = useState<boolean>(false)
-  const [pendingSafe, setPendingSafe] = usePendingSafe()
-  const provider = useWeb3()
-  const chainId = useChainId()
+
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
+  const provider = useWeb3()
+  const chain = useCurrentChain()
+  const chainId = useChainId()
 
-  const safeCreationCallback = useCallback(
-    (txHash: string) => {
-      trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
+  const createSafeCallback = useCallback(
+    async (txHash: string) => {
+      if (!provider || !chain || !pendingSafe || !wallet) return
 
-      setStatus(SafeCreationStatus.PROCESSING)
-      setPendingSafe((prev) => (prev ? { ...prev, txHash } : undefined))
+      const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, pendingSafe.saltNonce, wallet)
+      setPendingSafe((prev) => (prev ? { ...prev, txHash, tx } : undefined))
     },
-    [setPendingSafe],
+    [provider, chain, pendingSafe, wallet, setPendingSafe],
   )
 
   const createSafe = useCallback(async () => {
-    if (!provider || !pendingSafe || isCreationPending) return
+    if (!pendingSafe || !provider || isCreationPending) return
+
+    const safeParams = getSafeDeployProps(
+      {
+        threshold: pendingSafe.threshold,
+        owners: pendingSafe.owners.map((owner) => owner.address),
+        saltNonce: pendingSafe.saltNonce,
+      },
+      createSafeCallback,
+      chainId,
+    )
 
     setStatus(SafeCreationStatus.AWAITING)
+    // Need this to stop createSafe from being called multiple times in the side effect
     setIsCreationPending(true)
 
     try {
-      await createNewSafe(
-        provider,
-        getSafeDeployProps(
-          {
-            threshold: pendingSafe.threshold,
-            owners: pendingSafe.owners.map((owner) => owner.address),
-            saltNonce: pendingSafe.saltNonce,
-          },
-          safeCreationCallback,
-          chainId,
-        ),
-      )
-
-      setStatus(SafeCreationStatus.SUCCESS)
+      await createNewSafe(provider, safeParams)
     } catch (err) {
       const _err = err as Error & { code?: number }
 
-      setStatus(SafeCreationStatus.ERROR)
-
-      if (isWalletRejection(_err)) {
-        trackEvent(CREATE_SAFE_EVENTS.REJECT_CREATE_SAFE)
-      }
-
       logError(Errors._800, _err.message)
+
+      // TODO: isWalletRejection is not working because the error is not caught here
+      const newStatus = isWalletRejection(_err) ? SafeCreationStatus.WALLET_REJECTED : SafeCreationStatus.ERROR
+      setStatus(newStatus)
+
+      // Remove the failed txHash
+      setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined, tx: undefined } : undefined))
     }
 
     setIsCreationPending(false)
-  }, [chainId, isCreationPending, pendingSafe, provider, safeCreationCallback])
+  }, [chainId, isCreationPending, pendingSafe, provider, createSafeCallback, setPendingSafe, setStatus])
 
-  usePendingSafeCreation({ status, pendingSafe, setStatus })
-  useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus, chainId })
-
+  // Create tx if txHash doesn't exist
   useEffect(() => {
-    if (
-      pendingSafe?.txHash ||
-      status === SafeCreationStatus.ERROR ||
-      status === SafeCreationStatus.REVERTED ||
-      status === SafeCreationStatus.SUCCESS ||
-      status === SafeCreationStatus.INDEXED ||
-      status === SafeCreationStatus.INDEX_FAILED
-    ) {
-      return
+    if (pendingSafe?.txHash || status !== SafeCreationStatus.AWAITING) return
+
+    createSafe()
+  }, [createSafe, pendingSafe?.txHash, status])
+
+  // Launch the monitor if txHash exists
+  useEffect(() => {
+    if (!provider || !pendingSafe?.tx || !pendingSafe?.txHash) return
+
+    const monitorTx = async () => {
+      const txStatus = await checkSafeCreationTx(provider, pendingSafe.tx!, pendingSafe.txHash!)
+      setStatus(txStatus)
     }
 
-    const newStatus = !wallet || isWrongChain ? SafeCreationStatus.AWAITING_WALLET : SafeCreationStatus.AWAITING
-    setStatus(newStatus)
-  }, [wallet, isWrongChain, pendingSafe?.txHash, status])
-
-  useEffect(() => {
-    if (!pendingSafe) return
-
-    setSafeAddress(pendingSafe.address)
-  }, [pendingSafe])
-
-  useEffect(() => {
-    if (status === SafeCreationStatus.AWAITING && !pendingSafe?.txHash) {
-      createSafe()
-    }
-  }, [status, createSafe, pendingSafe?.txHash])
+    setStatus(SafeCreationStatus.PROCESSING)
+    monitorTx()
+  }, [provider, pendingSafe?.tx, pendingSafe?.txHash, setStatus])
 
   return {
-    safeAddress,
-    status,
     createSafe,
     txHash: pendingSafe?.txHash,
   }

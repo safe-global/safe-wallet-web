@@ -4,15 +4,15 @@ import * as router from 'next/router'
 import type { NextRouter } from 'next/router'
 import { type SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import * as web3 from '@/hooks/wallets/web3'
-import * as pendingSafe from '@/components/create-safe/status/usePendingSafeCreation'
+import * as pendingSafe from '@/components/create-safe/logic'
 import * as chainIdModule from '@/hooks/useChainId'
 import { Web3Provider } from '@ethersproject/providers'
 import type { PendingSafeData } from '@/components/create-safe'
-import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
 import { AppRoutes } from '@/config/routes'
 import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
+import useSafeCreationEffects from '@/components/create-safe/status/useSafeCreationEffects'
 
-describe('useWatchSafeCreation', () => {
+describe('useSafeCreationEffects', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn(() => Promise.resolve({} as SafeInfo)))
@@ -26,7 +26,7 @@ describe('useWatchSafeCreation', () => {
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
-      useWatchSafeCreation({
+      useSafeCreationEffects({
         status: SafeCreationStatus.ERROR,
         safeAddress: '0x1',
         pendingSafe: { txHash: '0x10' } as PendingSafeData,
@@ -44,7 +44,7 @@ describe('useWatchSafeCreation', () => {
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
-      useWatchSafeCreation({
+      useSafeCreationEffects({
         status: SafeCreationStatus.ERROR,
         safeAddress: '0x1',
         pendingSafe: {} as PendingSafeData,
@@ -63,10 +63,10 @@ describe('useWatchSafeCreation', () => {
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
-      useWatchSafeCreation({
+      useSafeCreationEffects({
         status: SafeCreationStatus.SUCCESS,
         safeAddress: '0x1',
-        pendingSafe: {} as PendingSafeData,
+        pendingSafe: undefined,
         setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
         chainId: '4',
@@ -83,29 +83,9 @@ describe('useWatchSafeCreation', () => {
     const setPendingSafeSpy = jest.fn()
 
     renderHook(() =>
-      useWatchSafeCreation({
+      useSafeCreationEffects({
         status: SafeCreationStatus.SUCCESS,
         safeAddress: undefined,
-        pendingSafe: {} as PendingSafeData,
-        setPendingSafe: setPendingSafeSpy,
-        setStatus: setStatusSpy,
-        chainId: '4',
-      }),
-    )
-
-    expect(pollSafeInfoSpy).not.toHaveBeenCalled()
-    expect(setPendingSafeSpy).toHaveBeenCalledWith(undefined)
-  })
-
-  it('should not poll safe info on SUCCESS if there is no pending safe data', () => {
-    const pollSafeInfoSpy = jest.spyOn(pendingSafe, 'pollSafeInfo')
-    const setStatusSpy = jest.fn()
-    const setPendingSafeSpy = jest.fn()
-
-    renderHook(() =>
-      useWatchSafeCreation({
-        status: SafeCreationStatus.SUCCESS,
-        safeAddress: '0x10',
         pendingSafe: undefined,
         setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
@@ -132,7 +112,7 @@ describe('useWatchSafeCreation', () => {
 
     renderHook(
       () =>
-        useWatchSafeCreation({
+        useSafeCreationEffects({
           status: SafeCreationStatus.INDEXED,
           safeAddress: '0x10',
           pendingSafe: {} as PendingSafeData,

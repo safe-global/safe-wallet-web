@@ -1,9 +1,8 @@
-import type { Web3Provider } from '@ethersproject/providers'
-import type { DeploySafeProps } from '@gnosis.pm/safe-core-sdk'
+import type { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
 import type Safe from '@gnosis.pm/safe-core-sdk'
-import { SafeFactory } from '@gnosis.pm/safe-core-sdk'
+import { SafeFactory, type DeploySafeProps } from '@gnosis.pm/safe-core-sdk'
 import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
-import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 import {
   getFallbackHandlerContractInstance,
@@ -14,9 +13,14 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 import type { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
 import type { SafeFormData } from '@/components/create-safe/types'
 import type { ConnectedWallet } from '@/services/onboard'
-import { getUserNonce } from '@/hooks/wallets/web3'
 import { BigNumber } from '@ethersproject/bignumber'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import { getSafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { backOff } from 'exponential-backoff'
+import type { PendingSafeTx } from '@/components/create-safe'
+import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
+import { didRevert, type EthersError } from '@/utils/ethers-utils'
+import { Errors, logError } from '@/services/exceptions'
+import { ErrorCode } from '@ethersproject/logger'
 
 /**
  * Prepare data for creating a Safe for the Core SDK
@@ -111,7 +115,7 @@ export const getSafeCreationTxInfo = async (
   return {
     data,
     from: wallet.address,
-    nonce: await getUserNonce(wallet.address),
+    nonce: await provider.getTransactionCount(wallet.address),
     to: proxyContract.getAddress(),
     value: BigNumber.from(0),
     startBlock: await provider.getBlockNumber(),
@@ -138,4 +142,49 @@ export const estimateSafeCreationGas = async (
     to: proxyFactoryContract.getAddress(),
     data: encodedSafeCreationTx,
   })
+}
+
+export const pollSafeInfo = async (chainId: string, safeAddress: string): Promise<SafeInfo> => {
+  // exponential delay between attempts for around 4 min
+  return backOff(() => getSafeInfo(chainId, safeAddress), {
+    startingDelay: 750,
+    maxDelay: 20000,
+    numOfAttempts: 19,
+    retry: (e) => {
+      console.info('waiting for client-gateway to provide safe information', e)
+      return true
+    },
+  })
+}
+
+export const checkSafeCreationTx = async (
+  provider: JsonRpcProvider,
+  pendingTx: PendingSafeTx,
+  txHash: string,
+): Promise<SafeCreationStatus> => {
+  const TIMEOUT_TIME = 6.5 * 60 * 1000 // 6.5 minutes
+
+  try {
+    const receipt = await provider._waitForTransaction(txHash, 1, TIMEOUT_TIME, pendingTx)
+
+    if (didRevert(receipt)) {
+      return SafeCreationStatus.REVERTED
+    }
+
+    return SafeCreationStatus.SUCCESS
+  } catch (err) {
+    const error = err as EthersError
+
+    logError(Errors._800, error.message)
+
+    if (error.code === ErrorCode.TRANSACTION_REPLACED) {
+      if (error.reason === 'cancelled') {
+        return SafeCreationStatus.ERROR
+      } else {
+        return SafeCreationStatus.SUCCESS
+      }
+    }
+
+    return SafeCreationStatus.TIMEOUT
+  }
 }
