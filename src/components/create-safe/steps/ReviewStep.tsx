@@ -10,7 +10,7 @@ import { formatVisualAmount } from '@/utils/formatters'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useMemo } from 'react'
 import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
-import { computeNewSafeAddress, getSafeCreationTxInfo } from '@/components/create-safe/sender'
+import { computeNewSafeAddress } from '@/components/create-safe/sender'
 import { useCurrentChain } from '@/hooks/useChains'
 import type { SafeFormData } from '@/components/create-safe/types'
 import { getFallbackHandlerContractInstance } from '@/services/contracts/safeContracts'
@@ -61,9 +61,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
 
     const safeAddress = await computeNewSafeAddress(ethersProvider, props)
 
-    const tx = await getSafeCreationTxInfo(ethersProvider, params, chain, saltNonce, wallet)
-
-    setPendingSafe({ ...params, address: safeAddress, saltNonce, tx })
+    setPendingSafe({ ...params, address: safeAddress, saltNonce })
     onSubmit(params)
   }
 

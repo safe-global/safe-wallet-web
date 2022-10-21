@@ -2,6 +2,8 @@ import { ProviderLabel } from '@web3-onboard/injected-wallets'
 import { hasStoredPairingSession } from '@/services/pairing/connector'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
+import type { EthersError } from '@/utils/ethers-utils'
+import { ErrorCode } from '@ethersproject/logger'
 
 const isKeystoneError = (err: unknown): boolean => {
   if (err instanceof Error) {
@@ -14,13 +16,11 @@ const isWCRejection = (err: Error): boolean => {
   return /User rejected/.test(err?.message)
 }
 
-const isMMRejection = (err: Error & { code?: number }): boolean => {
-  const METAMASK_REJECT_CONFIRM_TX_ERROR_CODE = 4001
-
-  return err.code === METAMASK_REJECT_CONFIRM_TX_ERROR_CODE
+const isMMRejection = (err: EthersError): boolean => {
+  return err.code === ErrorCode.ACTION_REJECTED
 }
 
-export const isWalletRejection = (err: Error & { code?: number }): boolean => {
+export const isWalletRejection = (err: EthersError): boolean => {
   return isMMRejection(err) || isWCRejection(err) || isKeystoneError(err)
 }
 

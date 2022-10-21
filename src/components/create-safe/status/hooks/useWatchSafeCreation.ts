@@ -68,7 +68,7 @@ const useWatchSafeCreation = ({
       setPendingSafe(undefined)
 
       // Asynchronously wait for Safe creation
-      if (safeAddress && pendingSafe) {
+      if (safeAddress) {
         pollSafeInfo(chainId, safeAddress)
           .then(() => setStatus(SafeCreationStatus.INDEXED))
           .catch(() => setStatus(SafeCreationStatus.INDEX_FAILED))
@@ -81,7 +81,7 @@ const useWatchSafeCreation = ({
       status === SafeCreationStatus.TIMEOUT
     ) {
       if (pendingSafe?.txHash) {
-        setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined } : undefined))
+        setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined, tx: undefined } : undefined))
       }
     }
   }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId])

@@ -15,7 +15,6 @@ import type { SafeCreationProps } from '@/components/create-safe/useEstimateSafe
 import type { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
 import type { SafeFormData } from '@/components/create-safe/types'
 import type { ConnectedWallet } from '@/services/onboard'
-import { getUserNonce } from '@/hooks/wallets/web3'
 import { BigNumber } from '@ethersproject/bignumber'
 
 export const createNewSafe = async (ethersProvider: Web3Provider, props: DeploySafeProps): Promise<Safe> => {
@@ -77,7 +76,7 @@ export const getSafeCreationTxInfo = async (
   return {
     data,
     from: wallet.address,
-    nonce: await getUserNonce(wallet.address),
+    nonce: await provider.getTransactionCount(wallet.address),
     to: proxyContract.getAddress(),
     value: BigNumber.from(0),
     startBlock: await provider.getBlockNumber(),

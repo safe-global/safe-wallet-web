@@ -97,26 +97,6 @@ describe('useWatchSafeCreation', () => {
     expect(setPendingSafeSpy).toHaveBeenCalledWith(undefined)
   })
 
-  it('should not poll safe info on SUCCESS if there is no pending safe data', () => {
-    const pollSafeInfoSpy = jest.spyOn(pendingSafe, 'pollSafeInfo')
-    const setStatusSpy = jest.fn()
-    const setPendingSafeSpy = jest.fn()
-
-    renderHook(() =>
-      useWatchSafeCreation({
-        status: SafeCreationStatus.SUCCESS,
-        safeAddress: '0x10',
-        pendingSafe: undefined,
-        setPendingSafe: setPendingSafeSpy,
-        setStatus: setStatusSpy,
-        chainId: '4',
-      }),
-    )
-
-    expect(pollSafeInfoSpy).not.toHaveBeenCalled()
-    expect(setPendingSafeSpy).toHaveBeenCalledWith(undefined)
-  })
-
   it('should navigate to the dashboard on INDEXED', async () => {
     jest.spyOn(chainIdModule, 'default').mockReturnValue('4')
     const pushMock = jest.fn()
