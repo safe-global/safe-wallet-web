@@ -11,6 +11,7 @@ import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
 import type { NamedAddress, SafeFormData } from '@/components/create-safe/types'
 import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
 import AddIcon from '@/public/images/common/add.svg'
+import { useEffect } from 'react'
 
 type Props = {
   params: SafeFormData
@@ -46,7 +47,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
       threshold: defaultThreshold,
     },
   })
-  const { register, handleSubmit, control, formState, watch, setValue } = formMethods
+  const { register, handleSubmit, control, formState, watch, setValue, getValues, trigger } = formMethods
   const currentThreshold = watch(FieldName.threshold)
   const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
@@ -73,6 +74,11 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     }
   }
 
+  // Default values can be invalid so we need to trigger validation
+  useEffect(() => {
+    trigger()
+  }, [trigger])
+
   const onFormSubmit = handleSubmit((data: SafeFormData) => {
     onSubmit(data)
 
@@ -87,9 +93,9 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     })
   })
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
-    onBack(data)
-  })
+  const onFormBack = () => {
+    onBack(getValues())
+  }
 
   return (
     <Paper>

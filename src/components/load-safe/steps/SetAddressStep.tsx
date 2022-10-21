@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Button, CircularProgress, Divider, Grid, InputAdornment, Link, Paper, Typography } from '@mui/material'
 import { useForm, FormProvider } from 'react-hook-form'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
@@ -36,7 +36,7 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     },
   })
 
-  const { handleSubmit, watch, formState } = formMethods
+  const { handleSubmit, watch, formState, getValues, trigger } = formMethods
 
   const safeAddress = watch('address')
 
@@ -58,6 +58,11 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     }
   }
 
+  // Default values can be invalid so we need to trigger validation
+  useEffect(() => {
+    trigger()
+  }, [trigger])
+
   const onFormSubmit = handleSubmit((data: SafeFormData) => {
     onSubmit({
       ...data,
@@ -69,12 +74,12 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     }
   })
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
+  const onFormBack = () => {
     onBack({
-      ...data,
-      [FormField.name]: data[FormField.name] || fallbackName,
+      ...getValues(),
+      [FormField.name]: getValues([FormField.name]) || fallbackName,
     })
-  })
+  }
 
   return (
     <FormProvider {...formMethods}>
