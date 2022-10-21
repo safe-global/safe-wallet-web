@@ -89,11 +89,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
 
             if (error) {
               const errorDescription =
-                error instanceof Error
-                  ? error.message
-                  : typeof error === 'string'
-                  ? error.toString()
-                  : JSON.stringify(error)
+                error instanceof Error ? error.message : typeof error === 'string' ? error.toString() : error.message
               setError(errorDescription)
               logError(Errors._703, errorDescription)
             }
