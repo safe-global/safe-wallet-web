@@ -48,9 +48,9 @@ const SafeOwnersStep = ({ params, onSubmit, onBack }: Props): ReactElement => {
     setValue('owners', owners)
   }, [getValues, safeInfo, setValue])
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
-    onBack(data)
-  })
+  const onFormBack = () => {
+    onBack(getValues())
+  }
 
   return (
     <Paper>

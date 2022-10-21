@@ -31,7 +31,7 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
     mode: 'onChange',
   })
 
-  const { handleSubmit } = formMethods
+  const { handleSubmit, getValues } = formMethods
 
   const onFormSubmit = handleSubmit((data: SafeFormData) => {
     onSubmit({
@@ -44,12 +44,12 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
     }
   })
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
+  const onFormBack = () => {
     onBack({
-      ...data,
-      name: data.name || fallbackName,
+      ...getValues(),
+      name: getValues([FormField.name]) || fallbackName,
     })
-  })
+  }
 
   return (
     <Paper>
