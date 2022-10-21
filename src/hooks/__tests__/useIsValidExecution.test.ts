@@ -56,7 +56,7 @@ describe('useIsValidExecution', () => {
 
     const { result } = renderHook(() => useIsValidExecution(mockTx, mockGas))
 
-    var { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
+    let { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
 
     expect(isValidExecution).toEqual(undefined)
     expect(executionValidationError).toBe(undefined)
@@ -65,8 +65,7 @@ describe('useIsValidExecution', () => {
     await act(async () => {
       await new Promise(process.nextTick)
     })
-
-    var { isValidExecution, executionValidationError, isValidExecutionLoading } = result.current
+    ;({ isValidExecution, executionValidationError, isValidExecutionLoading } = result.current)
 
     expect(isValidExecution).toBe(true)
     expect(executionValidationError).toBe(undefined)
