@@ -5,18 +5,17 @@ import {
   getSafeCreationTxInfo,
   getSafeDeployProps,
   checkSafeCreationTx,
+  handleSafeCreationError,
 } from '@/components/create-safe/logic'
-import { isWalletRejection } from '@/utils/wallets'
-import { Errors, logError } from '@/services/exceptions'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { PendingSafeData } from '@/components/create-safe'
+import type { EthersError } from '@/utils/ethers-utils'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
-  AWAITING_WALLET = 'AWAITING_WALLET',
   WALLET_REJECTED = 'WALLET_REJECTED',
   PROCESSING = 'PROCESSING',
   ERROR = 'ERROR',
@@ -33,7 +32,8 @@ export const useSafeCreation = (
   status: SafeCreationStatus,
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>,
 ) => {
-  const [isCreationPending, setIsCreationPending] = useState<boolean>(false)
+  const [isCreating, setIsCreating] = useState<boolean>(false)
+  const [isWatching, setIsWatching] = useState<boolean>(false)
 
   const wallet = useWallet()
   const provider = useWeb3()
@@ -51,7 +51,7 @@ export const useSafeCreation = (
   )
 
   const createSafe = useCallback(async () => {
-    if (!pendingSafe || !provider || isCreationPending) return
+    if (!pendingSafe || !provider || isCreating) return
 
     const safeParams = getSafeDeployProps(
       {
@@ -64,46 +64,36 @@ export const useSafeCreation = (
     )
 
     setStatus(SafeCreationStatus.AWAITING)
-    // Need this to stop createSafe from being called multiple times in the side effect
-    setIsCreationPending(true)
+    setIsCreating(true)
 
     try {
       await createNewSafe(provider, safeParams)
     } catch (err) {
-      const _err = err as Error & { code?: number }
-
-      logError(Errors._800, _err.message)
-
-      // TODO: isWalletRejection is not working because the error is not caught here
-      const newStatus = isWalletRejection(_err) ? SafeCreationStatus.WALLET_REJECTED : SafeCreationStatus.ERROR
-      setStatus(newStatus)
-
-      // Remove the failed txHash
-      setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined, tx: undefined } : undefined))
+      setStatus(handleSafeCreationError(err as EthersError))
     }
 
-    setIsCreationPending(false)
-  }, [chainId, isCreationPending, pendingSafe, provider, createSafeCallback, setPendingSafe, setStatus])
+    setIsCreating(false)
+  }, [chainId, createSafeCallback, isCreating, pendingSafe, provider, setStatus])
+
+  const watchSafeTx = useCallback(async () => {
+    if (!pendingSafe?.tx || !pendingSafe?.txHash || !provider || isWatching) return
+
+    setStatus(SafeCreationStatus.PROCESSING)
+    setIsWatching(true)
+
+    const txStatus = await checkSafeCreationTx(provider, pendingSafe.tx, pendingSafe.txHash)
+    setStatus(txStatus)
+    setIsWatching(false)
+  }, [isWatching, pendingSafe, provider, setStatus])
 
   // Create tx if txHash doesn't exist
   useEffect(() => {
-    if (pendingSafe?.txHash || status !== SafeCreationStatus.AWAITING) return
-
-    createSafe()
-  }, [createSafe, pendingSafe?.txHash, status])
-
-  // Launch the monitor if txHash exists
-  useEffect(() => {
-    if (!provider || !pendingSafe?.tx || !pendingSafe?.txHash) return
-
-    const monitorTx = async () => {
-      const txStatus = await checkSafeCreationTx(provider, pendingSafe.tx!, pendingSafe.txHash!)
-      setStatus(txStatus)
+    if (pendingSafe?.txHash || status !== SafeCreationStatus.AWAITING) {
+      watchSafeTx()
+    } else {
+      createSafe()
     }
-
-    setStatus(SafeCreationStatus.PROCESSING)
-    monitorTx()
-  }, [provider, pendingSafe?.tx, pendingSafe?.txHash, setStatus])
+  }, [createSafe, watchSafeTx, pendingSafe?.txHash, status])
 
   return {
     createSafe,

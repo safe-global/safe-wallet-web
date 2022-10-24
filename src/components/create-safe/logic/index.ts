@@ -21,6 +21,7 @@ import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreat
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { Errors, logError } from '@/services/exceptions'
 import { ErrorCode } from '@ethersproject/logger'
+import { isWalletRejection } from '@/utils/wallets'
 
 /**
  * Prepare data for creating a Safe for the Core SDK
@@ -157,6 +158,24 @@ export const pollSafeInfo = async (chainId: string, safeAddress: string): Promis
   })
 }
 
+export const handleSafeCreationError = (error: EthersError) => {
+  logError(Errors._800, error.message)
+
+  if (isWalletRejection(error)) {
+    return SafeCreationStatus.WALLET_REJECTED
+  }
+
+  if (error.code === ErrorCode.TRANSACTION_REPLACED) {
+    if (error.reason === 'cancelled') {
+      return SafeCreationStatus.ERROR
+    } else {
+      return SafeCreationStatus.SUCCESS
+    }
+  }
+
+  return SafeCreationStatus.TIMEOUT
+}
+
 export const checkSafeCreationTx = async (
   provider: JsonRpcProvider,
   pendingTx: PendingSafeTx,
@@ -173,18 +192,6 @@ export const checkSafeCreationTx = async (
 
     return SafeCreationStatus.SUCCESS
   } catch (err) {
-    const error = err as EthersError
-
-    logError(Errors._800, error.message)
-
-    if (error.code === ErrorCode.TRANSACTION_REPLACED) {
-      if (error.reason === 'cancelled') {
-        return SafeCreationStatus.ERROR
-      } else {
-        return SafeCreationStatus.SUCCESS
-      }
-    }
-
-    return SafeCreationStatus.TIMEOUT
+    return handleSafeCreationError(err as EthersError)
   }
 }

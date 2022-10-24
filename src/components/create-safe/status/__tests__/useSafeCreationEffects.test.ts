@@ -11,6 +11,7 @@ import type { PendingSafeData } from '@/components/create-safe'
 import { AppRoutes } from '@/config/routes'
 import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
 import useSafeCreationEffects from '@/components/create-safe/status/useSafeCreationEffects'
+import type { NamedAddress } from '@/components/create-safe/types'
 
 describe('useSafeCreationEffects', () => {
   beforeEach(() => {
@@ -28,7 +29,6 @@ describe('useSafeCreationEffects', () => {
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.ERROR,
-        safeAddress: '0x1',
         pendingSafe: { txHash: '0x10' } as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
@@ -46,7 +46,6 @@ describe('useSafeCreationEffects', () => {
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.ERROR,
-        safeAddress: '0x1',
         pendingSafe: {} as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
@@ -65,8 +64,10 @@ describe('useSafeCreationEffects', () => {
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.SUCCESS,
-        safeAddress: '0x1',
-        pendingSafe: undefined,
+        pendingSafe: {
+          safeAddress: '0x1',
+          owners: [] as NamedAddress[],
+        } as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
         chainId: '4',
@@ -74,7 +75,6 @@ describe('useSafeCreationEffects', () => {
     )
 
     expect(pollSafeInfoSpy).toHaveBeenCalled()
-    expect(setPendingSafeSpy).toHaveBeenCalledWith(undefined)
   })
 
   it('should not poll safe info on SUCCESS if there is no safe address', () => {
@@ -85,7 +85,6 @@ describe('useSafeCreationEffects', () => {
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.SUCCESS,
-        safeAddress: undefined,
         pendingSafe: undefined,
         setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
@@ -94,7 +93,6 @@ describe('useSafeCreationEffects', () => {
     )
 
     expect(pollSafeInfoSpy).not.toHaveBeenCalled()
-    expect(setPendingSafeSpy).toHaveBeenCalledWith(undefined)
   })
 
   it('should navigate to the dashboard on INDEXED', async () => {
@@ -114,8 +112,7 @@ describe('useSafeCreationEffects', () => {
       () =>
         useSafeCreationEffects({
           status: SafeCreationStatus.INDEXED,
-          safeAddress: '0x10',
-          pendingSafe: {} as PendingSafeData,
+          pendingSafe: { safeAddress: '0x10' } as PendingSafeData,
           setPendingSafe: setPendingSafeSpy,
           setStatus: setStatusSpy,
           chainId: '4',

@@ -42,14 +42,12 @@ const useSafeCreationEffects = ({
   pendingSafe,
   setPendingSafe,
   status,
-  safeAddress,
   setStatus,
   chainId,
 }: {
   pendingSafe: PendingSafeData | undefined
   setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>
   status: SafeCreationStatus
-  safeAddress: string | undefined
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>
   chainId: string
 }) => {
@@ -60,9 +58,13 @@ const useSafeCreationEffects = ({
     if (status === SafeCreationStatus.INDEXED) {
       trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)
 
+      const { safeAddress } = pendingSafe || {}
+      setPendingSafe(undefined)
+
       if (safeAddress) {
         router.push(getRedirect(chainId, safeAddress, router.query?.safeViewRedirectURL))
       }
+      return
     }
 
     if (status === SafeCreationStatus.SUCCESS) {
@@ -75,30 +77,30 @@ const useSafeCreationEffects = ({
         )
       }
 
-      setPendingSafe(undefined)
-
       // Asynchronously wait for Safe creation
-      if (safeAddress) {
-        pollSafeInfo(chainId, safeAddress)
+      if (pendingSafe?.safeAddress) {
+        pollSafeInfo(chainId, pendingSafe.safeAddress)
           .then(() => setStatus(SafeCreationStatus.INDEXED))
           .catch(() => setStatus(SafeCreationStatus.INDEX_FAILED))
       }
-    }
-
-    if (
-      status === SafeCreationStatus.ERROR ||
-      status === SafeCreationStatus.REVERTED ||
-      status === SafeCreationStatus.TIMEOUT
-    ) {
-      if (pendingSafe?.txHash) {
-        setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined, tx: undefined } : undefined))
-      }
+      return
     }
 
     if (status === SafeCreationStatus.WALLET_REJECTED) {
       trackEvent(CREATE_SAFE_EVENTS.REJECT_CREATE_SAFE)
     }
-  }, [router, dispatch, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId])
+
+    if (
+      status === SafeCreationStatus.WALLET_REJECTED ||
+      status === SafeCreationStatus.ERROR ||
+      status === SafeCreationStatus.REVERTED
+    ) {
+      if (pendingSafe?.txHash) {
+        setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined, tx: undefined } : undefined))
+      }
+      return
+    }
+  }, [router, dispatch, setPendingSafe, status, pendingSafe, setStatus, chainId])
 }
 
 export default useSafeCreationEffects
