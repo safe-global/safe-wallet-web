@@ -12,7 +12,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { isOwner } from '@/utils/transaction-guards'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { useCurrentChain } from '@/hooks/useChains'
-import type { SafeFormData } from '@/components/create-safe/types'
+import type { SafeFormData } from '@/components/load-safe/types'
 import { trackEvent, LOAD_SAFE_EVENTS } from '@/services/analytics'
 
 type Props = {

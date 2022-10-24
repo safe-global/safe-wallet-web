@@ -1,0 +1,4 @@
+.actions {
+  border-top: 1px solid var(--color-border-light);
+  padding: var(--space-3) 52px;
+}

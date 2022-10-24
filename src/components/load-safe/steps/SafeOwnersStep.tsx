@@ -9,9 +9,9 @@ import useAsync from '@/hooks/useAsync'
 import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getSafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { OwnerRow } from '@/components/create-safe/steps/OwnerRow'
+import { OwnerRow } from '@/components/load-safe/steps/OwnerRow'
 import useChainId from '@/hooks/useChainId'
-import type { SafeFormData } from '@/components/create-safe/types'
+import type { SafeFormData } from '@/components/load-safe/types'
 
 type Props = {
   params: SafeFormData

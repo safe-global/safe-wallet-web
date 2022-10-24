@@ -8,7 +8,7 @@ import SafeOwnersStep from '@/components/load-safe/steps/SafeOwnersStep'
 import SetAddressStep from '@/components/load-safe/steps/SetAddressStep'
 import SafeReviewStep from '@/components/load-safe/steps/SafeReviewStep'
 import SelectNetworkStep from '@/components/load-safe/steps/SelectNetworkStep'
-import type { SafeFormData } from '@/components/create-safe/types'
+import type { SafeFormData } from '@/components/load-safe/types'
 import { LOAD_SAFE_CATEGORY } from '@/services/analytics'
 
 export const LoadSafeSteps: TxStepperProps['steps'] = [

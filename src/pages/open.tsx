@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import CreateSafe from '@/components/create-safe'
+import CreateSafe from '@/components/create-safe/CreateSafe'
 
 const Open: NextPage = () => {
   return (

@@ -11,7 +11,7 @@ import { selectAddedSafes } from '@/store/addedSafesSlice'
 import NameInput from '@/components/common/NameInput'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
-import type { SafeFormData } from '@/components/create-safe/types'
+import type { SafeFormData } from '@/components/load-safe/types'
 import { trackEvent, LOAD_SAFE_EVENTS } from '@/services/analytics'
 
 type Props = {
