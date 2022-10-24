@@ -12,7 +12,7 @@ const CreateSafeCardHeader = ({ step, ...props }: CardHeaderProps & { step: numb
       }}
       subheaderTypographyProps={{
         variant: 'body2',
-        color: 'primary',
+        color: 'text.primary',
       }}
       avatar={
         <Avatar className={css.avatar}>

@@ -73,10 +73,10 @@ const CreateSafeStep1 = () => {
           <Select
             startAdornment={
               <InputAdornment position="start">
-                <InputLabel required>Network</InputLabel>
+                <InputLabel>Network</InputLabel>
               </InputAdornment>
             }
-            {...(register(CreateSafeStep1Fields.chainId), { required: true })}
+            {...register(CreateSafeStep1Fields.chainId)}
             SelectDisplayProps={{
               className: css.select,
             }}
@@ -92,7 +92,6 @@ const CreateSafeStep1 = () => {
           <TextField
             label={errors?.[CreateSafeStep1Fields.name]?.message || 'Name'}
             error={!!errors?.[CreateSafeStep1Fields.name]}
-            required
             placeholder={fallbackName}
             InputProps={{
               endAdornment: (
@@ -107,7 +106,10 @@ const CreateSafeStep1 = () => {
                 </Tooltip>
               ),
             }}
-            {...register(CreateSafeStep1Fields.name, { required: true })}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            {...register(CreateSafeStep1Fields.name)}
           />
 
           <Typography variant="body2">
