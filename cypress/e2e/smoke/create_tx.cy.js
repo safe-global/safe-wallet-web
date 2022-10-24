@@ -5,7 +5,7 @@ describe('Queue a transaction on 1/1', () => {
   before(() => {
     cy.connectE2EWallet()
 
-    cy.visit(`/${SAFE}/home`)
+    cy.visit(`/${SAFE}/home`, { failOnStatusCode: false })
 
     cy.contains('Accept selection').click()
   })
