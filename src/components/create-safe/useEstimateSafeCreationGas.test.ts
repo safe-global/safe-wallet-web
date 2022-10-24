@@ -71,16 +71,6 @@ describe('useEstimateSafeCreationGas', () => {
     })
   })
 
-  it('should not estimate gas if there is no encoded data', async () => {
-    jest.spyOn(sender, 'getSafeCreationTx').mockReturnValue(undefined)
-    const { result } = renderHook(() => useEstimateSafeCreationGas(mockProps))
-
-    await waitFor(() => {
-      expect(result.current.gasLimit).toBeUndefined()
-      expect(result.current.gasLimitLoading).toBe(false)
-    })
-  })
-
   it('should not estimate gas if there is no provider', async () => {
     jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(undefined)
     const { result } = renderHook(() => useEstimateSafeCreationGas(mockProps))

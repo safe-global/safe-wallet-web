@@ -6,7 +6,7 @@ import { type UrlObject } from 'url'
 import { pollSafeInfo } from '@/components/create-safe/status/usePendingSafeCreation'
 import { AppRoutes } from '@/config/routes'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
-import { trackEvent, CREATE_SAFE_EVENTS, SAFE_APPS_EVENTS } from '@/services/analytics'
+import { CREATE_SAFE_EVENTS, SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import chains from '@/config/chains'
 
 const getRedirect = (chainId: string, safeAddress: string, redirectQuery?: string | string[]): UrlObject | string => {
@@ -68,16 +68,20 @@ const useWatchSafeCreation = ({
       setPendingSafe(undefined)
 
       // Asynchronously wait for Safe creation
-      if (safeAddress && pendingSafe) {
+      if (safeAddress) {
         pollSafeInfo(chainId, safeAddress)
           .then(() => setStatus(SafeCreationStatus.INDEXED))
           .catch(() => setStatus(SafeCreationStatus.INDEX_FAILED))
       }
     }
 
-    if (status === SafeCreationStatus.ERROR || status === SafeCreationStatus.REVERTED) {
+    if (
+      status === SafeCreationStatus.ERROR ||
+      status === SafeCreationStatus.REVERTED ||
+      status === SafeCreationStatus.TIMEOUT
+    ) {
       if (pendingSafe?.txHash) {
-        setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined } : undefined))
+        setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined, tx: undefined } : undefined))
       }
     }
   }, [router, safeAddress, setPendingSafe, status, pendingSafe, setStatus, chainId])

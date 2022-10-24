@@ -11,9 +11,11 @@ import type { TransactionResponse } from '@ethersproject/providers'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { checkSafeCreationTx } from '@/components/create-safe/status/usePendingSafeCreation'
-import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { BigNumber } from '@ethersproject/bignumber'
+import type { EthersError } from '@/utils/ethers-utils'
+import { ErrorCode } from '@ethersproject/logger'
 
 describe('useSafeCreation', () => {
   beforeEach(() => {
@@ -49,7 +51,6 @@ describe('useSafeCreation', () => {
 
   it('should return PROCESSING if there is a txHash', async () => {
     const mockSafe: Safe = new Safe()
-    mockSafe.getAddress = jest.fn(() => '0x0')
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
         name: 'joyful-rinkeby-safe',
@@ -69,7 +70,6 @@ describe('useSafeCreation', () => {
 
   it('should return SUCCESS if the safe creation promise resolves', async () => {
     const mockSafe: Safe = new Safe()
-    mockSafe.getAddress = jest.fn(() => '0x0')
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(wrongChain, 'default').mockReturnValue(false)
     jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.resolve(mockSafe))
@@ -92,13 +92,43 @@ describe('useSafeCreation', () => {
     })
   })
 
-  it('should return ERROR if the safe creation promise rejects', async () => {
-    const mockSafe: Safe = new Safe()
-    mockSafe.getAddress = jest.fn(() => '0x0')
+  it('should return SUCCESS if transaction was replaced', async () => {
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(wrongChain, 'default').mockReturnValue(false)
-    jest.spyOn(createSafe, 'computeNewSafeAddress').mockImplementation(() => Promise.resolve(ZERO_ADDRESS))
-    jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() => Promise.reject(mockSafe))
+    jest.spyOn(createSafe, 'createNewSafe').mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Transaction was replaced',
+        code: ErrorCode.TRANSACTION_REPLACED,
+        reason: 'replaced',
+      } as EthersError),
+    )
+    jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
+      {
+        name: 'joyful-rinkeby-safe',
+        address: '0x10',
+        threshold: 1,
+        owners: [],
+        saltNonce: 123,
+        chainId: '4',
+      },
+      jest.fn,
+    ])
+
+    const { result } = renderHook(() => useSafeCreation())
+
+    await waitFor(() => {
+      expect(result.current.status).toBe(SafeCreationStatus.SUCCESS)
+    })
+  })
+
+  it('should return ERROR if user rejects transaction', async () => {
+    jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
+    jest.spyOn(wrongChain, 'default').mockReturnValue(false)
+    jest
+      .spyOn(createSafe, 'createNewSafe')
+      .mockImplementation(() =>
+        Promise.reject({ message: 'User rejected transaction', code: ErrorCode.ACTION_REJECTED } as EthersError),
+      )
     jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
       {
         name: 'joyful-rinkeby-safe',
@@ -121,6 +151,23 @@ describe('useSafeCreation', () => {
 
 const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
 
+const mockTransaction = {
+  data: EMPTY_DATA,
+  nonce: 1,
+  from: '0x10',
+  to: '0x11',
+  value: BigNumber.from(0),
+}
+
+const mockPendingTx = {
+  data: EMPTY_DATA,
+  from: ZERO_ADDRESS,
+  to: ZERO_ADDRESS,
+  nonce: 0,
+  startBlock: 0,
+  value: BigNumber.from(0),
+}
+
 describe('monitorSafeCreationTx', () => {
   let waitForTxSpy = jest.spyOn(provider, '_waitForTransaction')
 
@@ -131,15 +178,7 @@ describe('monitorSafeCreationTx', () => {
 
     waitForTxSpy = jest.spyOn(provider, '_waitForTransaction')
     jest.spyOn(provider, 'getBlockNumber').mockReturnValue(Promise.resolve(4))
-    jest.spyOn(provider, 'getTransaction').mockReturnValue(
-      Promise.resolve({
-        data: '0x',
-        nonce: 1,
-        from: '0x10',
-        to: '0x11',
-        value: BigNumber.from(0),
-      } as TransactionResponse),
-    )
+    jest.spyOn(provider, 'getTransaction').mockReturnValue(Promise.resolve(mockTransaction as TransactionResponse))
   })
 
   it('returns SUCCESS if promise was resolved', async () => {
@@ -149,7 +188,7 @@ describe('monitorSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    const result = await checkSafeCreationTx(provider, '0x0', '4')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
     expect(result).toBe(SafeCreationStatus.SUCCESS)
   })
@@ -161,7 +200,7 @@ describe('monitorSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    const result = await checkSafeCreationTx(provider, '0x0', '4')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
     expect(result).toBe(SafeCreationStatus.REVERTED)
   })
@@ -169,7 +208,7 @@ describe('monitorSafeCreationTx', () => {
   it('returns TIMEOUT if transaction couldnt be found within the timout limit', async () => {
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error()))
 
-    const result = await checkSafeCreationTx(provider, '0x0', '4')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
     expect(result).toBe(SafeCreationStatus.TIMEOUT)
   })
@@ -182,7 +221,7 @@ describe('monitorSafeCreationTx', () => {
     }
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
 
-    const result = await checkSafeCreationTx(provider, '0x0', '4')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
     expect(result).toBe(SafeCreationStatus.SUCCESS)
   })
@@ -195,7 +234,7 @@ describe('monitorSafeCreationTx', () => {
     }
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
 
-    const result = await checkSafeCreationTx(provider, '0x0', '4')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
     expect(result).toBe(SafeCreationStatus.ERROR)
   })

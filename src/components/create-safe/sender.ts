@@ -13,6 +13,9 @@ import {
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import type { SafeCreationProps } from '@/components/create-safe/useEstimateSafeCreationGas'
 import type { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
+import type { SafeFormData } from '@/components/create-safe/types'
+import type { ConnectedWallet } from '@/services/onboard'
+import { BigNumber } from '@ethersproject/bignumber'
 
 export const createNewSafe = async (ethersProvider: Web3Provider, props: DeploySafeProps): Promise<Safe> => {
   const ethAdapter = createEthersAdapter(ethersProvider)
@@ -33,9 +36,7 @@ export const getSafeCreationTx = ({
   threshold,
   saltNonce,
   chain,
-}: SafeCreationProps & { chain: ChainInfo | undefined }) => {
-  if (!chain) return
-
+}: SafeCreationProps & { chain: ChainInfo }) => {
   const safeContract = getGnosisSafeContractInstance(chain, LATEST_SAFE_VERSION)
   const proxyContract = getProxyFactoryContractInstance(chain.chainId)
   const fallbackHandlerContract = getFallbackHandlerContractInstance(chain.chainId)
@@ -52,4 +53,32 @@ export const getSafeCreationTx = ({
   ])
 
   return proxyContract.encode('createProxyWithNonce', [safeContract.getAddress(), setupData, saltNonce])
+}
+
+// Returns an object that can be used to detect a replacement tx
+// via ethers _waitForTransaction
+export const getSafeCreationTxInfo = async (
+  provider: Web3Provider,
+  params: SafeFormData,
+  chain: ChainInfo,
+  saltNonce: number,
+  wallet: ConnectedWallet,
+) => {
+  const proxyContract = getProxyFactoryContractInstance(chain.chainId)
+
+  const data = getSafeCreationTx({
+    owners: params.owners.map((owner) => owner.address),
+    threshold: params.threshold,
+    saltNonce,
+    chain,
+  })
+
+  return {
+    data,
+    from: wallet.address,
+    nonce: await provider.getTransactionCount(wallet.address),
+    to: proxyContract.getAddress(),
+    value: BigNumber.from(0),
+    startBlock: await provider.getBlockNumber(),
+  }
 }
