@@ -30,7 +30,7 @@ import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
   if (!safeSDK) {
-    throw new Error('The Safe SDK could not be initialized. Please be aware that we only support >= v1.1.1 Safes.')
+    throw new Error('The Safe SDK could not be initialized. Please be aware that we only support v1.1.1 Safes and up.')
   }
   return safeSDK
 }
