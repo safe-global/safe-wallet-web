@@ -1,5 +1,5 @@
 const SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
-const OWNER = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
+const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 describe('Queue a transaction on 1/1', () => {
   before(() => {
@@ -18,7 +18,7 @@ describe('Queue a transaction on 1/1', () => {
     cy.contains('Send tokens').click()
 
     // Fill transaction data
-    cy.get('input[name="recipient"]').type(OWNER)
+    cy.get('input[name="recipient"]').type(EOA)
     // Click on the Token selector
     cy.get('input[name="tokenAddress"]').prev().click()
     cy.get('ul[role="listbox"]').contains('Görli Ether').click()
@@ -30,6 +30,14 @@ describe('Queue a transaction on 1/1', () => {
   })
 
   it('should create a queued transaction', () => {
+    cy.contains('Signing the transaction with nonce 4').click()
+    cy.contains('button', 'Edit').click()
+
+    cy.get('label').contains('Safe transaction nonce').next().clear().type('3')
+
+    // Accepts the values
+    cy.contains('Confirm').click()
+
     cy.get('.MuiDialogContent-root input[type="checkbox"]')
       .parent('span')
       .should(($div) => {
@@ -52,5 +60,17 @@ describe('Queue a transaction on 1/1', () => {
       })
 
     cy.contains('Submit').click()
+  })
+
+  it('should display the queued tx on Dashboard', () => {
+    cy.contains('h2', 'Transaction queue').parents('section').as('txQueueSection')
+
+    cy.get('@txQueueSection').within(() => {
+      // There should be queued transactions
+      cy.contains('This Safe has no queued transactions').should('not.exist')
+
+      // Created transaction should be queued
+      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '3' + 'Send' + '-0.00002 GOR' + '1/1').should('exist')
+    })
   })
 })
