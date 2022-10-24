@@ -31,7 +31,7 @@ const getLocationQuery = (): ParsedUrlQuery => {
 export const useUrlChainId = (): string | undefined => {
   const router = useRouter()
   // Dynamic query params are available only in an effect
-  const query = router.query.safe || router.query.chain ? router.query : getLocationQuery()
+  const query = router && (router.query.safe || router.query.chain) ? router.query : getLocationQuery()
   const chain = query.chain?.toString() || ''
   const safe = query.safe?.toString() || ''
 

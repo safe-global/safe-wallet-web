@@ -2,8 +2,7 @@ import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { createRoot } from 'react-dom/client'
 import CloseIcon from '@mui/icons-material/Close'
 
-import QRCode from '@/components/common/QRCode'
-import { formatPairingUri } from '@/services/pairing/utils'
+import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
 import PairingDescription from '@/components/common/PairingDetails/PairingDescription'
 import { StoreHydrator } from '@/store'
 import { AppProviders } from '@/pages/_app'
@@ -71,7 +70,7 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
             </IconButton>
           </DialogTitle>
           <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-            <QRCode value={formatPairingUri(uri)} size={QR_CODE_SIZE} />
+            <PairingQRCode size={QR_CODE_SIZE} />
             <br />
             <PairingDescription />
           </DialogContent>
