@@ -92,6 +92,35 @@ describe('useSafeCreation', () => {
     })
   })
 
+  it('should return SUCCESS if transaction was replaced', async () => {
+    jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
+    jest.spyOn(wrongChain, 'default').mockReturnValue(false)
+    jest.spyOn(createSafe, 'createNewSafe').mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Transaction was replaced',
+        code: ErrorCode.TRANSACTION_REPLACED,
+        reason: 'replaced',
+      } as EthersError),
+    )
+    jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
+      {
+        name: 'joyful-rinkeby-safe',
+        address: '0x10',
+        threshold: 1,
+        owners: [],
+        saltNonce: 123,
+        chainId: '4',
+      },
+      jest.fn,
+    ])
+
+    const { result } = renderHook(() => useSafeCreation())
+
+    await waitFor(() => {
+      expect(result.current.status).toBe(SafeCreationStatus.SUCCESS)
+    })
+  })
+
   it('should return ERROR if user rejects transaction', async () => {
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(wrongChain, 'default').mockReturnValue(false)
@@ -116,35 +145,6 @@ describe('useSafeCreation', () => {
 
     await waitFor(() => {
       expect(result.current.status).toBe(SafeCreationStatus.ERROR)
-    })
-  })
-
-  it('should return SUCCESS if transaction was replaced', async () => {
-    jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
-    jest.spyOn(wrongChain, 'default').mockReturnValue(false)
-    jest.spyOn(createSafe, 'createNewSafe').mockImplementation(() =>
-      Promise.reject({
-        message: 'Transaction was replaced',
-        code: ErrorCode.TRANSACTION_REPLACED,
-        reason: 'replaced',
-      } as EthersError),
-    )
-    jest.spyOn(pendingSafe, 'usePendingSafe').mockImplementation(() => [
-      {
-        name: 'joyful-rinkeby-safe',
-        address: '0x10',
-        threshold: 1,
-        owners: [],
-        saltNonce: 123,
-        chainId: '4',
-      },
-      jest.fn,
-    ])
-
-    const { result } = renderHook(() => useSafeCreation())
-
-    await waitFor(() => {
-      expect(result.current.status).toBe(SafeCreationStatus.SUCCESS)
     })
   })
 })
