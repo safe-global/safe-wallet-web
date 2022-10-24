@@ -12,7 +12,7 @@ describe('Queue a transaction on 1/1', () => {
 
   it('should create and queue a transaction', () => {
     // Open the new transaction modal
-    cy.contains('New transaction').click()
+    cy.contains('New transaction', { timeout: 10000 }).click()
 
     cy.contains('.MuiDialog-container', 'New transaction').should('be.visible')
     cy.contains('Send tokens').click()
