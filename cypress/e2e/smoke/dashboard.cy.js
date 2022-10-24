@@ -11,7 +11,7 @@ describe('Dashboard', () => {
   })
 
   it('should display the overview widget', () => {
-    // Alias for the featured Safe Apps section
+    // Alias for the Overview section
     cy.contains('h2', 'Overview').parents('section').as('overviewSection')
 
     cy.get('@overviewSection').within(() => {
@@ -25,7 +25,7 @@ describe('Dashboard', () => {
   })
 
   it('should display the tx queue widget', () => {
-    // Alias for the featured Safe Apps section
+    // Alias for the Transaction queue section
     cy.contains('h2', 'Transaction queue').parents('section').as('txQueueSection')
 
     cy.get('@txQueueSection').within(() => {
