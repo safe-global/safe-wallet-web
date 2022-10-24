@@ -130,7 +130,7 @@ const SafeAppsPermissions = (): ReactElement => {
                 padding: '9px 0',
               }}
             >
-              <Typography variant="body1" fontWeight={700}>
+              <Typography variant="h5" fontWeight={700}>
                 {appNames[domain]}
               </Typography>
               <Typography variant="body2">{domain}</Typography>
