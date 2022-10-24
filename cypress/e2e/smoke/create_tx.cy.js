@@ -70,7 +70,9 @@ describe('Queue a transaction on 1/1', () => {
       cy.contains('This Safe has no queued transactions').should('not.exist')
 
       // Created transaction should be queued
-      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '3' + 'Send' + '-0.00003 GOR' + '1/1').should('exist')
+      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '3' + 'Send' + '-' + '0.00003 GOR' + '1/1').should(
+        'exist',
+      )
     })
   })
 })
