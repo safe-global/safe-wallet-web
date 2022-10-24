@@ -3,7 +3,7 @@
   "homepage": "https://github.com/5afe/web-core",
   "license": "MIT",
   "type": "module",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
