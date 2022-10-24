@@ -4,6 +4,7 @@ import PendingTxsList from '@/components/dashboard/PendingTxs/PendingTxsList'
 import Overview from '@/components/dashboard/Overview/Overview'
 import { FeaturedApps } from '@/components/dashboard/FeaturedApps/FeaturedApps'
 import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
+import GovernanceSection from '@/components/dashboard/GovernanceSection/GovernanceSection'
 
 const Dashboard = (): ReactElement => {
   return (
@@ -14,6 +15,10 @@ const Dashboard = (): ReactElement => {
 
       <Grid item xs={12} md={12} lg={6}>
         <PendingTxsList size={4} />
+      </Grid>
+
+      <Grid item xs={12}>
+        <GovernanceSection />
       </Grid>
 
       <Grid item xs={12}>
