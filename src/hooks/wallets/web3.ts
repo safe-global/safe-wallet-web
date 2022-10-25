@@ -1,9 +1,10 @@
 import { RPC_AUTHENTICATION, type ChainInfo, type RpcUri } from '@gnosis.pm/safe-react-gateway-sdk'
 import { INFURA_TOKEN, SAFE_APPS_INFURA_TOKEN } from '@/config/constants'
 import { type EIP1193Provider } from '@web3-onboard/core'
-import { JsonRpcProvider, Web3Provider, Formatter } from '@ethersproject/providers'
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import ExternalStore from '@/services/ExternalStore'
-import { BigNumber, Contract, providers, utils } from 'ethers'
+import type { providers, utils } from 'ethers'
+import { BigNumber, Contract } from 'ethers'
 import * as gasPriceMinimumInfo from '@/contracts/gas_price_minimum'
 import * as blockchainParametersInfo from '@/contracts/blockchain_parameters'
 
@@ -19,23 +20,10 @@ class CeloJsonRpcProvider extends JsonRpcProvider {
     blockFormat.difficulty = () => 0
   }
 
-  // _block(value: any, format: any): any {
-  //   if (value.author != null && value.miner == null) {
-  //     value.miner = value.author
-  //   }
-  //   // The difficulty may need to come from _difficulty in recursed blocks
-  //   const difficulty = value._difficulty != null ? value._difficulty : value.difficulty
-  //   const result = Formatter.check(format, value)
-  //   result._difficulty = BigNumber.from(0)
-  //   return result
-  // }
-
   async getGasPrice(): Promise<BigNumber> {
     await this.getNetwork()
 
     const result = await this.perform('getGasPrice', {})
-    console.log(result, BigNumber.from(result))
-    // debugger
     try {
       return BigNumber.from(result)
     } catch (error) {
@@ -78,12 +66,10 @@ class CeloJsonRpcProvider extends JsonRpcProvider {
     //   maxFeePerGas = block.baseFeePerGas.mul(2).add(maxPriorityFeePerGas)
     // }
 
-    console.log(gasPriceMinimum)
-
     return { lastBaseFeePerGas, maxFeePerGas, maxPriorityFeePerGas, gasPrice: gasPriceMinimum }
   }
 
-  async estimateGas(transaction) {
+  async estimateGas(transaction: utils.Deferrable<providers.TransactionRequest>) {
     await this.getNetwork()
     const params = {
       transaction: await this._getTransactionRequest(transaction),
@@ -91,10 +77,9 @@ class CeloJsonRpcProvider extends JsonRpcProvider {
 
     const result = await this.perform('estimateGas', params)
     try {
-      debugger
       return BigNumber.from(result)
     } catch (error) {
-      debugger
+      throw error
     }
   }
 }

@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import useGasPrice from '@/hooks/useGasPrice'
 import { type AdvancedParameters } from './types'
 import useUserNonce from './useUserNonce'
-import { BigNumber } from 'ethers'
 
 export const useAdvancedParams = ({
   nonce,
