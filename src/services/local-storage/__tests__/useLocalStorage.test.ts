@@ -55,20 +55,4 @@ describe('useLocalStorage', () => {
 
     waitFor(() => expect(result.current[0]).toBe('ls'))
   })
-
-  it('should read the same storage between hook invocations', () => {
-    const { result } = renderHook(() => useLocalStorage('test-key', 'hello'))
-
-    expect(result.current[0]).toBe('hello')
-
-    const { result: otherResult } = renderHook(() => useLocalStorage('test-key', 'hello'))
-
-    expect(otherResult.current[0]).toBe('hello')
-
-    act(() => {
-      otherResult.current[1]('world')
-    })
-
-    expect(result.current[0]).toBe('world')
-  })
 })

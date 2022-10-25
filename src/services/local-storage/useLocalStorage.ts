@@ -1,67 +1,65 @@
-import { useCallback, useEffect } from 'react'
-import ExternalStore from '../ExternalStore'
+import { useCallback, useEffect, useState } from 'react'
 import local from './local'
-
-// This store is a record whose keys correspond to the keys of the local storage
-// It's basically a global cache of the local storage
-// When a value is updated, all instances of the hook below will be updated
-const { setStore, useStore } = new ExternalStore<Record<string, unknown>>()
 
 // The setter accepts T or a function that takes the old value and returns T
 // Mimics the behavior of useState
-type Setter<T> = (val: T | undefined | ((prevVal: T) => T | undefined)) => void
+type Setter<T> = (val: T | undefined | ((prevVal: T | undefined) => T | undefined)) => void
 
-const useLocalStorage = <T>(key: string, initialValue: T): [T, Setter<T>] => {
-  // Get the current value from the cache, or fall back to the initial value
-  const cache = useStore()
-  const cachedVal = cache?.[key] as T
-  const currentVal = cachedVal ?? initialValue
+const useLocalStorage = <T>(key: string, initialValue: T): [T | undefined, Setter<T>] => {
+  const [cache, setCache] = useState<T | undefined>(initialValue)
 
   // This is the setter that will be returned
-  // It will update the local storage and the cache
+  // It will update the local storage and cache
   const setNewValue = useCallback<Setter<T>>(
     (value) => {
-      setStore((prevStore = {}) => {
-        const prevVal = prevStore[key] as T
-        const newVal = value instanceof Function ? value(prevVal) : value
+      setCache((oldValue) => {
+        const newValue = value instanceof Function ? value(oldValue) : value
 
-        // Nothing to update
-        if (prevVal === newVal) return prevStore
+        if (newValue !== oldValue) {
+          local.setItem(key, newValue)
 
-        // Update the cache
-        return {
-          ...prevStore,
-          [key]: newVal,
+          // Dispatch a fake storage event within the current browser tab
+          // The real storage event is dispatched only in other tabs
+          window.dispatchEvent(
+            new StorageEvent('storage', {
+              key: local.getPrefixedKey(key),
+            }),
+          )
         }
+
+        return newValue
       })
     },
     [key],
   )
 
-  // Read the initial local storage value and put it in the cache
+  // Subscribe to changes in local storage and update the cache
+  // This will work across tabs
   useEffect(() => {
-    setNewValue((prevVal) => prevVal ?? local.getItem<T>(key))
-  }, [key, setNewValue])
+    const onStorageEvent = (event: StorageEvent) => {
+      if (event.key === local.getPrefixedKey(key)) {
+        setCache(local.getItem<T>(key))
+      }
+    }
 
-  return [currentVal, setNewValue]
+    // Subscribe to storage events from othet tabs and this tab
+    window.addEventListener('storage', onStorageEvent)
+
+    return () => {
+      window.removeEventListener('storage', onStorageEvent)
+    }
+  }, [key])
+
+  // Set the initial value when the component is mounted
+  // Ignore undefined to avoid overwriting the externally passed inital value
+  useEffect(() => {
+    const lsValue = local.getItem<T>(key)
+    if (lsValue !== undefined) {
+      setCache(lsValue)
+    }
+  }, [key])
+
+  return [cache, setNewValue]
 }
 
 export default useLocalStorage
-
-export const useSyncLocalStorage = () => {
-  const cache = useStore()
-
-  useEffect(() => {
-    if (!cache) return
-
-    // Update the local storage when the cache changes
-    Object.entries(cache).forEach(([key, value]) => {
-      // Update the local storage
-      if (value === undefined) {
-        local.removeItem(key)
-      } else {
-        local.setItem(key, value)
-      }
-    })
-  }, [cache])
-}

@@ -31,7 +31,7 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
     setOwnedSafesCache((prev) => ({
       ...prev,
       [walletAddress]: {
-        ...(prev[walletAddress] || {}),
+        ...(prev?.[walletAddress] || {}),
         [chainId]: ownedSafes.safes,
       },
     }))
@@ -43,7 +43,7 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
     }
   }, [error])
 
-  return ownedSafesCache[walletAddress || ''] ?? {}
+  return ownedSafesCache?.[walletAddress || ''] ?? {}
 }
 
 export default useOwnedSafes
