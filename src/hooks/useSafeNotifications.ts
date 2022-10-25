@@ -6,7 +6,10 @@ import { useAppDispatch } from '@/store'
 import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from './useChains'
 import useAsync from './useAsync'
-import { isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { isOldestVersion, isValidMasterCopy } from '@/services/contracts/safeContracts'
+
+const LEGACY_DESKTOP_APP = 'https://github.com/safe-global/safe-react/releases/tag/v3.22.1-desktop'
+const CLI_LINK = 'https://github.com/5afe/safe-cli'
 
 /**
  * General-purpose notifications relating to the entire Safe
@@ -26,18 +29,29 @@ const useSafeNotifications = (): void => {
       return
     }
 
-    const id = dispatch(
-      showNotification({
-        variant: 'warning',
-        message: `Your Safe version ${version} is out of date. Please update it.`,
-        groupKey: 'safe-outdated-version',
-        link: {
+    const isOldest = isOldestVersion(version)
+
+    const link = isOldest
+      ? {
+          href: LEGACY_DESKTOP_APP,
+          title: 'Desktop app',
+        }
+      : {
           href: {
             pathname: AppRoutes.settings.setup,
             query: { safe: `${chain?.shortName}:${safeAddress}` },
           },
           title: 'Update Safe',
-        },
+        }
+
+    const id = dispatch(
+      showNotification({
+        variant: 'warning',
+        message: isOldest
+          ? `Safe version ${version} not supported. Please use the legacy desktop app.`
+          : `Your Safe version ${version} is out of date. Please update it.`,
+        groupKey: 'safe-outdated-version',
+        link,
       }),
     )
 
@@ -62,8 +76,6 @@ const useSafeNotifications = (): void => {
     if (validMasterCopy === undefined || validMasterCopy) {
       return
     }
-
-    const CLI_LINK = 'https://github.com/5afe/safe-cli'
 
     const id = dispatch(
       showNotification({
