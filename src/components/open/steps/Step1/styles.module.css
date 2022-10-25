@@ -1,0 +1,24 @@
+.card {
+  border: none;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.select {
+  border-radius: 0;
+  padding-left: var(--space-1);
+  border-left: 1px solid var(--color-border-main);
+}
+
+.chain {
+  min-width: 90px;
+  min-height: var(--space-2);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700px;
+}
