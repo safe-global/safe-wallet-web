@@ -1,0 +1,72 @@
+diff --git a/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe.json b/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe.json
+index 741984e..1306a9d 100644
+--- a/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe.json
++++ b/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe.json
+@@ -54,6 +54,7 @@
+         "12357": "0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552",
+         "42161": "0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552",
+         "42220": "0x69f4D1788e39c87893C980c06EdF4b7f686e2938",
++        "44787": "0x69f4D1788e39c87893C980c06EdF4b7f686e2938",
+         "43114": "0x69f4D1788e39c87893C980c06EdF4b7f686e2938",
+         "47805": "0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552",
+         "71401": "0x69f4D1788e39c87893C980c06EdF4b7f686e2938",
+diff --git a/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json b/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json
+index f5f55c4..4645088 100644
+--- a/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json
++++ b/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json
+@@ -54,6 +54,7 @@
+         "12357": "0x3E5c63644E683549055b9Be8653de26E0B4CD36E",
+         "42161": "0x3E5c63644E683549055b9Be8653de26E0B4CD36E",
+         "42220": "0xfb1bffC9d739B8D520DaF37dF666da4C687191EA",
++        "44787": "0xfb1bffC9d739B8D520DaF37dF666da4C687191EA",
+         "43114": "0xfb1bffC9d739B8D520DaF37dF666da4C687191EA",
+         "47805": "0x3E5c63644E683549055b9Be8653de26E0B4CD36E",
+         "71401": "0xfb1bffC9d739B8D520DaF37dF666da4C687191EA",
+diff --git a/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/proxy_factory.json b/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/proxy_factory.json
+index b4dfb9c..0df3d7d 100644
+--- a/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/proxy_factory.json
++++ b/node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/proxy_factory.json
+@@ -54,6 +54,7 @@
+         "12357": "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2",
+         "42161": "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2",
+         "42220": "0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC",
++        "44787": "0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC",
+         "43114": "0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC",
+         "47805": "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2",
+         "71401": "0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC",
+diff --git a/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/gnosis_safe.json b/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/gnosis_safe.json
+index 3dee05f..ac65b52 100644
+--- a/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/gnosis_safe.json
++++ b/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/gnosis_safe.json
+@@ -54,6 +54,7 @@
+     "12357": "0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552",
+     "42161": "0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552",
+     "42220": "0x69f4D1788e39c87893C980c06EdF4b7f686e2938",
++    "44787": "0x69f4D1788e39c87893C980c06EdF4b7f686e2938",
+     "43114": "0x69f4D1788e39c87893C980c06EdF4b7f686e2938",
+     "47805": "0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552",
+     "71401": "0x69f4D1788e39c87893C980c06EdF4b7f686e2938",
+diff --git a/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/gnosis_safe_l2.json b/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/gnosis_safe_l2.json
+index 8db6407..bfbfd97 100644
+--- a/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/gnosis_safe_l2.json
++++ b/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/gnosis_safe_l2.json
+@@ -54,6 +54,7 @@
+     "12357": "0x3E5c63644E683549055b9Be8653de26E0B4CD36E",
+     "42161": "0x3E5c63644E683549055b9Be8653de26E0B4CD36E",
+     "42220": "0xfb1bffC9d739B8D520DaF37dF666da4C687191EA",
++    "44787": "0xfb1bffC9d739B8D520DaF37dF666da4C687191EA",
+     "43114": "0xfb1bffC9d739B8D520DaF37dF666da4C687191EA",
+     "47805": "0x3E5c63644E683549055b9Be8653de26E0B4CD36E",
+     "71401": "0xfb1bffC9d739B8D520DaF37dF666da4C687191EA",
+diff --git a/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/proxy_factory.json b/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/proxy_factory.json
+index 4e3e901..219dd7f 100644
+--- a/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/proxy_factory.json
++++ b/node_modules/@gnosis.pm/safe-deployments/src/assets/v1.3.0/proxy_factory.json
+@@ -54,6 +54,7 @@
+     "12357": "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2",
+     "42161": "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2",
+     "42220": "0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC",
++    "44787": "0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC",
+     "43114": "0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC",
+     "47805": "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2",
+     "71401": "0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC",
