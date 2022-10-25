@@ -32,7 +32,9 @@ const CreateSafe = () => {
         <Button variant="text" startIcon={<ChevronLeftIcon />} onClick={onBack} sx={{ my: 4, mx: 0 }}>
           Back
         </Button>
-        <Typography variant="h2">Create new Safe</Typography>
+        <Typography variant="h2" pb={2}>
+          Create new Safe
+        </Typography>
       </Grid>
 
       <Grid item xs={1} />
