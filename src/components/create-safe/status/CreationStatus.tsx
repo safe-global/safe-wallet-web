@@ -8,7 +8,7 @@ import Track from '@/components/common/Track'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import ComputedSafeAddress from '@/components/create-safe/status/ComputedSafeAddress'
 import useSafeCreationEffects from '@/components/create-safe/status/useSafeCreationEffects'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import type { PendingSafeData } from '@/components/create-safe'
@@ -16,6 +16,7 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import StatusMessage from '@/components/create-safe/status/StatusMessage'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useStatus from '@/components/create-safe/status/useStatus'
 
 export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 
@@ -27,7 +28,7 @@ type Props = {
 }
 
 export const CreationStatus = ({ params, setStep }: Props) => {
-  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
+  const [status, setStatus] = useStatus()
   const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(
     SAFE_PENDING_CREATION_STORAGE_KEY,
     params,
@@ -53,7 +54,7 @@ export const CreationStatus = ({ params, setStep }: Props) => {
   const onCreate = useCallback(() => {
     setStatus(SafeCreationStatus.AWAITING)
     void createSafe()
-  }, [createSafe])
+  }, [createSafe, setStatus])
 
   const displaySafeLink = status === SafeCreationStatus.INDEX_FAILED
 
