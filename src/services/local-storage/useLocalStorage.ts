@@ -47,8 +47,7 @@ const useLocalStorage = <T>(key: string, initialValue: T): [T, Setter<T>] => {
     setNewValue((prevVal) => prevVal ?? local.getItem<T>(key))
   }, [key, setNewValue])
 
-  // Get the current value from the cache, or directly from the local storage if it's not in the cache
-  // Fall back to the initial value if it's not in the local storage
+  // Get the current value from the cache, or fall back to the initial value
   const cache = useStore()
   const cachedVal = cache?.[key] as T
   const currentVal = cachedVal ?? initialValue
