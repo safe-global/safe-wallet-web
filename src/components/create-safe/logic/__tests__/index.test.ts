@@ -25,7 +25,7 @@ const mockPendingTx = {
   value: BigNumber.from(0),
 }
 
-describe('monitorSafeCreationTx', () => {
+describe('checkSafeCreationTx', () => {
   let waitForTxSpy = jest.spyOn(provider, '_waitForTransaction')
 
   beforeEach(() => {
@@ -95,4 +95,12 @@ describe('monitorSafeCreationTx', () => {
 
     expect(result).toBe(SafeCreationStatus.ERROR)
   })
+})
+
+describe('handleSafeCreationError', () => {
+  it.todo('returns WALLET_REJECTED if the tx was rejected in the wallet')
+  it.todo('returns WALLET_REJECTED if the tx was rejected via WC')
+  it.todo('returns ERROR if the tx was cancelled')
+  it.todo('returns SUCCESS if the tx was replaced')
+  it.todo('returns TIMEOUT if the tx was not rejected, cancelled or replaced')
 })
