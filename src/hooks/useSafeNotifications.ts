@@ -29,9 +29,9 @@ const useSafeNotifications = (): void => {
       return
     }
 
-    const isOldest = isOldestVersion(version)
+    const isOldSafe = isOldestVersion(version)
 
-    const link = isOldest
+    const link = isOldSafe
       ? {
           href: LEGACY_DESKTOP_APP,
           title: 'Desktop app',
@@ -47,8 +47,8 @@ const useSafeNotifications = (): void => {
     const id = dispatch(
       showNotification({
         variant: 'warning',
-        message: isOldest
-          ? `Safe version ${version} not supported. Please use the legacy desktop app.`
+        message: isOldSafe
+          ? `Safe version ${version} is not supported by this web app anymore. Please use the legacy desktop app.`
           : `Your Safe version ${version} is out of date. Please update it.`,
         groupKey: 'safe-outdated-version',
         link,
