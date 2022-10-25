@@ -3,8 +3,10 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { checkSafeCreationTx } from '@/components/create-safe/logic'
+import { checkSafeCreationTx, handleSafeCreationError } from '@/components/create-safe/logic'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
+import { ErrorCode } from '@ethersproject/logger'
+import { EthersTxReplacedReason } from '@/utils/ethers-utils'
 
 const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
 
@@ -98,9 +100,79 @@ describe('checkSafeCreationTx', () => {
 })
 
 describe('handleSafeCreationError', () => {
-  it.todo('returns WALLET_REJECTED if the tx was rejected in the wallet')
-  it.todo('returns WALLET_REJECTED if the tx was rejected via WC')
-  it.todo('returns ERROR if the tx was cancelled')
-  it.todo('returns SUCCESS if the tx was replaced')
-  it.todo('returns TIMEOUT if the tx was not rejected, cancelled or replaced')
+  it('returns WALLET_REJECTED if the tx was rejected in the wallet', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: ErrorCode.ACTION_REJECTED,
+      receipt: {} as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.WALLET_REJECTED)
+  })
+
+  it('returns WALLET_REJECTED if the tx was rejected via WC', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: ErrorCode.UNKNOWN_ERROR,
+      receipt: {} as TransactionReceipt,
+      message: 'rejected',
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.WALLET_REJECTED)
+  })
+
+  it('returns ERROR if the tx was cancelled', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: ErrorCode.TRANSACTION_REPLACED,
+      reason: EthersTxReplacedReason.cancelled,
+      receipt: {} as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.ERROR)
+  })
+
+  it('returns SUCCESS if the tx was replaced', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: ErrorCode.TRANSACTION_REPLACED,
+      reason: EthersTxReplacedReason.replaced,
+      receipt: {} as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.SUCCESS)
+  })
+
+  it('returns SUCCESS if the tx was repriced', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: ErrorCode.TRANSACTION_REPLACED,
+      reason: EthersTxReplacedReason.repriced,
+      receipt: {} as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.SUCCESS)
+  })
+
+  it('returns TIMEOUT if the tx was not rejected, cancelled or replaced', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: ErrorCode.UNKNOWN_ERROR,
+      receipt: {} as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.TIMEOUT)
+  })
 })
