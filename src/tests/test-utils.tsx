@@ -5,6 +5,7 @@ import { RouterContext } from 'next/dist/shared/lib/router-context'
 import { ThemeProvider } from '@mui/material/styles'
 import initTheme from '@/styles/theme'
 import type { RootState } from '@/store'
+import { useSyncLocalStorage } from '@/services/local-storage/useLocalStorage'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   asPath: '/',
@@ -38,6 +39,8 @@ const getProviders: (options: {
 }) => React.FC<{ children: React.ReactElement }> = ({ routerProps, initialReduxState }) =>
   function ProviderComponent({ children }) {
     const { StoreHydrator } = require('@/store') // require dynamically to reset the store
+
+    useSyncLocalStorage()
 
     return (
       <StoreHydrator initialState={initialReduxState}>

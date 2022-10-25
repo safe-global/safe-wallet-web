@@ -12,6 +12,11 @@ const { setStore, useStore } = new ExternalStore<Record<string, unknown>>()
 type Setter<T> = (val: T | undefined | ((prevVal: T) => T | undefined)) => void
 
 const useLocalStorage = <T>(key: string, initialValue: T): [T, Setter<T>] => {
+  // Get the current value from the cache, or fall back to the initial value
+  const cache = useStore()
+  const cachedVal = cache?.[key] as T
+  const currentVal = cachedVal ?? initialValue
+
   // This is the setter that will be returned
   // It will update the local storage and the cache
   const setNewValue = useCallback<Setter<T>>(
@@ -21,16 +26,7 @@ const useLocalStorage = <T>(key: string, initialValue: T): [T, Setter<T>] => {
         const newVal = value instanceof Function ? value(prevVal) : value
 
         // Nothing to update
-        if (prevVal === newVal) {
-          return prevStore
-        }
-
-        // Update the local storage
-        if (newVal === undefined) {
-          local.removeItem(key)
-        } else {
-          local.setItem<T>(key, newVal)
-        }
+        if (prevVal === newVal) return prevStore
 
         // Update the cache
         return {
@@ -47,12 +43,25 @@ const useLocalStorage = <T>(key: string, initialValue: T): [T, Setter<T>] => {
     setNewValue((prevVal) => prevVal ?? local.getItem<T>(key))
   }, [key, setNewValue])
 
-  // Get the current value from the cache, or fall back to the initial value
-  const cache = useStore()
-  const cachedVal = cache?.[key] as T
-  const currentVal = cachedVal ?? initialValue
-
   return [currentVal, setNewValue]
 }
 
 export default useLocalStorage
+
+export const useSyncLocalStorage = () => {
+  const cache = useStore()
+
+  useEffect(() => {
+    if (!cache) return
+
+    // Update the local storage when the cache changes
+    Object.entries(cache).forEach(([key, value]) => {
+      // Update the local storage
+      if (value === undefined) {
+        local.removeItem(key)
+      } else {
+        local.setItem(key, value)
+      }
+    })
+  }, [cache])
+}
