@@ -11,9 +11,9 @@ const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
     />
 
     {/* Social sharing */}
-    <meta name="og:image" content="/images/social-share.jpg" />
+    <meta name="og:image" content="https://app.safe.global/images/social-share.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="/images/social-share.jpg" />
+    <meta name="twitter:image" content="https://app.safe.global/images/social-share.jpg" />
 
     {/* CSP */}
     <meta httpEquiv="Content-Security-Policy" content={ContentSecurityPolicy} />
