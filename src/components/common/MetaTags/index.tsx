@@ -35,9 +35,9 @@ const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
     <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#000" />
 
     {/* Social sharing */}
-    <meta name="og:image" content="/images/social-share-image.jpeg" />
+    <meta name="og:image" content="/images/social-share.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="/images/social-share-image.jpeg" />
+    <meta name="twitter:image" content="/images/social-share.jpg" />
   </>
 )
 
