@@ -8,8 +8,6 @@ import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '../OverviewWidget'
 import CreateSafeStep1 from '../steps/Step1'
 
-import css from './styles.module.css'
-
 const CreateSafe = () => {
   const router = useRouter()
 
@@ -31,12 +29,10 @@ const CreateSafe = () => {
     <Grid container spacing={3}>
       <Grid item xs={1} />
       <Grid item xs={11}>
-        <Button variant="text" startIcon={<ChevronLeftIcon />} className={css.back} onClick={onBack}>
+        <Button variant="text" startIcon={<ChevronLeftIcon />} onClick={onBack} sx={{ my: 4, mx: 0 }}>
           Back
         </Button>
-        <Typography variant="h2" className={css.title}>
-          Create new Safe
-        </Typography>
+        <Typography variant="h2">Create new Safe</Typography>
       </Grid>
 
       <Grid item xs={1} />
