@@ -27,35 +27,13 @@ const Footer = (): ReactElement | null => {
     <footer className={css.container}>
       <ul>
         <li>
-          <Typography variant="caption">&copy;2022 Safe Ecosystem Foundation</Typography>
+          <Typography variant="caption">
+            &copy;2022 Deployed by cLabs - Forked from the Safe Ecosystem Foundation
+          </Typography>
         </li>
         <li>
-          <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/terms">
-            Terms
-          </Link>
-        </li>
-        <li>
-          <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/privacy">
-            Privacy
-          </Link>
-        </li>
-        <li>
-          <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/licenses">
-            Licenses
-          </Link>
-        </li>
-        <li>
-          <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/imprint">
-            Imprint
-          </Link>
-        </li>
-        <li>
-          <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/cookie">
-            Cookie Policy
-          </Link>
-          &nbsp;&mdash;&nbsp;
           <Link href="#" onClick={onCookieClick}>
-            Preferences
+            Cookie preferences
           </Link>
         </li>
         <li>
@@ -64,7 +42,7 @@ const Footer = (): ReactElement | null => {
             target="_blank"
             href={`${packageJson.homepage}/releases/tags/${packageJson.version}`}
           >
-            v{packageJson.version}
+            v{packageJson.version}-celo
           </Link>
         </li>
         <li>
