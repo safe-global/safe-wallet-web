@@ -103,7 +103,7 @@ export const getSafeCreationTxInfo = async (
   chain: ChainInfo,
   saltNonce: number,
   wallet: ConnectedWallet,
-) => {
+): Promise<PendingSafeTx> => {
   const proxyContract = getProxyFactoryContractInstance(chain.chainId)
 
   const data = encodeSafeCreationTx({

@@ -32,7 +32,6 @@ describe('useSafeCreationEffects', () => {
         pendingSafe: { txHash: '0x10' } as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
-        chainId: '4',
       }),
     )
 
@@ -49,7 +48,6 @@ describe('useSafeCreationEffects', () => {
         pendingSafe: {} as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
-        chainId: '4',
       }),
     )
 
@@ -70,7 +68,6 @@ describe('useSafeCreationEffects', () => {
         } as PendingSafeData,
         setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
-        chainId: '4',
       }),
     )
 
@@ -88,7 +85,6 @@ describe('useSafeCreationEffects', () => {
         pendingSafe: undefined,
         setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
-        chainId: '4',
       }),
     )
 
@@ -115,7 +111,6 @@ describe('useSafeCreationEffects', () => {
           pendingSafe: { safeAddress: '0x10' } as PendingSafeData,
           setPendingSafe: setPendingSafeSpy,
           setStatus: setStatusSpy,
-          chainId: '4',
         }),
       {
         initialReduxState: {

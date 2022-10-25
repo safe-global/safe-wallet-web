@@ -1,8 +1,5 @@
 import { Box, Button, Divider, Grid, Paper, Typography, Tooltip } from '@mui/material'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
-import { useAppSelector } from '@/store'
-import { selectChainById } from '@/store/chainsSlice'
-import useChainId from '@/hooks/useChainId'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
@@ -35,8 +32,6 @@ export const CreationStatus = ({ params, setStep }: Props) => {
     SAFE_PENDING_CREATION_STORAGE_KEY,
     params,
   )
-  const chainId = useChainId()
-  const chain = useAppSelector((state) => selectChainById(state, chainId))
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const isConnected = wallet && !isWrongChain
@@ -48,13 +43,17 @@ export const CreationStatus = ({ params, setStep }: Props) => {
     setPendingSafe,
     status,
     setStatus,
-    chainId,
   })
 
   const onClose = useCallback(() => {
     setPendingSafe(undefined)
     setStep(0)
   }, [setPendingSafe, setStep])
+
+  const onCreate = useCallback(() => {
+    setStatus(SafeCreationStatus.AWAITING)
+    void createSafe()
+  }, [createSafe])
 
   const displaySafeLink = status === SafeCreationStatus.INDEX_FAILED
 
@@ -72,7 +71,7 @@ export const CreationStatus = ({ params, setStep }: Props) => {
     >
       <StatusMessage status={status} />
 
-      {txHash && chain && (
+      {txHash && (
         <Box mb={3}>
           <Typography>Your Safe creation transaction:</Typography>
           <Box display="flex" justifyContent="center">
@@ -92,7 +91,9 @@ export const CreationStatus = ({ params, setStep }: Props) => {
           </Track>
         </Box>
       )}
+
       <Divider sx={{ marginTop: 3 }} />
+
       {displayActions && (
         <Grid container padding={3} justifyContent="center" gap={2}>
           <Track {...CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE}>
@@ -101,7 +102,7 @@ export const CreationStatus = ({ params, setStep }: Props) => {
           <Track {...CREATE_SAFE_EVENTS.RETRY_CREATE_SAFE}>
             <Tooltip title={!isConnected ? 'Please make sure your wallet is connected on the correct network.' : ''}>
               <span>
-                <Button onClick={createSafe} variant="contained" disabled={!isConnected}>
+                <Button onClick={onCreate} variant="contained" disabled={!isConnected}>
                   Retry
                 </Button>
               </span>

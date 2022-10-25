@@ -10,6 +10,7 @@ import chains from '@/config/chains'
 import { updateAddressBook } from '../logic/address-book'
 import { useAppDispatch } from '@/store'
 import type { PendingSafeData } from '@/components/create-safe'
+import useChainId from '@/hooks/useChainId'
 
 const getRedirect = (chainId: string, safeAddress: string, redirectQuery?: string | string[]): UrlObject | string => {
   const redirectUrl = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery
@@ -43,16 +44,15 @@ const useSafeCreationEffects = ({
   setPendingSafe,
   status,
   setStatus,
-  chainId,
 }: {
   pendingSafe: PendingSafeData | undefined
   setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>
   status: SafeCreationStatus
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>
-  chainId: string
 }) => {
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const chainId = useChainId()
 
   useEffect(() => {
     if (status === SafeCreationStatus.INDEXED) {
