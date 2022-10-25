@@ -30,7 +30,7 @@ const CreateSafe = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={1} />
-      <Grid item xs={6}>
+      <Grid item xs={11}>
         <Button variant="text" startIcon={<ChevronLeftIcon />} className={css.back} onClick={onBack}>
           Back
         </Button>
@@ -38,13 +38,12 @@ const CreateSafe = () => {
           Create new Safe
         </Typography>
       </Grid>
-      <Grid item xs={5} />
 
       <Grid item xs={1} />
       <Grid item xs={6}>
         <CreateSafeStep1 />
       </Grid>
-      <Grid item xs={5}>
+      <Grid item xs={4}>
         <OverviewWidget rows={rows} />
       </Grid>
       <Grid item xs={1} />
