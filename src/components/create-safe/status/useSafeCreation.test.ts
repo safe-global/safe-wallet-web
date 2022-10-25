@@ -92,7 +92,7 @@ describe('useSafeCreation', () => {
     })
   })
 
-  it('should return SUCCESS if transaction was replaced', async () => {
+  it.skip('should return SUCCESS if transaction was replaced', async () => {
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(wrongChain, 'default').mockReturnValue(false)
     jest.spyOn(createSafe, 'createNewSafe').mockImplementationOnce(() =>
