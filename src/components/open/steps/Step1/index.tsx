@@ -1,6 +1,4 @@
 import {
-  Card,
-  LinearProgress,
   Select,
   InputAdornment,
   InputLabel,
@@ -19,9 +17,7 @@ import useChainId from '@/hooks/useChainId'
 import useChains from '@/hooks/useChains'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import CreateSafeCardContent from '../../CardContent'
-import CreateSafeCardHeader from '../../CardHeader'
-import CreateSafeCardActions from '../../CardActions'
+import StepCard from '../../StepCard'
 
 import css from './styles.module.css'
 
@@ -59,16 +55,10 @@ const CreateSafeStep1 = () => {
   }
 
   return (
-    <Card className={css.card}>
-      <LinearProgress />
-
-      <CreateSafeCardHeader
-        step={1}
-        title="Select network and name Safe"
-        subheader="Select the network on which to create your Safe"
-      />
-
-      <CreateSafeCardContent>
+    <StepCard
+      title="Select network and name Safe"
+      subheader="Select the network on which to create your Safe"
+      content={
         <form onSubmit={handleSubmit(onSubmit)} id={STEP_1_FORM_ID} className={css.form}>
           <Select
             startAdornment={
@@ -124,14 +114,13 @@ const CreateSafeStep1 = () => {
             .
           </Typography>
         </form>
-      </CreateSafeCardContent>
-
-      <CreateSafeCardActions>
+      }
+      actions={
         <Button variant="contained" form={STEP_1_FORM_ID} type="submit">
           Continue
         </Button>
-      </CreateSafeCardActions>
-    </Card>
+      }
+    />
   )
 }
 
