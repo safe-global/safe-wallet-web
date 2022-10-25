@@ -13,6 +13,7 @@ import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
 import { computeNewSafeAddress } from '@/components/create-safe/sender'
 import { useCurrentChain } from '@/hooks/useChains'
 import type { SafeFormData } from '@/components/create-safe/types'
+import { getFallbackHandlerContractInstance } from '@/services/contracts/safeContracts'
 
 type Props = {
   params: SafeFormData
@@ -43,12 +44,15 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
       : '> 0.001'
 
   const createSafe = async () => {
-    if (!wallet || !ethersProvider) return
+    if (!wallet || !ethersProvider || !chain) return
+
+    const fallbackHandler = getFallbackHandlerContractInstance(chain.chainId)
 
     const props = {
       safeAccountConfig: {
         threshold: params.threshold,
         owners: params.owners.map((owner) => owner.address),
+        fallbackHandler: fallbackHandler.address,
       },
       safeDeploymentConfig: {
         saltNonce: saltNonce.toString(),

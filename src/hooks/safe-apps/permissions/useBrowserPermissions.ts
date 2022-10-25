@@ -4,7 +4,7 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useCallback } from 'react'
 import { trimTrailingSlash } from '@/utils/url'
 
-const BROWSER_PERMISSIONS = 'BROWSER_PERMISSIONS'
+const BROWSER_PERMISSIONS = 'SafeApps__browserPermissions'
 
 export type BrowserPermission = { feature: AllowedFeatures; status: PermissionStatus }
 

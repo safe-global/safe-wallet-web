@@ -46,7 +46,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
       threshold: defaultThreshold,
     },
   })
-  const { register, handleSubmit, control, formState, watch, setValue } = formMethods
+  const { register, handleSubmit, control, formState, watch, setValue, getValues } = formMethods
   const currentThreshold = watch(FieldName.threshold)
   const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
@@ -87,9 +87,9 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     })
   })
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
-    onBack(data)
-  })
+  const onFormBack = () => {
+    onBack(getValues())
+  }
 
   return (
     <Paper>

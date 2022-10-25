@@ -7,10 +7,9 @@ import { useEffect } from 'react'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getSafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getProxyFactoryContractInstance } from '@/services/contracts/safeContracts'
-import useChainId from '@/hooks/useChainId'
 import { ErrorCode } from '@ethersproject/logger'
 import { Errors, logError } from '@/services/exceptions'
+import type { PendingSafeData, PendingSafeTx } from '@/components/create-safe'
 
 export const pollSafeInfo = async (chainId: string, safeAddress: string): Promise<SafeInfo> => {
   // exponential delay between attempts for around 4 min
@@ -27,34 +26,13 @@ export const pollSafeInfo = async (chainId: string, safeAddress: string): Promis
 
 export const checkSafeCreationTx = async (
   provider: JsonRpcProvider,
+  pendingTx: PendingSafeTx,
   txHash: string,
-  chainId: string,
 ): Promise<SafeCreationStatus> => {
   const TIMEOUT_TIME = 6.5 * 60 * 1000 // 6.5 minutes
 
   try {
-    const txResponse = await provider.getTransaction(txHash)
-
-    if (!txResponse) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(SafeCreationStatus.TIMEOUT)
-        }, TIMEOUT_TIME)
-      })
-    }
-
-    const proxyContractAddress = getProxyFactoryContractInstance(chainId).getAddress()
-
-    const replacement = {
-      data: txResponse.data,
-      from: txResponse.from,
-      nonce: txResponse.nonce,
-      to: proxyContractAddress,
-      value: txResponse.value,
-      startBlock: txResponse.blockNumber || (await provider.getBlockNumber()),
-    }
-
-    const receipt = await provider._waitForTransaction(txHash, 1, TIMEOUT_TIME, replacement)
+    const receipt = await provider._waitForTransaction(txHash, 1, TIMEOUT_TIME, pendingTx)
 
     if (didRevert(receipt)) {
       return SafeCreationStatus.REVERTED
@@ -79,23 +57,35 @@ export const checkSafeCreationTx = async (
 }
 
 type Props = {
-  txHash: string | undefined
+  pendingSafe?: PendingSafeData
+  status: SafeCreationStatus
   setStatus: (status: SafeCreationStatus) => void
 }
 
-export const usePendingSafeCreation = ({ txHash, setStatus }: Props) => {
+export const usePendingSafeCreation = ({ pendingSafe, status, setStatus }: Props) => {
   const provider = useWeb3ReadOnly()
-  const chainId = useChainId()
 
   useEffect(() => {
-    if (!txHash || !provider) return
+    if (
+      !provider ||
+      !pendingSafe?.txHash ||
+      status === SafeCreationStatus.PROCESSING ||
+      status === SafeCreationStatus.ERROR ||
+      status === SafeCreationStatus.REVERTED ||
+      status === SafeCreationStatus.TIMEOUT ||
+      status === SafeCreationStatus.SUCCESS
+    ) {
+      return
+    }
 
     const monitorTx = async () => {
-      const txStatus = await checkSafeCreationTx(provider, txHash, chainId)
+      if (!pendingSafe.tx || !pendingSafe.txHash) return
+
+      const txStatus = await checkSafeCreationTx(provider, pendingSafe.tx, pendingSafe.txHash)
       setStatus(txStatus)
     }
 
     setStatus(SafeCreationStatus.PROCESSING)
     monitorTx()
-  }, [txHash, provider, setStatus, chainId])
+  }, [pendingSafe, provider, status, setStatus])
 }

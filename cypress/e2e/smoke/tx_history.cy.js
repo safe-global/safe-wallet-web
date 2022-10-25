@@ -98,7 +98,6 @@ describe('Transaction history', () => {
       })
       // Send 0.11 WETH
       .prev()
-      .prev()
       .within(() => {
         // Type
         cy.get('img').should('have.attr', 'src', OUTGOING)

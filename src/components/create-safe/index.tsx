@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import type { BigNumber } from 'ethers'
 
 import ConnectWalletStep from '@/components/create-safe/steps/ConnectWalletStep'
 import SetNameStep from '@/components/create-safe/steps/SetNameStep'
@@ -14,7 +15,16 @@ import useChainId from '@/hooks/useChainId'
 import type { SafeFormData } from '@/components/create-safe/types.d'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
 
-export type PendingSafeData = SafeFormData & { txHash?: string; saltNonce: number }
+export type PendingSafeTx = {
+  data: string
+  from: string
+  nonce: number
+  to: string
+  value: BigNumber
+  startBlock: number
+}
+
+export type PendingSafeData = SafeFormData & { txHash?: string; tx?: PendingSafeTx; saltNonce: number }
 export type PendingSafeByChain = Record<string, PendingSafeData | undefined>
 
 export const CreateSafeSteps: TxStepperProps['steps'] = [
