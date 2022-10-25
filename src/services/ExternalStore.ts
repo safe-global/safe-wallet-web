@@ -15,9 +15,9 @@ class ExternalStore<T extends unknown> {
     return this.store
   }
 
-  public readonly setStore = (value: T): void => {
+  public readonly setStore = (value: T | ((prevValue: T | undefined) => T | undefined)): void => {
     if (value !== this.store) {
-      this.store = value
+      this.store = value instanceof Function ? value(this.store) : value
       this.listeners.forEach((listener) => listener())
     }
   }

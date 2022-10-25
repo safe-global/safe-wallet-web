@@ -1,33 +1,59 @@
-import type { Dispatch, SetStateAction } from 'react'
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
+import ExternalStore from '../ExternalStore'
 import local from './local'
 
-const useLocalStorage = <T>(key: string, initialState: T): [T, Dispatch<SetStateAction<T>>] => {
-  const [cache, setCache] = useState<T>(initialState)
+// This store is a record whose keys correspond to the keys of the local storage
+// It's basically a global cache of the local storage
+// When a value is updated, all instances of the hook below will be updated
+const { setStore, useStore } = new ExternalStore<Record<string, unknown>>()
 
-  useEffect(() => {
-    const initialValue = local.getItem<T>(key)
-    if (initialValue !== undefined) {
-      setCache(initialValue)
-    }
-  }, [setCache, key])
+// The setter accepts T or a function that takes the old value and returns T
+// Mimics the behavior of useState
+type Setter<T> = (val: T | undefined | ((prevVal: T) => T | undefined)) => void
 
-  const setNewValue = useCallback(
-    (value: T | ((prevState: T) => T)) => {
-      setCache((prevState) => {
-        const newState = value instanceof Function ? value(prevState) : value
+const useLocalStorage = <T>(key: string, initialValue: T): [T, Setter<T>] => {
+  // This is the setter that will be returned
+  // It will update the local storage and the cache
+  const setNewValue = useCallback<Setter<T>>(
+    (value) => {
+      setStore((prevStore = {}) => {
+        const prevVal = prevStore[key] as T
+        const newVal = value instanceof Function ? value(prevVal) : value
 
-        if (newState !== prevState) {
-          local.setItem(key, newState)
+        // Nothing to update
+        if (prevVal === newVal) {
+          return prevStore
         }
 
-        return newState
+        // Update the local storage
+        if (newVal === undefined) {
+          local.removeItem(key)
+        } else {
+          local.setItem<T>(key, newVal)
+        }
+
+        // Update the cache
+        return {
+          ...prevStore,
+          [key]: newVal,
+        }
       })
     },
-    [setCache, key],
+    [key],
   )
 
-  return [cache, setNewValue]
+  // Read the initial local storage value and put it in the cache
+  useEffect(() => {
+    setNewValue((prevVal) => prevVal ?? local.getItem<T>(key))
+  }, [key, setNewValue])
+
+  // Get the current value from the cache, or directly from the local storage if it's not in the cache
+  // Fall back to the initial value if it's not in the local storage
+  const cache = useStore()
+  const cachedVal = cache?.[key] as T
+  const currentVal = cachedVal ?? initialValue
+
+  return [currentVal, setNewValue]
 }
 
 export default useLocalStorage
