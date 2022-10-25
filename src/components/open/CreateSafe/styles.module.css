@@ -1,0 +1,7 @@
+.back {
+  margin: var(--space-4) 0;
+}
+
+.title {
+  padding-bottom: var(--space-2);
+}

@@ -5,6 +5,7 @@ export const AppRoutes = {
   load: '/load',
   index: '/',
   home: '/home',
+  demo: '/demo',
   apps: '/apps',
   addressBook: '/address-book',
   balances: {

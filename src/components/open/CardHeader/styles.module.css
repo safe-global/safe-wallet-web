@@ -1,0 +1,17 @@
+.header {
+  padding: var(--space-3) var(--space-2);
+}
+
+.header :global .MuiCardHeader-title {
+  font-weight: 700;
+}
+
+.header :global .MuiCardHeader-subheader {
+  color: var(--color-text-primary);
+}
+
+.avatar {
+  background-color: var(--color-primary-main);
+  height: 20px;
+  width: 20px;
+}
