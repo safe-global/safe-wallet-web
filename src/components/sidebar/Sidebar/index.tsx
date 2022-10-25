@@ -12,6 +12,7 @@ import SidebarFooter from '@/components/sidebar/SidebarFooter'
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
+import OwnedSafes from '../OwnedSafes'
 
 const Sidebar = (): ReactElement => {
   const router = useRouter()
@@ -39,9 +40,13 @@ const Sidebar = (): ReactElement => {
             <SidebarNavigation />
           </>
         ) : (
-          <div className={css.noSafeHeader}>
-            <KeyholeIcon />
-          </div>
+          <>
+            <div className={css.noSafeHeader}>
+              <KeyholeIcon />
+            </div>
+
+            <OwnedSafes />
+          </>
         )}
 
         <div style={{ flexGrow: 1 }} />
