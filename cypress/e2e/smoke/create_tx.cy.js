@@ -1,7 +1,10 @@
 const SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
 const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
-describe('Queue a transaction on N/1', () => {
+// generate number between 0.00001 and 0.00020
+const sendValue = Math.floor(Math.random() * 20 + 1) / 100000
+
+describe('Queue a transaction on 1/N', () => {
   before(() => {
     cy.connectE2EWallet()
 
@@ -25,7 +28,7 @@ describe('Queue a transaction on N/1', () => {
     cy.get('ul[role="listbox"]').contains('Görli Ether').click()
 
     // Insert amount
-    cy.get('input[name="amount"]').type('0.00003')
+    cy.get('input[name="amount"]').type(`${sendValue}`)
 
     cy.contains('Next').click()
   })
@@ -79,7 +82,7 @@ describe('Queue a transaction on N/1', () => {
       cy.contains('This Safe has no queued transactions').should('not.exist')
 
       // Created transaction should be queued
-      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '3' + 'Send' + '-' + '0.00003 GOR' + '1/1').should(
+      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '3' + 'Send' + '-' + `${sendValue} GOR` + '1/1').should(
         'exist',
       )
     })
