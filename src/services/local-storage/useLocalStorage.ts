@@ -38,7 +38,10 @@ const useLocalStorage = <T>(key: string): [T | undefined, Setter<T>] => {
   useEffect(() => {
     const onStorageEvent = (event: StorageEvent) => {
       if (event.key === local.getPrefixedKey(key)) {
-        setCache(local.getItem<T>(key))
+        const newValue = local.getItem<T>(key)
+        if (newValue !== undefined) {
+          setCache(newValue)
+        }
       }
     }
 
