@@ -104,6 +104,7 @@ describe('handleSafeCreationError', () => {
     const mockEthersError = {
       ...new Error(),
       code: ErrorCode.ACTION_REJECTED,
+      reason: '' as EthersTxReplacedReason,
       receipt: {} as TransactionReceipt,
     }
 
@@ -116,6 +117,7 @@ describe('handleSafeCreationError', () => {
     const mockEthersError = {
       ...new Error(),
       code: ErrorCode.UNKNOWN_ERROR,
+      reason: '' as EthersTxReplacedReason,
       receipt: {} as TransactionReceipt,
       message: 'rejected',
     }
@@ -168,6 +170,7 @@ describe('handleSafeCreationError', () => {
     const mockEthersError = {
       ...new Error(),
       code: ErrorCode.UNKNOWN_ERROR,
+      reason: '' as EthersTxReplacedReason,
       receipt: {} as TransactionReceipt,
     }
 

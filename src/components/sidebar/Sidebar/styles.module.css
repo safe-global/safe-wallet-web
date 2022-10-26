@@ -35,10 +35,11 @@
 
 .noSafeHeader {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding: 10px;
-  min-height: 80px;
-  align-items: flex-start;
+  min-height: 100px;
 }
 
 .drawerButton {

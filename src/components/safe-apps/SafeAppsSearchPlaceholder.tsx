@@ -8,12 +8,12 @@ import PagePlaceholder from '../common/PagePlaceholder'
 import AddCustomAppIcon from '@/public/images/apps/add-custom-app.svg'
 import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
-import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 
 const useWCAppLink = (): LinkProps['href'] => {
   const router = useRouter()
-  const { allSafeApps } = useSafeApps()
-  const app = allSafeApps.find((app) => app.tags?.includes(SafeAppsTag.WALLET_CONNECT))
+  const [matchingApps] = useRemoteSafeApps(SafeAppsTag.WALLET_CONNECT)
+  const app = matchingApps?.[0]
 
   return useMemo(
     () => ({

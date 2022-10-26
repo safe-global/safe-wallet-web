@@ -7,7 +7,6 @@ import { BigNumber } from 'ethers'
 import SafeTokenWidget from '..'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
-import * as useSafeApps from '@/hooks/safe-apps/useSafeApps'
 import useSafeTokenAllocation from '@/hooks/useSafeTokenAllocation'
 
 const MOCK_CLAIMING_APP_URL = 'https://fake.claiming-app.safe.global'
@@ -15,6 +14,28 @@ const MOCK_CLAIMING_APP_URL = 'https://fake.claiming-app.safe.global'
 jest.mock('@/hooks/useChainId', () => jest.fn(() => '1'))
 
 jest.mock('@/hooks/useSafeTokenAllocation')
+
+jest.mock(
+  '@/hooks/safe-apps/useRemoteSafeApps',
+  jest.fn(() => ({
+    useRemoteSafeApps: () => [
+      [
+        {
+          id: 61,
+          url: MOCK_CLAIMING_APP_URL,
+          chainIds: ['4'],
+          name: '$SAFE Claiming App',
+          description: '',
+          iconUrl: '',
+          tags: ['safe-claiming-app'],
+          accessControl: {
+            type: SafeAppAccessPolicyTypes.NoRestrictions,
+          },
+        },
+      ],
+    ],
+  })),
+)
 
 describe('SafeTokenWidget', () => {
   const fakeSafeAddress = hexZeroPad('0x1', 20)
@@ -26,25 +47,6 @@ describe('SafeTokenWidget', () => {
           query: {
             safe: fakeSafeAddress,
           },
-        } as any),
-    )
-    jest.spyOn(useSafeApps, 'useSafeApps').mockImplementation(
-      () =>
-        ({
-          allSafeApps: [
-            {
-              id: 61,
-              url: MOCK_CLAIMING_APP_URL,
-              chainIds: ['4'],
-              name: '$SAFE Claiming App',
-              description: '',
-              iconUrl: '',
-              tags: ['safe-claiming-app'],
-              accessControl: {
-                type: SafeAppAccessPolicyTypes.NoRestrictions,
-              },
-            },
-          ],
         } as any),
     )
   })

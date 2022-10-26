@@ -15,6 +15,7 @@ import type Safe from '@gnosis.pm/safe-core-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 import * as wrongChain from '@/hooks/useIsWrongChain'
+import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
 
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
@@ -73,6 +74,11 @@ describe('SignOrExecuteForm', () => {
       gasLimit: undefined,
       gasLimitError: undefined,
       gasLimitLoading: false,
+    })
+    jest.spyOn(useIsValidExecutionHook, 'default').mockReturnValue({
+      isValidExecution: undefined,
+      executionValidationError: undefined,
+      isValidExecutionLoading: false,
     })
     jest.spyOn(wallet, 'default').mockReturnValue({
       address: ethers.utils.hexZeroPad('0x123', 20),
@@ -149,44 +155,52 @@ describe('SignOrExecuteForm', () => {
     expect(result.queryByText('Execute transaction')).toBeInTheDocument()
   })
 
-  it('displays an error if gas limit estimation fails', () => {
-    jest.spyOn(useGasLimitHook, 'default').mockReturnValue({
-      gasLimit: undefined,
-      gasLimitError: new Error('Error estimating gas limit'),
-      gasLimitLoading: false,
+  describe('hides execution-related errors if it is not an execution', () => {
+    it('hides the gas limit estimation error', () => {
+      jest.spyOn(useGasLimitHook, 'default').mockReturnValue({
+        gasLimit: undefined,
+        gasLimitError: new Error('Error estimating gas limit'),
+        gasLimitLoading: false,
+      })
+
+      const mockTx = createSafeTx()
+      const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+      expect(
+        result.getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
+      ).toBeInTheDocument()
+
+      act(() => {
+        fireEvent.click(result.getByText('Execute transaction'))
+      })
+
+      expect(
+        result.queryByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
+      ).not.toBeInTheDocument()
     })
 
-    const mockTx = createSafeTx()
-    const result = render(
-      <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} />,
-    )
+    it('hides the executiuon validation error', () => {
+      jest.spyOn(useIsValidExecutionHook, 'default').mockReturnValue({
+        isValidExecution: undefined,
+        executionValidationError: new Error('Error validating execution'),
+        isValidExecutionLoading: false,
+      })
 
-    expect(
-      result.getByText('This transaction will most likely fail. To save gas costs, avoid creating the transaction.'),
-    ).toBeInTheDocument()
-  })
+      const mockTx = createSafeTx()
+      const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-  it('hides the gas limit estimation error if its not an execution', () => {
-    jest.spyOn(useGasLimitHook, 'default').mockReturnValue({
-      gasLimit: undefined,
-      gasLimitError: new Error('Error estimating gas limit'),
-      gasLimitLoading: false,
+      expect(
+        result.getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
+      ).toBeInTheDocument()
+
+      act(() => {
+        fireEvent.click(result.getByText('Execute transaction'))
+      })
+
+      expect(
+        result.queryByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
+      ).not.toBeInTheDocument()
     })
-
-    const mockTx = createSafeTx()
-    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
-
-    expect(
-      result.getByText('This transaction will most likely fail. To save gas costs, avoid creating the transaction.'),
-    ).toBeInTheDocument()
-
-    act(() => {
-      fireEvent.click(result.getByText('Execute transaction'))
-    })
-
-    expect(
-      result.queryByText('This transaction will most likely fail. To save gas costs, avoid creating the transaction.'),
-    ).not.toBeInTheDocument()
   })
 
   it('displays an error if passed through props', () => {
@@ -196,7 +210,7 @@ describe('SignOrExecuteForm', () => {
     )
 
     expect(
-      result.getByText('This transaction will most likely fail. To save gas costs, avoid creating the transaction.'),
+      result.getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
     ).toBeInTheDocument()
   })
 
@@ -213,6 +227,78 @@ describe('SignOrExecuteForm', () => {
       result.getByText("You are currently not an owner of this Safe and won't be able to submit this transaction."),
     ).toBeInTheDocument()
     expect(result.getByText('Submit')).toBeDisabled()
+  })
+
+  it('displays an error and disables the submit button if Safe attempts to execute own transaction', () => {
+    const address = ethers.utils.hexZeroPad('0x789', 20)
+
+    jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
+      safeAddress: address,
+      safe: {
+        owners: [{ value: address }],
+      } as SafeInfo,
+      safeLoaded: true,
+      safeLoading: false,
+      safeError: undefined,
+    })
+
+    jest.spyOn(wallet, 'default').mockReturnValue({
+      chainId: '1',
+      address: address,
+    } as ConnectedWallet)
+
+    const mockTx = createSafeTx()
+    const result = render(<SignOrExecuteForm isExecutable={false} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    expect(
+      result.getByText('Cannot execute a transaction from the Safe itself, please connect a different account.'),
+    ).toBeInTheDocument()
+    expect(result.getByText('Submit')).toBeDisabled()
+  })
+
+  describe('adjusts the generic error text creating/executing transactions', () => {
+    it('displays an error for newly created transactions', () => {
+      jest.spyOn(wallet, 'default').mockReturnValue({
+        address: ethers.utils.hexZeroPad('0x456', 20),
+      } as ConnectedWallet)
+
+      jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
+        safeAddress: ethers.utils.hexZeroPad('0x123', 20),
+        safe: {
+          owners: [{ value: ethers.utils.hexZeroPad('0x456', 20) }],
+          threshold: 1,
+        } as SafeInfo,
+        safeLoaded: true,
+        safeLoading: false,
+        safeError: undefined,
+      })
+
+      const mockTx = createSafeTx()
+      const result = render(
+        <SignOrExecuteForm isExecutable={false} onSubmit={jest.fn} safeTx={mockTx} error={new Error('Some error')} />,
+      )
+
+      expect(
+        result.getByText('This transaction will most likely fail. To save gas costs, avoid creating the transaction.'),
+      ).toBeInTheDocument()
+    })
+
+    it('displays an error for transactions being executed', () => {
+      const mockTx = createSafeTx()
+      const result = render(
+        <SignOrExecuteForm
+          isExecutable={false}
+          onSubmit={jest.fn}
+          safeTx={mockTx}
+          txId="0x123"
+          error={new Error('Some error')}
+        />,
+      )
+
+      expect(
+        result.getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
+      ).toBeInTheDocument()
+    })
   })
 
   it('allows execution for non-owners', () => {
@@ -283,11 +369,17 @@ describe('SignOrExecuteForm', () => {
     await waitFor(() => expect(submitButton).toBeDisabled())
   })
 
-  it('disables the submit button if gas limit is estimating', () => {
+  it('disables the submit button if gas limit/execution validity is estimating', () => {
     jest.spyOn(useGasLimitHook, 'default').mockReturnValue({
       gasLimit: undefined,
       gasLimitError: undefined,
       gasLimitLoading: true,
+    })
+
+    jest.spyOn(useIsValidExecutionHook, 'default').mockReturnValue({
+      isValidExecution: undefined,
+      executionValidationError: undefined,
+      isValidExecutionLoading: true,
     })
 
     const mockTx = createSafeTx()
@@ -330,9 +422,9 @@ describe('SignOrExecuteForm', () => {
     expect(proposeSpy).toHaveBeenCalledTimes(1)
   })
 
-  it('on-chain signs a transaction', async () => {
+  it('smart contract wallets propose and sign new transactions on-chain', async () => {
     const mockTx = createSafeTx()
-    const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning').mockReturnValue(Promise.resolve(mockTx))
+    const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning')
     const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
 
@@ -346,5 +438,23 @@ describe('SignOrExecuteForm', () => {
 
     await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
     expect(proposeSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it("smart contract wallets dont't propose, but sign existing transactions on-chain", async () => {
+    const mockTx = createSafeTx()
+    const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning')
+    const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
+    jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
+
+    const result = render(<SignOrExecuteForm txId="0x123" onSubmit={jest.fn} safeTx={mockTx} />)
+
+    const submitButton = result.getByText('Submit')
+
+    act(() => {
+      fireEvent.click(submitButton)
+    })
+
+    await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
+    expect(proposeSpy).not.toHaveBeenCalled()
   })
 })

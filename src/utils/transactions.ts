@@ -34,7 +34,10 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
   const getMissingSigners = ({
     signers,
     confirmations,
+    confirmationsRequired,
   }: MultisigExecutionDetails): MultisigExecutionInfo['missingSigners'] => {
+    if (confirmations.length >= confirmationsRequired) return
+
     const missingSigners = signers.filter(({ value }) => {
       const hasConfirmed = confirmations?.some(({ signer }) => signer?.value === value)
       return !hasConfirmed

@@ -5,7 +5,7 @@ import { useEffect, useCallback, useMemo, useRef } from 'react'
 import type { AllowedFeatures } from '../types'
 import { PermissionStatus } from '../types'
 
-const SAFE_APPS_INFO_MODAL = 'SAFE_APPS_INFO_MODAL'
+const SAFE_APPS_INFO_MODAL = 'SafeApps__infoModal'
 
 type useSafeAppsInfoModal = {
   url: string

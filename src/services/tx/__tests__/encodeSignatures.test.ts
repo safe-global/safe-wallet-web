@@ -1,5 +1,5 @@
 import type { SafeSignature, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { _encodeSignatures } from '../useGasLimit'
+import { encodeSignatures } from '../encodeSignatures'
 
 const createSafeTx = (): SafeTransaction => {
   return {
@@ -43,7 +43,7 @@ describe('encodeSignatures', () => {
 
     const owner = '0x123'
 
-    const encoded = _encodeSignatures(safeTx, owner)
+    const encoded = encodeSignatures(safeTx, owner)
 
     expect(safeTx?.signatures.size).toBe(2)
     expect(encoded).toBe('0x123 = 0xEEE; 0x345 = 0xAAA')
@@ -61,7 +61,7 @@ describe('encodeSignatures', () => {
 
     const owner = '0x123'
 
-    const encoded = _encodeSignatures(safeTx, owner)
+    const encoded = encodeSignatures(safeTx, owner)
 
     expect(safeTx?.signatures.size).toBe(1)
     expect(encoded).toBe(

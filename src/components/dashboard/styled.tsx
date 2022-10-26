@@ -44,7 +44,7 @@ const StyledLink = styled(Link)`
   align-items: center;
   gap: var(--space-1);
   margin-bottom: 10px;
-  padding-right: 26px;
+  padding-right: 17px;
 `
 
 export const ViewAllLink = ({ url, text }: { url: LinkProps['href']; text?: string }): ReactElement => (
