@@ -2,12 +2,11 @@ import chains from './chains'
 
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION
 
-export const GATEWAY_URL = 'http://localhost:8080'
-export const GATEWAY_URL_PRODUCTION = GATEWAY_URL
-export const GATEWAY_URL_STAGING = GATEWAY_URL
-
-// export const GATEWAY_URL_PRODUCTION = process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || "http://localhost:8080" //'https://safe-client.gnosis.io'
-// export const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || "http://localhost:8080" //'https://safe-client.staging.5afe.dev'
+export const GATEWAY_URL_PRODUCTION = process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.gnosis.io'
+export const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'https://safe-client.staging.5afe.dev'
+export const SAFE_REACT_URL = IS_PRODUCTION
+  ? 'https://safe.celo.org'
+  : process.env.NEXT_PUBLIC_VERCEL_URL || 'http://localhost:3000'
 
 // Magic numbers
 export const POLLING_INTERVAL = 15_000
