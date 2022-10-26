@@ -10,6 +10,10 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import type { NamedAddress } from '@/components/create-safe/types'
 import useWallet from '@/hooks/wallets/useWallet'
 
+/**
+ * TODO: this is a slightly modified copy of the old /create-safe/OwnerRow.tsx
+ * Once we remove the old safe creation flow we should remove the old file.
+ */
 export const OwnerRow = ({
   index,
   groupName,
