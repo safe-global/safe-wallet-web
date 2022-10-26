@@ -3,10 +3,10 @@ import local from './local'
 
 // The setter accepts T or a function that takes the old value and returns T
 // Mimics the behavior of useState
-type Setter<T> = (val: T | ((prevVal: T) => T)) => void
+type Setter<T> = (val: (T | undefined) | ((prevVal: T | undefined) => T | undefined)) => void
 
-const useLocalStorage = <T>(key: string, initialValue: T): [T, Setter<T>] => {
-  const [cache, setCache] = useState<T>(initialValue)
+const useLocalStorage = <T>(key: string): [T | undefined, Setter<T>] => {
+  const [cache, setCache] = useState<T | undefined>()
 
   // This is the setter that will be returned
   // It will update the local storage and cache
@@ -38,10 +38,7 @@ const useLocalStorage = <T>(key: string, initialValue: T): [T, Setter<T>] => {
   useEffect(() => {
     const onStorageEvent = (event: StorageEvent) => {
       if (event.key === local.getPrefixedKey(key)) {
-        const newValue = local.getItem<T>(key)
-        if (newValue !== undefined) {
-          setCache(newValue)
-        }
+        setCache(local.getItem<T>(key))
       }
     }
 

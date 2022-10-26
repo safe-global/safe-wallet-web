@@ -31,7 +31,7 @@ const useSafeAppsInfoModal = ({
 } => {
   const didMount = useRef(false)
   const chainId = useChainId()
-  const [modalInfo, setModalInfo] = useLocalStorage<ModalInfoProps>(SAFE_APPS_INFO_MODAL, {})
+  const [modalInfo = {}, setModalInfo] = useLocalStorage<ModalInfoProps>(SAFE_APPS_INFO_MODAL)
 
   useEffect(() => {
     if (!didMount.current) {

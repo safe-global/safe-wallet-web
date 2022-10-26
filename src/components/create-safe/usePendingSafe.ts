@@ -12,7 +12,6 @@ export const usePendingSafe = (): [Props, Dispatch<SetStateAction<Props>>] => {
   const chainId = useChainId()
   const [pendingSafes, setPendingSafes] = useLocalStorage<PendingSafeByChain | undefined>(
     SAFE_PENDING_CREATION_STORAGE_KEY,
-    undefined,
   )
 
   const pendingSafe = pendingSafes?.[chainId]
