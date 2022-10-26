@@ -43,9 +43,10 @@ const UNKNOWN_APP_NAME = 'Unknown App'
 type AppFrameProps = {
   appUrl: string
   allowedFeaturesList: string
+  isQueueBarDisabled?: boolean
 }
 
-const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
+const AppFrame = ({ appUrl, allowedFeaturesList, isQueueBarDisabled = false }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
@@ -61,7 +62,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     dismissQueueBar,
     transactions,
   } = useTransactionQueueBarState()
-  const queueBarVisible = transactions.results.length > 0 && !queueBarDismissed
+  const queueBarVisible = !isQueueBarDisabled && transactions.results.length > 0 && !queueBarDismissed
+
   const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
@@ -225,7 +227,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
 
         <TransactionQueueBar
           expanded={queueBarExpanded}
-          visible={!queueBarDismissed}
+          visible={queueBarVisible && !queueBarDismissed}
           setExpanded={setExpanded}
           onDismiss={dismissQueueBar}
           transactions={transactions}
