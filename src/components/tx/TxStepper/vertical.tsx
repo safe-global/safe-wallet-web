@@ -18,7 +18,7 @@ const VerticalTxStepper = ({ steps, initialData, initialStep, onClose, onFinish 
 
   return (
     <Box width={1}>
-      <Stepper activeStep={activeStep} orientation="vertical">
+      <Stepper activeStep={activeStep} orientation="vertical" className={`active-${activeStep}`}>
         {steps.map(({ label, render }, index) => {
           return (
             <Step key={index}>

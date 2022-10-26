@@ -12,6 +12,7 @@ import { AppRoutes } from '@/config/routes'
 import { CreationStatus } from '@/components/create-safe/status/CreationStatus'
 import type { SafeFormData } from '@/components/create-safe/types.d'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
+import css from './styles.module.css'
 
 export type PendingSafeTx = {
   data: string
@@ -70,7 +71,11 @@ const CreateSafe = () => {
     router.push(AppRoutes.welcome)
   }
 
-  return <VerticalTxStepper steps={CreateSafeSteps} onClose={onClose} eventCategory={CREATE_SAFE_CATEGORY} />
+  return (
+    <div className={css.stepper}>
+      <VerticalTxStepper steps={CreateSafeSteps} onClose={onClose} eventCategory={CREATE_SAFE_CATEGORY} />
+    </div>
+  )
 }
 
 export default CreateSafe
