@@ -131,9 +131,9 @@ const CreateSafeStep2 = (): ReactElement => {
                 </Button>
               </Grid>
 
-              <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3 }} />
-
               <Grid item xs={12}>
+                <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3 }} />
+
                 <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
                   Threshold
                   <Tooltip title="TODO: Add tooltip" arrow placement="top">
@@ -142,11 +142,11 @@ const CreateSafeStep2 = (): ReactElement => {
                     </span>
                   </Tooltip>
                 </Typography>
+                <Typography variant="body2" mb={2}>
+                  Any transaction requires the confirmation of:
+                </Typography>
               </Grid>
 
-              <Typography variant="body2" mb={2}>
-                Any transaction requires the confirmation of:
-              </Typography>
               <Grid item xs={12}>
                 <Select {...register(CreateSafeStep2Fields.threshold)} defaultValue={allOwners.length}>
                   {allOwners.map((_, i) => (
