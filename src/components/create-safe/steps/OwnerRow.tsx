@@ -57,7 +57,7 @@ export const OwnerRow = ({
   }, [ens, setValue, getValues, name, fieldName])
 
   return (
-    <Grid container spacing={3} alignItems="flex-start" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
+    <Grid container spacing={3} alignItems="center" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
       <Grid item xs={12} md={4}>
         <FormControl fullWidth>
           <NameInput
