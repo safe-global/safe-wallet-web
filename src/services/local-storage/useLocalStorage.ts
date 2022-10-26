@@ -39,9 +39,9 @@ const useLocalStorage = <T>(key: string, initialValue: T): [T, Setter<T>] => {
     const onStorageEvent = (event: StorageEvent) => {
       if (event.key === local.getPrefixedKey(key)) {
         const newValue = local.getItem<T>(key)
-        setCache((oldValue) => {
-          return newValue === undefined || newValue === oldValue ? oldValue : newValue
-        })
+        if (newValue !== undefined) {
+          setCache(newValue)
+        }
       }
     }
 
