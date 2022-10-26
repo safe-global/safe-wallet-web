@@ -20,7 +20,7 @@ const DebugToggle = (): ReactElement => {
     setIsProdGateway(event.target.checked)
 
     setTimeout(() => {
-      //location.reload()
+      location.reload()
     }, 300)
   }
 
