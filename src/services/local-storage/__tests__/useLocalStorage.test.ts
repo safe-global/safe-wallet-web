@@ -5,7 +5,7 @@ describe('useLocalStorage', () => {
   beforeEach(() => {
     window.localStorage.clear()
     const { result } = renderHook(() => useLocalStorage('test-key', 'test'))
-    result.current[1](undefined)
+    result.current[1](undefined as any)
   })
 
   it('should return the initial value', () => {
