@@ -1,41 +1,24 @@
-import {
-  Select,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  TextField,
-  Tooltip,
-  SvgIcon,
-  Typography,
-  Button,
-  Link,
-} from '@mui/material'
+import { InputAdornment, TextField, Tooltip, SvgIcon, Typography, Button, Link, Box } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
-import ChainIndicator from '@/components/common/ChainIndicator'
-import useChainId from '@/hooks/useChainId'
-import useChains from '@/hooks/useChains'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import StepCard from '../../StepCard'
 
 import css from './styles.module.css'
+import NetworkSelector from '@/components/common/NetworkSelector'
 
 type CreateSafeStep1Form = {
-  chainId: string
   name: string
 }
 
 enum CreateSafeStep1Fields {
-  chainId = 'chainId',
   name = 'name',
 }
 
 const STEP_1_FORM_ID = 'create-safe-step-1-form'
 
 const CreateSafeStep1 = () => {
-  const chainId = useChainId()
-  const { configs } = useChains()
   const fallbackName = useMnemonicSafeName()
 
   const {
@@ -45,7 +28,6 @@ const CreateSafeStep1 = () => {
   } = useForm<CreateSafeStep1Form>({
     mode: 'all',
     defaultValues: {
-      [CreateSafeStep1Fields.chainId]: chainId || '',
       [CreateSafeStep1Fields.name]: '',
     },
   })
@@ -60,26 +42,17 @@ const CreateSafeStep1 = () => {
       subheader="Select the network on which to create your Safe"
       content={
         <form onSubmit={handleSubmit(onSubmit)} id={STEP_1_FORM_ID} className={css.form}>
-          <Select
-            startAdornment={
-              <InputAdornment position="start">
-                <InputLabel>Network</InputLabel>
-              </InputAdornment>
-            }
-            {...register(CreateSafeStep1Fields.chainId)}
-            SelectDisplayProps={{
-              className: css.select,
-            }}
-            defaultValue={chainId}
-          >
-            {configs.map((chain) => (
-              <MenuItem key={chain.chainId} value={chain.chainId}>
-                <ChainIndicator chainId={chain.chainId} className={css.chain} />
-              </MenuItem>
-            ))}
-          </Select>
+          <Box className={css.select}>
+            <Typography color="text.secondary" pl={2}>
+              Network
+            </Typography>
+            <Box className={css.networkSelect}>
+              <NetworkSelector />
+            </Box>
+          </Box>
 
           <TextField
+            fullWidth
             label={errors?.[CreateSafeStep1Fields.name]?.message || 'Name'}
             error={!!errors?.[CreateSafeStep1Fields.name]}
             placeholder={fallbackName}
