@@ -13,6 +13,7 @@ import { Card, CardContent, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
+import CreateSafeStep3 from '@/components/new-safe/steps/Step3'
 
 export type NewSafeFormData = {
   name: string
@@ -32,6 +33,11 @@ export const CreateSafeSteps: TxStepperProps<NewSafeFormData>['steps'] = [
     subtitle:
       'Here you can add owners to your Safe and determine how many owners need to confirm before making a successful transaction',
     render: (data, onSubmit, onBack) => <CreateSafeStep2 onSubmit={onSubmit} onBack={onBack} data={data} />,
+  },
+  {
+    title: 'Review',
+    subtitle: `You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet.`,
+    render: (data, onSubmit, onBack) => <CreateSafeStep3 onSubmit={onSubmit} onBack={onBack} data={data} />,
   },
 ]
 

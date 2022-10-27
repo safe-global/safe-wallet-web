@@ -1,7 +1,6 @@
 import { useMemo, type ReactElement } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Button, Grid, Typography, Divider, Box } from '@mui/material'
-import StepCard from '@/components/new-safe/StepCard'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import type { NamedAddress } from '@/components/create-safe/types'
@@ -9,6 +8,8 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useGasPrice from '@/hooks/useGasPrice'
 import { useEstimateSafeCreationGas } from '@/components/create-safe/useEstimateSafeCreationGas'
 import { formatVisualAmount } from '@/utils/formatters'
+import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
+import type { NewSafeFormData } from '@/components/new-safe/CreateSafe'
 import css from './styles.module.css'
 
 enum CreateSafeStep3Fields {
@@ -39,39 +40,22 @@ const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
   )
 }
 
-const CreateSafeStep3 = (): ReactElement => {
+const CreateSafeStep3 = ({
+  onSubmit,
+  onBack,
+  data,
+}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'>): ReactElement => {
   const chain = useCurrentChain()
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
   const saltNonce = useMemo(() => Date.now(), [])
 
-  // TODO: Get the Safe name from previous steps
-  const newSafeName = 'My Safe'
-  const safeOwners = useMemo(
-    () => [
-      {
-        name: 'My Wallet',
-        address: '0x85380007df137839015c2c1254c4b6cec130c589',
-      },
-      {
-        name: 'Marta',
-        address: '0xc81DeFC11034BDdFbFeeF299987Cd8f74A5B9bd8',
-      },
-      {
-        name: 'John',
-        address: '0xE297437d6b53890cbf004e401F3acc67c8b39665',
-      },
-    ],
-    [],
-  )
-  const safeThreshold = 1
-
   const safeParams = useMemo(() => {
     return {
-      owners: safeOwners.map((owner) => owner.address),
-      threshold: safeThreshold,
+      owners: data.owners.map((owner) => owner.address),
+      threshold: data.threshold,
       saltNonce,
     }
-  }, [safeOwners, saltNonce])
+  }, [data.owners, data.threshold, saltNonce])
 
   const { gasLimit } = useEstimateSafeCreationGas(safeParams)
 
@@ -83,92 +67,90 @@ const CreateSafeStep3 = (): ReactElement => {
   const formMethods = useForm<CreateSafeStep3Form>({
     mode: 'all',
     defaultValues: {
-      [CreateSafeStep3Fields.name]: newSafeName,
-      [CreateSafeStep3Fields.owners]: safeOwners,
-      [CreateSafeStep3Fields.threshold]: safeThreshold,
+      [CreateSafeStep3Fields.name]: data.name,
+      [CreateSafeStep3Fields.owners]: data.owners,
+      [CreateSafeStep3Fields.threshold]: data.threshold,
     },
   })
 
-  const { handleSubmit } = formMethods
+  const { handleSubmit, watch } = formMethods
 
-  const onSubmit = (data: CreateSafeStep3Form) => {
-    console.log(data)
+  const allFormData = watch()
+
+  const handleBack = () => {
+    onBack(allFormData)
   }
 
   return (
-    <StepCard
-      step={3}
-      title="Review"
-      subheader={`You're about to create a new Safe on ${chain?.chainName} and will have to confirm a transaction with your currently connected wallet.`}
-      content={
-        <form onSubmit={handleSubmit(onSubmit)} id={STEP_3_FORM_ID}>
-          <FormProvider {...formMethods}>
+    <form onSubmit={handleSubmit(onSubmit)} id={STEP_3_FORM_ID}>
+      <FormProvider {...formMethods}>
+        <Grid container spacing={3}>
+          <Grid item>
             <Grid container spacing={3}>
-              <Grid item>
-                <Grid container spacing={3}>
-                  <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
-                  <ReviewRow name="Name" value={<Typography>{newSafeName}</Typography>} />
-                  <ReviewRow
-                    name="Owners"
-                    value={
-                      <Box className={css.ownersArray}>
-                        {safeOwners.map((owner, index) => (
-                          <EthHashInfo address={owner.address} shortAddress={false} showPrefix={false} key={index} />
-                        ))}
-                      </Box>
-                    }
-                  />
-                  <ReviewRow
-                    name="Threshold"
-                    value={
-                      <Typography>
-                        {safeThreshold} out of {safeOwners.length} owner(s)
-                      </Typography>
-                    }
-                  />
-                </Grid>
-              </Grid>
+              <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
+              <ReviewRow name="Name" value={<Typography>{data.name}</Typography>} />
+              <ReviewRow
+                name="Owners"
+                value={
+                  <Box className={css.ownersArray}>
+                    {data.owners.map((owner, index) => (
+                      <EthHashInfo address={owner.address} shortAddress={false} showPrefix={false} key={index} />
+                    ))}
+                  </Box>
+                }
+              />
+              <ReviewRow
+                name="Threshold"
+                value={
+                  <Typography>
+                    {data.threshold} out of {data.owners.length} owner(s)
+                  </Typography>
+                }
+              />
+            </Grid>
+          </Grid>
 
-              <Grid item xs={12}>
-                <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3 }} />
-                <Grid item xs={12}>
-                  <Grid container spacing={3}>
-                    <ReviewRow
-                      name="Est. network fee"
-                      value={
-                        <Box p={1} sx={{ backgroundColor: 'secondary.background', width: 'fit-content' }}>
-                          <Typography variant="body1">
-                            <b>
-                              &asymp; {totalFee} {chain?.nativeCurrency.symbol}
-                            </b>
-                          </Typography>
-                        </Box>
-                      }
-                    />
-                    <ReviewRow
-                      name=""
-                      value={
-                        <Typography color="text.secondary">
-                          You will have to confirm a transaction with your currently connected wallet.
-                        </Typography>
-                      }
-                    />
-                  </Grid>
-                </Grid>
+          <Grid item xs={12}>
+            <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3 }} />
+            <Grid item xs={12}>
+              <Grid container spacing={3}>
+                <ReviewRow
+                  name="Est. network fee"
+                  value={
+                    <Box p={1} sx={{ backgroundColor: 'secondary.background', width: 'fit-content' }}>
+                      <Typography variant="body1">
+                        <b>
+                          &asymp; {totalFee} {chain?.nativeCurrency.symbol}
+                        </b>
+                      </Typography>
+                    </Box>
+                  }
+                />
+                <ReviewRow
+                  name=""
+                  value={
+                    <Typography color="text.secondary">
+                      You will have to confirm a transaction with your currently connected wallet.
+                    </Typography>
+                  }
+                />
               </Grid>
             </Grid>
-          </FormProvider>
-        </form>
-      }
-      actions={
-        <>
-          <Button variant="contained" form={STEP_3_FORM_ID} type="submit">
-            Continue
-          </Button>
-          <Button variant="text">Back</Button>
-        </>
-      }
-    />
+          </Grid>
+          <Grid item xs={12}>
+            <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3, alignSelf: 'normal' }} />
+            <Box display="flex" flexDirection="row" gap={3}>
+              <Button variant="outlined" onClick={handleBack}>
+                Back
+              </Button>
+              <Button type="submit" variant="contained">
+                Continue
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      </FormProvider>
+    </form>
   )
 }
 
