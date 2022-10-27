@@ -46,27 +46,34 @@ const CreateSafeStep3 = (): ReactElement => {
 
   // TODO: Get the Safe name from previous steps
   const newSafeName = 'My Safe'
-  const safeOwners = [
-    {
-      name: 'My Wallet',
-      address: '0x85380007df137839015c2c1254c4b6cec130c589',
-    },
-    {
-      name: 'Marta',
-      address: '0xc81DeFC11034BDdFbFeeF299987Cd8f74A5B9bd8',
-    },
-    {
-      name: 'John',
-      address: '0xE297437d6b53890cbf004e401F3acc67c8b39665',
-    },
-  ]
+  const safeOwners = useMemo(
+    () => [
+      {
+        name: 'My Wallet',
+        address: '0x85380007df137839015c2c1254c4b6cec130c589',
+      },
+      {
+        name: 'Marta',
+        address: '0xc81DeFC11034BDdFbFeeF299987Cd8f74A5B9bd8',
+      },
+      {
+        name: 'John',
+        address: '0xE297437d6b53890cbf004e401F3acc67c8b39665',
+      },
+    ],
+    [],
+  )
   const safeThreshold = 1
 
-  const { gasLimit } = useEstimateSafeCreationGas({
-    owners: safeOwners.map((owner) => owner.address),
-    threshold: safeThreshold,
-    saltNonce,
-  })
+  const safeParams = useMemo(() => {
+    return {
+      owners: safeOwners.map((owner) => owner.address),
+      threshold: safeThreshold,
+      saltNonce,
+    }
+  }, [safeOwners, saltNonce])
+
+  const { gasLimit } = useEstimateSafeCreationGas(safeParams)
 
   const totalFee =
     gasLimit && maxFeePerGas && maxPriorityFeePerGas
