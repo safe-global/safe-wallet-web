@@ -42,7 +42,7 @@ const palette = {
     dark: '#CD674E',
     main: '#FF8061',
     light: '#FFB7A6',
-    background: '#EFFFF4',
+    background: '#FFF0ED',
   },
   background: {
     default: '#F4F4F4',
