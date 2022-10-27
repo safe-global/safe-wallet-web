@@ -10,7 +10,7 @@ import {
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
-import type { PendingSafeData, PendingSafeTx } from '@/components/create-safe'
+import type { PendingSafeData, PendingSafeTx } from '@/components/create-safe/types.d'
 import type { EthersError } from '@/utils/ethers-utils'
 
 export enum SafeCreationStatus {

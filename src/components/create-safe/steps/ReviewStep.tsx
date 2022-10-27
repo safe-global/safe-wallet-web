@@ -1,6 +1,6 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
+import useSetCreationStep from '@/components/create-safe/useSetCreationStep'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useGasPrice from '@/hooks/useGasPrice'
 import { formatVisualAmount } from '@/utils/formatters'
@@ -22,7 +22,7 @@ type Props = {
 }
 
 const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
-  useResetSafeCreation(setStep)
+  useSetCreationStep(setStep)
   const wallet = useWallet()
   const provider = useWeb3()
   const chain = useCurrentChain()

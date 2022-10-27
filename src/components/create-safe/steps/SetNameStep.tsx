@@ -1,6 +1,6 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
 import NameInput from '@/components/common/NameInput'
-import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
+import useSetCreationStep from '@/components/create-safe/useSetCreationStep'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
@@ -21,7 +21,7 @@ enum FormField {
 }
 
 const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
-  useResetSafeCreation(setStep)
+  useSetCreationStep(setStep)
   const fallbackName = useMnemonicSafeName()
 
   const formMethods = useForm<SafeFormData>({

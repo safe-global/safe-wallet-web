@@ -11,7 +11,7 @@ import useSafeCreationEffects from '@/components/create-safe/status/useSafeCreat
 import { useCallback } from 'react'
 import { useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
-import type { PendingSafeData } from '@/components/create-safe'
+import type { PendingSafeData } from '@/components/create-safe/types.d'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import StatusMessage from '@/components/create-safe/status/StatusMessage'
 import useWallet from '@/hooks/wallets/useWallet'

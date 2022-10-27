@@ -3,8 +3,7 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useWallet from '@/hooks/wallets/useWallet'
 import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from '@/hooks/useChains'
-import type { SafeCreationProps } from '@/components/create-safe/logic'
-import { estimateSafeCreationGas } from '@/components/create-safe/logic'
+import { estimateSafeCreationGas, type SafeCreationProps } from '@/components/create-safe/logic'
 
 export const useEstimateSafeCreationGas = (
   safeParams: SafeCreationProps,

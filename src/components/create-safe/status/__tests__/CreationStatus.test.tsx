@@ -1,6 +1,6 @@
 import { CreationStatus } from '@/components/create-safe/status/CreationStatus'
 import { act, fireEvent, render } from '@/tests/test-utils'
-import type { PendingSafeData } from '@/components/create-safe'
+import type { PendingSafeData } from '@/components/create-safe/types.d'
 import * as hooks from '@/components/create-safe/status/useSafeCreation'
 import * as status from '@/components/create-safe/status/useStatus'
 import * as localStorage from '@/services/local-storage/useLocalStorage'

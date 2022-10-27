@@ -9,7 +9,7 @@ import { CREATE_SAFE_EVENTS, SAFE_APPS_EVENTS, trackEvent } from '@/services/ana
 import chains from '@/config/chains'
 import { updateAddressBook } from '../logic/address-book'
 import { useAppDispatch } from '@/store'
-import type { PendingSafeData } from '@/components/create-safe'
+import type { PendingSafeData } from '@/components/create-safe/types.d'
 import useChainId from '@/hooks/useChainId'
 
 const getRedirect = (chainId: string, safeAddress: string, redirectQuery?: string | string[]): UrlObject | string => {
