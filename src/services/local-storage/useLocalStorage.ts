@@ -7,8 +7,8 @@ type Undefinable<T> = T | undefined
 
 type Setter<T> = (val: T | ((prevVal: Undefinable<T>) => Undefinable<T>)) => void
 
-const useLocalStorage = <T>(key: string): [Undefinable<T>, Setter<T>] => {
-  const [cache, setCache] = useState<Undefinable<T>>()
+const useLocalStorage = <T>(key: string, initialValue?: T): [Undefinable<T>, Setter<T>] => {
+  const [cache, setCache] = useState<Undefinable<T>>(initialValue)
 
   // This is the setter that will be returned
   // It will update the local storage and cache
@@ -35,24 +35,30 @@ const useLocalStorage = <T>(key: string): [Undefinable<T>, Setter<T>] => {
     [key],
   )
 
+  // On mount, sync the cache with the local storage
   useEffect(() => {
-    const syncCache = () => {
-      const lsValue = local.getItem<T>(key)
-      if (lsValue !== null) {
-        setCache(lsValue)
-      }
+    const lsValue = local.getItem<T>(key)
+    if (lsValue !== null) {
+      setCache(lsValue)
     }
+  }, [key])
 
-    // Subscribe to changes in local storage and update the cache
-    // This will work across tabs
+  // Save initial value to the LS
+  useEffect(() => {
+    if (initialValue !== undefined && local.getItem(key) === null) {
+      local.setItem(key, initialValue)
+    }
+  }, [key, initialValue])
+
+  // Subscribe to changes in local storage and update the cache
+  // This will work across tabs
+  useEffect(() => {
     const onStorageEvent = (event: StorageEvent) => {
       if (event.key === local.getPrefixedKey(key)) {
-        syncCache()
+        const lsValue = local.getItem<T>(key)
+        setCache(lsValue ?? undefined)
       }
     }
-
-    // Set the initial value when the component is mounted
-    syncCache()
 
     window.addEventListener('storage', onStorageEvent)
 

@@ -1,4 +1,5 @@
-import { renderHook, act, waitFor } from '@/tests/test-utils'
+import { renderHook, act } from '@/tests/test-utils'
+import local from '../local'
 import useLocalStorage from '../useLocalStorage'
 
 describe('useLocalStorage', () => {
@@ -45,12 +46,26 @@ describe('useLocalStorage', () => {
   })
 
   it('should read from LS on initial call', () => {
-    localStorage.setItem('test-key', 'ls')
+    local.setItem('test-key', 'ls')
 
     const { result } = renderHook(() => useLocalStorage('test-key'))
 
-    expect(result.current[0]).toBe(undefined)
+    expect(result.current[0]).toBe('ls')
+  })
 
-    waitFor(() => expect(result.current[0]).toBe('ls'))
+  it('should save the initial value to the LS', () => {
+    const { result } = renderHook(() => useLocalStorage('test-key', 'initial'))
+
+    expect(result.current[0]).toBe('initial')
+    expect(local.getItem('test-key')).toBe('initial')
+  })
+
+  it('should NOT save the initial value to the LS if LS is already populated', () => {
+    local.setItem('test-key', 'ls')
+
+    const { result } = renderHook(() => useLocalStorage('test-key', 'initial'))
+
+    expect(result.current[0]).toBe('ls')
+    expect(local.getItem('test-key')).toBe('ls')
   })
 })
