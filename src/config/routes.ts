@@ -5,7 +5,7 @@ export const AppRoutes = {
   load: '/load',
   index: '/',
   home: '/home',
-  demo: '/demo',
+  createSafe: '/create-safe',
   apps: '/apps',
   addressBook: '/address-book',
   balances: {

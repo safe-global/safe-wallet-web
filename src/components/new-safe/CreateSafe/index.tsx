@@ -1,5 +1,3 @@
-import { useRouter } from 'next/router'
-
 import WalletInfo from '@/components/common/WalletInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -11,7 +9,10 @@ import useAddressBook from '@/hooks/useAddressBook'
 import CreateSafeStep2 from '../steps/Step2'
 import { CardStepper } from '../CardStepper'
 import Grid from '@mui/material/Grid'
-import { Typography } from '@mui/material'
+import { Card, CardContent, Typography } from '@mui/material'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
+import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
 
 export type NewSafeFormData = {
   name: string
@@ -36,7 +37,6 @@ export const CreateSafeSteps: TxStepperProps<NewSafeFormData>['steps'] = [
 
 const CreateSafe = () => {
   const router = useRouter()
-
   const wallet = useWallet()
   const addressBook = useAddressBook()
   const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
@@ -51,16 +51,15 @@ const CreateSafe = () => {
     owners: [defaultOwner],
     threshold: 1,
   }
+
+  const onClose = () => {
+    router.push(AppRoutes.welcome)
+  }
+
   const chain = useCurrentChain()
   const rows = [
     ...(wallet && chain ? [{ title: 'Wallet', component: <WalletInfo wallet={wallet} chain={chain} /> }] : []),
   ]
-
-  const onBack = () => {
-    router.back()
-
-    // Logic to be handled by stepper hook
-  }
 
   // TODO: Improve layout when other widget/responsive design is ready
   return (
@@ -74,15 +73,25 @@ const CreateSafe = () => {
 
       <Grid item xs={1} />
       <Grid item xs={12} md={6}>
-        <CardStepper
-          initialData={initialData}
-          onClose={() => {}}
-          steps={CreateSafeSteps}
-          eventCategory="NewSafeCreation"
-        />
+        {wallet?.address ? (
+          <CardStepper
+            initialData={initialData}
+            onClose={onClose}
+            steps={CreateSafeSteps}
+            eventCategory={CREATE_SAFE_CATEGORY}
+          />
+        ) : (
+          <Card>
+            <CardContent>
+              <Typography variant="h3" fontWeight={700}>
+                You need to connect a wallet to create a new Safe.
+              </Typography>
+            </CardContent>
+          </Card>
+        )}
       </Grid>
       <Grid item xs={12} md={4}>
-        <OverviewWidget rows={rows} />
+        {wallet?.address && <OverviewWidget rows={rows} />}
       </Grid>
       <Grid item xs={1} />
     </Grid>

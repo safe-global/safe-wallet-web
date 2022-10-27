@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import CreateSafe from '@/components/new-safe/CreateSafe'
 
-const Open: NextPage = () => {
+const Create: NextPage = () => {
   return (
     <main>
       <Head>
@@ -14,4 +14,4 @@ const Open: NextPage = () => {
   )
 }
 
-export default Open
+export default Create

@@ -40,6 +40,7 @@ const CreateSafeStep2 = ({
   const { register, handleSubmit, control, watch } = formMethods
 
   const allFormData = watch()
+  const currentThreshold = watch(CreateSafeStep2Fields.threshold)
 
   const { fields: ownerFields, append: appendOwner, remove: removeOwner } = useFieldArray({ control, name: 'owners' })
 
