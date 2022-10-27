@@ -83,14 +83,14 @@ export const useSafeCreation = (
   }, [isWatching, pendingSafe, provider, setStatus])
 
   useEffect(() => {
+    if (status !== SafeCreationStatus.AWAITING) return
+
     if (pendingSafe?.txHash) {
       void watchSafeTx()
       return
     }
 
-    if (status === SafeCreationStatus.AWAITING) {
-      void createSafe()
-    }
+    void createSafe()
   }, [createSafe, watchSafeTx, pendingSafe?.txHash, status])
 
   return {
