@@ -7,6 +7,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '../OverviewWidget'
 import CreateSafeStep1 from '../steps/Step1'
+import CreateSafeStep2 from '../steps/Step2'
 
 const CreateSafe = () => {
   const router = useRouter()
@@ -40,6 +41,7 @@ const CreateSafe = () => {
       <Grid item xs={1} />
       <Grid item xs={6}>
         <CreateSafeStep1 />
+        <CreateSafeStep2 />
       </Grid>
       <Grid item xs={4}>
         <OverviewWidget rows={rows} />
