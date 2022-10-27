@@ -8,6 +8,7 @@ import { act, renderHook } from '@/tests/test-utils'
 import useIsValidExecution from '../useIsValidExecution'
 import type { EthersError } from '@/utils/ethers-utils'
 import type { ConnectedWallet } from '../wallets/useOnboard'
+import type { EthersTxReplacedReason } from '@/utils/ethers-utils'
 
 const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
@@ -103,7 +104,7 @@ describe('useIsValidExecution', () => {
 
   it('should append the error code description to the error thrown', async () => {
     const error = new Error('Some error') as EthersError
-    error.reason = 'GS026'
+    error.reason = 'GS026' as EthersTxReplacedReason
 
     jest.spyOn(safeContracts, 'getSpecificGnosisSafeContractInstance').mockReturnValue({
       contract: {

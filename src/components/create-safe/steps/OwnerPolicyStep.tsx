@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
-import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
+import useSetCreationStep from '@/components/create-safe/useSetCreationStep'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -25,7 +25,7 @@ enum FieldName {
 }
 
 const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactElement => {
-  useResetSafeCreation(setStep)
+  useSetCreationStep(setStep)
   const wallet = useWallet()
   const addressBook = useAddressBook()
 
