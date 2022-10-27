@@ -73,7 +73,7 @@ const CreateSafe = () => {
       </Grid>
 
       <Grid item xs={1} />
-      <Grid item xs={6}>
+      <Grid item xs={12} md={6}>
         <CardStepper
           initialData={initialData}
           onClose={() => {}}
@@ -81,7 +81,7 @@ const CreateSafe = () => {
           eventCategory="NewSafeCreation"
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={12} md={4}>
         <OverviewWidget rows={rows} />
       </Grid>
       <Grid item xs={1} />

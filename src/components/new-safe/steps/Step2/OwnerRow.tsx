@@ -9,6 +9,7 @@ import { useAddressResolver } from '@/hooks/useAddressResolver'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import type { NamedAddress } from '@/components/create-safe/types'
 import useWallet from '@/hooks/wallets/useWallet'
+import { sameAddress } from '@/utils/addresses'
 
 /**
  * TODO: this is a slightly modified copy of the old /create-safe/OwnerRow.tsx
@@ -45,7 +46,7 @@ export const OwnerRow = ({
 
   const validateSafeAddress = useCallback(
     async (address: string) => {
-      if (owners.filter((owner: NamedAddress) => owner.address === address).length > 1) {
+      if (owners.filter((owner: NamedAddress) => sameAddress(owner.address, address)).length > 1) {
         return 'Owner is already added'
       }
     },
@@ -84,7 +85,7 @@ export const OwnerRow = ({
           />
         </FormControl>
       </Grid>
-      <Grid item xs={10} md={7}>
+      <Grid item xs={11} md={7}>
         {readOnly ? (
           <EthHashInfo address={owner.address} shortAddress={false} hasExplorer showCopyButton />
         ) : (
@@ -99,7 +100,17 @@ export const OwnerRow = ({
         )}
       </Grid>
       {!readOnly && (
-        <Grid item xs={2} alignSelf="stretch" maxHeight="80px" md={1} display="flex" alignItems="center" flexShrink={0}>
+        <Grid
+          item
+          ml={-3}
+          xs={1}
+          alignSelf="stretch"
+          maxHeight="80px"
+          md={1}
+          display="flex"
+          alignItems="center"
+          flexShrink={0}
+        >
           {removable && (
             <>
               <IconButton onClick={() => remove?.(index)}>
