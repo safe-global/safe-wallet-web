@@ -129,11 +129,13 @@ const CreateSafeStep3 = (): ReactElement => {
                     <ReviewRow
                       name="Est. network fee"
                       value={
-                        <Typography variant="body1">
-                          <b>
-                            &asymp; {totalFee} {chain?.nativeCurrency.symbol}
-                          </b>
-                        </Typography>
+                        <Box p={1} sx={{ backgroundColor: 'secondary.background', width: 'fit-content' }}>
+                          <Typography variant="body1">
+                            <b>
+                              &asymp; {totalFee} {chain?.nativeCurrency.symbol}
+                            </b>
+                          </Typography>
+                        </Box>
                       }
                     />
                     <ReviewRow
