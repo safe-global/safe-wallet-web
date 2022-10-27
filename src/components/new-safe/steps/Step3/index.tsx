@@ -1,6 +1,6 @@
 import { useMemo, type ReactElement } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { Button, Grid, Typography, Divider } from '@mui/material'
+import { Button, Grid, Typography, Divider, Box } from '@mui/material'
 import StepCard from '@/components/new-safe/StepCard'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -25,6 +25,19 @@ type CreateSafeStep3Form = {
 }
 
 const STEP_3_FORM_ID = 'create-safe-step-3-form'
+
+const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
+  return (
+    <>
+      <Grid item xs={4}>
+        <Typography>{name}</Typography>
+      </Grid>
+      <Grid item xs={8}>
+        {value}
+      </Grid>
+    </>
+  )
+}
 
 const CreateSafeStep3 = (): ReactElement => {
   const chain = useCurrentChain()
@@ -86,34 +99,26 @@ const CreateSafeStep3 = (): ReactElement => {
             <Grid container spacing={3}>
               <Grid item>
                 <Grid container spacing={3}>
-                  <Grid item xs={4}>
-                    <Typography>Network</Typography>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <ChainIndicator chainId={chain?.chainId} inline />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography>Name</Typography>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <Typography>{newSafeName}</Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography>Owners</Typography>
-                  </Grid>
-                  <Grid item xs={8} className={css.ownersArray}>
-                    {safeOwners.map((owner, index) => (
-                      <EthHashInfo address={owner.address} showPrefix={false} key={index} />
-                    ))}
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography>Threshold</Typography>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <Typography>
-                      {safeThreshold} out of {safeOwners.length} owner(s)
-                    </Typography>
-                  </Grid>
+                  <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
+                  <ReviewRow name="Name" value={<Typography>{newSafeName}</Typography>} />
+                  <ReviewRow
+                    name="Owners"
+                    value={
+                      <Box className={css.ownersArray}>
+                        {safeOwners.map((owner, index) => (
+                          <EthHashInfo address={owner.address} showPrefix={false} key={index} />
+                        ))}
+                      </Box>
+                    }
+                  />
+                  <ReviewRow
+                    name="Threshold"
+                    value={
+                      <Typography>
+                        {safeThreshold} out of {safeOwners.length} owner(s)
+                      </Typography>
+                    }
+                  />
                 </Grid>
               </Grid>
 
@@ -121,23 +126,24 @@ const CreateSafeStep3 = (): ReactElement => {
                 <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3 }} />
                 <Grid item xs={12}>
                   <Grid container spacing={3}>
-                    <Grid item xs={4}>
-                      <Typography>Est. network fee</Typography>
-                    </Grid>
-                    <Grid item xs={8}>
-                      <Typography variant="body1">
-                        <b>
-                          {totalFee} {chain?.nativeCurrency.symbol}
-                        </b>
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={4} />
-                    <Grid item xs={8}>
-                      <Typography color="text.secondary">
-                        You will have to confirm a transaction with your currently connected wallet.
-                      </Typography>
-                    </Grid>
+                    <ReviewRow
+                      name="Est. network fee"
+                      value={
+                        <Typography variant="body1">
+                          <b>
+                            {totalFee} {chain?.nativeCurrency.symbol}
+                          </b>
+                        </Typography>
+                      }
+                    />
+                    <ReviewRow
+                      name=""
+                      value={
+                        <Typography color="text.secondary">
+                          You will have to confirm a transaction with your currently connected wallet.
+                        </Typography>
+                      }
+                    />
                   </Grid>
                 </Grid>
               </Grid>
