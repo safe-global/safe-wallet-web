@@ -1,12 +1,15 @@
-import type { ReactElement } from 'react'
+import { useMemo, type ReactElement } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Button, Grid, Typography, Divider } from '@mui/material'
 import StepCard from '@/components/new-safe/StepCard'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import type { NamedAddress } from '@/components/create-safe/types'
-import css from './styles.module.css'
 import { useCurrentChain } from '@/hooks/useChains'
+import useGasPrice from '@/hooks/useGasPrice'
+import { useEstimateSafeCreationGas } from '@/components/create-safe/useEstimateSafeCreationGas'
+import { formatVisualAmount } from '@/utils/formatters'
+import css from './styles.module.css'
 
 type CreateSafeStep3Form = {
   name: string
@@ -19,6 +22,8 @@ const STEP_3_FORM_ID = 'create-safe-step-3-form'
 
 const CreateSafeStep3 = (): ReactElement => {
   const chain = useCurrentChain()
+  const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
+  const saltNonce = useMemo(() => Date.now(), [])
 
   // TODO: Get the Safe name from previous steps
   const newSafeName = 'My Safe'
@@ -29,15 +34,25 @@ const CreateSafeStep3 = (): ReactElement => {
     },
     {
       name: 'Marta',
-      address: '0x37380007DF8493237515C2C1254c4b6cec130K771',
+      address: '0xc81DeFC11034BDdFbFeeF299987Cd8f74A5B9bd8',
     },
     {
       name: 'John',
-      address: '0x457820007DF137839015C2C1254c4b6cec130C0955',
+      address: '0xE297437d6b53890cbf004e401F3acc67c8b39665',
     },
   ]
   const safeThreshold = 1
-  const gasEstimation = '0.04185'
+
+  const { gasLimit } = useEstimateSafeCreationGas({
+    owners: safeOwners.map((owner) => owner.address),
+    threshold: safeThreshold,
+    saltNonce,
+  })
+
+  const totalFee =
+    gasLimit && maxFeePerGas && maxPriorityFeePerGas
+      ? formatVisualAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+      : '> 0.001'
 
   const formMethods = useForm<CreateSafeStep3Form>({
     mode: 'all',
@@ -100,7 +115,9 @@ const CreateSafeStep3 = (): ReactElement => {
                     </Grid>
                     <Grid item xs={8}>
                       <Typography variant="body1">
-                        <b>{gasEstimation} ETH</b>
+                        <b>
+                          {totalFee} {chain?.nativeCurrency.symbol}
+                        </b>
                       </Typography>
                     </Grid>
 
