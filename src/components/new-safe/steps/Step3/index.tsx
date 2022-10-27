@@ -11,6 +11,12 @@ import { useEstimateSafeCreationGas } from '@/components/create-safe/useEstimate
 import { formatVisualAmount } from '@/utils/formatters'
 import css from './styles.module.css'
 
+enum CreateSafeStep3Fields {
+  name = 'name',
+  owners = 'owners',
+  threshold = 'threshold',
+}
+
 type CreateSafeStep3Form = {
   name: string
   owners: NamedAddress[]
@@ -56,6 +62,11 @@ const CreateSafeStep3 = (): ReactElement => {
 
   const formMethods = useForm<CreateSafeStep3Form>({
     mode: 'all',
+    defaultValues: {
+      [CreateSafeStep3Fields.name]: newSafeName,
+      [CreateSafeStep3Fields.owners]: safeOwners,
+      [CreateSafeStep3Fields.threshold]: safeThreshold,
+    },
   })
 
   const { handleSubmit } = formMethods
