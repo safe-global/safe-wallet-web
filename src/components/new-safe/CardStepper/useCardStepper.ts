@@ -38,6 +38,8 @@ export const useCardStepper = <TData>({
   const [activeStep, setActiveStep] = useState<number>(initialStep || 0)
   const [stepData, setStepData] = useState(initialData)
 
+  console.log(stepData)
+
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
     trackEvent({ category: eventCategory, action: lastStep ? 'Submit' : 'Next' })
@@ -66,7 +68,7 @@ export const useCardStepper = <TData>({
       onClose()
       return
     }
-    setStepData((previous) => ({ ...previous, data }))
+    setStepData((previous) => ({ ...previous, ...data }))
     handleNext()
   }
 

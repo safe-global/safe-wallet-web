@@ -44,7 +44,7 @@ function CreateSafeStep1({
   } = useForm<CreateSafeStep1Form>({
     mode: 'all',
     defaultValues: {
-      [CreateSafeStep1Fields.name]: '',
+      [CreateSafeStep1Fields.name]: data.name,
     },
   })
 
