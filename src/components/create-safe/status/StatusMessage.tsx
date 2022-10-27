@@ -1,13 +1,24 @@
 import { Box, Typography } from '@mui/material'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import css from '@/components/create-safe/status/styles.module.css'
+import classNames from 'classnames'
 
 const getStep = (status: SafeCreationStatus) => {
   const loading = (
-    <img src="/images/open/safe-creation-process.gif" alt="Image of a vault that is loading" className={css.loading} />
+    <img
+      src="/images/open/safe-creation-process.gif"
+      alt="Image of a vault that is loading"
+      className={classNames(css.image, css.loading)}
+    />
   )
-  const indexed = <img src="/images/open/safe-creation.svg" alt="Image of a vault" />
-  const error = <img src="/images/open/safe-creation-error.svg" alt="Image of a vault with a red error sign" />
+  const indexed = <img src="/images/open/safe-creation.svg" alt="Image of a vault" className={css.image} />
+  const error = (
+    <img
+      src="/images/open/safe-creation-error.svg"
+      alt="Image of a vault with a red error sign"
+      className={css.image}
+    />
+  )
 
   switch (status) {
     case SafeCreationStatus.AWAITING:
