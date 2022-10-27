@@ -86,9 +86,6 @@ const CreateSafeStep2 = (): ReactElement => {
                     remove={removeOwner}
                   />
                 ))}
-              </Grid>
-
-              <Grid item xs={12}>
                 <Button
                   variant="text"
                   onClick={() => appendOwner({ name: '', address: '' }, { shouldFocus: true })}
@@ -101,8 +98,8 @@ const CreateSafeStep2 = (): ReactElement => {
                 <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
                   Safe Mobile owner key (optional){' '}
                   <Tooltip title="TODO: Add tooltip" arrow placement="top">
-                    <span>
-                      <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" />
+                    <span style={{ display: 'flex' }}>
+                      <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
                     </span>
                   </Tooltip>
                 </Typography>
@@ -120,8 +117,6 @@ const CreateSafeStep2 = (): ReactElement => {
                     remove={removeMobileOwner}
                   />
                 ))}
-              </Grid>
-              <Grid item xs={12}>
                 <Button
                   variant="text"
                   onClick={() => appendMobileOwner({ name: '', address: '' }, { shouldFocus: true })}
@@ -133,21 +128,17 @@ const CreateSafeStep2 = (): ReactElement => {
 
               <Grid item xs={12}>
                 <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3 }} />
-
                 <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
                   Threshold
                   <Tooltip title="TODO: Add tooltip" arrow placement="top">
-                    <span>
-                      <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" />
+                    <span style={{ display: 'flex' }}>
+                      <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
                     </span>
                   </Tooltip>
                 </Typography>
                 <Typography variant="body2" mb={2}>
                   Any transaction requires the confirmation of:
                 </Typography>
-              </Grid>
-
-              <Grid item xs={12}>
                 <Select {...register(CreateSafeStep2Fields.threshold)} defaultValue={allOwners.length}>
                   {allOwners.map((_, i) => (
                     <MenuItem key={i} value={i + 1}>
