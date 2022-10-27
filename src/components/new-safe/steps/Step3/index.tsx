@@ -29,10 +29,10 @@ const STEP_3_FORM_ID = 'create-safe-step-3-form'
 const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
   return (
     <>
-      <Grid item xs={4}>
+      <Grid item xs={3}>
         <Typography>{name}</Typography>
       </Grid>
-      <Grid item xs={8}>
+      <Grid item xs={9}>
         {value}
       </Grid>
     </>
@@ -106,7 +106,7 @@ const CreateSafeStep3 = (): ReactElement => {
                     value={
                       <Box className={css.ownersArray}>
                         {safeOwners.map((owner, index) => (
-                          <EthHashInfo address={owner.address} showPrefix={false} key={index} />
+                          <EthHashInfo address={owner.address} shortAddress={false} showPrefix={false} key={index} />
                         ))}
                       </Box>
                     }
@@ -131,7 +131,7 @@ const CreateSafeStep3 = (): ReactElement => {
                       value={
                         <Typography variant="body1">
                           <b>
-                            {totalFee} {chain?.nativeCurrency.symbol}
+                            &asymp; {totalFee} {chain?.nativeCurrency.symbol}
                           </b>
                         </Typography>
                       }
