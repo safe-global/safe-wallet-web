@@ -8,6 +8,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '../OverviewWidget'
 import CreateSafeStep1 from '../steps/Step1'
 import CreateSafeStep2 from '../steps/Step2'
+import CreateSafeStep3 from '@/components/new-safe/steps/Step3'
 
 const CreateSafe = () => {
   const router = useRouter()
@@ -39,9 +40,10 @@ const CreateSafe = () => {
       </Grid>
 
       <Grid item xs={1} />
-      <Grid item xs={6}>
+      <Grid item xs={6} sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <CreateSafeStep1 />
         <CreateSafeStep2 />
+        <CreateSafeStep3 />
       </Grid>
       <Grid item xs={4}>
         <OverviewWidget rows={rows} />
