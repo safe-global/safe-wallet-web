@@ -50,7 +50,7 @@ export const useCardStepper = <TData>({
     trackEvent({ category: eventCategory, action: firstStep ? 'Cancel' : 'Back' })
 
     if (data) {
-      setStepData((previous) => ({ ...previous, data }))
+      setStepData((previous) => ({ ...previous, ...data }))
     }
   }
 

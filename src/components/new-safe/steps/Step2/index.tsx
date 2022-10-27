@@ -41,17 +41,13 @@ const CreateSafeStep2 = ({
 
   const allFormData = watch()
 
-  const {
-    fields: ownerFields,
-    append: appendOwner,
-    remove: removeOwner,
-  } = useFieldArray({ control, name: 'owners', shouldUnregister: true })
+  const { fields: ownerFields, append: appendOwner, remove: removeOwner } = useFieldArray({ control, name: 'owners' })
 
   const {
     fields: mobileOwnerFields,
     append: appendMobileOwner,
     remove: removeMobileOwner,
-  } = useFieldArray({ control, name: 'mobileOwners', shouldUnregister: true })
+  } = useFieldArray({ control, name: 'mobileOwners' })
 
   const allOwners = [...ownerFields, ...mobileOwnerFields]
 
@@ -126,7 +122,7 @@ const CreateSafeStep2 = ({
             <Typography variant="body2" mb={2}>
               Any transaction requires the confirmation of:
             </Typography>
-            <Select {...register(CreateSafeStep2Fields.threshold)} defaultValue={allOwners.length}>
+            <Select {...register(CreateSafeStep2Fields.threshold)} defaultValue={data.threshold}>
               {allOwners.map((_, i) => (
                 <MenuItem key={i} value={i + 1}>
                   {i + 1}
