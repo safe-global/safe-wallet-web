@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { BigNumber } from 'ethers'
+import type { BigNumber } from 'ethers'
 import type Safe from '@gnosis.pm/safe-core-sdk'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { OperationType } from '@gnosis.pm/safe-core-sdk-types'
