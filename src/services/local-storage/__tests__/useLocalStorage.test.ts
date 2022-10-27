@@ -52,20 +52,4 @@ describe('useLocalStorage', () => {
 
     expect(result.current[0]).toBe('ls')
   })
-
-  it('should save the initial value to the LS', () => {
-    const { result } = renderHook(() => useLocalStorage('test-key', 'initial'))
-
-    expect(result.current[0]).toBe('initial')
-    expect(local.getItem('test-key')).toBe('initial')
-  })
-
-  it('should NOT save the initial value to the LS if LS is already populated', () => {
-    local.setItem('test-key', 'ls')
-
-    const { result } = renderHook(() => useLocalStorage('test-key', 'initial'))
-
-    expect(result.current[0]).toBe('ls')
-    expect(local.getItem('test-key')).toBe('ls')
-  })
 })
