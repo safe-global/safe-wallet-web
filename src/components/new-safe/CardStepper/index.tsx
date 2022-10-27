@@ -11,7 +11,7 @@ export function CardStepper<StepperData>(props: TxStepperProps<StepperData>) {
 
   return (
     <Card className={css.card}>
-      <LinearProgress variant="determinate" value={Math.min(progress, 100)} />
+      <LinearProgress color="secondary" variant="determinate" value={Math.min(progress, 100)} />
       <CardHeader
         title={currentStep.title}
         subheader={currentStep.subtitle}
