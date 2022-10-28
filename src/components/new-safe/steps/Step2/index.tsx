@@ -8,8 +8,10 @@ import { OwnerRow } from './OwnerRow'
 import type { NamedAddress } from '@/components/create-safe/types'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
+import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
+import { useSafeSetupHints } from './useSafeSetupHints'
 
-type CreateSafeStep2Form = {
+export type CreateSafeStep2Form = {
   owners: NamedAddress[]
   mobileOwners: NamedAddress[]
   threshold: number
@@ -27,7 +29,10 @@ const CreateSafeStep2 = ({
   onSubmit,
   onBack,
   data,
-}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'>): ReactElement => {
+  setDynamicHint,
+}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'> & {
+  setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
+}): ReactElement => {
   const formMethods = useForm<CreateSafeStep2Form>({
     mode: 'all',
     defaultValues: {
@@ -50,6 +55,8 @@ const CreateSafeStep2 = ({
   } = useFieldArray({ control, name: 'mobileOwners' })
 
   const allOwners = [...ownerFields, ...mobileOwnerFields]
+
+  useSafeSetupHints(allFormData.threshold, allOwners.length, setDynamicHint)
 
   const handleBack = () => {
     onBack(allFormData)

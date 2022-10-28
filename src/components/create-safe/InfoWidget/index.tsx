@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardActions, CardContent, CardHeader, SvgIcon, Typography } from '@mui/material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { AlertColor } from '@mui/material'
 import type { ReactElement } from 'react'
 
@@ -37,7 +37,13 @@ const InfoWidget = ({ title, steps, variant }: Props): ReactElement | null => {
     }
   }
 
-  if (dismissed) {
+  // Reset if steps change
+  useEffect(() => {
+    setActiveStep(0)
+    setDismissed(false)
+  }, [steps])
+
+  if (dismissed || steps.length === 0) {
     return null
   }
 

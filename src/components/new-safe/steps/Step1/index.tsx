@@ -34,7 +34,8 @@ function CreateSafeStep1({
   data,
   onSubmit,
   onBack,
-}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'>) {
+  setSafeName,
+}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'> & { setSafeName: (name: string) => void }) {
   const fallbackName = useMnemonicSafeName()
 
   const {
@@ -48,8 +49,13 @@ function CreateSafeStep1({
     },
   })
 
+  const onFormSubmit = (data: Partial<NewSafeFormData>) => {
+    setSafeName(data.name ?? '')
+    onSubmit(data)
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id={STEP_1_FORM_ID} className={css.form}>
+    <form onSubmit={handleSubmit(onFormSubmit)} id={STEP_1_FORM_ID} className={css.form}>
       <Grid container spacing={3}>
         <Grid item>
           <Box className={css.select}>
