@@ -31,7 +31,7 @@ const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
   return (
     <>
       <Grid item xs={3}>
-        <Typography>{name}</Typography>
+        <Typography variant="body2">{name}</Typography>
       </Grid>
       <Grid item xs={9}>
         {value}
@@ -73,9 +73,9 @@ const CreateSafeStep3 = ({
     },
   })
 
-  const { handleSubmit, watch } = formMethods
+  const { handleSubmit, getValues } = formMethods
 
-  const allFormData = watch()
+  const allFormData = getValues()
 
   const handleBack = () => {
     onBack(allFormData)
@@ -94,7 +94,14 @@ const CreateSafeStep3 = ({
                 value={
                   <Box className={css.ownersArray}>
                     {data.owners.map((owner, index) => (
-                      <EthHashInfo address={owner.address} shortAddress={false} showPrefix={false} key={index} />
+                      <EthHashInfo
+                        address={owner.address}
+                        name={owner.name || owner.ens}
+                        shortAddress={false}
+                        showPrefix={false}
+                        showName
+                        key={index}
+                      />
                     ))}
                   </Box>
                 }
@@ -126,14 +133,12 @@ const CreateSafeStep3 = ({
                     </Box>
                   }
                 />
-                <ReviewRow
-                  name=""
-                  value={
-                    <Typography color="text.secondary">
-                      You will have to confirm a transaction with your currently connected wallet.
-                    </Typography>
-                  }
-                />
+                <Grid xs={3} />
+                <Grid xs={9} pt={1} pl={3}>
+                  <Typography color="text.secondary">
+                    You will have to confirm a transaction with your currently connected wallet.
+                  </Typography>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
