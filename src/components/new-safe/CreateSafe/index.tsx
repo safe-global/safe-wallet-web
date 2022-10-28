@@ -87,7 +87,7 @@ const CreateSafe = () => {
         )}
       </Grid>
 
-      <Grid item xs={12} md={3} mt={[3, 0]}>
+      <Grid item xs={12} md={3} mt={[3, null, 0]}>
         {wallet?.address && <OverviewWidget rows={rows} />}
       </Grid>
     </Grid>
