@@ -91,6 +91,7 @@ type ActionGtmEvent = GtmEvent & {
   eventCategory: string
   eventAction: string
   eventLabel?: EventLabel
+  abTest?: string
 }
 
 type PageviewGtmEvent = GtmEvent & {
@@ -116,6 +117,10 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
 
   if (eventData.label) {
     gtmEvent.eventLabel = eventData.label
+  }
+
+  if (eventData.abTest) {
+    gtmEvent.abTest = eventData.abTest()
   }
 
   gtmSend(gtmEvent)

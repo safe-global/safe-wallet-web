@@ -5,12 +5,15 @@ export const AppRoutes = {
   load: '/load',
   index: '/',
   home: '/home',
-  createSafe: '/create-safe',
   apps: '/apps',
   addressBook: '/address-book',
   balances: {
     nfts: '/balances/nfts',
     index: '/balances',
+  },
+  newSafe: {
+    create: '/new-safe/create',
+    add: '/new-safe/add',
   },
   settings: {
     spendingLimits: '/settings/spending-limits',

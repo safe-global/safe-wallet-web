@@ -3,9 +3,11 @@ import { Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS, LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import Track from '../common/Track'
+import useNewSafeRoutes from '@/hooks/useNewSafeRoutes'
 
 const NewSafe = () => {
   const router = useRouter()
+  const { createSafe, addSafe } = useNewSafeRoutes()
 
   return (
     <>
@@ -28,7 +30,7 @@ const NewSafe = () => {
               for creating your new Safe.
             </Typography>
             <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
-              <Button variant="contained" onClick={() => router.push('/open')}>
+              <Button variant="contained" onClick={() => router.push(createSafe)}>
                 + Create new Safe
               </Button>
             </Track>
@@ -43,7 +45,7 @@ const NewSafe = () => {
               address.
             </Typography>
             <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
-              <Button variant="outlined" onClick={() => router.push('/load')}>
+              <Button variant="outlined" onClick={() => router.push(addSafe)}>
                 Add existing Safe
               </Button>
             </Track>

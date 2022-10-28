@@ -15,6 +15,7 @@ export type AnalyticsEvent = {
   category: string
   action: string
   label?: EventLabel
+  abTest?: () => string
 }
 
 export type SafeAppEvent = {

@@ -1,19 +1,38 @@
 import type { Dispatch, SetStateAction } from 'react'
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import local from './local'
 
-const useLocalStorage = <T>(key: string, initialState: T): [T, Dispatch<SetStateAction<T>>] => {
-  const [cache, setCache] = useState<T>(initialState)
+/**
+ * Locally persisted equivalent of `useState` that saves to `localStorage` when `setNewValue` is called
+ * or (initially) when `shouldPersistInitialState` is `true`
+ *
+ * @param key `localStorage` key to store under
+ * @param initialState default state to return if no `localStorage` value exists
+ * @param shouldPersistInitialState if no `localStorage` value exists, persist the `initialState` in `localStorage`
+ * @returns persisted state if it exists, otherwise `initialState`
+ */
 
-  useEffect(() => {
-    const initialValue = local.getItem<T>(key)
-    if (initialValue !== undefined) {
-      setCache(initialValue)
+const useLocalStorage = <T>(
+  key: string,
+  initialState: T,
+  shouldPersistInitialState = false,
+): [T, Dispatch<SetStateAction<T>>] => {
+  const [cache, setCache] = useState<T>(() => {
+    const value = local.getItem<T>(key)
+
+    if (value !== undefined) {
+      return value
     }
-  }, [setCache, key])
 
-  const setNewValue = useCallback(
-    (value: T | ((prevState: T) => T)) => {
+    if (shouldPersistInitialState) {
+      local.setItem(key, initialState)
+    }
+
+    return initialState
+  })
+
+  const setNewValue: Dispatch<SetStateAction<T>> = useCallback(
+    (value) => {
       setCache((prevState) => {
         const newState = value instanceof Function ? value(prevState) : value
 
