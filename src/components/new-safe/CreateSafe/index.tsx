@@ -9,7 +9,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import CreateSafeStep2 from '../steps/Step2'
 import { CardStepper } from '../CardStepper'
 import Grid from '@mui/material/Grid'
-import { Card, CardContent, Typography } from '@mui/material'
+import { Card, CardContent, Container, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
@@ -67,40 +67,38 @@ const CreateSafe = () => {
     ...(wallet && chain ? [{ title: 'Wallet', component: <WalletInfo wallet={wallet} chain={chain} /> }] : []),
   ]
 
-  // TODO: Improve layout when other widget/responsive design is ready
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={1} />
-      <Grid item xs={11}>
-        <Typography variant="h2" pb={2}>
-          Create new Safe
-        </Typography>
-      </Grid>
+    <Container>
+      <Grid container columnSpacing={3} justifyContent="center" mt={[2, null, 7]}>
+        <Grid item xs={12}>
+          <Typography variant="h2" pb={2}>
+            Create new Safe
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={8} order={[1, null, 0]}>
+          {wallet?.address ? (
+            <CardStepper
+              initialData={initialData}
+              onClose={onClose}
+              steps={CreateSafeSteps}
+              eventCategory={CREATE_SAFE_CATEGORY}
+            />
+          ) : (
+            <Card>
+              <CardContent>
+                <Typography variant="h3" fontWeight={700}>
+                  You need to connect a wallet to create a new Safe.
+                </Typography>
+              </CardContent>
+            </Card>
+          )}
+        </Grid>
 
-      <Grid item xs={1} />
-      <Grid item xs={12} md={6}>
-        {wallet?.address ? (
-          <CardStepper
-            initialData={initialData}
-            onClose={onClose}
-            steps={CreateSafeSteps}
-            eventCategory={CREATE_SAFE_CATEGORY}
-          />
-        ) : (
-          <Card>
-            <CardContent>
-              <Typography variant="h3" fontWeight={700}>
-                You need to connect a wallet to create a new Safe.
-              </Typography>
-            </CardContent>
-          </Card>
-        )}
+        <Grid item xs={12} md={4} mb={[3, null, 0]} order={[0, null, 1]}>
+          {wallet?.address && <OverviewWidget rows={rows} />}
+        </Grid>
       </Grid>
-      <Grid item xs={12} md={4}>
-        {wallet?.address && <OverviewWidget rows={rows} />}
-      </Grid>
-      <Grid item xs={1} />
-    </Grid>
+    </Container>
   )
 }
 

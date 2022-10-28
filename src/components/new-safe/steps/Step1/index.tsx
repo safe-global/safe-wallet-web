@@ -51,7 +51,7 @@ function CreateSafeStep1({
   return (
     <form onSubmit={handleSubmit(onSubmit)} id={STEP_1_FORM_ID} className={css.form}>
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item>
           <Box className={css.select}>
             <Typography color="text.secondary" pl={2}>
               Network
@@ -86,7 +86,7 @@ function CreateSafeStep1({
             {...register(CreateSafeStep1Fields.name)}
           />
 
-          <Typography variant="body2">
+          <Typography variant="body2" mt={3}>
             By continuing, you agree to our{' '}
             <Link href="https://gnosis-safe.io/terms" target="_blank" rel="noopener noreferrer" fontWeight={700}>
               terms of use
