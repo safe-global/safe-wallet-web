@@ -6,7 +6,7 @@ import { useAppDispatch } from '@/store'
 import { openCookieBanner } from '@/store/popupSlice'
 import { AppRoutes } from '@/config/routes'
 import packageJson from '../../../../package.json'
-import AppstoreButton from '../AppStoreButton'
+// import AppstoreButton from '../AppStoreButton'
 
 const footerPages = [AppRoutes.welcome, AppRoutes.settings.index]
 
@@ -37,17 +37,13 @@ const Footer = (): ReactElement | null => {
           </Link>
         </li>
         <li>
-          <Link
-            rel="noopener noreferrer"
-            target="_blank"
-            href={`${packageJson.homepage}/releases/tags/${packageJson.version}`}
-          >
-            v{packageJson.version}-celo
+          <Link rel="noopener noreferrer" target="_blank" href={`${packageJson.homepage}`}>
+            Github Fork
           </Link>
         </li>
-        <li>
+        {/* <li>
           <AppstoreButton placement="footer" />
-        </li>
+        </li> */}
       </ul>
     </footer>
   )
