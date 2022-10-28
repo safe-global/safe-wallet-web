@@ -26,7 +26,7 @@ import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 import type { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
-import { gtmTrackSafeAppMessage } from '@/services/analytics/gtm'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -77,11 +77,10 @@ const useAppCommunicator = (
     const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onMessage: (msg) => {
-          gtmTrackSafeAppMessage({
-            app,
+          trackSafeAppEvent({ ...SAFE_APPS_EVENTS.SAFE_APP_SDK_METHOD_CALL }, app?.name || '', {
             method: msg.data.method,
-            params: msg.data.params,
-            sdkVersion: msg.data.env.sdkVersion,
+            ethMethod: (msg.data.params as any)?.call,
+            version: msg.data.env.sdkVersion,
           })
         },
         onError: (error, data) => {
