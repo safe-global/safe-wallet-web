@@ -7,7 +7,7 @@ export function CardStepper<StepperData>(props: TxStepperProps<StepperData>) {
   const { activeStep, onSubmit, onBack, stepData, setStep } = useCardStepper<StepperData>(props)
   const { steps } = props
   const currentStep = steps[activeStep]
-  const progress = (activeStep + 1 / steps.length) * 100
+  const progress = ((activeStep + 1) / steps.length) * 100
 
   return (
     <Card className={css.card}>

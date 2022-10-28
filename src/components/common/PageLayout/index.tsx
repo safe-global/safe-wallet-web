@@ -13,7 +13,7 @@ import { AppRoutes } from '@/config/routes'
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   const router = useRouter()
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false)
-  const hideSidebar = router.pathname === AppRoutes.share.safeApp
+  const hideSidebar = [AppRoutes.share.safeApp, AppRoutes.createSafe].includes(router.pathname)
 
   const onMenuToggle = (): void => {
     setIsMobileDrawerOpen((prev) => !prev)
