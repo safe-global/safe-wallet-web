@@ -41,9 +41,54 @@ describe('Queue a transaction on 1/N', () => {
     // Estimation is loaded
     cy.get('button[type="submit"]').should('not.be.disabled')
 
+    // Gets the recommended nonce
     cy.contains('Signing the transaction with nonce').should(($div) => {
       // get the number in the string
       recommendedNonce = $div.text().match(/\d+$/)[0]
+    })
+
+    // Changes nonce to next one
+    cy.contains('Signing the transaction with nonce').click()
+    cy.contains('button', 'Edit').click()
+    cy.get('label').contains('Safe transaction nonce').next().clear().type('3')
+    cy.contains('Confirm').click()
+
+    // Asserts the execute checkbox exists and is checkable
+    cy.get('@modal').within(() => {
+      cy.get('input[type="checkbox"]')
+        .parent('span')
+        .should(($div) => {
+          // Turn the classList into a string
+          const classListString = Array.from($div[0].classList).join()
+          // Check if it contains the error class
+          expect(classListString).to.include('checked')
+        })
+    })
+    cy.contains('Estimated fee').should('exist')
+
+    cy.contains('Execute transaction').click()
+    cy.get('@modal').within(() => {
+      cy.get('input[type="checkbox"]')
+        .parent('span')
+        .should(($div) => {
+          // Turn the classList into a string
+          const classListString = Array.from($div[0].classList).join()
+          // Check if it contains the error class
+          expect(classListString).not.to.include('checked')
+        })
+    })
+    cy.contains('Signing the transaction with nonce').should('exist')
+
+    // Changes back to recommended nonce
+    cy.contains('Signing the transaction with nonce').click()
+    cy.contains('Edit').click()
+    cy.get('button[aria-label="Reset to recommended nonce"]').click()
+
+    // Accepts the values
+    cy.contains('Confirm').click()
+
+    cy.get('@modal').within(() => {
+      cy.get('input[type="checkbox"]').should('not.exist')
     })
 
     cy.contains('Submit').click()
