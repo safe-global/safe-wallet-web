@@ -81,29 +81,24 @@ export const LOAD_SAFE_EVENTS = {
   LOAD_BUTTON: {
     action: 'Open stepper',
     category: LOAD_SAFE_CATEGORY,
-    abTest: isB,
   },
   NAME_SAFE: {
     event: EventType.META,
     action: 'Name Safe',
     category: LOAD_SAFE_CATEGORY,
-    abTest: isB,
   },
   OWNERS: {
     event: EventType.META,
     action: 'Owners',
     category: LOAD_SAFE_CATEGORY,
-    abTest: isB,
   },
   THRESHOLD: {
     event: EventType.META,
     action: 'Threshold',
     category: LOAD_SAFE_CATEGORY,
-    abTest: isB,
   },
   GO_TO_SAFE: {
     action: 'Open Safe',
     category: LOAD_SAFE_CATEGORY,
-    abTest: isB,
   },
 }
