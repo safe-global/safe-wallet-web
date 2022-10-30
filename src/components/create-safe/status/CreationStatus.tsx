@@ -86,7 +86,7 @@ export const CreationStatus = ({ params, setStep }: Props) => {
       {displaySafeLink && (
         <Box mt={3}>
           <Track {...CREATE_SAFE_EVENTS.GO_TO_SAFE}>
-            <Link href={{ pathname: AppRoutes.home, query: { safe: pendingSafe?.safeAddress } }} passHref>
+            <Link href={{ pathname: AppRoutes.home, query: { safe: pendingSafe?.safeAddress } }}>
               <Button variant="contained">Open your Safe</Button>
             </Link>
           </Track>

@@ -61,7 +61,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
       }
 
       button = (
-        <Link href={href} passHref>
+        <Link href={href}>
           <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse}>
             Use app
           </Button>
@@ -75,7 +75,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
         query: { safeViewRedirectURL: redirect, chain: chain.shortName },
       }
       button = (
-        <Link href={createSafeHrefWithRedirect} passHref>
+        <Link href={createSafeHrefWithRedirect}>
           <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>
             Create new Safe
           </Button>

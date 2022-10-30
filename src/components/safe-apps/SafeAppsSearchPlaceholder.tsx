@@ -36,7 +36,7 @@ const SafeAppsSearchPlaceholder = ({ searchQuery }: { searchQuery: string }) => 
         </Typography>
       }
     >
-      <Link href={wcLink} passHref>
+      <Link href={wcLink}>
         <Button variant="contained" disableElevation size="small">
           Use WalletConnect
         </Button>

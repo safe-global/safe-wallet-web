@@ -70,7 +70,7 @@ const NewTxModal = ({ onClose, recipient }: { onClose: () => void; recipient?: s
 
             {/* Contract interaction via Transaction Builder */}
             {txBuilder.app && !recipient && (
-              <Link href={txBuilder.link} passHref>
+              <Link href={txBuilder.link}>
                 <TxButton
                   startIcon={<img src={txBuilder.app.iconUrl} height={20} width="auto" alt={txBuilder.app.name} />}
                   variant="outlined"

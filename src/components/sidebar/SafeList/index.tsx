@@ -75,7 +75,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
           My Safes
         </Typography>
         <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
-          <Link href={{ pathname: AppRoutes.welcome }} passHref>
+          <Link href={{ pathname: AppRoutes.welcome }}>
             <Button
               disableElevation
               size="small"
@@ -118,10 +118,8 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
             {/* No Safes yet */}
             {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
               <Typography variant="body2" color="primary.light" py={2}>
-                <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
-                  Create or add
-                </Link>{' '}
-                an existing Safe on this network
+                <Link href={{ href: AppRoutes.welcome, query: router.query }}>Create or add</Link> an existing Safe on
+                this network
               </Typography>
             )}
 

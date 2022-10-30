@@ -133,8 +133,8 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
 
   if (url) {
     return (
-      <Link href={url} passHref>
-        <a rel="noreferrer">{card}</a>
+      <Link href={url} rel="noreferrer">
+        {card}
       </Link>
     )
   }

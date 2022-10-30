@@ -73,7 +73,7 @@ const SafeListItem = ({
         )
       }
     >
-      <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
+      <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }}>
         <ListItemButton
           key={address}
           onClick={closeDrawer}

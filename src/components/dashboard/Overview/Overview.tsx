@@ -130,36 +130,30 @@ const Overview = (): ReactElement => {
 
             <Grid container>
               <Grid item xs={3}>
-                <Link href={assetsLink} passHref>
-                  <a>
-                    <Typography color="border.main" variant="body2">
-                      Tokens
-                    </Typography>
-                    <StyledText fontSize="lg">{tokenCount}</StyledText>
-                  </a>
+                <Link href={assetsLink}>
+                  <Typography color="border.main" variant="body2">
+                    Tokens
+                  </Typography>
+                  <StyledText fontSize="lg">{tokenCount}</StyledText>
                 </Link>
               </Grid>
 
               <Grid item xs={3}>
-                <Link href={nftsLink} passHref>
-                  <a>
-                    <Typography color="border.main" variant="body2">
-                      NFTs
-                    </Typography>
-                    <StyledText fontSize="lg">{nftsCount || <ValueSkeleton />}</StyledText>
-                  </a>
+                <Link href={nftsLink}>
+                  <Typography color="border.main" variant="body2">
+                    NFTs
+                  </Typography>
+                  <StyledText fontSize="lg">{nftsCount || <ValueSkeleton />}</StyledText>
                 </Link>
               </Grid>
               <Grid item xs />
 
               <Grid item>
                 <Box display="flex" height={1} alignItems="flex-end" justifyContent="flex-end">
-                  <Link href={assetsLink} passHref>
-                    <a>
-                      <Button size="medium" variant="contained" color="primary">
-                        View assets
-                      </Button>
-                    </a>
+                  <Link href={assetsLink}>
+                    <Button size="medium" variant="contained" color="primary">
+                      View assets
+                    </Button>
                   </Link>
                 </Box>
               </Grid>

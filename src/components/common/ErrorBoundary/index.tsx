@@ -24,7 +24,7 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
         {IS_PRODUCTION ? (
           <Typography color="text.primary">
             In case the problem persists, please reach out to us via our{' '}
-            <Link href="https://help.gnosis-safe.io" passHref target="_blank" rel="noopener noreferrer">
+            <Link href="https://help.gnosis-safe.io" legacyBehavior passHref target="_blank" rel="noopener noreferrer">
               <MuiLink>Help Center</MuiLink>
             </Link>
           </Typography>
@@ -36,7 +36,14 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
         )}
 
         <Typography mt={2}>
-          <Link href={AppRoutes.welcome} passHref target="_blank" rel="noopener noreferrer" color="primary">
+          <Link
+            href={AppRoutes.welcome}
+            legacyBehavior
+            passHref
+            target="_blank"
+            rel="noopener noreferrer"
+            color="primary"
+          >
             <MuiLink>Go Home</MuiLink>
           </Link>
         </Typography>

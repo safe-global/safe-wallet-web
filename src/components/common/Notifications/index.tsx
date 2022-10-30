@@ -30,7 +30,7 @@ export const NotificationLink = ({
 
   return (
     <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title}>
-      <NextLink href={link.href} passHref>
+      <NextLink href={link.href} legacyBehavior passHref>
         <Link
           className={css.link}
           onClick={onClick}

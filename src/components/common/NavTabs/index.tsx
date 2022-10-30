@@ -13,7 +13,7 @@ const NavTabs = ({ tabs }: { tabs: NavItem[] }) => {
     <Tabs value={activeTab} variant="scrollable" allowScrollButtonsMobile className={css.tabs}>
       {tabs.map((tab, idx) => {
         return (
-          <Link key={tab.href} href={{ pathname: tab.href, query: { safe: router.query.safe } }} passHref>
+          <Link key={tab.href} href={{ pathname: tab.href, query: { safe: router.query.safe } }}>
             <Tab
               className={css.tab}
               label={

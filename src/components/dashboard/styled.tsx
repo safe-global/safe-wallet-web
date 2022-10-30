@@ -48,7 +48,7 @@ const StyledLink = styled(Link)`
 `
 
 export const ViewAllLink = ({ url, text }: { url: LinkProps['href']; text?: string }): ReactElement => (
-  <NextLink href={url} passHref>
+  <NextLink href={url} legacyBehavior passHref>
     <StyledLink>
       {text || 'View all'} <ChevronRightIcon />
     </StyledLink>
