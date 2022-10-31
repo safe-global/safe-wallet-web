@@ -18,8 +18,6 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useStatus from '@/components/create-safe/status/useStatus'
 import usePendingCreation from '@/components/create-safe/usePendingCreation'
 
-export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
-
 type Props = {
   params: PendingSafeData
   onSubmit: StepRenderProps['onSubmit']

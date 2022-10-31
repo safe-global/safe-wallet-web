@@ -35,14 +35,6 @@ const useLocalStorage = <T>(key: string): [Undefinable<T>, Setter<T>] => {
     [key],
   )
 
-  // On mount, sync the cache with the local storage
-  useEffect(() => {
-    const lsValue = local.getItem<T>(key)
-    if (lsValue !== null) {
-      setCache(lsValue)
-    }
-  }, [key])
-
   // Subscribe to changes in local storage and update the cache
   // This will work across tabs
   useEffect(() => {
