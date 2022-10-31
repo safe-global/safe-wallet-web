@@ -13,9 +13,7 @@ import { getFallbackHandlerContractInstance } from '@/services/contracts/safeCon
 import { computeNewSafeAddress } from '@/components/create-safe/logic'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import useWallet from '@/hooks/wallets/useWallet'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import type { PendingSafeData } from '@/components/create-safe/types'
-import { SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/create-safe/status/CreationStatus'
+import usePendingCreation from '../usePendingCreation'
 
 type Props = {
   params: SafeFormData
@@ -30,7 +28,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
   const provider = useWeb3()
   const chain = useCurrentChain()
   const saltNonce = useMemo(() => Date.now(), [])
-  const [_, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY, undefined)
+  const [_, setPendingSafe] = usePendingCreation()
 
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
 
