@@ -86,7 +86,7 @@ export const connectWallet = (onboard: OnboardAPI, options?: Parameters<OnboardA
     }
   }
 
-  onboard
+  return onboard
     .connectWallet(options)
     .then(async (wallets) => {
       const newWallet = getConnectedWallet(wallets)
