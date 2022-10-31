@@ -41,8 +41,8 @@ const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
   )
 }
 
-const CreateSafeStep3 = ({ onSubmit, onBack, data, setStep }: StepRenderProps<NewSafeFormData>): ReactElement => {
-  const { isConnected } = useCreateSafe(setStep)
+const CreateSafeStep3 = ({ onSubmit, onBack, data }: StepRenderProps<NewSafeFormData>): ReactElement => {
+  const { isConnected } = useCreateSafe()
   const chain = useCurrentChain()
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
   const saltNonce = useMemo(() => Date.now(), [])

@@ -31,9 +31,9 @@ enum CreateSafeStep1Fields {
 
 const STEP_1_FORM_ID = 'create-safe-step-1-form'
 
-function CreateSafeStep1({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) {
+function CreateSafeStep1({ data, onSubmit, onBack }: StepRenderProps<NewSafeFormData>) {
   const fallbackName = useMnemonicSafeName()
-  const { isConnected } = useCreateSafe(setStep)
+  const { isConnected } = useCreateSafe()
 
   const {
     handleSubmit,

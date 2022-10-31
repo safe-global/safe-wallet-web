@@ -24,8 +24,8 @@ enum CreateSafeStep2Fields {
 
 const STEP_2_FORM_ID = 'create-safe-step-2-form'
 
-const CreateSafeStep2 = ({ onSubmit, onBack, data, setStep }: StepRenderProps<NewSafeFormData>): ReactElement => {
-  const { isConnected } = useCreateSafe(setStep)
+const CreateSafeStep2 = ({ onSubmit, onBack, data }: StepRenderProps<NewSafeFormData>): ReactElement => {
+  const { isConnected } = useCreateSafe()
 
   const formMethods = useForm<CreateSafeStep2Form>({
     mode: 'all',
