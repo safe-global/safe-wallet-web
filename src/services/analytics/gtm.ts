@@ -20,6 +20,8 @@ import {
 } from '@/config/constants'
 import type { AnalyticsEvent, EventLabel, SafeAppEvent } from './types'
 import { EventType } from './types'
+import { getAbTestEvent } from './ab-testing'
+import type { AbTestEvent } from './ab-testing'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
@@ -85,6 +87,7 @@ export const gtmClear = (): void => {
 type GtmEvent = {
   event: EventType
   chainId: string
+  abTest?: AbTestEvent
 }
 
 type ActionGtmEvent = GtmEvent & {
@@ -116,6 +119,12 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
 
   if (eventData.label) {
     gtmEvent.eventLabel = eventData.label
+  }
+
+  const abTest = getAbTestEvent()
+
+  if (Object.keys(abTest).length > 0) {
+    gtmEvent.abTest = abTest
   }
 
   gtmSend(gtmEvent)
