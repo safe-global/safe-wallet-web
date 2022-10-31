@@ -3,7 +3,7 @@ import { Checkbox, FormControlLabel, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 
-const ExecuteToggle = ({
+const ExecuteCheckbox = ({
   checked,
   onChange,
   disabled = false,
@@ -38,4 +38,4 @@ const ExecuteToggle = ({
   )
 }
 
-export default ExecuteToggle
+export default ExecuteCheckbox
