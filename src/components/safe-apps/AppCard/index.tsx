@@ -1,4 +1,5 @@
 import type { ReactElement, ReactNode, SyntheticEvent } from 'react'
+import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import type { LinkProps } from 'next/link'
@@ -20,6 +21,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { SvgIcon } from '@mui/material'
 import type { UrlObject } from 'url'
 import { resolveHref } from 'next/dist/shared/lib/router/router'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
@@ -73,16 +75,29 @@ const DeleteButton = ({ safeApp, onDelete }: { safeApp: SafeAppData; onDelete: (
 const ShareButton = ({
   className,
   shareUrl,
-  appName,
+  safeApp,
 }: {
   className?: string
   shareUrl: string
-  appName: string
-}): ReactElement => (
-  <CopyButton text={shareUrl} initialToolTipText={`Copy share URL for ${appName}`} className={className}>
-    <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
-  </CopyButton>
-)
+  safeApp: SafeAppData
+}): ReactElement => {
+  const handleCopy = useCallback(() => {
+    const isCustomApp = safeApp.id < 1
+
+    trackSafeAppEvent(SAFE_APPS_EVENTS.COPY_SHARE_URL, isCustomApp ? safeApp.url : safeApp.name)
+  }, [safeApp])
+
+  return (
+    <CopyButton
+      text={shareUrl}
+      initialToolTipText={`Copy share URL for ${safeApp.name}`}
+      className={className}
+      onCopy={handleCopy}
+    >
+      <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
+    </CopyButton>
+  )
+}
 
 const PinButton = ({
   pinned,
@@ -158,7 +173,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
       />
 
       {/* Share button */}
-      <ShareButton className={styles.compactShareButton} shareUrl={shareUrl} appName={safeApp.name} />
+      <ShareButton className={styles.compactShareButton} shareUrl={shareUrl} safeApp={safeApp} />
 
       {/* Pin/unpin button */}
       {onPin && (
@@ -212,7 +227,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
         action={
           <>
             {/* Share button */}
-            <ShareButton shareUrl={shareUrl} appName={safeApp.name} />
+            <ShareButton shareUrl={shareUrl} safeApp={safeApp} />
 
             {/* Pin/unpin button */}
             {onPin && <PinButton pinned={Boolean(pinned)} safeApp={safeApp} onPin={onPin} />}

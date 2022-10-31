@@ -21,6 +21,10 @@ export const SAFE_APPS_EVENTS = {
     ...SAFE_APPS_EVENT_DATA,
     action: 'Unpin Safe App',
   },
+  COPY_SHARE_URL: {
+    ...SAFE_APPS_EVENT_DATA,
+    action: 'Copy Share URL',
+  },
   SEARCH: {
     ...SAFE_APPS_EVENT_DATA,
     action: 'Search for Safe App',
