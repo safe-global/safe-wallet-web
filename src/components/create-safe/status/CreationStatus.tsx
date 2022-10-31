@@ -12,13 +12,11 @@ import { useCallback } from 'react'
 import { useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import type { PendingSafeData } from '@/components/create-safe/types.d'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import StatusMessage from '@/components/create-safe/status/StatusMessage'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useStatus from '@/components/create-safe/status/useStatus'
-
-export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
+import usePendingCreation from '@/components/create-safe/usePendingCreation'
 
 type Props = {
   params: PendingSafeData
@@ -29,10 +27,7 @@ type Props = {
 
 export const CreationStatus = ({ params, setStep }: Props) => {
   const [status, setStatus] = useStatus()
-  const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(
-    SAFE_PENDING_CREATION_STORAGE_KEY,
-    params,
-  )
+  const [pendingSafe = params, setPendingSafe] = usePendingCreation()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const isConnected = wallet && !isWrongChain

@@ -18,8 +18,8 @@ describe('local storage', () => {
 
       expect(getItem('test')).toStrictEqual({ test: 'value' })
     })
-    it("returns undefined the key doesn't exist", () => {
-      expect(getItem('notAKey')).toBe(undefined)
+    it("returns null of the key doesn't exist", () => {
+      expect(getItem('notAKey')).toBe(null)
     })
   })
 
@@ -32,10 +32,10 @@ describe('local storage', () => {
   })
 
   describe('handling undefined', () => {
-    it('saves ands reads undefined', () => {
+    it('removes the key when passing undefined', () => {
       setItem('test_undefined', undefined)
-      expect(getItem('test_undefined')).toBe(undefined)
-      expect(window.localStorage.getItem('SAFE_v2__test_undefined')).toBe('undefined')
+      expect(getItem('test_undefined')).toBe(null)
+      expect(window.localStorage.getItem('SAFE_v2__test_undefined')).toBe(null)
     })
   })
 })
