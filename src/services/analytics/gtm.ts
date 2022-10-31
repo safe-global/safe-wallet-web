@@ -48,6 +48,23 @@ export const gtmSetChainId = (chainId: string): void => {
   _chainId = chainId
 }
 
+export const enum AbTest {
+  SAFE_CREATION = 'safe-creation',
+}
+
+let _abTest: AbTest | null = null
+
+const gtmResetAbTest = (): void => {
+  _abTest = null
+}
+
+export const gtmSetAbTest = (abTest: AbTest): (() => void) => {
+  _abTest = abTest
+
+  // Return a cleanup function
+  return gtmResetAbTest
+}
+
 export const gtmInit = (): void => {
   const GTM_ENVIRONMENT = IS_PRODUCTION ? GTM_ENV_AUTH.LIVE : GTM_ENV_AUTH.DEVELOPMENT
 
@@ -85,6 +102,7 @@ export const gtmClear = (): void => {
 type GtmEvent = {
   event: EventType
   chainId: string
+  abTest?: AbTest
 }
 
 type ActionGtmEvent = GtmEvent & {
@@ -116,6 +134,10 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
 
   if (eventData.label) {
     gtmEvent.eventLabel = eventData.label
+  }
+
+  if (_abTest) {
+    gtmEvent.abTest = _abTest
   }
 
   gtmSend(gtmEvent)
