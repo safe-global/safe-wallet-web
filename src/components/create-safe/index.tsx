@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import type { BigNumber } from 'ethers'
+import React from 'react'
 
 import ConnectWalletStep from '@/components/create-safe/steps/ConnectWalletStep'
 import SetNameStep from '@/components/create-safe/steps/SetNameStep'
@@ -10,27 +9,16 @@ import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import VerticalTxStepper from '@/components/tx/TxStepper/vertical'
 import { AppRoutes } from '@/config/routes'
 import { CreationStatus } from '@/components/create-safe/status/CreationStatus'
-import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
-import useChainId from '@/hooks/useChainId'
-import type { SafeFormData } from '@/components/create-safe/types.d'
+import type { PendingSafeData, SafeFormData } from '@/components/create-safe/types.d'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
-
-export type PendingSafeTx = {
-  data: string
-  from: string
-  nonce: number
-  to: string
-  value: BigNumber
-  startBlock: number
-}
-
-export type PendingSafeData = SafeFormData & { txHash?: string; tx?: PendingSafeTx; saltNonce: number }
-export type PendingSafeByChain = Record<string, PendingSafeData | undefined>
+import css from './styles.module.css'
 
 export const CreateSafeSteps: TxStepperProps['steps'] = [
   {
     label: 'Connect wallet & select network',
-    render: (_, onSubmit, onBack) => <ConnectWalletStep onSubmit={onSubmit} onBack={onBack} />,
+    render: (_, onSubmit, onBack, setStep) => (
+      <ConnectWalletStep onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+    ),
   },
   {
     label: 'Name',
@@ -50,37 +38,25 @@ export const CreateSafeSteps: TxStepperProps['steps'] = [
       <ReviewStep params={data as SafeFormData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
     ),
   },
+  {
+    label: 'Status',
+    render: (data, onSubmit, onBack, setStep) => (
+      <CreationStatus params={data as PendingSafeData} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+    ),
+  },
 ]
 
 const CreateSafe = () => {
-  const [pendingSafe, setPendingSafe] = usePendingSafe()
-  const chainId = useChainId()
-  // We need this additional state to avoid hydration errors
-  const [safeCreationPending, setSafeCreationPending] = useState<boolean>(false)
   const router = useRouter()
 
-  useEffect(() => {
-    setSafeCreationPending(!!pendingSafe)
-  }, [pendingSafe, chainId])
-
-  const onFinish = () => {
-    setSafeCreationPending(true)
-  }
-
   const onClose = () => {
-    setPendingSafe(undefined)
     router.push(AppRoutes.welcome)
   }
 
-  return safeCreationPending ? (
-    <CreationStatus onClose={onClose} />
-  ) : (
-    <VerticalTxStepper
-      steps={CreateSafeSteps}
-      onClose={onClose}
-      onFinish={onFinish}
-      eventCategory={CREATE_SAFE_CATEGORY}
-    />
+  return (
+    <div className={css.stepper}>
+      <VerticalTxStepper steps={CreateSafeSteps} onClose={onClose} eventCategory={CREATE_SAFE_CATEGORY} />
+    </div>
   )
 }
 

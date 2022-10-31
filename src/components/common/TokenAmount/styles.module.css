@@ -2,15 +2,9 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  white-space: nowrap;
   color: var(--color-text-primary);
 }
 
 .verticalAlign {
   vertical-align: middle;
-}
-
-.symbol {
-  white-space: normal;
-  word-break: break-all;
 }
