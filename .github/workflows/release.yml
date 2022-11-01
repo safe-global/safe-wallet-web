@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: GitHub release
+        if: success()
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: true
+          prerelease: false
+          release_name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
