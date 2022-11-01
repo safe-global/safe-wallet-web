@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react'
 
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { gtmSetAbTest } from '@/services/analytics/gtm'
-import type { AbTest } from '@/services/analytics/gtm'
+import { setAbTest } from './abTesting'
+import type { AbTest } from './abTesting'
 
 const useABTesting = (abTest: AbTest): boolean => {
   // Fallback AB test value if no `localStorage` exists
@@ -20,7 +20,7 @@ const useABTesting = (abTest: AbTest): boolean => {
   // Store AB test value in GTM
   useEffect(() => {
     if (isB) {
-      gtmSetAbTest(abTest)
+      setAbTest(abTest)
     }
   }, [abTest, isB])
 
