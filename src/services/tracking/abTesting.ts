@@ -1,4 +1,6 @@
-export const enum AbTest {}
+export const enum AbTest {
+  SAFE_CREATION = 'safe_creation',
+}
 
 let _abTest: AbTest | null = null
 
