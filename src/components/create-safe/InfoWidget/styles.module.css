@@ -1,7 +1,3 @@
-.header {
-  cursor: pointer;
-}
-
 .headerWrapper {
   display: flex;
   justify-content: space-between;
@@ -24,27 +20,13 @@
   color: var(--color-text-secondary);
 }
 
-.actions {
-  display: flex;
-  justify-content: flex-end;
+.content {
+  padding: 0;
 }
 
-.tipsTitles {
-  padding: var(--space-1);
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: var(--space-2);
-  row-gap: calc(var(--space-1) / 2);
-}
-
-.dot {
-  border-radius: 2px;
-  width: var(--space-1);
-  height: var(--space-1);
-}
-
-.listItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1)
+.tipAccordion {
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-1);
+  background-color: inherit;
+  border: none;
 }
