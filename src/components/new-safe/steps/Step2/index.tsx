@@ -1,6 +1,5 @@
 import { Button, Grid, SvgIcon, MenuItem, Select, Tooltip, Typography, Divider, Box } from '@mui/material'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
-import type { ReactElement } from 'react'
 
 import AddIcon from '@/public/images/common/add.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -8,6 +7,7 @@ import { OwnerRow } from './OwnerRow'
 import type { NamedAddress } from '@/components/create-safe/types'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
+import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
 
 type CreateSafeStep2Form = {
   owners: NamedAddress[]
@@ -23,11 +23,8 @@ enum CreateSafeStep2Fields {
 
 const STEP_2_FORM_ID = 'create-safe-step-2-form'
 
-const CreateSafeStep2 = ({
-  onSubmit,
-  onBack,
-  data,
-}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'>): ReactElement => {
+const CreateSafeStep2 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
+  useCreateSafe(setStep)
   const formMethods = useForm<CreateSafeStep2Form>({
     mode: 'all',
     defaultValues: {

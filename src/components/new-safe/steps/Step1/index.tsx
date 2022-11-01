@@ -19,6 +19,7 @@ import css from './styles.module.css'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
+import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
 
 type CreateSafeStep1Form = {
   name: string
@@ -30,11 +31,8 @@ enum CreateSafeStep1Fields {
 
 const STEP_1_FORM_ID = 'create-safe-step-1-form'
 
-function CreateSafeStep1({
-  data,
-  onSubmit,
-  onBack,
-}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'>) {
+function CreateSafeStep1({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) {
+  useCreateSafe(setStep)
   const fallbackName = useMnemonicSafeName()
 
   const {

@@ -1,3 +1,4 @@
+import React from 'react'
 import WalletInfo from '@/components/common/WalletInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -14,30 +15,46 @@ import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
 import CreateSafeStep3 from '@/components/new-safe/steps/Step3'
+import { CreateSafeStatus } from '@/components/new-safe/steps/Step4'
 
 export type NewSafeFormData = {
   name: string
   threshold: number
   owners: NamedAddress[]
   mobileOwners: NamedAddress[]
+  saltNonce: number
+  safeAddress?: string
 }
 
 export const CreateSafeSteps: TxStepperProps<NewSafeFormData>['steps'] = [
   {
     title: 'Select network and name Safe',
     subtitle: 'Select the network on which to create your Safe',
-    render: (data, onSubmit, onBack) => <CreateSafeStep1 onSubmit={onSubmit} onBack={onBack} data={data} />,
+    render: (data, onSubmit, onBack, setStep) => (
+      <CreateSafeStep1 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+    ),
   },
   {
     title: 'Owners and confirmations',
     subtitle:
       'Here you can add owners to your Safe and determine how many owners need to confirm before making a successful transaction',
-    render: (data, onSubmit, onBack) => <CreateSafeStep2 onSubmit={onSubmit} onBack={onBack} data={data} />,
+    render: (data, onSubmit, onBack, setStep) => (
+      <CreateSafeStep2 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+    ),
   },
   {
     title: 'Review',
     subtitle: `You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet.`,
-    render: (data, onSubmit, onBack) => <CreateSafeStep3 onSubmit={onSubmit} onBack={onBack} data={data} />,
+    render: (data, onSubmit, onBack, setStep) => (
+      <CreateSafeStep3 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+    ),
+  },
+  {
+    title: '',
+    subtitle: '',
+    render: (data, onSubmit, onBack, setStep) => (
+      <CreateSafeStatus data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+    ),
   },
 ]
 
@@ -56,6 +73,7 @@ const CreateSafe = () => {
     mobileOwners: [] as NamedAddress[],
     owners: [defaultOwner],
     threshold: 1,
+    saltNonce: 0,
   }
 
   const onClose = () => {

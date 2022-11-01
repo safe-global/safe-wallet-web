@@ -12,18 +12,20 @@ export function CardStepper<StepperData>(props: TxStepperProps<StepperData>) {
   return (
     <Card className={css.card}>
       <LinearProgress color="secondary" variant="determinate" value={Math.min(progress, 100)} />
-      <CardHeader
-        title={currentStep.title}
-        subheader={currentStep.subtitle}
-        titleTypographyProps={{ variant: 'h4' }}
-        subheaderTypographyProps={{ variant: 'body2' }}
-        avatar={
-          <Avatar className={css.step}>
-            <Typography variant="body2">{activeStep + 1}</Typography>
-          </Avatar>
-        }
-        className={css.header}
-      />
+      {currentStep.title && (
+        <CardHeader
+          title={currentStep.title}
+          subheader={currentStep.subtitle}
+          titleTypographyProps={{ variant: 'h4' }}
+          subheaderTypographyProps={{ variant: 'body2' }}
+          avatar={
+            <Avatar className={css.step}>
+              <Typography variant="body2">{activeStep + 1}</Typography>
+            </Avatar>
+          }
+          className={css.header}
+        />
+      )}
       <CardContent className={css.content}>{currentStep.render(stepData, onSubmit, onBack, setStep)}</CardContent>
     </Card>
   )
