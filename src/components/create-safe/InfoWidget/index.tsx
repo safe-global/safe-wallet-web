@@ -1,57 +1,43 @@
 import { Box, Button, Card, CardActions, CardContent, CardHeader, Collapse, SvgIcon, Typography } from '@mui/material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import { useEffect, useState } from 'react'
 import type { AlertColor } from '@mui/material'
-import type { ReactElement } from 'react'
-
+import { useEffect, useState, type ReactElement } from 'react'
 import LightbulbIcon from '@/public/images/common/lightbulb.svg'
 
 import css from './styles.module.css'
 
-type Props = {
+type InfoWidgetProps = {
   title: string
   steps: { title: string; text: string }[]
   variant: AlertColor
   startCollapsed?: boolean
 }
 
-const InfoWidget = ({ title, steps, variant, startCollapsed = true }: Props): ReactElement | null => {
-  console.log('steps', steps)
+const InfoWidget = ({ title, steps, variant, startCollapsed = true }: InfoWidgetProps): ReactElement | null => {
   const [activeStep, setActiveStep] = useState(0)
-  const [dismissed, setDismissed] = useState(false)
   const [expanded, setExpanded] = useState(!startCollapsed)
 
-  const handleExpandClick = () => {
-    // setExpanded(true)
-    setExpanded(!expanded)
-  }
+  const handleExpandClick = () => setExpanded(true)
 
   const isFirst = activeStep === 0
   const isLast = activeStep === steps.length - 1
-
   const isMultiStep = steps.length > 1
 
-  const onPrev = () => {
-    if (!isFirst) {
-      setActiveStep((prev) => prev - 1)
-    }
-  }
-
-  const onNext = () => {
+  const onPrev = () => setActiveStep((prev) => prev - 1)
+  const handleNextClick = (isLast: boolean) => {
     if (isLast) {
-      setDismissed(true)
+      setExpanded(false)
     } else {
       setActiveStep((prev) => prev + 1)
     }
   }
 
-  // Reset if steps change
   useEffect(() => {
+    setExpanded(true)
     setActiveStep(0)
-    setDismissed(false)
   }, [steps])
 
-  if (dismissed || steps.length === 0) {
+  if (!steps.length) {
     return null
   }
 
@@ -97,7 +83,7 @@ const InfoWidget = ({ title, steps, variant, startCollapsed = true }: Props): Re
           </>
         }
       />
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      <Collapse in={expanded} timeout={0} unmountOnExit>
         <CardContent>
           <Typography variant="h5">{steps[activeStep].title}</Typography>
           <Typography variant="body2">{steps[activeStep].text}</Typography>
@@ -108,8 +94,8 @@ const InfoWidget = ({ title, steps, variant, startCollapsed = true }: Props): Re
               Previous
             </Button>
           )}
-          <Button variant="outlined" size="small" onClick={onNext}>
-            Got it
+          <Button variant="contained" size="small" onClick={() => handleNextClick(isLast)}>
+            {isLast ? 'Got it' : 'Next'}
           </Button>
         </CardActions>
       </Collapse>
