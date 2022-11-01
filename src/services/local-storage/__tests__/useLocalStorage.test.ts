@@ -8,7 +8,8 @@ describe('useLocalStorage', () => {
   })
 
   it('should set the value', () => {
-    const { result } = renderHook(() => useLocalStorage('test-key'))
+    const key = Math.random().toString(32)
+    const { result } = renderHook(() => useLocalStorage(key))
     const [value, setValue] = result.current
 
     expect(value).toBe(undefined)
@@ -27,7 +28,8 @@ describe('useLocalStorage', () => {
   })
 
   it('should set the value using a callback', () => {
-    const { result } = renderHook(() => useLocalStorage<string>('test-key'))
+    const key = Math.random().toString(32)
+    const { result } = renderHook(() => useLocalStorage<string>(key))
     const [value, setValue] = result.current
 
     expect(value).toBe(undefined)
@@ -46,9 +48,10 @@ describe('useLocalStorage', () => {
   })
 
   it('should read from LS on initial call', () => {
-    local.setItem('test-key', 'ls')
+    const key = Math.random().toString(32)
+    local.setItem(key, 'ls')
 
-    const { result } = renderHook(() => useLocalStorage('test-key'))
+    const { result } = renderHook(() => useLocalStorage(key))
 
     expect(result.current[0]).toBe('ls')
   })
