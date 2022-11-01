@@ -1,5 +1,5 @@
 .header {
-  padding-bottom: 0px;
+  cursor: pointer;
 }
 
 .headerWrapper {
@@ -27,4 +27,24 @@
 .actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.tipsTitles {
+  padding: var(--space-1);
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-2);
+  row-gap: calc(var(--space-1) / 2);
+}
+
+.dot {
+  border-radius: 2px;
+  width: var(--space-1);
+  height: var(--space-1);
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1)
 }
