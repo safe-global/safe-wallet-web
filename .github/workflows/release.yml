@@ -33,7 +33,7 @@ jobs:
           NEXT_PUBLIC_FORTMATIC_KEY: ${{ secrets.NEXT_PUBLIC_FORTMATIC_KEY }}
           NEXT_PUBLIC_PORTIS_KEY: ${{ secrets.NEXT_PUBLIC_PORTIS_KEY }}
           NEXT_PUBLIC_WC_BRIDGE: ${{ secrets.NEXT_PUBLIC_WC_BRIDGE }}
-          NEXT_PUBLIC_IS_PRODUCTION: true
+          NEXT_PUBLIC_IS_PRODUCTION: ${{ true }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -53,15 +53,6 @@ jobs:
           for file in $(find . -name '*.html' | sed 's|^\./||'); do
               aws s3 cp ${file%} s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}/${file%.*} --content-type 'text/html'
           done
-
-      # - run: bash ./scripts/github/deploy_release.sh
-      #   if: startsWith(github.ref, 'refs/tags/v')
-      #   env:
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     PR_NUMBER: ${{ github.event.number }}
-      #     REVIEW_BUCKET_NAME: ${{ secrets.AWS_REVIEW_BUCKET_NAME }}
-      #     VERSION_TAG: ${{ github.event.release.tag_name }}
 
       # Script to prepare production deployments
       - run: bash ./scripts/github/prepare_production_deployment.sh
