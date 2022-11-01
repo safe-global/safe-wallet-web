@@ -54,7 +54,7 @@ const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidget
         }
       />
       <CardContent sx={{ padding: '0', '&.MuiCardContent-root': { paddingBottom: '0px' } }}>
-        {steps.map((step) => {
+        {steps.map(({ title, text }) => {
           return (
             <Accordion
               key={title.replace(' ', '-')}
@@ -70,10 +70,10 @@ const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidget
               defaultExpanded={startExpanded}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: ({ palette }) => palette[variant]?.main }} />}>
-                <Typography>{step.title}</Typography>
+                <Typography>{title}</Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ paddingTop: '0px' }}>
-                <Typography variant="body2">{step.text}</Typography>
+                <Typography variant="body2">{text}</Typography>
               </AccordionDetails>
             </Accordion>
           )
