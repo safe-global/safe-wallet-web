@@ -17,7 +17,6 @@ const ExplorerLink = ({ address }: { address: string }): ReactElement | null => 
           component={LinkIcon}
           inheritViewBox
           color="primary"
-          fontSize="small"
           sx={{
             '& path': {
               fill: ({ palette }) => palette.border.main,
