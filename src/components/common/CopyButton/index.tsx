@@ -38,7 +38,6 @@ const CopyButton = ({
             component={CopyIcon}
             inheritViewBox
             color="primary"
-            fontSize="small"
             sx={{
               '& path': {
                 fill: ({ palette }) => palette.border.main,
