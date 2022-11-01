@@ -66,6 +66,7 @@ const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidget
                 },
                 '&.Mui-expanded > .MuiAccordionSummary-root': {
                   background: 'inherit',
+                  fontWeight: 'bold',
                 },
               }}
               defaultExpanded={startExpanded}
@@ -77,7 +78,7 @@ const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidget
                   </IconButton>
                 }
               >
-                <Typography>{title}</Typography>
+                {title}
               </AccordionSummary>
               <AccordionDetails sx={{ paddingTop: '0px' }}>
                 <Typography variant="body2">{text}</Typography>
