@@ -48,21 +48,12 @@ export const gtmSetChainId = (chainId: string): void => {
   _chainId = chainId
 }
 
-export const enum AbTest {
-  SAFE_CREATION = 'safe-creation',
-}
+export const enum AbTest {}
 
 let _abTest: AbTest | null = null
 
-const gtmResetAbTest = (): void => {
-  _abTest = null
-}
-
-export const gtmSetAbTest = (abTest: AbTest): (() => void) => {
+export const gtmSetAbTest = (abTest: AbTest): void => {
   _abTest = abTest
-
-  // Return a cleanup function
-  return gtmResetAbTest
 }
 
 export const gtmInit = (): void => {
