@@ -1,65 +1,51 @@
 import { Box, Typography } from '@mui/material'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
-import css from '@/components/create-safe/status/styles.module.css'
-import classNames from 'classnames'
+import LoadingSpinner from '@/components/new-safe/steps/Step4/LoadingSpinner'
 
 const getStep = (status: SafeCreationStatus) => {
-  const loading = <img src="/images/logo-no-text.svg" alt="Safe logo" className={classNames(css.image, css.loading)} />
-  const indexed = <img src="/images/logo-no-text.svg" alt="Safe logo" className={classNames(css.image, css.loading)} />
-  const error = <img src="/images/logo-no-text.svg" alt="Safe logo" className={classNames(css.image, css.loading)} />
-
   switch (status) {
     case SafeCreationStatus.AWAITING:
       return {
-        image: loading,
-        description: 'Waiting for transaction confirmation.',
+        description: 'Step 1/2: Waiting for transaction confirmation.',
         instruction: 'Please confirm the transaction with your connected wallet.',
       }
     case SafeCreationStatus.WALLET_REJECTED:
       return {
-        image: error,
         description: 'Transaction was rejected.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.PROCESSING:
       return {
-        image: loading,
-        description: 'Transaction is being executed.',
+        description: 'Step 2/2: Transaction is being executed.',
         instruction: 'Please do not leave the page.',
       }
     case SafeCreationStatus.ERROR:
       return {
-        image: error,
         description: 'There was an error.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.REVERTED:
       return {
-        image: error,
         description: 'Transaction was reverted.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.TIMEOUT:
       return {
-        image: error,
         description: 'Transaction was not found. Be aware that it might still be processed.',
         instruction: 'You can cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.SUCCESS:
       return {
-        image: loading,
         description: 'Your Safe was successfully created!',
         instruction: 'It is now being indexed. Please do not leave the page.',
       }
     case SafeCreationStatus.INDEXED:
       return {
-        image: indexed,
         description: 'Your Safe was successfully indexed!',
         instruction: 'Taking you to your dashboard...',
       }
     case SafeCreationStatus.INDEX_FAILED:
       return {
-        image: error,
         description: 'Your Safe is created and will be indexed by our services shortly.',
         instruction:
           'You can already open your Safe. It might take a moment until it becomes fully usable in the interface.',
@@ -73,7 +59,7 @@ const StatusMessage = ({ status }: { status: SafeCreationStatus }) => {
   return (
     <>
       <Box padding={3}>
-        {stepInfo.image}
+        <LoadingSpinner status={status} />
         <Typography variant="h6" marginTop={2} fontWeight={700}>
           {stepInfo.description}
         </Typography>
