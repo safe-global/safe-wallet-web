@@ -93,27 +93,7 @@ const CreateSafeStep2 = ({
                 </span>
               </Tooltip>
             </Typography>
-            <Typography variant="body2">
-              Add an extra layer of security and sign transactions with the Safe Mobile app.
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            {mobileOwnerFields.map((field, i) => (
-              <OwnerRow
-                key={field.id}
-                groupName={CreateSafeStep2Fields.mobileOwners}
-                index={i}
-                remove={removeMobileOwner}
-              />
-            ))}
-            <Button
-              variant="text"
-              onClick={() => appendMobileOwner({ name: '', address: '' }, { shouldFocus: true })}
-              startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-            >
-              Add mobile owner
-            </Button>
+            <Typography variant="body2">Use your mobile phone as your additional owner key</Typography>
           </Grid>
 
           <Grid item xs={12}>
