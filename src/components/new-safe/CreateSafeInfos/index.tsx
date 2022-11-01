@@ -27,7 +27,7 @@ const CreateSafeInfos = ({
               title={dynamicHint.title}
               variant={dynamicHint.variant}
               steps={dynamicHint.steps}
-              startCollapsed={false}
+              startExpanded
             />
           </Grid>
         )}

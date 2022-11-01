@@ -10,12 +10,12 @@ type InfoWidgetProps = {
   title: string
   steps: { title: string; text: string }[]
   variant: AlertColor
-  startCollapsed?: boolean
+  startExpanded?: boolean
 }
 
-const InfoWidget = ({ title, steps, variant, startCollapsed = true }: InfoWidgetProps): ReactElement | null => {
+const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidgetProps): ReactElement | null => {
   const [activeStep, setActiveStep] = useState(0)
-  const [expanded, setExpanded] = useState(!startCollapsed)
+  const [expanded, setExpanded] = useState(startExpanded)
 
   const handleExpandClick = () => setExpanded(true)
 
@@ -33,13 +33,15 @@ const InfoWidget = ({ title, steps, variant, startCollapsed = true }: InfoWidget
   }
 
   useEffect(() => {
-    setExpanded(true)
+    !startExpanded && setExpanded(false)
     setActiveStep(0)
-  }, [steps])
+  }, [startExpanded, steps])
 
-  if (!steps.length) {
+  if (steps[activeStep] == undefined) {
     return null
   }
+
+  console.log(steps[activeStep])
 
   return (
     <Card sx={{ backgroundColor: ({ palette }) => palette[variant]?.background }}>
