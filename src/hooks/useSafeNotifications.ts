@@ -4,20 +4,22 @@ import { ImplementationVersionState } from '@gnosis.pm/safe-react-gateway-sdk'
 import useSafeInfo from './useSafeInfo'
 import { useAppDispatch } from '@/store'
 import { AppRoutes } from '@/config/routes'
-import { useCurrentChain } from './useChains'
 import useAsync from './useAsync'
 import { isOldestVersion, isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { useRouter } from 'next/router'
 
-const LEGACY_DESKTOP_APP = 'https://github.com/safe-global/safe-react/releases/tag/v3.22.1-desktop'
-const CLI_LINK = 'https://github.com/5afe/safe-cli'
+const CLI_LINK = {
+  href: 'https://github.com/5afe/safe-cli',
+  title: 'Get CLI',
+}
 
 /**
  * General-purpose notifications relating to the entire Safe
  */
 const useSafeNotifications = (): void => {
   const dispatch = useAppDispatch()
-  const chain = useCurrentChain()
-  const { safe, safeAddress } = useSafeInfo()
+  const { query } = useRouter()
+  const { safe } = useSafeInfo()
   const { chainId, version, implementationVersionState } = safe
 
   /**
@@ -31,34 +33,31 @@ const useSafeNotifications = (): void => {
 
     const isOldSafe = isOldestVersion(version)
 
-    const link = isOldSafe
-      ? {
-          href: LEGACY_DESKTOP_APP,
-          title: 'Desktop app',
-        }
-      : {
-          href: {
-            pathname: AppRoutes.settings.setup,
-            query: { safe: `${chain?.shortName}:${safeAddress}` },
-          },
-          title: 'Update Safe',
-        }
-
     const id = dispatch(
       showNotification({
         variant: 'warning',
-        message: isOldSafe
-          ? `Safe version ${version} is not supported by this web app anymore. Please use the legacy desktop app.`
-          : `Your Safe version ${version} is out of date. Please update it.`,
         groupKey: 'safe-outdated-version',
-        link,
+
+        message: isOldSafe
+          ? `Safe version ${version} is not supported by this web app anymore. We recommend using the command line interface instead.`
+          : `Your Safe version ${version} is out of date. Please update it.`,
+
+        link: isOldSafe
+          ? CLI_LINK
+          : {
+              href: {
+                pathname: AppRoutes.settings.setup,
+                query: { safe: query.safe },
+              },
+              title: 'Update Safe',
+            },
       }),
     )
 
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, chainId, safeAddress, implementationVersionState, version, chain?.shortName])
+  }, [dispatch, implementationVersionState, version, query.safe])
 
   /**
    * Show a notification when the Safe master copy is not supported
@@ -66,10 +65,9 @@ const useSafeNotifications = (): void => {
 
   const masterCopy = safe.implementation.value
 
-  const [validMasterCopy] = useAsync(async () => {
-    if (masterCopy) {
-      return await isValidMasterCopy(chainId, masterCopy)
-    }
+  const [validMasterCopy] = useAsync(() => {
+    if (!masterCopy) return
+    return isValidMasterCopy(chainId, masterCopy)
   }, [chainId, masterCopy])
 
   useEffect(() => {
@@ -84,10 +82,7 @@ const useSafeNotifications = (): void => {
            The web interface might not work correctly.
            We recommend using the command line interface instead.`,
         groupKey: 'invalid-mastercopy',
-        link: {
-          href: CLI_LINK,
-          title: 'Get CLI',
-        },
+        link: CLI_LINK,
       }),
     )
 

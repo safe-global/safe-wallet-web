@@ -18,7 +18,7 @@ type OwnedSafesCache = {
 const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const chainId = useChainId()
   const { address: walletAddress } = useWallet() || {}
-  const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY, {})
+  const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY)
 
   const [ownedSafes, error] = useAsync<OwnedSafes>(() => {
     if (!chainId || !walletAddress) return
@@ -31,7 +31,7 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
     setOwnedSafesCache((prev) => ({
       ...prev,
       [walletAddress]: {
-        ...(prev[walletAddress] || {}),
+        ...(prev?.[walletAddress] || {}),
         [chainId]: ownedSafes.safes,
       },
     }))
@@ -43,7 +43,7 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
     }
   }, [error])
 
-  return ownedSafesCache[walletAddress || ''] ?? {}
+  return ownedSafesCache?.[walletAddress || ''] ?? {}
 }
 
 export default useOwnedSafes
