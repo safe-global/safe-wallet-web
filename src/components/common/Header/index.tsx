@@ -13,6 +13,7 @@ import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
 import SafeLogo from '@/public/images/logo.svg'
 import Link from 'next/link'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 type HeaderProps = {
   onMenuToggle: () => void
@@ -20,7 +21,8 @@ type HeaderProps = {
 
 const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const chainId = useChainId()
-  const showSafeToken = !!getSafeTokenAddress(chainId)
+  const safeAddress = useSafeAddress()
+  const showSafeToken = safeAddress && !!getSafeTokenAddress(chainId)
   const router = useRouter()
 
   // Logo link: if on Dashboard, link to Welcome, otherwise to the root (which redirects to either Dashboard or Welcome)
