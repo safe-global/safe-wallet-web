@@ -27,6 +27,11 @@
   white-space: nowrap;
 }
 
+.addressRow svg {
+  height: 1.2em;
+  width: auto;
+}
+
 .nameRow {
   overflow: hidden;
 }

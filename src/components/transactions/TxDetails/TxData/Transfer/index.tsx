@@ -32,7 +32,7 @@ const TransferTxInfo = ({ txInfo, txStatus }: TransferTxInfoProps) => {
   return (
     <Box>
       <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} />
-      <Box display="flex" alignItems="flex-end">
+      <Box display="flex" alignItems="center">
         <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
         <TransferActions address={address} txInfo={txInfo} />
       </Box>
