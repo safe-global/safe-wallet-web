@@ -207,12 +207,20 @@ const pairingModule = (): WalletInit => {
                 case ProviderMethods.ETH_SIGN_TYPED_DATA_V3:
                 case ProviderMethods.ETH_SIGN_TYPED_DATA_V4:
                 // Not supported by WC
-                case ProviderMethods.ETH_SELECT_ACCOUNTS:
-                case ProviderMethods.WALLET_SWITCH_ETHEREUM_CHAIN: {
+                case ProviderMethods.ETH_SELECT_ACCOUNTS: {
                   throw new ProviderRpcError({
                     code: ProviderRpcErrorCode.UNSUPPORTED_METHOD,
                     message: `The Mobile Safe does not support the requested method: ${method}`,
                   })
+                }
+
+                // Switch wallet chain
+                case ProviderMethods.WALLET_SWITCH_ETHEREUM_CHAIN: {
+                  this.connector.updateSession({
+                    chainId: parseInt((params as [{ chainId: string }])[0].chainId),
+                    accounts: this.connector.accounts,
+                  })
+                  return
                 }
 
                 default: {

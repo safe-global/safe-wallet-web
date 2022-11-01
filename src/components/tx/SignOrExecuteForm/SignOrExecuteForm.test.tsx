@@ -115,13 +115,13 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Execute transaction')).toBeInTheDocument()
   })
 
-  it("doesn't display an execute checkbox if execution is the only option", () => {
+  it('the execute checkbox is disabled if execution is the only option', () => {
     const mockTx = createSafeTx()
     const result = render(
       <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} />,
     )
 
-    expect(result.queryByText('Execute transaction')).not.toBeInTheDocument()
+    expect((result.getByRole('checkbox') as HTMLInputElement).disabled).toBe(true)
   })
 
   it("doesn't display an execute checkbox if nonce is incorrect", () => {
