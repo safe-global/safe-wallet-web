@@ -31,7 +31,7 @@ const staticHints: Record<number, { title: string; variant: AlertColor; steps: {
     steps: [
       {
         title: 'Network fee',
-        text: 'Deploying your Safe contract requires the payment of the associated network fee with your connected wallet. An estmation will be provided in the last step.',
+        text: 'Deploying your Safe requires the payment of the associated network fee with your connected wallet. An estmation will be provided in the last step.',
       },
     ],
   },
@@ -45,7 +45,7 @@ const staticHints: Record<number, { title: string; variant: AlertColor; steps: {
       },
       {
         title: 'Managing Owners',
-        text: 'You can always change the amount of owners and required confirmations in your Safe at a later stage after the creation.',
+        text: 'You can always change the amount of owners and required confirmations in your Safe at a later stage after creation.',
       },
       {
         title: 'Safe Setup',
@@ -59,7 +59,7 @@ const staticHints: Record<number, { title: string; variant: AlertColor; steps: {
     steps: [
       {
         title: 'Wait for the creation',
-        text: 'Depending on the network congestion, it can take some time until the transaction is successfully included on the network and picked up by our services.',
+        text: 'Depending on network congestion, it can take some time until the transaction is successfully added to the network and picked up by our services.',
       },
     ],
   },
@@ -69,7 +69,7 @@ const staticHints: Record<number, { title: string; variant: AlertColor; steps: {
     steps: [
       {
         title: 'Connect your Safe',
-        text: 'In our Safe App section you can connect your Safe to over 70 dApps directly or use Wallet Connect to interact with any application.',
+        text: 'In our Safe Apps section you can connect your Safe to over 70 dApps directly or use Wallet Connect to interact with any application.',
       },
     ],
   },
@@ -100,14 +100,15 @@ const CreateSafe = () => {
     {
       title: 'Owners and confirmations',
       subtitle:
-        'Here you can add owners to your Safe and determine how many owners need to confirm before making a successful transaction',
+        'Here you can add owners to your Safe and determine how many owners need to confirm it before executing a transaction',
       render: (data, onSubmit, onBack) => (
         <CreateSafeStep2 setDynamicHint={setDynamicHint} onSubmit={onSubmit} onBack={onBack} data={data} />
       ),
     },
     {
       title: 'Review',
-      subtitle: `You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet.`,
+      subtitle:
+        "You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet.",
       render: (data, onSubmit, onBack) => <CreateSafeStep3 onSubmit={onSubmit} onBack={onBack} data={data} />,
     },
   ]
@@ -141,7 +142,7 @@ const CreateSafe = () => {
               onClose={onClose}
               steps={CreateSafeSteps}
               eventCategory={CREATE_SAFE_CATEGORY}
-              updateActiveStep={setActiveStep}
+              setWidgetStep={setActiveStep}
             />
           ) : (
             <Card>

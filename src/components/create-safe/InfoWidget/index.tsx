@@ -35,42 +35,18 @@ const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidget
       <CardHeader
         sx={{ paddingBottom: '0px' }}
         title={
-          <>
-            <Box className={css.headerWrapper}>
-              <Typography
-                variant="caption"
-                className={css.title}
-                sx={{
-                  backgroundColor: ({ palette }) => palette[variant]?.main,
-                }}
-              >
-                <SvgIcon component={LightbulbIcon} inheritViewBox fontSize="inherit" className={css.lightbulb} />
-                {title}
-              </Typography>
-              <Typography variant="caption" className={css.count}>
-                {steps.length} tip{isMultiStep && 's'}
-              </Typography>
-            </Box>
-          </>
+          <Box className={css.title} sx={{ backgroundColor: ({ palette }) => palette[variant]?.main }}>
+            <SvgIcon component={LightbulbIcon} inheritViewBox className={css.titleIcon} />
+            <Typography variant="caption">
+              <b>{title}</b>
+            </Typography>
+          </Box>
         }
       />
       <CardContent sx={{ padding: '0', '&.MuiCardContent-root': { paddingBottom: '0px' } }}>
         {steps.map(({ title, text }) => {
           return (
-            <Accordion
-              key={title.replace(' ', '-')}
-              className={css.tipAccordion}
-              sx={{
-                '&:hover > .MuiAccordionSummary-root': {
-                  background: 'inherit',
-                },
-                '&.Mui-expanded > .MuiAccordionSummary-root': {
-                  background: 'inherit',
-                  fontWeight: 'bold',
-                },
-              }}
-              defaultExpanded={startExpanded}
-            >
+            <Accordion key={title.replace(' ', '-')} className={css.tipAccordion} defaultExpanded={startExpanded}>
               <AccordionSummary
                 expandIcon={
                   <IconButton sx={{ '&:hover': { background: ({ palette }) => palette[variant]?.light } }}>

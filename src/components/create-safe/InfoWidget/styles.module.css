@@ -1,23 +1,14 @@
-.headerWrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .title {
-  font-weight: 700;
-  padding: calc(var(--space-1) / 2) var(--space-1);
+  width:fit-content;
+  padding: 4px var(--space-1);
   border-radius: 6px;
   display: flex;
   align-items: center;
+  gap: 4px;
 }
 
-.lightbulb {
-  margin-right: calc(var(--space-1) / 2);
-}
-
-.count {
-  color: var(--color-text-secondary);
+.titleIcon {
+  font-size: 12px;
 }
 
 .content {
@@ -27,4 +18,13 @@
 .tipAccordion {
   background-color: inherit;
   border: none;
+}
+
+.tipAccordion :global .MuiAccordionSummary-root:hover {
+  background: inherit;
+}
+
+.tipAccordion :global .Mui-expanded.MuiAccordionSummary-root {
+  background: inherit;
+  font-weight: bold;
 }

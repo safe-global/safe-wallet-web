@@ -85,15 +85,17 @@ const CreateSafeStep2 = ({
             </Button>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
-              Safe Mobile owner key (optional){' '}
-              <Tooltip title="TODO: Add tooltip" arrow placement="top">
-                <span style={{ display: 'flex' }}>
-                  <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
-                </span>
-              </Tooltip>
-            </Typography>
-            <Typography variant="body2">Use your mobile phone as your additional owner key</Typography>
+            <Box p={2} sx={{ backgroundColor: 'background.main', borderRadius: '8px' }}>
+              <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
+                Safe Mobile owner key (optional){' '}
+                <Tooltip title="TODO: Add tooltip" arrow placement="top">
+                  <span style={{ display: 'flex' }}>
+                    <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
+                  </span>
+                </Tooltip>
+              </Typography>
+              <Typography variant="body2">Use your mobile phone as your additional owner key</Typography>
+            </Box>
           </Grid>
 
           <Grid item xs={12}>

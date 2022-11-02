@@ -25,7 +25,7 @@ export type TxStepperProps<TData> = {
   initialData: TData
   initialStep?: number
   eventCategory?: string
-  updateActiveStep?: (step: number | SetStateAction<number>) => void
+  setWidgetStep?: (step: number | SetStateAction<number>) => void
   onClose: () => void
 }
 
@@ -35,20 +35,20 @@ export const useCardStepper = <TData>({
   initialStep,
   eventCategory = MODALS_CATEGORY,
   onClose,
-  updateActiveStep,
+  setWidgetStep,
 }: TxStepperProps<TData>) => {
   const [activeStep, setActiveStep] = useState<number>(initialStep || 0)
   const [stepData, setStepData] = useState(initialData)
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
-    updateActiveStep && updateActiveStep((prevActiveStep) => prevActiveStep + 1)
+    setWidgetStep && setWidgetStep((prevActiveStep) => prevActiveStep + 1)
     trackEvent({ category: eventCategory, action: lastStep ? 'Submit' : 'Next' })
   }
 
   const handleBack = (data?: Partial<TData>) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
-    updateActiveStep && updateActiveStep((prevActiveStep) => prevActiveStep - 1)
+    setWidgetStep && setWidgetStep((prevActiveStep) => prevActiveStep - 1)
     trackEvent({ category: eventCategory, action: firstStep ? 'Cancel' : 'Back' })
 
     if (data) {
@@ -58,7 +58,7 @@ export const useCardStepper = <TData>({
 
   const setStep = (step: number) => {
     setActiveStep(step)
-    updateActiveStep && updateActiveStep(step)
+    setWidgetStep && setWidgetStep(step)
   }
 
   const firstStep = activeStep === 0

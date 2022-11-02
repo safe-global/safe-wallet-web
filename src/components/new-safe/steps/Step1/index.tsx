@@ -50,7 +50,7 @@ function CreateSafeStep1({
   })
 
   const onFormSubmit = (data: Partial<NewSafeFormData>) => {
-    setSafeName(data.name ?? '')
+    setSafeName(data.name ?? fallbackName)
     onSubmit(data)
   }
 
