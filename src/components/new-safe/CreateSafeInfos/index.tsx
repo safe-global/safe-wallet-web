@@ -1,11 +1,12 @@
 import InfoWidget from '@/components/create-safe/InfoWidget'
 import { Grid } from '@mui/material'
 import type { AlertColor } from '@mui/material'
+import { type ReactElement } from 'react'
 
 export type CreateSafeInfoItem = {
   title: string
   variant: AlertColor
-  steps: { title: string; text: string }[]
+  steps: { title: string; text: string | ReactElement }[]
 }
 
 const CreateSafeInfos = ({

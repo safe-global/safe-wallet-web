@@ -1,4 +1,4 @@
-import { Container, Typography, Grid } from '@mui/material'
+import { Container, Typography, Grid, Link } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import useWallet from '@/hooks/wallets/useWallet'
@@ -17,7 +17,7 @@ import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
 import type { AlertColor } from '@mui/material'
 import type { CreateSafeInfoItem } from '../CreateSafeInfos'
 import CreateSafeInfos from '../CreateSafeInfos'
-import { useMemo, useState } from 'react'
+import { type ReactElement, useMemo, useState } from 'react'
 
 export type NewSafeFormData = {
   name: string
@@ -26,7 +26,10 @@ export type NewSafeFormData = {
   mobileOwners: NamedAddress[]
 }
 
-const staticHints: Record<number, { title: string; variant: AlertColor; steps: { title: string; text: string }[] }> = {
+const staticHints: Record<
+  number,
+  { title: string; variant: AlertColor; steps: { title: string; text: string | ReactElement }[] }
+> = {
   1: {
     title: 'Safe Creation',
     variant: 'info',
@@ -51,7 +54,19 @@ const staticHints: Record<number, { title: string; variant: AlertColor; steps: {
       },
       {
         title: 'Safe Setup',
-        text: 'Not sure how many owners and confirmations you need for your Safe? Learn more about setting up your Safe.',
+        text: (
+          <>
+            Not sure how many owners and confirmations you need for your Safe?{' '}
+            <Link
+              sx={{ textDecoration: 'underline' }}
+              href="https://help.gnosis-safe.io/en/articles/4772567-what-safe-setup-should-i-use"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Learn more about setting up your Safe.
+            </Link>
+          </>
+        ),
       },
     ],
   },

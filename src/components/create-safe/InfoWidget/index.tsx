@@ -18,14 +18,12 @@ import css from './styles.module.css'
 
 type InfoWidgetProps = {
   title: string
-  steps: { title: string; text: string }[]
+  steps: { title: string; text: string | ReactElement }[]
   variant: AlertColor
   startExpanded?: boolean
 }
 
 const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidgetProps): ReactElement | null => {
-  const isMultiStep = steps.length > 1
-
   if (steps.length === 0) {
     return null
   }
