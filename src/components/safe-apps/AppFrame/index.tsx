@@ -69,7 +69,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
     useSafePermissions()
   const appName = useMemo(() => (remoteApp ? remoteApp.name : appUrl), [appUrl, remoteApp])
-  const communicator = useAppCommunicator(iframeRef, safeAppFromManifest, chain, {
+  const communicator = useAppCommunicator(iframeRef, remoteApp || safeAppFromManifest, chain, {
     onConfirmTransactions: openTxModal,
     onSignMessage: openSignMessageModal,
     onGetPermissions: getPermissions,
@@ -128,6 +128,17 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     setAppIsLoading(false)
     gtmTrackPageview(`${router.pathname}?appUrl=${router.query.appUrl}`)
   }, [appUrl, iframeRef, setAppIsLoading, router])
+
+  useEffect(() => {
+    if (!appIsLoading) {
+      trackSafeAppEvent(
+        {
+          ...SAFE_APPS_EVENTS.OPEN_APP,
+        },
+        appName,
+      )
+    }
+  }, [appIsLoading, appName])
 
   useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, safeAppRequestId }) => {
