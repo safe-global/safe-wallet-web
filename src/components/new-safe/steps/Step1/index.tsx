@@ -11,14 +11,13 @@ import {
   Grid,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
-
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
-
-import css from './styles.module.css'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
+
+import css from './styles.module.css'
 
 type CreateSafeStep1Form = {
   name: string
@@ -49,9 +48,10 @@ function CreateSafeStep1({
     },
   })
 
-  const onFormSubmit = (data: Partial<NewSafeFormData>) => {
-    setSafeName(data.name ?? fallbackName)
-    onSubmit(data)
+  const onFormSubmit = (data: Pick<NewSafeFormData, 'name'>) => {
+    const name = data.name || fallbackName
+    setSafeName(name)
+    onSubmit({ ...data, name })
   }
 
   return (

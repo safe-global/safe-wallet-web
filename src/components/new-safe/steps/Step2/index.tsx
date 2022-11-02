@@ -13,13 +13,11 @@ import { useSafeSetupHints } from './useSafeSetupHints'
 
 export type CreateSafeStep2Form = {
   owners: NamedAddress[]
-  mobileOwners: NamedAddress[]
   threshold: number
 }
 
 enum CreateSafeStep2Fields {
   owners = 'owners',
-  mobileOwners = 'mobileOwners',
   threshold = 'threshold',
 }
 
@@ -37,7 +35,6 @@ const CreateSafeStep2 = ({
     mode: 'all',
     defaultValues: {
       [CreateSafeStep2Fields.owners]: data.owners,
-      [CreateSafeStep2Fields.mobileOwners]: data.mobileOwners,
       [CreateSafeStep2Fields.threshold]: data.threshold,
     },
   })
@@ -48,13 +45,7 @@ const CreateSafeStep2 = ({
 
   const { fields: ownerFields, append: appendOwner, remove: removeOwner } = useFieldArray({ control, name: 'owners' })
 
-  const {
-    fields: mobileOwnerFields,
-    append: appendMobileOwner,
-    remove: removeMobileOwner,
-  } = useFieldArray({ control, name: 'mobileOwners' })
-
-  const allOwners = [...ownerFields, ...mobileOwnerFields]
+  const allOwners = [...ownerFields]
 
   useSafeSetupHints(allFormData.threshold, allOwners.length, setDynamicHint)
 
