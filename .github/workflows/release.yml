@@ -42,7 +42,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
-      # Script to upload release files
+      # Script to upload release files.
+      # First it uploads new files, so both the previous version and the new one co-exist and there’s no downtime.
+      # Then it uploads a second time, with --delete, to delete the old files.
+      # Finally, it uploads HTML files w/o the `.html` extension so that URLs like `/balances` work.
       - name: 'Upload release build files for production'
         run: |
           cd out
