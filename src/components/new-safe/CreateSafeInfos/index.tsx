@@ -12,15 +12,17 @@ const CreateSafeInfos = ({
   staticHint,
   dynamicHint,
 }: {
-  staticHint: CreateSafeInfoItem
+  staticHint?: CreateSafeInfoItem
   dynamicHint?: CreateSafeInfoItem
 }) => {
   return (
     <Grid item xs={12}>
       <Grid container direction="column" gap={3}>
-        <Grid item>
-          <InfoWidget title={staticHint.title} variant={staticHint.variant} steps={staticHint.steps} />
-        </Grid>
+        {staticHint && (
+          <Grid item>
+            <InfoWidget title={staticHint.title} variant={staticHint.variant} steps={staticHint.steps} />
+          </Grid>
+        )}
         {dynamicHint && (
           <Grid item>
             <InfoWidget

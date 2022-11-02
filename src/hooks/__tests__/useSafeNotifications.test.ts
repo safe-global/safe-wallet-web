@@ -3,8 +3,6 @@ import { renderHook } from '@/tests//test-utils'
 import useSafeNotifications from '../../hooks/useSafeNotifications'
 import useSafeInfo from '../../hooks/useSafeInfo'
 import { showNotification } from '@/store/notificationsSlice'
-import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import * as useChains from '../../hooks/useChains'
 import * as contracts from '@/services/contracts/safeContracts'
 
 // mock showNotification
@@ -18,6 +16,13 @@ jest.mock('@/store/notificationsSlice', () => {
 
 // mock useSafeInfo
 jest.mock('../../hooks/useSafeInfo')
+
+// mock router
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(() => ({
+    query: { safe: 'rin:0x123' },
+  })),
+}))
 
 describe('useSafeNotifications', () => {
   beforeEach(() => {
@@ -35,12 +40,6 @@ describe('useSafeNotifications', () => {
         },
         safeAddress: '0x123',
       })
-      jest.spyOn(useChains, 'useCurrentChain').mockImplementation(
-        () =>
-          ({
-            shortName: 'rin',
-          } as ChainInfo),
-      )
 
       // render the hook
       const { result } = renderHook(() => useSafeNotifications())

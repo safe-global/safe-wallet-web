@@ -22,7 +22,7 @@ type UseBrowserPermissionsReturnType = {
 }
 
 const useBrowserPermissions = (): UseBrowserPermissionsReturnType => {
-  const [permissions, setPermissions] = useLocalStorage<BrowserPermissions>(BROWSER_PERMISSIONS, {})
+  const [permissions = {}, setPermissions] = useLocalStorage<BrowserPermissions>(BROWSER_PERMISSIONS)
 
   const getPermissions = useCallback(
     (origin: string) => {

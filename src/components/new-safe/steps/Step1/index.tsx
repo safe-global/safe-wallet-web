@@ -16,6 +16,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
+import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
 
 import css from './styles.module.css'
 
@@ -34,8 +35,9 @@ function CreateSafeStep1({
   onSubmit,
   onBack,
   setSafeName,
-}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'> & { setSafeName: (name: string) => void }) {
+}: StepRenderProps<NewSafeFormData> & { setSafeName: (name: string) => void }) {
   const fallbackName = useMnemonicSafeName()
+  const { isConnected } = useCreateSafe()
 
   const {
     handleSubmit,
@@ -108,9 +110,9 @@ function CreateSafeStep1({
           <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3, alignSelf: 'normal' }} />
           <Box display="flex" flexDirection="row" gap={3}>
             <Button variant="outlined" onClick={() => onBack()}>
-              Cancel
+              Back
             </Button>
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" disabled={!isConnected}>
               Continue
             </Button>
           </Box>

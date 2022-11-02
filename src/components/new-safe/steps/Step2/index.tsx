@@ -10,6 +10,7 @@ import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
 import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
 import { useSafeSetupHints } from './useSafeSetupHints'
+import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
 
 export type CreateSafeStep2Form = {
   owners: NamedAddress[]
@@ -28,9 +29,11 @@ const CreateSafeStep2 = ({
   onBack,
   data,
   setDynamicHint,
-}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'> & {
+}: StepRenderProps<NewSafeFormData> & {
   setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
 }): ReactElement => {
+  const { isConnected } = useCreateSafe()
+
   const formMethods = useForm<CreateSafeStep2Form>({
     mode: 'all',
     defaultValues: {
@@ -71,6 +74,7 @@ const CreateSafeStep2 = ({
               variant="text"
               onClick={() => appendOwner({ name: '', address: '' }, { shouldFocus: true })}
               startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+              size="large"
             >
               Add new owner
             </Button>
@@ -117,7 +121,7 @@ const CreateSafeStep2 = ({
               <Button variant="outlined" onClick={handleBack}>
                 Back
               </Button>
-              <Button type="submit" variant="contained">
+              <Button type="submit" variant="contained" disabled={!isConnected}>
                 Continue
               </Button>
             </Box>

@@ -3,6 +3,7 @@ const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 // generate number between 0.00001 and 0.00020
 const sendValue = Math.floor(Math.random() * 20 + 1) / 100000
+let recommendedNonce
 
 describe('Queue a transaction on 1/N', () => {
   before(() => {
@@ -37,15 +38,22 @@ describe('Queue a transaction on 1/N', () => {
     // Alias for New transaction modal
     cy.contains('h2', 'Review transaction').parents('div').as('modal')
 
-    cy.contains('Signing the transaction with nonce 4').click()
+    // Estimation is loaded
+    cy.get('button[type="submit"]').should('not.be.disabled')
+
+    // Gets the recommended nonce
+    cy.contains('Signing the transaction with nonce').should(($div) => {
+      // get the number in the string
+      recommendedNonce = $div.text().match(/\d+$/)[0]
+    })
+
+    // Changes nonce to next one
+    cy.contains('Signing the transaction with nonce').click()
     cy.contains('button', 'Edit').click()
-
     cy.get('label').contains('Safe transaction nonce').next().clear().type('3')
-
-    // Accepts the values
     cy.contains('Confirm').click()
 
-    // Asserts the execute checkbox is checked
+    // Asserts the execute checkbox exists and is checkable
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]')
         .parent('span')
@@ -56,10 +64,9 @@ describe('Queue a transaction on 1/N', () => {
           expect(classListString).to.include('checked')
         })
     })
+    cy.contains('Estimated fee').should('exist')
 
-    // Open the new transaction modal
     cy.contains('Execute transaction').click()
-
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]')
         .parent('span')
@@ -70,21 +77,34 @@ describe('Queue a transaction on 1/N', () => {
           expect(classListString).not.to.include('checked')
         })
     })
+    cy.contains('Signing the transaction with nonce').should('exist')
+
+    // Changes back to recommended nonce
+    cy.contains('Signing the transaction with nonce').click()
+    cy.contains('Edit').click()
+    cy.get('button[aria-label="Reset to recommended nonce"]').click()
+
+    // Accepts the values
+    cy.contains('Confirm').click()
+
+    cy.get('@modal').within(() => {
+      cy.get('input[type="checkbox"]').should('not.exist')
+    })
 
     cy.contains('Submit').click()
   })
 
-  it('should display the queued tx on Dashboard', () => {
-    cy.contains('h2', 'Transaction queue').parents('section').as('txQueueSection')
+  it('should click the notification and see the transaction queued', () => {
+    // Click on the notification
+    cy.contains('View transaction').click()
 
-    cy.get('@txQueueSection').within(() => {
-      // There should be queued transactions
-      cy.contains('This Safe has no queued transactions').should('not.exist')
+    // Single Tx page
+    cy.contains('h3', 'Transaction details').should('be.visible')
 
-      // Created transaction should be queued
-      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '3' + 'Send' + '-' + `${sendValue} GOR` + '1/1').should(
-        'exist',
-      )
-    })
+    // Queue label
+    cy.contains('Queued - transaction with nonce 3 needs to be executed first').should('be.visible')
+
+    // Transaction summary
+    cy.contains(`${recommendedNonce}` + 'Send' + '-' + `${sendValue} GOR`).should('exist')
   })
 })

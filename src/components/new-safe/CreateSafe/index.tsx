@@ -1,17 +1,19 @@
+import { Container, Typography, Grid } from '@mui/material'
+import { useRouter } from 'next/router'
+
 import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '../OverviewWidget'
 import type { NamedAddress } from '@/components/create-safe/types'
 import type { TxStepperProps } from '../CardStepper/useCardStepper'
-import CreateSafeStep1 from '../steps/Step1'
+import CreateSafeStep0 from '@/components/new-safe/steps/Step0'
+import CreateSafeStep1 from '@/components/new-safe/steps/Step1'
+import CreateSafeStep2 from '@/components/new-safe/steps/Step2'
+import CreateSafeStep3 from '@/components/new-safe/steps/Step3'
 import useAddressBook from '@/hooks/useAddressBook'
-import CreateSafeStep2 from '../steps/Step2'
 import { CardStepper } from '../CardStepper'
-import Grid from '@mui/material/Grid'
-import { Card, CardContent, Container, Typography } from '@mui/material'
-import { useRouter } from 'next/router'
+
 import { AppRoutes } from '@/config/routes'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
-import CreateSafeStep3 from '@/components/new-safe/steps/Step3'
 import type { AlertColor } from '@mui/material'
 import type { CreateSafeInfoItem } from '../CreateSafeInfos'
 import CreateSafeInfos from '../CreateSafeInfos'
@@ -25,7 +27,7 @@ export type NewSafeFormData = {
 }
 
 const staticHints: Record<number, { title: string; variant: AlertColor; steps: { title: string; text: string }[] }> = {
-  0: {
+  1: {
     title: 'Safe Creation',
     variant: 'info',
     steps: [
@@ -35,7 +37,7 @@ const staticHints: Record<number, { title: string; variant: AlertColor; steps: {
       },
     ],
   },
-  1: {
+  2: {
     title: 'Safe Creation',
     variant: 'info',
     steps: [
@@ -53,7 +55,7 @@ const staticHints: Record<number, { title: string; variant: AlertColor; steps: {
       },
     ],
   },
-  2: {
+  3: {
     title: 'Safe Creation',
     variant: 'info',
     steps: [
@@ -63,7 +65,7 @@ const staticHints: Record<number, { title: string; variant: AlertColor; steps: {
       },
     ],
   },
-  3: {
+  4: {
     title: 'Safe Usage',
     variant: 'success',
     steps: [
@@ -91,25 +93,40 @@ const CreateSafe = () => {
 
   const CreateSafeSteps: TxStepperProps<NewSafeFormData>['steps'] = [
     {
+      title: 'Connect wallet',
+      subtitle: 'In order to create a Safe you need to connect a wallet',
+      render: (data, onSubmit, onBack, setStep) => (
+        <CreateSafeStep0 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      ),
+    },
+    {
       title: 'Select network and name Safe',
       subtitle: 'Select the network on which to create your Safe',
-      render: (data, onSubmit, onBack) => (
-        <CreateSafeStep1 setSafeName={setSafeName} onSubmit={onSubmit} onBack={onBack} data={data} />
+      render: (data, onSubmit, onBack, setStep) => (
+        <CreateSafeStep1 setSafeName={setSafeName} data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
       ),
     },
     {
       title: 'Owners and confirmations',
       subtitle:
         'Here you can add owners to your Safe and determine how many owners need to confirm it before executing a transaction',
-      render: (data, onSubmit, onBack) => (
-        <CreateSafeStep2 setDynamicHint={setDynamicHint} onSubmit={onSubmit} onBack={onBack} data={data} />
+      render: (data, onSubmit, onBack, setStep) => (
+        <CreateSafeStep2
+          setDynamicHint={setDynamicHint}
+          data={data}
+          onSubmit={onSubmit}
+          onBack={onBack}
+          setStep={setStep}
+        />
       ),
     },
     {
       title: 'Review',
       subtitle:
         "You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet.",
-      render: (data, onSubmit, onBack) => <CreateSafeStep3 onSubmit={onSubmit} onBack={onBack} data={data} />,
+      render: (data, onSubmit, onBack, setStep) => (
+        <CreateSafeStep3 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      ),
     },
   ]
 
@@ -126,7 +143,6 @@ const CreateSafe = () => {
     router.push(AppRoutes.welcome)
   }
 
-  // TODO: Improve layout when other widget/responsive design is ready
   return (
     <Container>
       <Grid container columnSpacing={3} justifyContent="center" mt={[2, null, 7]}>
@@ -136,28 +152,18 @@ const CreateSafe = () => {
           </Typography>
         </Grid>
         <Grid item xs={12} md={8} order={[1, null, 0]}>
-          {wallet?.address ? (
-            <CardStepper
-              initialData={initialData}
-              onClose={onClose}
-              steps={CreateSafeSteps}
-              eventCategory={CREATE_SAFE_CATEGORY}
-              setWidgetStep={setActiveStep}
-            />
-          ) : (
-            <Card>
-              <CardContent>
-                <Typography variant="h3" fontWeight={700}>
-                  You need to connect a wallet to create a new Safe.
-                </Typography>
-              </CardContent>
-            </Card>
-          )}
+          <CardStepper
+            initialData={initialData}
+            onClose={onClose}
+            steps={CreateSafeSteps}
+            eventCategory={CREATE_SAFE_CATEGORY}
+            setWidgetStep={setActiveStep}
+          />
         </Grid>
 
         <Grid item xs={12} md={4} mb={[3, null, 0]} order={[0, null, 1]}>
           <Grid container spacing={3}>
-            {wallet?.address && activeStep < 2 && <OverviewWidget safeName={safeName} />}
+            {wallet?.address && activeStep < 3 && <OverviewWidget safeName={safeName} />}
             {wallet?.address && <CreateSafeInfos staticHint={staticHint} dynamicHint={dynamicHint} />}
           </Grid>
         </Grid>

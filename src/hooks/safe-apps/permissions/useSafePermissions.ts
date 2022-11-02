@@ -36,7 +36,7 @@ type UseSafePermissionsReturnType = {
 }
 
 const useSafePermissions = (): UseSafePermissionsReturnType => {
-  const [permissions, setPermissions] = useLocalStorage<SafePermissions>(SAFE_PERMISSIONS, {})
+  const [permissions = {}, setPermissions] = useLocalStorage<SafePermissions>(SAFE_PERMISSIONS)
 
   const [permissionsRequest, setPermissionsRequest] = useState<SafePermissionsRequest | undefined>()
 
