@@ -1,19 +1,19 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
-import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
+import useSetCreationStep from '@/components/create-safe/useSetCreationStep'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useGasPrice from '@/hooks/useGasPrice'
-import useWallet from '@/hooks/wallets/useWallet'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { formatVisualAmount } from '@/utils/formatters'
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useMemo } from 'react'
 import { useEstimateSafeCreationGas } from '../useEstimateSafeCreationGas'
-import { computeNewSafeAddress } from '@/components/create-safe/sender'
 import { useCurrentChain } from '@/hooks/useChains'
 import type { SafeFormData } from '@/components/create-safe/types'
 import { getFallbackHandlerContractInstance } from '@/services/contracts/safeContracts'
+import { computeNewSafeAddress } from '@/components/create-safe/logic'
+import { useWeb3 } from '@/hooks/wallets/web3'
+import useWallet from '@/hooks/wallets/useWallet'
+import usePendingCreation from '../usePendingCreation'
 
 type Props = {
   params: SafeFormData
@@ -23,20 +23,24 @@ type Props = {
 }
 
 const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
-  useResetSafeCreation(setStep)
+  useSetCreationStep(setStep)
   const wallet = useWallet()
-  const ethersProvider = useWeb3()
-  const [_, setPendingSafe] = usePendingSafe()
+  const provider = useWeb3()
   const chain = useCurrentChain()
   const saltNonce = useMemo(() => Date.now(), [])
+  const [_, setPendingSafe] = usePendingCreation()
 
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
 
-  const { gasLimit } = useEstimateSafeCreationGas({
-    owners: params.owners.map((owner) => owner.address),
-    threshold: params.threshold,
-    saltNonce,
-  })
+  const safeParams = useMemo(() => {
+    return {
+      owners: params.owners.map((owner) => owner.address),
+      threshold: params.threshold,
+      saltNonce,
+    }
+  }, [params.owners, params.threshold, saltNonce])
+
+  const { gasLimit } = useEstimateSafeCreationGas(safeParams)
 
   const totalFee =
     gasLimit && maxFeePerGas && maxPriorityFeePerGas
@@ -44,7 +48,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
       : '> 0.001'
 
   const createSafe = async () => {
-    if (!wallet || !ethersProvider || !chain) return
+    if (!wallet || !provider || !chain) return
 
     const fallbackHandler = getFallbackHandlerContractInstance(chain.chainId)
 
@@ -59,10 +63,10 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
       },
     }
 
-    const safeAddress = await computeNewSafeAddress(ethersProvider, props)
+    const safeAddress = await computeNewSafeAddress(provider, props)
 
-    setPendingSafe({ ...params, address: safeAddress, saltNonce })
-    onSubmit(params)
+    setPendingSafe({ ...params, saltNonce, safeAddress })
+    onSubmit({ ...params, saltNonce, safeAddress })
   }
 
   return (

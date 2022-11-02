@@ -10,6 +10,11 @@ const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
       content="Safe is the most trusted platform to manage digital assets on Ethereum (formerly known as the Gnosis Safe multisig)."
     />
 
+    {/* Social sharing */}
+    <meta name="og:image" content="https://app.safe.global/images/social-share.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://app.safe.global/images/social-share.png" />
+
     {/* CSP */}
     <meta httpEquiv="Content-Security-Policy" content={ContentSecurityPolicy} />
     {IS_PRODUCTION && <meta httpEquiv="Strict-Transport-Security" content={StrictTransportSecurity} />}

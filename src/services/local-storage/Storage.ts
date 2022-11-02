@@ -21,28 +21,33 @@ class Storage {
     return `${this.prefix}${key}`
   }
 
-  public getItem = <T>(key: string): T | undefined => {
+  public getItem = <T>(key: string): T | null => {
     const fullKey = this.getPrefixedKey(key)
     let saved: string | null = null
     try {
-      saved = this.storage?.getItem(fullKey) || null
+      saved = this.storage?.getItem(fullKey) ?? null
     } catch (err) {
       logError(Errors._700, `key ${key} – ${(err as Error).message}`)
     }
 
-    if (!saved || saved === 'undefined') return
+    if (saved == null) return null
 
     try {
       return JSON.parse(saved) as T
     } catch (err) {
       logError(Errors._700, `key ${key} – ${(err as Error).message}`)
     }
+    return null
   }
 
   public setItem = <T>(key: string, item: T): void => {
     const fullKey = this.getPrefixedKey(key)
     try {
-      this.storage?.setItem(fullKey, JSON.stringify(item))
+      if (item == null) {
+        this.storage?.removeItem(fullKey)
+      } else {
+        this.storage?.setItem(fullKey, JSON.stringify(item))
+      }
     } catch (err) {
       logError(Errors._701, `key ${key} – ${(err as Error).message}`)
     }

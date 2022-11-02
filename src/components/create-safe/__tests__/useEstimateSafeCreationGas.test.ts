@@ -5,7 +5,7 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as chainIdModule from '@/hooks/useChainId'
 import * as store from '@/store'
 import * as safeContracts from '@/services/contracts/safeContracts'
-import * as sender from './sender'
+import * as sender from '@/components/create-safe/logic'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as web3 from '@/hooks/wallets/web3'
 import { waitFor } from '@testing-library/react'
@@ -29,7 +29,7 @@ describe('useEstimateSafeCreationGas', () => {
     jest
       .spyOn(safeContracts, 'getProxyFactoryContractInstance')
       .mockReturnValue({ getAddress: () => ZERO_ADDRESS } as GnosisSafeProxyFactoryEthersContract)
-    jest.spyOn(sender, 'getSafeCreationTx').mockReturnValue(EMPTY_DATA)
+    jest.spyOn(sender, 'encodeSafeCreationTx').mockReturnValue(EMPTY_DATA)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
   })
 
@@ -41,11 +41,8 @@ describe('useEstimateSafeCreationGas', () => {
 
   it('should estimate gas', async () => {
     const mockProvider = new JsonRpcProvider()
-    mockProvider.estimateGas = jest.fn(() => {
-      return Promise.resolve(BigNumber.from('123'))
-    })
     jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(mockProvider)
-    jest.spyOn(sender, 'getSafeCreationTx').mockReturnValue(EMPTY_DATA)
+    jest.spyOn(sender, 'estimateSafeCreationGas').mockReturnValue(Promise.resolve(BigNumber.from('123')))
     jest.spyOn(wallet, 'default').mockReturnValue({
       label: 'MetaMask',
       chainId: '4',

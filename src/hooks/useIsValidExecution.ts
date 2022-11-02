@@ -49,6 +49,7 @@ const useIsValidExecution = (
       const err = _err as EthersError
 
       if (isContractError(err)) {
+        // @ts-ignore
         err.reason += `: ${ContractErrorCodes[err.reason]}`
       }
 
