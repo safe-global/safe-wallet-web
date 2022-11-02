@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
 import { getBalances, getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { AddressBookItem, RequestId } from '@gnosis.pm/safe-apps-sdk'
@@ -34,8 +34,11 @@ import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
 import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTransactionQueueBarState'
+import { gtmTrackPageview } from '@/services/analytics/gtm'
+import { useRouter } from 'next/router'
+import Head from 'next/head'
 
-const UNKNOWN_APP = 'unknown'
+const UNKNOWN_APP_NAME = 'Unknown App'
 
 type AppFrameProps = {
   appUrl: string
@@ -50,7 +53,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const addressBook = useAddressBook()
   const chain = useCurrentChain()
   const granted = useIsGranted()
-  const startTime = useRef(0)
+  const router = useRouter()
   const {
     expanded: queueBarExpanded,
     dismissedByUser: queueBarDismissed,
@@ -123,36 +126,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     }
 
     setAppIsLoading(false)
-  }, [appUrl, iframeRef, setAppIsLoading])
-
-  useEffect(() => {
-    if (appIsLoading) {
-      return
-    }
-
-    startTime.current = Date.now()
-
-    return () => {
-      trackSafeAppEvent(
-        {
-          ...SAFE_APPS_EVENTS.TIME_ELAPSED_IN_SAFE_APP,
-          label: Date.now() - startTime.current,
-        },
-        appName,
-      )
-    }
-  }, [appIsLoading, appName])
-
-  useEffect(() => {
-    if (!appIsLoading) {
-      trackSafeAppEvent(
-        {
-          ...SAFE_APPS_EVENTS.OPEN_APP,
-        },
-        appName,
-      )
-    }
-  }, [appIsLoading, appName])
+    gtmTrackPageview(`${router.pathname}?appUrl=${router.query.appUrl}`)
+  }, [appUrl, iframeRef, setAppIsLoading, router])
 
   useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, safeAppRequestId }) => {
@@ -200,83 +175,89 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   }
 
   return (
-    <div className={css.wrapper}>
-      {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
+    <>
+      <Head>
+        <title>Safe Apps - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}</title>
+      </Head>
 
-      {appIsLoading && (
-        <div className={css.loadingContainer}>
-          {isLoadingSlow && (
-            <Typography variant="h4" gutterBottom>
-              The Safe App is taking too long to load, consider refreshing.
-            </Typography>
-          )}
-          <CircularProgress size={48} color="primary" />
-        </div>
-      )}
+      <div className={css.wrapper}>
+        {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
 
-      <iframe
-        className={css.iframe}
-        id={`iframe-${appUrl}`}
-        ref={iframeRef}
-        src={appUrl}
-        title={safeAppFromManifest?.name}
-        onLoad={onIframeLoad}
-        allow={allowedFeaturesList}
-        style={{
-          display: appIsLoading ? 'none' : 'block',
-          paddingBottom: queueBarVisible ? TRANSACTION_BAR_HEIGHT : 0,
-        }}
-      />
+        {appIsLoading && (
+          <div className={css.loadingContainer}>
+            {isLoadingSlow && (
+              <Typography variant="h4" gutterBottom>
+                The Safe App is taking too long to load, consider refreshing.
+              </Typography>
+            )}
+            <CircularProgress size={48} color="primary" />
+          </div>
+        )}
 
-      <TransactionQueueBar
-        expanded={queueBarExpanded}
-        visible={!queueBarDismissed}
-        setExpanded={setExpanded}
-        onDismiss={dismissQueueBar}
-        transactions={transactions}
-      />
-
-      {txModalState.isOpen && (
-        <SafeAppsTxModal
-          onClose={onSafeAppsModalClose}
-          initialData={[
-            {
-              app: safeAppFromManifest,
-              appId: remoteApp?.id,
-              requestId: txModalState.requestId,
-              txs: txModalState.txs,
-              params: txModalState.params,
-            },
-          ]}
+        <iframe
+          className={css.iframe}
+          id={`iframe-${appUrl}`}
+          ref={iframeRef}
+          src={appUrl}
+          title={safeAppFromManifest?.name}
+          onLoad={onIframeLoad}
+          allow={allowedFeaturesList}
+          style={{
+            display: appIsLoading ? 'none' : 'block',
+            paddingBottom: queueBarVisible ? TRANSACTION_BAR_HEIGHT : 0,
+          }}
         />
-      )}
 
-      {signMessageModalState.isOpen && (
-        <SafeAppsSignMessageModal
-          onClose={onSafeAppsModalClose}
-          initialData={[
-            {
-              app: safeAppFromManifest,
-              appId: remoteApp?.id,
-              requestId: signMessageModalState.requestId,
-              message: signMessageModalState.message,
-              method: signMessageModalState.method as Methods.signMessage | Methods.signTypedMessage,
-            },
-          ]}
+        <TransactionQueueBar
+          expanded={queueBarExpanded}
+          visible={!queueBarDismissed}
+          setExpanded={setExpanded}
+          onDismiss={dismissQueueBar}
+          transactions={transactions}
         />
-      )}
 
-      {permissionsRequest && (
-        <PermissionsPrompt
-          isOpen
-          origin={permissionsRequest.origin}
-          requestId={permissionsRequest.requestId}
-          onAccept={onAcceptPermissionRequest}
-          onReject={onRejectPermissionRequest}
-          permissions={permissionsRequest.request}
-        />
-      )}
-    </div>
+        {txModalState.isOpen && (
+          <SafeAppsTxModal
+            onClose={onSafeAppsModalClose}
+            initialData={[
+              {
+                app: safeAppFromManifest,
+                appId: remoteApp?.id,
+                requestId: txModalState.requestId,
+                txs: txModalState.txs,
+                params: txModalState.params,
+              },
+            ]}
+          />
+        )}
+
+        {signMessageModalState.isOpen && (
+          <SafeAppsSignMessageModal
+            onClose={onSafeAppsModalClose}
+            initialData={[
+              {
+                app: safeAppFromManifest,
+                appId: remoteApp?.id,
+                requestId: signMessageModalState.requestId,
+                message: signMessageModalState.message,
+                method: signMessageModalState.method as Methods.signMessage | Methods.signTypedMessage,
+              },
+            ]}
+          />
+        )}
+
+        {permissionsRequest && (
+          <PermissionsPrompt
+            isOpen
+            origin={permissionsRequest.origin}
+            requestId={permissionsRequest.requestId}
+            onAccept={onAcceptPermissionRequest}
+            onReject={onRejectPermissionRequest}
+            permissions={permissionsRequest.request}
+          />
+        )}
+      </div>
+    </>
   )
 }
 
