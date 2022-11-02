@@ -21,7 +21,7 @@ export type TagManagerArgs = {
   dataLayer?: DataLayer
 }
 
-export const DATA_LAYER_NAME = 'dataLayer'
+const DATA_LAYER_NAME = 'dataLayer'
 
 // Initialization scripts
 

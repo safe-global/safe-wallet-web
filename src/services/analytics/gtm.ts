@@ -8,7 +8,7 @@
  */
 
 import type { TagManagerArgs } from './TagManager'
-import TagManager, { DATA_LAYER_NAME } from './TagManager'
+import TagManager from './TagManager'
 import Cookies from 'js-cookie'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
@@ -67,13 +67,7 @@ export const gtmInit = (): void => {
   })
 }
 
-const isGtmLoaded = (): boolean => {
-  return typeof window !== 'undefined' && !!window[DATA_LAYER_NAME]
-}
-
 export const gtmClear = (): void => {
-  if (!isGtmLoaded()) return
-
   // Delete GA cookies
   const path = '/'
   const domain = `.${location.host.split('.').slice(-2).join('.')}`
@@ -100,8 +94,6 @@ type PageviewGtmEvent = GtmEvent & {
 
 const gtmSend = (event: GtmEvent): void => {
   console.info('[Analytics]', event)
-
-  if (!isGtmLoaded()) return
 
   TagManager.dataLayer(event)
 }
