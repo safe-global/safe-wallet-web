@@ -13,9 +13,16 @@ const TokenIcon = ({
   size?: number
   fallbackSrc?: string
 }): ReactElement | null => {
-  const FALLBACK_ICON = '/images/common/token-placeholder.svg'
+  let FALLBACK_ICON = '/images/common/token-placeholder.svg'
+  if (tokenSymbol) {
+    if (['CELO', 'cUSD', 'cEUR', 'cREAL'].includes(tokenSymbol)) {
+      FALLBACK_ICON = `https://reserve.mento.org/assets/tokens/${tokenSymbol}.svg`
+    } else {
+      FALLBACK_ICON = `https://raw.githubusercontent.com/ubeswap/default-token-list/master/assets/asset_${tokenSymbol}.png`
+    }
+  }
 
-  return !logoUri ? null : (
+  return (
     <ImageFallback
       src={logoUri}
       alt={tokenSymbol}
