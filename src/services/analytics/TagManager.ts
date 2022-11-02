@@ -10,33 +10,22 @@ export type TagManagerArgs = {
   /**
    * Used to set environments.
    */
-  auth?: string | undefined
+  auth: string
   /**
    * Used to set environments, something like env-00.
    */
-  preview?: string | undefined
+  preview: string
   /**
    * Object that contains all of the information that you want to pass to Google Tag Manager.
    */
-  dataLayer?: DataLayer | undefined
+  dataLayer?: DataLayer
 }
 
 export const DATA_LAYER_NAME = 'dataLayer'
 
-export const _getRequiredGtmArgs = ({ gtmId, dataLayer = undefined, auth = '', preview = '' }: TagManagerArgs) => {
-  return {
-    gtmId,
-    dataLayer,
-    auth: auth ? `&gtm_auth=${auth}` : '',
-    preview: preview ? `&gtm_preview=${preview}` : '',
-  }
-}
-
 // Initialization scripts
 
-export const _getGtmScript = (args: TagManagerArgs) => {
-  const { gtmId, auth, preview } = _getRequiredGtmArgs(args)
-
+export const _getGtmScript = ({ gtmId, auth, preview }: TagManagerArgs) => {
   const script = document.createElement('script')
 
   const gtmScript = `
@@ -47,7 +36,7 @@ export const _getGtmScript = (args: TagManagerArgs) => {
         j = d.createElement(s),
         dl = l != 'dataLayer' ? '&l=' + l : '';
       j.async = true;
-      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl + '${auth}${preview}&gtm_cookies_win=x';
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl + '&gtm_auth=${auth}&gtm_preview=${preview}&gtm_cookies_win=x';
       f.parentNode.insertBefore(j, f);
     })(window, document, 'script', '${DATA_LAYER_NAME}', '${gtmId}');`
 
@@ -58,37 +47,19 @@ export const _getGtmScript = (args: TagManagerArgs) => {
 
 // Data layer scripts
 
-export const _getGtmDataLayerScript = (dataLayer: DataLayer) => {
-  const script = document.createElement('script')
-
-  const gtmDataLayerScript = `
-      window.${DATA_LAYER_NAME} = window.${DATA_LAYER_NAME} || [];
-      window.${DATA_LAYER_NAME}.push(${JSON.stringify(dataLayer)})`
-
-  script.innerHTML = gtmDataLayerScript
-
-  return script
-}
-
 const TagManager = {
-  initialize: (args: TagManagerArgs) => {
-    const { dataLayer } = _getRequiredGtmArgs(args)
+  dataLayer: (dataLayer: DataLayer) => {
+    window[DATA_LAYER_NAME] ||= []
 
+    return window[DATA_LAYER_NAME].push(dataLayer)
+  },
+  initialize: ({ dataLayer, ...args }: TagManagerArgs) => {
     if (dataLayer) {
-      const gtmDataLayerScript = _getGtmDataLayerScript(dataLayer)
-      document.head.appendChild(gtmDataLayerScript)
+      TagManager.dataLayer(dataLayer)
     }
 
     const gtmScript = _getGtmScript(args)
     document.head.insertBefore(gtmScript, document.head.childNodes[0])
-  },
-  dataLayer: (dataLayer: DataLayer) => {
-    if (window[DATA_LAYER_NAME]) {
-      return window[DATA_LAYER_NAME].push(dataLayer)
-    }
-
-    const gtmDataLayerScript = _getGtmDataLayerScript(dataLayer)
-    document.head.insertBefore(gtmDataLayerScript, document.head.childNodes[0])
   },
 }
 
