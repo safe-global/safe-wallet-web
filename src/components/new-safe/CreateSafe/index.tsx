@@ -61,7 +61,7 @@ const staticHints: Record<
               sx={{ textDecoration: 'underline' }}
               href="https://help.gnosis-safe.io/en/articles/4772567-what-safe-setup-should-i-use"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               Learn more about setting up your Safe.
             </Link>

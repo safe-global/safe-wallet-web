@@ -1,3 +1,7 @@
+.cardHeader {
+  padding-bottom: 0px;
+}
+
 .title {
   width:fit-content;
   padding: 4px var(--space-1);
@@ -11,7 +15,7 @@
   font-size: 12px;
 }
 
-.content {
+.tipsList :global .MuiCardContent-root {
   padding: 0;
 }
 
@@ -27,4 +31,8 @@
 .tipAccordion :global .Mui-expanded.MuiAccordionSummary-root {
   background: inherit;
   font-weight: bold;
+}
+
+.tipAccordion :global .MuiAccordionDetails-root {
+  padding-top: 0;
 }
