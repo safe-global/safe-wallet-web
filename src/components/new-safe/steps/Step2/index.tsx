@@ -8,6 +8,7 @@ import { OwnerRow } from './OwnerRow'
 import type { NamedAddress } from '@/components/create-safe/types'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
+import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
 
 type CreateSafeStep2Form = {
   owners: NamedAddress[]
@@ -23,11 +24,9 @@ enum CreateSafeStep2Fields {
 
 const STEP_2_FORM_ID = 'create-safe-step-2-form'
 
-const CreateSafeStep2 = ({
-  onSubmit,
-  onBack,
-  data,
-}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'>): ReactElement => {
+const CreateSafeStep2 = ({ onSubmit, onBack, data }: StepRenderProps<NewSafeFormData>): ReactElement => {
+  const { isConnected } = useCreateSafe()
+
   const formMethods = useForm<CreateSafeStep2Form>({
     mode: 'all',
     defaultValues: {
@@ -73,6 +72,7 @@ const CreateSafeStep2 = ({
               variant="text"
               onClick={() => appendOwner({ name: '', address: '' }, { shouldFocus: true })}
               startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+              size="large"
             >
               Add new owner
             </Button>
@@ -104,6 +104,7 @@ const CreateSafeStep2 = ({
               variant="text"
               onClick={() => appendMobileOwner({ name: '', address: '' }, { shouldFocus: true })}
               startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+              size="large"
             >
               Add mobile owner
             </Button>
@@ -137,7 +138,7 @@ const CreateSafeStep2 = ({
               <Button variant="outlined" onClick={handleBack}>
                 Back
               </Button>
-              <Button type="submit" variant="contained">
+              <Button type="submit" variant="contained" disabled={!isConnected}>
                 Continue
               </Button>
             </Box>

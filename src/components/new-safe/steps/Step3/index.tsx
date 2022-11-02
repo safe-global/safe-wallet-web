@@ -11,6 +11,7 @@ import { formatVisualAmount } from '@/utils/formatters'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/CreateSafe'
 import css from './styles.module.css'
+import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
 
 enum CreateSafeStep3Fields {
   name = 'name',
@@ -40,11 +41,8 @@ const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
   )
 }
 
-const CreateSafeStep3 = ({
-  onSubmit,
-  onBack,
-  data,
-}: Pick<StepRenderProps<NewSafeFormData>, 'onSubmit' | 'data' | 'onBack'>): ReactElement => {
+const CreateSafeStep3 = ({ onSubmit, onBack, data }: StepRenderProps<NewSafeFormData>): ReactElement => {
+  const { isConnected } = useCreateSafe()
   const chain = useCurrentChain()
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
   const saltNonce = useMemo(() => Date.now(), [])
@@ -148,7 +146,7 @@ const CreateSafeStep3 = ({
               <Button variant="outlined" onClick={handleBack}>
                 Back
               </Button>
-              <Button type="submit" variant="contained">
+              <Button type="submit" variant="contained" disabled={!isConnected}>
                 Continue
               </Button>
             </Box>
