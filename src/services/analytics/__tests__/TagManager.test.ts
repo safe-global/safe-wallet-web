@@ -14,8 +14,8 @@ describe('TagManager', () => {
       const script1 = _getGtmScript({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
 
       expect(script1.innerHTML).toContain(MOCK_ID)
-      expect(script1.innerHTML).not.toContain(`&gtm_auth=${MOCK_AUTH}`)
-      expect(script1.innerHTML).not.toContain(`&gtm_auth=${MOCK_PREVIEW}`)
+      expect(script1.innerHTML).toContain(`&gtm_auth=${MOCK_AUTH}`)
+      expect(script1.innerHTML).toContain(`&gtm_preview=${MOCK_PREVIEW}`)
       expect(script1.innerHTML).toContain('dataLayer')
     })
   })
