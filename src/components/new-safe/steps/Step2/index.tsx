@@ -48,9 +48,7 @@ const CreateSafeStep2 = ({
 
   const { fields: ownerFields, append: appendOwner, remove: removeOwner } = useFieldArray({ control, name: 'owners' })
 
-  const allOwners = [...ownerFields]
-
-  useSafeSetupHints(allFormData.threshold, allOwners.length, setDynamicHint)
+  useSafeSetupHints(allFormData.threshold, ownerFields.length, setDynamicHint)
 
   const handleBack = () => {
     onBack(allFormData)
@@ -107,13 +105,13 @@ const CreateSafeStep2 = ({
               Any transaction requires the confirmation of:
             </Typography>
             <Select {...register(CreateSafeStep2Fields.threshold)} defaultValue={data.threshold}>
-              {allOwners.map((_, i) => (
+              {ownerFields.map((_, i) => (
                 <MenuItem key={i} value={i + 1}>
                   {i + 1}
                 </MenuItem>
               ))}
             </Select>{' '}
-            out of {allOwners.length} owner(s).
+            out of {ownerFields.length} owner(s).
           </Grid>
           <Grid item xs={12}>
             <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3, alignSelf: 'normal' }} />

@@ -16,6 +16,10 @@ const CreateSafeInfos = ({
   staticHint?: CreateSafeInfoItem
   dynamicHint?: CreateSafeInfoItem
 }) => {
+  if (!staticHint && !dynamicHint) {
+    return null
+  }
+
   return (
     <Grid item xs={12}>
       <Grid container direction="column" gap={3}>
