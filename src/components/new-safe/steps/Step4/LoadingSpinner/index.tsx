@@ -2,6 +2,33 @@ import { Box } from '@mui/material'
 import css from './styles.module.css'
 import classnames from 'classnames'
 import { SafeCreationStatus } from '@/components/new-safe/steps/Step4/useSafeCreation'
+import { createRef, useCallback, useEffect } from 'react'
+
+const rectTlEndTransform = 'translateX(0) translateY(23px) scaleY(1.25)'
+const rectTrEndTransform = 'translateX(25px) scaleX(2)'
+const rectBlEndTransform = 'translateX(30px) translateY(60px)  scale(1) scaleX(2)'
+const rectBrEndTransform = 'translateY(40px) translateX(60px) scaleY(1.25)'
+
+const moveToEnd = (transformEnd: string, element: HTMLDivElement | null) => {
+  if (element) {
+    element.getAnimations().forEach((animation) => {
+      if ((animation as CSSAnimation).animationName) {
+        animation.pause()
+      }
+    })
+    const transformStart = window.getComputedStyle(element).transform
+    element.getAnimations().forEach((animation) => {
+      if ((animation as CSSAnimation).animationName) {
+        animation.cancel()
+      }
+    })
+    element.animate([{ transform: transformStart }, { transform: transformEnd }], {
+      duration: 1000,
+      easing: 'ease-out',
+      fill: 'forwards',
+    })
+  }
+}
 
 const LoadingSpinner = ({ status }: { status: SafeCreationStatus }) => {
   const isError =
@@ -10,12 +37,34 @@ const LoadingSpinner = ({ status }: { status: SafeCreationStatus }) => {
     status === SafeCreationStatus.TIMEOUT ||
     status === SafeCreationStatus.WALLET_REJECTED
 
+  const isSuccess = status === SafeCreationStatus.SUCCESS
+
+  const rectTl = createRef<HTMLDivElement>()
+  const rectTr = createRef<HTMLDivElement>()
+  const rectBl = createRef<HTMLDivElement>()
+  const rectBr = createRef<HTMLDivElement>()
+  const rectCenter = createRef<HTMLDivElement>()
+
+  const onFinish = useCallback(() => {
+    moveToEnd(rectTlEndTransform, rectTl.current)
+    moveToEnd(rectTrEndTransform, rectTr.current)
+    moveToEnd(rectBlEndTransform, rectBl.current)
+    moveToEnd(rectBrEndTransform, rectBr.current)
+  }, [rectBl, rectBr, rectTl, rectTr])
+
+  useEffect(() => {
+    if (isSuccess) {
+      onFinish()
+    }
+  }, [isSuccess, onFinish])
+
   return (
-    <Box className={classnames(css.box, { [css.rectError]: isError })}>
-      <div className={classnames(css.rect, css.rectTl)} />
-      <div className={classnames(css.rect, css.rectTr)} />
-      <div className={classnames(css.rect, css.rectBl)} />
-      <div className={classnames(css.rect, css.rectBr)} />
+    <Box className={classnames(css.box, { [css.rectError]: isError }, { [css.rectSuccess]: isSuccess })}>
+      <div className={classnames(css.rect, css.rectTl)} ref={rectTl} />
+      <div className={classnames(css.rect, css.rectTr)} ref={rectTr} />
+      <div className={classnames(css.rect, css.rectBl)} ref={rectBl} />
+      <div className={classnames(css.rect, css.rectBr)} ref={rectBr} />
+      <div className={classnames(css.rect, css.rectCenter)} ref={rectCenter} />
 
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
         <defs>
