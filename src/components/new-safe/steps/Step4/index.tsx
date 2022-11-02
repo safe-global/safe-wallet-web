@@ -68,13 +68,8 @@ export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) 
     }
   }, [chainId, pendingSafe, router, setPendingSafe])
 
-  const displaySafeLink = status === SafeCreationStatus.INDEXED || status === SafeCreationStatus.INDEX_FAILED
-
-  const displayActions =
-    status === SafeCreationStatus.ERROR ||
-    status === SafeCreationStatus.REVERTED ||
-    status === SafeCreationStatus.TIMEOUT ||
-    status === SafeCreationStatus.WALLET_REJECTED
+  const displaySafeLink = status >= SafeCreationStatus.INDEXED
+  const displayActions = status >= SafeCreationStatus.WALLET_REJECTED && status <= SafeCreationStatus.TIMEOUT
 
   return (
     <Paper

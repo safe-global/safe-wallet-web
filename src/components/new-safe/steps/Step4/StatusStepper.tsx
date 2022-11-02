@@ -8,11 +8,6 @@ import StatusStep from '@/components/new-safe/steps/Step4/StatusStep'
 const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; status: SafeCreationStatus }) => {
   if (!pendingSafe?.safeAddress) return null
 
-  const isSuccess =
-    status === SafeCreationStatus.SUCCESS ||
-    status === SafeCreationStatus.INDEXED ||
-    status === SafeCreationStatus.INDEX_FAILED
-
   return (
     <Stepper orientation="vertical" nonLinear connector={<StepConnector className={css.connector} />}>
       <Step>
@@ -50,7 +45,7 @@ const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; 
         </StatusStep>
       </Step>
       <Step>
-        <StatusStep isLoading={!isSuccess} safeAddress={pendingSafe.safeAddress}>
+        <StatusStep isLoading={status < SafeCreationStatus.SUCCESS} safeAddress={pendingSafe.safeAddress}>
           <Typography variant="body2" fontWeight="700">
             Processing
           </Typography>

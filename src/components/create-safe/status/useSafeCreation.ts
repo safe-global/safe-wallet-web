@@ -15,8 +15,8 @@ import type { EthersError } from '@/utils/ethers-utils'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
-  WALLET_REJECTED = 'WALLET_REJECTED',
   PROCESSING = 'PROCESSING',
+  WALLET_REJECTED = 'WALLET_REJECTED',
   ERROR = 'ERROR',
   REVERTED = 'REVERTED',
   TIMEOUT = 'TIMEOUT',
