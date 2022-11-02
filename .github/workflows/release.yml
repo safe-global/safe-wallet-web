@@ -6,6 +6,9 @@ on:
 
 jobs:
   release:
+    runs-on: ubuntu-latest
+    name: Deploy release
+    steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.8.0
         with:
