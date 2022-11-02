@@ -77,11 +77,17 @@ const useAppCommunicator = (
     const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onMessage: (msg) => {
-          trackSafeAppEvent({ ...SAFE_APPS_EVENTS.SAFE_APP_SDK_METHOD_CALL }, app?.name || '', {
-            method: msg.data.method,
-            ethMethod: (msg.data.params as any)?.call,
-            version: msg.data.env.sdkVersion,
-          })
+          const isCustomApp = app && app.id < 1
+
+          trackSafeAppEvent(
+            { ...SAFE_APPS_EVENTS.SAFE_APP_SDK_METHOD_CALL },
+            isCustomApp ? app?.url : app?.name || '',
+            {
+              method: msg.data.method,
+              ethMethod: (msg.data.params as any)?.call,
+              version: msg.data.env.sdkVersion,
+            },
+          )
         },
         onError: (error, data) => {
           logError(Errors._901, error.message, {

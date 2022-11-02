@@ -57,10 +57,6 @@ export const SAFE_APPS_EVENTS = {
     ...SAFE_APPS_EVENT_DATA,
     action: 'Open shared app after Safe creation',
   },
-  TIME_ELAPSED_IN_SAFE_APP: {
-    ...SAFE_APPS_EVENT_DATA,
-    action: 'Time elapsed in Safe App',
-  },
   SAFE_APP_SDK_METHOD_CALL: {
     ...SAFE_APPS_EVENT_DATA,
     category: SAFE_APPS_SDK_CATEGORY,
