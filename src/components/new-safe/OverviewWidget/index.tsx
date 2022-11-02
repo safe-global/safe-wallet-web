@@ -1,3 +1,4 @@
+import ChainIndicator from '@/components/common/ChainIndicator'
 import WalletInfo from '@/components/common/WalletInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -13,6 +14,7 @@ const OverviewWidget = ({ safeName }: { safeName: string }): ReactElement | null
   const chain = useCurrentChain()
   const rows = [
     ...(wallet && chain ? [{ title: 'Wallet', component: <WalletInfo wallet={wallet} chain={chain} /> }] : []),
+    ...(chain ? [{ title: 'Network', component: <ChainIndicator chainId={chain?.chainId} inline /> }] : []),
     ...(safeName !== '' ? [{ title: 'Name', component: <Typography>{safeName}</Typography> }] : []),
   ]
 
