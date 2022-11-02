@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie'
+
 // Based on https://github.com/alinemorelli/react-gtm
 
 type DataLayer = Record<string, unknown>
@@ -23,7 +25,8 @@ export type TagManagerArgs = {
 
 const DATA_LAYER_NAME = 'dataLayer'
 
-// Initialization scripts
+// GTM script tag singleton
+let scriptRef: HTMLScriptElement | null = null
 
 export const _getGtmScript = ({ gtmId, auth, preview }: TagManagerArgs) => {
   const script = document.createElement('script')
@@ -53,8 +56,25 @@ const TagManager = {
       TagManager.dataLayer(dataLayer)
     }
 
-    const gtmScript = _getGtmScript(args)
-    document.head.insertBefore(gtmScript, document.head.childNodes[0])
+    scriptRef = _getGtmScript(args)
+    document.head.insertBefore(scriptRef, document.head.childNodes[0])
+  },
+  destroy: () => {
+    const GOOGLE_ANALYTICS_COOKIE_LIST = ['_ga', '_gat', '_gid']
+
+    // Remove GTM script
+    scriptRef?.remove()
+    scriptRef = null
+
+    delete window[DATA_LAYER_NAME]
+
+    // Remove cookies
+    const path = '/'
+    const domain = `.${location.host.split('.').slice(-2).join('.')}`
+
+    GOOGLE_ANALYTICS_COOKIE_LIST.forEach((cookie) => {
+      Cookies.remove(cookie, { path, domain })
+    })
   },
   dataLayer: (dataLayer: DataLayer) => {
     window[DATA_LAYER_NAME] ||= []

@@ -9,7 +9,6 @@
 
 import type { TagManagerArgs } from './TagManager'
 import TagManager from './TagManager'
-import Cookies from 'js-cookie'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   IS_PRODUCTION,
@@ -23,9 +22,6 @@ import { EventType } from './types'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
-
-const GOOGLE_ANALYTICS_COOKIE_LIST = ['_ga', '_gat', '_gid']
-const EMPTY_SAFE_APP = 'unknown'
 
 const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
   LIVE: {
@@ -68,12 +64,7 @@ export const gtmInit = (): void => {
 }
 
 export const gtmClear = (): void => {
-  // Delete GA cookies
-  const path = '/'
-  const domain = `.${location.host.split('.').slice(-2).join('.')}`
-  GOOGLE_ANALYTICS_COOKIE_LIST.forEach((cookie) => {
-    Cookies.remove(cookie, { path, domain })
-  })
+  TagManager.destroy()
 }
 
 type GtmEvent = {
@@ -135,6 +126,8 @@ export const gtmTrackSafeAppMessage = ({
   params?: any
   sdkVersion?: string
 }): void => {
+  const EMPTY_SAFE_APP = 'unknown'
+
   const gtmEvent: SafeAppEvent = {
     event: EventType.SAFE_APP,
     chainId: _chainId,
