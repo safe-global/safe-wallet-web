@@ -20,7 +20,9 @@ export const ConnectWalletContent = ({ onSubmit }: { onSubmit: StepRenderProps<N
   const isSupported = isPairingSupported(chain?.disabledWallets)
 
   const onConnect = (wallet?: ConnectedWallet) => {
-    onSubmit({ owners: [{ address: wallet?.address || '', name: wallet?.ens || '' }] })
+    if (!wallet) return
+
+    onSubmit({ owners: [{ address: wallet.address, name: wallet.ens || '' }] })
   }
 
   return (
