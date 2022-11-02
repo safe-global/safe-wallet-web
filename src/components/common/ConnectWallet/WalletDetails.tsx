@@ -15,8 +15,8 @@ const WalletDetails = ({ onConnect }: { onConnect?: () => void }): ReactElement 
     // We `trackEvent` instead of using `<Track>` as it impedes styling
     trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
 
+    await connectWallet(onboard)
     onConnect?.()
-    connectWallet(onboard)
   }
 
   return (
@@ -25,7 +25,7 @@ const WalletDetails = ({ onConnect }: { onConnect?: () => void }): ReactElement 
 
       <KeyholeIcon />
 
-      <Button onClick={handleConnect} variant="contained" size="small" disableElevation fullWidth>
+      <Button onClick={handleConnect} variant="contained" disableElevation>
         Connect
       </Button>
     </>

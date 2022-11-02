@@ -56,7 +56,7 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
   return (
     <StoreHydrator>
       <AppProviders>
-        <Dialog open onClose={handleClose} disablePortal>
+        <Dialog open onClose={handleClose} disablePortal sx={{ zIndex: 1301 }}>
           <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between' }}>
             {PAIRING_MODULE_LABEL}
             <IconButton

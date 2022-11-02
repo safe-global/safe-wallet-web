@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
-import useOnboard, { type ConnectedWallet, connectWallet } from '@/hooks/wallets/useOnboard'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -9,10 +9,8 @@ import { isPairingSupported } from '@/services/pairing/utils'
 
 import type { NewSafeFormData } from '@/components/new-safe/CreateSafe'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
-import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
-import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
-import PairingDescription from '@/components/common/PairingDetails/PairingDescription'
+import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
+import PairingDetails from '@/components/common/PairingDetails'
 
 export const ConnectWalletContent = ({
   wallet,
@@ -25,16 +23,6 @@ export const ConnectWalletContent = ({
 }) => {
   const chain = useCurrentChain()
   const isSupported = isPairingSupported(chain?.disabledWallets)
-  const onboard = useOnboard()
-
-  const handleConnect = async () => {
-    if (!onboard) return
-
-    trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
-
-    await connectWallet(onboard)
-    setStep(1)
-  }
 
   return (
     <>
@@ -47,22 +35,12 @@ export const ConnectWalletContent = ({
         <>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} display="flex" flexDirection="column" alignItems="center" gap={2}>
-              <Box display="flex" alignItems="center" justifyContent="center" width={100} height={100}>
-                <KeyholeIcon />
-              </Box>
-
-              <Button onClick={handleConnect} variant="contained" disableElevation>
-                Connect Wallet
-              </Button>
+              <WalletDetails onConnect={() => setStep(1)} />
             </Grid>
 
             {isSupported && (
               <Grid item xs={12} md={6} display="flex" flexDirection="column" alignItems="center" gap={2}>
-                <PairingQRCode />
-                <Typography variant="h6" fontWeight="700">
-                  Connect to mobile
-                </Typography>
-                <PairingDescription />
+                <PairingDetails vertical />
               </Grid>
             )}
           </Grid>
