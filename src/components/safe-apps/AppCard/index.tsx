@@ -13,6 +13,7 @@ import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ShareIcon from '@/public/images/common/share.svg'
 import CopyButton from '@/components/common/CopyButton'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
+import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { AppRoutes } from '@/config/routes'
 import styles from './styles.module.css'
@@ -106,7 +107,12 @@ const PinButton = ({
     title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
     sx={sx}
   >
-    <SvgIcon component={BookmarkIcon} inheritViewBox color={pinned ? 'primary' : 'border'} fontSize="small" />
+    <SvgIcon
+      component={pinned ? BookmarkedIcon : BookmarkIcon}
+      inheritViewBox
+      color={pinned ? 'primary' : undefined}
+      fontSize="small"
+    />
   </IconButton>
 )
 

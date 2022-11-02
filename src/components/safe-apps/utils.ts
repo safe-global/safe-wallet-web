@@ -54,7 +54,7 @@ export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
     id: Math.random(),
     url,
     name: 'unknown',
-    iconUrl: '/images/apps-icon.svg',
+    iconUrl: '/images/apps/apps-icon.svg',
     description: '',
     chainIds: [],
     accessControl: {

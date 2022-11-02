@@ -5,7 +5,7 @@ import HomeIcon from '@/public/images/sidebar/home.svg'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import TransactionIcon from '@/public/images/sidebar/transactions.svg'
 import ABIcon from '@/public/images/sidebar/address-book.svg'
-import AppsIcon from '@/public/images/sidebar/apps.svg'
+import AppsIcon from '@/public/images/apps/apps-icon.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import { SvgIcon } from '@mui/material'
 
