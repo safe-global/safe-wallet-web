@@ -189,7 +189,7 @@ export const getQueuedTransactionCount = (txPage?: TransactionListPage): string 
 
 export const getTxOrigin = (app?: SafeAppData): string | undefined => {
   if (!app) {
-    return undefined
+    return
   }
 
   let origin: string | undefined
