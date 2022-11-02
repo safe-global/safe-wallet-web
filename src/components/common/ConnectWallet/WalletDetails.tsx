@@ -15,7 +15,8 @@ const WalletDetails = ({ onConnect }: { onConnect?: () => void }): ReactElement 
     // We `trackEvent` instead of using `<Track>` as it impedes styling
     trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
 
-    await connectWallet(onboard)
+    const error = await connectWallet(onboard)
+    if (error) return
     onConnect?.()
   }
 
