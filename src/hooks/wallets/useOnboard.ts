@@ -95,6 +95,7 @@ export const connectWallet = (onboard: OnboardAPI, options?: Parameters<OnboardA
         lastWalletStorage.set(newWallet.label)
 
         await trackWalletType(newWallet)
+        return newWallet
       }
     })
     .catch((e) => logError(Errors._302, (e as Error).message))
