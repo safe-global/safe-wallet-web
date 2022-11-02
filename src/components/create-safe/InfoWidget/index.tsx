@@ -46,7 +46,7 @@ const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidget
       <CardContent sx={{ padding: '0', '&.MuiCardContent-root': { paddingBottom: '0px' } }}>
         {steps.map(({ title, text }) => {
           return (
-            <Accordion key={title.replace(' ', '-')} className={css.tipAccordion} defaultExpanded={startExpanded}>
+            <Accordion key={title} className={css.tipAccordion} defaultExpanded={startExpanded}>
               <AccordionSummary
                 expandIcon={
                   <IconButton sx={{ '&:hover': { background: ({ palette }) => palette[variant]?.light } }}>
