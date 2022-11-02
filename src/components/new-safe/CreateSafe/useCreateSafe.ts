@@ -12,6 +12,8 @@ const useCreateSafe = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => 
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
 
+  const isConnected = wallet && !isWrongChain
+
   useEffect(() => {
     if (isWrongChain || !wallet) {
       setStep(0)
@@ -22,6 +24,8 @@ const useCreateSafe = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => 
       setStep(3)
     }
   }, [setStep, isWrongChain, wallet, pendingSafe])
+
+  return { isConnected }
 }
 
 export default useCreateSafe

@@ -32,8 +32,6 @@ type CreateSafeStep3Form = {
   networkFee: string
 }
 
-const STEP_3_FORM_ID = 'create-safe-step-3-form'
-
 const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
   return (
     <>
@@ -48,7 +46,7 @@ const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
 }
 
 const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
-  useCreateSafe(setStep)
+  const { isConnected } = useCreateSafe(setStep)
   const chain = useCurrentChain()
   const wallet = useWallet()
   const provider = useWeb3()
@@ -174,7 +172,7 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
           <Button variant="outlined" onClick={handleBack}>
             Back
           </Button>
-          <Button variant="contained" onClick={createSafe}>
+          <Button variant="contained" onClick={createSafe} disabled={!isConnected}>
             Continue
           </Button>
         </Box>

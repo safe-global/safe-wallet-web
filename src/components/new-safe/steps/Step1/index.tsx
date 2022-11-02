@@ -32,8 +32,8 @@ enum CreateSafeStep1Fields {
 const STEP_1_FORM_ID = 'create-safe-step-1-form'
 
 function CreateSafeStep1({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) {
-  useCreateSafe(setStep)
   const fallbackName = useMnemonicSafeName()
+  const { isConnected } = useCreateSafe(setStep)
 
   const {
     handleSubmit,
@@ -100,9 +100,9 @@ function CreateSafeStep1({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
           <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3, alignSelf: 'normal' }} />
           <Box display="flex" flexDirection="row" gap={3}>
             <Button variant="outlined" onClick={() => onBack()}>
-              Cancel
+              Back
             </Button>
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" disabled={!isConnected}>
               Continue
             </Button>
           </Box>

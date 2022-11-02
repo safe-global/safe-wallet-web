@@ -1,5 +1,6 @@
 import { Button, Grid, SvgIcon, MenuItem, Select, Tooltip, Typography, Divider, Box } from '@mui/material'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
+import type { ReactElement } from 'react'
 
 import AddIcon from '@/public/images/common/add.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -23,8 +24,9 @@ enum CreateSafeStep2Fields {
 
 const STEP_2_FORM_ID = 'create-safe-step-2-form'
 
-const CreateSafeStep2 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
-  useCreateSafe(setStep)
+const CreateSafeStep2 = ({ onSubmit, onBack, data, setStep }: StepRenderProps<NewSafeFormData>): ReactElement => {
+  const { isConnected } = useCreateSafe(setStep)
+
   const formMethods = useForm<CreateSafeStep2Form>({
     mode: 'all',
     defaultValues: {
@@ -70,6 +72,7 @@ const CreateSafeStep2 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
               variant="text"
               onClick={() => appendOwner({ name: '', address: '' }, { shouldFocus: true })}
               startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+              size="large"
             >
               Add new owner
             </Button>
@@ -101,6 +104,7 @@ const CreateSafeStep2 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
               variant="text"
               onClick={() => appendMobileOwner({ name: '', address: '' }, { shouldFocus: true })}
               startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+              size="large"
             >
               Add mobile owner
             </Button>
@@ -134,7 +138,7 @@ const CreateSafeStep2 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
               <Button variant="outlined" onClick={handleBack}>
                 Back
               </Button>
-              <Button type="submit" variant="contained">
+              <Button type="submit" variant="contained" disabled={!isConnected}>
                 Continue
               </Button>
             </Box>
