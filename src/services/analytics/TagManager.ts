@@ -48,11 +48,6 @@ export const _getGtmScript = ({ gtmId, auth, preview }: TagManagerArgs) => {
 // Data layer scripts
 
 const TagManager = {
-  dataLayer: (dataLayer: DataLayer) => {
-    window[DATA_LAYER_NAME] ||= []
-
-    return window[DATA_LAYER_NAME].push(dataLayer)
-  },
   initialize: ({ dataLayer, ...args }: TagManagerArgs) => {
     if (dataLayer) {
       TagManager.dataLayer(dataLayer)
@@ -60,6 +55,11 @@ const TagManager = {
 
     const gtmScript = _getGtmScript(args)
     document.head.insertBefore(gtmScript, document.head.childNodes[0])
+  },
+  dataLayer: (dataLayer: DataLayer) => {
+    window[DATA_LAYER_NAME] ||= []
+
+    return window[DATA_LAYER_NAME].push(dataLayer)
   },
 }
 
