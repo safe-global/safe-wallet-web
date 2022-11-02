@@ -1,20 +1,18 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { Box, Button, Divider, Grid, Paper, Tooltip } from '@mui/material'
 import { useRouter } from 'next/router'
 
-import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import Track from '@/components/common/Track'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import StatusMessage from '@/components/new-safe/steps/Step4/StatusMessage'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import useStatus from '@/components/create-safe/status/useStatus'
 import type { NewSafeFormData } from '@/components/new-safe/CreateSafe'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { PendingSafeTx } from '@/components/create-safe/types.d'
 import useSafeCreationEffects from '@/components/new-safe/steps/Step4/useSafeCreationEffects'
-import { useSafeCreation } from '@/components/new-safe/steps/Step4/useSafeCreation'
+import { SafeCreationStatus, useSafeCreation } from '@/components/new-safe/steps/Step4/useSafeCreation'
 import StatusStepper from '@/components/new-safe/steps/Step4/StatusStepper'
 import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
@@ -30,7 +28,7 @@ export type PendingSafeData = NewSafeFormData & {
 }
 
 export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) => {
-  const [status, setStatus] = useStatus()
+  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
   const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const router = useRouter()
   const chainId = useChainId()

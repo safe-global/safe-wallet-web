@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
+import { SafeCreationStatus } from './useSafeCreation'
 import LoadingSpinner from '@/components/new-safe/steps/Step4/LoadingSpinner'
 
 const getStep = (status: SafeCreationStatus) => {
@@ -42,7 +42,7 @@ const getStep = (status: SafeCreationStatus) => {
     case SafeCreationStatus.INDEXED:
       return {
         description: 'Your Safe was successfully indexed!',
-        instruction: 'Taking you to your dashboard...',
+        instruction: '',
       }
     case SafeCreationStatus.INDEX_FAILED:
       return {
@@ -58,19 +58,21 @@ const StatusMessage = ({ status }: { status: SafeCreationStatus }) => {
 
   return (
     <>
-      <Box padding={3}>
+      <Box paddingX={3} mt={3}>
         <LoadingSpinner status={status} />
         <Typography variant="h6" marginTop={2} fontWeight={700}>
           {stepInfo.description}
         </Typography>
       </Box>
-      <Box
-        sx={({ palette }) => ({ backgroundColor: palette.warning.background, borderRadius: '6px' })}
-        padding={3}
-        mb={3}
-      >
-        <Typography variant="body2">{stepInfo.instruction}</Typography>
-      </Box>
+      {stepInfo.instruction && (
+        <Box
+          sx={({ palette }) => ({ backgroundColor: palette.warning.background, borderRadius: '6px' })}
+          padding={3}
+          my={3}
+        >
+          <Typography variant="body2">{stepInfo.instruction}</Typography>
+        </Box>
+      )}
     </>
   )
 }

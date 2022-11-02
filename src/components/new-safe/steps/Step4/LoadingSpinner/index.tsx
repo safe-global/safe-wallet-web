@@ -4,10 +4,10 @@ import classnames from 'classnames'
 import { SafeCreationStatus } from '@/components/new-safe/steps/Step4/useSafeCreation'
 import { createRef, useCallback, useEffect } from 'react'
 
-const rectTlEndTransform = 'translateX(0) translateY(23px) scaleY(1.25)'
-const rectTrEndTransform = 'translateX(25px) scaleX(2)'
-const rectBlEndTransform = 'translateX(30px) translateY(60px)  scale(1) scaleX(2)'
-const rectBrEndTransform = 'translateY(40px) translateX(60px) scaleY(1.25)'
+const rectTlEndTransform = 'translateX(0) translateY(20px) scaleY(1.1)'
+const rectTrEndTransform = 'translateX(30px) scaleX(2.3)'
+const rectBlEndTransform = 'translateX(30px) translateY(60px) scaleX(2.3)'
+const rectBrEndTransform = 'translateY(40px) translateX(60px) scaleY(1.1)'
 
 const moveToEnd = (transformEnd: string, element: HTMLDivElement | null) => {
   if (element) {
@@ -31,13 +31,8 @@ const moveToEnd = (transformEnd: string, element: HTMLDivElement | null) => {
 }
 
 const LoadingSpinner = ({ status }: { status: SafeCreationStatus }) => {
-  const isError =
-    status === SafeCreationStatus.ERROR ||
-    status === SafeCreationStatus.REVERTED ||
-    status === SafeCreationStatus.TIMEOUT ||
-    status === SafeCreationStatus.WALLET_REJECTED
-
-  const isSuccess = status === SafeCreationStatus.SUCCESS
+  const isError = status >= SafeCreationStatus.WALLET_REJECTED && status <= SafeCreationStatus.TIMEOUT
+  const isSuccess = status >= SafeCreationStatus.SUCCESS
 
   const rectTl = createRef<HTMLDivElement>()
   const rectTr = createRef<HTMLDivElement>()

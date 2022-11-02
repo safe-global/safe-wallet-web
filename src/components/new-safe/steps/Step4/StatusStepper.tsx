@@ -1,7 +1,7 @@
 import { Box, Step, StepConnector, Stepper, Typography } from '@mui/material'
 import css from '@/components/new-safe/steps/Step4/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
+import { SafeCreationStatus } from '@/components/new-safe/steps/Step4/useSafeCreation'
 import type { PendingSafeData } from '@/components/new-safe/steps/Step4/index'
 import StatusStep from '@/components/new-safe/steps/Step4/StatusStep'
 
@@ -20,6 +20,7 @@ const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; 
               address={pendingSafe.safeAddress}
               hasExplorer
               showCopyButton
+              showName={false}
               shortAddress={false}
               showAvatar={false}
             />
@@ -37,6 +38,7 @@ const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; 
                 address={pendingSafe.txHash}
                 hasExplorer
                 showCopyButton
+                showName={false}
                 shortAddress={true}
                 showAvatar={false}
               />

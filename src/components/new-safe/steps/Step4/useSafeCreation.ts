@@ -15,15 +15,15 @@ import {
 } from '@/components/new-safe/steps/Step4/logic'
 
 export enum SafeCreationStatus {
-  AWAITING = 'AWAITING',
-  WALLET_REJECTED = 'WALLET_REJECTED',
-  PROCESSING = 'PROCESSING',
-  ERROR = 'ERROR',
-  REVERTED = 'REVERTED',
-  TIMEOUT = 'TIMEOUT',
-  SUCCESS = 'SUCCESS',
-  INDEXED = 'INDEXED',
-  INDEX_FAILED = 'INDEX_FAILED',
+  AWAITING = 1,
+  PROCESSING = 2,
+  WALLET_REJECTED = 3,
+  ERROR = 4,
+  REVERTED = 5,
+  TIMEOUT = 6,
+  SUCCESS = 7,
+  INDEXED = 8,
+  INDEX_FAILED = 9,
 }
 
 export const useSafeCreation = (

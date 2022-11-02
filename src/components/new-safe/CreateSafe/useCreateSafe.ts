@@ -21,7 +21,7 @@ const useCreateSafe = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => 
 
     // Jump to the status screen if there is already a tx submitted
     if (pendingSafe) {
-      setStep(3)
+      setStep(4)
     }
   }, [setStep, isWrongChain, wallet, pendingSafe])
 

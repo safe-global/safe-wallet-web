@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { useEffect } from 'react'
 import { pollSafeInfo } from '@/components/create-safe/logic'
-import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
+import { SafeCreationStatus } from '@/components/new-safe/steps/Step4/useSafeCreation'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { updateAddressBook } from '@/components/create-safe/logic/address-book'
 import { useAppDispatch } from '@/store'
