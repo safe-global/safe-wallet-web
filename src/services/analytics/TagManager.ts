@@ -1,3 +1,4 @@
+import { IS_PRODUCTION } from '@/config/constants'
 import Cookies from 'js-cookie'
 
 // Based on https://github.com/alinemorelli/react-gtm
@@ -48,6 +49,12 @@ export const _getGtmScript = ({ gtmId, auth, preview }: TagManagerArgs) => {
   return script
 }
 
+const logAnalytics = (event: unknown) => {
+  if (!IS_PRODUCTION) {
+    console.info('[Analytics]', event)
+  }
+}
+
 // Data layer scripts
 
 const TagManager = {
@@ -58,6 +65,9 @@ const TagManager = {
 
     scriptRef = _getGtmScript(args)
     document.head.insertBefore(scriptRef, document.head.childNodes[0])
+
+    logAnalytics('Initialized')
+    window[DATA_LAYER_NAME].forEach(logAnalytics)
   },
   destroy: () => {
     const GOOGLE_ANALYTICS_COOKIE_LIST = ['_ga', '_gat', '_gid']
@@ -75,9 +85,15 @@ const TagManager = {
     GOOGLE_ANALYTICS_COOKIE_LIST.forEach((cookie) => {
       Cookies.remove(cookie, { path, domain })
     })
+
+    logAnalytics('Unmounted')
   },
   dataLayer: (dataLayer: DataLayer) => {
     window[DATA_LAYER_NAME] ||= []
+
+    if (scriptRef) {
+      logAnalytics(dataLayer)
+    }
 
     return window[DATA_LAYER_NAME].push(dataLayer)
   },
