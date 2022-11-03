@@ -38,6 +38,7 @@ const Setup: NextPage = () => {
                     component={InfoIcon}
                     inheritViewBox
                     fontSize="small"
+                    color="border"
                     sx={{ verticalAlign: 'middle', ml: 0.5 }}
                   />
                 </Tooltip>
