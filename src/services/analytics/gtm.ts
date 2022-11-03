@@ -8,7 +8,7 @@
  */
 
 import type { TagManagerArgs } from './TagManager'
-import TagManager, { DATA_LAYER_NAME } from './TagManager'
+import TagManager from './TagManager'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import {
   IS_PRODUCTION,
@@ -65,15 +65,7 @@ export const gtmInit = (): void => {
   })
 }
 
-const isGtmLoaded = (): boolean => {
-  return typeof window !== 'undefined' && !!window[DATA_LAYER_NAME]
-}
-
-export const gtmClear = (): void => {
-  if (!isGtmLoaded()) return
-
-  TagManager.destroy()
-}
+export const gtmClear = TagManager.destroy
 
 type GtmEvent = {
   event: EventType
@@ -91,13 +83,7 @@ type PageviewGtmEvent = GtmEvent & {
   pagePath: string
 }
 
-const gtmSend = (event: GtmEvent): void => {
-  console.info('[Analytics]', event)
-
-  if (!isGtmLoaded()) return
-
-  TagManager.dataLayer(event)
-}
+const gtmSend = TagManager.dataLayer
 
 export const gtmTrack = (eventData: AnalyticsEvent): void => {
   const gtmEvent: ActionGtmEvent = {

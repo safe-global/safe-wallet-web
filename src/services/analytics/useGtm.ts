@@ -30,7 +30,7 @@ const useGtm = () => {
   // Track page views – anononimized by default.
   // Sensitive info, like the safe address or tx id, is always in the query string, which we DO NOT track.
   useEffect(() => {
-    if (isAnalyticsEnabled && router.pathname !== AppRoutes['404']) {
+    if (router.pathname !== AppRoutes['404']) {
       gtmTrackPageview(router.pathname)
     }
   }, [isAnalyticsEnabled, router.pathname])
