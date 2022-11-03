@@ -3,7 +3,7 @@
   "homepage": "https://github.com/safe-global/web-core",
   "license": "MIT",
   "type": "module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
