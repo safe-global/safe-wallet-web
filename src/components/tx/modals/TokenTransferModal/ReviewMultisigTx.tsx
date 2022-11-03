@@ -9,10 +9,10 @@ import useAsync from '@/hooks/useAsync'
 import { createTx } from '@/services/tx/txSender'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SendFromBlock from '../../SendFromBlock'
-import type { ReviewTokenTxProps } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
+import type { TokenTransferModalProps } from '.'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 
-const ReviewMultisigTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement => {
+const ReviewMultisigTx = ({ params, onSubmit }: TokenTransferModalProps): ReactElement => {
   const { balances } = useBalances()
 
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
@@ -22,7 +22,7 @@ const ReviewMultisigTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElemen
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!address || !decimals) return
     const txParams = createTokenTransferParams(params.recipient, params.amount, decimals, address)
-    return createTx(txParams)
+    return createTx(txParams, params.nonce)
   }, [params, decimals, address])
 
   return (

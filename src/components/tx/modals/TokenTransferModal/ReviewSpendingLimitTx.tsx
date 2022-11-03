@@ -4,7 +4,7 @@ import type { BigNumberish, BytesLike } from 'ethers'
 import { Box, Button, DialogContent, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import type { ReviewTokenTxProps } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
+import type { TokenTransferModalProps } from '.'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 import useBalances from '@/hooks/useBalances'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
@@ -33,7 +33,7 @@ export type SpendingLimitTxParams = {
   signature: BytesLike
 }
 
-const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement => {
+const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): ReactElement => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chainId = useChainId()
@@ -67,7 +67,10 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
 
   const { gasLimit, gasLimitLoading } = useSpendingLimitGas(txParams)
 
-  const [advancedParams, setManualParams] = useAdvancedParams({ gasLimit })
+  const [advancedParams, setManualParams] = useAdvancedParams({
+    gasLimit,
+    nonce: params.nonce,
+  })
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()

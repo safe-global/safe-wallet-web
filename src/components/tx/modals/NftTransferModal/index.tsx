@@ -9,6 +9,7 @@ import ReviewNftTx from './ReviewNftTx'
 export type NftTransferParams = {
   recipient: string
   token: SafeCollectibleResponse
+  nonce?: number
 }
 
 export const NftTransferSteps: TxStepperProps['steps'] = [
