@@ -60,7 +60,7 @@ const RejectTxButton = ({
 
       {open && (
         <Suspense>
-          <NewTxModal onClose={() => setOpen(false)} nonce={txNonce} />
+          <NewTxModal onClose={() => setOpen(false)} txNonce={txNonce} />
         </Suspense>
       )}
     </>

@@ -22,7 +22,7 @@ const ReviewMultisigTx = ({ params, onSubmit }: TokenTransferModalProps): ReactE
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!address || !decimals) return
     const txParams = createTokenTransferParams(params.recipient, params.amount, decimals, address)
-    return createTx(txParams, params.nonce)
+    return createTx(txParams, params.txNonce)
   }, [params, decimals, address])
 
   return (

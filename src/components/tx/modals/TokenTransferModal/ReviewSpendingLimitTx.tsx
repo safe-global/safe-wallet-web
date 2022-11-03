@@ -69,7 +69,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
 
   const [advancedParams, setManualParams] = useAdvancedParams({
     gasLimit,
-    nonce: params.nonce,
+    nonce: params.txNonce,
   })
 
   const handleSubmit = async (e: SyntheticEvent) => {

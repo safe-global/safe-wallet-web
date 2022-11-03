@@ -8,7 +8,7 @@ import type { TxModalProps } from '@/components/tx/TxModal'
 import TxModal from '@/components/tx/TxModal'
 
 export type TokenTransferModalProps = {
-  params: SendAssetsFormData & { nonce?: number }
+  params: SendAssetsFormData & { txNonce?: number }
   onSubmit: (txId: string) => void
 }
 

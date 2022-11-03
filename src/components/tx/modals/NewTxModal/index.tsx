@@ -37,11 +37,11 @@ const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
 const NewTxModal = ({
   onClose,
   recipient,
-  nonce,
+  txNonce,
 }: {
   onClose: () => void
   recipient?: string
-  nonce?: number
+  txNonce?: number
 }): ReactElement => {
   const [tokenModalOpen, setTokenModalOpen] = useState<boolean>(false)
   const [nftsModalOpen, setNftModalOpen] = useState<boolean>(false)
@@ -69,7 +69,7 @@ const NewTxModal = ({
     onClose()
   }
 
-  const dialogTitle = nonce ? `Replace transaction #${nonce}` : 'New transaction'
+  const dialogTitle = txNonce ? `Replace transaction #${txNonce}` : 'New transaction'
 
   return (
     <>
@@ -84,14 +84,14 @@ const NewTxModal = ({
               Send NFTs
             </TxButton>
 
-            {nonce && (
+            {txNonce && (
               <TxButton onClick={onRejectModalOpen} variant="danger">
                 Rejection transaction
               </TxButton>
             )}
 
             {/* Contract interaction via Transaction Builder */}
-            {txBuilder.app && !recipient && !nonce && (
+            {txBuilder.app && !recipient && !txNonce && (
               <Link href={txBuilder.link} passHref>
                 <TxButton
                   startIcon={<img src={txBuilder.app.iconUrl} height={20} width="auto" alt={txBuilder.app.name} />}
@@ -107,12 +107,12 @@ const NewTxModal = ({
       </ModalDialog>
 
       {tokenModalOpen && (
-        <TokenTransferModal onClose={onClose} initialData={[{ [SendAssetsField.recipient]: recipient }, { nonce }]} />
+        <TokenTransferModal onClose={onClose} initialData={[{ [SendAssetsField.recipient]: recipient }, { txNonce }]} />
       )}
 
-      {nftsModalOpen && <NftTransferModal onClose={onClose} initialData={[{ recipient }, { nonce }]} />}
+      {nftsModalOpen && <NftTransferModal onClose={onClose} initialData={[{ recipient }, { txNonce }]} />}
 
-      {rejectModalOpen && nonce && <RejectTxModal onClose={onClose} initialData={[nonce]} />}
+      {rejectModalOpen && txNonce && <RejectTxModal onClose={onClose} initialData={[txNonce]} />}
     </>
   )
 }
