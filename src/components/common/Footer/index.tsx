@@ -62,7 +62,7 @@ const Footer = (): ReactElement | null => {
           <Link
             rel="noopener noreferrer"
             target="_blank"
-            href={`${packageJson.homepage}/releases/tags/${packageJson.version}`}
+            href={`${packageJson.homepage}/releases/tag/v${packageJson.version}`}
           >
             v{packageJson.version}
           </Link>
