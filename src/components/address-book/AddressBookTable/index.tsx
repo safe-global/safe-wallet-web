@@ -91,7 +91,7 @@ const AddressBookTable = () => {
       rawValue: '',
       sticky: true,
       content: (
-        <div className={css.entryButtonWrapper}>
+        <>
           <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
             <Tooltip title="Edit entry" placement="top">
               <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)} size="small">
@@ -121,7 +121,7 @@ const AddressBookTable = () => {
               </Button>
             </Track>
           )}
-        </div>
+        </>
       ),
     },
   }))

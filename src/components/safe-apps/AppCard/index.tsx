@@ -110,7 +110,7 @@ const PinButton = ({
     <SvgIcon
       component={pinned ? BookmarkedIcon : BookmarkIcon}
       inheritViewBox
-      color={pinned ? 'primary' : undefined}
+      color={pinned ? 'border' : undefined}
       fontSize="small"
     />
   </IconButton>
