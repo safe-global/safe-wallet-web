@@ -11,15 +11,14 @@ import {
   Grid,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
-
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
-
-import css from './styles.module.css'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
 import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
+
+import css from './styles.module.css'
 
 type CreateSafeStep1Form = {
   name: string
@@ -31,7 +30,12 @@ enum CreateSafeStep1Fields {
 
 const STEP_1_FORM_ID = 'create-safe-step-1-form'
 
-function CreateSafeStep1({ data, onSubmit, onBack }: StepRenderProps<NewSafeFormData>) {
+function CreateSafeStep1({
+  data,
+  onSubmit,
+  onBack,
+  setSafeName,
+}: StepRenderProps<NewSafeFormData> & { setSafeName: (name: string) => void }) {
   const fallbackName = useMnemonicSafeName()
   const { isConnected } = useCreateSafe()
 
@@ -46,8 +50,14 @@ function CreateSafeStep1({ data, onSubmit, onBack }: StepRenderProps<NewSafeForm
     },
   })
 
+  const onFormSubmit = (data: Pick<NewSafeFormData, 'name'>) => {
+    const name = data.name || fallbackName
+    setSafeName(name)
+    onSubmit({ ...data, name })
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id={STEP_1_FORM_ID} className={css.form}>
+    <form onSubmit={handleSubmit(onFormSubmit)} id={STEP_1_FORM_ID} className={css.form}>
       <Grid container spacing={3}>
         <Grid item>
           <Box className={css.select}>

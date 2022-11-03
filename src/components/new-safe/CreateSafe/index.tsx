@@ -1,8 +1,6 @@
-import { Container, Typography, Grid } from '@mui/material'
+import { Container, Typography, Grid, Link } from '@mui/material'
 import { useRouter } from 'next/router'
 
-import WalletInfo from '@/components/common/WalletInfo'
-import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '../OverviewWidget'
 import type { NamedAddress } from '@/components/create-safe/types'
@@ -16,6 +14,10 @@ import { CardStepper } from '../CardStepper'
 
 import { AppRoutes } from '@/config/routes'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
+import type { AlertColor } from '@mui/material'
+import type { CreateSafeInfoItem } from '../CreateSafeInfos'
+import CreateSafeInfos from '../CreateSafeInfos'
+import { type ReactElement, useMemo, useState } from 'react'
 
 export type NewSafeFormData = {
   name: string
@@ -24,37 +26,71 @@ export type NewSafeFormData = {
   mobileOwners: NamedAddress[]
 }
 
-export const CreateSafeSteps: TxStepperProps<NewSafeFormData>['steps'] = [
-  {
-    title: 'Connect wallet',
-    subtitle: 'In order to create a Safe you need to connect a wallet',
-    render: (data, onSubmit, onBack, setStep) => (
-      <CreateSafeStep0 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
-    ),
+const staticHints: Record<
+  number,
+  { title: string; variant: AlertColor; steps: { title: string; text: string | ReactElement }[] }
+> = {
+  1: {
+    title: 'Safe Creation',
+    variant: 'info',
+    steps: [
+      {
+        title: 'Network fee',
+        text: 'Deploying your Safe requires the payment of the associated network fee with your connected wallet. An estmation will be provided in the last step.',
+      },
+    ],
   },
-  {
-    title: 'Select network and name Safe',
-    subtitle: 'Select the network on which to create your Safe',
-    render: (data, onSubmit, onBack, setStep) => (
-      <CreateSafeStep1 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
-    ),
+  2: {
+    title: 'Safe Creation',
+    variant: 'info',
+    steps: [
+      {
+        title: 'Flat hierarchy',
+        text: 'Every owner has the same rights within the Safe and can propose, sign and execute transactions.',
+      },
+      {
+        title: 'Managing Owners',
+        text: 'You can always change the amount of owners and required confirmations in your Safe at a later stage after creation.',
+      },
+      {
+        title: 'Safe Setup',
+        text: (
+          <>
+            Not sure how many owners and confirmations you need for your Safe?{' '}
+            <Link
+              sx={{ textDecoration: 'underline' }}
+              href="https://help.gnosis-safe.io/en/articles/4772567-what-safe-setup-should-i-use"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Learn more about setting up your Safe.
+            </Link>
+          </>
+        ),
+      },
+    ],
   },
-  {
-    title: 'Owners and confirmations',
-    subtitle:
-      'Here you can add owners to your Safe and determine how many owners need to confirm before making a successful transaction',
-    render: (data, onSubmit, onBack, setStep) => (
-      <CreateSafeStep2 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
-    ),
+  3: {
+    title: 'Safe Creation',
+    variant: 'info',
+    steps: [
+      {
+        title: 'Wait for the creation',
+        text: 'Depending on network congestion, it can take some time until the transaction is successfully added to the network and picked up by our services.',
+      },
+    ],
   },
-  {
-    title: 'Review',
-    subtitle: `You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet.`,
-    render: (data, onSubmit, onBack, setStep) => (
-      <CreateSafeStep3 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
-    ),
+  4: {
+    title: 'Safe Usage',
+    variant: 'success',
+    steps: [
+      {
+        title: 'Connect your Safe',
+        text: 'In our Safe Apps section you can connect your Safe to over 70 dApps directly or use Wallet Connect to interact with any application.',
+      },
+    ],
   },
-]
+}
 
 const CreateSafe = () => {
   const router = useRouter()
@@ -66,6 +102,51 @@ const CreateSafe = () => {
     address: wallet?.address || '',
   }
 
+  const [safeName, setSafeName] = useState('')
+  const [dynamicHint, setDynamicHint] = useState<CreateSafeInfoItem>()
+  const [activeStep, setActiveStep] = useState(0)
+
+  const CreateSafeSteps: TxStepperProps<NewSafeFormData>['steps'] = [
+    {
+      title: 'Connect wallet',
+      subtitle: 'In order to create a Safe you need to connect a wallet',
+      render: (data, onSubmit, onBack, setStep) => (
+        <CreateSafeStep0 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      ),
+    },
+    {
+      title: 'Select network and name Safe',
+      subtitle: 'Select the network on which to create your Safe',
+      render: (data, onSubmit, onBack, setStep) => (
+        <CreateSafeStep1 setSafeName={setSafeName} data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      ),
+    },
+    {
+      title: 'Owners and confirmations',
+      subtitle:
+        'Here you can add owners to your Safe and determine how many owners need to confirm it before executing a transaction',
+      render: (data, onSubmit, onBack, setStep) => (
+        <CreateSafeStep2
+          setDynamicHint={setDynamicHint}
+          data={data}
+          onSubmit={onSubmit}
+          onBack={onBack}
+          setStep={setStep}
+        />
+      ),
+    },
+    {
+      title: 'Review',
+      subtitle:
+        "You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet.",
+      render: (data, onSubmit, onBack, setStep) => (
+        <CreateSafeStep3 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      ),
+    },
+  ]
+
+  const staticHint = useMemo(() => staticHints[activeStep], [activeStep])
+
   const initialData: NewSafeFormData = {
     name: '',
     mobileOwners: [] as NamedAddress[],
@@ -76,11 +157,6 @@ const CreateSafe = () => {
   const onClose = () => {
     router.push(AppRoutes.welcome)
   }
-
-  const chain = useCurrentChain()
-  const rows = [
-    ...(wallet && chain ? [{ title: 'Wallet', component: <WalletInfo wallet={wallet} chain={chain} /> }] : []),
-  ]
 
   return (
     <Container>
@@ -96,11 +172,15 @@ const CreateSafe = () => {
             onClose={onClose}
             steps={CreateSafeSteps}
             eventCategory={CREATE_SAFE_CATEGORY}
+            setWidgetStep={setActiveStep}
           />
         </Grid>
 
         <Grid item xs={12} md={4} mb={[3, null, 0]} order={[0, null, 1]}>
-          {wallet?.address && <OverviewWidget rows={rows} />}
+          <Grid container spacing={3}>
+            {wallet?.address && activeStep < 3 && <OverviewWidget safeName={safeName} />}
+            {wallet?.address && <CreateSafeInfos staticHint={staticHint} dynamicHint={dynamicHint} />}
+          </Grid>
         </Grid>
       </Grid>
     </Container>

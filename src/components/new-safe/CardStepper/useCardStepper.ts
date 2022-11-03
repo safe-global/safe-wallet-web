@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import type { ReactElement, SetStateAction } from 'react'
 import { useState } from 'react'
 import { trackEvent, MODALS_CATEGORY } from '@/services/analytics'
 
@@ -25,6 +25,7 @@ export type TxStepperProps<TData> = {
   initialData: TData
   initialStep?: number
   eventCategory?: string
+  setWidgetStep?: (step: number | SetStateAction<number>) => void
   onClose: () => void
 }
 
@@ -34,17 +35,20 @@ export const useCardStepper = <TData>({
   initialStep,
   eventCategory = MODALS_CATEGORY,
   onClose,
+  setWidgetStep,
 }: TxStepperProps<TData>) => {
   const [activeStep, setActiveStep] = useState<number>(initialStep || 0)
   const [stepData, setStepData] = useState(initialData)
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
+    setWidgetStep && setWidgetStep((prevActiveStep) => prevActiveStep + 1)
     trackEvent({ category: eventCategory, action: lastStep ? 'Submit' : 'Next' })
   }
 
   const handleBack = (data?: Partial<TData>) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
+    setWidgetStep && setWidgetStep((prevActiveStep) => prevActiveStep - 1)
     trackEvent({ category: eventCategory, action: firstStep ? 'Cancel' : 'Back' })
 
     if (data) {
@@ -54,6 +58,7 @@ export const useCardStepper = <TData>({
 
   const setStep = (step: number) => {
     setActiveStep(step)
+    setWidgetStep && setWidgetStep(step)
   }
 
   const firstStep = activeStep === 0

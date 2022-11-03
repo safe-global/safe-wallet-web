@@ -1,84 +1,68 @@
-import { Box, Button, Card, CardActions, CardContent, CardHeader, SvgIcon, Typography } from '@mui/material'
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import { useState } from 'react'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  IconButton,
+  SvgIcon,
+  Typography,
+} from '@mui/material'
 import type { AlertColor } from '@mui/material'
 import type { ReactElement } from 'react'
-
 import LightbulbIcon from '@/public/images/common/lightbulb.svg'
-
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import css from './styles.module.css'
 
-type Props = {
+type InfoWidgetProps = {
   title: string
-  steps: { title: string; text: string }[]
+  steps: { title: string; text: string | ReactElement }[]
   variant: AlertColor
+  startExpanded?: boolean
 }
 
-const InfoWidget = ({ title, steps, variant }: Props): ReactElement | null => {
-  const [activeStep, setActiveStep] = useState(0)
-  const [dismissed, setDismissed] = useState(false)
-
-  const isFirst = activeStep === 0
-  const isLast = activeStep === steps.length - 1
-
-  const isMultiStep = steps.length > 1
-
-  const onPrev = () => {
-    if (!isFirst) {
-      setActiveStep((prev) => prev - 1)
-    }
-  }
-
-  const onNext = () => {
-    if (isLast) {
-      setDismissed(true)
-    } else {
-      setActiveStep((prev) => prev + 1)
-    }
-  }
-
-  if (dismissed) {
+const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidgetProps): ReactElement | null => {
+  if (steps.length === 0) {
     return null
   }
 
   return (
     <Card sx={{ backgroundColor: ({ palette }) => palette[variant]?.background }}>
       <CardHeader
-        className={css.header}
+        className={css.cardHeader}
         title={
-          <Box className={css.headerWrapper}>
-            <Typography
-              variant="caption"
-              className={css.title}
-              sx={{
-                backgroundColor: ({ palette }) => palette[variant]?.main,
-              }}
-            >
-              <SvgIcon component={LightbulbIcon} inheritViewBox fontSize="inherit" className={css.lightbulb} />
-              {title}
+          <Box className={css.title} sx={{ backgroundColor: ({ palette }) => palette[variant]?.main }}>
+            <SvgIcon component={LightbulbIcon} inheritViewBox className={css.titleIcon} />
+            <Typography variant="caption">
+              <b>{title}</b>
             </Typography>
-            {isMultiStep && (
-              <Typography variant="caption" className={css.count}>
-                {activeStep + 1} of {steps.length}
-              </Typography>
-            )}
           </Box>
         }
       />
-      <CardContent>
-        <Typography variant="h5">{steps[activeStep].title}</Typography>
-        <Typography variant="body2">{steps[activeStep].text}</Typography>
-      </CardContent>
-      <CardActions className={css.actions}>
-        {isMultiStep && !isFirst && (
-          <Button variant="contained" size="small" onClick={onPrev} startIcon={<ChevronLeftIcon />}>
-            Previous
-          </Button>
-        )}
-        <Button variant="outlined" size="small" onClick={onNext}>
-          Got it
-        </Button>
-      </CardActions>
+      <Box className={css.tipsList}>
+        <CardContent>
+          {steps.map(({ title, text }) => {
+            return (
+              <Accordion key={title} className={css.tipAccordion} defaultExpanded={startExpanded}>
+                <AccordionSummary
+                  expandIcon={
+                    <IconButton sx={{ '&:hover': { background: ({ palette }) => palette[variant]?.light } }}>
+                      <ExpandMoreIcon sx={{ color: ({ palette }) => palette[variant]?.main }} />
+                    </IconButton>
+                  }
+                >
+                  {title}
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="body2">{text}</Typography>
+                </AccordionDetails>
+              </Accordion>
+            )
+          })}
+        </CardContent>
+      </Box>
     </Card>
   )
 }
