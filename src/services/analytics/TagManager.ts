@@ -1,3 +1,4 @@
+import { IS_PRODUCTION } from '@/config/constants'
 import Cookies from 'js-cookie'
 
 // Based on https://github.com/alinemorelli/react-gtm
@@ -69,9 +70,15 @@ const TagManager = {
   },
   dataLayer: (dataLayer: DataLayer) => {
     // Push to dataLayer if mounted
-    if (gtmScriptRef && window[DATA_LAYER_NAME]) {
-      window[DATA_LAYER_NAME].push(dataLayer)
+    if (!gtmScriptRef || !window[DATA_LAYER_NAME]) {
+      return
     }
+
+    if (!IS_PRODUCTION) {
+      console.info('[GTM] -', dataLayer)
+    }
+
+    window[DATA_LAYER_NAME].push(dataLayer)
   },
   destroy: () => {
     if (!gtmScriptRef) {
