@@ -20,7 +20,6 @@ import {
 } from '@/config/constants'
 import type { AnalyticsEvent, EventLabel, SafeAppEvent } from './types'
 import { EventType } from './types'
-import { addressRe, prefixedAddressRe } from '@/utils/url'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
@@ -49,34 +48,13 @@ export const gtmSetChainId = (chainId: string): void => {
   _chainId = chainId
 }
 
-export const getAnonymizedPathname = (pathname: string = location.pathname): string => {
-  const ANON_SAFE_ADDRESS = 'SAFE_ADDRESS'
-
-  let anonPathname = pathname
-
-  // Anonymize safe address
-  const prefixedSafeAddressMatch = prefixedAddressRe.test(pathname)
-  if (prefixedSafeAddressMatch) {
-    anonPathname = anonPathname.replace(prefixedAddressRe, ANON_SAFE_ADDRESS)
-  }
-
-  const safeAddressMatch = addressRe.test(pathname)
-  if (safeAddressMatch) {
-    anonPathname = anonPathname.replace(addressRe, ANON_SAFE_ADDRESS)
-  }
-
-  return anonPathname
-}
-
-export const gtmInit = (): void => {
+export const gtmInit = (pagePath: string): void => {
   const GTM_ENVIRONMENT = IS_PRODUCTION ? GTM_ENV_AUTH.LIVE : GTM_ENV_AUTH.DEVELOPMENT
 
   if (!GOOGLE_TAG_MANAGER_ID || !GTM_ENVIRONMENT.auth) {
     console.warn('[GTM] - Unable to initialize Google Tag Manager. `id` or `gtm_auth` missing.')
     return
   }
-
-  const pagePath = getAnonymizedPathname()
 
   TagManager.initialize({
     gtmId: GOOGLE_TAG_MANAGER_ID,

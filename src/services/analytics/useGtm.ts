@@ -19,7 +19,8 @@ const useGtm = () => {
 
   // Initialize GTM, or clear it if analytics is disabled
   useEffect(() => {
-    isAnalyticsEnabled ? gtmInit() : gtmClear()
+    isAnalyticsEnabled ? gtmInit(router.pathname) : gtmClear()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnalyticsEnabled])
 
   // Set the chain ID for GTM
