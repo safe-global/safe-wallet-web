@@ -45,7 +45,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
-  const { safe, safeAddress } = useSafeInfo()
+  const { safe, safeLoaded, safeAddress } = useSafeInfo()
   const addressBook = useAddressBook()
   const chain = useCurrentChain()
   const granted = useIsGranted()
@@ -184,6 +184,10 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     } else {
       setPermissionsRequest(undefined)
     }
+  }
+
+  if (!safeLoaded) {
+    return <div />
   }
 
   return (
