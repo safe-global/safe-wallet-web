@@ -34,13 +34,15 @@ const Setup: NextPage = () => {
                   placement="top"
                   title="For security reasons, transactions made with Safe need to be executed in order. The nonce shows you which transaction will be executed next. You can find the nonce for a transaction in the transaction details."
                 >
-                  <SvgIcon
-                    component={InfoIcon}
-                    inheritViewBox
-                    fontSize="small"
-                    color="border"
-                    sx={{ verticalAlign: 'middle', ml: 0.5 }}
-                  />
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      fontSize="small"
+                      color="border"
+                      sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                    />
+                  </span>
                 </Tooltip>
               </Typography>
 
