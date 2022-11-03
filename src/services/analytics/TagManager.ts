@@ -85,6 +85,7 @@ const TagManager = {
       return
     }
 
+    const GTM_SCRIPT = 'https://www.googletagmanager.com/gtm.js'
     const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
 
     // Unmount GTM script
@@ -92,7 +93,7 @@ const TagManager = {
     gtmScriptRef = null
 
     // Remove script(s) (gtmScriptRef inserts a script before itself to the DOM)
-    const scripts = document.querySelectorAll('[src^="https://www.googletagmanager.com/gtm.js"]')
+    const scripts = document.querySelectorAll(`[src^="${GTM_SCRIPT}"]`)
     scripts?.forEach((script) => {
       script.remove()
     })
