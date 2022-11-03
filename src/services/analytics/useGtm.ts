@@ -19,6 +19,8 @@ const useGtm = () => {
 
   // Initialize GTM, or clear it if analytics is disabled
   useEffect(() => {
+    // router.pathname doesn't contain the safe address
+    // so we can override the initial dataLayer
     isAnalyticsEnabled ? gtmInit(router.pathname) : gtmClear()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnalyticsEnabled])
