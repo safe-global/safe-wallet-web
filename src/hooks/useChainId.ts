@@ -5,6 +5,7 @@ import chains from '@/config/chains'
 import { useAppSelector } from '@/store'
 import { selectSession } from '@/store/sessionSlice'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import { prefixedAddressRe } from '@/utils/url'
 
 const defaultChainId = IS_PRODUCTION ? chains.eth : chains.gor
 
@@ -15,7 +16,6 @@ const getLocationQuery = (): ParsedUrlQuery => {
   const query = parse(location.search.slice(1))
 
   if (!query.safe) {
-    const prefixedAddressRe = /[a-z0-9-]+\:0x[a-f0-9]{40}/i
     const pathParam = location.pathname.split('/')[1]
     const safeParam = prefixedAddressRe.test(pathParam) ? pathParam : ''
 
