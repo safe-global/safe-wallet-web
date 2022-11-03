@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie'
+
 // Based on https://github.com/alinemorelli/react-gtm
 
 type DataLayer = Record<string, unknown>
@@ -34,10 +36,12 @@ export const _getRequiredGtmArgs = ({ gtmId, dataLayer = undefined, auth = '', p
 
 // Initialization scripts
 
+let gtmScriptRef: HTMLScriptElement | null = null
+
 export const _getGtmScript = (args: TagManagerArgs) => {
   const { gtmId, auth, preview } = _getRequiredGtmArgs(args)
 
-  const script = document.createElement('script')
+  gtmScriptRef = document.createElement('script')
 
   const gtmScript = `
     (function (w, d, s, l, i) {
@@ -51,23 +55,25 @@ export const _getGtmScript = (args: TagManagerArgs) => {
       f.parentNode.insertBefore(j, f);
     })(window, document, 'script', '${DATA_LAYER_NAME}', '${gtmId}');`
 
-  script.innerHTML = gtmScript
+  gtmScriptRef.innerHTML = gtmScript
 
-  return script
+  return gtmScriptRef
 }
 
 // Data layer scripts
 
+let gtmDataLayerScriptRef: HTMLScriptElement | null = null
+
 export const _getGtmDataLayerScript = (dataLayer: DataLayer) => {
-  const script = document.createElement('script')
+  gtmDataLayerScriptRef = document.createElement('script')
 
   const gtmDataLayerScript = `
       window.${DATA_LAYER_NAME} = window.${DATA_LAYER_NAME} || [];
       window.${DATA_LAYER_NAME}.push(${JSON.stringify(dataLayer)})`
 
-  script.innerHTML = gtmDataLayerScript
+  gtmDataLayerScriptRef.innerHTML = gtmDataLayerScript
 
-  return script
+  return gtmDataLayerScriptRef
 }
 
 const TagManager = {
@@ -89,6 +95,21 @@ const TagManager = {
 
     const gtmDataLayerScript = _getGtmDataLayerScript(dataLayer)
     document.head.insertBefore(gtmDataLayerScript, document.head.childNodes[0])
+  },
+  destroy: () => {
+    const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
+
+    gtmScriptRef?.remove()
+    gtmScriptRef = null
+
+    gtmDataLayerScriptRef?.remove()
+    gtmDataLayerScriptRef = null
+
+    const path = '/'
+    const domain = `.${location.host.split('.').slice(-2).join('.')}`
+    GTM_COOKIE_LIST.forEach((cookie) => {
+      Cookies.remove(cookie, { path, domain })
+    })
   },
 }
 
