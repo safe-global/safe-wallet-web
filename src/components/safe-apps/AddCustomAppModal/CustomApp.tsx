@@ -1,13 +1,12 @@
+import { useCallback } from 'react'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Typography, SvgIcon } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import CopyButton from '@/components/common/CopyButton'
 import ShareIcon from '@/public/images/common/share.svg'
-
 import css from './styles.module.css'
-import { useCallback } from 'react'
-import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 
 type CustomAppProps = {
   safeApp: SafeAppData

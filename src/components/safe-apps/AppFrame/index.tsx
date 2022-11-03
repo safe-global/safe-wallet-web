@@ -2,6 +2,8 @@ import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import { useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
+import { useRouter } from 'next/router'
+import Head from 'next/head'
 import { getBalances, getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { AddressBookItem, RequestId } from '@gnosis.pm/safe-apps-sdk'
 import { Methods } from '@gnosis.pm/safe-apps-sdk'
@@ -19,6 +21,8 @@ import useIsGranted from '@/hooks/useIsGranted'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isSameUrl } from '@/utils/url'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
+import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTransactionQueueBarState'
+import { gtmTrackPageview } from '@/services/analytics/gtm'
 import { getLegacyChainName } from '../utils'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAppIsLoading from './useAppIsLoading'
@@ -33,10 +37,6 @@ import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
-import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTransactionQueueBarState'
-import { gtmTrackPageview } from '@/services/analytics/gtm'
-import { useRouter } from 'next/router'
-import Head from 'next/head'
 
 const UNKNOWN_APP_NAME = 'Unknown App'
 
@@ -188,7 +188,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   return (
     <>
       <Head>
-        <title>Safe Apps - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}</title>
+        <title>Safe Apps - Viewer - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}</title>
       </Head>
 
       <div className={css.wrapper}>

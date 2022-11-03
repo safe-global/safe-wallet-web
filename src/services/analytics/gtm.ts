@@ -98,13 +98,12 @@ type PageviewGtmEvent = GtmEvent & {
   pagePath: string
 }
 
-type SafeAppGtmEvent = GtmEvent &
-  ActionGtmEvent & {
-    safeAppName: string
-    safeAppMethod?: string
-    safeAppEthMethod?: string
-    safeAppSDKVersion?: string
-  }
+type SafeAppGtmEvent = ActionGtmEvent & {
+  safeAppName: string
+  safeAppMethod?: string
+  safeAppEthMethod?: string
+  safeAppSDKVersion?: string
+}
 
 const gtmSend = (event: GtmEvent): void => {
   console.info('[Analytics]', event)
