@@ -66,7 +66,7 @@ const staticHints: Record<
               fontWeight="bold"
               display="flex"
               alignItems="center"
-              sx={{ '&:hover svg path': { fill: ({ palette }) => palette.primary.light } }}
+              sx={{ '&:hover svg path': { fill: 'inherit' } }}
             >
               Learn more about setting up your Safe.
               <SvgIcon component={LinkIcon} inheritViewBox />
