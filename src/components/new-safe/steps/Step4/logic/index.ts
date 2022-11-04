@@ -22,10 +22,6 @@ import { ErrorCode } from '@ethersproject/logger'
 import { isWalletRejection } from '@/utils/wallets'
 import type { PendingSafeTx } from '@/components/create-safe/types'
 import type { NewSafeFormData } from '@/components/new-safe/CreateSafe'
-import type { UrlObject } from 'url'
-import chains from '@/config/chains'
-import { AppRoutes } from '@/config/routes'
-import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 
 /**
  * Prepare data for creating a Safe for the Core SDK
@@ -198,35 +194,4 @@ export const checkSafeCreationTx = async (
   } catch (err) {
     return handleSafeCreationError(err as EthersError)
   }
-}
-
-export const getRedirect = (
-  chainId: string,
-  safeAddress: string,
-  redirectQuery?: string | string[],
-): UrlObject | string => {
-  const redirectUrl = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery
-  const chainPrefix = Object.keys(chains).find((prefix) => chains[prefix] === chainId)
-  const address = `${chainPrefix}:${safeAddress}`
-
-  // Should never happen in practice
-  if (!chainPrefix) return AppRoutes.index
-
-  // Go to the dashboard if no specific redirect is provided
-  if (!redirectUrl) {
-    return { pathname: AppRoutes.home, query: { safe: address, creation: 1 } }
-  }
-
-  // Otherwise, redirect to the provided URL (e.g. from a Safe App)
-
-  // Track the redirect to Safe App
-  if (redirectUrl.includes('apps')) {
-    trackEvent(SAFE_APPS_EVENTS.SHARED_APP_OPEN_AFTER_SAFE_CREATION)
-  }
-
-  // We're prepending the safe address directly here because the `router.push` doesn't parse
-  // The URL for already existing query params
-  const hasQueryParams = redirectUrl.includes('?')
-  const appendChar = hasQueryParams ? '&' : '?'
-  return redirectUrl + `${appendChar}safe=${address}`
 }

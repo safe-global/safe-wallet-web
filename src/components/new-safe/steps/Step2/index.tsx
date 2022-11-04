@@ -8,7 +8,8 @@ import { OwnerRow } from './OwnerRow'
 import type { NamedAddress } from '@/components/create-safe/types'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
-import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
+import useIsConnected from '@/hooks/useIsConnected'
+import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
 
 type CreateSafeStep2Form = {
   owners: NamedAddress[]
@@ -25,7 +26,8 @@ enum CreateSafeStep2Fields {
 const STEP_2_FORM_ID = 'create-safe-step-2-form'
 
 const CreateSafeStep2 = ({ onSubmit, onBack, data, setStep }: StepRenderProps<NewSafeFormData>): ReactElement => {
-  const { isConnected } = useCreateSafe(setStep)
+  const isConnected = useIsConnected()
+  useSetCreationStep(setStep, isConnected)
 
   const formMethods = useForm<CreateSafeStep2Form>({
     mode: 'all',

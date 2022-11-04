@@ -10,8 +10,9 @@ import type { NewSafeFormData } from '@/components/new-safe/CreateSafe'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
 import PairingDetails from '@/components/common/PairingDetails'
-import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
 import type { ConnectedWallet } from '@/services/onboard'
+import useIsConnected from '@/hooks/useIsConnected'
+import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
 
 export const ConnectWalletContent = ({ onSubmit }: { onSubmit: StepRenderProps<NewSafeFormData>['onSubmit'] }) => {
   const isWrongChain = useIsWrongChain()
@@ -57,7 +58,8 @@ export const ConnectWalletContent = ({ onSubmit }: { onSubmit: StepRenderProps<N
 }
 
 const CreateSafeStep0 = ({ onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
-  const { isConnected } = useCreateSafe(setStep)
+  const isConnected = useIsConnected()
+  useSetCreationStep(setStep, isConnected)
 
   return (
     <Paper>

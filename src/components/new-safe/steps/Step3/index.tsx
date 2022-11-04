@@ -15,9 +15,10 @@ import { getFallbackHandlerContractInstance } from '@/services/contracts/safeCon
 import { computeNewSafeAddress } from '@/components/create-safe/logic'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/steps/Step4'
+import useIsConnected from '@/hooks/useIsConnected'
+import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
 
 enum CreateSafeStep3Fields {
   name = 'name',
@@ -46,7 +47,8 @@ const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
 }
 
 const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
-  const { isConnected } = useCreateSafe(setStep)
+  const isConnected = useIsConnected()
+  useSetCreationStep(setStep, isConnected)
   const chain = useCurrentChain()
   const wallet = useWallet()
   const provider = useWeb3()

@@ -15,15 +15,15 @@ import {
 } from '@/components/new-safe/steps/Step4/logic'
 
 export enum SafeCreationStatus {
-  AWAITING = 1,
-  PROCESSING = 2,
-  WALLET_REJECTED = 3,
-  ERROR = 4,
-  REVERTED = 5,
-  TIMEOUT = 6,
-  SUCCESS = 7,
-  INDEXED = 8,
-  INDEX_FAILED = 9,
+  AWAITING,
+  PROCESSING,
+  WALLET_REJECTED,
+  ERROR,
+  REVERTED,
+  TIMEOUT,
+  SUCCESS,
+  INDEXED,
+  INDEX_FAILED,
 }
 
 export const useSafeCreation = (
@@ -32,8 +32,8 @@ export const useSafeCreation = (
   status: SafeCreationStatus,
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>,
 ) => {
-  const [isCreating, setIsCreating] = useState<boolean>(false)
-  const [isWatching, setIsWatching] = useState<boolean>(false)
+  const [isCreating, setIsCreating] = useState(false)
+  const [isWatching, setIsWatching] = useState(false)
 
   const wallet = useWallet()
   const provider = useWeb3()

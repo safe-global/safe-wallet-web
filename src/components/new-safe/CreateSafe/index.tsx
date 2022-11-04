@@ -82,7 +82,7 @@ const CreateSafe = () => {
     mobileOwners: [] as NamedAddress[],
     owners: [defaultOwner],
     threshold: 1,
-    saltNonce: 0,
+    saltNonce: Date.now(),
   }
 
   const onClose = () => {

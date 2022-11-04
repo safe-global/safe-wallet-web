@@ -12,7 +12,7 @@ const getStep = (status: SafeCreationStatus) => {
     case SafeCreationStatus.WALLET_REJECTED:
       return {
         description: 'Transaction was rejected.',
-        instruction: 'You can cancel or retry the Safe creation process.',
+        instruction: 'Please cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.PROCESSING:
       return {
@@ -22,17 +22,17 @@ const getStep = (status: SafeCreationStatus) => {
     case SafeCreationStatus.ERROR:
       return {
         description: 'There was an error.',
-        instruction: 'You can cancel or retry the Safe creation process.',
+        instruction: 'Please cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.REVERTED:
       return {
         description: 'Transaction was reverted.',
-        instruction: 'You can cancel or retry the Safe creation process.',
+        instruction: 'Please cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.TIMEOUT:
       return {
         description: 'Transaction was not found. Be aware that it might still be processed.',
-        instruction: 'You can cancel or retry the Safe creation process.',
+        instruction: 'Please cancel or retry the Safe creation process.',
       }
     case SafeCreationStatus.SUCCESS:
       return {

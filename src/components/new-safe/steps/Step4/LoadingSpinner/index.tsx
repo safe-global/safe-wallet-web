@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 import css from './styles.module.css'
 import classnames from 'classnames'
 import { SafeCreationStatus } from '@/components/new-safe/steps/Step4/useSafeCreation'
-import { createRef, useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 const rectTlEndTransform = 'translateX(0) translateY(20px) scaleY(1.1)'
 const rectTrEndTransform = 'translateX(30px) scaleX(2.3)'
@@ -34,11 +34,11 @@ const LoadingSpinner = ({ status }: { status: SafeCreationStatus }) => {
   const isError = status >= SafeCreationStatus.WALLET_REJECTED && status <= SafeCreationStatus.TIMEOUT
   const isSuccess = status >= SafeCreationStatus.SUCCESS
 
-  const rectTl = createRef<HTMLDivElement>()
-  const rectTr = createRef<HTMLDivElement>()
-  const rectBl = createRef<HTMLDivElement>()
-  const rectBr = createRef<HTMLDivElement>()
-  const rectCenter = createRef<HTMLDivElement>()
+  const rectTl = useRef<HTMLDivElement>(null)
+  const rectTr = useRef<HTMLDivElement>(null)
+  const rectBl = useRef<HTMLDivElement>(null)
+  const rectBr = useRef<HTMLDivElement>(null)
+  const rectCenter = useRef<HTMLDivElement>(null)
 
   const onFinish = useCallback(() => {
     moveToEnd(rectTlEndTransform, rectTl.current)

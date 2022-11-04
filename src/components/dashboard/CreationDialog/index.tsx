@@ -39,17 +39,17 @@ const CreationDialog = () => {
           <HintItem
             Icon={HomeIcon}
             title="Home"
-            description="Get a status overview of your Safe and more at your Safe home."
+            description="Get a status overview of your Safe and more on your Safe homepage."
           />
           <HintItem
             Icon={TransactionIcon}
             title="Transactions"
-            description="Review, approve, execute, keep track of assets movement."
+            description="Review, approve, execute and keep track of asset movement."
           />
           <HintItem
             Icon={AppsIcon}
             title="Apps"
-            description="Over 70 dApps available for you on Mainnet. Check out Safe native apps for secure integrations. "
+            description="Over 70 dApps available for you on Mainnet. Check out Safe apps for secure integrations. "
           />
           <HintItem
             Icon={SettingsIcon}
