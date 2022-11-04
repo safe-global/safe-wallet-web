@@ -187,6 +187,7 @@ const SignOrExecuteForm = ({
     cannotPropose ||
     isExecutionLoop ||
     isValidExecutionLoading
+
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
   return (
