@@ -50,8 +50,8 @@ const TransactionGuards = () => {
           <Box>
             <Typography>
               Transaction guards impose additional constraints that are checked prior to executing a Safe transaction.
-              Transaction guards are potentially risky, so make sure to only use modules from trusted sources. Learn
-              more about transaction guards{' '}
+              Transaction guards are potentially risky, so make sure to only use transaction guards from trusted
+              sources. Learn more about transaction guards{' '}
               <Link
                 href="https://help.gnosis-safe.io/en/articles/5324092-what-is-a-transaction-guard"
                 rel="noreferrer noopener"
