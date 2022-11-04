@@ -9,6 +9,7 @@ import NonceForm from '../NonceForm'
 import ModalDialog from '@/components/common/ModalDialog'
 import { AdvancedField, type AdvancedParameters } from './types.d'
 import GasLimitInput from './GasLimitInput'
+import DatePickerInput from '@/components/common/DatePickerInput'
 
 const HELP_LINK = 'https://help.gnosis-safe.io/en/articles/4738445-advanced-transaction-parameters'
 
@@ -29,9 +30,11 @@ type FormData = {
   [AdvancedField.maxFeePerGas]: string
   [AdvancedField.maxPriorityFeePerGas]: string
   [AdvancedField.safeTxGas]: number
+  [AdvancedField.executableAfter]?: Date
 }
 
 const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
+  console.log(params)
   const formMethods = useForm<FormData>({
     mode: 'onChange',
     defaultValues: {
@@ -57,6 +60,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
       maxFeePerGas: params.maxFeePerGas,
       maxPriorityFeePerGas: params.maxPriorityFeePerGas,
       safeTxGas: params.safeTxGas,
+      executableAfter: params.executableAfter,
     })
   }
 
@@ -68,6 +72,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
       maxFeePerGas: safeParseUnits(data.maxFeePerGas) || params.maxFeePerGas,
       maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) || params.maxPriorityFeePerGas,
       safeTxGas: data.safeTxGas || params.safeTxGas,
+      executableAfter: data.executableAfter?.getTime(),
     })
   }
 
@@ -98,6 +103,23 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                       nonce={params.nonce}
                       recommendedNonce={props.recommendedNonce}
                       readonly={props.nonceReadonly}
+                    />
+                  </FormControl>
+                </Grid>
+              )}
+
+              {/* Executable after */}
+              {!props.nonceReadonly && (
+                <Grid item xs={6}>
+                  <FormControl fullWidth>
+                    <DatePickerInput
+                      disableFuture={false}
+                      disablePast
+                      label="Executable after"
+                      {...register(AdvancedField.executableAfter, {
+                        required: false,
+                        valueAsDate: true,
+                      })}
                     />
                   </FormControl>
                 </Grid>

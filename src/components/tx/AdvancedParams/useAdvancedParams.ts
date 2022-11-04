@@ -20,6 +20,7 @@ export const useAdvancedParams = ({
       maxFeePerGas: manualParams?.maxFeePerGas ?? maxFeePerGas,
       maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas ?? maxPriorityFeePerGas,
       safeTxGas: manualParams?.safeTxGas ?? safeTxGas,
+      executableAfter: manualParams?.executableAfter,
     }),
     [manualParams, nonce, userNonce, gasLimit, maxFeePerGas, maxPriorityFeePerGas, safeTxGas],
   )

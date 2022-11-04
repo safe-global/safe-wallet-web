@@ -5,6 +5,7 @@ export enum AdvancedField {
   maxFeePerGas = 'maxFeePerGas',
   maxPriorityFeePerGas = 'maxPriorityFeePerGas',
   safeTxGas = 'safeTxGas',
+  executableAfter = 'executableAfter',
 }
 
 export type AdvancedParameters = Partial<{
@@ -14,4 +15,5 @@ export type AdvancedParameters = Partial<{
   [AdvancedField.maxFeePerGas]: BigNumber
   [AdvancedField.maxPriorityFeePerGas]: BigNumber
   [AdvancedField.safeTxGas]: number
+  [AdvancedField.executableAfter]: number
 }>

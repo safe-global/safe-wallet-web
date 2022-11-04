@@ -1,6 +1,6 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
 import { Button, DialogContent, Typography } from '@mui/material'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import {
   dispatchTxExecution,
@@ -8,6 +8,7 @@ import {
   dispatchTxSigning,
   createTx,
   dispatchOnChainSigning,
+  createMultiSendCallOnlyTx,
 } from '@/services/tx/txSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
@@ -28,6 +29,8 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@gnosis.pm/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
+import { getMultiSendCallOnlyContractInstance } from '@/services/contracts/safeContracts'
+import { Interface } from 'ethers/lib/utils'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -172,6 +175,36 @@ const SignOrExecuteForm = ({
 
   // On advanced params submit (nonce, gas limit, price, etc)
   const onAdvancedSubmit = async (data: AdvancedParameters) => {
+    if (tx && data.executableAfter && data.executableAfter !== advancedParams.executableAfter) {
+      try {
+        const timeLockAddress = '0x6e8c8403837e305a0312beba98b7001c117a69a7'
+        const humanReadableAbi = ['function checkLock(uint) public view']
+        const timeLockInterface = new Interface(humanReadableAbi)
+        // executable after was edited, create a new tx where we add another call to the multisend
+        const multiSendCallOnly = getMultiSendCallOnlyContractInstance(safe.chainId, safe.version)
+        if (tx.data.to === multiSendCallOnly.getAddress()) {
+          // We have to add to the current multiSend
+        } else {
+          // We batch the current with the new tx
+          const txs: MetaTransactionData[] = [
+            { to: tx.data.to, value: tx.data.value, data: tx.data.data, operation: 0 },
+            {
+              to: timeLockAddress,
+              value: '0x0',
+              operation: 0,
+              data: timeLockInterface.encodeFunctionData('checkLock', [data.executableAfter / 1000]),
+            },
+          ]
+
+          setTx(await createMultiSendCallOnlyTx(txs))
+        }
+      } catch (err) {
+        console.log('SOME ERROR')
+        logError(Errors._103, (err as Error).message)
+        return
+      }
+    }
+
     // If nonce was edited, create a new tx with that nonce
     if (tx && (data.nonce !== tx.data.nonce || data.safeTxGas !== tx.data.safeTxGas)) {
       try {
@@ -199,6 +232,8 @@ const SignOrExecuteForm = ({
 
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
+  console.log('Current advanced params: ', advancedParams)
+
   return (
     <form onSubmit={handleSubmit}>
       <DialogContent>
@@ -220,7 +255,7 @@ const SignOrExecuteForm = ({
 
         <TxSimulation
           gasLimit={advancedParams.gasLimit?.toNumber()}
-          transactions={safeTx}
+          transactions={tx}
           canExecute={canExecute}
           disabled={submitDisabled}
         />
