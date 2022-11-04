@@ -8,24 +8,32 @@ import { OwnerRow } from './OwnerRow'
 import type { NamedAddress } from '@/components/create-safe/types'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
+import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
+import { useSafeSetupHints } from './useSafeSetupHints'
 import useIsConnected from '@/hooks/useIsConnected'
 import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
 
-type CreateSafeStep2Form = {
+export type CreateSafeStep2Form = {
   owners: NamedAddress[]
-  mobileOwners: NamedAddress[]
   threshold: number
 }
 
 enum CreateSafeStep2Fields {
   owners = 'owners',
-  mobileOwners = 'mobileOwners',
   threshold = 'threshold',
 }
 
 const STEP_2_FORM_ID = 'create-safe-step-2-form'
 
-const CreateSafeStep2 = ({ onSubmit, onBack, data, setStep }: StepRenderProps<NewSafeFormData>): ReactElement => {
+const CreateSafeStep2 = ({
+  onSubmit,
+  onBack,
+  data,
+  setStep,
+  setDynamicHint,
+}: StepRenderProps<NewSafeFormData> & {
+  setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
+}): ReactElement => {
   const isConnected = useIsConnected()
   useSetCreationStep(setStep, isConnected)
 
@@ -33,7 +41,6 @@ const CreateSafeStep2 = ({ onSubmit, onBack, data, setStep }: StepRenderProps<Ne
     mode: 'all',
     defaultValues: {
       [CreateSafeStep2Fields.owners]: data.owners,
-      [CreateSafeStep2Fields.mobileOwners]: data.mobileOwners,
       [CreateSafeStep2Fields.threshold]: data.threshold,
     },
   })
@@ -44,13 +51,7 @@ const CreateSafeStep2 = ({ onSubmit, onBack, data, setStep }: StepRenderProps<Ne
 
   const { fields: ownerFields, append: appendOwner, remove: removeOwner } = useFieldArray({ control, name: 'owners' })
 
-  const {
-    fields: mobileOwnerFields,
-    append: appendMobileOwner,
-    remove: removeMobileOwner,
-  } = useFieldArray({ control, name: 'mobileOwners' })
-
-  const allOwners = [...ownerFields, ...mobileOwnerFields]
+  useSafeSetupHints(allFormData.threshold, ownerFields.length, setDynamicHint)
 
   const handleBack = () => {
     onBack(allFormData)
@@ -80,36 +81,17 @@ const CreateSafeStep2 = ({ onSubmit, onBack, data, setStep }: StepRenderProps<Ne
             </Button>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
-              Safe Mobile owner key (optional){' '}
-              <Tooltip title="TODO: Add tooltip" arrow placement="top">
-                <span style={{ display: 'flex' }}>
-                  <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
-                </span>
-              </Tooltip>
-            </Typography>
-            <Typography variant="body2">
-              Add an extra layer of security and sign transactions with the Safe Mobile app.
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            {mobileOwnerFields.map((field, i) => (
-              <OwnerRow
-                key={field.id}
-                groupName={CreateSafeStep2Fields.mobileOwners}
-                index={i}
-                remove={removeMobileOwner}
-              />
-            ))}
-            <Button
-              variant="text"
-              onClick={() => appendMobileOwner({ name: '', address: '' }, { shouldFocus: true })}
-              startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-              size="large"
-            >
-              Add mobile owner
-            </Button>
+            <Box p={2} sx={{ backgroundColor: 'background.main', borderRadius: '8px' }}>
+              <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
+                Safe Mobile owner key (optional){' '}
+                <Tooltip title="TODO: Add tooltip" arrow placement="top">
+                  <span style={{ display: 'flex' }}>
+                    <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
+                  </span>
+                </Tooltip>
+              </Typography>
+              <Typography variant="body2">Use your mobile phone as your additional owner key</Typography>
+            </Box>
           </Grid>
 
           <Grid item xs={12}>
@@ -126,13 +108,13 @@ const CreateSafeStep2 = ({ onSubmit, onBack, data, setStep }: StepRenderProps<Ne
               Any transaction requires the confirmation of:
             </Typography>
             <Select {...register(CreateSafeStep2Fields.threshold)} defaultValue={data.threshold}>
-              {allOwners.map((_, i) => (
+              {ownerFields.map((_, i) => (
                 <MenuItem key={i} value={i + 1}>
                   {i + 1}
                 </MenuItem>
               ))}
             </Select>{' '}
-            out of {allOwners.length} owner(s).
+            out of {ownerFields.length} owner(s).
           </Grid>
           <Grid item xs={12}>
             <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3, alignSelf: 'normal' }} />
