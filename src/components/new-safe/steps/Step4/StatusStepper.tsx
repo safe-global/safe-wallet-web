@@ -14,7 +14,7 @@ const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; 
         <StatusStep isLoading={!pendingSafe.safeAddress} safeAddress={pendingSafe.safeAddress}>
           <Box>
             <Typography variant="body2" fontWeight="700">
-              Your Safe address:
+              Your Safe address
             </Typography>
             <EthHashInfo
               address={pendingSafe.safeAddress}
@@ -31,7 +31,7 @@ const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; 
         <StatusStep isLoading={!pendingSafe.txHash} safeAddress={pendingSafe.safeAddress}>
           <Box>
             <Typography variant="body2" fontWeight="700">
-              Validating Transaction
+              Validating transaction
             </Typography>
             {pendingSafe.txHash && (
               <EthHashInfo
