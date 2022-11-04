@@ -108,8 +108,8 @@ const NewTxModal = ({
             </TxButton>
 
             {txNonce && (
-              <TxButton onClick={onRejectModalOpen} variant="danger">
-                Rejection transaction
+              <TxButton onClick={onRejectModalOpen} variant="outlined">
+                Empty transaction
               </TxButton>
             )}
 
