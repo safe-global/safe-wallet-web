@@ -10,7 +10,8 @@ import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
 import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
 import { useSafeSetupHints } from './useSafeSetupHints'
-import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
+import useIsConnected from '@/hooks/useIsConnected'
+import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
 
 export type CreateSafeStep2Form = {
   owners: NamedAddress[]
@@ -28,11 +29,13 @@ const CreateSafeStep2 = ({
   onSubmit,
   onBack,
   data,
+  setStep,
   setDynamicHint,
 }: StepRenderProps<NewSafeFormData> & {
   setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
 }): ReactElement => {
-  const { isConnected } = useCreateSafe()
+  const isConnected = useIsConnected()
+  useSetCreationStep(setStep, isConnected)
 
   const formMethods = useForm<CreateSafeStep2Form>({
     mode: 'all',

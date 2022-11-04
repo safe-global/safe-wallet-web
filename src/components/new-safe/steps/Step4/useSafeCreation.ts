@@ -1,28 +1,29 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { useCallback, useEffect, useState } from 'react'
-import {
-  createNewSafe,
-  getSafeCreationTxInfo,
-  getSafeDeployProps,
-  checkSafeCreationTx,
-  handleSafeCreationError,
-} from '@/components/create-safe/logic'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
-import type { PendingSafeData, PendingSafeTx } from '@/components/create-safe/types.d'
 import type { EthersError } from '@/utils/ethers-utils'
+import type { PendingSafeData } from '@/components/new-safe/steps/Step4/index'
+import type { PendingSafeTx } from '@/components/create-safe/types'
+import {
+  checkSafeCreationTx,
+  createNewSafe,
+  getSafeCreationTxInfo,
+  getSafeDeployProps,
+  handleSafeCreationError,
+} from '@/components/new-safe/steps/Step4/logic'
 
 export enum SafeCreationStatus {
-  AWAITING = 'AWAITING',
-  PROCESSING = 'PROCESSING',
-  WALLET_REJECTED = 'WALLET_REJECTED',
-  ERROR = 'ERROR',
-  REVERTED = 'REVERTED',
-  TIMEOUT = 'TIMEOUT',
-  SUCCESS = 'SUCCESS',
-  INDEXED = 'INDEXED',
-  INDEX_FAILED = 'INDEX_FAILED',
+  AWAITING,
+  PROCESSING,
+  WALLET_REJECTED,
+  ERROR,
+  REVERTED,
+  TIMEOUT,
+  SUCCESS,
+  INDEXED,
+  INDEX_FAILED,
 }
 
 export const useSafeCreation = (
@@ -31,8 +32,8 @@ export const useSafeCreation = (
   status: SafeCreationStatus,
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>,
 ) => {
-  const [isCreating, setIsCreating] = useState<boolean>(false)
-  const [isWatching, setIsWatching] = useState<boolean>(false)
+  const [isCreating, setIsCreating] = useState(false)
+  const [isWatching, setIsWatching] = useState(false)
 
   const wallet = useWallet()
   const provider = useWeb3()
@@ -95,6 +96,5 @@ export const useSafeCreation = (
 
   return {
     createSafe,
-    txHash: pendingSafe?.txHash,
   }
 }

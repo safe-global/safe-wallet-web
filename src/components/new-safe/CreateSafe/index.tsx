@@ -9,9 +9,9 @@ import CreateSafeStep0 from '@/components/new-safe/steps/Step0'
 import CreateSafeStep1 from '@/components/new-safe/steps/Step1'
 import CreateSafeStep2 from '@/components/new-safe/steps/Step2'
 import CreateSafeStep3 from '@/components/new-safe/steps/Step3'
+import { CreateSafeStatus } from '@/components/new-safe/steps/Step4'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CardStepper } from '../CardStepper'
-
 import { AppRoutes } from '@/config/routes'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
 import type { AlertColor } from '@mui/material'
@@ -24,6 +24,8 @@ export type NewSafeFormData = {
   threshold: number
   owners: NamedAddress[]
   mobileOwners: NamedAddress[]
+  saltNonce: number
+  safeAddress?: string
 }
 
 const staticHints: Record<
@@ -143,6 +145,13 @@ const CreateSafe = () => {
         <CreateSafeStep3 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
       ),
     },
+    {
+      title: '',
+      subtitle: '',
+      render: (data, onSubmit, onBack, setStep) => (
+        <CreateSafeStatus data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      ),
+    },
   ]
 
   const staticHint = useMemo(() => staticHints[activeStep], [activeStep])
@@ -152,6 +161,7 @@ const CreateSafe = () => {
     mobileOwners: [] as NamedAddress[],
     owners: [defaultOwner],
     threshold: 1,
+    saltNonce: Date.now(),
   }
 
   const onClose = () => {

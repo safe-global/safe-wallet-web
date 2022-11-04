@@ -16,7 +16,8 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
-import useCreateSafe from '@/components/new-safe/CreateSafe/useCreateSafe'
+import useIsConnected from '@/hooks/useIsConnected'
+import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
 
 import css from './styles.module.css'
 
@@ -34,10 +35,12 @@ function CreateSafeStep1({
   data,
   onSubmit,
   onBack,
+  setStep,
   setSafeName,
 }: StepRenderProps<NewSafeFormData> & { setSafeName: (name: string) => void }) {
   const fallbackName = useMnemonicSafeName()
-  const { isConnected } = useCreateSafe()
+  const isConnected = useIsConnected()
+  useSetCreationStep(setStep, isConnected)
 
   const {
     handleSubmit,
