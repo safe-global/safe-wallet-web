@@ -1,5 +1,5 @@
 import { useState, type ReactElement } from 'react'
-import { Box, Button, type ButtonProps, DialogContent, SvgIcon } from '@mui/material'
+import { Box, Button, type ButtonProps, DialogContent, SvgIcon, Tooltip } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { UrlObject } from 'url'
@@ -15,6 +15,7 @@ import { SendAssetsField } from '../TokenTransferModal/SendAssetsForm'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
+import InfoIcon from '@/public/images/notifications/info.svg'
 
 const TxButton = (props: ButtonProps) => (
   <Button variant="contained" sx={{ '& svg path': { fill: 'currentColor' } }} fullWidth {...props} />
@@ -69,7 +70,29 @@ const NewTxModal = ({
     onClose()
   }
 
-  const dialogTitle = txNonce ? `Replace transaction #${txNonce}` : 'New transaction'
+  const dialogTitle = txNonce ? (
+    <>
+      Replace transaction with nonce {txNonce}
+      <Tooltip
+        title="Replacing a transaction will create a new one with the same nonce. Execution of this will replace the
+                previous one."
+        placement="top"
+        arrow
+      >
+        <span>
+          <SvgIcon
+            component={InfoIcon}
+            inheritViewBox
+            color="border"
+            fontSize="small"
+            sx={{ verticalAlign: 'middle', marginLeft: 0.5 }}
+          />
+        </span>
+      </Tooltip>
+    </>
+  ) : (
+    'New transaction'
+  )
 
   return (
     <>
