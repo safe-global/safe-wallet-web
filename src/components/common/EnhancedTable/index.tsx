@@ -141,7 +141,14 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
               pagedRows.map((row, index) => (
                 <TableRow tabIndex={-1} key={index}>
                   {Object.entries(row).map(([key, cell]) => (
-                    <TableCell key={key} className={classNames({ sticky: cell.sticky, [css.hide]: cell.hide })}>
+                    <TableCell
+                      key={key}
+                      className={classNames({
+                        sticky: cell.sticky,
+                        [css.hide]: cell.hide,
+                        [css.actions]: key === 'actions',
+                      })}
+                    >
                       {cell.content}
                     </TableCell>
                   ))}

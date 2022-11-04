@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import React, { type ReactElement, type SyntheticEvent, useCallback, useState } from 'react'
-import CopyIcon from '@/public/images/sidebar/copy.svg'
+import CopyIcon from '@/public/images/common/copy.svg'
 import { IconButton, SvgIcon, Tooltip } from '@mui/material'
 
 const CopyButton = ({
@@ -46,6 +46,7 @@ const CopyButton = ({
                 fill: ({ palette }) => palette.border.main,
               },
             }}
+            fontSize="small"
           />
         )}
       </IconButton>
