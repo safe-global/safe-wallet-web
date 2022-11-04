@@ -1,4 +1,4 @@
-import { Container, Typography, Grid, Link } from '@mui/material'
+import { Container, Typography, Grid, SvgIcon, IconButton } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import useWallet from '@/hooks/wallets/useWallet'
@@ -18,6 +18,7 @@ import type { AlertColor } from '@mui/material'
 import type { CreateSafeInfoItem } from '../CreateSafeInfos'
 import CreateSafeInfos from '../CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
+import LinkIcon from '@/public/images/sidebar/link.svg'
 
 export type NewSafeFormData = {
   name: string
@@ -56,15 +57,17 @@ const staticHints: Record<
         title: 'Safe Setup',
         text: (
           <>
-            Not sure how many owners and confirmations you need for your Safe?{' '}
-            <Link
-              sx={{ textDecoration: 'underline' }}
+            Not sure how many owners and confirmations you need for your Safe?
+            <br />
+            <b>Learn more about setting up your Safe.</b>
+            <IconButton
               href="https://help.gnosis-safe.io/en/articles/4772567-what-safe-setup-should-i-use"
               target="_blank"
               rel="noopener noreferrer"
+              size="small"
             >
-              Learn more about setting up your Safe.
-            </Link>
+              <SvgIcon component={LinkIcon} inheritViewBox />
+            </IconButton>
           </>
         ),
       },
