@@ -1,14 +1,15 @@
-name: Deploy to Dev
+name: Deploy to dev/staging
 
 on:
   push:
     branches:
+      - main
       - dev
 
 jobs:
-  deploy-dev:
+  deploy:
     runs-on: ubuntu-latest
-    name: Deploy to dev
+    name: Deploy to dev/staging
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.8.0
@@ -45,7 +46,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
+      - name: Deploy to the staging S3
+        if: github.ref == 'refs/heads/main'
+        run: |
+          cd out
+
+          aws s3 sync . s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current
+          aws s3 sync . s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
+
+          for file in $(find . -name '*.html' | sed 's|^\./||'); do
+              aws s3 cp ${file%} s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current/${file%.*} --content-type 'text/html'
+          done
+
       - name: Deploy to the dev S3
+        if: github.ref == 'refs/heads/dev'
         run: |
           cd out
 
