@@ -19,6 +19,7 @@ export const generateSafeTxHash = (safe: SafeInfo, data: SafeTransactionData): s
     safeTransactionData: data,
   })
 
+  // `ethers` generates `EIP712Domain` automatically
   const { EIP712Domain: _, ...types } = typedData.types
 
   let safeTxHash = ''
@@ -26,7 +27,7 @@ export const generateSafeTxHash = (safe: SafeInfo, data: SafeTransactionData): s
   try {
     const typedDataHash = utils._TypedDataEncoder.encode(
       typedData.domain,
-      // @ts-ignore - typedData.types.SafeTxData key is not recognised as a string
+      // @ts-ignore - the typedData.types.SafeTxData key is not recognised as a string
       types,
       typedData.message,
     )
