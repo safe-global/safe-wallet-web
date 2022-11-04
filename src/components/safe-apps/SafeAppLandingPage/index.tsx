@@ -30,19 +30,12 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
   const showDemo = chain.chainId === CHAIN_ID_WITH_A_DEMO || !!backendApp?.chainIds.includes(CHAIN_ID_WITH_A_DEMO)
 
   useEffect(() => {
-    if (!isLoading && safeApp?.chainIds.length) {
+    if (!isLoading && !backendAppLoading && safeApp?.chainIds.length) {
       const appName = backendApp ? backendApp.name : safeApp.url
 
-      trackSafeAppEvent(SAFE_APPS_EVENTS.SHARED_APP_LANDING, appName)
-      trackSafeAppEvent(
-        {
-          ...SAFE_APPS_EVENTS.SHARED_APP_CHAIN_ID,
-          label: chain.chainId,
-        },
-        appName,
-      )
+      trackSafeAppEvent({ ...SAFE_APPS_EVENTS.SHARED_APP_LANDING, label: chain.chainId }, appName)
     }
-  }, [isLoading, backendApp, safeApp, chain.chainId])
+  }, [isLoading, backendApp, safeApp, backendAppLoading, chain])
 
   const handleConnectWallet = async () => {
     if (!onboard) return
