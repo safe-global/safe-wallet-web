@@ -3,7 +3,7 @@ import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securit
 import palette from '@/styles/colors'
 import darkPalette from '@/styles/colors-dark'
 
-const descriptionText = 'Safe is the most trusted platform to manage digital assets (formerly known as the Gnosis Safe)'
+const descriptionText = 'Safe (formerly Gnosis Safe) is the most trusted platform to manage digital assets'
 const titleText = 'Safe'
 
 const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
