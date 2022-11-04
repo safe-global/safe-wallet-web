@@ -114,7 +114,14 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
               Safe address
             </Typography>
             <Typography mb={3} component="div">
-              <EthHashInfo key={params.address} address={params.address} showName={false} shortAddress />
+              <EthHashInfo
+                key={params.address}
+                address={params.address}
+                showName={false}
+                shortAddress
+                showCopyButton
+                hasExplorer
+              />
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Connected wallet client is owner?
