@@ -1,4 +1,4 @@
-import { Container, Typography, Grid, SvgIcon, IconButton } from '@mui/material'
+import { Container, Typography, Grid, SvgIcon, Box } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import useWallet from '@/hooks/wallets/useWallet'
@@ -59,15 +59,16 @@ const staticHints: Record<
           <>
             Not sure how many owners and confirmations you need for your Safe?
             <br />
-            <b>Learn more about setting up your Safe.</b>
-            <IconButton
+            <a
               href="https://help.gnosis-safe.io/en/articles/4772567-what-safe-setup-should-i-use"
               target="_blank"
               rel="noopener noreferrer"
-              size="small"
             >
-              <SvgIcon component={LinkIcon} inheritViewBox />
-            </IconButton>
+              <Box display="flex" alignItems="center">
+                <b>Learn more about setting up your Safe.</b>
+                <SvgIcon component={LinkIcon} />
+              </Box>
+            </a>
           </>
         ),
       },
