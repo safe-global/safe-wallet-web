@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, Paper, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
 import NetworkSelector from '@/components/common/NetworkSelector'
@@ -13,6 +13,7 @@ import PairingDetails from '@/components/common/PairingDetails'
 import type { ConnectedWallet } from '@/services/onboard'
 import useIsConnected from '@/hooks/useIsConnected'
 import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
+import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
 
 export const ConnectWalletContent = ({ onSubmit }: { onSubmit: StepRenderProps<NewSafeFormData>['onSubmit'] }) => {
   const isWrongChain = useIsWrongChain()
@@ -30,7 +31,7 @@ export const ConnectWalletContent = ({ onSubmit }: { onSubmit: StepRenderProps<N
     <>
       {wallet && !isWrongChain && <Typography mb={2}>Wallet connected</Typography>}
       {wallet ? (
-        <Typography mb={2} component="div">
+        <Typography component="div">
           Creating a Safe on <NetworkSelector />
         </Typography>
       ) : (
@@ -49,7 +50,7 @@ export const ConnectWalletContent = ({ onSubmit }: { onSubmit: StepRenderProps<N
         </>
       )}
       {isWrongChain && (
-        <Typography mb={2}>
+        <Typography>
           Your wallet connection must match the selected network. <ChainSwitcher />
         </Typography>
       )}
@@ -62,20 +63,20 @@ const CreateSafeStep0 = ({ onSubmit, onBack, setStep }: StepRenderProps<NewSafeF
   useSetCreationStep(setStep, isConnected)
 
   return (
-    <Paper>
-      <Box>
+    <>
+      <Box className={layoutCss.row}>
         <ConnectWalletContent onSubmit={onSubmit} />
       </Box>
-      <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3, alignSelf: 'normal' }} />
-      <Box display="flex" flexDirection="row" gap={3}>
-        <Button variant="outlined" onClick={() => onBack()}>
+      <Divider />
+      <Box className={layoutCss.row} display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+        <Button variant="outlined" size="small" onClick={() => onBack()}>
           Cancel
         </Button>
-        <Button variant="contained" onClick={() => onSubmit({})} disabled={!isConnected}>
-          Continue
+        <Button variant="contained" size="stretched" onClick={() => onSubmit({})} disabled={!isConnected}>
+          Next
         </Button>
       </Box>
-    </Paper>
+    </>
   )
 }
 

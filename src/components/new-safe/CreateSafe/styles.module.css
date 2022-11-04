@@ -1,0 +1,10 @@
+.row {
+  width: 100%;
+  padding: var(--space-4) var(--space-7);
+}
+
+@media (max-width: 600px) {
+  .row {
+    padding: var(--space-2);
+  }
+}
