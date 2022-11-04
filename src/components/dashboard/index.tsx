@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
-  const { creation = '' } = router.query
+  const { showCreationModal = '' } = router.query
 
   return (
     <>
@@ -30,7 +30,7 @@ const Dashboard = (): ReactElement => {
           <SafeAppsDashboardSection />
         </Grid>
       </Grid>
-      {creation ? <CreationDialog /> : null}
+      {showCreationModal ? <CreationDialog /> : null}
     </>
   )
 }

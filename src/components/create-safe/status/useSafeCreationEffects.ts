@@ -12,11 +12,7 @@ import { useAppDispatch } from '@/store'
 import type { PendingSafeData } from '@/components/create-safe/types.d'
 import useChainId from '@/hooks/useChainId'
 
-export const getRedirect = (
-  chainId: string,
-  safeAddress: string,
-  redirectQuery?: string | string[],
-): UrlObject | string => {
+const getRedirect = (chainId: string, safeAddress: string, redirectQuery?: string | string[]): UrlObject | string => {
   const redirectUrl = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery
   const chainPrefix = Object.keys(chains).find((prefix) => chains[prefix] === chainId)
   const address = `${chainPrefix}:${safeAddress}`

@@ -16,7 +16,7 @@ import { SafeCreationStatus, useSafeCreation } from '@/components/new-safe/steps
 import StatusStepper from '@/components/new-safe/steps/Step4/StatusStepper'
 import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
-import { getRedirect } from '@/components/create-safe/status/useSafeCreationEffects'
+import { getRedirect } from '@/components/new-safe/steps/Step4/logic'
 
 export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 
