@@ -84,7 +84,11 @@ const CreateSafeStep2 = ({
             <Box p={2} sx={{ backgroundColor: 'background.main', borderRadius: '8px' }}>
               <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
                 Safe Mobile owner key (optional){' '}
-                <Tooltip title="TODO: Add tooltip" arrow placement="top">
+                <Tooltip
+                  title="The Safe Mobile app allows generating new signer keys so you can use them as a signer in a new or existing Safe."
+                  arrow
+                  placement="top"
+                >
                   <span style={{ display: 'flex' }}>
                     <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
                   </span>
@@ -98,7 +102,11 @@ const CreateSafeStep2 = ({
             <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3 }} />
             <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
               Threshold
-              <Tooltip title="TODO: Add tooltip" arrow placement="top">
+              <Tooltip
+                title="The threshold of a Safe specifies how many owner accounts need to confirm a Safe transaction before it can be executed."
+                arrow
+                placement="top"
+              >
                 <span style={{ display: 'flex' }}>
                   <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
                 </span>
