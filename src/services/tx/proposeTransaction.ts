@@ -8,6 +8,7 @@ const proposeTx = async (
   sender: string,
   tx: SafeTransaction,
   safeTxHash: string,
+  origin?: string,
 ): Promise<TransactionDetails> => {
   const signatures = tx.signatures.size ? tx.encodedSignatures() : undefined
 
@@ -22,6 +23,7 @@ const proposeTx = async (
     baseGas: tx.data.baseGas.toString(),
     gasPrice: tx.data.gasPrice.toString(),
     signature: signatures,
+    origin,
   })
 }
 

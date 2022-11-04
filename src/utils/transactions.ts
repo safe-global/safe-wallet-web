@@ -3,6 +3,7 @@ import type {
   ExecutionInfo,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
+  SafeAppData,
   Transaction,
   TransactionDetails,
   TransactionListPage,
@@ -29,6 +30,7 @@ import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import type { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
+import { Errors, logError } from '@/services/exceptions'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -183,4 +185,20 @@ export const getQueuedTransactionCount = (txPage?: TransactionListPage): string 
   }
 
   return queuedTxsByNonce.length.toString()
+}
+
+export const getTxOrigin = (app?: SafeAppData): string | undefined => {
+  if (!app) {
+    return
+  }
+
+  let origin: string | undefined
+
+  try {
+    origin = JSON.stringify({ name: app.name, url: app.url })
+  } catch (e) {
+    logError(Errors._808, (e as Error).message)
+  }
+
+  return origin
 }

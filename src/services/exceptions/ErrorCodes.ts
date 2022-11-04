@@ -38,6 +38,7 @@ enum ErrorCodes {
   _804 = '804: Error processing a transaction',
   _806 = '806: Failed to remove module',
   _807 = '807: Failed to remove guard',
+  _808 = '808: Failed to get transaction origin',
 
   _900 = '900: Error loading Safe App',
   _901 = '901: Error processing Safe Apps SDK request',
