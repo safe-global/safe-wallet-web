@@ -2,12 +2,12 @@
   display: flex;
   align-items: center;
   gap: 0.5em;
+  line-height: 1.4;
 }
 
-.container,
 .address {
-  font-size: inherit;
-  line-height: 1.4;
+  font-family: monospace;
+  font-size: 13px;
 }
 
 .avatar {
@@ -35,7 +35,7 @@
   display: none;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599px) {
   .mobileAddress {
     display: inline-block;
   }
