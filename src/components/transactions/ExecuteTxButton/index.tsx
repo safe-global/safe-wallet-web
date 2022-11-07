@@ -1,13 +1,13 @@
 import type { SyntheticEvent } from 'react'
 import { useState, type ReactElement, useContext } from 'react'
 import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Button, Tooltip } from '@mui/material'
+import { Button, Tooltip, SvgIcon } from '@mui/material'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import ExecuteTxModal from '@/components/tx/modals/ExecuteTxModal'
 import useIsPending from '@/hooks/useIsPending'
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
+import RocketIcon from '@/public/images/transactions/rocket.svg'
 import IconButton from '@mui/material/IconButton'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
@@ -56,7 +56,7 @@ const ExecuteTxButton = ({
                 disabled={isDisabled}
                 size="small"
               >
-                <RocketLaunchIcon fontSize="small" />
+                <SvgIcon component={RocketIcon} inheritViewBox fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>

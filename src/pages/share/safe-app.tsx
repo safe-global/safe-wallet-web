@@ -4,6 +4,7 @@ import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
 import { useChainFromQueryParams } from '@/hooks/safe-apps/useChainFromQueryParams'
 import { SafeAppLanding } from '@/components/safe-apps/SafeAppLandingPage'
 import { AppRoutes } from '@/config/routes'
+import Head from 'next/head'
 
 const ShareSafeApp = () => {
   const router = useRouter()
@@ -28,9 +29,15 @@ const ShareSafeApp = () => {
   }
 
   return (
-    <main>
-      <SafeAppLanding appUrl={appUrl} chain={chain} />
-    </main>
+    <>
+      <Head>
+        <title>Safe Apps – Share</title>
+      </Head>
+
+      <main>
+        <SafeAppLanding appUrl={appUrl} chain={chain} />
+      </main>
+    </>
   )
 }
 

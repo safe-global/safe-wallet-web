@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react'
 import { IconButton, Tooltip, SvgIcon } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
-import LinkIcon from '@/public/images/sidebar/link.svg'
+import LinkIcon from '@/public/images/common/link.svg'
 import { getBlockExplorerLink } from '@/utils/chains'
 
 const ExplorerLink = ({ address }: { address: string }): ReactElement | null => {
@@ -22,6 +22,7 @@ const ExplorerLink = ({ address }: { address: string }): ReactElement | null => 
               fill: ({ palette }) => palette.border.main,
             },
           }}
+          fontSize="small"
         />
       </IconButton>
     </Tooltip>

@@ -1,64 +1,65 @@
 import { EventType } from '@/services/analytics/types'
 
-const SAFE_APPS_CATEGORY = 'safe-apps'
+export const SAFE_APPS_CATEGORY = 'safe-apps'
+export const SAFE_APPS_SDK_CATEGORY = 'safe-apps-sdk'
 
-// TODO: Does not yet exist in web-core
+const SAFE_APPS_EVENT_DATA = {
+  event: EventType.SAFE_APP,
+  category: SAFE_APPS_CATEGORY,
+}
+
 export const SAFE_APPS_EVENTS = {
   OPEN_APP: {
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Open Safe App',
-    category: SAFE_APPS_CATEGORY,
   },
   PIN: {
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Pin Safe App',
-    category: SAFE_APPS_CATEGORY,
   },
   UNPIN: {
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Unpin Safe App',
-    category: SAFE_APPS_CATEGORY,
+  },
+  COPY_SHARE_URL: {
+    ...SAFE_APPS_EVENT_DATA,
+    action: 'Copy Share URL',
   },
   SEARCH: {
-    event: EventType.META,
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Search for Safe App',
-    category: SAFE_APPS_CATEGORY,
   },
   ADD_CUSTOM_APP: {
-    event: EventType.META,
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Add custom Safe App',
-    category: SAFE_APPS_CATEGORY,
   },
   TRANSACTION_CONFIRMED: {
-    event: EventType.META,
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Transaction Confirmed',
-    category: SAFE_APPS_CATEGORY,
   },
   TRANSACTION_REJECTED: {
-    event: EventType.META,
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Transaction Rejected',
-    category: SAFE_APPS_CATEGORY,
-  },
-  LEGACY_API_CALL: {
-    event: EventType.META,
-    action: 'Legacy API call',
-    category: SAFE_APPS_CATEGORY,
   },
   SHARED_APP_LANDING: {
-    event: EventType.META,
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Shared App landing page visited',
-    category: SAFE_APPS_CATEGORY,
   },
   SHARED_APP_CHAIN_ID: {
-    event: EventType.META,
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Shared App chainId',
-    category: SAFE_APPS_CATEGORY,
   },
   SHARED_APP_OPEN_DEMO: {
-    event: EventType.META,
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Open demo safe from shared app',
-    category: SAFE_APPS_CATEGORY,
   },
   SHARED_APP_OPEN_AFTER_SAFE_CREATION: {
-    event: EventType.META,
+    ...SAFE_APPS_EVENT_DATA,
     action: 'Open shared app after Safe creation',
-    category: SAFE_APPS_CATEGORY,
+  },
+  SAFE_APP_SDK_METHOD_CALL: {
+    ...SAFE_APPS_EVENT_DATA,
+    category: SAFE_APPS_SDK_CATEGORY,
+    action: 'SDK method call',
   },
 }

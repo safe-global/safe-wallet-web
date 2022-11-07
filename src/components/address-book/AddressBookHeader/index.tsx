@@ -27,10 +27,12 @@ const HeaderButton = ({
   disabled?: boolean
   children: string
 }): ReactElement => {
+  const svg = <SvgIcon component={icon} inheritViewBox />
+
   return (
     <>
-      <IconButton color="primary" onClick={onClick} disabled={disabled} size="small" className={css.iconButton}>
-        <SvgIcon component={icon} inheritViewBox fontSize="small" />
+      <IconButton color="primary" onClick={onClick} disabled={disabled} className={css.iconButton}>
+        {svg}
       </IconButton>
 
       <Button
@@ -39,7 +41,7 @@ const HeaderButton = ({
         variant="text"
         color="primary"
         size="small"
-        startIcon={<SvgIcon component={icon} inheritViewBox />}
+        startIcon={svg}
         className={css.button}
       >
         {children}
@@ -64,7 +66,7 @@ const AddressBookHeader = ({ handleOpenModal, searchQuery, onSearchQueryChange }
       noBorder
       action={
         <Grid container pb={1}>
-          <Grid item xs={9} md={5} xl={4.5}>
+          <Grid item xs={8} md={5} xl={4.5}>
             <TextField
               placeholder="Search"
               variant="filled"
@@ -85,7 +87,7 @@ const AddressBookHeader = ({ handleOpenModal, searchQuery, onSearchQueryChange }
               size="small"
             />
           </Grid>
-          <Grid item xs={3} md={7} display="flex" justifyContent="flex-end" alignItems="center">
+          <Grid item xs={4} md={7} display="flex" justifyContent="flex-end" alignItems="center">
             <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
               <HeaderButton onClick={handleOpenModal(ModalType.IMPORT)} icon={ImportIcon}>
                 Import
