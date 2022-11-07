@@ -107,14 +107,16 @@ const CreateSafeStep2 = ({
           <Typography variant="body2" mb={2}>
             Any transaction requires the confirmation of:
           </Typography>
-          <Select {...register(CreateSafeStep2Fields.threshold)} defaultValue={data.threshold} className={css.select}>
-            {ownerFields.map((_, i) => (
-              <MenuItem key={i} value={i + 1}>
-                {i + 1}
-              </MenuItem>
-            ))}
-          </Select>{' '}
-          out of {ownerFields.length} owner(s).
+          <Box display="flex" alignItems="center">
+            <Select {...register(CreateSafeStep2Fields.threshold)} defaultValue={data.threshold} className={css.select}>
+              {ownerFields.map((_, i) => (
+                <MenuItem key={i} value={i + 1}>
+                  {i + 1}
+                </MenuItem>
+              ))}
+            </Select>{' '}
+            out of {ownerFields.length} owner(s).
+          </Box>
         </Box>
         <Divider />
         <Box className={layoutCss.row}>
