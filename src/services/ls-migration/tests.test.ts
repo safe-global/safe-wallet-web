@@ -9,8 +9,8 @@ describe('Local storage migration', () => {
       SAFE__addressBook: JSON.stringify([
         { address: '0x123', name: 'Alice', chainId: '1' },
         { address: '0x456', name: 'Bob', chainId: '1' },
-        { address: '0x789', name: 'Charlie', chainId: '4' },
-        { address: '0xabc', name: 'Dave', chainId: '4' },
+        { address: '0x789', name: 'Charlie', chainId: '5' },
+        { address: '0xabc', name: 'Dave', chainId: '5' },
       ]),
     }
 
@@ -22,7 +22,7 @@ describe('Local storage migration', () => {
           '0x123': 'Alice',
           '0x456': 'Bob',
         },
-        '4': {
+        '5': {
           '0x789': 'Charlie',
           '0xabc': 'Dave',
         },
