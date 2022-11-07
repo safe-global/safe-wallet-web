@@ -1,4 +1,4 @@
-import { Container, Typography, Grid, Link } from '@mui/material'
+import { Container, Typography, Grid, Link, SvgIcon } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import useWallet from '@/hooks/wallets/useWallet'
@@ -18,6 +18,7 @@ import type { AlertColor } from '@mui/material'
 import type { CreateSafeInfoItem } from '../CreateSafeInfos'
 import CreateSafeInfos from '../CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
+import LinkIcon from '@/public/images/sidebar/link.svg'
 
 export type NewSafeFormData = {
   name: string
@@ -40,6 +41,10 @@ const staticHints: Record<
         title: 'Network fee',
         text: 'Deploying your Safe requires the payment of the associated network fee with your connected wallet. An estmation will be provided in the last step.',
       },
+      {
+        title: 'Address book privacy',
+        text: 'The name of your Safe will be stored in a local address book and can be changed at a later stage. It will not be shared with us or any third party.',
+      },
     ],
   },
   2: {
@@ -58,14 +63,19 @@ const staticHints: Record<
         title: 'Safe Setup',
         text: (
           <>
-            Not sure how many owners and confirmations you need for your Safe?{' '}
+            Not sure how many owners and confirmations you need for your Safe?
+            <br />
             <Link
-              sx={{ textDecoration: 'underline' }}
               href="https://help.gnosis-safe.io/en/articles/4772567-what-safe-setup-should-i-use"
               target="_blank"
               rel="noopener noreferrer"
+              fontWeight="bold"
+              display="flex"
+              alignItems="center"
+              sx={{ '&:hover svg path': { fill: 'inherit' } }}
             >
               Learn more about setting up your Safe.
+              <SvgIcon component={LinkIcon} inheritViewBox />
             </Link>
           </>
         ),
@@ -140,7 +150,7 @@ const CreateSafe = () => {
     {
       title: 'Review',
       subtitle:
-        "You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet.",
+        "You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet",
       render: (data, onSubmit, onBack, setStep) => (
         <CreateSafeStep3 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
       ),
