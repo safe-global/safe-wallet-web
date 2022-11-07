@@ -28,3 +28,12 @@ export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => 
       return item
     })
 }
+
+export const getLatestTransactions = (list: TransactionListItem[] = []): Transaction[] => {
+  return (
+    groupConflictingTxs(list)
+      // Get latest transaction if there are conflicting ones
+      .map((group) => (Array.isArray(group) ? group[0] : group))
+      .filter(isTransactionListItem)
+  )
+}
