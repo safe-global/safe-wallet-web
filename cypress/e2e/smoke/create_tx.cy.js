@@ -89,6 +89,9 @@ describe('Queue a transaction on 1/N', () => {
 
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]').should('not.exist')
+
+      // Estimation is loaded (can take long)
+      cy.get('button[type="submit"]', { timeout: 20000 }).should('not.be.disabled')
     })
 
     cy.contains('Submit').click()
@@ -96,7 +99,8 @@ describe('Queue a transaction on 1/N', () => {
 
   it('should click the notification and see the transaction queued', () => {
     // Click on the notification
-    cy.contains('View transaction').click()
+    // Transaction can take a bit to be proposed
+    cy.contains('View transaction', { timeout: 10000 }).click()
 
     // Single Tx page
     cy.contains('h3', 'Transaction details').should('be.visible')
