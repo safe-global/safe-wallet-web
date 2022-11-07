@@ -32,11 +32,11 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
           rawValue: '',
           sticky: true,
           content: (
-            <>
+            <div>
               {isGranted && <ReplaceOwnerDialog address={address} />}
               <EditOwnerDialog address={address} name={name} chainId={safe.chainId} />
               {isGranted && <RemoveOwnerDialog owner={{ address, name }} />}
-            </>
+            </div>
           ),
         },
       }
