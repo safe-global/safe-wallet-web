@@ -55,7 +55,6 @@ const ExecuteTxButton = ({
                 color="primary"
                 disabled={isDisabled}
                 size="small"
-                sx={{ '& svg path': { fill: ({ palette }) => palette.primary.main } }}
               >
                 <SvgIcon component={RocketIcon} inheritViewBox fontSize="small" />
               </IconButton>
