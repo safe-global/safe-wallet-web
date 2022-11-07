@@ -146,7 +146,6 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
                       className={classNames({
                         sticky: cell.sticky,
                         [css.hide]: cell.hide,
-                        [css.actions]: key === 'actions',
                       })}
                     >
                       {cell.content}
