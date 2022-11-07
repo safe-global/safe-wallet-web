@@ -2,7 +2,7 @@
   display: none;
 }
 
-.actions > div {
+.actions {
   display: flex;
   justify-content: flex-end;
   align-items: center;
