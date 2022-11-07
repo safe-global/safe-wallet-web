@@ -147,7 +147,7 @@ const initTheme = (darkMode: boolean) => {
             padding: '12px 24px',
           },
           root: ({ theme }) => ({
-            borderRadius: '8px',
+            borderRadius: '6px',
             fontWeight: 'bold',
             lineHeight: 1.25,
             borderColor: theme.palette.primary.main,

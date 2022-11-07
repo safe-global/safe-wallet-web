@@ -51,7 +51,7 @@ type AppCardContainerProps = {
 
 const enum AppCardVariantHeights {
   compact = '120px',
-  default = '180px',
+  default = '200px',
 }
 
 const enum AppCardVariantAspectRatio {
@@ -141,6 +141,7 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
         height,
         aspectRatio,
         transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
+        borderRadius: '6px !important',
         border: '1px solid transparent',
         '&:hover': {
           backgroundColor: palette.background.light,
@@ -178,8 +179,9 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
         }}
       />
 
+      {/* TODO No share button per design. Only info button. Leaving the code for reusing the styles */}
       {/* Share button */}
-      <ShareButton className={styles.compactShareButton} shareUrl={shareUrl} safeApp={safeApp} />
+      {/* <ShareButton className={styles.compactShareButton} shareUrl={shareUrl} safeApp={safeApp} /> */}
 
       {/* Pin/unpin button */}
       {onPin && (

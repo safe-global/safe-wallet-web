@@ -81,7 +81,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
               size="small"
               variant="outlined"
               onClick={closeDrawer}
-              className={css.addButton}
               startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
             >
               Add
