@@ -10,11 +10,12 @@ import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
 import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
 import { useSafeSetupHints } from './useSafeSetupHints'
-import useIsConnected from '@/hooks/useIsConnected'
 import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import css from './styles.module.css'
 import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
+import NetworkWarning from '@/components/new-safe/NetworkWarning'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 export type CreateSafeStep2Form = {
   owners: NamedAddress[]
@@ -37,8 +38,8 @@ const CreateSafeStep2 = ({
 }: StepRenderProps<NewSafeFormData> & {
   setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
 }): ReactElement => {
-  const isConnected = useIsConnected()
-  useSetCreationStep(setStep, isConnected)
+  const isWrongChain = useIsWrongChain()
+  useSetCreationStep(setStep)
 
   const formMethods = useForm<CreateSafeStep2Form>({
     mode: 'all',
@@ -48,11 +49,14 @@ const CreateSafeStep2 = ({
     },
   })
 
-  const { register, handleSubmit, control, watch } = formMethods
+  const { register, handleSubmit, control, watch, formState } = formMethods
 
   const allFormData = watch()
 
   const { fields: ownerFields, append: appendOwner, remove: removeOwner } = useFieldArray({ control, name: 'owners' })
+
+  const isValid = Object.keys(formState.errors).length === 0
+  const isDisabled = isWrongChain || !isValid
 
   useSafeSetupHints(allFormData.threshold, ownerFields.length, setDynamicHint)
 
@@ -125,6 +129,8 @@ const CreateSafeStep2 = ({
             </Select>{' '}
             out of {ownerFields.length} owner(s).
           </Box>
+
+          {isWrongChain && <NetworkWarning />}
         </Box>
         <Divider />
         <Box className={layoutCss.row}>
@@ -132,7 +138,7 @@ const CreateSafeStep2 = ({
             <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
               Back
             </Button>
-            <Button type="submit" variant="contained" size="stretched" disabled={!isConnected}>
+            <Button type="submit" variant="contained" size="stretched" disabled={isDisabled}>
               Next
             </Button>
           </Box>

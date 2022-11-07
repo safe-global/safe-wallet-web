@@ -1,9 +1,7 @@
 import { useMemo, type ReactElement } from 'react'
-import { useForm } from 'react-hook-form'
 import { Button, Grid, Typography, Divider, Box } from '@mui/material'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import type { NamedAddress } from '@/components/create-safe/types'
 import { useCurrentChain } from '@/hooks/useChains'
 import useGasPrice from '@/hooks/useGasPrice'
 import { useEstimateSafeCreationGas } from '@/components/create-safe/useEstimateSafeCreationGas'
@@ -18,22 +16,10 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/steps/Step4'
-import useIsConnected from '@/hooks/useIsConnected'
 import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-
-enum CreateSafeStep3Fields {
-  name = 'name',
-  owners = 'owners',
-  threshold = 'threshold',
-}
-
-type CreateSafeStep3Form = {
-  name: string
-  owners: NamedAddress[]
-  threshold: number
-  networkFee: string
-}
+import NetworkWarning from '@/components/new-safe/NetworkWarning'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
   return (
@@ -49,8 +35,8 @@ const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
 }
 
 const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
-  const isConnected = useIsConnected()
-  useSetCreationStep(setStep, isConnected)
+  const isWrongChain = useIsWrongChain()
+  useSetCreationStep(setStep)
   const chain = useCurrentChain()
   const wallet = useWallet()
   const provider = useWeb3()
@@ -73,20 +59,8 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
       ? formatVisualAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
       : '> 0.001'
 
-  const formMethods = useForm<CreateSafeStep3Form>({
-    mode: 'all',
-    defaultValues: {
-      [CreateSafeStep3Fields.name]: data.name,
-      [CreateSafeStep3Fields.owners]: data.owners,
-      [CreateSafeStep3Fields.threshold]: data.threshold,
-    },
-  })
-
-  const { getValues } = formMethods
-
   const handleBack = () => {
-    const allFormData = getValues()
-    onBack(allFormData)
+    onBack(data)
   }
 
   const createSafe = async () => {
@@ -169,6 +143,8 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
             </Grid>
           </Grid>
         </Grid>
+
+        {isWrongChain && <NetworkWarning />}
       </Box>
       <Divider />
       <Box className={layoutCss.row}>
@@ -176,7 +152,7 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
           <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
             Back
           </Button>
-          <Button onClick={createSafe} variant="contained" size="stretched" disabled={!isConnected}>
+          <Button onClick={createSafe} variant="contained" size="stretched" disabled={isWrongChain}>
             Next
           </Button>
         </Box>
