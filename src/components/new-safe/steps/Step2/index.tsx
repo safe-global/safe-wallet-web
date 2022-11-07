@@ -10,7 +10,7 @@ import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
 import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
 import { useSafeSetupHints } from './useSafeSetupHints'
-import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
+import useSyncSafeCreationStep from '@/components/new-safe/CreateSafe/useSyncSafeCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import css from './styles.module.css'
 import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
@@ -39,7 +39,7 @@ const CreateSafeStep2 = ({
   setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
 }): ReactElement => {
   const isWrongChain = useIsWrongChain()
-  useSetCreationStep(setStep)
+  useSyncSafeCreationStep(setStep)
 
   const formMethods = useForm<CreateSafeStep2Form>({
     mode: 'all',

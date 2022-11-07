@@ -16,7 +16,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/steps/Step4'
-import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
+import useSyncSafeCreationStep from '@/components/new-safe/CreateSafe/useSyncSafeCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import NetworkWarning from '@/components/new-safe/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
@@ -36,7 +36,7 @@ const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
 
 const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
-  useSetCreationStep(setStep)
+  useSyncSafeCreationStep(setStep)
   const chain = useCurrentChain()
   const wallet = useWallet()
   const provider = useWeb3()
