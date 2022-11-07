@@ -48,6 +48,7 @@ const NewTxModal = ({
   const [nftsModalOpen, setNftModalOpen] = useState<boolean>(false)
   const [rejectModalOpen, setRejectModalOpen] = useState<boolean>(false)
   const txBuilder = useTxBuilderApp()
+  const isReplacement = txNonce !== undefined
 
   // These cannot be Track components as they intefere with styling
   const onTokenModalOpen = () => {
@@ -70,7 +71,7 @@ const NewTxModal = ({
     onClose()
   }
 
-  const dialogTitle = txNonce ? (
+  const dialogTitle = isReplacement ? (
     <>
       Replace transaction with nonce {txNonce}
       <Tooltip
@@ -107,14 +108,14 @@ const NewTxModal = ({
               Send NFTs
             </TxButton>
 
-            {txNonce && (
+            {isReplacement && (
               <TxButton onClick={onRejectModalOpen} variant="outlined">
                 Empty transaction
               </TxButton>
             )}
 
             {/* Contract interaction via Transaction Builder */}
-            {txBuilder.app && !recipient && !txNonce && (
+            {txBuilder.app && !recipient && !isReplacement && (
               <Link href={txBuilder.link} passHref>
                 <TxButton
                   startIcon={<img src={txBuilder.app.iconUrl} height={20} width="auto" alt={txBuilder.app.name} />}
