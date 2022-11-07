@@ -58,6 +58,7 @@ describe('Local storage migration', () => {
           { address: 'sdfgsdfg', name: 'Bob', chainId: '1' },
           { address: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808', name: 'Charlie', chainId: '5' },
           { address: '', name: 'Dave', chainId: '5' },
+          { address: undefined, name: 'John', chainId: '5' },
         ]),
       }
 
