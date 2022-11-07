@@ -62,7 +62,7 @@ const useTxNotifications = (): void => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
-        const hasSafeTxHash = 'safeTxHash' in detail
+        const hasSafeTxHash = 'safeTxHash' in detail && !!detail.safeTxHash
 
         const txId = 'txId' in detail ? detail.txId : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''

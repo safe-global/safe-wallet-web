@@ -7,9 +7,9 @@ import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import ErrorCodes from '../exceptions/ErrorCodes'
 import { logError } from '../exceptions'
 
-export const generateSafeTxHash = (safe: SafeInfo, data: SafeTransactionData): string => {
+export const generateSafeTxHash = (safe: SafeInfo, data: SafeTransactionData): string | undefined => {
   if (!isValidSafeVersion(safe.version)) {
-    return ''
+    return
   }
 
   const typedData = generateTypedData({
@@ -22,7 +22,7 @@ export const generateSafeTxHash = (safe: SafeInfo, data: SafeTransactionData): s
   // `ethers` generates `EIP712Domain` automatically
   const { EIP712Domain: _, ...types } = typedData.types
 
-  let safeTxHash = ''
+  let safeTxHash: string | undefined
 
   try {
     const typedDataHash = utils._TypedDataEncoder.encode(
