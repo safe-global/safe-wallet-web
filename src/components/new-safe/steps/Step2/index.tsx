@@ -49,19 +49,20 @@ const CreateSafeStep2 = ({
     },
   })
 
-  const { register, handleSubmit, control, watch, formState } = formMethods
+  const { register, handleSubmit, control, watch, formState, getValues } = formMethods
 
-  const allFormData = watch()
+  const threshold = watch(CreateSafeStep2Fields.threshold)
 
   const { fields: ownerFields, append: appendOwner, remove: removeOwner } = useFieldArray({ control, name: 'owners' })
 
   const isValid = Object.keys(formState.errors).length === 0
   const isDisabled = isWrongChain || !isValid
 
-  useSafeSetupHints(allFormData.threshold, ownerFields.length, setDynamicHint)
+  useSafeSetupHints(threshold, ownerFields.length, setDynamicHint)
 
   const handleBack = () => {
-    onBack(allFormData)
+    const formData = getValues()
+    onBack(formData)
   }
 
   return (
