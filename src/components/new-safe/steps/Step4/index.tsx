@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { Box, Button, Divider, Grid, Paper, Tooltip } from '@mui/material'
+import { Box, Button, Divider, Grid, Paper, Tooltip, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import Track from '@/components/common/Track'
@@ -17,6 +17,7 @@ import StatusStepper from '@/components/new-safe/steps/Step4/StatusStepper'
 import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import { getRedirect } from '@/components/new-safe/steps/Step4/logic'
+import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
 
 export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 
@@ -75,19 +76,23 @@ export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) 
         textAlign: 'center',
       }}
     >
-      <StatusMessage status={status} />
+      <Box className={layoutCss.row}>
+        <StatusMessage status={status} />
+      </Box>
 
       {!displayActions && pendingSafe && (
         <>
-          <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 4, alignSelf: 'normal' }} />
-          <StatusStepper pendingSafe={pendingSafe} status={status} />
+          <Divider />
+          <Box className={layoutCss.row}>
+            <StatusStepper pendingSafe={pendingSafe} status={status} />
+          </Box>
         </>
       )}
 
       {displaySafeLink && (
         <>
-          <Divider sx={{ ml: '-52px', mr: '-52px', mb: 3, mt: 3, alignSelf: 'normal' }} />
-          <Box mt={3}>
+          <Divider />
+          <Box className={layoutCss.row}>
             <Track {...CREATE_SAFE_EVENTS.GO_TO_SAFE}>
               <Button variant="contained" onClick={onFinish}>
                 Start using Safe
@@ -99,21 +104,27 @@ export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) 
 
       {displayActions && (
         <>
-          <Divider sx={{ ml: '-52px', mr: '-52px', mb: 3, mt: 3, alignSelf: 'normal' }} />
-          <Grid container justifyContent="center" gap={2}>
-            <Track {...CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE}>
-              <Button onClick={onClose}>Cancel</Button>
-            </Track>
-            <Track {...CREATE_SAFE_EVENTS.RETRY_CREATE_SAFE}>
-              <Tooltip title={!isConnected ? 'Please make sure your wallet is connected on the correct network.' : ''}>
-                <span>
-                  <Button onClick={onCreate} variant="contained" disabled={!isConnected}>
-                    Retry
-                  </Button>
-                </span>
-              </Tooltip>
-            </Track>
-          </Grid>
+          <Divider />
+          <Box className={layoutCss.row}>
+            <Grid container justifyContent="center" gap={2}>
+              <Track {...CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE}>
+                <Button onClick={onClose} variant="outlined">
+                  Cancel
+                </Button>
+              </Track>
+              <Track {...CREATE_SAFE_EVENTS.RETRY_CREATE_SAFE}>
+                <Tooltip
+                  title={!isConnected ? 'Please make sure your wallet is connected on the correct network.' : ''}
+                >
+                  <Typography display="flex" height={1}>
+                    <Button onClick={onCreate} variant="contained" disabled={!isConnected}>
+                      Retry
+                    </Button>
+                  </Typography>
+                </Tooltip>
+              </Track>
+            </Grid>
+          </Box>
         </>
       )}
     </Paper>

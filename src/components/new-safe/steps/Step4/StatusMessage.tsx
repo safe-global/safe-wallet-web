@@ -68,7 +68,8 @@ const StatusMessage = ({ status }: { status: SafeCreationStatus }) => {
         <Box
           sx={({ palette }) => ({ backgroundColor: palette.warning.background, borderRadius: '6px' })}
           padding={3}
-          my={3}
+          mt={4}
+          mb={0}
         >
           <Typography variant="body2">{stepInfo.instruction}</Typography>
         </Box>

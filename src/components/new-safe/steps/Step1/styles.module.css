@@ -2,18 +2,12 @@
   border: none;
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  align-items: flex-start;
-}
-
 .select {
   display: flex;
   align-items: center;
   border-radius: 8px;
   border: 1px solid var(--color-border-light);
+  height: 56px;
 }
 
 .select:hover,

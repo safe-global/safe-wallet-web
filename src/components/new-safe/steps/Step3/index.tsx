@@ -11,6 +11,7 @@ import { formatVisualAmount } from '@/utils/formatters'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/CreateSafe'
 import css from './styles.module.css'
+import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
 import { getFallbackHandlerContractInstance } from '@/services/contracts/safeContracts'
 import { computeNewSafeAddress } from '@/components/create-safe/logic'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -19,6 +20,7 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/steps/Step4'
 import useIsConnected from '@/hooks/useIsConnected'
 import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 enum CreateSafeStep3Fields {
   name = 'name',
@@ -110,8 +112,8 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
   }
 
   return (
-    <Grid container spacing={3}>
-      <Grid item>
+    <>
+      <Box className={layoutCss.row}>
         <Grid container spacing={3}>
           <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
           <ReviewRow name="Name" value={<Typography>{data.name}</Typography>} />
@@ -141,10 +143,10 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
             }
           />
         </Grid>
-      </Grid>
+      </Box>
 
-      <Grid item xs={12}>
-        <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3 }} />
+      <Divider />
+      <Box className={layoutCss.row}>
         <Grid item xs={12}>
           <Grid container spacing={3}>
             <ReviewRow
@@ -161,25 +163,25 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
             />
             <Grid xs={3} />
             <Grid xs={9} pt={1} pl={3}>
-              <Typography color="text.secondary">
+              <Typography variant="body2" color="text.secondary">
                 You will have to confirm a transaction with your currently connected wallet.
               </Typography>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <Divider sx={{ ml: '-52px', mr: '-52px', mb: 4, mt: 3, alignSelf: 'normal' }} />
-        <Box display="flex" flexDirection="row" gap={3}>
-          <Button variant="outlined" onClick={handleBack}>
+      </Box>
+      <Divider />
+      <Box className={layoutCss.row}>
+        <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+          <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
             Back
           </Button>
-          <Button variant="contained" onClick={createSafe} disabled={!isConnected}>
-            Continue
+          <Button onClick={createSafe} variant="contained" size="stretched" disabled={!isConnected}>
+            Next
           </Button>
         </Box>
-      </Grid>
-    </Grid>
+      </Box>
+    </>
   )
 }
 
