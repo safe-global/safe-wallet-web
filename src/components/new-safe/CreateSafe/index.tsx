@@ -41,6 +41,10 @@ const staticHints: Record<
         title: 'Network fee',
         text: 'Deploying your Safe requires the payment of the associated network fee with your connected wallet. An estmation will be provided in the last step.',
       },
+      {
+        title: 'Address book privacy',
+        text: 'The name of your Safe will be stored in a local address book and can be changed at a later stage. It will not be shared with us or any third party.',
+      },
     ],
   },
   2: {
@@ -146,7 +150,7 @@ const CreateSafe = () => {
     {
       title: 'Review',
       subtitle:
-        "You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet.",
+        "You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet",
       render: (data, onSubmit, onBack, setStep) => (
         <CreateSafeStep3 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
       ),

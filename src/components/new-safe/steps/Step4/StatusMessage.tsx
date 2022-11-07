@@ -17,7 +17,7 @@ const getStep = (status: SafeCreationStatus) => {
     case SafeCreationStatus.PROCESSING:
       return {
         description: 'Step 2/2: Transaction is being executed.',
-        instruction: 'Please do not leave the page.',
+        instruction: 'Please do not leave this page.',
       }
     case SafeCreationStatus.ERROR:
       return {
@@ -37,7 +37,7 @@ const getStep = (status: SafeCreationStatus) => {
     case SafeCreationStatus.SUCCESS:
       return {
         description: 'Your Safe was successfully created!',
-        instruction: 'It is now being indexed. Please do not leave the page.',
+        instruction: 'It is now being indexed. Please do not leave this page.',
       }
     case SafeCreationStatus.INDEXED:
       return {
