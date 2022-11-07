@@ -34,7 +34,7 @@ const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
   }
 }
 
-const NewTxModal = ({ onClose, recipient }: { onClose: () => void; recipient?: string }): ReactElement => {
+const NewTxModal = ({ onClose, recipient = '' }: { onClose: () => void; recipient?: string }): ReactElement => {
   const [tokenModalOpen, setTokenModalOpen] = useState<boolean>(false)
   const [nftsModalOpen, setNftModalOpen] = useState<boolean>(false)
   const txBuilder = useTxBuilderApp()
