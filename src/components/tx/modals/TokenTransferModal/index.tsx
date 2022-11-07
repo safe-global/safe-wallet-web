@@ -7,6 +7,11 @@ import ReviewTokenTx from '@/components/tx/modals/TokenTransferModal/ReviewToken
 import type { TxModalProps } from '@/components/tx/TxModal'
 import TxModal from '@/components/tx/TxModal'
 
+export type TokenTransferModalProps = {
+  params: SendAssetsFormData & { txNonce?: number }
+  onSubmit: (txId: string) => void
+}
+
 export const TokenTransferSteps: TxStepperProps['steps'] = [
   {
     label: 'Send tokens',
@@ -14,7 +19,9 @@ export const TokenTransferSteps: TxStepperProps['steps'] = [
   },
   {
     label: 'Review transaction',
-    render: (data, onSubmit) => <ReviewTokenTx onSubmit={onSubmit} params={data as SendAssetsFormData} />,
+    render: (data, onSubmit) => (
+      <ReviewTokenTx onSubmit={onSubmit} params={data as TokenTransferModalProps['params']} />
+    ),
   },
 ]
 
