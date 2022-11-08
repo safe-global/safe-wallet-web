@@ -1,5 +1,5 @@
 import { waitFor } from '@testing-library/react'
-import { migrateAddressBook } from './addressBook'
+import { migrateAddressBook, sanitizeMigratedAddressBook } from './addressBook'
 import { migrateAddedSafes } from './addedSafes'
 import { createIframe, sendReadyMessage, receiveMessage } from './iframe'
 
@@ -204,5 +204,101 @@ describe('Local storage migration', () => {
     window.postMessage('hello', '*')
 
     await waitFor(() => expect(message).toEqual('hello'))
+  })
+})
+
+describe('sanitizeMigratedAddressBook', () => {
+  it('should return valid address books as is', () => {
+    const addressBook = {
+      '1': {
+        '0x1F2504De05f5167650bE5B28c472601Be434b60A': 'Alice',
+      },
+      '5': {
+        '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
+      },
+    }
+
+    expect(sanitizeMigratedAddressBook(addressBook)).toEqual(addressBook)
+  })
+
+  it('should remove entries with empty/invalid addresses', () => {
+    const invalidAddressBook = {
+      '1': {
+        '0x1F2504De05f5167650bE5B28c472601Be434b60A': 'Alice',
+        '': 'Bob',
+      },
+      '5': {
+        '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
+        invalid: 'Dave',
+      },
+    }
+
+    expect(sanitizeMigratedAddressBook(invalidAddressBook)).toEqual({
+      '1': {
+        '0x1F2504De05f5167650bE5B28c472601Be434b60A': 'Alice',
+      },
+      '5': {
+        '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
+      },
+    })
+  })
+
+  it('should remove entries with empty names', () => {
+    const invalidAddressBook = {
+      '1': {
+        '0x1F2504De05f5167650bE5B28c472601Be434b60A': 'Alice',
+        '0x501E66bF7a8F742FA40509588eE751e93fA354Df': '',
+      },
+      '5': {
+        '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
+        '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2': undefined,
+      },
+    }
+
+    // @ts-ignore - Invalid address book
+    expect(sanitizeMigratedAddressBook(invalidAddressBook)).toEqual({
+      '1': {
+        '0x1F2504De05f5167650bE5B28c472601Be434b60A': 'Alice',
+      },
+      '5': {
+        '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
+      },
+    })
+  })
+
+  it('should remove chain-specific address books if they have no entries', () => {
+    const invalidAddressBook = {
+      '1': {
+        invalid: 'Alice',
+        '0x501E66bF7a8F742FA40509588eE751e93fA354Df': '',
+      },
+      '5': {
+        '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
+        '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2': 'Dave',
+      },
+    }
+
+    expect(sanitizeMigratedAddressBook(invalidAddressBook)).toEqual({
+      '5': {
+        '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
+        '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2': 'Dave',
+      },
+    })
+  })
+
+  it('should return the initial state if the entire address book is empty', () => {
+    const invalidAddressBook = {
+      '1': {
+        invalid: 'Alice',
+        '0x501E66bF7a8F742FA40509588eE751e93fA354Df': '',
+      },
+      '5': {
+        invalid: 'Charlie',
+        '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2': undefined,
+      },
+    }
+
+    // @ts-ignore - Invalid address book
+    expect(sanitizeMigratedAddressBook(invalidAddressBook)).toEqual({})
   })
 })

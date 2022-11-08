@@ -13,6 +13,7 @@ import { MIGRATION_KEY } from './config'
 const useStorageMigration = (): void => {
   const dispatch = useAppDispatch()
   const [isMigrationFinished = false, setIsMigrationFinished] = useLocalStorage<boolean>(MIGRATION_KEY)
+  const [isSanitized = false, setIsSanitized] = useLocalStorage<boolean>(MIGRATION_KEY)
 
   useEffect(() => {
     if (isMigrationFinished) return
@@ -34,6 +35,17 @@ const useStorageMigration = (): void => {
 
     return unmount
   }, [isMigrationFinished, setIsMigrationFinished, dispatch])
+
+  // Temporary post-migration fix for malformed data
+  useEffect(() => {
+    if (!isMigrationFinished || isSanitized) {
+      return
+    }
+
+    dispatch(addressBookSlice.actions.sanitize)
+
+    setIsSanitized(true)
+  }, [dispatch, isMigrationFinished, isSanitized, setIsSanitized])
 }
 
 export default IS_PRODUCTION ? useStorageMigration : () => void null

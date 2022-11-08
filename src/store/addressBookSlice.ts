@@ -1,3 +1,4 @@
+import { sanitizeMigratedAddressBook } from '@/services/ls-migration/addressBook'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '.'
 
@@ -5,7 +6,7 @@ export type AddressBook = { [address: string]: string }
 
 export type AddressBookState = { [chainId: string]: AddressBook }
 
-const initialState: AddressBookState = {}
+export const initialState: AddressBookState = {}
 
 export const addressBookSlice = createSlice({
   name: 'addressBook',
@@ -17,6 +18,9 @@ export const addressBookSlice = createSlice({
       // Otherwise, migrate
       return action.payload
     },
+
+    // Temporary post-migration fix for malformed data
+    sanitize: (state): AddressBookState => sanitizeMigratedAddressBook(state),
 
     setAddressBook: (_, action: PayloadAction<AddressBookState>): AddressBookState => {
       return action.payload

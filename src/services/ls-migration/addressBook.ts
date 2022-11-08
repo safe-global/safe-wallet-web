@@ -1,4 +1,5 @@
-import { type AddressBookState } from '@/store/addressBookSlice'
+import { initialState } from '@/store/addressBookSlice'
+import type { AddressBook, AddressBookState } from '@/store/addressBookSlice'
 import { utils } from 'ethers'
 import type { LOCAL_STORAGE_DATA } from './common'
 import { parseLsValue } from './common'
@@ -25,4 +26,38 @@ export const migrateAddressBook = (lsData: LOCAL_STORAGE_DATA): AddressBookState
       return newAb
     }
   }
+}
+
+// Temporary post-migration fix for malformed data
+export const sanitizeMigratedAddressBook = (state: AddressBookState): AddressBookState => {
+  const sanitizedAb = Object.keys(state).reduce<AddressBookState>((sanitizedAb, chainId) => {
+    const chainAb = state[chainId]
+
+    const sanitizedChainAb = Object.keys(chainAb).reduce<AddressBook>((sanitizedChainAb, address) => {
+      if (!address || !utils.isAddress(address)) {
+        return sanitizedChainAb
+      }
+
+      const name = chainAb[address]
+      if (!name) {
+        return sanitizedChainAb
+      }
+
+      sanitizedChainAb[address] = name
+
+      return sanitizedChainAb
+    }, {})
+
+    if (Object.keys(sanitizedChainAb).length > 0) {
+      sanitizedAb[chainId] = sanitizedChainAb
+    }
+
+    return sanitizedAb
+  }, {})
+
+  if (Object.keys(sanitizedAb).length > 0) {
+    return sanitizedAb
+  }
+
+  return initialState
 }
