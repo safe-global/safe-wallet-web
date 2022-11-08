@@ -13,12 +13,12 @@ import { useAppSelector } from '@/store'
 
 const WARNING_BANNER = 'WARNING_BANNER'
 const OLD_APP = 'https://gnosis-safe.io/app'
-const NO_REDIRECT = 'no-redirect'
+const NO_REDIRECT = '?no-redirect=true'
 
 const ExportLink = ({ children }: { children: ReactNode }): ReactElement => {
   const router = useRouter()
   const safeAddress = router.query.safe as string
-  const url = safeAddress ? `${OLD_APP}/${safeAddress}/address-book?${NO_REDIRECT}` : `${OLD_APP}?${NO_REDIRECT}`
+  const url = safeAddress ? `${OLD_APP}/${safeAddress}/address-book${NO_REDIRECT}` : `${OLD_APP}${NO_REDIRECT}`
 
   return (
     <a href={url} target="_blank" rel="noreferrer">
@@ -57,7 +57,7 @@ const PsaBanner = (): ReactElement | null => {
       <div className={styles.wrapper}>
         <div className={styles.content}>{banner}</div>
 
-        <IconButton className={styles.close} onClick={onClose} aria-label="dismiss transaction queue bar">
+        <IconButton className={styles.close} onClick={onClose} aria-label="dismiss announcement banner">
           <CloseIcon />
         </IconButton>
       </div>
