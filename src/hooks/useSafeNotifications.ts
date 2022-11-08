@@ -5,8 +5,10 @@ import useSafeInfo from './useSafeInfo'
 import { useAppDispatch } from '@/store'
 import { AppRoutes } from '@/config/routes'
 import useAsync from './useAsync'
-import { isOldestVersion, isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 import { useRouter } from 'next/router'
+import { useCurrentChain } from './useChains'
+import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
 
 const CLI_LINK = {
   href: 'https://github.com/5afe/safe-cli',
@@ -20,44 +22,45 @@ const useSafeNotifications = (): void => {
   const dispatch = useAppDispatch()
   const { query } = useRouter()
   const { safe } = useSafeInfo()
-  const { chainId, version, implementationVersionState } = safe
+  const { chainId, version, implementationVersionState, address } = safe
+  const chain = useCurrentChain()
 
   /**
    * Show a notification when the Safe version is out of date
    */
 
   useEffect(() => {
-    if (implementationVersionState !== ImplementationVersionState.OUTDATED) {
+    const isUnsupportedSafe = !isValidSafeVersion(version)
+
+    if (implementationVersionState !== ImplementationVersionState.OUTDATED || isUnsupportedSafe) {
       return
     }
-
-    const isOldSafe = isOldestVersion(version)
 
     const id = dispatch(
       showNotification({
         variant: 'warning',
         groupKey: 'safe-outdated-version',
 
-        message: isOldSafe
-          ? `Safe version ${version} is not supported by this web app anymore. We recommend using the command line interface instead.`
+        message: isUnsupportedSafe
+          ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the old web app here.`
           : `Your Safe version ${version} is out of date. Please update it.`,
 
-        link: isOldSafe
-          ? CLI_LINK
-          : {
-              href: {
+        link: {
+          href: isUnsupportedSafe
+            ? `https://gnosis-safe.io/app/${chain?.shortName}:${address.value}/settings/details?redirect=false`
+            : {
                 pathname: AppRoutes.settings.setup,
                 query: { safe: query.safe },
               },
-              title: 'Update Safe',
-            },
+          title: 'Update Safe',
+        },
       }),
     )
 
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, implementationVersionState, version, query.safe])
+  }, [dispatch, implementationVersionState, version, query.safe, chain?.shortName, address.value])
 
   /**
    * Show a notification when the Safe master copy is not supported
