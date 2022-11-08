@@ -35,8 +35,14 @@ describe('Queue a transaction on 1/N', () => {
   })
 
   it('should create a queued transaction', () => {
+    // Spy the /estimations request
+    cy.intercept('POST', '/**/multisig-transactions/estimations').as('estimations')
+
     // Alias for New transaction modal
     cy.contains('h2', 'Review transaction').parents('div').as('modal')
+
+    // Wait for /estimations response
+    cy.wait('@estimations')
 
     // Estimation is loaded
     cy.get('button[type="submit"]').should('not.be.disabled')
@@ -91,7 +97,19 @@ describe('Queue a transaction on 1/N', () => {
       cy.get('input[type="checkbox"]').should('not.exist')
     })
 
+    // Stub the second /estimations request
+    cy.intercept('POST', '/**/multisig-transactions/estimations', {
+      statusCode: 200,
+      body: { currentNonce: 3, recommendedNonce: recommendedNonce, safeTxGas: '45006' },
+    })
+
     cy.contains('Submit').click()
+
+    // Spy the /propose request and give it an alias
+    cy.intercept('POST', '/**/propose').as('propose')
+
+    // Wait for the /propose request
+    cy.wait('@propose')
   })
 
   it('should click the notification and see the transaction queued', () => {
