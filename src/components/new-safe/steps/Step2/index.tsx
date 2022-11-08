@@ -55,8 +55,7 @@ const CreateSafeStep2 = ({
 
   const { fields: ownerFields, append: appendOwner, remove: removeOwner } = useFieldArray({ control, name: 'owners' })
 
-  const isValid = Object.keys(formState.errors).length === 0
-  const isDisabled = isWrongChain || !isValid
+  const isDisabled = isWrongChain || !formState.isValid
 
   useSafeSetupHints(threshold, ownerFields.length, setDynamicHint)
 
