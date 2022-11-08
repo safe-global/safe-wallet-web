@@ -21,8 +21,8 @@ const CLI_LINK = {
 const useSafeNotifications = (): void => {
   const dispatch = useAppDispatch()
   const { query } = useRouter()
-  const { safe } = useSafeInfo()
-  const { chainId, version, implementationVersionState, address } = safe
+  const { safe, safeAddress } = useSafeInfo()
+  const { chainId, version, implementationVersionState } = safe
   const chain = useCurrentChain()
 
   /**
@@ -30,24 +30,24 @@ const useSafeNotifications = (): void => {
    */
 
   useEffect(() => {
-    const isValid = isValidSafeVersion(version)
-
-    if (implementationVersionState !== ImplementationVersionState.OUTDATED && isValid) {
+    if (implementationVersionState !== ImplementationVersionState.OUTDATED) {
       return
     }
+
+    const isOldSafe = !isValidSafeVersion(version)
 
     const id = dispatch(
       showNotification({
         variant: 'warning',
         groupKey: 'safe-outdated-version',
 
-        message: !isValid
+        message: isOldSafe
           ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the old web app here.`
           : `Your Safe version ${version} is out of date. Please update it.`,
 
         link: {
-          href: !isValid
-            ? `https://gnosis-safe.io/app/${chain?.shortName}:${address.value}/settings/details?no-redirect=true`
+          href: isOldSafe
+            ? `https://gnosis-safe.io/app/${chain?.shortName}:${safeAddress}/settings/details?no-redirect=true`
             : {
                 pathname: AppRoutes.settings.setup,
                 query: { safe: query.safe },
@@ -60,7 +60,7 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, implementationVersionState, version, query.safe, chain?.shortName, address.value])
+  }, [dispatch, implementationVersionState, version, query.safe, chain?.shortName, safeAddress])
 
   /**
    * Show a notification when the Safe master copy is not supported
