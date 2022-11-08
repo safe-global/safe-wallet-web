@@ -30,24 +30,20 @@ export const migrateAddressBook = (lsData: LOCAL_STORAGE_DATA): AddressBookState
 
 // Temporary post-migration fix for malformed data
 export const sanitizeMigratedAddressBook = (state: AddressBookState): AddressBookState => {
-  const hasValidAb = Object.values(state).every((ab) => {
-    return Object.keys(ab).every(utils.isAddress)
-  })
-
-  if (hasValidAb) {
-    return state
-  }
+  console.log('Sanitizing address book')
 
   const sanitizedAb = Object.keys(state).reduce<AddressBookState>((sanitizedAb, chainId) => {
     const chainAb = state[chainId]
 
     const sanitizedChainAb = Object.keys(chainAb).reduce<AddressBook>((sanitizedChainAb, address) => {
       if (!address || !utils.isAddress(address)) {
+        console.log(`Removing malformed address book entry (invalid address): ${address}`)
         return sanitizedChainAb
       }
 
-      const name = chainAb[address]
+      const name = chainAb[address]?.trim()
       if (!name) {
+        console.log(`Removing malformed address book entry (invalid name): ${address}`)
         return sanitizedChainAb
       }
 

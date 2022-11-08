@@ -221,21 +221,6 @@ describe('sanitizeMigratedAddressBook', () => {
     expect(sanitizeMigratedAddressBook(addressBook)).toEqual(addressBook)
   })
 
-  it('should return early if all addresses are valid', () => {
-    const addressBook = {
-      '1': {
-        '0x1F2504De05f5167650bE5B28c472601Be434b60A': 'Alice',
-      },
-      '5': {
-        '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
-      },
-    }
-
-    const sanitizedAb = sanitizeMigratedAddressBook(addressBook)
-
-    expect(addressBook === sanitizedAb).toEqual(true)
-  })
-
   it('should remove entries with empty/invalid addresses', () => {
     const invalidAddressBook = {
       '1': {
@@ -267,6 +252,7 @@ describe('sanitizeMigratedAddressBook', () => {
       '5': {
         '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
         '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2': undefined,
+        '0xF3E977e7Eea1A91ce5B2d5077e5A7195Ae18b722': ' ',
       },
     }
 
