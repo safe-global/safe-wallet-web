@@ -61,7 +61,7 @@ class AppCommunicator {
       this.config?.onMessage?.(msg)
 
       try {
-        // @ts-expect-error Handler existence is checked in this.canHandleMessage
+        //  Handler existence is checked in this.canHandleMessage
         const response = await handler(msg)
 
         // If response is not returned, it means the response will be send somewhere else

@@ -39,7 +39,7 @@ const ReviewSafeAppsTx = ({
 
     if (params?.safeTxGas) {
       // FIXME: do it properly via the Core SDK
-      // @ts-expect-error safeTxGas readonly
+      // @ts-ignore
       tx.data.safeTxGas = params.safeTxGas
     }
 

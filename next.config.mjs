@@ -5,9 +5,9 @@ import withBundleAnalyzer from '@next/bundle-analyzer'
 const nextConfig = {
   reactStrictMode: false,
   productionBrowserSourceMaps: true,
-  eslint: {
-    dirs: ['src'],
-  },
+  // eslint: {
+  //   dirs: ['src'],
+  // },
   experimental: {
     images: {
       unoptimized: true,

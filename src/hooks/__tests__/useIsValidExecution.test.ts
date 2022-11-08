@@ -67,7 +67,7 @@ describe('useIsValidExecution', () => {
   it('should add a missing signature and return a boolean if the transaction is valid', async () => {
     jest.spyOn(safeContracts, 'getSpecificGnosisSafeContractInstance').mockReturnValue({
       contract: {
-        // @ts-expect-error
+        //
         callStatic: {
           execTransaction: jest.fn((_1, _2, _3, _4, _5, _6, _7, _8, _9, signatures: string) =>
             Promise.resolve(signatures.includes(ethers.utils.hexZeroPad('0x123', 20))),
@@ -102,7 +102,7 @@ describe('useIsValidExecution', () => {
 
     jest.spyOn(safeContracts, 'getSpecificGnosisSafeContractInstance').mockReturnValue({
       contract: {
-        // @ts-expect-error
+        //
         callStatic: {
           execTransaction: jest.fn((_1, _2, _3, _4, _5, _6, _7, _8, _9, signatures: string) =>
             Promise.resolve(
@@ -142,7 +142,7 @@ describe('useIsValidExecution', () => {
   it('should throw if the transaction is invalid', async () => {
     jest.spyOn(safeContracts, 'getSpecificGnosisSafeContractInstance').mockReturnValue({
       contract: {
-        // @ts-expect-error
+        //
         callStatic: {
           execTransaction: jest.fn(() => Promise.reject('Some error')),
         },
@@ -174,7 +174,7 @@ describe('useIsValidExecution', () => {
 
     jest.spyOn(safeContracts, 'getSpecificGnosisSafeContractInstance').mockReturnValue({
       contract: {
-        // @ts-expect-error
+        //
         callStatic: {
           execTransaction: jest.fn(() => Promise.reject(error)),
         },

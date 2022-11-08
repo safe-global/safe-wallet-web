@@ -55,11 +55,14 @@ const pairingModule = (): WalletInit => {
           public connector: InstanceType<typeof WalletConnect>
           public chains: Chain[]
           public disconnect: EIP1193Provider['disconnect']
-          // @ts-expect-error - 'emit' does not exist on `typeof EventEmitter`
+          //  - 'emit' does not exist on `typeof EventEmitter`
+          // @ts-ignore
           public emit: typeof EventEmitter['emit']
-          // @ts-expect-error - 'on' does not exist on `typeof EventEmitter`
+          //  - 'on' does not exist on `typeof EventEmitter`
+          // @ts-ignore
           public on: typeof EventEmitter['on']
-          // @ts-expect-error - 'removeListener' does not exist on `typeof EventEmitter`
+          //  - 'removeListener' does not exist on `typeof EventEmitter`
+          // @ts-ignore
           public removeListener: typeof EventEmitter['removeListener']
 
           private disconnected$: InstanceType<typeof Subject>
@@ -75,7 +78,6 @@ const pairingModule = (): WalletInit => {
             this.disconnected$ = new Subject()
             this.providers = {}
 
-            // @ts-expect-error - `payload` type (`ISessionStatus`) is not correctly `pipe`ed
             fromEvent(this.connector, ProviderEvents.WC_SESSION_UPDATE, (error, payload) => {
               if (error) {
                 throw error
@@ -94,7 +96,6 @@ const pairingModule = (): WalletInit => {
                 error: console.warn,
               })
 
-            // @ts-expect-error - `this.connector` does not satisfy the event target type
             fromEvent(this.connector, ProviderEvents.DISCONNECT, (error, payload) => {
               if (error) {
                 throw error
@@ -119,7 +120,7 @@ const pairingModule = (): WalletInit => {
             })
 
             this.disconnect = () => killPairingSession(this.connector)
-
+            //@ts-ignore
             this.request = async ({ method, params }) => {
               switch (method) {
                 case ProviderMethods.ETH_CHAIN_ID: {

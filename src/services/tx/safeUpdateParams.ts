@@ -17,7 +17,8 @@ export const createUpdateSafeTxs = (safe: SafeInfo, chain: ChainInfo): MetaTrans
   const latestMasterCopy = getGnosisSafeContractInstance(chain, LATEST_SAFE_VERSION)
   const safeContractInstance = getGnosisSafeContractInstance(chain, safe.version)
 
-  // @ts-expect-error this was removed in 1.3.0 but we need to support it for older safe versions
+  //  this was removed in 1.3.0 but we need to support it for older safe versions
+  //@ts-ignore
   const changeMasterCopyCallData = safeContractInstance.encode('changeMasterCopy', [latestMasterCopy.getAddress()])
 
   const fallbackHandlerAddress = getFallbackHandlerContractInstance(chain.chainId).address

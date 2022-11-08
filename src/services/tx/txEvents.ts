@@ -50,6 +50,7 @@ export const txSubscribe = txEventBus.subscribe.bind(txEventBus)
 
 // Log all events
 Object.values(TxEvent).forEach((event: TxEvent) => {
+  //@ts-ignore
   txSubscribe<TxEvent>(event, (detail) => {
     console.info(`${event} event received`, detail)
   })

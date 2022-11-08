@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { getChainsConfig, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import useAsync, { type AsyncResult } from '../useAsync'
 import { logError, Errors } from '@/services/exceptions'
 import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
