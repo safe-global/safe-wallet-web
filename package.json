@@ -141,5 +141,8 @@
     "patchedDependencies": {
       "@gnosis.pm/safe-deployments@1.16.0": "patches/@gnosis.pm__safe-deployments@1.16.0.patch"
     }
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
