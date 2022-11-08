@@ -4,7 +4,7 @@ import palette from '@/styles/colors'
 import darkPalette from '@/styles/colors-dark'
 
 const descriptionText =
-  'Safe (prev. Gnosis Safe) is the most trusted platform to manage digital assets on Ethereum and multiple EVMs. Over $40B secured. Unlock Ownership.'
+  'Safe (prev. Gnosis Safe) is the most trusted platform to manage digital assets on Ethereum and multiple EVMs. Over $40B secured.'
 const titleText = 'Safe'
 
 const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
