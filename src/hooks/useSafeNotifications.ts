@@ -47,7 +47,7 @@ const useSafeNotifications = (): void => {
 
         link: {
           href: !isValid
-            ? `https://gnosis-safe.io/app/${chain?.shortName}:${address.value}/settings/details?redirect=false`
+            ? `https://gnosis-safe.io/app/${chain?.shortName}:${address.value}/settings/details?no-redirect=true`
             : {
                 pathname: AppRoutes.settings.setup,
                 query: { safe: query.safe },
