@@ -2,6 +2,7 @@ import { act } from '@testing-library/react'
 import { renderHook } from '@/tests//test-utils'
 import useSafeNotifications from '../../hooks/useSafeNotifications'
 import useSafeInfo from '../../hooks/useSafeInfo'
+import { useCurrentChain } from '../../hooks/useChains'
 import { showNotification } from '@/store/notificationsSlice'
 import * as contracts from '@/services/contracts/safeContracts'
 
@@ -58,6 +59,41 @@ describe('useSafeNotifications', () => {
             pathname: '/settings/setup',
             query: { safe: 'rin:0x123' },
           },
+          title: 'Update Safe',
+        },
+      })
+    })
+
+    it('should show a notification for legacy Safes', async () => {
+      // mock useSafeInfo to return a SafeInfo with an outdated version
+      ;(useSafeInfo as jest.Mock).mockReturnValue({
+        safe: {
+          implementation: { value: '0x123' },
+          implementationVersionState: 'OUTDATED',
+          version: '1.0.0',
+        },
+        safeAddress: '0x123',
+      })
+
+      // mock useCurrentChain to return the shortName
+      ;(useCurrentChain as jest.Mock).mockReturnValue({
+        shortName: 'eth',
+      })
+
+      // render the hook
+      const { result } = renderHook(() => useSafeNotifications())
+
+      // await
+      await act(async () => Promise.resolve())
+
+      // check that the notification was shown
+      expect(result.current).toBeUndefined()
+      expect(showNotification).toHaveBeenCalledWith({
+        variant: 'warning',
+        message: `Safe version 1.0.0 is not supported by this web app anymore. You can update your Safe via the old web app here.`,
+        groupKey: 'safe-outdated-version',
+        link: {
+          href: 'https://gnosis-safe.io/app/eth:0x123/settings/details?redirect=false',
           title: 'Update Safe',
         },
       })

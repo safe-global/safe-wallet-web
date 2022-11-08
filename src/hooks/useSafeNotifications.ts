@@ -30,9 +30,9 @@ const useSafeNotifications = (): void => {
    */
 
   useEffect(() => {
-    const isUnsupportedSafe = !isValidSafeVersion(version)
+    const isValid = isValidSafeVersion(version)
 
-    if (implementationVersionState !== ImplementationVersionState.OUTDATED || isUnsupportedSafe) {
+    if (implementationVersionState !== ImplementationVersionState.OUTDATED && isValid) {
       return
     }
 
@@ -41,12 +41,12 @@ const useSafeNotifications = (): void => {
         variant: 'warning',
         groupKey: 'safe-outdated-version',
 
-        message: isUnsupportedSafe
+        message: !isValid
           ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the old web app here.`
           : `Your Safe version ${version} is out of date. Please update it.`,
 
         link: {
-          href: isUnsupportedSafe
+          href: !isValid
             ? `https://gnosis-safe.io/app/${chain?.shortName}:${address.value}/settings/details?redirect=false`
             : {
                 pathname: AppRoutes.settings.setup,
