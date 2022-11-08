@@ -22,7 +22,7 @@ const CLI_LINK = {
 const useSafeNotifications = (): void => {
   const dispatch = useAppDispatch()
   const { query } = useRouter()
-  const { safe, safeAddress } = useSafeInfo()
+  const { safe } = useSafeInfo()
   const { chainId, version, implementationVersionState } = safe
 
   /**
@@ -60,7 +60,7 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, implementationVersionState, version, query.safe, safeAddress])
+  }, [dispatch, implementationVersionState, version, query.safe])
 
   /**
    * Show a notification when the Safe master copy is not supported
