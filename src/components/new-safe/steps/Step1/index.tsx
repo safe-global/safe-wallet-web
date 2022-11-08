@@ -10,18 +10,18 @@ import {
   Button,
   Grid,
 } from '@mui/material'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useForm } from 'react-hook-form'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '../../CardStepper/useCardStepper'
 import type { NewSafeFormData } from '../../CreateSafe'
-import useIsConnected from '@/hooks/useIsConnected'
-import useSetCreationStep from '@/components/new-safe/CreateSafe/useSetCreationStep'
+import useSyncSafeCreationStep from '@/components/new-safe/CreateSafe/useSyncSafeCreationStep'
 
 import css from './styles.module.css'
 import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import NetworkWarning from '@/components/new-safe/NetworkWarning'
 
 type CreateSafeStep1Form = {
   name: string
@@ -36,18 +36,17 @@ const STEP_1_FORM_ID = 'create-safe-step-1-form'
 function CreateSafeStep1({
   data,
   onSubmit,
-  onBack,
   setStep,
   setSafeName,
 }: StepRenderProps<NewSafeFormData> & { setSafeName: (name: string) => void }) {
   const fallbackName = useMnemonicSafeName()
-  const isConnected = useIsConnected()
-  useSetCreationStep(setStep, isConnected)
+  const isWrongChain = useIsWrongChain()
+  useSyncSafeCreationStep(setStep)
 
   const {
     handleSubmit,
     register,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<CreateSafeStep1Form>({
     mode: 'all',
     defaultValues: {
@@ -60,6 +59,8 @@ function CreateSafeStep1({
     setSafeName(name)
     onSubmit({ ...data, name })
   }
+
+  const isDisabled = isWrongChain || !isValid
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} id={STEP_1_FORM_ID}>
@@ -107,19 +108,13 @@ function CreateSafeStep1({
           </Link>
           .
         </Typography>
+
+        {isWrongChain && <NetworkWarning />}
       </Box>
       <Divider />
       <Box className={layoutCss.row}>
-        <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => onBack()}
-            startIcon={<ArrowBackIcon fontSize="small" />}
-          >
-            Back
-          </Button>
-          <Button type="submit" variant="contained" size="stretched" disabled={!isConnected}>
+        <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
+          <Button type="submit" variant="contained" size="stretched" disabled={isDisabled}>
             Next
           </Button>
         </Box>

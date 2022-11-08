@@ -4,12 +4,14 @@ import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardS
 import type { PendingSafeData } from '@/components/new-safe/steps/Step4'
 import type { NewSafeFormData } from '@/components/new-safe/CreateSafe/index'
 import { SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/steps/Step4'
+import useWallet from '@/hooks/wallets/useWallet'
 
-const useSetCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setStep'], isConnected: boolean) => {
+const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => {
   const [pendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
+  const wallet = useWallet()
 
   useEffect(() => {
-    if (!isConnected) {
+    if (!wallet) {
       setStep(0)
     }
 
@@ -17,7 +19,7 @@ const useSetCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setStep']
     if (pendingSafe) {
       setStep(4)
     }
-  }, [isConnected, setStep, pendingSafe])
+  }, [wallet, setStep, pendingSafe])
 }
 
-export default useSetCreationStep
+export default useSyncSafeCreationStep
