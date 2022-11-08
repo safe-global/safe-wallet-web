@@ -16,6 +16,7 @@ export const AppRoutes = {
     setup: '/settings/setup',
     modules: '/settings/modules',
     index: '/settings',
+    data: '/settings/data',
     appearance: '/settings/appearance',
     safeApps: {
       index: '/settings/safe-apps',
