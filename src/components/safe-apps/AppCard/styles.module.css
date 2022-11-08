@@ -11,10 +11,18 @@
   position: relative;
 }
 
+.compactContainer {
+  max-width: 120px;
+}
+
 .compactShareButton {
   position: absolute;
   top: 2px;
   left: 2px;
+}
+
+.compactText {
+  margin-top: 11px;
 }
 
 .truncateDescription {

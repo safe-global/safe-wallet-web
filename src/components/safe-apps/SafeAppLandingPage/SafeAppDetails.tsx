@@ -34,7 +34,7 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
           p: 1,
           backgroundColor: palette.primary.background,
           display: 'inline-block',
-          borderRadius: '4px',
+          borderRadius: '6px',
         })}
         fontWeight={700}
       >

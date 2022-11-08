@@ -94,7 +94,7 @@ const SafeAppsInfoModal = ({
         sx={({ palette }) => ({
           width: '450px',
           backgroundColor: palette.background.paper,
-          borderRadius: '8px',
+          borderRadius: '6px',
           boxShadow: `1px 2px 10px 0 ${alpha(palette.text.primary, 0.18)}`,
         })}
       >

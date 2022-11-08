@@ -185,7 +185,7 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             transition: 'background 0.2s, border 0.2s',
-            borderRadius: '8px',
+            borderRadius: '6px',
             border: `1px solid ${theme.palette.border.light}`,
             overflow: 'hidden',
 
@@ -272,7 +272,7 @@ const initTheme = (darkMode: boolean) => {
             borderColor: theme.palette.border.light,
           }),
           root: {
-            borderRadius: '8px !important',
+            borderRadius: '6px',
             backgroundImage: 'none',
           },
         },

@@ -110,8 +110,8 @@ const SafeAppsPermissions = (): ReactElement => {
           item
           key={domain}
           sx={({ palette }) => ({
-            border: `2px solid ${palette.border.light}`,
-            borderRadius: '8px',
+            border: `1px solid ${palette.border.light}`,
+            borderRadius: '6px',
             marginBottom: '16px',
           })}
         >
@@ -119,7 +119,7 @@ const SafeAppsPermissions = (): ReactElement => {
             container
             sx={({ palette }) => ({
               padding: '15px 24px',
-              borderBottom: `2px solid ${palette.border.light}`,
+              borderBottom: `1px solid ${palette.border.light}`,
             })}
           >
             <Grid
