@@ -14,7 +14,6 @@ const DefaultSection = ({
   pinnedIds,
   cardVariant,
 }: SectionProps) => {
-
   return (
     <Grid
       container

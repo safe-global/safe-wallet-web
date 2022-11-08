@@ -125,7 +125,7 @@ const PinButton = ({
     <SvgIcon
       component={pinned ? BookmarkedIcon : BookmarkIcon}
       inheritViewBox
-      color={pinned ? 'border' : undefined}
+      color={pinned ? 'primary' : undefined}
       fontSize="small"
     />
   </IconButton>
@@ -233,7 +233,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
           />
         }
         action={
-          <>
+          <div className={styles.actionContainer}>
             {/* Share button */}
             <ShareButton shareUrl={shareUrl} safeApp={safeApp} />
 
@@ -242,7 +242,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
 
             {/* Delete custom app button */}
             {onDelete && <DeleteButton onDelete={onDelete} safeApp={safeApp} />}
-          </>
+          </div>
         }
       />
 

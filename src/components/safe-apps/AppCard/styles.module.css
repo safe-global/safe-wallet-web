@@ -1,3 +1,7 @@
+.actionContainer > * {
+  padding: 8px;
+}
+
 .compactCardContainer {
   height: 100%;
   display: flex;
