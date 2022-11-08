@@ -8,12 +8,12 @@ import { migrateAddressBook } from './addressBook'
 import { migrateAddedSafes } from './addedSafes'
 import type { LOCAL_STORAGE_DATA } from './common'
 import createMigrationBus from './migrationBus'
-import { MIGRATION_KEY } from './config'
+import { MIGRATION_KEY, SANITIZE_KEY } from './config'
 
 const useStorageMigration = (): void => {
   const dispatch = useAppDispatch()
   const [isMigrationFinished = false, setIsMigrationFinished] = useLocalStorage<boolean>(MIGRATION_KEY)
-  const [isSanitized = false, setIsSanitized] = useLocalStorage<boolean>(MIGRATION_KEY)
+  const [isSanitized = false, setIsSanitized] = useLocalStorage<boolean>(SANITIZE_KEY)
 
   useEffect(() => {
     if (isMigrationFinished) return
