@@ -5,8 +5,8 @@ import useSafeInfo from './useSafeInfo'
 import { useAppDispatch } from '@/store'
 import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from './useChains'
-import useAsync from './useAsync'
-import { isValidMasterCopy } from '@/services/contracts/safeContracts'
+// import useAsync from './useAsync'
+// import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 
 /**
  * General-purpose notifications relating to the entire Safe
@@ -50,39 +50,39 @@ const useSafeNotifications = (): void => {
    * Show a notification when the Safe master copy is not supported
    */
 
-  const masterCopy = safe.implementation.value
+  // const masterCopy = safe.implementation.value
 
-  const [validMasterCopy] = useAsync(async () => {
-    if (masterCopy) {
-      return await isValidMasterCopy(chainId, masterCopy)
-    }
-  }, [chainId, masterCopy])
+  // const [validMasterCopy] = useAsync(async () => {
+  //   if (masterCopy) {
+  //     return await isValidMasterCopy(chainId, masterCopy)
+  //   }
+  // }, [chainId, masterCopy])
 
-  useEffect(() => {
-    if (validMasterCopy === undefined || validMasterCopy) {
-      return
-    }
+  // useEffect(() => {
+  //   if (validMasterCopy === undefined || validMasterCopy) {
+  //     return
+  //   }
 
-    const CLI_LINK = 'https://github.com/5afe/safe-cli'
+  //   const CLI_LINK = 'https://github.com/5afe/safe-cli'
 
-    const id = dispatch(
-      showNotification({
-        variant: 'warning',
-        message: `This Safe was created with an unsupported base contract.
-           The web interface might not work correctly.
-           We recommend using the command line interface instead.`,
-        groupKey: 'invalid-mastercopy',
-        link: {
-          href: CLI_LINK,
-          title: 'Get CLI',
-        },
-      }),
-    )
+  //   const id = dispatch(
+  //     showNotification({
+  //       variant: 'warning',
+  //       message: `This Safe was created with an unsupported base contract.
+  //          The web interface might not work correctly.
+  //          We recommend using the command line interface instead.`,
+  //       groupKey: 'invalid-mastercopy',
+  //       link: {
+  //         href: CLI_LINK,
+  //         title: 'Get CLI',
+  //       },
+  //     }),
+  //   )
 
-    return () => {
-      dispatch(closeNotification({ id }))
-    }
-  }, [dispatch, validMasterCopy])
+  //   return () => {
+  //     dispatch(closeNotification({ id }))
+  //   }
+  // }, [dispatch, validMasterCopy])
 }
 
 export default useSafeNotifications
