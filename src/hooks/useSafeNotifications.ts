@@ -7,8 +7,9 @@ import { AppRoutes } from '@/config/routes'
 import useAsync from './useAsync'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 import { useRouter } from 'next/router'
-import { useCurrentChain } from './useChains'
 import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
+
+const OLD_URL = 'https://gnosis-safe.io/app'
 
 const CLI_LINK = {
   href: 'https://github.com/5afe/safe-cli',
@@ -23,7 +24,6 @@ const useSafeNotifications = (): void => {
   const { query } = useRouter()
   const { safe, safeAddress } = useSafeInfo()
   const { chainId, version, implementationVersionState } = safe
-  const chain = useCurrentChain()
 
   /**
    * Show a notification when the Safe version is out of date
@@ -47,7 +47,7 @@ const useSafeNotifications = (): void => {
 
         link: {
           href: isOldSafe
-            ? `https://gnosis-safe.io/app/${chain?.shortName}:${safeAddress}/settings/details?no-redirect=true`
+            ? `${OLD_URL}/${query.safe}/settings/details?no-redirect=true`
             : {
                 pathname: AppRoutes.settings.setup,
                 query: { safe: query.safe },
@@ -60,7 +60,7 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, implementationVersionState, version, query.safe, chain?.shortName, safeAddress])
+  }, [dispatch, implementationVersionState, version, query.safe, safeAddress])
 
   /**
    * Show a notification when the Safe master copy is not supported

@@ -2,10 +2,8 @@ import { act } from '@testing-library/react'
 import { renderHook } from '@/tests//test-utils'
 import useSafeNotifications from '../../hooks/useSafeNotifications'
 import useSafeInfo from '../../hooks/useSafeInfo'
-import * as useChainHook from '@/hooks/useChains'
 import { showNotification } from '@/store/notificationsSlice'
 import * as contracts from '@/services/contracts/safeContracts'
-import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 // mock showNotification
 jest.mock('@/store/notificationsSlice', () => {
@@ -22,7 +20,7 @@ jest.mock('../../hooks/useSafeInfo')
 // mock router
 jest.mock('next/router', () => ({
   useRouter: jest.fn(() => ({
-    query: { safe: 'rin:0x123' },
+    query: { safe: 'eth:0x123' },
   })),
 }))
 
@@ -39,7 +37,6 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x123' },
           implementationVersionState: 'OUTDATED',
           version: '1.1.1',
-          chainId: '1',
         },
         safeAddress: '0x123',
       })
@@ -59,7 +56,7 @@ describe('useSafeNotifications', () => {
         link: {
           href: {
             pathname: '/settings/setup',
-            query: { safe: 'rin:0x123' },
+            query: { safe: 'eth:0x123' },
           },
           title: 'Update Safe',
         },
@@ -76,14 +73,6 @@ describe('useSafeNotifications', () => {
         },
         safeAddress: '0x123',
       })
-
-      // mock useCurrentChain to return the shortName
-      jest.spyOn(useChainHook, 'useCurrentChain').mockImplementation(
-        () =>
-          ({
-            shortName: 'eth',
-          } as ChainInfo),
-      )
 
       // render the hook
       const { result } = renderHook(() => useSafeNotifications())
