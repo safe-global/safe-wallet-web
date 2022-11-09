@@ -3,15 +3,13 @@ import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import Typography from '@mui/material/Typography'
-import { type ReactElement, useState, useMemo } from 'react'
+import { type ReactElement, useState } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
 import { useAppDispatch } from '@/store'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useDropzone } from 'react-dropzone'
-import { migrateAddressBook } from '@/services/ls-migration/addressBook'
-import { migrateAddedSafes } from '@/services/ls-migration/addedSafes'
 import { addedSafesSlice } from '@/store/addedSafesSlice'
 import { addressBookSlice } from '@/store/addressBookSlice'
 
@@ -20,28 +18,16 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import type { MouseEventHandler } from 'react'
-
-const hasEntry = (entry: string[]) => {
-  return entry.length === 3 && entry[0] && entry[1] && entry[2]
-}
+import { useGlobalImportJsonParser } from './useGlobalImportFileParser'
+import { showNotification } from '@/store/notificationsSlice'
 
 const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [jsonData, setJsonData] = useState<string>()
   const [fileName, setFileName] = useState<string>()
   const [error, setError] = useState<string>()
 
-  // Count how many entries are in the CSV file
-  const [migrationAddedSafes, migrationAddressbook] = useMemo(() => {
-    if (!jsonData) {
-      return [{}, {}]
-    }
-    const parsedFile = JSON.parse(jsonData)
-
-    const abData = migrateAddressBook(parsedFile)
-    const addedSafesData = migrateAddedSafes(parsedFile)
-
-    return [addedSafesData, abData]
-  }, [jsonData])
+  // Parse the jsonData whenever it changes
+  const { addedSafes, addedSafesCount, addressBook, addressBookEntriesCount } = useGlobalImportJsonParser(jsonData)
 
   const dispatch = useAppDispatch()
 
@@ -84,13 +70,24 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
       return
     }
 
-    if (migrationAddressbook) {
-      dispatch(addressBookSlice.actions.setAddressBook(migrationAddressbook))
+    if (addressBook) {
+      dispatch(addressBookSlice.actions.setAddressBook(addressBook))
     }
 
-    if (migrationAddedSafes) {
-      dispatch(addedSafesSlice.actions.setAddedSafes(migrationAddedSafes))
+    if (addedSafes) {
+      dispatch(addedSafesSlice.actions.setAddedSafes(addedSafes))
     }
+
+    dispatch(
+      showNotification({
+        variant: 'success',
+        groupKey: 'global-import-success',
+        message: 'Successfully imported data',
+        detailedMessage: `${addedSafesCount > 0 ? `${addedSafesCount} Safes were added. \n` : ''}${
+          addressBookEntriesCount > 0 ? `${addressBookEntriesCount} addresses were added to your address book.` : ''
+        }`,
+      }),
+    )
 
     handleClose()
   }
@@ -119,15 +116,15 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
                     </Grid>
                   </Grid>
 
-                  {migrationAddressbook && (
-                    <Typography mt={1}>{`Found address book entries for ${
-                      Object.keys(migrationAddressbook).length
+                  {addressBook && (
+                    <Typography mt={1}>{`Found ${addressBookEntriesCount} address book entries on ${
+                      Object.keys(addressBook).length
                     } chains`}</Typography>
                   )}
 
-                  {migrationAddedSafes && (
-                    <Typography mt={1}>{`Found added safes for ${
-                      Object.keys(migrationAddedSafes).length
+                  {addedSafes && (
+                    <Typography mt={1}>{`Found ${addedSafesCount} added safes on ${
+                      Object.keys(addedSafes).length
                     } chains`}</Typography>
                   )}
                 </>
