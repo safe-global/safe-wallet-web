@@ -69,7 +69,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
   })
 
   const handleImport = () => {
-    if (!jsonData) {
+    if (!addressBook && !addedSafes) {
       return
     }
 
@@ -170,6 +170,24 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
                         </Grid>
                       </Grid>
                     )}
+                    {!addedSafes && !addressBook && (
+                      <Grid container display="flex" gap={1} alignItems="center">
+                        <Grid item xs={1}>
+                          <SvgIcon
+                            component={FileIcon}
+                            inheritViewBox
+                            fontSize="small"
+                            color="border"
+                            sx={{ fill: 'none' }}
+                          />
+                        </Grid>
+                        <Grid item xs>
+                          <Typography color="error">
+                            <strong>This file contains no importable data.</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    )}
                   </>
                 </Grid>
               </>
@@ -216,7 +234,12 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleImport} variant="contained" disableElevation disabled={!jsonData || !!error}>
+        <Button
+          onClick={handleImport}
+          variant="contained"
+          disableElevation
+          disabled={(!addressBook && !addedSafes) || !!error}
+        >
           Import
         </Button>
       </DialogActions>
