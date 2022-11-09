@@ -27,7 +27,12 @@ export const getInteractionTitle = (value?: string, chain?: ChainInfo) => {
   }:`
 }
 
-export const convertToHumanReadableMessage = (message: string): string => {
+/**
+ * If message is a hex value and is Utf8 encoded string we decode it, else we return the raw message
+ * @param {string} message raw input message
+ * @returns {string}
+ */
+export const getDecodedMessage = (message: string): string => {
   if (isHexString(message)) {
     // If is a hex string we try to extract a message
     try {
