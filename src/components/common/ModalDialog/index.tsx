@@ -56,7 +56,7 @@ const ModalDialog = ({
     <Dialog
       {...restProps}
       fullScreen={fullScreen}
-      scroll="body"
+      scroll={fullScreen ? 'paper' : 'body'}
       className={css.dialog}
       onClick={(e) => e.stopPropagation()}
     >
