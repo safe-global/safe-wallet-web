@@ -77,10 +77,20 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
 
     if (addressBook) {
       dispatch(addressBookSlice.actions.setAddressBook(addressBook))
+
+      trackEvent({
+        ...SETTINGS_EVENTS.DATA.IMPORT_ADDRESS_BOOK,
+        label: addressBookEntriesCount,
+      })
     }
 
     if (addedSafes) {
       dispatch(addedSafesSlice.actions.setAddedSafes(addedSafes))
+
+      trackEvent({
+        ...SETTINGS_EVENTS.DATA.IMPORT_ADDED_SAFES,
+        label: addedSafesCount,
+      })
     }
 
     dispatch(
@@ -93,11 +103,6 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
         }`,
       }),
     )
-
-    trackEvent({
-      ...SETTINGS_EVENTS.DATA.IMPORT_ALL,
-      label: `Added Safes: ${addedSafesCount}, Addressbook entries: ${addressBookEntriesCount}`,
-    })
 
     handleClose()
   }

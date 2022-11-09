@@ -42,7 +42,7 @@ const Data: NextPage = () => {
               </Typography>
             </Grid>
             <Grid item xs justifyContent="flex-end" display="flex">
-              <Track {...SETTINGS_EVENTS.DATA.IMPORT_ALL}>
+              <Track {...SETTINGS_EVENTS.DATA.IMPORT_ALL_BUTTON}>
                 <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
                   Import all data
                 </Button>
