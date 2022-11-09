@@ -35,7 +35,7 @@ const CollapsibleSection = ({
       <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
         <Grid container rowSpacing={2} columnSpacing={columnSpacing}>
           {prependAddCustomAppCard && onAddCustomApp && (
-            <Grid item xs={12} sm={6} md={3} xl={1.5}>
+            <Grid item xs={12} sm={6} md={4} xl={3}>
               <AddCustomAppCard onSave={onAddCustomApp} safeAppList={allApps} />
             </Grid>
           )}
@@ -50,7 +50,7 @@ const CollapsibleSection = ({
             }
 
             return (
-              <Grid key={a.id} item xs={12} sm={6} md={3} xl={1.5}>
+              <Grid key={a.id} item xs={12} sm={6} md={4} xl={3}>
                 <AppCard
                   safeApp={a}
                   onPin={onPinApp}
