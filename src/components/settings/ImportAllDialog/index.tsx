@@ -22,6 +22,7 @@ import { useGlobalImportJsonParser } from './useGlobalImportFileParser'
 import { showNotification } from '@/store/notificationsSlice'
 import { Alert, AlertTitle, Link, SvgIcon } from '@mui/material'
 import FileIcon from '@/public/images/settings/data/file.svg'
+import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 
 const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [jsonData, setJsonData] = useState<string>()
@@ -90,6 +91,11 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
         }`,
       }),
     )
+
+    trackEvent({
+      ...SETTINGS_EVENTS.DATA.IMPORT_ALL,
+      label: `Added Safes: ${addedSafesCount}, Addressbook entries: ${addressBookEntriesCount}`,
+    })
 
     handleClose()
   }

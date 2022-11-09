@@ -5,6 +5,8 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
 import ImportAllDialog from '@/components/settings/ImportAllDialog'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import Track from '@/components/common/Track'
 
 const Data: NextPage = () => {
   const [modalOpen, setModalOpen] = useState(false)
@@ -40,9 +42,12 @@ const Data: NextPage = () => {
               </Typography>
             </Grid>
             <Grid item xs justifyContent="flex-end" display="flex">
-              <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
-                Import All Data
-              </Button>
+              <Track {...SETTINGS_EVENTS.DATA.IMPORT_ALL}>
+                <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
+                  Import All Data
+                </Button>
+              </Track>
+
               {modalOpen && <ImportAllDialog handleClose={() => setModalOpen(false)} />}
             </Grid>
           </Grid>

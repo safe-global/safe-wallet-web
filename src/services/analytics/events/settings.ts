@@ -78,4 +78,14 @@ export const SETTINGS_EVENTS = {
       category: SETTINGS_CATEGORY,
     },
   },
+  DATA: {
+    IMPORT_ALL_BUTTON: {
+      action: 'Import all data button clicked',
+      category: SETTINGS_CATEGORY,
+    },
+    IMPORT_ALL: {
+      action: 'Import all finished',
+      category: SETTINGS_CATEGORY,
+    },
+  },
 }
