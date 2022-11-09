@@ -1,6 +1,6 @@
 import type { ModalProps } from '@mui/material'
 import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery } from '@mui/material'
-import { styled, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import * as React from 'react'
@@ -11,25 +11,6 @@ interface ModalDialogProps extends DialogProps {
   dialogTitle?: React.ReactNode
   hideChainIndicator?: boolean
 }
-
-const StyledDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogActions-root': {
-    borderTop: `2px solid ${theme.palette.divider}`,
-    padding: theme.spacing(3),
-
-    '& > :last-of-type:not(:first-of-type)': {
-      order: 2,
-    },
-    '&:after': {
-      content: '""',
-      order: 1,
-      flex: 1,
-    },
-  },
-  '& .MuiDialogTitle-root': {
-    borderBottom: `2px solid ${theme.palette.divider}`,
-  },
-}))
 
 interface DialogTitleProps {
   children: React.ReactNode
@@ -72,11 +53,11 @@ const ModalDialog = ({
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
-    <StyledDialog
+    <Dialog
       {...restProps}
       fullScreen={fullScreen}
       scroll="body"
-      className={css.paper}
+      className={css.dialog}
       onClick={(e) => e.stopPropagation()}
     >
       {dialogTitle && (
@@ -86,7 +67,7 @@ const ModalDialog = ({
       )}
 
       {children}
-    </StyledDialog>
+    </Dialog>
   )
 }
 
