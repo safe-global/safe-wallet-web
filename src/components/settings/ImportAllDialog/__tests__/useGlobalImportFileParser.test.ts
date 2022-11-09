@@ -22,6 +22,31 @@ describe('useGlobalImportFileParser', () => {
     })
   })
 
+  it('should return empty objects for wrong versions', () => {
+    const goerliSafeAddress = '0xAecDFD3A19f777F0c03e6bf99AAfB59937d6467b'
+    const mainnetSafeAddress = '0x7cB6E6Cbc845e79d9CA05F6577141DA36ad398f5'
+
+    const owner1 = '0x3819b800c67Be64029C1393c8b2e0d0d627dADE2'
+    const owner2 = '0x954cD69f0E902439f99156e3eeDA080752c08401'
+
+    const jsonData = JSON.stringify({
+      version: '2.0',
+      data: {
+        '_immortal|v2_5__SAFES': `{"${goerliSafeAddress}":{"address":"${goerliSafeAddress}","chainId":"5","threshold":2,"ethBalance":"0.3","totalFiatBalance":"435.08","owners":["${owner1}","${owner2}"],"modules":[],"spendingLimits":[],"balances":[{"tokenAddress":"0x0000000000000000000000000000000000000000","fiatBalance":"435.08100","tokenBalance":"0.3"},{"tokenAddress":"0x61fD3b6d656F39395e32f46E2050953376c3f5Ff","fiatBalance":"0.00000","tokenBalance":"22405.086233211233211233"}],"implementation":{"value":"0x3E5c63644E683549055b9Be8653de26E0B4CD36E"},"loaded":true,"nonce":1,"currentVersion":"1.3.0+L2","needsUpdate":false,"featuresEnabled":["CONTRACT_INTERACTION","DOMAIN_LOOKUP","EIP1559","ERC721","SAFE_APPS","SAFE_TX_GAS_OPTIONAL","SPENDING_LIMIT","TX_SIMULATION","WARNING_BANNER"],"loadedViaUrl":false,"guard":"","collectiblesTag":"1667921524","txQueuedTag":"1667921524","txHistoryTag":"1667400927"}}`,
+        '_immortal|v2_MAINNET__SAFES': `{"${mainnetSafeAddress}":{"address":"${mainnetSafeAddress}","chainId":"1","threshold":1,"ethBalance":"0","totalFiatBalance":"0.00","owners":["${owner1}","${owner2}"],"modules":[],"spendingLimits":[],"balances":[{"tokenAddress":"0x0000000000000000000000000000000000000000","fiatBalance":"0.00000","tokenBalance":"0"}],"implementation":{"value":"0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552","name":"Gnosis Safe: Singleton 1.3.0","logoUri":"https://safe-transaction-assets.safe.global/contracts/logos/0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552.png"},"loaded":true,"nonce":2,"currentVersion":"1.3.0","needsUpdate":false,"featuresEnabled":["CONTRACT_INTERACTION","DOMAIN_LOOKUP","EIP1559","ERC721","SAFE_APPS","SAFE_TX_GAS_OPTIONAL","SPENDING_LIMIT","TX_SIMULATION"],"loadedViaUrl":false,"guard":"","collectiblesTag":"1667397095","txQueuedTag":"1667397095","txHistoryTag":"1664287235"}}`,
+      },
+    })
+
+    const { result } = renderHook(() => useGlobalImportJsonParser(jsonData))
+
+    expect(result.current).toEqual({
+      addedSafes: undefined,
+      addressBook: undefined,
+      addressBookEntriesCount: 0,
+      addedSafesCount: 0,
+    })
+  })
+
   it('should parse added safes correctly', () => {
     const goerliSafeAddress = '0xAecDFD3A19f777F0c03e6bf99AAfB59937d6467b'
     const mainnetSafeAddress = '0x7cB6E6Cbc845e79d9CA05F6577141DA36ad398f5'

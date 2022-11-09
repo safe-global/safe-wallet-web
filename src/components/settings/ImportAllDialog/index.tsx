@@ -28,9 +28,21 @@ const AcceptedMimeTypes = {
   'application/json': ['.json'],
 }
 
-const GreyFileIcon = () => (
-  <SvgIcon component={FileIcon} inheritViewBox fontSize="small" color="border" sx={{ fill: 'none' }} />
-)
+const ColoredFileIcon = ({
+  color,
+}: {
+  color:
+    | 'inherit'
+    | 'action'
+    | 'disabled'
+    | 'primary'
+    | 'secondary'
+    | 'error'
+    | 'info'
+    | 'success'
+    | 'warning'
+    | 'border'
+}) => <SvgIcon component={FileIcon} inheritViewBox fontSize="small" color={color} sx={{ fill: 'none' }} />
 
 const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [jsonData, setJsonData] = useState<string>()
@@ -116,10 +128,10 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
       <DialogContent>
         <div>
           {fileName ? (
-            <Grid container direction="column" gap={1}>
+            <Grid container direction="column" gap={1} mt={3}>
               <Grid container gap={1} display="flex" alignItems="center">
                 <Grid item xs={1}>
-                  <SvgIcon component={FileIcon} inheritViewBox fontSize="small" color="primary" sx={{ fill: 'none' }} />
+                  <ColoredFileIcon color="primary" />
                 </Grid>
                 <Grid item xs={7}>
                   {fileName}
@@ -138,12 +150,12 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
                 {addressBook && (
                   <Grid container display="flex" gap={1} alignItems="center">
                     <Grid item xs={1}>
-                      <GreyFileIcon />
+                      <ColoredFileIcon color="border" />
                     </Grid>
                     <Grid item xs>
                       <Typography>
-                        Found <strong>{addressBookEntriesCount} Address book</strong> entries for{' '}
-                        <strong>{Object.keys(addressBook).length} chains</strong>
+                        Found <strong>{addressBookEntriesCount} Address book</strong> entries on{' '}
+                        <strong>{Object.keys(addressBook).length} chain(s)</strong>
                       </Typography>
                     </Grid>
                   </Grid>
@@ -151,12 +163,12 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
                 {addedSafes && (
                   <Grid container display="flex" gap={1} alignItems="center">
                     <Grid item xs={1}>
-                      <GreyFileIcon />
+                      <ColoredFileIcon color="border" />
                     </Grid>
                     <Grid item xs>
                       <Typography>
-                        Found <strong>{addedSafesCount} Added Safes</strong> entries for{' '}
-                        <strong>{Object.keys(addedSafes).length} chains</strong>
+                        Found <strong>{addedSafesCount} Added Safes</strong> entries on{' '}
+                        <strong>{Object.keys(addedSafes).length} chain(s)</strong>
                       </Typography>
                     </Grid>
                   </Grid>
@@ -164,7 +176,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
                 {!addedSafes && !addressBook && (
                   <Grid container display="flex" gap={1} alignItems="center">
                     <Grid item xs={1}>
-                      <GreyFileIcon />
+                      <ColoredFileIcon color="border" />
                     </Grid>
                     <Grid item xs>
                       <Typography color="error">

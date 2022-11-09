@@ -2,6 +2,8 @@ import { migrateAddedSafes } from '@/services/ls-migration/addedSafes'
 import { migrateAddressBook } from '@/services/ls-migration/addressBook'
 import { useMemo } from 'react'
 
+const V1 = '1.0'
+
 const countEntries = (data: { [chainId: string]: { [address: string]: unknown } }) =>
   Object.values(data).reduce<number>((count, entry) => count + Object.keys(entry).length, 0)
 
@@ -22,7 +24,7 @@ export const useGlobalImportJsonParser = (jsonData: string | undefined) => {
       const parsedFile = JSON.parse(jsonData)
 
       // We only understand v1 data so far
-      if (parsedFile.version !== '1.0') {
+      if (parsedFile.version !== V1) {
         return [undefined, undefined, 0, 0]
       }
 
