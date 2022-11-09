@@ -50,14 +50,14 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
     }
     const file = acceptedFiles[0]
     const reader = new FileReader()
-    reader.onload = function (evt) {
-      if (!evt.target) {
+    reader.onload = (event) => {
+      if (!event.target) {
         return
       }
-      if (typeof evt.target.result !== 'string') {
+      if (typeof event.target.result !== 'string') {
         return
       }
-      setJsonData(evt.target.result)
+      setJsonData(event.target.result)
       setFileName(file.name)
     }
     reader.readAsText(file)
@@ -134,7 +134,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
                 </Grid>
               </Grid>
               <Grid item xs={12} display="flex" justifyContent="flex-start">
-                <div className={css.vertical_line} />
+                <div className={css.verticalLine} />
               </Grid>
               <>
                 {addressBook && (
@@ -212,7 +212,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        <div className={css.horizontal_divider} />
+        <div className={css.horizontalDivider} />
 
         <Typography>Only JSON files exported from a Safe can be imported.</Typography>
         <Alert severity="warning" sx={{ mt: 3 }}>

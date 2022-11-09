@@ -1,3 +1,5 @@
+import { logError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { migrateAddedSafes } from '@/services/ls-migration/addedSafes'
 import { migrateAddressBook } from '@/services/ls-migration/addressBook'
 import { useMemo } from 'react'
@@ -36,7 +38,7 @@ export const useGlobalImportJsonParser = (jsonData: string | undefined) => {
 
       return [addedSafesData, abData, abCount, addedSafesCount]
     } catch (err) {
-      console.error(err)
+      logError(ErrorCodes._704, (err as Error).message)
       return [undefined, undefined, 0, 0]
     }
   }, [jsonData])
