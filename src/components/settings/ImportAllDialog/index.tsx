@@ -64,7 +64,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
     maxFiles: 1,
     onDrop,
     accept: {
-      text: ['.json'],
+      'application/json': ['.json'],
     },
   })
 
@@ -196,9 +196,13 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
             <Box
               {...getRootProps({ className: css.dropbox })}
               sx={{
-                transition: 'border 0.5s',
+                transition: 'border 0.5s, background 0.5s',
+                cursor: isDragReject ? 'not-allowed' : undefined,
+                background: ({ palette }) => `${isDragReject ? palette.error.light : undefined} !important`,
                 border: ({ palette }) =>
-                  `1px dashed ${isDragActive || jsonData ? palette.primary.main : palette.secondary.dark}`,
+                  `1px dashed ${
+                    isDragReject ? palette.error.dark : isDragActive ? palette.primary.main : palette.secondary.dark
+                  }`,
               }}
             >
               <input {...getInputProps()} />
