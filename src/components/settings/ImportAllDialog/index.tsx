@@ -20,6 +20,8 @@ import IconButton from '@mui/material/IconButton'
 import type { MouseEventHandler } from 'react'
 import { useGlobalImportJsonParser } from './useGlobalImportFileParser'
 import { showNotification } from '@/store/notificationsSlice'
+import { Alert, AlertTitle, Link, SvgIcon } from '@mui/material'
+import FileIcon from '@/public/images/settings/data/file.svg'
 
 const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [jsonData, setJsonData] = useState<string>()
@@ -93,51 +95,118 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
   }
 
   return (
-    <ModalDialog open onClose={handleClose} dialogTitle="Import added Safes and address book" hideChainIndicator>
+    <ModalDialog open onClose={handleClose} dialogTitle="Data Import" hideChainIndicator>
       <DialogContent>
         <div>
-          <Box
-            {...getRootProps({ className: css.dropbox })}
-            sx={{
-              border: ({ palette }) => `2px dashed ${isDragActive ? palette.primary.main : palette.border.light}`,
-            }}
-          >
-            <input {...getInputProps()} />
-            {fileName ? (
-              <Box>
-                <>
-                  <Grid container gap={1} alignItems="center">
-                    <Grid item>{fileName}</Grid>
+          {fileName ? (
+            <Box>
+              <>
+                <Grid container direction="column" gap={1}>
+                  <Grid container gap={1} display="flex" alignItems="center">
+                    <Grid item xs={1}>
+                      <SvgIcon
+                        component={FileIcon}
+                        inheritViewBox
+                        fontSize="small"
+                        color="primary"
+                        sx={{ fill: 'none' }}
+                      />
+                    </Grid>
+                    <Grid item xs={7}>
+                      {fileName}
+                    </Grid>
 
-                    <Grid item>
+                    <Grid item xs display="flex" justifyContent="flex-end">
                       <IconButton onClick={onRemove}>
-                        <HighlightOffIcon width={16} height={16} />
+                        <HighlightOffIcon color="primary" width={16} height={16} />
                       </IconButton>
                     </Grid>
                   </Grid>
+                  <Grid item xs={12} display="flex" justifyContent="flex-start">
+                    <div className={css.vertical_line} />
+                  </Grid>
+                  <>
+                    {addressBook && (
+                      <Grid container display="flex" gap={1} alignItems="center">
+                        <Grid item xs={1}>
+                          <SvgIcon
+                            component={FileIcon}
+                            inheritViewBox
+                            fontSize="small"
+                            color="border"
+                            sx={{ fill: 'none' }}
+                          />
+                        </Grid>
+                        <Grid item xs>
+                          <Typography>
+                            Found <strong>{addressBookEntriesCount} Address book</strong> entries for{' '}
+                            <strong>{Object.keys(addressBook).length} chains</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    )}
+                    {addedSafes && (
+                      <Grid container display="flex" gap={1} alignItems="center">
+                        <Grid item xs={1}>
+                          <SvgIcon
+                            component={FileIcon}
+                            inheritViewBox
+                            fontSize="small"
+                            color="border"
+                            sx={{ fill: 'none' }}
+                          />
+                        </Grid>
+                        <Grid item xs>
+                          <Typography>
+                            Found <strong>{addedSafesCount} Added Safes</strong> entries for{' '}
+                            <strong>{Object.keys(addedSafes).length} chains</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    )}
+                  </>
+                </Grid>
+              </>
+            </Box>
+          ) : (
+            <Box
+              {...getRootProps({ className: css.dropbox })}
+              sx={{
+                transition: 'border 0.5s',
+                border: ({ palette }) =>
+                  `1px dashed ${isDragActive || jsonData ? palette.primary.main : palette.secondary.dark}`,
+              }}
+            >
+              <input {...getInputProps()} />
 
-                  {addressBook && (
-                    <Typography mt={1}>{`Found ${addressBookEntriesCount} address book entries on ${
-                      Object.keys(addressBook).length
-                    } chains`}</Typography>
-                  )}
-
-                  {addedSafes && (
-                    <Typography mt={1}>{`Found ${addedSafesCount} added safes on ${
-                      Object.keys(addedSafes).length
-                    } chains`}</Typography>
-                  )}
-                </>
+              <Box display="flex" alignItems="center" gap={1}>
+                <SvgIcon
+                  component={FileIcon}
+                  inheritViewBox
+                  fontSize="small"
+                  sx={{ fill: 'none', color: ({ palette }) => palette.primary.light }}
+                />
+                <Typography>
+                  Drag and drop a JSON file or{' '}
+                  <Link href="#" color="secondary">
+                    choose a file
+                  </Link>
+                </Typography>
               </Box>
-            ) : (
-              'Drop your JSON file here or click to upload.'
-            )}
-          </Box>
+            </Box>
+          )}
         </div>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
+        <div className={css.horizontal_divider} />
+
         <Typography>Only JSON files exported from a Safe can be imported.</Typography>
+        <Alert severity="warning" sx={{ mt: 3 }}>
+          <AlertTitle sx={{ fontWeight: 700 }}>Overwrite your current data?</AlertTitle>
+          This action will overwrite your currently added Safes and address book entries with those from the imported
+          file.
+        </Alert>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>

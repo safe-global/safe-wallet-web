@@ -20,7 +20,7 @@ const Data: NextPage = () => {
       <main>
         <Paper sx={{ p: 4, mb: 2 }}>
           <Grid container spacing={3}>
-            <Grid item lg={4} xs={12}>
+            <Grid item sm={4} xs={12}>
               <Typography variant="h4" fontWeight={700}>
                 Data import
                 <Tooltip
@@ -39,9 +39,9 @@ const Data: NextPage = () => {
                 </Tooltip>
               </Typography>
             </Grid>
-            <Grid item xs>
-              <Button onClick={() => setModalOpen(true)} variant="outlined">
-                Import all data
+            <Grid item xs justifyContent="flex-end" display="flex">
+              <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
+                Import All Data
               </Button>
               {modalOpen && <ImportAllDialog handleClose={() => setModalOpen(false)} />}
             </Grid>

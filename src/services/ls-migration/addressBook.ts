@@ -13,7 +13,7 @@ export const migrateAddressBook = (lsData: LOCAL_STORAGE_DATA): AddressBookState
     console.log('Migrating address book')
 
     const newAb = legacyAb.reduce<AddressBookState>((acc, { address, name, chainId }) => {
-      if (!name || !address || !utils.isAddress(address)) {
+      if (!name || !address || !utils.isAddress(address) || chainId === '4') {
         return acc
       }
       acc[chainId] = acc[chainId] || {}
