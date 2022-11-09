@@ -5,16 +5,14 @@ import CloseIcon from '@mui/icons-material/Close'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import * as React from 'react'
 
+import css from './styles.module.css'
+
 interface ModalDialogProps extends DialogProps {
   dialogTitle?: React.ReactNode
   hideChainIndicator?: boolean
 }
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialog-paper': {
-    minWidth: '600px',
-    margin: '0px',
-  },
   '& .MuiDialogActions-root': {
     borderTop: `2px solid ${theme.palette.divider}`,
     padding: theme.spacing(3),
@@ -78,12 +76,7 @@ const ModalDialog = ({
       {...restProps}
       fullScreen={fullScreen}
       scroll="body"
-      PaperProps={{
-        sx: {
-          minWidth: [null, null, 600],
-          margin: '0px',
-        },
-      }}
+      className={css.paper}
       onClick={(e) => e.stopPropagation()}
     >
       {dialogTitle && (

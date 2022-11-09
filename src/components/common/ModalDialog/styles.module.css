@@ -1,0 +1,6 @@
+@media (min-width: 600px) {
+  .paper :global .MuiPaper-root {
+    min-width: 600px;
+    margin: 0;
+  }
+}
