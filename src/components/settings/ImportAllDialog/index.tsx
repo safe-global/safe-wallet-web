@@ -28,6 +28,10 @@ const AcceptedMimeTypes = {
   'application/json': ['.json'],
 }
 
+const GreyFileIcon = () => (
+  <SvgIcon component={FileIcon} inheritViewBox fontSize="small" color="border" sx={{ fill: 'none' }} />
+)
+
 const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [jsonData, setJsonData] = useState<string>()
   const [fileName, setFileName] = useState<string>()
@@ -108,97 +112,69 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
   }
 
   return (
-    <ModalDialog open onClose={handleClose} dialogTitle="Data Import" hideChainIndicator>
+    <ModalDialog open onClose={handleClose} dialogTitle="Data import" hideChainIndicator>
       <DialogContent>
         <div>
           {fileName ? (
-            <Box>
-              <>
-                <Grid container direction="column" gap={1}>
-                  <Grid container gap={1} display="flex" alignItems="center">
-                    <Grid item xs={1}>
-                      <SvgIcon
-                        component={FileIcon}
-                        inheritViewBox
-                        fontSize="small"
-                        color="primary"
-                        sx={{ fill: 'none' }}
-                      />
-                    </Grid>
-                    <Grid item xs={7}>
-                      {fileName}
-                    </Grid>
-
-                    <Grid item xs display="flex" justifyContent="flex-end">
-                      <IconButton onClick={onRemove}>
-                        <HighlightOffIcon color="primary" width={16} height={16} />
-                      </IconButton>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12} display="flex" justifyContent="flex-start">
-                    <div className={css.vertical_line} />
-                  </Grid>
-                  <>
-                    {addressBook && (
-                      <Grid container display="flex" gap={1} alignItems="center">
-                        <Grid item xs={1}>
-                          <SvgIcon
-                            component={FileIcon}
-                            inheritViewBox
-                            fontSize="small"
-                            color="border"
-                            sx={{ fill: 'none' }}
-                          />
-                        </Grid>
-                        <Grid item xs>
-                          <Typography>
-                            Found <strong>{addressBookEntriesCount} Address book</strong> entries for{' '}
-                            <strong>{Object.keys(addressBook).length} chains</strong>
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    )}
-                    {addedSafes && (
-                      <Grid container display="flex" gap={1} alignItems="center">
-                        <Grid item xs={1}>
-                          <SvgIcon
-                            component={FileIcon}
-                            inheritViewBox
-                            fontSize="small"
-                            color="border"
-                            sx={{ fill: 'none' }}
-                          />
-                        </Grid>
-                        <Grid item xs>
-                          <Typography>
-                            Found <strong>{addedSafesCount} Added Safes</strong> entries for{' '}
-                            <strong>{Object.keys(addedSafes).length} chains</strong>
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    )}
-                    {!addedSafes && !addressBook && (
-                      <Grid container display="flex" gap={1} alignItems="center">
-                        <Grid item xs={1}>
-                          <SvgIcon
-                            component={FileIcon}
-                            inheritViewBox
-                            fontSize="small"
-                            color="border"
-                            sx={{ fill: 'none' }}
-                          />
-                        </Grid>
-                        <Grid item xs>
-                          <Typography color="error">
-                            <strong>This file contains no importable data.</strong>
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    )}
-                  </>
+            <Grid container direction="column" gap={1}>
+              <Grid container gap={1} display="flex" alignItems="center">
+                <Grid item xs={1}>
+                  <SvgIcon component={FileIcon} inheritViewBox fontSize="small" color="primary" sx={{ fill: 'none' }} />
                 </Grid>
+                <Grid item xs={7}>
+                  {fileName}
+                </Grid>
+
+                <Grid item xs display="flex" justifyContent="flex-end">
+                  <IconButton onClick={onRemove} size="small">
+                    <HighlightOffIcon color="primary" />
+                  </IconButton>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} display="flex" justifyContent="flex-start">
+                <div className={css.vertical_line} />
+              </Grid>
+              <>
+                {addressBook && (
+                  <Grid container display="flex" gap={1} alignItems="center">
+                    <Grid item xs={1}>
+                      <GreyFileIcon />
+                    </Grid>
+                    <Grid item xs>
+                      <Typography>
+                        Found <strong>{addressBookEntriesCount} Address book</strong> entries for{' '}
+                        <strong>{Object.keys(addressBook).length} chains</strong>
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                )}
+                {addedSafes && (
+                  <Grid container display="flex" gap={1} alignItems="center">
+                    <Grid item xs={1}>
+                      <GreyFileIcon />
+                    </Grid>
+                    <Grid item xs>
+                      <Typography>
+                        Found <strong>{addedSafesCount} Added Safes</strong> entries for{' '}
+                        <strong>{Object.keys(addedSafes).length} chains</strong>
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                )}
+                {!addedSafes && !addressBook && (
+                  <Grid container display="flex" gap={1} alignItems="center">
+                    <Grid item xs={1}>
+                      <GreyFileIcon />
+                    </Grid>
+                    <Grid item xs>
+                      <Typography color="error">
+                        <strong>This file contains no importable data.</strong>
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                )}
               </>
-            </Box>
+            </Grid>
           ) : (
             <Box
               {...getRootProps({ className: css.dropbox })}
