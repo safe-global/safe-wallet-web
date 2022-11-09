@@ -109,9 +109,9 @@ const SafeAppsPermissions = (): ReactElement => {
         <Grid
           item
           key={domain}
-          sx={({ palette }) => ({
+          sx={({ palette, shape }) => ({
             border: `1px solid ${palette.border.light}`,
-            borderRadius: '6px',
+            borderRadius: shape.borderRadius,
             marginBottom: '16px',
           })}
         >

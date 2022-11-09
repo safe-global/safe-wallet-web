@@ -1,5 +1,5 @@
 .actionContainer > * {
-  padding: 8px;
+  padding: var(--space-1);
 }
 
 .compactCardContainer {
