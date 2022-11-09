@@ -59,7 +59,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('label').contains('Safe transaction nonce').next().clear().type('3')
     cy.contains('Confirm').click()
 
-    // Asserts the execute checkbox exists and is checkable
+    // Asserts the execute checkbox exists
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]')
         .parent('span')
@@ -72,6 +72,7 @@ describe('Queue a transaction on 1/N', () => {
     })
     cy.contains('Estimated fee').should('exist')
 
+    // Asserts the execute checkbox is uncheckable
     cy.contains('Execute transaction').click()
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]')
@@ -95,12 +96,6 @@ describe('Queue a transaction on 1/N', () => {
 
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]').should('not.exist')
-    })
-
-    // Stub the second /estimations request
-    cy.intercept('POST', '/**/multisig-transactions/estimations', {
-      statusCode: 200,
-      body: { currentNonce: 3, recommendedNonce: recommendedNonce, safeTxGas: '45006' },
     })
 
     cy.contains('Submit').click()
