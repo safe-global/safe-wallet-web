@@ -20,7 +20,7 @@ import IconButton from '@mui/material/IconButton'
 import type { MouseEventHandler } from 'react'
 import { useGlobalImportJsonParser } from './useGlobalImportFileParser'
 import { showNotification } from '@/store/notificationsSlice'
-import { Alert, AlertTitle, Link, SvgIcon } from '@mui/material'
+import { Alert, AlertTitle, Link, SvgIcon, type SvgIconTypeMap } from '@mui/material'
 import FileIcon from '@/public/images/settings/data/file.svg'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 
@@ -28,11 +28,9 @@ const AcceptedMimeTypes = {
   'application/json': ['.json'],
 }
 
-const ColoredFileIcon = ({
-  color,
-}: {
-  color: SvgIconTypeMap['props']['color']
-}) => <SvgIcon component={FileIcon} inheritViewBox fontSize="small" color={color} sx={{ fill: 'none' }} />
+const ColoredFileIcon = ({ color }: { color: SvgIconTypeMap['props']['color'] }) => (
+  <SvgIcon component={FileIcon} inheritViewBox fontSize="small" color={color} sx={{ fill: 'none' }} />
+)
 
 const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [jsonData, setJsonData] = useState<string>()
