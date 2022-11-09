@@ -31,17 +31,7 @@ const AcceptedMimeTypes = {
 const ColoredFileIcon = ({
   color,
 }: {
-  color:
-    | 'inherit'
-    | 'action'
-    | 'disabled'
-    | 'primary'
-    | 'secondary'
-    | 'error'
-    | 'info'
-    | 'success'
-    | 'warning'
-    | 'border'
+  color: SvgIconTypeMap['props']['color']
 }) => <SvgIcon component={FileIcon} inheritViewBox fontSize="small" color={color} sx={{ fill: 'none' }} />
 
 const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
