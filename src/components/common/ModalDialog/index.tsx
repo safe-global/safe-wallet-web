@@ -11,6 +11,10 @@ interface ModalDialogProps extends DialogProps {
 }
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    minWidth: '600px',
+    margin: '0px',
+  },
   '& .MuiDialogActions-root': {
     borderTop: `2px solid ${theme.palette.divider}`,
     padding: theme.spacing(3),
