@@ -44,7 +44,7 @@ const Data: NextPage = () => {
             <Grid item xs justifyContent="flex-end" display="flex">
               <Track {...SETTINGS_EVENTS.DATA.IMPORT_ALL}>
                 <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
-                  Import All Data
+                  Import all data
                 </Button>
               </Track>
 
