@@ -28,11 +28,16 @@ export const getInteractionTitle = (value?: string, chain?: ChainInfo) => {
 }
 
 export const convertToHumanReadableMessage = (message: string): string => {
-  if (!isHexString(message)) {
-    return message
+  if (isHexString(message)) {
+    // If is a hex string we try to extract a message
+    try {
+      return toUtf8String(message)
+    } catch (e) {
+      // the hex string is not UTF8 encoding so we will return the raw message.
+    }
   }
 
-  return toUtf8String(message)
+  return message
 }
 
 export const getLegacyChainName = (chainName: string, chainId: string): string => {
