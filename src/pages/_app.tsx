@@ -1,5 +1,6 @@
 import Sentry from '@/services/sentry' // needs to be imported first
 import type { ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
@@ -74,6 +75,22 @@ interface WebCoreAppProps extends AppProps {
 }
 
 const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: WebCoreAppProps): ReactElement => {
+  const onMigrate = () => {
+    console.log('Before permission', localStorage)
+
+    document.requestStorageAccess?.().then(() => {
+      console.log('After permission', localStorage)
+    })
+  }
+
+  const [iframe, setIframe] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.host.includes('migration-parent')) {
+      setIframe(true)
+    }
+  }, [])
+
   return (
     <StoreHydrator>
       <Head>
@@ -90,7 +107,15 @@ const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCach
           <PsaBanner />
 
           <PageLayout>
-            <Component {...pageProps} />
+            <>
+              <Component {...pageProps} />
+
+              {iframe ? (
+                <iframe src="https://migration-iframe.www.earthship.house/welcome" width={800} height={600} />
+              ) : (
+                <button onClick={onMigrate}>Migrate</button>
+              )}
+            </>
           </PageLayout>
 
           <CookieBanner />
