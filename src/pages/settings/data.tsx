@@ -27,7 +27,7 @@ const Data: NextPage = () => {
                 Data import
                 <Tooltip
                   placement="top"
-                  title="The data import will overwrite all added Safes and all address book entries"
+                  title="The imported data will overwrite all added Safes and all address book entries"
                 >
                   <span>
                     <SvgIcon

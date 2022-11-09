@@ -2,6 +2,9 @@ import { migrateAddedSafes } from '@/services/ls-migration/addedSafes'
 import { migrateAddressBook } from '@/services/ls-migration/addressBook'
 import { useMemo } from 'react'
 
+const countEntries = (data: { [chainId: string]: { [address: string]: unknown } }) =>
+  Object.values(data).reduce<number>((count, entry) => count + Object.keys(entry).length, 0)
+
 /**
  * The global import currently imports:
  *  - all addressbook entries
@@ -21,21 +24,8 @@ export const useGlobalImportJsonParser = (jsonData: string | undefined) => {
       const abData = migrateAddressBook(parsedFile)
       const addedSafesData = migrateAddedSafes(parsedFile)
 
-      let abCount = 0
-      let addedSafesCount = 0
-      if (abData) {
-        Object.keys(abData).forEach((chainKey) => {
-          const chainData = abData[chainKey]
-          abCount += Object.keys(chainData).length
-        })
-      }
-
-      if (addedSafesData) {
-        Object.keys(addedSafesData).forEach((chainKey) => {
-          const chainData = addedSafesData[chainKey]
-          addedSafesCount += Object.keys(chainData).length
-        })
-      }
+      const abCount = abData ? countEntries(abData) : 0
+      const addedSafesCount = addedSafesData ? countEntries(addedSafesData) : 0
 
       return [addedSafesData, abData, abCount, addedSafesCount]
     } catch (err) {

@@ -24,6 +24,10 @@ import { Alert, AlertTitle, Link, SvgIcon } from '@mui/material'
 import FileIcon from '@/public/images/settings/data/file.svg'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 
+const AcceptedMimeTypes = {
+  'application/json': ['.json'],
+}
+
 const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [jsonData, setJsonData] = useState<string>()
   const [fileName, setFileName] = useState<string>()
@@ -63,9 +67,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
     maxFiles: 1,
     onDrop,
-    accept: {
-      'application/json': ['.json'],
-    },
+    accept: AcceptedMimeTypes,
   })
 
   const handleImport = () => {
@@ -86,8 +88,8 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
         variant: 'success',
         groupKey: 'global-import-success',
         message: 'Successfully imported data',
-        detailedMessage: `${addedSafesCount > 0 ? `${addedSafesCount} Safes were added. \n` : ''}${
-          addressBookEntriesCount > 0 ? `${addressBookEntriesCount} addresses were added to your address book.` : ''
+        detailedMessage: `${addedSafesCount > 0 ? `${addedSafesCount} Safes were added.` : ''}${
+          addressBookEntriesCount > 0 ? `\n${addressBookEntriesCount} addresses were added to your address book.` : ''
         }`,
       }),
     )
