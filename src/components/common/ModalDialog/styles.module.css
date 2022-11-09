@@ -19,7 +19,7 @@
 
 @media (min-width: 600px) {
   .dialog :global .MuiDialog-paper {
-    min-width: 600px !important;
+    min-width: 600px;
     margin: 0;
   }
 }
