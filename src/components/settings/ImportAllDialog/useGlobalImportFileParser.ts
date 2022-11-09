@@ -21,8 +21,13 @@ export const useGlobalImportJsonParser = (jsonData: string | undefined) => {
     try {
       const parsedFile = JSON.parse(jsonData)
 
-      const abData = migrateAddressBook(parsedFile)
-      const addedSafesData = migrateAddedSafes(parsedFile)
+      // We only understand v1 data so far
+      if (parsedFile.version !== '1.0') {
+        return [undefined, undefined, 0, 0]
+      }
+
+      const abData = migrateAddressBook(parsedFile.data)
+      const addedSafesData = migrateAddedSafes(parsedFile.data)
 
       const abCount = abData ? countEntries(abData) : 0
       const addedSafesCount = addedSafesData ? countEntries(addedSafesData) : 0

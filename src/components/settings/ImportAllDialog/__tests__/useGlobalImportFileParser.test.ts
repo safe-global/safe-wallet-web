@@ -30,8 +30,11 @@ describe('useGlobalImportFileParser', () => {
     const owner2 = '0x954cD69f0E902439f99156e3eeDA080752c08401'
 
     const jsonData = JSON.stringify({
-      '_immortal|v2_5__SAFES': `{"${goerliSafeAddress}":{"address":"${goerliSafeAddress}","chainId":"5","threshold":2,"ethBalance":"0.3","totalFiatBalance":"435.08","owners":["${owner1}","${owner2}"],"modules":[],"spendingLimits":[],"balances":[{"tokenAddress":"0x0000000000000000000000000000000000000000","fiatBalance":"435.08100","tokenBalance":"0.3"},{"tokenAddress":"0x61fD3b6d656F39395e32f46E2050953376c3f5Ff","fiatBalance":"0.00000","tokenBalance":"22405.086233211233211233"}],"implementation":{"value":"0x3E5c63644E683549055b9Be8653de26E0B4CD36E"},"loaded":true,"nonce":1,"currentVersion":"1.3.0+L2","needsUpdate":false,"featuresEnabled":["CONTRACT_INTERACTION","DOMAIN_LOOKUP","EIP1559","ERC721","SAFE_APPS","SAFE_TX_GAS_OPTIONAL","SPENDING_LIMIT","TX_SIMULATION","WARNING_BANNER"],"loadedViaUrl":false,"guard":"","collectiblesTag":"1667921524","txQueuedTag":"1667921524","txHistoryTag":"1667400927"}}`,
-      '_immortal|v2_MAINNET__SAFES': `{"${mainnetSafeAddress}":{"address":"${mainnetSafeAddress}","chainId":"1","threshold":1,"ethBalance":"0","totalFiatBalance":"0.00","owners":["${owner1}","${owner2}"],"modules":[],"spendingLimits":[],"balances":[{"tokenAddress":"0x0000000000000000000000000000000000000000","fiatBalance":"0.00000","tokenBalance":"0"}],"implementation":{"value":"0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552","name":"Gnosis Safe: Singleton 1.3.0","logoUri":"https://safe-transaction-assets.safe.global/contracts/logos/0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552.png"},"loaded":true,"nonce":2,"currentVersion":"1.3.0","needsUpdate":false,"featuresEnabled":["CONTRACT_INTERACTION","DOMAIN_LOOKUP","EIP1559","ERC721","SAFE_APPS","SAFE_TX_GAS_OPTIONAL","SPENDING_LIMIT","TX_SIMULATION"],"loadedViaUrl":false,"guard":"","collectiblesTag":"1667397095","txQueuedTag":"1667397095","txHistoryTag":"1664287235"}}`,
+      version: '1.0',
+      data: {
+        '_immortal|v2_5__SAFES': `{"${goerliSafeAddress}":{"address":"${goerliSafeAddress}","chainId":"5","threshold":2,"ethBalance":"0.3","totalFiatBalance":"435.08","owners":["${owner1}","${owner2}"],"modules":[],"spendingLimits":[],"balances":[{"tokenAddress":"0x0000000000000000000000000000000000000000","fiatBalance":"435.08100","tokenBalance":"0.3"},{"tokenAddress":"0x61fD3b6d656F39395e32f46E2050953376c3f5Ff","fiatBalance":"0.00000","tokenBalance":"22405.086233211233211233"}],"implementation":{"value":"0x3E5c63644E683549055b9Be8653de26E0B4CD36E"},"loaded":true,"nonce":1,"currentVersion":"1.3.0+L2","needsUpdate":false,"featuresEnabled":["CONTRACT_INTERACTION","DOMAIN_LOOKUP","EIP1559","ERC721","SAFE_APPS","SAFE_TX_GAS_OPTIONAL","SPENDING_LIMIT","TX_SIMULATION","WARNING_BANNER"],"loadedViaUrl":false,"guard":"","collectiblesTag":"1667921524","txQueuedTag":"1667921524","txHistoryTag":"1667400927"}}`,
+        '_immortal|v2_MAINNET__SAFES': `{"${mainnetSafeAddress}":{"address":"${mainnetSafeAddress}","chainId":"1","threshold":1,"ethBalance":"0","totalFiatBalance":"0.00","owners":["${owner1}","${owner2}"],"modules":[],"spendingLimits":[],"balances":[{"tokenAddress":"0x0000000000000000000000000000000000000000","fiatBalance":"0.00000","tokenBalance":"0"}],"implementation":{"value":"0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552","name":"Gnosis Safe: Singleton 1.3.0","logoUri":"https://safe-transaction-assets.safe.global/contracts/logos/0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552.png"},"loaded":true,"nonce":2,"currentVersion":"1.3.0","needsUpdate":false,"featuresEnabled":["CONTRACT_INTERACTION","DOMAIN_LOOKUP","EIP1559","ERC721","SAFE_APPS","SAFE_TX_GAS_OPTIONAL","SPENDING_LIMIT","TX_SIMULATION"],"loadedViaUrl":false,"guard":"","collectiblesTag":"1667397095","txQueuedTag":"1667397095","txHistoryTag":"1664287235"}}`,
+      },
     })
     const { result } = renderHook(() => useGlobalImportJsonParser(jsonData))
 
@@ -66,10 +69,13 @@ describe('useGlobalImportFileParser', () => {
     const mainnetName2 = 'S0mE&W3!rd#N4m€'
 
     const jsonData = JSON.stringify({
-      SAFE__addressBook: `[{"address":"${mainnetAddress1}","name":"${mainnetName1}","chainId":"1"},
+      version: '1.0',
+      data: {
+        SAFE__addressBook: `[{"address":"${mainnetAddress1}","name":"${mainnetName1}","chainId":"1"},
       {"address":"${mainnetAddress2}","name":"${mainnetName2}","chainId":"1"},
       {"address":"${goerliAddress1}","name":"${goerliName1}","chainId":"5"},
       {"address":"${goerliAddress2}","name":"${goerliName2}","chainId":"5"}]`,
+      },
     })
 
     const { result } = renderHook(() => useGlobalImportJsonParser(jsonData))
