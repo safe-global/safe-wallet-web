@@ -4,6 +4,7 @@ export const AppRoutes = {
   open: '/open',
   load: '/load',
   index: '/',
+  import: '/import',
   home: '/home',
   apps: '/apps',
   addressBook: '/address-book',

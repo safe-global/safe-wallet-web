@@ -1,16 +1,13 @@
 import DataManagement from '@/components/settings/DataManagement'
-import SettingsHeader from '@/components/settings/SettingsHeader'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 
-const Data: NextPage = () => {
+const Import: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe – Settings – Data</title>
+        <title>Data Import</title>
       </Head>
-
-      <SettingsHeader />
 
       <main>
         <DataManagement />
@@ -19,4 +16,4 @@ const Data: NextPage = () => {
   )
 }
 
-export default Data
+export default Import
