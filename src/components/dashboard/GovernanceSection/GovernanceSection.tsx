@@ -1,14 +1,21 @@
-import { Typography, Grid, Card, Box } from '@mui/material'
-import { WidgetBody } from '@/components/dashboard/styled'
+import { Typography, Grid, Card, Box, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
+import { useState } from 'react'
+import type { SyntheticEvent } from 'react'
+
+import SnapshotWidget from '../SnapshotWidget'
+
 import css from './styles.module.css'
 
-const GovernanceSection = () => (
-  <Grid item xs={12} md>
-    <Accordion className={css.accordion}>
+const GovernanceSection = () => {
+  const [expanded, setExpanded] = useState(true)
+
+  const handleChange = (_: SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded)
+  }
+
+  return (
+    <Accordion className={css.accordion} expanded={expanded} onChange={handleChange}>
       <AccordionSummary expandIcon={<ExpandMoreIcon color="border" />}>
         <div>
           <Typography component="h2" variant="subtitle1" fontWeight={700}>
@@ -20,32 +27,24 @@ const GovernanceSection = () => (
         </div>
       </AccordionSummary>
 
-      <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
-        <WidgetBody>
-          <Grid spacing={3} container>
-            <Grid item xs={8}>
-              <Card>
-                <Box m={2} sx={{ minHeight: '200px' }}>
-                  <Typography variant="h3">
-                    <strong>Snapshot</strong>
-                  </Typography>
-                </Box>
-              </Card>
-            </Grid>
-            <Grid item xs={4}>
-              <Card>
-                <Box m={2} sx={{ minHeight: '200px' }}>
-                  <Typography variant="h3">
-                    <strong>Claiming app</strong>
-                  </Typography>
-                </Box>
-              </Card>
-            </Grid>
+      <AccordionDetails>
+        <Grid spacing={3} container>
+          <Grid item xs={8}>
+            <SnapshotWidget />
           </Grid>
-        </WidgetBody>
+          <Grid item xs={4}>
+            <Card>
+              <Box m={2} sx={{ minHeight: '200px' }}>
+                <Typography variant="h3">
+                  <strong>Claiming app</strong>
+                </Typography>
+              </Box>
+            </Card>
+          </Grid>
+        </Grid>
       </AccordionDetails>
     </Accordion>
-  </Grid>
-)
+  )
+}
 
 export default GovernanceSection
