@@ -89,10 +89,9 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
             required,
 
             setValueAs: (value: string): string => {
-              const { address, prefix } = parsePrefixedAddress(value)
               rawValueRef.current = value
-              // Return a bare address if the prefx is the correct shortName
-              return prefix === currentShortName ? address : value
+              // This also checksums the address
+              return parsePrefixedAddress(value).address
             },
 
             validate: () => {
