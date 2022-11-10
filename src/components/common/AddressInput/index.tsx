@@ -104,6 +104,9 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
             // Workaround for a bug in react-hook-form that it restores a cached error state on blur
             onBlur: () => setTimeout(() => trigger(name), 100),
           })}
+          // Workaround for a bug in react-hook-form when `register().value` is cached after `setValueAs`
+          // Only seems to occur on the `/load` route
+          value={watchedValue}
         />
       </Grid>
 
