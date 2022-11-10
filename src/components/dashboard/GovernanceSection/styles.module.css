@@ -1,0 +1,18 @@
+.accordion {
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}
+
+.accordion :global .MuiAccordionSummary-root,
+.accordion :global .MuiAccordionDetails-root {
+  padding: 0;
+}
+
+.accordion :global .MuiAccordionSummary-root:hover {
+  background: inherit;
+}
+
+.accordion :global .Mui-expanded.MuiAccordionSummary-root {
+  background: inherit;
+}

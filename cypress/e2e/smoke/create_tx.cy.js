@@ -35,8 +35,14 @@ describe('Queue a transaction on 1/N', () => {
   })
 
   it('should create a queued transaction', () => {
+    // Spy the /estimations request
+    cy.intercept('POST', '/**/multisig-transactions/estimations').as('estimations')
+
     // Alias for New transaction modal
     cy.contains('h2', 'Review transaction').parents('div').as('modal')
+
+    // Wait for /estimations response
+    cy.wait('@estimations')
 
     // Estimation is loaded
     cy.get('button[type="submit"]').should('not.be.disabled')
@@ -53,7 +59,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('label').contains('Safe transaction nonce').next().clear().type('3')
     cy.contains('Confirm').click()
 
-    // Asserts the execute checkbox exists and is checkable
+    // Asserts the execute checkbox exists
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]')
         .parent('span')
@@ -66,6 +72,7 @@ describe('Queue a transaction on 1/N', () => {
     })
     cy.contains('Estimated fee').should('exist')
 
+    // Asserts the execute checkbox is uncheckable
     cy.contains('Execute transaction').click()
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]')
@@ -92,6 +99,12 @@ describe('Queue a transaction on 1/N', () => {
     })
 
     cy.contains('Submit').click()
+
+    // Spy the /propose request and give it an alias
+    cy.intercept('POST', '/**/propose').as('propose')
+
+    // Wait for the /propose request
+    cy.wait('@propose')
   })
 
   it('should click the notification and see the transaction queued', () => {

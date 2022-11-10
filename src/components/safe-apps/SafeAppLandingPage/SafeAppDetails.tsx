@@ -29,12 +29,12 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
       <Typography variant="body1">App URL</Typography>
       <Typography
         variant="body2"
-        sx={({ palette }) => ({
+        sx={({ palette, shape }) => ({
           mt: 1,
           p: 1,
           backgroundColor: palette.primary.background,
           display: 'inline-block',
-          borderRadius: '4px',
+          borderRadius: shape.borderRadius,
         })}
         fontWeight={700}
       >
