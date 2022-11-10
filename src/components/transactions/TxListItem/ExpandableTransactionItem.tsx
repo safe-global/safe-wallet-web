@@ -29,10 +29,6 @@ export const ExpandableTransactionItem = ({
   return (
     <Accordion
       disableGutters
-      TransitionProps={{
-        mountOnEnter: false,
-        unmountOnExit: true,
-      }}
       elevation={0}
       defaultExpanded={!!txDetails}
       className={classNames(css.accordion, { [css.batched]: isBatched })}
