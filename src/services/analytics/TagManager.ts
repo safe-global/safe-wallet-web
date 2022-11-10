@@ -85,7 +85,7 @@ const TagManager = {
       return
     }
 
-    const GTM_SCRIPT = 'https://www.googletagmanager.com/gtm.js'
+    const GTM_SCRIPT = 'https://www.googletagmanager.com'
     const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
 
     // Unmount GTM script
