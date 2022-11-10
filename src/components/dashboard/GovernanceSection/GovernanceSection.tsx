@@ -9,7 +9,7 @@ import css from './styles.module.css'
 const GovernanceSection = () => (
   <Grid item xs={12} md>
     <Accordion className={css.accordion}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: ({ palette }) => palette.primary.light }} />}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon color="border" />}>
         <div>
           <Typography component="h2" variant="subtitle1" fontWeight={700}>
             Governance
