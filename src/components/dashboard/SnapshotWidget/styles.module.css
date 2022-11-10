@@ -1,0 +1,84 @@
+.skeleton {
+  border-radius: 6px;
+  overflow: hidden;
+  height: 47px;
+}
+
+.header {
+  margin-bottom: 0;
+}
+
+.links {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.icon {
+  margin-left: 8px;
+  display: flex;
+}
+
+.header,
+.link {
+  font-weight: 700;
+}
+
+.proposals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+  padding: var(--space-2) 0;
+}
+
+.proposal {
+  height: 47px;
+  width: 100%;
+  display: grid;
+  grid-gap: 4px;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: var(--color-background-paper);
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  grid-template-columns: 1fr minmax(auto, 9fr) 1fr 1fr;
+  grid-template-areas: 'number title title title title title title title title title status link';
+}
+
+.proposal:hover {
+  background-color: var(--color-background-light);
+  border-color: var(--color-secondary-light);
+}
+
+.number {
+  height: unset;
+  min-width: 56px;
+  background-color: var(--color-border-light);
+  border-radius: 6px;
+}
+
+.number :global .MuiChip-label {
+  padding: unset;
+}
+
+.title {
+  overflow: hidden;
+}
+
+.title :global .MuiTypography-root {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.status {
+  border-radius: 20px;
+  min-width: 68px;
+  text-align: center;
+  height: 23px;
+}
