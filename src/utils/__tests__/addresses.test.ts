@@ -17,6 +17,11 @@ describe('Addresses', () => {
       expect(value).toBe('0x62Da87ff2E2216F1858603A3Db9313E178da3112')
     })
 
+    it('should return uppercase addresses as is', () => {
+      const value = checksumAddress('0X62DA87FF2E2216F1858603A3DB9313E178DA3112')
+      expect(value).toBe('0X62DA87FF2E2216F1858603A3DB9313E178DA3112')
+    })
+
     it('should return non-addresses as is', () => {
       const value = checksumAddress('sdfgsdfg')
       expect(value).toBe('sdfgsdfg')
@@ -35,8 +40,13 @@ describe('Addresses', () => {
     })
 
     it('should return false for mixed case addresses', () => {
-      const value = checksumAddress('0x62Da87ff2E2216F1858603A3Db9313E178da3112')
-      expect(value).toBe('0x62Da87ff2E2216F1858603A3Db9313E178da3112')
+      const value = isChecksummedAddress('0x62Da87ff2E2216F1858603A3Db9313E178da3112')
+      expect(value).toBe(false)
+    })
+
+    it('should return false for uppercase addresses', () => {
+      const value = isChecksummedAddress('0X62DA87FF2E2216F1858603A3DB9313E178DA3112')
+      expect(value).toBe(false)
     })
 
     it('should return false for non-/invalid addresses', () => {
