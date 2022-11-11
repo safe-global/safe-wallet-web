@@ -37,7 +37,7 @@ const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
 
 const NewTxModal = ({
   onClose,
-  recipient,
+  recipient = '',
   txNonce,
 }: {
   onClose: () => void

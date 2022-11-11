@@ -54,7 +54,7 @@ export const getSpecificGnosisSafeContractInstance = (safe: SafeInfo) => {
   })
 }
 
-export const isOldestVersion = (safeVersion: string): boolean => {
+const isOldestVersion = (safeVersion: string): boolean => {
   return semverSatisfies(safeVersion, '<=1.0.0')
 }
 

@@ -5,26 +5,71 @@ import { createIframe, sendReadyMessage, receiveMessage } from './iframe'
 
 describe('Local storage migration', () => {
   describe('migrateAddressBook', () => {
-    const oldStorage = {
-      SAFE__addressBook: JSON.stringify([
-        { address: '0x123', name: 'Alice', chainId: '1' },
-        { address: '0x456', name: 'Bob', chainId: '1' },
-        { address: '0x789', name: 'Charlie', chainId: '4' },
-        { address: '0xabc', name: 'Dave', chainId: '4' },
-      ]),
-    }
-
     it('should migrate the address book', () => {
+      const oldStorage = {
+        SAFE__addressBook: JSON.stringify([
+          { address: '0x1F2504De05f5167650bE5B28c472601Be434b60A', name: 'Alice', chainId: '1' },
+          { address: '0x501E66bF7a8F742FA40509588eE751e93fA354Df', name: 'Bob', chainId: '1' },
+          { address: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808', name: 'Charlie', chainId: '5' },
+          { address: '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2', name: 'Dave', chainId: '5' },
+        ]),
+      }
+
       const newData = migrateAddressBook(oldStorage)
 
       expect(newData).toEqual({
         '1': {
-          '0x123': 'Alice',
-          '0x456': 'Bob',
+          '0x1F2504De05f5167650bE5B28c472601Be434b60A': 'Alice',
+          '0x501E66bF7a8F742FA40509588eE751e93fA354Df': 'Bob',
         },
-        '4': {
-          '0x789': 'Charlie',
-          '0xabc': 'Dave',
+        '5': {
+          '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
+          '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2': 'Dave',
+        },
+      })
+    })
+
+    it('should not add empty names', () => {
+      const oldStorage = {
+        SAFE__addressBook: JSON.stringify([
+          { address: '0x1F2504De05f5167650bE5B28c472601Be434b60A', name: 'Alice', chainId: '1' },
+          { address: '0x501E66bF7a8F742FA40509588eE751e93fA354Df', name: '', chainId: '1' },
+          { address: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808', name: 'Charlie', chainId: '5' },
+          { address: '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2', name: undefined, chainId: '5' },
+        ]),
+      }
+
+      const newData = migrateAddressBook(oldStorage)
+
+      expect(newData).toEqual({
+        '1': {
+          '0x1F2504De05f5167650bE5B28c472601Be434b60A': 'Alice',
+        },
+        '5': {
+          '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
+        },
+      })
+    })
+
+    it('should not add invalid addresses', () => {
+      const oldStorage = {
+        SAFE__addressBook: JSON.stringify([
+          { address: '0x1F2504De05f5167650bE5B28c472601Be434b60A', name: 'Alice', chainId: '1' },
+          { address: 'sdfgsdfg', name: 'Bob', chainId: '1' },
+          { address: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808', name: 'Charlie', chainId: '5' },
+          { address: '', name: 'Dave', chainId: '5' },
+          { address: undefined, name: 'John', chainId: '5' },
+        ]),
+      }
+
+      const newData = migrateAddressBook(oldStorage)
+
+      expect(newData).toEqual({
+        '1': {
+          '0x1F2504De05f5167650bE5B28c472601Be434b60A': 'Alice',
+        },
+        '5': {
+          '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': 'Charlie',
         },
       })
     })
@@ -41,16 +86,34 @@ describe('Local storage migration', () => {
   describe('migrateAddedSafes', () => {
     const oldStorage = {
       '_immortal|v2_MAINNET__SAFES': JSON.stringify({
-        '0x123': { address: '0x123', chainId: '1', ethBalance: '0.1', owners: ['0x123'], threshold: 1 },
-        '0x456': { address: '0x456', chainId: '1', ethBalance: '20.3', owners: ['0x456', '0x789'], threshold: 2 },
+        '0x1F2504De05f5167650bE5B28c472601Be434b60A': {
+          address: '0x1F2504De05f5167650bE5B28c472601Be434b60A',
+          chainId: '1',
+          ethBalance: '0.1',
+          owners: ['0x1F2504De05f5167650bE5B28c472601Be434b60A'],
+          threshold: 1,
+        },
+        '0x501E66bF7a8F742FA40509588eE751e93fA354Df': {
+          address: '0x501E66bF7a8F742FA40509588eE751e93fA354Df',
+          chainId: '1',
+          ethBalance: '20.3',
+          owners: ['0x501E66bF7a8F742FA40509588eE751e93fA354Df', '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808'],
+          threshold: 2,
+        },
       }),
       '_immortal|v2_1313161554__SAFES': JSON.stringify({
-        '0x789': { address: '0x789', chainId: '1313161554', ethBalance: '0', owners: ['0x789'], threshold: 1 },
-        '0xabc': {
-          address: '0xabc',
+        '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': {
+          address: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808',
+          chainId: '1313161554',
+          ethBalance: '0',
+          owners: ['0x9913B9180C20C6b0F21B6480c84422F6ebc4B808'],
+          threshold: 1,
+        },
+        '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2': {
+          address: '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2',
           chainId: '1313161554',
           ethBalance: '0.00001',
-          owners: ['0xabc', '0xdef', '0x123'],
+          owners: ['0x979774d85274A5F63C85786aC4Fa54B9A4f391c2', '0xdef', '0x1F2504De05f5167650bE5B28c472601Be434b60A'],
           threshold: 2,
         },
       }),
@@ -61,26 +124,33 @@ describe('Local storage migration', () => {
 
       expect(newData).toEqual({
         '1': {
-          '0x123': {
+          '0x1F2504De05f5167650bE5B28c472601Be434b60A': {
             ethBalance: '0.1',
-            owners: [{ value: '0x123' }],
+            owners: [{ value: '0x1F2504De05f5167650bE5B28c472601Be434b60A' }],
             threshold: 1,
           },
-          '0x456': {
+          '0x501E66bF7a8F742FA40509588eE751e93fA354Df': {
             ethBalance: '20.3',
-            owners: [{ value: '0x456' }, { value: '0x789' }],
+            owners: [
+              { value: '0x501E66bF7a8F742FA40509588eE751e93fA354Df' },
+              { value: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808' },
+            ],
             threshold: 2,
           },
         },
         '1313161554': {
-          '0x789': {
+          '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808': {
             ethBalance: '0',
-            owners: [{ value: '0x789' }],
+            owners: [{ value: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808' }],
             threshold: 1,
           },
-          '0xabc': {
+          '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2': {
             ethBalance: '0.00001',
-            owners: [{ value: '0xabc' }, { value: '0xdef' }, { value: '0x123' }],
+            owners: [
+              { value: '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2' },
+              { value: '0xdef' },
+              { value: '0x1F2504De05f5167650bE5B28c472601Be434b60A' },
+            ],
             threshold: 2,
           },
         },

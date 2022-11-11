@@ -11,8 +11,10 @@
  * `import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'`
  * `trackEvent(ADDRESS_BOOK_EVENTS.EXPORT)`
  */
-import { gtmTrack } from './gtm'
+import { gtmTrack, gtmTrackSafeApp } from './gtm'
 
 export const trackEvent = gtmTrack
+export const trackSafeAppEvent = gtmTrackSafeApp
+
 export * from './types'
 export * from './events'

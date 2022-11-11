@@ -195,19 +195,27 @@ export const createExistingTx = async (
  * Propose a transaction
  * If txId is passed, it's an existing tx being signed
  */
-export const dispatchTxProposal = async (
-  chainId: string,
-  safeAddress: string,
-  sender: string,
-  safeTx: SafeTransaction,
-  txId?: string,
-): Promise<TransactionDetails> => {
+export const dispatchTxProposal = async ({
+  chainId,
+  safeAddress,
+  sender,
+  safeTx,
+  txId,
+  origin,
+}: {
+  chainId: string
+  safeAddress: string
+  sender: string
+  safeTx: SafeTransaction
+  txId?: string
+  origin?: string
+}): Promise<TransactionDetails> => {
   const safeSDK = getAndValidateSafeSDK()
   const safeTxHash = await safeSDK.getTransactionHash(safeTx)
 
   let proposedTx: TransactionDetails | undefined
   try {
-    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash)
+    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash, origin)
   } catch (error) {
     if (txId) {
       txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: error as Error })
@@ -232,9 +240,12 @@ export const dispatchTxSigning = async (
   safeTx: SafeTransaction,
   shouldEthSign: boolean,
   txId?: string,
+  safeTxHash?: string,
 ): Promise<SafeTransaction> => {
   const sdk = getAndValidateSafeSDK()
   const signingMethod = shouldEthSign ? 'eth_sign' : 'eth_signTypedData'
+
+  txDispatch(TxEvent.SIGNING, { txId, safeTxHash })
 
   let signedTx: SafeTransaction | undefined
   try {
@@ -279,10 +290,11 @@ export const dispatchTxExecution = async (
   provider: Web3Provider,
   txOptions: TransactionOptions,
   txId: string,
+  safeTxHash?: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
 
-  txDispatch(TxEvent.EXECUTING, { txId })
+  txDispatch(TxEvent.EXECUTING, { txId, safeTxHash })
 
   // Execute the tx
   let result: TransactionResult | undefined

@@ -8,6 +8,7 @@ import useSafeInfo from './useSafeInfo'
 import useWallet from './wallets/useWallet'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
 import ContractErrorCodes from '@/services/contracts/ContractErrorCodes'
+import { sameAddress } from '@/utils/addresses'
 
 const isContractError = <T extends EthersError>(error: T): error is T & { reason: keyof typeof ContractErrorCodes } => {
   return Object.keys(ContractErrorCodes).includes(error.reason)
@@ -29,6 +30,8 @@ const useIsValidExecution = (
       return
     }
 
+    const isSafeOwnerConnected = safe.owners.some((owner) => sameAddress(owner.value, wallet.address))
+
     const { contract } = getSpecificGnosisSafeContractInstance(safe)
 
     try {
@@ -42,7 +45,7 @@ const useIsValidExecution = (
         safeTx.data.gasPrice,
         safeTx.data.gasToken,
         safeTx.data.refundReceiver,
-        encodeSignatures(safeTx, wallet.address),
+        encodeSignatures(safeTx, isSafeOwnerConnected ? wallet.address : undefined),
         { from: wallet.address, gasLimit: gasLimit.toString() },
       )
     } catch (_err) {

@@ -8,7 +8,7 @@ import { SafeAppsHeader } from './SafeAppsHeader'
 import { useRemoveAppModal } from '@/hooks/safe-apps/useRemoveAppModal'
 import useDebounce from '@/hooks/useDebounce'
 import { RemoveCustomAppModal } from '@/components/safe-apps/RemoveCustomAppModal'
-import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import SafeAppsSearchPlaceholder from './SafeAppsSearchPlaceholder'
 
 const SafeAppList = () => {
@@ -31,7 +31,7 @@ const SafeAppList = () => {
 
   useEffect(() => {
     if (debouncedSearchQuery) {
-      trackEvent({ ...SAFE_APPS_EVENTS.SEARCH, label: debouncedSearchQuery })
+      trackSafeAppEvent({ ...SAFE_APPS_EVENTS.SEARCH, label: debouncedSearchQuery })
     }
   }, [debouncedSearchQuery])
 

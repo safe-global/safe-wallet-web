@@ -4,6 +4,10 @@
   height: 100%;
 }
 
+.bell svg path {
+  stroke: var(--color-text-primary);
+}
+
 .popoverContainer {
   width: 446px;
   border: 1px solid var(--color-border-light);

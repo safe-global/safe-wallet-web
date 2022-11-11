@@ -15,9 +15,9 @@ import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
 
 import css from './styles.module.css'
-import QrIcon from '@/public/images/sidebar/qr.svg'
-import CopyIcon from '@/public/images/sidebar/copy.svg'
-import LinkIcon from '@/public/images/sidebar/link.svg'
+import QrIconBold from '@/public/images/sidebar/qr-bold.svg'
+import CopyIconBold from '@/public/images/sidebar/copy-bold.svg'
+import LinkIconBold from '@/public/images/sidebar/link-bold.svg'
 
 import { selectSettings } from '@/store/settingsSlice'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -89,21 +89,21 @@ const SafeHeader = (): ReactElement => {
           <Track {...OVERVIEW_EVENTS.SHOW_QR}>
             <QrCodeButton>
               <HeaderIconButton title="Open QR code">
-                <SvgIcon component={QrIcon} inheritViewBox color="primary" />
+                <SvgIcon component={QrIconBold} inheritViewBox color="primary" fontSize="small" />
               </HeaderIconButton>
             </QrCodeButton>
           </Track>
 
           <Track {...OVERVIEW_EVENTS.COPY_ADDRESS}>
             <CopyButton text={addressCopyText} className={css.iconButton}>
-              <SvgIcon component={CopyIcon} inheritViewBox color="primary" />
+              <SvgIcon component={CopyIconBold} inheritViewBox color="primary" fontSize="small" />
             </CopyButton>
           </Track>
 
           <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
             <a target="_blank" rel="noreferrer" href={blockExplorerLink?.href || '#'}>
               <HeaderIconButton title={blockExplorerLink?.title || ''}>
-                <SvgIcon component={LinkIcon} inheritViewBox />
+                <SvgIcon component={LinkIconBold} inheritViewBox fontSize="small" />
               </HeaderIconButton>
             </a>
           </Track>
