@@ -1,22 +1,29 @@
 import Cookies from 'js-cookie'
 
-import TagManager, { _getGtmScript } from '../TagManager'
+import * as constants from '@/config/constants'
 
 const MOCK_ID = 'GTM-123456'
 const MOCK_AUTH = 'key123'
 const MOCK_PREVIEW = 'env-0'
 
+const MOCK_MEASUREMENT_ID = 'UA-123456-1'
+
 jest.mock('js-cookie', () => ({
   remove: jest.fn(),
+  set: jest.fn(),
+  get: jest.fn(),
+}))
+
+jest.mock('@/config/constants', () => ({
+  get GOOGLE_ANALYTICS_MEASUREMENT_ID() {
+    return MOCK_MEASUREMENT_ID
+  },
 }))
 
 describe('TagManager', () => {
-  beforeEach(() => {
-    TagManager.destroy()
-  })
-
   describe('getGtmScript', () => {
     it('should use the id, auth and preview', () => {
+      const { _getGtmScript } = require('../TagManager')
       const script1 = _getGtmScript({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
 
       expect(script1.innerHTML).toContain(MOCK_ID)
@@ -27,7 +34,19 @@ describe('TagManager', () => {
   })
 
   describe('TagManager.initialize', () => {
+    it('should not initialize TagManager if already initialized', () => {
+      const { default: TagManager } = require('../TagManager')
+
+      TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
+      TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
+      TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
+
+      expect(document.head.childNodes).toHaveLength(2)
+    })
+
     it('should initialize TagManager', () => {
+      const { default: TagManager, _getGtmScript } = require('../TagManager')
+
       TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
 
       expect(document.head.childNodes).toHaveLength(2)
@@ -45,9 +64,16 @@ describe('TagManager', () => {
 
       expect(window.dataLayer).toHaveLength(1)
       expect(window.dataLayer[0]).toStrictEqual({ event: 'gtm.js', 'gtm.start': expect.any(Number) })
+
+      // @ts-expect-error
+      expect(window[`ga-disable-${constants.GOOGLE_ANALYTICS_MEASUREMENT_ID}`]).toBe(false)
+
+      expect(Cookies.remove).toHaveBeenCalledWith('google-analytics-opt-out', { path: '/' })
     })
 
     it('should push to the dataLayer if povided', () => {
+      const { default: TagManager } = require('../TagManager')
+
       TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW, dataLayer: { test: '456' } })
 
       expect(window.dataLayer).toHaveLength(2)
@@ -57,13 +83,17 @@ describe('TagManager', () => {
   })
 
   describe('TagManager.dataLayer', () => {
-    it("shoult't push to the dataLayer if not initialized", () => {
+    it('should not push to the dataLayer if not initialized', () => {
+      const { default: TagManager } = require('../TagManager')
+
       TagManager.dataLayer({ test: '456' })
 
       expect(window.dataLayer).toBeUndefined()
     })
 
     it('should push data to the dataLayer', () => {
+      const { default: TagManager } = require('../TagManager')
+
       expect(window.dataLayer).toBeUndefined()
 
       TagManager.initialize({
@@ -84,50 +114,60 @@ describe('TagManager', () => {
     })
   })
 
-  describe('TagManager.destroy', () => {
-    it('should remove the dataLayer', () => {
-      expect(window.dataLayer).toBeUndefined()
+  describe('TagManager.disable', () => {
+    it('should not disable TagManager if not initialized', () => {
+      const { default: TagManager } = require('../TagManager')
 
-      TagManager.initialize({
-        gtmId: MOCK_ID,
-        auth: MOCK_AUTH,
-        preview: MOCK_PREVIEW,
-        dataLayer: {
-          test: '456',
-        },
-      })
+      TagManager.disable()
 
-      expect(window.dataLayer).toHaveLength(2)
-      expect(window.dataLayer[0]).toStrictEqual({ test: '456' })
-      expect(window.dataLayer[1]).toStrictEqual({ event: 'gtm.js', 'gtm.start': expect.any(Number) })
+      // @ts-expect-error
+      expect(window[`ga-disable-${constants.GOOGLE_ANALYTICS_MEASUREMENT_ID}`]).toBeUndefined()
 
-      TagManager.destroy()
-
-      expect(window.dataLayer).toBeUndefined()
+      expect(Cookies.set).not.toHaveBeenCalled()
     })
 
-    it('should remove the scripts', () => {
+    it('should disable GA', () => {
+      const { default: TagManager } = require('../TagManager')
+
       TagManager.initialize({
         gtmId: MOCK_ID,
         auth: MOCK_AUTH,
         preview: MOCK_PREVIEW,
       })
 
-      expect(document.head.childNodes).toHaveLength(2)
+      TagManager.disable()
 
-      TagManager.destroy()
-
-      expect(document.head.childNodes).toHaveLength(0)
+      // @ts-expect-error
+      expect(window[`ga-disable-${constants.GOOGLE_ANALYTICS_MEASUREMENT_ID}`]).toBe(true)
     })
 
-    it('should remove the cookies', () => {
+    it('should disable GTM triggers', () => {
+      const { default: TagManager } = require('../TagManager')
+
       TagManager.initialize({
         gtmId: MOCK_ID,
         auth: MOCK_AUTH,
         preview: MOCK_PREVIEW,
       })
 
-      TagManager.destroy()
+      TagManager.disable()
+
+      expect(Cookies.set).toHaveBeenCalledWith('google-analytics-opt-out', 'true', {
+        expires: Number.MAX_SAFE_INTEGER,
+        path: '/',
+      })
+    })
+
+    it.skip('should remove the GA cookies', () => {
+      const { default: TagManager } = require('../TagManager')
+
+      TagManager.initialize({
+        gtmId: MOCK_ID,
+        auth: MOCK_AUTH,
+        preview: MOCK_PREVIEW,
+      })
+
+      TagManager.disable()
 
       const path = '/'
       const domain = '.localhost'

@@ -67,7 +67,7 @@ export const gtmInit = (pagePath: string): void => {
   })
 }
 
-export const gtmClear = TagManager.destroy
+export const gtmClear = TagManager.disable
 
 type GtmEvent = {
   event: EventType

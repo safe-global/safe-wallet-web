@@ -1,26 +1,16 @@
-import { IS_PRODUCTION } from '@/config/constants'
+import { GOOGLE_ANALYTICS_MEASUREMENT_ID, IS_PRODUCTION } from '@/config/constants'
 import Cookies from 'js-cookie'
-
-// Based on https://github.com/alinemorelli/react-gtm
 
 type DataLayer = Record<string, unknown>
 
 export type TagManagerArgs = {
-  /**
-   * GTM id, must be something like GTM-000000.
-   */
+  // GTM id, e.g. GTM-000000
   gtmId: string
-  /**
-   * Used to set environments.
-   */
+  // GTM authetication key
   auth: string
-  /**
-   * Used to set environments, something like env-00.
-   */
+  // GTM environment, e.g. env-00.
   preview: string
-  /**
-   * Object that contains all of the information that you want to pass to Google Tag Manager.
-   */
+  // Object that contains all of the information that you want to pass to GTM
   dataLayer?: DataLayer
 }
 
@@ -48,19 +38,36 @@ export const _getGtmScript = ({ gtmId, auth, preview }: TagManagerArgs) => {
   return script
 }
 
+// https://developers.google.com/tag-platform/devguides/privacy#turn_off_google_analytics
+const GA_DISABLE_KEY = `ga-disable-${GOOGLE_ANALYTICS_MEASUREMENT_ID}`
+const GTM_DISABLE_TRIGGER_COOKIE_NAME = 'google-analytics-opt-out'
+
+// Injected GTM script singleton
 let gtmScriptRef: HTMLScriptElement | null = null
 
 const TagManager = {
+  isEnabled: () => {
+    // @ts-expect-error - Element implicitly has an 'any' type because index expression is not of type 'number'.
+    return Cookies.get(GTM_DISABLE_TRIGGER_COOKIE_NAME) === undefined && window[GA_DISABLE_KEY] === false
+  },
   initialize: (args: TagManagerArgs) => {
+    if (TagManager.isEnabled()) {
+      return
+    }
+
+    // Enable GA
+    // @ts-expect-error - Element implicitly has an 'any' type because index expression is not of type 'number'.
+    window[GA_DISABLE_KEY] = false
+
+    // Enable GTM triggers
+    Cookies.remove(GTM_DISABLE_TRIGGER_COOKIE_NAME, { path: '/' })
+
     if (gtmScriptRef) {
       return
     }
 
-    // Push configuration to dataLayer
-    if (args.dataLayer) {
-      window[DATA_LAYER_NAME] = []
-      window[DATA_LAYER_NAME].push(args.dataLayer)
-    }
+    // Initialize dataLayer (with configuration)
+    window[DATA_LAYER_NAME] = args.dataLayer ? [args.dataLayer] : []
 
     gtmScriptRef = _getGtmScript(args)
 
@@ -69,44 +76,39 @@ const TagManager = {
     document.head.insertBefore(gtmScriptRef, document.head.childNodes[0])
   },
   dataLayer: (dataLayer: DataLayer) => {
-    // Push to dataLayer if mounted
-    if (!gtmScriptRef || !window[DATA_LAYER_NAME]) {
+    if (!TagManager.isEnabled()) {
       return
     }
+
+    window[DATA_LAYER_NAME].push(dataLayer)
 
     if (!IS_PRODUCTION) {
       console.info('[GTM] -', dataLayer)
     }
-
-    window[DATA_LAYER_NAME].push(dataLayer)
   },
-  destroy: () => {
-    if (!gtmScriptRef) {
+  disable: () => {
+    if (!TagManager.isEnabled()) {
       return
     }
 
-    const GTM_SCRIPT = 'https://www.googletagmanager.com'
-    const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
+    // Disable GA
+    // @ts-expect-error - Element implicitly has an 'any' type because index expression is not of type 'number'.
+    window[GA_DISABLE_KEY] = true
 
-    // Unmount GTM script
-    gtmScriptRef.remove()
-    gtmScriptRef = null
-
-    // Remove script(s) (gtmScriptRef inserts a script before itself to the DOM)
-    const scripts = document.querySelectorAll(`[src^="${GTM_SCRIPT}"]`)
-    scripts?.forEach((script) => {
-      script.remove()
+    // Disable GTM triggers
+    Cookies.set(GTM_DISABLE_TRIGGER_COOKIE_NAME, 'true', {
+      expires: Number.MAX_SAFE_INTEGER,
+      path: '/',
     })
 
-    // Empty dataLayer
-    delete window[DATA_LAYER_NAME]
+    // const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
 
-    // Remove cookies
-    const path = '/'
-    const domain = `.${location.host.split('.').slice(-2).join('.')}`
-    GTM_COOKIE_LIST.forEach((cookie) => {
-      Cookies.remove(cookie, { path, domain })
-    })
+    // GTM_COOKIE_LIST.forEach((cookie) => {
+    //   Cookies.remove(cookie, {
+    //     path: '/',
+    //     domain: `.${location.host.split('.').slice(-2).join('.')}`,
+    //   })
+    // })
   },
 }
 

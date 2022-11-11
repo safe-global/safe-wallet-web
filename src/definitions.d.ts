@@ -1,5 +1,6 @@
 import type React from 'react'
 import type { BeamerConfig, BeamerMethods } from '@services/beamer/types'
+import { GOOGLE_ANALYTICS_MEASUREMENT_ID } from '@/config/constants'
 
 declare global {
   interface Window {
@@ -15,6 +16,7 @@ declare global {
     Beamer?: BeamerMethods
     dataLayer?: DataLayerArgs['dataLayer']
     Cypress?
+    [`ga-disable-${GOOGLE_ANALYTICS_MEASUREMENT_ID}`]?: boolean
   }
 }
 
