@@ -75,6 +75,7 @@
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-gtm-module": "^2.0.11",
     "react-hook-form": "^7.36.1",
     "react-papaparse": "^4.0.2",

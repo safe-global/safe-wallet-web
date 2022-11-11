@@ -1,3 +1,4 @@
+import chains from '@/config/chains'
 import { type AddressBookState } from '@/store/addressBookSlice'
 import { isChecksummedAddress } from '@/utils/addresses'
 import type { LOCAL_STORAGE_DATA } from './common'
@@ -13,7 +14,7 @@ export const migrateAddressBook = (lsData: LOCAL_STORAGE_DATA): AddressBookState
     console.log('Migrating address book')
 
     const newAb = legacyAb.reduce<AddressBookState>((acc, { address, name, chainId }) => {
-      if (!name || !address || !isChecksummedAddress(address)) {
+      if (!name || !address || !isChecksummedAddress(address) || chainId === chains.rin) {
         return acc
       }
       acc[chainId] = acc[chainId] || {}

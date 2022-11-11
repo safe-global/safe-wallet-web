@@ -92,4 +92,8 @@ export const settingsNavItems = [
     label: 'Safe Apps permissions',
     href: AppRoutes.settings.safeApps.index,
   },
+  {
+    label: 'Data',
+    href: AppRoutes.settings.data,
+  },
 ]
