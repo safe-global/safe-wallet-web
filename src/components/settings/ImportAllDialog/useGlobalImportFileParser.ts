@@ -6,6 +6,12 @@ import { useMemo } from 'react'
 
 const V1 = '1.0'
 
+export enum ImportErrors {
+  INVALID_VERSION = 'The file is not a Safe export.',
+  INVALID_JSON_FORMAT = 'The JSON format is invalid.',
+  NO_IMPORT_DATA_FOUND = 'This file contains no importable data.',
+}
+
 const countEntries = (data: { [chainId: string]: { [address: string]: unknown } }) =>
   Object.values(data).reduce<number>((count, entry) => count + Object.keys(entry).length, 0)
 
@@ -18,16 +24,16 @@ const countEntries = (data: { [chainId: string]: { [address: string]: unknown } 
  * @returns data to import and some insights about it
  */
 export const useGlobalImportJsonParser = (jsonData: string | undefined) => {
-  const [migrationAddedSafes, migrationAddressbook, addressBookEntriesCount, addedSafesCount] = useMemo(() => {
+  const [migrationAddedSafes, migrationAddressbook, addressBookEntriesCount, addedSafesCount, error] = useMemo(() => {
     if (!jsonData) {
-      return [undefined, undefined, 0, 0]
+      return [undefined, undefined, 0, 0, undefined]
     }
     try {
       const parsedFile = JSON.parse(jsonData)
 
       // We only understand v1 data so far
-      if (parsedFile.version !== V1) {
-        return [undefined, undefined, 0, 0]
+      if (!parsedFile.data || parsedFile.version !== V1) {
+        return [undefined, undefined, 0, 0, ImportErrors.INVALID_VERSION]
       }
 
       const abData = migrateAddressBook(parsedFile.data)
@@ -36,10 +42,16 @@ export const useGlobalImportJsonParser = (jsonData: string | undefined) => {
       const abCount = abData ? countEntries(abData) : 0
       const addedSafesCount = addedSafesData ? countEntries(addedSafesData) : 0
 
-      return [addedSafesData, abData, abCount, addedSafesCount]
+      return [
+        addedSafesData,
+        abData,
+        abCount,
+        addedSafesCount,
+        !abData && !addedSafesData ? ImportErrors.NO_IMPORT_DATA_FOUND : undefined,
+      ]
     } catch (err) {
       logError(ErrorCodes._704, (err as Error).message)
-      return [undefined, undefined, 0, 0]
+      return [undefined, undefined, 0, 0, ImportErrors.INVALID_JSON_FORMAT]
     }
   }, [jsonData])
 
@@ -48,5 +60,6 @@ export const useGlobalImportJsonParser = (jsonData: string | undefined) => {
     addressBook: migrationAddressbook,
     addressBookEntriesCount,
     addedSafesCount,
+    error,
   }
 }

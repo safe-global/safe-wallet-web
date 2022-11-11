@@ -1,14 +1,25 @@
 import { renderHook } from '@/tests/test-utils'
-import { useGlobalImportJsonParser } from '../useGlobalImportFileParser'
+import { ImportErrors, useGlobalImportJsonParser } from '../useGlobalImportFileParser'
 
 describe('useGlobalImportFileParser', () => {
-  it('should return empty objects for undefined json', () => {
+  it('should return undefined values for undefined json', () => {
     const { result } = renderHook(() => useGlobalImportJsonParser(undefined))
     expect(result.current).toEqual({
       addedSafes: undefined,
       addressBook: undefined,
       addressBookEntriesCount: 0,
       addedSafesCount: 0,
+    })
+  })
+
+  it('should return undefined values and error for empty json', () => {
+    const { result } = renderHook(() => useGlobalImportJsonParser('{ "version": "1.0", "data": "{}" }'))
+    expect(result.current).toEqual({
+      addedSafes: undefined,
+      addressBook: undefined,
+      addressBookEntriesCount: 0,
+      addedSafesCount: 0,
+      error: ImportErrors.NO_IMPORT_DATA_FOUND,
     })
   })
 
@@ -19,6 +30,7 @@ describe('useGlobalImportFileParser', () => {
       addressBook: undefined,
       addressBookEntriesCount: 0,
       addedSafesCount: 0,
+      error: ImportErrors.INVALID_JSON_FORMAT,
     })
   })
 
@@ -44,6 +56,7 @@ describe('useGlobalImportFileParser', () => {
       addressBook: undefined,
       addressBookEntriesCount: 0,
       addedSafesCount: 0,
+      error: ImportErrors.INVALID_VERSION,
     })
   })
 

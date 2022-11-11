@@ -8,7 +8,6 @@ import { type ReactElement, useState } from 'react'
 import ModalDialog from '@/components/common/ModalDialog'
 import { useAppDispatch } from '@/store'
 
-import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useDropzone } from 'react-dropzone'
 import { addedSafesSlice } from '@/store/addedSafesSlice'
 import { addressBookSlice } from '@/store/addressBookSlice'
@@ -35,10 +34,10 @@ const ColoredFileIcon = ({ color }: { color: SvgIconTypeMap['props']['color'] })
 const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [jsonData, setJsonData] = useState<string>()
   const [fileName, setFileName] = useState<string>()
-  const [error, setError] = useState<string>()
 
   // Parse the jsonData whenever it changes
-  const { addedSafes, addedSafesCount, addressBook, addressBookEntriesCount } = useGlobalImportJsonParser(jsonData)
+  const { addedSafes, addedSafesCount, addressBook, addressBookEntriesCount, error } =
+    useGlobalImportJsonParser(jsonData)
 
   const dispatch = useAppDispatch()
 
@@ -68,7 +67,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
     event.stopPropagation()
   }
 
-  const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     maxFiles: 1,
     onDrop,
     accept: AcceptedMimeTypes,
@@ -102,9 +101,12 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
         variant: 'success',
         groupKey: 'global-import-success',
         message: 'Successfully imported data',
-        detailedMessage: `${addedSafesCount > 0 ? `${addedSafesCount} Safes were added.` : ''}${
-          addressBookEntriesCount > 0 ? `\n${addressBookEntriesCount} addresses were added to your address book.` : ''
-        }`,
+        detailedMessage: [
+          ...(addedSafesCount > 0 ? [`${addedSafesCount} Safes were added.`] : []),
+          ...(addressBookEntriesCount > 0
+            ? [`${addressBookEntriesCount} addresses were added to your address book.`]
+            : []),
+        ].join('\n'),
       }),
     )
 
@@ -161,14 +163,14 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
                     </Grid>
                   </Grid>
                 )}
-                {!addedSafes && !addressBook && (
+                {error && (
                   <Grid container display="flex" gap={1} alignItems="center">
                     <Grid item xs={1}>
                       <ColoredFileIcon color="border" />
                     </Grid>
                     <Grid item xs>
                       <Typography color="error">
-                        <strong>This file contains no importable data.</strong>
+                        <strong>{error}</strong>
                       </Typography>
                     </Grid>
                   </Grid>
@@ -207,8 +209,6 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
             </Box>
           )}
         </div>
-
-        {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <div className={css.horizontalDivider} />
 
