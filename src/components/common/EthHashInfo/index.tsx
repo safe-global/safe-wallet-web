@@ -70,12 +70,10 @@ const EthHashInfo = ({
         )}
 
         <Box className={css.addressRow}>
-          <Typography variant="body2">
+          <Typography variant="body2" fontWeight="inherit">
             {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
-            <Box component="span">
-              <span className={css.mobileAddress}>{shortenAddress(address)}</span>
-              <span className={css.desktopAddress}>{shortAddress ? shortenAddress(address) : address}</span>
-            </Box>
+            <span className={css.mobileAddress}>{shortenAddress(address)}</span>
+            <span className={css.desktopAddress}>{shortAddress ? shortenAddress(address) : address}</span>
           </Typography>
 
           {showCopyButton && (
