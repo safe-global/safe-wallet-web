@@ -6,6 +6,7 @@ export type NamedAddress = {
   ens?: string
 }
 
+// TODO: Split this type up for create and add safe since NamedAddress only makes sense when adding a safe
 export type SafeFormData = NamedAddress & {
   threshold: number
   owners: NamedAddress[]

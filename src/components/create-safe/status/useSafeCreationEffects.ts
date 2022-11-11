@@ -71,9 +71,15 @@ const useSafeCreationEffects = ({
       trackEvent(CREATE_SAFE_EVENTS.CREATED_SAFE)
 
       // Add the Safe and add names to the address book
-      if (pendingSafe) {
+      if (pendingSafe && pendingSafe.safeAddress) {
         dispatch(
-          updateAddressBook(chainId, pendingSafe.address, pendingSafe.name, pendingSafe.owners, pendingSafe.threshold),
+          updateAddressBook(
+            chainId,
+            pendingSafe.safeAddress,
+            pendingSafe.name,
+            pendingSafe.owners,
+            pendingSafe.threshold,
+          ),
         )
       }
 

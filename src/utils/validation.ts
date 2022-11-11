@@ -1,6 +1,5 @@
 import chains from '@/config/chains'
-import { isAddress } from '@ethersproject/address'
-import { parsePrefixedAddress, sameAddress } from './addresses'
+import { parsePrefixedAddress, sameAddress, isChecksummedAddress } from './addresses'
 import { safeFormatUnits, safeParseUnits } from './formatters'
 
 export const validateAddress = (address: string) => {
@@ -10,7 +9,7 @@ export const validateAddress = (address: string) => {
     return 'Invalid address format'
   }
 
-  if (!isAddress(address)) {
+  if (!isChecksummedAddress(address)) {
     return 'Invalid address checksum'
   }
 }

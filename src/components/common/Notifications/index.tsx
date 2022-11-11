@@ -67,7 +67,7 @@ const Toast = ({
     onClose()
   }
 
-  const autoHideDuration = variant === 'info' || variant === 'success' ? 5000 : undefined
+  const autoHideDuration = (variant === 'info' || variant === 'success') && !detailedMessage ? 5000 : undefined
 
   return (
     <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={autoHideDuration}>
