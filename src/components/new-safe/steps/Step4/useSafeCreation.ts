@@ -12,7 +12,11 @@ import {
   getSafeCreationTxInfo,
   getSafeDeployProps,
   handleSafeCreationError,
+  SAFE_CREATION_ERROR_KEY,
+  showSafeCreationError,
 } from '@/components/new-safe/steps/Step4/logic'
+import { useAppDispatch } from '@/store'
+import { closeByGroupKey } from '@/store/notificationsSlice'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -34,6 +38,7 @@ export const useSafeCreation = (
 ) => {
   const [isCreating, setIsCreating] = useState(false)
   const [isWatching, setIsWatching] = useState(false)
+  const dispatch = useAppDispatch()
 
   const wallet = useWallet()
   const provider = useWeb3()
@@ -50,6 +55,7 @@ export const useSafeCreation = (
     if (!pendingSafe || !provider || !chain || !wallet || isCreating) return
 
     setIsCreating(true)
+    dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
     try {
       const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, pendingSafe.saltNonce, wallet)
@@ -66,11 +72,18 @@ export const useSafeCreation = (
 
       await createNewSafe(provider, safeParams)
     } catch (err) {
-      setStatus(handleSafeCreationError(err as EthersError))
+      const _err = err as EthersError
+      const status = handleSafeCreationError(_err)
+
+      setStatus(status)
+
+      if (status !== SafeCreationStatus.SUCCESS) {
+        dispatch(showSafeCreationError(_err))
+      }
     }
 
     setIsCreating(false)
-  }, [chain, createSafeCallback, isCreating, pendingSafe, provider, setStatus, wallet])
+  }, [chain, createSafeCallback, dispatch, isCreating, pendingSafe, provider, setStatus, wallet])
 
   const watchSafeTx = useCallback(async () => {
     if (!pendingSafe?.tx || !pendingSafe?.txHash || !provider || isWatching) return
@@ -78,10 +91,10 @@ export const useSafeCreation = (
     setStatus(SafeCreationStatus.PROCESSING)
     setIsWatching(true)
 
-    const txStatus = await checkSafeCreationTx(provider, pendingSafe.tx, pendingSafe.txHash)
+    const txStatus = await checkSafeCreationTx(provider, pendingSafe.tx, pendingSafe.txHash, dispatch)
     setStatus(txStatus)
     setIsWatching(false)
-  }, [isWatching, pendingSafe, provider, setStatus])
+  }, [isWatching, pendingSafe, provider, setStatus, dispatch])
 
   useEffect(() => {
     if (status !== SafeCreationStatus.AWAITING) return
