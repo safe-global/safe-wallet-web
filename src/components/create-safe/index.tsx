@@ -13,6 +13,8 @@ import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
 import useChainId from '@/hooks/useChainId'
 import type { SafeFormData } from '@/components/create-safe/types.d'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
+import useWallet from '@/hooks/wallets/useWallet'
+import SafeLoadingError from '../common/SafeLoadingError'
 
 export type PendingSafeData = SafeFormData & { txHash?: string; saltNonce: number }
 export type PendingSafeByChain = Record<string, PendingSafeData | undefined>
@@ -48,6 +50,7 @@ const CreateSafe = () => {
   // We need this additional state to avoid hydration errors
   const [safeCreationPending, setSafeCreationPending] = useState<boolean>(false)
   const router = useRouter()
+  const wallet = useWallet()
 
   useEffect(() => {
     setSafeCreationPending(!!pendingSafe)
@@ -60,6 +63,10 @@ const CreateSafe = () => {
   const onClose = () => {
     setPendingSafe(undefined)
     router.push(AppRoutes.welcome)
+  }
+
+  if (wallet && wallet.sanctioned) {
+    return <SafeLoadingError>{null}</SafeLoadingError>
   }
 
   return safeCreationPending ? (

@@ -10,6 +10,7 @@ import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { useInitPairing } from '@/services/pairing/hooks'
 import { isWalletUnlocked } from '@/utils/wallets'
+import { SANCTIONED_ADDRESSES } from '@/utils/ofac-sanctioned-addresses'
 
 export type ConnectedWallet = {
   label: string
@@ -17,6 +18,7 @@ export type ConnectedWallet = {
   address: string
   ens?: string
   provider: EIP1193Provider
+  sanctioned?: boolean
 }
 
 export const lastWalletStorage = localItem<string>('lastWallet')
@@ -40,12 +42,14 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
   const account = primaryWallet?.accounts[0]
   if (!account) return null
 
+  const address = getAddress(account.address)
   return {
     label: primaryWallet.label,
-    address: getAddress(account.address),
+    address,
     ens: account.ens?.name,
     chainId: Number(primaryWallet.chains[0].id).toString(10),
     provider: primaryWallet.provider,
+    sanctioned: SANCTIONED_ADDRESSES.includes(address.toLowerCase()),
   }
 }
 

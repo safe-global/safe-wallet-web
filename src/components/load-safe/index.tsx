@@ -10,6 +10,8 @@ import SafeReviewStep from '@/components/load-safe/steps/SafeReviewStep'
 import SelectNetworkStep from '@/components/load-safe/steps/SelectNetworkStep'
 import type { SafeFormData } from '@/components/create-safe/types'
 import { LOAD_SAFE_CATEGORY } from '@/services/analytics'
+import useWallet from '@/hooks/wallets/useWallet'
+import SafeLoadingError from '../common/SafeLoadingError'
 
 export const LoadSafeSteps: TxStepperProps['steps'] = [
   {
@@ -42,6 +44,11 @@ const LoadSafe = ({
   initialData?: TxStepperProps['initialData']
 }) => {
   const router = useRouter()
+  const wallet = useWallet()
+
+  if (wallet && wallet.sanctioned) {
+    return <SafeLoadingError>{null}</SafeLoadingError>
+  }
 
   return (
     <VerticalTxStepper

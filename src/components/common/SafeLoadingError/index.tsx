@@ -4,21 +4,32 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import PagePlaceholder from '../PagePlaceholder'
 import { AppRoutes } from '@/config/routes'
 import Link from 'next/link'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement => {
   const { safeError } = useSafeInfo()
+  const wallet = useWallet()
 
-  if (!safeError) return <>{children}</>
+  let walletError = ''
+  if (wallet && wallet.sanctioned) {
+    walletError = 'This wallet address has been sanctioned by the OFAC.'
+  }
+
+  if (!safeError && !walletError) return <>{children}</>
 
   return (
     <PagePlaceholder
       img={<img src="/images/common/error.png" alt="A vault with a red icon in the bottom right corner" />}
-      text="This Safe couldn't be loaded"
+      text={walletError || "This Safe couldn't be loaded"}
     >
       <Link href={AppRoutes.welcome} passHref>
-        <Button variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
-          Go to the main page
-        </Button>
+        {walletError ? (
+          <div />
+        ) : (
+          <Button variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
+            Go to the main page
+          </Button>
+        )}
       </Link>
     </PagePlaceholder>
   )
