@@ -141,13 +141,15 @@ export const gtmTrackPageview = (pagePath: string): void => {
   gtmSend(gtmEvent)
 }
 
+const stripQueryStringAndHashFromPath = (url: string) => url.split('?')[0].split('#')[0]
+
 export const gtmTrackSafeApp = (eventData: AnalyticsEvent, appName?: string, sdkEventData?: SafeAppSDKEvent): void => {
   const safeAppGtmEvent: SafeAppGtmEvent = {
     event: EventType.SAFE_APP,
     chainId: _chainId,
     eventCategory: eventData.category,
     eventAction: eventData.action,
-    safeAppName: appName || '',
+    safeAppName: (appName?.startsWith('http') ? stripQueryStringAndHashFromPath(appName) : appName) || '',
     safeAppEthMethod: '',
     safeAppMethod: '',
     safeAppSDKVersion: '',
