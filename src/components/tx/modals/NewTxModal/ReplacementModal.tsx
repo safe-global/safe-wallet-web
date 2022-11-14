@@ -41,6 +41,13 @@ const steps = [
   },
 ]
 
+const btnWidth = {
+  width: {
+    xs: 240,
+    sm: '100%',
+  },
+}
+
 const ReplacementModal = ({
   txNonce,
   onClose,
@@ -57,7 +64,7 @@ const ReplacementModal = ({
   return (
     <ModalDialog open dialogTitle={`Replace transaction with nonce ${txNonce}`} onClose={onClose}>
       <DialogContent className={css.container}>
-        <Typography variant="h5" mb={1}>
+        <Typography variant="h5" mb={1} textAlign="center">
           Need to replace or discard this transaction?
         </Typography>
         <Typography variant="body1" textAlign="center">
@@ -76,41 +83,53 @@ const ReplacementModal = ({
         </Stepper>
       </DialogContent>
       <DialogActions className={css.container}>
-        <Grid container alignItems="center" justifyContent="center" spacing={3}>
+        <Grid
+          container
+          alignItems="center"
+          justifyContent="center"
+          flexDirection={{
+            xs: 'column',
+            sm: 'row',
+          }}
+        >
           <Grid item xs={12}>
-            <Typography variant="body2" textAlign="center" fontWeight={700}>
+            <Typography variant="body2" textAlign="center" fontWeight={700} mb={3}>
               Select the type of replacement transaction
             </Typography>
           </Grid>
-          <Grid item xs>
-            <SendTokensButton onClick={onTokenModalOpen} sx={{ mb: 1, maxWidth: '320px !important' }} />
-            <SendNFTsButton onClick={onNFTModalOpen} />
+          <Grid item container justifyContent="center" gap={1} xs={12} sm>
+            <SendTokensButton onClick={onTokenModalOpen} sx={btnWidth} />
+            <SendNFTsButton onClick={onNFTModalOpen} sx={btnWidth} />
           </Grid>
-          <Grid>
-            <Typography variant="body2" textAlign="center" fontWeight={700} p={3}>
+          <Grid item>
+            <Typography variant="body2" className={css.or}>
               or
             </Typography>
           </Grid>
-          <Grid xs>
-            <Button onClick={onRejectModalOpen} variant="outlined" fullWidth sx={{ mt: 3 }}>
+          <Grid item container xs={12} sm sx={{ justifyContent: { xs: 'center', sm: 'flex-start' } }}>
+            <Button onClick={onRejectModalOpen} variant="outlined" fullWidth sx={{ mb: 1, ...btnWidth }}>
               Rejection transaction
             </Button>
 
-            <Typography variant="caption">How does it work?</Typography>
-            <Tooltip
-              title={`An on-chain rejection doesn't send any funds. Executing an on-chain rejection will replace all currently awaiting transactions with nonce ${txNonce}.`}
-              arrow
-            >
-              <span>
-                <SvgIcon
-                  component={InfoIcon}
-                  inheritViewBox
-                  fontSize="small"
-                  color="border"
-                  sx={{ verticalAlign: 'middle', ml: 0.5 }}
-                />
-              </span>
-            </Tooltip>
+            <div>
+              <Typography variant="caption" display="flex" alignItems="center">
+                How does it work?{' '}
+                <Tooltip
+                  title={`An on-chain rejection doesn't send any funds. Executing an on-chain rejection will replace all currently awaiting transactions with nonce ${txNonce}.`}
+                  arrow
+                >
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      fontSize="small"
+                      color="border"
+                      sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                    />
+                  </span>
+                </Tooltip>
+              </Typography>
+            </div>
           </Grid>
         </Grid>
       </DialogActions>
