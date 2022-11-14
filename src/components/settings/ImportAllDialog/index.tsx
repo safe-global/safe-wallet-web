@@ -17,7 +17,7 @@ import { useGlobalImportJsonParser } from './useGlobalImportFileParser'
 import { showNotification } from '@/store/notificationsSlice'
 import { Alert, AlertTitle } from '@mui/material'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
-import FileUpload from '@/components/common/FileUpload'
+import FileUpload, { FileTypes, type FileInfo } from '@/components/common/FileUpload'
 
 const AcceptedMimeTypes = {
   'application/json': ['.json'],
@@ -105,7 +105,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
     handleClose()
   }
 
-  const fileInfo = fileName
+  const fileInfo: FileInfo | undefined = fileName
     ? {
         name: fileName,
         error,
@@ -134,7 +134,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
     <ModalDialog open onClose={handleClose} dialogTitle="Data import" hideChainIndicator>
       <DialogContent>
         <FileUpload
-          fileType="JSON"
+          fileType={FileTypes.JSON}
           getRootProps={getRootProps}
           getInputProps={getInputProps}
           isDragActive={isDragActive}

@@ -16,7 +16,7 @@ import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
 import { abCsvReaderValidator, abOnUploadValidator } from './validation'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { Errors, logError } from '@/services/exceptions'
-import FileUpload from '@/components/common/FileUpload'
+import FileUpload, { FileTypes, type FileInfo } from '@/components/common/FileUpload'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']
 
@@ -122,7 +122,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
               onClick(e)
             }
 
-            const fileInfo = acceptedFile
+            const fileInfo: FileInfo | undefined = acceptedFile
               ? {
                   name: acceptedFile.name,
                   additionalInfo: formatFileSize(acceptedFile.size),
@@ -138,7 +138,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
             return (
               <FileUpload
                 fileInfo={fileInfo}
-                fileType="CSV"
+                fileType={FileTypes.CSV}
                 getRootProps={getRootProps}
                 isDragActive={zoneHover}
                 onRemove={onRemove}

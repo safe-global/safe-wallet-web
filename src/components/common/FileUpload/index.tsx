@@ -3,12 +3,18 @@ import { Box, Grid, IconButton, Link, SvgIcon, type SvgIconTypeMap, Typography }
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import FileIcon from '@/public/images/settings/data/file.svg'
 import type { MouseEventHandler, ReactElement } from 'react'
+import type { DropzoneInputProps, DropzoneRootProps } from 'react-dropzone'
 
-type FileInfo = {
+export type FileInfo = {
   name: string
   additionalInfo?: string
   summary: ReactElement[]
   error?: string
+}
+
+export enum FileTypes {
+  JSON = 'JSON',
+  CSV = 'CSV',
 }
 
 const ColoredFileIcon = ({ color }: { color: SvgIconTypeMap['props']['color'] }) => (
@@ -23,7 +29,8 @@ const UploadSummary = ({ fileInfo, onRemove }: { fileInfo: FileInfo; onRemove: (
           <ColoredFileIcon color="primary" />
         </Grid>
         <Grid item xs={7}>
-          {fileInfo.name} {fileInfo.additionalInfo && `- ${fileInfo.additionalInfo}`}
+          {fileInfo.name}
+          {fileInfo.additionalInfo && ` - ${fileInfo.additionalInfo}`}
         </Grid>
 
         <Grid item xs display="flex" justifyContent="flex-end">
@@ -74,9 +81,9 @@ const FileUpload = ({
 }: {
   isDragReject?: boolean
   isDragActive?: boolean
-  fileType: string
-  getInputProps?: () => any
-  getRootProps: () => any
+  fileType: FileTypes
+  getInputProps?: <T extends DropzoneInputProps>(props?: T | undefined) => T
+  getRootProps: <T extends DropzoneRootProps>(props?: T | undefined) => T
   fileInfo?: FileInfo
   onRemove: (() => void) | MouseEventHandler
 }) => {
