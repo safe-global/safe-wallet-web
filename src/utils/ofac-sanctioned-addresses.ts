@@ -123,7 +123,4 @@ export const SANCTIONED_ADDRESSES = [
   '0x5cab7692d4e94096462119ab7bf57319726eed2a',
   '0x756c4628e57f7e7f8a459ec2752968360cf4d1aa',
   '0xd82ed8786d7c69dc7e052f7a542ab047971e73d2',
-
-  //
-  '0x21ecc6113bfa08c428ca11bae55ba038fca0e7da',
 ].map((x) => x.toLowerCase())
