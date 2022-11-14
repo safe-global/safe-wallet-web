@@ -13,12 +13,11 @@ import { useAppSelector } from '@/store'
 
 const WARNING_BANNER = 'WARNING_BANNER'
 const OLD_APP = 'https://gnosis-safe.io/app'
-const NO_REDIRECT = '?no-redirect=true'
 
 const ExportLink = ({ children }: { children: ReactNode }): ReactElement => {
   const router = useRouter()
   const safeAddress = router.query.safe as string
-  const url = safeAddress ? `${OLD_APP}/${safeAddress}/address-book${NO_REDIRECT}` : `${OLD_APP}${NO_REDIRECT}`
+  const url = safeAddress ? `${OLD_APP}/${safeAddress}/settings/details` : `${OLD_APP}/export`
 
   return (
     <a href={url} target="_blank" rel="noreferrer">
@@ -32,7 +31,7 @@ const BANNERS: Record<string, ReactElement | string> = {
     <>
       <b>app.safe.global</b> is Safe&apos;s new official URL.
       <br />
-      Import your address book via the CSV export from the <ExportLink>old app</ExportLink>.
+      Export your data from the old app <ExportLink>here</ExportLink>.
     </>
   ),
 }
