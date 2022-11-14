@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: var(--space-3);
+  padding: var(--space-4) !important;
 }
 
 .redCircle {
@@ -24,11 +24,12 @@
 }
 
 .stepper {
-  padding: var(--space-3) 0;
+  padding-top: var(--space-3);
+  gap: var(--space-2);
 }
 
 .stepper :global .MuiStepConnector-root {
-  left: calc(-50% + 28px);
+  left: calc(-50% + 14px);
   right: calc(50% + 28px);
 }
 

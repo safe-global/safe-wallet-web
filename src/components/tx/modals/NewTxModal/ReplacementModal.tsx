@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   DialogContent,
   SvgIcon,
@@ -37,7 +36,7 @@ const steps = [
     icon: wrapIcon(<SvgIcon component={RocketIcon} inheritViewBox fontSize="small" color="border" />),
   },
   {
-    label: 'The initial transaction is replaced',
+    label: 'Initial transaction is replaced',
     icon: wrapIcon(<SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" color="border" />),
   },
 ]
@@ -57,46 +56,44 @@ const ReplacementModal = ({
 }) => {
   return (
     <ModalDialog open dialogTitle={`Replace transaction with nonce ${txNonce}`} onClose={onClose}>
-      <DialogContent>
-        <Box className={css.container}>
-          <Typography variant="h5" gutterBottom>
-            How to replace/change a transaction?
-          </Typography>
-          <Typography variant="body1" textAlign="center">
-            A signed transaction cannot be removed but it can be replaced with a new transaction with the same nonce.
-          </Typography>
-          <Stepper alternativeLabel className={css.stepper}>
-            {steps.map(({ label }) => (
-              <Step key={label}>
-                <StepLabel StepIconComponent={({ icon }) => steps[Number(icon) - 1].icon}>
-                  <Typography variant="body1" fontWeight={700}>
-                    {label}
-                  </Typography>
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </Box>
+      <DialogContent className={css.container}>
+        <Typography variant="h5" mb={1}>
+          Need to replace or discard this transaction?
+        </Typography>
+        <Typography variant="body1" textAlign="center">
+          A signed transaction cannot be removed but it can be replaced with a new transaction with the same nonce.
+        </Typography>
+        <Stepper alternativeLabel className={css.stepper}>
+          {steps.map(({ label }) => (
+            <Step key={label}>
+              <StepLabel StepIconComponent={({ icon }) => steps[Number(icon) - 1].icon}>
+                <Typography variant="body1" fontWeight={700}>
+                  {label}
+                </Typography>
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
       </DialogContent>
-      <DialogActions>
-        <Grid container alignItems="center" justifyContent="center" spacing={2}>
+      <DialogActions className={css.container}>
+        <Grid container alignItems="center" justifyContent="center" spacing={3}>
           <Grid item xs={12}>
             <Typography variant="body2" textAlign="center" fontWeight={700}>
               Select the type of replacement transaction
             </Typography>
           </Grid>
           <Grid item xs>
-            <SendTokensButton onClick={onTokenModalOpen} sx={{ mb: 1 }} />
+            <SendTokensButton onClick={onTokenModalOpen} sx={{ mb: 1, maxWidth: '320px !important' }} />
             <SendNFTsButton onClick={onNFTModalOpen} />
           </Grid>
-          <Grid xs={1}>
-            <Typography variant="body2" textAlign="center" fontWeight={700}>
+          <Grid>
+            <Typography variant="body2" textAlign="center" fontWeight={700} p={3}>
               or
             </Typography>
           </Grid>
           <Grid xs>
-            <Button onClick={onRejectModalOpen} variant="outlined" fullWidth sx={{ mt: 2 }}>
-              Replace transaction
+            <Button onClick={onRejectModalOpen} variant="outlined" fullWidth sx={{ mt: 3 }}>
+              Rejection transaction
             </Button>
 
             <Typography variant="caption">How does it work?</Typography>
