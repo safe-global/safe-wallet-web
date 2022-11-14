@@ -23,7 +23,7 @@ const UploadSummary = ({ fileInfo, onRemove }: { fileInfo: FileInfo; onRemove: (
           <ColoredFileIcon color="primary" />
         </Grid>
         <Grid item xs={7}>
-          {fileInfo.name}
+          {fileInfo.name} {fileInfo.additionalInfo && `- ${fileInfo.additionalInfo}`}
         </Grid>
 
         <Grid item xs display="flex" justifyContent="flex-end">
