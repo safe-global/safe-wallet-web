@@ -26,6 +26,9 @@ import type { UrlObject } from 'url'
 import chains from '@/config/chains'
 import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import type { AppDispatch, AppThunk } from '@/store'
+import { showNotification } from '@/store/notificationsSlice'
+import { formatError } from '@/hooks/useTxNotifications'
 
 /**
  * Prepare data for creating a Safe for the Core SDK
@@ -180,10 +183,24 @@ export const handleSafeCreationError = (error: EthersError) => {
   return SafeCreationStatus.TIMEOUT
 }
 
+export const showSafeCreationError = (error: EthersError): AppThunk => {
+  return (dispatch) => {
+    dispatch(
+      showNotification({
+        message: `Your transaction was unsuccessful. Reason: ${formatError(error)}`,
+        detailedMessage: error.message,
+        groupKey: 'create-safe-error',
+        variant: 'error',
+      }),
+    )
+  }
+}
+
 export const checkSafeCreationTx = async (
   provider: JsonRpcProvider,
   pendingTx: PendingSafeTx,
   txHash: string,
+  dispatch: AppDispatch,
 ): Promise<SafeCreationStatus> => {
   const TIMEOUT_TIME = 6.5 * 60 * 1000 // 6.5 minutes
 
@@ -196,7 +213,15 @@ export const checkSafeCreationTx = async (
 
     return SafeCreationStatus.SUCCESS
   } catch (err) {
-    return handleSafeCreationError(err as EthersError)
+    const _err = err as EthersError
+
+    const status = handleSafeCreationError(_err)
+
+    if (status !== SafeCreationStatus.SUCCESS) {
+      dispatch(showSafeCreationError(_err))
+    }
+
+    return status
   }
 }
 

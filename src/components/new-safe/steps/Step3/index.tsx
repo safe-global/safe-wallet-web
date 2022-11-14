@@ -135,8 +135,8 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
                 </Box>
               }
             />
-            <Grid xs={3} />
-            <Grid xs={9} pt={1} pl={3}>
+            <Grid item xs={3} />
+            <Grid item xs={9} pt={1} pl={3}>
               <Typography variant="body2" color="text.secondary">
                 You will have to confirm a transaction with your currently connected wallet.
               </Typography>

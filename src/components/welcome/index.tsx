@@ -28,7 +28,8 @@ const NewSafe = () => {
               for creating your new Safe.
             </Typography>
             <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
-              <Button variant="contained" onClick={() => router.push('/open')}>
+              {/* TODO: Revert this to /open before merging into dev */}
+              <Button variant="contained" onClick={() => router.push('/new-safe/create')}>
                 + Create new Safe
               </Button>
             </Track>
