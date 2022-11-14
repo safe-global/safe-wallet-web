@@ -12,8 +12,10 @@
   transition: border 0.5s, background 0.5s;
 }
 
-.horizontalDivider {
+.verticalLine {
   display: flex;
-  margin: 24px -24px;
-  border-top: 2px solid rgba(0, 0, 0, 0.12);
+  height: 18px;
+  border: 1px solid var(--color-primary-main);
+  margin-left: var(--space-1);
+  margin-top: -8px;
 }

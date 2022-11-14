@@ -1,7 +1,6 @@
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
-import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import Typography from '@mui/material/Typography'
 import { type ReactElement, useState } from 'react'
 
@@ -13,23 +12,16 @@ import { addedSafesSlice } from '@/store/addedSafesSlice'
 import { addressBookSlice } from '@/store/addressBookSlice'
 
 import css from './styles.module.css'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import IconButton from '@mui/material/IconButton'
 import type { MouseEventHandler } from 'react'
 import { useGlobalImportJsonParser } from './useGlobalImportFileParser'
 import { showNotification } from '@/store/notificationsSlice'
-import { Alert, AlertTitle, Link, SvgIcon, type SvgIconTypeMap } from '@mui/material'
-import FileIcon from '@/public/images/settings/data/file.svg'
+import { Alert, AlertTitle } from '@mui/material'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
+import FileUpload from '@/components/common/FileUpload'
 
 const AcceptedMimeTypes = {
   'application/json': ['.json'],
 }
-
-const ColoredFileIcon = ({ color }: { color: SvgIconTypeMap['props']['color'] }) => (
-  <SvgIcon component={FileIcon} inheritViewBox fontSize="small" color={color} sx={{ fill: 'none' }} />
-)
 
 const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
   const [jsonData, setJsonData] = useState<string>()
@@ -113,102 +105,43 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
     handleClose()
   }
 
+  const fileInfo = fileName
+    ? {
+        name: fileName,
+        error,
+        summary: [
+          ...(addedSafesCount > 0 && addedSafes
+            ? [
+                <Typography key="addedSafesInfo">
+                  Found <strong>{addedSafesCount} Added Safes</strong> entries on{' '}
+                  <strong>{Object.keys(addedSafes).length} chain(s)</strong>
+                </Typography>,
+              ]
+            : []),
+          ...(addressBookEntriesCount > 0 && addressBook
+            ? [
+                <Typography key="addressBookInfo">
+                  Found <strong>{addressBookEntriesCount} Address book</strong> entries on{' '}
+                  <strong>{Object.keys(addressBook).length} chain(s)</strong>
+                </Typography>,
+              ]
+            : []),
+        ],
+      }
+    : undefined
+
   return (
     <ModalDialog open onClose={handleClose} dialogTitle="Data import" hideChainIndicator>
       <DialogContent>
-        <div>
-          {fileName ? (
-            <Grid container direction="column" gap={1} mt={3}>
-              <Grid container gap={1} display="flex" alignItems="center">
-                <Grid item xs={1}>
-                  <ColoredFileIcon color="primary" />
-                </Grid>
-                <Grid item xs={7}>
-                  {fileName}
-                </Grid>
-
-                <Grid item xs display="flex" justifyContent="flex-end">
-                  <IconButton onClick={onRemove} size="small">
-                    <HighlightOffIcon color="primary" />
-                  </IconButton>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} display="flex" justifyContent="flex-start">
-                <div className={css.verticalLine} />
-              </Grid>
-              <>
-                {addressBook && (
-                  <Grid container display="flex" gap={1} alignItems="center">
-                    <Grid item xs={1}>
-                      <ColoredFileIcon color="border" />
-                    </Grid>
-                    <Grid item xs>
-                      <Typography>
-                        Found <strong>{addressBookEntriesCount} Address book</strong> entries on{' '}
-                        <strong>{Object.keys(addressBook).length} chain(s)</strong>
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                )}
-                {addedSafes && (
-                  <Grid container display="flex" gap={1} alignItems="center">
-                    <Grid item xs={1}>
-                      <ColoredFileIcon color="border" />
-                    </Grid>
-                    <Grid item xs>
-                      <Typography>
-                        Found <strong>{addedSafesCount} Added Safes</strong> entries on{' '}
-                        <strong>{Object.keys(addedSafes).length} chain(s)</strong>
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                )}
-                {error && (
-                  <Grid container display="flex" gap={1} alignItems="center">
-                    <Grid item xs={1}>
-                      <ColoredFileIcon color="border" />
-                    </Grid>
-                    <Grid item xs>
-                      <Typography color="error">
-                        <strong>{error}</strong>
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                )}
-              </>
-            </Grid>
-          ) : (
-            <Box
-              {...getRootProps({ className: css.dropbox })}
-              sx={{
-                transition: 'border 0.5s, background 0.5s',
-                cursor: isDragReject ? 'not-allowed' : undefined,
-                background: ({ palette }) => `${isDragReject ? palette.error.light : undefined} !important`,
-                border: ({ palette }) =>
-                  `1px dashed ${
-                    isDragReject ? palette.error.dark : isDragActive ? palette.primary.main : palette.secondary.dark
-                  }`,
-              }}
-            >
-              <input {...getInputProps()} />
-
-              <Box display="flex" alignItems="center" gap={1}>
-                <SvgIcon
-                  component={FileIcon}
-                  inheritViewBox
-                  fontSize="small"
-                  sx={{ fill: 'none', color: ({ palette }) => palette.primary.light }}
-                />
-                <Typography>
-                  Drag and drop a JSON file or{' '}
-                  <Link href="#" color="secondary">
-                    choose a file
-                  </Link>
-                </Typography>
-              </Box>
-            </Box>
-          )}
-        </div>
+        <FileUpload
+          fileType="JSON"
+          getRootProps={getRootProps}
+          getInputProps={getInputProps}
+          isDragActive={isDragActive}
+          isDragReject={isDragReject}
+          fileInfo={fileInfo}
+          onRemove={onRemove}
+        />
 
         <div className={css.horizontalDivider} />
 
