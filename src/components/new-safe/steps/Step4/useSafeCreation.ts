@@ -12,10 +12,11 @@ import {
   getSafeCreationTxInfo,
   getSafeDeployProps,
   handleSafeCreationError,
+  SAFE_CREATION_ERROR_KEY,
   showSafeCreationError,
 } from '@/components/new-safe/steps/Step4/logic'
 import { useAppDispatch } from '@/store'
-import { closeAllNotifications } from '@/store/notificationsSlice'
+import { closeByGroupKey } from '@/store/notificationsSlice'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -54,7 +55,7 @@ export const useSafeCreation = (
     if (!pendingSafe || !provider || !chain || !wallet || isCreating) return
 
     setIsCreating(true)
-    dispatch(closeAllNotifications())
+    dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
     try {
       const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, pendingSafe.saltNonce, wallet)

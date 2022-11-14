@@ -183,13 +183,14 @@ export const handleSafeCreationError = (error: EthersError) => {
   return SafeCreationStatus.TIMEOUT
 }
 
+export const SAFE_CREATION_ERROR_KEY = 'create-safe-error'
 export const showSafeCreationError = (error: EthersError): AppThunk => {
   return (dispatch) => {
     dispatch(
       showNotification({
         message: `Your transaction was unsuccessful. Reason: ${formatError(error)}`,
         detailedMessage: error.message,
-        groupKey: 'create-safe-error',
+        groupKey: SAFE_CREATION_ERROR_KEY,
         variant: 'error',
       }),
     )

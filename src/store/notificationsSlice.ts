@@ -31,9 +31,9 @@ export const notificationsSlice = createSlice({
         return notification.id === payload.id ? { ...notification, isDismissed: true } : notification
       })
     },
-    closeAllNotifications: (state): NotificationState => {
+    closeByGroupKey: (state, { payload }: PayloadAction<{ groupKey: string }>): NotificationState => {
       return state.map((notification) => {
-        return { ...notification, isDismissed: true }
+        return notification.groupKey === payload.groupKey ? { ...notification, isDismissed: true } : notification
       })
     },
     deleteNotification: (state, { payload }: PayloadAction<Notification>) => {
@@ -50,13 +50,8 @@ export const notificationsSlice = createSlice({
   },
 })
 
-export const {
-  closeNotification,
-  closeAllNotifications,
-  deleteNotification,
-  deleteAllNotifications,
-  readNotification,
-} = notificationsSlice.actions
+export const { closeNotification, closeByGroupKey, deleteNotification, deleteAllNotifications, readNotification } =
+  notificationsSlice.actions
 
 export const showNotification = (payload: Omit<Notification, 'id' | 'timestamp'>): AppThunk<string> => {
   return (dispatch) => {
