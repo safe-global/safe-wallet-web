@@ -105,21 +105,17 @@ describe('useChainId hook', () => {
     expect(result.current).toBe('137')
   })
 
-  it('should throw when the chain query is invalid', () => {
+  it('should navigate to the welcome page when the chain query is invalid', () => {
+    const mockFn = jest.fn()
     ;(useRouter as any).mockImplementation(() => ({
       query: {
         chain: 'invalid',
       },
+      push: mockFn,
     }))
 
-    // Mock console error because the hook will throw and show a huge error message in test output
-    const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation()
-    try {
-      renderHook(() => useChainId())
-    } catch (error) {
-      expect((error as Error).message).toBe('Invalid chain short name in the URL')
-    }
-    consoleErrorMock.mockRestore()
+    renderHook(() => useChainId())
+    expect(mockFn).toHaveBeenCalledWith('/welcome')
   })
 
   it('should return the last used chain id if no chain in the URL', () => {
