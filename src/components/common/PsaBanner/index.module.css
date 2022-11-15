@@ -36,13 +36,16 @@
   z-index: 2;
 }
 
-@media (max-width: 600px) {
-  .banner {
-    padding: var(--space-1) var(--space-3);
-  }
+@media (max-width: 900px) {
   .close {
     position: relative;
     right: unset;
     top: unset;
+  }
+}
+
+@media (max-width: 600px) {
+  .banner {
+    padding: var(--space-1) var(--space-3);
   }
 }
