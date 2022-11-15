@@ -2,9 +2,8 @@ import type { MutableRefObject } from 'react'
 import { useCallback, useEffect } from 'react'
 
 import type { AnalyticsEvent } from '@/services/analytics'
-import { EventType } from '@/services/analytics'
-import { trackSafeAppEvent } from '@/services/analytics'
-import { SAFE_APPS_ANALYTIC_CATEGORY } from '@/services/analytics'
+import { EventType, trackSafeAppEvent } from '@/services/analytics'
+import { SAFE_APPS_ANALYTIC_CATEGORY } from '@/services/analytics/events/safeApps'
 
 //TODO: Update apps domain to the new one when decided
 const ALLOWED_DOMAINS: RegExp[] = [/^http:\/\/localhost:[0-9]{4}$/, /^https:\/\/apps\.gnosis-safe\.io$/]
