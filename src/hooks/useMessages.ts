@@ -73,7 +73,7 @@ const MOCK_DATA: (MessageDateLabel | Message)[] = [
 ]
 
 // TODO: Use store
-const useMessages = (_pageUrl: string) => {
+const useMessages = (_pageUrl?: string) => {
   return {
     error: undefined,
     loading: false,

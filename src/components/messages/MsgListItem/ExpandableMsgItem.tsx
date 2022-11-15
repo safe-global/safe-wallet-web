@@ -8,7 +8,7 @@ import { AppRoutes } from '@/config/routes'
 import MsgSummary from '@/components/messages/MsgSummary'
 import type { Message } from '@/hooks/useMessages'
 
-const ExpandableTransactionItem = ({ item }: { item: Message }): ReactElement => {
+const ExpandableMsgItem = ({ item }: { item: Message }): ReactElement => {
   const { pathname } = useRouter()
 
   return (
@@ -29,4 +29,4 @@ const ExpandableTransactionItem = ({ item }: { item: Message }): ReactElement =>
   )
 }
 
-export default ExpandableTransactionItem
+export default ExpandableMsgItem
