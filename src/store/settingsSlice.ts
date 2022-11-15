@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
+import { merge } from 'lodash'
 
 import type { RootState } from '@/store'
 
@@ -45,6 +46,10 @@ export const settingsSlice = createSlice({
     },
     setDarkMode: (state, { payload }: PayloadAction<SettingsState['theme']['darkMode']>) => {
       state.theme.darkMode = payload
+    },
+    setSettings: (state, { payload }: PayloadAction<SettingsState>) => {
+      // Preserve default nested settings if importing without
+      state = merge({}, initialState, payload)
     },
   },
 })

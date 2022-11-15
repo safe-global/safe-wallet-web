@@ -1,7 +1,8 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { merge } from 'lodash'
 import type { RootState } from '.'
 
-type SessionState = {
+export type SessionState = {
   lastChainId: string
   lastSafeAddress: { [chainId: string]: string }
 }
@@ -27,6 +28,10 @@ export const sessionSlice = createSlice({
     ) => {
       const { chainId, safeAddress } = action.payload
       state.lastSafeAddress[chainId] = safeAddress
+    },
+    setSession: (state, { payload }: PayloadAction<SessionState>) => {
+      // Preserve default `lastSafeAddress` if importing without
+      state = merge({}, initialState, payload)
     },
   },
 })

@@ -22,6 +22,9 @@ import { showNotification } from '@/store/notificationsSlice'
 import { Alert, AlertTitle, Link, SvgIcon, type SvgIconTypeMap } from '@mui/material'
 import FileIcon from '@/public/images/settings/data/file.svg'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
+import { settingsSlice } from '@/store/settingsSlice'
+import { safeAppsSlice } from '@/store/safeAppsSlice'
+import { sessionSlice } from '@/store/sessionSlice'
 
 const AcceptedMimeTypes = {
   'application/json': ['.json'],
@@ -36,7 +39,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
   const [fileName, setFileName] = useState<string>()
 
   // Parse the jsonData whenever it changes
-  const { addedSafes, addedSafesCount, addressBook, addressBookEntriesCount, error } =
+  const { addedSafes, addedSafesCount, addressBook, addressBookEntriesCount, settings, safeApps, session, error } =
     useGlobalImportJsonParser(jsonData)
 
   const dispatch = useAppDispatch()
@@ -74,7 +77,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
   })
 
   const handleImport = () => {
-    if (!addressBook && !addedSafes) {
+    if (!addressBook && !addedSafes && !settings && !safeApps && !session) {
       return
     }
 
@@ -94,6 +97,24 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
         ...SETTINGS_EVENTS.DATA.IMPORT_ADDED_SAFES,
         label: addedSafesCount,
       })
+    }
+
+    if (settings) {
+      dispatch(settingsSlice.actions.setSettings(settings))
+
+      trackEvent(SETTINGS_EVENTS.DATA.IMPORT_SETTINGS)
+    }
+
+    if (safeApps) {
+      dispatch(safeAppsSlice.actions.setSafeApps(safeApps))
+
+      trackEvent(SETTINGS_EVENTS.DATA.IMPORT_SAFE_APPS)
+    }
+
+    if (session) {
+      dispatch(sessionSlice.actions.setSession(session))
+
+      trackEvent(SETTINGS_EVENTS.DATA.IMPORT_SESSION)
     }
 
     dispatch(

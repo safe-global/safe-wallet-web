@@ -22,6 +22,9 @@ export const safeAppsSlice = createSlice({
       state[chainId] ??= { pinned: [] }
       state[chainId].pinned = pinned
     },
+    setSafeApps: (state, { payload }: PayloadAction<SafeAppsState>) => {
+      state = payload
+    },
   },
 })
 
