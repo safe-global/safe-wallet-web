@@ -40,6 +40,17 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
             <SafeLogo alt="Safe logo" />
           </a>
         </Link>
+        <span className={css.hideMobile}>
+          Celo Safe is{' '}
+          <a target="_blank" rel="noreferrer" href="https://forum.celo.org/t/multisig-celo-safe-re-launch/4529">
+            was upgraded!
+          </a>{' '}
+          his is still a beta release, please{' '}
+          <a target="_blank" rel="noreferrer" href="https://forum.celo.org/t/multisig-celo-safe-re-launch/4529">
+            share bugs/feedback here
+          </a>
+          .
+        </span>
       </div>
 
       <div className={classnames(css.element, css.hideMobile)}>

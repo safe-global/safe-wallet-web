@@ -26,10 +26,25 @@
   align-items: flex-start;
 }
 
+.logo {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: center;
+}
+
 .logo svg {
   width: auto;
   display: block;
   color: var(--color-logo-main);
+}
+
+.logo span {
+  padding-left: 2rem;
+  font-size: 0.9rem;
+}
+.logo span a {
+  text-decoration: underline;
 }
 
 .menuButton {
