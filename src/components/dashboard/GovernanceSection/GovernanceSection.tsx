@@ -1,21 +1,13 @@
 import { Typography, Grid, Card, Box, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { useState } from 'react'
-import type { SyntheticEvent } from 'react'
 
 import SnapshotWidget from '../SnapshotWidget'
 
 import css from './styles.module.css'
 
 const GovernanceSection = () => {
-  const [expanded, setExpanded] = useState(true)
-
-  const handleChange = (_: SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded)
-  }
-
   return (
-    <Accordion className={css.accordion} expanded={expanded} onChange={handleChange}>
+    <Accordion className={css.accordion} defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon color="border" />}>
         <div>
           <Typography component="h2" variant="subtitle1" fontWeight={700}>

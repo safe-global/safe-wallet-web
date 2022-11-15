@@ -6,10 +6,6 @@ import type { SnapshotProposal } from '@/components/dashboard/SnapshotWidget/use
 
 import css from './styles.module.css'
 
-// These colors remain the same regardless of dark/light mode
-const STATUS_TEXT_COLOR = '#FFF'
-const CLOSED_STATUS_COLOR = '#743EE4'
-
 export const _getProposalNumber = (title: string): string => {
   // Find anything that matches "SEP #n"
   const SEP_REGEX = /SEP\s\#\d+/g
@@ -44,8 +40,7 @@ const SnapshotProposals = ({ proposals }: { proposals: SnapshotProposal[] }) => 
           <Chip
             label={proposal.state}
             sx={{
-              color: STATUS_TEXT_COLOR,
-              backgroundColor: proposal.state === 'active' ? 'success.main' : CLOSED_STATUS_COLOR,
+              backgroundColor: proposal.state === 'active' ? 'success.main' : '#743EE4',
             }}
             className={css.status}
           />
@@ -62,9 +57,9 @@ const SNAPSHOT_LINK = 'https://snapshot.org/#/safe.eth'
 const FORUM_LINK = 'https://forum.gnosis-safe.io'
 
 const SnapshotWidget = () => {
-  const SKELETON_NUMBER = 2
+  const PROPOSAL_AMOUNT = 3
 
-  const [proposals, _, loading] = useSafeSnapshot()
+  const [proposals, _, loading] = useSafeSnapshot(PROPOSAL_AMOUNT)
 
   return (
     <Card>
@@ -74,7 +69,7 @@ const SnapshotWidget = () => {
         </Typography>
         <div className={css.proposals}>
           {loading || !proposals ? (
-            Array.from(Array(SKELETON_NUMBER).keys()).map((key) => (
+            Array.from(Array(PROPOSAL_AMOUNT).keys()).map((key) => (
               <Skeleton key={key} variant="rectangular" className={css.skeleton} />
             ))
           ) : (

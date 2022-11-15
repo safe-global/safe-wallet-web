@@ -62,20 +62,20 @@ const getSnapshot = async (variables: ShapshotProposalVars): Promise<SnapshotPro
   return data.proposals
 }
 
-const getSafeSnapshot = (): Promise<SnapshotProposal[]> => {
+const getSafeSnapshot = (amount: number): Promise<SnapshotProposal[]> => {
   const SNAPSHOT_SPACE = 'safe.eth'
 
   return getSnapshot({
     space: SNAPSHOT_SPACE,
-    first: 5,
+    first: amount,
     skip: 0,
     orderBy: 'created',
     orderDirection: 'desc',
   })
 }
 
-const useSafeSnapshot = (): AsyncResult<SnapshotProposal[]> => {
-  return useAsync(getSafeSnapshot, [])
+const useSafeSnapshot = (amount: number): AsyncResult<SnapshotProposal[]> => {
+  return useAsync(() => getSafeSnapshot(amount), [])
 }
 
 export default useSafeSnapshot
