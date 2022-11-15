@@ -22,7 +22,6 @@
   align-items: center;
   justify-content: center;
   min-height: var(--header-height);
-  flex-wrap: wrap;
 }
 
 .content {
@@ -38,13 +37,11 @@
 }
 
 @media (max-width: 600px) {
-  .content {
-    width: 100%;
+  .banner {
+    padding: 5px 20px;
   }
-
   .close {
-    flex: 1;
-    position: unset;
+    position: relative;
     right: unset;
     top: unset;
   }

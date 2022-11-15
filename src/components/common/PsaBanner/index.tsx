@@ -29,9 +29,8 @@ const ExportLink = ({ children }: { children: ReactNode }): ReactElement => {
 const BANNERS: Record<string, ReactElement | string> = {
   '*': (
     <>
-      <b>app.safe.global</b> is Safe&apos;s new official URL.
-      <br />
-      Export your data from the old app <ExportLink>here</ExportLink>.
+      <b>app.safe.global</b> is Safe&apos;s new official URL. Export your data from the old app{' '}
+      <ExportLink>here</ExportLink>.
     </>
   ),
 }
