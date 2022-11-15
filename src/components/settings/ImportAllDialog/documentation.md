@@ -23,21 +23,22 @@ In the new interface navigate to `/import` or `Settings -> Data` and open the _I
 This will only import specific data:
 
 - The added Safes
-- The (valid*) address book entries
+- The (valid\*) address book entries
 
 * Only named, checksummed address book entries will be added.
 
 #### Address book
 
 All address book entries are stored under the key `SAFE__addressBook`.
-This entry contains a stringified version of the address book json with format:
+This entry contains a stringified address book with the following format:
 
 ```ts
 {
   address: string
   name: string
   chainId: string
-}[]
+}
+;[]
 ```
 
 Example:
