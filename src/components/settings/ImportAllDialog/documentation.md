@@ -1,10 +1,10 @@
 ## Data Import / Export
 
-Currently we only support the import of data from our old web interface (safe-react) to the new one (web-core).
+Currently we only support the importing of data from our old web interface (safe-react) to the new one (web-core).
 
 ### How does the export work?
 
-In the old interface navigate to `Settings -> Details -> Download your data` this button will download a `.json` file which contains the **entire localStorage**.
+In the old interface navigate to `Settings -> Details -> Download your data`. This button will download a `.json` file which contains the **entire localStorage**.
 The export files have this format:
 
 ```json
@@ -20,10 +20,12 @@ The export files have this format:
 
 In the new interface navigate to `/import` or `Settings -> Data` and open the _Import all data_ modal.
 
-The import will only use specific information of this data:
+This will only import specific data:
 
 - The added Safes
-- The address book entries
+- The (valid*) address book entries
+
+* Only named, checksummed address book entries will be added.
 
 #### Address book
 
@@ -35,8 +37,7 @@ This entry contains a stringified version of the address book json with format:
   address: string
   name: string
   chainId: string
-}
-;[]
+}[]
 ```
 
 Example:
@@ -52,9 +53,9 @@ Example:
 
 #### Added safes
 
-Added safes are stored in one entry per chain.
-Each entry has a key in this format: `_immortal|v2_<chainPrefix>__SAFES`
-Chain prefix is either just the chainId or prefixes for the following chains:
+Added safes are stored under one entry per chain.
+Each entry has a key in following format: `_immortal|v2_<chainPrefix>__SAFES`
+The chain prefix is either the chain ID or prefix, as follows:
 
 ```
   '1': 'MAINNET',
@@ -71,7 +72,7 @@ Examples:
 - `_immortal|v2_MAINNET__SAFES` for mainnet
 - `_immortal|v2_5__SAFES` for goerli (chainId 5)
 
-Inside each of these keys the full safe information (including balances) is stored in stringified format.
+Inside each of these keys the full Safe information (including balances) is stored in stringified format.
 Example:
 
 ```json
@@ -85,4 +86,5 @@ Example:
 
 ### Noteworthy
 
+- Only address book entries with names and checksummed addresses will be imported.
 - Rinkeby data will be ignored as it's not supported anymore.
