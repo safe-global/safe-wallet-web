@@ -27,7 +27,7 @@ export const MethodDetails = ({ data }: MethodDetailsProps): ReactElement => {
             {isArrayValueParam ? (
               <Value method={methodName} type={param.type} value={param.value as string} />
             ) : (
-              generateDataRowValue(param.value as string, inlineType)
+              generateDataRowValue(param.value as string, inlineType, true)
             )}
           </TxDataRow>
         )

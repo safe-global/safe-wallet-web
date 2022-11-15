@@ -1,0 +1,40 @@
+.banner {
+  position: fixed;
+  z-index: 10000;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--color-info-dark);
+  color: var(--color-text-light);
+  padding: 5px 20px;
+  font-size: 16px;
+}
+
+.banner a {
+  color: inherit;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  alignitems: center;
+  height: 70px;
+}
+
+.content {
+  max-width: 960px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 10px;
+}
+
+.close {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  z-index: 2;
+}
