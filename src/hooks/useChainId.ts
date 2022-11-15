@@ -6,6 +6,7 @@ import { useAppSelector } from '@/store'
 import { selectSession } from '@/store/sessionSlice'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import { prefixedAddressRe } from '@/utils/url'
+import { AppRoutes } from '@/config/routes'
 
 const defaultChainId = IS_PRODUCTION ? chains.eth : chains.gor
 
@@ -41,7 +42,7 @@ export const useUrlChainId = (): string | undefined => {
   if (shortName) {
     const chainId = Object.entries(chains).find(([key]) => key === shortName)?.[1]
     if (chainId == null) {
-      throw Error('Invalid chain short name in the URL')
+      router.push(AppRoutes.welcome)
     }
     return chainId
   }
