@@ -3,7 +3,6 @@ import EventBus from '@/services/EventBus'
 import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 export enum TxEvent {
-  SIGNING = 'SIGNING',
   SIGNED = 'SIGNED',
   SIGN_FAILED = 'SIGN_FAILED',
   PROPOSED = 'PROPOSED',
@@ -25,7 +24,6 @@ export enum TxEvent {
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
 
 interface TxEvents {
-  [TxEvent.SIGNING]: { txId?: string; safeTxHash?: string }
   [TxEvent.SIGNED]: { txId?: string }
   [TxEvent.SIGN_FAILED]: { txId?: string; error: Error }
   [TxEvent.PROPOSE_FAILED]: { error: Error }
@@ -34,7 +32,7 @@ interface TxEvents {
   [TxEvent.SIGNATURE_PROPOSED]: { txId: string; signerAddress: string }
   [TxEvent.SIGNATURE_INDEXED]: { txId: string }
   [TxEvent.AWAITING_ON_CHAIN_SIGNATURE]: Id
-  [TxEvent.EXECUTING]: Id & { safeTxHash?: string }
+  [TxEvent.EXECUTING]: Id
   [TxEvent.PROCESSING]: Id & { txHash: string }
   [TxEvent.PROCESSING_MODULE]: Id & { txHash: string }
   [TxEvent.PROCESSED]: Id & { receipt: ContractReceipt }
