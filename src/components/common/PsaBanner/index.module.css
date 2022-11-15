@@ -6,7 +6,7 @@
   right: 0;
   background-color: var(--color-info-dark);
   color: var(--color-text-light);
-  padding: 0 20px;
+  padding: 0 var(--space-3);
   font-size: 16px;
 }
 
@@ -38,7 +38,7 @@
 
 @media (max-width: 600px) {
   .banner {
-    padding: 5px 20px;
+    padding: var(--space-1) var(--space-3);
   }
   .close {
     position: relative;
