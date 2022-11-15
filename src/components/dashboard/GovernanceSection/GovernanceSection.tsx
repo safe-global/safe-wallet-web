@@ -49,8 +49,8 @@ const GovernanceSection = () => {
           <WidgetBody>
             <Grid spacing={3} container>
               <Grid item xs={8}>
-                <Card>
-                  <Box m={2} sx={{ minHeight: '200px' }}>
+                <Card sx={{ height: '300px' }}>
+                  <Box m={2}>
                     <Typography variant="h3">
                       <strong>Snapshot</strong>
                     </Typography>
@@ -58,7 +58,7 @@ const GovernanceSection = () => {
                 </Card>
               </Grid>
               <Grid item xs={4}>
-                <Card sx={{ maxHeight: '250px' }}>
+                <Card sx={{ height: '300px' }}>
                   <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
                     <AppFrame
                       appUrl={appWidgets[1].appUrl}
