@@ -10,6 +10,7 @@ import {
   DialogActions,
   Grid,
 } from '@mui/material'
+import type { SystemProps } from '@mui/system/Box'
 
 import ModalDialog from '@/components/common/ModalDialog'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -48,6 +49,11 @@ const btnWidth = {
   },
 }
 
+const flexDirection: SystemProps['flexDirection'] = {
+  xs: 'column',
+  sm: 'row',
+}
+
 const ReplacementModal = ({
   txNonce,
   onClose,
@@ -83,21 +89,22 @@ const ReplacementModal = ({
         </Stepper>
       </DialogContent>
       <DialogActions className={css.container}>
-        <Grid
-          container
-          alignItems="center"
-          justifyContent="center"
-          flexDirection={{
-            xs: 'column',
-            sm: 'row',
-          }}
-        >
+        <Grid container alignItems="center" justifyContent="center" flexDirection={flexDirection}>
           <Grid item xs={12}>
             <Typography variant="body2" textAlign="center" fontWeight={700} mb={3}>
               Select the type of replacement transaction
             </Typography>
           </Grid>
-          <Grid item container justifyContent="center" gap={1} xs={12} sm>
+          <Grid
+            item
+            container
+            justifyContent="center"
+            alignItems="center"
+            gap={1}
+            xs={12}
+            sm
+            flexDirection={flexDirection}
+          >
             <SendTokensButton onClick={onTokenModalOpen} sx={btnWidth} />
             <SendNFTsButton onClick={onNFTModalOpen} sx={btnWidth} />
           </Grid>
@@ -106,7 +113,18 @@ const ReplacementModal = ({
               or
             </Typography>
           </Grid>
-          <Grid item container xs={12} sm sx={{ justifyContent: { xs: 'center', sm: 'flex-start' } }}>
+          <Grid
+            item
+            container
+            xs={12}
+            sm
+            justifyContent={{
+              xs: 'center',
+              sm: 'flex-start',
+            }}
+            alignItems="center"
+            flexDirection={flexDirection}
+          >
             <Button onClick={onRejectModalOpen} variant="outlined" fullWidth sx={{ mb: 1, ...btnWidth }}>
               Rejection transaction
             </Button>
