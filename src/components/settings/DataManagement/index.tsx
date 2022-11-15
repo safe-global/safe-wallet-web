@@ -1,8 +1,6 @@
-import InfoIcon from '@/public/images/notifications/info.svg'
-
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics'
-import { Paper, Grid, Typography, Tooltip, SvgIcon, Button } from '@mui/material'
+import { Paper, Grid, Typography, Button } from '@mui/material'
 import { useState } from 'react'
 import ImportAllDialog from '../ImportAllDialog'
 import { getPersistedState } from '@/store'
@@ -27,49 +25,41 @@ const handleExport = () => {
   link.dispatchEvent(new MouseEvent('click'))
 }
 
-const InfoTooltip = ({ title }: { title: string }) => {
-  return (
-    <Tooltip placement="top" title={title}>
-      <span>
-        <SvgIcon
-          component={InfoIcon}
-          inheritViewBox
-          fontSize="small"
-          color="border"
-          sx={{ verticalAlign: 'middle', ml: 0.5 }}
-        />
-      </span>
-    </Tooltip>
-  )
-}
-
 const DataManagement = () => {
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
     <>
-      <Paper sx={{ p: 4 }}>
+      <Paper sx={{ p: 4, mb: 2 }}>
         <Grid container spacing={3}>
           <Grid item lg={4} xs={12}>
             <Typography variant="h4" fontWeight="bold" mb={1}>
-              Export all data{' '}
-              <InfoTooltip title="The export includes all added/defaults Safes, address book entries and settings" />
+              Export all data
             </Typography>
           </Grid>
-          <Grid item lg={8}>
+
+          <Grid item xs>
+            <Typography pb={2}>The export includes all added Safes, address book entries and settings.</Typography>
             <Track {...SETTINGS_EVENTS.DATA.EXPORT_ALL_BUTTON}>
               <Button size="small" variant="contained" onClick={handleExport}>
                 Export
               </Button>
             </Track>
           </Grid>
+        </Grid>
+      </Paper>
+      <Paper sx={{ p: 4 }}>
+        <Grid container spacing={3}>
           <Grid item lg={4} xs={12}>
             <Typography variant="h4" fontWeight="bold" mb={1}>
-              Import all data{' '}
-              <InfoTooltip title="The imported data will overwrite all added Safes and all address book entries" />
+              Import all data
             </Typography>
           </Grid>
-          <Grid item lg={8}>
+
+          <Grid item xs>
+            <Typography pb={2}>
+              The imported data will overwrite all added Safes and all address book entries.
+            </Typography>
             <Track {...SETTINGS_EVENTS.DATA.IMPORT_ALL_BUTTON}>
               <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
                 Import
