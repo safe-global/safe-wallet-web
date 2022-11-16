@@ -18,7 +18,7 @@ import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
 import { createTx } from '@/services/tx/txSender'
-import { convertToHumanReadableMessage } from '../utils'
+import { getDecodedMessage } from '../utils'
 import { dispatchSafeAppsTx } from '@/services/tx/txSender'
 
 type ReviewSafeAppsSignMessageProps = {
@@ -38,7 +38,7 @@ const ReviewSafeAppsSignMessage = ({
 
   const readableData = useMemo(() => {
     if (isTextMessage) {
-      return convertToHumanReadableMessage(message)
+      return getDecodedMessage(message)
     } else if (isTypedMessage) {
       return JSON.stringify(message, undefined, 2)
     }
@@ -48,7 +48,9 @@ const ReviewSafeAppsSignMessage = ({
     let txData
 
     if (isTextMessage) {
-      txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [hashMessage(message)])
+      txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [
+        hashMessage(getDecodedMessage(message)),
+      ])
     } else if (isTypedMessage) {
       const typesCopy = { ...message.types }
 

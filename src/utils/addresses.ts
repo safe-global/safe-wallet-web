@@ -1,6 +1,22 @@
 import { getAddress } from 'ethers/lib/utils'
 import { isAddress } from '@ethersproject/address'
 
+export const checksumAddress = (address: string): string => {
+  return isAddress(address) ? getAddress(address) : address
+}
+
+export const isChecksummedAddress = (address: string): boolean => {
+  if (!isAddress(address)) {
+    return false
+  }
+
+  try {
+    return getAddress(address) === address
+  } catch {
+    return false
+  }
+}
+
 export const sameAddress = (firstAddress: string | undefined, secondAddress: string | undefined): boolean => {
   if (!firstAddress || !secondAddress) {
     return false
@@ -14,6 +30,11 @@ export type PrefixedAddress = {
   address: string
 }
 
+/**
+ * Parses a string that may/may not contain an address and returns the `prefix` and checksummed `address`
+ * @param value (prefixed) address
+ * @returns `prefix` and checksummed `address`
+ */
 export const parsePrefixedAddress = (value: string): PrefixedAddress => {
   let [prefix, address] = value.split(':')
 
@@ -24,7 +45,7 @@ export const parsePrefixedAddress = (value: string): PrefixedAddress => {
 
   return {
     prefix: prefix || undefined,
-    address: isAddress(address) ? getAddress(address) : value,
+    address: checksumAddress(address),
   }
 }
 
