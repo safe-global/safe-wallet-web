@@ -1,4 +1,4 @@
-import { Typography, Grid, Card, Box } from '@mui/material'
+import { Typography, Grid, Card } from '@mui/material'
 import { WidgetBody } from '@/components/dashboard/styled'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
@@ -20,7 +20,7 @@ export type WidgetType = {
 export const appWidgets: WidgetType[] = [
   {
     appId: '1',
-    appUrl: 'https://swap.cow.fi/',
+    appUrl: 'http://localhost:3001/safe-claiming-app#snapshot_widget',
   },
   {
     appId: '2',
@@ -50,11 +50,13 @@ const GovernanceSection = () => {
             <Grid spacing={3} container>
               <Grid item xs={8}>
                 <Card sx={{ height: '300px' }}>
-                  <Box m={2}>
-                    <Typography variant="h3">
-                      <strong>Snapshot</strong>
-                    </Typography>
-                  </Box>
+                  <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
+                    <AppFrame
+                      appUrl={appWidgets[0].appUrl}
+                      allowedFeaturesList={getAllowedFeaturesList(appWidgets[0].appUrl)}
+                      isQueueBarDisabled
+                    />
+                  </SafeAppsErrorBoundary>
                 </Card>
               </Grid>
               <Grid item xs={4}>
@@ -63,7 +65,7 @@ const GovernanceSection = () => {
                     <AppFrame
                       appUrl={appWidgets[1].appUrl}
                       allowedFeaturesList={getAllowedFeaturesList(appWidgets[1].appUrl)}
-                      isQueueBarDisabled={true}
+                      isQueueBarDisabled
                     />
                   </SafeAppsErrorBoundary>
                 </Card>
