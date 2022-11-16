@@ -32,6 +32,7 @@ enum ErrorCodes {
   _701 = '701: Failed to write to local/session storage',
   _702 = '702: Failed to remove from local/session storage',
   _703 = '703: Error importing an address book',
+  _704 = '704: Error importing global data',
 
   _800 = '800: Safe creation tx failed',
   _801 = '801: Failed to send a tx with a spending limit',
@@ -39,7 +40,6 @@ enum ErrorCodes {
   _806 = '806: Failed to remove module',
   _807 = '807: Failed to remove guard',
   _808 = '808: Failed to get transaction origin',
-  _809 = '809: Error generating safeTxHash',
 
   _900 = '900: Error loading Safe App',
   _901 = '901: Error processing Safe Apps SDK request',

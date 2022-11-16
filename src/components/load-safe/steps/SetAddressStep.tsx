@@ -31,8 +31,8 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
   const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
     defaultValues: {
-      [FormField.address]: params?.address,
-      [FormField.name]: params?.name,
+      [FormField.address]: params?.address || '',
+      [FormField.name]: params?.name || '',
     },
   })
 

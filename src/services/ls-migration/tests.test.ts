@@ -51,12 +51,26 @@ describe('Local storage migration', () => {
       })
     })
 
+    it('should not add rinkeby addresses', () => {
+      const oldStorage = {
+        SAFE__addressBook: JSON.stringify([
+          { address: '0x1F2504De05f5167650bE5B28c472601Be434b60A', name: 'Alice', chainId: '4' },
+          { address: '0x501E66bF7a8F742FA40509588eE751e93fA354Df', name: 'Berta', chainId: '4' },
+          { address: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808', name: 'Charlie', chainId: '4' },
+        ]),
+      }
+
+      const newData = migrateAddressBook(oldStorage)
+      expect(newData).toEqual(undefined)
+    })
+
     it('should not add invalid addresses', () => {
       const oldStorage = {
         SAFE__addressBook: JSON.stringify([
           { address: '0x1F2504De05f5167650bE5B28c472601Be434b60A', name: 'Alice', chainId: '1' },
           { address: 'sdfgsdfg', name: 'Bob', chainId: '1' },
           { address: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808', name: 'Charlie', chainId: '5' },
+          { address: '0x62da87ff2e2216f1858603a3db9313e178da3112 ', name: 'Not checksummed', chainId: '5' },
           { address: '', name: 'Dave', chainId: '5' },
           { address: undefined, name: 'John', chainId: '5' },
         ]),

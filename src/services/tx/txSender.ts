@@ -240,12 +240,9 @@ export const dispatchTxSigning = async (
   safeTx: SafeTransaction,
   shouldEthSign: boolean,
   txId?: string,
-  safeTxHash?: string,
 ): Promise<SafeTransaction> => {
   const sdk = getAndValidateSafeSDK()
   const signingMethod = shouldEthSign ? 'eth_sign' : 'eth_signTypedData'
-
-  txDispatch(TxEvent.SIGNING, { txId, safeTxHash })
 
   let signedTx: SafeTransaction | undefined
   try {
@@ -290,11 +287,10 @@ export const dispatchTxExecution = async (
   provider: Web3Provider,
   txOptions: TransactionOptions,
   txId: string,
-  safeTxHash?: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
 
-  txDispatch(TxEvent.EXECUTING, { txId, safeTxHash })
+  txDispatch(TxEvent.EXECUTING, { txId })
 
   // Execute the tx
   let result: TransactionResult | undefined
