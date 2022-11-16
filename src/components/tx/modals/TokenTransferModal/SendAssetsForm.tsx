@@ -160,7 +160,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               autoComplete="off"
               InputProps={{
                 endAdornment: (
-                  <InputValueHelper onMouseDown={onMaxAmountClick} disabled={!selectedToken}>
+                  <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
                     Max
                   </InputValueHelper>
                 ),

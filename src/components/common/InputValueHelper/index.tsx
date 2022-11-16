@@ -1,33 +1,26 @@
 import type { ReactNode, SyntheticEvent } from 'react'
-import { Link } from '@mui/material'
+import { InputAdornment, Link } from '@mui/material'
+import type { InputAdornmentProps } from '@mui/material'
 
 type InputValueHelperProps = {
   children: ReactNode
-  onMouseDown: () => void
+  onClick: () => void
   disabled?: boolean
+  position?: InputAdornmentProps['position']
 }
 
-const InputValueHelper = ({
-  children,
-  // We use onMouseDown instead of onClick to avoid "Enter" from triggering it
-  onMouseDown,
-  disabled = false,
-}: InputValueHelperProps) => {
+const InputValueHelper = ({ children, onClick, disabled = false, position = 'end' }: InputValueHelperProps) => {
   const handleClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    onMouseDown()
+    onClick()
   }
 
   return (
-    <Link
-      // Without a type, the parent form will submit
-      type="button"
-      component="button"
-      onMouseDown={handleClick}
-      sx={disabled ? { visibility: 'hidden' } : undefined}
-    >
-      {children}
-    </Link>
+    <InputAdornment position={position}>
+      <Link type="button" component="button" onClick={handleClick} sx={disabled ? { visibility: 'hidden' } : undefined}>
+        {children}
+      </Link>
+    </InputAdornment>
   )
 }
 
