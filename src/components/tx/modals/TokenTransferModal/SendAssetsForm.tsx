@@ -106,7 +106,9 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         ? Math.min(+spendingLimit.amount, +selectedToken.balance).toString()
         : selectedToken.balance
 
-    setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals))
+    setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
+      shouldValidate: true,
+    })
   }
 
   return (
@@ -158,7 +160,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               autoComplete="off"
               InputProps={{
                 endAdornment: (
-                  <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
+                  <InputValueHelper onMouseDown={onMaxAmountClick} disabled={!selectedToken}>
                     Max
                   </InputValueHelper>
                 ),
