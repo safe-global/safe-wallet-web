@@ -19,30 +19,30 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   const isSafeAppPage = !!appUrl
   const isShareSafeAppPage = router.pathname === AppRoutes.share.safeApp
 
-  const [isSideBarCollapsed, setIsSideBarCollapsed] = useState<boolean>(isMobile)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(isMobile)
 
-  const collapseSideBar = () => setIsSideBarCollapsed((prev) => !prev)
+  const collapseSidebar = () => setIsSidebarCollapsed((prev) => !prev)
   const showCollapseSidebarButton = isSafeAppPage && !isShareSafeAppPage && !isMobile
 
-  const hideSidebarDesktop = (isShareSafeAppPage || isSafeAppPage) && isSideBarCollapsed
-  const hideSidebarMobile = isSideBarCollapsed
-  const hideSidebar = isMobile ? hideSidebarMobile : hideSidebarDesktop
+  const isSidebarHiddenDesktop = (isShareSafeAppPage || isSafeAppPage) && isSidebarCollapsed
+  const isSidebarHiddenMobile = isSidebarCollapsed
+  const isSidebarHidden = isMobile ? isSidebarHiddenMobile : isSidebarHiddenDesktop
 
   useEffect(() => {
-    setIsSideBarCollapsed(true)
-  }, [router.pathname, router.query.safe, isMobile])
+    setIsSidebarCollapsed(true)
+  }, [router.pathname, router.query.safe, isMobile, isSafeAppPage])
 
   return (
     <>
-      <Header onMenuToggle={collapseSideBar} />
+      <Header onMenuToggle={collapseSidebar} />
 
       <Sidebar
-        hideSidebar={hideSidebar}
+        isSidebarHidden={isSidebarHidden}
         showCollapseSidebarButton={showCollapseSidebarButton}
-        collapseSideBar={collapseSideBar}
+        collapseSidebar={collapseSidebar}
       />
 
-      <div className={cn(css.main, hideSidebar && css.mainNoSidebar)}>
+      <div className={cn(css.main, isSidebarHidden && css.mainNoSidebar)}>
         <div className={css.content}>
           <SafeLoadingError>{children}</SafeLoadingError>
         </div>

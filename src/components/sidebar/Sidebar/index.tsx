@@ -21,12 +21,12 @@ import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import OwnedSafes from '../OwnedSafes'
 
 type SidebarProps = {
-  hideSidebar: boolean
+  isSidebarHidden: boolean
   showCollapseSidebarButton: boolean
-  collapseSideBar: () => void
+  collapseSidebar: () => void
 }
 
-const Sidebar = ({ hideSidebar, showCollapseSidebarButton, collapseSideBar }: SidebarProps): ReactElement => {
+const Sidebar = ({ isSidebarHidden, showCollapseSidebarButton, collapseSidebar }: SidebarProps): ReactElement => {
   const router = useRouter()
   const isMobile = useMediaQuery('(max-width: 900px)')
 
@@ -44,8 +44,8 @@ const Sidebar = ({ hideSidebar, showCollapseSidebarButton, collapseSideBar }: Si
       <Drawer
         variant={isMobile ? 'temporary' : 'persistent'}
         anchor="left"
-        open={!hideSidebar}
-        onClose={collapseSideBar}
+        open={!isSidebarHidden}
+        onClose={collapseSidebar}
         PaperProps={{ style: { overflow: 'visible' } }}
       >
         <aside className={css.container}>
@@ -86,10 +86,14 @@ const Sidebar = ({ hideSidebar, showCollapseSidebarButton, collapseSideBar }: Si
           </Drawer>
         </aside>
         {showCollapseSidebarButton && (
-          <Tooltip title={hideSidebar ? 'Open sidebar' : 'Close sidebar'} placement="right" followCursor={true}>
-            <div onClick={collapseSideBar} className={css.collapseSidebarBar} role="button">
+          <Tooltip title={isSidebarHidden ? 'Open sidebar' : 'Close sidebar'} placement="right" followCursor={true}>
+            <div onClick={collapseSidebar} className={css.collapseSidebarBar} role="button">
               <IconButton className={css.collapseSidebarBarButton} aria-label="collapse sidebar" size="small">
-                {hideSidebar ? <DoubleArrowRightIcon fontSize="inherit" /> : <DoubleArrowLeftIcon fontSize="inherit" />}
+                {isSidebarHidden ? (
+                  <DoubleArrowRightIcon fontSize="inherit" />
+                ) : (
+                  <DoubleArrowLeftIcon fontSize="inherit" />
+                )}
               </IconButton>
             </div>
           </Tooltip>
