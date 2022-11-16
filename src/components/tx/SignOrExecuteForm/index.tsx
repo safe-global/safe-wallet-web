@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState, useMemo } from 'react'
+import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
@@ -28,7 +28,6 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@gnosis.pm/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
-import { generateSafeTxHash } from '@/services/tx/generateSafeTxHash'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -80,10 +79,6 @@ const SignOrExecuteForm = ({
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
-
-  const safeTxHash = useMemo(() => {
-    return tx?.data ? generateSafeTxHash(safe, tx.data) : undefined
-  }, [safe, tx?.data])
 
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
@@ -139,7 +134,7 @@ const SignOrExecuteForm = ({
 
     // Otherwise, sign off-chain
     const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
-    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId, safeTxHash)
+    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
     return await proposeTx(signedTx)
   }
 
@@ -151,7 +146,7 @@ const SignOrExecuteForm = ({
     const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(createdTx, provider, txOptions, id, safeTxHash)
+    await dispatchTxExecution(createdTx, provider, txOptions, id)
 
     return id
   }
