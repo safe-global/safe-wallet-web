@@ -34,7 +34,9 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
 
   return (
     <>
-      <Header onMenuToggle={collapseSidebar} />
+      <header className={css.header}>
+        <Header onMenuToggle={collapseSidebar} />
+      </header>
 
       <Sidebar
         isSidebarHidden={isSidebarHidden}

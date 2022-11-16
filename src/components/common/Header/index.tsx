@@ -29,45 +29,43 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const logoHref = router.pathname === AppRoutes.home ? AppRoutes.welcome : AppRoutes.index
 
   return (
-    <header className={css.header}>
-      <Paper className={css.container}>
-        <div className={classnames(css.element, css.menuButton)}>
-          <IconButton onClick={onMenuToggle} size="large" edge="start" color="default" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-        </div>
+    <Paper className={css.container}>
+      <div className={classnames(css.element, css.menuButton)}>
+        <IconButton onClick={onMenuToggle} size="large" edge="start" color="default" aria-label="menu">
+          <MenuIcon />
+        </IconButton>
+      </div>
 
-        <div className={classnames(css.element, css.hideMobile, css.logo)}>
-          <Link href={logoHref} passHref>
-            <a>
-              <SafeLogo alt="Safe logo" />
-            </a>
-          </Link>
-        </div>
+      <div className={classnames(css.element, css.hideMobile, css.logo)}>
+        <Link href={logoHref} passHref>
+          <a>
+            <SafeLogo alt="Safe logo" />
+          </a>
+        </Link>
+      </div>
 
+      <div className={classnames(css.element, css.hideMobile)}>
+        <ChainSwitcher />
+      </div>
+
+      {showSafeToken && (
         <div className={classnames(css.element, css.hideMobile)}>
-          <ChainSwitcher />
+          <SafeTokenWidget />
         </div>
+      )}
 
-        {showSafeToken && (
-          <div className={classnames(css.element, css.hideMobile)}>
-            <SafeTokenWidget />
-          </div>
-        )}
+      <div className={classnames(css.element, css.hideMobile)}>
+        <NotificationCenter />
+      </div>
 
-        <div className={classnames(css.element, css.hideMobile)}>
-          <NotificationCenter />
-        </div>
+      <div className={css.element}>
+        <ConnectWallet />
+      </div>
 
-        <div className={css.element}>
-          <ConnectWallet />
-        </div>
-
-        <div className={classnames(css.element, css.networkSelector)}>
-          <NetworkSelector />
-        </div>
-      </Paper>
-    </header>
+      <div className={classnames(css.element, css.networkSelector)}>
+        <NetworkSelector />
+      </div>
+    </Paper>
   )
 }
 
