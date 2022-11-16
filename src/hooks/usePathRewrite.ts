@@ -1,5 +1,10 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { parsePrefixedAddress } from '@/utils/addresses'
+import chains from '@/config/chains'
+import { AppRoutes } from '@/config/routes'
+import { logError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
 
 // Next.js needs to know all the static paths in advance when doing SSG (static site generation)
 // @see https://nextjs.org/docs/api-reference/next.config.js/runtime-config-static-paths
@@ -16,6 +21,15 @@ const usePathRewrite = () => {
     let { safe = '', ...restQuery } = router.query
     if (Array.isArray(safe)) safe = safe[0]
     if (!safe) return
+
+    const { prefix } = parsePrefixedAddress(safe)
+
+    const chainId = Object.entries(chains).find(([key]) => key === prefix)?.[1]
+    if (!chainId) {
+      logError(ErrorCodes._621, prefix)
+      router.push(AppRoutes.welcome)
+      return
+    }
 
     // Move the Safe address to the path
     let newPath = router.pathname.replace(/^\//, `/${safe}/`)

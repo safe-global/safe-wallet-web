@@ -6,7 +6,6 @@ import { useAppSelector } from '@/store'
 import { selectSession } from '@/store/sessionSlice'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import { prefixedAddressRe } from '@/utils/url'
-import { AppRoutes } from '@/config/routes'
 
 const defaultChainId = IS_PRODUCTION ? chains.eth : chains.gor
 
@@ -39,13 +38,7 @@ export const useUrlChainId = (): string | undefined => {
   const { prefix } = parsePrefixedAddress(safe)
   const shortName = prefix || chain
 
-  if (shortName) {
-    const chainId = Object.entries(chains).find(([key]) => key === shortName)?.[1]
-    if (chainId == null) {
-      router.push(AppRoutes.welcome)
-    }
-    return chainId
-  }
+  return Object.entries(chains).find(([key]) => key === shortName)?.[1]
 }
 
 export const useChainId = (): string => {

@@ -105,19 +105,6 @@ describe('useChainId hook', () => {
     expect(result.current).toBe('137')
   })
 
-  it('should navigate to the welcome page when the chain query is invalid', () => {
-    const mockFn = jest.fn()
-    ;(useRouter as any).mockImplementation(() => ({
-      query: {
-        chain: 'invalid',
-      },
-      push: mockFn,
-    }))
-
-    renderHook(() => useChainId())
-    expect(mockFn).toHaveBeenCalledWith('/welcome')
-  })
-
   it('should return the last used chain id if no chain in the URL', () => {
     ;(useRouter as any).mockImplementation(() => ({
       query: {},
