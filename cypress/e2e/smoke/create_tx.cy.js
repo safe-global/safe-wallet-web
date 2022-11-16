@@ -42,7 +42,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('h2', 'Review transaction').parents('div').as('modal')
 
     // Wait for /estimations response
-    cy.wait('@estimations')
+    cy.wait('@estimations', { timeout: 30_000 })
 
     // Estimation is loaded
     cy.get('button[type="submit"]').should('not.be.disabled')
@@ -104,7 +104,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.intercept('POST', '/**/propose').as('propose')
 
     // Wait for the /propose request
-    cy.wait('@propose')
+    cy.wait('@propose', { timeout: 30_000 })
   })
 
   it('should click the notification and see the transaction queued', () => {

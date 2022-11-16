@@ -4,7 +4,7 @@ import 'cypress-file-upload'
 const SAFE_ENS_NAME = 'test20.eth'
 const SAFE_ENS_NAME_TRANSLATED = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
-const SAFE_QR_CODE_ADDRESS = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
+const SAFE_QR_CODE_ADDRESS = '0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 const EOA_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 const INVALID_INPUT_ERROR_MSG = 'Invalid address format'
@@ -19,8 +19,8 @@ describe('Load existing Safe', () => {
     cy.visit('/welcome?chain=matic')
     cy.contains('Accept selection').click()
 
-    // Enters Loading Safe form
-    cy.contains('Add existing Safe').click()
+    // Enters Loading Safe form - force if banner is present
+    cy.contains('Add existing Safe').click({ force: true })
     cy.contains('Connect wallet & select network')
   })
 
@@ -52,7 +52,7 @@ describe('Load existing Safe', () => {
     cy.get('input[name="address"]').type('RandomText')
     cy.get('@addressLabel').contains(INVALID_INPUT_ERROR_MSG)
 
-    cy.get('input[name="address"]').clear().type(SAFE_QR_CODE_ADDRESS)
+    cy.get('input[name="address"]').clear().type(`gor:${SAFE_QR_CODE_ADDRESS}`)
 
     // Type an invalid address
     // cy.get('input[name="address"]').clear().type(EOA_ADDRESS)
