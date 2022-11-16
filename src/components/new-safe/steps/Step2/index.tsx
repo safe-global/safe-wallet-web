@@ -1,5 +1,5 @@
 import { Button, SvgIcon, MenuItem, Select, Tooltip, Typography, Divider, Box } from '@mui/material'
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
+import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import type { ReactElement } from 'react'
 
 import AddIcon from '@/public/images/common/add.svg'
@@ -49,11 +49,18 @@ const CreateSafeStep2 = ({
     },
   })
 
-  const { register, handleSubmit, control, watch, formState, getValues } = formMethods
+  const { handleSubmit, control, watch, formState, getValues, setValue } = formMethods
 
   const threshold = watch(CreateSafeStep2Fields.threshold)
 
-  const { fields: ownerFields, append: appendOwner, remove: removeOwner } = useFieldArray({ control, name: 'owners' })
+  const { fields: ownerFields, append: appendOwner, remove } = useFieldArray({ control, name: 'owners' })
+
+  const removeOwner = (index: number): void => {
+    if (ownerFields.length === threshold) {
+      setValue('threshold', threshold - 1)
+    }
+    remove(index)
+  }
 
   const isDisabled = isWrongChain || !formState.isValid
 
@@ -120,13 +127,19 @@ const CreateSafeStep2 = ({
             Any transaction requires the confirmation of:
           </Typography>
           <Box display="flex" alignItems="center">
-            <Select {...register(CreateSafeStep2Fields.threshold)} defaultValue={data.threshold} className={css.select}>
-              {ownerFields.map((_, i) => (
-                <MenuItem key={i} value={i + 1}>
-                  {i + 1}
-                </MenuItem>
-              ))}
-            </Select>{' '}
+            <Controller
+              name={CreateSafeStep2Fields.threshold}
+              control={control}
+              render={({ field }) => (
+                <Select {...field} className={css.select}>
+                  {ownerFields.map(({ id }, i) => (
+                    <MenuItem key={id} value={i + 1}>
+                      {i + 1}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />{' '}
             out of {ownerFields.length} owner(s).
           </Box>
 
