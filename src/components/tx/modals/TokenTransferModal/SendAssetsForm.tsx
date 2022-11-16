@@ -69,7 +69,12 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const addressBook = useAddressBook()
 
   const formMethods = useForm<SendAssetsFormData>({
-    defaultValues: { ...formData, [SendAssetsField.type]: SendTxType.multiSig },
+    defaultValues: {
+      [SendAssetsField.recipient]: formData?.[SendAssetsField.recipient] || '',
+      [SendAssetsField.tokenAddress]: formData?.[SendAssetsField.tokenAddress] || '',
+      [SendAssetsField.amount]: formData?.[SendAssetsField.amount] || '',
+      [SendAssetsField.type]: formData?.[SendAssetsField.type] || SendTxType.multiSig,
+    },
     mode: 'onChange',
     delayError: 500,
   })
