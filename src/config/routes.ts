@@ -4,6 +4,7 @@ export const AppRoutes = {
   open: '/open',
   load: '/load',
   index: '/',
+  import: '/import',
   home: '/home',
   apps: '/apps',
   addressBook: '/address-book',
@@ -16,6 +17,7 @@ export const AppRoutes = {
     setup: '/settings/setup',
     modules: '/settings/modules',
     index: '/settings',
+    data: '/settings/data',
     appearance: '/settings/appearance',
     safeApps: {
       index: '/settings/safe-apps',

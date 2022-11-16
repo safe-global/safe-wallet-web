@@ -31,6 +31,7 @@ import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
+import PsaBanner from '@/components/common/PsaBanner'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -85,6 +86,8 @@ const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCach
           <CssBaseline />
 
           <InitApp />
+
+          <PsaBanner />
 
           <PageLayout>
             <Component {...pageProps} />
