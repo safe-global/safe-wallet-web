@@ -4,7 +4,7 @@ import 'cypress-file-upload'
 const SAFE_ENS_NAME = 'test20.eth'
 const SAFE_ENS_NAME_TRANSLATED = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
-const SAFE_QR_CODE_ADDRESS = '0x97d314157727D517A706B5D08507A1f9B44AaaE9'
+const SAFE_QR_CODE_ADDRESS = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 const EOA_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 const INVALID_INPUT_ERROR_MSG = 'Invalid address format'
@@ -52,7 +52,7 @@ describe('Load existing Safe', () => {
     cy.get('input[name="address"]').type('RandomText')
     cy.get('@addressLabel').contains(INVALID_INPUT_ERROR_MSG)
 
-    cy.get('input[name="address"]').clear().type(`gor:${SAFE_QR_CODE_ADDRESS}`)
+    cy.get('input[name="address"]').clear().type(SAFE_QR_CODE_ADDRESS)
 
     // Type an invalid address
     // cy.get('input[name="address"]').clear().type(EOA_ADDRESS)
@@ -70,8 +70,9 @@ describe('Load existing Safe', () => {
     // cy.contains('Upload an image').click()
     // cy.get('[type="file"]').attachFile('../fixtures/goerli_safe_QR.png')
 
-    // The address field should be filled with the QR code's address
-    cy.get('input[name="address"]').should('have.value', SAFE_QR_CODE_ADDRESS)
+    // The address field should be filled with the "bare" QR code's address
+    const [, address] = SAFE_QR_CODE_ADDRESS.split(':')
+    cy.get('input[name="address"]').should('have.value', address)
 
     cy.contains('Continue').click()
   })
