@@ -19,8 +19,11 @@ describe('Load existing Safe', () => {
     cy.visit('/welcome?chain=matic')
     cy.contains('Accept selection').click()
 
-    // Enters Loading Safe form - force if banner is present
-    cy.contains('Add existing Safe').click({ force: true })
+    // Close banner
+    cy.get('[data-testid=CloseIcon]').click()
+
+    // Enters Loading Safe form
+    cy.contains('Add existing Safe').click()
     cy.contains('Connect wallet & select network')
   })
 
