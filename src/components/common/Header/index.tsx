@@ -18,6 +18,9 @@ type HeaderProps = {
   onMenuToggle: () => void
 }
 
+const FORUM_POST_URL = 'https://forum.celo.org/t/multisig-celo-safe-re-launch/4529/25?u=0xarthurxyz'
+const OLD_SAFE_URL = 'https://old-safe.celo.org'
+
 const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const chainId = useChainId()
   const showSafeToken = !!getSafeTokenAddress(chainId)
@@ -41,13 +44,13 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
           </a>
         </Link>
         <span className={css.hideMobile}>
-          Celo Safe is{' '}
-          <a target="_blank" rel="noreferrer" href="https://forum.celo.org/t/multisig-celo-safe-re-launch/4529">
-            was upgraded!
-          </a>{' '}
-          his is still a beta release, please{' '}
-          <a target="_blank" rel="noreferrer" href="https://forum.celo.org/t/multisig-celo-safe-re-launch/4529">
-            share bugs/feedback here
+          Celo Safe was{' '}
+          <a target="_blank" rel="noreferrer" href={FORUM_POST_URL}>
+            was upgraded
+          </a>
+          ! Use the{' '}
+          <a target="_blank" rel="noreferrer" href={OLD_SAFE_URL}>
+            previous version here
           </a>
           .
         </span>
