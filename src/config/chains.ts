@@ -234,7 +234,7 @@ const chains: Record<string, string> = {
   nrg: '39797',
   pc: '42069',
   arb1: '42161',
-  celo: '42220',
+  mainnet: '42220',
   alfajores: '44787',
   emerald: '42261',
   oasis: '42262',
