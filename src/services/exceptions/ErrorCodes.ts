@@ -10,6 +10,7 @@ enum ErrorCodes {
   _100 = '100: Invalid input in the address field',
   _101 = '101: Failed to resolve the address',
   _103 = '103: Error creating a SafeTransaction',
+  _104 = '104: Invalid chain short name in the URL',
 
   _302 = '302: Error connecting to the wallet',
   _303 = '303: Error creating pairing session',
@@ -27,7 +28,6 @@ enum ErrorCodes {
   _616 = '616: Failed to retrieve recommended nonce',
   _619 = '619: Error fetching data from master-copies',
   _620 = '620: Error loading chains',
-  _621 = '621: Invalid chain short name in the URL',
 
   _700 = '700: Failed to read from local/session storage',
   _701 = '701: Failed to write to local/session storage',

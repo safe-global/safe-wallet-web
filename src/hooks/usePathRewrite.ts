@@ -26,7 +26,7 @@ const usePathRewrite = () => {
 
     const chainId = Object.entries(chains).find(([key]) => key === prefix)?.[1]
     if (!chainId) {
-      logError(ErrorCodes._621, prefix)
+      logError(ErrorCodes._104, prefix)
       router.push(AppRoutes.welcome)
       return
     }
