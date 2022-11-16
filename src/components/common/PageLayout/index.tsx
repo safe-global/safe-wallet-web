@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactElement } from 'react'
-import cn from 'classnames'
-import { Drawer } from '@mui/material'
 import { useRouter } from 'next/router'
+import cn from 'classnames'
 
 import Sidebar from '@/components/sidebar/Sidebar'
 import Header from '@/components/common//Header'
@@ -9,35 +8,39 @@ import css from './styles.module.css'
 import SafeLoadingError from '../SafeLoadingError'
 import Footer from '../Footer'
 import { AppRoutes } from '@/config/routes'
+import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
+import { useMediaQuery } from '@mui/material'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   const router = useRouter()
-  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false)
-  const hideSidebar = router.pathname === AppRoutes.share.safeApp
+  const isMobile = useMediaQuery('(max-width: 900px)')
 
-  const onMenuToggle = (): void => {
-    setIsMobileDrawerOpen((prev) => !prev)
-  }
+  const [appUrl] = useSafeAppUrl()
+  const isSafeAppPage = !!appUrl
+  const isShareSafeAppPage = router.pathname === AppRoutes.share.safeApp
 
-  const sidebar = <Sidebar />
+  const [isSideBarCollapsed, setIsSideBarCollapsed] = useState<boolean>(isMobile)
+
+  const collapseSideBar = () => setIsSideBarCollapsed((prev) => !prev)
+  const showCollapseSidebarButton = isSafeAppPage && !isShareSafeAppPage && !isMobile
+
+  const hideSidebarDesktop = (isShareSafeAppPage || isSafeAppPage) && isSideBarCollapsed
+  const hideSidebarMobile = isSideBarCollapsed
+  const hideSidebar = isMobile ? hideSidebarMobile : hideSidebarDesktop
 
   useEffect(() => {
-    setIsMobileDrawerOpen(false)
-  }, [router.pathname, router.query.safe])
+    setIsSideBarCollapsed(true)
+  }, [router.pathname, router.query.safe, isMobile])
 
   return (
     <>
-      <header className={css.header}>
-        <Header onMenuToggle={onMenuToggle} />
-      </header>
+      <Header onMenuToggle={collapseSideBar} />
 
-      {/* Desktop sidebar */}
-      {!hideSidebar && <aside className={css.sidebar}>{sidebar}</aside>}
-
-      {/* Mobile sidebar */}
-      <Drawer variant="temporary" anchor="left" open={isMobileDrawerOpen} onClose={onMenuToggle}>
-        {sidebar}
-      </Drawer>
+      <Sidebar
+        hideSidebar={hideSidebar}
+        showCollapseSidebarButton={showCollapseSidebarButton}
+        collapseSideBar={collapseSideBar}
+      />
 
       <div className={cn(css.main, hideSidebar && css.mainNoSidebar)}>
         <div className={css.content}>
