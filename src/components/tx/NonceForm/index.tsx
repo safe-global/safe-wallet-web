@@ -31,7 +31,7 @@ const NonceFormOption = memo(({ nonce, ...props }: { nonce: number } & MenuItemP
 
   return (
     <MenuItem key={nonce} {...props}>
-      {nonce} - {label}
+      {nonce} - already exists ({label} transaction)
     </MenuItem>
   )
 })
