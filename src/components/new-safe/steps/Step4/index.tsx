@@ -50,7 +50,7 @@ export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) 
   const onClose = useCallback(() => {
     setPendingSafe(undefined)
     router.push(AppRoutes.welcome)
-  }, [setPendingSafe, setStep])
+  }, [router, setPendingSafe])
 
   const onCreate = useCallback(() => {
     setStatus(SafeCreationStatus.AWAITING)
