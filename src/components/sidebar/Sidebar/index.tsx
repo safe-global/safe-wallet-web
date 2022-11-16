@@ -40,66 +40,65 @@ const Sidebar = ({ isSidebarHidden, showCollapseSidebarButton, collapseSidebar }
   }
 
   return (
-    <>
-      <Drawer
-        variant={isMobile ? 'temporary' : 'persistent'}
-        anchor="left"
-        open={!isSidebarHidden}
-        onClose={collapseSidebar}
-        PaperProps={{ style: { overflow: 'visible' } }}
-      >
-        <aside className={css.container}>
-          <div className={css.scroll}>
-            <ChainIndicator />
+    <Drawer
+      variant={isMobile ? 'temporary' : 'persistent'}
+      anchor="left"
+      open={!isSidebarHidden}
+      onClose={collapseSidebar}
+      PaperProps={{ style: { overflow: 'visible' } }}
+    >
+      <aside className={css.container}>
+        <div className={css.scroll}>
+          <ChainIndicator />
 
-            <IconButton className={css.drawerButton} onClick={onToggleSafeList}>
-              <ChevronRight />
-            </IconButton>
+          <IconButton className={css.drawerButton} onClick={onToggleSafeList}>
+            <ChevronRight />
+          </IconButton>
 
-            {isSafeRoute ? (
-              <>
-                <SidebarHeader />
-                <Divider />
-                <SidebarNavigation />
-              </>
-            ) : (
-              <>
-                <div className={css.noSafeHeader}>
-                  <KeyholeIcon />
-                </div>
+          {isSafeRoute ? (
+            <>
+              <SidebarHeader />
+              <Divider />
+              <SidebarNavigation />
+            </>
+          ) : (
+            <>
+              <div className={css.noSafeHeader}>
+                <KeyholeIcon />
+              </div>
 
-                <OwnedSafes />
-              </>
-            )}
+              <OwnedSafes />
+            </>
+          )}
 
-            <div style={{ flexGrow: 1 }} />
+          <div style={{ flexGrow: 1 }} />
 
-            <Divider flexItem />
+          <Divider flexItem />
 
-            <SidebarFooter />
+          <SidebarFooter />
+        </div>
+
+        <Drawer variant="temporary" anchor="left" open={isSafeListOpen} onClose={onToggleSafeList}>
+          <div className={css.drawer}>
+            <SafeList closeDrawer={() => setIsSafeListOpen(false)} />
           </div>
+        </Drawer>
+      </aside>
 
-          <Drawer variant="temporary" anchor="left" open={isSafeListOpen} onClose={onToggleSafeList}>
-            <div className={css.drawer}>
-              <SafeList closeDrawer={() => setIsSafeListOpen(false)} />
-            </div>
-          </Drawer>
-        </aside>
-        {showCollapseSidebarButton && (
-          <Tooltip title={isSidebarHidden ? 'Open sidebar' : 'Close sidebar'} placement="right" followCursor={true}>
-            <div onClick={collapseSidebar} className={css.collapseSidebarBar} role="button">
-              <IconButton className={css.collapseSidebarBarButton} aria-label="collapse sidebar" size="small">
-                {isSidebarHidden ? (
-                  <DoubleArrowRightIcon fontSize="inherit" />
-                ) : (
-                  <DoubleArrowLeftIcon fontSize="inherit" />
-                )}
-              </IconButton>
-            </div>
-          </Tooltip>
-        )}
-      </Drawer>
-    </>
+      {showCollapseSidebarButton && (
+        <Tooltip title={isSidebarHidden ? 'Open sidebar' : 'Close sidebar'} placement="right" followCursor={true}>
+          <div onClick={collapseSidebar} className={css.collapseSidebarBar} role="button">
+            <IconButton className={css.collapseSidebarBarButton} aria-label="collapse sidebar" size="small">
+              {isSidebarHidden ? (
+                <DoubleArrowRightIcon fontSize="inherit" />
+              ) : (
+                <DoubleArrowLeftIcon fontSize="inherit" />
+              )}
+            </IconButton>
+          </div>
+        </Tooltip>
+      )}
+    </Drawer>
   )
 }
 
