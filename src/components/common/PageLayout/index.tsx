@@ -16,13 +16,13 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   const isMobile = useMediaQuery('(max-width: 900px)')
 
   const [appUrl] = useSafeAppUrl()
-  const isSafeAppPage = !!appUrl
+  const isSafeAppPage = !!appUrl && router.pathname === AppRoutes.apps
   const isShareSafeAppPage = router.pathname === AppRoutes.share.safeApp
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(isMobile)
 
   const collapseSidebar = () => setIsSidebarCollapsed((prev) => !prev)
-  const showCollapseSidebarButton = isSafeAppPage && !isShareSafeAppPage && !isMobile
+  const showCollapseSidebarButton = isSafeAppPage && !isMobile
 
   const isSidebarHiddenDesktop = (isShareSafeAppPage || isSafeAppPage) && isSidebarCollapsed
   const isSidebarHiddenMobile = isSidebarCollapsed
