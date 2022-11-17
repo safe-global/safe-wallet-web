@@ -473,6 +473,9 @@ const initTheme = (darkMode: boolean) => {
         },
       },
       MuiSwitch: {
+        defaultProps: {
+          color: 'success',
+        },
         styleOverrides: {
           thumb: ({ theme }) => ({
             boxShadow:
