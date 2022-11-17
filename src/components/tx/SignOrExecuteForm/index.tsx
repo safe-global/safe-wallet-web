@@ -39,6 +39,7 @@ type SignOrExecuteProps = {
   isRejection?: boolean
   onlyExecute?: boolean
   disableSubmit?: boolean
+  origin?: string
 }
 
 const SignOrExecuteForm = ({
@@ -50,6 +51,7 @@ const SignOrExecuteForm = ({
   isExecutable = false,
   isRejection = false,
   disableSubmit = false,
+  origin,
   ...props
 }: SignOrExecuteProps): ReactElement => {
   //
@@ -108,7 +110,14 @@ const SignOrExecuteForm = ({
 
   // Propose transaction if no txId
   const proposeTx = async (newTx: SafeTransaction): Promise<string> => {
-    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, wallet!.address, newTx, txId)
+    const proposedTx = await dispatchTxProposal({
+      chainId: safe.chainId,
+      safeAddress,
+      sender: wallet!.address,
+      safeTx: newTx,
+      txId,
+      origin,
+    })
     return proposedTx.txId
   }
 
@@ -187,6 +196,7 @@ const SignOrExecuteForm = ({
     cannotPropose ||
     isExecutionLoop ||
     isValidExecutionLoading
+
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
   return (

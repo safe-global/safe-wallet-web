@@ -7,8 +7,9 @@ import { useMemo } from 'react'
 import { EditOwnerDialog } from '../EditOwnerDialog'
 import { RemoveOwnerDialog } from '../RemoveOwnerDialog'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
-import css from './styles.module.css'
 import EnhancedTable from '@/components/common/EnhancedTable'
+
+import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
 const headCells = [
   { id: 'owner', label: 'Name' },
@@ -33,7 +34,7 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
           rawValue: '',
           sticky: true,
           content: (
-            <div className={css.actions}>
+            <div className={tableCss.actions}>
               {isGranted && <ReplaceOwnerDialog address={address} />}
               <EditOwnerDialog address={address} name={name} chainId={safe.chainId} />
               {isGranted && <RemoveOwnerDialog owner={{ address, name }} />}

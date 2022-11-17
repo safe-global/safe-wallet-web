@@ -45,5 +45,15 @@ describe('formatters', () => {
     it('should shorten an address with custom length', () => {
       expect(formatters.shortenAddress('0x1234567890123456789012345678901234567890', 5)).toEqual('0x12345...67890')
     })
+
+    it('should return an empty string if passed a falsy value', () => {
+      expect(formatters.shortenAddress('', 5)).toEqual('')
+
+      // @ts-ignore - Invalid type
+      expect(formatters.shortenAddress(undefined, 5)).toEqual('')
+
+      // @ts-ignore - Invalid type
+      expect(formatters.shortenAddress(null, 5)).toEqual('')
+    })
   })
 })

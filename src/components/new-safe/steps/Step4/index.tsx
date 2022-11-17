@@ -18,6 +18,7 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import { getRedirect } from '@/components/new-safe/steps/Step4/logic'
 import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
+import { AppRoutes } from '@/config/routes'
 
 export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 
@@ -48,8 +49,8 @@ export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) 
 
   const onClose = useCallback(() => {
     setPendingSafe(undefined)
-    setStep(0)
-  }, [setPendingSafe, setStep])
+    router.push(AppRoutes.welcome)
+  }, [router, setPendingSafe])
 
   const onCreate = useCallback(() => {
     setStatus(SafeCreationStatus.AWAITING)

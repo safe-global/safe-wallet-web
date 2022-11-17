@@ -5,8 +5,8 @@ import useSafeInfo from './useSafeInfo'
 
 export const VESTING_URL = 'https://safe-claiming-app-data.gnosis-safe.io/allocations/'
 
-export type VestingData = {
-  tag: 'user' | 'ecosystem'
+type VestingData = {
+  tag: 'user' | 'ecosystem' | 'investor'
   account: string
   chainId: number
   contract: string
@@ -52,9 +52,7 @@ const useSafeTokenAllocation = (): BigNumber | undefined => {
   useEffect(() => {
     if (!allocationData) return
 
-    const userAllocation = allocationData.find((data) => data.tag === 'user')
-    const ecosystemAllocation = allocationData.find((data) => data.tag === 'ecosystem')
-    const totalAllocation = BigNumber.from(userAllocation?.amount || '0').add(ecosystemAllocation?.amount || '0')
+    const totalAllocation = allocationData.reduce((acc, data) => acc.add(data.amount), BigNumber.from(0))
 
     setAllocation(totalAllocation)
   }, [allocationData])

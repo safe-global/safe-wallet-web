@@ -29,7 +29,7 @@ export const isWalletUnlocked = async (walletName: string): Promise<boolean> => 
 
   // Only MetaMask exposes a method to check if the wallet is unlocked
   if (walletName === WalletNames.METAMASK) {
-    return window.ethereum?._metamask?.isUnlocked() || false
+    return window.ethereum?._metamask?.isUnlocked?.() || false
   }
 
   // Wallet connect creates a localStorage entry when connected and removes it when disconnected

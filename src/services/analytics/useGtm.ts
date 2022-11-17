@@ -19,7 +19,10 @@ const useGtm = () => {
 
   // Initialize GTM, or clear it if analytics is disabled
   useEffect(() => {
-    isAnalyticsEnabled ? gtmInit() : gtmClear()
+    // router.pathname doesn't contain the safe address
+    // so we can override the initial dataLayer
+    isAnalyticsEnabled ? gtmInit(router.pathname) : gtmClear()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnalyticsEnabled])
 
   // Set the chain ID for GTM
@@ -30,10 +33,10 @@ const useGtm = () => {
   // Track page views – anononimized by default.
   // Sensitive info, like the safe address or tx id, is always in the query string, which we DO NOT track.
   useEffect(() => {
-    if (router.pathname !== AppRoutes['404']) {
+    if (isAnalyticsEnabled && router.pathname !== AppRoutes['404']) {
       gtmTrackPageview(router.pathname)
     }
-  }, [router.pathname])
+  }, [isAnalyticsEnabled, router.pathname])
 }
 
 export default useGtm

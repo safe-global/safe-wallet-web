@@ -5,7 +5,7 @@ import { useCustomSafeApps } from '@/hooks/safe-apps/useCustomSafeApps'
 import { usePinnedSafeApps } from '@/hooks/safe-apps/usePinnedSafeApps'
 import { useBrowserPermissions, useSafePermissions } from './permissions'
 import { useRankedSafeApps } from '@/hooks/safe-apps/useRankedSafeApps'
-import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 
 type ReturnType = {
   allSafeApps: SafeAppData[]
@@ -68,10 +68,10 @@ const useSafeApps = (): ReturnType => {
 
     if (alreadyPinned) {
       newSet.delete(appId)
-      trackEvent({ ...SAFE_APPS_EVENTS.UNPIN, label: appName })
+      trackSafeAppEvent(SAFE_APPS_EVENTS.UNPIN, appName)
     } else {
       newSet.add(appId)
-      trackEvent({ ...SAFE_APPS_EVENTS.PIN, label: appName })
+      trackSafeAppEvent(SAFE_APPS_EVENTS.PIN, appName)
     }
     updatePinnedSafeApps(newSet)
   }

@@ -156,7 +156,7 @@ describe('Assets > Coins', () => {
       cy.get('[id="currency"]').click()
 
       // Select EUR
-      cy.get('ul[role="listbox"]').findByText('EUR').click()
+      cy.get('ul[role="listbox"]').findByText('EUR').click({ force: true })
 
       // First row Fiat balance should not contain USD
       cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'USD')

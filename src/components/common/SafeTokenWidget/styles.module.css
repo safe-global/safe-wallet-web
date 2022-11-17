@@ -9,7 +9,7 @@
 
 .tokenButton {
   display: flex;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 0px var(--space-1) 0px var(--space-1);
   background-color: var(--color-border-background);
   margin: var(--space-1);

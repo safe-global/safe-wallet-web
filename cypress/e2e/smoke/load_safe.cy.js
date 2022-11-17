@@ -19,6 +19,9 @@ describe('Load existing Safe', () => {
     cy.visit('/welcome?chain=matic')
     cy.contains('Accept selection').click()
 
+    // Close banner
+    cy.get('[data-testid=CloseIcon]').click()
+
     // Enters Loading Safe form
     cy.contains('Add existing Safe').click()
     cy.contains('Connect wallet & select network')
@@ -70,8 +73,9 @@ describe('Load existing Safe', () => {
     // cy.contains('Upload an image').click()
     // cy.get('[type="file"]').attachFile('../fixtures/goerli_safe_QR.png')
 
-    // The address field should be filled with the QR code's address
-    cy.get('input[name="address"]').should('have.value', SAFE_QR_CODE_ADDRESS)
+    // The address field should be filled with the "bare" QR code's address
+    const [, address] = SAFE_QR_CODE_ADDRESS.split(':')
+    cy.get('input[name="address"]').should('have.value', address)
 
     cy.contains('Continue').click()
   })

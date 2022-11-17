@@ -195,19 +195,27 @@ export const createExistingTx = async (
  * Propose a transaction
  * If txId is passed, it's an existing tx being signed
  */
-export const dispatchTxProposal = async (
-  chainId: string,
-  safeAddress: string,
-  sender: string,
-  safeTx: SafeTransaction,
-  txId?: string,
-): Promise<TransactionDetails> => {
+export const dispatchTxProposal = async ({
+  chainId,
+  safeAddress,
+  sender,
+  safeTx,
+  txId,
+  origin,
+}: {
+  chainId: string
+  safeAddress: string
+  sender: string
+  safeTx: SafeTransaction
+  txId?: string
+  origin?: string
+}): Promise<TransactionDetails> => {
   const safeSDK = getAndValidateSafeSDK()
   const safeTxHash = await safeSDK.getTransactionHash(safeTx)
 
   let proposedTx: TransactionDetails | undefined
   try {
-    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash)
+    proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash, origin)
   } catch (error) {
     if (txId) {
       txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: error as Error })
