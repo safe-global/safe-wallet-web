@@ -32,6 +32,33 @@
   padding: var(--space-3);
 }
 
+.sidebarToggle {
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: var(--space-1);
+  background-color: var(--color-border-light);
+  /* mimics MUI drawer animation */
+  transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+.sidebarToggle.sidebarOpen {
+  transform: translateX(230px);
+}
+
+.sidebarToggle button {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: -3px;
+  transform: translateY(-50%);
+  background-color: var(--color-border-light);
+  clip-path: inset(0 -14px 0 0);
+  transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
 @media (max-width: 900px) {
   .main {
     padding-left: 0;
