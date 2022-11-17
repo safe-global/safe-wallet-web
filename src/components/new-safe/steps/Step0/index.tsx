@@ -10,18 +10,21 @@ import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
 import PairingDetails from '@/components/common/PairingDetails'
 import useSyncSafeCreationStep from '@/components/new-safe/CreateSafe/useSyncSafeCreationStep'
 import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/steps/Step4'
 
 const CreateSafeStep0 = ({ onSubmit, setStep }: StepRenderProps<NewSafeFormData>) => {
+  const [pendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const wallet = useWallet()
   const chain = useCurrentChain()
   const isSupported = isPairingSupported(chain?.disabledWallets)
   useSyncSafeCreationStep(setStep)
 
   useEffect(() => {
-    if (!wallet) return
+    if (!wallet || pendingSafe) return
 
     onSubmit({ owners: [{ address: wallet.address, name: wallet.ens || '' }] })
-  }, [onSubmit, wallet])
+  }, [onSubmit, wallet, pendingSafe])
 
   return (
     <>
