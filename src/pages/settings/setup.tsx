@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Grid, Paper, Tooltip, Typography } from '@mui/material'
-import InfoIcon from '@mui/icons-material/Info'
+import { Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
@@ -34,7 +34,15 @@ const Setup: NextPage = () => {
                   placement="top"
                   title="For security reasons, transactions made with Safe need to be executed in order. The nonce shows you which transaction will be executed next. You can find the nonce for a transaction in the transaction details."
                 >
-                  <InfoIcon fontSize="small" sx={{ verticalAlign: 'middle', ml: 0.5 }} />
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      fontSize="small"
+                      color="border"
+                      sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                    />
+                  </span>
                 </Tooltip>
               </Typography>
 

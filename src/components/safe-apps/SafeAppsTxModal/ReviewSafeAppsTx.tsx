@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 import type { DecodedDataResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getDecodedData, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -19,12 +20,15 @@ import type { SafeAppsTxParams } from '.'
 import { isEmptyHexData } from '@/utils/hex'
 import { dispatchSafeAppsTx } from '@/services/tx/txSender'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
+import { getTxOrigin } from '@/utils/transactions'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
 }
 
-const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params, appId } }: ReviewSafeAppsTxProps): ReactElement => {
+const ReviewSafeAppsTx = ({
+  safeAppsTx: { txs, requestId, params, appId, app },
+}: ReviewSafeAppsTxProps): ReactElement => {
   const chainId = useChainId()
   const chain = useCurrentChain()
 
@@ -53,8 +57,10 @@ const ReviewSafeAppsTx = ({ safeAppsTx: { txs, requestId, params, appId } }: Rev
     dispatchSafeAppsTx(txId, requestId)
   }
 
+  const origin = useMemo(() => getTxOrigin(app), [app])
+
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError} origin={origin}>
       <>
         <SendFromBlock />
 

@@ -89,10 +89,9 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
             required,
 
             setValueAs: (value: string): string => {
-              const { address, prefix } = parsePrefixedAddress(value)
               rawValueRef.current = value
-              // Return a bare address if the prefx is the correct shortName
-              return prefix === currentShortName ? address : value
+              // This also checksums the address
+              return parsePrefixedAddress(value).address
             },
 
             validate: () => {
@@ -105,6 +104,9 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
             // Workaround for a bug in react-hook-form that it restores a cached error state on blur
             onBlur: () => setTimeout(() => trigger(name), 100),
           })}
+          // Workaround for a bug in react-hook-form when `register().value` is cached after `setValueAs`
+          // Only seems to occur on the `/load` route
+          value={watchedValue}
         />
       </Grid>
 
