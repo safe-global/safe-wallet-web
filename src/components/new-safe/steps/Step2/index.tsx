@@ -17,14 +17,14 @@ import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
 import NetworkWarning from '@/components/new-safe/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 
-export type CreateSafeStep2Form = {
-  owners: NamedAddress[]
-  threshold: number
-}
-
 enum CreateSafeStep2Fields {
   owners = 'owners',
   threshold = 'threshold',
+}
+
+export type CreateSafeStep2Form = {
+  [CreateSafeStep2Fields.owners]: NamedAddress[]
+  [CreateSafeStep2Fields.threshold]: number
 }
 
 const STEP_2_FORM_ID = 'create-safe-step-2-form'
@@ -53,11 +53,15 @@ const CreateSafeStep2 = ({
 
   const threshold = watch(CreateSafeStep2Fields.threshold)
 
-  const { fields: ownerFields, append: appendOwner, remove } = useFieldArray({ control, name: 'owners' })
+  const {
+    fields: ownerFields,
+    append: appendOwner,
+    remove,
+  } = useFieldArray({ control, name: CreateSafeStep2Fields.owners })
 
   const removeOwner = (index: number): void => {
     if (ownerFields.length === threshold) {
-      setValue('threshold', threshold - 1)
+      setValue(CreateSafeStep2Fields.threshold, threshold - 1)
     }
     remove(index)
   }
