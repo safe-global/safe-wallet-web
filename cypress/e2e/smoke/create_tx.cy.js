@@ -16,7 +16,9 @@ describe('Queue a transaction on 1/N', () => {
 
   it('should create and queue a transaction', () => {
     // Assert that "New transaction" button is visible
-    cy.contains('New transaction').should('be.visible', { timeout: 30_000 })
+    cy.contains('New transaction', {
+      timeout: 60_000, // `lastWallet` takes a while initialize in CI
+    }).should('be.visible')
 
     // Open the new transaction modal
     cy.contains('New transaction').click()
