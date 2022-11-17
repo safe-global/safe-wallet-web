@@ -60,9 +60,8 @@ const CreateSafeStep2 = ({
   } = useFieldArray({ control, name: CreateSafeStep2Fields.owners })
 
   const removeOwner = (index: number): void => {
-    if (ownerFields.length === threshold) {
-      setValue(CreateSafeStep2Fields.threshold, threshold - 1)
-    }
+    // Set threshold if it's greater than the number of owners
+    setValue(CreateSafeStep2Fields.threshold, Math.min(threshold, ownerFields.length - 1))
     remove(index)
   }
 
