@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
-import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type ChainInfo, getChainsConfig } from '@gnosis.pm/safe-react-gateway-sdk'
 import useAsync, { type AsyncResult } from '../useAsync'
 import { logError, Errors } from '@/services/exceptions'
-import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
+// import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
 
 const getConfigs = async (): Promise<ChainInfo[]> => {
-  // const data = await getChainsConfig()
-  // return data.results || []
-  return CONFIG_SERVICE_CHAINS
+  const data = await getChainsConfig()
+  return data.results || []
+  // return CONFIG_SERVICE_CHAINS
 }
 
 export const useLoadChains = (): AsyncResult<ChainInfo[]> => {

@@ -154,7 +154,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
     ],
   },
   {
-    transactionService: 'https://safe-transaction.polygon.gnosis.io',
+    transactionService: 'https://safe-transaction-nightly.iotex.me/',
     chainId: '4691',
     chainName: 'IoTeX',
     shortName: 'iotex',
