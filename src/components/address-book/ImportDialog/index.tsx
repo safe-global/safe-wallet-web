@@ -131,7 +131,6 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
                       {`Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`}
                     </Typography>,
                   ],
-                  error,
                 }
               : undefined
 
