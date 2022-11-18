@@ -39,11 +39,11 @@ const staticHints: Record<
     steps: [
       {
         title: 'Network fee',
-        text: 'Deploying your Safe requires the payment of the associated network fee with your connected wallet. An estmation will be provided in the last step.',
+        text: 'Deploying your Safe requires the payment of the associated network fee with your connected wallet. An estimation will be provided in the last step.',
       },
       {
         title: 'Address book privacy',
-        text: 'The name of your Safe will be stored in a local address book and can be changed at a later stage. It will not be shared with us or any third party.',
+        text: 'The name of your Safe will be stored in a local address book on your device and can be changed at a later stage. It will not be shared with us or any third party.',
       },
     ],
   },
@@ -53,11 +53,11 @@ const staticHints: Record<
     steps: [
       {
         title: 'Flat hierarchy',
-        text: 'Every owner has the same rights within the Safe and can propose, sign and execute transactions.',
+        text: 'Every owner has the same rights within the Safe and can propose, sign and execute transactions that have the required confirmations.',
       },
       {
         title: 'Managing Owners',
-        text: 'You can always change the amount of owners and required confirmations in your Safe at a later stage after creation.',
+        text: 'You can always change the number of owners and required confirmations in your Safe after creation.',
       },
       {
         title: 'Safe Setup',
@@ -88,7 +88,7 @@ const staticHints: Record<
     steps: [
       {
         title: 'Wait for the creation',
-        text: 'Depending on network congestion, it can take some time until the transaction is successfully added to the network and picked up by our services.',
+        text: 'Depending on network usage, it can take some time until the transaction is successfully added to the blockchain and picked up by our services.',
       },
     ],
   },
@@ -98,7 +98,7 @@ const staticHints: Record<
     steps: [
       {
         title: 'Connect your Safe',
-        text: 'In our Safe Apps section you can connect your Safe to over 70 dApps directly or use Wallet Connect to interact with any application.',
+        text: 'In our Safe Apps section you can connect your Safe to over 70 dApps directly or via Wallet Connect to interact with any application.',
       },
     ],
   },
