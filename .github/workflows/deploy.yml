@@ -82,7 +82,7 @@ jobs:
       - name: Deploy PR branch
         if: github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
         env:
-          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/web-core/${{ github.event.number}
+          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/web-core/${{ github.event.number }}
         run: |
           cd out
 
