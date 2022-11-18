@@ -7,6 +7,8 @@ import AppsIcon from '@/public/images/sidebar/apps.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import BeamerIcon from '@/public/images/sidebar/whats-new.svg'
 import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import { useCurrentChain } from '@/hooks/useChains'
 
 const HintItem = ({ Icon, title, description }: { Icon: ElementType; title: string; description: string }) => {
   return (
@@ -25,6 +27,8 @@ const HintItem = ({ Icon, title, description }: { Icon: ElementType; title: stri
 
 const CreationDialog = () => {
   const [open, setOpen] = React.useState(true)
+  const [remoteSafeApps = []] = useRemoteSafeApps()
+  const chain = useCurrentChain()
 
   return (
     <Dialog open={open}>
@@ -33,14 +37,10 @@ const CreationDialog = () => {
           Welcome to your Safe!
         </Typography>
         <Typography variant="body2">
-          Congratulations on creating the safest wallet in web3. Keep your assets safe and discover our app.
+          Congratulations on your first step to truly unlock ownership. Enjoy the experience and discover our app.
         </Typography>
         <Grid container mt={4} mb={6} spacing={3}>
-          <HintItem
-            Icon={HomeIcon}
-            title="Home"
-            description="Get a status overview of your Safe and more on your Safe homepage."
-          />
+          <HintItem Icon={HomeIcon} title="Home" description="Get a status overview of your Safe here." />
           <HintItem
             Icon={TransactionIcon}
             title="Transactions"
@@ -49,7 +49,7 @@ const CreationDialog = () => {
           <HintItem
             Icon={AppsIcon}
             title="Apps"
-            description="Over 70 dApps available for you on Mainnet. Check out Safe apps for secure integrations. "
+            description={`Over ${remoteSafeApps.length} dApps available for you on ${chain?.chainName}.`}
           />
           <HintItem
             Icon={SettingsIcon}
@@ -60,7 +60,7 @@ const CreationDialog = () => {
           <HintItem
             Icon={HelpCenterIcon}
             title="Help center"
-            description="Have any questions? Check out our collection of articles. "
+            description="HHave any questions? Check out our collection of articles."
           />
         </Grid>
         <Box display="flex" justifyContent="center">
