@@ -21,6 +21,14 @@ jest.mock('@/config/constants', () => ({
 }))
 
 describe('TagManager', () => {
+  beforeEach(() => {
+    jest.resetModules()
+
+    // @ts-expect-error
+    delete window[`ga-disable-${constants.GOOGLE_ANALYTICS_MEASUREMENT_ID}`]
+    delete window['dataLayer']
+  })
+
   describe('getGtmScript', () => {
     it('should use the id, auth and preview', () => {
       const { _getGtmScript } = require('../TagManager')
@@ -30,6 +38,61 @@ describe('TagManager', () => {
       expect(script1.innerHTML).toContain(`&gtm_auth=${MOCK_AUTH}`)
       expect(script1.innerHTML).toContain(`&gtm_preview=${MOCK_PREVIEW}`)
       expect(script1.innerHTML).toContain('dataLayer')
+    })
+  })
+
+  describe('TagManager.isEnabled', () => {
+    it('returns true if the cookie is not set and the GA_DISABLE_KEY is false', () => {
+      const { TagManager } = require('../TagManager')
+      ;(Cookies.get as jest.Mock).mockReturnValue(undefined)
+      // @ts-expect-error
+      window[constants.GA_DISABLE_KEY] = false
+
+      expect(TagManager.isEnabled()).toBe(true)
+    })
+
+    it('returns false if the cookie is set and the GA_DISABLE_KEY is false', () => {
+      const { TagManager } = require('../TagManager')
+      ;(Cookies.get as jest.Mock).mockReturnValue('true')
+      // @ts-expect-error
+      window[constants.GA_DISABLE_KEY] = false
+
+      expect(TagManager.isEnabled()).toBe(false)
+    })
+
+    it('returns false if the cookie is not set and the GA_DISABLE_KEY is true', () => {
+      const { TagManager } = require('../TagManager')
+      ;(Cookies.get as jest.Mock).mockReturnValue(undefined)
+      // @ts-expect-error
+      window[constants.GA_DISABLE_KEY] = true
+
+      expect(TagManager.isEnabled()).toBe(false)
+    })
+  })
+
+  describe('TagManager.isMounted', () => {
+    it('returns true if the GA_DISABLE_KEY is in window and the gtmScriptRef is set', () => {
+      const { TagManager } = require('../TagManager')
+      // @ts-expect-error
+      window[constants.GA_DISABLE_KEY] = true
+
+      expect(TagManager.isMounted()).toBe(true)
+    })
+
+    it('returns false if the GA_DISABLE_KEY is not in window and the gtmScriptRef is set', () => {
+      const { TagManager } = require('../TagManager')
+      // @ts-expect-error
+      window[constants.GA_DISABLE_KEY] = false
+
+      expect(TagManager.isMounted()).toBe(false)
+    })
+
+    it('returns false if the GA_DISABLE_KEY is in window and the gtmScriptRef is not set', () => {
+      const { TagManager } = require('../TagManager')
+      // @ts-expect-error
+      window[constants.GA_DISABLE_KEY] = true
+
+      expect(TagManager.isMounted()).toBe(false)
     })
   })
 
@@ -115,6 +178,35 @@ describe('TagManager', () => {
   })
 
   describe('TagManager.disable', () => {
+    it('should not remove GA cookies if mounted', () => {
+      const { default: TagManager } = require('../TagManager')
+
+      TagManager.initialize({
+        gtmId: MOCK_ID,
+        auth: MOCK_AUTH,
+        preview: MOCK_PREVIEW,
+      })
+
+      TagManager.disable()
+
+      const path = '/'
+      const domain = '.localhost'
+
+      expect(Cookies.remove).not.toHaveBeenCalled()
+    })
+    it('should remove GA cookies if not mounted', () => {
+      const { default: TagManager } = require('../TagManager')
+
+      TagManager.disable()
+
+      const path = '/'
+      const domain = '.localhost'
+
+      expect(Cookies.remove).toHaveBeenCalledWith('_ga', { path, domain })
+      expect(Cookies.remove).toHaveBeenCalledWith('_gat', { path, domain })
+      expect(Cookies.remove).toHaveBeenCalledWith('_gid', { path, domain })
+    })
+
     it('should not disable TagManager if not initialized', () => {
       const { default: TagManager } = require('../TagManager')
 
@@ -156,25 +248,6 @@ describe('TagManager', () => {
         expires: Number.MAX_SAFE_INTEGER,
         path: '/',
       })
-    })
-
-    it.skip('should remove the GA cookies', () => {
-      const { default: TagManager } = require('../TagManager')
-
-      TagManager.initialize({
-        gtmId: MOCK_ID,
-        auth: MOCK_AUTH,
-        preview: MOCK_PREVIEW,
-      })
-
-      TagManager.disable()
-
-      const path = '/'
-      const domain = '.localhost'
-
-      expect(Cookies.remove).toHaveBeenCalledWith('_ga', { path, domain })
-      expect(Cookies.remove).toHaveBeenCalledWith('_gat', { path, domain })
-      expect(Cookies.remove).toHaveBeenCalledWith('_gid', { path, domain })
     })
   })
 })
