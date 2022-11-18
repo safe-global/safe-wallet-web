@@ -26,11 +26,12 @@ const isSafeAppRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
 const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   const { pathname, query } = useRouter()
   const isSmallScreen = useMediaQuery('(max-width: 900px)')
-  const showSidebarToggle = isSafeAppRoute(pathname, query)
+  const showSidebarToggle = isSafeAppRoute(pathname, query) && !isSmallScreen
 
   useEffect(() => {
-    onToggle(!isSmallScreen && !isAppShareRoute(pathname))
-  }, [isSmallScreen, pathname, onToggle])
+    const closeSidebar = isSmallScreen || isSafeAppRoute(pathname, query) || isAppShareRoute(pathname)
+    onToggle(!closeSidebar)
+  }, [isSmallScreen, onToggle, pathname, query])
 
   return (
     <>
@@ -44,14 +45,12 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
       </Drawer>
 
       {showSidebarToggle && (
-        <div
-          className={classnames(css.sidebarToggle, isOpen && css.sidebarOpen)}
-          role="button"
-          onClick={() => onToggle(!isOpen)}
-        >
-          <IconButton aria-label="collapse sidebar" size="small">
-            {isOpen ? <DoubleArrowLeftIcon fontSize="inherit" /> : <DoubleArrowRightIcon fontSize="inherit" />}
-          </IconButton>
+        <div className={classnames(css.sidebarTogglePosition, isOpen && css.sidebarOpen)}>
+          <div className={css.sidebarToggle} role="button" onClick={() => onToggle(!isOpen)}>
+            <IconButton aria-label="collapse sidebar" size="small" disableRipple>
+              {isOpen ? <DoubleArrowLeftIcon fontSize="inherit" /> : <DoubleArrowRightIcon fontSize="inherit" />}
+            </IconButton>
+          </div>
         </div>
       )}
     </>
