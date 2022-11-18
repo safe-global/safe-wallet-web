@@ -13,9 +13,9 @@ const SandboxedIcon = ({
 }): ReactElement => {
   return (
     <iframe
-      src={`/safe-app-icon.html#${encodeURIComponent(src)}`}
+      srcDoc={`<style>html,body{padding:0;margin:0;background-color:transparent;}body{background:url('${src}') 0 0/cover no-repeat;}</style>`}
       title={alt}
-      sandbox="allow-scripts"
+      sandbox=""
       referrerPolicy="strict-origin"
       frameBorder={0}
       width={width}
