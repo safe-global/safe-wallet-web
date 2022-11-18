@@ -8,8 +8,11 @@ describe('The Safe Apps list', () => {
 
   describe('When searching apps', () => {
     it('should filter the list by app name', () => {
-      cy.findByRole('textbox').type('walletconnect')
-      cy.findAllByRole('link', { name: /logo/i }).should('have.length', 1)
+      // Wait for /safe-apps response
+      cy.intercept('GET', '/**/safe-apps').then(() => {
+        cy.findByRole('textbox').type('walletconnect')
+        cy.findAllByRole('link', { name: /logo/i }).should('have.length', 1)
+      })
     })
 
     it('should filter the list by app description', () => {
