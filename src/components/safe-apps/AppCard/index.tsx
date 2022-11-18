@@ -3,7 +3,6 @@ import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import type { LinkProps } from 'next/link'
-import Avatar from '@mui/material/Avatar'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -23,6 +22,7 @@ import { SvgIcon } from '@mui/material'
 import type { UrlObject } from 'url'
 import { resolveHref } from 'next/dist/shared/lib/router/router'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
+import SandboxedIcon from '../SandboxedIcon'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
@@ -168,16 +168,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
     <AppCardContainer url={url} variant="compact">
       <div className={styles.compactCardContainer}>
         {/* App logo */}
-        <Avatar
-          src={safeApp.iconUrl}
-          alt={`${safeApp.name} logo`}
-          variant="square"
-          sx={{
-            '.MuiAvatar-img': {
-              objectFit: 'contain',
-            },
-          }}
-        />
+        <SandboxedIcon src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
 
         {/* TODO No share button per design. Only info button. Leaving the code for reusing the styles */}
         {/* Share button */}
@@ -224,18 +215,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   return (
     <AppCardContainer url={url}>
       <CardHeader
-        avatar={
-          <Avatar
-            src={safeApp.iconUrl}
-            alt={`${safeApp.name} logo`}
-            variant="square"
-            sx={{
-              '.MuiAvatar-img': {
-                objectFit: 'contain',
-              },
-            }}
-          />
-        }
+        avatar={<SandboxedIcon src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />}
         action={
           <div className={styles.actionContainer}>
             {/* Share button */}
