@@ -57,7 +57,7 @@ const initTheme = (darkMode: boolean) => {
     },
     spacing: base,
     shape: {
-      borderRadius: '6px',
+      borderRadius: 6,
     },
     shadows: [
       'none',
