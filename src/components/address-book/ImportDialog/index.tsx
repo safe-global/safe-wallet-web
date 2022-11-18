@@ -10,13 +10,13 @@ import { type ReactElement, useState, type MouseEvent, useMemo } from 'react'
 import ModalDialog from '@/components/common/ModalDialog'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
-import { Box, Grid, IconButton } from '@mui/material'
 
 import css from './styles.module.css'
 import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
 import { abCsvReaderValidator, abOnUploadValidator } from './validation'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { Errors, logError } from '@/services/exceptions'
+import FileUpload, { FileTypes, type FileInfo } from '@/components/common/FileUpload'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']
 
@@ -114,7 +114,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
         >
           {/* https://github.com/Bunlong/react-papaparse/blob/master/src/useCSVReader.tsx */}
           {({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps, Remove }: any) => {
-            const { onClick, ...removeProps } = getRemoveFileProps()
+            const { onClick } = getRemoveFileProps()
 
             const onRemove = (e: MouseEvent<HTMLSpanElement>) => {
               setCsvData(undefined)
@@ -122,43 +122,31 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
               onClick(e)
             }
 
+            const fileInfo: FileInfo | undefined = acceptedFile
+              ? {
+                  name: acceptedFile.name,
+                  additionalInfo: formatFileSize(acceptedFile.size),
+                  summary: [
+                    <Typography key="abSummary">
+                      {`Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`}
+                    </Typography>,
+                  ],
+                }
+              : undefined
+
             return (
-              <Box
-                {...getRootProps()}
-                className={css.dropbox}
-                sx={{
-                  border: ({ palette }) => `2px dashed ${zoneHover ? palette.primary.main : palette.border.light}`,
-                }}
-              >
-                {acceptedFile ? (
-                  <div>
-                    <Grid container gap={1} alignItems="center">
-                      <Grid item>
-                        {acceptedFile.name} - {formatFileSize(acceptedFile.size)}
-                      </Grid>
-
-                      <Grid item>
-                        <IconButton {...removeProps} onClick={onRemove}>
-                          <Remove width={16} height={16} />
-                        </IconButton>
-                      </Grid>
-                    </Grid>
-
-                    <ProgressBar />
-
-                    {entryCount > 0 && (
-                      <Typography mt={1}>
-                        {`Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`}
-                      </Typography>
-                    )}
-                  </div>
-                ) : (
-                  'Drop your CSV file here or click to upload.'
-                )}
-              </Box>
+              <FileUpload
+                fileInfo={fileInfo}
+                fileType={FileTypes.CSV}
+                getRootProps={getRootProps}
+                isDragActive={zoneHover}
+                onRemove={onRemove}
+              />
             )
           }}
         </CSVReader>
+
+        <div className={css.horizontalDivider} />
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
