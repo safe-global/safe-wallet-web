@@ -13,7 +13,7 @@ export const useSafeSetupHints = (
     if (threshold === 1) {
       safeSetupWarningSteps.push({
         title: `1/${noOwners}`,
-        text: 'We recommend to use a threshold higher than one to prevent losing access to your safe in case one owner key gets compromised or lost',
+        text: 'We recommend using a threshold higher than one to prevent losing access to your Safe in case an owner key is lost or compromised.',
       })
     }
 
@@ -21,7 +21,7 @@ export const useSafeSetupHints = (
     if (threshold === noOwners && noOwners > 1) {
       safeSetupWarningSteps.push({
         title: `${noOwners}/${noOwners}`,
-        text: 'We recommend to use a threshold which is lower than the total number of owners of your Safe in case an owner loses access to their account and needs to be replaced.',
+        text: 'We recommend using a threshold which is lower than the total number of owners of your Safe in case an owner loses access to their account and needs to be replaced.',
       })
     }
 
