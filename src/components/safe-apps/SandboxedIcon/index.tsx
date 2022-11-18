@@ -13,7 +13,7 @@ const SandboxedIcon = ({
 }): ReactElement => {
   return (
     <iframe
-      srcDoc={`<style>html,body{padding:0;margin:0;background-color:transparent;}body{background:url('${src}') 0 0/cover no-repeat;}</style>`}
+      srcDoc={`<style>html,body{padding:0;margin:0;background-color:transparent;height:100%;}body{background:url('${src}') center center/contain no-repeat;}</style>`}
       title={alt}
       sandbox=""
       referrerPolicy="strict-origin"

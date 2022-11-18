@@ -5,6 +5,7 @@ import Divider from '@mui/material/Divider'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import SvgIcon from '@mui/material/SvgIcon'
+import SandboxedIcon from '../SandboxedIcon'
 
 type DetailsProps = {
   app: SafeAppData
@@ -14,7 +15,8 @@ type DetailsProps = {
 const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
     <Box sx={{ display: 'flex', mb: 4 }}>
-      <img src={app.iconUrl} alt={app.name} width={90} height={90} />
+      <SandboxedIcon src={app.iconUrl} alt={app.name} width={90} height={90} />
+
       <Box sx={{ ml: 8 }}>
         <Typography variant="h3" fontWeight={700}>
           {app.name}
