@@ -6,7 +6,11 @@ import { EventType, trackSafeAppEvent } from '@/services/analytics'
 import { SAFE_APPS_ANALYTICS_CATEGORY } from '@/services/analytics/events/safeApps'
 
 //TODO: Update apps domain to the new one when decided
-const ALLOWED_DOMAINS: RegExp[] = [/^http:\/\/localhost:[0-9]{4}$/, /^https:\/\/apps\.gnosis-safe\.io$/]
+const ALLOWED_DOMAINS: RegExp[] = [
+  /^http:\/\/localhost:[0-9]{4}$/,
+  /^https:\/\/safe-apps\.dev\.5afe\.dev$/,
+  /^https:\/\/apps\.gnosis-safe\.io$/,
+]
 
 const useAnalyticsFromSafeApp = (iframeRef: MutableRefObject<HTMLIFrameElement | null>): void => {
   const isValidMessage = useCallback(
