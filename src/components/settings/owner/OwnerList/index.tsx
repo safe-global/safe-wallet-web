@@ -9,6 +9,8 @@ import { RemoveOwnerDialog } from '../RemoveOwnerDialog'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import EnhancedTable from '@/components/common/EnhancedTable'
 
+import tableCss from '@/components/common/EnhancedTable/styles.module.css'
+
 const headCells = [
   { id: 'owner', label: 'Name' },
   { id: 'actions', label: '', sticky: true },
@@ -32,11 +34,11 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
           rawValue: '',
           sticky: true,
           content: (
-            <>
+            <div className={tableCss.actions}>
               {isGranted && <ReplaceOwnerDialog address={address} />}
               <EditOwnerDialog address={address} name={name} chainId={safe.chainId} />
               {isGranted && <RemoveOwnerDialog owner={{ address, name }} />}
-            </>
+            </div>
           ),
         },
       }

@@ -8,12 +8,14 @@ const CopyButton = ({
   className,
   children,
   initialToolTipText = 'Copy to clipboard',
+  onCopy,
 }: {
   text: string
   className?: string
   children?: ReactNode
   initialToolTipText?: string
   ariaLabel?: string
+  onCopy?: () => void
 }): ReactElement => {
   const [tooltipText, setTooltipText] = useState(initialToolTipText)
 
@@ -22,8 +24,9 @@ const CopyButton = ({
       e.preventDefault()
       e.stopPropagation()
       navigator.clipboard.writeText(text).then(() => setTooltipText('Copied'))
+      onCopy?.()
     },
-    [text],
+    [text, onCopy],
   )
 
   const handleMouseLeave = useCallback(() => {

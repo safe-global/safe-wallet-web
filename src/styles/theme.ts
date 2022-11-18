@@ -56,6 +56,9 @@ const initTheme = (darkMode: boolean) => {
       ...colors,
     },
     spacing: base,
+    shape: {
+      borderRadius: '6px',
+    },
     shadows: [
       'none',
       darkMode ? `0 0 2px ${shadowColor}` : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
@@ -147,7 +150,7 @@ const initTheme = (darkMode: boolean) => {
             padding: '12px 24px',
           },
           root: ({ theme }) => ({
-            borderRadius: '8px',
+            borderRadius: theme.shape.borderRadius,
             fontWeight: 'bold',
             lineHeight: 1.25,
             borderColor: theme.palette.primary.main,
@@ -185,7 +188,7 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             transition: 'background 0.2s, border 0.2s',
-            borderRadius: '8px',
+            borderRadius: theme.shape.borderRadius,
             border: `1px solid ${theme.palette.border.light}`,
             overflow: 'hidden',
 
@@ -236,7 +239,7 @@ const initTheme = (darkMode: boolean) => {
       MuiCard: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: theme.spacing(1),
+            borderRadius: theme.shape.borderRadius,
             boxSizing: 'border-box',
             border: '2px solid transparent',
             boxShadow: 'none',
@@ -271,10 +274,10 @@ const initTheme = (darkMode: boolean) => {
             borderWidth: 2,
             borderColor: theme.palette.border.light,
           }),
-          root: {
-            borderRadius: '8px !important',
+          root: ({ theme }) => ({
+            borderRadius: theme.shape.borderRadius,
             backgroundImage: 'none',
-          },
+          }),
         },
       },
       MuiPopover: {
@@ -470,6 +473,9 @@ const initTheme = (darkMode: boolean) => {
         },
       },
       MuiSwitch: {
+        defaultProps: {
+          color: darkMode ? undefined : 'success',
+        },
         styleOverrides: {
           thumb: ({ theme }) => ({
             boxShadow:
