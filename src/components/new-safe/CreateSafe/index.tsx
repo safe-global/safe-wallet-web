@@ -121,7 +121,7 @@ const CreateSafe = () => {
   const CreateSafeSteps: TxStepperProps<NewSafeFormData>['steps'] = [
     {
       title: 'Connect wallet',
-      subtitle: 'In order to create a Safe you need to connect a wallet',
+      subtitle: 'The connected wallet will pay the network fees for the Safe creation.',
       render: (data, onSubmit, onBack, setStep) => (
         <CreateSafeStep0 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
       ),
