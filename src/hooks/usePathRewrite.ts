@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { AppRoutes } from '@/config/routes'
-import { logError } from '@/services/exceptions'
+import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { useUrlChainId } from '@/hooks/useChainId'
 
@@ -23,7 +23,7 @@ const usePathRewrite = () => {
     if (!safe) return
 
     if (!chainId) {
-      logError(ErrorCodes._104)
+      trackError(ErrorCodes._104)
       router.push(AppRoutes.welcome)
       return
     }
