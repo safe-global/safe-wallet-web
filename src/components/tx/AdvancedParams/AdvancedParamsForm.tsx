@@ -34,7 +34,6 @@ type FormData = {
 }
 
 const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
-  console.log(params)
   const formMethods = useForm<FormData>({
     mode: 'onChange',
     defaultValues: {

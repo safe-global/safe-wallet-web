@@ -9,6 +9,7 @@ import { Box, Tooltip } from '@mui/material'
 import { BigNumber, ethers } from 'ethers'
 import { AbiCoder, Interface } from 'ethers/lib/utils'
 import { isPast } from 'date-fns'
+import chains from '@/config/chains'
 
 const TxTimingDetails = ({ txId }: { txId: string }) => {
   const { safe, safeAddress } = useSafeInfo()
@@ -28,8 +29,10 @@ const TxTimingDetails = ({ txId }: { txId: string }) => {
     [txId, safe.chainId, safe.txQueuedTag, safe.txHistoryTag, safeAddress],
     false,
   )
-
-  const timeLockAddress = '6e8c8403837e305a0312beba98b7001c117a69a7'
+  const timeLockAddress =
+    safe.chainId === chains.eth
+      ? '2d96225942ada8e7f928b172c75df7b1c3baf343'
+      : '6e8c8403837e305a0312beba98b7001c117a69a7'
   const humanReadableAbi = ['function checkLock(uint) public view']
   const timeLockInterface = new Interface(humanReadableAbi)
 
@@ -73,7 +76,9 @@ const TxTimingDetails = ({ txId }: { txId: string }) => {
 }
 
 const TxTimingInfo = ({ transaction }: { transaction: TransactionSummary }) => {
-  if (isMultiSendTxInfo(transaction.txInfo)) {
+  const { safe } = useSafeInfo()
+
+  if ((safe.chainId === chains.eth || safe.chainId === chains.gor) && isMultiSendTxInfo(transaction.txInfo)) {
     return <TxTimingDetails txId={transaction.id} />
   }
   return null

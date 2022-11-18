@@ -1,6 +1,6 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
 import { Button, DialogContent, Typography } from '@mui/material'
-import type { MetaTransactionData, SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 
 import {
   dispatchTxExecution,
@@ -21,7 +21,7 @@ import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
-import { getTxOptions } from '@/utils/transactions'
+import { decodeMultiSendTxs, getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import type { Web3Provider } from '@ethersproject/providers'
@@ -31,6 +31,7 @@ import { sameString } from '@gnosis.pm/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { getMultiSendCallOnlyContractInstance } from '@/services/contracts/safeContracts'
 import { Interface } from 'ethers/lib/utils'
+import chains from '@/config/chains'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -177,29 +178,33 @@ const SignOrExecuteForm = ({
   const onAdvancedSubmit = async (data: AdvancedParameters) => {
     if (tx && data.executableAfter && data.executableAfter !== advancedParams.executableAfter) {
       try {
-        const timeLockAddress = '0x6e8c8403837e305a0312beba98b7001c117a69a7'
+        const timeLockAddress =
+          currentChain?.chainId === chains.eth
+            ? '0x2d96225942ada8e7f928b172c75df7b1c3baf343'
+            : '0x6e8c8403837e305a0312beba98b7001c117a69a7'
         const humanReadableAbi = ['function checkLock(uint) public view']
         const timeLockInterface = new Interface(humanReadableAbi)
         // executable after was edited, create a new tx where we add another call to the multisend
         const multiSendCallOnly = getMultiSendCallOnlyContractInstance(safe.chainId, safe.version)
+        let txsWithoutTimelock = []
         if (tx.data.to === multiSendCallOnly.getAddress()) {
           // We have to add to the current multiSend
+          const multiSendTxs = decodeMultiSendTxs(tx.data.data)
+          txsWithoutTimelock = multiSendTxs.filter((tx) => tx.to !== timeLockAddress)
         } else {
-          // We batch the current with the new tx
-          const txs: MetaTransactionData[] = [
-            { to: tx.data.to, value: tx.data.value, data: tx.data.data, operation: 0 },
-            {
-              to: timeLockAddress,
-              value: '0x0',
-              operation: 0,
-              data: timeLockInterface.encodeFunctionData('checkLock', [data.executableAfter / 1000]),
-            },
-          ]
-
-          setTx(await createMultiSendCallOnlyTx(txs))
+          txsWithoutTimelock = [{ to: tx.data.to, value: tx.data.value, data: tx.data.data, operation: 0 }]
         }
+        const newTxs = [
+          ...txsWithoutTimelock,
+          {
+            to: timeLockAddress,
+            value: '0x0',
+            operation: 0,
+            data: timeLockInterface.encodeFunctionData('checkLock', [data.executableAfter / 1000]),
+          },
+        ]
+        setTx(await createMultiSendCallOnlyTx(newTxs))
       } catch (err) {
-        console.log('SOME ERROR')
         logError(Errors._103, (err as Error).message)
         return
       }
@@ -231,9 +236,6 @@ const SignOrExecuteForm = ({
     isValidExecutionLoading
 
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
-
-  console.log('Current advanced params: ', advancedParams)
-
   return (
     <form onSubmit={handleSubmit}>
       <DialogContent>
