@@ -250,6 +250,12 @@ const initTheme = (darkMode: boolean) => {
         defaultProps: {
           fullWidth: true,
         },
+        styleOverrides: {
+          root: {
+            // Keystone modals have a z-index of 999
+            zIndex: 998,
+          },
+        },
       },
       MuiDialogContent: {
         styleOverrides: {
