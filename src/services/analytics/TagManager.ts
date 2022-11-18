@@ -1,5 +1,6 @@
-import { GOOGLE_ANALYTICS_MEASUREMENT_ID, IS_PRODUCTION } from '@/config/constants'
 import Cookies from 'js-cookie'
+
+import { IS_PRODUCTION } from '@/config/constants'
 
 type DataLayer = Record<string, unknown>
 
@@ -38,48 +39,28 @@ export const _getGtmScript = ({ gtmId, auth, preview }: TagManagerArgs) => {
   return script
 }
 
-// https://developers.google.com/tag-platform/devguides/privacy#turn_off_google_analytics
-const GA_DISABLE_KEY = `ga-disable-${GOOGLE_ANALYTICS_MEASUREMENT_ID}`
-const GTM_DISABLE_TRIGGER_COOKIE_NAME = 'google-analytics-opt-out'
-
-// Injected GTM script singleton
-let gtmScriptRef: HTMLScriptElement | null = null
-
 const TagManager = {
-  isEnabled: () => {
-    // @ts-expect-error - Element implicitly has an 'any' type because index expression is not of type 'number'.
-    return Cookies.get(GTM_DISABLE_TRIGGER_COOKIE_NAME) === undefined && window[GA_DISABLE_KEY] === false
-  },
-  isMounted: () => {
-    return GA_DISABLE_KEY in window && gtmScriptRef
+  isInitialized: () => {
+    const GTM_SCRIPT = 'https://www.googletagmanager.com/gtm.js'
+
+    return !!document.querySelector(`[src^="${GTM_SCRIPT}"]`)
   },
   initialize: (args: TagManagerArgs) => {
-    if (TagManager.isEnabled()) {
-      return
-    }
-
-    // Enable GA
-    // @ts-expect-error - Element implicitly has an 'any' type because index expression is not of type 'number'.
-    window[GA_DISABLE_KEY] = false
-
-    // Enable GTM triggers
-    Cookies.remove(GTM_DISABLE_TRIGGER_COOKIE_NAME, { path: '/' })
-
-    if (gtmScriptRef) {
+    if (TagManager.isInitialized()) {
       return
     }
 
     // Initialize dataLayer (with configuration)
     window[DATA_LAYER_NAME] = args.dataLayer ? [args.dataLayer] : []
 
-    gtmScriptRef = _getGtmScript(args)
+    const script = _getGtmScript(args)
 
     // Initialize GTM. This pushes the default dataLayer event:
     // { "gtm.start": new Date().getTime(), event: "gtm.js" }
-    document.head.insertBefore(gtmScriptRef, document.head.childNodes[0])
+    document.head.insertBefore(script, document.head.childNodes[0])
   },
   dataLayer: (dataLayer: DataLayer) => {
-    if (!TagManager.isEnabled() || !TagManager.isMounted()) {
+    if (!TagManager.isInitialized()) {
       return
     }
 
@@ -90,30 +71,21 @@ const TagManager = {
     }
   },
   disable: () => {
-    if (!TagManager.isMounted()) {
-      const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
-
-      GTM_COOKIE_LIST.forEach((cookie) => {
-        Cookies.remove(cookie, {
-          path: '/',
-          domain: `.${location.host.split('.').slice(-2).join('.')}`,
-        })
-      })
-    }
-
-    if (!TagManager.isEnabled()) {
+    if (!TagManager.isInitialized()) {
       return
     }
 
-    // Disable GA
-    // @ts-expect-error - Element implicitly has an 'any' type because index expression is not of type 'number'.
-    window[GA_DISABLE_KEY] = true
+    const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
 
-    // Disable GTM triggers
-    Cookies.set(GTM_DISABLE_TRIGGER_COOKIE_NAME, 'true', {
-      expires: Number.MAX_SAFE_INTEGER,
-      path: '/',
+    GTM_COOKIE_LIST.forEach((cookie) => {
+      Cookies.remove(cookie, {
+        path: '/',
+        domain: `.${location.host.split('.').slice(-2).join('.')}`,
+      })
     })
+
+    // `gtmScriptRef` will remain in memory until a new session
+    location.reload()
   },
 }
 
