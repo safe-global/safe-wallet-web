@@ -50,6 +50,9 @@ const TagManager = {
     // @ts-expect-error - Element implicitly has an 'any' type because index expression is not of type 'number'.
     return Cookies.get(GTM_DISABLE_TRIGGER_COOKIE_NAME) === undefined && window[GA_DISABLE_KEY] === false
   },
+  isMounted: () => {
+    return GA_DISABLE_KEY in window && gtmScriptRef
+  },
   initialize: (args: TagManagerArgs) => {
     if (TagManager.isEnabled()) {
       return
@@ -76,7 +79,7 @@ const TagManager = {
     document.head.insertBefore(gtmScriptRef, document.head.childNodes[0])
   },
   dataLayer: (dataLayer: DataLayer) => {
-    if (!TagManager.isEnabled()) {
+    if (!TagManager.isEnabled() || !TagManager.isMounted()) {
       return
     }
 
@@ -87,6 +90,17 @@ const TagManager = {
     }
   },
   disable: () => {
+    if (!TagManager.isMounted()) {
+      const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
+
+      GTM_COOKIE_LIST.forEach((cookie) => {
+        Cookies.remove(cookie, {
+          path: '/',
+          domain: `.${location.host.split('.').slice(-2).join('.')}`,
+        })
+      })
+    }
+
     if (!TagManager.isEnabled()) {
       return
     }
@@ -100,15 +114,6 @@ const TagManager = {
       expires: Number.MAX_SAFE_INTEGER,
       path: '/',
     })
-
-    // const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
-
-    // GTM_COOKIE_LIST.forEach((cookie) => {
-    //   Cookies.remove(cookie, {
-    //     path: '/',
-    //     domain: `.${location.host.split('.').slice(-2).join('.')}`,
-    //   })
-    // })
   },
 }
 

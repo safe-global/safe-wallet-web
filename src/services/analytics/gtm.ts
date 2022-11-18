@@ -23,8 +23,6 @@ import { SAFE_APPS_SDK_CATEGORY } from './events'
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
 
-const EMPTY_SAFE_APP = 'unknown'
-
 const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
   LIVE: {
     auth: GOOGLE_TAG_MANAGER_AUTH_LIVE,
