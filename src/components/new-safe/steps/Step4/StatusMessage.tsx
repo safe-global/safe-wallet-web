@@ -3,36 +3,38 @@ import { SafeCreationStatus } from './useSafeCreation'
 import LoadingSpinner from '@/components/new-safe/steps/Step4/LoadingSpinner'
 
 const getStep = (status: SafeCreationStatus) => {
+  const ERROR_TEXT = 'Please cancel the process or retry the transaction.'
+
   switch (status) {
     case SafeCreationStatus.AWAITING:
       return {
-        description: 'Step 1/2: Waiting for transaction confirmation.',
+        description: 'Waiting for transaction confirmation.',
         instruction: 'Please confirm the transaction with your connected wallet.',
       }
     case SafeCreationStatus.WALLET_REJECTED:
       return {
         description: 'Transaction was rejected.',
-        instruction: 'Please cancel or retry the Safe creation process.',
+        instruction: ERROR_TEXT,
       }
     case SafeCreationStatus.PROCESSING:
       return {
-        description: 'Step 2/2: Transaction is being executed.',
+        description: 'Transaction is being executed.',
         instruction: 'Please do not leave this page.',
       }
     case SafeCreationStatus.ERROR:
       return {
         description: 'There was an error.',
-        instruction: 'Please cancel or retry the Safe creation process.',
+        instruction: ERROR_TEXT,
       }
     case SafeCreationStatus.REVERTED:
       return {
         description: 'Transaction was reverted.',
-        instruction: 'Please cancel or retry the Safe creation process.',
+        instruction: ERROR_TEXT,
       }
     case SafeCreationStatus.TIMEOUT:
       return {
         description: 'Transaction was not found. Be aware that it might still be processed.',
-        instruction: 'Please cancel or retry the Safe creation process.',
+        instruction: ERROR_TEXT,
       }
     case SafeCreationStatus.SUCCESS:
       return {
@@ -46,7 +48,7 @@ const getStep = (status: SafeCreationStatus) => {
       }
     case SafeCreationStatus.INDEX_FAILED:
       return {
-        description: 'Your Safe is created and will be indexed by our services shortly.',
+        description: 'Your Safe is created and will be picked up by our services shortly.',
         instruction:
           'You can already open your Safe. It might take a moment until it becomes fully usable in the interface.',
       }
