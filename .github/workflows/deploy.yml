@@ -1,8 +1,12 @@
 name: Deploy to dev/staging
 
 on:
+  pull_request:
+
   push:
     branches:
+      dev
+      main
 
 jobs:
   deploy:
