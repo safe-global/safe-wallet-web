@@ -127,7 +127,7 @@ const CreateSafe = () => {
       ),
     },
     {
-      title: 'Select network and name Safe',
+      title: 'Select network and name your Safe',
       subtitle: 'Select the network on which to create your Safe',
       render: (data, onSubmit, onBack, setStep) => (
         <CreateSafeStep1 setSafeName={setSafeName} data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
@@ -135,8 +135,7 @@ const CreateSafe = () => {
     },
     {
       title: 'Owners and confirmations',
-      subtitle:
-        'Here you can add owners to your Safe and determine how many owners need to confirm it before executing a transaction',
+      subtitle: 'Set the owner wallets of your Safe and how many need to confirm to execute a valid transaction.',
       render: (data, onSubmit, onBack, setStep) => (
         <CreateSafeStep2
           setDynamicHint={setDynamicHint}
@@ -150,7 +149,7 @@ const CreateSafe = () => {
     {
       title: 'Review',
       subtitle:
-        "You're about to create a new Safe and will have to confirm a transaction with your currently connected wallet",
+        "You're about to create a new Safe and will have to confirm the transaction with your connected wallet.",
       render: (data, onSubmit, onBack, setStep) => (
         <CreateSafeStep3 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
       ),

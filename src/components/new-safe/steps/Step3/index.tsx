@@ -102,6 +102,8 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
                     shortAddress={false}
                     showPrefix={false}
                     showName
+                    hasExplorer
+                    showCopyButton
                     key={index}
                   />
                 ))}
@@ -126,21 +128,20 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
             <ReviewRow
               name="Est. network fee"
               value={
-                <Box p={1} sx={{ backgroundColor: 'secondary.background', width: 'fit-content' }}>
-                  <Typography variant="body1">
-                    <b>
-                      &asymp; {totalFee} {chain?.nativeCurrency.symbol}
-                    </b>
+                <>
+                  <Box p={1} sx={{ backgroundColor: 'secondary.background', width: 'fit-content' }}>
+                    <Typography variant="body1">
+                      <b>
+                        &asymp; {totalFee} {chain?.nativeCurrency.symbol}
+                      </b>
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" color="text.secondary" mt={1}>
+                    You will have to confirm a transaction with your connected wallet.
                   </Typography>
-                </Box>
+                </>
               }
             />
-            <Grid item xs={3} />
-            <Grid item xs={9} pt={1} pl={3}>
-              <Typography variant="body2" color="text.secondary">
-                You will have to confirm a transaction with your currently connected wallet.
-              </Typography>
-            </Grid>
           </Grid>
         </Grid>
 

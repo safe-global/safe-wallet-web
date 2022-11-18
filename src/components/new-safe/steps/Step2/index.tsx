@@ -99,7 +99,7 @@ const CreateSafeStep2 = ({
             <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
               Safe Mobile owner key (optional){' '}
               <Tooltip
-                title="The Safe Mobile app allows generating new signer keys so you can use them as a signer in a new or existing Safe."
+                title="The Safe Mobile app allows for the generation of owner keys that you can add to this or an existing Safe."
                 arrow
                 placement="top"
               >
@@ -108,7 +108,7 @@ const CreateSafeStep2 = ({
                 </span>
               </Tooltip>
             </Typography>
-            <Typography variant="body2">Use your mobile phone as your additional owner key</Typography>
+            <Typography variant="body2">Use your mobile phone as an additional owner key</Typography>
           </Box>
         </Box>
 
@@ -117,7 +117,7 @@ const CreateSafeStep2 = ({
           <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
             Threshold
             <Tooltip
-              title="The threshold of a Safe specifies how many owner accounts need to confirm a Safe transaction before it can be executed."
+              title="The threshold of a Safe specifies how many owners need to confirm a Safe transaction before it can be executed."
               arrow
               placement="top"
             >
