@@ -25,7 +25,6 @@ type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
 
 const GOOGLE_ANALYTICS_COOKIE_LIST = ['_ga', '_gat', '_gid']
-const EMPTY_SAFE_APP = 'unknown'
 
 const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
   LIVE: {

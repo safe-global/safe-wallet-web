@@ -31,9 +31,9 @@ export const OVERVIEW_EVENTS = {
     action: 'Sidebar',
     category: OVERVIEW_CATEGORY,
   },
-  ADDED_SAFES_ON_NETWORK: {
+  TOTAL_ADDED_SAFES: {
     event: EventType.META,
-    action: 'Added Safes on', // Safe name is appended trackEvent on SafeList
+    action: 'Total added Safes',
     category: OVERVIEW_CATEGORY,
   },
   WHATS_NEW: {
