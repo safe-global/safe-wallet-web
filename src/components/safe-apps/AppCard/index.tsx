@@ -22,7 +22,7 @@ import { SvgIcon } from '@mui/material'
 import type { UrlObject } from 'url'
 import { resolveHref } from 'next/dist/shared/lib/router/router'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
-import SandboxedIcon from '../SandboxedIcon'
+import SafeAppIcon from '../SafeAppIcon'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
@@ -168,7 +168,7 @@ const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAp
     <AppCardContainer url={url} variant="compact">
       <div className={styles.compactCardContainer}>
         {/* App logo */}
-        <SandboxedIcon src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
+        <SafeAppIcon src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
 
         {/* TODO No share button per design. Only info button. Leaving the code for reusing the styles */}
         {/* Share button */}
@@ -215,7 +215,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   return (
     <AppCardContainer url={url}>
       <CardHeader
-        avatar={<SandboxedIcon src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />}
+        avatar={<SafeAppIcon src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />}
         action={
           <div className={styles.actionContainer}>
             {/* Share button */}

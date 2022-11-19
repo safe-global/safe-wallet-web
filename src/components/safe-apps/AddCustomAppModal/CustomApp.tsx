@@ -7,7 +7,7 @@ import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import CopyButton from '@/components/common/CopyButton'
 import ShareIcon from '@/public/images/common/share.svg'
 import css from './styles.module.css'
-import SandboxedIcon from '../SandboxedIcon'
+import SafeAppIcon from '../SafeAppIcon'
 
 type CustomAppProps = {
   safeApp: SafeAppData
@@ -21,7 +21,7 @@ const CustomApp = ({ safeApp, shareUrl }: CustomAppProps) => {
 
   return (
     <div className={css.customAppContainer}>
-      <SandboxedIcon src={safeApp.iconUrl} alt={safeApp.name} width={48} height={48} />
+      <SafeAppIcon src={safeApp.iconUrl} alt={safeApp.name} width={48} height={48} />
 
       <Typography component="h2" mt={2} color="text.primary" fontWeight={700}>
         {safeApp.name}
