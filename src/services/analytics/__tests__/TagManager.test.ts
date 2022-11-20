@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 
 import * as gtm from '../TagManager'
 
-const { default: TagManager, _getGtmScript } = gtm
+const { default: TagManager } = gtm
 
 const MOCK_ID = 'GTM-123456'
 const MOCK_AUTH = 'key123'
@@ -10,18 +10,39 @@ const MOCK_PREVIEW = 'env-0'
 
 jest.mock('js-cookie', () => ({
   remove: jest.fn(),
-  set: jest.fn(),
-  get: jest.fn(),
 }))
 
 describe('TagManager', () => {
-  beforeEach(() => {
-    jest.resetModules()
+  const originalLocation = window.location
+
+  // Mock `location.reload`
+  beforeAll(() => {
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: {
+        ...originalLocation,
+        reload: jest.fn(),
+      },
+    })
   })
 
-  describe('getGtmScript', () => {
+  // Remove mock
+  afterAll(() => {
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: originalLocation,
+    })
+  })
+
+  // Clear GTM between tests
+  afterEach(() => {
+    document.head.innerHTML = ''
+    delete window.dataLayer
+  })
+
+  describe('TagManager._getScript', () => {
     it('should use the id, auth and preview', () => {
-      const script1 = _getGtmScript({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
+      const script1 = TagManager._getScript({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
 
       expect(script1.innerHTML).toContain(MOCK_ID)
       expect(script1.innerHTML).toContain(`&gtm_auth=${MOCK_AUTH}`)
@@ -48,7 +69,7 @@ describe('TagManager', () => {
 
       expect(document.head.childNodes).toHaveLength(2)
 
-      // Script added by `_getGtmScript`
+      // Script added by `TagManager._getScript`
       // @ts-expect-error
       expect(document.head.childNodes[0].src).toBe(
         `https://www.googletagmanager.com/gtm.js?id=${MOCK_ID}&gtm_auth=${MOCK_AUTH}&gtm_preview=${MOCK_PREVIEW}&gtm_cookies_win=x`,
@@ -56,20 +77,20 @@ describe('TagManager', () => {
 
       // Manually added script
       expect(document.head.childNodes[1]).toStrictEqual(
-        _getGtmScript({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW }),
+        TagManager._getScript({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW }),
       )
 
       expect(window.dataLayer).toHaveLength(1)
       expect(window.dataLayer[0]).toStrictEqual({ event: 'gtm.js', 'gtm.start': expect.any(Number) })
     })
 
-    it('should not re-initialize the scripts if previously enabled', () => {
-      const getGtmScriptSpy = jest.spyOn(gtm, '_getGtmScript')
+    it('should not re-initialize the scripts if previously enabled', async () => {
+      const getScriptSpy = jest.spyOn(gtm.default, '_getScript')
 
       TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
       TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
 
-      expect(getGtmScriptSpy).toHaveBeenCalledTimes(1)
+      expect(getScriptSpy).toHaveBeenCalledTimes(1)
     })
 
     it('should push to the dataLayer if povided', () => {
@@ -110,20 +131,20 @@ describe('TagManager', () => {
   })
 
   describe('TagManager.disable', () => {
-    it('should not remove GA cookies and reload if mounted', () => {
+    it('should not remove GA cookies and reload if not mounted', () => {
+      TagManager.disable()
+
+      expect(Cookies.remove).not.toHaveBeenCalled()
+
+      expect(global.location.reload).not.toHaveBeenCalled()
+    })
+    it('should remove GA cookies and reload if mounted', () => {
       TagManager.initialize({
         gtmId: MOCK_ID,
         auth: MOCK_AUTH,
         preview: MOCK_PREVIEW,
       })
 
-      TagManager.disable()
-
-      expect(Cookies.remove).not.toHaveBeenCalled()
-
-      expect(location.reload).not.toHaveBeenCalled()
-    })
-    it('should remove GA cookies', () => {
       TagManager.disable()
 
       const path = '/'
@@ -133,7 +154,7 @@ describe('TagManager', () => {
       expect(Cookies.remove).toHaveBeenCalledWith('_gat', { path, domain })
       expect(Cookies.remove).toHaveBeenCalledWith('_gid', { path, domain })
 
-      expect(location.reload).toHaveBeenCalled()
+      expect(global.location.reload).toHaveBeenCalled()
     })
   })
 })

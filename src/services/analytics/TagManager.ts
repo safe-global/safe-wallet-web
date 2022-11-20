@@ -17,12 +17,12 @@ export type TagManagerArgs = {
 
 const DATA_LAYER_NAME = 'dataLayer'
 
-// Initialization scripts
+const TagManager = {
+  // `jest.spyOn` is not possible if outside of `TagManager`
+  _getScript: ({ gtmId, auth, preview }: TagManagerArgs) => {
+    const script = document.createElement('script')
 
-export const _getGtmScript = ({ gtmId, auth, preview }: TagManagerArgs) => {
-  const script = document.createElement('script')
-
-  const gtmScript = `
+    const gtmScript = `
     (function (w, d, s, l, i) {
       w[l] = w[l] || [];
       w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
@@ -34,12 +34,10 @@ export const _getGtmScript = ({ gtmId, auth, preview }: TagManagerArgs) => {
         f.parentNode.insertBefore(j, f);
       })(window, document, 'script', '${DATA_LAYER_NAME}', '${gtmId}');`
 
-  script.innerHTML = gtmScript
+    script.innerHTML = gtmScript
 
-  return script
-}
-
-const TagManager = {
+    return script
+  },
   isInitialized: () => {
     const GTM_SCRIPT = 'https://www.googletagmanager.com/gtm.js'
 
@@ -53,7 +51,7 @@ const TagManager = {
     // Initialize dataLayer (with configuration)
     window[DATA_LAYER_NAME] = args.dataLayer ? [args.dataLayer] : []
 
-    const script = _getGtmScript(args)
+    const script = TagManager._getScript(args)
 
     // Initialize GTM. This pushes the default dataLayer event:
     // { "gtm.start": new Date().getTime(), event: "gtm.js" }
@@ -84,7 +82,7 @@ const TagManager = {
       })
     })
 
-    // `gtmScriptRef` will remain in memory until a new session
+    // Injected script will remain in memory until new session
     location.reload()
   },
 }
