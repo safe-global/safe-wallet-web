@@ -4,10 +4,10 @@ import css from './styles.module.css'
 import { Card, LinearProgress, CardHeader, Avatar, Typography, CardContent } from '@mui/material'
 import type { TxStepperProps } from './useCardStepper'
 import { useCardStepper } from './useCardStepper'
+import palette from '@/styles/colors'
 
 export function CardStepper<StepperData>(props: TxStepperProps<StepperData>) {
-  // TODO: Check if there is a type from MUI that we could use for this
-  const [progressColor, setProgressColor] = useState('static.primary')
+  const [progressColor, setProgressColor] = useState(palette.secondary.main)
   const { activeStep, onSubmit, onBack, stepData, setStep } = useCardStepper<StepperData>(props)
   const { steps } = props
   const currentStep = steps[activeStep]
