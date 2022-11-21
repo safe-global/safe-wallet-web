@@ -16,6 +16,7 @@ import css from './styles.module.css'
 import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
 import NetworkWarning from '@/components/new-safe/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 
 enum CreateSafeStep2Fields {
   owners = 'owners',
@@ -74,8 +75,22 @@ const CreateSafeStep2 = ({
     onBack(formData)
   }
 
+  const onFormSubmit = handleSubmit((data) => {
+    onSubmit(data)
+
+    trackEvent({
+      ...CREATE_SAFE_EVENTS.OWNERS,
+      label: data.owners.length,
+    })
+
+    trackEvent({
+      ...CREATE_SAFE_EVENTS.THRESHOLD,
+      label: data.threshold,
+    })
+  })
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id={STEP_2_FORM_ID}>
+    <form onSubmit={onFormSubmit} id={STEP_2_FORM_ID}>
       <FormProvider {...formMethods}>
         <Box className={layoutCss.row}>
           {ownerFields.map((field, i) => (

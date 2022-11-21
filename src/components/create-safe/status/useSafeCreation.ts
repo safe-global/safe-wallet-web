@@ -12,6 +12,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { PendingSafeData, PendingSafeTx } from '@/components/create-safe/types.d'
 import type { EthersError } from '@/utils/ethers-utils'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
@@ -40,6 +41,7 @@ export const useSafeCreation = (
 
   const createSafeCallback = useCallback(
     async (txHash: string, tx: PendingSafeTx) => {
+      trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
       setPendingSafe((prev) => (prev ? { ...prev, txHash, tx } : undefined))
     },
     [setPendingSafe],

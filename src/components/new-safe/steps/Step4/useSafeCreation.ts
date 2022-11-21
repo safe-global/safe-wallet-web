@@ -17,6 +17,7 @@ import {
 } from '@/components/new-safe/steps/Step4/logic'
 import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -46,6 +47,7 @@ export const useSafeCreation = (
 
   const createSafeCallback = useCallback(
     async (txHash: string, tx: PendingSafeTx) => {
+      trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
       setPendingSafe((prev) => (prev ? { ...prev, txHash, tx } : undefined))
     },
     [setPendingSafe],
