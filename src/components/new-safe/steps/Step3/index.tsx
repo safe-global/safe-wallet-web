@@ -20,6 +20,7 @@ import useSyncSafeCreationStep from '@/components/new-safe/CreateSafe/useSyncSaf
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import NetworkWarning from '@/components/new-safe/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import palette from '@/styles/colors'
 
 const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
   return (
@@ -129,7 +130,15 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
               name="Est. network fee"
               value={
                 <>
-                  <Box p={1} sx={{ backgroundColor: 'secondary.background', width: 'fit-content' }}>
+                  <Box
+                    p={1}
+                    sx={{
+                      backgroundColor: palette.secondary.background,
+                      color: 'static.main',
+                      width: 'fit-content',
+                      borderRadius: '6px',
+                    }}
+                  >
                     <Typography variant="body1">
                       <b>
                         &asymp; {totalFee} {chain?.nativeCurrency.symbol}

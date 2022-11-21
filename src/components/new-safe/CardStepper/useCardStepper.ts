@@ -1,4 +1,4 @@
-import type { ReactElement, SetStateAction } from 'react'
+import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import { useState } from 'react'
 import { trackEvent, MODALS_CATEGORY } from '@/services/analytics'
 
@@ -7,6 +7,7 @@ export type StepRenderProps<TData> = {
   onSubmit: (data: Partial<TData>) => void
   onBack: (data?: Partial<TData>) => void
   setStep: (step: number) => void
+  setProgressColor?: Dispatch<SetStateAction<string>>
 }
 
 export type Step<TData> = {
@@ -17,6 +18,7 @@ export type Step<TData> = {
     onSubmit: StepRenderProps<TData>['onSubmit'],
     onBack: StepRenderProps<TData>['onBack'],
     setStep: StepRenderProps<TData>['setStep'],
+    setProgressColor: StepRenderProps<TData>['setProgressColor'],
   ) => ReactElement
 }
 

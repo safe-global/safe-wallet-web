@@ -29,6 +29,10 @@
   padding: var(--space-3) 52px;
 }
 
+.progress :global .MuiLinearProgress-root::before {
+  display: none;
+}
+
 @media (max-width: 600px) {
   .header {
     padding: var(--space-2);
