@@ -13,6 +13,7 @@ import MsgSigners from '@/components/messages/MsgSigners'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignMsgButton from '@/components/messages/SignMsgButton'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { MessageStatus } from '@/hooks/useMessages'
 import type { Message } from '@/hooks/useMessages'
 
 import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
@@ -53,6 +54,7 @@ const Msg = ({ message }: { message: Message['message'] }): ReactElement => {
 const MsgDetails = ({ msg }: { msg: Message }) => {
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
+  const isConfirmed = msg.status === MessageStatus.CONFIRMED
 
   return (
     <div className={txDetailsCss.container}>
@@ -122,7 +124,7 @@ const MsgDetails = ({ msg }: { msg: Message }) => {
       </div>
       <div className={txDetailsCss.txSigners}>
         <MsgSigners msg={msg} />
-        {wallet && !isWrongChain && (
+        {wallet && !isWrongChain && !isConfirmed && (
           <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
             <SignMsgButton msg={msg} />
           </Box>
