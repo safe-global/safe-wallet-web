@@ -83,5 +83,5 @@
 
 /* Keystone modal */
 #kv_sdk_container + .ReactModalPortal > div {
-  z-index: calc(var(--onboard-modal-z-index) + 1) !important;
+  z-index: 1301 !important;
 }
