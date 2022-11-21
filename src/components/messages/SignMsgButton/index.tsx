@@ -28,7 +28,7 @@ const SignMsgButton = ({ msg, compact = false }: { msg: Message; compact?: boole
     <>
       <Track {...MESSAGE_EVENTS.SIGN}>
         {compact ? (
-          <Tooltip title="Confirm" arrow placement="top">
+          <Tooltip title="Sign" arrow placement="top">
             <span>
               <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
                 <CheckIcon fontSize="small" />
@@ -37,7 +37,7 @@ const SignMsgButton = ({ msg, compact = false }: { msg: Message; compact?: boole
           </Tooltip>
         ) : (
           <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
-            Confirm
+            Sign
           </Button>
         )}
       </Track>

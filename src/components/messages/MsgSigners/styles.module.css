@@ -1,0 +1,9 @@
+.step :global .MuiStepLabel-label {
+  color: var(--color-text-primary);
+  font-size: 16px !important;
+}
+
+.step :global .MuiStepLabel-iconContainer {
+  color: var(--color-primary-main);
+  align-items: center;
+}
