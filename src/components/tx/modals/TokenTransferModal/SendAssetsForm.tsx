@@ -193,7 +193,9 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         <Button
           variant="contained"
           type="submit"
-          disabled={Boolean(errors.amount || errors.tokenAddress || errors.type || errors.OFAC)}
+          disabled={Boolean(
+            errors.amount?.message || errors.tokenAddress?.message || errors.type?.message || errors.OFAC?.message,
+          )}
         >
           Next
         </Button>
