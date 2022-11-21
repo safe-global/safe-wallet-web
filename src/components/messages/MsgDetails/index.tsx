@@ -1,7 +1,9 @@
-import { Accordion, AccordionSummary, Typography, AccordionDetails } from '@mui/material'
+import { Accordion, AccordionSummary, Typography, AccordionDetails, Link } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import CodeIcon from '@mui/icons-material/Code'
 import classNames from 'classnames'
+import { useState } from 'react'
+import type { ReactElement } from 'react'
 
 import { formatDateTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -13,6 +15,37 @@ import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
 import singleTxDecodedCss from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded/styles.module.css'
 import infoDetailsCss from '@/components/transactions/InfoDetails/styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
+
+const Msg = ({ message }: { message: Message['message'] }): ReactElement => {
+  const [showMsg, setShowMsg] = useState(true)
+
+  const handleToggleMsg = () => {
+    setShowMsg((prev) => !prev)
+  }
+
+  if (typeof message === 'string') {
+    return <>{message}</>
+  }
+
+  return (
+    <div>
+      {showMsg && (
+        <pre style={{ margin: 0 }}>
+          <code>{JSON.stringify(message, null, 2)}</code>
+        </pre>
+      )}
+      <Link
+        component="button"
+        onClick={handleToggleMsg}
+        fontSize="medium"
+        fontWeight={700}
+        sx={{ textDecoration: 'underline' }}
+      >
+        {showMsg ? 'Hide' : 'Show'}
+      </Link>
+    </div>
+  )
+}
 
 const MsgDetails = ({ msg }: { msg: Message }) => {
   const wallet = useWallet()
@@ -35,7 +68,7 @@ const MsgDetails = ({ msg }: { msg: Message }) => {
 
         <div className={txDetailsCss.txSummary}>
           <TxDataRow title="Message:">
-            {typeof msg.message === 'string' ? msg.message : <pre>{JSON.stringify(msg.message, null, 2)}</pre>}
+            <Msg message={msg.message} />
           </TxDataRow>
           <TxDataRow title="Hash:">{msg.messageHash}</TxDataRow>
           <TxDataRow title="Created:">{formatDateTime(msg.creationTimestamp)}</TxDataRow>
