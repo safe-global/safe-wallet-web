@@ -149,6 +149,24 @@ describe('useSafeCreation', () => {
     })
   })
 
+  it('should watch a tx even if no wallet is connected', async () => {
+    jest.spyOn(wallet, 'default').mockReturnValue(null)
+    const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
+
+    renderHook(() =>
+      useSafeCreation(
+        { ...mockPendingSafe, txHash: '0x123', tx: mockSafeInfo },
+        mockSetPendingSafe,
+        mockStatus,
+        mockSetStatus,
+      ),
+    )
+
+    await waitFor(() => {
+      expect(watchSafeTxSpy).toHaveBeenCalledTimes(1)
+    })
+  })
+
   it('should not watch a tx if there is no txHash', async () => {
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
 
