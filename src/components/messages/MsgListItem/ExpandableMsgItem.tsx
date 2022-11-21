@@ -2,9 +2,11 @@ import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import type { ReactElement } from 'react'
 
-import txListItemCss from '@/components/transactions/TxListItem/styles.module.css'
+import MsgDetails from '@/components/messages/MsgDetails'
 import MsgSummary from '@/components/messages/MsgSummary'
 import type { Message } from '@/hooks/useMessages'
+
+import txListItemCss from '@/components/transactions/TxListItem/styles.module.css'
 
 const ExpandableMsgItem = ({ item }: { item: Message }): ReactElement => {
   return (
@@ -14,7 +16,7 @@ const ExpandableMsgItem = ({ item }: { item: Message }): ReactElement => {
       </AccordionSummary>
 
       <AccordionDetails sx={{ padding: 0 }}>
-        <pre>{JSON.stringify(item, null, 3)}</pre>
+        <MsgDetails msg={item} />
       </AccordionDetails>
     </Accordion>
   )
