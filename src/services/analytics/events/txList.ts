@@ -41,3 +41,10 @@ export const TX_LIST_EVENTS = {
     category: TX_LIST_CATEGORY,
   },
 }
+
+export const MESSAGE_EVENTS = {
+  SIGN: {
+    action: 'Sign message',
+    category: TX_LIST_CATEGORY,
+  },
+}
