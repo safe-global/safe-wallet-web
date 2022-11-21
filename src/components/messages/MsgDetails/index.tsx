@@ -8,7 +8,7 @@ import type { ReactElement } from 'react'
 import { formatDateTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
-import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
+import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import type { Message } from '@/hooks/useMessages'
 
 import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
@@ -70,14 +70,16 @@ const MsgDetails = ({ msg }: { msg: Message }) => {
           <TxDataRow title="Message:">
             <Msg message={msg.message} />
           </TxDataRow>
-          <TxDataRow title="Hash:">{msg.messageHash}</TxDataRow>
+          <TxDataRow title="Hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>
           <TxDataRow title="Created:">{formatDateTime(msg.creationTimestamp)}</TxDataRow>
           <TxDataRow title="Last modified:">{formatDateTime(msg.modifiedTimestamp)}</TxDataRow>
         </div>
 
         {msg.preparedSignature && (
           <div className={classNames(txDetailsCss.txSummary, txDetailsCss.multiSend)}>
-            <TxDataRow title="Prepared signature:">{msg.preparedSignature}</TxDataRow>
+            <TxDataRow title="Prepared signature:">
+              {generateDataRowValue(msg.preparedSignature, 'hash', true)}
+            </TxDataRow>
           </div>
         )}
 
