@@ -12,6 +12,7 @@ import layoutCss from '@/components/new-safe/CreateSafe/styles.module.css'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/NetworkWarning'
 import NameInput from '@/components/common/NameInput'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 
 type CreateSafeStep1Form = {
   name: string
@@ -49,6 +50,10 @@ function CreateSafeStep1({
     const name = data.name || fallbackName
     setSafeName(name)
     onSubmit({ ...data, name })
+
+    if (data.name) {
+      trackEvent(CREATE_SAFE_EVENTS.NAME_SAFE)
+    }
   }
 
   const isDisabled = isWrongChain || !isValid
