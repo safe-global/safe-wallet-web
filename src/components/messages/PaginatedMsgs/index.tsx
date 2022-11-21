@@ -18,7 +18,7 @@ const NoMessages = (): ReactElement => {
       img={<NoMessagesIcon />}
       text={
         <Typography variant="body1" color="primary.light" m={2} maxWidth="600px">
-          Some applications allow you to interact with then via off-chain contract signatures (&ldquo;messages&ldquo;)
+          Some applications allow you to interact with them via off-chain contract signatures (&ldquo;messages&ldquo;)
           that you can generate with your Safe.
         </Typography>
       }

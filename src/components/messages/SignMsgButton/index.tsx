@@ -4,7 +4,6 @@ import type { ReactElement } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 
 import useWallet from '@/hooks/wallets/useWallet'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import Track from '@/components/common/Track'
 import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
 import useIsMessageSignableBy from '@/hooks/useIsMsgSignableBy'
@@ -14,7 +13,6 @@ import type { Message } from '@/hooks/useMessages'
 const SignMsgButton = ({ msg, compact = false }: { msg: Message; compact?: boolean }): ReactElement => {
   const wallet = useWallet()
   const isSignable = useIsMessageSignableBy(msg, wallet?.address || '')
-  const isSafeOwner = useIsSafeOwner()
   const isPending = useIsMsgPending(msg.messageHash)
 
   const onClick = (e: SyntheticEvent) => {
@@ -22,7 +20,7 @@ const SignMsgButton = ({ msg, compact = false }: { msg: Message; compact?: boole
     // TODO: Open modal
   }
 
-  const isDisabled = !isSignable || !isSafeOwner || isPending
+  const isDisabled = !isSignable || isPending
 
   return (
     <>
