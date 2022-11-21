@@ -66,7 +66,7 @@ describe('useIsMessageSignableBy', () => {
     expect(result.current).toBe(false)
   })
 
-  it('returns false if the message if not previously signed', () => {
+  it('returns false if the message is already signed by the connected wallet', () => {
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
     const message = {
