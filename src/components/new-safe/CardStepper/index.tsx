@@ -6,6 +6,7 @@ import type { TxStepperProps } from './useCardStepper'
 import { useCardStepper } from './useCardStepper'
 
 export function CardStepper<StepperData>(props: TxStepperProps<StepperData>) {
+  // TODO: Check if there is a type from MUI that we could use for this
   const [progressColor, setProgressColor] = useState('static.primary')
   const { activeStep, onSubmit, onBack, stepData, setStep } = useCardStepper<StepperData>(props)
   const { steps } = props
