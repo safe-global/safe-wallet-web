@@ -148,7 +148,9 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         const { detailedExecutionInfo } = await getTransactionDetails(chainId, txId)
 
         if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
-          trackSafeAppEvent(SAFE_APPS_EVENTS.TRANSACTION_CONFIRMED, appName)
+          if (detailedExecutionInfo.confirmationsRequired === 1 || detailedExecutionInfo.confirmations.length === 1) {
+            trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION_CONFIRMED, appName)
+          }
           communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, safeAppRequestId)
         }
 
@@ -168,7 +170,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       closeSignMessageModal()
     }
 
-    trackSafeAppEvent(SAFE_APPS_EVENTS.TRANSACTION_REJECTED, appName)
+    trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION_REJECTED, appName)
   }
 
   const onAcceptPermissionRequest = (origin: string, requestId: RequestId) => {
