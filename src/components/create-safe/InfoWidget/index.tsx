@@ -29,7 +29,13 @@ const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidget
   }
 
   return (
-    <Card sx={{ backgroundColor: ({ palette }) => palette[variant]?.background }}>
+    <Card
+      sx={{
+        backgroundColor: ({ palette }) => palette[variant]?.background,
+        borderColor: ({ palette }) => palette[variant]?.main,
+        borderWidth: 1,
+      }}
+    >
       <CardHeader
         className={css.cardHeader}
         title={

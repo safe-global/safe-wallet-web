@@ -55,8 +55,10 @@ const getStep = (status: SafeCreationStatus) => {
   }
 }
 
-const StatusMessage = ({ status }: { status: SafeCreationStatus }) => {
+const StatusMessage = ({ status, isError }: { status: SafeCreationStatus; isError: boolean }) => {
   const stepInfo = getStep(status)
+
+  const color = isError ? 'success' : 'warning'
 
   return (
     <>
@@ -68,7 +70,13 @@ const StatusMessage = ({ status }: { status: SafeCreationStatus }) => {
       </Box>
       {stepInfo.instruction && (
         <Box
-          sx={({ palette }) => ({ backgroundColor: palette.warning.background, borderRadius: '6px' })}
+          sx={({ palette }) => ({
+            backgroundColor: palette[color].background,
+            borderColor: palette[color].light,
+            borderWidth: 1,
+            borderStyle: 'solid',
+            borderRadius: '6px',
+          })}
           padding={3}
           mt={4}
           mb={0}

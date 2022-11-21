@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import { Box, Button, Divider, Grid, Paper, Tooltip, Typography } from '@mui/material'
+import { useCallback, useEffect, useState } from 'react'
+import { Box, Button, Divider, Paper, Tooltip, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import Track from '@/components/common/Track'
@@ -29,7 +29,7 @@ export type PendingSafeData = NewSafeFormData & {
   saltNonce: number
 }
 
-export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) => {
+export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFormData>) => {
   const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
   const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const router = useRouter()
@@ -69,7 +69,17 @@ export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) 
   }, [chainId, pendingSafe, router, setPendingSafe])
 
   const displaySafeLink = status >= SafeCreationStatus.INDEXED
-  const displayActions = status >= SafeCreationStatus.WALLET_REJECTED && status <= SafeCreationStatus.TIMEOUT
+  const isError = status >= SafeCreationStatus.WALLET_REJECTED && status <= SafeCreationStatus.TIMEOUT
+
+  useEffect(() => {
+    if (!setProgressColor) return
+
+    if (isError) {
+      setProgressColor('error.main')
+    } else {
+      setProgressColor('static.primary')
+    }
+  }, [isError, setProgressColor])
 
   return (
     <Paper
@@ -78,10 +88,10 @@ export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) 
       }}
     >
       <Box className={layoutCss.row}>
-        <StatusMessage status={status} />
+        <StatusMessage status={status} isError={isError} />
       </Box>
 
-      {!displayActions && pendingSafe && (
+      {!isError && pendingSafe && (
         <>
           <Divider />
           <Box className={layoutCss.row}>
@@ -103,11 +113,11 @@ export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) 
         </>
       )}
 
-      {displayActions && (
+      {isError && (
         <>
           <Divider />
           <Box className={layoutCss.row}>
-            <Grid container justifyContent="center" gap={2}>
+            <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
               <Track {...CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE}>
                 <Button onClick={onClose} variant="outlined">
                   Cancel
@@ -124,7 +134,7 @@ export const CreateSafeStatus = ({ setStep }: StepRenderProps<NewSafeFormData>) 
                   </Typography>
                 </Tooltip>
               </Track>
-            </Grid>
+            </Box>
           </Box>
         </>
       )}

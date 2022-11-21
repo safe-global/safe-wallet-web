@@ -56,6 +56,8 @@ const darkPalette = {
   },
   static: {
     main: '#121312',
+    primary: '#12FF80',
+    light: '#EFFFF4',
   },
 }
 export default darkPalette

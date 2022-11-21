@@ -129,7 +129,15 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
               name="Est. network fee"
               value={
                 <>
-                  <Box p={1} sx={{ backgroundColor: 'secondary.background', width: 'fit-content' }}>
+                  <Box
+                    p={1}
+                    sx={{
+                      backgroundColor: 'static.light',
+                      color: 'static.main',
+                      width: 'fit-content',
+                      borderRadius: '6px',
+                    }}
+                  >
                     <Typography variant="body1">
                       <b>
                         &asymp; {totalFee} {chain?.nativeCurrency.symbol}
