@@ -32,6 +32,7 @@ export type Message = {
     owner: AddressEx
     signature: string
   }[]
+  proposedBy: AddressEx
   preparedSignature: string | null // Name subject to change
 }
 
@@ -47,13 +48,22 @@ const MOCK_DATA: (MessageDateLabel | Message)[] = [
     messageHash: '0x123',
     status: MessageStatus.NEEDS_CONFIRMATION,
     logoUri: '',
-    name: 'Example name',
-    message: 'Example message',
+    name: 'Example dApp',
+    message: 'Example string message',
     creationTimestamp: Date.now(),
     modifiedTimestamp: Date.now(),
-    confirmationsSubmitted: 0,
-    confirmationsRequired: 1,
-    confirmations: [],
+    confirmationsSubmitted: 1,
+    confirmationsRequired: 2,
+    confirmations: [
+      {
+        owner: { value: '0x123', name: 'John' },
+        signature: '0x123',
+      },
+    ],
+    proposedBy: {
+      value: '0x123',
+      name: 'John',
+    },
     preparedSignature: null,
   },
   {
@@ -61,13 +71,24 @@ const MOCK_DATA: (MessageDateLabel | Message)[] = [
     messageHash: '0x456',
     status: MessageStatus.CONFIRMED,
     logoUri: '',
-    name: 'Example name',
-    message: 'Example message',
+    name: 'Example dApp',
+    message: {
+      example: 'Typed data message',
+    },
     creationTimestamp: Date.now(),
     modifiedTimestamp: Date.now(),
     confirmationsSubmitted: 1,
     confirmationsRequired: 1,
-    confirmations: [{ owner: { value: '0x123', name: 'Alice' }, signature: '0x123' }],
+    confirmations: [
+      {
+        owner: { value: '0x123', name: 'Alice' },
+        signature: '0x123',
+      },
+    ],
+    proposedBy: {
+      value: '0x123',
+      name: 'Alice',
+    },
     preparedSignature: '0x123',
   },
 ]
