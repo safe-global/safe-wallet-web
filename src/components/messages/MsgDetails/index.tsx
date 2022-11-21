@@ -86,7 +86,7 @@ const MsgDetails = ({ msg }: { msg: Message }) => {
             <Accordion
               variant="elevation"
               key={confirmation.signature}
-              expanded={confirmation.owner.value === wallet?.address}
+              defaultExpanded={confirmation.owner.value === wallet?.address}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <div className={singleTxDecodedCss.summary}>
