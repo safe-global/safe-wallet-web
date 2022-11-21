@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import {
   Button,
@@ -15,6 +16,7 @@ import {
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import TokenIcon from '@/components/common/TokenIcon'
+import css from './styles.module.css'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
@@ -25,6 +27,7 @@ import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useAddressBook from '@/hooks/useAddressBook'
+import { SANCTIONED_ADDRESSES, SANCTIONED_ADDRESS_MESSAGE } from '@/utils/ofac-sanctioned-addresses'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -50,6 +53,7 @@ export enum SendAssetsField {
   tokenAddress = 'tokenAddress',
   amount = 'amount',
   type = 'type',
+  OFAC = 'OFAC',
 }
 
 export type SendAssetsFormData = {
@@ -57,6 +61,7 @@ export type SendAssetsFormData = {
   [SendAssetsField.tokenAddress]: string
   [SendAssetsField.amount]: string
   [SendAssetsField.type]: SendTxType
+  [SendAssetsField.OFAC]: string
 }
 
 type SendAssetsFormProps = {
@@ -78,6 +83,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     handleSubmit,
     setValue,
     watch,
+    setError,
     formState: { errors },
   } = formMethods
 
@@ -103,6 +109,14 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
     setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals))
   }
+
+  useEffect(() => {
+    if (recipient && SANCTIONED_ADDRESSES.includes(recipient.toLowerCase())) {
+      setError(SendAssetsField.OFAC, { message: SANCTIONED_ADDRESS_MESSAGE })
+    } else {
+      setError(SendAssetsField.OFAC, { message: '' })
+    }
+  }, [recipient, setError])
 
   return (
     <FormProvider {...formMethods}>
@@ -173,9 +187,14 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               })}
             />
           </FormControl>
+          {!!errors.OFAC && <p className={css.error}>{errors.OFAC.message}</p>}
         </DialogContent>
 
-        <Button variant="contained" type="submit">
+        <Button
+          variant="contained"
+          type="submit"
+          disabled={Boolean(errors.amount || errors.tokenAddress || errors.type || errors.OFAC)}
+        >
           Next
         </Button>
       </form>

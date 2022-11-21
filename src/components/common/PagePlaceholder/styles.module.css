@@ -7,3 +7,8 @@
   text-align: center;
   flex: 1;
 }
+
+.container p {
+  max-width: 1024px;
+  text-align: justify;
+}

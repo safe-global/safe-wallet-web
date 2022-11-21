@@ -124,3 +124,6 @@ export const SANCTIONED_ADDRESSES = [
   '0x756c4628e57f7e7f8a459ec2752968360cf4d1aa',
   '0xd82ed8786d7c69dc7e052f7a542ab047971e73d2',
 ].map((x) => x.toLowerCase())
+
+export const SANCTIONED_ADDRESS_MESSAGE =
+  'The wallet address has been sanctioned by the U.S. Department of the Treasury. All U.S. persons are prohibited from accessing, receiving, accepting, or facilitating any property and interests in property (including use of any technology, software or software patch(es)) of these designated digital wallet addresses.  These prohibitions include the making of any contribution or provision of funds, goods, or services by, to, or for the benefit of any blocked person and the receipt of any contribution or provision of funds, goods, or services from any such person and all designated digital asset wallets.'

@@ -5,6 +5,7 @@ import PagePlaceholder from '../PagePlaceholder'
 import { AppRoutes } from '@/config/routes'
 import Link from 'next/link'
 import useWallet from '@/hooks/wallets/useWallet'
+import { SANCTIONED_ADDRESS_MESSAGE } from '@/utils/ofac-sanctioned-addresses'
 
 const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement => {
   const { safeError } = useSafeInfo()
@@ -12,7 +13,7 @@ const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement =
 
   let walletError = ''
   if (wallet && wallet.sanctioned) {
-    walletError = 'This wallet address has been sanctioned by the OFAC.'
+    walletError = SANCTIONED_ADDRESS_MESSAGE
   }
 
   if (!safeError && !walletError) return <>{children}</>
