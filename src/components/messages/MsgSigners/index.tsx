@@ -1,5 +1,5 @@
 import { useState, type ReactElement } from 'react'
-import { Box, Link, Step, StepConnector, StepLabel, Stepper, type StepProps } from '@mui/material'
+import { Box, Link, List, ListItem, ListItemIcon, ListItemText } from '@mui/material'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -11,29 +11,13 @@ import useIsMessageSignableBy from '@/hooks/useIsMsgSignableBy'
 import type { Message } from '@/hooks/useMessages'
 
 import css from '@/components/messages/MsgSigners/styles.module.css'
+
+// TODO: Migrate TxSigners to no longer use a Stepper and move CSS there
 import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 
 // Icons
 
-const DotIcon = () => <FiberManualRecordIcon className={txSignersCss.icon} />
-
-const StyledStep = ({
-  $bold,
-  sx,
-  ...rest
-}: {
-  $bold?: boolean
-} & StepProps) => (
-  <Step
-    className={css.step}
-    sx={{
-      '.MuiStepLabel-label': {
-        fontWeight: `${$bold ? 'bold' : 'normal'} !important`,
-      },
-    }}
-    {...rest}
-  />
-)
+const DotIcon = () => <FiberManualRecordIcon className={css.dot} />
 
 const shouldHideConfirmations = (msg: Message): boolean => {
   const confirmationsNeeded = msg.confirmationsRequired - msg.confirmationsSubmitted
@@ -59,48 +43,56 @@ export const MsgSigners = ({ msg }: { msg: Message }): ReactElement => {
   const isConfirmed = confirmationsNeeded <= 0 || isPending || canSign
 
   return (
-    <Stepper
-      orientation="vertical"
-      nonLinear
-      connector={<StepConnector sx={{ padding: '3px 0' }} />}
-      className={txSignersCss.stepper}
-    >
-      <StyledStep $bold>
-        <StepLabel icon={<AddCircleIcon className={txSignersCss.icon} />}>Created</StepLabel>
-      </StyledStep>
-      <StyledStep $bold>
-        <StepLabel icon={<CheckCircleIcon className={txSignersCss.icon} />}>
+    <List className={css.signers}>
+      <ListItem>
+        <ListItemIcon>
+          <AddCircleIcon className={css.icon} />
+        </ListItemIcon>
+        <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
+      </ListItem>
+      <ListItem>
+        <ListItemIcon>
+          <CheckCircleIcon className={css.icon} />
+        </ListItemIcon>
+        <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
           Confirmations{' '}
-          <Box className={txSignersCss.confirmationsTotal}>
+          <Box component="span" className={txSignersCss.confirmationsTotal}>
             ({`${confirmationsSubmitted} of ${confirmationsRequired}`})
           </Box>
-        </StepLabel>
-      </StyledStep>
+        </ListItemText>
+      </ListItem>
       {!hideConfirmations &&
         confirmations.map(({ owner }) => (
-          <StyledStep key={owner.value}>
-            <StepLabel icon={<DotIcon />}>
+          <ListItem key={owner.value} sx={{ py: 0 }}>
+            <ListItemIcon>
+              <DotIcon />
+            </ListItemIcon>
+            <ListItemText>
               <EthHashInfo address={owner.value} name={owner.name} hasExplorer showCopyButton />
-            </StepLabel>
-          </StyledStep>
+            </ListItemText>
+          </ListItem>
         ))}
       {confirmations.length > 0 && (
-        <StyledStep>
-          <StepLabel icon={<DotIcon />}>
+        <ListItem>
+          <ListItemIcon>
+            <DotIcon />
+          </ListItemIcon>
+          <ListItemText>
             <Link component="button" onClick={toggleHide} fontSize="medium">
               {hideConfirmations ? 'Show all' : 'Hide all'}
             </Link>
-          </StepLabel>
-        </StyledStep>
+          </ListItemText>
+        </ListItem>
       )}
       {isConfirmed && (
-        <StyledStep expanded>
-          <StepLabel icon={<DotIcon />} sx={{ marginBottom: 1, fontWeight: 'bold' }}>
-            Confirmed
-          </StepLabel>
-        </StyledStep>
+        <ListItem>
+          <ListItemIcon>
+            <DotIcon />
+          </ListItemIcon>
+          <ListItemText>Confirmed</ListItemText>
+        </ListItem>
       )}
-    </Stepper>
+    </List>
   )
 }
 
