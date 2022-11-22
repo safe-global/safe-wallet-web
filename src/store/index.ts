@@ -24,6 +24,7 @@ import { cookiesSlice } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
 import { spendingLimitSlice } from './spendingLimitsSlice'
 import { safeAppsSlice } from './safeAppsSlice'
+import { msgsSlice } from './msgsSlice'
 import { pendingMsgsSlice } from './pendingMsgsSlice'
 
 const rootReducer = combineReducers({
@@ -42,6 +43,7 @@ const rootReducer = combineReducers({
   [popupSlice.name]: popupSlice.reducer,
   [spendingLimitSlice.name]: spendingLimitSlice.reducer,
   [safeAppsSlice.name]: safeAppsSlice.reducer,
+  [msgsSlice.name]: msgsSlice.reducer,
   [pendingMsgsSlice.name]: pendingMsgsSlice.reducer,
 })
 

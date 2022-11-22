@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 
 import MsgDetails from '@/components/messages/MsgDetails'
 import MsgSummary from '@/components/messages/MsgSummary'
-import type { Message } from '@/hooks/useMessages'
+import type { Message } from '@/store/msgsSlice'
 
 import txListItemCss from '@/components/transactions/TxListItem/styles.module.css'
 

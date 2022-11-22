@@ -2,7 +2,7 @@ import { renderHook } from '@/tests/test-utils'
 import * as useIsMsgPendingHook from '@/hooks/useIsMsgPending'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
 import useMessageStatus from '../useMessageStatus'
-import type { Message, MessageStatus } from '../useMessages'
+import type { Message, MessageStatus } from '@/store/msgsSlice'
 import type { ConnectedWallet } from '@/services/onboard'
 
 describe('useMessageStatus', () => {

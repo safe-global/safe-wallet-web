@@ -9,7 +9,7 @@ import { formatDateTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import type { Message } from '@/hooks/useMessages'
+import type { Message } from '@/store/msgsSlice'
 
 import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
 import singleTxDecodedCss from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded/styles.module.css'
