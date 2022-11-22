@@ -10,10 +10,10 @@ const getMessageHash = (message: string | Record<string, any>): string => {
   return _TypedDataEncoder.encode(message.domain, message.types, message.message)
 }
 
-export const dispatchMsgProposal = (_message: string | Record<string, any>) => {
+export const dispatchMsgProposal = (message: string | Record<string, any>, _safeAppId: number) => {
   let proposedMsg: Message | undefined
 
-  const messageHash = getMessageHash(_message)
+  const messageHash = getMessageHash(message)
 
   try {
     // TODO: Propose and save response
