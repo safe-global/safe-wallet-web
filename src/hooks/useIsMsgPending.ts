@@ -1,6 +1,8 @@
-// TODO: Extend with pending status of message confirmation
-const useIsMsgPending = (_messageHash: string): boolean => {
-  return false
+import { useAppSelector } from '@/store'
+import { selectPendingMsgByHash } from '@/store/pendingMsgsSlice'
+
+const useIsMsgPending = (messageHash: string): boolean => {
+  return useAppSelector((state) => selectPendingMsgByHash(state, messageHash))
 }
 
 export default useIsMsgPending

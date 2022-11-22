@@ -51,6 +51,6 @@ export const txSubscribe = txEventBus.subscribe.bind(txEventBus)
 // Log all events
 Object.values(TxEvent).forEach((event: TxEvent) => {
   txSubscribe<TxEvent>(event, (detail) => {
-    console.info(`${event} event received`, detail)
+    console.info(`Transaction ${event} event received`, detail)
   })
 })

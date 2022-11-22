@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { capitalize } from '@/utils/formatters'
+import { formatError } from '@/utils/formatters'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
@@ -34,14 +34,6 @@ enum Variant {
   INFO = 'info',
   SUCCESS = 'success',
   ERROR = 'error',
-}
-
-// Format the error message
-const formatError = (error: Error & { reason?: string }): string => {
-  let { reason } = error
-  if (!reason) return ''
-  if (!reason.endsWith('.')) reason += '.'
-  return capitalize(reason)
 }
 
 const useTxNotifications = (): void => {
