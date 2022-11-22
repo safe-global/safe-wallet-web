@@ -8,8 +8,7 @@
  */
 
 import type { TagManagerArgs } from './TagManager'
-import TagManager, { DATA_LAYER_NAME } from './TagManager'
-import Cookies from 'js-cookie'
+import TagManager from './TagManager'
 import {
   IS_PRODUCTION,
   GOOGLE_TAG_MANAGER_ID,
@@ -25,9 +24,6 @@ import type { AbTest } from '../tracking/abTesting'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
-
-const GOOGLE_ANALYTICS_COOKIE_LIST = ['_ga', '_gat', '_gid']
-const EMPTY_SAFE_APP = 'unknown'
 
 const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
   LIVE: {
@@ -71,20 +67,7 @@ export const gtmInit = (pagePath: string): void => {
   })
 }
 
-const isGtmLoaded = (): boolean => {
-  return typeof window !== 'undefined' && !!window[DATA_LAYER_NAME]
-}
-
-export const gtmClear = (): void => {
-  if (!isGtmLoaded()) return
-
-  // Delete GA cookies
-  const path = '/'
-  const domain = `.${location.host.split('.').slice(-2).join('.')}`
-  GOOGLE_ANALYTICS_COOKIE_LIST.forEach((cookie) => {
-    Cookies.remove(cookie, { path, domain })
-  })
-}
+export const gtmClear = TagManager.disable
 
 type GtmEvent = {
   event: EventType
@@ -110,13 +93,7 @@ type SafeAppGtmEvent = ActionGtmEvent & {
   safeAppSDKVersion?: string
 }
 
-const gtmSend = (event: GtmEvent): void => {
-  console.info('[Analytics]', event)
-
-  if (!isGtmLoaded()) return
-
-  TagManager.dataLayer(event)
-}
+const gtmSend = TagManager.dataLayer
 
 export const gtmTrack = (eventData: AnalyticsEvent): void => {
   const gtmEvent: ActionGtmEvent = {
