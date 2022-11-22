@@ -29,11 +29,13 @@ describe('useMsgPendingStatuses', () => {
   it('should unset a message as pending when creation failed', () => {
     renderHook(() => useMsgPendingStatuses())
 
-    msgDispatch(MsgEvent.PROPOSE_FAILED, { error: Error() })
+    msgDispatch(MsgEvent.PROPOSE_FAILED, {
+      messageHash: '0x456',
+      error: Error(),
+    })
 
-    // Not `messageHash` exists in the event detail
+    expect(clearPendingMsg).toHaveBeenCalledWith('0x456')
     expect(setPendingMsg).not.toHaveBeenCalled()
-    expect(clearPendingMsg).not.toHaveBeenCalled()
   })
 
   it('should set a message as pending when it is confirmed', () => {

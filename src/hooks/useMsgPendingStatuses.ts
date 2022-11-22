@@ -20,13 +20,7 @@ const useMsgPendingStatuses = () => {
     const entries = Object.entries(pendingStatuses) as [keyof typeof pendingStatuses, boolean][]
 
     const unsubFns = entries.map(([event, isPending]) =>
-      msgSubscribe(event, (detail) => {
-        const messageHash = 'messageHash' in detail && detail.messageHash
-
-        if (!messageHash) {
-          return
-        }
-
+      msgSubscribe(event, ({ messageHash }) => {
         if (!isPending) {
           dispatch(clearPendingMsg(messageHash))
           return

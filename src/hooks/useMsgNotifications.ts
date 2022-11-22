@@ -25,13 +25,11 @@ const useMsgNotifications = () => {
         const isSuccess = event === MsgEvent.PROPOSE || event === MsgEvent.SIGNATURE_PREPARED
         const message = isError ? `${baseMessage}${formatError(detail.error)}` : baseMessage
 
-        const groupKey = 'messageHash' in detail ? detail.messageHash : ''
-
         dispatch(
           showNotification({
             message,
             detailedMessage: isError ? detail.error.message : undefined,
-            groupKey,
+            groupKey: detail.messageHash,
             variant: isError ? 'error' : isSuccess ? 'success' : 'info',
           }),
         )

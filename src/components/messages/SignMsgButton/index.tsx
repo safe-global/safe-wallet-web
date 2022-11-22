@@ -1,23 +1,25 @@
 import { Button, Tooltip, IconButton } from '@mui/material'
-import type { SyntheticEvent } from 'react'
-import type { ReactElement } from 'react'
+import { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
+import type { SyntheticEvent, ReactElement } from 'react'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import Track from '@/components/common/Track'
 import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
 import useIsMessageSignableBy from '@/hooks/useIsMsgSignableBy'
 import useIsMsgPending from '@/hooks/useIsMsgPending'
+import MsgModal from '@/components/messages/MsgModal'
 import type { Message } from '@/store/msgsSlice'
 
 const SignMsgButton = ({ msg, compact = false }: { msg: Message; compact?: boolean }): ReactElement => {
+  const [open, setOpen] = useState(false)
   const wallet = useWallet()
   const isSignable = useIsMessageSignableBy(msg, wallet?.address || '')
   const isPending = useIsMsgPending(msg.messageHash)
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
-    // TODO: Open modal
+    setOpen(true)
   }
 
   const isDisabled = !isSignable || isPending
@@ -39,6 +41,8 @@ const SignMsgButton = ({ msg, compact = false }: { msg: Message; compact?: boole
           </Button>
         )}
       </Track>
+
+      {open && <MsgModal onClose={() => setOpen(false)} msg={msg} />}
     </>
   )
 }
