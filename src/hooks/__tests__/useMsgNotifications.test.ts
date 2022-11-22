@@ -20,7 +20,7 @@ describe('useMsgNotifications', () => {
     expect(showNotification).toHaveBeenCalledWith({
       message: 'You successfully signed the message.',
       groupKey: '0x123',
-      variant: 'info',
+      variant: 'success',
     })
   })
 
