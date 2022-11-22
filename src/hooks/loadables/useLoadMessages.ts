@@ -62,14 +62,18 @@ const MOCK_DATA: MessageListPage['results'] = [
   },
 ]
 
-export const useLoadChains = (): AsyncResult<MessageListPage['results']> => {
+export const useLoadMessages = (): AsyncResult<MessageListPage> => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
 
-  const [data, error, loading] = useAsync<MessageListPage['results']>(() => {
+  const [data, error, loading] = useAsync<MessageListPage>(() => {
     if (!safeLoaded) {
       return
     }
-    return Promise.resolve(MOCK_DATA)
+    return Promise.resolve({
+      next: undefined,
+      previous: undefined,
+      results: MOCK_DATA,
+    })
   }, [safeLoaded, safe.chainId, safeAddress])
 
   // Log errors
@@ -82,4 +86,4 @@ export const useLoadChains = (): AsyncResult<MessageListPage['results']> => {
   return [data, error, loading]
 }
 
-export default useLoadChains
+export default useLoadMessages
