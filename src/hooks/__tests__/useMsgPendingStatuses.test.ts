@@ -34,9 +34,8 @@ describe('useMsgPendingStatuses', () => {
       error: Error(),
     })
 
-    // Not `messageHash` exists in the event detail
+    expect(clearPendingMsg).toHaveBeenCalledWith('0x456')
     expect(setPendingMsg).not.toHaveBeenCalled()
-    expect(clearPendingMsg).not.toHaveBeenCalled()
   })
 
   it('should set a message as pending when it is confirmed', () => {
