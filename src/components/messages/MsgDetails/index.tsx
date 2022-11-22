@@ -1,8 +1,7 @@
-import { Accordion, AccordionSummary, Typography, AccordionDetails, Link, Box } from '@mui/material'
+import { Accordion, AccordionSummary, Typography, AccordionDetails, Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import CodeIcon from '@mui/icons-material/Code'
 import classNames from 'classnames'
-import { useState } from 'react'
 import type { ReactElement } from 'react'
 
 import { formatDateTime } from '@/utils/date'
@@ -14,44 +13,14 @@ import useWallet from '@/hooks/wallets/useWallet'
 import SignMsgButton from '@/components/messages/SignMsgButton'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { MessageStatus } from '@/store/msgsSlice'
+import Msg from '@/components/messages/Msg'
 import type { Message } from '@/store/msgsSlice'
 
 import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
 import singleTxDecodedCss from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded/styles.module.css'
 import infoDetailsCss from '@/components/transactions/InfoDetails/styles.module.css'
 
-const Msg = ({ message }: { message: Message['message'] }): ReactElement => {
-  const [showMsg, setShowMsg] = useState(true)
-
-  const handleToggleMsg = () => {
-    setShowMsg((prev) => !prev)
-  }
-
-  if (typeof message === 'string') {
-    return <>{message}</>
-  }
-
-  return (
-    <div>
-      {showMsg && (
-        <pre style={{ margin: 0 }}>
-          <code>{JSON.stringify(message, null, 2)}</code>
-        </pre>
-      )}
-      <Link
-        component="button"
-        onClick={handleToggleMsg}
-        fontSize="medium"
-        fontWeight={700}
-        sx={{ textDecoration: 'underline' }}
-      >
-        {showMsg ? 'Hide' : 'Show'}
-      </Link>
-    </div>
-  )
-}
-
-const MsgDetails = ({ msg }: { msg: Message }) => {
+const MsgDetails = ({ msg }: { msg: Message }): ReactElement => {
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const isConfirmed = msg.status === MessageStatus.CONFIRMED

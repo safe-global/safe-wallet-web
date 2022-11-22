@@ -38,6 +38,31 @@ const MOCK_DATA: MessageListPage['results'] = [
   {
     type: MessageListItemType.MESSAGE,
     messageHash: '0x456',
+    status: MessageStatus.NEEDS_CONFIRMATION,
+    logoUri: '',
+    name: 'Example dApp',
+    message: {
+      example: 'Typed data message',
+    },
+    creationTimestamp: Date.now(),
+    modifiedTimestamp: Date.now(),
+    confirmationsSubmitted: 1,
+    confirmationsRequired: 2,
+    confirmations: [
+      {
+        owner: { value: '0x123', name: 'Alice' },
+        signature: '0x123',
+      },
+    ],
+    proposedBy: {
+      value: '0x123',
+      name: 'Alice',
+    },
+    preparedSignature: '0x123',
+  },
+  {
+    type: MessageListItemType.MESSAGE,
+    messageHash: '0x456',
     status: MessageStatus.CONFIRMED,
     logoUri: '',
     name: 'Example dApp',
