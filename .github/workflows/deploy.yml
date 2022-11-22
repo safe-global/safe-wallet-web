@@ -5,8 +5,8 @@ on:
 
   push:
     branches:
-      dev
-      main
+      - dev
+      - main
 
 jobs:
   deploy:
@@ -98,7 +98,7 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            ## Test link
+            ## Branch preview link
             https://pr${{ github.event.number }}--webcore.review-react-br.5afe.dev
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
