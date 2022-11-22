@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { useState } from 'react'
 import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import {
@@ -61,7 +62,6 @@ export type SendAssetsFormData = {
   [SendAssetsField.tokenAddress]: string
   [SendAssetsField.amount]: string
   [SendAssetsField.type]: SendTxType
-  [SendAssetsField.OFAC]: string
 }
 
 type SendAssetsFormProps = {
@@ -70,6 +70,7 @@ type SendAssetsFormProps = {
 }
 
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
+  const [OFACError, setOFACError] = useState<string>()
   const { balances } = useBalances()
   const addressBook = useAddressBook()
 
@@ -112,9 +113,9 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
   useEffect(() => {
     if (recipient && SANCTIONED_ADDRESSES.includes(recipient.toLowerCase())) {
-      setError(SendAssetsField.OFAC, { message: SANCTIONED_ADDRESS_MESSAGE })
+      setOFACError(SANCTIONED_ADDRESS_MESSAGE)
     } else {
-      setError(SendAssetsField.OFAC, { message: '' })
+      setOFACError(undefined)
     }
   }, [recipient, setError])
 
@@ -187,14 +188,14 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               })}
             />
           </FormControl>
-          {!!errors.OFAC && <p className={css.error}>{errors.OFAC.message}</p>}
+          {!!OFACError && <p className={css.error}>{OFACError}</p>}
         </DialogContent>
 
         <Button
           variant="contained"
           type="submit"
           disabled={Boolean(
-            errors.amount?.message || errors.tokenAddress?.message || errors.type?.message || errors.OFAC?.message,
+            errors.amount?.message || errors.tokenAddress?.message || errors.type?.message || OFACError,
           )}
         >
           Next

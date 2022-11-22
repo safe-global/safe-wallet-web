@@ -27,7 +27,7 @@ const NewTxButton = (): ReactElement => {
         onClick={onClick}
         variant="contained"
         size="small"
-        disabled={!isSafeOwner || isWrongChain}
+        disabled={!isSafeOwner || isWrongChain || wallet?.sanctioned}
         fullWidth
         className={css.button}
         disableElevation
@@ -36,7 +36,7 @@ const NewTxButton = (): ReactElement => {
           ? 'Not connected'
           : isWrongChain
           ? 'Wrong wallet chain'
-          : isSafeOwner
+          : isSafeOwner && !wallet?.sanctioned
           ? 'New transaction'
           : 'Read only'}
       </Button>
