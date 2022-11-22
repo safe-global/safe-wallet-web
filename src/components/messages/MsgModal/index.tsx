@@ -1,10 +1,11 @@
-import { Grid, DialogActions, Button, Box, Typography, DialogContent } from '@mui/material'
+import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import ModalDialog, { ModalDialogTitle } from '@/components/common/ModalDialog'
 import ImageFallback from '@/components/common/ImageFallback'
 import Msg from '@/components/messages/Msg'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import RequiredIcon from '@/public/images/messages/required.svg'
 import type { Message } from '@/store/msgsSlice'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
@@ -47,8 +48,8 @@ const MsgModal = ({ onClose, msg }: { onClose: () => void; msg: Message }): Reac
         </ModalDialogTitle>
 
         <DialogContent>
-          <Box textAlign="center" my={2}>
-            <img src="/images/messages/required.svg" alt="An icon depicting a signature being signed." />
+          <Box textAlign="center" mt={4} mb={2}>
+            <SvgIcon component={RequiredIcon} viewBox="0 0 32 32" fontSize="large" />
           </Box>
           <Typography variant="h4" textAlign="center" gutterBottom>
             Confirm message
