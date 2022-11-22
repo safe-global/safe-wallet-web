@@ -70,7 +70,7 @@ export const msgsMiddleware: Middleware<{}, RootState> = (store) => (next) => (a
 
         const { messageHash } = result
         if (pendingMsgs[messageHash]) {
-          msgDispatch(MsgEvent.CONFIRMATION_SAVED, { messageHash })
+          msgDispatch(MsgEvent.UPDATED, { messageHash })
         }
       }
     }

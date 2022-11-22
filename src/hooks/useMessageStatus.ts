@@ -24,7 +24,8 @@ const useMessageStatus = (msg: Message) => {
   }
 
   const hasWalletSigned = wallet && msg.confirmations.some(({ owner }) => owner.value === wallet.address)
-  if (hasWalletSigned) {
+  const isConfirmed = msg.status === MessageStatus.CONFIRMED
+  if (hasWalletSigned && !isConfirmed) {
     return STATUS_LABELS[AwaitingConfirmationsStatus]
   }
 

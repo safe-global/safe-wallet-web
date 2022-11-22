@@ -20,15 +20,16 @@ describe('useMsgPendingStatuses', () => {
   it('should set a message as pending when it is created', () => {
     renderHook(() => useMsgPendingStatuses())
 
-    msgDispatch(MsgEvent.CREATE, { messageHash: '0x123' })
+    msgDispatch(MsgEvent.PROPOSE, { messageHash: '0x123' })
 
+    expect(clearPendingMsg).not.toHaveBeenCalled()
     expect(setPendingMsg).toHaveBeenCalledWith('0x123')
   })
 
   it('should unset a message as pending when creation failed', () => {
     renderHook(() => useMsgPendingStatuses())
 
-    msgDispatch(MsgEvent.CREATE_FAILED, { error: Error() })
+    msgDispatch(MsgEvent.PROPOSE_FAILED, { error: Error() })
 
     // Not `messageHash` exists in the event detail
     expect(setPendingMsg).not.toHaveBeenCalled()
@@ -38,32 +39,36 @@ describe('useMsgPendingStatuses', () => {
   it('should set a message as pending when it is confirmed', () => {
     renderHook(() => useMsgPendingStatuses())
 
-    msgDispatch(MsgEvent.CONFIRM, { messageHash: '0x789' })
+    msgDispatch(MsgEvent.CONFIRM_PROPOSE, { messageHash: '0x789' })
 
+    expect(clearPendingMsg).not.toHaveBeenCalled()
     expect(setPendingMsg).toHaveBeenCalledWith('0x789')
   })
 
   it('should unset a message as pending when confirmation failed', () => {
     renderHook(() => useMsgPendingStatuses())
 
-    msgDispatch(MsgEvent.CONFIRM_FAILED, { messageHash: '0x012', error: Error() })
+    msgDispatch(MsgEvent.CONFIRM_PROPOSE_FAILED, { messageHash: '0x012', error: Error() })
 
     expect(clearPendingMsg).toHaveBeenCalledWith('0x012')
+    expect(setPendingMsg).not.toHaveBeenCalled()
   })
 
   it('should unset a message as pending when it was saved', () => {
     renderHook(() => useMsgPendingStatuses())
 
-    msgDispatch(MsgEvent.CONFIRMATION_SAVED, { messageHash: '0x345' })
+    msgDispatch(MsgEvent.UPDATED, { messageHash: '0x345' })
 
     expect(clearPendingMsg).toHaveBeenCalledWith('0x345')
+    expect(setPendingMsg).not.toHaveBeenCalled()
   })
 
   it('should unset a message as pending when it is fully confirmed', () => {
     renderHook(() => useMsgPendingStatuses())
 
-    msgDispatch(MsgEvent.FULLY_CONFIRMED, { messageHash: '0x678' })
+    msgDispatch(MsgEvent.SIGNATURE_PREPARED, { messageHash: '0x678' })
 
     expect(clearPendingMsg).toHaveBeenCalledWith('0x678')
+    expect(setPendingMsg).not.toHaveBeenCalled()
   })
 })

@@ -1,29 +1,31 @@
 import EventBus from '../EventBus'
 
 export enum MsgEvent {
-  CREATE = 'CREATE',
-  CREATE_FAILED = 'CREATE_FAILED',
-  CONFIRM = 'CONFIRM',
-  CONFIRM_FAILED = 'CONFIRM_FAILED',
-  CONFIRMATION_SAVED = 'CONFIRMATION_SAVED',
-  FULLY_CONFIRMED = 'CONFIRMED',
+  // Create message
+  PROPOSE = 'PROPOSE',
+  PROPOSE_FAILED = 'PROPOSE_FAILED',
+
+  // Confirm message
+  CONFIRM_PROPOSE = 'CONFIRM_PROPOSE',
+  CONFIRM_PROPOSE_FAILED = 'CONFIRM_PROPOSE_FAILED',
+
+  // Dispatched after the backend returns a new message signature
+  // Used to clear the pending status of a message
+  UPDATED = 'UPDATED',
+
+  // Final signature prepared
+  SIGNATURE_PREPARED = 'SIGNATURE_PREPARED',
 }
 
 type MessageHash = { messageHash: string }
 
 interface MsgEvents {
-  // New message signed/sent to backend
-  [MsgEvent.CREATE]: MessageHash
-  // New message signing rejected or backend error
-  [MsgEvent.CREATE_FAILED]: { error: Error }
-  // Existing message signed/sent to backend
-  [MsgEvent.CONFIRM]: MessageHash
-  // Existing message signing rejected or backend error
-  [MsgEvent.CONFIRM_FAILED]: MessageHash & { error: Error }
-  // Confirmed message returned after `CREATE` or `CONFIRM`
-  [MsgEvent.CONFIRMATION_SAVED]: MessageHash
-  // Fully confirmed message returned after `CREATE` or `CONFIRM`
-  [MsgEvent.FULLY_CONFIRMED]: MessageHash
+  [MsgEvent.PROPOSE]: MessageHash
+  [MsgEvent.PROPOSE_FAILED]: { error: Error }
+  [MsgEvent.CONFIRM_PROPOSE]: MessageHash
+  [MsgEvent.CONFIRM_PROPOSE_FAILED]: MessageHash & { error: Error }
+  [MsgEvent.UPDATED]: MessageHash
+  [MsgEvent.SIGNATURE_PREPARED]: MessageHash
 }
 
 const msgEventBus = new EventBus<MsgEvents>()
