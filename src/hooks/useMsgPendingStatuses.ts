@@ -5,12 +5,12 @@ import { useAppDispatch } from '@/store'
 import { clearPendingMsg, setPendingMsg } from '@/store/pendingMsgsSlice'
 
 const pendingStatuses: Record<MsgEvent, boolean> = {
-  [MsgEvent.CREATE]: true,
-  [MsgEvent.CREATE_FAILED]: false,
-  [MsgEvent.CONFIRM]: true,
-  [MsgEvent.CONFIRM_FAILED]: false,
-  [MsgEvent.CONFIRMATION_SAVED]: false,
-  [MsgEvent.FULLY_CONFIRMED]: false,
+  [MsgEvent.PROPOSE]: true,
+  [MsgEvent.PROPOSE_FAILED]: false,
+  [MsgEvent.CONFIRM_PROPOSE]: true,
+  [MsgEvent.CONFIRM_PROPOSE_FAILED]: false,
+  [MsgEvent.UPDATED]: false,
+  [MsgEvent.SIGNATURE_PREPARED]: false,
 }
 
 const useMsgPendingStatuses = () => {
@@ -29,6 +29,7 @@ const useMsgPendingStatuses = () => {
 
         if (!isPending) {
           dispatch(clearPendingMsg(messageHash))
+          return
         }
 
         dispatch(setPendingMsg(messageHash))

@@ -15,7 +15,7 @@ describe('useMsgNotifications', () => {
   it('should show a notification when a message is created', () => {
     renderHook(() => useMsgNotifications())
 
-    msgDispatch(MsgEvent.CREATE, { messageHash: '0x123' })
+    msgDispatch(MsgEvent.PROPOSE, { messageHash: '0x123' })
 
     expect(showNotification).toHaveBeenCalledWith({
       message: 'You successfully signed the message.',
@@ -27,7 +27,7 @@ describe('useMsgNotifications', () => {
   it('should show a notification when a message creation fails', () => {
     renderHook(() => useMsgNotifications())
 
-    msgDispatch(MsgEvent.CREATE_FAILED, { error: new Error('Example error') })
+    msgDispatch(MsgEvent.PROPOSE_FAILED, { error: new Error('Example error') })
 
     expect(showNotification).toHaveBeenCalledWith({
       message: 'Signing the message failed. Please try again.',
@@ -40,7 +40,7 @@ describe('useMsgNotifications', () => {
   it('should show a notification when a message is confirmed', () => {
     renderHook(() => useMsgNotifications())
 
-    msgDispatch(MsgEvent.CONFIRM, { messageHash: '0x456' })
+    msgDispatch(MsgEvent.CONFIRM_PROPOSE, { messageHash: '0x456' })
 
     expect(showNotification).toHaveBeenCalledWith({
       message: 'You successfully confirmed the message.',
@@ -52,7 +52,7 @@ describe('useMsgNotifications', () => {
   it('should show a notification when a message confirmation fails', () => {
     renderHook(() => useMsgNotifications())
 
-    msgDispatch(MsgEvent.CONFIRM_FAILED, { messageHash: '0x789', error: new Error('Other error') })
+    msgDispatch(MsgEvent.CONFIRM_PROPOSE_FAILED, { messageHash: '0x789', error: new Error('Other error') })
 
     expect(showNotification).toHaveBeenCalledWith({
       message: 'Confirming the message failed. Please try again.',
@@ -65,7 +65,7 @@ describe('useMsgNotifications', () => {
   it('should show a notification when a message fully is confirmed', () => {
     renderHook(() => useMsgNotifications())
 
-    msgDispatch(MsgEvent.FULLY_CONFIRMED, { messageHash: '0x012' })
+    msgDispatch(MsgEvent.SIGNATURE_PREPARED, { messageHash: '0x012' })
 
     expect(showNotification).toHaveBeenCalledWith({
       message: 'The message was successfully confirmed.',
