@@ -99,6 +99,6 @@ jobs:
         with:
           message: |
             ## Test link
-            https://pr${{ github.event.number }}--webcore.review-react-hr.5afe.dev
+            https://pr${{ github.event.number }}--webcore.review-react-br.5afe.dev
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
