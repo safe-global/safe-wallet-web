@@ -9,6 +9,7 @@ import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 import { waitFor } from '@testing-library/react'
+import type Safe from '@gnosis.pm/safe-core-sdk'
 
 const mockSafeInfo = {
   data: '0x',
@@ -50,7 +51,7 @@ describe('useSafeCreation', () => {
   })
 
   it('should create a safe if there is no txHash and status is AWAITING', async () => {
-    const createSafeSpy = jest.spyOn(logic, 'createNewSafe')
+    const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
     renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus))
 

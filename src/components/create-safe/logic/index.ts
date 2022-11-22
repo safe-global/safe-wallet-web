@@ -172,6 +172,10 @@ export const handleSafeCreationError = (error: EthersError) => {
     }
   }
 
+  if (didRevert(error.receipt)) {
+    return SafeCreationStatus.REVERTED
+  }
+
   return SafeCreationStatus.TIMEOUT
 }
 
