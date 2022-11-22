@@ -1,15 +1,35 @@
 import { MessageStatus } from './useMessages'
 import type { Message } from './useMessages'
+import useIsMsgPending from './useIsMsgPending'
+import useWallet from './wallets/useWallet'
 
-// TODO: Extend with pending status
+const ConfirmingStatus = 'CONFIRMING'
+const AwaitingConfirmationsStatus = 'AWAITING_CONFIRMATIONS'
 
-const STATUS_LABELS = {
+type MsgLocalStatus = MessageStatus | typeof ConfirmingStatus | typeof AwaitingConfirmationsStatus
+
+const STATUS_LABELS: { [key in MsgLocalStatus]: string } = {
+  [ConfirmingStatus]: 'Confirming',
+  [AwaitingConfirmationsStatus]: 'Awaiting confirmations',
   [MessageStatus.CONFIRMED]: 'Confirmed',
   [MessageStatus.NEEDS_CONFIRMATION]: 'Needs confirmation',
 }
 
-const useMessageStatus = (item: Message) => {
-  return STATUS_LABELS[item.status]
+const useMessageStatus = (msg: Message) => {
+  const isPending = useIsMsgPending(msg.messageHash)
+  const wallet = useWallet()
+
+  if (isPending) {
+    return STATUS_LABELS[ConfirmingStatus]
+  }
+
+  const hasWalletSigned = wallet && msg.confirmations.some(({ owner }) => owner.value === wallet.address)
+  const isConfirmed = msg.status === MessageStatus.CONFIRMED
+  if (hasWalletSigned && !isConfirmed) {
+    return STATUS_LABELS[AwaitingConfirmationsStatus]
+  }
+
+  return STATUS_LABELS[msg.status]
 }
 
 export default useMessageStatus
