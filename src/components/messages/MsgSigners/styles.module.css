@@ -1,6 +1,6 @@
 .icon {
-  height: 14px;
-  width: 14px;
+  height: 16px;
+  width: 16px;
 }
 
 .dot {
@@ -34,6 +34,6 @@
   color: var(--color-primary-main);
   justify-content: center;
   min-width: 32px;
-  padding: 8px 0;
+  padding: var(--space-1) 0;
   background-color: var(--color-background-paper);
 }

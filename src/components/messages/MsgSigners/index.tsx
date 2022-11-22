@@ -1,13 +1,12 @@
 import { useState, type ReactElement } from 'react'
-import { Box, Link, List, ListItem, ListItemIcon, ListItemText } from '@mui/material'
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
-import AddCircleIcon from '@mui/icons-material/AddCircle'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import { Box, Link, List, ListItem, ListItemIcon, ListItemText, SvgIcon } from '@mui/material'
 
-import useWallet from '@/hooks/wallets/useWallet'
+// TODO: Migrate TxSigners to use these icons
+import CreatedIcon from '@/public/images/messages/created.svg'
+import SignedIcon from '@/public/images/messages/signed.svg'
+import DotIcon from '@/public/images/messages/dot.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import useIsMsgPending from '@/hooks/useIsMsgPending'
-import useIsMessageSignableBy from '@/hooks/useIsMsgSignableBy'
+import { MessageStatus } from '@/hooks/useMessages'
 import type { Message } from '@/hooks/useMessages'
 
 import css from '@/components/messages/MsgSigners/styles.module.css'
@@ -17,11 +16,32 @@ import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 
 // Icons
 
-const DotIcon = () => <FiberManualRecordIcon className={css.dot} />
+const Created = () => (
+  <SvgIcon
+    component={CreatedIcon}
+    inheritViewBox
+    className={css.icon}
+    sx={{
+      '& path:last-of-type': { fill: ({ palette }) => palette.background.paper },
+    }}
+  />
+)
+
+const Signed = () => (
+  <SvgIcon
+    component={SignedIcon}
+    inheritViewBox
+    className={css.icon}
+    sx={{
+      '& path:last-of-type': { fill: ({ palette }) => palette.background.paper },
+    }}
+  />
+)
+
+const Dot = () => <SvgIcon component={DotIcon} inheritViewBox className={css.dot} />
 
 const shouldHideConfirmations = (msg: Message): boolean => {
-  const confirmationsNeeded = msg.confirmationsRequired - msg.confirmationsSubmitted
-  const isConfirmed = confirmationsNeeded <= 0
+  const isConfirmed = msg.status === MessageStatus.CONFIRMED
 
   // Threshold reached or more than 3 confirmations
   return isConfirmed || msg.confirmations.length > 3
@@ -29,8 +49,6 @@ const shouldHideConfirmations = (msg: Message): boolean => {
 
 export const MsgSigners = ({ msg }: { msg: Message }): ReactElement => {
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(msg))
-  const isPending = useIsMsgPending(msg.messageHash)
-  const wallet = useWallet()
 
   const toggleHide = () => {
     setHideConfirmations((prev) => !prev)
@@ -38,21 +56,19 @@ export const MsgSigners = ({ msg }: { msg: Message }): ReactElement => {
 
   const { confirmations, confirmationsRequired, confirmationsSubmitted } = msg
 
-  const canSign = useIsMessageSignableBy(msg, wallet?.address || '')
-  const confirmationsNeeded = confirmationsRequired - confirmationsSubmitted
-  const isConfirmed = confirmationsNeeded <= 0 || isPending || canSign
+  const isConfirmed = msg.status === MessageStatus.CONFIRMED
 
   return (
     <List className={css.signers}>
       <ListItem>
         <ListItemIcon>
-          <AddCircleIcon className={css.icon} />
+          <Created />
         </ListItemIcon>
         <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
       </ListItem>
       <ListItem>
         <ListItemIcon>
-          <CheckCircleIcon className={css.icon} />
+          <Signed />
         </ListItemIcon>
         <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
           Confirmations{' '}
@@ -65,7 +81,7 @@ export const MsgSigners = ({ msg }: { msg: Message }): ReactElement => {
         confirmations.map(({ owner }) => (
           <ListItem key={owner.value} sx={{ py: 0 }}>
             <ListItemIcon>
-              <DotIcon />
+              <Dot />
             </ListItemIcon>
             <ListItemText>
               <EthHashInfo address={owner.value} name={owner.name} hasExplorer showCopyButton />
@@ -75,7 +91,7 @@ export const MsgSigners = ({ msg }: { msg: Message }): ReactElement => {
       {confirmations.length > 0 && (
         <ListItem>
           <ListItemIcon>
-            <DotIcon />
+            <Dot />
           </ListItemIcon>
           <ListItemText>
             <Link component="button" onClick={toggleHide} fontSize="medium">
@@ -87,7 +103,7 @@ export const MsgSigners = ({ msg }: { msg: Message }): ReactElement => {
       {isConfirmed && (
         <ListItem>
           <ListItemIcon>
-            <DotIcon />
+            <Dot />
           </ListItemIcon>
           <ListItemText>Confirmed</ListItemText>
         </ListItem>
