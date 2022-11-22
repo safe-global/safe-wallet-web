@@ -48,10 +48,11 @@ export const useSafeCreation = (
 
   const createSafeCallback = useCallback(
     async (txHash: string, tx: PendingSafeTx) => {
+      setStatus(SafeCreationStatus.PROCESSING)
       trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
       setPendingSafe((prev) => (prev ? { ...prev, txHash, tx } : undefined))
     },
-    [setPendingSafe],
+    [setStatus, setPendingSafe],
   )
 
   const createSafe = useCallback(async () => {
@@ -74,6 +75,7 @@ export const useSafeCreation = (
       )
 
       await createNewSafe(provider, safeParams)
+      setStatus(SafeCreationStatus.SUCCESS)
     } catch (err) {
       const _err = err as EthersError
       const status = handleSafeCreationError(_err)
@@ -102,13 +104,13 @@ export const useSafeCreation = (
   useEffect(() => {
     if (status !== SafeCreationStatus.AWAITING) return
 
-    if (pendingSafe?.txHash) {
+    if (pendingSafe?.txHash && !isCreating) {
       void watchSafeTx()
       return
     }
 
     void createSafe()
-  }, [createSafe, watchSafeTx, pendingSafe?.txHash, status])
+  }, [createSafe, watchSafeTx, isCreating, pendingSafe?.txHash, status])
 
   return {
     createSafe,
