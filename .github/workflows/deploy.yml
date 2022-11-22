@@ -82,7 +82,7 @@ jobs:
       - name: Deploy PR branch
         if: github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
         env:
-          BUCKET: s3://${{ secrets.AWS_DEVELOPMENT_BUCKET_NAME }}/web-core/pr${{ github.event.number }}
+          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/pr${{ github.event.number }}
         run: |
           cd out
 
@@ -99,6 +99,6 @@ jobs:
         with:
           message: |
             ## Test link
-            https://pr${{ github.event.number }}--safe-web-core.dev.5afe.dev
+            https://pr${{ github.event.number }}--webcore.review-react-hr.5afe.dev
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
