@@ -1,6 +1,5 @@
-import { MessageListItemType } from '@/hooks/useMessages'
-import type { Message } from '@/hooks/useMessages'
-import type { MessageListPage, MessageDateLabel } from '@/hooks/useMessages'
+import { MessageListItemType } from '@/store/msgsSlice'
+import type { Message, MessageListPage, MessageDateLabel } from '@/store/msgsSlice'
 
 export const isMessageListDateLabel = (item: MessageListPage['results'][number]): item is MessageDateLabel => {
   return item.type === MessageListItemType.DATE_LABEL

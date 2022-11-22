@@ -20,7 +20,6 @@ export const pendingMsgsSlice = createSlice({
     setPendingMsg: (state, action: PayloadAction<MessageHash>) => {
       state[action.payload] = true
     },
-    // TODO: Clear when messages are fetched in middleware
     clearPendingMsg: (state, action: PayloadAction<MessageHash>) => {
       delete state[action.payload]
     },
@@ -29,7 +28,7 @@ export const pendingMsgsSlice = createSlice({
 
 export const { setPendingMsg, clearPendingMsg } = pendingMsgsSlice.actions
 
-const selectPendingMsgs = (state: RootState): PendingMsgsState => {
+export const selectPendingMsgs = (state: RootState): PendingMsgsState => {
   return state[pendingMsgsSlice.name]
 }
 

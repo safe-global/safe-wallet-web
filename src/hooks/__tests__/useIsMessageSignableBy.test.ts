@@ -3,7 +3,7 @@ import { renderHook } from '@/tests/test-utils'
 import * as useIsSafeOwnerHook from '@/hooks/useIsSafeOwner'
 import * as useIsWrongChainHook from '@/hooks/useIsWrongChain'
 import useIsMessageSignableBy from '../useIsMsgSignableBy'
-import type { Message } from '@/hooks/useMessages'
+import type { Message } from '@/store/msgsSlice'
 
 describe('useIsMessageSignableBy', () => {
   it('returns true if the message is signable by the wallet', () => {

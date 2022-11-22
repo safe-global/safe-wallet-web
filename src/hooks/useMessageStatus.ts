@@ -1,5 +1,5 @@
-import { MessageStatus } from './useMessages'
-import type { Message } from './useMessages'
+import { MessageStatus } from '@/store/msgsSlice'
+import type { Message } from '@/store/msgsSlice'
 import useIsMsgPending from './useIsMsgPending'
 import useWallet from './wallets/useWallet'
 

@@ -1,6 +1,6 @@
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import type { Message } from '@/hooks/useMessages'
+import type { Message } from '@/store/msgsSlice'
 
 const useIsMessageSignableBy = (message: Message, walletAddress: string): boolean => {
   const isSafeOwner = useIsSafeOwner()

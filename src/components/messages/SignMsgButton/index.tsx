@@ -8,7 +8,7 @@ import Track from '@/components/common/Track'
 import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
 import useIsMessageSignableBy from '@/hooks/useIsMsgSignableBy'
 import useIsMsgPending from '@/hooks/useIsMsgPending'
-import type { Message } from '@/hooks/useMessages'
+import type { Message } from '@/store/msgsSlice'
 
 const SignMsgButton = ({ msg, compact = false }: { msg: Message; compact?: boolean }): ReactElement => {
   const wallet = useWallet()

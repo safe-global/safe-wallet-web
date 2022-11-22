@@ -6,8 +6,8 @@ import CreatedIcon from '@/public/images/messages/created.svg'
 import SignedIcon from '@/public/images/messages/signed.svg'
 import DotIcon from '@/public/images/messages/dot.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { MessageStatus } from '@/hooks/useMessages'
-import type { Message } from '@/hooks/useMessages'
+import { MessageStatus } from '@/store/msgsSlice'
+import type { Message } from '@/store/msgsSlice'
 
 import css from '@/components/messages/MsgSigners/styles.module.css'
 

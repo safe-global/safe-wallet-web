@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 
 import ImageFallback from '@/components/common/ImageFallback'
-import type { Message } from '@/hooks/useMessages'
+import type { Message } from '@/store/msgsSlice'
 
 import txTypeCss from '@/components/transactions/TxType/styles.module.css'
 
