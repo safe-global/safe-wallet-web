@@ -12,6 +12,7 @@ import {
   isAwaitingExecution,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
+  isMultisigDetailedExecutionInfo,
   isMultisigExecutionInfo,
   isSupportedMultiSendAddress,
   isTxQueued,
@@ -45,6 +46,9 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   const awaitingExecution = isAwaitingExecution(txSummary.txStatus)
   const isUnsigned =
     isMultisigExecutionInfo(txSummary.executionInfo) && txSummary.executionInfo.confirmationsSubmitted === 0
+  const isUntrusted =
+    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
+    txDetails.detailedExecutionInfo.trusted === false
 
   return (
     <>
@@ -75,7 +79,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
         )}
 
         <div className={css.txSummary}>
-          {isUnsigned && <UnsignedWarning />}
+          {isUntrusted && <UnsignedWarning />}
           {txDetails.txData?.operation === Operation.DELEGATE && (
             <div className={css.delegateCall}>
               <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
