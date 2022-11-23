@@ -32,8 +32,8 @@ import ErrorBoundary from '@/components/common/ErrorBoundary'
 import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
 import PsaBanner from '@/components/common/PsaBanner'
-import useSignedMessageNotifications from '@/hooks/useSignedMessageNotifications'
-import useSignedMessagePendingStatuses from '@/hooks/useSignedMessagePendingStatuses'
+import useSafeMessageNotifications from '@/hooks/useSafeMessageNotifications'
+import useSafeMessagePendingStatuses from '@/hooks/useSafeMessagePendingStatuses'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -48,10 +48,10 @@ const InitApp = (): null => {
   useInitWeb3()
   useInitSafeCoreSDK()
   useTxNotifications()
-  useSignedMessageNotifications()
+  useSafeMessageNotifications()
   useSafeNotifications()
   useTxPendingStatuses()
-  useSignedMessagePendingStatuses()
+  useSafeMessagePendingStatuses()
   useTxTracking()
   useBeamer()
 

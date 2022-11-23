@@ -1,20 +1,20 @@
 import { useAppSelector } from '@/store'
 import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { selectSignedMessages } from '@/store/signedMessagesSlice'
-import type { SignedMessageListPage } from '@/store/signedMessagesSlice'
+import { selectSafeMessages } from '@/store/safeMessagesSlice'
+import type { SafeMessageListPage } from '@/store/safeMessagesSlice'
 
 const useMessages = (
   pageUrl?: string,
 ): {
-  page?: SignedMessageListPage
+  page?: SafeMessageListPage
   error?: string
   loading: boolean
 } => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
-  const messagesState = useAppSelector(selectSignedMessages)
+  const messagesState = useAppSelector(selectSafeMessages)
 
-  const [page, error, loading] = useAsync<SignedMessageListPage>(
+  const [page, error, loading] = useAsync<SafeMessageListPage>(
     // TODO: Fetch page
     //@ts-ignore
     () => {
