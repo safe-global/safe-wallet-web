@@ -1,5 +1,5 @@
-const SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
-const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
+const SAFE = 'gor:0x9Fe2725B42a17395f257A0fc0Bf3Ddb703B4c786'
+const EOA = '0x0Ee26C4481485AC64BfFf2bdCaA21EdAeCEcdCa9'
 
 // generate number between 0.00001 and 0.00020
 const sendValue = Math.floor(Math.random() * 20 + 1) / 100000
@@ -38,10 +38,10 @@ describe('Queue a transaction on 1/N', () => {
   })
 
   it('should create a queued transaction', () => {
-    cy.contains('Next').click()
-
     // Wait for /estimations response
     cy.intercept('POST', '/**/multisig-transactions/estimations').as('EstimationRequest')
+
+    cy.contains('Next').click()
 
     cy.wait('@EstimationRequest', {
       timeout: 30_000, // EstimationRequest takes a while in CI
@@ -62,7 +62,7 @@ describe('Queue a transaction on 1/N', () => {
     // Changes nonce to next one
     cy.contains('Signing the transaction with nonce').click()
     cy.contains('button', 'Edit').click()
-    cy.get('label').contains('Safe transaction nonce').next().clear().type('3')
+    cy.get('label').contains('Safe transaction nonce').next().clear().type('4')
     cy.contains('Confirm').click()
 
     // Asserts the execute checkbox exists
@@ -121,7 +121,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('h3', 'Transaction details').should('be.visible')
 
     // Queue label
-    cy.contains('Queued - transaction with nonce 3 needs to be executed first').should('be.visible')
+    cy.contains('Queued - transaction with nonce 4 needs to be executed first').should('be.visible')
 
     // Transaction summary
     cy.contains(`${recommendedNonce}` + 'Send' + '-' + `${sendValue} GOR`).should('exist')
