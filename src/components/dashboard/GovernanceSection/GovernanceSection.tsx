@@ -12,6 +12,9 @@ import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag } from '@/config/constants'
 
+const CLAIMING_WIDGET_ID = '#claiming-widget'
+const SNAPSHOT_WIDGET_ID = '#snapshot-widget'
+
 const GovernanceSection = () => {
   const { getAllowedFeaturesList } = useBrowserPermissions()
   const [claimingSafeApp, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
@@ -19,7 +22,7 @@ const GovernanceSection = () => {
   const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
 
   return (
-    <Accordion className={css.accordion} defaultExpanded>
+    <Accordion className={css.accordion} defaultExpanded={true}>
       <AccordionSummary expandIcon={<ExpandMoreIcon color="border" />}>
         <div>
           <Typography component="h2" variant="subtitle1" fontWeight={700}>
@@ -47,7 +50,7 @@ const GovernanceSection = () => {
                 <Card sx={{ height: '300px' }}>
                   <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
                     <AppFrame
-                      appUrl={`${claimingApp.url}#snapshot-widget`}
+                      appUrl={`${claimingApp.url}${SNAPSHOT_WIDGET_ID}`}
                       allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                       isQueueBarDisabled
                     />
@@ -58,7 +61,7 @@ const GovernanceSection = () => {
                 <Card sx={{ height: '300px' }}>
                   <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
                     <AppFrame
-                      appUrl={`${claimingApp.url}#claiming-widget`}
+                      appUrl={`${claimingApp.url}${CLAIMING_WIDGET_ID}`}
                       allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                       isQueueBarDisabled
                     />
