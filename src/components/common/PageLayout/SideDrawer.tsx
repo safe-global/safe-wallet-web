@@ -43,7 +43,9 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
         open={isOpen}
         onClose={() => onToggle(false)}
       >
-        <Sidebar />
+        <aside>
+          <Sidebar />
+        </aside>
       </Drawer>
 
       {showSidebarToggle && (
