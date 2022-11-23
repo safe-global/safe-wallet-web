@@ -12,6 +12,7 @@ import {
   isAwaitingExecution,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
+  isMultisigDetailedExecutionInfo,
   isMultisigExecutionInfo,
   isSupportedMultiSendAddress,
   isTxQueued,
@@ -27,7 +28,7 @@ import SignTxButton from '@/components/transactions/SignTxButton'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/Warning'
+import { DelegateCallWarning, UntrustedWarning } from '@/components/transactions/Warning'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 
 export const NOT_AVAILABLE = 'n/a'
@@ -45,6 +46,8 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   const awaitingExecution = isAwaitingExecution(txSummary.txStatus)
   const isUnsigned =
     isMultisigExecutionInfo(txSummary.executionInfo) && txSummary.executionInfo.confirmationsSubmitted === 0
+  const isTrusted =
+    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) && txDetails.detailedExecutionInfo.trusted
 
   return (
     <>
@@ -75,7 +78,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
         )}
 
         <div className={css.txSummary}>
-          {isUnsigned && <UnsignedWarning />}
+          {!isTrusted && <UntrustedWarning />}
           {txDetails.txData?.operation === Operation.DELEGATE && (
             <div className={css.delegateCall}>
               <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
