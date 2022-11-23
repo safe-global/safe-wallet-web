@@ -46,7 +46,7 @@ describe('Queue a transaction on 1/N', () => {
     // Wait for /estimations response
     cy.intercept('POST', '/**/multisig-transactions/estimations').as('EstimationRequest')
     cy.wait('@EstimationRequest', {
-      timeout: 30_000, // EstimationRequest takes a while initialize in CI
+      timeout: 60_000, // EstimationRequest takes a while initialize in CI
     })
 
     // Estimation is loaded
