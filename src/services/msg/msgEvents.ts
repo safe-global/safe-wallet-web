@@ -21,7 +21,7 @@ type MessageHash = { messageHash: string }
 
 interface MsgEvents {
   [MsgEvent.PROPOSE]: MessageHash
-  [MsgEvent.PROPOSE_FAILED]: { error: Error }
+  [MsgEvent.PROPOSE_FAILED]: MessageHash & { error: Error }
   [MsgEvent.CONFIRM_PROPOSE]: MessageHash
   [MsgEvent.CONFIRM_PROPOSE_FAILED]: MessageHash & { error: Error }
   [MsgEvent.UPDATED]: MessageHash

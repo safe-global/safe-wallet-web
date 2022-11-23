@@ -27,12 +27,15 @@ describe('useMsgNotifications', () => {
   it('should show a notification when a message creation fails', () => {
     renderHook(() => useMsgNotifications())
 
-    msgDispatch(MsgEvent.PROPOSE_FAILED, { error: new Error('Example error') })
+    msgDispatch(MsgEvent.PROPOSE_FAILED, {
+      messageHash: '0x456',
+      error: new Error('Example error'),
+    })
 
     expect(showNotification).toHaveBeenCalledWith({
       message: 'Signing the message failed. Please try again.',
       detailedMessage: 'Example error',
-      groupKey: '',
+      groupKey: '0x456',
       variant: 'error',
     })
   })
