@@ -16,6 +16,10 @@ type SideDrawerProps = {
   onToggle: (isOpen: boolean) => void
 }
 
+const isNewSafeRoute = (pathname: string): boolean => {
+  return pathname === AppRoutes.newSafe.create
+}
+
 const isAppShareRoute = (pathname: string): boolean => {
   return pathname === AppRoutes.share.safeApp
 }
@@ -31,7 +35,8 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   const showSidebarToggle = isSafeAppRoute(pathname, query) && !isSmallScreen
 
   useEffect(() => {
-    const closeSidebar = isSmallScreen || isSafeAppRoute(pathname, query) || isAppShareRoute(pathname)
+    const closeSidebar =
+      isSmallScreen || isSafeAppRoute(pathname, query) || isAppShareRoute(pathname) || isNewSafeRoute(pathname)
     onToggle(!closeSidebar)
   }, [isSmallScreen, onToggle, pathname, query])
 
