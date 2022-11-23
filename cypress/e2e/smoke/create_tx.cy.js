@@ -103,11 +103,11 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]').should('not.exist')
     })
+
+    cy.contains('Submit').click()
   })
 
   it('should click the notification and see the transaction queued', () => {
-    cy.contains('Submit').click()
-
     // Wait for the /propose request
     cy.intercept('POST', '/**/propose').as('ProposeTx')
     cy.wait('@ProposeTx', {
