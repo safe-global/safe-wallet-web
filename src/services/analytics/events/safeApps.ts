@@ -2,6 +2,7 @@ import { EventType } from '@/services/analytics/types'
 
 export const SAFE_APPS_CATEGORY = 'safe-apps'
 export const SAFE_APPS_SDK_CATEGORY = 'safe-apps-sdk'
+export const SAFE_APPS_ANALYTICS_CATEGORY = 'safe-apps-analytics'
 
 const SAFE_APPS_EVENT_DATA = {
   event: EventType.SAFE_APP,

@@ -35,17 +35,20 @@ describe('Queue a transaction on 1/N', () => {
 
     // Insert amount
     cy.get('input[name="amount"]').type(`${sendValue}`)
-
-    cy.contains('Next').click()
   })
 
   it('should create a queued transaction', () => {
-    // Alias for New transaction modal
-    cy.contains('h2', 'Review transaction').parents('div').as('modal')
-
     // Wait for /estimations response
     cy.intercept('POST', '/**/multisig-transactions/estimations').as('EstimationRequest')
-    cy.wait('@EstimationRequest')
+
+    cy.contains('Next').click()
+
+    cy.wait('@EstimationRequest', {
+      timeout: 30_000, // EstimationRequest takes a while in CI
+    })
+
+    // Alias for New transaction modal
+    cy.contains('h2', 'Review transaction').parents('div').as('modal')
 
     // Estimation is loaded
     cy.get('button[type="submit"]').should('not.be.disabled')
@@ -100,14 +103,16 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]').should('not.exist')
     })
-
-    cy.contains('Submit').click()
   })
 
   it('should click the notification and see the transaction queued', () => {
+    cy.contains('Submit').click()
+
     // Wait for the /propose request
     cy.intercept('POST', '/**/propose').as('ProposeTx')
-    cy.wait('@ProposeTx')
+    cy.wait('@ProposeTx', {
+      timeout: 30_000, // ProposeTx takes a while in CI
+    })
 
     // Click on the notification
     cy.contains('View transaction').click()
