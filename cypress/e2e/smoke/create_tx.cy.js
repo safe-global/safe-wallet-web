@@ -49,7 +49,9 @@ describe('Queue a transaction on 1/N', () => {
       timeout: 60_000, // EstimationRequest takes a while initialize in CI
     }).then(() => {
       // Estimation is loaded
-      cy.get('button[type="submit"]').should('not.be.disabled')
+      cy.get('button[type="submit"]', {
+        timeout: 60_000, // EstimationRequest takes a while initialize in CI
+      }).should('not.be.disabled')
 
       // Gets the recommended nonce
       cy.contains('Signing the transaction with nonce').should(($div) => {
