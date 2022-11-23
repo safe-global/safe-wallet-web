@@ -1,4 +1,4 @@
-import { Typography, Grid, Card, Box, Paper, Alert } from '@mui/material'
+import { Typography, Grid, Card, Box, Alert } from '@mui/material'
 import { WidgetBody } from '@/components/dashboard/styled'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
@@ -22,7 +22,7 @@ const GovernanceSection = () => {
   const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
 
   return (
-    <Accordion className={css.accordion} defaultExpanded={true}>
+    <Accordion className={css.accordion} defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon color="border" />}>
         <div>
           <Typography component="h2" variant="subtitle1" fontWeight={700}>
@@ -35,44 +35,64 @@ const GovernanceSection = () => {
       </AccordionSummary>
 
       <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
-        {fetchingSafeClaimingApp ? (
-          <Paper>
-            <Box sx={{ height: '300px' }} display="flex" alignItems="center" justifyContent="center">
-              <Typography variant="h1" color="text.secondary">
-                Loading Safe Claiming App...
-              </Typography>
-            </Box>
-          </Paper>
-        ) : claimingApp ? (
+        {claimingApp || fetchingSafeClaimingApp ? (
           <WidgetBody>
             <Grid spacing={3} container>
               <Grid item xs={12} md={6} lg={8}>
                 <Card sx={{ height: '300px' }}>
-                  <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
-                    <AppFrame
-                      appUrl={`${claimingApp.url}${SNAPSHOT_WIDGET_ID}`}
-                      allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
-                      isQueueBarDisabled
-                    />
-                  </SafeAppsErrorBoundary>
+                  {claimingApp ? (
+                    <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
+                      <AppFrame
+                        appUrl={`${claimingApp.url}${SNAPSHOT_WIDGET_ID}`}
+                        allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
+                        isQueueBarDisabled
+                      />
+                    </SafeAppsErrorBoundary>
+                  ) : (
+                    <Box
+                      sx={{ height: '300px' }}
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      textAlign="center"
+                    >
+                      <Typography variant="h1" color="text.secondary">
+                        Loading Snapshot...
+                      </Typography>
+                    </Box>
+                  )}
                 </Card>
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
                 <Card sx={{ height: '300px' }}>
-                  <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
-                    <AppFrame
-                      appUrl={`${claimingApp.url}${CLAIMING_WIDGET_ID}`}
-                      allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
-                      isQueueBarDisabled
-                    />
-                  </SafeAppsErrorBoundary>
+                  {claimingApp ? (
+                    <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
+                      <AppFrame
+                        appUrl={`${claimingApp.url}${CLAIMING_WIDGET_ID}`}
+                        allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
+                        isQueueBarDisabled
+                      />
+                    </SafeAppsErrorBoundary>
+                  ) : (
+                    <Box
+                      sx={{ height: '300px' }}
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      textAlign="center"
+                    >
+                      <Typography variant="h1" color="text.secondary">
+                        Loading Claiming app...
+                      </Typography>
+                    </Box>
+                  )}
                 </Card>
               </Grid>
             </Grid>
           </WidgetBody>
         ) : (
-          <Alert severity="info" elevation={3}>
-            There was an error fetching the Governance widget. Please reload the page.
+          <Alert severity="warning" elevation={3}>
+            There was an error fetching the Governance section. Please reload the page.
           </Alert>
         )}
       </AccordionDetails>

@@ -18,11 +18,11 @@ const Dashboard = (): ReactElement => {
       </Grid>
 
       <Grid item xs={12}>
-        <GovernanceSection />
+        <FeaturedApps />
       </Grid>
 
       <Grid item xs={12}>
-        <FeaturedApps />
+        <GovernanceSection />
       </Grid>
 
       <Grid item xs={12}>
