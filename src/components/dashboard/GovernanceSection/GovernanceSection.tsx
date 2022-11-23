@@ -22,7 +22,7 @@ const GovernanceSection = () => {
   const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
 
   return (
-    <Accordion className={css.accordion} defaultExpanded={true}>
+    <Accordion className={css.accordion} defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon color="border" />}>
         <div>
           <Typography component="h2" variant="subtitle1" fontWeight={700}>
