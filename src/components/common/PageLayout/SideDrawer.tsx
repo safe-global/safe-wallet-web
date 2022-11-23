@@ -1,5 +1,6 @@
 import { useEffect, type ReactElement } from 'react'
 import { IconButton, Drawer, useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import DoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRightRounded'
 import DoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded'
 import { useRouter } from 'next/router'
@@ -25,7 +26,8 @@ const isSafeAppRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
 
 const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   const { pathname, query } = useRouter()
-  const isSmallScreen = useMediaQuery('(max-width: 900px)')
+  const { breakpoints } = useTheme()
+  const isSmallScreen = useMediaQuery(`(max-width: ${breakpoints.values.md}px)`)
   const showSidebarToggle = isSafeAppRoute(pathname, query) && !isSmallScreen
 
   useEffect(() => {
