@@ -41,9 +41,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('Next').click()
 
     // Wait for /estimations response
-    cy.wait('@EstimationRequest', {
-      timeout: 30_000, // EstimationRequest takes a while in CI
-    })
+    cy.wait('@EstimationRequest')
   })
 
   it('should create a queued transaction', () => {
@@ -52,7 +50,7 @@ describe('Queue a transaction on 1/N', () => {
 
     // Estimation is loaded
     cy.get('button[type="submit"]', {
-      timeout: 30_000, // EstimationRequest takes a while in CI
+      timeout: 60_000, // EstimationRequest takes a while in CI
     }).should('not.be.disabled')
 
     // Gets the recommended nonce
@@ -112,9 +110,7 @@ describe('Queue a transaction on 1/N', () => {
   it('should click the notification and see the transaction queued', () => {
     // Wait for the /propose request
     cy.intercept('POST', '**/propose').as('ProposeTx')
-    cy.wait('@ProposeTx', {
-      timeout: 30_000, // ProposeTx takes a while in CI
-    })
+    cy.wait('@ProposeTx')
 
     // Click on the notification
     cy.contains('View transaction').click()
