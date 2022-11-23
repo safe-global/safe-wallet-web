@@ -40,12 +40,15 @@ describe('Queue a transaction on 1/N', () => {
   it('should create a queued transaction', () => {
     cy.contains('Next').click()
 
-    // Alias for New transaction modal
-    cy.contains('h2', 'Review transaction').parents('div').as('modal')
-
     // Wait for /estimations response
     cy.intercept('POST', '/**/multisig-transactions/estimations').as('EstimationRequest')
-    cy.wait('@EstimationRequest')
+
+    cy.wait('@EstimationRequest', {
+      timeout: 30_000, // EstimationRequest takes a while in CI
+    })
+
+    // Alias for New transaction modal
+    cy.contains('h2', 'Review transaction').parents('div').as('modal')
 
     // Estimation is loaded
     cy.get('button[type="submit"]').should('not.be.disabled')
@@ -107,7 +110,9 @@ describe('Queue a transaction on 1/N', () => {
 
     // Wait for the /propose request
     cy.intercept('POST', '/**/propose').as('ProposeTx')
-    cy.wait('@ProposeTx')
+    cy.wait('@ProposeTx', {
+      timeout: 30_000, // ProposeTx takes a while in CI
+    })
 
     // Click on the notification
     cy.contains('View transaction').click()
