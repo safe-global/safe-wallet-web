@@ -24,8 +24,8 @@ import { cookiesSlice } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
 import { spendingLimitSlice } from './spendingLimitsSlice'
 import { safeAppsSlice } from './safeAppsSlice'
-import { msgsSlice } from './msgsSlice'
-import { pendingMsgsSlice } from './pendingMsgsSlice'
+import { signedMessagesSlice } from './signedMessagesSlice'
+import { pendingSignedMessagesSlice } from './pendingSignedMessagesSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -43,8 +43,8 @@ const rootReducer = combineReducers({
   [popupSlice.name]: popupSlice.reducer,
   [spendingLimitSlice.name]: spendingLimitSlice.reducer,
   [safeAppsSlice.name]: safeAppsSlice.reducer,
-  [msgsSlice.name]: msgsSlice.reducer,
-  [pendingMsgsSlice.name]: pendingMsgsSlice.reducer,
+  [signedMessagesSlice.name]: signedMessagesSlice.reducer,
+  [pendingSignedMessagesSlice.name]: pendingSignedMessagesSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
@@ -55,7 +55,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   settingsSlice.name,
   cookiesSlice.name,
   safeAppsSlice.name,
-  pendingMsgsSlice.name,
+  pendingSignedMessagesSlice.name,
 ]
 
 const middleware = [persistState(persistedSlices), txHistoryMiddleware, txQueueMiddleware, addedSafesMiddleware]

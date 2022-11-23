@@ -3,19 +3,19 @@ import { useEffect } from 'react'
 import useAsync from '@/hooks/useAsync'
 import { logError, Errors } from '@/services/exceptions'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { MessageListItemType, MessageStatus } from '@/store/msgsSlice'
+import { SignedMessageListItemType, SignedMessageStatus } from '@/store/signedMessagesSlice'
 import type { AsyncResult } from '@/hooks/useAsync'
-import type { MessageListPage } from '@/store/msgsSlice'
+import type { SignedMessageListPage } from '@/store/signedMessagesSlice'
 
-const MOCK_DATA: MessageListPage['results'] = [
+const MOCK_DATA: SignedMessageListPage['results'] = [
   {
-    type: MessageListItemType.DATE_LABEL,
+    type: SignedMessageListItemType.DATE_LABEL,
     timestamp: Date.now(),
   },
   {
-    type: MessageListItemType.MESSAGE,
+    type: SignedMessageListItemType.MESSAGE,
     messageHash: '0x123',
-    status: MessageStatus.NEEDS_CONFIRMATION,
+    status: SignedMessageStatus.NEEDS_CONFIRMATION,
     logoUri: '',
     name: 'Example dApp',
     message: 'Example string message',
@@ -36,9 +36,9 @@ const MOCK_DATA: MessageListPage['results'] = [
     preparedSignature: null,
   },
   {
-    type: MessageListItemType.MESSAGE,
+    type: SignedMessageListItemType.MESSAGE,
     messageHash: '0x456',
-    status: MessageStatus.NEEDS_CONFIRMATION,
+    status: SignedMessageStatus.NEEDS_CONFIRMATION,
     logoUri: '',
     name: 'Example dApp',
     message: {
@@ -61,9 +61,9 @@ const MOCK_DATA: MessageListPage['results'] = [
     preparedSignature: '0x123',
   },
   {
-    type: MessageListItemType.MESSAGE,
+    type: SignedMessageListItemType.MESSAGE,
     messageHash: '0x456',
-    status: MessageStatus.CONFIRMED,
+    status: SignedMessageStatus.CONFIRMED,
     logoUri: '',
     name: 'Example dApp',
     message: {
@@ -87,10 +87,10 @@ const MOCK_DATA: MessageListPage['results'] = [
   },
 ]
 
-export const useLoadMessages = (): AsyncResult<MessageListPage> => {
+export const useLoadMessages = (): AsyncResult<SignedMessageListPage> => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
 
-  const [data, error, loading] = useAsync<MessageListPage>(() => {
+  const [data, error, loading] = useAsync<SignedMessageListPage>(() => {
     if (!safeLoaded) {
       return
     }
