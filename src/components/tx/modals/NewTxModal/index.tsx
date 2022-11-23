@@ -34,7 +34,7 @@ const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
   }
 }
 
-const NewTxModal = ({ onClose, recipient = '' }: { onClose: () => void; recipient?: string }): ReactElement => {
+const NewTxModal = ({ onClose, recipient }: { onClose: () => void; recipient?: string }): ReactElement => {
   const [tokenModalOpen, setTokenModalOpen] = useState<boolean>(false)
   const [nftsModalOpen, setNftModalOpen] = useState<boolean>(false)
   const txBuilder = useTxBuilderApp()
@@ -57,7 +57,7 @@ const NewTxModal = ({ onClose, recipient = '' }: { onClose: () => void; recipien
 
   return (
     <>
-      <ModalDialog open dialogTitle="New transaction" onClose={onClose}>
+      <ModalDialog open={!tokenModalOpen && !nftsModalOpen} dialogTitle="New transaction" onClose={onClose}>
         <DialogContent>
           <Box display="flex" flexDirection="column" alignItems="center" gap={2} pt={7} pb={4} width={240} m="auto">
             <TxButton onClick={onTokenModalOpen} startIcon={<SvgIcon component={AssetsIcon} inheritViewBox />}>

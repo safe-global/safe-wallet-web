@@ -10,6 +10,7 @@ enum ErrorCodes {
   _100 = '100: Invalid input in the address field',
   _101 = '101: Failed to resolve the address',
   _103 = '103: Error creating a SafeTransaction',
+  _104 = '104: Invalid chain short name in the URL',
 
   _302 = '302: Error connecting to the wallet',
   _303 = '303: Error creating pairing session',
@@ -40,7 +41,6 @@ enum ErrorCodes {
   _806 = '806: Failed to remove module',
   _807 = '807: Failed to remove guard',
   _808 = '808: Failed to get transaction origin',
-  _809 = '809: Error generating safeTxHash',
 
   _900 = '900: Error loading Safe App',
   _901 = '901: Error processing Safe Apps SDK request',
