@@ -46,8 +46,9 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   const awaitingExecution = isAwaitingExecution(txSummary.txStatus)
   const isUnsigned =
     isMultisigExecutionInfo(txSummary.executionInfo) && txSummary.executionInfo.confirmationsSubmitted === 0
-  const isTrusted =
-    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) && txDetails.detailedExecutionInfo.trusted
+  const isUntrusted =
+    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
+    txDetails.detailedExecutionInfo.trusted === false
 
   return (
     <>
@@ -78,7 +79,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
         )}
 
         <div className={css.txSummary}>
-          {isTrusted === false && <UnsignedWarning />}
+          {isUntrusted && <UnsignedWarning />}
           {txDetails.txData?.operation === Operation.DELEGATE && (
             <div className={css.delegateCall}>
               <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
