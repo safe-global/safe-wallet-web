@@ -1,14 +1,17 @@
-name: Deploy to staging
+name: Deploy to dev/staging
 
 on:
+  pull_request:
+
   push:
     branches:
+      - dev
       - main
 
 jobs:
-  deploy-staging:
+  deploy:
     runs-on: ubuntu-latest
-    name: Deploy to staging
+    name: Deploy to dev/staging
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.8.0
@@ -45,14 +48,33 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
+      # Staging
       - name: Deploy to the staging S3
-        run: |
-          cd out
+        if: github.ref == 'refs/heads/main'
+        env:
+          BUCKET: s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current
+        run: bash ./scripts/github/s3_upload.sh
 
-          aws s3 sync . s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current
-          aws s3 sync . s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
+      # Dev
+      - name: Deploy to the dev S3
+        if: github.ref == 'refs/heads/dev'
+        env:
+          BUCKET: s3://${{ secrets.AWS_DEVELOPMENT_BUCKET_NAME }}
+        run: bash ./scripts/github/s3_upload.sh
 
-          for file in $(find . -name '*.html' | sed 's|^\./||'); do
-              aws s3 cp ${file%} s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current/${file%.*} --content-type 'text/html'
-          done
+      # PRs
+      - name: Deploy PR branch
+        if: github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
+        env:
+          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/pr${{ github.event.number }}
+        run: bash ./scripts/github/s3_upload.sh
 
+      - name: 'Post the deployment links in the PR'
+        if: success() && github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            ## Branch preview
+            https://pr${{ github.event.number }}--webcore.review-react-br.5afe.dev
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'

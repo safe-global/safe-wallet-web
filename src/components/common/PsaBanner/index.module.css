@@ -6,7 +6,7 @@
   right: 0;
   background-color: var(--color-info-dark);
   color: var(--color-text-light);
-  padding: 5px 20px;
+  padding: 0 var(--space-3);
   font-size: 16px;
 }
 
@@ -19,22 +19,33 @@
 .wrapper {
   position: relative;
   display: flex;
-  flex-direction: column;
-  alignitems: center;
-  height: 70px;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--header-height);
 }
 
 .content {
   max-width: 960px;
-  margin: 0 auto;
   text-align: center;
-  padding: 10px;
 }
 
 .close {
   position: absolute;
   right: 10px;
-  top: 10px;
-  cursor: pointer;
+  top: 6px;
   z-index: 2;
+}
+
+@media (max-width: 900px) {
+  .close {
+    position: relative;
+    right: unset;
+    top: unset;
+  }
+}
+
+@media (max-width: 600px) {
+  .banner {
+    padding: var(--space-1) var(--space-3);
+  }
 }

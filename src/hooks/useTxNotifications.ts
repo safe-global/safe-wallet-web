@@ -14,7 +14,6 @@ import useIsGranted from './useIsGranted'
 import useWallet from './wallets/useWallet'
 
 const TxNotifications = {
-  [TxEvent.SIGNING]: 'Please sign the transaction with your wallet.',
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
   [TxEvent.PROPOSED]: 'Your transaction was successfully proposed.',
   [TxEvent.PROPOSE_FAILED]: 'Failed proposing the transaction. Please try again.',
@@ -62,7 +61,6 @@ const useTxNotifications = (): void => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
-        const hasSafeTxHash = 'safeTxHash' in detail && !!detail.safeTxHash
 
         const txId = 'txId' in detail ? detail.txId : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
@@ -72,11 +70,7 @@ const useTxNotifications = (): void => {
         dispatch(
           showNotification({
             message,
-            detailedMessage: isError
-              ? detail.error.message
-              : hasSafeTxHash
-              ? `safeTxHash: ${detail.safeTxHash}`
-              : undefined,
+            detailedMessage: isError ? detail.error.message : undefined,
             groupKey,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
             ...(shouldShowLink && {
