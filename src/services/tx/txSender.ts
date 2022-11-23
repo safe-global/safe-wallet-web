@@ -11,7 +11,7 @@ import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import proposeTx from './proposeTransaction'
 import { txDispatch, TxEvent } from './txEvents'
-import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { getSafeSDK, isLegacyVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import type { EthersError } from '@/utils/ethers-utils'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
 import type { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
@@ -47,7 +47,7 @@ const getUncheckedSafeSDK = (provider: Web3Provider): Promise<Safe> => {
   const signer = provider.getSigner()
   const ethAdapter = new EthersAdapter({
     ethers,
-    signer: signer.connectUnchecked(),
+    signerOrProvider: signer.connectUnchecked(),
   })
 
   return sdk.connect({ ethAdapter })
@@ -72,6 +72,9 @@ const getRecommendedTxParams = async (
   const safeSDK = getAndValidateSafeSDK()
   const chainId = await safeSDK.getChainId()
   const safeAddress = safeSDK.getAddress()
+  const contractVersion = await safeSDK.getContractVersion()
+  const isSafeTxGasRequired = isLegacyVersion(contractVersion)
+
   let estimation: SafeTransactionEstimation | undefined
 
   try {
@@ -91,7 +94,7 @@ const getRecommendedTxParams = async (
 
   return {
     nonce: estimation.recommendedNonce,
-    safeTxGas: Number(estimation.safeTxGas),
+    safeTxGas: isSafeTxGasRequired ? Number(estimation.safeTxGas) : 0,
   }
 }
 

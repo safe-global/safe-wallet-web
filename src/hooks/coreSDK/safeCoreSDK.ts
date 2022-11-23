@@ -9,7 +9,7 @@ import { getWeb3 } from '@/hooks/wallets/web3'
 import ExternalStore from '@/services/ExternalStore'
 import type { SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
 
-const isLegacyVersion = (safeVersion: string): boolean => {
+export const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
   return semverSatisfies(safeVersion, LEGACY_VERSION)
 }
@@ -27,7 +27,7 @@ export const createEthersAdapter = (provider = getWeb3()) => {
   const signer = provider.getSigner(0)
   return new EthersAdapter({
     ethers,
-    signer,
+    signerOrProvider: signer,
   })
 }
 
