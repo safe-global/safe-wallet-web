@@ -15,6 +15,8 @@ import { AppRoutes } from '@/config/routes'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import { CTA_BUTTON_WIDTH, CTA_HEIGHT } from '@/components/safe-apps/SafeAppLandingPage/constants'
 import CreateNewSafeSVG from '@/public/images/open/safe-creation.svg'
+import useABTesting from '@/services/tracking/useABTesting'
+import { AbTest } from '@/services/tracking/abTesting'
 
 type Props = {
   appUrl: string
@@ -27,6 +29,8 @@ type Props = {
 type CompatibleSafesType = { address: string; chainId: string; shortName?: string }
 
 const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): React.ReactElement => {
+  const shouldUseNewCreation = useABTesting(AbTest.SAFE_CREATION)
+  const createSafeLink = shouldUseNewCreation ? AppRoutes.newSafe.create : AppRoutes.open
   const lastUsedSafe = useLastSafe()
   const ownedSafes = useOwnedSafes()
   const addressBook = useAppSelector(selectAllAddressBooks)
@@ -71,7 +75,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
     case shouldCreateSafe:
       const redirect = `${AppRoutes.apps}?appUrl=${appUrl}`
       const createSafeHrefWithRedirect: UrlObject = {
-        pathname: AppRoutes.open,
+        pathname: createSafeLink,
         query: { safeViewRedirectURL: redirect, chain: chain.shortName },
       }
       button = (
