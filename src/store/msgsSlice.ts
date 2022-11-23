@@ -45,7 +45,7 @@ export type Message = {
 
 export type MessageListPage = Page<MessageDateLabel | Message>
 
-const { slice, selector } = makeLoadableSlice('msgs', undefined as MessageListPage | undefined)
+const { slice, selector } = makeLoadableSlice('messages', undefined as MessageListPage | undefined)
 
 export const msgsSlice = slice
 export const selectMsgs = selector
