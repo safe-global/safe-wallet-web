@@ -24,7 +24,6 @@ export type NewSafeFormData = {
   name: string
   threshold: number
   owners: NamedAddress[]
-  mobileOwners: NamedAddress[]
   saltNonce: number
   safeAddress?: string
 }
@@ -173,7 +172,6 @@ const CreateSafe = () => {
 
   const initialData: NewSafeFormData = {
     name: '',
-    mobileOwners: [] as NamedAddress[],
     owners: [defaultOwner],
     threshold: 1,
     saltNonce: Date.now(),

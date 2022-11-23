@@ -3,9 +3,15 @@ import { Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS, LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import Track from '../common/Track'
+import { AppRoutes } from '@/config/routes'
+import useABTesting from '@/services/tracking/useABTesting'
+import { AbTest } from '@/services/tracking/abTesting'
 
 const NewSafe = () => {
+  const shouldUseNewCreation = useABTesting(AbTest.SAFE_CREATION)
   const router = useRouter()
+
+  const createSafeLink = shouldUseNewCreation ? AppRoutes.newSafe.create : AppRoutes.open
 
   return (
     <>
@@ -28,8 +34,7 @@ const NewSafe = () => {
               for creating your new Safe.
             </Typography>
             <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
-              {/* TODO: Revert this to /open before merging into dev */}
-              <Button variant="contained" onClick={() => router.push('/new-safe/create')}>
+              <Button variant="contained" onClick={() => router.push(createSafeLink)}>
                 + Create new Safe
               </Button>
             </Track>

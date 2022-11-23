@@ -10,7 +10,7 @@ export type StepRenderProps<TData> = {
   setProgressColor?: Dispatch<SetStateAction<string>>
 }
 
-export type Step<TData> = {
+type Step<TData> = {
   title: string
   subtitle: string
   render: (

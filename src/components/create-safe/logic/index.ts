@@ -22,6 +22,12 @@ import { Errors, logError } from '@/services/exceptions'
 import { ErrorCode } from '@ethersproject/logger'
 import { isWalletRejection } from '@/utils/wallets'
 
+export type SafeCreationProps = {
+  owners: string[]
+  threshold: number
+  saltNonce: number
+}
+
 /**
  * Prepare data for creating a Safe for the Core SDK
  */
@@ -120,12 +126,6 @@ export const getSafeCreationTxInfo = async (
     value: BigNumber.from(0),
     startBlock: await provider.getBlockNumber(),
   }
-}
-
-export type SafeCreationProps = {
-  owners: string[]
-  threshold: number
-  saltNonce: number
 }
 
 export const estimateSafeCreationGas = async (

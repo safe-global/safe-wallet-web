@@ -8,9 +8,7 @@ import type { PendingSafeData } from '@/components/new-safe/steps/Step4/index'
 import type { PendingSafeTx } from '@/components/create-safe/types'
 import {
   checkSafeCreationTx,
-  createNewSafe,
   getSafeCreationTxInfo,
-  getSafeDeployProps,
   handleSafeCreationError,
   SAFE_CREATION_ERROR_KEY,
   showSafeCreationError,
@@ -18,6 +16,7 @@ import {
 import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
+import { createNewSafe, getSafeDeployProps } from '@/components/create-safe/logic'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -62,7 +61,7 @@ export const useSafeCreation = (
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
     try {
-      const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, pendingSafe.saltNonce, wallet)
+      const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, wallet)
 
       const safeParams = getSafeDeployProps(
         {

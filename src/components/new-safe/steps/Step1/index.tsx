@@ -92,11 +92,11 @@ function CreateSafeStep1({
           </Grid>
           <Typography variant="body2" mt={2}>
             By continuing, you agree to our{' '}
-            <Link href="https://gnosis-safe.io/terms" target="_blank" rel="noopener noreferrer" fontWeight={700}>
+            <Link href="https://safe.global/terms" target="_blank" rel="noopener noreferrer" fontWeight={700}>
               terms of use
             </Link>{' '}
             and{' '}
-            <Link href="https://gnosis-safe.io/privacy" target="_blank" rel="noopener noreferrer" fontWeight={700}>
+            <Link href="https://safe.global/privacy" target="_blank" rel="noopener noreferrer" fontWeight={700}>
               privacy policy
             </Link>
             .
