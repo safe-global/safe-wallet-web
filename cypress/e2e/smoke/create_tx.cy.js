@@ -35,18 +35,18 @@ describe('Queue a transaction on 1/N', () => {
 
     // Insert amount
     cy.get('input[name="amount"]').type(`${sendValue}`)
-  })
 
-  it('should create a queued transaction', () => {
-    // Wait for /estimations response
     cy.intercept('POST', '/**/multisig-transactions/estimations').as('EstimationRequest')
 
     cy.contains('Next').click()
 
+    // Wait for /estimations response
     cy.wait('@EstimationRequest', {
       timeout: 30_000, // EstimationRequest takes a while in CI
     })
+  })
 
+  it('should create a queued transaction', () => {
     // Alias for New transaction modal
     cy.contains('h2', 'Review transaction').parents('div').as('modal')
 
