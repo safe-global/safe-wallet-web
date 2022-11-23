@@ -8,7 +8,7 @@ import Footer from '../Footer'
 import SideDrawer from './SideDrawer'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
-  const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false)
+  const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true)
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev)
