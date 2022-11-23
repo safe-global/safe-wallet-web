@@ -17,10 +17,6 @@ const Open: NextPage = () => {
     }
   }, [router, shouldUseNewCreation])
 
-  if (shouldUseNewCreation) {
-    return <></>
-  }
-
   return (
     <main>
       <Head>
