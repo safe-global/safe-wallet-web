@@ -45,20 +45,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
-      # Script to upload release files.
-      # First it uploads new files, so both the previous version and the new one co-exist and there’s no downtime.
-      # Then it uploads a second time, with --delete, to delete the old files.
-      # Finally, it uploads HTML files w/o the `.html` extension so that URLs like `/balances` work.
+      # Script to upload release files
       - name: 'Upload release build files for production'
-        run: |
-          cd out
-
-          aws s3 sync . s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}
-          aws s3 sync . s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }} --delete
-
-          for file in $(find . -name '*.html' | sed 's|^\./||'); do
-              aws s3 cp ${file%} s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}/${file%.*} --content-type 'text/html'
-          done
+        env:
+          BUCKET: s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}
+        run: bash ./scripts/github/s3_upload.sh
 
       # Script to prepare production deployments
       - run: bash ./scripts/github/prepare_production_deployment.sh
