@@ -62,9 +62,9 @@ export const ThresholdWarning = (): ReactElement => (
   />
 )
 
-export const UntrustedWarning = (): ReactElement => (
+export const UnsignedWarning = (): ReactElement => (
   <Warning
-    title="This transaction is not trusted and could have been created by anyone. To avoid phishing, only sign it if you trust the source of the link."
+    title="This transaction is unsigned and could have been created by anyone. To avoid phishing, only sign it if you trust the source of the link."
     severity="error"
     text="Untrusted transaction"
   />
