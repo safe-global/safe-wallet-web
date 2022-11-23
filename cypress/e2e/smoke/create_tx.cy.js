@@ -36,7 +36,7 @@ describe('Queue a transaction on 1/N', () => {
     // Insert amount
     cy.get('input[name="amount"]').type(`${sendValue}`)
 
-    cy.intercept('POST', '/**/multisig-transactions/estimations').as('EstimationRequest')
+    cy.intercept('POST', '**/multisig-transactions/estimations').as('EstimationRequest')
 
     cy.contains('Next').click()
 
@@ -51,7 +51,9 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('h2', 'Review transaction').parents('div').as('modal')
 
     // Estimation is loaded
-    cy.get('button[type="submit"]').should('not.be.disabled')
+    cy.get('button[type="submit"]', {
+      timeout: 30_000, // EstimationRequest takes a while in CI
+    }).should('not.be.disabled')
 
     // Gets the recommended nonce
     cy.contains('Signing the transaction with nonce').should(($div) => {
@@ -109,7 +111,7 @@ describe('Queue a transaction on 1/N', () => {
 
   it('should click the notification and see the transaction queued', () => {
     // Wait for the /propose request
-    cy.intercept('POST', '/**/propose').as('ProposeTx')
+    cy.intercept('POST', '**/propose').as('ProposeTx')
     cy.wait('@ProposeTx', {
       timeout: 30_000, // ProposeTx takes a while in CI
     })
