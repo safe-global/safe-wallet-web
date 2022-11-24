@@ -1,4 +1,4 @@
-import { Typography, Grid, Card, Box, Alert } from '@mui/material'
+import { Typography, Card, Box, Alert } from '@mui/material'
 import { WidgetBody } from '@/components/dashboard/styled'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
@@ -34,34 +34,30 @@ const GovernanceSection = () => {
       <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
         {claimingApp || fetchingSafeClaimingApp ? (
           <WidgetBody>
-            <Grid container>
-              <Grid item xs={12}>
-                <Card className={css.widgetWrapper}>
-                  {claimingApp ? (
-                    <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
-                      <AppFrame
-                        // appUrl={`${claimingApp.url}#widget`}
-                        appUrl="http://localhost:3001/safe-claiming-app#widget"
-                        allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
-                        isQueueBarDisabled
-                      />
-                    </SafeAppsErrorBoundary>
-                  ) : (
-                    <Box
-                      sx={{ height: '300px' }}
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      textAlign="center"
-                    >
-                      <Typography variant="h1" color="text.secondary">
-                        Loading section...
-                      </Typography>
-                    </Box>
-                  )}
-                </Card>
-              </Grid>
-            </Grid>
+            <Card className={css.widgetWrapper}>
+              {claimingApp ? (
+                <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
+                  <AppFrame
+                    // appUrl={`${claimingApp.url}#widget`}
+                    appUrl="http://localhost:3001/safe-claiming-app#widget"
+                    allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
+                    isQueueBarDisabled
+                  />
+                </SafeAppsErrorBoundary>
+              ) : (
+                <Box
+                  sx={{ height: '300px' }}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  textAlign="center"
+                >
+                  <Typography variant="h1" color="text.secondary">
+                    Loading section...
+                  </Typography>
+                </Box>
+              )}
+            </Card>
           </WidgetBody>
         ) : (
           <Alert severity="warning" elevation={3}>

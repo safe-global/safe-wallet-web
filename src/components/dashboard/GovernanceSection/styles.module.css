@@ -22,7 +22,7 @@
   height: 300px;
 }
 
-/* sm breakpoint + paddings */
+/* iframe sm breakpoint + paddings */
 @media (max-width: 662px) {
   .widgetWrapper {
     height: 624px;
