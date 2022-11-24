@@ -42,7 +42,7 @@ describe('Queue a transaction on 1/N', () => {
 
   it('should create a queued transaction', () => {
     // Wait for /estimations response
-    cy.intercept('POST', '**/multisig-transactions/estimations').as('EstimationRequest')
+    cy.intercept('POST', '/**/multisig-transactions/estimations').as('EstimationRequest')
 
     cy.wait('@EstimationRequest')
 
@@ -52,7 +52,6 @@ describe('Queue a transaction on 1/N', () => {
     // Estimation is loaded
     cy.get('button[type="submit"]').should('not.be.disabled')
 
-    // Gets the recommended nonce
     // Gets the recommended nonce
     cy.contains('Signing the transaction with nonce').should(($div) => {
       // get the number in the string
@@ -109,7 +108,7 @@ describe('Queue a transaction on 1/N', () => {
 
   it('should click the notification and see the transaction queued', () => {
     // Wait for the /propose request
-    cy.intercept('POST', '**/propose').as('ProposeTx')
+    cy.intercept('POST', '/**/propose').as('ProposeTx')
     cy.wait('@ProposeTx')
 
     // Click on the notification
