@@ -488,7 +488,7 @@ const initTheme = (darkMode: boolean) => {
       MuiLink: {
         styleOverrides: {
           root: ({ theme }) => ({
-            textDecoration: 'none',
+            fontWeight: 700,
             '&:hover': {
               color: theme.palette.primary.light,
             },

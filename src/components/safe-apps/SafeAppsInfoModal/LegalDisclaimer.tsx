@@ -1,4 +1,5 @@
-import { Link, Typography } from '@mui/material'
+import ExternalLink from '@/components/common/ExternalLink'
+import { Typography } from '@mui/material'
 
 import css from './styles.module.css'
 
@@ -22,14 +23,9 @@ const LegalDisclaimer = (): JSX.Element => (
 
       <Typography>
         I have read and understood the{' '}
-        <Link
-          href="https://gnosis-safe.io/terms"
-          rel="noopener noreferrer"
-          target="_blank"
-          sx={{ textDecoration: 'none' }}
-        >
+        <ExternalLink href="https://safe.global/terms" sx={{ textDecoration: 'none' }}>
           Terms
-        </Link>{' '}
+        </ExternalLink>{' '}
         and this Disclaimer, and agree to be bound by them.
       </Typography>
     </div>

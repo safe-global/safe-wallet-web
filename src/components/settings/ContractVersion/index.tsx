@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
-import { Box, Link, Typography } from '@mui/material'
-import OpenInNewRounded from '@mui/icons-material/OpenInNewRounded'
+import { Typography } from '@mui/material'
 import { ImplementationVersionState } from '@gnosis.pm/safe-react-gateway-sdk'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { sameAddress } from '@/utils/addresses'
@@ -9,6 +8,7 @@ import { MasterCopyDeployer, useMasterCopies } from '@/hooks/useMasterCopies'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
 import UpdateSafeDialog from './UpdateSafeDialog'
+import ExternalLink from '@/components/common/ExternalLink'
 
 export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
   const [masterCopies] = useMasterCopies()
@@ -32,14 +32,10 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
       <Typography variant="h4" fontWeight={700} marginBottom={1}>
         Contract version
       </Typography>
-
-      <Link rel="noreferrer noopener" href={safeMasterCopy?.deployerRepoUrl} target="_blank">
-        <Box display="flex" alignItems="center" gap={0.2}>
-          {safe.version}
-          {getSafeVersionUpdate()}
-          <OpenInNewRounded fontSize="small" />
-        </Box>
-      </Link>
+      <ExternalLink href={safeMasterCopy?.deployerRepoUrl}>
+        {safe.version}
+        {getSafeVersionUpdate()}
+      </ExternalLink>
 
       {showUpdateDialog && isGranted && <UpdateSafeDialog />}
     </div>

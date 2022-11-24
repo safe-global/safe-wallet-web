@@ -1,7 +1,6 @@
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
-import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { useCSVDownloader } from 'react-papaparse'
 import type { SyntheticEvent } from 'react'
@@ -11,6 +10,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import { type AddressBookState, selectAllAddressBooks } from '@/store/addressBookSlice'
 import { useAppSelector } from '@/store'
 import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const COL_1 = 'address'
 const COL_2 = 'name'
@@ -65,14 +65,12 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
         </Typography>
 
         <Typography mt={1}>
-          <Link
-            href="https://help.gnosis-safe.io/en/articles/5299068-address-book-export-and-import"
-            target="_blank"
-            rel="noreferrer"
+          <ExternalLink
+            href="https://help.safe.global/en/articles/5299068-address-book-export-and-import"
             title="Learn about the address book import and export"
           >
             Learn about the address book import and export
-          </Link>
+          </ExternalLink>
         </Typography>
       </DialogContent>
 
