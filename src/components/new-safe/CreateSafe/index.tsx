@@ -33,7 +33,7 @@ const staticHints: Record<
   { title: string; variant: AlertColor; steps: { title: string; text: string | ReactElement }[] }
 > = {
   1: {
-    title: 'Safe Creation',
+    title: 'Safe creation',
     variant: 'info',
     steps: [
       {
@@ -47,7 +47,7 @@ const staticHints: Record<
     ],
   },
   2: {
-    title: 'Safe Creation',
+    title: 'Safe creation',
     variant: 'info',
     steps: [
       {
@@ -59,7 +59,7 @@ const staticHints: Record<
         text: 'You can always change the number of owners and required confirmations in your Safe after creation.',
       },
       {
-        title: 'Safe Setup',
+        title: 'Safe setup',
         text: (
           <>
             Not sure how many owners and confirmations you need for your Safe?
@@ -82,7 +82,7 @@ const staticHints: Record<
     ],
   },
   3: {
-    title: 'Safe Creation',
+    title: 'Safe creation',
     variant: 'info',
     steps: [
       {
@@ -92,7 +92,7 @@ const staticHints: Record<
     ],
   },
   4: {
-    title: 'Safe Usage',
+    title: 'Safe usage',
     variant: 'success',
     steps: [
       {
