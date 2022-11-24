@@ -18,6 +18,7 @@ const SNAPSHOT_WIDGET_ID = '#snapshot-widget'
 
 const GovernanceSection = () => {
   const isDarkMode = useDarkMode()
+  const theme = isDarkMode ? 'dark' : 'light'
   const { getAllowedFeaturesList } = useBrowserPermissions()
   const [claimingSafeApp, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
   const claimingApp = claimingSafeApp?.[0]
@@ -45,7 +46,7 @@ const GovernanceSection = () => {
                   {claimingApp ? (
                     <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
                       <AppFrame
-                        appUrl={`${claimingApp.url}${SNAPSHOT_WIDGET_ID}${isDarkMode ? '+dark' : ''}`}
+                        appUrl={`${claimingApp.url}?theme=${theme}${SNAPSHOT_WIDGET_ID}`}
                         allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                         isQueueBarDisabled
                       />
@@ -70,7 +71,7 @@ const GovernanceSection = () => {
                   {claimingApp ? (
                     <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
                       <AppFrame
-                        appUrl={`${claimingApp.url}${CLAIMING_WIDGET_ID}${isDarkMode ? '+dark' : ''}`}
+                        appUrl={`${claimingApp.url}?theme=${theme}${CLAIMING_WIDGET_ID}`}
                         allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                         isQueueBarDisabled
                       />
