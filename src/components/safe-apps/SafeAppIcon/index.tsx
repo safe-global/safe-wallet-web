@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import { type ReactElement, memo } from 'react'
 
 const getIframeContent = (src: string): string => {
   return `<style>
@@ -34,8 +34,9 @@ const SafeAppIcon = ({
       frameBorder={0}
       width={width}
       height={height}
+      style={{ pointerEvents: 'none' }}
     />
   )
 }
 
-export default SafeAppIcon
+export default memo(SafeAppIcon)
