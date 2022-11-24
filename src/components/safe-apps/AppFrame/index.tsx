@@ -63,7 +63,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     transactions,
   } = useTransactionQueueBarState()
   const queueBarVisible = transactions.results.length > 0 && !queueBarDismissed
-  const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
+  const [remoteApp, , isBackendAppsLoading] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
@@ -132,7 +132,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   }, [appUrl, iframeRef, setAppIsLoading, router])
 
   useEffect(() => {
-    if (!appIsLoading) {
+    if (!appIsLoading && !isBackendAppsLoading) {
       trackSafeAppEvent(
         {
           ...SAFE_APPS_EVENTS.OPEN_APP,
@@ -140,7 +140,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         appName,
       )
     }
-  }, [appIsLoading, appName])
+  }, [appIsLoading, isBackendAppsLoading, appName])
 
   useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, safeAppRequestId }) => {

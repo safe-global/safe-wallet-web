@@ -118,13 +118,22 @@ export const gtmTrackPageview = (pagePath: string): void => {
   gtmSend(gtmEvent)
 }
 
+export const normalizeAppName = (appName?: string): string => {
+  // App name is a URL
+  if (appName?.startsWith('http')) {
+    // Strip search query and hash
+    return appName.split('?')[0].split('#')[0]
+  }
+  return appName || ''
+}
+
 export const gtmTrackSafeApp = (eventData: AnalyticsEvent, appName?: string, sdkEventData?: SafeAppSDKEvent): void => {
   const safeAppGtmEvent: SafeAppGtmEvent = {
     event: EventType.SAFE_APP,
     chainId: _chainId,
     eventCategory: eventData.category,
     eventAction: eventData.action,
-    safeAppName: appName || '',
+    safeAppName: normalizeAppName(appName),
     safeAppEthMethod: '',
     safeAppMethod: '',
     safeAppSDKVersion: '',
