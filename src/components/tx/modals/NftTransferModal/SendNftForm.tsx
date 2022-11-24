@@ -42,14 +42,17 @@ export type SendNftFormProps = {
 }
 
 const NftMenuItem = ({ image, name, description }: { image: string; name: string; description?: string }) => (
-  <Grid container spacing={1} alignItems="center" wrap="nowrap">
+  <Grid container spacing={1} alignItems="center" wrap="nowrap" sx={{ maxWidth: '530px' }}>
     <Grid item>
       <Box width={20} height={20}>
         <ImageFallback src={image} fallbackSrc="/images/common/nft-placeholder.png" alt={name} height={20} />
       </Box>
     </Grid>
     <Grid item overflow="hidden">
-      {name}
+      <Typography overflow="hidden" textOverflow="ellipsis">
+        {name}
+      </Typography>
+
       {description && (
         <Typography variant="caption" color="primary.light" display="block" overflow="hidden" textOverflow="ellipsis">
           {description}
@@ -133,17 +136,21 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                     <MenuItem key={item.address + item.id} value={item.id}>
                       <NftMenuItem
                         image={item.imageUri || item.logoUri}
-                        name={item.name || `${item.tokenName || item.tokenSymbol || ''} #${item.id}`}
-                        description={`Token ID: ${item.id}`}
+                        name={`${item.tokenName || item.tokenSymbol || ''} #${item.id}`}
+                        description={`Token ID: ${item.id}${item.name ? ` - ${item.name}` : ''}`}
                       />
                     </MenuItem>
                   ))}
 
-                  <MenuItem disabled>
-                    {nftLoading && <CircularProgress size={20} />}
-
-                    {nftData?.next && !nftLoading && <InfiniteScroll onLoadMore={() => setPageUrl(nftData?.next)} />}
-                  </MenuItem>
+                  {(nftLoading || nftData?.next) && (
+                    <MenuItem disabled>
+                      {nftLoading ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        nftData?.next && <InfiniteScroll onLoadMore={() => setPageUrl(nftData?.next)} />
+                      )}
+                    </MenuItem>
+                  )}
                 </Select>
               )}
             />
