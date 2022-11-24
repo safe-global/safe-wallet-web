@@ -43,7 +43,7 @@ const getStep = (status: SafeCreationStatus) => {
       }
     case SafeCreationStatus.INDEXED:
       return {
-        description: 'Your Safe was successfully indexed!',
+        description: 'Your Safe is ready!',
         instruction: '',
       }
     case SafeCreationStatus.INDEX_FAILED:
