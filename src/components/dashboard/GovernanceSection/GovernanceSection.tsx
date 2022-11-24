@@ -46,7 +46,7 @@ const GovernanceSection = () => {
                 </SafeAppsErrorBoundary>
               ) : (
                 <Box
-                  sx={{ height: '300px' }}
+                  className={css.widgetWrapper}
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
