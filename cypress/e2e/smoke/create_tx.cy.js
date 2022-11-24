@@ -42,10 +42,7 @@ describe('Queue a transaction on 1/N', () => {
 
   it('should create a queued transaction', () => {
     // Wait for /estimations response
-    cy.intercept('POST', '**/multisig-transactions/estimations', {
-      statusCode: 200,
-      body: { currentNonce, recommendedNonce, safeTxGas: '45006' },
-    }).as('EstimationRequest')
+    cy.intercept('POST', '**/multisig-transactions/estimations').as('EstimationRequest')
 
     cy.wait('@EstimationRequest')
 
