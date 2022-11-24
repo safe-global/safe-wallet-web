@@ -4,7 +4,7 @@ import { useState } from 'react'
 import type { ReactElement } from 'react'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import useMessages from '@/hooks/useMessages'
+import useSafeMessages from '@/hooks/useSafeMessages'
 import LinkIcon from '@/public/images/common/link.svg'
 import NoMessagesIcon from '@/public/images/messages/no-messages.svg'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
@@ -39,7 +39,7 @@ const MsgPage = ({
   pageUrl: string
   onNextPage?: (pageUrl: string) => void
 }): ReactElement => {
-  const { page, error, loading } = useMessages(pageUrl)
+  const { page, error, loading } = useSafeMessages(pageUrl)
 
   return (
     <>

@@ -1,8 +1,9 @@
-import type { DateLabel } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { DateLabel, SafeMessageDateLabel } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { ReactElement } from 'react'
-import css from './styles.module.css'
+
 import { formatWithSchema } from '@/utils/date'
-import type { SafeMessageDateLabel } from '@/store/safeMessagesSlice'
+
+import css from './styles.module.css'
 
 const TxDateLabel = ({ item }: { item: DateLabel | SafeMessageDateLabel }): ReactElement => {
   return (

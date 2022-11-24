@@ -1,17 +1,14 @@
 import { useState, type ReactElement } from 'react'
 import { Box, Link, List, ListItem, ListItemIcon, ListItemText, SvgIcon } from '@mui/material'
+import { SafeMessageStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 
-// TODO: Migrate TxSigners to use these icons
 import CreatedIcon from '@/public/images/messages/created.svg'
 import SignedIcon from '@/public/images/messages/signed.svg'
 import DotIcon from '@/public/images/messages/dot.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { SafeMessageStatus } from '@/store/safeMessagesSlice'
-import type { SafeMessage } from '@/store/safeMessagesSlice'
 
 import css from '@/components/safeMessages/MsgSigners/styles.module.css'
-
-// TODO: Migrate TxSigners to no longer use a Stepper and move CSS there
 import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 
 // Icons

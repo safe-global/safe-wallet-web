@@ -3,11 +3,9 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 
 import type { RootState } from '.'
 
-type MessageHash = string
-
 type PendingSafeMessagesState =
   | {
-      [messageHash: MessageHash]: true
+      [messageHash: string]: true
     }
   | Record<string, never>
 
@@ -17,10 +15,10 @@ export const pendingSafeMessagesSlice = createSlice({
   name: 'pendingSafeMessages',
   initialState,
   reducers: {
-    setPendingSafeMessage: (state, action: PayloadAction<MessageHash>) => {
+    setPendingSafeMessage: (state, action: PayloadAction<string>) => {
       state[action.payload] = true
     },
-    clearPendingSafeMessage: (state, action: PayloadAction<MessageHash>) => {
+    clearPendingSafeMessage: (state, action: PayloadAction<string>) => {
       delete state[action.payload]
     },
   },
@@ -33,6 +31,6 @@ export const selectPendinngSafeMessages = (state: RootState): PendingSafeMessage
 }
 
 export const selectPendingSafeMessageByHash = createSelector(
-  [selectPendinngSafeMessages, (_: RootState, messageHash: MessageHash) => messageHash],
+  [selectPendinngSafeMessages, (_: RootState, messageHash: string) => messageHash],
   (pendingSignedMessages, messageHash) => !!pendingSignedMessages[messageHash],
 )

@@ -1,9 +1,9 @@
-import { renderHook } from '@/tests/test-utils'
+import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 
+import { renderHook } from '@/tests/test-utils'
 import * as useIsSafeOwnerHook from '@/hooks/useIsSafeOwner'
 import * as useIsWrongChainHook from '@/hooks/useIsWrongChain'
 import useIsSafeMessageSignableBy from '../useIsSafeMessageSignableBy'
-import type { SafeMessage } from '@/store/safeMessagesSlice'
 
 describe('useIsSafeMessageSignableBy', () => {
   it('returns true if the message is signable by the wallet', () => {

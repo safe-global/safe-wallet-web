@@ -1,23 +1,44 @@
-import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
-import { keccak256, _TypedDataEncoder } from 'ethers/lib/utils'
-import type { SafeMessage } from '@/store/safeMessagesSlice'
+import { proposeSafeMessage, confirmSafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeInfo, SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TypedDataDomain } from 'ethers'
 
-const getMessageHash = (message: string | Record<string, any>): string => {
-  if (typeof message === 'string') {
-    return keccak256(message)
+import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
+import { getWeb3 } from '@/hooks/wallets/web3'
+import { generateSafeMessageTypes, getSafeMessageHash } from '@/utils/safe-messages'
+
+/**
+ * Sign a message hash as a `SafeMessage` `message`
+ * @param safe Safe which will sign the message
+ * @param messageHash Message hash to sign
+ * @returns Signature of the `SafeMessage`
+ */
+const signMessageHash = async (safe: SafeInfo, messageHash: SafeMessage['messageHash']): Promise<string> => {
+  const web3 = getWeb3()
+
+  if (!web3) {
+    throw new Error('No wallet is connected.')
   }
 
-  return _TypedDataEncoder.encode(message.domain, message.types, message.message)
+  const { domain, types, message } = generateSafeMessageTypes(safe, messageHash)
+
+  return web3.getSigner()._signTypedData(domain as TypedDataDomain, types, message)
 }
 
-export const dispatchSafeMsgProposal = (message: string | Record<string, any>, _safeAppId: number) => {
-  let proposedSignedMsg: SafeMessage | undefined
-
-  const messageHash = getMessageHash(message)
+export const dispatchSafeMsgProposal = async (
+  safe: SafeInfo,
+  message: SafeMessage['message'],
+  safeAppId: number,
+): Promise<void> => {
+  const messageHash = getSafeMessageHash(message)
 
   try {
-    // TODO: Propose and save response
-    proposedSignedMsg = { messageHash: '' } as SafeMessage
+    const signature = await signMessageHash(safe, messageHash)
+
+    proposeSafeMessage(safe.chainId, safe.address.value, {
+      message,
+      signature,
+      safeAppId,
+    })
   } catch (error) {
     safeMsgDispatch(SafeMsgEvent.PROPOSE_FAILED, {
       messageHash,
@@ -27,16 +48,21 @@ export const dispatchSafeMsgProposal = (message: string | Record<string, any>, _
     throw error
   }
 
-  // TODO: Check that the generated messageHash matches that of the backend and otherwise throw
-
   safeMsgDispatch(SafeMsgEvent.PROPOSE, {
-    messageHash: proposedSignedMsg.messageHash,
+    messageHash,
   })
 }
 
-export const dispatchSafeMsgConfirmation = (messageHash: SafeMessage['messageHash']) => {
+export const dispatchSafeMsgConfirmation = async (
+  safe: SafeInfo,
+  messageHash: SafeMessage['messageHash'],
+): Promise<void> => {
   try {
-    // TODO: Confirm and save response
+    const signature = await signMessageHash(safe, messageHash)
+
+    confirmSafeMessage(safe.chainId, messageHash, {
+      signature,
+    })
   } catch (error) {
     safeMsgDispatch(SafeMsgEvent.CONFIRM_PROPOSE_FAILED, {
       messageHash,

@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react'
+import type { SafeMessageListPage } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { TxListGrid } from '@/components/transactions/TxList'
 import MsgListItem from '@/components/safeMessages/MsgListItem'
-import type { SafeMessageListPage } from '@/store/safeMessagesSlice'
 
 const MsgList = ({ items }: { items: SafeMessageListPage['results'] }): ReactElement => {
   return (

@@ -1,18 +1,18 @@
 import { Box, CircularProgress, Typography } from '@mui/material'
 import type { Palette } from '@mui/material'
 import type { ReactElement } from 'react'
+import { SafeMessageStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import { SafeMessageStatus } from '@/store/safeMessagesSlice'
 import MsgType from '@/components/safeMessages/MsgType'
 import SignMsgButton from '@/components/safeMessages/SignMsgButton'
 import useSafeMessageStatus from '@/hooks/useSafeMessageStatus'
 import useIsSafeMessagePending from '@/hooks/useIsSafeMessagePending'
 import TxConfirmations from '@/components/transactions/TxConfirmations'
 import classNames from 'classnames'
-import type { SafeMessage } from '@/store/safeMessagesSlice'
 
 import txSummaryCss from '@/components/transactions/TxSummary/styles.module.css'
 

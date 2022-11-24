@@ -1,5 +1,6 @@
-import { SafeMessageStatus } from '@/store/safeMessagesSlice'
-import type { SafeMessage } from '@/store/safeMessagesSlice'
+import { SafeMessageStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+
 import useIsSafeMessagePending from './useIsSafeMessagePending'
 import useWallet from './wallets/useWallet'
 

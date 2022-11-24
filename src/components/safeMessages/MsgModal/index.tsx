@@ -1,29 +1,51 @@
 import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon } from '@mui/material'
 import type { ReactElement } from 'react'
+import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import ModalDialog, { ModalDialogTitle } from '@/components/common/ModalDialog'
 import SafeAppIcon from '@/components/safe-apps/SafeAppIcon'
 import Msg from '@/components/safeMessages/Msg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import RequiredIcon from '@/public/images/messages/required.svg'
-import type { SafeMessage } from '@/store/safeMessagesSlice'
+import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
-// import { dispatchMsgConfirmation, dispatchMsgProposal } from '@/services/msg/msgSender'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 
-const MsgModal = ({ onClose, msg }: { onClose: () => void; msg: SafeMessage }): ReactElement => {
-  const { logoUri, name, message, messageHash } = msg
+type BaseProps = {
+  onClose: () => void
+} & Pick<SafeMessage, 'logoUri' | 'name' | 'message'>
+
+type ProposeProps = BaseProps & {
+  safeAppId: number
+  messageHash?: never
+}
+
+type ConfirmProps = BaseProps & {
+  safeAppId?: never
+  messageHash: string
+}
+
+const MsgModal = ({
+  onClose,
+  logoUri = APP_LOGO_FALLBACK_IMAGE,
+  name,
+  message,
+  messageHash,
+  safeAppId,
+}: ProposeProps | ConfirmProps): ReactElement => {
+  const { safe } = useSafeInfo()
+
   const onSign = () => {
+    if (safeAppId) {
+      dispatchSafeMsgProposal(safe, message, safeAppId)
+    } else if (messageHash) {
+      dispatchSafeMsgConfirmation(safe, messageHash)
+    }
+
     onClose()
-    // if (msg.messageHash) {
-    //   dispatchMsgConfirmation(msg.messageHash)
-    // } else {
-    //   // TODO: Pass `eth_sign`/`eth_signTypedData` payload to `dispatchMsgProposal`
-    //   const payload = {}
-    //   dispatchMsgProposal(payload)
-    // }
   }
 
   return (
@@ -33,8 +55,13 @@ const MsgModal = ({ onClose, msg }: { onClose: () => void; msg: SafeMessage }): 
           <Grid container px={1} alignItems="center" gap={2}>
             <Grid item>
               <Box display="flex" alignItems="center">
-                <SafeAppIcon src={logoUri || APP_LOGO_FALLBACK_IMAGE} alt={name} width={24} height={24} />
-                <Typography variant="h4">{msg.name}</Typography>
+                <SafeAppIcon
+                  src={logoUri || APP_LOGO_FALLBACK_IMAGE}
+                  alt={name || 'An icon of an application'}
+                  width={24}
+                  height={24}
+                />
+                <Typography variant="h4">{name}</Typography>
               </Box>
             </Grid>
           </Grid>

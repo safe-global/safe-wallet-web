@@ -1,6 +1,7 @@
+import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import type { SafeMessage } from '@/store/safeMessagesSlice'
 
 const useIsSafeMessageSignableBy = (message: SafeMessage, walletAddress: string): boolean => {
   const isSafeOwner = useIsSafeOwner()

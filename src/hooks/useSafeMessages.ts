@@ -1,10 +1,12 @@
+import { getSafeMessages } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessageListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+
 import { useAppSelector } from '@/store'
 import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { selectSafeMessages } from '@/store/safeMessagesSlice'
-import type { SafeMessageListPage } from '@/store/safeMessagesSlice'
 
-const useMessages = (
+const useSafeMessages = (
   pageUrl?: string,
 ): {
   page?: SafeMessageListPage
@@ -12,20 +14,23 @@ const useMessages = (
   loading: boolean
 } => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
-  const messagesState = useAppSelector(selectSafeMessages)
 
+  // If pageUrl is passed, load a new messages page from the API
   const [page, error, loading] = useAsync<SafeMessageListPage>(
-    // TODO: Fetch page
-    //@ts-ignore
     () => {
       if (!safeLoaded || !pageUrl) {
         return
       }
+      return getSafeMessages(safe.chainId, safeAddress, pageUrl)
     },
     [safe.chainId, safeAddress, safeLoaded, pageUrl],
     false,
   )
 
+  // The latest page of the messages is always in the store
+  const messagesState = useAppSelector(selectSafeMessages)
+
+  // Return the new page or the stored page
   return pageUrl
     ? {
         page,
@@ -39,4 +44,4 @@ const useMessages = (
       }
 }
 
-export default useMessages
+export default useSafeMessages
