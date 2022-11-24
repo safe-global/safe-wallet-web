@@ -34,7 +34,7 @@ export const dispatchSafeMsgProposal = async (
   try {
     const signature = await signMessageHash(safe, messageHash)
 
-    proposeSafeMessage(safe.chainId, safe.address.value, {
+    await proposeSafeMessage(safe.chainId, safe.address.value, {
       message,
       signature,
       safeAppId,
@@ -60,7 +60,7 @@ export const dispatchSafeMsgConfirmation = async (
   try {
     const signature = await signMessageHash(safe, messageHash)
 
-    confirmSafeMessage(safe.chainId, messageHash, {
+    await confirmSafeMessage(safe.chainId, messageHash, {
       signature,
     })
   } catch (error) {
