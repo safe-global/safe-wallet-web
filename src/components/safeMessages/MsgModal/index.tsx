@@ -2,19 +2,19 @@ import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon } 
 import type { ReactElement } from 'react'
 
 import ModalDialog, { ModalDialogTitle } from '@/components/common/ModalDialog'
-import ImageFallback from '@/components/common/ImageFallback'
+import SafeAppIcon from '@/components/safe-apps/SafeAppIcon'
 import Msg from '@/components/safeMessages/Msg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import RequiredIcon from '@/public/images/messages/required.svg'
 import type { SafeMessage } from '@/store/safeMessagesSlice'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
-import safeAppsModalLabelCss from '@/components/safe-apps/SafeAppsModalLabel/styles.module.css'
 // import { dispatchMsgConfirmation, dispatchMsgProposal } from '@/services/msg/msgSender'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 
 const MsgModal = ({ onClose, msg }: { onClose: () => void; msg: SafeMessage }): ReactElement => {
+  const { logoUri, name, message, messageHash } = msg
   const onSign = () => {
     onClose()
     // if (msg.messageHash) {
@@ -33,14 +33,7 @@ const MsgModal = ({ onClose, msg }: { onClose: () => void; msg: SafeMessage }): 
           <Grid container px={1} alignItems="center" gap={2}>
             <Grid item>
               <Box display="flex" alignItems="center">
-                <ImageFallback
-                  src={msg.logoUri}
-                  fallbackSrc={APP_LOGO_FALLBACK_IMAGE}
-                  alt={msg.name}
-                  className={safeAppsModalLabelCss.modalLabel}
-                  width={24}
-                  height={24}
-                />
+                <SafeAppIcon src={logoUri || APP_LOGO_FALLBACK_IMAGE} alt={name} width={24} height={24} />
                 <Typography variant="h4">{msg.name}</Typography>
               </Box>
             </Grid>
@@ -58,13 +51,13 @@ const MsgModal = ({ onClose, msg }: { onClose: () => void; msg: SafeMessage }): 
             This action will confirm the message and add your confirmation to the prepared signature.
           </Typography>
           <Typography fontWeight={700}>Message:</Typography>
-          <Msg message={msg.message} />
-          {msg.messageHash && (
+          <Msg message={message} />
+          {messageHash && (
             <>
               <Typography fontWeight={700} mt={2}>
                 Hash:
               </Typography>
-              <EthHashInfo address={msg.messageHash} showAvatar={false} shortAddress={false} showCopyButton />
+              <EthHashInfo address={messageHash} showAvatar={false} shortAddress={false} showCopyButton />
             </>
           )}
         </DialogContent>
