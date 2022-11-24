@@ -12,9 +12,6 @@ import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag } from '@/config/constants'
 
-const CLAIMING_WIDGET_ID = '#claiming-widget'
-const SNAPSHOT_WIDGET_ID = '#snapshot-widget'
-
 const GovernanceSection = () => {
   const { getAllowedFeaturesList } = useBrowserPermissions()
   const [claimingSafeApp, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
@@ -37,13 +34,14 @@ const GovernanceSection = () => {
       <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
         {claimingApp || fetchingSafeClaimingApp ? (
           <WidgetBody>
-            <Grid spacing={3} container>
-              <Grid item xs={12} md={6} lg={8}>
-                <Card sx={{ height: '300px' }}>
+            <Grid container>
+              <Grid item xs={12}>
+                <Card className={css.widgetWrapper}>
                   {claimingApp ? (
                     <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
                       <AppFrame
-                        appUrl={`${claimingApp.url}${SNAPSHOT_WIDGET_ID}`}
+                        // appUrl={`${claimingApp.url}#widget`}
+                        appUrl="http://localhost:3001/safe-claiming-app#widget"
                         allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                         isQueueBarDisabled
                       />
@@ -57,32 +55,7 @@ const GovernanceSection = () => {
                       textAlign="center"
                     >
                       <Typography variant="h1" color="text.secondary">
-                        Loading Snapshot...
-                      </Typography>
-                    </Box>
-                  )}
-                </Card>
-              </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                <Card sx={{ height: '300px' }}>
-                  {claimingApp ? (
-                    <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
-                      <AppFrame
-                        appUrl={`${claimingApp.url}${CLAIMING_WIDGET_ID}`}
-                        allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
-                        isQueueBarDisabled
-                      />
-                    </SafeAppsErrorBoundary>
-                  ) : (
-                    <Box
-                      sx={{ height: '300px' }}
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      textAlign="center"
-                    >
-                      <Typography variant="h1" color="text.secondary">
-                        Loading Claiming app...
+                        Loading section...
                       </Typography>
                     </Box>
                   )}

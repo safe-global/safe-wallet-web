@@ -16,3 +16,15 @@
 .accordion :global .Mui-expanded.MuiAccordionSummary-root {
   background: inherit;
 }
+
+.widgetWrapper {
+  border: none;
+  height: 300px;
+}
+
+/* sm breakpoint + paddings */
+@media (max-width: 662px) {
+  .widgetWrapper {
+    height: 624px;
+  }
+}
