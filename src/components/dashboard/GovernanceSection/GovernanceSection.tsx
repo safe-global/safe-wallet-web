@@ -11,11 +11,14 @@ import AppFrame from '@/components/safe-apps/AppFrame'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag } from '@/config/constants'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const CLAIMING_WIDGET_ID = '#claiming-widget'
 const SNAPSHOT_WIDGET_ID = '#snapshot-widget'
 
 const GovernanceSection = () => {
+  const isDarkMode = useDarkMode()
+  const theme = isDarkMode ? 'dark' : 'light'
   const { getAllowedFeaturesList } = useBrowserPermissions()
   const [claimingSafeApp, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
   const claimingApp = claimingSafeApp?.[0]
@@ -43,7 +46,7 @@ const GovernanceSection = () => {
                   {claimingApp ? (
                     <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
                       <AppFrame
-                        appUrl={`${claimingApp.url}${SNAPSHOT_WIDGET_ID}`}
+                        appUrl={`${claimingApp.url}?theme=${theme}${SNAPSHOT_WIDGET_ID}`}
                         allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                         isQueueBarDisabled
                       />
@@ -68,7 +71,7 @@ const GovernanceSection = () => {
                   {claimingApp ? (
                     <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
                       <AppFrame
-                        appUrl={`${claimingApp.url}${CLAIMING_WIDGET_ID}`}
+                        appUrl={`${claimingApp.url}?theme=${theme}${CLAIMING_WIDGET_ID}`}
                         allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                         isQueueBarDisabled
                       />
