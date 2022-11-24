@@ -3,7 +3,7 @@ const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 // generate number between 0.00001 and 0.00020
 const sendValue = Math.floor(Math.random() * 20 + 1) / 100000
-const recommendedNonce = 10
+let recommendedNonce
 const currentNonce = 3
 
 describe('Queue a transaction on 1/N', () => {
@@ -53,7 +53,11 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('button[type="submit"]').should('not.be.disabled')
 
     // Gets the recommended nonce
-    cy.contains(`Signing the transaction with nonce ${recommendedNonce}`)
+    // Gets the recommended nonce
+    cy.contains('Signing the transaction with nonce').should(($div) => {
+      // get the number in the string
+      recommendedNonce = $div.text().match(/\d+$/)[0]
+    })
 
     // Changes nonce to next one
     cy.contains('Signing the transaction with nonce').click()
