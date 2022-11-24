@@ -38,13 +38,7 @@ export const useUrlChainId = (): string | undefined => {
   const { prefix } = parsePrefixedAddress(safe)
   const shortName = prefix || chain
 
-  if (shortName) {
-    const chainId = Object.entries(chains).find(([key]) => key === shortName)?.[1]
-    if (chainId == null) {
-      throw Error('Invalid chain short name in the URL')
-    }
-    return chainId
-  }
+  return Object.entries(chains).find(([key]) => key === shortName)?.[1]
 }
 
 export const useChainId = (): string => {

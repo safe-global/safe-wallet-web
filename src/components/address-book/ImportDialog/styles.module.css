@@ -1,11 +1,5 @@
-.dropbox {
-  align-items: center;
-  border-radius: 8px;
+.horizontalDivider {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  cursor: pointer;
-  padding: var(--space-2) 0;
-  margin: var(--space-3) 0;
-  min-height: 200px;
+  margin: 24px -24px;
+  border-top: 2px solid rgba(0, 0, 0, 0.12);
 }
