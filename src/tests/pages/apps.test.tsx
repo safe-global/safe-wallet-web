@@ -353,12 +353,12 @@ describe('AppsPage', () => {
         fireEvent.click(button)
       })
 
-      await waitFor(() => expect(screen.getAllByAltText(/ENS App logo/i).length).toBe(2))
+      await waitFor(() => expect(screen.getAllByTitle(/ENS App logo/i).length).toBe(2))
 
       await act(() => {
         fireEvent.click(button)
       })
-      await waitFor(() => expect(screen.getAllByAltText(/ENS App logo/i).length).toBe(1))
+      await waitFor(() => expect(screen.getAllByTitle(/ENS App logo/i).length).toBe(1))
     })
   })
 })

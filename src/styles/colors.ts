@@ -50,6 +50,9 @@ const palette = {
     paper: '#FFFFFF',
     light: '#EFFFF4',
   },
+  backdrop: {
+    main: '#636669',
+  },
   logo: {
     main: '#121312',
     background: '#EEEFF0',

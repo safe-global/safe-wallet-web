@@ -25,6 +25,7 @@ import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTran
 import { gtmTrackPageview } from '@/services/analytics/gtm'
 import { getLegacyChainName } from '../utils'
 import useThirdPartyCookies from './useThirdPartyCookies'
+import useAnalyticsFromSafeApp from './useFromAppAnalytics'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
 import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
@@ -66,6 +67,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
+  useAnalyticsFromSafeApp(iframeRef)
   const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
     useSafePermissions()
   const appName = useMemo(() => (remoteApp ? remoteApp.name : appUrl), [appUrl, remoteApp])
