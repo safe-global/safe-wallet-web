@@ -60,7 +60,7 @@ const CreationDialog = () => {
           <HintItem
             Icon={HelpCenterIcon}
             title="Help center"
-            description="HHave any questions? Check out our collection of articles."
+            description="Have any questions? Check out our collection of articles."
           />
         </Grid>
         <Box display="flex" justifyContent="center">
