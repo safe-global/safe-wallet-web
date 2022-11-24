@@ -4,14 +4,9 @@ import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS, LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import Track from '../common/Track'
 import { AppRoutes } from '@/config/routes'
-import useABTesting from '@/services/tracking/useABTesting'
-import { AbTest } from '@/services/tracking/abTesting'
 
 const NewSafe = () => {
-  const shouldUseNewCreation = useABTesting(AbTest.SAFE_CREATION)
   const router = useRouter()
-
-  const createSafeLink = shouldUseNewCreation ? AppRoutes.newSafe.create : AppRoutes.open
 
   return (
     <>
@@ -34,7 +29,7 @@ const NewSafe = () => {
               for creating your new Safe.
             </Typography>
             <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
-              <Button variant="contained" onClick={() => router.push(createSafeLink)}>
+              <Button variant="contained" onClick={() => router.push(AppRoutes.open)}>
                 + Create new Safe
               </Button>
             </Track>
