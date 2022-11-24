@@ -1,0 +1,12 @@
+.select {
+  margin-right: var(--space-1);
+}
+
+.select :global .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-border-light);
+  border-width: 2px;
+}
+
+.select :global .MuiSelect-select {
+  padding: 12px 14px;
+}

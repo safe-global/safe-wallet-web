@@ -32,6 +32,10 @@
   gap: var(--space-1);
 }
 
+.pairing > div:first-child {
+  align-items: center;
+}
+
 .pairing :global .MuiTypography-alignCenter {
   text-align: unset;
 }

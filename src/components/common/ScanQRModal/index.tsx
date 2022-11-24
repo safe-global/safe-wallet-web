@@ -1,4 +1,4 @@
-import { useCallback, useEffect, createRef, useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Box, Dialog, DialogTitle, IconButton, Button, Divider } from '@mui/material'
 import QrReader from 'react-qr-reader'
 import CloseIcon from '@mui/icons-material/Close'
@@ -15,19 +15,14 @@ const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElement => 
   const [fileUploadModalOpen, setFileUploadModalOpen] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [cameraBlocked, setCameraBlocked] = useState<boolean>(false)
-  const scannerRef = createRef<QrReader>()
-  const openImageDialog = useCallback(() => {
-    if (!scannerRef.current) return
-
-    scannerRef.current.openImageDialog()
-  }, [scannerRef])
+  const scannerRef = useRef<QrReader>(null)
 
   useEffect(() => {
     if (!fileUploadModalOpen && cameraBlocked && !error) {
       setFileUploadModalOpen(true)
-      openImageDialog()
+      scannerRef.current?.openImageDialog()
     }
-  }, [cameraBlocked, openImageDialog, fileUploadModalOpen, setFileUploadModalOpen, error])
+  }, [cameraBlocked, fileUploadModalOpen, error])
 
   const onFileScannedError = (error: Error) => {
     if (error.name === 'NotAllowedError' || error.name === 'PermissionDismissedError') {
