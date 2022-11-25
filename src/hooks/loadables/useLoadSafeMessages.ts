@@ -6,19 +6,24 @@ import useAsync from '@/hooks/useAsync'
 import { logError, Errors } from '@/services/exceptions'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import type { AsyncResult } from '@/hooks/useAsync'
+import { POLLING_INTERVAL } from '@/config/constants'
+import useIntervalCounter from '@/hooks/useIntervalCounter'
 
 export const useLoadMessages = (): AsyncResult<SafeMessageListPage> => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
+  const [pollCount, resetPolling] = useIntervalCounter(POLLING_INTERVAL)
 
-  // Re-fetch when chainId/address
   const [data, error, loading] = useAsync<SafeMessageListPage>(() => {
     if (!safeLoaded) {
       return
     }
     return getSafeMessages(safe.chainId, safeAddress)
-  }, [safeLoaded, safe.chainId, safeAddress])
+  }, [safeLoaded, safe.chainId, safeAddress, pollCount])
 
-  // Log errors
+  useEffect(() => {
+    resetPolling()
+  }, [resetPolling, safe.chainId, safeAddress])
+
   useEffect(() => {
     if (error) {
       logError(Errors._608, error.message)

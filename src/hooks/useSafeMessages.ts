@@ -27,17 +27,17 @@ const useSafeMessages = (
     false,
   )
 
-  // The latest page of the messages is always in the store
   const messagesState = useAppSelector(selectSafeMessages)
 
-  // Return the new page or the stored page
   return pageUrl
-    ? {
+    ? // New page
+      {
         page,
         error: error?.message,
         loading: loading,
       }
-    : {
+    : // Stored page
+      {
         page: messagesState.data,
         error: messagesState.error,
         loading: messagesState.loading,

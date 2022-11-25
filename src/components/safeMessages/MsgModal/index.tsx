@@ -23,6 +23,7 @@ type ProposeProps = BaseProps & {
   messageHash?: never
 }
 
+// A proposed message does not return the `safeAppId` but the `logoUri` and `name` of the Safe App that proposed it
 type ConfirmProps = BaseProps & {
   safeAppId?: never
   messageHash: string
