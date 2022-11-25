@@ -45,13 +45,13 @@ export const useCardStepper = <TData>({
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
     setWidgetStep && setWidgetStep((prevActiveStep) => prevActiveStep + 1)
-    trackEvent({ category: eventCategory, action: lastStep ? 'Submit' : 'Next' })
+    trackEvent({ category: eventCategory, action: lastStep ? 'Submit' : 'Next', label: activeStep })
   }
 
   const handleBack = (data?: Partial<TData>) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
     setWidgetStep && setWidgetStep((prevActiveStep) => prevActiveStep - 1)
-    trackEvent({ category: eventCategory, action: firstStep ? 'Cancel' : 'Back' })
+    trackEvent({ category: eventCategory, action: firstStep ? 'Cancel' : 'Back', label: activeStep })
 
     if (data) {
       setStepData((previous) => ({ ...previous, ...data }))

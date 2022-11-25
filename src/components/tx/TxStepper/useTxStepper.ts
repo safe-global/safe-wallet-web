@@ -42,12 +42,12 @@ export const useTxStepper = ({
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
-    trackEvent({ category: eventCategory, action: lastStep ? 'Submit' : 'Next' })
+    trackEvent({ category: eventCategory, action: lastStep ? 'Submit' : 'Next', label: activeStep })
   }
 
   const handleBack = (data?: unknown) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
-    trackEvent({ category: eventCategory, action: firstStep ? 'Cancel' : 'Back' })
+    trackEvent({ category: eventCategory, action: firstStep ? 'Cancel' : 'Back', label: activeStep })
 
     if (data) {
       updateStepData(data)
