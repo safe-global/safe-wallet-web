@@ -1,4 +1,4 @@
-import { Typography, Card, Box, Alert, IconButton } from '@mui/material'
+import { Typography, Card, Box, Alert, IconButton, Link } from '@mui/material'
 import { WidgetBody } from '@/components/dashboard/styled'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
@@ -9,10 +9,9 @@ import SafeAppsErrorBoundary from '@/components/safe-apps/SafeAppsErrorBoundary'
 import AppFrame from '@/components/safe-apps/AppFrame'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import { SafeAppsTag } from '@/config/constants'
-import LoadIcon from '@/public/images/common/load.svg'
-import palette from '@/styles/colors'
+import { SafeAppsTag, SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import { OpenInNew } from '@mui/icons-material'
 
 const GovernanceSection = () => {
   const isDarkMode = useDarkMode()
@@ -24,10 +23,24 @@ const GovernanceSection = () => {
 
   const WidgetLoadError = () => (
     <Card className={css.loadErrorCard}>
-      <Box height="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2}>
-        <LoadIcon fill={`${palette.primary.light}`} />
+      <Box
+        height="100%"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        gap={2}
+        maxWidth="80%"
+      >
         <Typography variant="body1" color="primary.light">
-          Couldn&apos;t load governance widget
+          Couldn&apos;t load governance widget.
+        </Typography>
+        <Typography variant="body1" color="primary.light">
+          You can try to reload the page and in case the problem persists, please reach out to us via{' '}
+          <Link target="_blank" href={SAFE_APPS_SUPPORT_CHAT_URL} fontSize="medium">
+            Discord
+            <OpenInNew fontSize="small" color="primary" className={css.loadErroricon} />
+          </Link>
         </Typography>
       </Box>
     </Card>
