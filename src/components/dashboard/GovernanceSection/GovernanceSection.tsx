@@ -27,7 +27,7 @@ const GovernanceSection = () => {
       <Box height="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2}>
         <LoadIcon fill={`${palette.border.main}`} />
         <Typography variant="body1" color="border.main">
-          Couldn&apos;t load governance widgets
+          Couldn&apos;t load governance widget
         </Typography>
       </Box>
     </Card>
