@@ -12,8 +12,11 @@ import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag } from '@/config/constants'
 import LoadIcon from '@/public/images/common/load.svg'
 import palette from '@/styles/colors'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const GovernanceSection = () => {
+  const isDarkMode = useDarkMode()
+  const theme = isDarkMode ? 'dark' : 'light'
   const { getAllowedFeaturesList } = useBrowserPermissions()
   const [claimingSafeApp, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
   const claimingApp = claimingSafeApp?.[0]
@@ -57,7 +60,7 @@ const GovernanceSection = () => {
               {claimingApp ? (
                 <SafeAppsErrorBoundary render={() => <WidgetLoadErrorFallback />}>
                   <AppFrame
-                    appUrl={`${claimingApp.url}#widget`}
+                    appUrl={`${claimingApp.url}?theme=${theme}#widget`}
                     allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                     isQueueBarDisabled
                   />
