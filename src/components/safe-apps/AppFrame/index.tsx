@@ -46,6 +46,10 @@ type AppFrameProps = {
   allowedFeaturesList: string
 }
 
+// see sandbox mdn docs for more details https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
+const IFRAME_SANDBOX_ALLOWED_FEATURES =
+  'allow-scripts allow-same-origin allow-popups allow-forms allow-downloads allow-orientation-lock'
+
 const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
@@ -218,6 +222,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
           src={appUrl}
           title={safeAppFromManifest?.name}
           onLoad={onIframeLoad}
+          sandbox={IFRAME_SANDBOX_ALLOWED_FEATURES}
           allow={allowedFeaturesList}
           style={{
             display: appIsLoading ? 'none' : 'block',
