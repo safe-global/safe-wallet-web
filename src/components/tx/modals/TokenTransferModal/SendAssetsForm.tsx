@@ -11,6 +11,7 @@ import {
   TextField,
   DialogContent,
   Box,
+  SvgIcon,
 } from '@mui/material'
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -25,6 +26,11 @@ import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useAddressBook from '@/hooks/useAddressBook'
+import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
+import useChainId from '@/hooks/useChainId'
+import { sameAddress } from '@/utils/addresses'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import useSafeTokenWarning from '@/components/tx/modals/TokenTransferModal/useSafeTokenWarning'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -67,6 +73,9 @@ type SendAssetsFormProps = {
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
   const { balances } = useBalances()
   const addressBook = useAddressBook()
+  const chainId = useChainId()
+  const safeTokenAddress = getSafeTokenAddress(chainId)
+  const { isSafeTokenPaused } = useSafeTokenWarning()
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: {
@@ -98,6 +107,8 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
   const isSpendingLimitType = type === SendTxType.spendingLimit
 
+  const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
+
   const onMaxAmountClick = () => {
     if (!selectedToken) return
 
@@ -110,6 +121,8 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
       shouldValidate: true,
     })
   }
+
+  const isDisabled = isSafeTokenSelected && isSafeTokenPaused
 
   return (
     <FormProvider {...formMethods}>
@@ -127,7 +140,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             )}
           </FormControl>
 
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth>
             <InputLabel id="asset-label" required>
               Select an asset
             </InputLabel>
@@ -149,11 +162,20 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             </Select>
           </FormControl>
 
+          {isDisabled && (
+            <Box mt={1} display="flex" alignItems="center">
+              <SvgIcon component={InfoIcon} color="error" fontSize="small" />
+              <Typography variant="body2" color="error" ml={0.5}>
+                SAFE is currently non-transferable.
+              </Typography>
+            </Box>
+          )}
+
           {!!spendingLimit && (
             <SpendingLimitRow spendingLimit={spendingLimit} selectedToken={selectedToken?.tokenInfo} />
           )}
 
-          <FormControl fullWidth>
+          <FormControl fullWidth sx={{ mt: 2 }}>
             <TextField
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
@@ -182,7 +204,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
           </FormControl>
         </DialogContent>
 
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" disabled={isDisabled}>
           Next
         </Button>
       </form>
