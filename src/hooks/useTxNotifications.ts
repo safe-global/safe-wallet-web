@@ -37,7 +37,7 @@ enum Variant {
 }
 
 // Format the error message
-const formatError = (error: Error & { reason?: string }): string => {
+export const formatError = (error: Error & { reason?: string }): string => {
   let { reason } = error
   if (!reason) return ''
   if (!reason.endsWith('.')) reason += '.'

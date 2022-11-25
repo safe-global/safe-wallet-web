@@ -92,7 +92,9 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
 }
 
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
-  return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR].includes(wallet.label.toUpperCase() as WALLET_KEYS)
+  return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR, WALLET_KEYS.KEYSTONE].includes(
+    wallet.label.toUpperCase() as WALLET_KEYS,
+  )
 }
 
 export const isWalletConnect = (wallet: ConnectedWallet): boolean => {

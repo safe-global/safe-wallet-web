@@ -45,6 +45,7 @@ const NewTxModal = ({
   }
 
   const sharedProps = {
+    open: !tokenModalOpen && !nftsModalOpen,
     onClose,
     onTokenModalOpen,
     onNFTModalOpen,

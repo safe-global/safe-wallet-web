@@ -8,8 +8,7 @@
  */
 
 import type { TagManagerArgs } from './TagManager'
-import TagManager, { DATA_LAYER_NAME } from './TagManager'
-import Cookies from 'js-cookie'
+import TagManager from './TagManager'
 import {
   IS_PRODUCTION,
   GOOGLE_TAG_MANAGER_ID,
@@ -20,12 +19,11 @@ import {
 import type { AnalyticsEvent, EventLabel, SafeAppSDKEvent } from './types'
 import { EventType } from './types'
 import { SAFE_APPS_SDK_CATEGORY } from './events'
+import { getAbTest } from '../tracking/abTesting'
+import type { AbTest } from '../tracking/abTesting'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
-
-const GOOGLE_ANALYTICS_COOKIE_LIST = ['_ga', '_gat', '_gid']
-const EMPTY_SAFE_APP = 'unknown'
 
 const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
   LIVE: {
@@ -69,24 +67,12 @@ export const gtmInit = (pagePath: string): void => {
   })
 }
 
-const isGtmLoaded = (): boolean => {
-  return typeof window !== 'undefined' && !!window[DATA_LAYER_NAME]
-}
-
-export const gtmClear = (): void => {
-  if (!isGtmLoaded()) return
-
-  // Delete GA cookies
-  const path = '/'
-  const domain = `.${location.host.split('.').slice(-2).join('.')}`
-  GOOGLE_ANALYTICS_COOKIE_LIST.forEach((cookie) => {
-    Cookies.remove(cookie, { path, domain })
-  })
-}
+export const gtmClear = TagManager.disable
 
 type GtmEvent = {
   event: EventType
   chainId: string
+  abTest?: AbTest
 }
 
 type ActionGtmEvent = GtmEvent & {
@@ -107,13 +93,7 @@ type SafeAppGtmEvent = ActionGtmEvent & {
   safeAppSDKVersion?: string
 }
 
-const gtmSend = (event: GtmEvent): void => {
-  console.info('[Analytics]', event)
-
-  if (!isGtmLoaded()) return
-
-  TagManager.dataLayer(event)
-}
+const gtmSend = TagManager.dataLayer
 
 export const gtmTrack = (eventData: AnalyticsEvent): void => {
   const gtmEvent: ActionGtmEvent = {
@@ -125,6 +105,12 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
 
   if (eventData.label) {
     gtmEvent.eventLabel = eventData.label
+  }
+
+  const abTest = getAbTest()
+
+  if (abTest) {
+    gtmEvent.abTest = abTest
   }
 
   gtmSend(gtmEvent)
@@ -141,13 +127,22 @@ export const gtmTrackPageview = (pagePath: string): void => {
   gtmSend(gtmEvent)
 }
 
+export const normalizeAppName = (appName?: string): string => {
+  // App name is a URL
+  if (appName?.startsWith('http')) {
+    // Strip search query and hash
+    return appName.split('?')[0].split('#')[0]
+  }
+  return appName || ''
+}
+
 export const gtmTrackSafeApp = (eventData: AnalyticsEvent, appName?: string, sdkEventData?: SafeAppSDKEvent): void => {
   const safeAppGtmEvent: SafeAppGtmEvent = {
     event: EventType.SAFE_APP,
     chainId: _chainId,
     eventCategory: eventData.category,
     eventAction: eventData.action,
-    safeAppName: appName || '',
+    safeAppName: normalizeAppName(appName),
     safeAppEthMethod: '',
     safeAppMethod: '',
     safeAppSDKVersion: '',

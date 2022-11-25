@@ -11,11 +11,13 @@ declare module '@mui/material/styles' {
   interface Palette {
     border: Palette['primary']
     logo: Palette['primary']
+    backdrop: Palette['primary']
     static: Palette['primary']
   }
   interface PaletteOptions {
     border: PaletteOptions['primary']
     logo: PaletteOptions['primary']
+    backdrop: PaletteOptions['primary']
     static: PaletteOptions['primary']
   }
 
@@ -57,7 +59,7 @@ const initTheme = (darkMode: boolean) => {
     },
     spacing: base,
     shape: {
-      borderRadius: '6px',
+      borderRadius: 6,
     },
     shadows: [
       'none',
@@ -468,11 +470,14 @@ const initTheme = (darkMode: boolean) => {
       MuiBackdrop: {
         styleOverrides: {
           root: ({ theme }) => ({
-            backgroundColor: alpha(theme.palette.background.main, 0.75),
+            backgroundColor: alpha(theme.palette.backdrop.main, 0.75),
           }),
         },
       },
       MuiSwitch: {
+        defaultProps: {
+          color: darkMode ? undefined : 'success',
+        },
         styleOverrides: {
           thumb: ({ theme }) => ({
             boxShadow:
@@ -487,6 +492,13 @@ const initTheme = (darkMode: boolean) => {
             '&:hover': {
               color: theme.palette.primary.light,
             },
+          }),
+        },
+      },
+      MuiLinearProgress: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            backgroundColor: theme.palette.border.light,
           }),
         },
       },

@@ -32,10 +32,6 @@
   background-color: var(--color-secondary-background);
 }
 
-.iconButton svg path {
-  fill: var(--color-primary-main);
-}
-
 .address {
   width: 100%;
   overflow: hidden;

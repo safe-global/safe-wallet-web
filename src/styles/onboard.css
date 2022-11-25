@@ -32,6 +32,9 @@
   --onboard-warning-600: var(--color-error-main);
   --onboard-warning-700: var(--color-error-dark);
 
+  /* var(--color-backdrop-main) + opacity */
+  --onboard-modal-backdrop: rgba(99, 102, 105, 0.75);
+
   --account-select-modal-white: var(--color-background-paper);
   --account-select-modal-black: var(--color-primary-main);
   --account-select-modal-primary-100: var(--color-secondary-background);
@@ -69,8 +72,8 @@
   --onboard-border-radius-3: 8px;
 
   /* Z-index */
-  --onboard-modal-z-index: 1201;
-  --onboard-account-select-modal-z-index: 1201;
+  --onboard-modal-z-index: 1301;
+  --onboard-account-select-modal-z-index: 1301;
 }
 
 #walletconnect-qrcode-modal {
@@ -83,5 +86,5 @@
 
 /* Keystone modal */
 #kv_sdk_container + .ReactModalPortal > div {
-  z-index: var(--onboard-modal-z-index) !important;
+  z-index: 1301 !important;
 }

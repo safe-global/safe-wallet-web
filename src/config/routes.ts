@@ -12,6 +12,9 @@ export const AppRoutes = {
     nfts: '/balances/nfts',
     index: '/balances',
   },
+  newSafe: {
+    create: '/new-safe/create',
+  },
   settings: {
     spendingLimits: '/settings/spending-limits',
     setup: '/settings/setup',

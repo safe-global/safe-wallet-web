@@ -55,12 +55,14 @@ const flexDirection: SystemProps['flexDirection'] = {
 }
 
 const ReplacementModal = ({
+  open,
   txNonce,
   onClose,
   onTokenModalOpen,
   onNFTModalOpen,
   onRejectModalOpen,
 }: {
+  open: boolean
   txNonce: number
   onClose: () => void
   onTokenModalOpen: () => void
@@ -68,7 +70,7 @@ const ReplacementModal = ({
   onRejectModalOpen: () => void
 }) => {
   return (
-    <ModalDialog open dialogTitle={`Replace transaction with nonce ${txNonce}`} onClose={onClose}>
+    <ModalDialog open={open} dialogTitle={`Replace transaction with nonce ${txNonce}`} onClose={onClose}>
       <DialogContent className={css.container}>
         <Typography variant="h5" mb={1} textAlign="center">
           Need to replace or discard this transaction?

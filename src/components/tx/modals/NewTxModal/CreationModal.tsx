@@ -25,12 +25,14 @@ const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
 }
 
 const CreationModal = ({
+  open,
   onClose,
   onTokenModalOpen,
   onNFTModalOpen,
   onContractInteraction,
   shouldShowTxBuilder,
 }: {
+  open: boolean
   onClose: () => void
   onTokenModalOpen: () => void
   onNFTModalOpen: () => void
@@ -40,7 +42,7 @@ const CreationModal = ({
   const txBuilder = useTxBuilderApp()
 
   return (
-    <ModalDialog open dialogTitle="New transaction" onClose={onClose}>
+    <ModalDialog open={open} dialogTitle="New transaction" onClose={onClose}>
       <DialogContent>
         <Box display="flex" flexDirection="column" alignItems="center" gap={2} pt={7} pb={4} width={240} m="auto">
           <SendTokensButton onClick={onTokenModalOpen} />
