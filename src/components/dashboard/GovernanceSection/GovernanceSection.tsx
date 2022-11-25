@@ -1,4 +1,4 @@
-import { Typography, Card, Box, Alert } from '@mui/material'
+import { Typography, Card, Box, Alert, IconButton } from '@mui/material'
 import { WidgetBody } from '@/components/dashboard/styled'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
@@ -42,7 +42,13 @@ const GovernanceSection = () => {
 
   return (
     <Accordion className={css.accordion} defaultExpanded>
-      <AccordionSummary expandIcon={<ExpandMoreIcon color="border" />}>
+      <AccordionSummary
+        expandIcon={
+          <IconButton size="small">
+            <ExpandMoreIcon color="border" />
+          </IconButton>
+        }
+      >
         <div>
           <Typography component="h2" variant="subtitle1" fontWeight={700}>
             Governance

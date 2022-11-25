@@ -9,12 +9,18 @@
   padding: 0;
 }
 
-.accordion :global .MuiAccordionSummary-root:hover {
+.accordion:hover :global .MuiAccordionSummary-root,
+.accordion :global .MuiAccordionSummary-root:hover,
+.accordion :global .Mui-expanded.MuiAccordionSummary-root {
   background: inherit;
 }
 
-.accordion :global .Mui-expanded.MuiAccordionSummary-root {
-  background: inherit;
+.accordion :global .MuiAccordionSummary-root {
+  pointer-events: none;
+}
+
+.accordion :global .MuiAccordionSummary-expandIconWrapper {
+  pointer-events: auto;
 }
 
 .loadErrorWrapper {
