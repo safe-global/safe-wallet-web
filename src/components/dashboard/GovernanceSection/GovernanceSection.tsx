@@ -60,7 +60,8 @@ const GovernanceSection = () => {
               {claimingApp ? (
                 <SafeAppsErrorBoundary render={() => <WidgetLoadErrorFallback />}>
                   <AppFrame
-                    appUrl={`${claimingApp.url}?theme=${theme}#widget`}
+                    key={theme}
+                    appUrl={`${claimingApp.url}#widget+${theme}`}
                     allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                     isQueueBarDisabled
                   />
