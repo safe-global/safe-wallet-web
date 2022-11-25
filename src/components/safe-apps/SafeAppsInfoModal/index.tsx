@@ -112,7 +112,6 @@ const SafeAppsInfoModal = ({
         sx={({ palette, shape }) => ({
           width: '450px',
           backgroundColor: palette.background.paper,
-          borderRadius: shape.borderRadius,
           boxShadow: `1px 2px 10px 0 ${alpha(palette.text.primary, 0.18)}`,
         })}
       >

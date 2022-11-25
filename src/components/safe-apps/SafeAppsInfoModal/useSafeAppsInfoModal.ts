@@ -103,8 +103,8 @@ const useSafeAppsInfoModal = ({
     (shouldHide: boolean, browserPermissions: BrowserPermission[]) => {
       const info = {
         consentsAccepted: true,
-        appsReviewed: [...modalInfo[chainId].appsReviewed],
-        customAppsReviewed: [...modalInfo[chainId].customAppsReviewed],
+        appsReviewed: [...(modalInfo[chainId]?.appsReviewed || [])],
+        customAppsReviewed: [...(modalInfo[chainId]?.customAppsReviewed || [])],
       }
 
       const safeAppId = safeApp?.id
@@ -112,8 +112,8 @@ const useSafeAppsInfoModal = ({
       if (safeAppId && !modalInfo[chainId].appsReviewed.includes(safeAppId)) {
         info.appsReviewed = [...modalInfo[chainId].appsReviewed, safeAppId]
       } else {
-        if (shouldHide && !modalInfo[chainId].customAppsReviewed.includes(url)) {
-          info.customAppsReviewed = [...modalInfo[chainId].customAppsReviewed, url]
+        if (shouldHide && !modalInfo[chainId]?.customAppsReviewed.includes(url)) {
+          info.customAppsReviewed = [...(modalInfo[chainId]?.customAppsReviewed || []), url]
         }
       }
 

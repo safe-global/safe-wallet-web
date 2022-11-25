@@ -35,7 +35,7 @@
 
 .domainIcon {
   position: relative;
-  top: 4px;
+  top: 6px;
   padding-right: 4px;
 }
 
@@ -44,30 +44,8 @@
   font-size: 12px;
   font-weight: bold;
   overflow-wrap: anywhere;
-  background-color: #effaf8;
+  background-color: var(--color-background-light);
   padding: 10px 15px 10px 10px;
   border-radius: 8px;
   max-width: 75%;
-}
-
-.unknownAppWarning {
-  color: #e8663d;
-}
-
-.unknownAppWarningTitle {
-  font-size: 24px;
-  margin-left: 4px;
-}
-
-.unknownAppWarningIcon .icon-color {
-  fill: #e8663d;
-}
-
-.unknownAppWarningIcon .icon-stroke {
-  stroke: #e8663d;
-}
-
-.unknownAppLabel {
-  flex: 1;
-  color: #000;
 }

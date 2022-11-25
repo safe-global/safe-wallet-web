@@ -12,7 +12,7 @@ type DomainProps = {
 const Domain: React.FC<DomainProps> = ({ url, showInOneLine }): React.ReactElement => {
   return (
     <Typography className={styles.domainText} sx={showInOneLine ? { overflowY: 'hidden', whiteSpace: 'nowrap' } : {}}>
-      <CheckIcon color="success" /> {url}
+      <CheckIcon color="success" className={styles.domainIcon} /> {url}
     </Typography>
   )
 }

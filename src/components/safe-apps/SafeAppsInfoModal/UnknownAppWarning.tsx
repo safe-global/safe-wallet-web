@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material'
-import WarningIcon from '@mui/icons-material/Warning'
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined'
 import Domain from './Domain'
-
-import styles from './styles.module.css'
 
 type UnknownAppWarningProps = {
   url?: string
@@ -18,51 +16,37 @@ const UnknownAppWarning = ({ url, onHideWarning }: UnknownAppWarningProps): Reac
     setToggleHideWarning(!toggleHideWarning)
   }
 
-  const isColumnLayout = !!onHideWarning
-
   return (
-    <Box
-      className={styles.unknownAppWarning}
-      display={isColumnLayout ? 'flex' : 'block'}
-      flexDirection="column"
-      height={isColumnLayout ? '100%' : 'auto'}
-      alignItems="center"
-    >
-      <Box display={isColumnLayout ? 'block' : 'flex'} alignItems="center" mt={isColumnLayout ? 6 : 0}>
-        <div className={styles.unknownAppWarningIcon}>
-          <WarningIcon
-            sx={{
-              width: isColumnLayout ? '32px' : '24px',
-              height: isColumnLayout ? '32px' : '24px',
-            }}
-          />
-        </div>
-        <Typography fontWeight={700} sx={{ marginTop: isColumnLayout ? '12px' : '24px' }}>
+    <Box display="flex" flexDirection="column" height="100%" alignItems="center">
+      <Box display="block" alignItems="center" mt={6}>
+        <WarningAmberOutlinedIcon fontSize="large" color="warning" />
+        <Typography variant="h3" fontWeight={700} mt={2} color="#FF8061">
           Warning
         </Typography>
       </Box>
-      <Typography sx={{ color: 'inherit', textAlign: isColumnLayout ? 'center' : 'left' }}>
+      <Typography my={2} fontWeight={700} color="#FF8061">
         The application you are trying to access is not in the default Safe Apps list
       </Typography>
-      <br />
-      <Typography sx={{ textAlign: isColumnLayout ? 'center' : 'left' }}>
+
+      <Typography my={2} textAlign="center">
         Check the link you are using and ensure that it comes from a source you trust
       </Typography>
-      <br />
+
       {url && <Domain url={url} showInOneLine />}
-      <br />
+
       {onHideWarning && (
-        <FormControlLabel
-          className={styles.unknownAppLabel}
-          control={
-            <Checkbox
-              checked={toggleHideWarning}
-              onChange={handleToggleWarningPreference}
-              name="Warning message preference"
-            />
-          }
-          label="Don't show this warning again"
-        />
+        <Box mt={2}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={toggleHideWarning}
+                onChange={handleToggleWarningPreference}
+                name="Warning message preference"
+              />
+            }
+            label="Don't show this warning again"
+          />
+        </Box>
       )}
     </Box>
   )
