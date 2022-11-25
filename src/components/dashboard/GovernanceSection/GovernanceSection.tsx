@@ -6,17 +6,36 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import css from './styles.module.css'
 import SafeAppsErrorBoundary from '@/components/safe-apps/SafeAppsErrorBoundary'
-import SafeAppsLoadError from '@/components/safe-apps/SafeAppsErrorBoundary/SafeAppsLoadError'
 import AppFrame from '@/components/safe-apps/AppFrame'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag } from '@/config/constants'
+import LoadIcon from '@/public/images/common/load.svg'
+import palette from '@/styles/colors'
 
 const GovernanceSection = () => {
   const { getAllowedFeaturesList } = useBrowserPermissions()
   const [claimingSafeApp, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
   const claimingApp = claimingSafeApp?.[0]
   const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
+
+  const WidgetLoadError = () => (
+    <Card className={css.loadErrorCard}>
+      <Box height="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2}>
+        <LoadIcon fill={`${palette.border.main}`} />
+        <Typography variant="body1" color="border.main">
+          Couldn&apos;t load governance widgets
+        </Typography>
+      </Box>
+    </Card>
+  )
+
+  const WidgetLoadErrorFallback = () => (
+    <Box className={css.loadErrorWrapper} display="flex" gap={3} width={1} sx={{ backgroundColor: 'background.main' }}>
+      <WidgetLoadError />
+      <WidgetLoadError />
+    </Box>
+  )
 
   return (
     <Accordion className={css.accordion} defaultExpanded>
@@ -36,10 +55,9 @@ const GovernanceSection = () => {
           <WidgetBody>
             <Card className={css.widgetWrapper}>
               {claimingApp ? (
-                <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => {}} />}>
+                <SafeAppsErrorBoundary render={() => <WidgetLoadErrorFallback />}>
                   <AppFrame
-                    // appUrl={`${claimingApp.url}#widget`}
-                    appUrl="http://localhost:3001/safe-claiming-app#widget"
+                    appUrl={`${claimingApp.url}#widget`}
                     allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                     isQueueBarDisabled
                   />
