@@ -1,7 +1,7 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import { useController, useFormContext, useWatch } from 'react-hook-form'
-import { Autocomplete, IconButton, InputAdornment, MenuItem, TextField, Tooltip } from '@mui/material'
+import { Autocomplete, Backdrop, IconButton, InputAdornment, MenuItem, Popper, TextField, Tooltip } from '@mui/material'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useTxQueue, { useQueuedTxByNonce } from '@/hooks/useTxQueue'
@@ -31,7 +31,7 @@ const NonceFormOption = memo(({ nonce, ...props }: { nonce: number } & MenuItemP
 
   return (
     <MenuItem key={nonce} {...props}>
-      {nonce} - already exists ({label} transaction)
+      {nonce} ({label} transaction)
     </MenuItem>
   )
 })
@@ -39,6 +39,10 @@ const NonceFormOption = memo(({ nonce, ...props }: { nonce: number } & MenuItemP
 const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps): ReactElement => {
   const { safe } = useSafeInfo()
   const safeNonce = safe.nonce || 0
+  const [popper, setPopper] = useState<{ open: boolean; anchorEl: (EventTarget & Element) | null }>({
+    open: false,
+    anchorEl: null,
+  })
 
   // Initialise form field
   const { setValue, control } = useFormContext() || {}
@@ -106,6 +110,17 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
       getOptionLabel={(option) => option.toString()}
       renderOption={(props, option) => <NonceFormOption nonce={option} {...props} />}
       disableClearable
+      onClose={() => {
+        setPopper({ anchorEl: null, open: false })
+      }}
+      onOpen={(e) => {
+        setPopper({ anchorEl: e.currentTarget, open: true })
+      }}
+      PopperComponent={(props) => (
+        <Backdrop open={popper.open}>
+          <Popper anchorEl={popper.anchorEl} {...props} />
+        </Backdrop>
+      )}
       renderInput={(params) => (
         <TextField
           {...params}
