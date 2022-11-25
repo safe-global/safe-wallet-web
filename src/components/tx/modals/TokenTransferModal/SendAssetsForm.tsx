@@ -30,7 +30,7 @@ import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import useSafeTokenWarning from '@/components/tx/modals/TokenTransferModal/useSafeTokenWarning'
+import useIsSafeTokenPaused from '@/components/tx/modals/TokenTransferModal/useIsSafeTokenPaused'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -75,7 +75,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const addressBook = useAddressBook()
   const chainId = useChainId()
   const safeTokenAddress = getSafeTokenAddress(chainId)
-  const { isSafeTokenPaused } = useSafeTokenWarning()
+  const isSafeTokenPaused = useIsSafeTokenPaused()
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: {
@@ -166,7 +166,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             <Box mt={1} display="flex" alignItems="center">
               <SvgIcon component={InfoIcon} color="error" fontSize="small" />
               <Typography variant="body2" color="error" ml={0.5}>
-                SAFE is currently non-transferable.
+                $SAFE is currently non-transferable.
               </Typography>
             </Box>
           )}

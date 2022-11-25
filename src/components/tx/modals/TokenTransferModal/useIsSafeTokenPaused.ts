@@ -5,26 +5,29 @@ import useAsync from '@/hooks/useAsync'
 import { Contract } from 'ethers'
 import { Interface } from '@ethersproject/abi'
 
+const PAUSED_ABI = 'function paused() public view virtual returns (bool)'
+
 // TODO: Remove this hook after the safe token has been unpaused
-const useSafeTokenWarning = () => {
+const useIsSafeTokenPaused = () => {
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
 
   const [isSafeTokenPaused] = useAsync<boolean>(async () => {
     const safeTokenAddress = getSafeTokenAddress(chainId)
 
-    const safeTokenContract = new Contract(
-      safeTokenAddress,
-      new Interface(['function paused() public view virtual returns (bool)']),
-      provider,
-    )
+    const safeTokenContract = new Contract(safeTokenAddress, new Interface([PAUSED_ABI]), provider)
 
-    return safeTokenContract.paused()
+    let isPaused: boolean
+    try {
+      isPaused = await safeTokenContract.paused()
+    } catch (err) {
+      isPaused = false
+    }
+
+    return isPaused
   }, [chainId, provider])
 
-  return {
-    isSafeTokenPaused,
-  }
+  return isSafeTokenPaused
 }
 
-export default useSafeTokenWarning
+export default useIsSafeTokenPaused
