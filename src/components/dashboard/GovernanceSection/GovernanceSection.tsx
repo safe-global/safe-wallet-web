@@ -69,7 +69,7 @@ const GovernanceSection = () => {
                     key={theme}
                     appUrl={`${claimingApp.url}#widget+${theme}`}
                     allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
-                    isQueueBarDisabled
+                    isWidget
                   />
                 </SafeAppsErrorBoundary>
               ) : (

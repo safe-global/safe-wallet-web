@@ -44,10 +44,10 @@ const UNKNOWN_APP_NAME = 'Unknown App'
 type AppFrameProps = {
   appUrl: string
   allowedFeaturesList: string
-  isQueueBarDisabled?: boolean
+  isWidget?: boolean
 }
 
-const AppFrame = ({ appUrl, allowedFeaturesList, isQueueBarDisabled = false }: AppFrameProps): ReactElement => {
+const AppFrame = ({ appUrl, allowedFeaturesList, isWidget = false }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
@@ -63,7 +63,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, isQueueBarDisabled = false }: A
     dismissQueueBar,
     transactions,
   } = useTransactionQueueBarState()
-  const queueBarVisible = !isQueueBarDisabled && transactions.results.length > 0 && !queueBarDismissed
+  const queueBarVisible = !isWidget && transactions.results.length > 0 && !queueBarDismissed
   const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
@@ -198,7 +198,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, isQueueBarDisabled = false }: A
         <title>Safe Apps - Viewer - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}</title>
       </Head>
 
-      <div className={css.wrapper}>
+      <div className={`${css.wrapper} ${isWidget ? css.widgetWrapper : ''}`}>
         {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
 
         {appIsLoading && (
