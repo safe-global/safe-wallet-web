@@ -70,7 +70,7 @@ const SafeAppsInfoModal = ({
 
     if (isLastStep) {
       onConfirm(
-        true,
+        hideWarning,
         selectedFeatures.map(({ feature, checked }) => {
           return {
             feature,
@@ -109,7 +109,7 @@ const SafeAppsInfoModal = ({
   return (
     <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" height="calc(100vh - 52px)">
       <Box
-        sx={({ palette, shape }) => ({
+        sx={({ palette }) => ({
           width: '450px',
           backgroundColor: palette.background.paper,
           boxShadow: `1px 2px 10px 0 ${alpha(palette.text.primary, 0.18)}`,

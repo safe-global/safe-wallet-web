@@ -19,8 +19,7 @@ type useSafeAppsInfoModal = {
 type ModalInfoProps = {
   [chainId: string]: {
     consentsAccepted: boolean
-    appsReviewed: number[]
-    customAppsReviewed: string[]
+    warningCheckedCustomApps: string[]
   }
 }
 
@@ -78,15 +77,11 @@ const useSafeAppsInfoModal = ({
   const isFirstTimeAccessingApp = useMemo(() => {
     if (!url) return true
 
-    const safeAppId = safeApp?.id
-
-    if (modalInfo[chainId]) {
+    if (!modalInfo[chainId]) {
       return true
     }
 
-    return safeAppId
-      ? !modalInfo[chainId]?.appsReviewed?.includes(safeAppId)
-      : !modalInfo[chainId]?.customAppsReviewed?.includes(url)
+    return !modalInfo[chainId]?.warningCheckedCustomApps?.includes(url)
   }, [chainId, modalInfo, safeApp, url])
 
   const isModalVisible = useMemo(() => {
@@ -103,18 +98,11 @@ const useSafeAppsInfoModal = ({
     (shouldHide: boolean, browserPermissions: BrowserPermission[]) => {
       const info = {
         consentsAccepted: true,
-        appsReviewed: [...(modalInfo[chainId]?.appsReviewed || [])],
-        customAppsReviewed: [...(modalInfo[chainId]?.customAppsReviewed || [])],
+        warningCheckedCustomApps: [...(modalInfo[chainId]?.warningCheckedCustomApps || [])],
       }
 
-      const safeAppId = safeApp?.id
-
-      if (safeAppId && !modalInfo[chainId].appsReviewed.includes(safeAppId)) {
-        info.appsReviewed = [...modalInfo[chainId].appsReviewed, safeAppId]
-      } else {
-        if (shouldHide && !modalInfo[chainId]?.customAppsReviewed.includes(url)) {
-          info.customAppsReviewed = [...(modalInfo[chainId]?.customAppsReviewed || []), url]
-        }
+      if (shouldHide && !modalInfo[chainId]?.warningCheckedCustomApps?.includes(url)) {
+        info.warningCheckedCustomApps = [...(modalInfo[chainId]?.warningCheckedCustomApps || []), url]
       }
 
       setModalInfo({
