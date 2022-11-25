@@ -25,8 +25,8 @@ const GovernanceSection = () => {
   const WidgetLoadError = () => (
     <Card className={css.loadErrorCard}>
       <Box height="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2}>
-        <LoadIcon fill={`${palette.border.main}`} />
-        <Typography variant="body1" color="border.main">
+        <LoadIcon fill={`${palette.primary.light}`} />
+        <Typography variant="body1" color="primary.light">
           Couldn&apos;t load governance widget
         </Typography>
       </Box>
