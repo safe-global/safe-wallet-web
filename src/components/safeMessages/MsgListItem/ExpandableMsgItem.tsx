@@ -1,10 +1,10 @@
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import type { ReactElement } from 'react'
+import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import MsgDetails from '@/components/safeMessages/MsgDetails'
 import MsgSummary from '@/components/safeMessages/MsgSummary'
-import type { SafeMessage } from '@/store/safeMessagesSlice'
 
 import txListItemCss from '@/components/transactions/TxListItem/styles.module.css'
 

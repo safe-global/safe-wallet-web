@@ -2,6 +2,7 @@ import { Button, Tooltip, IconButton } from '@mui/material'
 import { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 import type { SyntheticEvent, ReactElement } from 'react'
+import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import Track from '@/components/common/Track'
@@ -9,7 +10,6 @@ import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
 import useIsSafeMessageSignableBy from '@/hooks/useIsSafeMessageSignableBy'
 import useIsSafeMessagePending from '@/hooks/useIsSafeMessagePending'
 import MsgModal from '@/components/safeMessages/MsgModal'
-import type { SafeMessage } from '@/store/safeMessagesSlice'
 
 const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: boolean }): ReactElement => {
   const [open, setOpen] = useState(false)
@@ -42,7 +42,7 @@ const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: b
         )}
       </Track>
 
-      {open && <MsgModal onClose={() => setOpen(false)} msg={msg} />}
+      {open && <MsgModal onClose={() => setOpen(false)} {...msg} />}
     </>
   )
 }

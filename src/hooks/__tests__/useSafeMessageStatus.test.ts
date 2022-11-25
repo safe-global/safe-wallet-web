@@ -1,8 +1,9 @@
+import type { SafeMessage, SafeMessageStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+
 import { renderHook } from '@/tests/test-utils'
 import * as useIsSafeMessagePendingHook from '@/hooks/useIsSafeMessagePending'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
 import useSafeMessageStatus from '../useSafeMessageStatus'
-import type { SafeMessage, SafeMessageStatus } from '@/store/safeMessagesSlice'
 import type { ConnectedWallet } from '@/services/onboard'
 
 describe('useSafeMessageStatus', () => {
