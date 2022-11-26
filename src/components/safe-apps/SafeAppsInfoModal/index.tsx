@@ -118,13 +118,13 @@ const SafeAppsInfoModal = ({
         <LinearProgress
           variant="determinate"
           value={progressValue}
-          color={progressValue === 100 && shouldShowUnknownAppWarning ? 'warning' : 'primary'}
           sx={({ palette }) => ({
             height: '6px',
             backgroundColor: palette.background.paper,
             borderRadius: '8px 8px 0 0',
             '> .MuiLinearProgress-bar': {
-              backgroundColor: palette.primary.main,
+              backgroundColor:
+                progressValue === 100 && shouldShowUnknownAppWarning ? palette.warning.main : palette.primary.main,
               borderRadius: '8px',
             },
           })}

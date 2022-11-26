@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material'
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined'
 import Domain from './Domain'
+import palette from '@/styles/colors'
 
 type UnknownAppWarningProps = {
   url?: string
@@ -20,11 +21,11 @@ const UnknownAppWarning = ({ url, onHideWarning }: UnknownAppWarningProps): Reac
     <Box display="flex" flexDirection="column" height="100%" alignItems="center">
       <Box display="block" alignItems="center" mt={6}>
         <WarningAmberOutlinedIcon fontSize="large" color="warning" />
-        <Typography variant="h3" fontWeight={700} mt={2} color="#FF8061">
+        <Typography variant="h3" fontWeight={700} mt={2} color={palette.warning.main}>
           Warning
         </Typography>
       </Box>
-      <Typography my={2} fontWeight={700} color="#FF8061">
+      <Typography my={2} fontWeight={700} color={palette.warning.main}>
         The application you are trying to access is not in the default Safe Apps list
       </Typography>
 

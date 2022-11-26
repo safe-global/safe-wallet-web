@@ -102,7 +102,7 @@ const useSafeAppsInfoModal = ({
       }
 
       if (shouldHide && !modalInfo[chainId]?.warningCheckedCustomApps?.includes(url)) {
-        info.warningCheckedCustomApps = [...(modalInfo[chainId]?.warningCheckedCustomApps || []), url]
+        info.warningCheckedCustomApps.push(url)
       }
 
       setModalInfo({
