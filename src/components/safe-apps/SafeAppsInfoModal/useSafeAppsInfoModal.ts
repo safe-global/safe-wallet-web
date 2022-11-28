@@ -66,7 +66,7 @@ const useSafeAppsInfoModal = ({
 
     // If the app add a new feature in the manifest we need to detect it and show the modal again
     return !!safeAppRequiredFeatures.every(featureHasBeenGrantedOrDenied)
-  }, [getPermissions, safeApp, url])
+  }, [getPermissions, safeApp, url, permissions])
 
   const isSafeAppInDefaultList = useMemo(() => {
     if (!url) return false
@@ -82,7 +82,7 @@ const useSafeAppsInfoModal = ({
     }
 
     return !modalInfo[chainId]?.warningCheckedCustomApps?.includes(url)
-  }, [chainId, modalInfo, safeApp, url])
+  }, [chainId, modalInfo, url])
 
   const isModalVisible = useMemo(() => {
     const isComponentReady = didMount.current
@@ -92,7 +92,7 @@ const useSafeAppsInfoModal = ({
       !isSafeAppInDefaultList && isFirstTimeAccessingApp && !isDisclaimerReadingCompleted
 
     return isComponentReady && (shouldShowLegalDisclaimer || shouldShowUnknownAppWarning || shouldShowAllowedFeatures)
-  }, [chainId, isPermissionsReviewCompleted, modalInfo])
+  }, [chainId, isPermissionsReviewCompleted, isDisclaimerReadingCompleted, modalInfo])
 
   const onComplete = useCallback(
     (shouldHide: boolean, browserPermissions: BrowserPermission[]) => {
@@ -116,7 +116,7 @@ const useSafeAppsInfoModal = ({
 
       setIsDisclaimerReadingCompleted(true)
     },
-    [addPermissions, chainId, isPermissionsReviewCompleted, modalInfo, safeApp, setModalInfo, url],
+    [addPermissions, chainId, isPermissionsReviewCompleted, modalInfo, setModalInfo, url],
   )
 
   return {
