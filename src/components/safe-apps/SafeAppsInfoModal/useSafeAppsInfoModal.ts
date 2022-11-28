@@ -66,7 +66,7 @@ const useSafeAppsInfoModal = ({
 
     // If the app add a new feature in the manifest we need to detect it and show the modal again
     return !!safeAppRequiredFeatures.every(featureHasBeenGrantedOrDenied)
-  }, [getPermissions, safeApp, url, permissions])
+  }, [getPermissions, url, permissions])
 
   const isSafeAppInDefaultList = useMemo(() => {
     if (!url) return false
