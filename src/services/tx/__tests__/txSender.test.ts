@@ -62,6 +62,7 @@ const mockSafeSDK = {
   getChainId: jest.fn(() => Promise.resolve(4)),
   getAddress: jest.fn(() => '0x0000000000000000000000000000000000000123'),
   getTransactionHash: jest.fn(() => Promise.resolve('0x1234567890')),
+  getContractVersion: jest.fn(() => Promise.resolve('1.1.1')),
 } as unknown as Safe
 
 describe('txSender', () => {
