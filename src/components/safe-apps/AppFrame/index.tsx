@@ -150,9 +150,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         const { detailedExecutionInfo } = await getTransactionDetails(chainId, txId)
 
         if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
-          if (detailedExecutionInfo.confirmationsRequired === 1 || detailedExecutionInfo.confirmations.length === 1) {
-            trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION_CONFIRMED, appName)
-          }
+          trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION, appName)
+
           communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, safeAppRequestId)
         }
 

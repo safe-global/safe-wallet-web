@@ -34,9 +34,9 @@ export const SAFE_APPS_EVENTS = {
     ...SAFE_APPS_EVENT_DATA,
     action: 'Add custom Safe App',
   },
-  PROPOSE_TRANSACTION_CONFIRMED: {
+  PROPOSE_TRANSACTION: {
     ...SAFE_APPS_EVENT_DATA,
-    action: 'Propose Transaction Confirmed',
+    action: 'Propose Transaction',
   },
   PROPOSE_TRANSACTION_REJECTED: {
     ...SAFE_APPS_EVENT_DATA,
