@@ -17,6 +17,12 @@ jest.mock('@/store/notificationsSlice', () => {
 // mock useSafeInfo
 jest.mock('../../hooks/useSafeInfo')
 
+// mock useIsSafeOwner
+jest.mock('../../hooks/useIsSafeOwner', () => ({
+  __esModule: true,
+  default: jest.fn(() => true),
+}))
+
 // mock router
 jest.mock('next/router', () => ({
   useRouter: jest.fn(() => ({
@@ -87,7 +93,7 @@ describe('useSafeNotifications', () => {
         message: `Safe version 1.0.0 is not supported by this web app anymore. You can update your Safe via the old web app here.`,
         groupKey: 'safe-outdated-version',
         link: {
-          href: 'https://gnosis-safe.io/app/eth:0x123/settings/details?no-redirect=true',
+          href: 'https://gnosis-safe.io/app/eth:0x123/settings/details',
           title: 'Update Safe',
         },
       })

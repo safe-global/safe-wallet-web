@@ -59,7 +59,7 @@ const initTheme = (darkMode: boolean) => {
     },
     spacing: base,
     shape: {
-      borderRadius: '6px',
+      borderRadius: 6,
     },
     shadows: [
       'none',
@@ -492,6 +492,13 @@ const initTheme = (darkMode: boolean) => {
             '&:hover': {
               color: theme.palette.primary.light,
             },
+          }),
+        },
+      },
+      MuiLinearProgress: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            backgroundColor: theme.palette.border.light,
           }),
         },
       },

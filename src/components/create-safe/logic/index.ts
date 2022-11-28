@@ -22,6 +22,12 @@ import { Errors, logError } from '@/services/exceptions'
 import { ErrorCode } from '@ethersproject/logger'
 import { isWalletRejection } from '@/utils/wallets'
 
+export type SafeCreationProps = {
+  owners: string[]
+  threshold: number
+  saltNonce: number
+}
+
 /**
  * Prepare data for creating a Safe for the Core SDK
  */
@@ -122,12 +128,6 @@ export const getSafeCreationTxInfo = async (
   }
 }
 
-export type SafeCreationProps = {
-  owners: string[]
-  threshold: number
-  saltNonce: number
-}
-
 export const estimateSafeCreationGas = async (
   chain: ChainInfo,
   provider: JsonRpcProvider,
@@ -170,6 +170,10 @@ export const handleSafeCreationError = (error: EthersError) => {
     } else {
       return SafeCreationStatus.SUCCESS
     }
+  }
+
+  if (didRevert(error.receipt)) {
+    return SafeCreationStatus.REVERTED
   }
 
   return SafeCreationStatus.TIMEOUT

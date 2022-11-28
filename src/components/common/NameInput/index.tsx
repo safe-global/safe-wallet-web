@@ -9,7 +9,7 @@ const NameInput = ({
   validate,
   required = false,
   ...props
-}: Omit<TextFieldProps, 'helperText' | 'error' | 'variant' | 'ref' | 'fullWidth'> & {
+}: Omit<TextFieldProps, 'error' | 'variant' | 'ref' | 'fullWidth'> & {
   name: string
   validate?: Validate<string>
   required?: boolean

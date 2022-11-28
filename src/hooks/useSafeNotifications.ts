@@ -7,9 +7,10 @@ import { AppRoutes } from '@/config/routes'
 import useAsync from './useAsync'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 import { useRouter } from 'next/router'
+import useIsSafeOwner from './useIsSafeOwner'
 import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
 
-const OLD_URL = 'https://gnosis-safe.io/app'
+const OLD_APP_URL = 'https://gnosis-safe.io/app'
 
 const CLI_LINK = {
   href: 'https://github.com/5afe/safe-cli',
@@ -24,15 +25,15 @@ const useSafeNotifications = (): void => {
   const { query } = useRouter()
   const { safe } = useSafeInfo()
   const { chainId, version, implementationVersionState } = safe
+  const isOwner = useIsSafeOwner()
 
   /**
    * Show a notification when the Safe version is out of date
    */
 
   useEffect(() => {
-    if (implementationVersionState !== ImplementationVersionState.OUTDATED) {
-      return
-    }
+    if (!isOwner) return
+    if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
     const isOldSafe = !isValidSafeVersion(version)
 
@@ -47,7 +48,7 @@ const useSafeNotifications = (): void => {
 
         link: {
           href: isOldSafe
-            ? `${OLD_URL}/${query.safe}/settings/details?no-redirect=true`
+            ? `${OLD_APP_URL}/${query.safe}/settings/details`
             : {
                 pathname: AppRoutes.settings.setup,
                 query: { safe: query.safe },
@@ -60,7 +61,7 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, implementationVersionState, version, query.safe])
+  }, [dispatch, implementationVersionState, version, query.safe, isOwner])
 
   /**
    * Show a notification when the Safe master copy is not supported
@@ -74,9 +75,7 @@ const useSafeNotifications = (): void => {
   }, [chainId, masterCopy])
 
   useEffect(() => {
-    if (validMasterCopy === undefined || validMasterCopy) {
-      return
-    }
+    if (validMasterCopy === undefined || validMasterCopy) return
 
     const id = dispatch(
       showNotification({
