@@ -3,7 +3,7 @@
 }
 
 .title {
-  width:fit-content;
+  width: fit-content;
   padding: 4px var(--space-1);
   border-radius: 6px;
   display: flex;
