@@ -92,7 +92,14 @@ const useSafeAppsInfoModal = ({
       !isSafeAppInDefaultList && isFirstTimeAccessingApp && !isDisclaimerReadingCompleted
 
     return isComponentReady && (shouldShowLegalDisclaimer || shouldShowUnknownAppWarning || shouldShowAllowedFeatures)
-  }, [chainId, isPermissionsReviewCompleted, isDisclaimerReadingCompleted, modalInfo])
+  }, [
+    chainId,
+    isPermissionsReviewCompleted,
+    isFirstTimeAccessingApp,
+    isSafeAppInDefaultList,
+    isDisclaimerReadingCompleted,
+    modalInfo,
+  ])
 
   const onComplete = useCallback(
     (shouldHide: boolean, browserPermissions: BrowserPermission[]) => {
