@@ -48,7 +48,7 @@ type AppFrameProps = {
 
 // see sandbox mdn docs for more details https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
 const IFRAME_SANDBOX_ALLOWED_FEATURES =
-  'allow-scripts allow-same-origin allow-popups allow-forms allow-downloads allow-orientation-lock'
+  'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms allow-downloads allow-orientation-lock'
 
 const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
