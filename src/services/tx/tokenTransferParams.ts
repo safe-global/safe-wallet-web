@@ -1,6 +1,6 @@
 import { safeParseUnits } from '@/utils/formatters'
 import { Interface } from '@ethersproject/abi'
-import type { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
+import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { sameAddress } from '@/utils/addresses'
 
 // CryptoKitties Contract Addresses by network
