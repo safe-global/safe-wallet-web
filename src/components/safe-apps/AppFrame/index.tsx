@@ -199,7 +199,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, isWidget = false }: AppFramePro
         <title>Safe Apps - Viewer - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}</title>
       </Head>
 
-      <div className={classnames(css.wrapper, isWidget ? css.widgetWrapper : '')}>
+      <div className={classnames(css.wrapper, { [css.widgetWrapper]: isWidget })}>
         {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
 
         {appIsLoading && (
