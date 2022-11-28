@@ -1,4 +1,4 @@
-import { Typography, Card, Box, Alert } from '@mui/material'
+import { Typography, Card, Box, Alert, IconButton, Link, SvgIcon } from '@mui/material'
 import { WidgetBody } from '@/components/dashboard/styled'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
@@ -9,10 +9,10 @@ import SafeAppsErrorBoundary from '@/components/safe-apps/SafeAppsErrorBoundary'
 import AppFrame from '@/components/safe-apps/AppFrame'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import { SafeAppsTag } from '@/config/constants'
-import LoadIcon from '@/public/images/common/load.svg'
-import palette from '@/styles/colors'
+import { SafeAppsTag, SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import { OpenInNew } from '@mui/icons-material'
+import NetworkError from '@/public/images/common/network-error.svg'
 
 const GovernanceSection = () => {
   const isDarkMode = useDarkMode()
@@ -24,10 +24,17 @@ const GovernanceSection = () => {
 
   const WidgetLoadError = () => (
     <Card className={css.loadErrorCard}>
-      <Box height="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2}>
-        <LoadIcon fill={`${palette.primary.light}`} />
-        <Typography variant="body1" color="primary.light">
-          Couldn&apos;t load governance widget
+      <Box className={css.loadErrorMsgContainer}>
+        <Typography variant="h4" color="text.primary" fontWeight="bold">
+          Couldn&apos;t load governance widgets
+        </Typography>
+        <SvgIcon component={NetworkError} inheritViewBox className={css.loadErroricon} />
+        <Typography variant="body1" color="text.primary">
+          You can try to reload the page and in case the problem persists, please reach out to us via{' '}
+          <Link target="_blank" href={SAFE_APPS_SUPPORT_CHAT_URL} fontSize="medium">
+            Discord
+            <OpenInNew fontSize="small" color="primary" className={css.loadErroricon} />
+          </Link>
         </Typography>
       </Box>
     </Card>
@@ -42,7 +49,13 @@ const GovernanceSection = () => {
 
   return (
     <Accordion className={css.accordion} defaultExpanded>
-      <AccordionSummary expandIcon={<ExpandMoreIcon color="border" />}>
+      <AccordionSummary
+        expandIcon={
+          <IconButton size="small">
+            <ExpandMoreIcon color="border" />
+          </IconButton>
+        }
+      >
         <div>
           <Typography component="h2" variant="subtitle1" fontWeight={700}>
             Governance
@@ -63,7 +76,7 @@ const GovernanceSection = () => {
                     key={theme}
                     appUrl={`${claimingApp.url}#widget+${theme}`}
                     allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
-                    isQueueBarDisabled
+                    isWidget
                   />
                 </SafeAppsErrorBoundary>
               ) : (
