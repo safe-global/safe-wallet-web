@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -6,7 +6,6 @@ import {
   DialogContent,
   FormControl,
   Grid,
-  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -23,6 +22,7 @@ import type { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import ImageFallback from '@/components/common/ImageFallback'
 import useAddressBook from '@/hooks/useAddressBook'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import InfiniteScroll from '@/components/common/InfiniteScroll'
 
 enum Field {
   recipient = 'recipient',
@@ -42,14 +42,17 @@ export type SendNftFormProps = {
 }
 
 const NftMenuItem = ({ image, name, description }: { image: string; name: string; description?: string }) => (
-  <Grid container spacing={1} alignItems="center" wrap="nowrap">
+  <Grid container spacing={1} alignItems="center" wrap="nowrap" sx={{ maxWidth: '530px' }}>
     <Grid item>
       <Box width={20} height={20}>
         <ImageFallback src={image} fallbackSrc="/images/common/nft-placeholder.png" alt={name} height={20} />
       </Box>
     </Grid>
     <Grid item overflow="hidden">
-      {name}
+      <Typography overflow="hidden" textOverflow="ellipsis">
+        {name}
+      </Typography>
+
       {description && (
         <Typography variant="caption" color="primary.light" display="block" overflow="hidden" textOverflow="ellipsis">
           {description}
@@ -62,10 +65,9 @@ const NftMenuItem = ({ image, name, description }: { image: string; name: string
 const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
   const addressBook = useAddressBook()
   const [pageUrl, setPageUrl] = useState<string>()
-  const [combinedNfts, setCombinedNfts] = useState<SafeCollectibleResponse[]>()
+  const [combinedNfts, setCombinedNfts] = useState<SafeCollectibleResponse[]>(params?.token ? [params.token] : [])
   const [nftData, nftError, nftLoading] = useCollectibles(pageUrl)
-  const allNfts = useMemo(() => combinedNfts ?? (params?.token ? [params.token] : []), [combinedNfts, params?.token])
-  const disabled = nftLoading && !allNfts.length
+  const disabled = nftLoading && !combinedNfts.length
 
   const formMethods = useForm<FormData>({
     defaultValues: {
@@ -83,18 +85,8 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
 
   const recipient = watch(Field.recipient)
 
-  // Collections
-  const collections = useMemo(() => uniqBy(allNfts, 'address'), [allNfts])
-
-  // Individual tokens
-  const selectedCollection = watch(Field.tokenAddress)
-  const selectedTokens = useMemo(
-    () => allNfts.filter((item) => item.address === selectedCollection),
-    [allNfts, selectedCollection],
-  )
-
   const onFormSubmit = (data: FormData) => {
-    const token = selectedTokens.find((item) => item.id === data.tokenId)
+    const token = combinedNfts.find((item) => item.id === data.tokenId)
     if (!token) return
     onSubmit({
       recipient: data.recipient,
@@ -102,16 +94,12 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
     })
   }
 
-  // Repeatedly load all NFTs page by page
+  // Accumulate all loaded NFT pages in one array
   useEffect(() => {
     if (nftData?.results?.length) {
-      setCombinedNfts((prev) => (prev || []).concat(nftData.results))
+      setCombinedNfts((prev) => uniqBy(prev.concat(nftData.results), (item) => item.address + item.id))
     }
-
-    if (nftData?.next) {
-      setPageUrl(nftData.next)
-    }
-  }, [nftData])
+  }, [nftData?.results])
 
   return (
     <FormProvider {...formMethods}>
@@ -131,47 +119,9 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
 
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel id="asset-label" required>
-              Select an NFT collection
-            </InputLabel>
-            <Controller
-              rules={{ required: true, onChange: () => setValue(Field.tokenId, '') }}
-              name={Field.tokenAddress}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  labelId="asset-label"
-                  label={errors.tokenAddress?.message || 'Select an NFT collection'}
-                  error={!!errors.tokenAddress}
-                  endAdornment={
-                    nftLoading && (
-                      <InputAdornment position="end">
-                        <CircularProgress size={20} sx={{ mr: 3 }} />
-                      </InputAdornment>
-                    )
-                  }
-                  sx={{ '&.MuiMenu-paper': { overflow: 'hidden' } }}
-                >
-                  {collections.map((item) => {
-                    const count = allNfts.filter((nft) => nft.address === item.address).length
-                    return (
-                      <MenuItem key={item.address} value={item.address}>
-                        <NftMenuItem
-                          image={item.imageUri || item.logoUri}
-                          name={item.tokenName || item.tokenSymbol || 'Unknown collection'}
-                          description={`Count: ${count} ${name}`}
-                        />
-                      </MenuItem>
-                    )
-                  })}
-                </Select>
-              )}
-            />
-          </FormControl>
-
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="asset-label" required>
               Select an NFT
             </InputLabel>
+
             <Controller
               rules={{ required: true }}
               name={Field.tokenId}
@@ -181,17 +131,26 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                   labelId="asset-label"
                   label={errors.tokenId?.message || 'Select an NFT'}
                   error={!!errors.tokenId}
-                  sx={{ '&.MuiMenu-paper': { overflow: 'hidden' } }}
                 >
-                  {selectedTokens.map((item) => (
+                  {combinedNfts.map((item) => (
                     <MenuItem key={item.address + item.id} value={item.id}>
                       <NftMenuItem
                         image={item.imageUri || item.logoUri}
-                        name={item.name || `${item.tokenName || item.tokenSymbol || ''} #${item.id}`}
-                        description={`Token ID: ${item.id}`}
+                        name={`${item.tokenName || item.tokenSymbol || ''} #${item.id}`}
+                        description={`Token ID: ${item.id}${item.name ? ` - ${item.name}` : ''}`}
                       />
                     </MenuItem>
                   ))}
+
+                  {(nftLoading || nftData?.next) && (
+                    <MenuItem disabled>
+                      {nftLoading ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        nftData?.next && <InfiniteScroll onLoadMore={() => setPageUrl(nftData?.next)} />
+                      )}
+                    </MenuItem>
+                  )}
                 </Select>
               )}
             />

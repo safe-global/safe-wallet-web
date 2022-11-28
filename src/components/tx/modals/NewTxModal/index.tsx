@@ -15,6 +15,7 @@ import { SendAssetsField } from '../TokenTransferModal/SendAssetsForm'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
+import SafeAppIcon from '@/components/safe-apps/SafeAppIcon'
 
 const TxButton = (props: ButtonProps) => (
   <Button variant="contained" sx={{ '& svg path': { fill: 'currentColor' } }} fullWidth {...props} />
@@ -72,7 +73,9 @@ const NewTxModal = ({ onClose, recipient }: { onClose: () => void; recipient?: s
             {txBuilder.app && !recipient && (
               <Link href={txBuilder.link} passHref>
                 <TxButton
-                  startIcon={<img src={txBuilder.app.iconUrl} height={20} width="auto" alt={txBuilder.app.name} />}
+                  startIcon={
+                    <SafeAppIcon src={txBuilder.app.iconUrl} width={20} height={20} alt={txBuilder.app.name} />
+                  }
                   variant="outlined"
                   onClick={onContractInteraction}
                 >

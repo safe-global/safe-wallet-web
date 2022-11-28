@@ -4,11 +4,12 @@ import * as web3 from '@/hooks/wallets/web3'
 import * as chain from '@/hooks/useChains'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '@/components/create-safe/logic'
-import { Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 import { waitFor } from '@testing-library/react'
+import type Safe from '@gnosis.pm/safe-core-sdk'
 
 const mockSafeInfo = {
   data: '0x',
@@ -32,23 +33,25 @@ describe('useSafeCreation', () => {
 
   const mockStatus = SafeCreationStatus.AWAITING
   const mockSetStatus = jest.fn()
+  const mockProvider: Web3Provider = new Web3Provider(jest.fn())
+  const mockReadOnlyProvider: JsonRpcProvider = new JsonRpcProvider()
 
   beforeEach(() => {
     jest.resetAllMocks()
 
-    const mockProvider: Web3Provider = new Web3Provider(jest.fn())
     const mockChain = {
       chainId: '4',
     } as unknown as ChainInfo
 
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
+    jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
     jest.spyOn(chain, 'useCurrentChain').mockImplementation(() => mockChain)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(logic, 'getSafeCreationTxInfo').mockReturnValue(Promise.resolve(mockSafeInfo))
   })
 
   it('should create a safe if there is no txHash and status is AWAITING', async () => {
-    const createSafeSpy = jest.spyOn(logic, 'createNewSafe')
+    const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
     renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus))
 
@@ -131,6 +134,24 @@ describe('useSafeCreation', () => {
   })
 
   it('should watch a tx if there is a txHash and a tx object', async () => {
+    const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
+
+    renderHook(() =>
+      useSafeCreation(
+        { ...mockPendingSafe, txHash: '0x123', tx: mockSafeInfo },
+        mockSetPendingSafe,
+        mockStatus,
+        mockSetStatus,
+      ),
+    )
+
+    await waitFor(() => {
+      expect(watchSafeTxSpy).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  it('should watch a tx even if no wallet is connected', async () => {
+    jest.spyOn(wallet, 'default').mockReturnValue(null)
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
 
     renderHook(() =>
