@@ -1,6 +1,6 @@
+import React from 'react'
 import { Typography } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
-import React from 'react'
 
 import styles from './styles.module.css'
 

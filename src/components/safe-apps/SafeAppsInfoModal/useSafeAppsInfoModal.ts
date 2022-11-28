@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { BrowserPermission } from '@/hooks/safe-apps/permissions'
 import useChainId from '@/hooks/useChainId'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import type { AllowedFeatures } from '../types'
 import { PermissionStatus } from '../types'
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 
 const SAFE_APPS_INFO_MODAL = 'SafeApps__infoModal'
 
