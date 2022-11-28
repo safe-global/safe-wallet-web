@@ -1,4 +1,4 @@
-import { formatAmount, formatCurrency } from '@/utils/formatNumber'
+import { formatAmount, formatCurrency, localeNumberFormatter } from '@/utils/formatNumber'
 
 describe('formatNumber', () => {
   describe('formatAmount', () => {
@@ -266,6 +266,26 @@ describe('formatNumber', () => {
       expect(formatCurrency(amount4, 'EUR')).toBe('< -0.01 EUR')
       expect(formatCurrency(amount4, 'GBP')).toBe('< -0.01 GBP')
       expect(formatCurrency(amount4, 'BHD')).toBe('< -0.001 BHD')
+    })
+  })
+
+  describe('localeNumberFormatter', () => {
+    it('should format numbers with commas and decimals', () => {
+      // only integer
+      const amount1 = 1_000_000
+      expect(localeNumberFormatter(amount1)).toBe('1,000,000')
+
+      // integer and decimal parts
+      const amount2 = 1_000_000.123456789
+      expect(localeNumberFormatter(amount2)).toBe('1,000,000.123456789')
+
+      // 18 decimals
+      const amount3 = 0.123456789012345678
+      expect(localeNumberFormatter(amount3)).toBe('0.12345678901234568')
+
+      // trailing zeros
+      const amount4 = '0.123456789012340000'
+      expect(localeNumberFormatter(amount4)).toBe('0.12345678901234')
     })
   })
 })

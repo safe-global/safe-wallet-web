@@ -203,13 +203,12 @@ export const localeNumberFormatter = (amount: number | string): string => {
 
   const [integerString, decimalString] = amount.toString().split(decimalSeparator)
 
-  // get decimal final
   const decimalFinal = decimalString ? `${decimalSeparator}${decimalString}` : ''
 
-  // get integer final
-  const mainFinal = integerString.replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator)
+  // trailing zeros
+  const decimalFinalWithoutTrailingZeros = decimalString ? decimalFinal.replace(/0+$/, '') : ''
 
-  const amountFinal = `${mainFinal}${decimalFinal}`
+  const integerFinal = integerString.replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator)
 
-  return amountFinal
+  return `${integerFinal}${decimalFinalWithoutTrailingZeros}`
 }
