@@ -23,7 +23,7 @@ const CollapsibleSection = ({
   const columnSpacing = cardVariant === 'compact' ? 3 : 2
 
   return (
-    <Accordion className={styles.accordion} defaultExpanded>
+    <Accordion style={{ boxShadow: 'none' }} className={styles.accordion} defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: ({ palette }) => palette.primary.light }} />}>
         <Typography
           variant="caption"
@@ -32,7 +32,7 @@ const CollapsibleSection = ({
           {title}
         </Typography>
       </AccordionSummary>
-      <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
+      <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}`, marginBottom: '10px' })}>
         <Grid container rowSpacing={2} columnSpacing={columnSpacing}>
           {prependAddCustomAppCard && onAddCustomApp && (
             <Grid item xs={12} sm={6} md={3} xl={1.5}>

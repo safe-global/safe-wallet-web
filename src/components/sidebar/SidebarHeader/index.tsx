@@ -96,6 +96,7 @@ const SafeHeader = (): ReactElement => {
 
           <Track {...OVERVIEW_EVENTS.COPY_ADDRESS}>
             <CopyButton text={addressCopyText} className={css.iconButton}>
+              <Typography className={css.copy}>Copy</Typography>
               <SvgIcon component={CopyIconBold} inheritViewBox color="primary" fontSize="small" />
             </CopyButton>
           </Track>

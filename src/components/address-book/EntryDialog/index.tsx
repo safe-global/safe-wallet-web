@@ -69,7 +69,9 @@ const EntryDialog = ({
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="danger" onClick={handleClose}>
+              Cancel
+            </Button>
             <Button type="submit" variant="contained" disabled={!formState.isValid} disableElevation>
               Save
             </Button>

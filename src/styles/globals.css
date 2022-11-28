@@ -2,14 +2,14 @@
 @import url(./onboard.css);
 
 @font-face {
-  font-family: 'DM Sans';
+  font-family: 'Poppins';
   font-display: swap;
   font-weight: 400;
   src: url('/fonts/dm-sans-v11-latin-ext-regular.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'DM Sans';
+  font-family: 'Poppins';
   font-display: swap;
   font-weight: bold;
   src: url('/fonts/dm-sans-v11-latin-ext-700.woff2') format('woff2');
@@ -19,7 +19,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: DM Sans, sans-serif;
+  font-family: Poppins;
   background-color: var(--color-background-paper);
 }
 
@@ -28,7 +28,7 @@ main {
 }
 
 a {
-  color: inherit;
+  color: var(--color-text-primary) !important;
   text-decoration: none;
 }
 

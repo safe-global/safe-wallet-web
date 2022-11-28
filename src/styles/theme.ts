@@ -65,7 +65,7 @@ const initTheme = (darkMode: boolean) => {
       ...Array(20).fill('none'),
     ] as Shadows,
     typography: {
-      fontFamily: 'DM Sans, sans-serif',
+      fontFamily: '',
       h1: {
         fontSize: '32px',
         lineHeight: '36px',
@@ -194,20 +194,10 @@ const initTheme = (darkMode: boolean) => {
             },
 
             '&:hover': {
-              borderColor: theme.palette.secondary.light,
+              boxShadow: '10px 5px 5px #2d283470',
             },
-
-            '&:hover > .MuiAccordionSummary-root': {
-              background: theme.palette.background.light,
-            },
-
             '&.Mui-expanded': {
               margin: 0,
-              borderColor: theme.palette.secondary.light,
-            },
-
-            '&.Mui-expanded > .MuiAccordionSummary-root': {
-              background: theme.palette.background.light,
             },
           }),
         },
@@ -272,7 +262,7 @@ const initTheme = (darkMode: boolean) => {
             borderColor: theme.palette.border.light,
           }),
           root: {
-            borderRadius: '8px !important',
+            borderRadius: '5px !important',
             backgroundImage: 'none',
           },
         },

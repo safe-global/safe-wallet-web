@@ -71,7 +71,9 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
             </DialogContent>
 
             <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
+              <Button variant="danger" onClick={handleClose}>
+                Cancel
+              </Button>
               <Button type="submit" variant="contained" disabled={buttonDisabled}>
                 Save
               </Button>

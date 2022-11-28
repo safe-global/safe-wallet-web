@@ -28,8 +28,8 @@ const ChainIndicator = ({
     const { theme } = chainConfig
 
     return {
-      backgroundColor: theme.backgroundColor,
-      color: theme.textColor,
+      backgroundColor: '#1065E5',
+      color: '#FFFFFF',
     }
   }, [chainConfig])
 

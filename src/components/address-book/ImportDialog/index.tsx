@@ -176,7 +176,9 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button variant="danger" onClick={handleClose}>
+          Cancel
+        </Button>
         <Button onClick={handleImport} variant="contained" disableElevation disabled={!csvData || !!error}>
           Import
         </Button>

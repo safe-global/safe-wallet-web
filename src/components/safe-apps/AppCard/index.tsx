@@ -143,8 +143,7 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
         transition: 'background-color 0.3s ease-in-out, border 0.3s ease-in-out',
         border: '1px solid transparent',
         '&:hover': {
-          backgroundColor: palette.background.light,
-          border: `1px solid ${palette.secondary.light}`,
+          boxShadow: '10px 5px 5px #2d283470',
         },
       })}
     >

@@ -77,7 +77,9 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button variant="danger" onClick={handleClose}>
+          Cancel
+        </Button>
         <CSVDownloader filename={filename} bom config={{ delimiter: ',' }} data={csvData} style={{ order: 2 }}>
           <Button variant="contained" disableElevation onClick={onSubmit}>
             Export

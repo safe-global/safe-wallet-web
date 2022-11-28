@@ -93,7 +93,7 @@ const SafeListItem = ({
               whiteSpace: 'nowrap',
               overflow: 'hidden',
             }}
-            secondaryTypographyProps={{ component: 'div', color: 'primary' }}
+            secondaryTypographyProps={{ component: 'div', color: 'primary.light' }}
             primary={name || ''}
             secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
           />

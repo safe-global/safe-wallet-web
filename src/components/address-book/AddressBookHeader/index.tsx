@@ -31,7 +31,7 @@ const HeaderButton = ({
 
   return (
     <>
-      <IconButton color="primary" onClick={onClick} disabled={disabled} className={css.iconButton}>
+      <IconButton color="secondary" onClick={onClick} disabled={disabled} className={css.iconButton}>
         {svg}
       </IconButton>
 
@@ -39,7 +39,7 @@ const HeaderButton = ({
         onClick={onClick}
         disabled={disabled}
         variant="text"
-        color="primary"
+        color="secondary"
         size="small"
         startIcon={svg}
         className={css.button}

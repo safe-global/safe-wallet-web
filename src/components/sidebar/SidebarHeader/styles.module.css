@@ -24,7 +24,7 @@
   border-radius: 4px;
   padding: 6px;
   background-color: var(--color-background-main);
-  width: 32px;
+  width: 52px;
   height: 32px;
 }
 
@@ -41,4 +41,9 @@
   overflow: hidden;
   white-space: nowrap;
   font-size: 14px;
+}
+
+.copy {
+  font-size: 10px;
+  padding: 3px;
 }

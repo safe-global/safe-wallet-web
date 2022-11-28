@@ -265,7 +265,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
               </FormControl>
 
               <Grid item container md={6} sx={{ gap: 2, mt: 3 }}>
-                <Button variant="contained" onClick={clearFilter} disabled={!canClear}>
+                <Button variant="outlined" onClick={clearFilter} disabled={!canClear}>
                   Clear
                 </Button>
                 <Button type="submit" variant="contained" color="primary" disabled={!isValid}>

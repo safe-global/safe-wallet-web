@@ -4,12 +4,11 @@
 
 .closed:hover,
 .batched {
-  background-color: var(--color-secondary-background);
-  border-color: var(--color-secondary-light);
+  box-shadow: 10px 5px 5px #2d283470;
 }
 
 .expanded {
-  border-color: var(--color-secondary-light) !important;
+  box-shadow: 10px 5px 5px #2d283470;
 }
 
 .expanded :global .MuiAccordionSummary-root {

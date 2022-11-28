@@ -33,7 +33,12 @@ const History: NextPage = () => {
         action={
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <NavTabs tabs={transactionNavItems} />
-            <Button variant="outlined" onClick={toggleFilter} size="small" endIcon={<ExpandIcon />}>
+            <Button
+              style={{ color: 'black', border: '1px solid black' }}
+              onClick={toggleFilter}
+              size="small"
+              endIcon={<ExpandIcon />}
+            >
               {filter?.type ?? 'Filter'}
             </Button>
           </Box>

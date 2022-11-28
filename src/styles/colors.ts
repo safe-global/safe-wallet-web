@@ -5,13 +5,13 @@ const palette = {
     disabled: '#DDDEE0',
   },
   primary: {
-    dark: '#3c3c3c',
-    main: '#121312',
+    dark: '#00BFFF',
+    main: '#1065E5',
     light: '#636669',
   },
   secondary: {
     dark: '#0FDA6D',
-    main: '#12FF80',
+    main: '#343840',
     light: '#B0FFC9',
     background: '#EFFFF4',
   },
@@ -21,10 +21,10 @@ const palette = {
     background: '#F4F4F4',
   },
   error: {
-    dark: '#AC2C3B',
-    main: '#FF5F72',
-    light: '#FFB4BD',
-    background: '#FFE6EA',
+    dark: '#fff',
+    main: '#fff',
+    light: '#3c3c3c',
+    background: '#121312',
   },
   success: {
     dark: '#028D4C',
@@ -51,7 +51,7 @@ const palette = {
     light: '#EFFFF4',
   },
   logo: {
-    main: '#121312',
+    main: '#1065E5',
     background: '#EEEFF0',
   },
   static: {

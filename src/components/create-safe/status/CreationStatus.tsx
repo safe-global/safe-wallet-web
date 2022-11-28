@@ -93,7 +93,9 @@ export const CreationStatus = ({ params, setStep }: Props) => {
       {displayActions && (
         <Grid container padding={3} justifyContent="center" gap={2}>
           <Track {...CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE}>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button variant="danger" onClick={onClose}>
+              Cancel
+            </Button>
           </Track>
           <Track {...CREATE_SAFE_EVENTS.RETRY_CREATE_SAFE}>
             <Tooltip title={!isConnected ? 'Please make sure your wallet is connected on the correct network.' : ''}>

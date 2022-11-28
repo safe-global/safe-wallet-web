@@ -31,7 +31,9 @@ const RemoveDialog = ({ handleClose, address }: { handleClose: () => void; addre
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button variant="danger" onClick={handleClose}>
+          Cancel
+        </Button>
         <Button onClick={handleConfirm} variant="danger" disableElevation>
           Delete
         </Button>

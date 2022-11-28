@@ -54,7 +54,7 @@ export const RemoveOwnerDialog = ({ owner }: { owner: OwnerData }) => {
       <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
         <Tooltip title="Remove owner">
           <IconButton onClick={() => setOpen(true)} size="small">
-            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+            <SvgIcon component={DeleteIcon} inheritViewBox color="border" fontSize="small" />
           </IconButton>
         </Tooltip>
       </Track>
