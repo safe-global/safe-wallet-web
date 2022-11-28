@@ -1,4 +1,4 @@
-import { Typography, Card, Box, Alert, IconButton, Link } from '@mui/material'
+import { Typography, Card, Box, Alert, IconButton, Link, SvgIcon } from '@mui/material'
 import { WidgetBody } from '@/components/dashboard/styled'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
@@ -12,6 +12,7 @@ import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag, SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { OpenInNew } from '@mui/icons-material'
+import NetworkError from '@/public/images/common/network-error.svg'
 
 const GovernanceSection = () => {
   const isDarkMode = useDarkMode()
@@ -23,19 +24,12 @@ const GovernanceSection = () => {
 
   const WidgetLoadError = () => (
     <Card className={css.loadErrorCard}>
-      <Box
-        height="100%"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        gap={2}
-        maxWidth="80%"
-      >
-        <Typography variant="body1" color="primary.light">
-          Couldn&apos;t load governance widget.
+      <Box className={css.loadErrorMsgContainer}>
+        <Typography variant="h4" color="text.primary" fontWeight="bold">
+          Couldn&apos;t load governance widgets
         </Typography>
-        <Typography variant="body1" color="primary.light">
+        <SvgIcon component={NetworkError} inheritViewBox className={css.loadErroricon} />
+        <Typography variant="body1" color="text.primary">
           You can try to reload the page and in case the problem persists, please reach out to us via{' '}
           <Link target="_blank" href={SAFE_APPS_SUPPORT_CHAT_URL} fontSize="medium">
             Discord

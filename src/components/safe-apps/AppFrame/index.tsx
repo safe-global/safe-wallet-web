@@ -38,6 +38,7 @@ import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
+import classnames from 'classnames'
 
 const UNKNOWN_APP_NAME = 'Unknown App'
 
@@ -198,7 +199,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, isWidget = false }: AppFramePro
         <title>Safe Apps - Viewer - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}</title>
       </Head>
 
-      <div className={`${css.wrapper} ${isWidget ? css.widgetWrapper : ''}`}>
+      <div className={classnames(css.wrapper, isWidget ? css.widgetWrapper : '')}>
         {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
 
         {appIsLoading && (

@@ -49,7 +49,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 16px;
+  padding: var(--space-2);
   text-align: center;
   flex-grow: 1;
 }
@@ -58,7 +58,18 @@
   min-width: 300px;
 }
 
+.loadErrorMsgContainer {
+  height: 100%;
+  display: flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content: center;
+  gap: var(--space-2);
+  max-width: 80%;
+}
+
 .loadErroricon {
+  font-size: 54px;
   position: relative;
   left: 3px;
   top: 3px;
