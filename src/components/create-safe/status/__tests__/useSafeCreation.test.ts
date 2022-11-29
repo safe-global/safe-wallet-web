@@ -4,12 +4,15 @@ import * as web3 from '@/hooks/wallets/web3'
 import * as chain from '@/hooks/useChains'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '@/components/create-safe/logic'
+import * as contracts from '@/services/contracts/safeContracts'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 import { waitFor } from '@testing-library/react'
 import type Safe from '@safe-global/safe-core-sdk'
+import { hexZeroPad } from 'ethers/lib/utils'
+import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
 
 const mockSafeInfo = {
   data: '0x',
@@ -48,6 +51,9 @@ describe('useSafeCreation', () => {
     jest.spyOn(chain, 'useCurrentChain').mockImplementation(() => mockChain)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(logic, 'getSafeCreationTxInfo').mockReturnValue(Promise.resolve(mockSafeInfo))
+    jest
+      .spyOn(contracts, 'getFallbackHandlerContractInstance')
+      .mockReturnValue({ getAddress: () => hexZeroPad('0x123', 20) } as CompatibilityFallbackHandlerEthersContract)
   })
 
   it('should create a safe if there is no txHash and status is AWAITING', async () => {

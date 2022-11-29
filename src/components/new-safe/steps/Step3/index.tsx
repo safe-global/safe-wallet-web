@@ -73,7 +73,7 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
       safeAccountConfig: {
         threshold: data.threshold,
         owners: data.owners.map((owner) => owner.address),
-        fallbackHandler: fallbackHandler.address,
+        fallbackHandler: fallbackHandler.getAddress(),
       },
       safeDeploymentConfig: {
         saltNonce: saltNonce.toString(),

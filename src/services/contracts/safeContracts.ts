@@ -15,10 +15,10 @@ import semverSatisfies from 'semver/functions/satisfies'
 import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getMasterCopies, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { type Compatibility_fallback_handler } from '@/types/contracts/Compatibility_fallback_handler'
 import { type Sign_message_lib } from '@/types/contracts/Sign_message_lib'
 import { createEthersAdapter, isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import { sameAddress } from '@/utils/addresses'
+import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
 
 export const isValidMasterCopy = async (chainId: string, address: string): Promise<boolean> => {
   const masterCopies = await getMasterCopies(chainId)
@@ -171,17 +171,16 @@ const getFallbackHandlerContractDeployment = (chainId: string) => {
   )
 }
 
-// SDK request here: https://github.com/safe-global/safe-core-sdk/issues/262
-export const getFallbackHandlerContractInstance = (chainId: string): Compatibility_fallback_handler => {
-  const fallbackHandlerDeployment = getFallbackHandlerContractDeployment(chainId)
+export const getFallbackHandlerContractInstance = (
+  chainId: string,
+  safeVersion: string = LATEST_SAFE_VERSION,
+): CompatibilityFallbackHandlerEthersContract => {
+  const ethAdapter = createEthersAdapter()
 
-  if (!fallbackHandlerDeployment) {
-    throw new Error(`FallbackHandler contract not found for chainId: ${chainId}`)
-  }
-
-  const contractAddress = fallbackHandlerDeployment.networkAddresses[chainId]
-
-  return new Contract(contractAddress, new Interface(fallbackHandlerDeployment.abi)) as Compatibility_fallback_handler
+  return ethAdapter.getCompatibilityFallbackHandlerContract({
+    singletonDeployment: getFallbackHandlerContractDeployment(chainId),
+    ..._getValidatedGetContractProps(chainId, safeVersion),
+  })
 }
 
 // Sign messages deployment
