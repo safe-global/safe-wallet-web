@@ -9,6 +9,7 @@ import NonceForm from '../NonceForm'
 import ModalDialog from '@/components/common/ModalDialog'
 import { AdvancedField, type AdvancedParameters } from './types.d'
 import GasLimitInput from './GasLimitInput'
+import NumberField from '@/components/inputs/NumberField'
 
 const HELP_LINK = 'https://help.gnosis-safe.io/en/articles/4738445-advanced-transaction-parameters'
 
@@ -107,11 +108,9 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
               {!!params.safeTxGas && (
                 <Grid item xs={6}>
                   <FormControl fullWidth>
-                    <TextField
+                    <NumberField
                       label={errors.safeTxGas?.message || 'safeTxGas'}
                       error={!!errors.safeTxGas}
-                      autoComplete="off"
-                      type="number"
                       disabled={props.nonceReadonly}
                       required
                       {...register(AdvancedField.safeTxGas, { required: true, min: 0 })}
@@ -131,11 +130,10 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                   {/* User nonce */}
                   <Grid item xs={6}>
                     <FormControl fullWidth>
-                      <TextField
+                      <NumberField
                         label={errors.userNonce?.message || 'Wallet nonce'}
                         error={!!errors.userNonce}
                         autoComplete="off"
-                        type="number"
                         {...register(AdvancedField.userNonce)}
                       />
                     </FormControl>

@@ -1,8 +1,9 @@
 import type { ReactElement } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { IconButton, TextField, Tooltip } from '@mui/material'
+import { IconButton, Tooltip } from '@mui/material'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import NumberField from '@/components/inputs/NumberField'
 
 type NonceFormProps = {
   name: string
@@ -31,9 +32,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
   }
 
   return (
-    <TextField
-      type="number"
-      autoComplete="off"
+    <NumberField
       defaultValue={nonce || ''}
       disabled={nonce == null || readonly}
       error={!!formState?.errors[name]}
