@@ -133,7 +133,6 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                       <NumberField
                         label={errors.userNonce?.message || 'Wallet nonce'}
                         error={!!errors.userNonce}
-                        autoComplete="off"
                         {...register(AdvancedField.userNonce)}
                       />
                     </FormControl>
