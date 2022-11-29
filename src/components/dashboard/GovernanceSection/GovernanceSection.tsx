@@ -13,8 +13,11 @@ import { SafeAppsTag, SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { OpenInNew } from '@mui/icons-material'
 import NetworkError from '@/public/images/common/network-error.svg'
+import useChainId from '@/hooks/useChainId'
+import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 
 const GovernanceSection = () => {
+  const chainId = useChainId()
   const isDarkMode = useDarkMode()
   const theme = isDarkMode ? 'dark' : 'light'
   const { getAllowedFeaturesList } = useBrowserPermissions()
@@ -22,7 +25,7 @@ const GovernanceSection = () => {
   const claimingApp = claimingSafeApp?.[0]
   const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
 
-  if (!claimingApp) {
+  if (!getSafeTokenAddress(chainId)) {
     return null
   }
 
