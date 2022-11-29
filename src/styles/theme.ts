@@ -69,9 +69,6 @@ const initTheme = (darkMode: boolean) => {
       darkMode ? `0 0 2px ${shadowColor}` : `0 8px 32px ${shadowColor}0a, 0 24px 60px ${shadowColor}14`,
       ...Array(20).fill('none'),
     ] as Shadows,
-    zIndex: {
-      modal: 1301,
-    },
     typography: {
       fontFamily: 'DM Sans, sans-serif',
       h1: {
