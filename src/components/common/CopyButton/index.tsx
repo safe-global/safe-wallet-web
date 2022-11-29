@@ -36,19 +36,7 @@ const CopyButton = ({
   return (
     <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
       <IconButton aria-label={initialToolTipText} onClick={handleCopy} size="small" className={className}>
-        {children ?? (
-          <SvgIcon
-            component={CopyIcon}
-            inheritViewBox
-            color="primary"
-            sx={{
-              '& path': {
-                fill: ({ palette }) => palette.border.main,
-              },
-            }}
-            fontSize="small"
-          />
-        )}
+        {children ?? <SvgIcon component={CopyIcon} inheritViewBox color="border" fontSize="small" />}
       </IconButton>
     </Tooltip>
   )
