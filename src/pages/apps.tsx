@@ -12,6 +12,7 @@ import AppFrame from '@/components/safe-apps/AppFrame'
 import SafeAppsLoadError from '@/components/safe-apps/SafeAppsErrorBoundary/SafeAppsLoadError'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
+import { AppRoutes } from '@/config/routes'
 
 const Apps: NextPage = () => {
   const router = useRouter()
@@ -43,7 +44,12 @@ const Apps: NextPage = () => {
     if (isModalVisible) {
       return (
         <SafeAppsInfoModal
-          onCancel={() => router.back()}
+          onCancel={() =>
+            router.push({
+              pathname: AppRoutes.apps,
+              query: { safe: router.query.safe },
+            })
+          }
           onConfirm={onComplete}
           features={safeApp?.safeAppsPermissions || []}
           appUrl={appUrl}
