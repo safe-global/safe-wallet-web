@@ -1,5 +1,5 @@
-import type { OperationType } from '@gnosis.pm/safe-core-sdk-types'
-import { type SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types'
+import type { OperationType } from '@safe-global/safe-core-sdk-types'
+import { type SafeTransactionData } from '@safe-global/safe-core-sdk-types'
 import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { isMultisigDetailedExecutionInfo, isNativeTokenTransfer } from '@/utils/transaction-guards'

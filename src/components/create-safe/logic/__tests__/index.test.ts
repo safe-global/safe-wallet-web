@@ -1,6 +1,6 @@
 import { JsonRpcProvider, type TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { checkSafeCreationTx, handleSafeCreationError } from '@/components/create-safe/logic'

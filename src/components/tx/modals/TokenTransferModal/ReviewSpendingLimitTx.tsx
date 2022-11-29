@@ -13,7 +13,7 @@ import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParam
 import useChainId from '@/hooks/useChainId'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { parseUnits } from '@ethersproject/units'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'

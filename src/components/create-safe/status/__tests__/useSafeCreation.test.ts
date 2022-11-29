@@ -9,7 +9,7 @@ import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 import { waitFor } from '@testing-library/react'
-import type Safe from '@gnosis.pm/safe-core-sdk'
+import type Safe from '@safe-global/safe-core-sdk'
 
 const mockSafeInfo = {
   data: '0x',

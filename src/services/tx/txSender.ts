@@ -1,31 +1,31 @@
+import type { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
+import { getSafeSDK, isLegacyVersion } from '@/hooks/coreSDK/safeCoreSDK'
+import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
+import { Errors, logError } from '@/services/exceptions'
+import extractTxInfo from '@/services/tx/extractTxInfo'
+import type { EthersError } from '@/utils/ethers-utils'
+import { didReprice, didRevert } from '@/utils/ethers-utils'
+import type { Web3Provider } from '@ethersproject/providers'
+import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import type { SafeTransactionEstimation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getTransactionDetails, Operation, postSafeGasEstimation } from '@gnosis.pm/safe-react-gateway-sdk'
+import type Safe from '@safe-global/safe-core-sdk'
+import type { RemoveOwnerTxParams } from '@safe-global/safe-core-sdk'
 import type {
   MetaTransactionData,
   SafeTransaction,
   SafeTransactionDataPartial,
   TransactionOptions,
   TransactionResult,
-} from '@gnosis.pm/safe-core-sdk-types'
-import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
-import extractTxInfo from '@/services/tx/extractTxInfo'
-import proposeTx from './proposeTransaction'
-import { txDispatch, TxEvent } from './txEvents'
-import { getSafeSDK, isLegacyVersion } from '@/hooks/coreSDK/safeCoreSDK'
-import type { EthersError } from '@/utils/ethers-utils'
-import { didReprice, didRevert } from '@/utils/ethers-utils'
-import type { RemoveOwnerTxParams } from '@gnosis.pm/safe-core-sdk'
-import type Safe from '@gnosis.pm/safe-core-sdk'
-import type { AddOwnerTxParams, SwapOwnerTxParams } from '@gnosis.pm/safe-core-sdk/dist/src/Safe'
-import type MultiSendCallOnlyEthersContract from '@gnosis.pm/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
-import type { Web3Provider } from '@ethersproject/providers'
+} from '@safe-global/safe-core-sdk-types'
+import type { AddOwnerTxParams, SwapOwnerTxParams } from '@safe-global/safe-core-sdk/dist/src/Safe'
+import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import EthersAdapter from '@safe-global/safe-ethers-lib'
+import type MultiSendCallOnlyEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
 import type { ContractTransaction } from 'ethers'
 import { ethers } from 'ethers'
-import type { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
-import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
-import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
-import { Errors, logError } from '@/services/exceptions'
-import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import proposeTx from './proposeTransaction'
+import { txDispatch, TxEvent } from './txEvents'
 
 const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
