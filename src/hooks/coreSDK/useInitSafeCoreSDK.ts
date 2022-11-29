@@ -14,12 +14,12 @@ export const useInitSafeCoreSDK = () => {
       return
     }
 
-    initSafeSDK(wallet.provider, wallet.chainId, safe.address.value, safe.version)
+    initSafeSDK(wallet.provider, safe.chainId, safe.address.value, safe.version)
       .then(setSafeSDK)
       .catch((e) => {
         trackError(ErrorCodes._105, (e as Error).message)
         // If we don't reset the SDK, a previous Safe could remain in the store
         setSafeSDK(undefined)
       })
-  }, [wallet?.provider, wallet?.chainId, safe, safeLoaded])
+  }, [wallet?.provider, wallet?.chainId, safe.chainId, safe.address.value, safe.version, safeLoaded])
 }
