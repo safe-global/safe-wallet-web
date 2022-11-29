@@ -22,6 +22,10 @@ const GovernanceSection = () => {
   const claimingApp = claimingSafeApp?.[0]
   const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
 
+  if (!claimingApp) {
+    return null
+  }
+
   const WidgetLoadError = () => (
     <Card className={css.loadErrorCard}>
       <Box className={css.loadErrorMsgContainer}>
