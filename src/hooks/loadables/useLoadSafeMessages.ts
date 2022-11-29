@@ -7,15 +7,15 @@ import { logError, Errors } from '@/services/exceptions'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import type { AsyncResult } from '@/hooks/useAsync'
 
-export const useLoadMessages = (): AsyncResult<SafeMessageListPage> => {
-  const { safe, safeAddress, safeLoaded, messagesTag } = useSafeInfo()
+export const useLoadSafeMessages = (): AsyncResult<SafeMessageListPage> => {
+  const { safe, safeAddress, safeLoaded } = useSafeInfo()
 
   const [data, error, loading] = useAsync<SafeMessageListPage>(() => {
     if (!safeLoaded) {
       return
     }
     return getSafeMessages(safe.chainId, safeAddress)
-  }, [safeLoaded, safe.chainId, safeAddress, messagesTag])
+  }, [safeLoaded, safe.chainId, safeAddress, safe.messagesTag])
 
   useEffect(() => {
     if (error) {
@@ -26,4 +26,4 @@ export const useLoadMessages = (): AsyncResult<SafeMessageListPage> => {
   return [data, error, loading]
 }
 
-export default useLoadMessages
+export default useLoadSafeMessages
