@@ -9,6 +9,7 @@ import AllowedFeaturesList from './AllowedFeaturesList'
 import type { AllowedFeatures, AllowedFeatureSelection } from '../types'
 import { PermissionStatus } from '../types'
 import UnknownAppWarning from './UnknownAppWarning'
+import { getOrigin } from '../utils'
 
 type SafeAppsInfoModalProps = {
   onCancel: () => void
@@ -106,6 +107,8 @@ const SafeAppsInfoModal = ({
     )
   }
 
+  const origin = useMemo(() => getOrigin(appUrl), [appUrl])
+
   return (
     <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" height="calc(100vh - 52px)">
       <Box
@@ -138,7 +141,7 @@ const SafeAppsInfoModal = ({
                 onFeatureSelectionChange={handleFeatureSelectionChange}
               />
             )}
-            {shouldShowUnknownAppWarning && <UnknownAppWarning url={appUrl} onHideWarning={setHideWarning} />}
+            {shouldShowUnknownAppWarning && <UnknownAppWarning url={origin} onHideWarning={setHideWarning} />}
           </Slider>
         </Grid>
       </Box>

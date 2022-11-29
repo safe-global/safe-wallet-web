@@ -27,6 +27,8 @@ describe('The Browser permissions system', () => {
       cy.findByText(/accept selection/i).click()
 
       cy.findByRole('checkbox', { name: /microphone/i }).click()
+      cy.findByRole('button', { name: /continue/i }).click()
+      cy.wait(500)
       cy.findByRole('button', { name: /continue/i })
         .click()
         .should(() => {

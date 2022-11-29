@@ -13,6 +13,7 @@ import SafeAppsLoadError from '@/components/safe-apps/SafeAppsErrorBoundary/Safe
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppRoutes } from '@/config/routes'
+import { getOrigin } from '@/components/safe-apps/utils'
 
 const Apps: NextPage = () => {
   const router = useRouter()
@@ -29,7 +30,7 @@ const Apps: NextPage = () => {
     isPermissionsReviewCompleted,
     onComplete,
   } = useSafeAppsInfoModal({
-    url: appUrl || '',
+    url: getOrigin(appUrl),
     safeApp: remoteSafeApps.find((app) => app.url === appUrl),
     permissions: safeApp?.safeAppsPermissions || [],
     addPermissions,

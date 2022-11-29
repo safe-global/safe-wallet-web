@@ -5,6 +5,7 @@ import useChainId from '@/hooks/useChainId'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import type { AllowedFeatures } from '../types'
 import { PermissionStatus } from '../types'
+import { getOrigin } from '../utils'
 
 const SAFE_APPS_INFO_MODAL = 'SafeApps__infoModal'
 
@@ -108,8 +109,10 @@ const useSafeAppsInfoModal = ({
         warningCheckedCustomApps: [...(modalInfo[chainId]?.warningCheckedCustomApps || [])],
       }
 
-      if (shouldHide && !modalInfo[chainId]?.warningCheckedCustomApps?.includes(url)) {
-        info.warningCheckedCustomApps.push(url)
+      const origin = getOrigin(url)
+
+      if (shouldHide && !modalInfo[chainId]?.warningCheckedCustomApps?.includes(origin)) {
+        info.warningCheckedCustomApps.push(origin)
       }
 
       setModalInfo({
