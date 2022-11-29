@@ -96,12 +96,22 @@ const SafeHeader = (): ReactElement => {
 
           <Track {...OVERVIEW_EVENTS.COPY_ADDRESS}>
             <CopyButton text={addressCopyText} className={css.iconButton}>
-              <SvgIcon component={CopyIconBold} inheritViewBox color="primary" fontSize="small" />
+              <SvgIcon
+                component={CopyIconBold}
+                inheritViewBox
+                color="primary"
+                fontSize="small"
+                sx={{
+                  '& path': {
+                    fill: ({ palette }) => palette.primary.main,
+                  },
+                }}
+              />
             </CopyButton>
           </Track>
 
           <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
-            <a target="_blank" rel="noreferrer" href={blockExplorerLink?.href || '#'}>
+            <a target="_blank" rel="noreferrer" href={blockExplorerLink?.href || ''}>
               <HeaderIconButton title={blockExplorerLink?.title || ''}>
                 <SvgIcon component={LinkIconBold} inheritViewBox fontSize="small" color="primary" />
               </HeaderIconButton>
