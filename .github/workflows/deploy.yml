@@ -24,6 +24,18 @@ jobs:
 
       - uses: actions/checkout@v3
 
+      # Post a PR comment before deploying
+      - name: Post a comment while building
+        if: github.event.number
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: praul
+          message: |
+            ## Branch preview
+            ⏳ Deploying a preview site...
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+
       - name: Install Node modules
         run: yarn install --immutable
 
@@ -66,25 +78,14 @@ jobs:
           BUCKET: s3://${{ secrets.AWS_DEVELOPMENT_BUCKET_NAME }}
         run: bash ./scripts/github/s3_upload.sh
 
-      # PRs
+      ### PRs ###
 
       # Extract branch name
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo '${{ github.ref }}' | sed 's/refs\/heads\///' | sed 's/\//-/g')"
+        ## Cut off "refs/heads/" and replace slashes with dashes, e.g. "refs/heads/features/hello" -> "features-hello"
+        run: echo "##[set-output name=branch;]$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///' | sed 's/\//-/g')"
         id: extract_branch
-
-      # Post a comment before deploying
-      - name: Post a comment while building
-        if: github.event.number
-        uses: mshick/add-pr-comment@v2
-        with:
-          message-id: praul
-          message: |
-            ## Branch preview
-            ⏳ Deploying a preview site...
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
 
       # Deploy to S3
       - name: Deploy PR branch
