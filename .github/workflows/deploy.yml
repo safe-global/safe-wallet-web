@@ -69,6 +69,13 @@ jobs:
           BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/pr${{ github.event.number }}
         run: bash ./scripts/github/s3_upload.sh
 
+      - name: Generate QR Code
+        id: qrcode
+        uses: hammadj/qr-code-generator@master
+        with:
+          # Example using text outputted from another step action
+          content: "https://pr${{ github.event.number }}--webcore.review-web-core.5afe.dev"
+
       - name: 'Post the deployment links in the PR'
         if: success() && github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
         uses: mshick/add-pr-comment@v1
@@ -76,5 +83,6 @@ jobs:
           message: |
             ## Branch preview
             https://pr${{ github.event.number }}--webcore.review-web-core.5afe.dev
+            ![QR code](${{ steps.qrcode.output.data }})
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
