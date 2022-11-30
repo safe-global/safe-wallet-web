@@ -18,6 +18,6 @@ jobs:
           path-to-signatures: 'signatures/version1/cla.json'
           path-to-cla-document: 'https://safe.global/cla/'
           branch: 'cla-signatures'
-          allowlist: lukasschor,mikheevm,rmeissner,germartinez,Uxio0,dasanra,francovenica,tschubotz,luarx,bot*,DaniSomoza,iamacook,yagopv,usame-algan,schmanu,DiogoSoaress,JagoFigueroa
+          allowlist: lukasschor,mikheevm,rmeissner,germartinez,Uxio0,dasanra,francovenica,tschubotz,luarx,bot*,katspaugh,DaniSomoza,iamacook,yagopv,usame-algan,schmanu,DiogoSoaress,JagoFigueroa
           empty-commit-flag: false
           blockchain-storage-flag: false
