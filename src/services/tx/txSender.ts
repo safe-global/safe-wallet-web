@@ -101,8 +101,12 @@ const getRecommendedTxParams = async (
 /**
  * Create a transaction from raw params
  */
-export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: number): Promise<SafeTransaction> => {
-  const safeSDK = getAndValidateSafeSDK()
+export const createTx = async (
+  txParams: SafeTransactionDataPartial,
+  nonce?: number,
+  safeSDK?: Safe,
+): Promise<SafeTransaction> => {
+  const safeSDKInstance = safeSDK || getAndValidateSafeSDK()
 
   // If the nonce is not provided, we get the recommended one
   if (nonce === undefined) {
@@ -113,7 +117,7 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
     txParams = { ...txParams, nonce }
   }
 
-  return safeSDK.createTransaction({ safeTransactionData: txParams })
+  return safeSDKInstance.createTransaction({ safeTransactionData: txParams })
 }
 
 /**
@@ -121,20 +125,26 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
  *
  * If only one tx is passed it will be created without multiSend and without onlyCalls.
  */
-export const createMultiSendCallOnlyTx = async (txParams: MetaTransactionData[]): Promise<SafeTransaction> => {
-  return withRecommendedNonce((safeSDK) =>
-    safeSDK.createTransaction({
-      safeTransactionData: txParams,
-      onlyCalls: true,
-    }),
+export const createMultiSendCallOnlyTx = async (
+  txParams: MetaTransactionData[],
+  safeSDK?: Safe,
+): Promise<SafeTransaction> => {
+  return withRecommendedNonce(
+    (safeSDK) =>
+      safeSDK.createTransaction({
+        safeTransactionData: txParams,
+        onlyCalls: true,
+      }),
+    safeSDK,
   )
 }
 
 const withRecommendedNonce = async (
   createFn: (safeSDK: Safe) => Promise<SafeTransaction>,
+  safeSDK?: Safe,
 ): Promise<SafeTransaction> => {
-  const safeSDK = getAndValidateSafeSDK()
-  const tx = await createFn(safeSDK)
+  const safeSDKInstance = safeSDK || getAndValidateSafeSDK()
+  const tx = await createFn(safeSDKInstance)
   return createTx(tx.data)
 }
 

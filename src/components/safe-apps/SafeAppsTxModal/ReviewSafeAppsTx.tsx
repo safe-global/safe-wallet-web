@@ -21,6 +21,7 @@ import { isEmptyHexData } from '@/utils/hex'
 import { dispatchSafeAppsTx } from '@/services/tx/txSender'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -31,11 +32,14 @@ const ReviewSafeAppsTx = ({
 }: ReviewSafeAppsTxProps): ReactElement => {
   const chainId = useChainId()
   const chain = useCurrentChain()
+  const safeSDK = useSafeSDK()
 
   const isMultiSend = txs.length > 1
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
-    const tx = await createMultiSendCallOnlyTx(txs)
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
+    if (!safeSDK) return
+
+    const tx = await createMultiSendCallOnlyTx(txs, safeSDK)
 
     if (params?.safeTxGas) {
       // FIXME: do it properly via the Core SDK
@@ -44,7 +48,7 @@ const ReviewSafeAppsTx = ({
     }
 
     return tx
-  }, [txs])
+  }, [txs, safeSDK])
 
   const [decodedData] = useAsync<DecodedDataResponse | undefined>(async () => {
     if (!safeTx || isEmptyHexData(safeTx.data.data)) return

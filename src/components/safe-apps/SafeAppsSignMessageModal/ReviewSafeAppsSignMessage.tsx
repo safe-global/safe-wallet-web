@@ -20,7 +20,7 @@ import { getSignMessageLibDeploymentContractInstance } from '@/services/contract
 import { createTx } from '@/services/tx/txSender'
 import { getDecodedMessage } from '../utils'
 import { dispatchSafeAppsTx } from '@/services/tx/txSender'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 
 type ReviewSafeAppsSignMessageProps = {
   safeAppsSignMessage: SafeAppsSignMessageParams
@@ -30,7 +30,7 @@ const ReviewSafeAppsSignMessage = ({
   safeAppsSignMessage: { message, method, requestId },
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
   const chainId = useChainId()
-  const isWrongChain = useIsWrongChain()
+  const safeSDK = useSafeSDK()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
@@ -47,9 +47,7 @@ const ReviewSafeAppsSignMessage = ({
   }, [isTextMessage, isTypedMessage, message])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
-    if (isWrongChain) return
-
-    console.log('UHMM')
+    if (!safeSDK) return
 
     let txData
 
@@ -70,13 +68,17 @@ const ReviewSafeAppsSignMessage = ({
       ])
     }
 
-    return createTx({
-      to: signMessageAddress,
-      value: '0',
-      data: txData || '0x',
-      operation: OperationType.DelegateCall,
-    })
-  }, [message, isWrongChain])
+    return createTx(
+      {
+        to: signMessageAddress,
+        value: '0',
+        data: txData || '0x',
+        operation: OperationType.DelegateCall,
+      },
+      undefined,
+      safeSDK,
+    )
+  }, [message, safeSDK])
 
   const handleSubmit = (txId: string) => {
     dispatchSafeAppsTx(txId, requestId)
