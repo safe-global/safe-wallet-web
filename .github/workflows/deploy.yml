@@ -64,7 +64,7 @@ jobs:
 
       # Post a comment in the PR
       - name: 'Post a comment while building'
-        if: github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
+        if: github.event.number
         uses: mshick/add-pr-comment@v1
         with:
           message-id: praul
@@ -76,13 +76,13 @@ jobs:
 
       # PRs
       - name: Deploy PR branch
-        if: github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
+        if: github.event.number
         env:
-          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/qr
+          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/${{ github.ref_name }}
         run: bash ./scripts/github/s3_upload.sh
 
       - name: 'Post the deployment links in the PR'
-        if: success() && github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
+        if: success() && github.event.number
         uses: mshick/add-pr-comment@v1
         with:
           message-id: praul
@@ -90,6 +90,17 @@ jobs:
             ## Branch preview
             ✅  Deploy successful!
 
-            https://prqr--webcore.review-web-core.5afe.dev
+            https://${{ github.ref_name }}--webcore.review-web-core.5afe.dev
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+
+      - name: 'When a build fails'
+        if: failure() && github.event.number
+        uses: mshick/add-pr-comment@v1
+        with:
+          message-id: praul
+          message: |
+            ## Branch preview
+            ❌  Deploy failed!
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
