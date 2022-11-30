@@ -10,7 +10,7 @@ import { getSpendingLimitContract, getSpendingLimitModuleAddress } from '@/servi
 import type { AddressEx } from '@gnosis.pm/safe-react-gateway-sdk'
 import { sameAddress } from '@/utils/addresses'
 import type { AllowanceModule } from '@/types/contracts'
-import { sameString } from '@gnosis.pm/safe-core-sdk/dist/src/utils'
+import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 
 const isModuleEnabled = (modules: string[], moduleAddress: string): boolean => {
   return modules?.some((module) => sameAddress(module, moduleAddress)) ?? false

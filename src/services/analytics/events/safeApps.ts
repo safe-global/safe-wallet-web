@@ -34,13 +34,13 @@ export const SAFE_APPS_EVENTS = {
     ...SAFE_APPS_EVENT_DATA,
     action: 'Add custom Safe App',
   },
-  TRANSACTION_CONFIRMED: {
+  PROPOSE_TRANSACTION: {
     ...SAFE_APPS_EVENT_DATA,
-    action: 'Transaction Confirmed',
+    action: 'Propose Transaction',
   },
-  TRANSACTION_REJECTED: {
+  PROPOSE_TRANSACTION_REJECTED: {
     ...SAFE_APPS_EVENT_DATA,
-    action: 'Transaction Rejected',
+    action: 'Propose Transaction Rejected',
   },
   SHARED_APP_LANDING: {
     ...SAFE_APPS_EVENT_DATA,
