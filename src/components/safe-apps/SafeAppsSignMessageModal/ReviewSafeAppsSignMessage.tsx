@@ -20,6 +20,7 @@ import { getSignMessageLibDeploymentContractInstance } from '@/services/contract
 import { createTx } from '@/services/tx/txSender'
 import { getDecodedMessage } from '../utils'
 import { dispatchSafeAppsTx } from '@/services/tx/txSender'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 type ReviewSafeAppsSignMessageProps = {
   safeAppsSignMessage: SafeAppsSignMessageParams
@@ -29,6 +30,7 @@ const ReviewSafeAppsSignMessage = ({
   safeAppsSignMessage: { message, method, requestId },
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
   const chainId = useChainId()
+  const isWrongChain = useIsWrongChain()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
@@ -45,6 +47,10 @@ const ReviewSafeAppsSignMessage = ({
   }, [isTextMessage, isTypedMessage, message])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
+    if (isWrongChain) return
+
+    console.log('UHMM')
+
     let txData
 
     if (isTextMessage) {
@@ -70,7 +76,7 @@ const ReviewSafeAppsSignMessage = ({
       data: txData || '0x',
       operation: OperationType.DelegateCall,
     })
-  }, [message])
+  }, [message, isWrongChain])
 
   const handleSubmit = (txId: string) => {
     dispatchSafeAppsTx(txId, requestId)

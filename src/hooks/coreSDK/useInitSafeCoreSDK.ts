@@ -11,6 +11,8 @@ export const useInitSafeCoreSDK = () => {
 
   useEffect(() => {
     if (!safeLoaded || !wallet?.provider || safe.chainId !== wallet.chainId) {
+      // If we don't reset the SDK, a previous Safe could remain in the store
+      setSafeSDK(undefined)
       return
     }
 
@@ -18,8 +20,6 @@ export const useInitSafeCoreSDK = () => {
       .then(setSafeSDK)
       .catch((e) => {
         trackError(ErrorCodes._105, (e as Error).message)
-        // If we don't reset the SDK, a previous Safe could remain in the store
-        setSafeSDK(undefined)
       })
   }, [wallet?.provider, wallet?.chainId, safe.chainId, safe.address.value, safe.version, safeLoaded])
 }

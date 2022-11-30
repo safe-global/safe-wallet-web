@@ -5,7 +5,8 @@ import * as coreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { EIP1193Provider } from '@web3-onboard/core'
-import { waitFor } from '@testing-library/react'
+import { act } from '@testing-library/react'
+import type Safe from '@gnosis.pm/safe-core-sdk'
 
 describe('useInitSafeCoreSDK hook', () => {
   const mockSafeInfo = {
@@ -36,8 +37,10 @@ describe('useInitSafeCoreSDK hook', () => {
     jest.spyOn(useWallet, 'default').mockReturnValue(mockWallet)
   })
 
-  it('initializes a Core SDK instance', () => {
-    const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
+  it('initializes a Core SDK instance', async () => {
+    const mockSafe = {} as Safe
+    const initMock = jest.spyOn(coreSDK, 'initSafeSDK').mockReturnValue(Promise.resolve(mockSafe))
+    const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
     jest.spyOn(useSafeInfo, 'default').mockReturnValueOnce({
@@ -48,20 +51,27 @@ describe('useInitSafeCoreSDK hook', () => {
     renderHook(() => useInitSafeCoreSDK())
 
     expect(initMock).toHaveBeenCalledWith({}, '5', '0x1', '1.3.0')
+
+    await act(() => Promise.resolve())
+
+    expect(setSDKMock).toHaveBeenCalledWith(mockSafe)
   })
 
   it('does not initialize a Core SDK instance if the safe info is not loaded', () => {
     const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
+    const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
 
     renderHook(() => useInitSafeCoreSDK())
 
     expect(initMock).not.toHaveBeenCalled()
+    expect(setSDKMock).toHaveBeenCalledWith(undefined)
   })
 
   it('does not initialize a Core SDK instance if there is no safe chainId', () => {
     const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
+    const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider, chainId: '5' })
     jest.spyOn(useSafeInfo, 'default').mockReturnValueOnce({
@@ -76,10 +86,12 @@ describe('useInitSafeCoreSDK hook', () => {
     renderHook(() => useInitSafeCoreSDK())
 
     expect(initMock).not.toHaveBeenCalled()
+    expect(setSDKMock).toHaveBeenCalledWith(undefined)
   })
 
   it('does not initialize a Core SDK instance if the safe chainId and wallet chainId are different', () => {
     const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
+    const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider, chainId: '1' })
     jest.spyOn(useSafeInfo, 'default').mockReturnValueOnce({
@@ -94,26 +106,6 @@ describe('useInitSafeCoreSDK hook', () => {
     renderHook(() => useInitSafeCoreSDK())
 
     expect(initMock).not.toHaveBeenCalled()
-  })
-
-  it('resets the Core SDK instance if the init call throws', async () => {
-    jest.spyOn(coreSDK, 'initSafeSDK').mockImplementationOnce(() =>
-      Promise.reject(() => {
-        throw new Error('Failed')
-      }),
-    )
-    const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
-
-    jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
-    jest.spyOn(useSafeInfo, 'default').mockReturnValueOnce({
-      ...mockSafeInfo,
-      safeLoaded: true,
-    })
-
-    renderHook(() => useInitSafeCoreSDK())
-
-    await waitFor(() => {
-      expect(setSDKMock).toHaveBeenCalledWith(undefined)
-    })
+    expect(setSDKMock).toHaveBeenCalledWith(undefined)
   })
 })
