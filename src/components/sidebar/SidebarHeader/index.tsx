@@ -101,7 +101,7 @@ const SafeHeader = (): ReactElement => {
           </Track>
 
           <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
-            <a target="_blank" rel="noreferrer" href={blockExplorerLink?.href || '#'}>
+            <a target="_blank" rel="noreferrer" href={blockExplorerLink?.href || ''}>
               <HeaderIconButton title={blockExplorerLink?.title || ''}>
                 <SvgIcon component={LinkIconBold} inheritViewBox fontSize="small" color="primary" />
               </HeaderIconButton>
