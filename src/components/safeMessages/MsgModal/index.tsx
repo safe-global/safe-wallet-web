@@ -11,6 +11,7 @@ import RequiredIcon from '@/public/images/messages/required.svg'
 import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { getSafeMessageHash } from '@/utils/safe-messages'
+import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 
@@ -23,12 +24,14 @@ type BaseProps = {
 // Custom Safe Apps do not have a `safeAppId`
 type ProposeProps = BaseProps & {
   safeAppId?: number
+  requestId: RequestId
   messageHash?: never
 }
 
 // A proposed message does not return the `safeAppId` but the `logoUri` and `name` of the Safe App that proposed it
 type ConfirmProps = BaseProps & {
   safeAppId?: never
+  requestId?: never
   messageHash: string
 }
 
@@ -39,6 +42,7 @@ const MsgModal = ({
   message,
   messageHash,
   safeAppId,
+  requestId,
 }: ProposeProps | ConfirmProps): ReactElement => {
   const { safe } = useSafeInfo()
 
@@ -50,11 +54,12 @@ const MsgModal = ({
     return getSafeMessageHash(message)
   }, [message, messageHash])
 
-  const onSign = () => {
-    if (message) {
-      dispatchSafeMsgProposal(safe, message, hash, safeAppId)
+  const onSign = async () => {
+    const isProposal = message && requestId
+    if (isProposal) {
+      await dispatchSafeMsgProposal(safe, message, hash, requestId, safeAppId)
     } else {
-      dispatchSafeMsgConfirmation(safe, hash)
+      await dispatchSafeMsgConfirmation(safe, hash)
     }
 
     onClose()

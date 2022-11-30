@@ -4,7 +4,8 @@ import type { TypedDataDomain } from 'ethers'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
 import { getWeb3 } from '@/hooks/wallets/web3'
-import { generateSafeMessageTypes, getSafeMessageHash } from '@/utils/safe-messages'
+import { generateSafeMessageTypes } from '@/utils/safe-messages'
+import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 /**
  * Sign a message hash as a `SafeMessage` `message`
@@ -29,13 +30,13 @@ export const dispatchSafeMsgProposal = async (
   safe: SafeInfo,
   message: SafeMessage['message'],
   messageHash: string,
+  requestId: RequestId,
   safeAppId?: number,
 ): Promise<void | string> => {
   let signature: string
 
   try {
     signature = await signMessageHash(safe, messageHash)
-
     await proposeSafeMessage(safe.chainId, safe.address.value, {
       message,
       signature,
@@ -52,6 +53,8 @@ export const dispatchSafeMsgProposal = async (
 
   safeMsgDispatch(SafeMsgEvent.PROPOSE, {
     messageHash,
+    signature,
+    requestId,
   })
 
   return safe.threshold === 1 ? signature : undefined

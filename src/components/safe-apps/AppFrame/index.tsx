@@ -37,6 +37,7 @@ import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueB
 import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
 import MsgModal from '@/components/safeMessages/MsgModal'
+import { SafeMsgEvent, safeMsgSubscribe } from '@/services/safe-messages/safeMsgEvents'
 
 import css from './styles.module.css'
 
@@ -162,6 +163,17 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     return unsubscribe
   }, [appName, chainId, closeSignMessageModal, closeTxModal, communicator, signMessageModalState, txModalState])
 
+  useEffect(() => {
+    const unsubscribe = safeMsgSubscribe(SafeMsgEvent.PROPOSE, ({ signature, requestId }) => {
+      const currentSafeAppRequestId = signMessageModalState.requestId
+      if (currentSafeAppRequestId === requestId && safe.threshold === 1) {
+        communicator?.send(signature, requestId)
+      }
+    })
+
+    return unsubscribe
+  }, [communicator, safe.threshold, signMessageModalState.requestId])
+
   const onSafeAppsModalClose = () => {
     if (txModalState.isOpen) {
       communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, txModalState.requestId, true)
@@ -257,6 +269,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
               name={remoteApp?.name || ''}
               message={signMessageModalState.message}
               safeAppId={remoteApp?.id}
+              requestId={signMessageModalState.requestId}
             />
           ) : (
             <SafeAppsSignMessageModal

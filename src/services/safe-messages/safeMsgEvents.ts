@@ -1,4 +1,5 @@
 import EventBus from '../EventBus'
+import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 export enum SafeMsgEvent {
   // Create message
@@ -20,7 +21,7 @@ export enum SafeMsgEvent {
 type SafeMessageHash = { messageHash: string }
 
 interface SignedMessageEvents {
-  [SafeMsgEvent.PROPOSE]: SafeMessageHash
+  [SafeMsgEvent.PROPOSE]: SafeMessageHash & { signature: string; requestId: RequestId }
   [SafeMsgEvent.PROPOSE_FAILED]: SafeMessageHash & { error: Error }
   [SafeMsgEvent.CONFIRM_PROPOSE]: SafeMessageHash
   [SafeMsgEvent.CONFIRM_PROPOSE_FAILED]: SafeMessageHash & { error: Error }

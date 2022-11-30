@@ -20,7 +20,7 @@ describe('useSafeMessagePendingStatuses', () => {
   it('should set a message as pending when it is created', () => {
     renderHook(() => useSafeMessagePendingStatuses())
 
-    safeMsgDispatch(SafeMsgEvent.PROPOSE, { messageHash: '0x123' })
+    safeMsgDispatch(SafeMsgEvent.PROPOSE, { messageHash: '0x123', signature: '0x456', requestId: '789' })
 
     expect(clearPendingSafeMessage).not.toHaveBeenCalled()
     expect(setPendingSafeMessage).toHaveBeenCalledWith('0x123')
