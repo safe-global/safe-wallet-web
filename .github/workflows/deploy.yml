@@ -62,8 +62,16 @@ jobs:
           BUCKET: s3://${{ secrets.AWS_DEVELOPMENT_BUCKET_NAME }}
         run: bash ./scripts/github/s3_upload.sh
 
-      # Post a comment in the PR
-      - name: 'Post a comment while building'
+      # PRs
+
+      # Extract branch name
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      # Post a comment before deploying
+      - name: Post a comment while building
         if: github.event.number
         uses: mshick/add-pr-comment@v1
         with:
@@ -74,14 +82,15 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
 
-      # PRs
+      # Deploy to S3
       - name: Deploy PR branch
         if: github.event.number
         env:
-          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/${{ github.ref_name }}
+          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/${{ steps.extract_branch.outputs.branch }}
         run: bash ./scripts/github/s3_upload.sh
 
-      - name: 'Post the deployment links in the PR'
+      # Success comnment
+      - name: Post a deployment link in the PR
         if: success() && github.event.number
         uses: mshick/add-pr-comment@v1
         with:
@@ -90,11 +99,12 @@ jobs:
             ## Branch preview
             ✅  Deploy successful!
 
-            https://${{ github.ref_name }}--webcore.review-web-core.5afe.dev
+            https://${{ steps.extract_branch.outputs.branch }}--webcore.review-web-core.5afe.dev
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
 
-      - name: 'When a build fails'
+      # Failure comnment
+      - name: When a build fails
         if: failure() && github.event.number
         uses: mshick/add-pr-comment@v1
         with:
