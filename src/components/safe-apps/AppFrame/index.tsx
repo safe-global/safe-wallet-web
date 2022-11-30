@@ -36,6 +36,7 @@ import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
 import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
 import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
+import MsgModal from '@/components/safeMessages/MsgModal'
 
 import css from './styles.module.css'
 
@@ -248,20 +249,29 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
           />
         )}
 
-        {signMessageModalState.isOpen && (
-          <SafeAppsSignMessageModal
-            onClose={onSafeAppsModalClose}
-            initialData={[
-              {
-                app: safeAppFromManifest,
-                appId: remoteApp?.id,
-                requestId: signMessageModalState.requestId,
-                message: signMessageModalState.message,
-                method: signMessageModalState.method as Methods.signMessage | Methods.signTypedMessage,
-              },
-            ]}
-          />
-        )}
+        {signMessageModalState.isOpen &&
+          (signMessageModalState.offChain ? (
+            <MsgModal
+              onClose={onSafeAppsModalClose}
+              logoUri={remoteApp?.iconUrl || ''}
+              name={remoteApp?.name || ''}
+              message={signMessageModalState.message}
+              safeAppId={remoteApp?.id}
+            />
+          ) : (
+            <SafeAppsSignMessageModal
+              onClose={onSafeAppsModalClose}
+              initialData={[
+                {
+                  app: safeAppFromManifest,
+                  appId: remoteApp?.id,
+                  requestId: signMessageModalState.requestId,
+                  message: signMessageModalState.message,
+                  method: signMessageModalState.method as Methods.signMessage | Methods.signTypedMessage,
+                },
+              ]}
+            />
+          ))}
 
         {permissionsRequest && (
           <PermissionsPrompt

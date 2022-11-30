@@ -1,4 +1,5 @@
 import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon } from '@mui/material'
+import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 
@@ -9,6 +10,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import RequiredIcon from '@/public/images/messages/required.svg'
 import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { getSafeMessageHash } from '@/utils/safe-messages'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 
@@ -18,8 +20,9 @@ type BaseProps = {
   onClose: () => void
 } & Pick<SafeMessage, 'logoUri' | 'name' | 'message'>
 
+// Custom Safe Apps do not have a `safeAppId`
 type ProposeProps = BaseProps & {
-  safeAppId: number
+  safeAppId?: number
   messageHash?: never
 }
 
@@ -39,11 +42,19 @@ const MsgModal = ({
 }: ProposeProps | ConfirmProps): ReactElement => {
   const { safe } = useSafeInfo()
 
+  const hash = useMemo(() => {
+    if (messageHash) {
+      return messageHash
+    }
+
+    return getSafeMessageHash(message)
+  }, [message, messageHash])
+
   const onSign = () => {
-    if (safeAppId) {
-      dispatchSafeMsgProposal(safe, message, safeAppId)
-    } else if (messageHash) {
-      dispatchSafeMsgConfirmation(safe, messageHash)
+    if (message) {
+      dispatchSafeMsgProposal(safe, message, hash, safeAppId)
+    } else {
+      dispatchSafeMsgConfirmation(safe, hash)
     }
 
     onClose()
@@ -80,14 +91,10 @@ const MsgModal = ({
           </Typography>
           <Typography fontWeight={700}>Message:</Typography>
           <Msg message={message} />
-          {messageHash && (
-            <>
-              <Typography fontWeight={700} mt={2}>
-                Hash:
-              </Typography>
-              <EthHashInfo address={messageHash} showAvatar={false} shortAddress={false} showCopyButton />
-            </>
-          )}
+          <Typography fontWeight={700} mt={2}>
+            Hash:
+          </Typography>
+          <EthHashInfo address={hash} showAvatar={false} shortAddress={false} showCopyButton />
         </DialogContent>
 
         <DialogActions>

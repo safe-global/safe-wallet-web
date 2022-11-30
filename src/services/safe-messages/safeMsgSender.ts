@@ -24,15 +24,17 @@ const signMessageHash = async (safe: SafeInfo, messageHash: SafeMessage['message
   return web3.getSigner()._signTypedData(domain as TypedDataDomain, types, message)
 }
 
+// TODO: Modify pending/notifications for immediately returned signatures, e.g. 1/n threshold
 export const dispatchSafeMsgProposal = async (
   safe: SafeInfo,
   message: SafeMessage['message'],
-  safeAppId: number,
-): Promise<void> => {
-  const messageHash = getSafeMessageHash(message)
+  messageHash: string,
+  safeAppId?: number,
+): Promise<void | string> => {
+  let signature: string
 
   try {
-    const signature = await signMessageHash(safe, messageHash)
+    signature = await signMessageHash(safe, messageHash)
 
     await proposeSafeMessage(safe.chainId, safe.address.value, {
       message,
@@ -51,8 +53,11 @@ export const dispatchSafeMsgProposal = async (
   safeMsgDispatch(SafeMsgEvent.PROPOSE, {
     messageHash,
   })
+
+  return safe.threshold === 1 ? signature : undefined
 }
 
+// TODO: Handle immediately returned strings
 export const dispatchSafeMsgConfirmation = async (
   safe: SafeInfo,
   messageHash: SafeMessage['messageHash'],

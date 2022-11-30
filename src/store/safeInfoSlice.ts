@@ -16,6 +16,7 @@ export const defaultSafeInfo: SafeInfo = {
   collectiblesTag: '',
   txQueuedTag: '',
   txHistoryTag: '',
+  messagesTag: '',
 }
 
 const { slice, selector } = makeLoadableSlice('safeInfo', undefined as SafeInfo | undefined)
