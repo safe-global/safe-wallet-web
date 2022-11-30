@@ -1,11 +1,13 @@
 import { INFO_MODAL_KEY, TEST_SAFE } from '../e2e/safe-apps/constants'
 
+const allowedApps = ['https://safe-test-app.com']
+
 Cypress.Commands.add('visitSafeApp', (appUrl, testSafe = TEST_SAFE) => {
   cy.on('window:before:load', (window) => {
     window.localStorage.setItem(
       INFO_MODAL_KEY,
       JSON.stringify({
-        5: { consentsAccepted: true },
+        5: { consentsAccepted: true, warningCheckedCustomApps: allowedApps },
       }),
     )
   })

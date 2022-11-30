@@ -74,3 +74,11 @@ export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
     safeAppsPermissions: [],
   }
 }
+
+export const getOrigin = (url?: string): string => {
+  if (!url) return ''
+
+  const { origin } = new URL(url)
+
+  return origin
+}
