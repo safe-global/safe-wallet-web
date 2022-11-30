@@ -11,7 +11,7 @@ import ContractErrorCodes from '@/services/contracts/ContractErrorCodes'
 import { sameAddress } from '@/utils/addresses'
 
 const isContractError = <T extends EthersError>(error: T): error is T & { reason: keyof typeof ContractErrorCodes } => {
-  return Object.keys(ContractErrorCodes).includes(error.reason)
+  return Object.keys(ContractErrorCodes).includes(error.reason!)
 }
 
 const useIsValidExecution = (

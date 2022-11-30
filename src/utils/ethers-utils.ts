@@ -8,10 +8,10 @@ export enum EthersTxReplacedReason {
   replaced = 'replaced',
 }
 
-export type EthersError = Error & { code: ErrorCode; reason: EthersTxReplacedReason; receipt: TransactionReceipt }
+export type EthersError = Error & { code: ErrorCode; reason?: EthersTxReplacedReason; receipt?: TransactionReceipt }
 
-export const didRevert = (receipt: TransactionReceipt): boolean => {
-  return receipt.status === 0
+export const didRevert = (receipt: EthersError['receipt']): boolean => {
+  return receipt?.status === 0
 }
 
 export const didReprice = (error: EthersError): boolean => {
