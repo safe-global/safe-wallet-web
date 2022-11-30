@@ -16,18 +16,23 @@ import NetworkError from '@/public/images/common/network-error.svg'
 import useChainId from '@/hooks/useChainId'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 
-const GovernanceSection = () => {
+// Prevent `GovernanceSection` hooks from needlessly being called
+const LoadingWrapper = () => {
   const chainId = useChainId()
+  if (!getSafeTokenAddress(chainId)) {
+    return null
+  }
+
+  return <GovernanceSection />
+}
+
+const GovernanceSection = () => {
   const isDarkMode = useDarkMode()
   const theme = isDarkMode ? 'dark' : 'light'
   const { getAllowedFeaturesList } = useBrowserPermissions()
   const [claimingSafeApp, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
   const claimingApp = claimingSafeApp?.[0]
   const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
-
-  if (!getSafeTokenAddress(chainId)) {
-    return null
-  }
 
   const WidgetLoadError = () => (
     <Card className={css.loadErrorCard}>
@@ -111,4 +116,4 @@ const GovernanceSection = () => {
   )
 }
 
-export default GovernanceSection
+export default LoadingWrapper
