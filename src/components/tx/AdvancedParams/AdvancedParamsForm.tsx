@@ -1,5 +1,5 @@
 import { type SyntheticEvent } from 'react'
-import { Button, DialogActions, FormControl, Grid, TextField, Link, Typography, DialogContent } from '@mui/material'
+import { Button, DialogActions, FormControl, Grid, Link, Typography, DialogContent } from '@mui/material'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { BigNumber } from 'ethers'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -163,7 +163,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
 
                   <Grid item xs={6}>
                     <FormControl fullWidth>
-                      <TextField
+                      <NumberField
                         label={errors.maxFeePerGas?.message || props.isEIP1559 ? 'Max fee (Gwei)' : 'Gas price (Gwei)'}
                         error={!!errors.maxFeePerGas}
                         autoComplete="off"
