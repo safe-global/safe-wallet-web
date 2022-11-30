@@ -1,6 +1,6 @@
 import { TEST_SAFE } from './constants'
 
-const appUrl = 'http://safe-test-app.com'
+const appUrl = 'https://safe-test-app.com'
 
 describe('The transaction modal', () => {
   before(() => {

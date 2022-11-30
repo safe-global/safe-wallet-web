@@ -27,13 +27,11 @@ describe('The Browser permissions system', () => {
       cy.findByText(/accept selection/i).click()
 
       cy.findByRole('checkbox', { name: /microphone/i }).click()
-      cy.findByRole('button', { name: /continue/i }).click()
-      cy.wait(500)
       cy.findByRole('button', { name: /continue/i })
         .click()
         .should(() => {
           expect(window.localStorage.getItem(BROWSER_PERMISSIONS_KEY)).to.eq(
-            '{"https://safe-test-app.com/app":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}',
+            '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}',
           )
         })
     })
