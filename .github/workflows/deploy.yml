@@ -77,7 +77,7 @@ jobs:
       # Post a comment before deploying
       - name: Post a comment while building
         if: github.event.number
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@v2
         with:
           message-id: praul
           message: |
@@ -96,7 +96,7 @@ jobs:
       # Comnment
       - name: Post a deployment link in the PR
         if: always() && github.event.number
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@v2
         with:
           message-id: praul
           message: |
