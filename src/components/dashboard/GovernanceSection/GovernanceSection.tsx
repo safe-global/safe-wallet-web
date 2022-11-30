@@ -17,7 +17,7 @@ import useChainId from '@/hooks/useChainId'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 
 // Prevent `GovernanceSection` hooks from needlessly being called
-const LoadingWrapper = () => {
+const GovernanceSectionWrapper = () => {
   const chainId = useChainId()
   if (!getSafeTokenAddress(chainId)) {
     return null
@@ -116,4 +116,4 @@ const GovernanceSection = () => {
   )
 }
 
-export default LoadingWrapper
+export default GovernanceSectionWrapper
