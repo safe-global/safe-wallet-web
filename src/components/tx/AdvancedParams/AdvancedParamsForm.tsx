@@ -166,7 +166,6 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                       <NumberField
                         label={errors.maxFeePerGas?.message || props.isEIP1559 ? 'Max fee (Gwei)' : 'Gas price (Gwei)'}
                         error={!!errors.maxFeePerGas}
-                        autoComplete="off"
                         required
                         {...register(AdvancedField.maxFeePerGas, { required: true, pattern: FLOAT_REGEX, min: 0 })}
                       />
