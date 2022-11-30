@@ -11,7 +11,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
     name: Deploy to dev/staging
+
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.8.0
@@ -67,7 +71,7 @@ jobs:
       # Extract branch name
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "##[set-output name=branch;]$(echo '${{ github.ref }}' | sed 's/refs\/heads\///' | sed 's/\//-/g')"
         id: extract_branch
 
       # Post a comment before deploying
@@ -89,9 +93,9 @@ jobs:
           BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/${{ steps.extract_branch.outputs.branch }}
         run: bash ./scripts/github/s3_upload.sh
 
-      # Success comnment
+      # Comnment
       - name: Post a deployment link in the PR
-        if: success() && github.event.number
+        if: always() && github.event.number
         uses: mshick/add-pr-comment@v1
         with:
           message-id: praul
@@ -100,17 +104,6 @@ jobs:
             ✅  Deploy successful!
 
             https://${{ steps.extract_branch.outputs.branch }}--webcore.review-web-core.5afe.dev
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
-
-      # Failure comnment
-      - name: When a build fails
-        if: failure() && github.event.number
-        uses: mshick/add-pr-comment@v1
-        with:
-          message-id: praul
-          message: |
+          message-failure: |
             ## Branch preview
             ❌  Deploy failed!
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
