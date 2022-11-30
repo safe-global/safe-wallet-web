@@ -1,14 +1,26 @@
 import { TextField } from '@mui/material'
-import { forwardRef } from 'react'
+import { forwardRef, useRef } from 'react'
 import type { TextFieldProps } from '@mui/material'
 import type { ReactElement } from 'react'
 
 const NumberField = forwardRef<HTMLInputElement, TextFieldProps>(({ inputProps, ...props }, ref): ReactElement => {
+  const inputRef = useRef<HTMLInputElement>()
+
+  const handleBlur = () => {
+    inputRef.current?.blur()
+  }
+
   return (
     <TextField
-      ref={ref}
+      type="number"
       autoComplete="off"
-      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', ...inputProps }}
+      inputRef={inputRef}
+      onWheel={handleBlur}
+      ref={ref}
+      inputProps={{
+        step: 'any',
+        ...inputProps,
+      }}
       {...props}
     />
   )

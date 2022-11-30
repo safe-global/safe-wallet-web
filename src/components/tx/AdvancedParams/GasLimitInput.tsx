@@ -3,7 +3,7 @@ import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import { useFormContext } from 'react-hook-form'
 import { BASE_TX_GAS } from '@/config/constants'
 import { AdvancedField } from './types.d'
-import NumberField from '@/components/inputs/NumberField'
+import NumberField from '@/components/common/NumberField'
 
 const GasLimitInput = ({ recommendedGasLimit }: { recommendedGasLimit?: string }) => {
   const {

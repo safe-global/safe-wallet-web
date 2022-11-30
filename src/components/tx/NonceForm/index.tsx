@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form'
 import { IconButton, Tooltip } from '@mui/material'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import NumberField from '@/components/inputs/NumberField'
+import NumberField from '@/components/common/NumberField'
 
 type NonceFormProps = {
   name: string

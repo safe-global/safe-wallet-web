@@ -9,7 +9,7 @@ import NonceForm from '../NonceForm'
 import ModalDialog from '@/components/common/ModalDialog'
 import { AdvancedField, type AdvancedParameters } from './types.d'
 import GasLimitInput from './GasLimitInput'
-import NumberField from '@/components/inputs/NumberField'
+import NumberField from '@/components/common/NumberField'
 
 const HELP_LINK = 'https://help.gnosis-safe.io/en/articles/4738445-advanced-transaction-parameters'
 
@@ -147,10 +147,9 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                   {props.isEIP1559 && (
                     <Grid item xs={6}>
                       <FormControl fullWidth>
-                        <TextField
+                        <NumberField
                           label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
                           error={!!errors.maxPriorityFeePerGas}
-                          autoComplete="off"
                           required
                           {...register(AdvancedField.maxPriorityFeePerGas, {
                             required: true,
