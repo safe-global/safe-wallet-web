@@ -75,6 +75,6 @@ jobs:
         with:
           message: |
             ## Branch preview
-            https://pr${{ github.event.number }}--webcore.review-react-br.5afe.dev
+            https://pr${{ github.event.number }}--webcore.review-web-core.5afe.dev
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'

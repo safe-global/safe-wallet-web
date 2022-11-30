@@ -1,6 +1,6 @@
 import { shouldUseEthSignMethod } from '@/hooks/wallets/wallets'
 import type { ConnectedWallet } from '@/services/onboard'
-import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import type { EIP1193Provider } from '@web3-onboard/core'
 
 describe('shouldUseEthSignMethod', () => {

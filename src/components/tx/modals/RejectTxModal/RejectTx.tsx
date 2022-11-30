@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { Typography } from '@mui/material'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
