@@ -1,7 +1,7 @@
 import { memo, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import { useController, useFormContext, useWatch } from 'react-hook-form'
-import { Autocomplete, Backdrop, IconButton, InputAdornment, MenuItem, Popper, TextField, Tooltip } from '@mui/material'
+import { Autocomplete, Backdrop, IconButton, InputAdornment, MenuItem, TextField, Tooltip } from '@mui/material'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useTxQueue, { useQueuedTxByNonce } from '@/hooks/useTxQueue'
@@ -39,10 +39,7 @@ const NonceFormOption = memo(({ nonce, ...props }: { nonce: number } & MenuItemP
 const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps): ReactElement => {
   const { safe } = useSafeInfo()
   const safeNonce = safe.nonce || 0
-  const [popper, setPopper] = useState<{ open: boolean; anchorEl: (EventTarget & Element) | null }>({
-    open: false,
-    anchorEl: null,
-  })
+  const [backdrop, setBackdrop] = useState(false)
 
   // Initialise form field
   const { setValue, control } = useFormContext() || {}
@@ -98,61 +95,59 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
   }
 
   return (
-    <Autocomplete
-      value={value}
-      freeSolo
-      // On option select or free text entry
-      onInputChange={(_, value) => {
-        onChange(value ? Number(value) : '')
-      }}
-      options={options}
-      disabled={nonce == null || readonly}
-      getOptionLabel={(option) => option.toString()}
-      renderOption={(props, option) => <NonceFormOption nonce={option} {...props} />}
-      disableClearable
-      onClose={() => {
-        setPopper({ anchorEl: null, open: false })
-      }}
-      onOpen={(e) => {
-        setPopper({ anchorEl: e.currentTarget, open: true })
-      }}
-      PopperComponent={(props) => (
-        <Backdrop open={popper.open}>
-          <Popper anchorEl={popper.anchorEl} {...props} />
-        </Backdrop>
-      )}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          name={name}
-          onBlur={onBlur}
-          inputRef={ref}
-          type="number"
-          autoComplete="off"
-          error={!!fieldState.error}
-          label={label}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: !readonly &&
-              recommendedNonce !== undefined &&
-              recommendedNonce !== params.inputProps.value && (
-                <InputAdornment position="end">
-                  <Tooltip title="Reset to recommended nonce">
-                    <IconButton onClick={onResetNonce} size="small" color="primary">
-                      <RotateLeftIcon />
-                    </IconButton>
-                  </Tooltip>
-                </InputAdornment>
-              ),
-            readOnly: readonly,
-          }}
-          InputLabelProps={{
-            ...params.InputLabelProps,
-            shrink: true,
-          }}
-        />
-      )}
-    />
+    <>
+      <Backdrop open={backdrop} />
+      <Autocomplete
+        value={value}
+        freeSolo
+        // On option select or free text entry
+        onInputChange={(_, value) => {
+          onChange(value ? Number(value) : '')
+        }}
+        options={options}
+        disabled={nonce == null || readonly}
+        getOptionLabel={(option) => option.toString()}
+        renderOption={(props, option) => <NonceFormOption nonce={option} {...props} />}
+        disableClearable
+        onClose={() => {
+          setBackdrop(false)
+        }}
+        onOpen={(e) => {
+          setBackdrop(true)
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            name={name}
+            onBlur={onBlur}
+            inputRef={ref}
+            type="number"
+            autoComplete="off"
+            error={!!fieldState.error}
+            label={label}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: !readonly &&
+                recommendedNonce !== undefined &&
+                recommendedNonce !== params.inputProps.value && (
+                  <InputAdornment position="end">
+                    <Tooltip title="Reset to recommended nonce">
+                      <IconButton onClick={onResetNonce} size="small" color="primary">
+                        <RotateLeftIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                ),
+              readOnly: readonly,
+            }}
+            InputLabelProps={{
+              ...params.InputLabelProps,
+              shrink: true,
+            }}
+          />
+        )}
+      />
+    </>
   )
 }
 
