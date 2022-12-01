@@ -1,23 +1,26 @@
 name: 'CLA Assistant'
-
 on:
   issue_comment:
-
-  pull_request:
+    types: [created]
+  pull_request_target:
+    types: [opened, closed, synchronize]
 
 jobs:
   CLAssistant:
     runs-on: ubuntu-latest
     steps:
       - name: 'CLA Assistant'
-        if: github.event_name == 'pull_request' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA' || github.event.comment.body == 'recheckcla'
+        if: github.base_ref != 'main' && ((github.event.comment.body == 'recheckcla' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target')
+        # Alpha Release
         uses: gnosis/github-action@master
+        # GitHub token, automatically provided to the action
+        # (No need to define this secret in the repo settings)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           path-to-signatures: 'signatures/version1/cla.json'
           path-to-cla-document: 'https://safe.global/cla/'
           branch: 'cla-signatures'
-          allowlist: lukasschor,mikheevm,rmeissner,germartinez,Uxio0,dasanra,francovenica,tschubotz,luarx,bot*,katspaugh,DaniSomoza,iamacook,yagopv,usame-algan,schmanu,DiogoSoaress,JagoFigueroa
+          allowlist: lukasschor,mikheevm,rmeissner,germartinez,davidalbela,Uxio0,dasanra,francovenica,tschubotz,luarx,giacomolicari,gnosis-info,bot*,DaniSomoza,iamacook,yagopv,usame-algan,schmanu,DiogoSoaress,JagoFigueroa
           empty-commit-flag: false
           blockchain-storage-flag: false
