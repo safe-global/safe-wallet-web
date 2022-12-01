@@ -10,7 +10,7 @@ import { Errors, logError } from '@/services/exceptions'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createRemoveGuardTx } from '@/services/tx/txSender'
 
-export const ReviewRemoveGuard = ({ data, onSubmit }: { data: RemoveGuardData; onSubmit: (txId: string) => void }) => {
+export const ReviewRemoveGuard = ({ data, onSubmit }: { data: RemoveGuardData; onSubmit: (txId?: string) => void }) => {
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createRemoveGuardTx()
   }, [])
@@ -21,7 +21,7 @@ export const ReviewRemoveGuard = ({ data, onSubmit }: { data: RemoveGuardData; o
     }
   }, [safeTxError])
 
-  const onFormSubmit = (txId: string) => {
+  const onFormSubmit = (txId?: string) => {
     trackEvent(SETTINGS_EVENTS.MODULES.REMOVE_GUARD)
 
     onSubmit(txId)

@@ -52,9 +52,9 @@ const ReviewSafeAppsTx = ({
     return getDecodedData(chainId, safeTx.data.data)
   }, [safeTx, chainId])
 
-  const handleSubmit = (txId: string) => {
+  const handleSubmit = (txId?: string) => {
     trackSafeAppTxCount(Number(appId))
-    dispatchSafeAppsTx(txId, requestId)
+    dispatchSafeAppsTx(requestId, txId)
   }
 
   const origin = useMemo(() => getTxOrigin(app), [app])

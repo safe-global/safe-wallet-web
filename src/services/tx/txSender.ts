@@ -263,20 +263,21 @@ export const dispatchTxSigning = async (
 /**
  * On-Chain sign a transaction
  */
-export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: Web3Provider, txId: string) => {
+export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: Web3Provider, txId?: string) => {
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
+  const eventParams = txId ? { txId } : { groupKey: safeTxHash }
 
   try {
     // With the unchecked signer, the contract call resolves once the tx
     // has been submitted in the wallet not when it has been executed
     await sdkUnchecked.approveTransactionHash(safeTxHash)
   } catch (err) {
-    txDispatch(TxEvent.FAILED, { txId, error: err as Error })
+    txDispatch(TxEvent.FAILED, { ...eventParams, error: err as Error })
     throw err
   }
 
-  txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, { txId })
+  txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, eventParams)
 
   // Until the on-chain signature is/has been executed, the safeTx is not
   // signed so we don't return it
@@ -289,40 +290,41 @@ export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
   provider: Web3Provider,
   txOptions: TransactionOptions,
-  txId: string,
+  txId?: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
+  const eventParams = txId ? { txId } : { groupKey: await sdkUnchecked.getTransactionHash(safeTx) }
 
-  txDispatch(TxEvent.EXECUTING, { txId })
+  txDispatch(TxEvent.EXECUTING, eventParams)
 
   // Execute the tx
   let result: TransactionResult | undefined
   try {
     result = await sdkUnchecked.executeTransaction(safeTx, txOptions)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+    txDispatch(TxEvent.FAILED, { ...eventParams, error: error as Error })
     throw error
   }
 
-  txDispatch(TxEvent.PROCESSING, { txId, txHash: result.hash })
+  txDispatch(TxEvent.PROCESSING, { ...eventParams, txHash: result.hash })
 
   // Asynchronously watch the tx to be mined/validated
   result.transactionResponse
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, { txId, receipt, error: new Error('Transaction reverted by EVM') })
+        txDispatch(TxEvent.REVERTED, { ...eventParams, receipt, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, { txId, receipt })
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, receipt })
       }
     })
     .catch((err) => {
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txDispatch(TxEvent.PROCESSED, { txId, receipt: error.receipt })
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, receipt: error.receipt })
       } else {
-        txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+        txDispatch(TxEvent.FAILED, { ...eventParams, error: error as Error })
       }
     })
 
@@ -450,6 +452,6 @@ export const dispatchSpendingLimitTxExecution = async (
   return result?.hash
 }
 
-export const dispatchSafeAppsTx = (txId: string, safeAppRequestId: RequestId) => {
-  txDispatch(TxEvent.SAFE_APPS_REQUEST, { txId, safeAppRequestId })
+export const dispatchSafeAppsTx = (safeAppRequestId: RequestId, txId?: string) => {
+  txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, txId })
 }
