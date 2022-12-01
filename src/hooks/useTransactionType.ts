@@ -67,7 +67,7 @@ export const useTransactionType = (tx: TransactionSummary): TxType => {
         if (isModuleExecutionInfo(tx.executionInfo)) {
           return {
             icon: toAddress?.logoUri || '/images/transactions/settings.svg',
-            text: toAddress?.name || '',
+            text: toAddress?.name || 'Contract interaction',
           }
         }
 
