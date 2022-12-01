@@ -502,6 +502,16 @@ const initTheme = (darkMode: boolean) => {
           }),
         },
       },
+      MuiDrawer: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            zIndex: theme.zIndex.snackbar,
+          }),
+          paper: {
+            borderRadius: 0,
+          },
+        },
+      },
     },
   })
 }

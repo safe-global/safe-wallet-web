@@ -15,21 +15,23 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   }
 
   return (
-    <>
+    <div className={css.wrapper}>
       <header className={css.header}>
         <Header onMenuToggle={toggleSidebar} />
       </header>
 
-      <SideDrawer isOpen={isSidebarOpen} onToggle={setSidebarOpen} />
+      <div className={css.container}>
+        <SideDrawer isOpen={isSidebarOpen} onToggle={setSidebarOpen} />
 
-      <div className={classnames(css.main, !isSidebarOpen && css.mainNoSidebar)}>
-        <div className={css.content}>
-          <SafeLoadingError>{children}</SafeLoadingError>
+        <div className={classnames(css.main, !isSidebarOpen && css.mainNoSidebar)}>
+          <div className={css.content}>
+            <SafeLoadingError>{children}</SafeLoadingError>
+          </div>
+
+          <Footer />
         </div>
-
-        <Footer />
       </div>
-    </>
+    </div>
   )
 }
 

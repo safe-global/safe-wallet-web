@@ -1,6 +1,6 @@
 .banner {
-  position: fixed;
-  z-index: 10000;
+  position: relative;
+  z-index: var(--onboard-modal-z-index);
   top: 0;
   left: 0;
   right: 0;

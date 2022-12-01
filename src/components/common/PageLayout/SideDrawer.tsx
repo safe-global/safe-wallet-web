@@ -43,12 +43,13 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   return (
     <>
       <Drawer
+        className={css.drawer}
         variant={isSmallScreen ? 'temporary' : 'persistent'}
         anchor="left"
         open={isOpen}
         onClose={() => onToggle(false)}
       >
-        <aside>
+        <aside className={css.sidebar}>
           <Sidebar />
         </aside>
       </Drawer>
