@@ -13,6 +13,18 @@ import { SafeAppsTag, SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { OpenInNew } from '@mui/icons-material'
 import NetworkError from '@/public/images/common/network-error.svg'
+import useChainId from '@/hooks/useChainId'
+import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
+
+// Prevent `GovernanceSection` hooks from needlessly being called
+const GovernanceSectionWrapper = () => {
+  const chainId = useChainId()
+  if (!getSafeTokenAddress(chainId)) {
+    return null
+  }
+
+  return <GovernanceSection />
+}
 
 const GovernanceSection = () => {
   const isDarkMode = useDarkMode()
@@ -104,4 +116,4 @@ const GovernanceSection = () => {
   )
 }
 
-export default GovernanceSection
+export default GovernanceSectionWrapper
