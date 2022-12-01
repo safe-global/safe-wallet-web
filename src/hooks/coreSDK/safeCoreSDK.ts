@@ -1,15 +1,15 @@
-import { type EIP1193Provider } from '@web3-onboard/core'
-import Safe from '@gnosis.pm/safe-core-sdk'
-import { ethers } from 'ethers'
-import { Web3Provider } from '@ethersproject/providers'
-import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
-import semverSatisfies from 'semver/functions/satisfies'
 import chains from '@/config/chains'
 import { getWeb3 } from '@/hooks/wallets/web3'
 import ExternalStore from '@/services/ExternalStore'
-import type { SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
+import { Web3Provider } from '@ethersproject/providers'
+import Safe from '@safe-global/safe-core-sdk'
+import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
+import EthersAdapter from '@safe-global/safe-ethers-lib'
+import { type EIP1193Provider } from '@web3-onboard/core'
+import { ethers } from 'ethers'
+import semverSatisfies from 'semver/functions/satisfies'
 
-const isLegacyVersion = (safeVersion: string): boolean => {
+export const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
   return semverSatisfies(safeVersion, LEGACY_VERSION)
 }
@@ -27,7 +27,7 @@ export const createEthersAdapter = (provider = getWeb3()) => {
   const signer = provider.getSigner(0)
   return new EthersAdapter({
     ethers,
-    signer,
+    signerOrProvider: signer,
   })
 }
 

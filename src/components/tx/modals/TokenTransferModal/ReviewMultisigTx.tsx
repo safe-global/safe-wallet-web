@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react'
 import { Box, Typography } from '@mui/material'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'

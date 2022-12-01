@@ -11,7 +11,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
     name: Deploy to dev/staging
+
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.8.0
@@ -19,6 +23,18 @@ jobs:
           access_token: ${{ github.token }}
 
       - uses: actions/checkout@v3
+
+      # Post a PR comment before deploying
+      - name: Post a comment while building
+        if: github.event.number
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: praul
+          message: |
+            ## Branch preview
+            ⏳ Deploying a preview site...
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
 
       - name: Install Node modules
         run: yarn install --immutable
@@ -62,19 +78,33 @@ jobs:
           BUCKET: s3://${{ secrets.AWS_DEVELOPMENT_BUCKET_NAME }}
         run: bash ./scripts/github/s3_upload.sh
 
-      # PRs
+      ### PRs ###
+
+      # Extract branch name
+      - name: Extract branch name
+        shell: bash
+        ## Cut off "refs/heads/" and replace slashes with dashes, e.g. "refs/heads/features/hello" -> "features-hello"
+        run: echo "##[set-output name=branch;]$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///' | sed 's/\//-/g')"
+        id: extract_branch
+
+      # Deploy to S3
       - name: Deploy PR branch
-        if: github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
+        if: github.event.number
         env:
-          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/pr${{ github.event.number }}
+          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/${{ steps.extract_branch.outputs.branch }}
         run: bash ./scripts/github/s3_upload.sh
 
-      - name: 'Post the deployment links in the PR'
-        if: success() && github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
-        uses: mshick/add-pr-comment@v1
+      # Comnment
+      - name: Post a deployment link in the PR
+        if: always() && github.event.number
+        uses: mshick/add-pr-comment@v2
         with:
+          message-id: praul
           message: |
             ## Branch preview
-            https://pr${{ github.event.number }}--webcore.review-react-br.5afe.dev
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
+            ✅  Deploy successful!
+
+            https://${{ steps.extract_branch.outputs.branch }}--webcore.review-web-core.5afe.dev
+          message-failure: |
+            ## Branch preview
+            ❌  Deploy failed!

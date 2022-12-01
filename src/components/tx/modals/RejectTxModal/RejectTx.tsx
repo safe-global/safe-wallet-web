@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { Typography } from '@mui/material'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import { createRejectTx } from '@/services/tx/txSender'
 import useAsync from '@/hooks/useAsync'
