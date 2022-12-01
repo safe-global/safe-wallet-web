@@ -1,6 +1,6 @@
 import { JsonRpcProvider, type TransactionResponse, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { checkSafeCreationTx, handleSafeCreationError } from '@/components/create-safe/logic'
@@ -64,8 +64,15 @@ describe('checkSafeCreationTx', () => {
     expect(result).toBe(SafeCreationStatus.REVERTED)
   })
 
-  it('returns TIMEOUT if transaction couldnt be found within the timout limit', async () => {
-    waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error()))
+  it('returns TIMEOUT if transaction couldnt be found within the timeout limit', async () => {
+    const mockEthersError = {
+      ...new Error(),
+      receipt: {
+        status: 1,
+      },
+    }
+
+    waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
 
     const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
 
@@ -177,5 +184,20 @@ describe('handleSafeCreationError', () => {
     const result = handleSafeCreationError(mockEthersError)
 
     expect(result).toEqual(SafeCreationStatus.TIMEOUT)
+  })
+
+  it('returns REVERTED if the tx failed', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: ErrorCode.UNKNOWN_ERROR,
+      reason: '' as EthersTxReplacedReason,
+      receipt: {
+        status: 0,
+      } as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.REVERTED)
   })
 })

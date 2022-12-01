@@ -1,9 +1,10 @@
-import type { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
-import { OperationType } from '@gnosis.pm/safe-core-sdk-types'
+import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import { OperationType } from '@safe-global/safe-core-sdk-types'
 import type { ChainInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getFallbackHandlerContractInstance, getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 
+// TODO: Check if these are still needed
 export const CHANGE_MASTER_COPY_ABI = 'function changeMasterCopy(address _masterCopy)'
 export const CHANGE_FALLBACK_HANDLER_ABI = 'function setFallbackHandler(address handler)'
 

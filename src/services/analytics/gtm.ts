@@ -19,6 +19,8 @@ import {
 import type { AnalyticsEvent, EventLabel, SafeAppSDKEvent } from './types'
 import { EventType } from './types'
 import { SAFE_APPS_SDK_CATEGORY } from './events'
+import { getAbTest } from '../tracking/abTesting'
+import type { AbTest } from '../tracking/abTesting'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
@@ -70,6 +72,7 @@ export const gtmClear = TagManager.disable
 type GtmEvent = {
   event: EventType
   chainId: string
+  abTest?: AbTest
 }
 
 type ActionGtmEvent = GtmEvent & {
@@ -104,6 +107,12 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
     gtmEvent.eventLabel = eventData.label
   }
 
+  const abTest = getAbTest()
+
+  if (abTest) {
+    gtmEvent.abTest = abTest
+  }
+
   gtmSend(gtmEvent)
 }
 
@@ -118,13 +127,22 @@ export const gtmTrackPageview = (pagePath: string): void => {
   gtmSend(gtmEvent)
 }
 
+export const normalizeAppName = (appName?: string): string => {
+  // App name is a URL
+  if (appName?.startsWith('http')) {
+    // Strip search query and hash
+    return appName.split('?')[0].split('#')[0]
+  }
+  return appName || ''
+}
+
 export const gtmTrackSafeApp = (eventData: AnalyticsEvent, appName?: string, sdkEventData?: SafeAppSDKEvent): void => {
   const safeAppGtmEvent: SafeAppGtmEvent = {
     event: EventType.SAFE_APP,
     chainId: _chainId,
     eventCategory: eventData.category,
     eventAction: eventData.action,
-    safeAppName: appName || '',
+    safeAppName: normalizeAppName(appName),
     safeAppEthMethod: '',
     safeAppMethod: '',
     safeAppSDKVersion: '',

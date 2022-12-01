@@ -72,8 +72,8 @@
   --onboard-border-radius-3: 8px;
 
   /* Z-index */
-  --onboard-modal-z-index: 1201;
-  --onboard-account-select-modal-z-index: 1201;
+  --onboard-modal-z-index: 1301;
+  --onboard-account-select-modal-z-index: 1301;
 }
 
 #walletconnect-qrcode-modal {

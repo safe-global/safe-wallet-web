@@ -31,6 +31,8 @@ import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
+import useABTesting from '@/services/tracking/useABTesting'
+import { AbTest } from '@/services/tracking/abTesting'
 import PsaBanner from '@/components/common/PsaBanner'
 import useSafeMessageNotifications from '@/hooks/useSafeMessageNotifications'
 import useSafeMessagePendingStatuses from '@/hooks/useSafeMessagePendingStatuses'
@@ -54,6 +56,7 @@ const InitApp = (): null => {
   useSafeMessagePendingStatuses()
   useTxTracking()
   useBeamer()
+  useABTesting(AbTest.SAFE_CREATION)
 
   return null
 }

@@ -1,6 +1,6 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import type Safe from '@gnosis.pm/safe-core-sdk'
-import { type TransactionResult } from '@gnosis.pm/safe-core-sdk-types'
+import type Safe from '@safe-global/safe-core-sdk'
+import { type TransactionResult } from '@safe-global/safe-core-sdk-types'
 import { getTransactionDetails, postSafeGasEstimation } from '@gnosis.pm/safe-react-gateway-sdk'
 import extractTxInfo from '../extractTxInfo'
 import proposeTx from '../proposeTransaction'
@@ -62,6 +62,7 @@ const mockSafeSDK = {
   getChainId: jest.fn(() => Promise.resolve(4)),
   getAddress: jest.fn(() => '0x0000000000000000000000000000000000000123'),
   getTransactionHash: jest.fn(() => Promise.resolve('0x1234567890')),
+  getContractVersion: jest.fn(() => Promise.resolve('1.1.1')),
 } as unknown as Safe
 
 describe('txSender', () => {
