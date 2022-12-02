@@ -18,7 +18,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_ASSISTANT_ACCESS_TOKEN }}
         with:
-          path-to-document: 'https://safe.global/cla/'
+          path-to-document: 'https://github.com/safe-global/web-core/blob/dev/CLA.md'
           branch: 'cla-signatures'
           allowlist: lukasschor,mikheevm,rmeissner,germartinez,Uxio0,dasanra,francovenica,tschubotz,luarx,gnosis-info,bot*,DaniSomoza,iamacook,yagopv,usame-algan,schmanu,DiogoSoaress,JagoFigueroa
           lock-pullrequest-aftermerge: true
