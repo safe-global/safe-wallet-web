@@ -64,12 +64,17 @@ const NewTxModal = ({
       )}
 
       {tokenModalOpen && (
-        <TokenTransferModal onClose={onClose} initialData={[{ [SendAssetsField.recipient]: recipient }, { txNonce }]} />
+        <TokenTransferModal
+          onClose={onClose}
+          initialData={[{ [SendAssetsField.recipient]: recipient, disableSpendingLimit: isReplacement }, { txNonce }]}
+        />
       )}
 
       {nftsModalOpen && <NftTransferModal onClose={onClose} initialData={[{ recipient }, { txNonce }]} />}
 
-      {rejectModalOpen && txNonce && <RejectTxModal onClose={onClose} initialData={[txNonce]} />}
+      {rejectModalOpen && typeof txNonce === 'number' ? (
+        <RejectTxModal onClose={onClose} initialData={[txNonce]} />
+      ) : null}
     </>
   )
 }
