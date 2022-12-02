@@ -21,3 +21,4 @@ jobs:
           path-to-document: 'https://safe.global/cla/'
           branch: 'cla-signatures'
           allowlist: lukasschor,mikheevm,rmeissner,germartinez,Uxio0,dasanra,francovenica,tschubotz,luarx,gnosis-info,bot*,DaniSomoza,iamacook,yagopv,usame-algan,schmanu,DiogoSoaress,JagoFigueroa
+          lock-pullrequest-aftermerge: true
