@@ -79,7 +79,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
   const options = useMemo(() => {
     return queuedTxs
       .map((tx) => (isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined))
-      .filter(Boolean)
+      .filter((nonce) => nonce !== undefined)
   }, [queuedTxs])
 
   // Warn about a higher nonce

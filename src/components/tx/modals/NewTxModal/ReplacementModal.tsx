@@ -18,6 +18,8 @@ import RocketIcon from '@/public/images/transactions/rocket.svg'
 import CheckIcon from '@mui/icons-material/Check'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { SendTokensButton, SendNFTsButton } from './TxButton'
+import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
+import { isCustomTxInfo } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
 
@@ -69,6 +71,11 @@ const ReplacementModal = ({
   onNFTModalOpen: () => void
   onRejectModalOpen: () => void
 }) => {
+  const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
+  const canCancel = !queuedTxsByNonce?.some(
+    (item) => isCustomTxInfo(item.transaction.txInfo) && item.transaction.txInfo.isCancellation,
+  )
+
   return (
     <ModalDialog open={open} dialogTitle={`Replace transaction with nonce ${txNonce}`} onClose={onClose}>
       <DialogContent className={css.container}>
@@ -127,9 +134,23 @@ const ReplacementModal = ({
             alignItems="center"
             flexDirection={flexDirection}
           >
-            <Button onClick={onRejectModalOpen} variant="outlined" fullWidth sx={{ mb: 1, ...btnWidth }}>
-              Rejection transaction
-            </Button>
+            <Tooltip
+              arrow
+              placement="top"
+              title={canCancel ? '' : `Transaction with nonce ${txNonce} already has a reject transaction`}
+            >
+              <span>
+                <Button
+                  onClick={onRejectModalOpen}
+                  variant="outlined"
+                  fullWidth
+                  sx={{ mb: 1, ...btnWidth }}
+                  disabled={!canCancel}
+                >
+                  Rejection transaction
+                </Button>
+              </span>
+            </Tooltip>
 
             <div>
               <Typography variant="caption" display="flex" alignItems="center">

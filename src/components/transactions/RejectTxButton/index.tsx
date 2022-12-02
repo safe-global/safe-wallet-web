@@ -3,8 +3,7 @@ import { Button, Tooltip, SvgIcon } from '@mui/material'
 
 import type { SyntheticEvent, ReactElement } from 'react'
 import { useState, Suspense } from 'react'
-import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
-import { isCustomTxInfo, isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import dynamic from 'next/dynamic'
 import useIsPending from '@/hooks/useIsPending'
 import IconButton from '@mui/material/IconButton'
@@ -25,10 +24,6 @@ const RejectTxButton = ({
   const [open, setOpen] = useState<boolean>(false)
   const isSafeOwner = useIsSafeOwner()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
-  const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
-  const canCancel = !queuedTxsByNonce?.some(
-    (item) => isCustomTxInfo(item.transaction.txInfo) && item.transaction.txInfo.isCancellation,
-  )
   const isPending = useIsPending(txSummary.id)
 
   const isDisabled = isPending || !isSafeOwner
@@ -37,8 +32,6 @@ const RejectTxButton = ({
     e.stopPropagation()
     setOpen(true)
   }
-
-  if (!canCancel) return null
 
   return (
     <>
