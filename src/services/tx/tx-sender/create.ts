@@ -7,6 +7,7 @@ import type { MetaTransactionData, SafeTransaction, SafeTransactionDataPartial }
 import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import extractTxInfo from '../extractTxInfo'
 import { getAndValidateSafeSDK } from './sdk'
+import type Safe from '@safe-global/safe-core-sdk'
 
 const estimateSafeTxGas = async (
   chainId: string,

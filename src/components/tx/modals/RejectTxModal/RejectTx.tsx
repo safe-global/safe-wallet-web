@@ -4,7 +4,7 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
-import { createRejectTx } from '@/services/tx/txSender'
+import { createRejectTx } from '@/services/tx/tx-sender'
 import useAsync from '@/hooks/useAsync'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 

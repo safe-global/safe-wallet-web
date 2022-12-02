@@ -6,7 +6,7 @@ import * as useWallet from '@/hooks/wallets/useWallet'
 import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { EIP1193Provider } from '@web3-onboard/core'
 import { act } from '@testing-library/react'
-import type Safe from '@gnosis.pm/safe-core-sdk'
+import type Safe from '@safe-global/safe-core-sdk'
 
 describe('useInitSafeCoreSDK hook', () => {
   const mockSafeInfo = {

@@ -8,7 +8,7 @@ import {
   dispatchTxSigning,
   createTx,
   dispatchOnChainSigning,
-} from '@/services/tx/txSender'
+} from '@/services/tx/tx-sender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'

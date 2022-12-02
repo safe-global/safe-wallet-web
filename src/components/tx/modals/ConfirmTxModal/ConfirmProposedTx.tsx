@@ -4,7 +4,7 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useChainId } from '@/hooks/useChainId'
-import { createExistingTx } from '@/services/tx/txSender'
+import { createExistingTx } from '@/services/tx/tx-sender'
 import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'

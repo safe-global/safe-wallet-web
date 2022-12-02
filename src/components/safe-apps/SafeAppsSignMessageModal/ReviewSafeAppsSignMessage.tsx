@@ -17,10 +17,8 @@ import type { SafeAppsSignMessageParams } from '../SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
-import { createTx } from '@/services/tx/txSender'
+import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import { getDecodedMessage } from '../utils'
-import { dispatchSafeAppsTx } from '@/services/tx/txSender'
-import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 
 type ReviewSafeAppsSignMessageProps = {
   safeAppsSignMessage: SafeAppsSignMessageParams
@@ -30,7 +28,6 @@ const ReviewSafeAppsSignMessage = ({
   safeAppsSignMessage: { message, method, requestId },
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
   const chainId = useChainId()
-  const safeSDK = useSafeSDK()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
@@ -47,8 +44,6 @@ const ReviewSafeAppsSignMessage = ({
   }, [isTextMessage, isTypedMessage, message])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
-    if (!safeSDK) return
-
     let txData
 
     if (isTextMessage) {
@@ -68,17 +63,13 @@ const ReviewSafeAppsSignMessage = ({
       ])
     }
 
-    return createTx(
-      {
-        to: signMessageAddress,
-        value: '0',
-        data: txData || '0x',
-        operation: OperationType.DelegateCall,
-      },
-      undefined,
-      safeSDK,
-    )
-  }, [message, safeSDK])
+    return createTx({
+      to: signMessageAddress,
+      value: '0',
+      data: txData || '0x',
+      operation: OperationType.DelegateCall,
+    })
+  }, [message])
 
   const handleSubmit = (txId: string) => {
     dispatchSafeAppsTx(txId, requestId)
