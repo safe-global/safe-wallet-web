@@ -20,5 +20,6 @@ jobs:
         with:
           path-to-document: 'https://github.com/safe-global/web-core/blob/dev/CLA.md'
           branch: 'cla-signatures'
+          path-to-signatures: 'signatures/version1/cla.json'
           allowlist: lukasschor,mikheevm,rmeissner,germartinez,Uxio0,dasanra,francovenica,tschubotz,luarx,gnosis-info,bot*,DaniSomoza,iamacook,yagopv,usame-algan,schmanu,DiogoSoaress,JagoFigueroa
           lock-pullrequest-aftermerge: true
