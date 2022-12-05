@@ -4,6 +4,7 @@ import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useGasLimitHook from '@/hooks/useGasLimit'
 import * as txSenderDispatch from '@/services/tx/tx-sender/dispatch'
+import * as txSender from '@/hooks/useTxSender'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as walletUtils from '@/hooks/wallets/wallets'
 import * as web3 from '@/hooks/wallets/web3'
@@ -16,6 +17,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 import * as wrongChain from '@/hooks/useIsWrongChain'
 import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
+import type { NullableTxSenderFunctions } from '@/hooks/useTxSender'
 
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
@@ -391,7 +393,15 @@ describe('SignOrExecuteForm', () => {
   })
 
   it('executes a transaction', async () => {
-    const executionSpy = jest.spyOn(txSenderDispatch, 'dispatchTxExecution')
+    const executionSpy = jest.fn()
+    jest.spyOn(txSender, 'default').mockImplementation(
+      () =>
+        ({
+          dispatchTxProposal: jest.fn(() => Promise.resolve({})),
+          dispatchTxExecution: executionSpy,
+        } as unknown as NullableTxSenderFunctions),
+    )
+
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
@@ -406,8 +416,17 @@ describe('SignOrExecuteForm', () => {
 
   it('signs a transactions', async () => {
     const mockTx = createSafeTx()
-    const signSpy = jest.spyOn(txSenderDispatch, 'dispatchTxSigning').mockReturnValue(Promise.resolve(mockTx))
-    const proposeSpy = jest.spyOn(txSenderDispatch, 'dispatchTxProposal')
+
+    const signSpy = jest.fn(() => Promise.resolve({}))
+    const proposeSpy = jest.fn(() => Promise.resolve({}))
+    jest.spyOn(txSender, 'default').mockImplementation(
+      () =>
+        ({
+          dispatchTxSigning: signSpy,
+          dispatchTxProposal: proposeSpy,
+        } as unknown as NullableTxSenderFunctions),
+    )
+
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(false))
 
     const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
@@ -424,8 +443,17 @@ describe('SignOrExecuteForm', () => {
 
   it('smart contract wallets propose and sign new transactions on-chain', async () => {
     const mockTx = createSafeTx()
-    const onChainSignSpy = jest.spyOn(txSenderDispatch, 'dispatchOnChainSigning')
-    const proposeSpy = jest.spyOn(txSenderDispatch, 'dispatchTxProposal')
+
+    const onChainSignSpy = jest.fn(() => Promise.resolve({}))
+    const proposeSpy = jest.fn(() => Promise.resolve({}))
+    jest.spyOn(txSender, 'default').mockImplementation(
+      () =>
+        ({
+          dispatchOnChainSigning: onChainSignSpy,
+          dispatchTxProposal: proposeSpy,
+        } as unknown as NullableTxSenderFunctions),
+    )
+
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
 
     const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
@@ -442,8 +470,17 @@ describe('SignOrExecuteForm', () => {
 
   it("smart contract wallets dont't propose, but sign existing transactions on-chain", async () => {
     const mockTx = createSafeTx()
-    const onChainSignSpy = jest.spyOn(txSenderDispatch, 'dispatchOnChainSigning')
-    const proposeSpy = jest.spyOn(txSenderDispatch, 'dispatchTxProposal')
+
+    const onChainSignSpy = jest.fn(() => Promise.resolve({}))
+    const proposeSpy = jest.fn(() => Promise.resolve({}))
+    jest.spyOn(txSender, 'default').mockImplementation(
+      () =>
+        ({
+          dispatchOnChainSigning: onChainSignSpy,
+          dispatchTxProposal: proposeSpy,
+        } as unknown as NullableTxSenderFunctions),
+    )
+
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
 
     const result = render(<SignOrExecuteForm txId="0x123" onSubmit={jest.fn} safeTx={mockTx} />)
