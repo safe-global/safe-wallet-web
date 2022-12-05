@@ -1,12 +1,14 @@
+import { useState } from 'react'
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import { useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { getBalances, getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import type { AddressBookItem, RequestId } from '@gnosis.pm/safe-apps-sdk'
+import { getBalances, getTransactionDetails, getSafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { AddressBookItem, EIP712TypedData, RequestId, SafeSettings } from '@gnosis.pm/safe-apps-sdk'
 import { Methods } from '@gnosis.pm/safe-apps-sdk'
+import { gte } from 'semver'
 
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
@@ -36,6 +38,11 @@ import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
 import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
 import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
+import MsgModal from '@/components/safeMessages/MsgModal'
+import { safeMsgSubscribe, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
+import { useAppSelector } from '@/store'
+import { selectSafeMessages } from '@/store/safeMessagesSlice'
+import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 
 import css from './styles.module.css'
 
@@ -53,6 +60,8 @@ const IFRAME_SANDBOX_ALLOWED_FEATURES =
 const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
+  const [offChainSigning, setOffChainSigning] = useState(false)
+  const safeMessages = useAppSelector(selectSafeMessages)
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe, safeLoaded, safeAddress } = useSafeInfo()
   const addressBook = useAddressBook()
@@ -77,7 +86,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const appName = useMemo(() => (remoteApp ? remoteApp.name : appUrl), [appUrl, remoteApp])
   const communicator = useAppCommunicator(iframeRef, remoteApp || safeAppFromManifest, chain, {
     onConfirmTransactions: openTxModal,
-    onSignMessage: openSignMessageModal,
+    onSignMessage: (
+      message: string | EIP712TypedData,
+      requestId: string,
+      method: Methods.signMessage | Methods.signTypedMessage,
+    ) => {
+      openSignMessageModal(message, requestId, method, offChainSigning)
+    },
     onGetPermissions: getPermissions,
     onSetPermissions: setPermissionsRequest,
     onRequestAddressBook: (origin: string): AddressBookItem[] => {
@@ -115,6 +130,31 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         shortName,
         nativeCurrency,
         blockExplorerUriTemplate,
+      }
+    },
+    onSetSafeSettings: (settings: SafeSettings) => {
+      const EIP_1271_SUPPORTED_SAFE_VERSION = '1.0.0'
+
+      if (typeof settings.offChainSigning === 'boolean' && gte(safe.version, EIP_1271_SUPPORTED_SAFE_VERSION)) {
+        setOffChainSigning(settings.offChainSigning)
+      }
+
+      return true
+    },
+    onGetOffChainSignature: async (messageHash: string) => {
+      const safeMessage = safeMessages.data?.results
+        ?.filter(isSafeMessageListItem)
+        ?.find((item) => item.messageHash === messageHash)
+
+      if (safeMessage) {
+        return safeMessage.preparedSignature
+      }
+
+      try {
+        const { preparedSignature } = await getSafeMessage(chainId, messageHash)
+        return preparedSignature
+      } catch {
+        // ignore
       }
     },
   })
@@ -165,6 +205,21 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
 
     return unsubscribe
   }, [appName, chainId, closeSignMessageModal, closeTxModal, communicator, signMessageModalState, txModalState])
+
+  useEffect(() => {
+    const unsubFns = [SafeMsgEvent.PROPOSE, SafeMsgEvent.CONFIRM_PROPOSE].map((event) => {
+      return safeMsgSubscribe(event, (details) => {
+        const requestId = 'requestId' in details ? details.requestId : undefined
+        if (signMessageModalState.requestId === requestId) {
+          communicator?.send({ messageHash: details.messageHash }, requestId)
+        }
+      })
+    })
+
+    return () => {
+      unsubFns.forEach((unsub) => unsub())
+    }
+  }, [communicator, safe.threshold, signMessageModalState.requestId])
 
   const onSafeAppsModalClose = () => {
     if (txModalState.isOpen) {
@@ -254,20 +309,30 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
           />
         )}
 
-        {signMessageModalState.isOpen && (
-          <SafeAppsSignMessageModal
-            onClose={onSafeAppsModalClose}
-            initialData={[
-              {
-                app: safeAppFromManifest,
-                appId: remoteApp?.id,
-                requestId: signMessageModalState.requestId,
-                message: signMessageModalState.message,
-                method: signMessageModalState.method as Methods.signMessage | Methods.signTypedMessage,
-              },
-            ]}
-          />
-        )}
+        {signMessageModalState.isOpen &&
+          (signMessageModalState.offChain ? (
+            <MsgModal
+              onClose={onSafeAppsModalClose}
+              logoUri={remoteApp?.iconUrl || ''}
+              name={remoteApp?.name || ''}
+              message={signMessageModalState.message}
+              safeAppId={remoteApp?.id}
+              requestId={signMessageModalState.requestId}
+            />
+          ) : (
+            <SafeAppsSignMessageModal
+              onClose={onSafeAppsModalClose}
+              initialData={[
+                {
+                  app: safeAppFromManifest,
+                  appId: remoteApp?.id,
+                  requestId: signMessageModalState.requestId,
+                  message: signMessageModalState.message,
+                  method: signMessageModalState.method as Methods.signMessage | Methods.signTypedMessage,
+                },
+              ]}
+            />
+          ))}
 
         {permissionsRequest && (
           <PermissionsPrompt

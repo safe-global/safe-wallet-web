@@ -1,6 +1,7 @@
-import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
-import type { TypedDataDomain } from 'ethers'
+import { hashMessage } from 'ethers/lib/utils'
 import type { SafeInfo, SafeMessage, EIP712TypedData } from '@gnosis.pm/safe-react-gateway-sdk'
+
+import { hashTypedData } from '@/utils/web3'
 
 /**
  * Generates `SafeMessage` types for EIP-712
@@ -9,7 +10,7 @@ import type { SafeInfo, SafeMessage, EIP712TypedData } from '@gnosis.pm/safe-rea
  * @param message Message to sign
  * @returns `SafeMessage` types for signing
  */
-export const generateSafeMessageTypes = (safe: SafeInfo, message: string): EIP712TypedData => {
+export const generateSafeMessageTypes = (safe: SafeInfo, message: SafeMessage['message']): EIP712TypedData => {
   return {
     domain: {
       chainId: safe.chainId,
@@ -19,19 +20,12 @@ export const generateSafeMessageTypes = (safe: SafeInfo, message: string): EIP71
       SafeMessage: [{ name: 'message', type: 'bytes' }],
     },
     message: {
-      message,
+      message: typeof message === 'string' ? hashMessage(message) : hashTypedData(message),
     },
   }
 }
 
-export const getSafeMessageHash = (message: SafeMessage['message']): SafeMessage['messageHash'] => {
-  // EIP-191
-  if (typeof message === 'string') {
-    return hashMessage(message)
-  }
-
-  // EIP-712
-  // `ethers` doesn't require `EIP712Domain` and otherwise throws
-  const { EIP712Domain: _, ...types } = message.types
-  return _TypedDataEncoder.hash(message.domain as TypedDataDomain, types, message.message)
+export const generateSafeMessageHash = (safe: SafeInfo, message: SafeMessage['message']): string => {
+  const typedData = generateSafeMessageTypes(safe, message)
+  return hashTypedData(typedData)
 }

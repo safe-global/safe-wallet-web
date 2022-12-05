@@ -1,7 +1,9 @@
-import { useState } from 'react'
-import { Paper, Grid, Typography, Button, Link } from '@mui/material'
+import InfoIcon from '@/public/images/notifications/info.svg'
+
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics'
+import { Paper, Grid, Typography, Tooltip, SvgIcon, Button } from '@mui/material'
+import { useState } from 'react'
 import ImportAllDialog from '../ImportAllDialog'
 
 const DataManagement = () => {
@@ -13,20 +15,23 @@ const DataManagement = () => {
         <Grid item sm={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
             Data import
+            <Tooltip
+              placement="top"
+              title="The imported data will overwrite all added Safes and all address book entries"
+            >
+              <span>
+                <SvgIcon
+                  component={InfoIcon}
+                  inheritViewBox
+                  fontSize="small"
+                  color="border"
+                  sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                />
+              </span>
+            </Tooltip>
           </Typography>
         </Grid>
-
-        <Grid item xs>
-          <Typography>
-            You can export your data from the{' '}
-            <Link target="_blank" href="https://gnosis-safe.io/app/export">
-              old app
-            </Link>
-            .
-          </Typography>
-
-          <Typography mb={3}>The imported data will overwrite all added Safes and all address book entries.</Typography>
-
+        <Grid item xs justifyContent="flex-end" display="flex">
           <Track {...SETTINGS_EVENTS.DATA.IMPORT_ALL_BUTTON}>
             <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>
               Import all data

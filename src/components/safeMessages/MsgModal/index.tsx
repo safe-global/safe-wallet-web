@@ -1,6 +1,9 @@
 import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon } from '@mui/material'
+import { useMemo } from 'react'
+import { getSafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 import ModalDialog, { ModalDialogTitle } from '@/components/common/ModalDialog'
 import SafeAppIcon from '@/components/safe-apps/SafeAppIcon'
@@ -9,6 +12,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import RequiredIcon from '@/public/images/messages/required.svg'
 import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { generateSafeMessageHash } from '@/utils/safe-messages'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 
@@ -18,15 +22,30 @@ type BaseProps = {
   onClose: () => void
 } & Pick<SafeMessage, 'logoUri' | 'name' | 'message'>
 
+// Custom Safe Apps do not have a `safeAppId`
 type ProposeProps = BaseProps & {
-  safeAppId: number
+  safeAppId?: number
   messageHash?: never
+  requestId: RequestId
 }
 
 // A proposed message does not return the `safeAppId` but the `logoUri` and `name` of the Safe App that proposed it
 type ConfirmProps = BaseProps & {
   safeAppId?: never
   messageHash: string
+  requestId?: RequestId
+}
+
+export const _isSafeMessageProposal = async (
+  chainId: string,
+  messageHash: SafeMessage['messageHash'],
+): Promise<boolean> => {
+  try {
+    await getSafeMessage(chainId, messageHash)
+    return false
+  } catch {
+    return true
+  }
 }
 
 const MsgModal = ({
@@ -36,14 +55,21 @@ const MsgModal = ({
   message,
   messageHash,
   safeAppId,
+  requestId,
 }: ProposeProps | ConfirmProps): ReactElement => {
   const { safe } = useSafeInfo()
 
-  const onSign = () => {
-    if (safeAppId) {
-      dispatchSafeMsgProposal(safe, message, safeAppId)
-    } else if (messageHash) {
-      dispatchSafeMsgConfirmation(safe, messageHash)
+  const hash = useMemo(() => {
+    return messageHash ?? generateSafeMessageHash(safe, message)
+  }, [messageHash, safe, message])
+
+  const onSign = async () => {
+    const shouldPropose = !messageHash ?? (await _isSafeMessageProposal(safe.chainId, hash))
+
+    if (requestId && shouldPropose) {
+      await dispatchSafeMsgProposal(safe, message, requestId, safeAppId)
+    } else {
+      await dispatchSafeMsgConfirmation(safe, message, requestId)
     }
 
     onClose()
@@ -80,14 +106,10 @@ const MsgModal = ({
           </Typography>
           <Typography fontWeight={700}>Message:</Typography>
           <Msg message={message} />
-          {messageHash && (
-            <>
-              <Typography fontWeight={700} mt={2}>
-                Hash:
-              </Typography>
-              <EthHashInfo address={messageHash} showAvatar={false} shortAddress={false} showCopyButton />
-            </>
-          )}
+          <Typography fontWeight={700} mt={2}>
+            Hash:
+          </Typography>
+          <EthHashInfo address={hash} showAvatar={false} shortAddress={false} showCopyButton />
         </DialogContent>
 
         <DialogActions>
