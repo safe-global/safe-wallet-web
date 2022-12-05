@@ -6,7 +6,7 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import useBalances from '@/hooks/useBalances'
 import useAsync from '@/hooks/useAsync'
-import { createTx } from '@/services/tx/tx-sender'
+import useTxSender from '@/hooks/useTxSender'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SendFromBlock from '../../SendFromBlock'
 import type { ReviewTokenTxProps } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
@@ -14,6 +14,7 @@ import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/R
 
 const ReviewMultisigTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement => {
   const { balances } = useBalances()
+  const { createTx } = useTxSender()
 
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const { decimals, address } = token?.tokenInfo || {}

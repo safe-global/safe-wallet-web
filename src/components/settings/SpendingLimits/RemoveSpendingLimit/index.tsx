@@ -2,7 +2,7 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { getSpendingLimitInterface, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import useChainId from '@/hooks/useChainId'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { createTx } from '@/services/tx/tx-sender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -22,6 +22,7 @@ export const RemoveSpendingLimit = ({
   data: SpendingLimitState
   onSubmit: (txId: string) => void
 }) => {
+  const { createTx } = useTxSender()
   const chainId = useChainId()
   const provider = useWeb3()
   const { balances } = useBalances()

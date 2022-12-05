@@ -4,7 +4,7 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
-import { createRejectTx } from '@/services/tx/tx-sender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 
@@ -14,6 +14,7 @@ type RejectTxProps = {
 }
 
 const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
+  const { createRejectTx } = useTxSender()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
 
   const [rejectTx, rejectError] = useAsync<SafeTransaction>(() => {

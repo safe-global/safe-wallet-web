@@ -17,7 +17,7 @@ import type { SafeAppsSignMessageParams } from '../SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
-import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
+import useTxSender from '@/hooks/useTxSender'
 import { getDecodedMessage } from '../utils'
 
 type ReviewSafeAppsSignMessageProps = {
@@ -28,6 +28,7 @@ const ReviewSafeAppsSignMessage = ({
   safeAppsSignMessage: { message, method, requestId },
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
   const chainId = useChainId()
+  const { createTx, dispatchSafeAppsTx } = useTxSender()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)

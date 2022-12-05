@@ -2,7 +2,7 @@ import type { NewSpendingLimitData } from '@/components/settings/SpendingLimits/
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import * as spendingLimit from '@/services/contracts/spendingLimitContracts'
-import * as txSender from '@/services/tx/tx-sender'
+import * as txSender from '@/services/tx/tx-sender/create'
 import * as spendingLimitParams from '@/services/tx/spendingLimitParams'
 import type Safe from '@safe-global/safe-core-sdk'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'

@@ -5,7 +5,7 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 import TxModal from '@/components/tx/TxModal'
 
-import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -43,6 +43,7 @@ const UpdateSafeDialog = () => {
 const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (txId: string) => void }) => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
+  const { createMultiSendCallOnlyTx } = useTxSender()
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!chain || !safeLoaded) return

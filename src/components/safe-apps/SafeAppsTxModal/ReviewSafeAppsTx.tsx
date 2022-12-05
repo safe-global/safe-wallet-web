@@ -14,11 +14,10 @@ import { generateDataRowValue } from '@/components/transactions/TxDetails/Summar
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
-import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
+import useTxSender from '@/hooks/useTxSender'
 import { getInteractionTitle } from '../utils'
 import type { SafeAppsTxParams } from '.'
 import { isEmptyHexData } from '@/utils/hex'
-import { dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
 
@@ -29,6 +28,7 @@ type ReviewSafeAppsTxProps = {
 const ReviewSafeAppsTx = ({
   safeAppsTx: { txs, requestId, params, appId, app },
 }: ReviewSafeAppsTxProps): ReactElement => {
+  const { createMultiSendCallOnlyTx, dispatchSafeAppsTx } = useTxSender()
   const chainId = useChainId()
   const chain = useCurrentChain()
 
@@ -44,7 +44,7 @@ const ReviewSafeAppsTx = ({
     }
 
     return tx
-  }, [txs])
+  }, [txs, createMultiSendCallOnlyTx])
 
   const [decodedData] = useAsync<DecodedDataResponse | undefined>(async () => {
     if (!safeTx || isEmptyHexData(safeTx.data.data)) return

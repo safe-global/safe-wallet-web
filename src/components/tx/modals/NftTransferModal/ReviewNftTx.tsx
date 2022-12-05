@@ -6,7 +6,7 @@ import SignOrExecuteForm from '../../SignOrExecuteForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useAsync from '@/hooks/useAsync'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
-import { createTx } from '@/services/tx/tx-sender'
+import useTxSender from '@/hooks/useTxSender'
 import { type NftTransferParams } from '.'
 import ImageFallback from '@/components/common/ImageFallback'
 import useSafeAddress from '@/hooks/useSafeAddress'
@@ -17,6 +17,7 @@ type ReviewNftTxProps = {
 }
 
 const ReviewNftTx = ({ params, onSubmit }: ReviewNftTxProps): ReactElement => {
+  const { createTx } = useTxSender()
   const safeAddress = useSafeAddress()
   const { token } = params
 
