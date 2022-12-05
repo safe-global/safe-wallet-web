@@ -1,5 +1,5 @@
 import useAsync from '@/hooks/useAsync'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { createRemoveModuleTx } from '@/services/tx/txSender'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { Typography } from '@mui/material'

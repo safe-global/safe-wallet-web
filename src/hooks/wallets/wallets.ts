@@ -24,7 +24,7 @@ import pairingModule, { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { EMPTY_DATA } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 
 export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',

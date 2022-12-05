@@ -46,9 +46,12 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   const awaitingExecution = isAwaitingExecution(txSummary.txStatus)
   const isUnsigned =
     isMultisigExecutionInfo(txSummary.executionInfo) && txSummary.executionInfo.confirmationsSubmitted === 0
+
+  // FIXME: remove "&& false" after https://github.com/safe-global/web-core/issues/1261 is fixed
   const isUntrusted =
     isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
-    txDetails.detailedExecutionInfo.trusted === false
+    txDetails.detailedExecutionInfo.trusted === false &&
+    false
 
   return (
     <>

@@ -7,6 +7,7 @@ import PairingDescription from '@/components/common/PairingDetails/PairingDescri
 import { StoreHydrator } from '@/store'
 import { AppProviders } from '@/pages/_app'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
+import css from './styles.module.css'
 
 const WRAPPER_ID = 'safe-mobile-qr-modal'
 const QR_CODE_SIZE = 200
@@ -56,7 +57,7 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
   return (
     <StoreHydrator>
       <AppProviders>
-        <Dialog open onClose={handleClose} disablePortal>
+        <Dialog open onClose={handleClose} disablePortal className={css.modal}>
           <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between' }}>
             {PAIRING_MODULE_LABEL}
             <IconButton

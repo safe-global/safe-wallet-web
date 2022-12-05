@@ -21,13 +21,13 @@ import {
   isTransactionListItem,
   isTxQueued,
 } from './transaction-guards'
-import type { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
-import { OperationType } from '@gnosis.pm/safe-core-sdk-types/dist/src/types'
+import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types/dist/src/types'
+import { OperationType } from '@safe-global/safe-core-sdk-types/dist/src/types'
 import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import { createExistingTx } from '@/services/tx/txSender'
 import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
-import type { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
+import type { TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
-import type { SafeTransaction, SafeSignature } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction, SafeSignature } from '@safe-global/safe-core-sdk-types'
 import { type SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import * as safeContracts from '@/services/contracts/safeContracts'

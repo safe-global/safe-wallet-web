@@ -125,7 +125,7 @@ const Overview = (): ReactElement => {
             </Grid>
 
             <Box mt={2} mb={4}>
-              <EthHashInfo showAvatar={false} address={safeAddress} shortAddress={false} />
+              <EthHashInfo showAvatar={false} address={safeAddress} shortAddress={false} showCopyButton hasExplorer />
             </Box>
 
             <Grid container>

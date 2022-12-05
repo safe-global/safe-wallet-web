@@ -46,6 +46,10 @@ type AppFrameProps = {
   allowedFeaturesList: string
 }
 
+// see sandbox mdn docs for more details https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
+const IFRAME_SANDBOX_ALLOWED_FEATURES =
+  'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms allow-downloads allow-orientation-lock'
+
 const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
@@ -150,7 +154,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         const { detailedExecutionInfo } = await getTransactionDetails(chainId, txId)
 
         if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
-          trackSafeAppEvent(SAFE_APPS_EVENTS.TRANSACTION_CONFIRMED, appName)
+          trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION, appName)
+
           communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, safeAppRequestId)
         }
 
@@ -170,7 +175,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       closeSignMessageModal()
     }
 
-    trackSafeAppEvent(SAFE_APPS_EVENTS.TRANSACTION_REJECTED, appName)
+    trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION_REJECTED, appName)
   }
 
   const onAcceptPermissionRequest = (origin: string, requestId: RequestId) => {
@@ -218,6 +223,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
           src={appUrl}
           title={safeAppFromManifest?.name}
           onLoad={onIframeLoad}
+          sandbox={IFRAME_SANDBOX_ALLOWED_FEATURES}
           allow={allowedFeaturesList}
           style={{
             display: appIsLoading ? 'none' : 'block',

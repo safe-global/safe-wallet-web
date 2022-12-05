@@ -1,6 +1,6 @@
 .card {
   border: 1px solid var(--color-border-light);
-  width: 300px; /* TODO: Remove when added to flow */
+  width: 100%;
 }
 
 .header {

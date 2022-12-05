@@ -94,7 +94,7 @@ export const OwnerRow = ({
           {index > 0 && (
             <>
               <IconButton onClick={() => remove?.(index)} size="small">
-                <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                <SvgIcon component={DeleteIcon} inheritViewBox />
               </IconButton>
             </>
           )}
