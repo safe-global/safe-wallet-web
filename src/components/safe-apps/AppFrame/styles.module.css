@@ -3,10 +3,6 @@
   height: calc(100vh - var(--header-height));
 }
 
-.widgetWrapper {
-  height: 100%;
-}
-
 .iframe {
   height: 100%;
   width: 100%;

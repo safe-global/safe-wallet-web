@@ -36,23 +36,18 @@ import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
 import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
 import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
+import AppIframe from './iframe'
 
 import css from './styles.module.css'
-import classnames from 'classnames'
 
 const UNKNOWN_APP_NAME = 'Unknown App'
 
-type AppFrameProps = {
+type AppFrameWrapperProps = {
   appUrl: string
   allowedFeaturesList: string
-  isWidget?: boolean
 }
 
-// see sandbox mdn docs for more details https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
-const IFRAME_SANDBOX_ALLOWED_FEATURES =
-  'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms allow-downloads allow-orientation-lock'
-
-const AppFrame = ({ appUrl, allowedFeaturesList, isWidget = false }: AppFrameProps): ReactElement => {
+const AppFrameWrapper = ({ appUrl, allowedFeaturesList }: AppFrameWrapperProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
@@ -68,7 +63,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, isWidget = false }: AppFramePro
     dismissQueueBar,
     transactions,
   } = useTransactionQueueBarState()
-  const queueBarVisible = !isWidget && transactions.results.length > 0 && !queueBarDismissed
+  const queueBarVisible = transactions.results.length > 0 && !queueBarDismissed
   const [remoteApp, , isBackendAppsLoading] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
@@ -204,7 +199,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, isWidget = false }: AppFramePro
         <title>Safe Apps - Viewer - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}</title>
       </Head>
 
-      <div className={classnames(css.wrapper, { [css.widgetWrapper]: isWidget })}>
+      <div className={css.wrapper}>
         {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
 
         {appIsLoading && (
@@ -218,20 +213,21 @@ const AppFrame = ({ appUrl, allowedFeaturesList, isWidget = false }: AppFramePro
           </div>
         )}
 
-        <iframe
-          className={css.iframe}
-          id={`iframe-${appUrl}`}
-          ref={iframeRef}
-          src={appUrl}
-          title={safeAppFromManifest?.name}
-          onLoad={onIframeLoad}
-          sandbox={IFRAME_SANDBOX_ALLOWED_FEATURES}
-          allow={allowedFeaturesList}
+        <div
           style={{
+            height: '100%',
             display: appIsLoading ? 'none' : 'block',
             paddingBottom: queueBarVisible ? TRANSACTION_BAR_HEIGHT : 0,
           }}
-        />
+        >
+          <AppIframe
+            appUrl={appUrl}
+            allowedFeaturesList={allowedFeaturesList}
+            iframeRef={iframeRef}
+            onLoad={onIframeLoad}
+            title={safeAppFromManifest?.name}
+          />
+        </div>
 
         <TransactionQueueBar
           expanded={queueBarExpanded}
@@ -286,4 +282,4 @@ const AppFrame = ({ appUrl, allowedFeaturesList, isWidget = false }: AppFramePro
   )
 }
 
-export default AppFrame
+export default AppFrameWrapper
