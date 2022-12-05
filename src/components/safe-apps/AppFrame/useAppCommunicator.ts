@@ -23,7 +23,7 @@ import type {
 } from '@gnosis.pm/safe-apps-sdk'
 import { Methods } from '@gnosis.pm/safe-apps-sdk'
 import { RPC_CALLS } from '@gnosis.pm/safe-apps-sdk/dist/src/eth/constants'
-import type { SafeSettings, OffChainSignMessageResponse } from '@gnosis.pm/safe-apps-sdk'
+import type { SafeSettings } from '@gnosis.pm/safe-apps-sdk'
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
@@ -138,8 +138,8 @@ const useAppCommunicator = (
     communicator?.on(Methods.rpcCall, async (msg) => {
       const params = msg.data.params as RPCPayload
 
-      if (RPC_CALLS.safe_setSettings) {
-        const settings = params.params[0] as OffChainSignMessageResponse
+      if (params.call === RPC_CALLS.safe_setSettings) {
+        const settings = params.params[0] as SafeSettings
         return handlers.onSetSafeSettings(settings)
       }
 

@@ -24,7 +24,7 @@ import { cookiesSlice } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
 import { spendingLimitSlice } from './spendingLimitsSlice'
 import { safeAppsSlice } from './safeAppsSlice'
-import { safeMessagesSlice } from './safeMessagesSlice'
+import { safeMessagesMiddleware, safeMessagesSlice } from './safeMessagesSlice'
 import { pendingSafeMessagesSlice } from './pendingSafeMessagesSlice'
 
 const rootReducer = combineReducers({
@@ -58,7 +58,13 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   pendingSafeMessagesSlice.name,
 ]
 
-const middleware = [persistState(persistedSlices), txHistoryMiddleware, txQueueMiddleware, addedSafesMiddleware]
+const middleware = [
+  persistState(persistedSlices),
+  txHistoryMiddleware,
+  txQueueMiddleware,
+  addedSafesMiddleware,
+  safeMessagesMiddleware,
+]
 
 export const getPersistedState = () => {
   return getPreloadedState(persistedSlices)

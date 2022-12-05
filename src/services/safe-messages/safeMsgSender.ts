@@ -38,7 +38,6 @@ export const dispatchSafeMsgProposal = async (
   })
 }
 
-// TODO: Refactor with above
 export const dispatchSafeMsgConfirmation = async (
   safe: SafeInfo,
   message: SafeMessage['message'],

@@ -64,7 +64,7 @@ const MsgModal = ({
   }, [messageHash, safe, message])
 
   const onSign = async () => {
-    const shouldPropose = !messageHash ?? (await _isSafeMessageProposal(safe.chainId, hash))
+    const shouldPropose = await _isSafeMessageProposal(safe.chainId, hash)
 
     if (requestId && shouldPropose) {
       await dispatchSafeMsgProposal(safe, message, requestId, safeAppId)
