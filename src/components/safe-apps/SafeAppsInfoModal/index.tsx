@@ -8,22 +8,31 @@ import LegalDisclaimer from './LegalDisclaimer'
 import AllowedFeaturesList from './AllowedFeaturesList'
 import type { AllowedFeatures, AllowedFeatureSelection } from '../types'
 import { PermissionStatus } from '../types'
+import UnknownAppWarning from './UnknownAppWarning'
+import { getOrigin } from '../utils'
 
 type SafeAppsInfoModalProps = {
   onCancel: () => void
-  onConfirm: (browserPermissions: BrowserPermission[]) => void
+  onConfirm: (shouldHide: boolean, browserPermissions: BrowserPermission[]) => void
   features: AllowedFeatures[]
+  appUrl: string
   isConsentAccepted?: boolean
   isPermissionsReviewCompleted: boolean
+  isSafeAppInDefaultList: boolean
+  isFirstTimeAccessingApp: boolean
 }
 
 const SafeAppsInfoModal = ({
   onCancel,
   onConfirm,
   features,
+  appUrl,
   isConsentAccepted,
   isPermissionsReviewCompleted,
+  isSafeAppInDefaultList,
+  isFirstTimeAccessingApp,
 }: SafeAppsInfoModalProps): JSX.Element => {
+  const [hideWarning, setHideWarning] = useState(false)
   const [selectedFeatures, setSelectedFeatures] = useState<AllowedFeatureSelection[]>(
     features.map((feature) => {
       return {
@@ -45,8 +54,12 @@ const SafeAppsInfoModal = ({
       totalSlides += 1
     }
 
+    if (!isSafeAppInDefaultList && isFirstTimeAccessingApp) {
+      totalSlides += 1
+    }
+
     return totalSlides
-  }, [isConsentAccepted, isPermissionsReviewCompleted])
+  }, [isConsentAccepted, isFirstTimeAccessingApp, isPermissionsReviewCompleted, isSafeAppInDefaultList])
 
   const handleSlideChange = (newStep: number) => {
     const isFirstStep = newStep === -1
@@ -58,6 +71,7 @@ const SafeAppsInfoModal = ({
 
     if (isLastStep) {
       onConfirm(
+        hideWarning,
         selectedFeatures.map(({ feature, checked }) => {
           return {
             feature,
@@ -74,6 +88,11 @@ const SafeAppsInfoModal = ({
     return ((currentSlide + 1) * 100) / totalSlides
   }, [currentSlide, totalSlides])
 
+  const shouldShowUnknownAppWarning = useMemo(
+    () => !isSafeAppInDefaultList && isFirstTimeAccessingApp,
+    [isFirstTimeAccessingApp, isSafeAppInDefaultList],
+  )
+
   const handleFeatureSelectionChange = (feature: AllowedFeatures, checked: boolean) => {
     setSelectedFeatures(
       selectedFeatures.map((feat) => {
@@ -88,13 +107,14 @@ const SafeAppsInfoModal = ({
     )
   }
 
+  const origin = useMemo(() => getOrigin(appUrl), [appUrl])
+
   return (
     <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" height="calc(100vh - 52px)">
       <Box
-        sx={({ palette, shape }) => ({
+        sx={({ palette }) => ({
           width: '450px',
           backgroundColor: palette.background.paper,
-          borderRadius: shape.borderRadius,
           boxShadow: `1px 2px 10px 0 ${alpha(palette.text.primary, 0.18)}`,
         })}
       >
@@ -106,7 +126,8 @@ const SafeAppsInfoModal = ({
             backgroundColor: palette.background.paper,
             borderRadius: '8px 8px 0 0',
             '> .MuiLinearProgress-bar': {
-              backgroundColor: palette.primary.main,
+              backgroundColor:
+                progressValue === 100 && shouldShowUnknownAppWarning ? palette.warning.main : palette.primary.main,
               borderRadius: '8px',
             },
           })}
@@ -120,6 +141,7 @@ const SafeAppsInfoModal = ({
                 onFeatureSelectionChange={handleFeatureSelectionChange}
               />
             )}
+            {shouldShowUnknownAppWarning && <UnknownAppWarning url={origin} onHideWarning={setHideWarning} />}
           </Slider>
         </Grid>
       </Box>
