@@ -34,7 +34,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
         threshold,
       })
     }
-  }, [removedOwner, newOwner])
+  }, [removedOwner, newOwner, createSwapOwnerTx, createAddOwnerTx])
 
   const isReplace = Boolean(removedOwner)
 

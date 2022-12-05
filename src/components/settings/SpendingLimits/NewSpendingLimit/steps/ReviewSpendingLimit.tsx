@@ -50,7 +50,7 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(() => {
     return createNewSpendingLimitTx(data, spendingLimits, chainId, decimals, existingSpendingLimit)
-  }, [data, spendingLimits, chainId, decimals, existingSpendingLimit])
+  }, [data, spendingLimits, chainId, decimals, existingSpendingLimit, createNewSpendingLimitTx])
 
   const onFormSubmit = (txId: string) => {
     trackEvent({

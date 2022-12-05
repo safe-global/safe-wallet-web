@@ -19,7 +19,7 @@ const RejectTx = ({ txSummary, onSubmit }: RejectTxProps): ReactElement => {
 
   const [rejectTx, rejectError] = useAsync<SafeTransaction>(() => {
     if (txNonce != undefined) return createRejectTx(txNonce)
-  }, [txNonce])
+  }, [txNonce, createRejectTx])
 
   return (
     <SignOrExecuteForm safeTx={rejectTx} isRejection onSubmit={onSubmit} error={rejectError}>

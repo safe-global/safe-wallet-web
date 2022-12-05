@@ -32,7 +32,7 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createExistingTx(chainId, safeAddress, txId)
-  }, [txId, safeAddress, chainId])
+  }, [txId, safeAddress, chainId, createExistingTx])
 
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 

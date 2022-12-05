@@ -26,7 +26,7 @@ export const ReviewRemoveOwnerTxStep = ({
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     return createRemoveOwnerTx({ ownerAddress: removedOwner.address, threshold })
-  }, [removedOwner.address, threshold])
+  }, [removedOwner.address, threshold, createRemoveOwnerTx])
 
   const newOwnerLength = safe.owners.length - 1
 

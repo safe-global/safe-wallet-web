@@ -19,7 +19,7 @@ export const ReviewRemoveModule = ({
   const { createRemoveModuleTx } = useTxSender()
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createRemoveModuleTx(data.address)
-  }, [data.address])
+  }, [data.address, createRemoveModuleTx])
 
   useEffect(() => {
     if (safeTxError) {

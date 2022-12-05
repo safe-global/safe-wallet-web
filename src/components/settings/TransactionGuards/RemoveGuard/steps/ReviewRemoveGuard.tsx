@@ -15,7 +15,7 @@ export const ReviewRemoveGuard = ({ data, onSubmit }: { data: RemoveGuardData; o
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createRemoveGuardTx()
-  }, [])
+  }, [createRemoveGuardTx])
 
   useEffect(() => {
     if (safeTxError) {

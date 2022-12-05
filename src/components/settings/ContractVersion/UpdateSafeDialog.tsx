@@ -50,7 +50,7 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (txId: string) => void }
 
     const txs = createUpdateSafeTxs(safe, chain)
     return createMultiSendCallOnlyTx(txs)
-  }, [chain, safe, safeLoaded])
+  }, [chain, safe, safeLoaded, createMultiSendCallOnlyTx])
 
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>

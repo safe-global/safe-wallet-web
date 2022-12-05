@@ -63,8 +63,9 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!selectedThreshold) return
+
     return createUpdateThresholdTx(selectedThreshold)
-  }, [selectedThreshold])
+  }, [selectedThreshold, createUpdateThresholdTx])
 
   const onChangeTheshold = (txId: string) => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
