@@ -12,13 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'CLA Assistant'
-        if: github.event_name == 'pull_request' || github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA'
-        uses: contributor-assistant/github-action@v2.2.0
+        if: contains(github.event.comment.body, 'recheckcla') || contains(github.event.comment.body, 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request'
+        uses: gnosis/github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_ASSISTANT_ACCESS_TOKEN }}
         with:
-          path-to-document: 'https://github.com/safe-global/web-core/blob/dev/CLA.md'
+          path-to-cla-document: 'https://safe.global/cla/'
           branch: 'cla-signatures'
+          path-to-signatures: 'signatures/version1/cla.json'
           allowlist: lukasschor,mikheevm,rmeissner,germartinez,Uxio0,dasanra,francovenica,tschubotz,luarx,gnosis-info,bot*,DaniSomoza,iamacook,yagopv,usame-algan,schmanu,DiogoSoaress,JagoFigueroa
-          lock-pullrequest-aftermerge: true
