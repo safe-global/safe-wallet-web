@@ -21,7 +21,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsGranted from '@/hooks/useIsGranted'
 import { getLegacyChainName } from '@/components/safe-apps/utils'
 import { useCurrentChain } from '@/hooks/useChains'
-import { useRef } from 'react'
+import useAppIsLoading from '@/components/safe-apps/AppFrame/useAppIsLoading'
 
 // Prevent `GovernanceSection` hooks from needlessly being called
 const GovernanceSectionWrapper = () => {
@@ -42,7 +42,7 @@ const GovernanceSection = () => {
   const chain = useCurrentChain()
   const [matchingApps, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
   const claimingApp = matchingApps?.[0]
-  const iframeRef = useRef<HTMLIFrameElement | null>(null)
+  const { iframeRef, setAppIsLoading } = useAppIsLoading()
   const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
 
   // Initialize the app communicator
@@ -55,7 +55,7 @@ const GovernanceSection = () => {
       isReadOnly: !granted,
       network: chain ? getLegacyChainName(chain.chainName || '', chain.chainId).toUpperCase() : '',
     }),
-  } as unknown as UseAppCommunicatorHandlers)
+  } as Partial<UseAppCommunicatorHandlers> as UseAppCommunicatorHandlers)
 
   const WidgetLoadError = () => (
     <Card className={css.loadErrorCard}>
@@ -113,6 +113,7 @@ const GovernanceSection = () => {
                     allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
                     title="Sage Governance"
                     iframeRef={iframeRef}
+                    onLoad={() => setAppIsLoading(false)}
                   />
                 </SafeAppsErrorBoundary>
               ) : (
