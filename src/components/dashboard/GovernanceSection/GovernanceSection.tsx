@@ -6,7 +6,6 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import css from './styles.module.css'
 import SafeAppsErrorBoundary from '@/components/safe-apps/SafeAppsErrorBoundary'
-import AppFrame from '@/components/safe-apps/AppFrame'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag, SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
@@ -15,6 +14,12 @@ import { OpenInNew } from '@mui/icons-material'
 import NetworkError from '@/public/images/common/network-error.svg'
 import useChainId from '@/hooks/useChainId'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
+import SafeAppIframe from '@/components/safe-apps/AppFrame/SafeAppIframe'
+import type { UseAppCommunicatorHandlers } from '@/components/safe-apps/AppFrame/useAppCommunicator'
+import useAppCommunicator from '@/components/safe-apps/AppFrame/useAppCommunicator'
+import { useCurrentChain } from '@/hooks/useChains'
+import useAppIsLoading from '@/components/safe-apps/AppFrame/useAppIsLoading'
+import useGetSafeInfo from '@/components/safe-apps/AppFrame/useGetSafeInfo'
 
 // Prevent `GovernanceSection` hooks from needlessly being called
 const GovernanceSectionWrapper = () => {
@@ -30,9 +35,16 @@ const GovernanceSection = () => {
   const isDarkMode = useDarkMode()
   const theme = isDarkMode ? 'dark' : 'light'
   const { getAllowedFeaturesList } = useBrowserPermissions()
-  const [claimingSafeApp, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
-  const claimingApp = claimingSafeApp?.[0]
+  const chain = useCurrentChain()
+  const [matchingApps, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
+  const claimingApp = matchingApps?.[0]
+  const { iframeRef, setAppIsLoading } = useAppIsLoading()
   const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
+
+  // Initialize the app communicator
+  useAppCommunicator(iframeRef, claimingApp, chain, {
+    onGetSafeInfo: useGetSafeInfo(),
+  } as Partial<UseAppCommunicatorHandlers> as UseAppCommunicatorHandlers)
 
   const WidgetLoadError = () => (
     <Card className={css.loadErrorCard}>
@@ -84,11 +96,13 @@ const GovernanceSection = () => {
             <Card className={css.widgetWrapper}>
               {claimingApp ? (
                 <SafeAppsErrorBoundary render={() => <WidgetLoadErrorFallback />}>
-                  <AppFrame
+                  <SafeAppIframe
                     key={theme}
                     appUrl={`${claimingApp.url}#widget+${theme}`}
                     allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
-                    isWidget
+                    title="Sage Governance"
+                    iframeRef={iframeRef}
+                    onLoad={() => setAppIsLoading(false)}
                   />
                 </SafeAppsErrorBoundary>
               ) : (
