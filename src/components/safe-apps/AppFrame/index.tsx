@@ -41,12 +41,12 @@ import useGetSafeInfo from './useGetSafeInfo'
 
 const UNKNOWN_APP_NAME = 'Unknown App'
 
-type AppFrameWrapperProps = {
+type AppFrameProps = {
   appUrl: string
   allowedFeaturesList: string
 }
 
-const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameWrapperProps): ReactElement => {
+const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()

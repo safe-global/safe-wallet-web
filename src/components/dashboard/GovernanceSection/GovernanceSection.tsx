@@ -36,7 +36,6 @@ const GovernanceSection = () => {
   const theme = isDarkMode ? 'dark' : 'light'
   const { getAllowedFeaturesList } = useBrowserPermissions()
   const chain = useCurrentChain()
-  const getSafeInfo = useGetSafeInfo()
   const [matchingApps, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
   const claimingApp = matchingApps?.[0]
   const { iframeRef, setAppIsLoading } = useAppIsLoading()
@@ -44,7 +43,7 @@ const GovernanceSection = () => {
 
   // Initialize the app communicator
   useAppCommunicator(iframeRef, claimingApp, chain, {
-    onGetSafeInfo: getSafeInfo,
+    onGetSafeInfo: useGetSafeInfo(),
   } as Partial<UseAppCommunicatorHandlers> as UseAppCommunicatorHandlers)
 
   const WidgetLoadError = () => (
