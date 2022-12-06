@@ -13,7 +13,7 @@ const useTxSender = (): NullableTxSenderFunctions => {
   return useMemo(
     () =>
       (Object.keys(txSender) as Array<keyof typeof txSender>).reduce((result, key) => {
-        result[key] = sdk ? txSender[key] : async () => undefined
+        result[key] = sdk ? txSender[key] : () => undefined
         return result
       }, Object.create(null)),
     [sdk],
