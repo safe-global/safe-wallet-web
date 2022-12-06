@@ -17,11 +17,9 @@ import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import SafeAppIframe from '@/components/safe-apps/AppFrame/SafeAppIframe'
 import type { UseAppCommunicatorHandlers } from '@/components/safe-apps/AppFrame/useAppCommunicator'
 import useAppCommunicator from '@/components/safe-apps/AppFrame/useAppCommunicator'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import useIsGranted from '@/hooks/useIsGranted'
-import { getLegacyChainName } from '@/components/safe-apps/utils'
 import { useCurrentChain } from '@/hooks/useChains'
 import useAppIsLoading from '@/components/safe-apps/AppFrame/useAppIsLoading'
+import useGetSafeInfo from '@/components/safe-apps/AppFrame/useGetSafeInfo'
 
 // Prevent `GovernanceSection` hooks from needlessly being called
 const GovernanceSectionWrapper = () => {
@@ -37,9 +35,8 @@ const GovernanceSection = () => {
   const isDarkMode = useDarkMode()
   const theme = isDarkMode ? 'dark' : 'light'
   const { getAllowedFeaturesList } = useBrowserPermissions()
-  const { safe, safeAddress } = useSafeInfo()
-  const granted = useIsGranted()
   const chain = useCurrentChain()
+  const getSafeInfo = useGetSafeInfo()
   const [matchingApps, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
   const claimingApp = matchingApps?.[0]
   const { iframeRef, setAppIsLoading } = useAppIsLoading()
@@ -47,14 +44,7 @@ const GovernanceSection = () => {
 
   // Initialize the app communicator
   useAppCommunicator(iframeRef, claimingApp, chain, {
-    onGetSafeInfo: () => ({
-      safeAddress,
-      chainId: chain ? parseInt(chain.chainId, 10) : -1,
-      owners: safe.owners.map((owner) => owner.value),
-      threshold: safe.threshold,
-      isReadOnly: !granted,
-      network: chain ? getLegacyChainName(chain.chainName || '', chain.chainId).toUpperCase() : '',
-    }),
+    onGetSafeInfo: getSafeInfo,
   } as Partial<UseAppCommunicatorHandlers> as UseAppCommunicatorHandlers)
 
   const WidgetLoadError = () => (

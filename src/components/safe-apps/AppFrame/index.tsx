@@ -17,13 +17,11 @@ import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import useChainId from '@/hooks/useChainId'
 import useAddressBook from '@/hooks/useAddressBook'
 import { useSafePermissions } from '@/hooks/safe-apps/permissions'
-import useIsGranted from '@/hooks/useIsGranted'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isSameUrl } from '@/utils/url'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTransactionQueueBarState'
 import { gtmTrackPageview } from '@/services/analytics/gtm'
-import { getLegacyChainName } from '../utils'
 import useThirdPartyCookies from './useThirdPartyCookies'
 import useAnalyticsFromSafeApp from './useFromAppAnalytics'
 import useAppIsLoading from './useAppIsLoading'
@@ -39,6 +37,7 @@ import { PermissionStatus } from '../types'
 
 import css from './styles.module.css'
 import SafeAppIframe from './SafeAppIframe'
+import useGetSafeInfo from './useGetSafeInfo'
 
 const UNKNOWN_APP_NAME = 'Unknown App'
 
@@ -54,7 +53,6 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameWrapperProps): ReactE
   const { safe, safeLoaded, safeAddress } = useSafeInfo()
   const addressBook = useAddressBook()
   const chain = useCurrentChain()
-  const granted = useIsGranted()
   const router = useRouter()
   const {
     expanded: queueBarExpanded,
@@ -72,6 +70,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameWrapperProps): ReactE
   const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
     useSafePermissions()
   const appName = useMemo(() => (remoteApp ? remoteApp.name : appUrl), [appUrl, remoteApp])
+
   const communicator = useAppCommunicator(iframeRef, remoteApp || safeAppFromManifest, chain, {
     onConfirmTransactions: openTxModal,
     onSignMessage: openSignMessageModal,
@@ -88,14 +87,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameWrapperProps): ReactE
     onGetEnvironmentInfo: () => ({
       origin: document.location.origin,
     }),
-    onGetSafeInfo: () => ({
-      safeAddress,
-      chainId: parseInt(chainId, 10),
-      owners: safe.owners.map((owner) => owner.value),
-      threshold: safe.threshold,
-      isReadOnly: !granted,
-      network: getLegacyChainName(chain?.chainName || '', chainId).toUpperCase(),
-    }),
+    onGetSafeInfo: useGetSafeInfo(),
     onGetSafeBalances: (currency) =>
       getBalances(chainId, safeAddress, currency, {
         exclude_spam: true,
