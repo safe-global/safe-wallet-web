@@ -37,7 +37,8 @@ jobs:
           repo-token-user-login: 'github-actions[bot]'
 
       - name: Install Node modules
-        run: yarn install --immutable
+        # TODO: Remove --skip-integrity-check before merging to main
+        run: yarn install --skip-integrity-check --immutable
 
       - name: Build
         run: yarn build && yarn export
