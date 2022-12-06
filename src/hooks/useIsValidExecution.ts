@@ -10,7 +10,9 @@ import { encodeSignatures } from '@/services/tx/encodeSignatures'
 import ContractErrorCodes from '@/services/contracts/ContractErrorCodes'
 import { sameAddress } from '@/utils/addresses'
 
-const isContractError = <T extends EthersError>(error: T): error is T & { reason: keyof typeof ContractErrorCodes } => {
+const isContractError = (error: EthersError) => {
+  if (!error.reason) return false
+
   return Object.keys(ContractErrorCodes).includes(error.reason)
 }
 

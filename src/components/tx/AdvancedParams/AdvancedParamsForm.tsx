@@ -1,5 +1,5 @@
 import { type SyntheticEvent } from 'react'
-import { Button, DialogActions, FormControl, Grid, TextField, Typography, DialogContent } from '@mui/material'
+import { Button, DialogActions, FormControl, Grid, Typography, DialogContent } from '@mui/material'
 import { BigNumber } from 'ethers'
 import { FormProvider, useForm } from 'react-hook-form'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
@@ -9,6 +9,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import { AdvancedField, type AdvancedParameters } from './types.d'
 import GasLimitInput from './GasLimitInput'
 import ExternalLink from '@/components/common/ExternalLink'
+import NumberField from '@/components/common/NumberField'
 
 const HELP_LINK = 'https://help.safe.global/en/articles/4738445-advanced-transaction-parameters'
 
@@ -107,11 +108,9 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
               {!!params.safeTxGas && (
                 <Grid item xs={6}>
                   <FormControl fullWidth>
-                    <TextField
+                    <NumberField
                       label={errors.safeTxGas?.message || 'safeTxGas'}
                       error={!!errors.safeTxGas}
-                      autoComplete="off"
-                      type="number"
                       disabled={props.nonceReadonly}
                       required
                       {...register(AdvancedField.safeTxGas, { required: true, min: 0 })}
@@ -131,11 +130,9 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                   {/* User nonce */}
                   <Grid item xs={6}>
                     <FormControl fullWidth>
-                      <TextField
+                      <NumberField
                         label={errors.userNonce?.message || 'Wallet nonce'}
                         error={!!errors.userNonce}
-                        autoComplete="off"
-                        type="number"
                         {...register(AdvancedField.userNonce)}
                       />
                     </FormControl>
@@ -150,10 +147,9 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
                   {props.isEIP1559 && (
                     <Grid item xs={6}>
                       <FormControl fullWidth>
-                        <TextField
+                        <NumberField
                           label={errors.maxPriorityFeePerGas?.message || 'Max priority fee (Gwei)'}
                           error={!!errors.maxPriorityFeePerGas}
-                          autoComplete="off"
                           required
                           {...register(AdvancedField.maxPriorityFeePerGas, {
                             required: true,
@@ -167,10 +163,9 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
 
                   <Grid item xs={6}>
                     <FormControl fullWidth>
-                      <TextField
+                      <NumberField
                         label={errors.maxFeePerGas?.message || props.isEIP1559 ? 'Max fee (Gwei)' : 'Gas price (Gwei)'}
                         error={!!errors.maxFeePerGas}
-                        autoComplete="off"
                         required
                         {...register(AdvancedField.maxFeePerGas, { required: true, pattern: FLOAT_REGEX, min: 0 })}
                       />

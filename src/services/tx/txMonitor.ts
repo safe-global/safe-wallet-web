@@ -22,7 +22,6 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
       txDispatch(TxEvent.REVERTED, {
         txId,
         error: new Error(`Transaction reverted by EVM.`),
-        receipt,
       })
     }
 
