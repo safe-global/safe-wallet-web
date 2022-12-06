@@ -13,6 +13,7 @@ import RequiredIcon from '@/public/images/messages/required.svg'
 import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { generateSafeMessageHash } from '@/utils/safe-messages'
+import { getDecodedMessage } from '@/components/safe-apps/utils'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 
@@ -59,17 +60,19 @@ const MsgModal = ({
 }: ProposeProps | ConfirmProps): ReactElement => {
   const { safe } = useSafeInfo()
 
+  const decodedMessage = useMemo(() => (typeof message === 'string' ? getDecodedMessage(message) : message), [message])
+
   const hash = useMemo(() => {
-    return messageHash ?? generateSafeMessageHash(safe, message)
-  }, [messageHash, safe, message])
+    return messageHash ?? generateSafeMessageHash(safe, decodedMessage)
+  }, [messageHash, safe, decodedMessage])
 
   const onSign = async () => {
     const shouldPropose = await _isSafeMessageProposal(safe.chainId, hash)
 
     if (requestId && shouldPropose) {
-      await dispatchSafeMsgProposal(safe, message, requestId, safeAppId)
+      await dispatchSafeMsgProposal(safe, decodedMessage, requestId, safeAppId)
     } else {
-      await dispatchSafeMsgConfirmation(safe, message, requestId)
+      await dispatchSafeMsgConfirmation(safe, decodedMessage, requestId)
     }
 
     onClose()
@@ -105,7 +108,7 @@ const MsgModal = ({
             This action will confirm the message and add your confirmation to the prepared signature.
           </Typography>
           <Typography fontWeight={700}>Message:</Typography>
-          <Msg message={message} />
+          <Msg message={decodedMessage} />
           <Typography fontWeight={700} mt={2}>
             Hash:
           </Typography>

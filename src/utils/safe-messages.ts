@@ -2,7 +2,6 @@ import { hashMessage } from 'ethers/lib/utils'
 import type { SafeInfo, SafeMessage, EIP712TypedData } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { hashTypedData } from '@/utils/web3'
-import { getDecodedMessage } from '@/components/safe-apps/utils'
 
 /**
  * Generates `SafeMessage` types for EIP-712
@@ -21,7 +20,7 @@ export const generateSafeMessageTypes = (safe: SafeInfo, message: SafeMessage['m
       SafeMessage: [{ name: 'message', type: 'bytes' }],
     },
     message: {
-      message: typeof message === 'string' ? hashMessage(getDecodedMessage(message)) : hashTypedData(message),
+      message: typeof message === 'string' ? hashMessage(message) : hashTypedData(message),
     },
   }
 }
