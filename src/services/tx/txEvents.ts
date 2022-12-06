@@ -1,4 +1,3 @@
-import type { ContractReceipt } from 'ethers/lib/ethers'
 import EventBus from '@/services/EventBus'
 import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
@@ -35,8 +34,8 @@ interface TxEvents {
   [TxEvent.EXECUTING]: Id
   [TxEvent.PROCESSING]: Id & { txHash: string }
   [TxEvent.PROCESSING_MODULE]: Id & { txHash: string }
-  [TxEvent.PROCESSED]: Id & { receipt: ContractReceipt }
-  [TxEvent.REVERTED]: Id & { error: Error; receipt: ContractReceipt }
+  [TxEvent.PROCESSED]: Id
+  [TxEvent.REVERTED]: Id & { error: Error }
   [TxEvent.FAILED]: Id & { error: Error }
   [TxEvent.SUCCESS]: Id
   [TxEvent.SAFE_APPS_REQUEST]: Id & { safeAppRequestId: RequestId }
