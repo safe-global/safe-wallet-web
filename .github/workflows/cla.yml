@@ -3,6 +3,8 @@ name: CLA
 on:
   pull_request:
 
+  pull_request_review_comment:
+
   issue_comment:
 
 jobs:
@@ -10,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check if CLA has been signed in this PR
+        if: ${{ github.event.pull_request.head.repo.full_name != 'safe-global/web-core' }}
         uses: peter-evans/find-comment@v2
         id: fc
         with:
@@ -18,8 +21,7 @@ jobs:
           body-includes: 'I have read the CLA Document and I hereby sign the CLA'
 
       - name: Post a comment if the PR is from a fork
-        #if: ${{ github.event.pull_request.head.repo.full_name != 'safe-global/web-core' }}
-        if: ${{ steps.fc.outputs.comment-id == 0 }}
+        if: ${{ github.event.pull_request.head.repo.full_name != 'safe-global/web-core' && steps.fc.outputs.comment-id == 0 }}
         uses: mshick/add-pr-comment@v2
         with:
           message-id: cla-comment
@@ -28,7 +30,7 @@ jobs:
 
             ---
 
-            **I have read the CLA Document and I hereby sign the CLA**
+            *I have read the CLA Document and I hereby sign the CLA*
 
             ---
 
@@ -40,4 +42,4 @@ jobs:
         with:
           message-id: cla-comment
           message: |
-            All contributors have signed the [CLA](https://safe.global/cla/) ✍️ ✅
+            All contributors have signed the CLA ✍️ ✅
