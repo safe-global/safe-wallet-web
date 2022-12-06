@@ -2431,6 +2431,7 @@
 "@gnosis.pm/safe-apps-sdk@https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-sdk?safe-settings":
   version "7.8.0"
   resolved "https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-sdk?safe-settings#49a3781a966ba5599f048770e06b195cee322403"
+  integrity sha512-cfTokV2BoMIBFQQh5nUBkUJctaJt9C976ihbAdMtgR79E+VTZge9D55vg0lriINlI26PaUF4D6CeGU73yvKdSQ==
   dependencies:
     "@gnosis.pm/safe-react-gateway-sdk" "^3.5.0"
     ethers "^5.7.2"
