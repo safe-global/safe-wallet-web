@@ -37,7 +37,7 @@ jobs:
           repo-token-user-login: 'github-actions[bot]'
 
       - name: Install Node modules
-        run: yarn cache clean && yarn --update-checksums && yarn install
+        run: yarn install --immutable
 
       - name: Build
         run: yarn build && yarn export
