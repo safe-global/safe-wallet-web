@@ -14,7 +14,7 @@ import { OpenInNew } from '@mui/icons-material'
 import NetworkError from '@/public/images/common/network-error.svg'
 import useChainId from '@/hooks/useChainId'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
-import AppIframe from '@/components/safe-apps/AppFrame/iframe'
+import SafeAppIframe from '@/components/safe-apps/AppFrame/SafeAppIframe'
 import type { UseAppCommunicatorHandlers } from '@/components/safe-apps/AppFrame/useAppCommunicator'
 import useAppCommunicator from '@/components/safe-apps/AppFrame/useAppCommunicator'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -107,7 +107,7 @@ const GovernanceSection = () => {
             <Card className={css.widgetWrapper}>
               {claimingApp ? (
                 <SafeAppsErrorBoundary render={() => <WidgetLoadErrorFallback />}>
-                  <AppIframe
+                  <SafeAppIframe
                     key={theme}
                     appUrl={`${claimingApp.url}#widget+${theme}`}
                     allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}

@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 import css from './styles.module.css'
 
-type AppIFrameProps = {
+type SafeAppIFrameProps = {
   appUrl: string
   allowedFeaturesList: string
   title?: string
@@ -13,7 +13,7 @@ type AppIFrameProps = {
 const IFRAME_SANDBOX_ALLOWED_FEATURES =
   'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms allow-downloads allow-orientation-lock'
 
-const AppIframe = ({ appUrl, allowedFeaturesList, iframeRef, onLoad, title }: AppIFrameProps): ReactElement => {
+const SafeAppIframe = ({ appUrl, allowedFeaturesList, iframeRef, onLoad, title }: SafeAppIFrameProps): ReactElement => {
   return (
     <iframe
       className={css.iframe}
@@ -28,4 +28,4 @@ const AppIframe = ({ appUrl, allowedFeaturesList, iframeRef, onLoad, title }: Ap
   )
 }
 
-export default AppIframe
+export default SafeAppIframe

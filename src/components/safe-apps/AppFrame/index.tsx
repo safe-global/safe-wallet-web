@@ -36,9 +36,9 @@ import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
 import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
 import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
-import AppIframe from './iframe'
 
 import css from './styles.module.css'
+import SafeAppIframe from './SafeAppIframe'
 
 const UNKNOWN_APP_NAME = 'Unknown App'
 
@@ -47,7 +47,7 @@ type AppFrameWrapperProps = {
   allowedFeaturesList: string
 }
 
-const AppFrameWrapper = ({ appUrl, allowedFeaturesList }: AppFrameWrapperProps): ReactElement => {
+const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameWrapperProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
@@ -220,7 +220,7 @@ const AppFrameWrapper = ({ appUrl, allowedFeaturesList }: AppFrameWrapperProps):
             paddingBottom: queueBarVisible ? TRANSACTION_BAR_HEIGHT : 0,
           }}
         >
-          <AppIframe
+          <SafeAppIframe
             appUrl={appUrl}
             allowedFeaturesList={allowedFeaturesList}
             iframeRef={iframeRef}
@@ -282,4 +282,4 @@ const AppFrameWrapper = ({ appUrl, allowedFeaturesList }: AppFrameWrapperProps):
   )
 }
 
-export default AppFrameWrapper
+export default AppFrame
