@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import css from './styles.module.css'
-import type { SendAssetsFormData } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import type { TokenTransferModalProps } from '.'
 import { SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import TokenIcon from '@/components/common/TokenIcon'
 import ReviewSpendingLimitTx from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
@@ -32,12 +32,7 @@ export const TokenTransferReview = ({
   )
 }
 
-export type ReviewTokenTxProps = {
-  params: SendAssetsFormData
-  onSubmit: (txId: string) => void
-}
-
-const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement => {
+const ReviewTokenTx = ({ params, onSubmit }: TokenTransferModalProps): ReactElement => {
   const isSpendingLimitTx = params.type === SendTxType.spendingLimit
 
   return isSpendingLimitTx ? (

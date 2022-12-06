@@ -8,7 +8,6 @@ import {
   MenuItem,
   Select,
   Typography,
-  TextField,
   DialogContent,
   Box,
   SvgIcon,
@@ -31,6 +30,7 @@ import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import useIsSafeTokenPaused from '@/components/tx/modals/TokenTransferModal/useIsSafeTokenPaused'
+import NumberField from '@/components/common/NumberField'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -67,10 +67,11 @@ export type SendAssetsFormData = {
 
 type SendAssetsFormProps = {
   formData?: SendAssetsFormData
+  disableSpendingLimit?: boolean
   onSubmit: (formData: SendAssetsFormData) => void
 }
 
-const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
+const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: SendAssetsFormProps): ReactElement => {
   const { balances } = useBalances()
   const addressBook = useAddressBook()
   const chainId = useChainId()
@@ -82,7 +83,9 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
       [SendAssetsField.recipient]: formData?.[SendAssetsField.recipient] || '',
       [SendAssetsField.tokenAddress]: formData?.[SendAssetsField.tokenAddress] || '',
       [SendAssetsField.amount]: formData?.[SendAssetsField.amount] || '',
-      [SendAssetsField.type]: formData?.[SendAssetsField.type] || SendTxType.multiSig,
+      [SendAssetsField.type]: disableSpendingLimit
+        ? SendTxType.multiSig
+        : formData?.[SendAssetsField.type] || SendTxType.multiSig,
     },
     mode: 'onChange',
     delayError: 500,
@@ -171,15 +174,14 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             </Box>
           )}
 
-          {!!spendingLimit && (
+          {!disableSpendingLimit && !!spendingLimit && (
             <SpendingLimitRow spendingLimit={spendingLimit} selectedToken={selectedToken?.tokenInfo} />
           )}
 
           <FormControl fullWidth sx={{ mt: 2 }}>
-            <TextField
+            <NumberField
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
-              autoComplete="off"
               InputProps={{
                 endAdornment: (
                   <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>

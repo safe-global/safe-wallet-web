@@ -1,44 +1,27 @@
-import { useState, type ReactElement } from 'react'
-import { Box, Button, type ButtonProps, DialogContent, SvgIcon } from '@mui/material'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import type { UrlObject } from 'url'
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import ModalDialog from '@/components/common/ModalDialog'
+import { useState } from 'react'
+import type { ReactElement } from 'react'
+
 import TokenTransferModal from '../TokenTransferModal'
-import AssetsIcon from '@/public/images/sidebar/assets.svg'
-import NftIcon from '@/public/images/common/nft.svg'
-import type { NftTransferParams } from '../NftTransferModal'
+import RejectTxModal from '../RejectTxModal'
 import NftTransferModal from '../NftTransferModal'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import { SendAssetsField } from '../TokenTransferModal/SendAssetsForm'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import { AppRoutes } from '@/config/routes'
-import { SafeAppsTag } from '@/config/constants'
-import SafeAppIcon from '@/components/safe-apps/SafeAppIcon'
+import CreationModal from './CreationModal'
+import ReplacementModal from './ReplacementModal'
 
-const TxButton = (props: ButtonProps) => (
-  <Button variant="contained" sx={{ '& svg path': { fill: 'currentColor' } }} fullWidth {...props} />
-)
-
-const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
-  const [matchingApps] = useRemoteSafeApps(SafeAppsTag.TX_BUILDER)
-  const router = useRouter()
-  const app = matchingApps?.[0]
-
-  return {
-    app,
-    link: {
-      pathname: AppRoutes.apps,
-      query: { safe: router.query.safe, appUrl: app?.url },
-    },
-  }
-}
-
-const NewTxModal = ({ onClose, recipient }: { onClose: () => void; recipient?: string }): ReactElement => {
+const NewTxModal = ({
+  onClose,
+  recipient = '',
+  txNonce,
+}: {
+  onClose: () => void
+  recipient?: string
+  txNonce?: number
+}): ReactElement => {
   const [tokenModalOpen, setTokenModalOpen] = useState<boolean>(false)
   const [nftsModalOpen, setNftModalOpen] = useState<boolean>(false)
-  const txBuilder = useTxBuilderApp()
+  const [rejectModalOpen, setRejectModalOpen] = useState<boolean>(false)
+  const isReplacement = txNonce !== undefined
 
   // These cannot be Track components as they intefere with styling
   const onTokenModalOpen = () => {
@@ -51,47 +34,47 @@ const NewTxModal = ({ onClose, recipient }: { onClose: () => void; recipient?: s
     setNftModalOpen(true)
   }
 
+  const onRejectModalOpen = () => {
+    trackEvent(MODALS_EVENTS.REJECT_TX)
+    setRejectModalOpen(true)
+  }
+
   const onContractInteraction = () => {
     trackEvent(MODALS_EVENTS.CONTRACT_INTERACTION)
     onClose()
   }
 
+  const sharedProps = {
+    open: !tokenModalOpen && !nftsModalOpen,
+    onClose,
+    onTokenModalOpen,
+    onNFTModalOpen,
+  }
+
   return (
     <>
-      <ModalDialog open={!tokenModalOpen && !nftsModalOpen} dialogTitle="New transaction" onClose={onClose}>
-        <DialogContent>
-          <Box display="flex" flexDirection="column" alignItems="center" gap={2} pt={7} pb={4} width={240} m="auto">
-            <TxButton onClick={onTokenModalOpen} startIcon={<SvgIcon component={AssetsIcon} inheritViewBox />}>
-              Send tokens
-            </TxButton>
-
-            <TxButton onClick={onNFTModalOpen} startIcon={<SvgIcon component={NftIcon} inheritViewBox />}>
-              Send NFTs
-            </TxButton>
-
-            {/* Contract interaction via Transaction Builder */}
-            {txBuilder.app && !recipient && (
-              <Link href={txBuilder.link} passHref>
-                <TxButton
-                  startIcon={
-                    <SafeAppIcon src={txBuilder.app.iconUrl} width={20} height={20} alt={txBuilder.app.name} />
-                  }
-                  variant="outlined"
-                  onClick={onContractInteraction}
-                >
-                  Contract interaction
-                </TxButton>
-              </Link>
-            )}
-          </Box>
-        </DialogContent>
-      </ModalDialog>
-
-      {tokenModalOpen && (
-        <TokenTransferModal onClose={onClose} initialData={[{ [SendAssetsField.recipient]: recipient }]} />
+      {isReplacement ? (
+        <ReplacementModal txNonce={txNonce} onRejectModalOpen={onRejectModalOpen} {...sharedProps} />
+      ) : (
+        <CreationModal
+          shouldShowTxBuilder={!recipient}
+          onContractInteraction={onContractInteraction}
+          {...sharedProps}
+        />
       )}
 
-      {nftsModalOpen && <NftTransferModal onClose={onClose} initialData={[{ recipient } as NftTransferParams]} />}
+      {tokenModalOpen && (
+        <TokenTransferModal
+          onClose={onClose}
+          initialData={[{ [SendAssetsField.recipient]: recipient, disableSpendingLimit: isReplacement }, { txNonce }]}
+        />
+      )}
+
+      {nftsModalOpen && <NftTransferModal onClose={onClose} initialData={[{ recipient }, { txNonce }]} />}
+
+      {rejectModalOpen && typeof txNonce === 'number' ? (
+        <RejectTxModal onClose={onClose} initialData={[txNonce]} />
+      ) : null}
     </>
   )
 }
