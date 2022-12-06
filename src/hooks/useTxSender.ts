@@ -10,14 +10,14 @@ export type NullableTxSenderFunctions = {
 const useTxSender = (): NullableTxSenderFunctions => {
   const sdk = useSafeSDK()
 
-  // @ts-ignore
   return useMemo(
     () =>
-      Object.keys(txSender).reduce((result, key) => {
-        // @ts-ignore
-        result[key] = async (...args) => (sdk ? txSender[key](...args) : undefined)
+      (Object.keys(txSender) as Array<keyof typeof txSender>).reduce((result, key) => {
+        result[key] = async (args: Parameters<typeof txSender[typeof key]>) =>
+          // @ts-ignore
+          sdk ? txSender[key](...args) : undefined
         return result
-      }, {}),
+      }, Object.create(null)),
     [sdk],
   )
 }
