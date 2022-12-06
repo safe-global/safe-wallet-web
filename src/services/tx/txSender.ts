@@ -311,16 +311,16 @@ export const dispatchTxExecution = async (
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, { txId, receipt, error: new Error('Transaction reverted by EVM') })
+        txDispatch(TxEvent.REVERTED, { txId, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, { txId, receipt })
+        txDispatch(TxEvent.PROCESSED, { txId })
       }
     })
     .catch((err) => {
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txDispatch(TxEvent.PROCESSED, { txId, receipt: error.receipt })
+        txDispatch(TxEvent.PROCESSED, { txId })
       } else {
         txDispatch(TxEvent.FAILED, { txId, error: error as Error })
       }
@@ -363,7 +363,6 @@ export const dispatchBatchExecution = async (
         txs.forEach(({ txId }) => {
           txDispatch(TxEvent.REVERTED, {
             txId,
-            receipt,
             error: new Error('Transaction reverted by EVM'),
             groupKey,
           })
@@ -372,7 +371,6 @@ export const dispatchBatchExecution = async (
         txs.forEach(({ txId }) => {
           txDispatch(TxEvent.PROCESSED, {
             txId,
-            receipt,
             groupKey,
           })
         })
@@ -383,7 +381,7 @@ export const dispatchBatchExecution = async (
 
       if (didReprice(error)) {
         txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.PROCESSED, { txId, receipt: error.receipt })
+          txDispatch(TxEvent.PROCESSED, { txId })
         })
       } else {
         txs.forEach(({ txId }) => {
@@ -438,9 +436,9 @@ export const dispatchSpendingLimitTxExecution = async (
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, { groupKey: id, receipt, error: new Error('Transaction reverted by EVM') })
+        txDispatch(TxEvent.REVERTED, { groupKey: id, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, { groupKey: id, receipt })
+        txDispatch(TxEvent.PROCESSED, { groupKey: id })
       }
     })
     .catch((error) => {
