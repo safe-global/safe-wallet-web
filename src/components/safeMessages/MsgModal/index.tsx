@@ -1,5 +1,5 @@
 import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon } from '@mui/material'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { getSafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -16,6 +16,11 @@ import { generateSafeMessageHash } from '@/utils/safe-messages'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import useAsync from '@/hooks/useAsync'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 
@@ -37,18 +42,6 @@ type ConfirmProps = BaseProps & {
   requestId?: RequestId
 }
 
-export const _isSafeMessageProposal = async (
-  chainId: string,
-  messageHash: SafeMessage['messageHash'],
-): Promise<boolean> => {
-  try {
-    await getSafeMessage(chainId, messageHash)
-    return false
-  } catch {
-    return true
-  }
-}
-
 const MsgModal = ({
   onClose,
   logoUri = APP_LOGO_FALLBACK_IMAGE,
@@ -58,24 +51,50 @@ const MsgModal = ({
   safeAppId,
   requestId,
 }: ProposeProps | ConfirmProps): ReactElement => {
+  // Hooks & variables
+  const [submitError, setSubmitError] = useState<Error | undefined>()
+
   const { safe } = useSafeInfo()
+  const isWrongChain = useIsWrongChain()
+  const isOwner = useIsSafeOwner()
+  const wallet = useWallet()
 
-  const decodedMessage = useMemo(() => (typeof message === 'string' ? getDecodedMessage(message) : message), [message])
+  // Decode message if UTF-8 encoded
+  const decodedMessage = useMemo(() => {
+    return typeof message === 'string' ? getDecodedMessage(message) : message
+  }, [message])
 
+  // Get `SafeMessage` hash
   const hash = useMemo(() => {
     return messageHash ?? generateSafeMessageHash(safe, decodedMessage)
   }, [messageHash, safe, decodedMessage])
 
-  const onSign = async () => {
-    const shouldPropose = await _isSafeMessageProposal(safe.chainId, hash)
-
-    if (requestId && shouldPropose) {
-      await dispatchSafeMsgProposal(safe, decodedMessage, requestId, safeAppId)
-    } else {
-      await dispatchSafeMsgConfirmation(safe, decodedMessage, requestId)
+  // Get message from backend
+  const [backendMessage] = useAsync(() => {
+    if (!hash) {
+      return
     }
+    return getSafeMessage(safe.chainId, hash)
+  }, [safe.chainId, hash])
 
-    onClose()
+  const hasSigned = !!backendMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
+
+  const isDisabled = isWrongChain || !isOwner || hasSigned
+
+  const onSign = async () => {
+    setSubmitError(undefined)
+
+    try {
+      if (requestId && !backendMessage) {
+        await dispatchSafeMsgProposal(safe, decodedMessage, requestId, safeAppId)
+      } else {
+        await dispatchSafeMsgConfirmation(safe, decodedMessage, requestId)
+      }
+
+      onClose()
+    } catch (e) {
+      setSubmitError(e as Error)
+    }
   }
 
   return (
@@ -113,11 +132,23 @@ const MsgModal = ({
             Hash:
           </Typography>
           <EthHashInfo address={hash} showAvatar={false} shortAddress={false} showCopyButton />
+
+          {isWrongChain ? (
+            <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>
+          ) : !isOwner ? (
+            <ErrorMessage>
+              You are currently not an owner of this Safe and won&apos;t be able to confirm this message.
+            </ErrorMessage>
+          ) : hasSigned ? (
+            <ErrorMessage>Your connected wallet has already signed this message.</ErrorMessage>
+          ) : submitError ? (
+            <ErrorMessage error={submitError}>Error confirming the message. Please try again.</ErrorMessage>
+          ) : null}
         </DialogContent>
 
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button color="inherit" onClick={onSign}>
+          <Button color="inherit" onClick={onSign} disabled={isDisabled}>
             Sign
           </Button>
         </DialogActions>
