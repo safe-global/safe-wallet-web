@@ -1,23 +1,45 @@
-name: 'CLA Assistant'
+name: CLA
 
 on:
-  issue_comment:
-    types: [created]
-
   pull_request:
-    types: [opened, closed, synchronize]
+
+  pull_request_review_comment:
+
+  issue_comment:
 
 jobs:
   CLAssistant:
     runs-on: ubuntu-latest
     steps:
-      - name: 'CLA Assistant'
-        if: contains(github.event.comment.body, 'recheckcla') || contains(github.event.comment.body, 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request'
-        uses: gnosis/github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check if CLA has been signed in this PR
+        if: ${{ github.event.pull_request.head.repo.full_name != 'safe-global/web-core' }}
+        uses: peter-evans/find-comment@v2
+        id: fc
         with:
-          path-to-cla-document: 'https://safe.global/cla/'
-          branch: 'cla-signatures'
-          path-to-signatures: 'signatures/version1/cla.json'
-          allowlist: lukasschor,mikheevm,rmeissner,germartinez,Uxio0,dasanra,francovenica,tschubotz,luarx,gnosis-info,bot*,DaniSomoza,iamacook,yagopv,usame-algan,schmanu,DiogoSoaress,JagoFigueroa
+          issue-number: ${{ github.event.number }}
+          comment-author: ${{ github.event.pull_request.user.login }}
+          body-includes: 'I have read the CLA Document and I hereby sign the CLA'
+
+      - name: Post a comment if the PR is from a fork
+        if: ${{ github.event.pull_request.head.repo.full_name != 'safe-global/web-core' && steps.fc.outputs.comment-id == 0 }}
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: cla-comment
+          message: |
+            Thank you for your submission, we really appreciate it. Like many open-source projects, we ask that you sign our [Contributor License Agreement](https://safe.global/cla/) before we can accept your contribution. You can sign the CLA just by posting a comment as per the format below:
+
+            ---
+
+            *I have read the CLA Document and I hereby sign the CLA*
+
+            ---
+
+            Thank you!
+
+      - name: Post a comment confirming the CLA was signed
+        if: ${{ steps.fc.outputs.comment-id != 0 }}
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: cla-comment
+          message: |
+            All contributors have signed the CLA ✍️ ✅
