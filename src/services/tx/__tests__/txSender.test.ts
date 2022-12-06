@@ -283,7 +283,7 @@ describe('txSender', () => {
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { txId })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { receipt: {}, txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { txId })
     })
 
     it('should fail executing a tx', async () => {
@@ -330,7 +330,6 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { txId })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('REVERTED', {
         txId,
-        receipt: { status: 0 },
         error: new Error('Transaction reverted by EVM'),
       })
     })
