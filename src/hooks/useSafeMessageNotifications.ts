@@ -80,7 +80,6 @@ const useSafeMessageNotifications = () => {
   }, [page?.results, pendingMsgs, wallet?.address])
 
   useEffect(() => {
-    console.log({ isGranted, msgsNeedingConfirmation })
     if (!isGranted || msgsNeedingConfirmation.length === 0) {
       return
     }
