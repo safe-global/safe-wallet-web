@@ -8,7 +8,6 @@ import {
   MenuItem,
   Select,
   Switch,
-  TextField,
   Typography,
   RadioGroup,
   FormControlLabel,
@@ -23,6 +22,7 @@ import useChainId from '@/hooks/useChainId'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import { parseUnits } from 'ethers/lib/utils'
+import NumberField from '@/components/common/NumberField'
 
 export type NewSpendingLimitData = {
   beneficiary: string
@@ -107,10 +107,9 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
           </FormControl>
 
           <FormControl fullWidth>
-            <TextField
+            <NumberField
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
-              autoComplete="off"
               required
               {...register('amount', {
                 required: true,
