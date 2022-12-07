@@ -1,8 +1,12 @@
 .container {
+  width: 100%;
+  padding: 0 var(--space-2);
   position: fixed;
-  top: var(--header-height);
+  top: calc(var(--header-height) / 2);
   right: 0;
   z-index: 2000;
+  display: flex;
+  flex-direction: column;
 }
 
 .row {
@@ -10,6 +14,16 @@
   display: flex;
   justify-content: flex-end;
   word-break: break-word;
+  align-self: flex-end;
+}
+
+.banner {
+  align-self: center;
+  max-width: 100%;
+}
+
+.banner :global .MuiPaper-root {
+  width: auto;
 }
 
 .link {

@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { AlertColor } from '@mui/material'
 import type { AppThunk, RootState } from '@/store'
@@ -5,7 +6,7 @@ import type { LinkProps } from 'next/link'
 
 export type Notification = {
   id: string
-  message: string
+  message: string | ReactElement
   detailedMessage?: string
   groupKey: string
   variant: AlertColor
@@ -13,6 +14,9 @@ export type Notification = {
   isDismissed?: boolean
   isRead?: boolean
   link?: { href: LinkProps['href']; title: string }
+  autoHide?: boolean
+  isBanner?: boolean
+  onClose?: () => void
 }
 
 export type NotificationState = Notification[]

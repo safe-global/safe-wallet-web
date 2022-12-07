@@ -1,15 +1,14 @@
 import type { ReactElement, ReactNode } from 'react'
 import { isEmpty } from 'lodash'
 import type { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
-import { IconButton } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
-import styles from './index.module.css'
 import { hasFeature } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useRouter } from 'next/router'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
-import { useAppSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { useEffect } from 'react'
+import { showNotification } from '@/store/notificationsSlice'
 
 const WARNING_BANNER = 'WARNING_BANNER'
 const OLD_APP = 'https://gnosis-safe.io/app'
@@ -35,7 +34,8 @@ const BANNERS: Record<string, ReactElement | string> = {
   ),
 }
 
-const PsaBanner = (): ReactElement | null => {
+const PsaBanner = (): null => {
+  const dispatch = useAppDispatch()
   const chain = useCurrentChain()
   const banner = chain ? BANNERS[chain.chainId] || BANNERS['*'] : undefined
   const isEnabled = chain && hasFeature(chain, WARNING_BANNER as FEATURES)
@@ -44,23 +44,24 @@ const PsaBanner = (): ReactElement | null => {
   // Address books on all chains
   const ab = useAppSelector(selectAllAddressBooks)
 
-  const showBanner = Boolean(isEnabled && banner && !closed && isEmpty(ab))
+  const showBanner = !!isEnabled && !!banner && !closed && isEmpty(ab)
 
-  const onClose = () => {
-    setClosed(true)
-  }
+  useEffect(() => {
+    if (!showBanner) return
 
-  return showBanner ? (
-    <div className={styles.banner}>
-      <div className={styles.wrapper}>
-        <div className={styles.content}>{banner}</div>
+    dispatch(
+      showNotification({
+        message: banner,
+        variant: 'info',
+        groupKey: 'psa-banner',
+        autoHide: false,
+        isBanner: true,
+        onClose: () => setClosed(true),
+      }),
+    )
+  }, [banner, dispatch, setClosed, showBanner])
 
-        <IconButton className={styles.close} onClick={onClose} aria-label="dismiss announcement banner">
-          <CloseIcon />
-        </IconButton>
-      </div>
-    </div>
-  ) : null
+  return null
 }
 
 export default PsaBanner

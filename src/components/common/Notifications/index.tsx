@@ -12,6 +12,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import Track from '../Track'
 import { isRelativeUrl } from '@/utils/url'
+import classNames from 'classnames'
 
 const toastStyle = { position: 'static', margin: 1 }
 
@@ -50,6 +51,7 @@ const Toast = ({
   link,
   onClose,
   id,
+  autoHide = true,
 }: {
   variant: AlertColor
   onClose: () => void
@@ -70,7 +72,7 @@ const Toast = ({
   const autoHideDuration = variant === 'info' || variant === 'success' ? 5000 : undefined
 
   return (
-    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={autoHideDuration}>
+    <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={autoHide ? autoHideDuration : null}>
       <Alert severity={variant} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
         {message}
 
@@ -98,6 +100,7 @@ const Notifications = (): ReactElement | null => {
 
   const handleClose = useCallback(
     (item: Notification) => {
+      item.onClose?.()
       dispatch(closeNotification(item))
     },
     [dispatch],
@@ -120,7 +123,7 @@ const Notifications = (): ReactElement | null => {
   return (
     <div className={css.container}>
       {visible.map((item) => (
-        <div className={css.row} key={item.id}>
+        <div className={classNames(css.row, { [css.banner]: item.isBanner })} key={item.id}>
           <Toast {...item} onClose={() => handleClose(item)} />
         </div>
       ))}
