@@ -299,7 +299,7 @@ describe('txSender', () => {
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { groupKey: '0x1234567890' })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { groupKey: '0x1234567890' })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { receipt: {}, groupKey: '0x1234567890' })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { groupKey: '0x1234567890' })
     })
 
     it('should fail executing a tx', async () => {
