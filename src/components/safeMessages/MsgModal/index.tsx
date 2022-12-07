@@ -75,7 +75,7 @@ const MsgModal = ({
       return
     }
     return getSafeMessage(safe.chainId, hash)
-  }, [safe.chainId, hash])
+  }, [safe.chainId, hash, safe?.messagesTag])
 
   const hasSigned = !!backendMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
 
