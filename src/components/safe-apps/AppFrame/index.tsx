@@ -154,7 +154,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         const { preparedSignature } = await getSafeMessage(chainId, messageHash)
         return preparedSignature
       } catch {
-        // ignore
+        return ''
       }
     },
   })

@@ -21,6 +21,8 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
+import useSafeMessages from '@/hooks/useSafeMessages'
+import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 
@@ -58,6 +60,7 @@ const MsgModal = ({
   const isWrongChain = useIsWrongChain()
   const isOwner = useIsSafeOwner()
   const wallet = useWallet()
+  const messages = useSafeMessages()
 
   // Decode message if UTF-8 encoded
   const decodedMessage = useMemo(() => {
@@ -69,15 +72,16 @@ const MsgModal = ({
     return messageHash ?? generateSafeMessageHash(safe, decodedMessage)
   }, [messageHash, safe, decodedMessage])
 
-  // Get message from backend
-  const [backendMessage] = useAsync(() => {
-    if (!hash) {
-      return
-    }
-    return getSafeMessage(safe.chainId, hash)
-  }, [safe.chainId, hash])
+  // Get already proposed message
+  const [alreadyProposedMessage] = useAsync<SafeMessage | Omit<SafeMessage, 'type'>>(() => {
+    const localMessage = messages.page?.results
+      .filter(isSafeMessageListItem)
+      .find((message) => message.messageHash === messageHash)
 
-  const hasSigned = !!backendMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
+    return localMessage ? Promise.resolve(localMessage) : getSafeMessage(safe.chainId, hash)
+  }, [safe.chainId, messageHash, hash])
+
+  const hasSigned = !!alreadyProposedMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
 
   const isDisabled = isWrongChain || !isOwner || hasSigned
 
@@ -85,7 +89,7 @@ const MsgModal = ({
     setSubmitError(undefined)
 
     try {
-      if (requestId && !backendMessage) {
+      if (requestId && !alreadyProposedMessage) {
         await dispatchSafeMsgProposal(safe, decodedMessage, requestId, safeAppId)
       } else {
         await dispatchSafeMsgConfirmation(safe, decodedMessage, requestId)
