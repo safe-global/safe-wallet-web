@@ -193,17 +193,3 @@ export const formatCurrency = (number: string | number, currency: string): strin
 
   return format(number, currencyFormatter, minimum)
 }
-
-export const localeNumberFormatter = (amount: number | string, locale?: string): string => {
-  // get locale thousand and decimal separator
-  const number = 123456.789
-  const parts = new Intl.NumberFormat(locale).formatToParts(number)
-
-  const decimalSeparator = parts.find((p) => p.type === 'decimal')!.value
-  const [integerString, decimalString] = amount.toString().split(decimalSeparator)
-
-  const integerFinal = Number(integerString).toLocaleString()
-  const decimalFinal = decimalString ? `${decimalSeparator}${decimalString}`.replace(/0+$/, '') : ''
-
-  return integerFinal + decimalFinal
-}

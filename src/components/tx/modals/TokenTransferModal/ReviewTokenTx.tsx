@@ -8,7 +8,7 @@ import { SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssets
 import TokenIcon from '@/components/common/TokenIcon'
 import ReviewSpendingLimitTx from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import ReviewMultisigTx from '@/components/tx/modals/TokenTransferModal/ReviewMultisigTx'
-import { localeNumberFormatter } from '@/utils/formatNumber'
+import { formatAmount } from '@/utils/formatNumber'
 
 export const TokenTransferReview = ({
   amount,
@@ -19,8 +19,6 @@ export const TokenTransferReview = ({
   tokenInfo: TokenInfo
   children?: ReactNode
 }) => {
-  const localeAmount = localeNumberFormatter(amount)
-
   return (
     <Box className={css.tokenPreview}>
       <Box className={css.tokenIcon}>
@@ -29,7 +27,7 @@ export const TokenTransferReview = ({
 
       <Box mt={1} fontSize={20}>
         {children}
-        {localeAmount} {tokenInfo.symbol}
+        {formatAmount(amount)} {tokenInfo.symbol}
       </Box>
     </Box>
   )
