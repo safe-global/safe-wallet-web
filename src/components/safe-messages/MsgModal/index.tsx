@@ -7,12 +7,12 @@ import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 import ModalDialog, { ModalDialogTitle } from '@/components/common/ModalDialog'
 import SafeAppIcon from '@/components/safe-apps/SafeAppIcon'
-import Msg from '@/components/safeMessages/Msg'
+import Msg from '@/components/safe-messages/Msg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import RequiredIcon from '@/public/images/messages/required.svg'
 import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { generateSafeMessageHash } from '@/utils/safe-messages'
+import { generateSafeMessageHash, generateSafeMessageMessage } from '@/utils/safe-messages'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
@@ -23,6 +23,7 @@ import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeMessages from '@/hooks/useSafeMessages'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
+import { useWeb3 } from '@/hooks/wallets/web3'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 
@@ -56,6 +57,7 @@ const MsgModal = ({
   // Hooks & variables
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
+  const web3 = useWeb3()
   const { safe } = useSafeInfo()
   const isWrongChain = useIsWrongChain()
   const isOwner = useIsSafeOwner()
@@ -67,8 +69,13 @@ const MsgModal = ({
     return typeof message === 'string' ? getDecodedMessage(message) : message
   }, [message])
 
+  // Get `SafeMessage` message
+  const safeMessageMessage = useMemo(() => {
+    return generateSafeMessageMessage(decodedMessage)
+  }, [decodedMessage])
+
   // Get `SafeMessage` hash
-  const hash = useMemo(() => {
+  const safeMessageHash = useMemo(() => {
     return messageHash ?? generateSafeMessageHash(safe, decodedMessage)
   }, [messageHash, safe, decodedMessage])
 
@@ -78,21 +85,28 @@ const MsgModal = ({
       .filter(isSafeMessageListItem)
       .find((message) => message.messageHash === messageHash)
 
-    return localMessage ? Promise.resolve(localMessage) : getSafeMessage(safe.chainId, hash)
-  }, [safe.chainId, messageHash, hash])
+    return localMessage ? Promise.resolve(localMessage) : getSafeMessage(safe.chainId, safeMessageHash)
+  }, [safe.chainId, messageHash, safeMessageHash])
 
   const hasSigned = !!alreadyProposedMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
 
-  const isDisabled = isWrongChain || !isOwner || hasSigned
+  const isDisabled = isWrongChain || !isOwner || hasSigned || !web3
 
   const onSign = async () => {
+    // Error is shown when no wallet is connected, this appeases TypeScript
+    if (!web3) {
+      return
+    }
+
     setSubmitError(undefined)
+
+    const signer = web3.getSigner()
 
     try {
       if (requestId && !alreadyProposedMessage) {
-        await dispatchSafeMsgProposal(safe, decodedMessage, requestId, safeAppId)
+        await dispatchSafeMsgProposal({ signer, safe, message: decodedMessage, requestId, safeAppId })
       } else {
-        await dispatchSafeMsgConfirmation(safe, decodedMessage, requestId)
+        await dispatchSafeMsgConfirmation({ signer, safe, message: decodedMessage, requestId })
       }
 
       onClose()
@@ -133,11 +147,17 @@ const MsgModal = ({
           <Typography fontWeight={700}>Message:</Typography>
           <Msg message={decodedMessage} />
           <Typography fontWeight={700} mt={2}>
-            Hash:
+            SafeMessage:
           </Typography>
-          <EthHashInfo address={hash} showAvatar={false} shortAddress={false} showCopyButton />
+          <EthHashInfo address={safeMessageMessage} showAvatar={false} shortAddress={false} showCopyButton />
+          <Typography fontWeight={700} mt={2}>
+            SafeMessage hash:
+          </Typography>
+          <EthHashInfo address={safeMessageHash} showAvatar={false} shortAddress={false} showCopyButton />
 
-          {isWrongChain ? (
+          {!web3 ? (
+            <ErrorMessage>No wallet is connected.</ErrorMessage>
+          ) : isWrongChain ? (
             <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>
           ) : !isOwner ? (
             <ErrorMessage>

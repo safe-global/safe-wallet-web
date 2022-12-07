@@ -8,7 +8,6 @@ import Head from 'next/head'
 import { getBalances, getTransactionDetails, getSafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { AddressBookItem, EIP712TypedData, RequestId, SafeSettings } from '@gnosis.pm/safe-apps-sdk'
 import { Methods } from '@gnosis.pm/safe-apps-sdk'
-import { gte } from 'semver'
 
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
@@ -38,7 +37,7 @@ import useSignMessageModal from '../SignMessageModal/useSignMessageModal'
 import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
 import PermissionsPrompt from '../PermissionsPrompt'
 import { PermissionStatus } from '../types'
-import MsgModal from '@/components/safeMessages/MsgModal'
+import MsgModal from '@/components/safe-messages/MsgModal'
 import { safeMsgSubscribe, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import { useAppSelector } from '@/store'
 import { selectSafeMessages } from '@/store/safeMessagesSlice'
@@ -133,11 +132,9 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       }
     },
     onSetSafeSettings: (safeSettings: SafeSettings) => {
-      const EIP_1271_SUPPORTED_SAFE_VERSION = '1.0.0'
-
       const newSettings: SafeSettings = {
         ...settings,
-        offChainSigning: gte(safe.version, EIP_1271_SUPPORTED_SAFE_VERSION) && !!safeSettings.offChainSigning,
+        offChainSigning: !!safeSettings.offChainSigning,
       }
 
       setSettings(newSettings)

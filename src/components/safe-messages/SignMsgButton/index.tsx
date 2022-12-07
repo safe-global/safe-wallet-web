@@ -9,7 +9,7 @@ import Track from '@/components/common/Track'
 import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
 import useIsSafeMessageSignableBy from '@/hooks/useIsSafeMessageSignableBy'
 import useIsSafeMessagePending from '@/hooks/useIsSafeMessagePending'
-import MsgModal from '@/components/safeMessages/MsgModal'
+import MsgModal from '@/components/safe-messages/MsgModal'
 
 const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: boolean }): ReactElement => {
   const [open, setOpen] = useState(false)

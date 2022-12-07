@@ -1,12 +1,12 @@
 import { ethers } from 'ethers'
 import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { generateSafeMessageTypes } from '../safe-messages'
+import { generateSafeMessageTypedData } from '../safe-messages'
 
 const MOCK_ADDRESS = ethers.utils.hexZeroPad('0x123', 20)
 
 describe('safe-messages', () => {
-  describe('generateSafeMessageTypes', () => {
+  describe('createSafeMessage', () => {
     it('should generate the correct types for a EIP-191 message', () => {
       const safe = {
         address: {
@@ -17,7 +17,7 @@ describe('safe-messages', () => {
 
       const message = 'Hello world!'
 
-      const safeMessage = generateSafeMessageTypes(safe, message)
+      const safeMessage = generateSafeMessageTypedData(safe, message)
 
       expect(safeMessage).toEqual({
         domain: {
@@ -106,7 +106,7 @@ describe('safe-messages', () => {
         },
       }
 
-      const safeMessage = generateSafeMessageTypes(safe, message)
+      const safeMessage = generateSafeMessageTypedData(safe, message)
 
       expect(safeMessage).toEqual({
         domain: {

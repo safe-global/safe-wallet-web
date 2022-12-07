@@ -9,7 +9,7 @@ import LinkIcon from '@/public/images/common/link.svg'
 import NoMessagesIcon from '@/public/images/messages/no-messages.svg'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
-import MsgList from '@/components/safeMessages/MsgList'
+import MsgList from '@/components/safe-messages/MsgList'
 import SkeletonTxList from '@/components/common/PaginatedTxns/SkeletonTxList'
 
 const NoMessages = (): ReactElement => {

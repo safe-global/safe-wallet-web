@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import type { NextPage } from 'next'
 
-import PaginatedMsgs from '@/components/safeMessages/PaginatedMsgs'
+import PaginatedMsgs from '@/components/safe-messages/PaginatedMsgs'
 import TxHeader from '@/components/transactions/TxHeader'
 import NavTabs from '@/components/common/NavTabs'
 import { transactionNavItems } from '@/components/sidebar/SidebarNavigation/config'

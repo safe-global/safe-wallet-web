@@ -1,9 +1,10 @@
 import * as gateway from '@gnosis.pm/safe-react-gateway-sdk'
+import { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcSigner } from '@ethersproject/providers'
 
 import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
 import * as utils from '@/utils/safe-messages'
 import * as events from '@/services/safe-messages/safeMsgEvents'
-import * as web3 from '@/utils/web3'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   ...jest.requireActual('@gnosis.pm/safe-react-gateway-sdk'),
@@ -12,17 +13,23 @@ jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
 }))
 
 describe('safeMsgSender', () => {
+  const mockProvider = new Web3Provider(jest.fn())
+
   beforeEach(() => {
     jest.resetAllMocks()
+
+    jest.spyOn(utils, 'generateSafeMessageHash').mockImplementation(() => '0x123')
+
+    jest.spyOn(mockProvider, 'getSigner').mockImplementation(
+      () =>
+        ({
+          _signTypedData: jest.fn().mockImplementation(() => Promise.resolve('0x456')),
+        } as unknown as JsonRpcSigner),
+    )
   })
 
   describe('dispatchSafeMsgProposal', () => {
     it('should dispatch a message proposal', async () => {
-      jest.spyOn(utils, 'generateSafeMessageHash').mockImplementation(() => '0x123')
-
-      const signTypedDataSpy = jest.spyOn(web3, 'signTypedData')
-      signTypedDataSpy.mockImplementation(() => Promise.resolve('0x456'))
-
       const proposeSafeMessageSpy = jest.spyOn(gateway, 'proposeSafeMessage')
       proposeSafeMessageSpy.mockImplementation(() => Promise.resolve())
 
@@ -37,8 +44,9 @@ describe('safeMsgSender', () => {
       const message = 'Hello world'
       const requestId = '0x123'
       const safeAppId = 1
+      const signer = mockProvider.getSigner()
 
-      await dispatchSafeMsgProposal(safe, message, requestId, safeAppId)
+      await dispatchSafeMsgProposal({ signer, safe, message, requestId, safeAppId })
 
       expect(proposeSafeMessageSpy).toHaveBeenCalledWith(1, '0x789', {
         message,
@@ -52,11 +60,6 @@ describe('safeMsgSender', () => {
       })
     })
     it('should dispatch a message proposal failure', async () => {
-      jest.spyOn(utils, 'generateSafeMessageHash').mockImplementation(() => '0x123')
-
-      const signTypedDataSpy = jest.spyOn(web3, 'signTypedData')
-      signTypedDataSpy.mockImplementation(() => Promise.resolve('0x456'))
-
       const proposeSafeMessageSpy = jest.spyOn(gateway, 'proposeSafeMessage')
       proposeSafeMessageSpy.mockImplementation(() => Promise.reject(new Error('Example error')))
 
@@ -71,9 +74,10 @@ describe('safeMsgSender', () => {
       const message = 'Hello world'
       const requestId = '0x123'
       const safeAppId = 1
+      const signer = mockProvider.getSigner()
 
       try {
-        await dispatchSafeMsgProposal(safe, message, requestId, safeAppId)
+        await dispatchSafeMsgProposal({ signer, safe, message, requestId, safeAppId })
       } catch (e) {
         expect((e as Error).message).toBe('Example error')
 
@@ -93,11 +97,6 @@ describe('safeMsgSender', () => {
 
   describe('dispatchSafeMsgConfirmation', () => {
     it('should dispatch a message proposal', async () => {
-      jest.spyOn(utils, 'generateSafeMessageHash').mockImplementation(() => '0x123')
-
-      const signTypedDataSpy = jest.spyOn(web3, 'signTypedData')
-      signTypedDataSpy.mockImplementation(() => Promise.resolve('0x456'))
-
       const confirmSafeMessageSpy = jest.spyOn(gateway, 'confirmSafeMessage')
       confirmSafeMessageSpy.mockImplementation(() => Promise.resolve())
 
@@ -111,8 +110,9 @@ describe('safeMsgSender', () => {
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
       const requestId = '0x123'
+      const signer = mockProvider.getSigner()
 
-      await dispatchSafeMsgConfirmation(safe, message, requestId)
+      await dispatchSafeMsgConfirmation({ signer, safe, message, requestId })
 
       expect(confirmSafeMessageSpy).toHaveBeenCalledWith(1, '0x123', {
         signature: '0x456',
@@ -124,11 +124,6 @@ describe('safeMsgSender', () => {
       })
     })
     it('should dispatch a message proposal failure', async () => {
-      jest.spyOn(utils, 'generateSafeMessageHash').mockImplementation(() => '0x123')
-
-      const signTypedDataSpy = jest.spyOn(web3, 'signTypedData')
-      signTypedDataSpy.mockImplementation(() => Promise.resolve('0x456'))
-
       const confirmSafeMessageSpy = jest.spyOn(gateway, 'confirmSafeMessage')
       confirmSafeMessageSpy.mockImplementation(() => Promise.reject(new Error('Example error')))
 
@@ -142,9 +137,10 @@ describe('safeMsgSender', () => {
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
       const requestId = '0x123'
+      const signer = mockProvider.getSigner()
 
       try {
-        await dispatchSafeMsgConfirmation(safe, message, requestId)
+        await dispatchSafeMsgConfirmation({ signer, safe, message, requestId })
       } catch (e) {
         expect((e as Error).message).toBe('Example error')
 

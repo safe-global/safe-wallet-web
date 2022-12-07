@@ -1,22 +1,34 @@
 import { proposeSafeMessage, confirmSafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { SafeInfo, SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
+import type { TypedDataDomain } from 'ethers'
+import type { JsonRpcSigner } from '@ethersproject/providers'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
-import { generateSafeMessageHash, generateSafeMessageTypes } from '@/utils/safe-messages'
-import { signTypedData } from '@/utils/web3'
+import { generateSafeMessageHash, generateSafeMessageTypedData } from '@/utils/safe-messages'
 
-export const dispatchSafeMsgProposal = async (
-  safe: SafeInfo,
-  message: SafeMessage['message'],
-  requestId: RequestId,
-  safeAppId?: number,
-): Promise<void> => {
+export const dispatchSafeMsgProposal = async ({
+  signer,
+  safe,
+  message,
+  requestId,
+  safeAppId,
+}: {
+  signer: JsonRpcSigner
+  safe: SafeInfo
+  message: SafeMessage['message']
+  requestId: RequestId
+  safeAppId?: number
+}): Promise<void> => {
   const messageHash = generateSafeMessageHash(safe, message)
 
   try {
-    const typedData = generateSafeMessageTypes(safe, message)
-    const signature = await signTypedData(typedData)
+    const typedData = generateSafeMessageTypedData(safe, message)
+    const signature = await signer._signTypedData(
+      typedData.domain as TypedDataDomain,
+      typedData.types,
+      typedData.message,
+    )
 
     await proposeSafeMessage(safe.chainId, safe.address.value, {
       message,
@@ -38,16 +50,26 @@ export const dispatchSafeMsgProposal = async (
   })
 }
 
-export const dispatchSafeMsgConfirmation = async (
-  safe: SafeInfo,
-  message: SafeMessage['message'],
-  requestId?: RequestId,
-): Promise<void> => {
+export const dispatchSafeMsgConfirmation = async ({
+  signer,
+  safe,
+  message,
+  requestId,
+}: {
+  signer: JsonRpcSigner
+  safe: SafeInfo
+  message: SafeMessage['message']
+  requestId?: RequestId
+}): Promise<void> => {
   const messageHash = generateSafeMessageHash(safe, message)
 
   try {
-    const typedData = generateSafeMessageTypes(safe, message)
-    const signature = await signTypedData(typedData)
+    const typedData = generateSafeMessageTypedData(safe, message)
+    const signature = await signer._signTypedData(
+      typedData.domain as TypedDataDomain,
+      typedData.types,
+      typedData.message,
+    )
 
     await confirmSafeMessage(safe.chainId, messageHash, {
       signature,

@@ -3,8 +3,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import MsgDetails from '@/components/safeMessages/MsgDetails'
-import MsgSummary from '@/components/safeMessages/MsgSummary'
+import MsgDetails from '@/components/safe-messages/MsgDetails'
+import MsgSummary from '@/components/safe-messages/MsgSummary'
 
 import txListItemCss from '@/components/transactions/TxListItem/styles.module.css'
 

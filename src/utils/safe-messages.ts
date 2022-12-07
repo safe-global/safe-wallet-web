@@ -3,14 +3,18 @@ import type { SafeInfo, SafeMessage, EIP712TypedData } from '@gnosis.pm/safe-rea
 
 import { hashTypedData } from '@/utils/web3'
 
+export const generateSafeMessageMessage = (message: SafeMessage['message']): string => {
+  return typeof message === 'string' ? hashMessage(message) : hashTypedData(message)
+}
+
 /**
- * Generates `SafeMessage` types for EIP-712
+ * Generates `SafeMessage` typed data for EIP-712
  * https://github.com/safe-global/safe-contracts/blob/main/contracts/handler/CompatibilityFallbackHandler.sol#L12
  * @param safe Safe which will sign the message
  * @param message Message to sign
  * @returns `SafeMessage` types for signing
  */
-export const generateSafeMessageTypes = (safe: SafeInfo, message: SafeMessage['message']): EIP712TypedData => {
+export const generateSafeMessageTypedData = (safe: SafeInfo, message: SafeMessage['message']): EIP712TypedData => {
   return {
     domain: {
       chainId: safe.chainId,
@@ -20,12 +24,12 @@ export const generateSafeMessageTypes = (safe: SafeInfo, message: SafeMessage['m
       SafeMessage: [{ name: 'message', type: 'bytes' }],
     },
     message: {
-      message: typeof message === 'string' ? hashMessage(message) : hashTypedData(message),
+      message: generateSafeMessageMessage(message),
     },
   }
 }
 
 export const generateSafeMessageHash = (safe: SafeInfo, message: SafeMessage['message']): string => {
-  const typedData = generateSafeMessageTypes(safe, message)
+  const typedData = generateSafeMessageTypedData(safe, message)
   return hashTypedData(typedData)
 }
