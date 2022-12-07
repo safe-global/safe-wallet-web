@@ -13,7 +13,7 @@ const NftApps = memo(function NftApps(): ReactElement | null {
 
   const { allSafeApps } = useSafeApps()
 
-  const nftApps = useMemo(() => allSafeApps.filter((app) => app.tags.includes(NFT_APPS_TAG)), [allSafeApps])
+  const nftApps = useMemo(() => allSafeApps.filter((app) => app.tags?.includes(NFT_APPS_TAG)), [allSafeApps])
 
   if (nftApps.length === 0) {
     return null
