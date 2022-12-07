@@ -21,7 +21,7 @@ export const createUpdateSafeTxs = (safe: SafeInfo, chain: ChainInfo): MetaTrans
   // @ts-expect-error this was removed in 1.3.0 but we need to support it for older safe versions
   const changeMasterCopyCallData = safeContractInstance.encode('changeMasterCopy', [latestMasterCopy.getAddress()])
 
-  const fallbackHandlerAddress = getFallbackHandlerContractInstance(chain.chainId).address
+  const fallbackHandlerAddress = getFallbackHandlerContractInstance(chain.chainId).getAddress()
   const changeFallbackHandlerCallData = safeContractInstance.encode('setFallbackHandler', [fallbackHandlerAddress])
 
   const txs: MetaTransactionData[] = [
