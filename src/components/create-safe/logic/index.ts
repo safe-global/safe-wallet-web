@@ -42,7 +42,7 @@ export const getSafeDeployProps = (
     safeAccountConfig: {
       threshold: safeParams.threshold,
       owners: safeParams.owners,
-      fallbackHandler: fallbackHandler.address,
+      fallbackHandler: fallbackHandler.getAddress(),
     },
     safeDeploymentConfig: {
       saltNonce: safeParams.saltNonce.toString(),
@@ -90,7 +90,7 @@ export const encodeSafeCreationTx = ({
     threshold,
     ZERO_ADDRESS,
     EMPTY_DATA,
-    fallbackHandlerContract.address,
+    fallbackHandlerContract.getAddress(),
     ZERO_ADDRESS,
     '0',
     ZERO_ADDRESS,

@@ -1,4 +1,4 @@
-import { InputAdornment, Tooltip, SvgIcon, Typography, Link, Box, Divider, Button, Grid } from '@mui/material'
+import { InputAdornment, Tooltip, SvgIcon, Typography, Box, Divider, Button, Grid } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -13,6 +13,7 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/NetworkWarning'
 import NameInput from '@/components/common/NameInput'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type CreateSafeStep1Form = {
   name: string
@@ -92,13 +93,13 @@ function CreateSafeStep1({
           </Grid>
           <Typography variant="body2" mt={2}>
             By continuing, you agree to our{' '}
-            <Link href="https://safe.global/terms" target="_blank" rel="noopener noreferrer" fontWeight={700}>
+            <ExternalLink href="https://safe.global/terms" fontWeight={700}>
               terms of use
-            </Link>{' '}
+            </ExternalLink>{' '}
             and{' '}
-            <Link href="https://safe.global/privacy" target="_blank" rel="noopener noreferrer" fontWeight={700}>
+            <ExternalLink href="https://safe.global/privacy" fontWeight={700}>
               privacy policy
-            </Link>
+            </ExternalLink>
             .
           </Typography>
 
