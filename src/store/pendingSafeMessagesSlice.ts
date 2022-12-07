@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 
 import type { RootState } from '.'
 
-type PendingSafeMessagesState =
+export type PendingSafeMessagesState =
   | {
       [messageHash: string]: true
     }

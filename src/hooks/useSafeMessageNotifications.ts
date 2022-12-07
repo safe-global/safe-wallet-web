@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { SafeMessageStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessageListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { SafeMsgEvent, safeMsgSubscribe } from '@/services/safe-messages/safeMsgEvents'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -13,6 +14,7 @@ import { AppRoutes } from '@/config/routes'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import type { PendingSafeMessagesState } from '@/store/pendingSafeMessagesSlice'
 
 const SafeMessageNotifications: Partial<Record<SafeMsgEvent, string>> = {
   [SafeMsgEvent.PROPOSE]: 'You successfully signed the message.',
@@ -20,6 +22,19 @@ const SafeMessageNotifications: Partial<Record<SafeMsgEvent, string>> = {
   [SafeMsgEvent.CONFIRM_PROPOSE]: 'You successfully confirmed the message.',
   [SafeMsgEvent.CONFIRM_PROPOSE_FAILED]: 'Confirming the message failed. Please try again.',
   [SafeMsgEvent.SIGNATURE_PREPARED]: 'The message was successfully confirmed.',
+}
+
+export const _getSafeMessagesAwaitingConfirmations = (
+  items: SafeMessageListItem[],
+  pendingMsgs: PendingSafeMessagesState,
+  walletAddress: string,
+) => {
+  return items.filter(isSafeMessageListItem).filter((message) => {
+    const needsConfirmation = message.status === SafeMessageStatus.NEEDS_CONFIRMATION
+    const isPending = !!pendingMsgs[message.messageHash]
+    const canSign = message.confirmations.every(({ owner }) => owner.value !== walletAddress)
+    return needsConfirmation && !isPending && canSign
+  })
 }
 
 const useSafeMessageNotifications = () => {
@@ -71,12 +86,7 @@ const useSafeMessageNotifications = () => {
       return []
     }
 
-    return page.results.filter(isSafeMessageListItem).filter((message) => {
-      const needsConfirmation = message.status === SafeMessageStatus.NEEDS_CONFIRMATION
-      const isPending = !!pendingMsgs[message.messageHash]
-      const canSign = message.confirmations.every(({ owner }) => owner.value !== wallet?.address)
-      return needsConfirmation && !isPending && canSign
-    })
+    return _getSafeMessagesAwaitingConfirmations(page.results, pendingMsgs, wallet?.address || '')
   }, [page?.results, pendingMsgs, wallet?.address])
 
   useEffect(() => {
