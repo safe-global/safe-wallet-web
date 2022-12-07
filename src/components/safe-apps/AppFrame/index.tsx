@@ -60,7 +60,7 @@ const IFRAME_SANDBOX_ALLOWED_FEATURES =
 const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
-  const [offChainSigning, setOffChainSigning] = useState(false)
+  const [settings, setSettings] = useState<SafeSettings>({})
   const safeMessages = useAppSelector(selectSafeMessages)
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe, safeLoaded, safeAddress } = useSafeInfo()
@@ -91,7 +91,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       requestId: string,
       method: Methods.signMessage | Methods.signTypedMessage,
     ) => {
-      openSignMessageModal(message, requestId, method, offChainSigning)
+      openSignMessageModal(message, requestId, method, !!settings.offChainSigning)
     },
     onGetPermissions: getPermissions,
     onSetPermissions: setPermissionsRequest,
@@ -132,14 +132,17 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         blockExplorerUriTemplate,
       }
     },
-    onSetSafeSettings: (settings: SafeSettings) => {
+    onSetSafeSettings: (safeSettings: SafeSettings) => {
       const EIP_1271_SUPPORTED_SAFE_VERSION = '1.0.0'
 
-      if (typeof settings.offChainSigning === 'boolean' && gte(safe.version, EIP_1271_SUPPORTED_SAFE_VERSION)) {
-        setOffChainSigning(settings.offChainSigning)
+      const newSettings: SafeSettings = {
+        ...settings,
+        offChainSigning: gte(safe.version, EIP_1271_SUPPORTED_SAFE_VERSION) && !!safeSettings.offChainSigning,
       }
 
-      return true
+      setSettings(newSettings)
+
+      return newSettings
     },
     onGetOffChainSignature: async (messageHash: string) => {
       const safeMessage = safeMessages.data?.results

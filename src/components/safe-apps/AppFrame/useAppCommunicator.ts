@@ -56,7 +56,7 @@ type UseAppCommunicatorHandlers = {
   onGetPermissions: (origin: string) => Permission[]
   onSetPermissions: (permissionsRequest?: SafePermissionsRequest) => void
   onRequestAddressBook: (origin: string) => AddressBookItem[]
-  onSetSafeSettings: (settings: SafeSettings) => boolean
+  onSetSafeSettings: (settings: SafeSettings) => SafeSettings
   onGetOffChainSignature: (messageHash: string) => Promise<string | undefined>
 }
 
