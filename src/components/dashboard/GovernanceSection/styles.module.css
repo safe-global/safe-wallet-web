@@ -23,25 +23,15 @@
   pointer-events: auto;
 }
 
-.loadErrorWrapper {
-  display: flex;
-}
-
-.widgetWrapper,
-.loadErrorWrapper {
+.widgetWrapper {
   border: none;
   height: 300px;
 }
 
 /* iframe sm breakpoint + paddings */
 @media (max-width: 662px) {
-  .widgetWrapper,
-  .loadErrorWrapper {
+  .widgetWrapper {
     height: 624px;
-  }
-
-  .loadErrorWrapper {
-    flex-direction: column;
   }
 }
 

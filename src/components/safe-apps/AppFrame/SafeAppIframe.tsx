@@ -1,11 +1,11 @@
-import type { ReactElement } from 'react'
+import type { MutableRefObject, ReactElement } from 'react'
 import css from './styles.module.css'
 
 type SafeAppIFrameProps = {
   appUrl: string
   allowedFeaturesList: string
   title?: string
-  iframeRef?: React.MutableRefObject<HTMLIFrameElement | null>
+  iframeRef?: MutableRefObject<HTMLIFrameElement | null>
   onLoad?: () => void
 }
 

@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Typography, Card, Box, Alert, IconButton, Link, SvgIcon } from '@mui/material'
 import { WidgetBody } from '@/components/dashboard/styled'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -5,7 +6,6 @@ import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import css from './styles.module.css'
-import SafeAppsErrorBoundary from '@/components/safe-apps/SafeAppsErrorBoundary'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag, SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
@@ -18,35 +18,15 @@ import SafeAppIframe from '@/components/safe-apps/AppFrame/SafeAppIframe'
 import type { UseAppCommunicatorHandlers } from '@/components/safe-apps/AppFrame/useAppCommunicator'
 import useAppCommunicator from '@/components/safe-apps/AppFrame/useAppCommunicator'
 import { useCurrentChain } from '@/hooks/useChains'
-import useAppIsLoading from '@/components/safe-apps/AppFrame/useAppIsLoading'
 import useGetSafeInfo from '@/components/safe-apps/AppFrame/useGetSafeInfo'
+import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
+import useAsync from '@/hooks/useAsync'
 
-// Prevent `GovernanceSection` hooks from needlessly being called
-const GovernanceSectionWrapper = () => {
-  const chainId = useChainId()
-  if (!getSafeTokenAddress(chainId)) {
-    return null
-  }
-
-  return <GovernanceSection />
-}
-
-const GovernanceSection = () => {
-  const isDarkMode = useDarkMode()
-  const theme = isDarkMode ? 'dark' : 'light'
-  const { getAllowedFeaturesList } = useBrowserPermissions()
-  const chain = useCurrentChain()
-  const [matchingApps, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
-  const claimingApp = matchingApps?.[0]
-  const { iframeRef, setAppIsLoading } = useAppIsLoading()
-  const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
-
-  // Initialize the app communicator
-  useAppCommunicator(iframeRef, claimingApp, chain, {
-    onGetSafeInfo: useGetSafeInfo(),
-  } as Partial<UseAppCommunicatorHandlers> as UseAppCommunicatorHandlers)
-
-  const WidgetLoadError = () => (
+// A fallback component when the Safe App fails to load
+const WidgetLoadErrorFallback = () => (
+  <Box display="flex" flexDirection="column" alignItems="center" height="100%">
     <Card className={css.loadErrorCard}>
       <Box className={css.loadErrorMsgContainer}>
         <Typography variant="h4" color="text.primary" fontWeight="bold">
@@ -62,14 +42,46 @@ const GovernanceSection = () => {
         </Typography>
       </Box>
     </Card>
-  )
+  </Box>
+)
 
-  const WidgetLoadErrorFallback = () => (
-    <Box className={css.loadErrorWrapper} display="flex" gap={3} width={1} sx={{ backgroundColor: 'background.main' }}>
-      <WidgetLoadError />
-      <WidgetLoadError />
-    </Box>
+// A mini Safe App frame with a minimal set of communication handlers
+const MiniAppFrame = ({ app, title }: { app: SafeAppData; title: string }) => {
+  const chain = useCurrentChain()
+  const isDarkMode = useDarkMode()
+  const theme = isDarkMode ? 'dark' : 'light'
+  const { getAllowedFeaturesList } = useBrowserPermissions()
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+
+  const [, error] = useAsync(() => {
+    if (!chain?.chainId) return
+    return fetchSafeAppFromManifest(app.url, chain.chainId)
+  }, [app.url, chain?.chainId])
+
+  // Initialize the app communicator
+  useAppCommunicator(iframeRef, app, chain, {
+    onGetSafeInfo: useGetSafeInfo(),
+  } as Partial<UseAppCommunicatorHandlers> as UseAppCommunicatorHandlers)
+
+  return error ? (
+    <WidgetLoadErrorFallback />
+  ) : (
+    <SafeAppIframe
+      key={theme}
+      appUrl={`${app.url}#widget+${theme}`}
+      allowedFeaturesList={getAllowedFeaturesList(app.url)}
+      title={title}
+      iframeRef={iframeRef}
+    />
   )
+}
+
+// Entire section for the governance widgets
+const GovernanceSection = () => {
+  const [matchingApps, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
+  const claimingApp = matchingApps?.[0]
+  const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
+  const { safeLoading } = useSafeInfo()
 
   return (
     <Accordion className={css.accordion} defaultExpanded>
@@ -94,17 +106,8 @@ const GovernanceSection = () => {
         {claimingApp || fetchingSafeClaimingApp ? (
           <WidgetBody>
             <Card className={css.widgetWrapper}>
-              {claimingApp ? (
-                <SafeAppsErrorBoundary render={() => <WidgetLoadErrorFallback />}>
-                  <SafeAppIframe
-                    key={theme}
-                    appUrl={`${claimingApp.url}#widget+${theme}`}
-                    allowedFeaturesList={getAllowedFeaturesList(claimingApp.url)}
-                    title="Sage Governance"
-                    iframeRef={iframeRef}
-                    onLoad={() => setAppIsLoading(false)}
-                  />
-                </SafeAppsErrorBoundary>
+              {claimingApp && !safeLoading ? (
+                <MiniAppFrame app={claimingApp} title="Safe Governance" />
               ) : (
                 <Box
                   className={css.widgetWrapper}
@@ -128,6 +131,16 @@ const GovernanceSection = () => {
       </AccordionDetails>
     </Accordion>
   )
+}
+
+// Prevent `GovernanceSection` hooks from needlessly being called
+const GovernanceSectionWrapper = () => {
+  const chainId = useChainId()
+  if (!getSafeTokenAddress(chainId)) {
+    return null
+  }
+
+  return <GovernanceSection />
 }
 
 export default GovernanceSectionWrapper
