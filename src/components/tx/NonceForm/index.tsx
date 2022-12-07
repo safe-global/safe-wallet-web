@@ -1,16 +1,17 @@
 import { memo, useMemo } from 'react'
 import type { ReactElement } from 'react'
 import { useController, useFormContext, useWatch } from 'react-hook-form'
-import { Autocomplete, IconButton, InputAdornment, MenuItem, TextField, Tooltip } from '@mui/material'
+import { Autocomplete, IconButton, InputAdornment, MenuItem, Tooltip } from '@mui/material'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import NumberField from '@/components/common/NumberField'
 import useTxQueue, { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import { uniqBy } from 'lodash'
 import { getTransactionType } from '@/hooks/useTransactionType'
 import useAddressBook from '@/hooks/useAddressBook'
-import type { MenuItemProps } from '@mui/material'
 import { getLatestTransactions } from '@/utils/tx-list'
+import type { MenuItemProps } from '@mui/material'
 
 type NonceFormProps = {
   name: string
@@ -112,13 +113,11 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
         },
       }}
       renderInput={(params) => (
-        <TextField
+        <NumberField
           {...params}
           name={name}
           onBlur={onBlur}
           inputRef={ref}
-          type="number"
-          autoComplete="off"
           error={!!fieldState.error}
           label={label}
           InputProps={{

@@ -7,6 +7,7 @@ import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui
 import { FormProvider, useForm } from 'react-hook-form'
 import type { SafeFormData } from '@/components/create-safe/types'
 import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type Props = {
   params: SafeFormData
@@ -72,7 +73,15 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
             </FormControl>
 
             <Typography mt={2}>
-              By continuing you consent to the <a href="#">terms of use</a> and <a href="#">privacy policy</a>.
+              By continuing you consent to the{' '}
+              <ExternalLink href="https://safe.global/terms" fontWeight={700}>
+                terms of use
+              </ExternalLink>{' '}
+              and{' '}
+              <ExternalLink href="https://safe.global/privacy" fontWeight={700}>
+                privacy policy
+              </ExternalLink>
+              .
             </Typography>
           </Box>
 
