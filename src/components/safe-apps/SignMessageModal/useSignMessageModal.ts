@@ -7,7 +7,7 @@ type StateType = {
   message: string | EIP712TypedData
   requestId: string
   method: Methods
-  offChain: boolean
+  isOffChain: boolean
 }
 
 const INITIAL_MODAL_STATE: StateType = {
@@ -15,7 +15,7 @@ const INITIAL_MODAL_STATE: StateType = {
   message: '',
   requestId: '',
   method: Methods.signMessage,
-  offChain: false,
+  isOffChain: false,
 }
 
 type ReturnType = [
@@ -24,7 +24,7 @@ type ReturnType = [
     message: string | EIP712TypedData,
     requestId: string,
     method: Methods.signMessage | Methods.signTypedMessage,
-    offChain: boolean,
+    isOffChain: boolean,
   ) => void,
   () => void,
 ]
@@ -37,7 +37,7 @@ const useSignMessageModal = (): ReturnType => {
       message: string | EIP712TypedData,
       requestId: string,
       method: Methods,
-      offChain = INITIAL_MODAL_STATE.offChain,
+      isOffChain = INITIAL_MODAL_STATE.isOffChain,
     ) => {
       setSignMessageModalState({
         ...INITIAL_MODAL_STATE,
@@ -45,7 +45,7 @@ const useSignMessageModal = (): ReturnType => {
         message,
         requestId,
         method,
-        offChain,
+        isOffChain,
       })
     },
     [],

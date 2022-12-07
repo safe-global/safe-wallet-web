@@ -4,7 +4,7 @@ import type { Middleware } from '@reduxjs/toolkit'
 import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import { makeLoadableSlice } from '@/store/common'
-import { selectPendinngSafeMessages } from '@/store/pendingSafeMessagesSlice'
+import { selectPendingSafeMessages } from '@/store/pendingSafeMessagesSlice'
 import type { RootState } from '@/store'
 
 const { slice, selector } = makeLoadableSlice('safeMessages', undefined as SafeMessageListPage | undefined)
@@ -18,7 +18,7 @@ export const safeMessagesMiddleware: Middleware<{}, RootState> = (store) => (nex
   switch (action.type) {
     case safeMessagesSlice.actions.set.type: {
       const state = store.getState()
-      const pendingMsgs = selectPendinngSafeMessages(state)
+      const pendingMsgs = selectPendingSafeMessages(state)
       const { payload } = action as ReturnType<typeof safeMessagesSlice.actions.set>
 
       if (!payload.data) {

@@ -219,7 +219,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [communicator, safe.threshold, signMessageModalState.requestId])
+  }, [communicator, signMessageModalState.requestId])
 
   const onSafeAppsModalClose = () => {
     if (txModalState.isOpen) {
@@ -310,7 +310,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
         )}
 
         {signMessageModalState.isOpen &&
-          (signMessageModalState.offChain ? (
+          (signMessageModalState.isOffChain ? (
             <MsgModal
               onClose={onSafeAppsModalClose}
               logoUri={remoteApp?.iconUrl || ''}

@@ -7,7 +7,7 @@ import { selectNotifications, showNotification } from '@/store/notificationsSlic
 import { formatError } from '@/utils/formatters'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import useSafeMessages from '@/hooks/useSafeMessages'
-import { selectPendinngSafeMessages } from '@/store/pendingSafeMessagesSlice'
+import { selectPendingSafeMessages } from '@/store/pendingSafeMessagesSlice'
 import useIsGranted from '@/hooks/useIsGranted'
 import { AppRoutes } from '@/config/routes'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -59,7 +59,7 @@ const useSafeMessageNotifications = () => {
    */
 
   const { page } = useSafeMessages()
-  const pendingMsgs = useAppSelector(selectPendinngSafeMessages)
+  const pendingMsgs = useAppSelector(selectPendingSafeMessages)
   const wallet = useWallet()
   const isGranted = useIsGranted()
   const notifications = useAppSelector(selectNotifications)
