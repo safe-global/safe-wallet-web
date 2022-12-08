@@ -1,6 +1,6 @@
 import { type ReactNode, type ReactElement } from 'react'
 import { Box } from '@mui/material'
-import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
 import type { TokenTransferModalProps } from '.'

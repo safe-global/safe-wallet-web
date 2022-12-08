@@ -6,7 +6,7 @@ import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import { NewSpendingLimit } from '@/components/settings/SpendingLimits/NewSpendingLimit'
 import { useCurrentChain } from '@/hooks/useChains'
 import { hasFeature } from '@/utils/chains'
-import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import useIsGranted from '@/hooks/useIsGranted'
 
 const SpendingLimits = () => {

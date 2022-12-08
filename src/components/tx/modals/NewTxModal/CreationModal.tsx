@@ -2,7 +2,7 @@ import { Box, DialogContent } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { UrlObject } from 'url'
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import ModalDialog from '@/components/common/ModalDialog'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'

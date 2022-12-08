@@ -1,5 +1,5 @@
 import type { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
-import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getProxyFactoryContractInstance } from '@/services/contracts/safeContracts'
 import type { ConnectedWallet } from '@/services/onboard'
 import { BigNumber } from '@ethersproject/bignumber'

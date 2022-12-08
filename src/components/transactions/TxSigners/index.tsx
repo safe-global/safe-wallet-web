@@ -11,7 +11,7 @@ import type {
   DetailedExecutionInfo,
   TransactionDetails,
   TransactionSummary,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+} from '@safe-global/safe-gateway-typescript-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsPending from '@/hooks/useIsPending'

@@ -1,4 +1,4 @@
-import type { DateLabel } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { DateLabel } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import css from './styles.module.css'
 import { formatWithSchema } from '@/utils/date'

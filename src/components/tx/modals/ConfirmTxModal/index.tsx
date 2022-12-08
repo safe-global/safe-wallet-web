@@ -4,7 +4,7 @@ import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import type { TxModalProps } from '@/components/tx/TxModal'
 import TxModal from '@/components/tx/TxModal'
 import ConfirmProposedTx from '@/components/tx/modals/ConfirmTxModal/ConfirmProposedTx'
-import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const ConfirmTxSteps: TxStepperProps['steps'] = [
   {
