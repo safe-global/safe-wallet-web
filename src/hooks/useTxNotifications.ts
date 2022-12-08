@@ -1,17 +1,19 @@
 import { useEffect, useMemo } from 'react'
+import type { LinkProps } from 'next/link'
 import { capitalize } from '@/utils/formatters'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { AppRoutes } from '@/config/routes'
-import useSafeInfo from './useSafeInfo'
 import { useCurrentChain } from './useChains'
 import useTxQueue from './useTxQueue'
 import { isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
+import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import useIsGranted from './useIsGranted'
 import useWallet from './wallets/useWallet'
+import useSafeAddress from './useSafeAddress'
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
@@ -39,6 +41,8 @@ enum Variant {
   ERROR = 'error',
 }
 
+const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
+
 // Format the error message
 export const formatError = (error: Error & { reason?: string }): string => {
   let { reason } = error
@@ -47,10 +51,20 @@ export const formatError = (error: Error & { reason?: string }): string => {
   return capitalize(reason)
 }
 
+const getTxLink = (txId: string, chain: ChainInfo, safeAddress: string): { href: LinkProps['href']; title: string } => {
+  return {
+    href: {
+      pathname: AppRoutes.transactions.tx,
+      query: { id: txId, safe: `${chain?.shortName}:${safeAddress}` },
+    },
+    title: 'View transaction',
+  }
+}
+
 const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
-  const { safeAddress } = useSafeInfo()
+  const safeAddress = useSafeAddress()
 
   /**
    * Show notifications of a transaction's lifecycle
@@ -62,13 +76,10 @@ const useTxNotifications = (): void => {
     const unsubFns = entries.map(([event, baseMessage]) =>
       txSubscribe(event, (detail) => {
         const isError = 'error' in detail
-        const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
+        const isSuccess = successEvents.includes(event)
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
-
         const txId = 'txId' in detail ? detail.txId : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
-
-        const shouldShowLink = event !== TxEvent.EXECUTING && txId
 
         dispatch(
           showNotification({
@@ -76,15 +87,7 @@ const useTxNotifications = (): void => {
             detailedMessage: isError ? detail.error.message : undefined,
             groupKey,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
-            ...(shouldShowLink && {
-              link: {
-                href: {
-                  pathname: AppRoutes.transactions.tx,
-                  query: { id: txId, safe: `${chain?.shortName}:${safeAddress}` },
-                },
-                title: 'View transaction',
-              },
-            }),
+            link: txId && chain ? getTxLink(txId, chain, safeAddress) : undefined,
           }),
         )
       }),
@@ -93,7 +96,7 @@ const useTxNotifications = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [dispatch, safeAddress, chain?.shortName])
+  }, [dispatch, safeAddress, chain])
 
   /**
    * If there's at least one transaction awaiting confirmations, show a notification for it
@@ -131,15 +134,12 @@ const useTxNotifications = (): void => {
         showNotification({
           variant: 'info',
           message: 'A transaction requires your confirmation.',
-          link: {
-            href: `${AppRoutes.transactions.tx}?id=${txId}&safe=${chain?.shortName}:${safeAddress}`,
-            title: 'View transaction',
-          },
+          link: chain && getTxLink(txId, chain, safeAddress),
           groupKey: txId,
         }),
       )
     }
-  }, [chain?.shortName, dispatch, isGranted, notifications, safeAddress, txsAwaitingConfirmation])
+  }, [chain, dispatch, isGranted, notifications, safeAddress, txsAwaitingConfirmation])
 }
 
 export default useTxNotifications

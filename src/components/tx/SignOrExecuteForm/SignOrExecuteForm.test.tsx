@@ -422,7 +422,7 @@ describe('SignOrExecuteForm', () => {
     expect(proposeSpy).toHaveBeenCalledTimes(1)
   })
 
-  it("smart contract wallets don't propose but create a new on-chain signature transaction", async () => {
+  it('smart contract wallets have to propose when creating a tx with an on-chain signature', async () => {
     const mockTx = createSafeTx()
     const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning')
     const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
@@ -437,10 +437,10 @@ describe('SignOrExecuteForm', () => {
     })
 
     await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
-    expect(proposeSpy).not.toHaveBeenCalled()
+    expect(proposeSpy).toHaveBeenCalled()
   })
 
-  it("smart contract wallets dont't propose, but sign existing transactions on-chain", async () => {
+  it('smart contract wallets should not propose when on-chain signing an existing transactions', async () => {
     const mockTx = createSafeTx()
     const onChainSignSpy = jest.spyOn(txSender, 'dispatchOnChainSigning')
     const proposeSpy = jest.spyOn(txSender, 'dispatchTxProposal')
