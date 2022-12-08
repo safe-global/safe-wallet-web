@@ -23,7 +23,10 @@ const TxNotifications = {
   [TxEvent.PROCESSING]: 'Your transaction is being processed.',
   [TxEvent.PROCESSING_MODULE]:
     'Your transaction has been submitted and will appear in the interface only after it has been successfully processed and indexed.',
-  [TxEvent.AWAITING_ON_CHAIN_SIGNATURE]: 'An on-chain signature request was submitted.',
+  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]:
+    'An on-chain signature is required. Please confirm the transaction in your wallet.',
+  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]:
+    'On-chain signature was successfully submitted. Please wait for the signature to be indexed.',
   [TxEvent.PROCESSED]: 'Your transaction was successfully processed and is now being indexed.',
   [TxEvent.REVERTED]: 'Transaction reverted. Please check your gas settings.',
   [TxEvent.SUCCESS]: 'Your transaction was successfully executed.',

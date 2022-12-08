@@ -268,7 +268,7 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
   const eventParams = txId ? { txId } : { groupKey: safeTxHash }
 
-  txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, eventParams)
+  txDispatch(TxEvent.ONCHAIN_SIGNATURE_REQUESTED, eventParams)
 
   try {
     // With the unchecked signer, the contract call resolves once the tx
@@ -278,6 +278,8 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
     txDispatch(TxEvent.FAILED, { ...eventParams, error: err as Error })
     throw err
   }
+
+  txDispatch(TxEvent.ONCHAIN_SIGNATURE_SUCCESS, eventParams)
 
   // Until the on-chain signature is/has been executed, the safeTx is not
   // signed so we don't return it
