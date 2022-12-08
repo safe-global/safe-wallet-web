@@ -268,6 +268,8 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
   const eventParams = txId ? { txId } : { groupKey: safeTxHash }
 
+  txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, eventParams)
+
   try {
     // With the unchecked signer, the contract call resolves once the tx
     // has been submitted in the wallet not when it has been executed
@@ -276,8 +278,6 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
     txDispatch(TxEvent.FAILED, { ...eventParams, error: err as Error })
     throw err
   }
-
-  txDispatch(TxEvent.AWAITING_ON_CHAIN_SIGNATURE, eventParams)
 
   // Until the on-chain signature is/has been executed, the safeTx is not
   // signed so we don't return it
@@ -450,6 +450,8 @@ export const dispatchSpendingLimitTxExecution = async (
   return result?.hash
 }
 
-export const dispatchSafeAppsTx = (safeAppRequestId: RequestId, txId?: string) => {
-  txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, txId })
+export const dispatchSafeAppsTx = async (safeTx: SafeTransaction, safeAppRequestId: RequestId) => {
+  const sdk = getAndValidateSafeSDK()
+  const safeTxHash = await sdk.getTransactionHash(safeTx)
+  txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, safeTxHash })
 }

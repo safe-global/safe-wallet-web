@@ -14,7 +14,7 @@ const WalletDetails = ({ onConnect }: { onConnect?: (wallet?: ConnectedWallet) =
 
       <KeyholeIcon />
 
-      <Button onClick={handleConnect} variant="contained" disableElevation>
+      <Button onClick={handleConnect} variant="contained" size="small" disableElevation fullWidth>
         Connect
       </Button>
     </>

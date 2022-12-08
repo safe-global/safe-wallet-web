@@ -38,7 +38,7 @@ interface TxEvents {
   [TxEvent.REVERTED]: Id & { error: Error }
   [TxEvent.FAILED]: Id & { error: Error }
   [TxEvent.SUCCESS]: Id
-  [TxEvent.SAFE_APPS_REQUEST]: { safeAppRequestId: RequestId; txId?: string }
+  [TxEvent.SAFE_APPS_REQUEST]: { safeAppRequestId: RequestId; safeTxHash: string }
 }
 
 const txEventBus = new EventBus<TxEvents>()
