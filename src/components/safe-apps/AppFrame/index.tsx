@@ -42,6 +42,7 @@ import { safeMsgSubscribe, SafeMsgEvent } from '@/services/safe-messages/safeMsg
 import { useAppSelector } from '@/store'
 import { selectSafeMessages } from '@/store/safeMessagesSlice'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
+import { supportsEIP1271 } from '@/utils/safe-messages'
 
 import css from './styles.module.css'
 
@@ -134,7 +135,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     onSetSafeSettings: (safeSettings: SafeSettings) => {
       const newSettings: SafeSettings = {
         ...settings,
-        offChainSigning: !!safeSettings.offChainSigning,
+        offChainSigning: supportsEIP1271(safe) && !!safeSettings.offChainSigning,
       }
 
       setSettings(newSettings)
