@@ -12,7 +12,7 @@ const ExternalLink = ({
 }: Omit<LinkProps, 'target' | 'rel'> & { suppressIcon?: boolean }) => {
   return (
     <Link rel="noreferrer noopener" target="_blank" {...props}>
-      <Box display="inline-flex" alignItems="center" gap={0.2}>
+      <Box display="inline-flex" alignItems="center" gap={0.2} component="span">
         {children}
         {!suppressIcon && <OpenInNewRounded fontSize="small" />}
       </Box>
