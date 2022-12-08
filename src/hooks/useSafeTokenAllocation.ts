@@ -110,8 +110,6 @@ const fetchTokenBalance = async (chainId: string, safeAddress: string): Promise<
       data: tokenInterface.encodeFunctionData('balanceOf', [safeAddress]),
     })
 
-    console.log('Token balance', tokenBalance)
-
     return tokenBalance || '0'
   } catch (err) {
     throw Error(`Error fetching Safe token balance:  ${err}`)
