@@ -12,7 +12,7 @@ import {
   dispatchTxExecution,
   dispatchTxProposal,
   dispatchTxSigning,
-} from '../txSender'
+} from '.'
 import { ErrorCode } from '@ethersproject/logger'
 import { waitFor } from '@/tests/test-utils'
 import { Web3Provider } from '@ethersproject/providers'

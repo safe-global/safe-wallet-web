@@ -10,7 +10,7 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import RemoveDialog from '@/components/address-book/RemoveDialog'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import useIsGranted from '@/hooks/useIsGranted'
 import NewTxModal from '@/components/tx/modals/NewTxModal'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -47,7 +47,7 @@ const defaultOpen = {
 
 const AddressBookTable = () => {
   const chain = useCurrentChain()
-  const isSafeOwner = useIsSafeOwner()
+  const isGranted = useIsGranted()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const [searchQuery, setSearchQuery] = useState('')
   const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)
@@ -110,7 +110,7 @@ const AddressBookTable = () => {
             </Tooltip>
           </Track>
 
-          {isSafeOwner && (
+          {isGranted && (
             <Track {...ADDRESS_BOOK_EVENTS.SEND}>
               <Button
                 variant="contained"
