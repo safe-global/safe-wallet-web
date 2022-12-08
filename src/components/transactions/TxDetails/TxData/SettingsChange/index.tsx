@@ -46,7 +46,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
               customAvatar={settingsInfo.owner?.logoUri}
               {...addressInfoProps}
             />
-            <InfoDetails title="Increase/decrease confirmation policy to:">{settingsInfo.threshold}</InfoDetails>
+            <InfoDetails title="Required confirmations for new transactions:">{settingsInfo.threshold}</InfoDetails>
           </InfoDetails>
         </>
       )
@@ -77,7 +77,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
       return (
         <>
           <ThresholdWarning />
-          <InfoDetails title="Increase/decrease confirmation policy to:">{settingsInfo.threshold}</InfoDetails>
+          <InfoDetails title="Required confirmations for new transactions:">{settingsInfo.threshold}</InfoDetails>
         </>
       )
     }

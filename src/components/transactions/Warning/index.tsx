@@ -55,7 +55,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
 
 export const ThresholdWarning = (): ReactElement => (
   <Warning
-    title="This transaction potentially alters the number of confirmations required to execute a transaction."
+    title="This transaction potentially alters the number of confirmations required to execute a transaction. Please verify before signing."
     severity="warning"
     text="Confirmation policy change"
   />
