@@ -104,7 +104,7 @@ export const formatAmount = (number: string | number, precision?: number): strin
 }
 
 /**
- * Returns a formatted number with a defined precision not adhering to our style guide notation
+ * Returns a formatted number with a defined precision not adhering to our style guide compact notation
  * @param number Number to format
  * @param precision Fraction digits to show
  */
