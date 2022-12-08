@@ -3,7 +3,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
 import type { ChangeOwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
-import { createAddOwnerTx, createSwapOwnerTx } from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
@@ -15,6 +15,7 @@ import React from 'react'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 
 export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; onSubmit: (txId?: string) => void }) => {
+  const { createSwapOwnerTx, createAddOwnerTx } = useTxSender()
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const dispatch = useAppDispatch()
@@ -33,7 +34,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
         threshold,
       })
     }
-  }, [removedOwner, newOwner])
+  }, [removedOwner, newOwner, createSwapOwnerTx, createAddOwnerTx])
 
   const isReplace = Boolean(removedOwner)
 

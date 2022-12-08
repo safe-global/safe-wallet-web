@@ -1,4 +1,4 @@
-import { formatAmount, formatCurrency } from '@/utils/formatNumber'
+import { formatAmount, formatAmountPrecise, formatCurrency } from '@/utils/formatNumber'
 
 describe('formatNumber', () => {
   describe('formatAmount', () => {
@@ -266,6 +266,34 @@ describe('formatNumber', () => {
       expect(formatCurrency(amount4, 'EUR')).toBe('< -0.01 EUR')
       expect(formatCurrency(amount4, 'GBP')).toBe('< -0.01 GBP')
       expect(formatCurrency(amount4, 'BHD')).toBe('< -0.001 BHD')
+    })
+  })
+
+  describe('formatAmountPrecise', () => {
+    it('should format amounts without the compact notation', () => {
+      const tokenDecimals = 18
+
+      const amount1 = 100_000_000.00001 // 100M
+      expect(formatAmountPrecise(amount1, tokenDecimals)).toEqual('100,000,000.00001')
+
+      const amount2 = 1_000_000_000.00001 // 1B
+      expect(formatAmountPrecise(amount2, tokenDecimals)).toEqual('1,000,000,000.00001')
+
+      const amount3 = 1_234_567_898.123456789 // 1.235B
+      expect(formatAmountPrecise(amount3, tokenDecimals)).toEqual('1,234,567,898.1234567')
+    })
+
+    it('should preserve the max fraction digits', () => {
+      const tokenDecimals = 18
+
+      const amount1 = 0.000001 // < 0.00001
+      expect(formatAmountPrecise(amount1, tokenDecimals)).toEqual('0.000001')
+
+      const amount2 = 0.00000123456789 // 14 decimals
+      expect(formatAmountPrecise(amount2, tokenDecimals)).toEqual('0.00000123456789') // 14 decimals
+
+      const amount3 = 0.00000123456789012345 // 20 decimals
+      expect(formatAmountPrecise(amount3, tokenDecimals)).toEqual('0.000001234567890123') // 18 decimals
     })
   })
 })
