@@ -115,7 +115,7 @@ export const formatAmountPrecise = (number: string | number, precision: number):
     maximumFractionDigits: precision,
   })
 
-  return formatter.format(Number(float))
+  return formatter.format(float)
 }
 
 // Fiat formatting
