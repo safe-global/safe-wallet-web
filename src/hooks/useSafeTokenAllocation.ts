@@ -25,7 +25,8 @@ type VestingData = {
 
 type Vesting = VestingData & {
   isExpired: boolean
-  claimedTokens: string
+  isRedeemed: boolean
+  amountClaimed: string
 }
 
 // We currently do not have typechain as dependency so we fallback to human readable ABIs
@@ -37,45 +38,38 @@ const tokenInterface = new Interface(['function balanceOf(address _owner) public
 
 /**
  * Add on-chain information to allocation.
- * Fetches if a the redeem deadline is expired and the claimed tokens from on-chain
+ * Fetches if the redeem deadline is expired and the claimed tokens from on-chain
  */
 const completeAllocation = async (allocation: VestingData): Promise<Vesting> => {
   const web3ReadOnly = getWeb3ReadOnly()
   if (!web3ReadOnly) {
     throw new Error('Cannot fetch vesting without web3 provider')
   }
-  const onChainVestingData = await web3ReadOnly?.call({
+  const onChainVestingData = await web3ReadOnly.call({
     to: allocation.contract,
     data: airdropInterface.encodeFunctionData('vestings', [allocation.vestingId]),
   })
 
-  if (!onChainVestingData) {
-    throw new Error(`Could not load vesting information for vesting with id ${allocation.vestingId}`)
-  }
-
   const decodedVestingData = defaultAbiCoder.decode(
+    // account, curveType, managed, durationWeeks, startDate, amount, amountClaimed, pausingDate, cancelled}
     ['address', 'uint8', 'bool', 'uint16', 'uint64', 'uint128', 'uint128', 'uint64', 'bool'],
     onChainVestingData,
   )
-  if (decodedVestingData[0].toLowerCase() !== ZERO_ADDRESS.toLowerCase()) {
-    // allocation is redeemed, return the amountClaimed from on-chain
-    return { ...allocation, isExpired: false, claimedTokens: decodedVestingData[6] }
+  const isRedeemed = decodedVestingData[0].toLowerCase() !== ZERO_ADDRESS.toLowerCase()
+  if (isRedeemed) {
+    return { ...allocation, isRedeemed, isExpired: false, amountClaimed: decodedVestingData[6] }
   }
 
   // Allocation is not yet redeemed => check the redeemDeadline
-  const redeemDeadline = await web3ReadOnly?.call({
+  const redeemDeadline = await web3ReadOnly.call({
     to: allocation.contract,
     data: airdropInterface.encodeFunctionData('redeemDeadline'),
   })
 
-  if (!redeemDeadline) {
-    throw new Error(`No redeemDeadline found for contract ${allocation.contract}`)
-  }
-
   const redeemDeadlineDate = new Date(BigNumber.from(redeemDeadline).mul(1000).toNumber())
 
   // Allocation is valid if redeem deadline is in future
-  return { ...allocation, isExpired: isPast(redeemDeadlineDate), claimedTokens: '0' }
+  return { ...allocation, isRedeemed, isExpired: isPast(redeemDeadlineDate), amountClaimed: '0' }
 }
 
 const fetchAllocation = async (chainId: string, safeAddress: string): Promise<VestingData[]> => {
@@ -105,12 +99,12 @@ const fetchTokenBalance = async (chainId: string, safeAddress: string): Promise<
     const safeTokenAddress = getSafeTokenAddress(chainId)
     if (!safeTokenAddress || !web3ReadOnly) return '0'
 
-    const tokenBalance = await web3ReadOnly?.call({
+    const tokenBalance = await web3ReadOnly.call({
       to: safeTokenAddress,
       data: tokenInterface.encodeFunctionData('balanceOf', [safeAddress]),
     })
 
-    return tokenBalance || '0'
+    return tokenBalance
   } catch (err) {
     throw Error(`Error fetching Safe token balance:  ${err}`)
   }
@@ -126,12 +120,11 @@ const useSafeTokenAllocation = (): [BigNumber | undefined, boolean] => {
 
   const [allocationData, _, allocationLoading] = useAsync<Vesting[] | undefined>(async () => {
     if (!safeAddress) return
-    const allocations = await Promise.all(
+    return Promise.all(
       await fetchAllocation(chainId, safeAddress).then((allocations) =>
         allocations.map((allocation) => completeAllocation(allocation)),
       ),
     )
-    return allocations
     // If the history tag changes we could have claimed / redeemed tokens
   }, [chainId, safeAddress, safe.txHistoryTag])
 
@@ -142,11 +135,11 @@ const useSafeTokenAllocation = (): [BigNumber | undefined, boolean] => {
   }, [chainId, safeAddress, safe.txHistoryTag])
 
   const allocation = useMemo(() => {
-    if (!allocationData && !balance) return
+    if (!allocationData || !balance) return
 
     const tokensInVesting =
       allocationData?.reduce(
-        (acc, data) => (data.isExpired ? acc : acc.add(data.amount).sub(data.claimedTokens)),
+        (acc, data) => (data.isExpired ? acc : acc.add(data.amount).sub(data.amountClaimed)),
         BigNumber.from(0),
       ) || BigNumber.from(0)
 
