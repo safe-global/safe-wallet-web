@@ -10,13 +10,13 @@ const TxButton = ({ sx, ...props }: ButtonProps) => (
 
 export const SendTokensButton = ({ onClick, ...props }: ButtonProps) => (
   <TxButton onClick={onClick} startIcon={<SvgIcon component={AssetsIcon} inheritViewBox />} {...props}>
-    Token transfer
+    Send tokens
   </TxButton>
 )
 
 export const SendNFTsButton = ({ onClick, ...props }: ButtonProps) => (
   <TxButton onClick={onClick} startIcon={<SvgIcon component={NftIcon} inheritViewBox />} {...props}>
-    NFT transfer
+    Send NFTs
   </TxButton>
 )
 
