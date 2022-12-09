@@ -43,7 +43,7 @@ type JsonRpcResponse = {
   error?: string
 }
 
-type UseAppCommunicatorHandlers = {
+export type UseAppCommunicatorHandlers = {
   onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => void
   onSignMessage: (
     message: string | EIP712TypedData,
