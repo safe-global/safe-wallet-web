@@ -36,11 +36,11 @@ export const initSafeSDK = async (
   provider: EIP1193Provider,
   chainId: string,
   safeAddress: string,
-  safeVersion: string,
+  safeVersion?: string,
 ): Promise<Safe> => {
   let isL1SafeMasterCopy = chainId === chains.eth
   // Legacy Safe contracts
-  if (isLegacyVersion(safeVersion)) {
+  if (safeVersion && isLegacyVersion(safeVersion)) {
     isL1SafeMasterCopy = true
   }
 

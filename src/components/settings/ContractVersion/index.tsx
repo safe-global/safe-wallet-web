@@ -33,7 +33,7 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
         Contract version
       </Typography>
       <ExternalLink href={safeMasterCopy?.deployerRepoUrl}>
-        {safe.version}
+        {safe?.version}
         {getSafeVersionUpdate()}
       </ExternalLink>
 

@@ -32,14 +32,14 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [data.txs, chain?.chainId])
 
   const multiSendContract = useMemo(() => {
-    if (!chain?.chainId) return
+    if (!chain?.chainId || !safe?.version) return
     return getMultiSendCallOnlyContractInstance(chain.chainId, safe.version)
-  }, [chain?.chainId, safe.version])
+  }, [chain?.chainId, safe?.version])
 
   const multiSendTxs = useMemo(() => {
-    if (!txsWithDetails || !chain) return
+    if (!txsWithDetails || !chain || !safe?.version) return
     return getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
-  }, [chain, safe.address.value, safe.version, txsWithDetails])
+  }, [chain, safe.address.value, safe?.version, txsWithDetails])
 
   const multiSendTxData = useMemo(() => {
     if (!txsWithDetails || !multiSendTxs) return

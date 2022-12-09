@@ -32,7 +32,7 @@ const GUARD_SUPPORTED_SAFE_VERSION = '1.3.0'
 const TransactionGuards = () => {
   const { safe, safeLoaded } = useSafeInfo()
 
-  const isVersionWithGuards = safeLoaded && gte(safe.version, GUARD_SUPPORTED_SAFE_VERSION)
+  const isVersionWithGuards = safeLoaded && safe?.version && gte(safe.version, GUARD_SUPPORTED_SAFE_VERSION)
 
   if (!isVersionWithGuards) {
     return null
