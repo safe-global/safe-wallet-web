@@ -48,7 +48,7 @@ export const getSpecificGnosisSafeContractInstance = (safe: SafeInfo) => {
 
   return ethAdapter.getSafeContract({
     customContractAddress: safe.address.value,
-    ..._getValidatedGetContractProps(safe.chainId, safe?.version),
+    ..._getValidatedGetContractProps(safe.chainId, safe.version),
   })
 }
 

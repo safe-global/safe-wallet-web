@@ -108,7 +108,7 @@ export const _getMultiSendCallOnlyPayload = (
   params: MultiSendTransactionSimulationParams,
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   const data = encodeMultiSendData(params.transactions)
-  const instance = getMultiSendCallOnlyContractInstance(params.safe.chainId, params.safe?.version)
+  const instance = getMultiSendCallOnlyContractInstance(params.safe.chainId, params.safe.version)
 
   return {
     to: instance.getAddress(),
