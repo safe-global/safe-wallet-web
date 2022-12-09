@@ -1,4 +1,10 @@
-import { addressBookSlice, setAddressBook, upsertAddressBookEntry, removeAddressBookEntry } from '../addressBookSlice'
+import {
+  addressBookSlice,
+  setAddressBook,
+  upsertAddressBookEntry,
+  removeAddressBookEntry,
+  selectAddressBookByChain,
+} from '../addressBookSlice'
 
 const initialState = {
   '1': { '0x0': 'Alice', '0x1': 'Bob' },
@@ -53,5 +59,18 @@ describe('addressBookSlice', () => {
       '1': { '0x1': 'Bob' },
       '4': { '0x0': 'Charlie', '0x1': 'Dave' },
     })
+  })
+
+  it('should not return entries with invalid address format', () => {
+    const initialState = {
+      '1': { '0x0': 'Alice', '0x1': 'Bob', '0x2': 'Fred' },
+      '5': { '0x744aaf04ad770895ce469300771d2ca38463cfa0': 'legit', undefined: 'bug' },
+    }
+
+    const expectedOutput = {
+      '0x744aaf04ad770895ce469300771d2ca38463cfa0': 'legit',
+    }
+
+    expect(selectAddressBookByChain.resultFunc(initialState, '5')).toEqual(expectedOutput)
   })
 })
