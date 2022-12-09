@@ -1,9 +1,9 @@
-import { getChainsConfig } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getChainsConfig } from '@safe-global/safe-gateway-typescript-sdk'
 import useLoadChains from '@/hooks/loadables/useLoadChains'
 import { act, renderHook } from '@/tests/test-utils'
 
 // Mock getChainsConfig
-jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => {
+jest.mock('@safe-global/safe-gateway-typescript-sdk', () => {
   return {
     getChainsConfig: jest.fn(() => {
       return new Promise((resolve) => {

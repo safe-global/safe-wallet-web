@@ -5,7 +5,7 @@ import {
   TransferDirection,
   type AddressEx,
   type TransactionSummary,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+} from '@safe-global/safe-gateway-typescript-sdk'
 
 import { isCancellationTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import useAddressBook from './useAddressBook'

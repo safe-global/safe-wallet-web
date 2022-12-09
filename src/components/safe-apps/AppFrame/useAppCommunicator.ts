@@ -2,7 +2,11 @@ import type { MutableRefObject } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
 import { BigNumber } from '@ethersproject/bignumber'
-import type { SafeAppData, ChainInfo as WebCoreChainInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type {
+  SafeAppData,
+  ChainInfo as WebCoreChainInfo,
+  TransactionDetails,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import type { Permission, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
 import type {
   AddressBookItem,

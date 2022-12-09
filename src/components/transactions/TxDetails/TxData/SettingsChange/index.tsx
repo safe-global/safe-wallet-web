@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactElement } from 'react'
-import type { SettingsChange } from '@gnosis.pm/safe-react-gateway-sdk'
-import { SettingsInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SettingsChange } from '@safe-global/safe-gateway-typescript-sdk'
+import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import { ThresholdWarning } from '@/components/transactions/Warning'
@@ -46,7 +46,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
               customAvatar={settingsInfo.owner?.logoUri}
               {...addressInfoProps}
             />
-            <InfoDetails title="Increase/decrease confirmation policy to:">{settingsInfo.threshold}</InfoDetails>
+            <InfoDetails title="Required confirmations for new transactions:">{settingsInfo.threshold}</InfoDetails>
           </InfoDetails>
         </>
       )
@@ -77,7 +77,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
       return (
         <>
           <ThresholdWarning />
-          <InfoDetails title="Increase/decrease confirmation policy to:">{settingsInfo.threshold}</InfoDetails>
+          <InfoDetails title="Required confirmations for new transactions:">{settingsInfo.threshold}</InfoDetails>
         </>
       )
     }

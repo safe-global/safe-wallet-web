@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import useSafeInfo from '@/hooks/useSafeInfo'

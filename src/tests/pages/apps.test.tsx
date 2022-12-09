@@ -1,11 +1,11 @@
 import React from 'react'
-import * as safeAppsGatewaySDK from '@gnosis.pm/safe-react-gateway-sdk'
+import * as safeAppsGatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
 import { render, screen, waitFor, fireEvent, act } from '../test-utils'
 import AppsPage from '@/pages/apps'
 import * as safeAppsService from '@/services/safe-apps/manifest'
 
-jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
-  ...jest.requireActual('@gnosis.pm/safe-react-gateway-sdk'),
+jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
+  ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
   getSafeApps: (chainId: string) =>
     Promise.resolve([
       {

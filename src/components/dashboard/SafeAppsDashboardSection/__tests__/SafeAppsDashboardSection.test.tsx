@@ -1,10 +1,10 @@
-import * as safeAppsGatewaySDK from '@gnosis.pm/safe-react-gateway-sdk'
+import * as safeAppsGatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
 import { render, screen, waitFor } from '@/tests/test-utils'
 import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
 import { LS_NAMESPACE } from '@/config/constants'
 
-jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
-  ...jest.requireActual('@gnosis.pm/safe-react-gateway-sdk'),
+jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
+  ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
   getSafeApps: (chainId: string) =>
     Promise.resolve([
       {

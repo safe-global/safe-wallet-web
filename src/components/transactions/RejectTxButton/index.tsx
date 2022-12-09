@@ -1,4 +1,4 @@
-import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { Button, Tooltip, SvgIcon } from '@mui/material'
 
 import type { SyntheticEvent, ReactElement } from 'react'

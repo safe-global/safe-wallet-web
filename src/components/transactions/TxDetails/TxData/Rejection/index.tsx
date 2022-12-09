@@ -1,6 +1,6 @@
 import ExternalLink from '@/components/common/ExternalLink'
 import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
-import type { MultisigExecutionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { MultisigExecutionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
 

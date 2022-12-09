@@ -1,5 +1,5 @@
-import type { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { proposeTransaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { Operation, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { proposeTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 const proposeTx = async (

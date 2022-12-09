@@ -4,7 +4,7 @@ import { useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { getBalances, getTransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getBalances, getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { AddressBookItem, RequestId } from '@gnosis.pm/safe-apps-sdk'
 import { Methods } from '@gnosis.pm/safe-apps-sdk'
 
