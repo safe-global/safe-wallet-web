@@ -1,5 +1,5 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { ADDRESS_RE } from '@/utils/validation'
+import { isAddress } from '@/utils/validation'
 import { pickBy } from 'lodash'
 import type { RootState } from '.'
 
@@ -48,7 +48,7 @@ export const selectAddressBookByChain = createSelector(
   [selectAllAddressBooks, (_, chainId: string) => chainId],
   (allAddressBooks, chainId): AddressBook => {
     const chainAddresses = allAddressBooks[chainId]
-    const validAddresses = pickBy(chainAddresses, (_, key) => ADDRESS_RE.test(key))
+    const validAddresses = pickBy(chainAddresses, (_, key) => isAddress(key))
     return chainId ? validAddresses || {} : {}
   },
 )
