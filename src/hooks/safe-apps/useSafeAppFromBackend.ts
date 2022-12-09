@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getSafeApps } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import { getSafeApps } from '@safe-global/safe-gateway-typescript-sdk'
 import { Errors, logError } from '@/services/exceptions'
 import type { AsyncResult } from '../useAsync'
 import useAsync from '../useAsync'

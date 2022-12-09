@@ -2455,13 +2455,6 @@
   dependencies:
     cross-fetch "^3.1.5"
 
-"@gnosis.pm/safe-react-gateway-sdk@^3.4.6":
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.4.6.tgz#14ae3cd6557eb2a3d0f165228b95f16d24aebfa8"
-  integrity sha512-9JeALF5j4cGF8a9NBZTJP2owGruG7w3bw8O6xR8JY2ZyJw4l5f0MHbPU/7rGPHwN33Q9W5c5u1tkXHiHkjkReQ==
-  dependencies:
-    cross-fetch "^3.1.5"
-
 "@hapi/hoek@^9.0.0":
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"
@@ -3281,6 +3274,13 @@
     "@safe-global/safe-core-sdk-types" "^1.7.0"
     "@safe-global/safe-core-sdk-utils" "^1.5.0"
     ethers "^5.7.2"
+
+"@safe-global/safe-gateway-typescript-sdk@^3.5.3":
+  version "3.5.3"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.5.3.tgz#07b5307601ba9d9d0d62f6366fdfc3cdfdfc6f87"
+  integrity sha512-HzvCmFHw9NEOJK9d3X8nqG3MMuw+/ceccltrgBenHn8OUxNkv8za9jUou0YUmG0HtJ4tKFTW+z8AwpohHTmWAw==
+  dependencies:
+    cross-fetch "^3.1.5"
 
 "@scure/base@~1.1.0":
   version "1.1.1"

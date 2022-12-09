@@ -2,7 +2,7 @@ import type { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
 import type Safe from '@safe-global/safe-core-sdk'
 import { SafeFactory, type DeploySafeProps } from '@safe-global/safe-core-sdk'
 import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
-import type { ChainInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import {
   getFallbackHandlerContractInstance,
@@ -14,7 +14,7 @@ import type { PredictSafeProps } from '@safe-global/safe-core-sdk/dist/src/safeF
 import type { SafeFormData, PendingSafeTx } from '@/components/create-safe/types.d'
 import type { ConnectedWallet } from '@/services/onboard'
 import { BigNumber } from '@ethersproject/bignumber'
-import { getSafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { backOff } from 'exponential-backoff'
 import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'

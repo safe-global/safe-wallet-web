@@ -1,4 +1,4 @@
-import type { TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { groupConflictingTxs } from '@/utils/tx-list'
 

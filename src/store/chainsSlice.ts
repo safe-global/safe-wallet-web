@@ -1,4 +1,4 @@
-import { type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { createSelector } from '@reduxjs/toolkit'
 import type { RootState } from '.'
 import { makeLoadableSlice } from './common'

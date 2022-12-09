@@ -12,7 +12,7 @@ import {
   Box,
   SvgIcon,
 } from '@mui/material'
-import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import TokenIcon from '@/components/common/TokenIcon'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'

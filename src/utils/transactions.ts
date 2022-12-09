@@ -7,13 +7,13 @@ import type {
   Transaction,
   TransactionDetails,
   TransactionListPage,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+} from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConflictType,
   FEATURES,
   getTransactionDetails,
   TransactionListItemType,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+} from '@safe-global/safe-gateway-typescript-sdk'
 import {
   isModuleDetailedExecutionInfo,
   isMultisigDetailedExecutionInfo,

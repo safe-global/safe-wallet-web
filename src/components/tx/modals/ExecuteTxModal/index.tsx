@@ -2,7 +2,7 @@ import React from 'react'
 
 import type { TxModalProps } from '@/components/tx/TxModal'
 import TxModal from '@/components/tx/TxModal'
-import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import ConfirmProposedTx from '@/components/tx/modals/ConfirmTxModal/ConfirmProposedTx'
 

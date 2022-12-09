@@ -1,6 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
 import { isEmpty } from 'lodash'
-import type { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import { IconButton } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import styles from './index.module.css'

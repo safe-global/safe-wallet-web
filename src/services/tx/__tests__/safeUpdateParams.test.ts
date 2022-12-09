@@ -4,7 +4,7 @@ import {
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
 } from '@gnosis.pm/safe-deployments'
-import type { ChainInfo, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
 import { CHANGE_FALLBACK_HANDLER_ABI, CHANGE_MASTER_COPY_ABI, createUpdateSafeTxs } from '../safeUpdateParams'
 import { LATEST_SAFE_VERSION } from '@/config/constants'

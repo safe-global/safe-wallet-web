@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { type SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, CircularProgress } from '@mui/material'
 import useCollectibles from '@/hooks/useCollectibles'
 import ErrorMessage from '@/components/tx/ErrorMessage'
