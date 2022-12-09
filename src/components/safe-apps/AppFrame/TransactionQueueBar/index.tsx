@@ -10,7 +10,7 @@ import styles from './styles.module.css'
 import { getQueuedTransactionCount } from '@/utils/transactions'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
-import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 
 type Props = {
   expanded: boolean
@@ -49,6 +49,7 @@ const TransactionQueueBar = ({
                 enter: 0,
                 exit: 500,
               },
+              unmountOnExit: true,
               mountOnEnter: true,
             }}
             sx={{

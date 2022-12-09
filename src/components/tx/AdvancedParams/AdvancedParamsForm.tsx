@@ -1,6 +1,5 @@
 import { type SyntheticEvent } from 'react'
-import { Button, DialogActions, FormControl, Grid, Link, Typography, DialogContent } from '@mui/material'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import { Button, DialogActions, FormControl, Grid, Typography, DialogContent } from '@mui/material'
 import { BigNumber } from 'ethers'
 import { FormProvider, useForm } from 'react-hook-form'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
@@ -9,9 +8,10 @@ import NonceForm from '../NonceForm'
 import ModalDialog from '@/components/common/ModalDialog'
 import { AdvancedField, type AdvancedParameters } from './types.d'
 import GasLimitInput from './GasLimitInput'
+import ExternalLink from '@/components/common/ExternalLink'
 import NumberField from '@/components/common/NumberField'
 
-const HELP_LINK = 'https://help.gnosis-safe.io/en/articles/4738445-advanced-transaction-parameters'
+const HELP_LINK = 'https://help.safe.global/en/articles/4738445-advanced-transaction-parameters'
 
 type AdvancedParamsFormProps = {
   params: AdvancedParameters
@@ -177,10 +177,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
 
             {/* Help link */}
             <Typography mt={2}>
-              <Link href={HELP_LINK} target="_blank" rel="noreferrer">
-                How can I configure these parameters manually?
-                <OpenInNewIcon fontSize="small" sx={{ verticalAlign: 'middle', marginLeft: 0.5 }} />
-              </Link>
+              <ExternalLink href={HELP_LINK}>How can I configure these parameters manually?</ExternalLink>
             </Typography>
           </DialogContent>
 

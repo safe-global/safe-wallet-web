@@ -1,7 +1,6 @@
 import { useState, type ReactElement, useMemo } from 'react'
 import { Button, Tooltip, Typography, SvgIcon } from '@mui/material'
-import type { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount from '@/components/common/TokenAmount'
@@ -9,7 +8,7 @@ import TokenIcon from '@/components/common/TokenIcon'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import TokenExplorerLink from '@/components/common/TokenExplorerLink'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import useIsGranted from '@/hooks/useIsGranted'
 import Track from '@/components/common/Track'
 import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -20,9 +19,9 @@ interface AssetsTableProps {
 
 const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
-  const isSafeOwner = useIsSafeOwner()
+  const isGranted = useIsGranted()
 
-  const shouldHideActions = !isSafeOwner
+  const shouldHideActions = !isGranted
 
   const headCells = useMemo(
     () => [

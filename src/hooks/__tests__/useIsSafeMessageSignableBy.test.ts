@@ -1,4 +1,4 @@
-import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { renderHook } from '@/tests/test-utils'
 import * as useIsSafeOwnerHook from '@/hooks/useIsSafeOwner'

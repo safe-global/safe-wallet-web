@@ -56,7 +56,7 @@ const ReviewStep = ({ params, onSubmit, setStep, onBack }: Props) => {
       safeAccountConfig: {
         threshold: params.threshold,
         owners: params.owners.map((owner) => owner.address),
-        fallbackHandler: fallbackHandler.address,
+        fallbackHandler: fallbackHandler.getAddress(),
       },
       safeDeploymentConfig: {
         saltNonce: saltNonce.toString(),

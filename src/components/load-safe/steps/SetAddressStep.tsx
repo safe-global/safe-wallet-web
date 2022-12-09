@@ -1,10 +1,10 @@
 import React from 'react'
-import { Box, Button, CircularProgress, Divider, Grid, InputAdornment, Link, Paper, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Divider, Grid, InputAdornment, Paper, Typography } from '@mui/material'
 import { useForm, FormProvider } from 'react-hook-form'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import AddressInput from '@/components/common/AddressInput'
-import { getSafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
@@ -13,6 +13,7 @@ import { useAddressResolver } from '@/hooks/useAddressResolver'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import type { SafeFormData } from '@/components/create-safe/types'
 import { trackEvent, LOAD_SAFE_EVENTS } from '@/services/analytics'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type Props = {
   params: SafeFormData
@@ -90,13 +91,9 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
 
             <Typography mb={3}>
               Don&apos;t have the address of the Safe you created?{' '}
-              <Link
-                href="https://help.gnosis-safe.io/en/articles/4971293-i-don-t-remember-my-safe-address-where-can-i-find-it"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <ExternalLink href="https://help.safe.globaL/en/articles/4971293-i-don-t-remember-my-safe-address-where-can-i-find-it">
                 This article explains how to find it.
-              </Link>
+              </ExternalLink>
             </Typography>
 
             <Box marginBottom={2} paddingRight={6} width={{ lg: '70%' }}>
@@ -121,14 +118,8 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
 
             <Typography mt={2}>
               By continuing you consent to the{' '}
-              <Link href="https://gnosis-safe.io/terms" target="_blank" rel="noreferrer">
-                terms of use
-              </Link>{' '}
-              and{' '}
-              <Link href="https://gnosis-safe.io/privacy" target="_blank" rel="noreferrer">
-                privacy policy
-              </Link>
-              .
+              <ExternalLink href="https://safe.global/terms">terms of use</ExternalLink> and{' '}
+              <ExternalLink href="https://safe.global/privacy">privacy policy</ExternalLink>.
             </Typography>
           </Box>
 

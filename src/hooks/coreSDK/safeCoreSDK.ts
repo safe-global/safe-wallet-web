@@ -34,11 +34,11 @@ export const createEthersAdapter = (provider = getWeb3()) => {
 // Safe Core SDK
 export const initSafeSDK = async (
   provider: EIP1193Provider,
-  walletChainId: string,
+  chainId: string,
   safeAddress: string,
   safeVersion: string,
 ): Promise<Safe> => {
-  let isL1SafeMasterCopy = walletChainId === chains.eth
+  let isL1SafeMasterCopy = chainId === chains.eth
   // Legacy Safe contracts
   if (isLegacyVersion(safeVersion)) {
     isL1SafeMasterCopy = true

@@ -89,7 +89,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
   const label = fieldState.error?.message || nonceWarning || 'Safe transaction nonce'
 
   const onResetNonce = () => {
-    if (recommendedNonce) {
+    if (recommendedNonce != null) {
       setValue(name, recommendedNonce, { shouldValidate: true })
     }
   }

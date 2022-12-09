@@ -1,7 +1,7 @@
 import { Link } from '@mui/material'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
-import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
 

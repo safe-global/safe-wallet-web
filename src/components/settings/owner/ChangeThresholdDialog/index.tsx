@@ -5,7 +5,7 @@ import { useState } from 'react'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-import { createUpdateThresholdTx } from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -50,6 +50,7 @@ export const ChangeThresholdDialog = () => {
 
 const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (txId: string) => void }) => {
   const { safe } = useSafeInfo()
+  const { createUpdateThresholdTx } = useTxSender()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(safe.threshold)
   const [isChanged, setChanged] = useState<boolean>(false)
   const isSameThreshold = selectedThreshold === safe.threshold
@@ -62,8 +63,9 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!selectedThreshold) return
+
     return createUpdateThresholdTx(selectedThreshold)
-  }, [selectedThreshold])
+  }, [selectedThreshold, createUpdateThresholdTx])
 
   const onChangeTheshold = (txId: string) => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })

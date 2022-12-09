@@ -1,12 +1,13 @@
 import React from 'react'
-import { Alert, Link, AlertTitle } from '@mui/material'
+import { Alert, AlertTitle } from '@mui/material'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type ThirdPartyCookiesWarningProps = {
   onClose: () => void
 }
 
 const HELP_LINK =
-  'https://help.gnosis-safe.io/en/articles/5955031-why-do-i-need-to-enable-third-party-cookies-for-safe-apps'
+  'https://help.safe.global/en/articles/5955031-why-do-i-need-to-enable-third-party-cookies-for-safe-apps'
 
 export const ThirdPartyCookiesWarning = ({ onClose }: ThirdPartyCookiesWarningProps): React.ReactElement => {
   return (
@@ -23,9 +24,9 @@ export const ThirdPartyCookiesWarning = ({ onClose }: ThirdPartyCookiesWarningPr
       <AlertTitle>
         Third party cookies are disabled. Safe Apps may therefore not work properly. You can find out more information
         about this{' '}
-        <Link href={HELP_LINK} target="_blank" fontSize="inherit">
+        <ExternalLink href={HELP_LINK} fontSize="inherit">
           here
-        </Link>
+        </ExternalLink>
       </AlertTitle>
     </Alert>
   )

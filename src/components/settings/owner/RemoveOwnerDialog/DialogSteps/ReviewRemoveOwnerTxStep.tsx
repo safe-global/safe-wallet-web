@@ -2,7 +2,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { createRemoveOwnerTx } from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -19,13 +19,14 @@ export const ReviewRemoveOwnerTxStep = ({
   data: RemoveOwnerData
   onSubmit: (txId: string) => void
 }) => {
+  const { createRemoveOwnerTx } = useTxSender()
   const { safe, safeAddress } = useSafeInfo()
   const addressBook = useAddressBook()
   const { removedOwner, threshold } = data
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     return createRemoveOwnerTx({ ownerAddress: removedOwner.address, threshold })
-  }, [removedOwner.address, threshold])
+  }, [removedOwner.address, threshold, createRemoveOwnerTx])
 
   const newOwnerLength = safe.owners.length - 1
 

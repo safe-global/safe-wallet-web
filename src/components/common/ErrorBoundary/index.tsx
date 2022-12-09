@@ -8,6 +8,7 @@ import WarningIcon from '@/public/images/notifications/warning.svg'
 
 import css from '@/components/common/ErrorBoundary/styles.module.css'
 import CircularIcon from '../icons/CircularIcon'
+import ExternalLink from '../ExternalLink'
 
 const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
   return (
@@ -24,8 +25,8 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
         {IS_PRODUCTION ? (
           <Typography color="text.primary">
             In case the problem persists, please reach out to us via our{' '}
-            <Link href="https://help.gnosis-safe.io" passHref target="_blank" rel="noopener noreferrer">
-              <MuiLink>Help Center</MuiLink>
+            <Link href="https://help.safe.global" passHref target="_blank" rel="noopener noreferrer">
+              <ExternalLink>Help Center</ExternalLink>
             </Link>
           </Typography>
         ) : (
