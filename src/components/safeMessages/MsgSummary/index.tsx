@@ -1,8 +1,8 @@
 import { Box, CircularProgress, Typography } from '@mui/material'
 import type { Palette } from '@mui/material'
 import type { ReactElement } from 'react'
-import { SafeMessageStatus } from '@gnosis.pm/safe-react-gateway-sdk'
-import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import useWallet from '@/hooks/wallets/useWallet'

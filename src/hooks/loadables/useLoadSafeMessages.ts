@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { getSafeMessages } from '@gnosis.pm/safe-react-gateway-sdk'
-import type { SafeMessageListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getSafeMessages } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeMessageListPage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useAsync from '@/hooks/useAsync'
 import { logError, Errors } from '@/services/exceptions'

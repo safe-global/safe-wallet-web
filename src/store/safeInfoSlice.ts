@@ -1,4 +1,4 @@
-import { type SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { makeLoadableSlice } from './common'
 
 export const defaultSafeInfo: SafeInfo = {

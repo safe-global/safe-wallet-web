@@ -1,4 +1,4 @@
-import type { SafeMessageListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessageListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Middleware } from '@reduxjs/toolkit'
 
 import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'

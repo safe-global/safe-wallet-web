@@ -2,7 +2,7 @@ import { Button, Tooltip, IconButton } from '@mui/material'
 import { useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 import type { SyntheticEvent, ReactElement } from 'react'
-import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import Track from '@/components/common/Track'

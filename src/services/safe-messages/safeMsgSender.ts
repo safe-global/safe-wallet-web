@@ -1,5 +1,5 @@
-import { proposeSafeMessage, confirmSafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
-import type { SafeInfo, SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TypedDataDomain } from 'ethers'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'

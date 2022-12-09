@@ -1,5 +1,5 @@
 import makeBlockie from 'ethereum-blockies-base64'
-import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
 import * as useAddressBook from '@/hooks/useAddressBook'

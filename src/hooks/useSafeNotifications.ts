@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { closeNotification, showNotification } from '@/store/notificationsSlice'
-import { ImplementationVersionState } from '@gnosis.pm/safe-react-gateway-sdk'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from './useSafeInfo'
 import { useAppDispatch } from '@/store'
 import { AppRoutes } from '@/config/routes'

@@ -1,7 +1,7 @@
 import { useState, type ReactElement } from 'react'
 import { Box, Link, List, ListItem, ListItemIcon, ListItemText, SvgIcon } from '@mui/material'
-import { SafeMessageStatus } from '@gnosis.pm/safe-react-gateway-sdk'
-import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import CreatedIcon from '@/public/images/messages/created.svg'
 import SignedIcon from '@/public/images/messages/signed.svg'

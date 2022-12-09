@@ -20,7 +20,7 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { useCurrentChain } from '@/hooks/useChains'
 
-const WHATS_NEW_PATH = 'https://help.gnosis-safe.io/en/'
+const WHATS_NEW_PATH = 'https://help.safe.global/en/'
 
 const SidebarFooter = (): ReactElement => {
   const dispatch = useAppDispatch()

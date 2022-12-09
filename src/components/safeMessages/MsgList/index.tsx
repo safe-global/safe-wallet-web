@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import type { SafeMessageListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessageListPage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { TxListGrid } from '@/components/transactions/TxList'
 import MsgListItem from '@/components/safeMessages/MsgListItem'

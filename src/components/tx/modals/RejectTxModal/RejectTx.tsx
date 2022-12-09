@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 import { Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
-import { createRejectTx } from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 
@@ -12,9 +12,10 @@ type RejectTxProps = {
 }
 
 const RejectTx = ({ txNonce, onSubmit }: RejectTxProps): ReactElement => {
+  const { createRejectTx } = useTxSender()
   const [rejectTx, rejectError] = useAsync<SafeTransaction>(() => {
     return createRejectTx(txNonce)
-  }, [txNonce])
+  }, [txNonce, createRejectTx])
 
   return (
     <SignOrExecuteForm safeTx={rejectTx} isRejection onSubmit={onSubmit} error={rejectError}>

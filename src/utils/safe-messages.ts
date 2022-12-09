@@ -1,6 +1,6 @@
 import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
 import type { TypedDataDomain } from 'ethers'
-import type { SafeInfo, SafeMessage, EIP712TypedData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeInfo, SafeMessage, EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
 /**
  * Generates `SafeMessage` types for EIP-712

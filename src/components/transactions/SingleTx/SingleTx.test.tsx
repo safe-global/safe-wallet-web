@@ -1,7 +1,7 @@
 import { act, fireEvent, render } from '@/tests/test-utils'
 import SingleTx from '@/pages/transactions/tx'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
-import type { SafeInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 const SAFE_ADDRESS = '0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f'
@@ -30,8 +30,8 @@ jest.mock('next/router', () => ({
   },
 }))
 
-jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
-  ...jest.requireActual('@gnosis.pm/safe-react-gateway-sdk'),
+jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
+  ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
   getTransactionDetails: jest.fn(() => Promise.resolve(txDetails)),
 }))
 
@@ -58,7 +58,10 @@ describe('SingleTx', () => {
   })
 
   it('shows an error when the transaction has failed to load', async () => {
-    const getTransactionDetails = jest.spyOn(require('@gnosis.pm/safe-react-gateway-sdk'), 'getTransactionDetails')
+    const getTransactionDetails = jest.spyOn(
+      require('@safe-global/safe-gateway-typescript-sdk'),
+      'getTransactionDetails',
+    )
     getTransactionDetails.mockImplementation(() => Promise.reject(new Error('Server error')))
 
     const screen = render(<SingleTx />)
@@ -74,7 +77,10 @@ describe('SingleTx', () => {
   })
 
   it('shows an error when transaction is not from the opened Safe', async () => {
-    const getTransactionDetails = jest.spyOn(require('@gnosis.pm/safe-react-gateway-sdk'), 'getTransactionDetails')
+    const getTransactionDetails = jest.spyOn(
+      require('@safe-global/safe-gateway-typescript-sdk'),
+      'getTransactionDetails',
+    )
     getTransactionDetails.mockImplementation(() =>
       Promise.resolve({
         ...txDetails,

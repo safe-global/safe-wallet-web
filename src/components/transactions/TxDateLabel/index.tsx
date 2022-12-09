@@ -1,4 +1,4 @@
-import type { DateLabel, SafeMessageDateLabel } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { DateLabel, SafeMessageDateLabel } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 
 import { formatWithSchema } from '@/utils/date'

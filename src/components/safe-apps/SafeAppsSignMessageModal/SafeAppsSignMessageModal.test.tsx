@@ -1,7 +1,7 @@
 import { Methods } from '@gnosis.pm/safe-apps-sdk'
 import { render, screen } from '@/tests/test-utils'
 import SafeAppsSignMessageModal from './'
-import { SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 
 describe('SafeAppsSignMessageModal', () => {
   test('can handle messages with EIP712Domain type in the JSON-RPC payload', () => {

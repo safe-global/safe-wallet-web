@@ -2,13 +2,7 @@ import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useS
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
-import {
-  dispatchTxExecution,
-  dispatchTxProposal,
-  dispatchTxSigning,
-  createTx,
-  dispatchOnChainSigning,
-} from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -69,6 +63,8 @@ const SignOrExecuteForm = ({
   const provider = useWeb3()
   const currentChain = useCurrentChain()
 
+  const { createTx, dispatchTxProposal, dispatchOnChainSigning, dispatchTxSigning, dispatchTxExecution } = useTxSender()
+
   // Check that the transaction is executable
   const isNewExecutableTx = !txId && safe.threshold === 1
   const isCorrectNonce = tx?.data.nonce === safe.nonce
@@ -118,6 +114,16 @@ const SignOrExecuteForm = ({
       txId,
       origin,
     })
+
+    /**
+     * We need to handle this case because of the way useTxSender is designed,
+     * but it should never happen here because this function is explicitly called
+     * through a user interaction
+     */
+    if (!proposedTx) {
+      throw new Error('Could not propose transaction')
+    }
+
     return proposedTx.txId
   }
 
@@ -135,6 +141,16 @@ const SignOrExecuteForm = ({
     // Otherwise, sign off-chain
     const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
     const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
+
+    /**
+     * We need to handle this case because of the way useTxSender is designed,
+     * but it should never happen here because this function is explicitly called
+     * through a user interaction
+     */
+    if (!signedTx) {
+      throw new Error('Could not sign transaction')
+    }
+
     return await proposeTx(signedTx)
   }
 

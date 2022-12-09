@@ -4,6 +4,7 @@ const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 // generate number between 0.00001 and 0.00020
 const sendValue = Math.floor(Math.random() * 20 + 1) / 100000
 let recommendedNonce
+const currentNonce = 3
 
 describe('Queue a transaction on 1/N', () => {
   before(() => {
@@ -35,17 +36,15 @@ describe('Queue a transaction on 1/N', () => {
 
     // Insert amount
     cy.get('input[name="amount"]').type(`${sendValue}`)
+
+    cy.contains('Next').click()
   })
 
   it('should create a queued transaction', () => {
     // Wait for /estimations response
     cy.intercept('POST', '/**/multisig-transactions/estimations').as('EstimationRequest')
 
-    cy.contains('Next').click()
-
-    cy.wait('@EstimationRequest', {
-      timeout: 30_000, // EstimationRequest takes a while in CI
-    })
+    cy.wait('@EstimationRequest')
 
     // Alias for New transaction modal
     cy.contains('h2', 'Review transaction').parents('div').as('modal')
@@ -62,7 +61,7 @@ describe('Queue a transaction on 1/N', () => {
     // Changes nonce to next one
     cy.contains('Signing the transaction with nonce').click()
     cy.contains('button', 'Edit').click()
-    cy.get('label').contains('Safe transaction nonce').next().clear().type('3')
+    cy.get('label').contains('Safe transaction nonce').next().clear().type(currentNonce)
     cy.contains('Confirm').click()
 
     // Asserts the execute checkbox exists
@@ -103,16 +102,14 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('@modal').within(() => {
       cy.get('input[type="checkbox"]').should('not.exist')
     })
+
+    cy.contains('Submit').click()
   })
 
   it('should click the notification and see the transaction queued', () => {
-    cy.contains('Submit').click()
-
     // Wait for the /propose request
     cy.intercept('POST', '/**/propose').as('ProposeTx')
-    cy.wait('@ProposeTx', {
-      timeout: 30_000, // ProposeTx takes a while in CI
-    })
+    cy.wait('@ProposeTx')
 
     // Click on the notification
     cy.contains('View transaction').click()
@@ -121,7 +118,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('h3', 'Transaction details').should('be.visible')
 
     // Queue label
-    cy.contains('Queued - transaction with nonce 3 needs to be executed first').should('be.visible')
+    cy.contains(`Queued - transaction with nonce ${currentNonce} needs to be executed first`).should('be.visible')
 
     // Transaction summary
     cy.contains(`${recommendedNonce}` + 'Send' + '-' + `${sendValue} GOR`).should('exist')

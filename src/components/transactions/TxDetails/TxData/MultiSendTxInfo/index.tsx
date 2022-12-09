@@ -3,7 +3,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import type { ReactElement } from 'react'
 import React from 'react'
-import type { MultiSend } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { MultiSend } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const MultiSendTxInfo = ({ txInfo }: { txInfo: MultiSend }): ReactElement => {
   return (

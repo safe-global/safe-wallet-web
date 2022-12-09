@@ -7,7 +7,7 @@ import {
   TransactionInfoType,
   TransactionListItemType,
   TransactionStatus,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+} from '@safe-global/safe-gateway-typescript-sdk'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 
 describe('AppFrame', () => {
