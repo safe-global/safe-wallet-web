@@ -11,9 +11,9 @@ import { hasFeature } from '@/utils/chains'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import useDebounce from '@/hooks/useDebounce'
 
-export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string> }
+export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string>; deps?: string | string[] }
 
-const AddressInput = ({ name, validate, required = true, ...props }: AddressInputProps): ReactElement => {
+const AddressInput = ({ name, validate, required = true, deps, ...props }: AddressInputProps): ReactElement => {
   const {
     register,
     setValue,
@@ -43,9 +43,7 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
 
   // Update the input value
   const setAddressValue = useCallback(
-    (value: string) => {
-      setValue(name, value, { shouldValidate: true })
-    },
+    (value: string) => setValue(name, value, { shouldValidate: true }),
     [setValue, name],
   )
 
@@ -86,13 +84,14 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
           }}
           required={required}
           {...register(name, {
+            deps,
+
             required,
 
             setValueAs: (value: string): string => {
-              const { address, prefix } = parsePrefixedAddress(value)
               rawValueRef.current = value
-              // Return a bare address if the prefx is the correct shortName
-              return prefix === currentShortName ? address : value
+              // This also checksums the address
+              return parsePrefixedAddress(value).address
             },
 
             validate: () => {
@@ -105,6 +104,9 @@ const AddressInput = ({ name, validate, required = true, ...props }: AddressInpu
             // Workaround for a bug in react-hook-form that it restores a cached error state on blur
             onBlur: () => setTimeout(() => trigger(name), 100),
           })}
+          // Workaround for a bug in react-hook-form when `register().value` is cached after `setValueAs`
+          // Only seems to occur on the `/load` route
+          value={watchedValue}
         />
       </Grid>
 

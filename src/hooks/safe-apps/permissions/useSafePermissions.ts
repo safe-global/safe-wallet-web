@@ -10,7 +10,7 @@ import { PermissionStatus } from '@/components/safe-apps/types'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { trimTrailingSlash } from '@/utils/url'
 
-const SAFE_PERMISSIONS = 'SAFE_PERMISSIONS'
+const SAFE_PERMISSIONS = 'SafeApps__safePermissions'
 const USER_RESTRICTED = 'userRestricted'
 
 export type SafePermissions = { [origin: string]: Permission[] }
@@ -36,7 +36,7 @@ type UseSafePermissionsReturnType = {
 }
 
 const useSafePermissions = (): UseSafePermissionsReturnType => {
-  const [permissions, setPermissions] = useLocalStorage<SafePermissions>(SAFE_PERMISSIONS, {})
+  const [permissions = {}, setPermissions] = useLocalStorage<SafePermissions>(SAFE_PERMISSIONS)
 
   const [permissionsRequest, setPermissionsRequest] = useState<SafePermissionsRequest | undefined>()
 

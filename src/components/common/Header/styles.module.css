@@ -52,7 +52,8 @@
 }
 
 .networkSelector {
-  padding-right: var(--space-1);
+  padding-right: 0;
+  padding-left: 0;
   border-right: none;
 }
 

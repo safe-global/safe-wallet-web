@@ -3,7 +3,6 @@ import { Link, Typography, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import css from './styles.module.css'
 
-// TODO: Replace with notification
 const ErrorMessage = ({
   children,
   error,
@@ -26,13 +25,13 @@ const ErrorMessage = ({
         <div>
           <Typography variant="body2" component="span">
             {children}
-          </Typography>
 
-          {error && (
-            <Link component="button" onClick={onDetailsToggle}>
-              Details
-            </Link>
-          )}
+            {error && (
+              <Link component="button" onClick={onDetailsToggle}>
+                Details
+              </Link>
+            )}
+          </Typography>
 
           {error && showDetails && (
             <Typography variant="body2" className={css.details}>

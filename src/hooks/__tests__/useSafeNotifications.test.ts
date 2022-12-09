@@ -3,8 +3,6 @@ import { renderHook } from '@/tests//test-utils'
 import useSafeNotifications from '../../hooks/useSafeNotifications'
 import useSafeInfo from '../../hooks/useSafeInfo'
 import { showNotification } from '@/store/notificationsSlice'
-import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import * as useChains from '../../hooks/useChains'
 import * as contracts from '@/services/contracts/safeContracts'
 
 // mock showNotification
@@ -18,6 +16,19 @@ jest.mock('@/store/notificationsSlice', () => {
 
 // mock useSafeInfo
 jest.mock('../../hooks/useSafeInfo')
+
+// mock useIsSafeOwner
+jest.mock('../../hooks/useIsSafeOwner', () => ({
+  __esModule: true,
+  default: jest.fn(() => true),
+}))
+
+// mock router
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(() => ({
+    query: { safe: 'eth:0x123' },
+  })),
+}))
 
 describe('useSafeNotifications', () => {
   beforeEach(() => {
@@ -35,12 +46,6 @@ describe('useSafeNotifications', () => {
         },
         safeAddress: '0x123',
       })
-      jest.spyOn(useChains, 'useCurrentChain').mockImplementation(
-        () =>
-          ({
-            shortName: 'rin',
-          } as ChainInfo),
-      )
 
       // render the hook
       const { result } = renderHook(() => useSafeNotifications())
@@ -57,8 +62,38 @@ describe('useSafeNotifications', () => {
         link: {
           href: {
             pathname: '/settings/setup',
-            query: { safe: 'rin:0x123' },
+            query: { safe: 'eth:0x123' },
           },
+          title: 'Update Safe',
+        },
+      })
+    })
+
+    it('should show a notification for legacy Safes', async () => {
+      // mock useSafeInfo to return a SafeInfo with an outdated version
+      ;(useSafeInfo as jest.Mock).mockReturnValue({
+        safe: {
+          implementation: { value: '0x123' },
+          implementationVersionState: 'OUTDATED',
+          version: '1.0.0',
+        },
+        safeAddress: '0x123',
+      })
+
+      // render the hook
+      const { result } = renderHook(() => useSafeNotifications())
+
+      // await
+      await act(async () => Promise.resolve())
+
+      // check that the notification was shown
+      expect(result.current).toBeUndefined()
+      expect(showNotification).toHaveBeenCalledWith({
+        variant: 'warning',
+        message: `Safe version 1.0.0 is not supported by this web app anymore. You can update your Safe via the old web app here.`,
+        groupKey: 'safe-outdated-version',
+        link: {
+          href: 'https://gnosis-safe.io/app/eth:0x123/settings/details',
           title: 'Update Safe',
         },
       })
@@ -90,6 +125,8 @@ describe('useSafeNotifications', () => {
       ;(useSafeInfo as jest.Mock).mockReturnValue({
         safe: {
           implementation: { value: '0x123' },
+          implementationVersionState: 'UP_TO_DATE',
+          version: '1.3.0',
         },
       })
       jest.spyOn(contracts, 'isValidMasterCopy').mockImplementation((...args: any[]) => Promise.resolve(false))
@@ -118,6 +155,8 @@ describe('useSafeNotifications', () => {
       ;(useSafeInfo as jest.Mock).mockReturnValue({
         safe: {
           implementation: { value: '0x456' },
+          implementationVersionState: 'UP_TO_DATE',
+          version: '1.3.0',
         },
       })
       jest.spyOn(contracts, 'isValidMasterCopy').mockImplementation((...args: any[]) => Promise.resolve(true))

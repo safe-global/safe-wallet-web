@@ -1,6 +1,7 @@
 .container,
 .drawer {
-  height: 100%;
+  height: 100vh;
+  padding-top: var(--header-height);
   display: flex;
   overflow: hidden;
   flex-direction: column;
@@ -19,7 +20,6 @@
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(100vh - var(--header-height)); /* needed for scroll */
 }
 
 .drawer {
@@ -33,16 +33,13 @@
   border-right: 1px solid var(--color-border-light);
 }
 
-.chain > * {
-  padding: 3px;
-}
-
 .noSafeHeader {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding: 10px;
-  min-height: 80px;
-  align-items: flex-start;
+  min-height: 100px;
 }
 
 .drawerButton {

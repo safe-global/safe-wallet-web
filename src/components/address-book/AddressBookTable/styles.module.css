@@ -15,13 +15,6 @@
   opacity: 1;
 }
 
-.entryButtonWrapper {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: var(--space-1);
-}
-
 .headerButtonWrapper {
   display: flex;
   justify-content: flex-end;
@@ -33,5 +26,9 @@
 @media (max-width: 600px) {
   .container td:last-of-type button {
     opacity: 1;
+  }
+
+  .sendButton {
+    display: none;
   }
 }

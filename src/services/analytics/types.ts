@@ -17,11 +17,8 @@ export type AnalyticsEvent = {
   label?: EventLabel
 }
 
-export type SafeAppEvent = {
-  event: EventType.SAFE_APP
-  chainId: string
-  safeAppName: string
-  safeAppMethod: string
-  safeAppEthMethod?: string
-  safeAppSDKVersion?: string
+export type SafeAppSDKEvent = {
+  method: string
+  ethMethod: string
+  version: string
 }

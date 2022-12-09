@@ -25,6 +25,9 @@ import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import type { Web3Provider } from '@ethersproject/providers'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { sameString } from '@gnosis.pm/safe-core-sdk/dist/src/utils'
+import useIsValidExecution from '@/hooks/useIsValidExecution'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -36,6 +39,7 @@ type SignOrExecuteProps = {
   isRejection?: boolean
   onlyExecute?: boolean
   disableSubmit?: boolean
+  origin?: string
 }
 
 const SignOrExecuteForm = ({
@@ -44,10 +48,11 @@ const SignOrExecuteForm = ({
   onlyExecute,
   onSubmit,
   children,
-  error,
   isExecutable = false,
   isRejection = false,
   disableSubmit = false,
+  origin,
+  ...props
 }: SignOrExecuteProps): ReactElement => {
   //
   // Hooks & variables
@@ -60,6 +65,7 @@ const SignOrExecuteForm = ({
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
+  const isOwner = useIsSafeOwner()
   const provider = useWeb3()
   const currentChain = useCurrentChain()
 
@@ -77,6 +83,12 @@ const SignOrExecuteForm = ({
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
+  // Check if transaction will fail
+  const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(
+    willExecute ? tx : undefined,
+    gasLimit,
+  )
+
   const [advancedParams, setAdvancedParams] = useAdvancedParams({
     nonce: tx?.data.nonce,
     gasLimit,
@@ -88,47 +100,53 @@ const SignOrExecuteForm = ({
   // Nonce cannot be edited if the tx is already signed, or it's a rejection
   const nonceReadonly = !!tx?.signatures.size || isRejection
 
-  //
-  // Callbacks
-  //
-  const assertSubmittable = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
+  // Assert that wallet, tx and provider are defined
+  const assertDependencies = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
     if (!wallet) throw new Error('Wallet not connected')
-    if (isWrongChain) throw new Error('Connected to the wrong chain')
     if (!tx) throw new Error('Transaction not ready')
     if (!provider) throw new Error('Provider not ready')
-
     return [wallet, tx, provider]
+  }
+
+  // Propose transaction if no txId
+  const proposeTx = async (newTx: SafeTransaction): Promise<string> => {
+    const proposedTx = await dispatchTxProposal({
+      chainId: safe.chainId,
+      safeAddress,
+      sender: wallet!.address,
+      safeTx: newTx,
+      txId,
+      origin,
+    })
+    return proposedTx.txId
   }
 
   // Sign transaction
   const onSign = async (): Promise<string> => {
-    const [connectedWallet, createdTx, provider] = assertSubmittable()
+    const [connectedWallet, createdTx, provider] = assertDependencies()
 
+    // Smart contract wallets must sign via an on-chain tx
+    if (await isSmartContractWallet(connectedWallet)) {
+      const id = txId || (await proposeTx(createdTx))
+      await dispatchOnChainSigning(createdTx, provider, id)
+      return id
+    }
+
+    // Otherwise, sign off-chain
     const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
-    const smartContractWallet = await isSmartContractWallet(connectedWallet)
-
-    const signedTx = smartContractWallet
-      ? await dispatchOnChainSigning(createdTx, provider)
-      : await dispatchTxSigning(createdTx, shouldEthSign, txId)
-
-    const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, signedTx, txId)
-    return proposedTx.txId
+    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
+    return await proposeTx(signedTx)
   }
 
   // Execute transaction
   const onExecute = async (): Promise<string> => {
-    const [connectedWallet, createdTx, provider] = assertSubmittable()
+    const [, createdTx, provider] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
-    let id = txId
-    if (!id) {
-      const proposedTx = await dispatchTxProposal(safe.chainId, safeAddress, connectedWallet.address, createdTx)
-      id = proposedTx.txId
-    }
-
+    const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(id, createdTx, provider, txOptions)
+    await dispatchTxExecution(createdTx, provider, txOptions, id)
 
     return id
   }
@@ -152,8 +170,9 @@ const SignOrExecuteForm = ({
     onSubmit(id)
   }
 
+  // On advanced params submit (nonce, gas limit, price, etc)
   const onAdvancedSubmit = async (data: AdvancedParameters) => {
-    // If nonce was edited, create a new with that nonce
+    // If nonce was edited, create a new tx with that nonce
     if (tx && (data.nonce !== tx.data.nonce || data.safeTxGas !== tx.data.safeTxGas)) {
       try {
         setTx(await createTx({ ...tx.data, safeTxGas: data.safeTxGas }, data.nonce))
@@ -166,7 +185,19 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
-  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit
+  const isExecutionLoop = wallet ? sameString(wallet.address, safeAddress) : false // Can't execute own transaction
+  const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
+  const submitDisabled =
+    !isSubmittable ||
+    isEstimating ||
+    !tx ||
+    disableSubmit ||
+    isWrongChain ||
+    cannotPropose ||
+    isExecutionLoop ||
+    isValidExecutionLoading
+
+  const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
   return (
     <form onSubmit={handleSubmit}>
@@ -175,7 +206,7 @@ const SignOrExecuteForm = ({
 
         <DecodedTx tx={tx} txId={txId} />
 
-        {canExecute && !onlyExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} />}
+        {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
 
         <AdvancedParams
           params={advancedParams}
@@ -184,6 +215,7 @@ const SignOrExecuteForm = ({
           willExecute={willExecute}
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
+          gasLimitError={gasLimitError}
         />
 
         <TxSimulation
@@ -193,22 +225,36 @@ const SignOrExecuteForm = ({
           disabled={submitDisabled}
         />
 
-        {(error || (willExecute && gasLimitError)) && (
-          <ErrorMessage error={error || gasLimitError}>
-            This transaction will most likely fail. To save gas costs, avoid creating the transaction.
+        {/* Error messages */}
+        {isWrongChain ? (
+          <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>
+        ) : cannotPropose ? (
+          <ErrorMessage>
+            You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
           </ErrorMessage>
-        )}
-
-        {submitError && (
+        ) : isExecutionLoop ? (
+          <ErrorMessage>
+            Cannot execute a transaction from the Safe itself, please connect a different account.
+          </ErrorMessage>
+        ) : error ? (
+          <ErrorMessage error={error}>
+            This transaction will most likely fail.{' '}
+            {isNewExecutableTx
+              ? 'To save gas costs, avoid creating the transaction.'
+              : 'To save gas costs, reject this transaction.'}
+          </ErrorMessage>
+        ) : submitError ? (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-        )}
+        ) : null}
 
+        {/* Info text */}
         <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
           You&apos;re about to {txId ? '' : 'create and '}
           {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
           wallet.
         </Typography>
 
+        {/* Submit button */}
         <Button variant="contained" type="submit" disabled={submitDisabled}>
           {isEstimating ? 'Estimating...' : 'Submit'}
         </Button>

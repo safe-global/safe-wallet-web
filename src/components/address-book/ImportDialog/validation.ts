@@ -3,10 +3,6 @@ import type { ParseResult } from 'papaparse'
 import { validateAddress, validateChainId } from '@/utils/validation'
 
 export const abCsvReaderValidator = ({ type, size }: File): string[] | undefined => {
-  if (type !== 'text/csv') {
-    return ['Address book must be a CSV file']
-  }
-
   if (size > 1_000_000) {
     return ['Address book cannot be larger than 1MB']
   }

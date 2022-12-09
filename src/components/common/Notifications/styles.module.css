@@ -19,3 +19,26 @@
   align-items: center;
   margin-top: 0.3em;
 }
+
+.container details {
+  margin-bottom: var(--space-1);
+  max-height: 200px;
+  overflow: auto;
+}
+
+.container pre {
+  margin: var(--space-1) 0 var(--space-2);
+  white-space: pre-wrap;
+  color: var(--color-primary-light);
+}
+
+.container summary {
+  text-decoration: underline;
+  cursor: pointer;
+  list-style: none;
+  margin-top: 4px;
+}
+
+.container summary::-webkit-details-marker {
+  display: none;
+}

@@ -8,6 +8,7 @@ import {
   TransactionListItemType,
   TransactionStatus,
 } from '@gnosis.pm/safe-react-gateway-sdk'
+import { defaultSafeInfo } from '@/store/safeInfoSlice'
 
 describe('AppFrame', () => {
   it('should not show the transaction queue bar when there are no queued transactions', () => {
@@ -19,6 +20,10 @@ describe('AppFrame', () => {
   it('should show queued transactions in the queue bar', () => {
     render(<AppFrame appUrl="https://app.url" allowedFeaturesList="" />, {
       initialReduxState: {
+        safeInfo: {
+          loading: true,
+          data: defaultSafeInfo,
+        },
         txQueue: {
           data: {
             results: [

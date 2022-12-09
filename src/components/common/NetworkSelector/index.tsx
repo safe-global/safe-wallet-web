@@ -24,15 +24,23 @@ const NetworkSelector = (): ReactElement => {
 
     trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: selectedChainId })
 
-    const shouldKeepPath = [AppRoutes.load, AppRoutes.open].includes(router.pathname)
+    const shouldKeepPath = [AppRoutes.load, AppRoutes.open, AppRoutes.newSafe.create].includes(router.pathname)
 
-    return router.push({
+    const newRoute = {
       pathname: shouldKeepPath ? router.pathname : '/',
       query: {
         chain: newShortName,
-        safeViewRedirectURL: router.query?.safeViewRedirectURL,
+      } as {
+        chain: string
+        safeViewRedirectURL?: string
       },
-    })
+    }
+
+    if (router.query?.safeViewRedirectURL) {
+      newRoute.query.safeViewRedirectURL = router.query?.safeViewRedirectURL.toString()
+    }
+
+    return router.push(newRoute)
   }
 
   return configs.length ? (
@@ -51,6 +59,9 @@ const NetworkSelector = (): ReactElement => {
         },
       }}
       sx={{
+        '& .MuiSelect-select': {
+          py: 0,
+        },
         '& svg path': {
           fill: ({ palette }) => palette.border.main,
         },

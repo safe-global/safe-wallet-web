@@ -2,12 +2,12 @@ import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { createRoot } from 'react-dom/client'
 import CloseIcon from '@mui/icons-material/Close'
 
-import QRCode from '@/components/common/QRCode'
-import { formatPairingUri } from '@/services/pairing/utils'
+import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
 import PairingDescription from '@/components/common/PairingDetails/PairingDescription'
 import { StoreHydrator } from '@/store'
 import { AppProviders } from '@/pages/_app'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
+import css from './styles.module.css'
 
 const WRAPPER_ID = 'safe-mobile-qr-modal'
 const QR_CODE_SIZE = 200
@@ -57,7 +57,7 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
   return (
     <StoreHydrator>
       <AppProviders>
-        <Dialog open onClose={handleClose} disablePortal>
+        <Dialog open onClose={handleClose} disablePortal className={css.modal}>
           <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between' }}>
             {PAIRING_MODULE_LABEL}
             <IconButton
@@ -71,7 +71,7 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
             </IconButton>
           </DialogTitle>
           <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-            <QRCode value={formatPairingUri(uri)} size={QR_CODE_SIZE} />
+            <PairingQRCode size={QR_CODE_SIZE} />
             <br />
             <PairingDescription />
           </DialogContent>

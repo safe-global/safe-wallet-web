@@ -17,6 +17,65 @@ describe('useChainId hook', () => {
     ;(useRouter as any).mockImplementation(() => ({
       query: {},
     }))
+
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: undefined,
+    })
+  })
+
+  it('should read location.pathname if useRouter query.safe is empty', () => {
+    ;(useRouter as any).mockImplementation(() => ({
+      query: {},
+    }))
+
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        pathname: '/avax:0x0000000000000000000000000000000000000123/balances',
+        search: '',
+      },
+    })
+
+    const { result } = renderHook(() => useChainId())
+
+    expect(result.current).toEqual('43114')
+  })
+
+  it('should read location.search if useRouter query.safe is empty', () => {
+    ;(useRouter as any).mockImplementation(() => ({
+      query: {},
+    }))
+
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        pathname: '/balances',
+        search: '?safe=avax:0x0000000000000000000000000000000000000123&redirect=true',
+      },
+    })
+
+    const { result } = renderHook(() => useChainId())
+
+    expect(result.current).toEqual('43114')
+  })
+
+  it('should read location.search if useRouter query.chain is empty', () => {
+    ;(useRouter as any).mockImplementation(() => ({
+      query: {},
+    }))
+
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        pathname: '/welcome',
+        search: '?chain=matic',
+      },
+    })
+
+    const { result } = renderHook(() => useChainId())
+
+    expect(result.current).toEqual('137')
   })
 
   it('should return the default chainId if no query params', () => {
@@ -44,23 +103,6 @@ describe('useChainId hook', () => {
 
     const { result } = renderHook(() => useChainId())
     expect(result.current).toBe('137')
-  })
-
-  it('should throw when the chain query is invalid', () => {
-    ;(useRouter as any).mockImplementation(() => ({
-      query: {
-        chain: 'invalid',
-      },
-    }))
-
-    // Mock console error because the hook will throw and show a huge error message in test output
-    const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation()
-    try {
-      renderHook(() => useChainId())
-    } catch (error) {
-      expect((error as Error).message).toBe('Invalid chain short name in the URL')
-    }
-    consoleErrorMock.mockRestore()
   })
 
   it('should return the last used chain id if no chain in the URL', () => {

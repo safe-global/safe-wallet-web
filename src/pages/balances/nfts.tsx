@@ -1,21 +1,18 @@
-import { type ReactElement, useMemo, memo } from 'react'
+import { type ReactElement, memo } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Alert, AlertTitle, Box, Grid, Typography } from '@mui/material'
 import AssetsHeader from '@/components/balances/AssetsHeader'
 import NftCollections from '@/components/nfts/NftCollections'
-import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppCard } from '@/components/safe-apps/AppCard'
+import { SafeAppsTag } from '@/config/constants'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 
 // `React.memo` requires a `displayName`
 const NftApps = memo(function NftApps(): ReactElement | null {
-  const NFT_APPS_TAG = 'nft'
+  const [nftApps] = useRemoteSafeApps(SafeAppsTag.NFT)
 
-  const { allSafeApps } = useSafeApps()
-
-  const nftApps = useMemo(() => allSafeApps.filter((app) => app.tags?.includes(NFT_APPS_TAG)), [allSafeApps])
-
-  if (nftApps.length === 0) {
+  if (!nftApps?.length) {
     return null
   }
 

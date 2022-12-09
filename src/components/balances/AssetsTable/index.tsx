@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react'
+import { useState, type ReactElement, useMemo } from 'react'
 import { Button, Tooltip, Typography, SvgIcon } from '@mui/material'
 import type { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -18,33 +18,39 @@ interface AssetsTableProps {
   items?: SafeBalanceResponse['items']
 }
 
-const headCells = [
-  {
-    id: 'asset',
-    label: 'Asset',
-    width: '60%',
-  },
-  {
-    id: 'balance',
-    label: 'Balance',
-    width: '20%',
-  },
-  {
-    id: 'value',
-    label: 'Value',
-    width: '20%',
-  },
-  {
-    id: 'actions',
-    label: '',
-    width: '20%',
-    sticky: true,
-  },
-]
-
 const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
   const isSafeOwner = useIsSafeOwner()
+
+  const shouldHideActions = !isSafeOwner
+
+  const headCells = useMemo(
+    () => [
+      {
+        id: 'asset',
+        label: 'Asset',
+        width: '60%',
+      },
+      {
+        id: 'balance',
+        label: 'Balance',
+        width: '20%',
+      },
+      {
+        id: 'value',
+        label: 'Value',
+        width: '20%',
+      },
+      {
+        id: 'actions',
+        label: '',
+        width: '20%',
+        hide: shouldHideActions,
+        sticky: true,
+      },
+    ],
+    [shouldHideActions],
+  )
 
   const rows = (items || []).map((item) => {
     const rawFiatValue = parseFloat(item.fiatBalance)
@@ -92,21 +98,18 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
       actions: {
         rawValue: '',
         sticky: true,
+        hide: shouldHideActions,
         content: (
-          <>
-            {isSafeOwner && (
-              <Track {...ASSETS_EVENTS.SEND}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={() => setSelectedAsset(item.tokenInfo.address)}
-                >
-                  Send
-                </Button>
-              </Track>
-            )}
-          </>
+          <Track {...ASSETS_EVENTS.SEND}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => setSelectedAsset(item.tokenInfo.address)}
+            >
+              Send
+            </Button>
+          </Track>
         ),
       },
     }

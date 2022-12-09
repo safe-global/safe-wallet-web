@@ -6,7 +6,6 @@ const IMMORTAL_PREFIX = '_immortal|v2_'
 
 const CHAIN_PREFIXES: Record<string, string> = {
   '1': 'MAINNET',
-  '4': 'RINKEBY',
   '56': 'BSC',
   '100': 'XDAI',
   '137': 'POLYGON',

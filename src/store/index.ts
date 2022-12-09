@@ -6,6 +6,8 @@ import {
   type AnyAction,
 } from '@reduxjs/toolkit'
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
+import { IS_PRODUCTION } from '@/config/constants'
+import { createStoreHydrator, HYDRATE_ACTION } from './storeHydrator'
 import { chainsSlice } from './chainsSlice'
 import { safeInfoSlice } from './safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
@@ -20,9 +22,8 @@ import { addedSafesMiddleware, addedSafesSlice } from './addedSafesSlice'
 import { settingsSlice } from './settingsSlice'
 import { cookiesSlice } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
-import { spendingLimitSlice } from '@/store/spendingLimitsSlice'
-import { IS_PRODUCTION } from '@/config/constants'
-import { createStoreHydrator, HYDRATE_ACTION } from './storeHydrator'
+import { spendingLimitSlice } from './spendingLimitsSlice'
+import { safeAppsSlice } from './safeAppsSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -39,6 +40,7 @@ const rootReducer = combineReducers({
   [cookiesSlice.name]: cookiesSlice.reducer,
   [popupSlice.name]: popupSlice.reducer,
   [spendingLimitSlice.name]: spendingLimitSlice.reducer,
+  [safeAppsSlice.name]: safeAppsSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
@@ -48,6 +50,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   addedSafesSlice.name,
   settingsSlice.name,
   cookiesSlice.name,
+  safeAppsSlice.name,
 ]
 
 const middleware = [persistState(persistedSlices), txHistoryMiddleware, txQueueMiddleware, addedSafesMiddleware]

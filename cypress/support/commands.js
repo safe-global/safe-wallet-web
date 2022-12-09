@@ -1,5 +1,3 @@
-import '@testing-library/cypress/add-commands'
-
 Cypress.Commands.add('connectE2EWallet', () => {
   cy.on('window:before:load', (window) => {
     // Does not work unless `JSON.stringify` is used

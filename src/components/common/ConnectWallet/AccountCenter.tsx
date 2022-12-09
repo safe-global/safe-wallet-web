@@ -1,6 +1,5 @@
 import type { MouseEvent } from 'react'
-import { useState, Suspense } from 'react'
-import dynamic from 'next/dynamic'
+import { useState } from 'react'
 import { Box, Button, ButtonBase, Paper, Popover, Typography } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -13,8 +12,7 @@ import Identicon from '@/components/common/Identicon'
 import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-
-const WalletIcon = dynamic(() => import('@/components/common/WalletIcon'))
+import WalletInfo from '../WalletInfo'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -47,31 +45,9 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
     <>
       <ButtonBase onClick={handleClick} aria-describedby={id} disableRipple sx={{ alignSelf: 'stretch' }}>
         <Box className={css.buttonContainer}>
-          <Box className={css.imageContainer}>
-            <Suspense>
-              <WalletIcon provider={wallet.label} />
-            </Suspense>
-          </Box>
+          {chainInfo && <WalletInfo wallet={wallet} chain={chainInfo} />}
 
-          <Box>
-            <Typography variant="caption" component="div" className={css.walletDetails}>
-              {wallet.label} @ {chainInfo?.chainName}
-            </Typography>
-
-            <Typography variant="caption" fontWeight="bold">
-              {wallet.ens || (
-                <EthHashInfo
-                  prefix={chainInfo?.shortName}
-                  address={wallet.address}
-                  showName={false}
-                  showAvatar
-                  avatarSize={12}
-                />
-              )}
-            </Typography>
-          </Box>
-
-          <Box justifySelf="flex-end" marginLeft="auto">
+          <Box display="flex" alignItems="center" justifyContent="flex-end" marginLeft="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
           </Box>
         </Box>

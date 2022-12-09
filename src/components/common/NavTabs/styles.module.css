@@ -21,14 +21,12 @@
 
 .tab {
   opacity: 1;
-  padding-left: var(--space-3);
-  padding-right: var(--space-3);
-  margin-right: var(--space-2);
+  padding: 0 var(--space-3);
   position: relative;
   z-index: 2;
 }
 
 .label {
   text-transform: none;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
 }

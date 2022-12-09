@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { capitalize } from '@/utils/formatters'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
@@ -35,6 +36,14 @@ enum Variant {
   ERROR = 'error',
 }
 
+// Format the error message
+export const formatError = (error: Error & { reason?: string }): string => {
+  let { reason } = error
+  if (!reason) return ''
+  if (!reason.endsWith('.')) reason += '.'
+  return capitalize(reason)
+}
+
 const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
@@ -51,7 +60,7 @@ const useTxNotifications = (): void => {
       txSubscribe(event, (detail) => {
         const isError = 'error' in detail
         const isSuccess = event === TxEvent.SUCCESS || event === TxEvent.PROPOSED
-        const message = isError ? `${baseMessage} ${detail.error.message.slice(0, 300)}` : baseMessage
+        const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
 
         const txId = 'txId' in detail ? detail.txId : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
@@ -61,6 +70,7 @@ const useTxNotifications = (): void => {
         dispatch(
           showNotification({
             message,
+            detailedMessage: isError ? detail.error.message : undefined,
             groupKey,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
             ...(shouldShowLink && {

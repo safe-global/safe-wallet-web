@@ -1,6 +1,7 @@
 import * as safeAppsGatewaySDK from '@gnosis.pm/safe-react-gateway-sdk'
 import { render, screen, waitFor } from '@/tests/test-utils'
 import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
+import { LS_NAMESPACE } from '@/config/constants'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
   ...jest.requireActual('@gnosis.pm/safe-react-gateway-sdk'),
@@ -78,7 +79,7 @@ describe('Safe Apps Dashboard Section', () => {
         txCount: 0,
       },
     })
-    window.localStorage.setItem('SAFE_v2__APPS_DASHBOARD', mostUsedApps)
+    window.localStorage.setItem(`${LS_NAMESPACE}SafeApps__dashboard`, mostUsedApps)
   })
 
   afterEach(() => {

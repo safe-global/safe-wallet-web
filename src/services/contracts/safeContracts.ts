@@ -54,9 +54,13 @@ export const getSpecificGnosisSafeContractInstance = (safe: SafeInfo) => {
   })
 }
 
+const isOldestVersion = (safeVersion: string): boolean => {
+  return semverSatisfies(safeVersion, '<=1.0.0')
+}
+
 export const _getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
   // We check if version is prior to v1.0.0 as they are not supported but still we want to keep a minimum compatibility
-  const useOldestContractVersion = semverSatisfies(safeVersion, '<1.0.0')
+  const useOldestContractVersion = isOldestVersion(safeVersion)
 
   // We had L1 contracts in three L2 networks, xDai, EWC and Volta so even if network is L2 we have to check that safe version is after v1.3.0
   const useL2ContractVersion = chain.l2 && semverSatisfies(safeVersion, '>=1.3.0')

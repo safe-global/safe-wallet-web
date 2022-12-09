@@ -1,0 +1,18 @@
+.icon {
+  width: 12px;
+  height: 12px;
+}
+
+.connector {
+  margin-left: 6px;
+  padding: 0;
+}
+
+.connector :global .MuiStepConnector-line {
+  border-color: var(--color-border-light);
+}
+
+.label {
+  padding: 0;
+  gap: var(--space-2);
+}

@@ -15,9 +15,9 @@ import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
 
 import css from './styles.module.css'
-import QrIcon from '@/public/images/sidebar/qr.svg'
-import CopyIcon from '@/public/images/sidebar/copy.svg'
-import LinkIcon from '@/public/images/sidebar/link.svg'
+import QrIconBold from '@/public/images/sidebar/qr-bold.svg'
+import CopyIconBold from '@/public/images/sidebar/copy-bold.svg'
+import LinkIconBold from '@/public/images/sidebar/link-bold.svg'
 
 import { selectSettings } from '@/store/settingsSlice'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -60,52 +60,54 @@ const SafeHeader = (): ReactElement => {
 
   return (
     <div className={css.container}>
-      <div className={css.safe}>
-        <div>
-          {safeLoading ? (
-            <Skeleton variant="circular" width={40} height={40} />
-          ) : (
-            <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
-          )}
-        </div>
+      <div className={css.info}>
+        <div className={css.safe}>
+          <div>
+            {safeLoading ? (
+              <Skeleton variant="circular" width={40} height={40} />
+            ) : (
+              <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
+            )}
+          </div>
 
-        <div className={css.address}>
-          {safeLoading ? (
-            <Typography variant="body2">
-              <Skeleton variant="text" width={86} />
+          <div className={css.address}>
+            {safeLoading ? (
+              <Typography variant="body2">
+                <Skeleton variant="text" width={86} />
+              </Typography>
+            ) : (
+              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
+            )}
+
+            <Typography variant="body2" fontWeight={700}>
+              {fiatTotal || <Skeleton variant="text" width={60} />}
             </Typography>
-          ) : (
-            <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
-          )}
-
-          <Typography variant="body1" fontWeight={700}>
-            {fiatTotal || <Skeleton variant="text" width={60} />}
-          </Typography>
+          </div>
         </div>
-      </div>
 
-      <div className={css.iconButtons}>
-        <Track {...OVERVIEW_EVENTS.SHOW_QR}>
-          <QrCodeButton>
-            <HeaderIconButton title="Open QR code">
-              <SvgIcon component={QrIcon} inheritViewBox color="primary" />
-            </HeaderIconButton>
-          </QrCodeButton>
-        </Track>
+        <div className={css.iconButtons}>
+          <Track {...OVERVIEW_EVENTS.SHOW_QR}>
+            <QrCodeButton>
+              <HeaderIconButton title="Open QR code">
+                <SvgIcon component={QrIconBold} inheritViewBox color="primary" fontSize="small" />
+              </HeaderIconButton>
+            </QrCodeButton>
+          </Track>
 
-        <Track {...OVERVIEW_EVENTS.COPY_ADDRESS}>
-          <CopyButton text={addressCopyText} className={css.iconButton}>
-            <SvgIcon component={CopyIcon} inheritViewBox color="primary" />
-          </CopyButton>
-        </Track>
+          <Track {...OVERVIEW_EVENTS.COPY_ADDRESS}>
+            <CopyButton text={addressCopyText} className={css.iconButton}>
+              <SvgIcon component={CopyIconBold} inheritViewBox color="primary" fontSize="small" />
+            </CopyButton>
+          </Track>
 
-        <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
-          <a target="_blank" rel="noreferrer" href={blockExplorerLink?.href || '#'}>
-            <HeaderIconButton title={blockExplorerLink?.title || ''}>
-              <SvgIcon component={LinkIcon} inheritViewBox />
-            </HeaderIconButton>
-          </a>
-        </Track>
+          <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
+            <a target="_blank" rel="noreferrer" href={blockExplorerLink?.href || ''}>
+              <HeaderIconButton title={blockExplorerLink?.title || ''}>
+                <SvgIcon component={LinkIconBold} inheritViewBox fontSize="small" color="primary" />
+              </HeaderIconButton>
+            </a>
+          </Track>
+        </div>
       </div>
 
       <NewTxButton />

@@ -4,12 +4,12 @@ import { format } from 'date-fns'
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
-const ADDRESS = '0x61a0c717d18232711bC788F19C9Cd56a43cc8872'
-const ENS_NAME = 'francotest.eth'
-const RINKEBY_TEST_SAFE = 'rin:0xB5ef359e8eBDAd1cd7695FFEF3f6F6D7d5e79B08'
+const ENS_NAME = 'diogo.eth'
+const ENS_ADDRESS = '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC'
+const GOERLI_TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
-const RINKEBY_CSV_ENTRY = {
-  name: 'rinkeby user 1',
+const GOERLI_CSV_ENTRY = {
+  name: 'goerli user 1',
   address: '0x730F87dA2A3C6721e2196DFB990759e9bdfc5083',
 }
 const GNO_CSV_ENTRY = {
@@ -19,7 +19,7 @@ const GNO_CSV_ENTRY = {
 
 describe('Address book', () => {
   before(() => {
-    cy.visit(`/${RINKEBY_TEST_SAFE}/address-book`, { failOnStatusCode: false })
+    cy.visit(`/${GOERLI_TEST_SAFE}/address-book`, { failOnStatusCode: false })
     cy.contains('Accept selection').click()
     // Waits for the Address Book table to be in the page
     cy.contains('p', 'Address book').should('be.visible')
@@ -31,11 +31,12 @@ describe('Address book', () => {
       cy.contains('Create entry').click()
       cy.get('input[name="name"]').type(NAME)
       cy.get('input[name="address"]').type(ENS_NAME)
-      // cy.wait(5000)
+      // Name was translated
+      cy.get(ENS_NAME).should('not.exist')
       cy.contains('button', 'Save').click()
 
       cy.contains(NAME).should('exist')
-      cy.contains(ADDRESS).should('exist')
+      cy.contains(ENS_ADDRESS).should('exist')
     })
 
     it('should save an edited entry name', () => {
@@ -71,14 +72,14 @@ describe('Address book', () => {
 
       // The import modal should be closed
       cy.get('Import address book').should('not.exist')
-      cy.contains(RINKEBY_CSV_ENTRY.name).should('exist')
-      cy.contains(RINKEBY_CSV_ENTRY.address).should('exist')
+      cy.contains(GOERLI_CSV_ENTRY.name).should('exist')
+      cy.contains(GOERLI_CSV_ENTRY.address).should('exist')
     })
 
-    it('should find Gnosis Chain imported address', () => {
+    it.skip('should find Gnosis Chain imported address', () => {
       // Go to a Safe on Gnosis Chain
       cy.get('header')
-        .contains(/^Rinkeby$/)
+        .contains(/^G(ö|oe)rli$/)
         .click()
       cy.contains('Gnosis Chain').click()
 
@@ -95,10 +96,8 @@ describe('Address book', () => {
 
     it('should download correctly the address book file', () => {
       // Download the export file
-      const date = format(new Date(), 'yyyy-MM-dd')
+      const date = format(new Date(), 'yyyy-MM-dd', { timeZone: 'UTC' })
       const fileName = `safe-address-book-${date}.csv` //name that is given to the file automatically
-
-      // safe-address-book-2022-09-21
 
       cy.contains('Export').click()
       //This is the submit button for the Export modal. It requires an actuall class or testId to differentiate

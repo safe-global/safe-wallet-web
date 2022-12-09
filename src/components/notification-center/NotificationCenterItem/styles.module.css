@@ -3,7 +3,7 @@
   padding: 8px 24px;
 }
 
-.item:not(:last-child):after {
+.item:not(:last-of-type):after {
   content: '';
   background: var(--color-border-background);
   position: absolute;

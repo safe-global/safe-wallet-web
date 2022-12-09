@@ -6,8 +6,8 @@ import { formatAmount } from './formatNumber'
 const GWEI = 'gwei'
 
 export const _removeTrailingZeros = (value: string): string => {
-  // Match `.0` or `0*` after non-zero decimals by "Positive Lookbehind Assertion"
-  return value.replace(/(\.0*|(?<=(\..*))0*)$/, '')
+  // Match `.000` or `.01000`
+  return value.replace(/\.0+$/, '').replace(/(\..*?)0+$/, '$1')
 }
 
 /**
@@ -34,8 +34,12 @@ export const safeFormatUnits = (value: BigNumberish, decimals: number | string =
  * @param decimals decimals of the specified value or unit name
  * @returns value at specified decimals, formatted, i.e. -< 0.00001
  */
-export const formatVisualAmount = (value: BigNumberish, decimals: number | string = GWEI): string => {
-  return formatAmount(safeFormatUnits(value, decimals))
+export const formatVisualAmount = (
+  value: BigNumberish,
+  decimals: number | string = GWEI,
+  precision?: number,
+): string => {
+  return formatAmount(safeFormatUnits(value, decimals), precision)
 }
 
 export const safeParseUnits = (value: string, decimals: number | string = GWEI): BigNumber | undefined => {
@@ -48,6 +52,10 @@ export const safeParseUnits = (value: string, decimals: number | string = GWEI):
 }
 
 export const shortenAddress = (address: string, length = 4): string => {
+  if (!address) {
+    return ''
+  }
+
   return `${address.slice(0, length + 2)}...${address.slice(-length)}`
 }
 
@@ -76,4 +84,8 @@ export const camelCaseToSpaces = (str: string): string => {
 
 export const ellipsis = (str: string, length: number): string => {
   return str.length > length ? `${str.slice(0, length)}...` : str
+}
+
+export const capitalize = (str: string): string => {
+  return str.slice(0, 1).toUpperCase() + str.slice(1)
 }

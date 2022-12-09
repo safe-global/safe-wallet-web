@@ -1,5 +1,9 @@
 .container {
-  padding: var(--space-2);
+  padding: var(--space-2) var(--space-1);
+}
+
+.info {
+  padding: 0 var(--space-1);
 }
 
 .safe {
@@ -10,7 +14,7 @@
 }
 
 .iconButtons {
-  margin-top: 8px;
+  margin-top: 10px;
   margin-bottom: 16px;
   display: flex;
   gap: 8px;
@@ -28,12 +32,9 @@
   background-color: var(--color-secondary-background);
 }
 
-.iconButton svg path {
-  fill: var(--color-primary-main);
-}
-
 .address {
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
+  font-size: 14px;
 }

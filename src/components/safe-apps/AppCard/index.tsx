@@ -1,17 +1,19 @@
 import type { ReactElement, ReactNode, SyntheticEvent } from 'react'
+import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import type { LinkProps } from 'next/link'
-import Avatar from '@mui/material/Avatar'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
+import type { IconButtonTypeMap } from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import ShareIcon from '@/public/images/common/share.svg'
 import CopyButton from '@/components/common/CopyButton'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
+import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { AppRoutes } from '@/config/routes'
 import styles from './styles.module.css'
@@ -19,6 +21,8 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { SvgIcon } from '@mui/material'
 import type { UrlObject } from 'url'
 import { resolveHref } from 'next/dist/shared/lib/router/router'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
+import SafeAppIcon from '../SafeAppIcon'
 
 export type SafeAppCardVariants = 'default' | 'compact'
 
@@ -47,13 +51,85 @@ type AppCardContainerProps = {
 
 const enum AppCardVariantHeights {
   compact = '120px',
-  default = '180px',
+  default = '200px',
 }
 
 const enum AppCardVariantAspectRatio {
   compact = '1 / 1',
   default = 'auto',
 }
+
+const DeleteButton = ({ safeApp, onDelete }: { safeApp: SafeAppData; onDelete: (app: SafeAppData) => void }) => (
+  <IconButton
+    aria-label={`Delete ${safeApp.name}`}
+    size="small"
+    onClick={(event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      onDelete(safeApp)
+    }}
+  >
+    <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
+  </IconButton>
+)
+
+const ShareButton = ({
+  className,
+  shareUrl,
+  safeApp,
+}: {
+  className?: string
+  shareUrl: string
+  safeApp: SafeAppData
+}): ReactElement => {
+  const handleCopy = useCallback(() => {
+    const isCustomApp = safeApp.id < 1
+
+    trackSafeAppEvent(SAFE_APPS_EVENTS.COPY_SHARE_URL, isCustomApp ? safeApp.url : safeApp.name)
+  }, [safeApp])
+
+  return (
+    <CopyButton
+      text={shareUrl}
+      initialToolTipText={`Copy share URL for ${safeApp.name}`}
+      className={className}
+      onCopy={handleCopy}
+    >
+      <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
+    </CopyButton>
+  )
+}
+
+const PinButton = ({
+  pinned,
+  safeApp,
+  onPin,
+  sx,
+}: {
+  pinned: boolean
+  safeApp: SafeAppData
+  onPin: (id: SafeAppData['id']) => void
+  sx?: IconButtonTypeMap['props']['sx']
+}) => (
+  <IconButton
+    aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
+    size="small"
+    onClick={(event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      onPin(safeApp.id)
+    }}
+    title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
+    sx={sx}
+  >
+    <SvgIcon
+      component={pinned ? BookmarkedIcon : BookmarkIcon}
+      inheritViewBox
+      color={pinned ? 'primary' : undefined}
+      fontSize="small"
+    />
+  </IconButton>
+)
 
 const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): ReactElement => {
   const height = variant === 'compact' ? AppCardVariantHeights.compact : AppCardVariantHeights.default
@@ -88,47 +164,31 @@ const AppCardContainer = ({ url, children, variant }: AppCardContainerProps): Re
 }
 
 const CompactAppCard = ({ url, safeApp, onPin, pinned, shareUrl }: CompactSafeAppCardProps): ReactElement => (
-  <AppCardContainer url={url} variant="compact">
-    <div className={styles.compactCardContainer}>
-      {/* App logo */}
-      <Avatar
-        src={safeApp.iconUrl}
-        alt={`${safeApp.name} logo`}
-        variant="square"
-        sx={{
-          '.MuiAvatar-img': {
-            objectFit: 'contain',
-          },
-        }}
-      />
+  <div className={styles.compactContainer}>
+    <AppCardContainer url={url} variant="compact">
+      <div className={styles.compactCardContainer}>
+        {/* App logo */}
+        <SafeAppIcon src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
 
-      {/* Share button */}
-      <CopyButton
-        text={shareUrl}
-        initialToolTipText={`Copy share URL for ${safeApp.name}`}
-        className={styles.compactShareButton}
-      >
-        <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
-      </CopyButton>
+        {/* TODO No share button per design. Only info button. Leaving the code for reusing the styles */}
+        {/* Share button */}
+        {/* <ShareButton className={styles.compactShareButton} shareUrl={shareUrl} safeApp={safeApp} /> */}
 
-      {/* Pin/unpin button */}
-      {onPin && (
-        <IconButton
-          aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
-          size="small"
-          onClick={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            onPin(safeApp.id)
-          }}
-          title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
-          sx={{ position: 'absolute', top: 2, right: 2 }}
-        >
-          <SvgIcon component={BookmarkIcon} inheritViewBox color={pinned ? 'primary' : 'border'} fontSize="small" />
-        </IconButton>
-      )}
-    </div>
-  </AppCardContainer>
+        {/* Pin/unpin button */}
+        {onPin && (
+          <PinButton
+            pinned={Boolean(pinned)}
+            safeApp={safeApp}
+            onPin={onPin}
+            sx={{ position: 'absolute', top: 2, right: 2 }}
+          />
+        )}
+      </div>
+    </AppCardContainer>
+    <Typography gutterBottom variant="h5" className={styles.compactText}>
+      {safeApp.name}
+    </Typography>
+  </div>
 )
 
 const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppCardProps): ReactElement => {
@@ -155,61 +215,18 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   return (
     <AppCardContainer url={url}>
       <CardHeader
-        avatar={
-          <Avatar
-            src={safeApp.iconUrl}
-            alt={`${safeApp.name} logo`}
-            variant="square"
-            sx={{
-              '.MuiAvatar-img': {
-                objectFit: 'contain',
-              },
-            }}
-          />
-        }
+        avatar={<SafeAppIcon src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />}
         action={
-          <>
+          <div className={styles.actionContainer}>
             {/* Share button */}
-            <CopyButton text={shareUrl} initialToolTipText={`Copy share URL for ${safeApp.name}`}>
-              <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
-            </CopyButton>
+            <ShareButton shareUrl={shareUrl} safeApp={safeApp} />
 
             {/* Pin/unpin button */}
-            {onPin && (
-              <IconButton
-                aria-label={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
-                onClick={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  onPin(safeApp.id)
-                }}
-                title={`${pinned ? 'Unpin' : 'Pin'} ${safeApp.name}`}
-                size="small"
-              >
-                <SvgIcon
-                  component={BookmarkIcon}
-                  inheritViewBox
-                  color={pinned ? 'primary' : 'border'}
-                  fontSize="small"
-                />
-              </IconButton>
-            )}
+            {onPin && <PinButton pinned={Boolean(pinned)} safeApp={safeApp} onPin={onPin} />}
 
             {/* Delete custom app button */}
-            {onDelete && (
-              <IconButton
-                aria-label={`Delete ${safeApp.name}`}
-                size="small"
-                onClick={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  onDelete(safeApp)
-                }}
-              >
-                <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
-              </IconButton>
-            )}
-          </>
+            {onDelete && <DeleteButton onDelete={onDelete} safeApp={safeApp} />}
+          </div>
         }
       />
 

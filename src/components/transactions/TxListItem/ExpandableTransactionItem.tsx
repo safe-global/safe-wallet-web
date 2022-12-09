@@ -29,13 +29,9 @@ export const ExpandableTransactionItem = ({
   return (
     <Accordion
       disableGutters
-      TransitionProps={{
-        mountOnEnter: false,
-        unmountOnExit: true,
-      }}
       elevation={0}
       defaultExpanded={!!txDetails}
-      className={classNames({ [css.batched]: isBatched })}
+      className={classNames(css.accordion, { [css.batched]: isBatched })}
       data-testid={testId}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>

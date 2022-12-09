@@ -5,6 +5,6 @@
   margin-top: 6px;
 }
 
-.container:first-child {
+.container:first-of-type {
   margin-top: 0;
 }

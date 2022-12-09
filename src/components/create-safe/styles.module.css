@@ -1,0 +1,16 @@
+.stepper :global .active-4 > div {
+  display: none;
+}
+
+.stepper :global .active-4 > div:last-child {
+  display: block;
+}
+
+.stepper :global .active-4 > div:last-child > span {
+  display: none;
+}
+
+.stepper :global .active-4 > div:last-child > div {
+  padding-left: var(--space-1);
+  margin-left: 0;
+}

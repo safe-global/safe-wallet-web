@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
-import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined'
+import BellIcon from '@/public/images/notifications/bell.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 
@@ -21,6 +21,7 @@ import UnreadBadge from '@/components/common/UnreadBadge'
 
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import SvgIcon from '@mui/icons-material/ExpandLess'
 
 const NOTIFICATION_CENTER_LIMIT = 4
 
@@ -93,10 +94,7 @@ const NotificationCenter = (): ReactElement => {
             horizontal: 'right',
           }}
         >
-          {/*
-          TODO: Get icon exported from Figma without badge
-          // @ts-expect-error - "background.paper" is not a standard icon `color` option */}
-          <NotificationsNoneOutlinedIcon color="background.paper" />
+          <SvgIcon component={BellIcon} inheritViewBox fontSize="small" />
         </UnreadBadge>
       </ButtonBase>
 

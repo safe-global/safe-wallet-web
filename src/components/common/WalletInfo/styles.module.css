@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  justify-content: center;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+}
+
+[data-theme='dark'] .imageContainer img[alt*='Trezor'],
+[data-theme='dark'] .imageContainer img[alt*='Ledger'] {
+  filter: invert(100%);
+}
+
+@media (max-width: 600px) {
+  .buttonContainer button {
+    font-size: 12px;
+  }
+
+  .imageContainer,
+  .walletDetails {
+    display: none;
+  }
+}
