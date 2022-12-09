@@ -24,6 +24,7 @@ import { cookiesSlice } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
 import { spendingLimitSlice } from './spendingLimitsSlice'
 import { safeAppsSlice } from './safeAppsSlice'
+import { hiddenAssetsSlice } from './hiddenAssetsSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
   [popupSlice.name]: popupSlice.reducer,
   [spendingLimitSlice.name]: spendingLimitSlice.reducer,
   [safeAppsSlice.name]: safeAppsSlice.reducer,
+  [hiddenAssetsSlice.name]: hiddenAssetsSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
@@ -51,6 +53,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   settingsSlice.name,
   cookiesSlice.name,
   safeAppsSlice.name,
+  hiddenAssetsSlice.name,
 ]
 
 const middleware = [persistState(persistedSlices), txHistoryMiddleware, txQueueMiddleware, addedSafesMiddleware]

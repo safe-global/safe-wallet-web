@@ -17,15 +17,17 @@ import classNames from 'classnames'
 
 import css from './styles.module.css'
 
-type EnhancedRow = Record<
-  string,
-  {
-    content: ReactNode
-    rawValue: string | number
-    sticky?: boolean
-    hide?: boolean
-  }
->
+type EnhancedCell = {
+  content: ReactNode
+  rawValue: string | number
+  sticky?: boolean
+  hide?: boolean
+}
+
+type EnhancedRow = {
+  selected?: boolean
+  cells: Record<string, EnhancedCell>
+}
 
 type EnhancedHeadCell = {
   id: string
@@ -36,10 +38,10 @@ type EnhancedHeadCell = {
 }
 
 function descendingComparator(a: EnhancedRow, b: EnhancedRow, orderBy: string) {
-  if (b[orderBy].rawValue < a[orderBy].rawValue) {
+  if (b.cells[orderBy].rawValue < a.cells[orderBy].rawValue) {
     return -1
   }
-  if (b[orderBy].rawValue > a[orderBy].rawValue) {
+  if (b.cells[orderBy].rawValue > a.cells[orderBy].rawValue) {
     return 1
   }
   return 0
@@ -139,8 +141,8 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
           <TableBody>
             {pagedRows.length > 0 ? (
               pagedRows.map((row, index) => (
-                <TableRow tabIndex={-1} key={index}>
-                  {Object.entries(row).map(([key, cell]) => (
+                <TableRow tabIndex={-1} key={index} selected={row.selected}>
+                  {Object.entries(row.cells).map(([key, cell]) => (
                     <TableCell
                       key={key}
                       className={classNames({

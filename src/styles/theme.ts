@@ -167,6 +167,9 @@ const initTheme = (darkMode: boolean) => {
               border: '2px solid',
             },
           },
+          contained: {
+            border: '2px solid',
+          },
           sizeLarge: { fontSize: '16px' },
         },
       },
@@ -399,6 +402,9 @@ const initTheme = (darkMode: boolean) => {
             },
 
             '& .MuiTableRow-root:hover': {
+              backgroundColor: theme.palette.background.light,
+            },
+            '& .MuiTableRow-root.Mui-selected': {
               backgroundColor: theme.palette.background.light,
             },
           }),

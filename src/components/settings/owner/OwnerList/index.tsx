@@ -26,20 +26,22 @@ export const OwnerList = ({ isGranted }: { isGranted: boolean }) => {
       const name = addressBook[address]
 
       return {
-        owner: {
-          rawValue: address,
-          content: <EthHashInfo address={address} showCopyButton shortAddress={false} showName={true} hasExplorer />,
-        },
-        actions: {
-          rawValue: '',
-          sticky: true,
-          content: (
-            <div className={tableCss.actions}>
-              {isGranted && <ReplaceOwnerDialog address={address} />}
-              <EditOwnerDialog address={address} name={name} chainId={safe.chainId} />
-              {isGranted && <RemoveOwnerDialog owner={{ address, name }} />}
-            </div>
-          ),
+        cells: {
+          owner: {
+            rawValue: address,
+            content: <EthHashInfo address={address} showCopyButton shortAddress={false} showName={true} hasExplorer />,
+          },
+          actions: {
+            rawValue: '',
+            sticky: true,
+            content: (
+              <div className={tableCss.actions}>
+                {isGranted && <ReplaceOwnerDialog address={address} />}
+                <EditOwnerDialog address={address} name={name} chainId={safe.chainId} />
+                {isGranted && <RemoveOwnerDialog owner={{ address, name }} />}
+              </div>
+            ),
+          },
         },
       }
     })

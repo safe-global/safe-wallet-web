@@ -21,4 +21,12 @@ export const ASSETS_EVENTS = {
     action: 'Send',
     category: ASSETS_CATEGORY,
   },
+  HIDE: {
+    action: 'Hide',
+    category: ASSETS_CATEGORY,
+  },
+  UNHIDE: {
+    action: 'Unhide',
+    category: ASSETS_CATEGORY,
+  },
 }

@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import { trackEvent, ASSETS_EVENTS } from '@/services/analytics'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoAssetsIcon from '@/public/images/balances/no-assets.svg'
+import HiddenAssetsProvider from '@/components/balances/HiddenAssetsProvider'
 
 const Balances: NextPage = () => {
   const { balances, loading, error } = useBalances()
@@ -25,17 +26,19 @@ const Balances: NextPage = () => {
         <title>Safe – Assets</title>
       </Head>
 
-      <AssetsHeader currencySelect />
+      <HiddenAssetsProvider>
+        <AssetsHeader currencySelect hiddenAssets />
 
-      <main>
-        {loading && <CircularProgress size={20} sx={{ marginTop: 2 }} />}
+        <main>
+          {loading && <CircularProgress size={20} sx={{ marginTop: 2 }} />}
 
-        {!error ? (
-          <AssetsTable items={balances?.items} />
-        ) : (
-          <PagePlaceholder img={<NoAssetsIcon />} text="There was an error loading your assets" />
-        )}
-      </main>
+          {!error ? (
+            <AssetsTable items={balances?.items} />
+          ) : (
+            <PagePlaceholder img={<NoAssetsIcon />} text="There was an error loading your assets" />
+          )}
+        </main>
+      </HiddenAssetsProvider>
     </>
   )
 }
