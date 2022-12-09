@@ -27,7 +27,7 @@ const TxNotifications = {
   [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]:
     'An on-chain signature is required. Please confirm the transaction in your wallet.',
   [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]:
-    'On-chain signature was successfully submitted. Please wait for the signature to be indexed.',
+    "The on-chain signature request was confirmed. Once it's on chain, the transaction will be signed.",
   [TxEvent.PROCESSED]: 'Your transaction was successfully processed and is now being indexed.',
   [TxEvent.REVERTED]: 'Transaction reverted. Please check your gas settings.',
   [TxEvent.SUCCESS]: 'Your transaction was successfully executed.',

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { getDecodedData, Operation } from '@safe-global/safe-gateway-typescript-sdk'
@@ -31,6 +31,7 @@ const ReviewSafeAppsTx = ({
   const { createMultiSendCallOnlyTx, dispatchSafeAppsTx } = useTxSender()
   const chainId = useChainId()
   const chain = useCurrentChain()
+  const [submitError, setSubmitError] = useState<Error>()
 
   const isMultiSend = txs.length > 1
 
@@ -52,16 +53,22 @@ const ReviewSafeAppsTx = ({
     return getDecodedData(chainId, safeTx.data.data)
   }, [safeTx, chainId])
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setSubmitError(undefined)
     if (!safeTx) return
     trackSafeAppTxCount(Number(appId))
-    dispatchSafeAppsTx(safeTx, requestId)
+
+    try {
+      await dispatchSafeAppsTx(safeTx, requestId)
+    } catch (error) {
+      setSubmitError(error as Error)
+    }
   }
 
   const origin = useMemo(() => getTxOrigin(app), [app])
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError} origin={origin}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
       <>
         <SendFromBlock />
 
