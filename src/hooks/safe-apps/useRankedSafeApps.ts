@@ -18,7 +18,7 @@ const useRankedSafeApps = (safeApps: SafeAppData[], pinnedSafeApps: SafeAppData[
     const allRankedApps = safeClaimingApp
       .concat(rankedPinnedApps, pinnedSafeApps, mostUsedApps, randomApps)
       // Filter out Featured Apps because they are in their own section
-      .filter((app) => !app.tags.includes(SafeAppsTag.DASHBOARD_FEATURED))
+      .filter((app) => !app.tags?.includes(SafeAppsTag.DASHBOARD_FEATURED))
 
     // Use a Set to remove duplicates
     return [...new Set(allRankedApps)].slice(0, NUMBER_OF_SAFE_APPS)

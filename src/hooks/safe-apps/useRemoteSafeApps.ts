@@ -39,7 +39,7 @@ const useRemoteSafeApps = (tag?: SafeAppsTag): AsyncResult<SafeAppsResponse> => 
 
   const apps = useMemo(() => {
     if (!remoteApps || !tag) return remoteApps
-    return remoteApps.filter((app) => app.tags.includes(tag))
+    return remoteApps.filter((app) => app.tags?.includes(tag))
   }, [remoteApps, tag])
 
   return [apps, error, loading]
