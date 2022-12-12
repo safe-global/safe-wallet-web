@@ -101,7 +101,7 @@ const ReplacementModal = ({
         <Grid container alignItems="center" justifyContent="center" flexDirection={flexDirection}>
           <Grid item xs={12}>
             <Typography variant="body2" textAlign="center" fontWeight={700} mb={3}>
-              Select the type of replacement transaction
+              Select how you would like to replace this transaction
             </Typography>
           </Grid>
           <Grid
@@ -139,7 +139,7 @@ const ReplacementModal = ({
               placement="top"
               title={canCancel ? '' : `Transaction with nonce ${txNonce} already has a reject transaction`}
             >
-              <span>
+              <span style={{ width: '100%' }}>
                 <Button
                   onClick={onRejectModalOpen}
                   variant="outlined"
@@ -147,7 +147,7 @@ const ReplacementModal = ({
                   sx={{ mb: 1, ...btnWidth }}
                   disabled={!canCancel}
                 >
-                  Rejection transaction
+                  Reject transaction
                 </Button>
               </span>
             </Tooltip>
