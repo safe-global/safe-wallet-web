@@ -101,7 +101,7 @@ const ReplacementModal = ({
         <Grid container alignItems="center" justifyContent="center" flexDirection={flexDirection}>
           <Grid item xs={12}>
             <Typography variant="body2" textAlign="center" fontWeight={700} mb={3}>
-              Select how would you like to replace this transaction
+              Select how you would like to replace this transaction
             </Typography>
           </Grid>
           <Grid
