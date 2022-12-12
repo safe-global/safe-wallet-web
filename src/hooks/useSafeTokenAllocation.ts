@@ -99,12 +99,10 @@ const fetchTokenBalance = async (chainId: string, safeAddress: string): Promise<
     const safeTokenAddress = getSafeTokenAddress(chainId)
     if (!safeTokenAddress || !web3ReadOnly) return '0'
 
-    const tokenBalance = await web3ReadOnly.call({
+    return await web3ReadOnly.call({
       to: safeTokenAddress,
       data: tokenInterface.encodeFunctionData('balanceOf', [safeAddress]),
     })
-
-    return tokenBalance
   } catch (err) {
     throw Error(`Error fetching Safe token balance:  ${err}`)
   }
@@ -137,11 +135,10 @@ const useSafeTokenAllocation = (): [BigNumber | undefined, boolean] => {
   const allocation = useMemo(() => {
     if (!allocationData || !balance) return
 
-    const tokensInVesting =
-      allocationData?.reduce(
-        (acc, data) => (data.isExpired ? acc : acc.add(data.amount).sub(data.amountClaimed)),
-        BigNumber.from(0),
-      ) || BigNumber.from(0)
+    const tokensInVesting = allocationData.reduce(
+      (acc, data) => (data.isExpired ? acc : acc.add(data.amount).sub(data.amountClaimed)),
+      BigNumber.from(0),
+    )
 
     // add balance
     const totalAllocation = tokensInVesting.add(balance || '0')
