@@ -34,7 +34,7 @@ import MetaTags from '@/components/common/MetaTags'
 import useABTesting from '@/services/tracking/useABTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 import PsaBanner from '@/components/common/PsaBanner'
-import usePrefersColorScheme from 'use-prefers-color-scheme'
+import usePrefersColorScheme from '@/hooks/usePrefersColorScheme'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
