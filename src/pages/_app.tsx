@@ -34,6 +34,7 @@ import MetaTags from '@/components/common/MetaTags'
 import useABTesting from '@/services/tracking/useABTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 import PsaBanner from '@/components/common/PsaBanner'
+import usePrefersColorScheme from 'use-prefers-color-scheme'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -77,11 +78,16 @@ interface WebCoreAppProps extends AppProps {
 }
 
 const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: WebCoreAppProps): ReactElement => {
+  const prefersColorScheme = usePrefersColorScheme()
+  const darkPath = prefersColorScheme === 'dark' ? '-dark' : ''
+
   return (
     <StoreHydrator>
       <Head>
         <title key="default-title">Safe</title>
         <MetaTags prefetchUrl={GATEWAY_URL} />
+        <link rel="icon" type="image/png" sizes="32x32" href={`/favicons/favicon${darkPath}-32x32.png`} />
+        <link rel="icon" type="image/png" sizes="16x16" href={`/favicons/favicon${darkPath}-16x16.png`} />
       </Head>
 
       <CacheProvider value={emotionCache}>

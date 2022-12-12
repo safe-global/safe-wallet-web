@@ -81,7 +81,8 @@
     "react-papaparse": "^4.0.2",
     "react-qr-reader": "2.2.1",
     "react-redux": "^8.0.2",
-    "semver": "^7.3.7"
+    "semver": "^7.3.7",
+    "use-prefers-color-scheme": "^1.1.1"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^12.2.4",
