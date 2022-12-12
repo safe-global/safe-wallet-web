@@ -83,8 +83,8 @@ jobs:
       # Extract branch name
       - name: Extract branch name
         shell: bash
-        ## Cut off "refs/heads/" and replace slashes with dashes, e.g. "refs/heads/features/hello" -> "features-hello"
-        run: echo "##[set-output name=branch;]$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///' | sed 's/\//-/g')"
+        ## Cut off "refs/heads/" and only allow alphanumeric characters, e.g. "refs/heads/features/hello-1.2.0" -> "features-hello120"
+        run: echo "##[set-output name=branch;]$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///' | sed 's/[^a-zA-Z0-9]//g')"
         id: extract_branch
 
       # Deploy to S3
