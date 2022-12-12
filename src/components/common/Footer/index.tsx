@@ -6,7 +6,7 @@ import { useAppDispatch } from '@/store'
 import { openCookieBanner } from '@/store/popupSlice'
 import { AppRoutes } from '@/config/routes'
 import packageJson from '../../../../package.json'
-import AppstoreButton from '../AppStoreButton'
+// import AppstoreButton from '../AppStoreButton'
 
 const footerPages = [AppRoutes.welcome, AppRoutes.settings.index]
 
@@ -27,49 +27,23 @@ const Footer = (): ReactElement | null => {
     <footer className={css.container}>
       <ul>
         <li>
-          <Typography variant="caption">&copy;2022 Safe Ecosystem Foundation</Typography>
+          <Typography variant="caption">
+            &copy;2022 Deployed by cLabs - Forked from the Safe Ecosystem Foundation
+          </Typography>
         </li>
         <li>
-          <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/terms">
-            Terms
-          </Link>
-        </li>
-        <li>
-          <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/privacy">
-            Privacy
-          </Link>
-        </li>
-        <li>
-          <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/licenses">
-            Licenses
-          </Link>
-        </li>
-        <li>
-          <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/imprint">
-            Imprint
-          </Link>
-        </li>
-        <li>
-          <Link rel="noopener noreferrer" target="_blank" href="https://gnosis-safe.io/cookie">
-            Cookie Policy
-          </Link>
-          &nbsp;&mdash;&nbsp;
           <Link href="#" onClick={onCookieClick}>
-            Preferences
+            Cookie preferences
           </Link>
         </li>
         <li>
-          <Link
-            rel="noopener noreferrer"
-            target="_blank"
-            href={`${packageJson.homepage}/releases/tags/${packageJson.version}`}
-          >
-            v{packageJson.version}
+          <Link rel="noopener noreferrer" target="_blank" href={`${packageJson.homepage}`}>
+            Github Fork
           </Link>
         </li>
-        <li>
+        {/* <li>
           <AppstoreButton placement="footer" />
-        </li>
+        </li> */}
       </ul>
     </footer>
   )

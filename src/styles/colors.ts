@@ -42,13 +42,16 @@ const palette = {
     dark: '#CD674E',
     main: '#FF8061',
     light: '#FFB7A6',
-    background: '#EFFFF4',
+    background: '#FFF0ED',
   },
   background: {
     default: '#F4F4F4',
     main: '#F4F4F4',
     paper: '#FFFFFF',
     light: '#EFFFF4',
+  },
+  backdrop: {
+    main: '#636669',
   },
   logo: {
     main: '#121312',

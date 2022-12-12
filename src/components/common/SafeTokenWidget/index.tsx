@@ -1,57 +1,45 @@
-import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
-import { IS_PRODUCTION, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
+import { SafeAppsTag, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
-import useBalances from '@/hooks/useBalances'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import useChainId from '@/hooks/useChainId'
+import useSafeTokenAllocation from '@/hooks/useSafeTokenAllocation'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
-import { formatAmountWithPrecision } from '@/utils/formatNumber'
-import { safeFormatUnits } from '@/utils/formatters'
-import { Box, ButtonBase, Skeleton, Tooltip, Typography } from '@mui/material'
+import { formatVisualAmount } from '@/utils/formatters'
+import { Box, ButtonBase, Tooltip, Typography } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useMemo } from 'react'
 import type { UrlObject } from 'url'
 import Track from '../Track'
-
 import SafeTokenIcon from './safe_token.svg'
-
 import css from './styles.module.css'
 
-const isStaging = !IS_PRODUCTION && !cgwDebugStorage.get()
-const CLAIMING_APP_ID = isStaging ? 61 : 95
+const TOKEN_DECIMALS = 18
 
 export const getSafeTokenAddress = (chainId: string): string => {
   return SAFE_TOKEN_ADDRESSES[chainId]
 }
 
 const SafeTokenWidget = () => {
-  const balances = useBalances()
   const chainId = useChainId()
   const router = useRouter()
-  const apps = useSafeApps()
+  const [apps] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
+  const claimingApp = apps?.[0]
 
-  const claimingApp = useMemo(
-    () => apps.allSafeApps.find((appData) => appData.id === CLAIMING_APP_ID),
-    [apps.allSafeApps],
-  )
+  const allocation = useSafeTokenAllocation()
 
   const tokenAddress = getSafeTokenAddress(chainId)
-  if (!tokenAddress) {
+  if (!tokenAddress || !allocation) {
     return null
   }
 
   const url: UrlObject | undefined = claimingApp
     ? {
         pathname: AppRoutes.apps,
-        query: { safe: router.query.safe, appUrl: claimingApp?.url },
+        query: { safe: router.query.safe, appUrl: claimingApp.url },
       }
     : undefined
 
-  const safeBalance = balances.balances.items.find((balanceItem) => balanceItem.tokenInfo.address === tokenAddress)
-
-  const safeBalanceDecimals = Number(safeFormatUnits(safeBalance?.balance || 0, safeBalance?.tokenInfo.decimals))
-  const flooredSafeBalance = formatAmountWithPrecision(safeBalanceDecimals, 2)
+  const flooredSafeBalance = formatVisualAmount(allocation, TOKEN_DECIMALS, 2)
 
   return (
     <Box className={css.buttonContainer}>
@@ -67,7 +55,7 @@ const SafeTokenWidget = () => {
               >
                 <SafeTokenIcon />
                 <Typography lineHeight="16px" fontWeight={700}>
-                  {balances.loading ? <Skeleton variant="text" width={16} /> : flooredSafeBalance}
+                  {flooredSafeBalance}
                 </Typography>
               </ButtonBase>
             </Link>

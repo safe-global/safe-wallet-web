@@ -29,14 +29,11 @@ const Balances: NextPage = () => {
 
       <main>
         {loading && <CircularProgress size={20} sx={{ marginTop: 2 }} />}
+
         {!error ? (
           <AssetsTable items={balances?.items} />
         ) : (
-          <PagePlaceholder
-            img={<NoAssetsIcon />}
-            text="
-              There was an error loading your assets"
-          />
+          <PagePlaceholder img={<NoAssetsIcon />} text="There was an error loading your assets" />
         )}
       </main>
     </>

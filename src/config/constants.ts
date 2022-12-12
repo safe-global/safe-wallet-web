@@ -2,8 +2,12 @@ import chains from './chains'
 
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION
 
-export const GATEWAY_URL_PRODUCTION = process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.gnosis.io'
+export const GATEWAY_URL_PRODUCTION =
+  process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.safe.global'
 export const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'https://safe-client.staging.5afe.dev'
+export const SAFE_REACT_URL = IS_PRODUCTION
+  ? 'https://safe.celo.org'
+  : process.env.NEXT_PUBLIC_VERCEL_URL || 'http://localhost:3000'
 
 // Magic numbers
 export const POLLING_INTERVAL = 15_000
@@ -17,7 +21,7 @@ export const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN || ''
 export const BEAMER_ID = process.env.NEXT_PUBLIC_BEAMER_ID || ''
 
 // Wallets
-export const WC_BRIDGE = process.env.NEXT_PUBLIC_WC_BRIDGE || 'https://safe-walletconnect.gnosis.io/'
+export const WC_BRIDGE = process.env.NEXT_PUBLIC_WC_BRIDGE || 'https://bridge.walletconnect.org'
 export const TREZOR_APP_URL = 'app.safe.global'
 export const TREZOR_EMAIL = 'support@safe.global'
 export const FORTMATIC_KEY = process.env.NEXT_PUBLIC_FORTMATIC_KEY || ''
@@ -34,7 +38,6 @@ export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
 
 // Safe Apps
 export const SAFE_APPS_INFURA_TOKEN = process.env.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN || INFURA_TOKEN
-export const SAFE_APPS_POLLING_INTERVAL = 15_000
 export const SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL = 'https://third-party-cookies-check.gnosis-safe.com'
 export const SAFE_APPS_SUPPORT_CHAT_URL = 'https://chat.gnosis-safe.io'
 export const SAFE_APPS_DEMO_SAFE_MAINNET = 'eth:0xfF501B324DC6d78dC9F983f140B9211c3EdB4dc7'
@@ -49,3 +52,12 @@ export const GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH = process.env.NEXT_PUBLIC_GOOGL
 export const TENDERLY_SIMULATE_ENDPOINT_URL = process.env.NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL || ''
 export const TENDERLY_PROJECT_NAME = process.env.NEXT_PUBLIC_TENDERLY_PROJECT_NAME || ''
 export const TENDERLY_ORG_NAME = process.env.NEXT_PUBLIC_TENDERLY_ORG_NAME || ''
+
+// Safe Apps tags
+export enum SafeAppsTag {
+  NFT = 'nft',
+  TX_BUILDER = 'transaction-builder',
+  DASHBOARD_FEATURED = 'dashboard-widgets',
+  SAFE_CLAIMING_APP = 'safe-claiming-app',
+  WALLET_CONNECT = 'wallet-connect',
+}

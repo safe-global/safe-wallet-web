@@ -58,7 +58,7 @@ const StyledStep = ({ $bold, $state, sx, ...rest }: StyledStepProps & StepProps)
     sx={({ palette }) => ({
       '.MuiStepLabel-label': {
         fontWeight: `${$bold ? 'bold' : 'normal'} !important`,
-        color: `${getStepColor($state, palette)} !important`,
+        color: palette.text.primary,
         fontSize: '16px !important',
       },
       '.MuiStepLabel-iconContainer': {
@@ -113,9 +113,7 @@ export const TxSigners = ({
 
   const { confirmations, confirmationsRequired, executor } = detailedExecutionInfo
 
-  // Backend doesn't return all confirmations for immediately executed transactions
-  const confirmationsCount =
-    isPending && confirmations.length < confirmationsRequired ? confirmationsRequired : confirmations.length
+  const confirmationsCount = confirmations.length
   const canExecute = wallet?.address ? isExecutable(txSummary, wallet.address, safe) : false
   const confirmationsNeeded = confirmationsRequired - confirmations.length
   const isConfirmed = confirmationsNeeded <= 0 || isPending || canExecute

@@ -5,6 +5,7 @@ on:
 
 jobs:
   e2e:
+    if: ${{ false }} # disable
     runs-on: ubuntu-latest
     name: E2E on Chrome
     steps:
@@ -16,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Yarn cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
@@ -43,7 +44,7 @@ jobs:
           NEXT_PUBLIC_FORTMATIC_KEY: ${{ secrets.NEXT_PUBLIC_FORTMATIC_KEY }}
           NEXT_PUBLIC_PORTIS_KEY: ${{ secrets.NEXT_PUBLIC_PORTIS_KEY }}
           NEXT_PUBLIC_CYPRESS_MNEMONIC: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}
-          NEXT_PUBLIC_IS_PRODUCTION: ${{ true }}
+          NEXT_PUBLIC_WC_BRIDGE: ${{ secrets.NEXT_PUBLIC_WC_BRIDGE }}
 
       - name: Serve
         run: yarn serve &

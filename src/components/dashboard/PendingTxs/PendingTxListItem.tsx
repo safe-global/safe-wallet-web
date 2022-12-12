@@ -1,49 +1,14 @@
 import NextLink from 'next/link'
 import type { LinkProps } from 'next/link'
 import type { ReactElement } from 'react'
-import styled from '@emotion/styled'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 import type { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Grid, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import TxInfo from '@/components/transactions/TxInfo'
 import TxType from '@/components/transactions/TxType'
-
-const StyledContainer = styled.div`
-  width: 100%;
-  text-decoration: none;
-  background-color: var(--color-background-paper);
-  border: 1px solid var(--color-border-light);
-  border-radius: 8px;
-  box-sizing: border-box;
-  &:hover {
-    background-color: var(--color-secondary-background);
-    border-color: var(--color-secondary-light);
-  }
-`
-
-const StyledConfirmationsCount = styled.div`
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 12px;
-  background-color: var(--color-secondary-light);
-  color: var(--color-static-main);
-`
-
-const TxConfirmations = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-
-  & svg {
-    margin-left: 8px;
-  }
-`
-
-const Spacer = styled.div`
-  flex-grow: 1;
-`
+import css from './styles.module.css'
+import classNames from 'classnames'
 
 type PendingTxType = {
   transaction: TransactionSummary
@@ -54,34 +19,33 @@ const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {
   return (
     <NextLink href={url} passHref>
       <a>
-        <StyledContainer>
-          <Grid container py={1} px={2} alignItems="center" gap={1}>
-            <Grid item sx={{ minWidth: '36px' }}>
-              <Typography fontSize="lg" component="span">
-                {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
-              </Typography>
-            </Grid>
+        <Box className={classNames(css.gridContainer, css.columnTemplate)}>
+          <Box gridArea="nonce">
+            {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
+          </Box>
 
-            <Grid item flexGrow={1}>
-              <TxType tx={transaction} />
-            </Grid>
+          <Box gridArea="type" className={css.columnWrap}>
+            <TxType tx={transaction} />
+          </Box>
 
+          <Box gridArea="info" className={css.columnWrap}>
             <TxInfo info={transaction.txInfo} />
+          </Box>
 
-            <Grid item xs />
+          <Box gridArea="confirmations">
+            {isMultisigExecutionInfo(transaction.executionInfo) ? (
+              <Box className={css.confirmationsCount}>
+                {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
+              </Box>
+            ) : (
+              <Box flexGrow={1} />
+            )}
+          </Box>
 
-            <TxConfirmations>
-              {isMultisigExecutionInfo(transaction.executionInfo) ? (
-                <StyledConfirmationsCount>
-                  {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
-                </StyledConfirmationsCount>
-              ) : (
-                <Spacer />
-              )}
-              <ChevronRight color="border" />
-            </TxConfirmations>
-          </Grid>
-        </StyledContainer>
+          <Box gridArea="icon" marginLeft="12px">
+            <ChevronRight color="border" />
+          </Box>
+        </Box>
       </a>
     </NextLink>
   )

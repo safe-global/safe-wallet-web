@@ -59,7 +59,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
           if (!Number.isInteger(val)) {
             return 'Nonce must be an integer'
           } else if (val < safeNonce) {
-            return `Nonce must be >= ${safeNonce}`
+            return `Nonce can't be lower than ${safeNonce}`
           }
         },
       })}

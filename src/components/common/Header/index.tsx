@@ -11,16 +11,21 @@ import SafeTokenWidget, { getSafeTokenAddress } from '@/components/common/SafeTo
 import NotificationCenter from '@/components/notification-center/NotificationCenter'
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
-import SafeLogo from '@/public/images/logo.svg'
+import SafeLogo from '@/public/images/logo-celo.svg'
 import Link from 'next/link'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 type HeaderProps = {
   onMenuToggle: () => void
 }
 
+const FORUM_POST_URL = 'https://forum.celo.org/t/multisig-celo-safe-re-launch/4529/25?u=0xarthurxyz'
+const OLD_SAFE_URL = 'https://old-safe.celo.org'
+
 const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const chainId = useChainId()
-  const showSafeToken = !!getSafeTokenAddress(chainId)
+  const safeAddress = useSafeAddress()
+  const showSafeToken = safeAddress && !!getSafeTokenAddress(chainId)
   const router = useRouter()
 
   // Logo link: if on Dashboard, link to Welcome, otherwise to the root (which redirects to either Dashboard or Welcome)
@@ -40,6 +45,17 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
             <SafeLogo alt="Safe logo" />
           </a>
         </Link>
+        <span className={css.hideMobile}>
+          Celo Safe was{' '}
+          <a target="_blank" rel="noreferrer" href={FORUM_POST_URL}>
+            was upgraded
+          </a>
+          ! Use the{' '}
+          <a target="_blank" rel="noreferrer" href={OLD_SAFE_URL}>
+            previous version here
+          </a>
+          .
+        </span>
       </div>
 
       <div className={classnames(css.element, css.hideMobile)}>

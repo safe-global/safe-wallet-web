@@ -18,7 +18,7 @@ const AllowedFeaturesList: React.FC<SafeAppsInfoAllowedFeaturesProps> = ({
 }): React.ReactElement => {
   return (
     <>
-      <SvgIcon component={ShieldIcon} inheritViewBox color="secondary" />
+      <SvgIcon component={ShieldIcon} inheritViewBox color="primary" />
       <Typography
         variant="body2"
         color="text.secondary"

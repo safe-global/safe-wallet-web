@@ -11,7 +11,7 @@ import { AppRoutes } from '@/config/routes'
 import ExploreSafeAppsIcon from '@/public/images/apps/explore.svg'
 
 const SafeAppsDashboardSection = () => {
-  const { rankedSafeApps } = useSafeApps()
+  const { rankedSafeApps, togglePin, pinnedSafeAppIds } = useSafeApps()
 
   return (
     <WidgetContainer>
@@ -19,10 +19,10 @@ const SafeAppsDashboardSection = () => {
         Safe Apps
       </Typography>
 
-      <Grid container rowSpacing={2} columnSpacing={2}>
+      <Grid container spacing={3}>
         {rankedSafeApps.map((rankedSafeApp) => (
           <Grid key={rankedSafeApp.id} item xs={12} sm={6} md={4} xl={4}>
-            <AppCard safeApp={rankedSafeApp} />
+            <AppCard safeApp={rankedSafeApp} onPin={togglePin} pinned={pinnedSafeAppIds.has(rankedSafeApp.id)} />
           </Grid>
         ))}
 

@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useCallback } from 'react'
+import { useMemo, useCallback } from 'react'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { useCustomSafeApps } from '@/hooks/safe-apps/useCustomSafeApps'
 import { usePinnedSafeApps } from '@/hooks/safe-apps/usePinnedSafeApps'
 import { useBrowserPermissions, useSafePermissions } from './permissions'
 import { useRankedSafeApps } from '@/hooks/safe-apps/useRankedSafeApps'
-import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 
 type ReturnType = {
   allSafeApps: SafeAppData[]
@@ -22,31 +22,12 @@ type ReturnType = {
   removeCustomApp: (appId: number) => void
 }
 
-const useDeadPinnedSafeAppsRemover = (
-  remoteSafeApps: SafeAppData[],
-  pinnedSafeAppIds: Set<number>,
-  updateCallback: (newIds: Set<number>) => void,
-) => {
-  useEffect(() => {
-    if (remoteSafeApps.length > 0 && pinnedSafeAppIds.size > 0) {
-      const filteredPinnedAppsIds = Array.from(pinnedSafeAppIds).filter((pinnedAppId) =>
-        remoteSafeApps.some((app) => app.id === pinnedAppId),
-      )
-      if (filteredPinnedAppsIds.length !== pinnedSafeAppIds.size) {
-        updateCallback(new Set(filteredPinnedAppsIds))
-      }
-    }
-  }, [remoteSafeApps, pinnedSafeAppIds, updateCallback])
-}
-
 const useSafeApps = (): ReturnType => {
   const [remoteSafeApps = [], remoteSafeAppsError, remoteSafeAppsLoading] = useRemoteSafeApps()
   const { customSafeApps, loading: customSafeAppsLoading, updateCustomSafeApps } = useCustomSafeApps()
   const { pinnedSafeAppIds, updatePinnedSafeApps } = usePinnedSafeApps()
   const { removePermissions: removeSafePermissions } = useSafePermissions()
   const { removePermissions: removeBrowserPermissions } = useBrowserPermissions()
-
-  useDeadPinnedSafeAppsRemover(remoteSafeApps, pinnedSafeAppIds, updatePinnedSafeApps)
 
   const allSafeApps = useMemo(
     () => remoteSafeApps.concat(customSafeApps).sort((a, b) => a.name.localeCompare(b.name)),
@@ -87,10 +68,10 @@ const useSafeApps = (): ReturnType => {
 
     if (alreadyPinned) {
       newSet.delete(appId)
-      trackEvent({ ...SAFE_APPS_EVENTS.UNPIN, label: appName })
+      trackSafeAppEvent(SAFE_APPS_EVENTS.UNPIN, appName)
     } else {
       newSet.add(appId)
-      trackEvent({ ...SAFE_APPS_EVENTS.PIN, label: appName })
+      trackSafeAppEvent(SAFE_APPS_EVENTS.PIN, appName)
     }
     updatePinnedSafeApps(newSet)
   }

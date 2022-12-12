@@ -18,14 +18,6 @@ describe('Address book import validation', () => {
 
       expect(abCsvReaderValidator(file)).toBeUndefined()
     })
-    it('should return an error if file is not a CSV', () => {
-      const file = {
-        type: 'text/plain',
-        size: 100,
-      } as File
-
-      expect(abCsvReaderValidator(file)).toEqual(['Address book must be a CSV file'])
-    })
     it('should return an error if file is too large', () => {
       const file = {
         type: 'text/csv',

@@ -1,4 +1,6 @@
 import type { ReactElement } from 'react'
+import { useState } from 'react'
+import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import {
   Button,
@@ -11,10 +13,12 @@ import {
   TextField,
   DialogContent,
   Box,
+  SvgIcon,
 } from '@mui/material'
 import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import TokenIcon from '@/components/common/TokenIcon'
+import css from './styles.module.css'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import useBalances from '@/hooks/useBalances'
@@ -25,6 +29,12 @@ import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useAddressBook from '@/hooks/useAddressBook'
+import { SANCTIONED_ADDRESSES, SANCTIONED_ADDRESS_MESSAGE } from '@/utils/ofac-sanctioned-addresses'
+import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
+import useChainId from '@/hooks/useChainId'
+import { sameAddress } from '@/utils/addresses'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import useIsSafeTokenPaused from '@/components/tx/modals/TokenTransferModal/useIsSafeTokenPaused'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -50,6 +60,7 @@ export enum SendAssetsField {
   tokenAddress = 'tokenAddress',
   amount = 'amount',
   type = 'type',
+  OFAC = 'OFAC',
 }
 
 export type SendAssetsFormData = {
@@ -65,11 +76,20 @@ type SendAssetsFormProps = {
 }
 
 const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
+  const [OFACError, setOFACError] = useState<string>()
   const { balances } = useBalances()
   const addressBook = useAddressBook()
+  const chainId = useChainId()
+  const safeTokenAddress = getSafeTokenAddress(chainId)
+  const isSafeTokenPaused = useIsSafeTokenPaused()
 
   const formMethods = useForm<SendAssetsFormData>({
-    defaultValues: { ...formData, [SendAssetsField.type]: SendTxType.multiSig },
+    defaultValues: {
+      [SendAssetsField.recipient]: formData?.[SendAssetsField.recipient] || '',
+      [SendAssetsField.tokenAddress]: formData?.[SendAssetsField.tokenAddress] || '',
+      [SendAssetsField.amount]: formData?.[SendAssetsField.amount] || '',
+      [SendAssetsField.type]: formData?.[SendAssetsField.type] || SendTxType.multiSig,
+    },
     mode: 'onChange',
     delayError: 500,
   })
@@ -78,6 +98,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
     handleSubmit,
     setValue,
     watch,
+    setError,
     formState: { errors },
   } = formMethods
 
@@ -93,6 +114,8 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
   const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
   const isSpendingLimitType = type === SendTxType.spendingLimit
 
+  const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
+
   const onMaxAmountClick = () => {
     if (!selectedToken) return
 
@@ -101,8 +124,20 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
         ? Math.min(+spendingLimit.amount, +selectedToken.balance).toString()
         : selectedToken.balance
 
-    setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals))
+    setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
+      shouldValidate: true,
+    })
   }
+
+  useEffect(() => {
+    if (recipient && SANCTIONED_ADDRESSES.includes(recipient.toLowerCase())) {
+      setOFACError(SANCTIONED_ADDRESS_MESSAGE)
+    } else {
+      setOFACError(undefined)
+    }
+  }, [recipient, setError])
+
+  const isDisabled = (isSafeTokenSelected && isSafeTokenPaused) || !!OFACError
 
   return (
     <FormProvider {...formMethods}>
@@ -120,7 +155,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             )}
           </FormControl>
 
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth>
             <InputLabel id="asset-label" required>
               Select an asset
             </InputLabel>
@@ -142,11 +177,20 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             </Select>
           </FormControl>
 
+          {isDisabled && (
+            <Box mt={1} display="flex" alignItems="center">
+              <SvgIcon component={InfoIcon} color="error" fontSize="small" />
+              <Typography variant="body2" color="error" ml={0.5}>
+                $SAFE is currently non-transferable.
+              </Typography>
+            </Box>
+          )}
+
           {!!spendingLimit && (
             <SpendingLimitRow spendingLimit={spendingLimit} selectedToken={selectedToken?.tokenInfo} />
           )}
 
-          <FormControl fullWidth>
+          <FormControl fullWidth sx={{ mt: 2 }}>
             <TextField
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
@@ -173,9 +217,10 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
               })}
             />
           </FormControl>
+          {!!OFACError && <p className={css.error}>{OFACError}</p>}
         </DialogContent>
 
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" disabled={isDisabled}>
           Next
         </Button>
       </form>

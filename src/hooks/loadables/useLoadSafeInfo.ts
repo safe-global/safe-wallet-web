@@ -9,6 +9,7 @@ import { Errors, logError } from '@/services/exceptions'
 import { POLLING_INTERVAL } from '@/config/constants'
 
 export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
+  // setBaseUrl()
   const address = useSafeAddress()
   const chainId = useChainId()
   const [pollCount, resetPolling] = useIntervalCounter(POLLING_INTERVAL)
@@ -28,7 +29,7 @@ export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
   // Log errors
   useEffect(() => {
     if (error) {
-      logError(Errors._601, error.message)
+      logError(Errors._600, error.message)
     }
   }, [error])
 

@@ -137,16 +137,23 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument())
 
       const appURLInput = screen.getByLabelText(/App URL/)
-      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
 
-      act(() => {
-        fireEvent.change(appURLInput, { target: { value: APP_URL } })
-        fireEvent.click(riskCheckbox)
-      })
-      await waitFor(() => expect(screen.getByDisplayValue('Custom Compound')).toBeInTheDocument())
+      fireEvent.change(appURLInput, { target: { value: APP_URL } })
+
+      const riskCheckbox = await screen.findByRole('checkbox')
+
+      fireEvent.click(riskCheckbox)
+
+      await waitFor(() =>
+        expect(
+          screen.getByRole('heading', {
+            name: /custom compound/i,
+          }),
+        ).toBeInTheDocument(),
+      )
 
       await act(() => {
-        fireEvent.click(screen.getByText('Save'))
+        fireEvent.click(screen.getByText('Add'))
       })
 
       await waitFor(() => expect(screen.getAllByText(/Custom markets on the Ethereum blockchain/).length).toBe(2))
@@ -173,17 +180,10 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
 
       const appURLInput = screen.getByLabelText(/App URL/)
-      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
 
-      act(() => {
-        fireEvent.change(appURLInput, { target: { value: APP_URL } })
-        fireEvent.click(riskCheckbox)
-      })
+      fireEvent.change(appURLInput, { target: { value: APP_URL } })
 
-      await waitFor(
-        () => expect(screen.getByText("The app doesn't support Safe App functionality")).toBeInTheDocument(),
-        { timeout: 7000 },
-      )
+      await screen.findByText(/the app doesn't support safe app functionality/i)
     })
 
     it('Requires risk acknowledgment checkbox to add the app', async () => {
@@ -220,12 +220,17 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
 
       const appURLInput = screen.getByLabelText(/App URL/)
-      await act(() => {
-        fireEvent.change(appURLInput, { target: { value: APP_URL } })
-        fireEvent.click(screen.getByText('Save'))
-      })
 
-      await waitFor(() => expect(screen.getByText('Required')).toBeInTheDocument())
+      fireEvent.change(appURLInput, { target: { value: APP_URL } })
+
+      const riskCheckbox = await screen.findByText(
+        /This app is not part of Safe and I agree to use it at my own risk\./,
+      )
+      fireEvent.click(riskCheckbox)
+      fireEvent.click(riskCheckbox)
+      fireEvent.click(screen.getByText('Add'))
+
+      await waitFor(() => expect(screen.getByText('Accepting the disclaimer is mandatory')).toBeInTheDocument())
     })
 
     it('allows removing custom apps', async () => {
@@ -262,16 +267,17 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
 
       const appURLInput = screen.getByLabelText(/App URL/)
-      const riskCheckbox = screen.getByLabelText(/This app is not part of Safe and I agree to use it at my own risk./)
 
-      act(() => {
-        fireEvent.change(appURLInput, { target: { value: APP_URL } })
-        fireEvent.click(riskCheckbox)
-      })
-      await waitFor(() => expect(screen.getByDisplayValue('Custom Compound')).toBeInTheDocument())
+      fireEvent.change(appURLInput, { target: { value: APP_URL } })
+
+      const riskCheckbox = await screen.findByText(/This app is not part of Safe and I agree to use it at my own risk./)
+
+      fireEvent.click(riskCheckbox)
+
+      await waitFor(() => expect(screen.getByRole('heading', { name: 'Custom Compound' })).toBeInTheDocument())
 
       await act(() => {
-        fireEvent.click(screen.getByText('Save'))
+        fireEvent.click(screen.getByText('Add'))
       })
       await waitFor(() => expect(screen.getAllByText(/Custom markets on the Ethereum blockchain/).length).toBe(2))
 
@@ -306,7 +312,7 @@ describe('AppsPage', () => {
         fireEvent.change(input, { target: { value: 'gibberish gibberish' } })
       })
 
-      await waitFor(() => expect(screen.getByText('No apps found')).toBeInTheDocument())
+      await waitFor(() => expect(screen.getByText('No apps found', { exact: false })).toBeInTheDocument())
     })
 
     it('shows apps matching the query', async () => {
@@ -347,12 +353,12 @@ describe('AppsPage', () => {
         fireEvent.click(button)
       })
 
-      await waitFor(() => expect(screen.getAllByAltText(/ENS App logo/i).length).toBe(2))
+      await waitFor(() => expect(screen.getAllByTitle(/ENS App logo/i).length).toBe(2))
 
       await act(() => {
         fireEvent.click(button)
       })
-      await waitFor(() => expect(screen.getAllByAltText(/ENS App logo/i).length).toBe(1))
+      await waitFor(() => expect(screen.getAllByTitle(/ENS App logo/i).length).toBe(1))
     })
   })
 })

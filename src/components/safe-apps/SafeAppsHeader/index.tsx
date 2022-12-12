@@ -16,10 +16,10 @@ const SafeAppsHeader = ({ searchQuery, onSearchQueryChange }: Props): ReactEleme
   return (
     <PageHeader
       title="Safe Apps"
-      subtitle="Explore endless possibilities to manage your assets"
+      noBorder
       action={
-        <Grid container sx={{ pb: 2 }}>
-          <Grid item xs={12} sm={12} md={6} xl={4.5}>
+        <Grid container pb={1}>
+          <Grid item xs={9} md={5} xl={4.5}>
             <TextField
               placeholder="Search"
               variant="filled"

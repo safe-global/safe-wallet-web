@@ -8,7 +8,8 @@ import { SafeAppsHeader } from './SafeAppsHeader'
 import { useRemoveAppModal } from '@/hooks/safe-apps/useRemoveAppModal'
 import useDebounce from '@/hooks/useDebounce'
 import { RemoveCustomAppModal } from '@/components/safe-apps/RemoveCustomAppModal'
-import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
+import SafeAppsSearchPlaceholder from './SafeAppsSearchPlaceholder'
 
 const SafeAppList = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -30,7 +31,7 @@ const SafeAppList = () => {
 
   useEffect(() => {
     if (debouncedSearchQuery) {
-      trackEvent({ ...SAFE_APPS_EVENTS.SEARCH, label: debouncedSearchQuery })
+      trackSafeAppEvent({ ...SAFE_APPS_EVENTS.SEARCH, label: debouncedSearchQuery })
     }
   }, [debouncedSearchQuery])
 
@@ -45,6 +46,7 @@ const SafeAppList = () => {
         collapsible
         title={`Pinned apps (${pinnedSafeApps.length})`}
         apps={pinnedSafeApps}
+        allApps={allSafeApps}
         onPinApp={togglePin}
         pinnedIds={pinnedSafeAppIds}
         cardVariant="compact"
@@ -53,6 +55,7 @@ const SafeAppList = () => {
         collapsible
         title={`Custom apps (${customSafeApps.length})`}
         apps={customSafeApps}
+        allApps={allSafeApps}
         onDeleteApp={openRemoveAppModal}
         prependAddCustomAppCard
         onAddCustomApp={addCustomApp}
@@ -60,6 +63,7 @@ const SafeAppList = () => {
       <SafeAppsSection
         title={`All (${allSafeApps.length})`}
         apps={allSafeApps}
+        allApps={allSafeApps}
         onPinApp={togglePin}
         pinnedIds={pinnedSafeAppIds}
       />
@@ -67,13 +71,11 @@ const SafeAppList = () => {
   )
   if (searchQuery) {
     if (filteredApps.length === 0) {
-      pageBody = (
-        <Typography variant="body1" p={2}>
-          No apps found
-        </Typography>
-      )
+      pageBody = <SafeAppsSearchPlaceholder searchQuery={searchQuery} />
     } else {
-      pageBody = <SafeAppsSection title={`Search results (${filteredApps.length})`} apps={filteredApps} />
+      pageBody = (
+        <SafeAppsSection title={`Search results (${filteredApps.length})`} apps={filteredApps} allApps={allSafeApps} />
+      )
     }
   }
 

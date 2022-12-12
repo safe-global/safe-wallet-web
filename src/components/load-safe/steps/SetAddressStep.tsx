@@ -31,12 +31,12 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
   const formMethods = useForm<SafeFormData>({
     mode: 'onChange',
     defaultValues: {
-      [FormField.address]: params?.address,
-      [FormField.name]: params?.name,
+      [FormField.address]: params?.address || '',
+      [FormField.name]: params?.name || '',
     },
   })
 
-  const { handleSubmit, watch, formState } = formMethods
+  const { handleSubmit, watch, formState, getValues } = formMethods
 
   const safeAddress = watch('address')
 
@@ -69,12 +69,12 @@ const SetAddressStep = ({ params, onSubmit, onBack }: Props) => {
     }
   })
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
+  const onFormBack = () => {
     onBack({
-      ...data,
-      [FormField.name]: data[FormField.name] || fallbackName,
+      ...getValues(),
+      [FormField.name]: getValues([FormField.name]) || fallbackName,
     })
-  })
+  }
 
   return (
     <FormProvider {...formMethods}>

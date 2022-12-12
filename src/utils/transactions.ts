@@ -1,9 +1,9 @@
 import type {
   ChainInfo,
-  DateLabel,
   ExecutionInfo,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
+  SafeAppData,
   Transaction,
   TransactionDetails,
   TransactionListPage,
@@ -29,14 +29,17 @@ import { createExistingTx } from '@/services/tx/txSender'
 import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import type { TransactionOptions } from '@gnosis.pm/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
-import { startOfDay } from 'date-fns'
 import uniqBy from 'lodash/uniqBy'
+import { Errors, logError } from '@/services/exceptions'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
     signers,
     confirmations,
+    confirmationsRequired,
   }: MultisigExecutionDetails): MultisigExecutionInfo['missingSigners'] => {
+    if (confirmations.length >= confirmationsRequired) return
+
     const missingSigners = signers.filter(({ value }) => {
       const hasConfirmed = confirmations?.some(({ signer }) => signer?.value === value)
       return !hasConfirmed
@@ -83,11 +86,6 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
     },
     conflictType: ConflictType.NONE,
   }
-}
-
-export const makeDateLabelFromTx = (tx: Transaction): DateLabel => {
-  const startOfDayTimestamp = startOfDay(tx.transaction.timestamp).getTime()
-  return { timestamp: startOfDayTimestamp, type: TransactionListItemType.DATE_LABEL }
 }
 
 const getSignatures = (confirmations: Record<string, string>) => {
@@ -187,4 +185,20 @@ export const getQueuedTransactionCount = (txPage?: TransactionListPage): string 
   }
 
   return queuedTxsByNonce.length.toString()
+}
+
+export const getTxOrigin = (app?: SafeAppData): string | undefined => {
+  if (!app) {
+    return
+  }
+
+  let origin: string | undefined
+
+  try {
+    origin = JSON.stringify({ name: app.name, url: app.url })
+  } catch (e) {
+    logError(Errors._808, (e as Error).message)
+  }
+
+  return origin
 }

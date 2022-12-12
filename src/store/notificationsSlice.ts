@@ -6,6 +6,7 @@ import type { LinkProps } from 'next/link'
 export type Notification = {
   id: string
   message: string
+  detailedMessage?: string
   groupKey: string
   variant: AlertColor
   timestamp: number
@@ -30,6 +31,11 @@ export const notificationsSlice = createSlice({
         return notification.id === payload.id ? { ...notification, isDismissed: true } : notification
       })
     },
+    closeByGroupKey: (state, { payload }: PayloadAction<{ groupKey: string }>): NotificationState => {
+      return state.map((notification) => {
+        return notification.groupKey === payload.groupKey ? { ...notification, isDismissed: true } : notification
+      })
+    },
     deleteNotification: (state, { payload }: PayloadAction<Notification>) => {
       return state.filter((notification) => notification.id !== payload.id)
     },
@@ -44,7 +50,7 @@ export const notificationsSlice = createSlice({
   },
 })
 
-export const { closeNotification, deleteNotification, deleteAllNotifications, readNotification } =
+export const { closeNotification, closeByGroupKey, deleteNotification, deleteAllNotifications, readNotification } =
   notificationsSlice.actions
 
 export const showNotification = (payload: Omit<Notification, 'id' | 'timestamp'>): AppThunk<string> => {

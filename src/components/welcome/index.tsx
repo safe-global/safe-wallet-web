@@ -3,6 +3,7 @@ import { Button, Divider, Grid, Paper, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS, LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import Track from '../common/Track'
+import { AppRoutes } from '@/config/routes'
 
 const NewSafe = () => {
   const router = useRouter()
@@ -13,7 +14,7 @@ const NewSafe = () => {
         Welcome to the Safe.
       </Typography>
       <Typography variant="h4" mb={2}>
-        Safe is the most trusted platform to manage digital assets.
+        Celo Safe is the most trusted platform to manage digital assets on Celo.
         <br />
         Here is how to get started:
       </Typography>
@@ -28,7 +29,7 @@ const NewSafe = () => {
               for creating your new Safe.
             </Typography>
             <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
-              <Button variant="contained" onClick={() => router.push('/open')}>
+              <Button variant="contained" onClick={() => router.push(AppRoutes.open)}>
                 + Create new Safe
               </Button>
             </Track>

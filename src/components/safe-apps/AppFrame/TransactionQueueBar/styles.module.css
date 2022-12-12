@@ -3,7 +3,9 @@
   bottom: 0;
   right: 0;
   width: 100%;
-  z-index: 1;
+
+  /* MUI Drawer z-index default value see: https://mui.com/material-ui/customization/default-theme/?expand-path=$.zIndex */
+  z-index: 1200;
 
   /*this rule is needed to prevent the bar from being expanded outside the screen without scrolling on mobile devices*/
   max-height: 90vh;

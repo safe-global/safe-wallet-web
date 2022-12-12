@@ -3,24 +3,27 @@ import { useCallback, useEffect } from 'react'
 
 import {
   SidebarList,
-  SidebarListItemButton,
-  SidebarListItemIcon,
-  SidebarListItemText,
+  // SidebarListItemButton,
+  // SidebarListItemIcon,
+  // SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
-import { BEAMER_SELECTOR, loadBeamer } from '@/services/beamer'
+import {
+  loadBeamer,
+  // BEAMER_SELECTOR,
+} from '@/services/beamer'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectCookies, CookieType } from '@/store/cookiesSlice'
 import { openCookieBanner } from '@/store/popupSlice'
-import BeamerIcon from '@/public/images/sidebar/whats-new.svg'
-import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
+// import BeamerIcon from '@/public/images/sidebar/whats-new.svg'
+// import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
 import { ListItem } from '@mui/material'
 import DebugToggle from '../DebugToggle'
 import { IS_PRODUCTION } from '@/config/constants'
-import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+// import Track from '@/components/common/Track'
+// import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { useCurrentChain } from '@/hooks/useChains'
 
-const WHATS_NEW_PATH = 'https://help.gnosis-safe.io/en/'
+// const WHATS_NEW_PATH = 'https://help.gnosis-safe.io/en/'
 
 const SidebarFooter = (): ReactElement => {
   const dispatch = useAppDispatch()
@@ -50,7 +53,7 @@ const SidebarFooter = (): ReactElement => {
         </ListItem>
       )}
 
-      <Track {...OVERVIEW_EVENTS.WHATS_NEW}>
+      {/* <Track {...OVERVIEW_EVENTS.WHATS_NEW}>
         <ListItem disablePadding>
           <SidebarListItemButton id={BEAMER_SELECTOR} onClick={handleBeamer}>
             <SidebarListItemIcon color="primary">
@@ -72,7 +75,7 @@ const SidebarFooter = (): ReactElement => {
             </SidebarListItemButton>
           </a>
         </ListItem>
-      </Track>
+      </Track> */}
     </SidebarList>
   )
 }

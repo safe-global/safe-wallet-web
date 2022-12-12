@@ -1,23 +1,26 @@
-import { useState, useEffect } from 'react'
-import local from '@/services/local-storage/local'
+import { useCallback, useMemo } from 'react'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectPinned, setPinned } from '@/store/safeAppsSlice'
+import useChainId from '../useChainId'
 
 type ReturnType = {
   pinnedSafeAppIds: Set<number>
   updatePinnedSafeApps: (newPinnedSafeAppIds: Set<number>) => void
 }
 
-const pinnedSafeAppsIdsKey = 'pinnedSafeAppsIds'
+// Return the pinned app ids across all chains
+export const usePinnedSafeApps = (): ReturnType => {
+  const chainId = useChainId()
+  const pinned = useAppSelector((state) => selectPinned(state, chainId))
+  const pinnedSafeAppIds = useMemo(() => new Set(pinned), [pinned])
+  const dispatch = useAppDispatch()
 
-const usePinnedSafeApps = (): ReturnType => {
-  const [pinnedSafeAppIds, updatePinnedSafeApps] = useState<Set<number>>(
-    () => new Set(local.getItem<number[]>(pinnedSafeAppsIdsKey) || []),
+  const updatePinnedSafeApps = useCallback(
+    (ids: Set<number>) => {
+      dispatch(setPinned({ pinned: Array.from(ids), chainId }))
+    },
+    [dispatch, chainId],
   )
-
-  useEffect(() => {
-    local.setItem(pinnedSafeAppsIdsKey, Array.from(pinnedSafeAppIds))
-  }, [pinnedSafeAppIds])
 
   return { pinnedSafeAppIds, updatePinnedSafeApps }
 }
-
-export { usePinnedSafeApps }

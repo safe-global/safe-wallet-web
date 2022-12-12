@@ -1,11 +1,10 @@
 import local from '@/services/local-storage/local'
 import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 
-export const APPS_DASHBOARD = 'APPS_DASHBOARD'
+export const APPS_DASHBOARD = 'SafeApps__dashboard'
 
 const TX_COUNT_WEIGHT = 2
 const OPEN_COUNT_WEIGHT = 1
-const PINNED_WEIGHT = 10
 
 export type AppTrackData = {
   [safeAppId: string]: {
@@ -56,20 +55,14 @@ const normalizeBetweenTwoRanges = (
   return newMin + ((val - minVal) * (newMax - newMin)) / (maxVal - minVal)
 }
 
-export const rankSafeApps = (apps: AppTrackData, pinnedSafeApps: SafeAppData[]): string[] => {
+export const rankSafeApps = (safeApps: SafeAppData[]) => {
+  const apps = getAppsUsageData()
   const appsWithScore = computeTrackedSafeAppsScore(apps)
-
-  for (const app of pinnedSafeApps) {
-    if (appsWithScore[app.id]) {
-      appsWithScore[app.id] += PINNED_WEIGHT
-    } else {
-      appsWithScore[app.id] = PINNED_WEIGHT
-    }
-  }
 
   return Object.entries(appsWithScore)
     .sort((a, b) => b[1] - a[1])
-    .map((app) => app[0])
+    .map((app) => safeApps.find((safeApp) => String(safeApp.id) === app[0]))
+    .filter(Boolean) as SafeAppData[]
 }
 
 export const computeTrackedSafeAppsScore = (apps: AppTrackData): Record<string, number> => {

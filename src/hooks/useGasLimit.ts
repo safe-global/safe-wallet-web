@@ -1,6 +1,7 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { BigNumber } from 'ethers'
 import type Safe from '@gnosis.pm/safe-core-sdk'
+import { encodeSignatures } from '@/services/tx/encodeSignatures'
 import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
 import { OperationType } from '@gnosis.pm/safe-core-sdk-types'
 import useAsync from '@/hooks/useAsync'
@@ -8,40 +9,10 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
+import useIsSafeOwner from './useIsSafeOwner'
+import { Errors, logError } from '@/services/exceptions'
 
-export const getPreValidatedSignature = (from: string): string => {
-  return `0x000000000000000000000000${from
-    .toLowerCase()
-    .replace('0x', '')}000000000000000000000000000000000000000000000000000000000000000001`
-}
-
-export const _encodeSignatures = (safeTx: SafeTransaction, from: string): string => {
-  const owner = from.toLowerCase()
-  const needsOwnerSig = !safeTx.signatures.has(owner)
-
-  // https://docs.gnosis.io/safe/docs/contracts_signatures/#pre-validated-signatures
-  if (needsOwnerSig) {
-    const ownerSig = getPreValidatedSignature(from)
-
-    safeTx.addSignature({
-      signer: owner,
-      data: ownerSig,
-      staticPart: () => ownerSig,
-      dynamicPart: () => '',
-    })
-  }
-
-  const encoded = safeTx.encodedSignatures()
-
-  // Remove the "fake" signature we added
-  if (needsOwnerSig) {
-    safeTx.signatures.delete(owner)
-  }
-
-  return encoded
-}
-
-const estimateSafeTxGas = (safeSDK: Safe, safeTx: SafeTransaction, from: string): string => {
+const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string): string => {
   const EXEC_TX_METHOD = 'execTransaction'
 
   return safeSDK
@@ -56,7 +27,7 @@ const estimateSafeTxGas = (safeSDK: Safe, safeTx: SafeTransaction, from: string)
       safeTx.data.gasPrice,
       safeTx.data.gasToken,
       safeTx.data.refundReceiver,
-      _encodeSignatures(safeTx, from),
+      encodeSignatures(safeTx, from),
     ])
 }
 
@@ -72,20 +43,21 @@ const useGasLimit = (
   const safeAddress = useSafeAddress()
   const wallet = useWallet()
   const walletAddress = wallet?.address
+  const isOwner = useIsSafeOwner()
 
   const encodedSafeTx = useMemo<string>(() => {
     if (!safeTx || !safeSDK || !walletAddress) {
       return ''
     }
-    return estimateSafeTxGas(safeSDK, safeTx, walletAddress)
-  }, [safeSDK, safeTx, walletAddress])
+    return getEncodedSafeTx(safeSDK, safeTx, isOwner ? walletAddress : undefined)
+  }, [safeSDK, safeTx, walletAddress, isOwner])
 
   const operationType = useMemo<number>(
     () => (safeTx?.data.operation == OperationType.DelegateCall ? 1 : 0),
     [safeTx?.data.operation],
   )
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>(() => {
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync(() => {
     if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return
 
     return web3ReadOnly.estimateGas({
@@ -95,6 +67,12 @@ const useGasLimit = (
       type: operationType,
     })
   }, [safeAddress, walletAddress, encodedSafeTx, web3ReadOnly, operationType])
+
+  useEffect(() => {
+    if (gasLimitError) {
+      logError(Errors._612, gasLimitError.message)
+    }
+  }, [gasLimitError])
 
   return { gasLimit, gasLimitError, gasLimitLoading }
 }

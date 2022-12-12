@@ -38,6 +38,7 @@ const EntryDialog = ({
     defaultValues,
     mode: 'onChange',
   })
+
   const { handleSubmit, formState } = methods
 
   const onSubmit = (data: AddressEntry) => {

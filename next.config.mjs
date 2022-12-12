@@ -4,6 +4,7 @@ import withBundleAnalyzer from '@next/bundle-analyzer'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  productionBrowserSourceMaps: true,
   eslint: {
     dirs: ['src'],
   },
@@ -29,7 +30,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/:safe([a-z]+\\:0x[a-fA-F0-9]{40})/:path*',
+        source: '/:safe([a-z0-9-]+\\:0x[a-fA-F0-9]{40})/:path*',
         destination: '/:path*?safe=:safe',
       },
     ]

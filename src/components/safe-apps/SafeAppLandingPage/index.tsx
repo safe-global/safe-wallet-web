@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Box, CircularProgress, Paper } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
-import { OVERVIEW_EVENTS, SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import { OVERVIEW_EVENTS, SAFE_APPS_EVENTS, trackEvent, trackSafeAppEvent } from '@/services/analytics'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import { SafeAppDetails } from '@/components/safe-apps/SafeAppLandingPage/SafeAppDetails'
@@ -30,17 +30,12 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
   const showDemo = chain.chainId === CHAIN_ID_WITH_A_DEMO || !!backendApp?.chainIds.includes(CHAIN_ID_WITH_A_DEMO)
 
   useEffect(() => {
-    if (!isLoading && safeApp) {
-      trackEvent({
-        ...SAFE_APPS_EVENTS.SHARED_APP_LANDING,
-        label: safeApp.name,
-      })
-      trackEvent({
-        ...SAFE_APPS_EVENTS.SHARED_APP_CHAIN_ID,
-        label: chain.chainId,
-      })
+    if (!isLoading && !backendAppLoading && safeApp?.chainIds.length) {
+      const appName = backendApp ? backendApp.name : safeApp.url
+
+      trackSafeAppEvent({ ...SAFE_APPS_EVENTS.SHARED_APP_LANDING, label: chain.chainId }, appName)
     }
-  }, [isLoading, safeApp, chain.chainId])
+  }, [isLoading, backendApp, safeApp, backendAppLoading, chain])
 
   const handleConnectWallet = async () => {
     if (!onboard) return
@@ -51,7 +46,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
   }
 
   const handleDemoClick = () => {
-    trackEvent({ ...SAFE_APPS_EVENTS.SHARED_APP_OPEN_DEMO, label: appUrl })
+    trackSafeAppEvent(SAFE_APPS_EVENTS.SHARED_APP_OPEN_DEMO, backendApp ? backendApp.name : appUrl)
   }
 
   if (isLoading || backendAppLoading) {

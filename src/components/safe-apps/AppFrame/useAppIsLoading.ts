@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { SAFE_APPS_POLLING_INTERVAL } from '@/config/constants'
-
 const APP_LOAD_ERROR_TIMEOUT = 30000
+const APP_SLOW_LOADING_WARNING_TIMEOUT = 15_000
 const APP_LOAD_ERROR = 'There was an error loading the Safe App. There might be a problem with the App provider.'
 
 type UseAppIsLoadingReturnType = {
@@ -30,7 +29,7 @@ const useAppIsLoading = (): UseAppIsLoadingReturnType => {
     if (appIsLoading) {
       timer.current = window.setTimeout(() => {
         setIsLoadingSlow(true)
-      }, SAFE_APPS_POLLING_INTERVAL)
+      }, APP_SLOW_LOADING_WARNING_TIMEOUT)
       errorTimer.current = window.setTimeout(() => {
         setAppLoadError(() => {
           throw Error(APP_LOAD_ERROR)

@@ -1,23 +1,13 @@
 import type { ReactElement } from 'react'
-import { useMemo } from 'react'
 import styled from '@emotion/styled'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid, Typography, Link } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import { useRouter } from 'next/router'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { AppRoutes } from '@/config/routes'
-
-export const FEATURED_APPS_TAG = 'dashboard-widgets'
-
-const StyledImage = styled.img`
-  width: 64px;
-  height: 64px;
-`
-
-const StyledLink = styled.a`
-  text-decoration: none;
-`
+import { SafeAppsTag } from '@/config/constants'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import SafeAppIcon from '@/components/safe-apps/SafeAppIcon'
 
 const StyledGrid = styled(Grid)`
   gap: 24px;
@@ -28,11 +18,10 @@ const StyledGridItem = styled(Grid)`
 `
 
 export const FeaturedApps = (): ReactElement | null => {
-  const [allApps = [], , isLoading] = useRemoteSafeApps()
   const router = useRouter()
-  const featuredApps = useMemo(() => allApps.filter((app) => app.tags?.includes(FEATURED_APPS_TAG)), [allApps])
+  const [featuredApps, _, remoteSafeAppsLoading] = useRemoteSafeApps(SafeAppsTag.DASHBOARD_FEATURED)
 
-  if (!featuredApps.length && !isLoading) return null
+  if (!featuredApps?.length && !remoteSafeAppsLoading) return null
 
   return (
     <Grid item xs={12} md>
@@ -42,14 +31,14 @@ export const FeaturedApps = (): ReactElement | null => {
         </Typography>
         <WidgetBody>
           <StyledGrid container>
-            {featuredApps.map((app) => (
+            {featuredApps?.map((app) => (
               <StyledGridItem item xs md key={app.id}>
-                <Link passHref href={{ pathname: AppRoutes.apps, query: { ...router.query, appUrl: app.url } }}>
-                  <StyledLink>
+                <NextLink passHref href={{ pathname: AppRoutes.apps, query: { ...router.query, appUrl: app.url } }}>
+                  <a>
                     <Card>
                       <Grid container alignItems="center" spacing={3}>
                         <Grid item xs={12} md={3}>
-                          <StyledImage src={app.iconUrl} alt={app.name} />
+                          <SafeAppIcon src={app.iconUrl} alt={app.name} width={64} height={64} />
                         </Grid>
 
                         <Grid item xs={12} md={9}>
@@ -57,14 +46,14 @@ export const FeaturedApps = (): ReactElement | null => {
                             <Typography fontSize="lg">{app.description}</Typography>
                           </Box>
 
-                          <Typography color="primary.main" fontWeight="bold">
+                          <Link color="primary.main" fontWeight="bold" component="span">
                             Use {app.name}
-                          </Typography>
+                          </Link>
                         </Grid>
                       </Grid>
                     </Card>
-                  </StyledLink>
-                </Link>
+                  </a>
+                </NextLink>
               </StyledGridItem>
             ))}
           </StyledGrid>

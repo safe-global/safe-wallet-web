@@ -93,23 +93,12 @@ const getAmountFormatterOptions = (number: string | number): Intl.NumberFormatOp
  * Intl.NumberFormat number formatter that adheres to our style guide
  * @param number Number to format
  */
-export const formatAmount = (number: string | number): string => {
+export const formatAmount = (number: string | number, precision?: number): string => {
   const options = getAmountFormatterOptions(number)
+  if (precision !== undefined) {
+    options.maximumFractionDigits = precision
+  }
   const formatter = new Intl.NumberFormat(undefined, options)
-
-  return format(number, formatter.format)
-}
-
-/**
- * Intl.NumberFormat number formatter that adheres to our style guide with custom decimal places
- * @param number Number to format
- */
-export const formatAmountWithPrecision = (
-  number: string | number,
-  fractionDigits: Intl.NumberFormatOptions['maximumFractionDigits'],
-): string => {
-  const options = getAmountFormatterOptions(number)
-  const formatter = new Intl.NumberFormat(undefined, { ...options, maximumFractionDigits: fractionDigits })
 
   return format(number, formatter.format)
 }

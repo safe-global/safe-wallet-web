@@ -1,4 +1,4 @@
-import { Popover, ButtonBase, Typography, Paper, Divider } from '@mui/material'
+import { Popover, ButtonBase, Typography, Paper, Divider, Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import { useState, type MouseEvent, type ReactElement } from 'react'
@@ -63,11 +63,11 @@ const ConnectionCenter = (): ReactElement => {
           <WalletDetails onConnect={handleClose} />
 
           {isSupported && (
-            <>
+            <Box className={css.pairingDetails}>
               <Divider flexItem />
 
               <PairingDetails vertical />
-            </>
+            </Box>
           )}
         </Paper>
       </Popover>

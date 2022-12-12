@@ -6,15 +6,16 @@ const IMMORTAL_PREFIX = '_immortal|v2_'
 
 const CHAIN_PREFIXES: Record<string, string> = {
   '1': 'MAINNET',
-  '4': 'RINKEBY',
   '56': 'BSC',
   '100': 'XDAI',
   '137': 'POLYGON',
   '246': 'ENERGY_WEB_CHAIN',
   '42161': 'ARBITRUM',
   '73799': 'VOLTA',
+  '42220': 'CELO',
+  '44787': 'ALFAJORES',
 }
-const ALL_CHAINS = ['1', '100', '137', '56', '246', '42161', '1313161554', '43114', '10', '5', '4', '73799']
+const ALL_CHAINS = ['42220', '44787']
 
 const OLD_LS_KEY = '__SAFES'
 

@@ -45,6 +45,7 @@ export const NotificationLink = ({
 
 const Toast = ({
   message,
+  detailedMessage,
   variant,
   link,
   onClose,
@@ -72,6 +73,13 @@ const Toast = ({
     <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={autoHideDuration}>
       <Alert severity={variant} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
         {message}
+
+        {detailedMessage && (
+          <details>
+            <Link component="summary">Details</Link>
+            <pre>{detailedMessage}</pre>
+          </details>
+        )}
         <NotificationLink link={link} onClick={handleClose} />
       </Alert>
     </Snackbar>

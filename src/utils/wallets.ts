@@ -2,29 +2,22 @@ import { ProviderLabel } from '@web3-onboard/injected-wallets'
 import { hasStoredPairingSession } from '@/services/pairing/connector'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
-
-const isKeystoneError = (err: unknown): boolean => {
-  if (err instanceof Error) {
-    return err.message?.startsWith('#ktek_error')
-  }
-  return false
-}
+import type { EthersError } from '@/utils/ethers-utils'
+import { ErrorCode } from '@ethersproject/logger'
 
 const isWCRejection = (err: Error): boolean => {
-  return /User rejected/.test(err?.message)
+  return /rejected/.test(err?.message)
 }
 
-const isMMRejection = (err: Error & { code?: number }): boolean => {
-  const METAMASK_REJECT_CONFIRM_TX_ERROR_CODE = 4001
-
-  return err.code === METAMASK_REJECT_CONFIRM_TX_ERROR_CODE
+const isEthersRejection = (err: EthersError): boolean => {
+  return err.code === ErrorCode.ACTION_REJECTED
 }
 
-export const isWalletRejection = (err: Error & { code?: number }): boolean => {
-  return isMMRejection(err) || isWCRejection(err) || isKeystoneError(err)
+export const isWalletRejection = (err: EthersError): boolean => {
+  return isEthersRejection(err) || isWCRejection(err)
 }
 
-const WalletNames = {
+export const WalletNames = {
   METAMASK: ProviderLabel.MetaMask,
   WALLET_CONNECT: 'WalletConnect',
   SAFE_MOBILE_PAIRING: PAIRING_MODULE_LABEL,
@@ -36,7 +29,7 @@ export const isWalletUnlocked = async (walletName: string): Promise<boolean> => 
 
   // Only MetaMask exposes a method to check if the wallet is unlocked
   if (walletName === WalletNames.METAMASK) {
-    return window.ethereum?._metamask?.isUnlocked() || false
+    return window.ethereum?._metamask?.isUnlocked?.() || false
   }
 
   // Wallet connect creates a localStorage entry when connected and removes it when disconnected

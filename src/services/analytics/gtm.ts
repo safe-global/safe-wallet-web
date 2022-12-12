@@ -8,9 +8,7 @@
  */
 
 import type { TagManagerArgs } from './TagManager'
-import TagManager, { DATA_LAYER_NAME } from './TagManager'
-import Cookies from 'js-cookie'
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import TagManager from './TagManager'
 import {
   IS_PRODUCTION,
   GOOGLE_TAG_MANAGER_ID,
@@ -18,14 +16,14 @@ import {
   GOOGLE_TAG_MANAGER_AUTH_LATEST,
   GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH,
 } from '@/config/constants'
-import type { AnalyticsEvent, EventLabel, SafeAppEvent } from './types'
+import type { AnalyticsEvent, EventLabel, SafeAppSDKEvent } from './types'
 import { EventType } from './types'
+import { SAFE_APPS_SDK_CATEGORY } from './events'
+import { getAbTest } from '../tracking/abTesting'
+import type { AbTest } from '../tracking/abTesting'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
-
-const GOOGLE_ANALYTICS_COOKIE_LIST = ['_ga', '_gat', '_gid']
-const EMPTY_SAFE_APP = 'unknown'
 
 const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
   LIVE: {
@@ -48,7 +46,7 @@ export const gtmSetChainId = (chainId: string): void => {
   _chainId = chainId
 }
 
-export const gtmInit = (): void => {
+export const gtmInit = (pagePath: string): void => {
   const GTM_ENVIRONMENT = IS_PRODUCTION ? GTM_ENV_AUTH.LIVE : GTM_ENV_AUTH.DEVELOPMENT
 
   if (!GOOGLE_TAG_MANAGER_ID || !GTM_ENVIRONMENT.auth) {
@@ -60,6 +58,8 @@ export const gtmInit = (): void => {
     gtmId: GOOGLE_TAG_MANAGER_ID,
     ...GTM_ENVIRONMENT,
     dataLayer: {
+      pageLocation: `${location.origin}${pagePath}`,
+      pagePath,
       // Block JS variables and custom scripts
       // @see https://developers.google.com/tag-platform/tag-manager/web/restrict
       'gtm.blocklist': ['j', 'jsm', 'customScripts'],
@@ -67,24 +67,12 @@ export const gtmInit = (): void => {
   })
 }
 
-const isGtmLoaded = (): boolean => {
-  return typeof window !== 'undefined' && !!window[DATA_LAYER_NAME]
-}
-
-export const gtmClear = (): void => {
-  if (!isGtmLoaded()) return
-
-  // Delete GA cookies
-  const path = '/'
-  const domain = `.${location.host.split('.').slice(-2).join('.')}`
-  GOOGLE_ANALYTICS_COOKIE_LIST.forEach((cookie) => {
-    Cookies.remove(cookie, { path, domain })
-  })
-}
+export const gtmClear = TagManager.disable
 
 type GtmEvent = {
   event: EventType
   chainId: string
+  abTest?: AbTest
 }
 
 type ActionGtmEvent = GtmEvent & {
@@ -98,13 +86,15 @@ type PageviewGtmEvent = GtmEvent & {
   pagePath: string
 }
 
-const gtmSend = (event: GtmEvent): void => {
-  console.info('[Analytics]', event)
-
-  if (!isGtmLoaded()) return
-
-  TagManager.dataLayer(event)
+type SafeAppGtmEvent = ActionGtmEvent & {
+  safeAppName: string
+  safeAppMethod?: string
+  safeAppEthMethod?: string
+  safeAppSDKVersion?: string
 }
+
+// const gtmSend = TagManager.dataLayer
+const gtmSend = (event: GtmEvent): void => {}
 
 export const gtmTrack = (eventData: AnalyticsEvent): void => {
   const gtmEvent: ActionGtmEvent = {
@@ -116,6 +106,12 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
 
   if (eventData.label) {
     gtmEvent.eventLabel = eventData.label
+  }
+
+  const abTest = getAbTest()
+
+  if (abTest) {
+    gtmEvent.abTest = abTest
   }
 
   gtmSend(gtmEvent)
@@ -132,25 +128,36 @@ export const gtmTrackPageview = (pagePath: string): void => {
   gtmSend(gtmEvent)
 }
 
-export const gtmTrackSafeAppMessage = ({
-  app,
-  method,
-  params,
-  sdkVersion,
-}: {
-  app?: SafeAppData
-  method: string
-  params?: any
-  sdkVersion?: string
-}): void => {
-  const gtmEvent: SafeAppEvent = {
+export const normalizeAppName = (appName?: string): string => {
+  // App name is a URL
+  if (appName?.startsWith('http')) {
+    // Strip search query and hash
+    return appName.split('?')[0].split('#')[0]
+  }
+  return appName || ''
+}
+
+export const gtmTrackSafeApp = (eventData: AnalyticsEvent, appName?: string, sdkEventData?: SafeAppSDKEvent): void => {
+  const safeAppGtmEvent: SafeAppGtmEvent = {
     event: EventType.SAFE_APP,
     chainId: _chainId,
-    safeAppName: app?.name || EMPTY_SAFE_APP,
-    safeAppMethod: method,
-    safeAppEthMethod: params?.call,
-    safeAppSDKVersion: sdkVersion,
+    eventCategory: eventData.category,
+    eventAction: eventData.action,
+    safeAppName: normalizeAppName(appName),
+    safeAppEthMethod: '',
+    safeAppMethod: '',
+    safeAppSDKVersion: '',
   }
 
-  gtmSend(gtmEvent)
+  if (eventData.category === SAFE_APPS_SDK_CATEGORY) {
+    safeAppGtmEvent.safeAppMethod = sdkEventData?.method
+    safeAppGtmEvent.safeAppEthMethod = sdkEventData?.ethMethod
+    safeAppGtmEvent.safeAppSDKVersion = sdkEventData?.version
+  }
+
+  if (eventData.label) {
+    safeAppGtmEvent.eventLabel = eventData.label
+  }
+
+  gtmSend(safeAppGtmEvent)
 }

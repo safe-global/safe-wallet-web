@@ -7,8 +7,6 @@ import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { safeFormatUnits } from '@/utils/formatters'
 import type { Loadable } from './common'
-import { selectChainById } from '@/store/chainsSlice'
-import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {
@@ -36,6 +34,9 @@ export const addedSafesSlice = createSlice({
       // Don't migrate if there's data already
       if (Object.keys(state).length > 0) return state
       // Otherwise, migrate
+      return action.payload
+    },
+    setAddedSafes: (state, action: PayloadAction<AddedSafesState>) => {
       return action.payload
     },
     addOrUpdateSafe: (state, { payload }: PayloadAction<{ safe: SafeInfo }>) => {
@@ -103,6 +104,12 @@ export const selectAllAddedSafes = (state: RootState): AddedSafesState => {
   return state[addedSafesSlice.name]
 }
 
+export const selectTotalAdded = (state: RootState): number => {
+  return Object.values(state[addedSafesSlice.name])
+    .map((item) => Object.keys(item))
+    .flat().length
+}
+
 export const selectAddedSafes = createSelector(
   [selectAllAddedSafes, (_: RootState, chainId: string) => chainId],
   (allAddedSafes, chainId): AddedSafesOnChain | undefined => {
@@ -116,29 +123,6 @@ export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next)
   const state = store.getState()
 
   switch (action.type) {
-    // Track number of total Safes (when a new one is added)
-    case addedSafesSlice.actions.addOrUpdateSafe.type: {
-      const { chainId, address } = action.payload.safe
-
-      const addedSafes = selectAllAddedSafes(state)
-      const addedSafeAddresses = Object.keys(addedSafes?.[chainId] || {})
-
-      if (isAddedSafe(addedSafes, chainId, address.value) || addedSafeAddresses.length === 0) {
-        return
-      }
-
-      const event = OVERVIEW_EVENTS.ADDED_SAFES_ON_NETWORK
-
-      const currentChain = selectChainById(state, chainId)
-      const { chainName } = currentChain || {}
-
-      trackEvent({
-        ...event,
-        action: `${event.action} ${chainName}`,
-        label: addedSafeAddresses.length,
-      })
-    }
-
     // Update added Safe balances when balance polling occurs
     case balancesSlice.actions.set.type: {
       const { data } = selectSafeInfo(state)
