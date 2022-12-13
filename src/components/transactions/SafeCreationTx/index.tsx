@@ -26,12 +26,18 @@ const SafeCreationTx = ({ txSummary }: SafeCreationTxProps) => {
         </InfoDetails>
         {factory && (
           <InfoDetails title="Factory:">
-            <EthHashInfo address={factory?.value} shortAddress={false} showCopyButton hasExplorer />
+            <EthHashInfo name={factory.name} address={factory.value} shortAddress={false} showCopyButton hasExplorer />
           </InfoDetails>
         )}
         {implementation && (
           <InfoDetails title="Mastercopy:">
-            <EthHashInfo address={implementation?.value} shortAddress={false} showCopyButton hasExplorer />
+            <EthHashInfo
+              name={implementation.name}
+              address={implementation.value}
+              shortAddress={false}
+              showCopyButton
+              hasExplorer
+            />
           </InfoDetails>
         )}
       </Box>
