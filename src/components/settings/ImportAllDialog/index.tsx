@@ -146,11 +146,13 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
         <div className={css.horizontalDivider} />
 
         <Typography>Only JSON files exported from a Safe can be imported.</Typography>
-        <Alert severity="warning" sx={{ mt: 3 }}>
-          <AlertTitle sx={{ fontWeight: 700 }}>Overwrite your current data?</AlertTitle>
-          This action will overwrite your currently added Safes and address book entries with those from the imported
-          file.
-        </Alert>
+        {jsonData && (
+          <Alert severity="warning" sx={{ mt: 3 }}>
+            <AlertTitle sx={{ fontWeight: 700 }}>Overwrite your current data?</AlertTitle>
+            This action will overwrite your currently added Safes and address book entries with those from the imported
+            file.
+          </Alert>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
