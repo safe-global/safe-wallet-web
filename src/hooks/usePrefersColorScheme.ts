@@ -11,12 +11,14 @@ const usePrefersColorScheme = (): ColorSchemeType => {
     const isDark = window.matchMedia('(prefers-color-scheme: dark)')
     const isLight = window.matchMedia('(prefers-color-scheme: light)')
 
-    const darkListener = ({ matches }: MediaQueryListEvent) => {
-      matches && setPreferredColorScheme('dark')
-    }
-    const lightListener = ({ matches }: MediaQueryListEvent) => {
-      matches && setPreferredColorScheme('light')
-    }
+    const listener =
+      (type: ColorSchemeType) =>
+      ({ matches }: MediaQueryListEvent) => {
+        matches && setPreferredColorScheme(type)
+      }
+
+    const darkListener = listener('dark')
+    const lightListener = listener('light')
 
     isDark.addEventListener('change', darkListener)
     isLight.addEventListener('change', lightListener)
