@@ -6,7 +6,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { Button, DialogContent, Typography } from '@mui/material'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import SendToBlock from '@/components/tx/SendToBlock'
 import { useMemo, useState } from 'react'
 import useTxSender from '@/hooks/useTxSender'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
@@ -75,10 +75,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
           over the execute button.
         </Typography>
 
-        <Typography color="primary.light">Interact with:</Typography>
-        {multiSendContract && (
-          <EthHashInfo address={multiSendContract.getAddress()} shortAddress={false} hasExplorer showCopyButton />
-        )}
+        {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with:" />}
 
         {multiSendTxData && (
           <>
