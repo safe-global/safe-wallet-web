@@ -43,7 +43,6 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
       maxPriorityFeePerGas: params.maxPriorityFeePerGas ? safeFormatUnits(params.maxPriorityFeePerGas) : '',
       safeTxGas: params.safeTxGas,
     },
-    shouldUseNativeValidation: true,
   })
   const {
     register,

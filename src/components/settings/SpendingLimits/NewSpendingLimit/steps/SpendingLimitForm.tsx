@@ -56,7 +56,6 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
   const formMethods = useForm<NewSpendingLimitData>({
     defaultValues: { ...data, resetTime: '0' },
     mode: 'onChange',
-    shouldUseNativeValidation: true,
   })
   const {
     register,
