@@ -7,6 +7,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { dateString } from '@/utils/formatters'
 import { isCreationTxInfo } from '@/utils/transaction-guards'
+import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
 
 type SafeCreationTxProps = {
   txSummary: TransactionSummary
@@ -24,13 +25,15 @@ const SafeCreationTx = ({ txSummary }: SafeCreationTxProps) => {
         <InfoDetails title="Creator:">
           <EthHashInfo address={creator.value} shortAddress={false} showCopyButton hasExplorer />
         </InfoDetails>
-        {factory && (
-          <InfoDetails title="Factory:">
+        <InfoDetails title="Factory:">
+          {factory ? (
             <EthHashInfo name={factory.name} address={factory.value} shortAddress={false} showCopyButton hasExplorer />
-          </InfoDetails>
-        )}
-        {implementation && (
-          <InfoDetails title="Mastercopy:">
+          ) : (
+            NOT_AVAILABLE
+          )}
+        </InfoDetails>
+        <InfoDetails title="Mastercopy:">
+          {implementation ? (
             <EthHashInfo
               name={implementation.name}
               address={implementation.value}
@@ -38,8 +41,10 @@ const SafeCreationTx = ({ txSummary }: SafeCreationTxProps) => {
               showCopyButton
               hasExplorer
             />
-          </InfoDetails>
-        )}
+          ) : (
+            NOT_AVAILABLE
+          )}
+        </InfoDetails>
       </Box>
       <Box className={css.txSummary}>
         <TxDataRow title="Transaction hash:">{generateDataRowValue(transactionHash, 'hash', true)}</TxDataRow>
