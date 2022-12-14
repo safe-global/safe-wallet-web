@@ -70,6 +70,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
     mode: 'onChange',
     shouldUnregister: true,
     defaultValues: getInitialFormValues(filter),
+    shouldUseNativeValidation: true,
   })
 
   const { control, watch, handleSubmit, reset, getValues } = formMethods

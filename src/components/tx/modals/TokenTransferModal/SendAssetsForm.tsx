@@ -89,6 +89,7 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
     },
     mode: 'onChange',
     delayError: 500,
+    shouldUseNativeValidation: true,
   })
   const {
     register,
