@@ -5,19 +5,11 @@ import { CircularProgress } from '@mui/material'
 import AssetsTable from '@/components/balances/AssetsTable'
 import AssetsHeader from '@/components/balances/AssetsHeader'
 import useBalances from '@/hooks/useBalances'
-import { useEffect } from 'react'
-import { trackEvent, ASSETS_EVENTS } from '@/services/analytics'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoAssetsIcon from '@/public/images/balances/no-assets.svg'
 
 const Balances: NextPage = () => {
   const { balances, loading, error } = useBalances()
-
-  useEffect(() => {
-    if (!loading && balances.items.length === 0) {
-      trackEvent({ ...ASSETS_EVENTS.DIFFERING_TOKENS, label: balances.items.length })
-    }
-  }, [balances, loading])
 
   return (
     <>
