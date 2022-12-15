@@ -12,7 +12,7 @@ import NoAssetsIcon from '@/public/images/balances/no-assets.svg'
 import HiddenAssetsProvider from '@/components/balances/HiddenAssetsProvider'
 
 const Balances: NextPage = () => {
-  const { balances, loading, error } = useBalances()
+  const { balances, loading, error } = useBalances(true)
 
   useEffect(() => {
     if (!loading && balances.items.length === 0) {

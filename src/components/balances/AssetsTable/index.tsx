@@ -15,7 +15,7 @@ import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material'
 import { HiddenAssetsContext } from '../HiddenAssetsProvider'
-import { useHiddenAssets } from '@/hooks/useHiddenAssets'
+import useHiddenAssets from '@/hooks/useHiddenAssets'
 
 interface AssetsTableProps {
   items?: SafeBalanceResponse['items']
@@ -24,6 +24,30 @@ interface AssetsTableProps {
 const isNativeToken = (tokenInfo: TokenInfo) => {
   return tokenInfo.type === TokenType.NATIVE_TOKEN
 }
+
+const headCells = [
+  {
+    id: 'asset',
+    label: 'Asset',
+    width: '60%',
+  },
+  {
+    id: 'balance',
+    label: 'Balance',
+    width: '20%',
+  },
+  {
+    id: 'value',
+    label: 'Value',
+    width: '20%',
+  },
+  {
+    id: 'actions',
+    label: '',
+    width: '20%',
+    sticky: true,
+  },
+]
 
 const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
@@ -52,35 +76,7 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
 
   const selectedAssetCount = visibleItems?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
 
-  const shouldHideActions = !isGranted
-
-  const headCells = useMemo(
-    () => [
-      {
-        id: 'asset',
-        label: 'Asset',
-        width: '60%',
-      },
-      {
-        id: 'balance',
-        label: 'Balance',
-        width: '20%',
-      },
-      {
-        id: 'value',
-        label: 'Value',
-        width: '20%',
-      },
-      {
-        id: 'actions',
-        label: '',
-        width: '20%',
-        hide: shouldHideActions,
-        sticky: true,
-      },
-    ],
-    [shouldHideActions],
-  )
+  const shouldHideSend = !isGranted
 
   const rows = (visibleItems || []).map((item) => {
     const rawFiatValue = parseFloat(item.fiatBalance)
@@ -131,19 +127,20 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
         actions: {
           rawValue: '',
           sticky: true,
-          hide: shouldHideActions,
           content: (
             <Box display="flex" flexDirection="row" gap={1} alignItems="center">
-              <Track {...ASSETS_EVENTS.SEND}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={() => setSelectedAsset(item.tokenInfo.address)}
-                >
-                  Send
-                </Button>
-              </Track>
+              {!shouldHideSend && (
+                <Track {...ASSETS_EVENTS.SEND}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => setSelectedAsset(item.tokenInfo.address)}
+                  >
+                    Send
+                  </Button>
+                </Track>
+              )}
               {!isNative && (
                 <Track {...ASSETS_EVENTS.HIDE}>
                   <IconButton onClick={() => toggleAsset(item.tokenInfo.address)}>
@@ -170,7 +167,7 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
           </Box>
           <div>
             <Button onClick={reset} className={css.tinyButton} variant="outlined">
-              Deselect all
+              Cancel
             </Button>
             <Button onClick={saveChanges} className={css.tinyButton} variant="contained">
               Apply

@@ -1,5 +1,5 @@
 import useChainId from '@/hooks/useChainId'
-import { useHiddenAssets } from '@/hooks/useHiddenAssets'
+import useHiddenAssets from '@/hooks/useHiddenAssets'
 import { useAppDispatch } from '@/store'
 import { addHiddenAssets, removeHiddenAssets } from '@/store/hiddenAssetsSlice'
 import { type ReactElement, type ReactNode, useState, useCallback } from 'react'

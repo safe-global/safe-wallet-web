@@ -5,7 +5,7 @@ import NavTabs from '@/components/common/NavTabs'
 import PageHeader from '@/components/common/PageHeader'
 import CurrencySelect from '@/components/balances/CurrencySelect'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
-import { useHiddenAssets } from '@/hooks/useHiddenAssets'
+import useHiddenAssets from '@/hooks/useHiddenAssets'
 import { VisibilityOutlined, VisibilityOffOutlined } from '@mui/icons-material'
 
 import css from './styles.module.css'
