@@ -51,10 +51,9 @@ describe('usePrefersColorScheme', () => {
     })
   })
 
-  it('should return light color scheme', async () => {
-    console.log('matchMedia', matchMedia)
+  it('should return no-preference color scheme', async () => {
     const mediaQuery = '(prefers-color-scheme: light)'
-    const expectedColorScheme = 'light'
+    const expectedColorScheme = 'no-preference'
 
     const { result } = renderHook(() => usePrefersColorScheme())
 
@@ -69,8 +68,8 @@ describe('usePrefersColorScheme', () => {
     })
 
     const mql = window.matchMedia(mediaQuery)
-    const lightListener = jest.fn().mockReturnValue('light')
-    mql.addEventListener('change', (ev) => ev.matches && lightListener())
+    const listener = jest.fn().mockReturnValue('light')
+    mql.addEventListener('change', (ev) => ev.matches && listener())
 
     await waitFor(() => {
       matchMedia.useMediaQuery(mediaQuery)

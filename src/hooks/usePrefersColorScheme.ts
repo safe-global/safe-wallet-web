@@ -8,24 +8,16 @@ const usePrefersColorScheme = (): ColorSchemeType => {
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') return
 
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)')
-    const isLight = window.matchMedia('(prefers-color-scheme: light)')
+    const preferDark = window.matchMedia('(prefers-color-scheme: dark)')
 
-    const listener =
-      (type: ColorSchemeType) =>
-      ({ matches }: MediaQueryListEvent) => {
-        matches && setPreferredColorScheme(type)
-      }
+    const listener = ({ matches }: MediaQueryListEvent) => {
+      matches ? setPreferredColorScheme('dark') : setPreferredColorScheme('light')
+    }
 
-    const darkListener = listener('dark')
-    const lightListener = listener('light')
-
-    isDark.addEventListener('change', darkListener)
-    isLight.addEventListener('change', lightListener)
+    preferDark.addEventListener('change', listener)
 
     return () => {
-      isDark.removeEventListener('change', darkListener)
-      isLight.removeEventListener('change', lightListener)
+      preferDark.removeEventListener('change', listener)
     }
   }, [])
 
