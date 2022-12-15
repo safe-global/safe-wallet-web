@@ -79,15 +79,15 @@ interface WebCoreAppProps extends AppProps {
 
 const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: WebCoreAppProps): ReactElement => {
   const prefersColorScheme = usePrefersColorScheme()
-  const darkPath = prefersColorScheme === 'dark' ? '-dark' : ''
+  const colorSchemePath = prefersColorScheme === 'dark' ? '-dark' : '-light'
 
   return (
     <StoreHydrator>
       <Head>
         <title key="default-title">Safe</title>
         <MetaTags prefetchUrl={GATEWAY_URL} />
-        <link rel="icon" type="image/png" sizes="32x32" href={`/favicons/favicon${darkPath}-32x32.png`} />
-        <link rel="icon" type="image/png" sizes="16x16" href={`/favicons/favicon${darkPath}-16x16.png`} />
+        <link rel="icon" type="image/png" sizes="32x32" href={`/favicons/favicon${colorSchemePath}-32x32.png`} />
+        <link rel="icon" type="image/png" sizes="16x16" href={`/favicons/favicon${colorSchemePath}-16x16.png`} />
       </Head>
 
       <CacheProvider value={emotionCache}>
