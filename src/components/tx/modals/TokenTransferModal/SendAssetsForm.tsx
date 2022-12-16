@@ -23,7 +23,7 @@ import InputValueHelper from '@/components/common/InputValueHelper'
 import SendFromBlock from '../../SendFromBlock'
 import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import SendToBlock from '@/components/tx/SendToBlock'
 import useAddressBook from '@/hooks/useAddressBook'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import useChainId from '@/hooks/useChainId'
@@ -136,7 +136,7 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
           <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
             {addressBook[recipient] ? (
               <Box onClick={() => setValue(SendAssetsField.recipient, '')}>
-                <EthHashInfo address={recipient} shortAddress={false} hasExplorer showCopyButton />
+                <SendToBlock address={recipient} />
               </Box>
             ) : (
               <AddressBookInput name={SendAssetsField.recipient} label="Recipient" />
