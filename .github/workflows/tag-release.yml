@@ -21,7 +21,7 @@ jobs:
         id: version
         run: |
           NEW_VERSION=$(node -p 'require("./package.json").version')
-          echo "::set-output name=version::v$NEW_VERSION"
+          echo "version=v$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "${{ github.event.pull_request.body }}" > CHANGELOG.md
 
       - name: Create a git tag
@@ -35,7 +35,7 @@ jobs:
         uses: actions/create-release@v1
         id: create_release
         with:
-          draft: false
+          draft: true
           prerelease: false
           release_name: ${{ steps.version.outputs.version }}
           tag_name: ${{ steps.version.outputs.version }}
