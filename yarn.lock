@@ -3254,10 +3254,10 @@
     semver "^7.3.8"
     web3-utils "^1.8.1"
 
-"@safe-global/safe-core-sdk@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk/-/safe-core-sdk-3.2.0.tgz#631b5ea068205d359a53685e7a95c7798861043b"
-  integrity sha512-shcyJZGfq0e8KOFiT3SsPCjwu/xfBOHqUEo3W/eZE1+fPBj+yhQS97cbAKlDg4pBJ9e/tYX1ndYxf5Ne3MgoCw==
+"@safe-global/safe-core-sdk@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk/-/safe-core-sdk-3.2.1.tgz#dab0cfd6f88ea81e9884f8c1ea87435b43fab30e"
+  integrity sha512-IfA4AWbc7jjOa7GneI5qu8Nrb5wf1EYzmjlXQx3459274iyZ1tv0PAE66fMpYRtioPJt4V0VVEcfK8R2bxpOGA==
   dependencies:
     "@ethersproject/solidity" "^5.7.0"
     "@gnosis.pm/safe-deployments" "1.17.0"

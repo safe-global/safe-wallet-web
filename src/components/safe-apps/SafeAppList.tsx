@@ -74,7 +74,13 @@ const SafeAppList = () => {
       pageBody = <SafeAppsSearchPlaceholder searchQuery={searchQuery} />
     } else {
       pageBody = (
-        <SafeAppsSection title={`Search results (${filteredApps.length})`} apps={filteredApps} allApps={allSafeApps} />
+        <SafeAppsSection
+          title={`Search results (${filteredApps.length})`}
+          apps={filteredApps}
+          allApps={allSafeApps}
+          pinnedIds={pinnedSafeAppIds}
+          onPinApp={togglePin}
+        />
       )
     }
   }
