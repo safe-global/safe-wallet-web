@@ -1,4 +1,7 @@
-import { formatPairingUri, isPairingSupported } from '../utils'
+import { addDays } from 'date-fns'
+import type { IWalletConnectSession } from '@walletconnect/types'
+
+import { formatPairingUri, isPairingSupported, hasValidPairingSession, _hasPairingSessionExpired } from '../utils'
 
 describe('Pairing utils', () => {
   describe('formatPairingUri', () => {
@@ -34,6 +37,63 @@ describe('Pairing utils', () => {
 
       const result2 = isPairingSupported(['safeMobile'])
       expect(result2).toBe(false)
+    })
+  })
+
+  describe('hasPairingSessionExpired', () => {
+    it('should return true if the session is older than 24h', () => {
+      const session: Pick<IWalletConnectSession, 'handshakeId'> = {
+        handshakeId: 1000000000000123,
+      }
+
+      expect(_hasPairingSessionExpired(session as IWalletConnectSession)).toBe(true)
+    })
+
+    it('should return false if the session is within the last 24h', () => {
+      const session: Pick<IWalletConnectSession, 'handshakeId'> = {
+        handshakeId: +`${Date.now()}123`,
+      }
+
+      expect(_hasPairingSessionExpired(session as IWalletConnectSession)).toBe(false)
+    })
+  })
+
+  describe('hasValidPairingSession', () => {
+    beforeEach(() => {
+      window.localStorage.clear()
+    })
+
+    it('should return false if there is no cached session', () => {
+      expect(hasValidPairingSession()).toBe(false)
+    })
+
+    it('should return true if the cached session date is within the last 24h', () => {
+      const session: Pick<IWalletConnectSession, 'handshakeId'> = {
+        handshakeId: 1000000000000123,
+      }
+
+      window.localStorage.setItem('SAFE_v2__pairingConnector', JSON.stringify(session))
+
+      jest.spyOn(Date, 'now').mockImplementation(() => session.handshakeId + 1)
+
+      expect(hasValidPairingSession()).toBe(true)
+    })
+
+    it('should return false and clear the cache if the cached session date is older than 24h', () => {
+      const session: Pick<IWalletConnectSession, 'handshakeId'> = {
+        handshakeId: 1000000000000123,
+      }
+
+      window.localStorage.setItem('SAFE_v2__pairingConnector', JSON.stringify(session))
+
+      const sessionTimestamp = session.handshakeId.toString().slice(0, -3)
+      const expirationDate = addDays(new Date(sessionTimestamp), 1)
+
+      jest.spyOn(Date, 'now').mockImplementation(() => expirationDate.getTime() + 1)
+
+      expect(hasValidPairingSession()).toBe(false)
+
+      expect(window.localStorage.getItem('SAFE_v2__pairingConnector')).toBeNull()
     })
   })
 })
