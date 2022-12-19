@@ -1,5 +1,4 @@
 import { type ReactElement } from 'react'
-import { Box, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -7,7 +6,7 @@ import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import useBalances from '@/hooks/useBalances'
 import useAsync from '@/hooks/useAsync'
 import useTxSender from '@/hooks/useTxSender'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import SendToBlock from '@/components/tx/SendToBlock'
 import SendFromBlock from '../../SendFromBlock'
 import type { TokenTransferModalProps } from '.'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
@@ -32,13 +31,7 @@ const ReviewMultisigTx = ({ params, onSubmit }: TokenTransferModalProps): ReactE
 
       <SendFromBlock />
 
-      <Typography color={({ palette }) => palette.text.secondary} pb={1}>
-        Recipient
-      </Typography>
-
-      <Box mb={3}>
-        <EthHashInfo address={params.recipient} shortAddress={false} hasExplorer showCopyButton />
-      </Box>
+      <SendToBlock address={params.recipient} />
     </SignOrExecuteForm>
   )
 }
