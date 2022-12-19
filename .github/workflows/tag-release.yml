@@ -1,0 +1,44 @@
+name: Tag & GitHub release
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  tag-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        if: github.event.pull_request.merged == true
+        with:
+          fetch-depth: 0
+
+      - name: Extract version
+        if: github.event.pull_request.merged == true
+        id: version
+        run: |
+          NEW_VERSION=$(node -p 'require("./package.json").version')
+          echo "version=v$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "${{ github.event.pull_request.body }}" > CHANGELOG.md
+
+      - name: Create a git tag
+        if: github.event.pull_request.merged == true
+        run: git tag $NEW_VERSION && git push --tags
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+
+      - name: GitHub release
+        if: success()
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: true
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ steps.version.outputs.version }}
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
