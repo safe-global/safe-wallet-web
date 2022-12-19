@@ -41,16 +41,20 @@ button {
 }
 
 :root {
-  --header-height: 52px;
+  --header-inner-height: 52px;
+}
+
+:root {
+  --header-height: var(--header-inner-height);
 }
 
 .psaBanner:root {
-  --header-height: 104px;
+  --header-height: calc(var(--header-inner-height) * 2);
 }
 
 @media (max-width: 600px) {
   .psaBanner:root {
-    --header-height: 120px;
+    --header-height: calc(var(--header-inner-height) * 2 + 16px);
   }
 }
 
