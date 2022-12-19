@@ -44,6 +44,16 @@ button {
   --header-height: 52px;
 }
 
+.psaBanner:root {
+  --header-height: 104px;
+}
+
+@media (max-width: 600px) {
+  .psaBanner:root {
+    --header-height: 120px;
+  }
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
