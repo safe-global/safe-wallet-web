@@ -1,4 +1,4 @@
-import { addDays, isBefore } from 'date-fns'
+import { addDays, isAfter } from 'date-fns'
 import type { IWalletConnectSession } from '@walletconnect/types'
 import type WalletConnect from '@walletconnect/client'
 
@@ -39,7 +39,7 @@ export const _hasPairingSessionExpired = (session: IWalletConnectSession): boole
   // The session is valid for 24h (mobile clears it on their end)
   const expirationDate = addDays(new Date(+sessionTimestamp), 1)
 
-  return isBefore(expirationDate, Date.now())
+  return isAfter(Date.now(), expirationDate)
 }
 
 export const hasValidPairingSession = (): boolean => {
@@ -49,11 +49,11 @@ export const hasValidPairingSession = (): boolean => {
     return false
   }
 
-  const isValid = _hasPairingSessionExpired(cachedSession)
+  const hasExpired = _hasPairingSessionExpired(cachedSession)
 
-  if (!isValid) {
+  if (hasExpired) {
     local.removeItem(PAIRING_MODULE_STORAGE_ID)
   }
 
-  return isValid
+  return !hasExpired
 }

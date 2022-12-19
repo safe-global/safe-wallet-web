@@ -74,7 +74,7 @@ describe('Pairing utils', () => {
 
       window.localStorage.setItem('SAFE_v2__pairingConnector', JSON.stringify(session))
 
-      jest.spyOn(Date, 'now').mockImplementation(() => session.handshakeId + 1)
+      jest.spyOn(Date, 'now').mockImplementation(() => +session.handshakeId.toString().slice(0, -3) + 1)
 
       expect(hasValidPairingSession()).toBe(true)
     })
@@ -87,7 +87,7 @@ describe('Pairing utils', () => {
       window.localStorage.setItem('SAFE_v2__pairingConnector', JSON.stringify(session))
 
       const sessionTimestamp = session.handshakeId.toString().slice(0, -3)
-      const expirationDate = addDays(new Date(sessionTimestamp), 1)
+      const expirationDate = addDays(new Date(+sessionTimestamp), 1)
 
       jest.spyOn(Date, 'now').mockImplementation(() => expirationDate.getTime() + 1)
 
