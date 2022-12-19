@@ -2,7 +2,7 @@
 
 [![GitHub license](https://img.shields.io/github/license/safe-global/web-core)](https://github.com/safe-global/web-core/blob/main/LICENSE.md)
 ![Tests](https://img.shields.io/github/actions/workflow/status/safe-global/web-core/test.yml?branch=main&label=tests)
-![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/safe-global/web-core/main)
+![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/safe-global/web-core)
 [![GitPOAP Badge](https://public-api.gitpoap.io/v1/repo/safe-global/web-core/badge)](https://www.gitpoap.io/gh/safe-global/web-core)
 
 The default Safe web interface.
