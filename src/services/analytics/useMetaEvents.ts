@@ -2,16 +2,16 @@ import { useEffect, useMemo } from 'react'
 import { gtmTrack } from '@/services/analytics/gtm'
 import { OVERVIEW_EVENTS, TX_LIST_EVENTS, ASSETS_EVENTS } from './events'
 import { selectTotalAdded } from '@/store/addedSafesSlice'
-import useSafeAddress from '@/hooks/useSafeAddress'
 import { selectQueuedTransactions } from '@/store/txQueueSlice'
 import { useAppSelector } from '@/store'
 import useChainId from '@/hooks/useChainId'
 import useBalances from '@/hooks/useBalances'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 // Track meta events on app load
 const useMetaEvents = (isAnalyticsEnabled: boolean) => {
   const chainId = useChainId()
-  const safeAddress = useSafeAddress()
+  const { safeAddress } = useSafeInfo()
 
   // Total added safes
   const totalAddedSafes = useAppSelector(selectTotalAdded)
@@ -38,10 +38,10 @@ const useMetaEvents = (isAnalyticsEnabled: boolean) => {
   }, [isAnalyticsEnabled, safeQueue])
 
   // Tokens
-  const { balances, loading } = useBalances()
-  const totalTokens = loading ? undefined : balances?.items.length
+  const { balances } = useBalances()
+  const totalTokens = balances?.items.length || 0
   useEffect(() => {
-    if (!isAnalyticsEnabled || !safeAddress || totalTokens === undefined) return
+    if (!isAnalyticsEnabled || !safeAddress || totalTokens <= 0) return
 
     gtmTrack({ ...ASSETS_EVENTS.DIFFERING_TOKENS, label: totalTokens })
   }, [isAnalyticsEnabled, totalTokens, safeAddress, chainId])
