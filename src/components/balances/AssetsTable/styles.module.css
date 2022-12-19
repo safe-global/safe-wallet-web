@@ -19,19 +19,3 @@
     display: none;
   }
 }
-
-.hideTokensHeader {
-  display: flex;
-  flex-direction: row;
-  flex: 1;
-  gap: var(--space-1);
-  padding: 5px 16px;
-  background-color: var(--color-background-light);
-  border-radius: 6px;
-  min-width: 185px;
-}
-
-.tinyButton {
-  margin-left: var(--space-1);
-  padding: 4px 10px;
-}

@@ -33,7 +33,7 @@ const Balances: NextPage = () => {
           {loading && <CircularProgress size={20} sx={{ marginTop: 2 }} />}
 
           {!error ? (
-            <AssetsTable items={balances?.items} />
+            <AssetsTable />
           ) : (
             <PagePlaceholder img={<NoAssetsIcon />} text="There was an error loading your assets" />
           )}

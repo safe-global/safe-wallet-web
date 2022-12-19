@@ -1,6 +1,6 @@
-import { useState, type ReactElement, useMemo, useContext, useCallback } from 'react'
+import { useState, type ReactElement, useContext } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box } from '@mui/material'
-import type { SafeBalanceResponse, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
@@ -15,11 +15,6 @@ import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material'
 import { HiddenAssetsContext } from '../HiddenAssetsProvider'
-import useHiddenAssets from '@/hooks/useHiddenAssets'
-
-interface AssetsTableProps {
-  items?: SafeBalanceResponse['items']
-}
 
 const isNativeToken = (tokenInfo: TokenInfo) => {
   return tokenInfo.type === TokenType.NATIVE_TOKEN
@@ -49,36 +44,14 @@ const headCells = [
   },
 ]
 
-const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
+const AssetsTable = (): ReactElement => {
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
   const isGranted = useIsGranted()
-  const { showHiddenAssets, toggleAsset, saveChanges, assetsToHide, assetsToUnhide, reset } =
-    useContext(HiddenAssetsContext)
-  const hiddenAssets = useHiddenAssets()
-
-  const visibleItems = useMemo(
-    () =>
-      showHiddenAssets
-        ? items
-        : items?.filter(
-            (item) => isNativeToken(item.tokenInfo) || typeof hiddenAssets?.[item.tokenInfo.address] === 'undefined',
-          ),
-    [hiddenAssets, items, showHiddenAssets],
-  )
-
-  // Assets are selected if they are either hidden or marked for hiding
-  const isAssetSelected = useCallback(
-    (address: string) =>
-      (hiddenAssets && typeof hiddenAssets[address] !== 'undefined' && !assetsToUnhide.includes(address)) ||
-      assetsToHide.includes(address),
-    [assetsToHide, assetsToUnhide, hiddenAssets],
-  )
-
-  const selectedAssetCount = visibleItems?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
+  const { toggleAsset, isAssetSelected, visibleAssets } = useContext(HiddenAssetsContext)
 
   const shouldHideSend = !isGranted
 
-  const rows = (visibleItems || []).map((item) => {
+  const rows = (visibleAssets || []).map((item) => {
     const rawFiatValue = parseFloat(item.fiatBalance)
     const isNative = isNativeToken(item.tokenInfo)
 
@@ -157,24 +130,6 @@ const AssetsTable = ({ items }: AssetsTableProps): ReactElement => {
 
   return (
     <div className={css.container}>
-      {(assetsToHide.length > 0 || showHiddenAssets) && (
-        <Box display="flex" flexWrap="wrap" flexDirection="row" alignItems="center" gap={1} mb={2}>
-          <Box className={css.hideTokensHeader}>
-            <VisibilityOffOutlined />
-            <Typography>
-              {selectedAssetCount} {selectedAssetCount === 1 ? 'token' : 'tokens'} selected
-            </Typography>
-          </Box>
-          <div>
-            <Button onClick={reset} className={css.tinyButton} variant="outlined">
-              Cancel
-            </Button>
-            <Button onClick={saveChanges} className={css.tinyButton} variant="contained">
-              Apply
-            </Button>
-          </div>
-        </Box>
-      )}
       <EnhancedTable rows={rows} headCells={headCells} />
       {selectedAsset && (
         <TokenTransferModal

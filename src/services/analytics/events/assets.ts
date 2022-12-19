@@ -7,9 +7,18 @@ export const ASSETS_EVENTS = {
     action: 'Currency menu',
     category: ASSETS_CATEGORY,
   },
+  TOKEN_LIST_MENU: {
+    action: 'Token list menu',
+    category: ASSETS_CATEGORY,
+  },
   CHANGE_CURRENCY: {
     event: EventType.META,
     action: 'Change currency',
+    category: ASSETS_CATEGORY,
+  },
+  CHANGE_TOKEN_LIST: {
+    event: EventType.META,
+    action: 'Change token list',
     category: ASSETS_CATEGORY,
   },
   DIFFERING_TOKENS: {
