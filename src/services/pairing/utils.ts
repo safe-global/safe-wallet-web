@@ -33,7 +33,7 @@ export const isPairingSupported = (disabledWallets?: string[]) => {
   return !!disabledWallets?.length && !disabledWallets.includes(CGW_NAMES[WALLET_KEYS.PAIRING] as string)
 }
 
-export const _hasPairingSessionExpired = (session: IWalletConnectSession): boolean => {
+export const _isPairingSessionExpired = (session: IWalletConnectSession): boolean => {
   // WC appends 3 digits to the timestamp. NOTE: This may change in WC v2
   const sessionTimestamp = session.handshakeId.toString().slice(0, -3)
   // The session is valid for 24h (mobile clears it on their end)
@@ -49,11 +49,11 @@ export const hasValidPairingSession = (): boolean => {
     return false
   }
 
-  const hasExpired = _hasPairingSessionExpired(cachedSession)
+  const isExpired = _isPairingSessionExpired(cachedSession)
 
-  if (hasExpired) {
+  if (isExpired) {
     local.removeItem(PAIRING_MODULE_STORAGE_ID)
   }
 
-  return !hasExpired
+  return !isExpired
 }

@@ -1,7 +1,7 @@
 import { addDays } from 'date-fns'
 import type { IWalletConnectSession } from '@walletconnect/types'
 
-import { formatPairingUri, isPairingSupported, hasValidPairingSession, _hasPairingSessionExpired } from '../utils'
+import { formatPairingUri, isPairingSupported, hasValidPairingSession, _isPairingSessionExpired } from '../utils'
 
 describe('Pairing utils', () => {
   describe('formatPairingUri', () => {
@@ -40,13 +40,13 @@ describe('Pairing utils', () => {
     })
   })
 
-  describe('hasPairingSessionExpired', () => {
+  describe('isPairingSessionExpired', () => {
     it('should return true if the session is older than 24h', () => {
       const session: Pick<IWalletConnectSession, 'handshakeId'> = {
         handshakeId: 1000000000000123,
       }
 
-      expect(_hasPairingSessionExpired(session as IWalletConnectSession)).toBe(true)
+      expect(_isPairingSessionExpired(session as IWalletConnectSession)).toBe(true)
     })
 
     it('should return false if the session is within the last 24h', () => {
@@ -54,7 +54,7 @@ describe('Pairing utils', () => {
         handshakeId: +`${Date.now()}123`,
       }
 
-      expect(_hasPairingSessionExpired(session as IWalletConnectSession)).toBe(false)
+      expect(_isPairingSessionExpired(session as IWalletConnectSession)).toBe(false)
     })
   })
 
