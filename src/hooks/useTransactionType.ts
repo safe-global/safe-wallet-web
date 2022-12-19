@@ -65,7 +65,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
     case TransactionInfoType.CUSTOM: {
       if (isModuleExecutionInfo(tx.executionInfo)) {
         return {
-          icon: toAddress?.logoUri || '/images/transactions/settings.svg',
+          icon: toAddress?.logoUri || '/images/transactions/custom.svg',
           text: toAddress?.name || 'Contract interaction',
         }
       }
