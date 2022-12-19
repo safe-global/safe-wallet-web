@@ -75,4 +75,8 @@
     left: 0;
     width: calc(100% - 50px);
   }
+
+  .or {
+    padding: var(--space-1) var(--space-2);
+  }
 }

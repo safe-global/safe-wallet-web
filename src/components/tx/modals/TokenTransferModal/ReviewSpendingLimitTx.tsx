@@ -1,9 +1,9 @@
 import type { ReactElement, SyntheticEvent } from 'react'
 import { useMemo, useState } from 'react'
 import type { BigNumberish, BytesLike } from 'ethers'
-import { Box, Button, DialogContent, Typography } from '@mui/material'
+import { Button, DialogContent, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import SendToBlock from '@/components/tx/SendToBlock'
 import type { TokenTransferModalProps } from '.'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 import useBalances from '@/hooks/useBalances'
@@ -108,13 +108,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
 
         <SendFromBlock />
 
-        <Typography color={({ palette }) => palette.text.secondary} pb={1}>
-          Recipient
-        </Typography>
-
-        <Box mb={3}>
-          <EthHashInfo address={params.recipient} shortAddress={false} hasExplorer showCopyButton />
-        </Box>
+        <SendToBlock address={params.recipient} />
 
         <AdvancedParams
           params={advancedParams}

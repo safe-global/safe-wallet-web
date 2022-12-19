@@ -32,10 +32,16 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
       <Typography variant="h4" fontWeight={700} marginBottom={1}>
         Contract version
       </Typography>
-      <ExternalLink href={safeMasterCopy?.deployerRepoUrl}>
-        {safe.version}
-        {getSafeVersionUpdate()}
-      </ExternalLink>
+      {safe.version ? (
+        <ExternalLink href={safeMasterCopy?.deployerRepoUrl}>
+          {safe.version}
+          {getSafeVersionUpdate()}
+        </ExternalLink>
+      ) : (
+        <Typography variant="body1" fontWeight={400}>
+          Unsupported contract
+        </Typography>
+      )}
 
       {showUpdateDialog && isGranted && <UpdateSafeDialog />}
     </div>

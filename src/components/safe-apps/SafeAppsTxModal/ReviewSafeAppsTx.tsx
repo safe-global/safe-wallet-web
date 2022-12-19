@@ -7,8 +7,7 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { Box, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
-import { InfoDetails } from '@/components/transactions/InfoDetails'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import SendToBlock from '@/components/tx/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useAsync from '@/hooks/useAsync'
@@ -74,9 +73,7 @@ const ReviewSafeAppsTx = ({
 
         {safeTx && (
           <>
-            <InfoDetails title={getInteractionTitle(safeTx.data.value || '', chain)}>
-              <EthHashInfo address={safeTx.data.to} shortAddress={false} showCopyButton hasExplorer />
-            </InfoDetails>
+            <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
 
             <Box pb={2}>
               <Typography mt={2} color="primary.light">
