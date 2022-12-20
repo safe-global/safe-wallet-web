@@ -1,15 +1,13 @@
-import { Box, Button, Typography } from '@mui/material'
-import { type ReactElement, useContext } from 'react'
+import { Box } from '@mui/material'
+import { type ReactElement } from 'react'
 
 import NavTabs from '@/components/common/NavTabs'
 import PageHeader from '@/components/common/PageHeader'
 import CurrencySelect from '@/components/balances/CurrencySelect'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
-import { VisibilityOffOutlined } from '@mui/icons-material'
 
-import css from './styles.module.css'
-import { HiddenAssetsContext } from '../HiddenAssetsProvider'
 import TokenListSelect from '../TokenListSelect'
+import TokenMenu from '../TokenMenu'
 
 const AssetsHeader = ({
   hiddenAssets = false,
@@ -18,10 +16,6 @@ const AssetsHeader = ({
   hiddenAssets?: boolean
   currencySelect?: boolean
 }): ReactElement => {
-  const { showHiddenAssets, isAssetSelected, visibleAssets, reset, saveChanges } = useContext(HiddenAssetsContext)
-
-  const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
-
   return (
     <PageHeader
       title="Assets"
@@ -34,35 +28,7 @@ const AssetsHeader = ({
               {currencySelect && <CurrencySelect />}
             </Box>
           </Box>
-          {/* TODO: refactor into own component */}
-          {(selectedAssetCount > 0 || showHiddenAssets) && (
-            <Box
-              position="sticky"
-              top="20px"
-              display="flex"
-              flexWrap="wrap"
-              flexDirection="row"
-              alignItems="center"
-              gap={1}
-              mb={1}
-              mt={2}
-            >
-              <Box className={css.hideTokensHeader}>
-                <VisibilityOffOutlined />
-                <Typography>
-                  {selectedAssetCount} {selectedAssetCount === 1 ? 'token' : 'tokens'} selected
-                </Typography>
-              </Box>
-              <div>
-                <Button onClick={reset} className={css.tinyButton} variant="outlined">
-                  Cancel
-                </Button>
-                <Button onClick={saveChanges} className={css.tinyButton} variant="contained">
-                  Apply
-                </Button>
-              </div>
-            </Box>
-          )}
+          <TokenMenu />
         </>
       }
     />
