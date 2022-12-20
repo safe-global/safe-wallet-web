@@ -3,7 +3,7 @@ import withBundleAnalyzer from '@next/bundle-analyzer'
 import NextPwa from'next-pwa'
 
 const withPWA = NextPwa({
-  dest: 'out'
+  dest: 'public'
 })
 
 /** @type {import('next').NextConfig} */
