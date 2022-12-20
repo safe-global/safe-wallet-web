@@ -1,5 +1,10 @@
 import path from 'path'
 import withBundleAnalyzer from '@next/bundle-analyzer'
+import NextPwa from'next-pwa'
+
+const withPWA = NextPwa({
+  dest: 'out'
+})
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -73,4 +78,4 @@ const nextConfig = {
 
 export default withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
-})(nextConfig)
+})(withPWA(nextConfig))
