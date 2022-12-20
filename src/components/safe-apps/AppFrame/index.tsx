@@ -19,7 +19,6 @@ import useAddressBook from '@/hooks/useAddressBook'
 import { useSafePermissions } from '@/hooks/safe-apps/permissions'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isSameUrl } from '@/utils/url'
-import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTransactionQueueBarState'
 import { gtmTrackPageview } from '@/services/analytics/gtm'
 import useThirdPartyCookies from './useThirdPartyCookies'
@@ -136,17 +135,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   }, [appIsLoading, isBackendAppsLoading, appName])
 
   useEffect(() => {
-    const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ txId, safeAppRequestId }) => {
+    const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ safeAppRequestId, safeTxHash }) => {
       const currentSafeAppRequestId = signMessageModalState.requestId || txModalState.requestId
 
-      if (txId && currentSafeAppRequestId === safeAppRequestId) {
-        const { detailedExecutionInfo } = await getTransactionDetails(chainId, txId)
+      if (currentSafeAppRequestId === safeAppRequestId) {
+        trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION, appName)
 
-        if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
-          trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION, appName)
-
-          communicator?.send({ safeTxHash: detailedExecutionInfo.safeTxHash }, safeAppRequestId)
-        }
+        communicator?.send({ safeTxHash }, safeAppRequestId)
 
         txModalState.isOpen ? closeTxModal() : closeSignMessageModal()
       }

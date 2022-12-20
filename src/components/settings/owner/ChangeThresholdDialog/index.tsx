@@ -48,7 +48,7 @@ export const ChangeThresholdDialog = () => {
   )
 }
 
-const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (txId: string) => void }) => {
+const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (txId?: string) => void }) => {
   const { safe } = useSafeInfo()
   const { createUpdateThresholdTx } = useTxSender()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(safe.threshold)
@@ -67,7 +67,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
     return createUpdateThresholdTx(selectedThreshold)
   }, [selectedThreshold, createUpdateThresholdTx])
 
-  const onChangeTheshold = (txId: string) => {
+  const onChangeTheshold = (txId?: string) => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: selectedThreshold })
 

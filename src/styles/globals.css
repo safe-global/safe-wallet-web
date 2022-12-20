@@ -41,7 +41,22 @@ button {
 }
 
 :root {
-  --header-height: 52px;
+  --header-inner-height: 52px;
+}
+
+:root {
+  --header-height: var(--header-inner-height);
+}
+
+.psaBanner:root {
+  --header-height: calc(var(--header-inner-height) * 2);
+}
+
+/* On mobile, the banner text is two lines + padding */
+@media (max-width: 600px) {
+  .psaBanner:root {
+    --header-height: calc(var(--header-inner-height) * 2 + 16px);
+  }
 }
 
 input::-webkit-outer-spin-button,
