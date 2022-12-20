@@ -18,8 +18,7 @@ const AssetsHeader = ({
   hiddenAssets?: boolean
   currencySelect?: boolean
 }): ReactElement => {
-  const { showHiddenAssets, isAssetSelected, visibleAssets, assetsToHide, reset, saveChanges } =
-    useContext(HiddenAssetsContext)
+  const { showHiddenAssets, isAssetSelected, visibleAssets, reset, saveChanges } = useContext(HiddenAssetsContext)
 
   const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
 
@@ -36,7 +35,7 @@ const AssetsHeader = ({
             </Box>
           </Box>
           {/* TODO: refactor into own component */}
-          {(assetsToHide.length > 0 || showHiddenAssets) && (
+          {(selectedAssetCount > 0 || showHiddenAssets) && (
             <Box
               position="sticky"
               top="20px"

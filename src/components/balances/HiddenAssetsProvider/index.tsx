@@ -6,20 +6,20 @@ import { addHiddenAssets, removeHiddenAssets } from '@/store/hiddenAssetsSlice'
 import { type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ReactElement, type ReactNode, useState, useCallback, useMemo, createContext } from 'react'
 
-export const HiddenAssetsContext = createContext<{
+type HiddenAssetsContextValue = {
   showHiddenAssets: boolean
   toggleShowHiddenAssets: () => void
   toggleAsset: (address: string) => void
-  assetsToHide: string[]
   saveChanges: () => void
   reset: () => void
   isAssetSelected: (address: string) => boolean
   visibleAssets: SafeBalanceResponse['items']
-}>({
+}
+
+export const HiddenAssetsContext = createContext<HiddenAssetsContextValue>({
   showHiddenAssets: false,
   toggleShowHiddenAssets: () => {},
   toggleAsset: () => {},
-  assetsToHide: [],
   saveChanges: () => {},
   reset: () => {},
   isAssetSelected: () => true,
@@ -105,7 +105,6 @@ const HiddenAssetsProvider = ({ children }: { children: ReactNode }): ReactEleme
         showHiddenAssets,
         toggleShowHiddenAssets,
         toggleAsset,
-        assetsToHide,
         saveChanges,
         reset,
         isAssetSelected,

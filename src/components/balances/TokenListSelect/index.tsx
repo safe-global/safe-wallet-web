@@ -44,6 +44,7 @@ const TokenListSelect = (): ReactElement => {
     <FormControl size="small">
       <Select
         autoWidth
+        data-testid="tokenlist-select"
         id="tokenlist"
         value={OPTION_ALL_TOKENS}
         onChange={handleChange}
