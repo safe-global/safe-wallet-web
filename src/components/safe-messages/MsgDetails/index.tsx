@@ -3,6 +3,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import CodeIcon from '@mui/icons-material/Code'
 import classNames from 'classnames'
 import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { useMemo } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 
@@ -15,6 +16,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import SignMsgButton from '@/components/safe-messages/SignMsgButton'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import Msg from '@/components/safe-messages/Msg'
+import { generateSafeMessageMessage } from '@/utils/safe-messages'
 
 import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
 import singleTxDecodedCss from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded/styles.module.css'
@@ -24,6 +26,9 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
+  const messageHash = useMemo(() => {
+    return generateSafeMessageMessage(msg.message)
+  }, [msg.message])
 
   return (
     <div className={txDetailsCss.container}>
@@ -45,6 +50,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
           <TxDataRow title="Message:">
             <Msg message={msg.message} />
           </TxDataRow>
+          <TxDataRow title="Message hash:">{generateDataRowValue(messageHash, 'hash')}</TxDataRow>
           <TxDataRow title="SafeMessage hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>
           <TxDataRow title="Created:">{formatDateTime(msg.creationTimestamp)}</TxDataRow>
           <TxDataRow title="Last modified:">{formatDateTime(msg.modifiedTimestamp)}</TxDataRow>
