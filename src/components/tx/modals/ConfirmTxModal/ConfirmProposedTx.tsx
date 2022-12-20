@@ -13,7 +13,7 @@ import { Skeleton, Typography } from '@mui/material'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
-  onSubmit: (txId: string) => void
+  onSubmit: (txId?: string) => void
 }
 
 const SIGN_TEXT = 'Sign this transaction.'

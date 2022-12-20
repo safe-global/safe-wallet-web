@@ -9,7 +9,8 @@ export enum TxEvent {
   SIGNATURE_PROPOSED = 'SIGNATURE_PROPOSED',
   SIGNATURE_PROPOSE_FAILED = 'SIGNATURE_PROPOSE_FAILED',
   SIGNATURE_INDEXED = 'SIGNATURE_INDEXED',
-  AWAITING_ON_CHAIN_SIGNATURE = 'AWAITING_ON_CHAIN_SIGNATURE',
+  ONCHAIN_SIGNATURE_REQUESTED = 'ONCHAIN_SIGNATURE_REQUESTED',
+  ONCHAIN_SIGNATURE_SUCCESS = 'ONCHAIN_SIGNATURE_SUCCESS',
   EXECUTING = 'EXECUTING',
   PROCESSING = 'PROCESSING',
   PROCESSING_MODULE = 'PROCESSING_MODULE',
@@ -30,7 +31,8 @@ interface TxEvents {
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; error: Error }
   [TxEvent.SIGNATURE_PROPOSED]: { txId: string; signerAddress: string }
   [TxEvent.SIGNATURE_INDEXED]: { txId: string }
-  [TxEvent.AWAITING_ON_CHAIN_SIGNATURE]: Id
+  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id
+  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id
   [TxEvent.EXECUTING]: Id
   [TxEvent.PROCESSING]: Id & { txHash: string }
   [TxEvent.PROCESSING_MODULE]: Id & { txHash: string }
@@ -38,7 +40,7 @@ interface TxEvents {
   [TxEvent.REVERTED]: Id & { error: Error }
   [TxEvent.FAILED]: Id & { error: Error }
   [TxEvent.SUCCESS]: Id
-  [TxEvent.SAFE_APPS_REQUEST]: Id & { safeAppRequestId: RequestId }
+  [TxEvent.SAFE_APPS_REQUEST]: { safeAppRequestId: RequestId; safeTxHash: string }
 }
 
 const txEventBus = new EventBus<TxEvents>()

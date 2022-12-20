@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { getDecodedData, Operation } from '@safe-global/safe-gateway-typescript-sdk'
@@ -7,8 +7,7 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { Box, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
-import { InfoDetails } from '@/components/transactions/InfoDetails'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import SendToBlock from '@/components/tx/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useAsync from '@/hooks/useAsync'
@@ -31,6 +30,7 @@ const ReviewSafeAppsTx = ({
   const { createMultiSendCallOnlyTx, dispatchSafeAppsTx } = useTxSender()
   const chainId = useChainId()
   const chain = useCurrentChain()
+  const [submitError, setSubmitError] = useState<Error>()
 
   const isMultiSend = txs.length > 1
 
@@ -52,23 +52,28 @@ const ReviewSafeAppsTx = ({
     return getDecodedData(chainId, safeTx.data.data)
   }, [safeTx, chainId])
 
-  const handleSubmit = (txId: string) => {
+  const handleSubmit = async () => {
+    setSubmitError(undefined)
+    if (!safeTx) return
     trackSafeAppTxCount(Number(appId))
-    dispatchSafeAppsTx(txId, requestId)
+
+    try {
+      await dispatchSafeAppsTx(safeTx, requestId)
+    } catch (error) {
+      setSubmitError(error as Error)
+    }
   }
 
   const origin = useMemo(() => getTxOrigin(app), [app])
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError} origin={origin}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
       <>
         <SendFromBlock />
 
         {safeTx && (
           <>
-            <InfoDetails title={getInteractionTitle(safeTx.data.value || '', chain)}>
-              <EthHashInfo address={safeTx.data.to} shortAddress={false} showCopyButton hasExplorer />
-            </InfoDetails>
+            <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
 
             <Box pb={2}>
               <Typography mt={2} color="primary.light">

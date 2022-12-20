@@ -27,7 +27,7 @@ const ErrorMessage = ({
             {children}
 
             {error && (
-              <Link component="button" onClick={onDetailsToggle}>
+              <Link component="button" onClick={onDetailsToggle} display="block">
                 Details
               </Link>
             )}

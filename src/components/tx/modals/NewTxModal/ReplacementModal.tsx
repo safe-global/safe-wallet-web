@@ -10,7 +10,6 @@ import {
   DialogActions,
   Grid,
 } from '@mui/material'
-import type { SystemProps } from '@mui/system/Box'
 
 import ModalDialog from '@/components/common/ModalDialog'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -49,11 +48,6 @@ const btnWidth = {
     xs: 240,
     sm: '100%',
   },
-}
-
-const flexDirection: SystemProps['flexDirection'] = {
-  xs: 'column',
-  sm: 'row',
 }
 
 const ReplacementModal = ({
@@ -98,22 +92,13 @@ const ReplacementModal = ({
         </Stepper>
       </DialogContent>
       <DialogActions className={css.container}>
-        <Grid container alignItems="center" justifyContent="center" flexDirection={flexDirection}>
+        <Grid container alignItems="center" justifyContent="center" flexDirection="row">
           <Grid item xs={12}>
             <Typography variant="body2" textAlign="center" fontWeight={700} mb={3}>
-              Select the type of replacement transaction
+              Select how you would like to replace this transaction
             </Typography>
           </Grid>
-          <Grid
-            item
-            container
-            justifyContent="center"
-            alignItems="center"
-            gap={1}
-            xs={12}
-            sm
-            flexDirection={flexDirection}
-          >
+          <Grid item container justifyContent="center" alignItems="center" gap={1} xs={12} sm flexDirection="row">
             <SendTokensButton onClick={onTokenModalOpen} sx={btnWidth} />
             <SendNFTsButton onClick={onNFTModalOpen} sx={btnWidth} />
           </Grid>
@@ -132,14 +117,15 @@ const ReplacementModal = ({
               sm: 'flex-start',
             }}
             alignItems="center"
-            flexDirection={flexDirection}
+            textAlign="center"
+            flexDirection="row"
           >
             <Tooltip
               arrow
               placement="top"
               title={canCancel ? '' : `Transaction with nonce ${txNonce} already has a reject transaction`}
             >
-              <span>
+              <span style={{ width: '100%' }}>
                 <Button
                   onClick={onRejectModalOpen}
                   variant="outlined"
@@ -147,7 +133,7 @@ const ReplacementModal = ({
                   sx={{ mb: 1, ...btnWidth }}
                   disabled={!canCancel}
                 >
-                  Rejection transaction
+                  Reject transaction
                 </Button>
               </span>
             </Tooltip>

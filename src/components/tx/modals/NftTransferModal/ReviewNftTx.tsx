@@ -3,7 +3,7 @@ import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { Box, Typography } from '@mui/material'
 import SendFromBlock from '../../SendFromBlock'
 import SignOrExecuteForm from '../../SignOrExecuteForm'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import SendToBlock from '@/components/tx/SendToBlock'
 import useAsync from '@/hooks/useAsync'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
 import useTxSender from '@/hooks/useTxSender'
@@ -13,7 +13,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 
 type ReviewNftTxProps = {
   params: NftTransferParams
-  onSubmit: (txId: string) => void
+  onSubmit: (txId?: string) => void
 }
 
 const ReviewNftTx = ({ params, onSubmit }: ReviewNftTxProps): ReactElement => {
@@ -43,13 +43,7 @@ const ReviewNftTx = ({ params, onSubmit }: ReviewNftTxProps): ReactElement => {
 
       <SendFromBlock />
 
-      <Typography color={({ palette }) => palette.text.secondary} pb={1}>
-        Recipient
-      </Typography>
-
-      <Box mb={3}>
-        <EthHashInfo address={params.recipient} shortAddress={false} hasExplorer showCopyButton />
-      </Box>
+      <SendToBlock address={params.recipient} />
     </SignOrExecuteForm>
   )
 }

@@ -91,7 +91,6 @@ describe('SignOrExecuteForm', () => {
       .spyOn(txSenderDispatch, 'dispatchTxProposal')
       .mockImplementation(jest.fn(() => Promise.resolve({ txId: '0x12' } as TransactionDetails)))
 
-    jest.spyOn(txSenderDispatch, 'dispatchTxExecution').mockImplementation(jest.fn())
     jest.spyOn(walletUtils, 'shouldUseEthSignMethod').mockImplementation(jest.fn(() => false))
   })
 
@@ -328,27 +327,6 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Submit')).toBeDisabled()
   })
 
-  it('displays an error if execution submission fails', async () => {
-    jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(() => {
-      throw new Error('Error while dispatching')
-    })
-
-    const mockTx = createSafeTx()
-    const result = render(
-      <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} />,
-    )
-
-    const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
-
-    await waitFor(() => {
-      expect(result.getByText('Error submitting the transaction. Please try again.')).toBeInTheDocument()
-    })
-  })
-
   it('disables the submit button if there is no tx', () => {
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={undefined} />)
 
@@ -441,7 +419,7 @@ describe('SignOrExecuteForm', () => {
     expect(proposeSpy).toHaveBeenCalledTimes(1)
   })
 
-  it('smart contract wallets propose and sign new transactions on-chain', async () => {
+  it('smart contract wallets have to propose when creating a tx with an on-chain signature', async () => {
     const mockTx = createSafeTx()
 
     const onChainSignSpy = jest.fn(() => Promise.resolve({}))
@@ -465,10 +443,10 @@ describe('SignOrExecuteForm', () => {
     })
 
     await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
-    expect(proposeSpy).toHaveBeenCalledTimes(1)
+    expect(proposeSpy).toHaveBeenCalled()
   })
 
-  it("smart contract wallets dont't propose, but sign existing transactions on-chain", async () => {
+  it('smart contract wallets should not propose when on-chain signing an existing transactions', async () => {
     const mockTx = createSafeTx()
 
     const onChainSignSpy = jest.fn(() => Promise.resolve({}))
@@ -493,5 +471,29 @@ describe('SignOrExecuteForm', () => {
 
     await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
     expect(proposeSpy).not.toHaveBeenCalled()
+  })
+
+  it('displays an error if execution submission fails', async () => {
+    jest.spyOn(txSender, 'default').mockImplementation(
+      () =>
+        ({
+          dispatchTxExecution: jest.fn(() => Promise.reject('Error while dispatching')),
+        } as unknown as NullableTxSenderFunctions),
+    )
+
+    const mockTx = createSafeTx()
+    const result = render(
+      <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} />,
+    )
+
+    const submitButton = result.getByText('Submit')
+
+    act(() => {
+      fireEvent.click(submitButton)
+    })
+
+    await waitFor(() => {
+      expect(result.getByText('Error submitting the transaction. Please try again.')).toBeInTheDocument()
+    })
   })
 })
