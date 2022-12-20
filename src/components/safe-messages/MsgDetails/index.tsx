@@ -26,7 +26,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
-  const messageHash = useMemo(() => {
+  const safeMessage = useMemo(() => {
     return generateSafeMessageMessage(msg.message)
   }, [msg.message])
 
@@ -50,7 +50,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
           <TxDataRow title="Message:">
             <Msg message={msg.message} />
           </TxDataRow>
-          <TxDataRow title="Message hash:">{generateDataRowValue(messageHash, 'hash')}</TxDataRow>
+          <TxDataRow title="SafeMessage:">{generateDataRowValue(safeMessage, 'hash')}</TxDataRow>
           <TxDataRow title="SafeMessage hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>
           <TxDataRow title="Created:">{formatDateTime(msg.creationTimestamp)}</TxDataRow>
           <TxDataRow title="Last modified:">{formatDateTime(msg.modifiedTimestamp)}</TxDataRow>
