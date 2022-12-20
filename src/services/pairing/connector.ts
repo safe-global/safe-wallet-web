@@ -5,13 +5,8 @@ import packageJson from '../../../package.json'
 import { IS_PRODUCTION } from '@/config/constants'
 import ExternalStore from '@/services/ExternalStore'
 import PairingIcon from '@/public/images/safe-logo-green.png'
-import local from '../local-storage/local'
 
 export const PAIRING_MODULE_STORAGE_ID = 'pairingConnector'
-
-export const hasStoredPairingSession = (): boolean => {
-  return Boolean(local.getItem(PAIRING_MODULE_STORAGE_ID))
-}
 
 export const getClientMeta = () => {
   const host = location.origin
