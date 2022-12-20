@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import LoadSafe from '@/components/load-safe'
+import LoadSafe, { loadSafeDefaultData } from '@/components/new-safe/load'
 
 const Load: NextPage = () => {
   const router = useRouter()
@@ -15,9 +15,9 @@ const Load: NextPage = () => {
       </Head>
 
       {safeAddress ? (
-        <LoadSafe key={safeAddress} initialStep={1} initialData={[undefined, { address: safeAddress }]} />
+        <LoadSafe key={safeAddress} initialData={{ ...loadSafeDefaultData, address: safeAddress }} />
       ) : (
-        <LoadSafe />
+        <LoadSafe initialData={loadSafeDefaultData} />
       )}
     </main>
   )

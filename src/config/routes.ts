@@ -1,8 +1,6 @@
 export const AppRoutes = {
   '404': '/404',
   welcome: '/welcome',
-  open: '/open',
-  load: '/load',
   index: '/',
   import: '/import',
   home: '/home',
@@ -14,6 +12,7 @@ export const AppRoutes = {
   },
   newSafe: {
     create: '/new-safe/create',
+    load: '/new-safe/load',
   },
   settings: {
     spendingLimits: '/settings/spending-limits',
