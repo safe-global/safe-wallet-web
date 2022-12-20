@@ -58,9 +58,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
 
         {msg.preparedSignature && (
           <div className={classNames(txDetailsCss.txSummary, txDetailsCss.multiSend)}>
-            <TxDataRow title="Prepared signature:">
-              {generateDataRowValue(msg.preparedSignature, 'hash', true)}
-            </TxDataRow>
+            <TxDataRow title="Prepared signature:">{generateDataRowValue(msg.preparedSignature, 'hash')}</TxDataRow>
           </div>
         )}
 

@@ -41,6 +41,10 @@ export const supportsEIP1271 = ({ chainId, version, fallbackHandler }: SafeInfo)
   // From v1.3.0, EIP-1271 support was moved to the CompatibilityFallbackHandler
   const EIP1271_FALLBACK_HANDLER_SUPPORTED_SAFE_VERSION = '1.3.0'
 
+  if (!version) {
+    return false
+  }
+
   const isHandledByFallbackHandler = gte(version, EIP1271_FALLBACK_HANDLER_SUPPORTED_SAFE_VERSION)
   if (isHandledByFallbackHandler) {
     const fallbackHandlerDeployment = getCompatibilityFallbackHandlerDeployment({ network: chainId, version })
