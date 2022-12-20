@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 
 import type { RootState } from '.'
 
-type PendingSafeMessagesState =
+export type PendingSafeMessagesState =
   | {
       [messageHash: string]: true
     }
@@ -26,11 +26,11 @@ export const pendingSafeMessagesSlice = createSlice({
 
 export const { setPendingSafeMessage, clearPendingSafeMessage } = pendingSafeMessagesSlice.actions
 
-export const selectPendinngSafeMessages = (state: RootState): PendingSafeMessagesState => {
+export const selectPendingSafeMessages = (state: RootState): PendingSafeMessagesState => {
   return state[pendingSafeMessagesSlice.name]
 }
 
 export const selectPendingSafeMessageByHash = createSelector(
-  [selectPendinngSafeMessages, (_: RootState, messageHash: string) => messageHash],
+  [selectPendingSafeMessages, (_: RootState, messageHash: string) => messageHash],
   (pendingSignedMessages, messageHash) => !!pendingSignedMessages[messageHash],
 )

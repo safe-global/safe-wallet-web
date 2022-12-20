@@ -33,7 +33,7 @@ const useSafeMessagePendingStatuses = () => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  })
+  }, [dispatch])
 }
 
 export default useSafeMessagePendingStatuses

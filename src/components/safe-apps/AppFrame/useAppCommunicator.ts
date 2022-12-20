@@ -26,6 +26,8 @@ import type {
   SafeBalances,
 } from '@gnosis.pm/safe-apps-sdk'
 import { Methods } from '@gnosis.pm/safe-apps-sdk'
+import { RPC_CALLS } from '@gnosis.pm/safe-apps-sdk/dist/src/eth/constants'
+import type { SafeSettings } from '@gnosis.pm/safe-apps-sdk'
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
@@ -58,6 +60,8 @@ type UseAppCommunicatorHandlers = {
   onGetPermissions: (origin: string) => Permission[]
   onSetPermissions: (permissionsRequest?: SafePermissionsRequest) => void
   onRequestAddressBook: (origin: string) => AddressBookItem[]
+  onSetSafeSettings: (settings: SafeSettings) => SafeSettings
+  onGetOffChainSignature: (messageHash: string) => Promise<string | undefined>
 }
 
 const useAppCommunicator = (
@@ -138,6 +142,11 @@ const useAppCommunicator = (
     communicator?.on(Methods.rpcCall, async (msg) => {
       const params = msg.data.params as RPCPayload
 
+      if (params.call === RPC_CALLS.safe_setSettings) {
+        const settings = params.params[0] as SafeSettings
+        return handlers.onSetSafeSettings(settings)
+      }
+
       try {
         return await safeAppWeb3Provider?.send(params.call, params.params)
       } catch (err) {
@@ -163,6 +172,10 @@ const useAppCommunicator = (
       const { message } = msg.data.params as SignMessageParams
 
       handlers.onSignMessage(message, msg.data.id, Methods.signMessage)
+    })
+
+    communicator?.on(Methods.getOffChainSignature, (msg) => {
+      return handlers.onGetOffChainSignature(msg.data.params as string)
     })
 
     communicator?.on(Methods.signTypedMessage, (msg) => {

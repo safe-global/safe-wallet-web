@@ -1,7 +1,12 @@
+import { hexZeroPad } from 'ethers/lib/utils'
+import { SafeMessageStatus, SafeMessageListItemType } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeMessageListItem } from '@gnosis.pm/safe-react-gateway-sdk'
+
 import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import { showNotification } from '@/store/notificationsSlice'
 import { renderHook } from '@/tests/test-utils'
-import useSafeMessageNotifications from '../useSafeMessageNotifications'
+import useSafeMessageNotifications, { _getSafeMessagesAwaitingConfirmations } from '../useSafeMessageNotifications'
+import type { PendingSafeMessagesState } from '@/store/pendingSafeMessagesSlice'
 
 jest.mock('@/store/notificationsSlice', () => {
   const original = jest.requireActual('@/store/notificationsSlice')
@@ -12,10 +17,95 @@ jest.mock('@/store/notificationsSlice', () => {
 })
 
 describe('useSafeMessageNotifications', () => {
+  describe('getSafeMessagesAwaitingConfirmations', () => {
+    it('should return all SafeMessages awaiting confirmation of the current wallet', () => {
+      const items: SafeMessageListItem[] = [
+        {
+          type: SafeMessageListItemType.MESSAGE,
+          status: SafeMessageStatus.NEEDS_CONFIRMATION,
+          messageHash: '0x123',
+          confirmations: [],
+        } as unknown as SafeMessageListItem,
+      ]
+
+      const messages = _getSafeMessagesAwaitingConfirmations(items, {}, hexZeroPad('0x456', 20))
+
+      expect(messages).toStrictEqual([
+        {
+          type: SafeMessageListItemType.MESSAGE,
+          status: SafeMessageStatus.NEEDS_CONFIRMATION,
+          messageHash: '0x123',
+          confirmations: [],
+        },
+      ])
+    })
+
+    it('should filter DATE_LABELs', () => {
+      const items = [
+        {
+          type: SafeMessageListItemType.DATE_LABEL,
+        } as SafeMessageListItem,
+      ]
+
+      const messages = _getSafeMessagesAwaitingConfirmations(items, {}, hexZeroPad('0x456', 20))
+
+      expect(messages).toStrictEqual([])
+    })
+
+    it('should filter pending messages', () => {
+      const items: SafeMessageListItem[] = [
+        {
+          type: SafeMessageListItemType.MESSAGE,
+          status: SafeMessageStatus.NEEDS_CONFIRMATION,
+          messageHash: '0x123',
+          confirmations: [
+            {
+              owner: {
+                value: hexZeroPad('0x123', 20),
+              },
+              signature: '0xabc',
+            },
+          ],
+        } as SafeMessageListItem,
+      ]
+
+      const pendingMsgs = {
+        '0x123': true,
+      } as PendingSafeMessagesState
+
+      const messages = _getSafeMessagesAwaitingConfirmations(items, pendingMsgs, hexZeroPad('0x456', 20))
+
+      expect(messages).toStrictEqual([])
+    })
+
+    it('should filter messages already confirmed by the connected wallet', () => {
+      const items: SafeMessageListItem[] = [
+        {
+          type: SafeMessageListItemType.MESSAGE,
+          status: SafeMessageStatus.NEEDS_CONFIRMATION,
+          messageHash: '0x123',
+          confirmations: [
+            {
+              owner: {
+                value: hexZeroPad('0x123', 20),
+              },
+              signature: '0xabc',
+            },
+          ],
+        } as SafeMessageListItem,
+      ]
+
+      const messages = _getSafeMessagesAwaitingConfirmations(items, {}, hexZeroPad('0x123', 20))
+
+      expect(messages).toStrictEqual([])
+    })
+  })
+
+  // Message lifecycle notifications
   it('should show a notification when a message is created', () => {
     renderHook(() => useSafeMessageNotifications())
 
-    safeMsgDispatch(SafeMsgEvent.PROPOSE, { messageHash: '0x123' })
+    safeMsgDispatch(SafeMsgEvent.PROPOSE, { messageHash: '0x123', requestId: '123' })
 
     expect(showNotification).toHaveBeenCalledWith({
       message: 'You successfully signed the message.',

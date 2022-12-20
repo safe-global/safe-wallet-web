@@ -36,6 +36,10 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
 
+      - name: Prepare install
+        run: yarn install --update-checksums
+        continue-on-error: true
+
       - name: Install Node modules
         run: yarn install --immutable
 

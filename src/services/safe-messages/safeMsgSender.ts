@@ -1,38 +1,34 @@
 import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import type { TypedDataDomain } from 'ethers'
+import type { JsonRpcSigner } from '@ethersproject/providers'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
-import { getWeb3 } from '@/hooks/wallets/web3'
-import { generateSafeMessageTypes, getSafeMessageHash } from '@/utils/safe-messages'
+import { generateSafeMessageHash, generateSafeMessageTypedData } from '@/utils/safe-messages'
 
-/**
- * Sign a message hash as a `SafeMessage` `message`
- * @param safe Safe which will sign the message
- * @param messageHash Message hash to sign
- * @returns Signature of the `SafeMessage`
- */
-const signMessageHash = async (safe: SafeInfo, messageHash: SafeMessage['messageHash']): Promise<string> => {
-  const web3 = getWeb3()
-
-  if (!web3) {
-    throw new Error('No wallet is connected.')
-  }
-
-  const { domain, types, message } = generateSafeMessageTypes(safe, messageHash)
-
-  return web3.getSigner()._signTypedData(domain as TypedDataDomain, types, message)
-}
-
-export const dispatchSafeMsgProposal = async (
-  safe: SafeInfo,
-  message: SafeMessage['message'],
-  safeAppId: number,
-): Promise<void> => {
-  const messageHash = getSafeMessageHash(message)
+export const dispatchSafeMsgProposal = async ({
+  signer,
+  safe,
+  message,
+  requestId,
+  safeAppId,
+}: {
+  signer: JsonRpcSigner
+  safe: SafeInfo
+  message: SafeMessage['message']
+  requestId: RequestId
+  safeAppId?: number
+}): Promise<void> => {
+  const messageHash = generateSafeMessageHash(safe, message)
 
   try {
-    const signature = await signMessageHash(safe, messageHash)
+    const typedData = generateSafeMessageTypedData(safe, message)
+    const signature = await signer._signTypedData(
+      typedData.domain as TypedDataDomain,
+      typedData.types,
+      typedData.message,
+    )
 
     await proposeSafeMessage(safe.chainId, safe.address.value, {
       message,
@@ -50,15 +46,30 @@ export const dispatchSafeMsgProposal = async (
 
   safeMsgDispatch(SafeMsgEvent.PROPOSE, {
     messageHash,
+    requestId,
   })
 }
 
-export const dispatchSafeMsgConfirmation = async (
-  safe: SafeInfo,
-  messageHash: SafeMessage['messageHash'],
-): Promise<void> => {
+export const dispatchSafeMsgConfirmation = async ({
+  signer,
+  safe,
+  message,
+  requestId,
+}: {
+  signer: JsonRpcSigner
+  safe: SafeInfo
+  message: SafeMessage['message']
+  requestId?: RequestId
+}): Promise<void> => {
+  const messageHash = generateSafeMessageHash(safe, message)
+
   try {
-    const signature = await signMessageHash(safe, messageHash)
+    const typedData = generateSafeMessageTypedData(safe, message)
+    const signature = await signer._signTypedData(
+      typedData.domain as TypedDataDomain,
+      typedData.types,
+      typedData.message,
+    )
 
     await confirmSafeMessage(safe.chainId, messageHash, {
       signature,
@@ -74,5 +85,6 @@ export const dispatchSafeMsgConfirmation = async (
 
   safeMsgDispatch(SafeMsgEvent.CONFIRM_PROPOSE, {
     messageHash,
+    requestId,
   })
 }

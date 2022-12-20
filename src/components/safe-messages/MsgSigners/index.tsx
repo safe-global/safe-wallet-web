@@ -8,7 +8,7 @@ import SignedIcon from '@/public/images/messages/signed.svg'
 import DotIcon from '@/public/images/messages/dot.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
-import css from '@/components/safeMessages/MsgSigners/styles.module.css'
+import css from '@/components/safe-messages/MsgSigners/styles.module.css'
 import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 
 // Icons
