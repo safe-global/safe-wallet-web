@@ -17,7 +17,7 @@ Contributions, be it a bug report or a pull request, are very welcome. Please ch
 
 Create a `.env` file with environment variables. You can use the `.env.example` file as a reference.
 
-Here's a list of required and optional variables:
+Here's the list of all the required and optional variables:
 
 | Env variable |          | Description |
 | ------------ | -------- | ----------- |
