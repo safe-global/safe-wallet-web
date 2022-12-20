@@ -6,6 +6,7 @@ import css from './styles.module.css'
 import SafeLoadingError from '../SafeLoadingError'
 import Footer from '../Footer'
 import SideDrawer from './SideDrawer'
+import PsaBanner from '../PsaBanner'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true)
@@ -17,6 +18,7 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   return (
     <>
       <header className={css.header}>
+        <PsaBanner />
         <Header onMenuToggle={toggleSidebar} />
       </header>
 
