@@ -299,8 +299,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
           (signMessageModalState.isOffChain ? (
             <MsgModal
               onClose={onSafeAppsModalClose}
-              logoUri={remoteApp?.iconUrl || ''}
-              name={remoteApp?.name || ''}
+              logoUri={safeAppFromManifest?.iconUrl || ''}
+              name={safeAppFromManifest?.name || ''}
               message={signMessageModalState.message}
               safeAppId={remoteApp?.id}
               requestId={signMessageModalState.requestId}

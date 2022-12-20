@@ -14,8 +14,6 @@ import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { generateSafeMessageHash, generateSafeMessageMessage } from '@/utils/safe-messages'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
-
-import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -25,7 +23,10 @@ import useSafeMessages from '@/hooks/useSafeMessages'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import { useWeb3 } from '@/hooks/wallets/web3'
 
+import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
+
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
+const APP_NAME_FALLBACK = 'Sign message off-chain'
 
 type BaseProps = {
   onClose: () => void
@@ -47,7 +48,7 @@ type ConfirmProps = BaseProps & {
 
 const MsgModal = ({
   onClose,
-  logoUri = APP_LOGO_FALLBACK_IMAGE,
+  logoUri,
   name,
   message,
   messageHash,
@@ -128,7 +129,9 @@ const MsgModal = ({
                   width={24}
                   height={24}
                 />
-                <Typography variant="h4">{name}</Typography>
+                <Typography variant="h4" pl={1}>
+                  {name || APP_NAME_FALLBACK}
+                </Typography>
               </Box>
             </Grid>
           </Grid>
@@ -145,15 +148,22 @@ const MsgModal = ({
             This action will confirm the message and add your confirmation to the prepared signature.
           </Typography>
           <Typography fontWeight={700}>Message:</Typography>
-          <Msg message={decodedMessage} />
+          <Typography variant="body2">
+            <Msg message={decodedMessage} />
+          </Typography>
           <Typography fontWeight={700} mt={2}>
             SafeMessage:
           </Typography>
-          <EthHashInfo address={safeMessageMessage} showAvatar={false} shortAddress={false} showCopyButton />
+          <Typography variant="body2">
+            <EthHashInfo address={safeMessageMessage} showAvatar={false} shortAddress={false} showCopyButton />
+          </Typography>
+
           <Typography fontWeight={700} mt={2}>
             SafeMessage hash:
           </Typography>
-          <EthHashInfo address={safeMessageHash} showAvatar={false} shortAddress={false} showCopyButton />
+          <Typography variant="body2">
+            <EthHashInfo address={safeMessageHash} showAvatar={false} shortAddress={false} showCopyButton />
+          </Typography>
 
           {!web3 ? (
             <ErrorMessage>No wallet is connected.</ErrorMessage>
