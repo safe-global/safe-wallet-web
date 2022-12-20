@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
+import type { CreateSafeInfoItem } from 'src/components/new-safe/create/CreateSafeInfos'
 
 export const useSafeSetupHints = (
   threshold: number,

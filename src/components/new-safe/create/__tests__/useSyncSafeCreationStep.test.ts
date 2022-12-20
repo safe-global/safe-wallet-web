@@ -1,5 +1,5 @@
 import { renderHook } from '@/tests/test-utils'
-import useSyncSafeCreationStep from '@/components/new-safe/CreateSafe/useSyncSafeCreationStep'
+import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as localStorage from '@/services/local-storage/useLocalStorage'
 import type { ConnectedWallet } from '@/services/onboard'

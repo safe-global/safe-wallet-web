@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { CircularProgress, FormControl, Grid, IconButton, SvgIcon } from '@mui/material'
+import { CircularProgress, FormControl, Grid, IconButton, SvgIcon, Typography } from '@mui/material'
 import NameInput from '@/components/common/NameInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import AddressBookInput from '@/components/common/AddressBookInput'
@@ -10,6 +10,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import type { NamedAddress } from '@/components/create-safe/types'
 import useWallet from '@/hooks/wallets/useWallet'
 import { sameAddress } from '@/utils/addresses'
+import css from './styles.module.css'
 
 /**
  * TODO: this is a slightly modified copy of the old /create-safe/OwnerRow.tsx
@@ -66,10 +67,11 @@ export const OwnerRow = ({
   }, [ens, setValue, getValues, name, fieldName])
 
   return (
-    <Grid container spacing={3} alignItems="flex-start" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
+    <Grid container spacing={3} alignItems="center" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
       <Grid item xs={12} md={4}>
         <FormControl fullWidth>
           <NameInput
+            className={css.name}
             name={`${fieldName}.name`}
             label="Owner name"
             InputLabelProps={{ shrink: true }}
@@ -85,9 +87,11 @@ export const OwnerRow = ({
           />
         </FormControl>
       </Grid>
-      <Grid item xs={11} md={7}>
+      <Grid item xs={11} md={readOnly ? 8 : 7}>
         {readOnly ? (
-          <EthHashInfo address={owner.address} shortAddress={false} hasExplorer showCopyButton />
+          <Typography variant="body2">
+            <EthHashInfo address={owner.address} shortAddress={false} hasExplorer showCopyButton />
+          </Typography>
         ) : (
           <FormControl fullWidth>
             <AddressBookInput

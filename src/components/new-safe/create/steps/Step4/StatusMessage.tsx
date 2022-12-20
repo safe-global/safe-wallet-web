@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
-import { SafeCreationStatus } from './useSafeCreation'
-import LoadingSpinner from '@/components/new-safe/steps/Step4/LoadingSpinner'
+import { SafeCreationStatus } from 'src/components/new-safe/create/steps/Step4/useSafeCreation'
+import LoadingSpinner from '@/components/new-safe/create/steps/Step4/LoadingSpinner'
 
 const getStep = (status: SafeCreationStatus) => {
   const ERROR_TEXT = 'Please cancel the process or retry the transaction.'
