@@ -84,11 +84,13 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
         <form onSubmit={onFormSubmit}>
           <DialogContent>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant="body1" fontWeight={700}>
-                  Safe transaction
-                </Typography>
-              </Grid>
+              {(params.nonce !== undefined || !!params.safeTxGas) && (
+                <Grid item xs={12}>
+                  <Typography variant="body1" fontWeight={700}>
+                    Safe transaction
+                  </Typography>
+                </Grid>
+              )}
 
               {/* Safe nonce */}
               {params.nonce !== undefined && (

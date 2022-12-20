@@ -3,45 +3,14 @@
  * It won't initialize GTM if a consent wasn't given for analytics cookies.
  * The hook needs to be called when the app starts.
  */
-import { useEffect, useMemo } from 'react'
-import { gtmClear, gtmInit, gtmTrackPageview, gtmSetChainId, gtmTrack } from '@/services/analytics/gtm'
+import { useEffect } from 'react'
+import { gtmClear, gtmInit, gtmTrackPageview, gtmSetChainId } from '@/services/analytics/gtm'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
 import useChainId from '@/hooks/useChainId'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
-import { OVERVIEW_EVENTS, TX_LIST_EVENTS } from './events'
-import { selectTotalAdded } from '@/store/addedSafesSlice'
-import useSafeAddress from '@/hooks/useSafeAddress'
-import { selectQueuedTransactions } from '@/store/txQueueSlice'
-
-// Track meta events on app load
-const useMetaEvents = (isAnalyticsEnabled: boolean) => {
-  // Track total added safes
-  const totalAddedSafes = useAppSelector(selectTotalAdded)
-  useEffect(() => {
-    if (!isAnalyticsEnabled || totalAddedSafes === 0) return
-
-    gtmTrack({
-      ...OVERVIEW_EVENTS.TOTAL_ADDED_SAFES,
-      label: totalAddedSafes.toString(),
-    })
-  }, [isAnalyticsEnabled, totalAddedSafes])
-
-  // Track queue size
-  const safeAddress = useSafeAddress()
-  const queue = useAppSelector(selectQueuedTransactions)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const safeQueue = useMemo(() => queue, [safeAddress, queue !== undefined])
-  useEffect(() => {
-    if (!isAnalyticsEnabled || !safeQueue) return
-
-    gtmTrack({
-      ...TX_LIST_EVENTS.QUEUED_TXS,
-      label: safeQueue.length.toString(),
-    })
-  }, [isAnalyticsEnabled, safeQueue])
-}
+import useMetaEvents from './useMetaEvents'
 
 const useGtm = () => {
   const chainId = useChainId()

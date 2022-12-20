@@ -49,7 +49,7 @@ const TransactionQueueBar = ({
                 enter: 0,
                 exit: 500,
               },
-              unmountOnExit: true,
+              unmountOnExit: false,
               mountOnEnter: true,
             }}
             sx={{

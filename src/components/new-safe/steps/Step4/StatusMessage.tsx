@@ -58,7 +58,7 @@ const getStep = (status: SafeCreationStatus) => {
 const StatusMessage = ({ status, isError }: { status: SafeCreationStatus; isError: boolean }) => {
   const stepInfo = getStep(status)
 
-  const color = isError ? 'success' : 'warning'
+  const color = isError ? 'error' : 'info'
 
   return (
     <>

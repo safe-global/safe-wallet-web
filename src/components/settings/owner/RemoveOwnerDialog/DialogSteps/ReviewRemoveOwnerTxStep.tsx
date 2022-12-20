@@ -17,7 +17,7 @@ export const ReviewRemoveOwnerTxStep = ({
   onSubmit,
 }: {
   data: RemoveOwnerData
-  onSubmit: (txId: string) => void
+  onSubmit: (txId?: string) => void
 }) => {
   const { createRemoveOwnerTx } = useTxSender()
   const { safe, safeAddress } = useSafeInfo()
@@ -30,7 +30,7 @@ export const ReviewRemoveOwnerTxStep = ({
 
   const newOwnerLength = safe.owners.length - 1
 
-  const onFormSubmit = (txId: string) => {
+  const onFormSubmit = (txId?: string) => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
 
