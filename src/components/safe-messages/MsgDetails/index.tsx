@@ -45,7 +45,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
           <TxDataRow title="Message:">
             <Msg message={msg.message} />
           </TxDataRow>
-          <TxDataRow title="Hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>
+          <TxDataRow title="SafeMessage hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>
           <TxDataRow title="Created:">{formatDateTime(msg.creationTimestamp)}</TxDataRow>
           <TxDataRow title="Last modified:">{formatDateTime(msg.modifiedTimestamp)}</TxDataRow>
         </div>
