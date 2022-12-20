@@ -41,6 +41,6 @@
 
 @media (max-width: 600px) {
   .banner {
-    padding: var(--space-1) var(--space-3);
+    padding: var(--space-1) var(--space-2);
   }
 }

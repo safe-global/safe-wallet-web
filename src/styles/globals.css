@@ -52,6 +52,7 @@ button {
   --header-height: calc(var(--header-inner-height) * 2);
 }
 
+/* On mobile, the banner text is two lines + padding */
 @media (max-width: 600px) {
   .psaBanner:root {
     --header-height: calc(var(--header-inner-height) * 2 + 16px);
