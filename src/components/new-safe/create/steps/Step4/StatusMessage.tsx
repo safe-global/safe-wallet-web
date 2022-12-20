@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import { SafeCreationStatus } from 'src/components/new-safe/create/steps/Step4/useSafeCreation'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/Step4/useSafeCreation'
 import LoadingSpinner from '@/components/new-safe/create/steps/Step4/LoadingSpinner'
 
 const getStep = (status: SafeCreationStatus) => {

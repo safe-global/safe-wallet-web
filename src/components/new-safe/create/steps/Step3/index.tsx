@@ -8,7 +8,7 @@ import { useEstimateSafeCreationGas } from '@/components/create-safe/useEstimate
 import { formatVisualAmount } from '@/utils/formatters'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
-import css from 'src/components/new-safe/create/steps/Step3/styles.module.css'
+import css from '@/components/new-safe/create/steps/Step3/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { getFallbackHandlerContractInstance } from '@/services/contracts/safeContracts'
 import { computeNewSafeAddress } from '@/components/create-safe/logic'

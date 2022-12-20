@@ -6,7 +6,7 @@ import { Card, Grid, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 import SafeLogo from '@/public/images/logo-no-text.svg'
 
-import css from 'src/components/new-safe/create/OverviewWidget/styles.module.css'
+import css from '@/components/new-safe/create/OverviewWidget/styles.module.css'
 
 const LOGO_DIMENSIONS = '22px'
 

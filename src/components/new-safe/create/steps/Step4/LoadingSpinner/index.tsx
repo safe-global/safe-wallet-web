@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import css from 'src/components/new-safe/create/steps/Step4/LoadingSpinner/styles.module.css'
+import css from '@/components/new-safe/create/steps/Step4/LoadingSpinner/styles.module.css'
 import classnames from 'classnames'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/Step4/useSafeCreation'
 import { useCallback, useEffect, useRef } from 'react'
