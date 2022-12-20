@@ -1,6 +1,6 @@
 import { hexlify, hexZeroPad, toUtf8Bytes } from 'ethers/lib/utils'
 import { Web3Provider } from '@ethersproject/providers'
-import type { SafeInfo, SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import MsgModal from '@/components/safe-messages/MsgModal'
 import * as useIsWrongChainHook from '@/hooks/useIsWrongChain'
@@ -13,8 +13,8 @@ import * as web3 from '@/hooks/wallets/web3'
 import { render, act, fireEvent, waitFor } from '@/tests/test-utils'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
-jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
-  ...jest.requireActual('@gnosis.pm/safe-react-gateway-sdk'),
+jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
+  ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
   getSafeMessage: jest.fn(),
 }))
 

@@ -1,4 +1,4 @@
-import * as gateway from '@gnosis.pm/safe-react-gateway-sdk'
+import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 
@@ -6,8 +6,8 @@ import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services
 import * as utils from '@/utils/safe-messages'
 import * as events from '@/services/safe-messages/safeMsgEvents'
 
-jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
-  ...jest.requireActual('@gnosis.pm/safe-react-gateway-sdk'),
+jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
+  ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
   proposeSafeMessage: jest.fn(),
   confirmSafeMessage: jest.fn(),
 }))
