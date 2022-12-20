@@ -1,4 +1,4 @@
-import React, { type ReactElement } from 'react'
+import React from 'react'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
@@ -16,19 +16,7 @@ import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { LOAD_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
-
-const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
-  return (
-    <>
-      <Grid item xs={3}>
-        <Typography variant="body2">{name}</Typography>
-      </Grid>
-      <Grid item xs={9}>
-        {value}
-      </Grid>
-    </>
-  )
-}
+import ReviewRow from '@/components/new-safe/ReviewRow'
 
 const LoadSafeStep2 = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => {
   const chain = useCurrentChain()

@@ -1,4 +1,4 @@
-import { useMemo, type ReactElement } from 'react'
+import { useMemo } from 'react'
 import { Button, Grid, Typography, Divider, Box } from '@mui/material'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -21,19 +21,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import palette from '@/styles/colors'
-
-const ReviewRow = ({ name, value }: { name: string; value: ReactElement }) => {
-  return (
-    <>
-      <Grid item xs={3}>
-        <Typography variant="body2">{name}</Typography>
-      </Grid>
-      <Grid item xs={9}>
-        {value}
-      </Grid>
-    </>
-  )
-}
+import ReviewRow from '@/components/new-safe/ReviewRow'
 
 const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()

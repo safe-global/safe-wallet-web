@@ -4,7 +4,6 @@ import type { ReactElement } from 'react'
 
 import AddIcon from '@/public/images/common/add.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import { OwnerRow } from '@/components/new-safe/create/steps/Step2/OwnerRow'
 import type { NamedAddress } from '@/components/create-safe/types'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
@@ -17,6 +16,7 @@ import layoutCss from '@/components/new-safe/create/styles.module.css'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
+import OwnerRow from '@/components/new-safe/OwnerRow'
 
 enum CreateSafeStep2Fields {
   owners = 'owners',

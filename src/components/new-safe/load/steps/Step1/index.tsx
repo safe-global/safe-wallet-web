@@ -10,7 +10,7 @@ import useChainId from '@/hooks/useChainId'
 import type { NamedAddress } from '@/components/create-safe/types'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { OwnerRow } from '@/components/new-safe/create/steps/Step2/OwnerRow'
+import { OwnerRow } from '@/components/new-safe/OwnerRow'
 
 enum LoadSafeStep1Fields {
   owners = 'owners',

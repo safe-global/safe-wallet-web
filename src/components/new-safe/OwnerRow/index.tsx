@@ -12,10 +12,6 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { sameAddress } from '@/utils/addresses'
 import css from './styles.module.css'
 
-/**
- * TODO: this is a slightly modified copy of the old /create-safe/OwnerRow.tsx
- * Once we remove the old safe creation flow we should remove the old file.
- */
 export const OwnerRow = ({
   index,
   groupName,
@@ -127,3 +123,5 @@ export const OwnerRow = ({
     </Grid>
   )
 }
+
+export default OwnerRow
