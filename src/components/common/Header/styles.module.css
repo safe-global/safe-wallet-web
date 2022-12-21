@@ -1,5 +1,5 @@
 .container {
-  height: var(--header-height);
+  height: var(--header-inner-height);
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;

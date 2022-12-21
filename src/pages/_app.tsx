@@ -33,7 +33,7 @@ import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
 import useABTesting from '@/services/tracking/useABTesting'
 import { AbTest } from '@/services/tracking/abTesting'
-import PsaBanner from '@/components/common/PsaBanner'
+
 import useSafeMessageNotifications from '@/hooks/useSafeMessageNotifications'
 import useSafeMessagePendingStatuses from '@/hooks/useSafeMessagePendingStatuses'
 
@@ -93,8 +93,6 @@ const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCach
           <CssBaseline />
 
           <InitApp />
-
-          <PsaBanner />
 
           <PageLayout>
             <Component {...pageProps} />
