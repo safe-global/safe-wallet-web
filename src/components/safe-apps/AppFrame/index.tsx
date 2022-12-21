@@ -121,12 +121,17 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       }
     },
     onSetSafeSettings: (safeSettings: SafeSettings) => {
+      const isEIP1271Supported = supportsEIP1271(safe)
       const newSettings: SafeSettings = {
         ...settings,
-        offChainSigning: supportsEIP1271(safe) && !!safeSettings.offChainSigning,
+        offChainSigning: isEIP1271Supported && !!safeSettings.offChainSigning,
       }
 
       setSettings(newSettings)
+
+      !isEIP1271Supported &&
+        safeSettings.offChainSigning &&
+        console.warn('The connected Safe does not support off-chain signing.')
 
       return newSettings
     },

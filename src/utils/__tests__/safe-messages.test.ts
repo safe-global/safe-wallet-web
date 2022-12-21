@@ -1,7 +1,8 @@
 import { ethers } from 'ethers'
 import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { generateSafeMessageTypedData } from '../safe-messages'
+import { generateSafeMessageTypedData, supportsEIP1271 } from '../safe-messages'
+import { hexZeroPad } from 'ethers/lib/utils'
 
 const MOCK_ADDRESS = ethers.utils.hexZeroPad('0x123', 20)
 
@@ -120,6 +121,56 @@ describe('safe-messages', () => {
           message: '0x37abd8589f35b81d0ed965127e85b3de86f17c06f3736cfbb5f8e67767a8dd45',
         },
       })
+    })
+  })
+
+  describe('supportsEIP1271', () => {
+    it('false for 1.3.0 Safes without fallback handler', () => {
+      expect(
+        supportsEIP1271({
+          chainId: '5',
+          version: '1.3.0',
+          fallbackHandler: null,
+        } as any),
+      ).toBeFalsy()
+    })
+
+    it('false for 1.3.0 Safes with invalid fallback handler', () => {
+      expect(
+        supportsEIP1271({
+          chainId: '5',
+          version: '0.0.1',
+          fallbackHandler: { value: 'this is not an address' },
+        } as any),
+      ).toBeFalsy()
+    })
+
+    it('true for 1.3.0 Safes with fallback handler', () => {
+      expect(
+        supportsEIP1271({
+          chainId: '5',
+          version: '1.3.0',
+          fallbackHandler: { value: hexZeroPad('0x2222', 20) },
+        } as any),
+      ).toBeTruthy()
+    })
+
+    it('true for 1.1.0 Safes', () => {
+      expect(
+        supportsEIP1271({
+          chainId: '5',
+          version: '1.0.0',
+        } as any),
+      ).toBeTruthy()
+    })
+
+    it('false for 0.0.1 Safes', () => {
+      expect(
+        supportsEIP1271({
+          chainId: '5',
+          version: '0.0.1',
+        } as any),
+      ).toBeFalsy()
     })
   })
 })
