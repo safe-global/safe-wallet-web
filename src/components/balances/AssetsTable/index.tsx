@@ -54,9 +54,10 @@ const AssetsTable = (): ReactElement => {
   const rows = (visibleAssets || []).map((item) => {
     const rawFiatValue = parseFloat(item.fiatBalance)
     const isNative = isNativeToken(item.tokenInfo)
+    const isSelected = isAssetSelected(item.tokenInfo.address)
 
     return {
-      selected: !isNative && isAssetSelected(item.tokenInfo.address),
+      selected: !isNative && isSelected,
       cells: {
         asset: {
           rawValue: item.tokenInfo.name,
@@ -116,9 +117,15 @@ const AssetsTable = (): ReactElement => {
               )}
               {!isNative && (
                 <Track {...ASSETS_EVENTS.HIDE}>
-                  <IconButton onClick={() => toggleAsset(item.tokenInfo.address)}>
-                    {isAssetSelected(item.tokenInfo.address) ? <VisibilityOutlined /> : <VisibilityOffOutlined />}
-                  </IconButton>
+                  <Tooltip title={isSelected ? 'Show asset' : 'Hide asset'} arrow disableInteractive>
+                    <IconButton size="small" onClick={() => toggleAsset(item.tokenInfo.address)}>
+                      {isSelected ? (
+                        <VisibilityOffOutlined fontSize="small" />
+                      ) : (
+                        <VisibilityOutlined fontSize="small" />
+                      )}
+                    </IconButton>
+                  </Tooltip>
                 </Track>
               )}
             </Box>

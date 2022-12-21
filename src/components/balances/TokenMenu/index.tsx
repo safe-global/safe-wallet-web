@@ -14,17 +14,7 @@ const TokenMenu = () => {
     return null
   }
   return (
-    <Box
-      position="sticky"
-      top="20px"
-      display="flex"
-      flexWrap="wrap"
-      flexDirection="row"
-      alignItems="center"
-      gap={1}
-      mb={1}
-      mt={2}
-    >
+    <Box className={css.stickyBox}>
       <Box className={css.hideTokensHeader}>
         <VisibilityOffOutlined />
         <Typography>
@@ -32,10 +22,10 @@ const TokenMenu = () => {
         </Typography>
       </Box>
       <div>
-        <Button onClick={reset} className={css.tinyButton} variant="outlined">
+        <Button onClick={reset} className={css.cancelButton} size="small" variant="outlined">
           Cancel
         </Button>
-        <Button onClick={saveChanges} className={css.tinyButton} variant="contained">
+        <Button onClick={saveChanges} className={css.applyButton} size="small" variant="contained">
           Apply
         </Button>
       </div>

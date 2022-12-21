@@ -10,15 +10,24 @@ import { trackEvent, ASSETS_EVENTS } from '@/services/analytics'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoAssetsIcon from '@/public/images/balances/no-assets.svg'
 import HiddenAssetsProvider from '@/components/balances/HiddenAssetsProvider'
+import useHiddenAssets from '@/hooks/useHiddenAssets'
+import TokenMenu from '@/components/balances/TokenMenu'
 
 const Balances: NextPage = () => {
   const { balances, loading, error } = useBalances(true)
+  const hiddenAssets = useHiddenAssets()
 
   useEffect(() => {
     if (!loading && balances.items.length === 0) {
       trackEvent({ ...ASSETS_EVENTS.DIFFERING_TOKENS, label: balances.items.length })
     }
   }, [balances, loading])
+
+  useEffect(() => {
+    if (hiddenAssets) {
+      trackEvent({ ...ASSETS_EVENTS.HIDDEN_TOKENS, label: Object.keys(hiddenAssets).length })
+    }
+  }, [hiddenAssets])
 
   return (
     <>
@@ -28,6 +37,7 @@ const Balances: NextPage = () => {
 
       <HiddenAssetsProvider>
         <AssetsHeader currencySelect hiddenAssets />
+        <TokenMenu />
 
         <main>
           {loading && <CircularProgress size={20} sx={{ marginTop: 2 }} />}

@@ -167,9 +167,6 @@ const initTheme = (darkMode: boolean) => {
               border: '2px solid',
             },
           },
-          contained: {
-            border: '2px solid',
-          },
           sizeLarge: { fontSize: '16px' },
         },
       },

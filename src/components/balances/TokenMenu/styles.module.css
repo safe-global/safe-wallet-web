@@ -3,13 +3,32 @@
   flex-direction: row;
   flex: 1;
   gap: var(--space-1);
-  padding: 5px 16px;
+  padding: 5px var(--space-2);
+  margin-right: var(--space-3);
   background-color: var(--color-background-light);
   border-radius: 6px;
   min-width: 185px;
 }
 
-.tinyButton {
-  margin-left: var(--space-1);
+.stickyBox {
+  position: sticky;
+  top: 123px; /* under AssetHeader */
+  z-index: 1;
+  padding: var(--space-2);
+  background-color: var(--color-background-default);
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: -66px; /* height of the box itself, causes the table to not scroll on first selection */
+  gap: var(--space-1);
+}
+
+.cancelButton {
   padding: 4px 10px;
+}
+
+.applyButton {
+  margin-left: var(--space-1);
+  padding: 6px var(--space-3);
 }

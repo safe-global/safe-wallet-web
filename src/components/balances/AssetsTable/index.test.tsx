@@ -98,20 +98,20 @@ describe('AssetsTable', () => {
     // unhide both tokens
     let tableRow = result.getByText('100 DAI').parentElement?.parentElement
     expect(tableRow).toBeDefined()
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
 
     tableRow = result.getByText('200 SPM').parentElement?.parentElement
     expect(tableRow).toBeDefined()
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
 
     // hide them again
     tableRow = result.getByText('100 DAI').parentElement?.parentElement
     expect(tableRow).toBeDefined()
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
 
     tableRow = result.getByText('200 SPM').parentElement?.parentElement
     expect(tableRow).toBeDefined()
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
 
     fireEvent.click(saveButton)
 
@@ -176,20 +176,20 @@ describe('AssetsTable', () => {
     // hide both tokens
     let tableRow = result.getByText('100 DAI').parentElement?.parentElement
     expect(tableRow).toBeDefined()
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
 
     tableRow = result.getByText('200 SPM').parentElement?.parentElement
     expect(tableRow).toBeDefined()
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
 
     // unhide them again
     tableRow = result.getByText('100 DAI').parentElement?.parentElement
     expect(tableRow).toBeDefined()
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
 
     tableRow = result.getByText('200 SPM').parentElement?.parentElement
     expect(tableRow).toBeDefined()
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
 
     fireEvent.click(saveButton)
 
@@ -258,7 +258,7 @@ describe('AssetsTable', () => {
     expect(tableRow).toBeDefined()
 
     // hide button
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
 
     // Apply changes
     fireEvent.click(saveButton)
@@ -284,7 +284,7 @@ describe('AssetsTable', () => {
     // Unhide token & reset (make no changes)
     tableRow = result.getByText('200 SPM').parentElement?.parentElement
     expect(tableRow).toBeDefined()
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
     fireEvent.click(resetButton)
 
     // SPAM token is hidden again
@@ -299,7 +299,7 @@ describe('AssetsTable', () => {
     // Unhide token & apply
     tableRow = result.getByText('200 SPM').parentElement?.parentElement
     expect(tableRow).toBeDefined()
-    fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
+    fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
     fireEvent.click(saveButton)
 
     // Both tokens are visible again

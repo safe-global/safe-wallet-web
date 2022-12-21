@@ -1,6 +1,6 @@
 import * as useChainId from '@/hooks/useChainId'
 import type { RootState } from '@/store'
-import { fireEvent, getByRole, render, waitFor } from '@/tests/test-utils'
+import { fireEvent, render, waitFor } from '@/tests/test-utils'
 import HiddenAssetsProvider, { HiddenAssetsContext } from '../HiddenAssetsProvider'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -79,25 +79,20 @@ describe('TokenListSelect', () => {
 
     const visibleAssets = result.getByTestId('visibleAssets')
     const showHiddenAssets = result.getByTestId('showHiddenAssets')
-    const selectElement = result.getByTestId('tokenlist-select')
 
     expect(visibleAssets).toContainHTML(hexZeroPad('0x2', 20))
     expect(visibleAssets).not.toContainHTML(hexZeroPad('0x3', 20))
 
     expect(showHiddenAssets).toContainHTML('false')
 
-    // Toggle hidden tokens
-    fireEvent.mouseDown(getByRole(selectElement, 'button'))
-    fireEvent.click(result.getByText('Show 1 hidden token(s)'))
+    fireEvent.click(result.getByTestId('toggle-hidden-assets'))
 
     await waitFor(() => {
       expect(visibleAssets).toContainHTML(hexZeroPad('0x3', 20))
       expect(showHiddenAssets).toContainHTML('true')
     })
 
-    // Toggle hidden tokens
-    fireEvent.mouseDown(getByRole(selectElement, 'button'))
-    fireEvent.click(result.getByText('Hide 1 hidden token(s)'))
+    fireEvent.click(result.getByTestId('toggle-hidden-assets'))
 
     await waitFor(() => {
       expect(visibleAssets).toContainHTML(hexZeroPad('0x2', 20))
@@ -105,7 +100,7 @@ describe('TokenListSelect', () => {
     })
   })
 
-  test('Disable show hidden tokens toggle if none are hidden', () => {
+  test('Do not render hidden tokens toggle if none are hidden', () => {
     const mockHiddenAssets = {
       '5': { [hexZeroPad('0x3', 20)]: hexZeroPad('0x3', 20) },
     }
@@ -140,8 +135,6 @@ describe('TokenListSelect', () => {
       },
     })
 
-    const selectElement = result.getByTestId('tokenlist-select')
-    fireEvent.mouseDown(getByRole(selectElement, 'button'))
-    expect(result.getByText('Show 0 hidden token(s)').parentElement).toHaveAttribute('aria-disabled', 'true')
+    expect(result.queryByTestId('toggle-hidden-assets')).toBeNull()
   })
 })

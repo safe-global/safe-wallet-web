@@ -16,14 +16,19 @@ export const ASSETS_EVENTS = {
     action: 'Change currency',
     category: ASSETS_CATEGORY,
   },
-  CHANGE_TOKEN_LIST: {
+  TOGGLE_HIDDEN_ASSETS: {
     event: EventType.META,
-    action: 'Change token list',
+    action: 'Toggle hidden assets',
     category: ASSETS_CATEGORY,
   },
   DIFFERING_TOKENS: {
     event: EventType.META,
     action: 'Tokens',
+    category: ASSETS_CATEGORY,
+  },
+  HIDDEN_TOKENS: {
+    event: EventType.META,
+    action: 'Hidden tokens',
     category: ASSETS_CATEGORY,
   },
   SEND: {

@@ -7,7 +7,6 @@ import CurrencySelect from '@/components/balances/CurrencySelect'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 
 import TokenListSelect from '../TokenListSelect'
-import TokenMenu from '../TokenMenu'
 
 const AssetsHeader = ({
   hiddenAssets = false,
@@ -28,7 +27,6 @@ const AssetsHeader = ({
               {currencySelect && <CurrencySelect />}
             </Box>
           </Box>
-          <TokenMenu />
         </>
       }
     />
