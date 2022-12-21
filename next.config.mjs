@@ -3,7 +3,12 @@ import withBundleAnalyzer from '@next/bundle-analyzer'
 import NextPwa from'next-pwa'
 
 const withPWA = NextPwa({
-  dest: 'public'
+  disable: process.env.NODE_ENV === 'development',
+  dest: 'public',
+  reloadOnOnline: false,
+  /* Do not precache anything */
+  publicExcludes: ['**/*'],
+  buildExcludes: [/./],
 })
 
 /** @type {import('next').NextConfig} */
