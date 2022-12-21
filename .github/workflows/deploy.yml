@@ -40,6 +40,8 @@ jobs:
         run: yarn install --immutable
 
       - uses: ./.github/workflows/build
+        with:
+          secrets: ${{ toJSON(secrets) }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1

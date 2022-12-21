@@ -27,6 +27,8 @@ jobs:
           ./node_modules/.bin/cypress install
 
       - uses: ./.github/workflows/build
+        with:
+          secrets: ${{ toJSON(secrets) }}
 
       - name: Serve
         run: yarn serve &
