@@ -1,7 +1,6 @@
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
-import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { useCSVReader, formatFileSize } from 'react-papaparse'
 import type { ParseResult } from 'papaparse'
@@ -10,14 +9,25 @@ import { type ReactElement, useState, type MouseEvent, useMemo } from 'react'
 import ModalDialog from '@/components/common/ModalDialog'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
-import { Box, Grid, IconButton } from '@mui/material'
 
 import css from './styles.module.css'
 import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
 import { abCsvReaderValidator, abOnUploadValidator } from './validation'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { Errors, logError } from '@/services/exceptions'
+import FileUpload, { FileTypes, type FileInfo } from '@/components/common/FileUpload'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']
+
+// https://react-papaparse.js.org/docs#errors
+type PapaparseErrorType = {
+  type: 'Quotes' | 'Delimiter' | 'FieldMismatch'
+  code: 'MissingQuotes' | 'UndetectableDelimiter' | 'TooFewFields' | 'TooManyFields'
+  message: string
+  row?: number
+  index?: number
+}
 
 const hasEntry = (entry: string[]) => {
   return entry.length === 3 && entry[0] && entry[1] && entry[2]
@@ -70,7 +80,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
             setZoneHover(false)
           }}
           validator={abCsvReaderValidator}
-          onUploadRejected={(result: { file: File; errors?: Array<Error | string> }[]) => {
+          onUploadRejected={(result: { file: File; errors?: Array<Error | string | PapaparseErrorType> }[]) => {
             setZoneHover(false)
             setError(undefined)
 
@@ -78,7 +88,9 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
             const error = result?.[0].errors?.pop()
 
             if (error) {
-              setError(error instanceof Error ? error.message : error.toString())
+              const errorDescription = typeof error === 'string' ? error.toString() : error.message
+              setError(errorDescription)
+              logError(Errors._703, errorDescription)
             }
           }}
           onUploadAccepted={(result: ParseResult<['address', 'name', 'chainId']>) => {
@@ -102,7 +114,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
         >
           {/* https://github.com/Bunlong/react-papaparse/blob/master/src/useCSVReader.tsx */}
           {({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps, Remove }: any) => {
-            const { onClick, ...removeProps } = getRemoveFileProps()
+            const { onClick } = getRemoveFileProps()
 
             const onRemove = (e: MouseEvent<HTMLSpanElement>) => {
               setCsvData(undefined)
@@ -110,57 +122,43 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
               onClick(e)
             }
 
+            const fileInfo: FileInfo | undefined = acceptedFile
+              ? {
+                  name: acceptedFile.name,
+                  additionalInfo: formatFileSize(acceptedFile.size),
+                  summary: [
+                    <Typography key="abSummary">
+                      {`Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`}
+                    </Typography>,
+                  ],
+                }
+              : undefined
+
             return (
-              <Box
-                {...getRootProps()}
-                className={css.dropbox}
-                sx={{
-                  border: ({ palette }) => `2px dashed ${zoneHover ? palette.primary.main : palette.border.light}`,
-                }}
-              >
-                {acceptedFile ? (
-                  <div>
-                    <Grid container gap={1} alignItems="center">
-                      <Grid item>
-                        {acceptedFile.name} - {formatFileSize(acceptedFile.size)}
-                      </Grid>
-
-                      <Grid item>
-                        <IconButton {...removeProps} onClick={onRemove}>
-                          <Remove width={16} height={16} />
-                        </IconButton>
-                      </Grid>
-                    </Grid>
-
-                    <ProgressBar />
-
-                    {entryCount > 0 && (
-                      <Typography mt={1}>
-                        {`Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`}
-                      </Typography>
-                    )}
-                  </div>
-                ) : (
-                  'Drop your CSV file here or click to upload.'
-                )}
-              </Box>
+              <FileUpload
+                fileInfo={fileInfo}
+                fileType={FileTypes.CSV}
+                getRootProps={getRootProps}
+                isDragActive={zoneHover}
+                onRemove={onRemove}
+              />
             )
           }}
         </CSVReader>
+
+        <div className={css.horizontalDivider} />
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <Typography>
           Only CSV files exported from a Safe can be imported.
           <br />
-          <Link
-            href="https://help.gnosis-safe.io/en/articles/5299068-address-book-export-and-import"
-            target="_blank"
-            rel="noreferrer"
+          <ExternalLink
+            href="https://help.safe.global/en/articles/5299068-address-book-export-and-import"
             title="Learn about the address book import and export"
           >
             Learn about the address book import and export
-          </Link>
+          </ExternalLink>
         </Typography>
       </DialogContent>
       <DialogActions>

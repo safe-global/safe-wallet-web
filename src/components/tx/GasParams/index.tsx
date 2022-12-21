@@ -51,7 +51,7 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit, gasLimitError }: Ga
   }
 
   return (
-    <Accordion elevation={0} onChange={onChangeExpand} sx={nonce === undefined ? { pointerEvents: 'none' } : undefined}>
+    <Accordion elevation={0} onChange={onChangeExpand}>
       <AccordionSummary>
         {isExecution ? (
           <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>

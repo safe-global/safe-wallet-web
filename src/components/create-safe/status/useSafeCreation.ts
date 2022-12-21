@@ -1,28 +1,23 @@
-import type { PendingSafeData } from '@/components/create-safe'
-import { createNewSafe } from '@/components/create-safe/sender'
-import { usePendingSafeCreation } from '@/components/create-safe/status/usePendingSafeCreation'
-import { usePendingSafe } from '@/components/create-safe/usePendingSafe'
-import { useWeb3 } from '@/hooks/wallets/web3'
-import type { DeploySafeProps } from '@gnosis.pm/safe-core-sdk'
+import type { Dispatch, SetStateAction } from 'react'
 import { useCallback, useEffect, useState } from 'react'
-import type { PredictSafeProps } from '@gnosis.pm/safe-core-sdk/dist/src/safeFactory'
+import {
+  createNewSafe,
+  getSafeCreationTxInfo,
+  getSafeDeployProps,
+  checkSafeCreationTx,
+  handleSafeCreationError,
+} from '@/components/create-safe/logic'
+import { useWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import useWatchSafeCreation from '@/components/create-safe/status/hooks/useWatchSafeCreation'
-import type { AppThunk } from '@/store'
-import { useAppDispatch } from '@/store'
-import { Errors, logError } from '@/services/exceptions'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import useChainId from '@/hooks/useChainId'
-import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
-import { isWalletRejection } from '@/utils/wallets'
+import type { PendingSafeData, PendingSafeTx } from '@/components/create-safe/types.d'
+import type { EthersError } from '@/utils/ethers-utils'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 
 export enum SafeCreationStatus {
   AWAITING = 'AWAITING',
-  AWAITING_WALLET = 'AWAITING_WALLET',
   PROCESSING = 'PROCESSING',
+  WALLET_REJECTED = 'WALLET_REJECTED',
   ERROR = 'ERROR',
   REVERTED = 'REVERTED',
   TIMEOUT = 'TIMEOUT',
@@ -31,135 +26,77 @@ export enum SafeCreationStatus {
   INDEX_FAILED = 'INDEX_FAILED',
 }
 
-export const addSafeAndOwnersToAddressBook = (pendingSafe: PendingSafeData, chainId: string): AppThunk => {
-  return (dispatch) => {
-    dispatch(
-      upsertAddressBookEntry({
-        chainId: chainId,
-        address: pendingSafe.address,
-        name: pendingSafe.name,
-      }),
-    )
+export const useSafeCreation = (
+  pendingSafe: PendingSafeData | undefined,
+  setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>,
+  status: SafeCreationStatus,
+  setStatus: Dispatch<SetStateAction<SafeCreationStatus>>,
+) => {
+  const [isCreating, setIsCreating] = useState<boolean>(false)
+  const [isWatching, setIsWatching] = useState<boolean>(false)
 
-    pendingSafe.owners.forEach((owner) => {
-      const entryName = owner.name || owner.ens
-      if (entryName) {
-        dispatch(upsertAddressBookEntry({ chainId, address: owner.address, name: entryName }))
-      }
-    })
-
-    dispatch(
-      addOrUpdateSafe({
-        safe: {
-          ...defaultSafeInfo,
-          address: { value: pendingSafe.address, name: pendingSafe.name },
-          threshold: pendingSafe.threshold,
-          owners: pendingSafe.owners.map((owner) => ({
-            value: owner.address,
-            name: owner.name || owner.ens,
-          })),
-          chainId: chainId,
-          nonce: 0,
-        },
-      }),
-    )
-  }
-}
-
-export const getSafeDeployProps = (
-  pendingSafe: PendingSafeData,
-  callback: (txHash: string) => void,
-): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
-  return {
-    safeAccountConfig: {
-      threshold: pendingSafe.threshold,
-      owners: pendingSafe.owners.map((owner) => owner.address),
-    },
-    safeDeploymentConfig: {
-      saltNonce: pendingSafe.saltNonce.toString(),
-    },
-    callback,
-  }
-}
-
-export const useSafeCreation = () => {
-  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING_WALLET)
-  const [safeAddress, setSafeAddress] = useState<string>()
-  const [isCreationPending, setIsCreationPending] = useState<boolean>(false)
-  const [pendingSafe, setPendingSafe] = usePendingSafe()
-  const provider = useWeb3()
-  const chainId = useChainId()
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
-  const dispatch = useAppDispatch()
+  const provider = useWeb3()
+  const web3ReadOnly = useWeb3ReadOnly()
+  const chain = useCurrentChain()
 
-  const safeCreationCallback = useCallback(
-    (txHash: string) => {
+  const createSafeCallback = useCallback(
+    async (txHash: string, tx: PendingSafeTx) => {
       trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
-
-      setStatus(SafeCreationStatus.PROCESSING)
-      setPendingSafe((prev) => (prev ? { ...prev, txHash } : undefined))
+      setPendingSafe((prev) => (prev ? { ...prev, txHash, tx } : undefined))
     },
     [setPendingSafe],
   )
 
   const createSafe = useCallback(async () => {
-    if (!provider || !pendingSafe || isCreationPending) return
+    if (!pendingSafe || !provider || !chain || !wallet || isCreating) return
 
-    setStatus(SafeCreationStatus.AWAITING)
-    setIsCreationPending(true)
+    setIsCreating(true)
 
     try {
-      await createNewSafe(provider, getSafeDeployProps(pendingSafe, safeCreationCallback))
-      setStatus(SafeCreationStatus.SUCCESS)
-      dispatch(addSafeAndOwnersToAddressBook(pendingSafe, chainId))
+      const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, pendingSafe.saltNonce, wallet)
+
+      const safeParams = getSafeDeployProps(
+        {
+          threshold: pendingSafe.threshold,
+          owners: pendingSafe.owners.map((owner) => owner.address),
+          saltNonce: pendingSafe.saltNonce,
+        },
+        (txHash) => createSafeCallback(txHash, tx),
+        chain.chainId,
+      )
+
+      await createNewSafe(provider, safeParams)
     } catch (err) {
-      const _err = err as Error & { code?: number }
-
-      setStatus(SafeCreationStatus.ERROR)
-
-      if (isWalletRejection(_err)) {
-        trackEvent(CREATE_SAFE_EVENTS.REJECT_CREATE_SAFE)
-      }
-
-      logError(Errors._800, _err.message)
+      setStatus(handleSafeCreationError(err as EthersError))
     }
 
-    setIsCreationPending(false)
-  }, [chainId, dispatch, isCreationPending, pendingSafe, provider, safeCreationCallback])
+    setIsCreating(false)
+  }, [chain, createSafeCallback, isCreating, pendingSafe, provider, setStatus, wallet])
 
-  usePendingSafeCreation({ txHash: pendingSafe?.txHash, setStatus })
-  useWatchSafeCreation({ status, safeAddress, pendingSafe, setPendingSafe, setStatus, chainId })
+  const watchSafeTx = useCallback(async () => {
+    if (!pendingSafe?.tx || !pendingSafe?.txHash || !web3ReadOnly || isWatching) return
+
+    setStatus(SafeCreationStatus.PROCESSING)
+    setIsWatching(true)
+
+    const txStatus = await checkSafeCreationTx(web3ReadOnly, pendingSafe.tx, pendingSafe.txHash)
+    setStatus(txStatus)
+    setIsWatching(false)
+  }, [isWatching, pendingSafe, web3ReadOnly, setStatus])
 
   useEffect(() => {
-    if (
-      pendingSafe?.txHash ||
-      status === SafeCreationStatus.ERROR ||
-      status === SafeCreationStatus.REVERTED ||
-      status === SafeCreationStatus.SUCCESS
-    ) {
+    if (status !== SafeCreationStatus.AWAITING) return
+
+    if (pendingSafe?.txHash) {
+      void watchSafeTx()
       return
     }
 
-    const newStatus = !wallet || isWrongChain ? SafeCreationStatus.AWAITING_WALLET : SafeCreationStatus.AWAITING
-    setStatus(newStatus)
-  }, [wallet, isWrongChain, pendingSafe?.txHash, status])
-
-  useEffect(() => {
-    if (!pendingSafe) return
-
-    setSafeAddress(pendingSafe.address)
-  }, [pendingSafe])
-
-  useEffect(() => {
-    if (status === SafeCreationStatus.AWAITING && !pendingSafe?.txHash) {
-      createSafe()
-    }
-  }, [status, createSafe, pendingSafe?.txHash])
+    void createSafe()
+  }, [createSafe, watchSafeTx, pendingSafe?.txHash, status])
 
   return {
-    safeAddress,
-    status,
     createSafe,
     txHash: pendingSafe?.txHash,
   }

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import React, { type ReactElement, type SyntheticEvent, useCallback, useState } from 'react'
-import CopyIcon from '@/public/images/sidebar/copy.svg'
+import CopyIcon from '@/public/images/common/copy.svg'
 import { IconButton, SvgIcon, Tooltip } from '@mui/material'
 
 const CopyButton = ({
@@ -8,12 +8,14 @@ const CopyButton = ({
   className,
   children,
   initialToolTipText = 'Copy to clipboard',
+  onCopy,
 }: {
   text: string
   className?: string
   children?: ReactNode
   initialToolTipText?: string
   ariaLabel?: string
+  onCopy?: () => void
 }): ReactElement => {
   const [tooltipText, setTooltipText] = useState(initialToolTipText)
 
@@ -22,8 +24,9 @@ const CopyButton = ({
       e.preventDefault()
       e.stopPropagation()
       navigator.clipboard.writeText(text).then(() => setTooltipText('Copied'))
+      onCopy?.()
     },
-    [text],
+    [text, onCopy],
   )
 
   const handleMouseLeave = useCallback(() => {
@@ -33,19 +36,7 @@ const CopyButton = ({
   return (
     <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
       <IconButton aria-label={initialToolTipText} onClick={handleCopy} size="small" className={className}>
-        {children ?? (
-          <SvgIcon
-            component={CopyIcon}
-            inheritViewBox
-            color="primary"
-            fontSize="small"
-            sx={{
-              '& path': {
-                fill: ({ palette }) => palette.border.main,
-              },
-            }}
-          />
-        )}
+        {children ?? <SvgIcon component={CopyIcon} inheritViewBox color="border" fontSize="small" />}
       </IconButton>
     </Tooltip>
   )

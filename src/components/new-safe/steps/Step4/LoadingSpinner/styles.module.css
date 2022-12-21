@@ -1,0 +1,123 @@
+.box {
+  width: 80px;
+  height: 80px;
+  margin: auto;
+  position: relative;
+  filter: url('#gooey');
+}
+
+.rectError .rect {
+  background-color: #ff5f72;
+  animation-play-state: paused;
+}
+
+.rectSuccess .rectCenter {
+  visibility: visible;
+  transform: translateY(30px) translateX(30px) scale(1);
+}
+
+.rect {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  background-color: #12ff80;
+  transition: background-color 0.1s;
+}
+
+.rectTl {
+  animation: rect-anim-tl ease-in-out 4s infinite;
+  animation-delay: 0.1s;
+}
+
+.rectTr {
+  animation: rect-anim-tr ease-in-out 4s infinite;
+}
+
+.rectBl {
+  animation: rect-anim-bl ease-in-out 4s infinite;
+}
+
+.rectCenter {
+  visibility: hidden;
+  animation: none;
+  transition: transform 1s ease-out;
+  transform: translateY(30px) translateX(30px) scale(0);
+}
+
+.rectBr {
+  animation: rect-anim-br ease-in-out 4s infinite;
+}
+
+@keyframes rect-anim-tl {
+  0% {
+    transform: translateX(0) translateY(0) scale(2);
+  }
+  25% {
+    transform: translateX(50px) translateY(0) scale(1);
+  }
+  50% {
+    transform: translateX(50px) translateY(50px) scale(2);
+  }
+  75% {
+    transform: translateX(0) translateY(50px) scale(1);
+  }
+  100% {
+    transform: translateX(0) translateY(0) scale(2);
+  }
+}
+
+@keyframes rect-anim-tr {
+  0% {
+    transform: translateX(50px) translateY(0) scale(1);
+  }
+  25% {
+    transform: translateX(50px) translateY(50px) scale(2);
+  }
+  50% {
+    transform: translateX(0) translateY(50px) scale(1);
+  }
+  75% {
+    transform: translateX(0) translateY(0) scale(2);
+  }
+  100% {
+    transform: translateX(50px) translateY(0) scale(1);
+  }
+}
+
+@keyframes rect-anim-br {
+  0% {
+    transform: translateX(50px) translateY(50px) scale(2);
+  }
+  25% {
+    transform: translateX(0) translateY(50px) scale(1);
+  }
+  50% {
+    transform: translateX(0) translateY(0) scale(2);
+  }
+  75% {
+    transform: translateX(50px) translateY(0) scale(1);
+  }
+  100% {
+    transform: translateX(50px) translateY(50px) scale(2);
+  }
+}
+
+@keyframes rect-anim-bl {
+  0% {
+    transform: translateX(0) translateY(50px) scale(1);
+  }
+  25% {
+    transform: translateX(0) translateY(0) scale(2);
+  }
+  50% {
+    transform: translateX(50px) translateY(0) scale(1);
+  }
+  75% {
+    transform: translateX(50px) translateY(50px) scale(2);
+  }
+  100% {
+    transform: translateX(0) translateY(50px) scale(1);
+  }
+}

@@ -5,7 +5,7 @@ import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
-import { setBaseUrl as setGatewayBaseUrl } from '@gnosis.pm/safe-react-gateway-sdk'
+import { setBaseUrl as setGatewayBaseUrl } from '@safe-global/safe-gateway-typescript-sdk'
 import { CacheProvider, type EmotionCache } from '@emotion/react'
 import '@/styles/globals.css'
 import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION } from '@/config/constants'
@@ -31,6 +31,8 @@ import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
+import useABTesting from '@/services/tracking/useABTesting'
+import { AbTest } from '@/services/tracking/abTesting'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -49,6 +51,7 @@ const InitApp = (): null => {
   useTxPendingStatuses()
   useTxTracking()
   useBeamer()
+  useABTesting(AbTest.SAFE_CREATION)
 
   return null
 }

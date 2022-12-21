@@ -1,0 +1,66 @@
+.accordion {
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}
+
+.accordion :global .MuiAccordionSummary-root,
+.accordion :global .MuiAccordionDetails-root {
+  padding: 0;
+}
+
+.accordion:hover :global .MuiAccordionSummary-root,
+.accordion :global .MuiAccordionSummary-root:hover,
+.accordion :global .Mui-expanded.MuiAccordionSummary-root {
+  background: inherit;
+}
+
+.accordion :global .MuiAccordionSummary-root {
+  pointer-events: none;
+}
+
+.accordion :global .MuiAccordionSummary-expandIconWrapper {
+  pointer-events: auto;
+}
+
+.widgetWrapper {
+  border: none;
+  height: 300px;
+}
+
+/* iframe sm breakpoint + paddings */
+@media (max-width: 662px) {
+  .widgetWrapper {
+    height: 624px;
+  }
+}
+
+.loadErrorCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-2);
+  text-align: center;
+  flex-grow: 1;
+}
+
+.loadErrorCard:last-of-type {
+  min-width: 300px;
+}
+
+.loadErrorMsgContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  max-width: 80%;
+}
+
+.loadErroricon {
+  font-size: 54px;
+  position: relative;
+  left: 3px;
+  top: 3px;
+}

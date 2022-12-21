@@ -1,13 +1,14 @@
 import { type ReactNode, type ReactElement } from 'react'
 import { Box } from '@mui/material'
-import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
-import type { SendAssetsFormData } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import type { TokenTransferModalProps } from '.'
 import { SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import TokenIcon from '@/components/common/TokenIcon'
 import ReviewSpendingLimitTx from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import ReviewMultisigTx from '@/components/tx/modals/TokenTransferModal/ReviewMultisigTx'
+import { formatAmountPrecise } from '@/utils/formatNumber'
 
 export const TokenTransferReview = ({
   amount,
@@ -26,18 +27,13 @@ export const TokenTransferReview = ({
 
       <Box mt={1} fontSize={20}>
         {children}
-        {amount} {tokenInfo.symbol}
+        {formatAmountPrecise(amount, tokenInfo.decimals)} {tokenInfo.symbol}
       </Box>
     </Box>
   )
 }
 
-export type ReviewTokenTxProps = {
-  params: SendAssetsFormData
-  onSubmit: (txId: string) => void
-}
-
-const ReviewTokenTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement => {
+const ReviewTokenTx = ({ params, onSubmit }: TokenTransferModalProps): ReactElement => {
   const isSpendingLimitTx = params.type === SendTxType.spendingLimit
 
   return isSpendingLimitTx ? (

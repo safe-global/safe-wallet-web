@@ -4,6 +4,10 @@ When contributing to this repository, please first discuss the change you wish t
 
 Please note we have a Code of Conduct (see below), please follow it in all your interactions with the project.
 
+## CLA
+
+It is a requirement for all contributors to sign the [Contributor License Agreement (CLA)](safe.global/cla/) in order to proceed with their contribution.
+
 ## Pull Request Process
 
 - When opening a pull request, please make sure to fully fill out the pull request template that will appear in the description text box.

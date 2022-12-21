@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import type { BigNumber } from 'ethers'
-import type Safe from '@gnosis.pm/safe-core-sdk'
-import { generatePreValidatedSignature } from '@gnosis.pm/safe-core-sdk/dist/src/utils/signatures'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
-import { OperationType } from '@gnosis.pm/safe-core-sdk-types'
+import type Safe from '@safe-global/safe-core-sdk'
+import { encodeSignatures } from '@/services/tx/encodeSignatures'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { OperationType } from '@safe-global/safe-core-sdk-types'
 import useAsync from '@/hooks/useAsync'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useSafeAddress from './useSafeAddress'
@@ -11,26 +11,6 @@ import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import useIsSafeOwner from './useIsSafeOwner'
 import { Errors, logError } from '@/services/exceptions'
-
-export const _encodeSignatures = (safeTx: SafeTransaction, from?: string): string => {
-  const owner = from?.toLowerCase()
-  const needsOwnerSig = owner && !safeTx.signatures.has(owner)
-
-  // https://docs.gnosis.io/safe/docs/contracts_signatures/#pre-validated-signatures
-  if (needsOwnerSig) {
-    const ownerSig = generatePreValidatedSignature(owner)
-    safeTx.addSignature(ownerSig)
-  }
-
-  const encoded = safeTx.encodedSignatures()
-
-  // Remove the "fake" signature we've just added
-  if (needsOwnerSig) {
-    safeTx.signatures.delete(owner)
-  }
-
-  return encoded
-}
 
 const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string): string => {
   const EXEC_TX_METHOD = 'execTransaction'
@@ -47,7 +27,7 @@ const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string)
       safeTx.data.gasPrice,
       safeTx.data.gasToken,
       safeTx.data.refundReceiver,
-      _encodeSignatures(safeTx, from),
+      encodeSignatures(safeTx, from),
     ])
 }
 

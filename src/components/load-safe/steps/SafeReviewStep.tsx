@@ -114,7 +114,14 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
               Safe address
             </Typography>
             <Typography mb={3} component="div">
-              <EthHashInfo key={params.address} address={params.address} showName={false} shortAddress />
+              <EthHashInfo
+                key={params.address}
+                address={params.address}
+                showName={false}
+                shortAddress
+                showCopyButton
+                hasExplorer
+              />
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Connected wallet client is owner?
@@ -142,7 +149,13 @@ const SafeReviewStep = ({ params, onBack }: Props) => {
             {params.owners.map((owner) => {
               return (
                 <Box key={owner.address} mb={1}>
-                  <EthHashInfo address={owner.address} name={owner.name || owner.ens} shortAddress={false} />
+                  <EthHashInfo
+                    address={owner.address}
+                    name={owner.name || owner.ens}
+                    shortAddress={false}
+                    showCopyButton
+                    hasExplorer
+                  />
                 </Box>
               )
             })}

@@ -1,12 +1,13 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
 import NameInput from '@/components/common/NameInput'
-import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
+import useSetCreationStep from '@/components/create-safe/useSetCreationStep'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import { Box, Button, Divider, FormControl, Grid, Paper, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import type { SafeFormData } from '@/components/create-safe/types'
 import { trackEvent, CREATE_SAFE_EVENTS } from '@/services/analytics'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type Props = {
   params: SafeFormData
@@ -21,7 +22,7 @@ enum FormField {
 }
 
 const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
-  useResetSafeCreation(setStep)
+  useSetCreationStep(setStep)
   const fallbackName = useMnemonicSafeName()
 
   const formMethods = useForm<SafeFormData>({
@@ -31,7 +32,7 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
     mode: 'onChange',
   })
 
-  const { handleSubmit } = formMethods
+  const { handleSubmit, getValues } = formMethods
 
   const onFormSubmit = handleSubmit((data: SafeFormData) => {
     onSubmit({
@@ -44,12 +45,12 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
     }
   })
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
+  const onFormBack = () => {
     onBack({
-      ...data,
-      name: data.name || fallbackName,
+      ...getValues(),
+      name: getValues([FormField.name]) || fallbackName,
     })
-  })
+  }
 
   return (
     <Paper>
@@ -72,7 +73,15 @@ const SetNameStep = ({ params, onSubmit, onBack, setStep }: Props) => {
             </FormControl>
 
             <Typography mt={2}>
-              By continuing you consent to the <a href="#">terms of use</a> and <a href="#">privacy policy</a>.
+              By continuing you consent to the{' '}
+              <ExternalLink href="https://safe.global/terms" fontWeight={700}>
+                terms of use
+              </ExternalLink>{' '}
+              and{' '}
+              <ExternalLink href="https://safe.global/privacy" fontWeight={700}>
+                privacy policy
+              </ExternalLink>
+              .
             </Typography>
           </Box>
 

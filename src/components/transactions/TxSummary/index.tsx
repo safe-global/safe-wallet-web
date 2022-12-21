@@ -1,7 +1,7 @@
 import type { Palette } from '@mui/material'
 import { Box, CircularProgress, SvgIcon, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
-import { type Transaction, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type Transaction, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'

@@ -1,4 +1,4 @@
-import type { ChainInfo, FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo, FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import { getExplorerLink } from './gateway'
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getSafeApps } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import { getSafeApps } from '@safe-global/safe-gateway-typescript-sdk'
 import { Errors, logError } from '@/services/exceptions'
 import type { AsyncResult } from '../useAsync'
 import useAsync from '../useAsync'
@@ -8,6 +8,8 @@ import { trimTrailingSlash } from '@/utils/url'
 
 const useSafeAppFromBackend = (url: string, chainId: string): AsyncResult<SafeAppData> => {
   const [backendApp, error, loading] = useAsync(async () => {
+    if (!chainId) return
+
     // We do not have a single standard for storing URLs, it may be stored with or without a trailing slash.
     // But for the request it has to be an exact match.
     const retryUrl = url.endsWith('/') ? trimTrailingSlash(url) : `${url}/`

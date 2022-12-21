@@ -1,10 +1,10 @@
 import type { ReactElement, SyntheticEvent } from 'react'
 import { useMemo, useState } from 'react'
 import type { BigNumberish, BytesLike } from 'ethers'
-import { Box, Button, DialogContent, Typography } from '@mui/material'
+import { Button, DialogContent, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import type { ReviewTokenTxProps } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
+import SendToBlock from '@/components/tx/SendToBlock'
+import type { TokenTransferModalProps } from '.'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 import useBalances from '@/hooks/useBalances'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
@@ -13,12 +13,12 @@ import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParam
 import useChainId from '@/hooks/useChainId'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { parseUnits } from '@ethersproject/units'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useCurrentChain } from '@/hooks/useChains'
-import { dispatchSpendingLimitTxExecution } from '@/services/tx/txSender'
+import { dispatchSpendingLimitTxExecution } from '@/services/tx/tx-sender'
 import { getTxOptions } from '@/utils/transactions'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 
@@ -33,7 +33,7 @@ export type SpendingLimitTxParams = {
   signature: BytesLike
 }
 
-const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactElement => {
+const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): ReactElement => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chainId = useChainId()
@@ -67,7 +67,10 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
 
   const { gasLimit, gasLimitLoading } = useSpendingLimitGas(txParams)
 
-  const [advancedParams, setManualParams] = useAdvancedParams({ gasLimit })
+  const [advancedParams, setManualParams] = useAdvancedParams({
+    gasLimit,
+    nonce: params.txNonce,
+  })
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
@@ -105,13 +108,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: ReviewTokenTxProps): ReactE
 
         <SendFromBlock />
 
-        <Typography color={({ palette }) => palette.text.secondary} pb={1}>
-          Recipient
-        </Typography>
-
-        <Box mb={3}>
-          <EthHashInfo address={params.recipient} shortAddress={false} hasExplorer showCopyButton />
-        </Box>
+        <SendToBlock address={params.recipient} />
 
         <AdvancedParams
           params={advancedParams}

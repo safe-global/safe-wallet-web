@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react'
 import { Button, Card, CardContent, Typography } from '@mui/material'
-import type { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 import { ellipsis } from '@/utils/formatters'
 

@@ -19,9 +19,9 @@ const SendFromBlock = (): ReactElement => {
         Sending from
       </Typography>
 
-      <Box>
+      <Typography variant="body2">
         <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
-      </Box>
+      </Typography>
 
       {nativeToken && (
         <Box className={css.balance} bgcolor={(theme) => theme.palette.background.main}>

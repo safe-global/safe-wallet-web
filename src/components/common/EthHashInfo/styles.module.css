@@ -2,11 +2,6 @@
   display: flex;
   align-items: center;
   gap: 0.5em;
-}
-
-.container,
-.address {
-  font-size: inherit;
   line-height: 1.4;
 }
 

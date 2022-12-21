@@ -32,6 +32,20 @@
   gap: var(--space-1);
 }
 
+.pairing > div:first-child {
+  align-items: center;
+}
+
 .pairing :global .MuiTypography-alignCenter {
   text-align: unset;
+}
+
+@media (max-width: 600px) {
+  .pairing {
+    display: none;
+  }
+
+  .connectionOptions {
+    justify-content: center;
+  }
 }

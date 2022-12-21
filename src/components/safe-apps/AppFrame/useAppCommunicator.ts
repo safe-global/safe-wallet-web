@@ -2,7 +2,11 @@ import type { MutableRefObject } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
 import { BigNumber } from '@ethersproject/bignumber'
-import type { SafeAppData, ChainInfo as WebCoreChainInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type {
+  SafeAppData,
+  ChainInfo as WebCoreChainInfo,
+  TransactionDetails,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import type { Permission, PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
 import type {
   AddressBookItem,
@@ -26,7 +30,7 @@ import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 import type { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
-import { gtmTrackSafeAppMessage } from '@/services/analytics/gtm'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -39,7 +43,7 @@ type JsonRpcResponse = {
   error?: string
 }
 
-type UseAppCommunicatorHandlers = {
+export type UseAppCommunicatorHandlers = {
   onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => void
   onSignMessage: (
     message: string | EIP712TypedData,
@@ -77,12 +81,17 @@ const useAppCommunicator = (
     const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onMessage: (msg) => {
-          gtmTrackSafeAppMessage({
-            app,
-            method: msg.data.method,
-            params: msg.data.params,
-            sdkVersion: msg.data.env.sdkVersion,
-          })
+          const isCustomApp = app && app.id < 1
+
+          trackSafeAppEvent(
+            { ...SAFE_APPS_EVENTS.SAFE_APP_SDK_METHOD_CALL },
+            isCustomApp ? app?.url : app?.name || '',
+            {
+              method: msg.data.method,
+              ethMethod: (msg.data.params as any)?.call,
+              version: msg.data.env.sdkVersion,
+            },
+          )
         },
         onError: (error, data) => {
           logError(Errors._901, error.message, {

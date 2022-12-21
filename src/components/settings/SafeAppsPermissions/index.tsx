@@ -9,7 +9,7 @@ import type { ReactElement } from 'react'
 import { useCallback, useMemo } from 'react'
 import type { AllowedFeatures } from '@/components/safe-apps/types'
 import { PermissionStatus } from '@/components/safe-apps/types'
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { Grid, Link, Paper, SvgIcon, Typography } from '@mui/material'
 import PermissionsCheckbox from '@/components/safe-apps/PermissionCheckbox'
 import DeleteIcon from '@/public/images/common/delete.svg'
@@ -109,9 +109,9 @@ const SafeAppsPermissions = (): ReactElement => {
         <Grid
           item
           key={domain}
-          sx={({ palette }) => ({
-            border: `2px solid ${palette.border.light}`,
-            borderRadius: '8px',
+          sx={({ palette, shape }) => ({
+            border: `1px solid ${palette.border.light}`,
+            borderRadius: shape.borderRadius,
             marginBottom: '16px',
           })}
         >
@@ -119,7 +119,7 @@ const SafeAppsPermissions = (): ReactElement => {
             container
             sx={({ palette }) => ({
               padding: '15px 24px',
-              borderBottom: `2px solid ${palette.border.light}`,
+              borderBottom: `1px solid ${palette.border.light}`,
             })}
           >
             <Grid
@@ -130,7 +130,7 @@ const SafeAppsPermissions = (): ReactElement => {
                 padding: '9px 0',
               }}
             >
-              <Typography variant="body1" fontWeight={700}>
+              <Typography variant="h5" fontWeight={700}>
                 {appNames[domain]}
               </Typography>
               <Typography variant="body2">{domain}</Typography>

@@ -31,7 +31,7 @@ describe('The Browser permissions system', () => {
         .click()
         .should(() => {
           expect(window.localStorage.getItem(BROWSER_PERMISSIONS_KEY)).to.eq(
-            '{"https://safe-test-app.com/app":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}',
+            '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}',
           )
         })
     })

@@ -102,4 +102,18 @@ describe('usePathRewrite', () => {
       '/rin:0x0000000000000000000000000000000000000000/hello?hi=hello&count=1',
     )
   })
+
+  it('should navigate to the welcome page when the chain query is invalid', () => {
+    const mockFn = jest.fn()
+
+    renderHook(() => usePathRewrite(), {
+      routerProps: {
+        query: {
+          safe: 'undefined:0x0000000000000000000000000000000000000000',
+        },
+        push: mockFn,
+      },
+    })
+    expect(mockFn).toHaveBeenCalledWith('/welcome')
+  })
 })

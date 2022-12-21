@@ -1,12 +1,12 @@
 import type { SyntheticEvent, ReactElement } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
-import { type SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import {
   type DecodedDataResponse,
   getDecodedData,
   getTransactionDetails,
   type TransactionDetails,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+} from '@safe-global/safe-gateway-typescript-sdk'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'

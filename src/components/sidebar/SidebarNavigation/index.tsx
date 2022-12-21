@@ -1,7 +1,7 @@
 import React, { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import ListItem from '@mui/material/ListItem'
-import { ImplementationVersionState } from '@gnosis.pm/safe-react-gateway-sdk'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 
 import {
   SidebarList,
@@ -13,9 +13,14 @@ import { navItems } from './config'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { AppRoutes } from '@/config/routes'
 
+const getSubdirectory = (pathname: string): string => {
+  return pathname.split('/')[1]
+}
+
 const Navigation = (): ReactElement => {
   const router = useRouter()
   const { safe } = useSafeInfo()
+  const currentSubdirectory = getSubdirectory(router.pathname)
 
   // Indicate whether the current Safe needs an upgrade
   const setupItem = navItems.find((item) => item.href === AppRoutes.settings.setup)
@@ -26,8 +31,7 @@ const Navigation = (): ReactElement => {
   return (
     <SidebarList>
       {navItems.map((item) => {
-        const subdirectory = item.href.split('/')[1]
-        const isSelected = router.pathname.includes(subdirectory)
+        const isSelected = currentSubdirectory === getSubdirectory(item.href)
 
         return (
           <ListItem key={item.href} disablePadding selected={isSelected}>

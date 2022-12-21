@@ -1,22 +1,26 @@
 import type { ReactNode, SyntheticEvent } from 'react'
-import { Link } from '@mui/material'
+import { InputAdornment, Link } from '@mui/material'
+import type { InputAdornmentProps } from '@mui/material'
 
 type InputValueHelperProps = {
   children: ReactNode
   onClick: () => void
   disabled?: boolean
+  position?: InputAdornmentProps['position']
 }
 
-const InputValueHelper = ({ children, onClick, disabled = false }: InputValueHelperProps) => {
+const InputValueHelper = ({ children, onClick, disabled = false, position = 'end' }: InputValueHelperProps) => {
   const handleClick = (e: SyntheticEvent) => {
     e.preventDefault()
     onClick()
   }
 
   return (
-    <Link component="button" onClick={handleClick} sx={disabled ? { visibility: 'hidden' } : undefined}>
-      {children}
-    </Link>
+    <InputAdornment position={position}>
+      <Link type="button" component="button" onClick={handleClick} sx={disabled ? { visibility: 'hidden' } : undefined}>
+        {children}
+      </Link>
+    </InputAdornment>
   )
 }
 

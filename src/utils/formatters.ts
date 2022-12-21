@@ -6,8 +6,8 @@ import { formatAmount } from './formatNumber'
 const GWEI = 'gwei'
 
 export const _removeTrailingZeros = (value: string): string => {
-  // Match `.0` or `0*` after non-zero decimals by "Positive Lookbehind Assertion"
-  return value.replace(/(\.0*|(?<=(\..*))0*)$/, '')
+  // Match `.000` or `.01000`
+  return value.replace(/\.0+$/, '').replace(/(\..*?)0+$/, '$1')
 }
 
 /**
@@ -52,6 +52,10 @@ export const safeParseUnits = (value: string, decimals: number | string = GWEI):
 }
 
 export const shortenAddress = (address: string, length = 4): string => {
+  if (!address) {
+    return ''
+  }
+
   return `${address.slice(0, length + 2)}...${address.slice(-length)}`
 }
 

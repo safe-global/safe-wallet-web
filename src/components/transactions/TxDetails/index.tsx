@@ -1,6 +1,6 @@
 import React, { type ReactElement } from 'react'
-import type { TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getTransactionDetails, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionDetails, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
+import { getTransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, CircularProgress } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
@@ -12,6 +12,7 @@ import {
   isAwaitingExecution,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
+  isMultisigDetailedExecutionInfo,
   isMultisigExecutionInfo,
   isSupportedMultiSendAddress,
   isTxQueued,
@@ -27,7 +28,7 @@ import SignTxButton from '@/components/transactions/SignTxButton'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import { DelegateCallWarning } from '@/components/transactions/Warning'
+import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/Warning'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 
 export const NOT_AVAILABLE = 'n/a'
@@ -43,13 +44,17 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   const isWrongChain = useIsWrongChain()
   const isQueue = isTxQueued(txSummary.txStatus)
   const awaitingExecution = isAwaitingExecution(txSummary.txStatus)
-  // confirmations are in detailedExecutionInfo
-  const hasSigners = isMultisigExecutionInfo(txSummary.executionInfo) && txSummary.executionInfo.confirmationsRequired
+  const isUnsigned =
+    isMultisigExecutionInfo(txSummary.executionInfo) && txSummary.executionInfo.confirmationsSubmitted === 0
+
+  const isUntrusted =
+    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
+    txDetails.detailedExecutionInfo.trusted === false
 
   return (
     <>
       {/* /Details */}
-      <div className={`${css.details} ${!hasSigners ? css.noSigners : ''}`}>
+      <div className={`${css.details} ${isUnsigned ? css.noSigners : ''}`}>
         <div className={css.shareLink}>
           <TxShareLink id={txSummary.id} />
         </div>
@@ -75,6 +80,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
         )}
 
         <div className={css.txSummary}>
+          {isUntrusted && <UnsignedWarning />}
           {txDetails.txData?.operation === Operation.DELEGATE && (
             <div className={css.delegateCall}>
               <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
@@ -93,7 +99,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
       </div>
 
       {/* Signers */}
-      {hasSigners && (
+      {!isUnsigned && (
         <div className={css.txSigners}>
           <TxSigners txDetails={txDetails} txSummary={txSummary} />
           {wallet && !isWrongChain && isQueue && (

@@ -1,6 +1,6 @@
-import type { Operation, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { proposeTransaction } from '@gnosis.pm/safe-react-gateway-sdk'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { Operation, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { proposeTransaction } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 const proposeTx = async (
   chainId: string,
@@ -8,6 +8,7 @@ const proposeTx = async (
   sender: string,
   tx: SafeTransaction,
   safeTxHash: string,
+  origin?: string,
 ): Promise<TransactionDetails> => {
   const signatures = tx.signatures.size ? tx.encodedSignatures() : undefined
 
@@ -22,6 +23,7 @@ const proposeTx = async (
     baseGas: tx.data.baseGas.toString(),
     gasPrice: tx.data.gasPrice.toString(),
     signature: signatures,
+    origin,
   })
 }
 

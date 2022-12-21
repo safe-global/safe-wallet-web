@@ -1,12 +1,11 @@
 import Typography from '@mui/material/Typography'
-import Link from '@mui/material/Link'
 import Button from '@mui/material/Button'
 import SvgIcon from '@mui/material/SvgIcon'
-import OpenInNew from '@mui/icons-material/OpenInNew'
 import { SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
 import NetworkError from '@/public/images/apps/network-error.svg'
 
 import css from './styles.module.css'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type SafeAppsLoadErrorProps = {
   onBackToApps: () => void
@@ -22,10 +21,9 @@ const SafeAppsLoadError = ({ onBackToApps }: SafeAppsLoadErrorProps): React.Reac
 
         <div>
           <Typography component="span">In case the problem persists, please reach out to us via </Typography>
-          <Link target="_blank" href={SAFE_APPS_SUPPORT_CHAT_URL} fontSize="medium">
+          <ExternalLink href={SAFE_APPS_SUPPORT_CHAT_URL} fontSize="medium">
             Discord
-            <OpenInNew fontSize="small" color="primary" className={css.icon} />
-          </Link>
+          </ExternalLink>
         </div>
 
         <Button href="#back" color="primary" onClick={onBackToApps}>

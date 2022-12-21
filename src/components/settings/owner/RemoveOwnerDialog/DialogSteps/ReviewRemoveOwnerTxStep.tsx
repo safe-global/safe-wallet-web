@@ -2,9 +2,9 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { createRemoveOwnerTx } from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { sameAddress } from '@/utils/addresses'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -17,19 +17,20 @@ export const ReviewRemoveOwnerTxStep = ({
   onSubmit,
 }: {
   data: RemoveOwnerData
-  onSubmit: (txId: string) => void
+  onSubmit: (txId?: string) => void
 }) => {
+  const { createRemoveOwnerTx } = useTxSender()
   const { safe, safeAddress } = useSafeInfo()
   const addressBook = useAddressBook()
   const { removedOwner, threshold } = data
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction>(async () => {
+  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     return createRemoveOwnerTx({ ownerAddress: removedOwner.address, threshold })
-  }, [removedOwner.address, threshold])
+  }, [removedOwner.address, threshold, createRemoveOwnerTx])
 
   const newOwnerLength = safe.owners.length - 1
 
-  const onFormSubmit = (txId: string) => {
+  const onFormSubmit = (txId?: string) => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
 

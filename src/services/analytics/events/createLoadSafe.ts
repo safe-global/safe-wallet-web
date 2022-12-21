@@ -55,6 +55,10 @@ export const CREATE_SAFE_EVENTS = {
     action: 'Open Safe',
     category: CREATE_SAFE_CATEGORY,
   },
+  OPEN_HINT: {
+    action: 'Open Hint',
+    category: CREATE_SAFE_CATEGORY,
+  },
 }
 
 export const LOAD_SAFE_CATEGORY = 'load-safe'

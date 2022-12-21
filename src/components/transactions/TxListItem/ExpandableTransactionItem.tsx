@@ -1,4 +1,4 @@
-import { type Transaction, type TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type Transaction, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TxSummary from '@/components/transactions/TxSummary'
@@ -30,8 +30,8 @@ export const ExpandableTransactionItem = ({
     <Accordion
       disableGutters
       TransitionProps={{
-        mountOnEnter: false,
-        unmountOnExit: true,
+        mountOnEnter: true,
+        unmountOnExit: false,
       }}
       elevation={0}
       defaultExpanded={!!txDetails}

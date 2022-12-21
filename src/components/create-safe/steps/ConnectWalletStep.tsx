@@ -11,6 +11,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { isPairingSupported } from '@/services/pairing/utils'
 
 import css from '@/components/create-safe/steps/styles.module.css'
+import useSetCreationStep from '@/components/create-safe/useSetCreationStep'
 
 export const ConnectWalletContent = ({
   wallet,
@@ -57,9 +58,11 @@ export const ConnectWalletContent = ({
 type Props = {
   onSubmit: StepRenderProps['onSubmit']
   onBack: StepRenderProps['onBack']
+  setStep: StepRenderProps['setStep']
 }
 
-const ConnectWalletStep = ({ onSubmit, onBack }: Props) => {
+const ConnectWalletStep = ({ onSubmit, onBack, setStep }: Props) => {
+  useSetCreationStep(setStep)
   const isWrongChain = useIsWrongChain()
   const wallet = useWallet()
 

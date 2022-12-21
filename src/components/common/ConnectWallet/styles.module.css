@@ -8,7 +8,6 @@
   align-items: center;
   text-align: left;
   gap: var(--space-1);
-  height: 100%;
 }
 
 .popoverContainer {
@@ -27,20 +26,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   width: 100%;
-}
-
-.imageContainer {
-  position: relative;
-  font-size: 16px;
-}
-
-.imageContainer img {
-  display: block;
-}
-
-[data-theme='dark'] .imageContainer img[alt*='Trezor'],
-[data-theme='dark'] .imageContainer img[alt*='Ledger'] {
-  filter: invert(100%);
 }
 
 .rowContainer {
@@ -62,13 +47,19 @@
   border-bottom: 1px solid var(--color-border-light);
 }
 
+.pairingDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 @media (max-width: 600px) {
   .buttonContainer button {
     font-size: 12px;
   }
 
-  .imageContainer,
-  .walletDetails {
+  .pairingDetails {
     display: none;
   }
 }

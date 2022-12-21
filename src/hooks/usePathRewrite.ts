@@ -1,5 +1,9 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { AppRoutes } from '@/config/routes'
+import { trackError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import { useUrlChainId } from '@/hooks/useChainId'
 
 // Next.js needs to know all the static paths in advance when doing SSG (static site generation)
 // @see https://nextjs.org/docs/api-reference/next.config.js/runtime-config-static-paths
@@ -11,11 +15,18 @@ import { useEffect } from 'react'
 // Next.js doesn't care because dynamic path params are internally represented as query params anyway.
 const usePathRewrite = () => {
   const router = useRouter()
+  const chainId = useUrlChainId()
 
   useEffect(() => {
     let { safe = '', ...restQuery } = router.query
     if (Array.isArray(safe)) safe = safe[0]
     if (!safe) return
+
+    if (!chainId) {
+      trackError(ErrorCodes._104)
+      router.push(AppRoutes.welcome)
+      return
+    }
 
     // Move the Safe address to the path
     let newPath = router.pathname.replace(/^\//, `/${safe}/`)
@@ -36,7 +47,7 @@ const usePathRewrite = () => {
       // This just changes what you see in the URL bar w/o triggering any rendering or route change
       history.replaceState(history.state, '', newPath)
     }
-  }, [router])
+  }, [chainId, router])
 }
 
 export default usePathRewrite

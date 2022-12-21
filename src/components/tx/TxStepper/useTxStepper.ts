@@ -28,7 +28,6 @@ export type TxStepperProps = {
   initialStep?: number
   eventCategory?: string
   onClose: () => void
-  onFinish?: () => void
 }
 
 export const useTxStepper = ({
@@ -37,19 +36,18 @@ export const useTxStepper = ({
   initialStep,
   eventCategory = MODALS_CATEGORY,
   onClose,
-  onFinish,
 }: TxStepperProps) => {
   const [activeStep, setActiveStep] = useState<number>(initialStep || 0)
   const [stepData, setStepData] = useState<Array<unknown>>(initialData || [])
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
-    trackEvent({ category: eventCategory, action: lastStep ? 'Submit' : 'Next' })
+    trackEvent({ category: eventCategory, action: lastStep ? 'Submit' : 'Next', label: activeStep })
   }
 
   const handleBack = (data?: unknown) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
-    trackEvent({ category: eventCategory, action: firstStep ? 'Cancel' : 'Back' })
+    trackEvent({ category: eventCategory, action: firstStep ? 'Cancel' : 'Back', label: activeStep })
 
     if (data) {
       updateStepData(data)
@@ -74,7 +72,7 @@ export const useTxStepper = ({
 
   const onSubmit = (data: unknown) => {
     if (lastStep) {
-      onFinish ? onFinish() : onClose()
+      onClose()
       return
     }
     updateStepData(data)

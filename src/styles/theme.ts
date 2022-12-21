@@ -11,11 +11,13 @@ declare module '@mui/material/styles' {
   interface Palette {
     border: Palette['primary']
     logo: Palette['primary']
+    backdrop: Palette['primary']
     static: Palette['primary']
   }
   interface PaletteOptions {
     border: PaletteOptions['primary']
     logo: PaletteOptions['primary']
+    backdrop: PaletteOptions['primary']
     static: PaletteOptions['primary']
   }
 
@@ -56,6 +58,9 @@ const initTheme = (darkMode: boolean) => {
       ...colors,
     },
     spacing: base,
+    shape: {
+      borderRadius: 6,
+    },
     shadows: [
       'none',
       darkMode ? `0 0 2px ${shadowColor}` : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
@@ -147,7 +152,7 @@ const initTheme = (darkMode: boolean) => {
             padding: '12px 24px',
           },
           root: ({ theme }) => ({
-            borderRadius: '8px',
+            borderRadius: theme.shape.borderRadius,
             fontWeight: 'bold',
             lineHeight: 1.25,
             borderColor: theme.palette.primary.main,
@@ -185,7 +190,7 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: ({ theme }) => ({
             transition: 'background 0.2s, border 0.2s',
-            borderRadius: '8px',
+            borderRadius: theme.shape.borderRadius,
             border: `1px solid ${theme.palette.border.light}`,
             overflow: 'hidden',
 
@@ -221,7 +226,7 @@ const initTheme = (darkMode: boolean) => {
           },
           content: {
             '&.Mui-expanded': {
-              margin: 0,
+              margin: '12px 0',
             },
           },
         },
@@ -236,7 +241,7 @@ const initTheme = (darkMode: boolean) => {
       MuiCard: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: theme.spacing(1),
+            borderRadius: theme.shape.borderRadius,
             boxSizing: 'border-box',
             border: '2px solid transparent',
             boxShadow: 'none',
@@ -271,10 +276,10 @@ const initTheme = (darkMode: boolean) => {
             borderWidth: 2,
             borderColor: theme.palette.border.light,
           }),
-          root: {
-            borderRadius: '8px !important',
+          root: ({ theme }) => ({
+            borderRadius: theme.shape.borderRadius,
             backgroundImage: 'none',
-          },
+          }),
         },
       },
       MuiPopover: {
@@ -465,11 +470,14 @@ const initTheme = (darkMode: boolean) => {
       MuiBackdrop: {
         styleOverrides: {
           root: ({ theme }) => ({
-            backgroundColor: alpha(theme.palette.background.main, 0.75),
+            backgroundColor: alpha(theme.palette.backdrop.main, 0.75),
           }),
         },
       },
       MuiSwitch: {
+        defaultProps: {
+          color: darkMode ? undefined : 'success',
+        },
         styleOverrides: {
           thumb: ({ theme }) => ({
             boxShadow:
@@ -480,10 +488,17 @@ const initTheme = (darkMode: boolean) => {
       MuiLink: {
         styleOverrides: {
           root: ({ theme }) => ({
-            textDecoration: 'none',
+            fontWeight: 700,
             '&:hover': {
               color: theme.palette.primary.light,
             },
+          }),
+        },
+      },
+      MuiLinearProgress: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            backgroundColor: theme.palette.border.light,
           }),
         },
       },

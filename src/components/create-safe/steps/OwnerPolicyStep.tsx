@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
-import useResetSafeCreation from '@/components/create-safe/useResetSafeCreation'
+import useSetCreationStep from '@/components/create-safe/useSetCreationStep'
 import type { StepRenderProps } from '@/components/tx/TxStepper/useTxStepper'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -25,7 +25,7 @@ enum FieldName {
 }
 
 const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactElement => {
-  useResetSafeCreation(setStep)
+  useSetCreationStep(setStep)
   const wallet = useWallet()
   const addressBook = useAddressBook()
 
@@ -46,7 +46,7 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
       threshold: defaultThreshold,
     },
   })
-  const { register, handleSubmit, control, formState, watch, setValue } = formMethods
+  const { register, handleSubmit, control, formState, watch, setValue, getValues } = formMethods
   const currentThreshold = watch(FieldName.threshold)
   const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
@@ -87,9 +87,9 @@ const OwnerPolicyStep = ({ params, onSubmit, setStep, onBack }: Props): ReactEle
     })
   })
 
-  const onFormBack = handleSubmit((data: SafeFormData) => {
-    onBack(data)
-  })
+  const onFormBack = () => {
+    onBack(getValues())
+  }
 
   return (
     <Paper>

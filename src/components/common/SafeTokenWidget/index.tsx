@@ -5,7 +5,8 @@ import useChainId from '@/hooks/useChainId'
 import useSafeTokenAllocation from '@/hooks/useSafeTokenAllocation'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { formatVisualAmount } from '@/utils/formatters'
-import { Box, ButtonBase, Tooltip, Typography } from '@mui/material'
+import { Box, ButtonBase, Skeleton, Tooltip, Typography } from '@mui/material'
+import { BigNumber } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { UrlObject } from 'url'
@@ -25,10 +26,10 @@ const SafeTokenWidget = () => {
   const [apps] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
   const claimingApp = apps?.[0]
 
-  const allocation = useSafeTokenAllocation()
+  const [allocation, allocationLoading] = useSafeTokenAllocation()
 
   const tokenAddress = getSafeTokenAddress(chainId)
-  if (!tokenAddress || !allocation) {
+  if (!tokenAddress) {
     return null
   }
 
@@ -39,7 +40,7 @@ const SafeTokenWidget = () => {
       }
     : undefined
 
-  const flooredSafeBalance = formatVisualAmount(allocation, TOKEN_DECIMALS, 2)
+  const flooredSafeBalance = formatVisualAmount(allocation || BigNumber.from(0), TOKEN_DECIMALS, 2)
 
   return (
     <Box className={css.buttonContainer}>
@@ -54,8 +55,8 @@ const SafeTokenWidget = () => {
                 disabled={url === undefined}
               >
                 <SafeTokenIcon />
-                <Typography lineHeight="16px" fontWeight={700}>
-                  {flooredSafeBalance}
+                <Typography component="div" lineHeight="16px" fontWeight={700}>
+                  {allocationLoading ? <Skeleton width="16px" animation="wave" /> : flooredSafeBalance}
                 </Typography>
               </ButtonBase>
             </Link>

@@ -15,13 +15,6 @@
   opacity: 1;
 }
 
-.entryButtonWrapper {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: var(--space-1);
-}
-
 .headerButtonWrapper {
   display: flex;
   justify-content: flex-end;

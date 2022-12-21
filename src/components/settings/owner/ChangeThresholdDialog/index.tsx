@@ -5,12 +5,12 @@ import { useState } from 'react'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-import { createUpdateThresholdTx } from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import Track from '@/components/common/Track'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 
@@ -48,8 +48,9 @@ export const ChangeThresholdDialog = () => {
   )
 }
 
-const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (txId: string) => void }) => {
+const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (txId?: string) => void }) => {
   const { safe } = useSafeInfo()
+  const { createUpdateThresholdTx } = useTxSender()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(safe.threshold)
   const [isChanged, setChanged] = useState<boolean>(false)
   const isSameThreshold = selectedThreshold === safe.threshold
@@ -62,10 +63,11 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!selectedThreshold) return
-    return createUpdateThresholdTx(selectedThreshold)
-  }, [selectedThreshold])
 
-  const onChangeTheshold = (txId: string) => {
+    return createUpdateThresholdTx(selectedThreshold)
+  }, [selectedThreshold, createUpdateThresholdTx])
+
+  const onChangeTheshold = (txId?: string) => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: selectedThreshold })
 

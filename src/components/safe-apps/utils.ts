@@ -1,5 +1,5 @@
 import { isHexString, toUtf8String } from 'ethers/lib/utils'
-import { SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { formatVisualAmount } from '@/utils/formatters'
 import { validateAddress } from '@/utils/validation'
@@ -27,12 +27,22 @@ export const getInteractionTitle = (value?: string, chain?: ChainInfo) => {
   }:`
 }
 
-export const convertToHumanReadableMessage = (message: string): string => {
-  if (!isHexString(message)) {
-    return message
+/**
+ * If message is a hex value and is Utf8 encoded string we decode it, else we return the raw message
+ * @param {string} message raw input message
+ * @returns {string}
+ */
+export const getDecodedMessage = (message: string): string => {
+  if (isHexString(message)) {
+    // If is a hex string we try to extract a message
+    try {
+      return toUtf8String(message)
+    } catch (e) {
+      // the hex string is not UTF8 encoding so we will return the raw message.
+    }
   }
 
-  return toUtf8String(message)
+  return message
 }
 
 export const getLegacyChainName = (chainName: string, chainId: string): string => {
@@ -54,7 +64,7 @@ export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
     id: Math.random(),
     url,
     name: 'unknown',
-    iconUrl: '/images/apps-icon.svg',
+    iconUrl: '/images/apps/apps-icon.svg',
     description: '',
     chainIds: [],
     accessControl: {
@@ -63,4 +73,12 @@ export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
     tags: [],
     safeAppsPermissions: [],
   }
+}
+
+export const getOrigin = (url?: string): string => {
+  if (!url) return ''
+
+  const { origin } = new URL(url)
+
+  return origin
 }

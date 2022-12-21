@@ -1,0 +1,22 @@
+.card {
+  border: 1px solid var(--color-border-light);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+}
+
+.row {
+  padding: var(--space-2);
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--color-border-light);
+}

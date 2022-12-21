@@ -25,6 +25,7 @@ const SafeListItem = ({
   chainId,
   closeDrawer,
   shouldScrollToSafe,
+  noActions = false,
   ...rest
 }: {
   address: string
@@ -33,6 +34,7 @@ const SafeListItem = ({
   shouldScrollToSafe: boolean
   threshold?: string | number
   owners?: string | number
+  noActions?: boolean
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()
@@ -55,18 +57,20 @@ const SafeListItem = ({
       className={css.container}
       disablePadding
       secondaryAction={
-        <Box display="flex" alignItems="center" gap={1}>
-          <SafeListItemSecondaryAction
-            chainId={chainId}
-            address={address}
-            onClick={closeDrawer}
-            href={{
-              pathname: AppRoutes.load,
-              query: { chain: shortName, address },
-            }}
-          />
-          <SafeListContextMenu name={name} address={address} chainId={chainId} />
-        </Box>
+        noActions ? undefined : (
+          <Box display="flex" alignItems="center" gap={1}>
+            <SafeListItemSecondaryAction
+              chainId={chainId}
+              address={address}
+              onClick={closeDrawer}
+              href={{
+                pathname: AppRoutes.load,
+                query: { chain: shortName, address },
+              }}
+            />
+            <SafeListContextMenu name={name} address={address} chainId={chainId} />
+          </Box>
+        )
       }
     >
       <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
@@ -81,7 +85,7 @@ const SafeListItem = ({
             <SafeIcon address={address} {...rest} />
           </ListItemIcon>
           <ListItemText
-            sx={{ pr: 10 }}
+            sx={noActions ? undefined : { pr: 10 }}
             primaryTypographyProps={{
               variant: 'body2',
               component: 'div',

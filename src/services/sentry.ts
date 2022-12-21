@@ -1,10 +1,11 @@
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { SENTRY_DSN } from '@/config/constants'
+import packageJson from '../../package.json'
 
 Sentry.init({
   dsn: SENTRY_DSN,
-  release: `safe-react@${process.env.REACT_APP_APP_VERSION}`,
+  release: `web-core@${packageJson.version}`,
   integrations: [new Integrations.BrowserTracing()],
   sampleRate: 0.1,
   // ignore MetaMask errors we don't control

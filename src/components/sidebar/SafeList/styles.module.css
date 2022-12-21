@@ -9,11 +9,6 @@
   padding: var(--space-2) var(--space-1) 0;
 }
 
-.addButton {
-  border-radius: 8px;
-  font-weight: 700;
-}
-
 .chainDivider {
   width: unset;
   border-radius: 8px;

@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react'
 import { useMemo } from 'react'
 import { Box } from '@mui/material'
-import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import TxListItem from '../TxListItem'
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
 import { groupConflictingTxs } from '@/utils/tx-list'

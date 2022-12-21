@@ -13,6 +13,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: padding 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
 }
 
 .mainNoSidebar {
@@ -31,23 +32,46 @@
   padding: var(--space-3);
 }
 
-.sidebar {
+.sidebarTogglePosition {
   position: fixed;
-  height: 100vh;
+  z-index: 2;
   left: 0;
   top: 0;
-  /* the z-index is required for the sidebar not to be covered by the transaction accordion on the Safe app page */
+  /* mimics MUI drawer animation */
+  transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+.sidebarTogglePosition.sidebarOpen {
+  transform: translateX(230px);
+}
+
+.sidebarToggle {
+  height: 100vh;
+  width: var(--space-1);
+  background-color: var(--color-border-light);
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  cursor: pointer;
+}
+
+.sidebarToggle button {
+  position: absolute;
   z-index: 1;
-  padding-top: var(--header-height);
+  top: 50%;
+  left: -3px;
+  transform: translateY(-50%);
+  background-color: var(--color-border-light);
+  clip-path: inset(0 -14px 0 0);
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.sidebarToggle:hover,
+.sidebarToggle:hover button {
+  background-color: var(--color-background-light);
 }
 
 @media (max-width: 900px) {
   .main {
     padding-left: 0;
-  }
-
-  .sidebar {
-    display: none;
   }
 }
 

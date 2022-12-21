@@ -1,12 +1,12 @@
 import type { NewSpendingLimitData } from '@/components/settings/SpendingLimits/NewSpendingLimit'
-import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import * as spendingLimit from '@/services/contracts/spendingLimitContracts'
-import * as txSender from '@/services/tx/txSender'
+import * as txSender from '@/services/tx/tx-sender/create'
 import * as spendingLimitParams from '@/services/tx/spendingLimitParams'
-import type Safe from '@gnosis.pm/safe-core-sdk'
+import type Safe from '@safe-global/safe-core-sdk'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
-import { createNewSpendingLimitTx } from '@/components/settings/SpendingLimits/NewSpendingLimit/steps/ReviewSpendingLimit'
+import { createNewSpendingLimitTx } from '@/services/tx/tx-sender'
 
 const mockData: NewSpendingLimitData = {
   beneficiary: ZERO_ADDRESS,
