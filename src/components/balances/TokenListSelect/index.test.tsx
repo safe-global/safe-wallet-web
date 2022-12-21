@@ -26,7 +26,7 @@ const TestComponent = () => (
 describe('TokenListSelect', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-
+    window.localStorage.clear()
     jest.spyOn(useChainId, 'default').mockReturnValue('5')
   })
 
