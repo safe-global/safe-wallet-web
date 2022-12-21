@@ -12,19 +12,19 @@ import layoutCss from '@/components/new-safe/create/styles.module.css'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { OwnerRow } from '@/components/new-safe/OwnerRow'
 
-enum LoadSafeStep1Fields {
+enum Field {
   owners = 'owners',
   threshold = 'threshold',
 }
 
-type LoadSafeStep1Form = {
-  [LoadSafeStep1Fields.owners]: NamedAddress[]
-  [LoadSafeStep1Fields.threshold]: number
+type FormData = {
+  [Field.owners]: NamedAddress[]
+  [Field.threshold]: number
 }
 
-const LoadSafeStep1 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormData>) => {
+const SafeOwnerStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormData>) => {
   const chainId = useChainId()
-  const formMethods = useForm<LoadSafeStep1Form>({
+  const formMethods = useForm<FormData>({
     defaultValues: data,
     mode: 'onChange',
   })
@@ -38,7 +38,7 @@ const LoadSafeStep1 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
 
   const { fields } = useFieldArray({
     control,
-    name: LoadSafeStep1Fields.owners,
+    name: Field.owners,
   })
 
   const [safeInfo] = useAsync<SafeInfo>(() => {
@@ -50,14 +50,14 @@ const LoadSafeStep1 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
   useEffect(() => {
     if (!safeInfo) return
 
-    setValue(LoadSafeStep1Fields.threshold, safeInfo.threshold)
+    setValue(Field.threshold, safeInfo.threshold)
 
     const owners = safeInfo.owners.map((owner, i) => ({
       address: owner.value,
       name: getValues(`owners.${i}.name`) || '',
     }))
 
-    setValue(LoadSafeStep1Fields.owners, owners)
+    setValue(Field.owners, owners)
   }, [getValues, safeInfo, setValue])
 
   const handleBack = () => {
@@ -88,4 +88,4 @@ const LoadSafeStep1 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
   )
 }
 
-export default LoadSafeStep1
+export default SafeOwnerStep

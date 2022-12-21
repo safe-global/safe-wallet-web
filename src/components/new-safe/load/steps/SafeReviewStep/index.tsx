@@ -18,7 +18,7 @@ import { LOAD_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 
-const LoadSafeStep2 = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => {
+const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => {
   const chain = useCurrentChain()
   const dispatch = useAppDispatch()
   const router = useRouter()
@@ -139,4 +139,4 @@ const LoadSafeStep2 = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => {
   )
 }
 
-export default LoadSafeStep2
+export default SafeReviewStep

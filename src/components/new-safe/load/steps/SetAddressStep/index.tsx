@@ -29,24 +29,24 @@ import { selectAddedSafes } from '@/store/addedSafesSlice'
 import { LOAD_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import ExternalLink from '@/components/common/ExternalLink'
 
-type LoadSafeStep0Form = {
-  name: string
-  address: string
-}
-
-enum LoadSafeStep0Fields {
+enum Field {
   name = 'name',
   address = 'address',
 }
 
-const LoadSafeStep0 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormData>) => {
+type FormData = {
+  [Field.name]: string
+  [Field.address]: string
+}
+
+const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormData>) => {
   const currentChainId = useChainId()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId))
-  const formMethods = useForm<LoadSafeStep0Form>({
+  const formMethods = useForm<FormData>({
     mode: 'all',
     defaultValues: {
-      [LoadSafeStep0Fields.name]: data.name,
-      [LoadSafeStep0Fields.address]: data.address,
+      [Field.name]: data.name,
+      [Field.address]: data.address,
     },
   })
 
@@ -57,7 +57,7 @@ const LoadSafeStep0 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
     getValues,
   } = formMethods
 
-  const safeAddress = watch(LoadSafeStep0Fields.address)
+  const safeAddress = watch(Field.address)
 
   const randomName = useMnemonicSafeName()
   const { ens, name, resolving } = useAddressResolver(safeAddress)
@@ -77,13 +77,13 @@ const LoadSafeStep0 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
     }
   }
 
-  const onFormSubmit = handleSubmit((data: LoadSafeStep0Form) => {
+  const onFormSubmit = handleSubmit((data: FormData) => {
     onSubmit({
       ...data,
-      [LoadSafeStep0Fields.name]: data[LoadSafeStep0Fields.name] || fallbackName,
+      [Field.name]: data[Field.name] || fallbackName,
     })
 
-    if (data[LoadSafeStep0Fields.name]) {
+    if (data[Field.name]) {
       trackEvent(LOAD_SAFE_EVENTS.NAME_SAFE)
     }
   })
@@ -92,7 +92,7 @@ const LoadSafeStep0 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
     const formData = getValues()
     onBack({
       ...formData,
-      [LoadSafeStep0Fields.name]: formData.name || fallbackName,
+      [Field.name]: formData.name || fallbackName,
     })
   }
 
@@ -103,8 +103,8 @@ const LoadSafeStep0 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
           <Grid container spacing={1}>
             <Grid item xs={12} md={8}>
               <NameInput
-                name={LoadSafeStep0Fields.name}
-                label={errors?.[LoadSafeStep0Fields.name]?.message || 'Name'}
+                name={Field.name}
+                label={errors?.[Field.name]?.message || 'Name'}
                 placeholder={fallbackName}
                 InputLabelProps={{ shrink: true }}
                 InputProps={{
@@ -134,7 +134,7 @@ const LoadSafeStep0 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
           </Grid>
           <Grid container spacing={1} mt={2}>
             <Grid item xs={12} md={8}>
-              <AddressInput label="Safe address" validate={validateSafeAddress} name={LoadSafeStep0Fields.address} />
+              <AddressInput label="Safe address" validate={validateSafeAddress} name={Field.address} />
             </Grid>
           </Grid>
           <Typography mt={2}>
@@ -158,4 +158,4 @@ const LoadSafeStep0 = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
   )
 }
 
-export default LoadSafeStep0
+export default SetAddressStep

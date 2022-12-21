@@ -6,10 +6,10 @@ import { Container, Grid, Typography } from '@mui/material'
 import { CardStepper } from '@/components/new-safe/CardStepper'
 import type { TxStepperProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NamedAddress } from '@/components/create-safe/types'
-import LoadSafeStep0 from '@/components/new-safe/load/steps/Step0'
+import SetAddressStep from '@/components/new-safe/load/steps/SetAddressStep'
 import { AppRoutes } from '@/config/routes'
-import LoadSafeStep1 from '@/components/new-safe/load/steps/Step1'
-import LoadSafeStep2 from '@/components/new-safe/load/steps/Step2'
+import SafeOwnerStep from '@/components/new-safe/load/steps/SafeOwnerStep'
+import SafeReviewStep from '@/components/new-safe/load/steps/SafeReviewStep'
 
 export type LoadSafeFormData = NamedAddress & {
   threshold: number
@@ -21,21 +21,21 @@ export const LoadSafeSteps: TxStepperProps<LoadSafeFormData>['steps'] = [
     title: 'Connect wallet & select network',
     subtitle: 'Select network on which the Safe was created',
     render: (_, onSubmit, onBack, setStep) => (
-      <LoadSafeStep0 onSubmit={onSubmit} onBack={onBack} data={_} setStep={setStep} />
+      <SetAddressStep onSubmit={onSubmit} onBack={onBack} data={_} setStep={setStep} />
     ),
   },
   {
     title: 'Owners and confirmations',
     subtitle: 'Optional: Provide a name for each owner.',
     render: (data, onSubmit, onBack, setStep) => (
-      <LoadSafeStep1 onSubmit={onSubmit} onBack={onBack} data={data} setStep={setStep} />
+      <SafeOwnerStep onSubmit={onSubmit} onBack={onBack} data={data} setStep={setStep} />
     ),
   },
   {
     title: 'Review',
     subtitle: 'Confirm loading Safe.',
     render: (data, onSubmit, onBack, setStep) => (
-      <LoadSafeStep2 onSubmit={onSubmit} onBack={onBack} data={data} setStep={setStep} />
+      <SafeReviewStep onSubmit={onSubmit} onBack={onBack} data={data} setStep={setStep} />
     ),
   },
 ]
