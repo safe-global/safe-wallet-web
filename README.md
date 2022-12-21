@@ -13,13 +13,40 @@ Contributions, be it a bug report or a pull request, are very welcome. Please ch
 
 ## Getting started with local development
 
+### Environment variables
+
+Create a `.env` file with environment variables. You can use the `.env.example` file as a reference.
+
+Here's the list of all the required and optional variables:
+
+| Env variable |          | Description |
+| ------------ | -------- | ----------- |
+| `NEXT_PUBLIC_IS_PRODUCTION` | optional | Set to `true` to build a minified production app |
+| `NEXT_PUBLIC_GATEWAY_URL_PRODUCTION` | optional | The base URL for the [Safe Client Gateway](https://github.com/safe-global/safe-client-gateway) |
+| `NEXT_PUBLIC_GATEWAY_URL_STAGING` | optional | The base CGW URL on staging |
+| `NEXT_PUBLIC_SAFE_VERSION` | optional | The latest version of the Safe contract, defaults to 1.3.0 |
+| `NEXT_PUBLIC_INFURA_TOKEN` | **required** | [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) RPC API token |
+| `NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN` | optional | Infura token for Safe Apps, falls back to `NEXT_PUBLIC_INFURA_TOKEN` |
+| `NEXT_PUBLIC_WC_BRIDGE` | **required** | [WalletConnect](https://docs.walletconnect.com/1.0/bridge-server) bridge URL |
+| `NEXT_PUBLIC_TENDERLY_ORG_NAME` | optional | [Tenderly](https://tenderly.co) org name for Transaction Simulation |
+| `NEXT_PUBLIC_TENDERLY_PROJECT_NAME` | optional | Tenderly project name |
+| `NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL` | optional | Tenderly simulation URL |
+| `NEXT_PUBLIC_BEAMER_ID` | optional | [Beamer](https://www.getbeamer.com) is a news feed for in-app announcements |
+| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID` | optional | [GTM](https://tagmanager.google.com) project id |
+| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH` | optional | Dev GTM key |
+| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH` | optional | Preview GTM key |
+| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH` | optional | Production GTM key |
+| `NEXT_PUBLIC_SENTRY_DSN` | optional | [Sentry](https://sentry.io) id for tracking runtime errors |
+
+If you don't provide some of the optional vars, the corresponding features will be disabled in the UI.
+
+### Runing the app locally
+
 Install the dependencies:
 
 ```bash
 yarn
 ```
-
-Create a `.env` file with the environment variables. You can use the `.env.example` file as a reference.
 
 Run the development server:
 
