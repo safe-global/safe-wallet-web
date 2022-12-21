@@ -3,7 +3,7 @@ import { gte } from 'semver'
 import type { SafeInfo, SafeMessage, EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { hashTypedData } from '@/utils/web3'
-import { validateAddress } from './validation'
+import { isValidAddress } from './validation'
 
 export const generateSafeMessageMessage = (message: SafeMessage['message']): string => {
   return typeof message === 'string' ? hashMessage(message) : hashTypedData(message)
@@ -48,7 +48,7 @@ export const supportsEIP1271 = ({ version, fallbackHandler }: SafeInfo): boolean
   const isHandledByFallbackHandler = gte(version, EIP1271_FALLBACK_HANDLER_SUPPORTED_SAFE_VERSION)
   if (isHandledByFallbackHandler) {
     // We only check if any fallback Handler is set as we expect / assume that users who overwrite the fallback handler by a custom one know what they are doing
-    return fallbackHandler !== null && validateAddress(fallbackHandler.value) === undefined
+    return fallbackHandler !== null && isValidAddress(fallbackHandler.value)
   }
 
   return gte(version, EIP1271_SUPPORTED_SAFE_VERSION)
