@@ -52,7 +52,7 @@ const LoadSafe = ({ initialData }: { initialData?: TxStepperProps<LoadSafeFormDa
   const initialSafe = initialData ?? loadSafeDefaultData
 
   return (
-    <Container>
+    <Container data-testid="load-safe-form">
       <Grid container columnSpacing={3} mt={[2, null, 7]} justifyContent="center">
         <Grid item xs={12} md={10} lg={8}>
           <Typography variant="h2" pb={2}>
