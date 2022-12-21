@@ -19,9 +19,10 @@ export const ContentSecurityPolicy = `
  };
  frame-src *;
  style-src 'self' 'unsafe-inline' https://*.getbeamer.com https://*.googleapis.com;
- font-src 'self' data:; 
+ font-src 'self' data:;
  worker-src 'self' blob:;
  img-src * data:;
+ cookies-policy 'self';
 `
   .replace(/\s{2,}/g, ' ')
   .trim()
