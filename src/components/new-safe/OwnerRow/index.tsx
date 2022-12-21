@@ -86,7 +86,7 @@ export const OwnerRow = ({
       <Grid item xs={11} md={readOnly ? 8 : 7}>
         {readOnly ? (
           <Typography variant="body2">
-            <EthHashInfo address={owner.address} shortAddress={false} hasExplorer showCopyButton />
+            <EthHashInfo address={owner.address} shortAddress hasExplorer showCopyButton />
           </Typography>
         ) : (
           <FormControl fullWidth>
@@ -106,7 +106,6 @@ export const OwnerRow = ({
           xs={1}
           alignSelf="stretch"
           maxHeight="80px"
-          md={1}
           display="flex"
           alignItems="center"
           flexShrink={0}
