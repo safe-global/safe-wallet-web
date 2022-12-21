@@ -81,7 +81,7 @@ export const addedSafesSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    // @ts-ignore
+    // @ts-ignore TODO: introduced with RTK 1.9.0 need to migrate
     builder.addCase(safeInfoSlice.actions.set.type, (state, { payload }: PayloadAction<Loadable<SafeInfo>>) => {
       if (!payload.data) {
         return
