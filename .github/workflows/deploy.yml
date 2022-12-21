@@ -22,8 +22,6 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - uses: actions/checkout@v3
-
       # Post a PR comment before deploying
       - name: Post a comment while building
         if: github.event.number
@@ -36,8 +34,9 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
 
-      - name: Install Node modules
-        run: yarn install --immutable
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/yarn
 
       - uses: ./.github/workflows/build
         with:
