@@ -13,12 +13,12 @@ const pendingStatuses: Record<SafeMsgEvent, boolean> = {
   [SafeMsgEvent.SIGNATURE_PREPARED]: false,
 }
 
+const entries = Object.entries(pendingStatuses) as [keyof typeof pendingStatuses, boolean][]
+
 const useSafeMessagePendingStatuses = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    const entries = Object.entries(pendingStatuses) as [keyof typeof pendingStatuses, boolean][]
-
     const unsubFns = entries.map(([event, isPending]) =>
       safeMsgSubscribe(event, ({ messageHash }) => {
         if (!isPending) {
