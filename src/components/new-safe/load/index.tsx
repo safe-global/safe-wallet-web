@@ -53,13 +53,13 @@ const LoadSafe = ({ initialData }: { initialData?: TxStepperProps<LoadSafeFormDa
 
   return (
     <Container>
-      <Grid container columnSpacing={3} mt={[2, null, 7]}>
-        <Grid item xs={12}>
+      <Grid container columnSpacing={3} mt={[2, null, 7]} justifyContent="center">
+        <Grid item xs={12} md={10} lg={8}>
           <Typography variant="h2" pb={2}>
             Load Safe
           </Typography>
         </Grid>
-        <Grid item xs={12} md={8} order={[1, null, 0]}>
+        <Grid item xs={12} md={10} lg={8} order={[1, null, 0]}>
           <CardStepper
             initialData={initialSafe}
             onClose={onClose}

@@ -64,7 +64,7 @@ export const OwnerRow = ({
 
   return (
     <Grid container spacing={3} alignItems="center" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={readOnly ? 5 : 4}>
         <FormControl fullWidth>
           <NameInput
             className={css.name}
@@ -83,7 +83,7 @@ export const OwnerRow = ({
           />
         </FormControl>
       </Grid>
-      <Grid item xs={11} md={readOnly ? 8 : 7}>
+      <Grid item xs={11} md={7}>
         {readOnly ? (
           <Typography variant="body2">
             <EthHashInfo address={owner.address} shortAddress hasExplorer showCopyButton />
