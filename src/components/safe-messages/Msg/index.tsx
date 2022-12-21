@@ -17,16 +17,16 @@ const Msg = ({ message }: { message: SafeMessage['message'] }): ReactElement => 
   }
 
   return (
-    <div>
-      {showMsg && (
-        <pre style={{ margin: 0 }}>
-          <code>{JSON.stringify(message, null, 2)}</code>
-        </pre>
-      )}
+    <>
       <Link component="button" onClick={handleToggleMsg} fontSize="medium" className={css.toggle}>
         {showMsg ? 'Hide' : 'Show'}
       </Link>
-    </div>
+      {showMsg && (
+        <pre>
+          <code>{JSON.stringify(message, null, 2)}</code>
+        </pre>
+      )}
+    </>
   )
 }
 
