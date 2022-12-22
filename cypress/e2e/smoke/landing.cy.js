@@ -6,7 +6,12 @@ describe('Landing page', () => {
   })
 
   it('should require accept "Updates" cookies to display Beamer', () => {
-    cy.visit('/')
+    // Disable PWA, otherwise it will throw a security error
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        delete win.navigator.__proto__.serviceWorker
+      },
+    })
 
     // Way to select the cookies banner without an id
     cy.contains('We use cookies to provide')
