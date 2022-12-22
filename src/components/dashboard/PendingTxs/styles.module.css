@@ -15,12 +15,14 @@
 }
 
 .confirmationsCount {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
   padding: var(--space-1) 12px;
   border-radius: 8px;
   font-weight: bold;
   font-size: 12px;
-  background-color: var(--color-secondary-light);
-  color: var(--color-static-main);
+  background-color: var(--color-secondary-background);
   text-align: center;
 }
 
