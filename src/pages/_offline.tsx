@@ -17,17 +17,23 @@ const Offline: NextPage = () => {
               <WifiOffIcon fontSize="inherit" />
             </Box>
 
-            <Typography variant="h1">Oops, it looks like you&apos;re offline!</Typography>
+            <Typography variant="h1" textAlign="center">
+              Oops, it looks like you&apos;re offline!
+            </Typography>
 
-            <Typography variant="body1" mt={2}>
-              Don&apos;t worry, we&apos;ve got your back. Just take a break and go pet a puppy, stare at a waterfall, or
-              do some deep breathing.
+            <Typography variant="body1" mt={3}>
+              We apologize, but it looks like you are currently unable to access our app due to an offline connection.
             </Typography>
 
             <Typography variant="body1" mt={2}>
-              When you&apos;re ready to reconnect with the digital world, come back and we&apos;ll be here waiting for
-              you. Until then, we&apos;ll just be over here refreshing the page every 5 seconds in the hopes that
-              you&apos;ll come back. (Kidding, we promise we won&apos;t do that... or will we?)
+              While you wait for your internet to come back online, we encourage you to take a moment to step outside
+              and enjoy the nature. If you have the opportunity, try touching the grass with your bare feet -
+              there&apos;s something about the sensation of grass on our skin that can be really grounding and
+              refreshing.
+            </Typography>
+
+            <Typography variant="body1" mt={2}>
+              We hope to see you back online soon. Thank you for your patience.
             </Typography>
           </Paper>
         </Box>
