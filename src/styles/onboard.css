@@ -84,6 +84,11 @@
   color: #162d45;
 }
 
+#walletconnect-wrapper .walletconnect-modal__footer {
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
 /* Keystone modal */
 #kv_sdk_container + .ReactModalPortal > div {
   z-index: 1301 !important;
