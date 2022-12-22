@@ -1,15 +1,18 @@
-import { type ReactElement, useContext } from 'react'
+import { type ReactElement } from 'react'
 import { Typography, ToggleButton, Tooltip } from '@mui/material'
 import { ASSETS_EVENTS } from '@/services/analytics'
-import { HiddenAssetsContext } from '../HiddenAssetsProvider'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import useBalances from '@/hooks/useBalances'
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material'
 import Track from '@/components/common/Track'
 
-const TokenListSelect = (): ReactElement | null => {
-  const { toggleShowHiddenAssets, showHiddenAssets } = useContext(HiddenAssetsContext)
-
+const TokenListSelect = ({
+  toggleShowHiddenAssets,
+  showHiddenAssets,
+}: {
+  toggleShowHiddenAssets?: () => void
+  showHiddenAssets?: boolean
+}): ReactElement | null => {
   const { balances } = useBalances(true)
   const currentHiddenAssets = useHiddenTokens()
 

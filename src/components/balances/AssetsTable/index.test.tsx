@@ -1,31 +1,20 @@
 import * as useChainId from '@/hooks/useChainId'
-import type { RootState } from '@/store'
 import { fireEvent, getByTestId, render, waitFor } from '@/tests/test-utils'
 import { safeParseUnits } from '@/utils/formatters'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
+import { useState } from 'react'
 import AssetsTable from '.'
 
-import HiddenAssetsProvider, { HiddenAssetsContext } from '../HiddenAssetsProvider'
-
-const customRender = (ui: React.ReactElement, { ...renderOptions }: { initialReduxState?: Partial<RootState> }) => {
-  return render(<HiddenAssetsProvider>{ui}</HiddenAssetsProvider>, renderOptions)
+const TestComponent = () => {
+  const [showHidden, setShowHidden] = useState(false)
+  return (
+    <>
+      <AssetsTable showHiddenAssets={showHidden} setShowHiddenAssets={setShowHidden} />
+      <button data-testid="showHidden" onClick={() => setShowHidden((prev) => !prev)} />
+    </>
+  )
 }
-
-const TestComponent = () => (
-  <HiddenAssetsContext.Consumer>
-    {(value) => {
-      return (
-        <>
-          <AssetsTable />
-          <button data-testid="save" onClick={value.saveChanges} />
-          <button data-testid="reset" onClick={value.reset} />
-          <button data-testid="showHidden" onClick={value.toggleShowHiddenAssets} />
-        </>
-      )
-    }}
-  </HiddenAssetsContext.Consumer>
-)
 
 describe('AssetsTable', () => {
   beforeEach(() => {
@@ -74,7 +63,7 @@ describe('AssetsTable', () => {
       error: undefined,
     }
 
-    const result = customRender(<TestComponent />, {
+    const result = render(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
         settings: {
@@ -92,7 +81,6 @@ describe('AssetsTable', () => {
       },
     })
 
-    const saveButton = result.getByTestId('save')
     const toggleHiddenButton = result.getByTestId('showHidden')
 
     // Show only hidden assets
@@ -121,6 +109,7 @@ describe('AssetsTable', () => {
     expect(tableRow).toBeDefined()
     fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
 
+    const saveButton = result.getByText('Apply')
     fireEvent.click(saveButton)
 
     // Both tokens should still be hidden
@@ -168,7 +157,7 @@ describe('AssetsTable', () => {
       error: undefined,
     }
 
-    const result = customRender(<TestComponent />, {
+    const result = render(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
         settings: {
@@ -185,8 +174,6 @@ describe('AssetsTable', () => {
         },
       },
     })
-
-    const saveButton = result.getByTestId('save')
 
     // Initially we see all tokens
     expect(result.queryByText('100 DAI')).not.toBeNull()
@@ -210,11 +197,8 @@ describe('AssetsTable', () => {
     expect(tableRow).toBeDefined()
     fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
 
-    fireEvent.click(saveButton)
-
-    // Unchanged as we deselected before saving
-    expect(result.queryByText('100 DAI')).not.toBeNull()
-    expect(result.queryByText('200 SPM')).not.toBeNull()
+    // We deselected everything => no Apply button visible
+    expect(result.queryByText('Apply')).toBeNull()
   })
 
   test('hideAndUnhideAssets', async () => {
@@ -257,7 +241,7 @@ describe('AssetsTable', () => {
       error: undefined,
     }
 
-    const result = customRender(<TestComponent />, {
+    const result = render(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
         settings: {
@@ -275,8 +259,6 @@ describe('AssetsTable', () => {
       },
     })
 
-    const saveButton = result.getByTestId('save')
-    const resetButton = result.getByTestId('reset')
     const toggleHiddenButton = result.getByTestId('showHidden')
 
     // Initially we see all tokens (as none are hidden)
@@ -291,6 +273,7 @@ describe('AssetsTable', () => {
     fireEvent.click(getByTestId(tableRow!, 'VisibilityOutlinedIcon'))
 
     // Apply changes
+    let saveButton = result.getByText('Apply')
     fireEvent.click(saveButton)
 
     // SPAM token is hidden now
@@ -315,6 +298,7 @@ describe('AssetsTable', () => {
     tableRow = result.getByText('200 SPM').parentElement?.parentElement
     expect(tableRow).toBeDefined()
     fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
+    const resetButton = result.getByText('Cancel')
     fireEvent.click(resetButton)
 
     // SPAM token is hidden again
@@ -330,6 +314,7 @@ describe('AssetsTable', () => {
     tableRow = result.getByText('200 SPM').parentElement?.parentElement
     expect(tableRow).toBeDefined()
     fireEvent.click(getByTestId(tableRow!, 'VisibilityOffOutlinedIcon'))
+    saveButton = result.getByText('Apply')
     fireEvent.click(saveButton)
 
     // Both tokens are visible again

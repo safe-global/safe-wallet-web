@@ -1,27 +1,15 @@
 import * as useChainId from '@/hooks/useChainId'
-import type { RootState } from '@/store'
-import { fireEvent, render, waitFor } from '@/tests/test-utils'
-import HiddenAssetsProvider, { HiddenAssetsContext } from '../HiddenAssetsProvider'
+import { fireEvent, render } from '@/tests/test-utils'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { safeParseUnits } from '@/utils/formatters'
 import TokenListSelect from '.'
+import { useState } from 'react'
 
-const customRender = (ui: React.ReactElement, { ...renderOptions }: { initialReduxState?: Partial<RootState> }) => {
-  return render(<HiddenAssetsProvider>{ui}</HiddenAssetsProvider>, renderOptions)
+const TestComponent = () => {
+  const [showHidden, setShowHidden] = useState(false)
+  return <TokenListSelect showHiddenAssets={showHidden} toggleShowHiddenAssets={() => setShowHidden((prev) => !prev)} />
 }
-
-const TestComponent = () => (
-  <HiddenAssetsContext.Consumer>
-    {(value) => (
-      <>
-        <TokenListSelect />
-        <span data-testid="visibleAssets">{value.visibleAssets.map((asset) => asset.tokenInfo.address)}</span>
-        <span data-testid="showHiddenAssets">{value.showHiddenAssets.toString()}</span>
-      </>
-    )}
-  </HiddenAssetsContext.Consumer>
-)
 
 describe('TokenListSelect', () => {
   beforeEach(() => {
@@ -70,7 +58,7 @@ describe('TokenListSelect', () => {
       error: undefined,
     }
 
-    const result = customRender(<TestComponent />, {
+    const result = render(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
         settings: {
@@ -88,27 +76,18 @@ describe('TokenListSelect', () => {
       },
     })
 
-    const visibleAssets = result.getByTestId('visibleAssets')
-    const showHiddenAssets = result.getByTestId('showHiddenAssets')
-
-    expect(visibleAssets).toContainHTML(hexZeroPad('0x2', 20))
-    expect(visibleAssets).not.toContainHTML(hexZeroPad('0x3', 20))
-
-    expect(showHiddenAssets).toContainHTML('false')
+    expect(result.queryByTestId('VisibilityOutlinedIcon')).not.toBeNull()
+    expect(result.queryByTestId('VisibilityOffOutlinedIcon')).toBeNull()
 
     fireEvent.click(result.getByTestId('toggle-hidden-assets'))
 
-    await waitFor(() => {
-      expect(visibleAssets).toContainHTML(hexZeroPad('0x3', 20))
-      expect(showHiddenAssets).toContainHTML('true')
-    })
+    expect(result.queryByTestId('VisibilityOutlinedIcon')).toBeNull()
+    expect(result.queryByTestId('VisibilityOffOutlinedIcon')).not.toBeNull()
 
     fireEvent.click(result.getByTestId('toggle-hidden-assets'))
 
-    await waitFor(() => {
-      expect(visibleAssets).toContainHTML(hexZeroPad('0x2', 20))
-      expect(showHiddenAssets).toContainHTML('false')
-    })
+    expect(result.queryByTestId('VisibilityOutlinedIcon')).not.toBeNull()
+    expect(result.queryByTestId('VisibilityOffOutlinedIcon')).toBeNull()
   })
 
   test('Do not render hidden tokens toggle if none are hidden', () => {
@@ -138,7 +117,7 @@ describe('TokenListSelect', () => {
       loading: false,
       error: undefined,
     }
-    const result = customRender(<TestComponent />, {
+    const result = render(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
         settings: {

@@ -1,4 +1,4 @@
-import { useState, type ReactElement, useContext } from 'react'
+import { useState, type ReactElement, useCallback, useMemo } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -14,8 +14,12 @@ import Track from '@/components/common/Track'
 import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material'
-import { HiddenAssetsContext } from '../HiddenAssetsProvider'
 import TokenMenu from '../TokenMenu'
+import useBalances from '@/hooks/useBalances'
+import useChainId from '@/hooks/useChainId'
+import useHiddenTokens from '@/hooks/useHiddenTokens'
+import { useAppDispatch } from '@/store'
+import { setHiddenTokensForChain } from '@/store/settingsSlice'
 
 const isNativeToken = (tokenInfo: TokenInfo) => {
   return tokenInfo.type === TokenType.NATIVE_TOKEN
@@ -45,10 +49,77 @@ const headCells = [
   },
 ]
 
-const AssetsTable = (): ReactElement => {
+const AssetsTable = ({
+  showHiddenAssets,
+  setShowHiddenAssets,
+}: {
+  showHiddenAssets: boolean
+  setShowHiddenAssets: (hidden: boolean) => void
+}): ReactElement => {
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
   const isGranted = useIsGranted()
-  const { toggleAsset, isAssetSelected, visibleAssets } = useContext(HiddenAssetsContext)
+  const [assetsToHide, setAssetsToHide] = useState<string[]>([])
+  const [assetsToUnhide, setAssetsToUnhide] = useState<string[]>([])
+  const hiddenAssets = useHiddenTokens()
+  const { balances } = useBalances(true)
+  const dispatch = useAppDispatch()
+  const chainId = useChainId()
+
+  // TODO: move logic into hook
+  const toggleAsset = useCallback(
+    (address: string) => {
+      if (assetsToHide.includes(address)) {
+        assetsToHide.splice(assetsToHide.indexOf(address), 1)
+        setAssetsToHide([...assetsToHide])
+        return
+      }
+
+      if (assetsToUnhide.includes(address)) {
+        assetsToUnhide.splice(assetsToUnhide.indexOf(address), 1)
+        setAssetsToUnhide([...assetsToUnhide])
+        return
+      }
+
+      const assetIsHidden = hiddenAssets.includes(address)
+      if (!assetIsHidden) {
+        setAssetsToHide([...assetsToHide, address])
+      } else {
+        setAssetsToUnhide([...assetsToUnhide, address])
+      }
+    },
+    [assetsToHide, assetsToUnhide, hiddenAssets],
+  )
+
+  // Assets are selected if they are either hidden or marked for hiding
+  const isAssetSelected = useCallback(
+    (address: string) =>
+      (hiddenAssets.includes(address) && !assetsToUnhide.includes(address)) || assetsToHide.includes(address),
+    [assetsToHide, assetsToUnhide, hiddenAssets],
+  )
+
+  const visibleAssets = useMemo(
+    () =>
+      showHiddenAssets
+        ? balances.items?.filter((item) => hiddenAssets.includes(item.tokenInfo.address))
+        : balances.items?.filter(
+            (item) => item.tokenInfo.type === TokenType.NATIVE_TOKEN || !hiddenAssets.includes(item.tokenInfo.address),
+          ),
+    [hiddenAssets, balances.items, showHiddenAssets],
+  )
+
+  const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
+
+  const cancel = useCallback(() => {
+    setAssetsToHide([])
+    setAssetsToUnhide([])
+    setShowHiddenAssets(false)
+  }, [setShowHiddenAssets])
+
+  const saveChanges = useCallback(() => {
+    const newHiddenAssets = [...hiddenAssets.filter((asset) => !assetsToUnhide.includes(asset)), ...assetsToHide]
+    dispatch(setHiddenTokensForChain({ chainId, assets: newHiddenAssets }))
+    cancel()
+  }, [assetsToHide, assetsToUnhide, chainId, dispatch, hiddenAssets, cancel])
 
   const shouldHideSend = !isGranted
 
@@ -138,7 +209,12 @@ const AssetsTable = (): ReactElement => {
 
   return (
     <>
-      <TokenMenu />
+      <TokenMenu
+        saveChanges={saveChanges}
+        cancel={cancel}
+        selectedAssetCount={selectedAssetCount}
+        showHiddenAssets={showHiddenAssets}
+      />
 
       <div className={css.container}>
         <EnhancedTable rows={rows} headCells={headCells} />
