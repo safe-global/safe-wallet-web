@@ -6,7 +6,12 @@ import type { ConnectedWallet } from '@/services/onboard'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 
 const WalletDetails = ({ onConnect }: { onConnect?: (wallet?: ConnectedWallet) => void }): ReactElement => {
-  const handleConnect = useConnectWallet(onConnect)
+  const connectWallet = useConnectWallet()
+
+  const handleConnect = () => {
+    onConnect?.()
+    connectWallet()
+  }
 
   return (
     <>
