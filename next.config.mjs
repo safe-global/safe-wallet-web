@@ -44,7 +44,7 @@ const nextConfig = {
           loader: '@svgr/webpack',
           options: {
             prettier: false,
-            svgo: true,
+            svgo: false,
             svgoConfig: {
               plugins: [
                 {
