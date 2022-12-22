@@ -15,9 +15,11 @@ const cachedGetSafeApps = (chainId: string): ReturnType<typeof getSafeApps> | un
     cache[chainId] = getSafeApps(chainId, { client_url: window.location.origin })
 
     // Clear the cache the promise resolves with a small delay
-    cache[chainId]?.finally(() => {
-      setTimeout(() => (cache[chainId] = undefined), 100)
-    })
+    cache[chainId]
+      ?.catch(() => null)
+      .then(() => {
+        setTimeout(() => (cache[chainId] = undefined), 100)
+      })
   }
 
   return cache[chainId]
