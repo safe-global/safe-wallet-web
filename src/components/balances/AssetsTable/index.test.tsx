@@ -36,10 +36,7 @@ describe('AssetsTable', () => {
 
   test('select and deselect hidden assets', async () => {
     const mockHiddenAssets = {
-      '5': {
-        [hexZeroPad('0x2', 20)]: hexZeroPad('0x2', 20),
-        [hexZeroPad('0x3', 20)]: hexZeroPad('0x3', 20),
-      },
+      '5': [hexZeroPad('0x2', 20), hexZeroPad('0x3', 20)],
     }
     const mockBalances = {
       data: {
@@ -80,7 +77,18 @@ describe('AssetsTable', () => {
     const result = customRender(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
-        hiddenAssets: mockHiddenAssets,
+        settings: {
+          currency: 'usd',
+          hiddenTokens: mockHiddenAssets,
+          shortName: {
+            show: true,
+            copy: true,
+            qr: true,
+          },
+          theme: {
+            darkMode: true,
+          },
+        },
       },
     })
 
@@ -122,7 +130,7 @@ describe('AssetsTable', () => {
 
   test('select and deselect visible assets', async () => {
     const mockHiddenAssets = {
-      '5': {},
+      '5': [],
     }
     const mockBalances = {
       data: {
@@ -163,7 +171,18 @@ describe('AssetsTable', () => {
     const result = customRender(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
-        hiddenAssets: mockHiddenAssets,
+        settings: {
+          currency: 'usd',
+          hiddenTokens: mockHiddenAssets,
+          shortName: {
+            show: true,
+            copy: true,
+            qr: true,
+          },
+          theme: {
+            darkMode: true,
+          },
+        },
       },
     })
 
@@ -200,7 +219,7 @@ describe('AssetsTable', () => {
 
   test('hideAndUnhideAssets', async () => {
     const mockHiddenAssets = {
-      '5': {},
+      '5': [],
     }
     const mockBalances = {
       data: {
@@ -241,7 +260,18 @@ describe('AssetsTable', () => {
     const result = customRender(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
-        hiddenAssets: mockHiddenAssets,
+        settings: {
+          currency: 'usd',
+          hiddenTokens: mockHiddenAssets,
+          shortName: {
+            show: true,
+            copy: true,
+            qr: true,
+          },
+          theme: {
+            darkMode: true,
+          },
+        },
       },
     })
 

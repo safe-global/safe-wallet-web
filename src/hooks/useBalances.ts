@@ -3,19 +3,15 @@ import isEqual from 'lodash/isEqual'
 import { type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
 import { selectBalances } from '@/store/balancesSlice'
-import type { HiddenAssetsOnChain } from '@/store/hiddenAssetsSlice'
-import useHiddenAssets from './useHiddenAssets'
+import useHiddenTokens from './useHiddenTokens'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 import { BigNumber } from 'ethers'
 
-const removeHiddenBalances = (
-  balances: SafeBalanceResponse,
-  hiddenAssets: HiddenAssetsOnChain,
-): SafeBalanceResponse => {
+const filterHiddenBalances = (balances: SafeBalanceResponse, hiddenAssets: string[]): SafeBalanceResponse => {
   const fiatTotalVisible = safeFormatUnits(
     balances.items
       .reduce((acc, balanceItem) => {
-        if (typeof hiddenAssets?.[balanceItem.tokenInfo.address] !== 'undefined') {
+        if (hiddenAssets.includes(balanceItem.tokenInfo.address)) {
           return acc.sub(safeParseUnits(balanceItem.fiatBalance, 18) || 0)
         }
         return acc
@@ -25,7 +21,7 @@ const removeHiddenBalances = (
   )
 
   const balanceItemsVisible = balances.items.filter(
-    (balanceItem) => hiddenAssets?.[balanceItem.tokenInfo.address] === undefined,
+    (balanceItem) => !hiddenAssets.includes(balanceItem.tokenInfo.address),
   )
 
   return { fiatTotal: fiatTotalVisible, items: balanceItemsVisible }
@@ -39,12 +35,12 @@ const useBalances = (
   error?: string
 } => {
   const state = useAppSelector(selectBalances, isEqual)
-  const hiddenAssets = useHiddenAssets()
+  const hiddenAssets = useHiddenTokens()
   const { data, error, loading } = state
 
   return useMemo(
     () => ({
-      balances: includeHidden ? data : removeHiddenBalances(data, hiddenAssets || {}),
+      balances: includeHidden ? data : filterHiddenBalances(data, hiddenAssets || {}),
       error,
       loading,
     }),

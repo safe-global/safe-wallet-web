@@ -20,7 +20,8 @@
   flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
-  margin-bottom: -66px; /* height of the box itself, causes the table to not scroll on first selection */
+  margin-top: -24px;
+  margin-bottom: -42px; /* 24 + 42 is the height of the box itself, causes the table to not scroll on first selection */
   gap: var(--space-1);
 }
 

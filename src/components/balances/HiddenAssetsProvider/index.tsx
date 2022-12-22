@@ -1,8 +1,8 @@
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
-import useHiddenAssets from '@/hooks/useHiddenAssets'
+import useHiddenTokens from '@/hooks/useHiddenTokens'
 import { useAppDispatch } from '@/store'
-import { addHiddenAssets, removeHiddenAssets } from '@/store/hiddenAssetsSlice'
+import { setHiddenTokensForChain } from '@/store/settingsSlice'
 import { type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ReactElement, type ReactNode, useState, useCallback, useMemo, createContext } from 'react'
 
@@ -30,12 +30,12 @@ const HiddenAssetsProvider = ({ children }: { children: ReactNode }): ReactEleme
   const [showHiddenAssets, setShowHiddenAssets] = useState(false)
   const [assetsToHide, setAssetsToHide] = useState<string[]>([])
   const [assetsToUnhide, setAssetsToUnhide] = useState<string[]>([])
-  const hiddenAssets = useHiddenAssets()
+  const hiddenAssets = useHiddenTokens()
   const { balances } = useBalances(true)
   const dispatch = useAppDispatch()
   const chainId = useChainId()
 
-  const toggleShowHiddenAssets = () => setShowHiddenAssets((prev) => !prev)
+  const toggleShowHiddenAssets = useCallback(() => setShowHiddenAssets((prev) => !prev), [])
 
   const toggleAsset = useCallback(
     (address: string) => {
@@ -51,7 +51,7 @@ const HiddenAssetsProvider = ({ children }: { children: ReactNode }): ReactEleme
         return
       }
 
-      const assetIsHidden = hiddenAssets && typeof hiddenAssets[address] !== 'undefined'
+      const assetIsHidden = hiddenAssets.includes(address)
       if (!assetIsHidden) {
         setAssetsToHide([...assetsToHide, address])
       } else {
@@ -64,19 +64,16 @@ const HiddenAssetsProvider = ({ children }: { children: ReactNode }): ReactEleme
   // Assets are selected if they are either hidden or marked for hiding
   const isAssetSelected = useCallback(
     (address: string) =>
-      (hiddenAssets && typeof hiddenAssets[address] !== 'undefined' && !assetsToUnhide.includes(address)) ||
-      assetsToHide.includes(address),
+      (hiddenAssets.includes(address) && !assetsToUnhide.includes(address)) || assetsToHide.includes(address),
     [assetsToHide, assetsToUnhide, hiddenAssets],
   )
 
   const visibleItems = useMemo(
     () =>
       showHiddenAssets
-        ? balances.items?.filter((item) => typeof hiddenAssets?.[item.tokenInfo.address] !== 'undefined')
+        ? balances.items?.filter((item) => hiddenAssets.includes(item.tokenInfo.address))
         : balances.items?.filter(
-            (item) =>
-              item.tokenInfo.type === TokenType.NATIVE_TOKEN ||
-              typeof hiddenAssets?.[item.tokenInfo.address] === 'undefined',
+            (item) => item.tokenInfo.type === TokenType.NATIVE_TOKEN || !hiddenAssets.includes(item.tokenInfo.address),
           ),
     [hiddenAssets, balances.items, showHiddenAssets],
   )
@@ -88,16 +85,10 @@ const HiddenAssetsProvider = ({ children }: { children: ReactNode }): ReactEleme
   }, [])
 
   const saveChanges = useCallback(() => {
-    if (assetsToHide.length > 0) {
-      dispatch(addHiddenAssets({ chainId, assets: assetsToHide }))
-    }
-
-    if (assetsToUnhide.length > 0) {
-      dispatch(removeHiddenAssets({ chainId, assetAddresses: assetsToUnhide }))
-    }
-
+    const newHiddenAssets = [...hiddenAssets.filter((asset) => !assetsToUnhide.includes(asset)), ...assetsToHide]
+    dispatch(setHiddenTokensForChain({ chainId, assets: newHiddenAssets }))
     reset()
-  }, [assetsToHide, assetsToUnhide, chainId, dispatch, reset])
+  }, [assetsToHide, assetsToUnhide, chainId, dispatch, hiddenAssets, reset])
 
   return (
     <HiddenAssetsContext.Provider

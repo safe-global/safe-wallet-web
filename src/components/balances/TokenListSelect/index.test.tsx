@@ -32,7 +32,7 @@ describe('TokenListSelect', () => {
 
   test('toggle hidden assets', async () => {
     const mockHiddenAssets = {
-      '5': { [hexZeroPad('0x3', 20)]: hexZeroPad('0x3', 20) },
+      '5': [hexZeroPad('0x3', 20)],
     }
     const mockBalances = {
       data: {
@@ -73,7 +73,18 @@ describe('TokenListSelect', () => {
     const result = customRender(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
-        hiddenAssets: mockHiddenAssets,
+        settings: {
+          currency: 'usd',
+          hiddenTokens: mockHiddenAssets,
+          shortName: {
+            show: true,
+            copy: true,
+            qr: true,
+          },
+          theme: {
+            darkMode: true,
+          },
+        },
       },
     })
 
@@ -102,7 +113,7 @@ describe('TokenListSelect', () => {
 
   test('Do not render hidden tokens toggle if none are hidden', () => {
     const mockHiddenAssets = {
-      '5': { [hexZeroPad('0x3', 20)]: hexZeroPad('0x3', 20) },
+      '5': [hexZeroPad('0x3', 20)],
     }
 
     const mockBalances = {
@@ -127,11 +138,21 @@ describe('TokenListSelect', () => {
       loading: false,
       error: undefined,
     }
-
     const result = customRender(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
-        hiddenAssets: mockHiddenAssets,
+        settings: {
+          currency: 'usd',
+          hiddenTokens: mockHiddenAssets,
+          shortName: {
+            show: true,
+            copy: true,
+            qr: true,
+          },
+          theme: {
+            darkMode: true,
+          },
+        },
       },
     })
 

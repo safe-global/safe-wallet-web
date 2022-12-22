@@ -15,6 +15,7 @@ import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material'
 import { HiddenAssetsContext } from '../HiddenAssetsProvider'
+import TokenMenu from '../TokenMenu'
 
 const isNativeToken = (tokenInfo: TokenInfo) => {
   return tokenInfo.type === TokenType.NATIVE_TOKEN
@@ -136,15 +137,19 @@ const AssetsTable = (): ReactElement => {
   })
 
   return (
-    <div className={css.container}>
-      <EnhancedTable rows={rows} headCells={headCells} />
-      {selectedAsset && (
-        <TokenTransferModal
-          onClose={() => setSelectedAsset(undefined)}
-          initialData={[{ tokenAddress: selectedAsset }]}
-        />
-      )}
-    </div>
+    <>
+      <TokenMenu />
+
+      <div className={css.container}>
+        <EnhancedTable rows={rows} headCells={headCells} />
+        {selectedAsset && (
+          <TokenTransferModal
+            onClose={() => setSelectedAsset(undefined)}
+            initialData={[{ tokenAddress: selectedAsset }]}
+          />
+        )}
+      </div>
+    </>
   )
 }
 

@@ -1,6 +1,6 @@
 import { type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import * as store from '@/store'
-import * as hiddenAssets from '../useHiddenAssets'
+import * as hiddenAssets from '../useHiddenTokens'
 import { renderHook } from '@/tests/test-utils'
 import useBalances from '../useBalances'
 import { hexZeroPad } from 'ethers/lib/utils'
@@ -17,7 +17,7 @@ describe('useBalances', () => {
       } as store.RootState),
     )
 
-    jest.spyOn(hiddenAssets, 'default').mockReturnValue({})
+    jest.spyOn(hiddenAssets, 'default').mockReturnValue([])
 
     const { result } = renderHook(() => useBalances(false))
 
@@ -65,9 +65,7 @@ describe('useBalances', () => {
       } as store.RootState),
     )
 
-    jest.spyOn(hiddenAssets, 'default').mockReturnValue({
-      [hiddenTokenAddress]: hiddenTokenAddress,
-    })
+    jest.spyOn(hiddenAssets, 'default').mockReturnValue([hiddenTokenAddress])
 
     const { result } = renderHook(() => useBalances(true))
 
@@ -114,9 +112,7 @@ describe('useBalances', () => {
         balances: { data: balance, error: undefined, loading: false },
       } as store.RootState),
     )
-    jest.spyOn(hiddenAssets, 'default').mockReturnValue({
-      [hiddenTokenAddress]: hiddenTokenAddress,
-    })
+    jest.spyOn(hiddenAssets, 'default').mockReturnValue([hiddenTokenAddress])
 
     const { result } = renderHook(() => useBalances(false))
 

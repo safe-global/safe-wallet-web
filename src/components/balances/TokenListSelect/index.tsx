@@ -2,23 +2,19 @@ import { type ReactElement, useContext } from 'react'
 import { Typography, ToggleButton, Tooltip } from '@mui/material'
 import { ASSETS_EVENTS } from '@/services/analytics'
 import { HiddenAssetsContext } from '../HiddenAssetsProvider'
-import useHiddenAssets from '@/hooks/useHiddenAssets'
+import useHiddenTokens from '@/hooks/useHiddenTokens'
 import useBalances from '@/hooks/useBalances'
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material'
 import Track from '@/components/common/Track'
-
-const TOGGLE_HIDDEN_ASSETS = 'toggleHiddenAssets'
-
-const OPTION_ALL_TOKENS = 'All tokens'
 
 const TokenListSelect = (): ReactElement | null => {
   const { toggleShowHiddenAssets, showHiddenAssets } = useContext(HiddenAssetsContext)
 
   const { balances } = useBalances(true)
-  const currentHiddenAssets = useHiddenAssets()
+  const currentHiddenAssets = useHiddenTokens()
 
   const hiddenAssetCount =
-    balances.items?.filter((item) => currentHiddenAssets?.[item.tokenInfo.address] !== undefined).length || 0
+    balances.items?.filter((item) => currentHiddenAssets.includes(item.tokenInfo.address)).length || 0
 
   if (hiddenAssetCount === 0) {
     return null

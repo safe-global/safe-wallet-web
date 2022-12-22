@@ -33,7 +33,7 @@ describe('TokenMenu', () => {
 
   test('do not render the menu initially', () => {
     const mockHiddenAssets = {
-      '5': { [hexZeroPad('0x3', 20)]: hexZeroPad('0x3', 20) },
+      '5': [hexZeroPad('0x3', 20)],
     }
     const mockBalances = {
       data: {
@@ -74,7 +74,18 @@ describe('TokenMenu', () => {
     const result = customRender(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
-        hiddenAssets: mockHiddenAssets,
+        settings: {
+          currency: 'usd',
+          hiddenTokens: mockHiddenAssets,
+          shortName: {
+            show: true,
+            copy: true,
+            qr: true,
+          },
+          theme: {
+            darkMode: true,
+          },
+        },
       },
     })
 
@@ -84,7 +95,7 @@ describe('TokenMenu', () => {
 
   test('render if showHiddenAssets is toggled', () => {
     const mockHiddenAssets = {
-      '5': { [hexZeroPad('0x3', 20)]: hexZeroPad('0x3', 20) },
+      '5': [hexZeroPad('0x3', 20)],
     }
     const mockBalances = {
       data: {
@@ -125,7 +136,18 @@ describe('TokenMenu', () => {
     const result = customRender(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
-        hiddenAssets: mockHiddenAssets,
+        settings: {
+          currency: 'usd',
+          hiddenTokens: mockHiddenAssets,
+          shortName: {
+            show: true,
+            copy: true,
+            qr: true,
+          },
+          theme: {
+            darkMode: true,
+          },
+        },
       },
     })
 
@@ -138,7 +160,7 @@ describe('TokenMenu', () => {
 
   test('toggle asset and cancel', () => {
     const mockHiddenAssets = {
-      '5': { [hexZeroPad('0x3', 20)]: hexZeroPad('0x3', 20) },
+      '5': [hexZeroPad('0x3', 20)],
     }
     const mockBalances = {
       data: {
@@ -179,7 +201,18 @@ describe('TokenMenu', () => {
     const result = customRender(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
-        hiddenAssets: mockHiddenAssets,
+        settings: {
+          currency: 'usd',
+          hiddenTokens: mockHiddenAssets,
+          shortName: {
+            show: true,
+            copy: true,
+            qr: true,
+          },
+          theme: {
+            darkMode: true,
+          },
+        },
       },
     })
 
@@ -202,7 +235,7 @@ describe('TokenMenu', () => {
 
   test('toggle and save asset', () => {
     const mockHiddenAssets = {
-      '5': { [hexZeroPad('0x3', 20)]: hexZeroPad('0x3', 20) },
+      '5': [hexZeroPad('0x3', 20)],
     }
     const mockBalances = {
       data: {
@@ -243,7 +276,18 @@ describe('TokenMenu', () => {
     const result = customRender(<TestComponent />, {
       initialReduxState: {
         balances: mockBalances,
-        hiddenAssets: mockHiddenAssets,
+        settings: {
+          currency: 'usd',
+          hiddenTokens: mockHiddenAssets,
+          shortName: {
+            show: true,
+            copy: true,
+            qr: true,
+          },
+          theme: {
+            darkMode: true,
+          },
+        },
       },
     })
 
