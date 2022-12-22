@@ -15,6 +15,7 @@ type useSafeAppsInfoModal = {
   permissions: AllowedFeatures[]
   addPermissions: (origin: string, permissions: BrowserPermission[]) => void
   getPermissions: (origin: string) => BrowserPermission[]
+  remoteSafeAppsLoading: boolean
 }
 
 type ModalInfoProps = {
@@ -30,6 +31,7 @@ const useSafeAppsInfoModal = ({
   permissions,
   addPermissions,
   getPermissions,
+  remoteSafeAppsLoading,
 }: useSafeAppsInfoModal): {
   isModalVisible: boolean
   isFirstTimeAccessingApp: boolean
@@ -90,7 +92,7 @@ const useSafeAppsInfoModal = ({
     const shouldShowLegalDisclaimer = !modalInfo[chainId] || modalInfo[chainId].consentsAccepted === false
     const shouldShowAllowedFeatures = !isPermissionsReviewCompleted
     const shouldShowUnknownAppWarning =
-      !isSafeAppInDefaultList && isFirstTimeAccessingApp && !isDisclaimerReadingCompleted
+      !remoteSafeAppsLoading && !isSafeAppInDefaultList && isFirstTimeAccessingApp && !isDisclaimerReadingCompleted
 
     return isComponentReady && (shouldShowLegalDisclaimer || shouldShowUnknownAppWarning || shouldShowAllowedFeatures)
   }, [
@@ -99,6 +101,7 @@ const useSafeAppsInfoModal = ({
     isFirstTimeAccessingApp,
     isSafeAppInDefaultList,
     isDisclaimerReadingCompleted,
+    remoteSafeAppsLoading,
     modalInfo,
   ])
 

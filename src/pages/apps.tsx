@@ -19,7 +19,7 @@ const Apps: NextPage = () => {
   const router = useRouter()
   const chainId = useChainId()
   const [appUrl, routerReady] = useSafeAppUrl()
-  const { remoteSafeApps } = useSafeApps()
+  const { remoteSafeApps, remoteSafeAppsLoading } = useSafeApps()
   const { isLoading, safeApp } = useSafeAppFromManifest(appUrl || '', chainId)
   const { addPermissions, getPermissions, getAllowedFeaturesList } = useBrowserPermissions()
   const origin = getOrigin(appUrl)
@@ -37,6 +37,7 @@ const Apps: NextPage = () => {
     permissions: safeApp?.safeAppsPermissions || [],
     addPermissions,
     getPermissions,
+    remoteSafeAppsLoading,
   })
 
   if (!routerReady || isLoading) {
