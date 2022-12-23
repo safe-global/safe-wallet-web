@@ -2,12 +2,3 @@
   margin-top: 8px;
   padding: 0;
 }
-
-.collapsibleSection {
-  max-height: 0px;
-  overflow: hidden;
-}
-
-.collapsibleSectionExpanded {
-  max-height: '500px';
-}

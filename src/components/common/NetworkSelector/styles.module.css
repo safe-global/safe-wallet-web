@@ -7,10 +7,6 @@
   display: none;
 }
 
-.select *:focus {
-  background: inherit;
-}
-
 .select :global .MuiSelect-select {
   padding-right: 40px !important;
   padding-left: 16px;

@@ -35,6 +35,7 @@ const SafeAppIcon = ({
       width={width}
       height={height}
       style={{ pointerEvents: 'none' }}
+      tabIndex={-1}
     />
   )
 }

@@ -1,7 +1,6 @@
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
-import type { IconButtonProps } from '@mui/material/IconButton'
 import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 import Tooltip from '@mui/material/Tooltip'
@@ -28,18 +27,6 @@ import QrCodeButton from '../QrCodeButton'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { SvgIcon } from '@mui/material'
-
-const HeaderIconButton = ({
-  title,
-  children,
-  ...props
-}: { title: string } & Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
-  <Tooltip title={title} placement="top">
-    <IconButton className={css.iconButton} {...props}>
-      {children}
-    </IconButton>
-  </Tooltip>
-)
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
@@ -88,9 +75,11 @@ const SafeHeader = (): ReactElement => {
         <div className={css.iconButtons}>
           <Track {...OVERVIEW_EVENTS.SHOW_QR}>
             <QrCodeButton>
-              <HeaderIconButton title="Open QR code">
-                <SvgIcon component={QrIconBold} inheritViewBox color="primary" fontSize="small" />
-              </HeaderIconButton>
+              <Tooltip title="Open QR code" placement="top">
+                <IconButton className={css.iconButton}>
+                  <SvgIcon component={QrIconBold} inheritViewBox color="primary" fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </QrCodeButton>
           </Track>
 
@@ -101,11 +90,16 @@ const SafeHeader = (): ReactElement => {
           </Track>
 
           <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
-            <a target="_blank" rel="noreferrer" href={blockExplorerLink?.href || ''}>
-              <HeaderIconButton title={blockExplorerLink?.title || ''}>
+            <Tooltip title={blockExplorerLink?.title || ''} placement="top">
+              <IconButton
+                className={css.iconButton}
+                target="_blank"
+                rel="noreferrer"
+                href={blockExplorerLink?.href || ''}
+              >
                 <SvgIcon component={LinkIconBold} inheritViewBox fontSize="small" color="primary" />
-              </HeaderIconButton>
-            </a>
+              </IconButton>
+            </Tooltip>
           </Track>
         </div>
       </div>

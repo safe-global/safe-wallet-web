@@ -13,7 +13,8 @@
   pointer-events: none;
 }
 
-.card:hover .sendButton {
+.card:hover .sendButton,
+.sendButton:focus-visible {
   pointer-events: all;
   opacity: 1;
 }

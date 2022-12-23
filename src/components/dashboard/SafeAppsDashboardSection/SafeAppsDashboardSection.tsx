@@ -9,6 +9,7 @@ import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import { AppCard, AppCardContainer } from '@/components/safe-apps/AppCard'
 import { AppRoutes } from '@/config/routes'
 import ExploreSafeAppsIcon from '@/public/images/apps/explore.svg'
+import Link from 'next/link'
 
 const SafeAppsDashboardSection = () => {
   const { rankedSafeApps, togglePin, pinnedSafeAppIds } = useSafeApps()
@@ -41,13 +42,15 @@ const ExploreSafeAppsCard = () => {
   const safeAppsLink = `${AppRoutes.apps}?safe=${router.query.safe}`
 
   return (
-    <AppCardContainer url={safeAppsLink}>
+    <AppCardContainer>
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={1}>
         <ExploreSafeAppsIcon alt="Explore Safe Apps icon" />
 
-        <Button variant="contained" size="small">
-          Explore Safe Apps
-        </Button>
+        <Link href={safeAppsLink} passHref>
+          <Button variant="contained" size="small">
+            Explore Safe Apps
+          </Button>
+        </Link>
       </Box>
     </AppCardContainer>
   )
