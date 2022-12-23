@@ -36,6 +36,11 @@ button {
   font: inherit;
 }
 
+:focus-visible {
+  outline: 5px auto Highlight;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -104,7 +109,7 @@ input[type='number'] {
 }
 
 body.beamerAnnouncementBarTopActive {
-  padding-top: 0px !important;
+  padding-top: 0 !important;
 }
 
 #beamerLastPostTitle {
