@@ -192,7 +192,7 @@ const chains: Record<string, string> = {
   tftm: '4002',
   'iotex-mainnet': '4689',
   'iotex-testnet': '4690',
-  txvm: '4919',
+  txvm: '4918',
   xvm: '4919',
   es: '5197',
   uzmi: '5315',
