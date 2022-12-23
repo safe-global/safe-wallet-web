@@ -37,7 +37,7 @@ const Apps: NextPage = () => {
     permissions: safeApp?.safeAppsPermissions || [],
     addPermissions,
     getPermissions,
-    remoteSafeAppsLoading,
+    remoteSafeAppsLoading: remoteSafeAppsLoading || remoteSafeApps.length === 0,
   })
 
   if (!routerReady || isLoading) {
