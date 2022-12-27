@@ -1,12 +1,12 @@
 import { type ReactElement } from 'react'
-import { Typography, ToggleButton, Tooltip } from '@mui/material'
+import { Typography, ToggleButton } from '@mui/material'
 import { ASSETS_EVENTS } from '@/services/analytics'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import useBalances from '@/hooks/useBalances'
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material'
 import Track from '@/components/common/Track'
 
-const TokenListSelect = ({
+const HiddenTokenToggle = ({
   toggleShowHiddenAssets,
   showHiddenAssets,
 }: {
@@ -25,22 +25,27 @@ const TokenListSelect = ({
 
   return (
     <Track {...ASSETS_EVENTS.TOGGLE_HIDDEN_ASSETS}>
-      <Tooltip title="Toggle hidden assets" arrow>
-        <ToggleButton
-          sx={{ gap: 1, padding: 1 }}
-          value="showHiddenAssets"
-          onClick={toggleShowHiddenAssets}
-          selected={showHiddenAssets}
-          data-testid="toggle-hidden-assets"
-        >
+      <ToggleButton
+        sx={{ gap: 1, padding: 1 }}
+        value="showHiddenAssets"
+        onClick={toggleShowHiddenAssets}
+        selected={showHiddenAssets}
+        data-testid="toggle-hidden-assets"
+      >
+        {showHiddenAssets ? (
           <>
-            {showHiddenAssets ? <VisibilityOffOutlined fontSize="small" /> : <VisibilityOutlined fontSize="small" />}
-            <Typography fontSize="small">{hiddenAssetCount}</Typography>
+            <VisibilityOffOutlined fontSize="small" />{' '}
+            <Typography fontSize="small">Hide {hiddenAssetCount} hidden</Typography>
           </>
-        </ToggleButton>
-      </Tooltip>
+        ) : (
+          <>
+            <VisibilityOutlined fontSize="small" />
+            <Typography fontSize="small">Show {hiddenAssetCount} hidden</Typography>
+          </>
+        )}
+      </ToggleButton>
     </Track>
   )
 }
 
-export default TokenListSelect
+export default HiddenTokenToggle

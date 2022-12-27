@@ -299,6 +299,13 @@ const initTheme = (darkMode: boolean) => {
           },
         },
       },
+      MuiToggleButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+          },
+        },
+      },
       MuiAlert: {
         styleOverrides: {
           standardError: ({ theme }) => ({

@@ -3,15 +3,17 @@ import { fireEvent, render } from '@/tests/test-utils'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { safeParseUnits } from '@/utils/formatters'
-import TokenListSelect from '.'
+import HiddenTokenToggle from '.'
 import { useState } from 'react'
 
 const TestComponent = () => {
   const [showHidden, setShowHidden] = useState(false)
-  return <TokenListSelect showHiddenAssets={showHidden} toggleShowHiddenAssets={() => setShowHidden((prev) => !prev)} />
+  return (
+    <HiddenTokenToggle showHiddenAssets={showHidden} toggleShowHiddenAssets={() => setShowHidden((prev) => !prev)} />
+  )
 }
 
-describe('TokenListSelect', () => {
+describe('HiddenTokenToggle', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     window.localStorage.clear()

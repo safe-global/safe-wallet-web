@@ -187,19 +187,14 @@ const AssetsTable = ({
                   </Button>
                 </Track>
               )}
-              {!isNative && (
-                <Track {...ASSETS_EVENTS.HIDE}>
-                  <Tooltip title={isSelected ? 'Show asset' : 'Hide asset'} arrow disableInteractive>
-                    <IconButton size="small" onClick={() => toggleAsset(item.tokenInfo.address)}>
-                      {isSelected ? (
-                        <VisibilityOffOutlined fontSize="small" />
-                      ) : (
-                        <VisibilityOutlined fontSize="small" />
-                      )}
-                    </IconButton>
-                  </Tooltip>
-                </Track>
-              )}
+
+              <Track {...ASSETS_EVENTS.HIDE}>
+                <Tooltip title={isSelected ? 'Show asset' : 'Hide asset'} arrow disableInteractive>
+                  <IconButton disabled={isNative} size="medium" onClick={() => toggleAsset(item.tokenInfo.address)}>
+                    {isSelected ? <VisibilityOffOutlined fontSize="small" /> : <VisibilityOutlined fontSize="small" />}
+                  </IconButton>
+                </Tooltip>
+              </Track>
             </Box>
           ),
         },
