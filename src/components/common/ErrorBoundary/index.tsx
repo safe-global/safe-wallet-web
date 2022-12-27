@@ -1,4 +1,4 @@
-import { Typography, Link as MuiLink, SvgIcon } from '@mui/material'
+import { Typography, Link as MuiLink } from '@mui/material'
 import Link from 'next/link'
 import type { FallbackRender } from '@sentry/react'
 
@@ -20,7 +20,7 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
           please try again.
         </Typography>
 
-        <CircularIcon icon={<SvgIcon component={WarningIcon} inheritViewBox />} badgeColor="warning" />
+        <CircularIcon icon={WarningIcon} badgeColor="warning" />
 
         {IS_PRODUCTION ? (
           <Typography color="text.primary">
@@ -31,11 +31,11 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
           </Typography>
         ) : (
           <>
-            <Typography color="error">{error.toString()}</Typography>
+            {/* Error may be undefined despite what the type says */}
+            <Typography color="error">{error?.toString()}</Typography>
             <Typography color="error">{componentStack}</Typography>
           </>
         )}
-
         <Typography mt={2}>
           <Link href={AppRoutes.welcome} passHref target="_blank" rel="noopener noreferrer" color="primary">
             <MuiLink>Go Home</MuiLink>
