@@ -11,8 +11,9 @@ runs:
         path: '**/node_modules'
         key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
     - name: Prepare install
-        run: yarn install --update-checksums
-        continue-on-error: true
+      run: yarn install --update-checksums
+      shell: bash
+      continue-on-error: true
     - name: Yarn install
       shell: bash
       run: yarn install --immutable
