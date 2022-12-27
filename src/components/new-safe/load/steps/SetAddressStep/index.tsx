@@ -100,8 +100,8 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
     <FormProvider {...formMethods}>
       <form onSubmit={onFormSubmit}>
         <Box className={layoutCss.row}>
-          <Grid container spacing={1}>
-            <Grid item xs={12} md={8}>
+          <Grid container spacing={[3, 1]} mb={3} pr="40px">
+            <Grid item xs={12} md>
               <NameInput
                 name={Field.name}
                 label={errors?.[Field.name]?.message || 'Name'}
@@ -126,23 +126,23 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
                 }}
               />
             </Grid>
-            <Grid item>
+            <Grid item order={[-1, 1]}>
               <Box className={css.select}>
                 <NetworkSelector />
               </Box>
             </Grid>
           </Grid>
-          <Grid container spacing={1} mt={2}>
-            <Grid item xs={12} md={8}>
-              <AddressInput label="Safe address" validate={validateSafeAddress} name={Field.address} />
-            </Grid>
-          </Grid>
-          <Typography mt={2}>
+
+          <AddressInput label="Safe address" validate={validateSafeAddress} name={Field.address} />
+
+          <Typography mt={4}>
             By continuing you consent to the <ExternalLink href="https://safe.global/terms">terms of use</ExternalLink>{' '}
             and <ExternalLink href="https://safe.global/privacy">privacy policy</ExternalLink>.
           </Typography>
         </Box>
+
         <Divider />
+
         <Box className={layoutCss.row}>
           <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
             <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
