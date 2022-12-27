@@ -1,7 +1,7 @@
 {
   "name": "web-core",
   "homepage": "https://github.com/safe-global/web-core",
-  "license": "MIT",
+  "license": "LGPL-3.0",
   "type": "module",
   "version": "1.2.1",
   "private": true,
