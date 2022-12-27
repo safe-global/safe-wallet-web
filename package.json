@@ -9,7 +9,7 @@
     "dev": "next dev",
     "start": "next dev",
     "build": "next build",
-    "export": "next export",
+    "export": "next export && cp public/404.html out/404.html",
     "lint": "tsc && next lint",
     "lint:fix": "next lint --fix",
     "prettier": "prettier -w \"{src,cypress,mocks,scripts}/**/*.{ts,tsx,css,js}\"",

@@ -1,0 +1,22 @@
+<script>
+// Rewrite the URL to move a Safe address from the path to the query
+// E.g. /eth:0x1234/home -> /home?safe=eth:0x1234
+(function () {
+  let redirectUrl = '/not-found'
+  const pathname = location.pathname
+  const search = location.search
+  const re = /^\/([^/]+?:0x[0-9a-f]{40})/i
+  const match = pathname.match(re)
+
+  if (match) {
+    const newPath = pathname.replace(re, '') || '/'
+    const pathSafe = match[1]
+
+    if (newPath !== pathname) {
+      redirectUrl = `${newPath}?safe=${pathSafe}${search ? '&' + search.slice(1) : ''}`
+    }
+  }
+
+  location.href = redirectUrl
+}())
+</script>
