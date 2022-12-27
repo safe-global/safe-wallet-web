@@ -4,9 +4,16 @@ import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
+import classNames from 'classnames'
 
-const Msg = ({ message }: { message: SafeMessage['message'] }): ReactElement => {
-  const [showMsg, setShowMsg] = useState(true)
+const Msg = ({
+  message,
+  showInitially = false,
+}: {
+  message: SafeMessage['message']
+  showInitially?: boolean
+}): ReactElement => {
+  const [showMsg, setShowMsg] = useState(showInitially)
 
   const handleToggleMsg = () => {
     setShowMsg((prev) => !prev)
@@ -18,14 +25,14 @@ const Msg = ({ message }: { message: SafeMessage['message'] }): ReactElement => 
 
   return (
     <>
-      <Link component="button" onClick={handleToggleMsg} fontSize="medium" className={css.toggle}>
-        {showMsg ? 'Hide' : 'Show'}
-      </Link>
-      {showMsg && (
+      <div>
         <pre>
-          <code>{JSON.stringify(message, null, 2)}</code>
+          <code className={classNames({ [css.truncated]: !showMsg })}>{JSON.stringify(message, null, 2)}</code>
         </pre>
-      )}
+        <Link component="button" onClick={handleToggleMsg} fontSize="medium" className={css.toggle}>
+          {showMsg ? 'Hide' : 'Show all'}
+        </Link>
+      </div>
     </>
   )
 }
