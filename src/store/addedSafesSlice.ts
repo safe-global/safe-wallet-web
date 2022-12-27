@@ -36,7 +36,7 @@ export const addedSafesSlice = createSlice({
       // Otherwise, migrate
       return action.payload
     },
-    setAddedSafes: (state, action: PayloadAction<AddedSafesState>) => {
+    setAddedSafes: (_, action: PayloadAction<AddedSafesState>) => {
       return action.payload
     },
     addOrUpdateSafe: (state, { payload }: PayloadAction<{ safe: SafeInfo }>) => {
@@ -81,6 +81,7 @@ export const addedSafesSlice = createSlice({
     },
   },
   extraReducers(builder) {
+    // @ts-ignore TODO: introduced with RTK 1.9.0 need to migrate
     builder.addCase(safeInfoSlice.actions.set.type, (state, { payload }: PayloadAction<Loadable<SafeInfo>>) => {
       if (!payload.data) {
         return

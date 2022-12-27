@@ -26,7 +26,7 @@ import useIsValidExecution from '@/hooks/useIsValidExecution'
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
-  onSubmit: (txId: string) => void
+  onSubmit: (txId?: string) => void
   children?: ReactNode
   error?: Error
   isExecutable?: boolean
@@ -93,8 +93,8 @@ const SignOrExecuteForm = ({
 
   // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
-  // Nonce cannot be edited if the tx is already signed, or it's a rejection
-  const nonceReadonly = !!tx?.signatures.size || isRejection
+  // Nonce cannot be edited if the tx is already proposed, or signed, or it's a rejection
+  const nonceReadonly = !!txId || !!tx?.signatures.size || isRejection
 
   // Assert that wallet, tx and provider are defined
   const assertDependencies = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
@@ -128,11 +128,14 @@ const SignOrExecuteForm = ({
   }
 
   // Sign transaction
-  const onSign = async (): Promise<string> => {
+  const onSign = async (): Promise<string | undefined> => {
     const [connectedWallet, createdTx, provider] = assertDependencies()
 
     // Smart contract wallets must sign via an on-chain tx
     if (await isSmartContractWallet(connectedWallet)) {
+      // If the first signature is a smart contract wallet, we have to propose w/o signatures
+      // Otherwise the backend won't pick up the tx
+      // The signature will be added once the on-chain signature is indexed
       const id = txId || (await proposeTx(createdTx))
       await dispatchOnChainSigning(createdTx, provider, id)
       return id
@@ -155,16 +158,15 @@ const SignOrExecuteForm = ({
   }
 
   // Execute transaction
-  const onExecute = async (): Promise<string> => {
+  const onExecute = async (): Promise<string | undefined> => {
     const [, createdTx, provider] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
-    const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(createdTx, provider, txOptions, id)
+    await dispatchTxExecution(createdTx, provider, txOptions, txId)
 
-    return id
+    return txId
   }
 
   // On modal submit
@@ -173,7 +175,7 @@ const SignOrExecuteForm = ({
     setIsSubmittable(false)
     setSubmitError(undefined)
 
-    let id: string
+    let id: string | undefined
     try {
       id = await (willExecute ? onExecute() : onSign())
     } catch (err) {

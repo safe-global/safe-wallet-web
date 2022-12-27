@@ -22,6 +22,8 @@ const Apps: NextPage = () => {
   const { remoteSafeApps } = useSafeApps()
   const { isLoading, safeApp } = useSafeAppFromManifest(appUrl || '', chainId)
   const { addPermissions, getPermissions, getAllowedFeaturesList } = useBrowserPermissions()
+  const origin = getOrigin(appUrl)
+
   const {
     isModalVisible,
     isSafeAppInDefaultList,
@@ -30,7 +32,7 @@ const Apps: NextPage = () => {
     isPermissionsReviewCompleted,
     onComplete,
   } = useSafeAppsInfoModal({
-    url: getOrigin(appUrl),
+    url: origin,
     safeApp: remoteSafeApps.find((app) => app.url === appUrl),
     permissions: safeApp?.safeAppsPermissions || [],
     addPermissions,
@@ -64,7 +66,7 @@ const Apps: NextPage = () => {
 
     return (
       <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => router.back()} />}>
-        <AppFrame appUrl={appUrl} allowedFeaturesList={getAllowedFeaturesList(appUrl)} />
+        <AppFrame appUrl={appUrl} allowedFeaturesList={getAllowedFeaturesList(origin)} />
       </SafeAppsErrorBoundary>
     )
   }

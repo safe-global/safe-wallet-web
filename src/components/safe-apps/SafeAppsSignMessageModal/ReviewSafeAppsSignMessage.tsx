@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { useState } from 'react'
 import { useMemo } from 'react'
 import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
 import { Box } from '@mui/system'
@@ -29,6 +30,7 @@ const ReviewSafeAppsSignMessage = ({
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
   const chainId = useChainId()
   const { createTx, dispatchSafeAppsTx } = useTxSender()
+  const [submitError, setSubmitError] = useState<Error>()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
@@ -72,12 +74,18 @@ const ReviewSafeAppsSignMessage = ({
     })
   }, [message, createTx])
 
-  const handleSubmit = (txId: string) => {
-    dispatchSafeAppsTx(txId, requestId)
+  const handleSubmit = async () => {
+    setSubmitError(undefined)
+    if (!safeTx) return
+    try {
+      await dispatchSafeAppsTx(safeTx, requestId)
+    } catch (error) {
+      setSubmitError(error as Error)
+    }
   }
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError}>
+    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError}>
       <>
         <SendFromBlock />
 

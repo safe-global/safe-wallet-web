@@ -3,6 +3,7 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getFallbackHandlerContractInstance, getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 // TODO: Check if these are still needed
 export const CHANGE_MASTER_COPY_ABI = 'function changeMasterCopy(address _masterCopy)'
@@ -15,6 +16,8 @@ export const CHANGE_FALLBACK_HANDLER_ABI = 'function setFallbackHandler(address 
  * Only works for safes < 1.3.0 as the changeMasterCopy function was removed
  */
 export const createUpdateSafeTxs = (safe: SafeInfo, chain: ChainInfo): MetaTransactionData[] => {
+  assertValidSafeVersion(safe.version)
+
   const latestMasterCopy = getGnosisSafeContractInstance(chain, LATEST_SAFE_VERSION)
   const safeContractInstance = getGnosisSafeContractInstance(chain, safe.version)
 

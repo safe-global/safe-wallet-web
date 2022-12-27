@@ -30,8 +30,8 @@ export const ExpandableTransactionItem = ({
     <Accordion
       disableGutters
       TransitionProps={{
-        mountOnEnter: false,
-        unmountOnExit: true,
+        mountOnEnter: true,
+        unmountOnExit: false,
       }}
       elevation={0}
       defaultExpanded={!!txDetails}

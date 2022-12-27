@@ -1,9 +1,4 @@
 .banner {
-  position: fixed;
-  z-index: 10000;
-  top: 0;
-  left: 0;
-  right: 0;
   background-color: var(--color-info-dark);
   color: var(--color-text-light);
   padding: 0 var(--space-3);
@@ -21,7 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--header-height);
+  min-height: var(--header-inner-height);
 }
 
 .content {
@@ -46,6 +41,6 @@
 
 @media (max-width: 600px) {
   .banner {
-    padding: var(--space-1) var(--space-3);
+    padding: var(--space-1) var(--space-2);
   }
 }
