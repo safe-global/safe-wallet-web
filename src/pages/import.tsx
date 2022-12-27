@@ -6,7 +6,7 @@ const Import: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Data import</title>
+        <title>Safe – Data import</title>
       </Head>
 
       <main>

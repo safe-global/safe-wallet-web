@@ -116,10 +116,10 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
   const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
 
   const onMaxAmountClick = () => {
-    if (!selectedToken || !spendingLimitAmount) return
+    if (!selectedToken) return
 
     const amount =
-      spendingLimit && isSpendingLimitType && spendingLimitAmount.lte(selectedToken.balance)
+      isSpendingLimitType && spendingLimitAmount && spendingLimitAmount.lte(selectedToken.balance)
         ? spendingLimitAmount.toString()
         : selectedToken.balance
 

@@ -93,8 +93,8 @@ const SignOrExecuteForm = ({
 
   // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
-  // Nonce cannot be edited if the tx is already signed, or it's a rejection
-  const nonceReadonly = !!tx?.signatures.size || isRejection
+  // Nonce cannot be edited if the tx is already proposed, or signed, or it's a rejection
+  const nonceReadonly = !!txId || !!tx?.signatures.size || isRejection
 
   // Assert that wallet, tx and provider are defined
   const assertDependencies = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {

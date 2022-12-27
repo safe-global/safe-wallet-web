@@ -20,10 +20,18 @@
   color: var(--color-text-primary);
 }
 
-.list :global .MuiListItemButton-root:hover,
+[data-theme='dark'] .list :global .Mui-selected {
+  background-color: var(--color-border-light);
+}
+
+.list :global .MuiListItemButton-root:hover {
+  border-radius: 6px;
+  background-color: var(--color-background-light);
+}
+
 .list :global .Mui-selected {
   border-radius: 6px;
-  background-color: var(--color-secondary-background);
+  background-color: var(--color-background-main);
 }
 
 .listItemButton :global .beamer_icon.active {
