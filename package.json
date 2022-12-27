@@ -1,7 +1,7 @@
 {
   "name": "web-core",
   "homepage": "https://github.com/safe-global/web-core",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "type": "module",
   "version": "1.2.1",
   "private": true,
@@ -69,6 +69,7 @@
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
     "next": "12.2.0",
+    "next-pwa": "^5.6.0",
     "papaparse": "^5.3.2",
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",
@@ -117,7 +118,7 @@
     "ts-node": "^10.8.2",
     "ts-prune": "^0.10.3",
     "typechain": "^8.0.0",
-    "typescript": "4.7.4",
+    "typescript": "4.9.4",
     "typescript-plugin-css-modules": "^3.4.0",
     "whatwg-fetch": "3.6.2"
   }

@@ -22,8 +22,6 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - uses: actions/checkout@v3
-
       # Post a PR comment before deploying
       - name: Post a comment while building
         if: github.event.number
@@ -36,28 +34,13 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
 
-      - name: Prepare install
-        run: yarn install --update-checksums
-        continue-on-error: true
+      - uses: actions/checkout@v3
 
-      - name: Install Node modules
-        run: yarn install --immutable
+      - uses: ./.github/workflows/yarn
 
-      - name: Build
-        run: yarn build && yarn export
-        env:
-          NEXT_PUBLIC_BEAMER_ID: ${{ secrets.NEXT_PUBLIC_BEAMER_ID }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH }}
-          NEXT_PUBLIC_INFURA_TOKEN: ${{ secrets.NEXT_PUBLIC_INFURA_TOKEN }}
-          NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN: ${{ secrets.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN }}
-          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
-          NEXT_PUBLIC_TENDERLY_ORG_NAME: ${{ secrets.NEXT_PUBLIC_TENDERLY_ORG_NAME }}
-          NEXT_PUBLIC_TENDERLY_PROJECT_NAME: ${{ secrets.NEXT_PUBLIC_TENDERLY_PROJECT_NAME }}
-          NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL }}
-          NEXT_PUBLIC_WC_BRIDGE: ${{ secrets.NEXT_PUBLIC_WC_BRIDGE }}
+      - uses: ./.github/workflows/build
+        with:
+          secrets: ${{ toJSON(secrets) }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1

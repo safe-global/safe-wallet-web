@@ -34,8 +34,8 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('input[name="tokenAddress"]').prev().click()
     cy.get('ul[role="listbox"]').contains('Görli Ether').click()
 
-    // Insert amount
-    cy.get('input[name="amount"]').type(`${sendValue}`)
+    // Insert max amount
+    cy.contains('Max').click()
 
     cy.contains('Next').click()
   })

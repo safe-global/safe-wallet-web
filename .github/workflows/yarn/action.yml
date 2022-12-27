@@ -1,0 +1,18 @@
+name: 'Yarn'
+
+description: 'Install the dependencies'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Yarn cache
+      uses: actions/cache@v3
+      with:
+        path: '**/node_modules'
+        key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
+    - name: Prepare install
+        run: yarn install --update-checksums
+        continue-on-error: true
+    - name: Yarn install
+      shell: bash
+      run: yarn install --immutable

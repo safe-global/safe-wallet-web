@@ -39,9 +39,6 @@ describe('Tx Modal', () => {
           cy.contains(chainPrefix)
           cy.contains(safeAddress)
 
-          // Current ETH balance
-          cy.contains('Balance:').contains('0.3 ETH')
-
           // Recipient field
           cy.get('#address-book-input').should('be.visible')
 

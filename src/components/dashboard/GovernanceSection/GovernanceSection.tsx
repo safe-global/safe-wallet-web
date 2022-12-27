@@ -23,6 +23,7 @@ import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import useAsync from '@/hooks/useAsync'
+import { getOrigin } from '@/components/safe-apps/utils'
 
 // A fallback component when the Safe App fails to load
 const WidgetLoadErrorFallback = () => (
@@ -69,7 +70,7 @@ const MiniAppFrame = ({ app, title }: { app: SafeAppData; title: string }) => {
     <SafeAppIframe
       key={theme}
       appUrl={`${app.url}#widget+${theme}`}
-      allowedFeaturesList={getAllowedFeaturesList(app.url)}
+      allowedFeaturesList={getAllowedFeaturesList(getOrigin(app.url))}
       title={title}
       iframeRef={iframeRef}
     />
