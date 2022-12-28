@@ -18,7 +18,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
     register,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, isValidating },
     trigger,
   } = useFormContext()
   const currentChain = useCurrentChain()
@@ -72,11 +72,13 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
               <InputAdornment position="end">{currentShortName}:</InputAdornment>
             ),
 
-            endAdornment: resolving && (
-              <InputAdornment position="end">
-                <CircularProgress size={20} />
-              </InputAdornment>
-            ),
+            endAdornment:
+              resolving ||
+              (isValidating && (
+                <InputAdornment position="end">
+                  <CircularProgress size={20} />
+                </InputAdornment>
+              )),
           }}
           InputLabelProps={{
             ...(props.InputLabelProps || {}),
