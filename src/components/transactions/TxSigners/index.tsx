@@ -29,19 +29,18 @@ import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import palette from '@/styles/colors'
 import CreatedIcon from '@/public/images/common/created.svg'
-import DotIconNew from '@/public/images/common/dot.svg'
+import DotIcon from '@/public/images/common/dot.svg'
 
 // TODO: replace MUI icons by .svg
 const TxRejectionIcon = () => <CancelIcon className={css.icon} />
+const CheckIcon = () => <CheckCircleIcon className={css.icon} />
 const CircleIcon = () => (
   <RadioButtonUncheckedOutlinedIcon className={css.icon} sx={{ stroke: 'currentColor', strokeWidth: '1px' }} />
 )
 
 // New Icons
 const Created = () => <SvgIcon component={CreatedIcon} inheritViewBox className={css.icon} />
-const Dot = () => <SvgIcon component={DotIconNew} inheritViewBox className={css.dot} />
-const CheckIconNew = () => <SvgIcon component={CheckCircleIcon} inheritViewBox className={css.icon} />
-const CircleIconNew = () => <SvgIcon component={CircleIcon} inheritViewBox className={css.icon} />
+const Dot = () => <SvgIcon component={DotIcon} inheritViewBox className={css.dot} />
 
 enum StepState {
   CONFIRMED = 'CONFIRMED',
@@ -139,7 +138,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
 
         <ListItem>
           <StyledListItemIcon $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
-            {isConfirmed ? <CheckIconNew /> : <CircleIconNew />}
+            {isConfirmed ? <CheckIcon /> : <CircleIcon />}
           </StyledListItemIcon>
           <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
             Confirmations{' '}
@@ -173,7 +172,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
         )}
         <ListItem>
           <StyledListItemIcon $state={executor ? StepState.CONFIRMED : StepState.DISABLED}>
-            {executor ? <CheckIconNew /> : <CircleIconNew />}
+            {executor ? <CheckIcon /> : <CircleIcon />}
           </StyledListItemIcon>
           <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
             {executor ? 'Executed' : isPending ? 'Executing' : 'Can be executed'}
