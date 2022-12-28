@@ -72,13 +72,11 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
               <InputAdornment position="end">{currentShortName}:</InputAdornment>
             ),
 
-            endAdornment:
-              resolving ||
-              (isValidating && (
-                <InputAdornment position="end">
-                  <CircularProgress size={20} />
-                </InputAdornment>
-              )),
+            endAdornment: (resolving || isValidating) && (
+              <InputAdornment position="end">
+                <CircularProgress size={20} />
+              </InputAdornment>
+            ),
           }}
           InputLabelProps={{
             ...(props.InputLabelProps || {}),
