@@ -72,7 +72,7 @@ describe('safe-messages', () => {
 
       const message = {
         domain: {
-          chainId: 5,
+          chainId: 1,
           name: 'Ether Mail',
           verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
           version: '1',
@@ -146,7 +146,7 @@ describe('safe-messages', () => {
           SafeMessage: [{ name: 'message', type: 'bytes' }],
         },
         message: {
-          message: '0x37abd8589f35b81d0ed965127e85b3de86f17c06f3736cfbb5f8e67767a8dd45',
+          message: '0xbe609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2',
         },
       })
     })
@@ -162,7 +162,7 @@ describe('safe-messages', () => {
 
       const message = {
         domain: {
-          chainId: 5,
+          chainId: 1,
           name: 'Ether Mail',
           verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
           version: '1',
@@ -235,7 +235,7 @@ describe('safe-messages', () => {
           SafeMessage: [{ name: 'message', type: 'bytes' }],
         },
         message: {
-          message: '0x37abd8589f35b81d0ed965127e85b3de86f17c06f3736cfbb5f8e67767a8dd45',
+          message: '0xbe609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2',
         },
       })
     })

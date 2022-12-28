@@ -7,9 +7,11 @@ import { isValidAddress } from './validation'
 
 /*
  * From v1.3.0, EIP-1271 support was moved to the CompatibilityFallbackHandler.
- * Also 1.3.0 introduces the chainId in the domain part of the safeMessageTypedData
+ * Also 1.3.0 introduces the chainId in the domain part of the SafeMessage
  */
 const EIP1271_FALLBACK_HANDLER_SUPPORTED_SAFE_VERSION = '1.3.0'
+
+const EIP1271_SUPPORTED_SAFE_VERSION = '1.0.0'
 
 export const generateSafeMessageMessage = (message: SafeMessage['message']): string => {
   return typeof message === 'string' ? hashMessage(message) : hashTypedData(message)
@@ -53,9 +55,6 @@ export const generateSafeMessageHash = (safe: SafeInfo, message: SafeMessage['me
 }
 
 export const supportsEIP1271 = ({ version, fallbackHandler }: SafeInfo): boolean => {
-  const EIP1271_SUPPORTED_SAFE_VERSION = '1.0.0'
-  const EIP1271_FALLBACK_HANDLER_SUPPORTED_SAFE_VERSION = '1.3.0'
-
   if (!version) {
     return false
   }
