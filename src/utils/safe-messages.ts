@@ -5,6 +5,12 @@ import type { SafeInfo, SafeMessage, EIP712TypedData } from '@safe-global/safe-g
 import { hashTypedData } from '@/utils/web3'
 import { isValidAddress } from './validation'
 
+/*
+ * From v1.3.0, EIP-1271 support was moved to the CompatibilityFallbackHandler.
+ * Also 1.3.0 introduces the chainId in the domain part of the safeMessageTypedData
+ */
+const EIP1271_FALLBACK_HANDLER_SUPPORTED_SAFE_VERSION = '1.3.0'
+
 export const generateSafeMessageMessage = (message: SafeMessage['message']): string => {
   return typeof message === 'string' ? hashMessage(message) : hashTypedData(message)
 }
@@ -16,12 +22,22 @@ export const generateSafeMessageMessage = (message: SafeMessage['message']): str
  * @param message Message to sign
  * @returns `SafeMessage` types for signing
  */
-export const generateSafeMessageTypedData = (safe: SafeInfo, message: SafeMessage['message']): EIP712TypedData => {
+export const generateSafeMessageTypedData = (
+  { version, chainId, address }: SafeInfo,
+  message: SafeMessage['message'],
+): EIP712TypedData => {
+  if (!version) {
+    throw Error('Cannot create SafeMessage without version information')
+  }
+  const isHandledByFallbackHandler = gte(version, EIP1271_FALLBACK_HANDLER_SUPPORTED_SAFE_VERSION)
+
   return {
-    domain: {
-      chainId: safe.chainId,
-      verifyingContract: safe.address.value,
-    },
+    domain: isHandledByFallbackHandler
+      ? {
+          chainId: chainId,
+          verifyingContract: address.value,
+        }
+      : { verifyingContract: address.value },
     types: {
       SafeMessage: [{ name: 'message', type: 'bytes' }],
     },
@@ -38,7 +54,6 @@ export const generateSafeMessageHash = (safe: SafeInfo, message: SafeMessage['me
 
 export const supportsEIP1271 = ({ version, fallbackHandler }: SafeInfo): boolean => {
   const EIP1271_SUPPORTED_SAFE_VERSION = '1.0.0'
-  // From v1.3.0, EIP-1271 support was moved to the CompatibilityFallbackHandler
   const EIP1271_FALLBACK_HANDLER_SUPPORTED_SAFE_VERSION = '1.3.0'
 
   if (!version) {
