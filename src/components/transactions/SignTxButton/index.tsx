@@ -37,7 +37,7 @@ const SignTxButton = ({
     <>
       <Track {...TX_LIST_EVENTS.CONFIRM}>
         {compact ? (
-          <Tooltip title="Sign" arrow placement="top">
+          <Tooltip title="Confirm" arrow placement="top">
             <span>
               <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
                 <CheckIcon fontSize="small" />
@@ -46,7 +46,7 @@ const SignTxButton = ({
           </Tooltip>
         ) : (
           <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
-            Sign
+            Confirm
           </Button>
         )}
       </Track>
