@@ -30,6 +30,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/Warning'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -122,10 +123,11 @@ const TxDetails = ({
   txDetails?: TransactionDetails // optional
 }): ReactElement => {
   const chainId = useChainId()
+  const { safe } = useSafeInfo()
 
   const [txDetailsData, error, loading] = useAsync<TransactionDetails>(async () => {
     return txDetails || getTransactionDetails(chainId, txSummary.id)
-  }, [txDetails, chainId, txSummary.id])
+  }, [txDetails, chainId, txSummary.id, safe.txQueuedTag])
 
   return (
     <div className={css.container}>
