@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react'
+import { useEffect, useState, type ReactElement } from 'react'
 import type { Palette } from '@mui/material'
 import { Box, Link, Step, StepConnector, StepContent, StepLabel, Stepper, type StepProps } from '@mui/material'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
@@ -9,9 +9,11 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import type {
   AddressEx,
   DetailedExecutionInfo,
+  MultisigConfirmation,
   TransactionDetails,
   TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsPending from '@/hooks/useIsPending'
@@ -20,6 +22,8 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 
 import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import useChainId from '@/hooks/useChainId'
+import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 
 // Icons
 
@@ -102,6 +106,22 @@ export const TxSigners = ({
   const isPending = useIsPending(txId)
   const wallet = useWallet()
   const { safe } = useSafeInfo()
+  const chainId = useChainId()
+  const [confirmations, setConfirmations] = useState<MultisigConfirmation[]>([])
+
+  useEffect(() => {
+    if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
+      setConfirmations(detailedExecutionInfo.confirmations)
+    }
+  }, [detailedExecutionInfo])
+
+  txSubscribe(TxEvent.SIGNATURE_INDEXED, ({ txId }) => {
+    getTransactionDetails(chainId, txId).then(({ detailedExecutionInfo }) => {
+      if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
+        setConfirmations(detailedExecutionInfo.confirmations)
+      }
+    })
+  })
 
   const toggleHide = () => {
     setHideConfirmations((prev) => !prev)
@@ -111,7 +131,7 @@ export const TxSigners = ({
     return null
   }
 
-  const { confirmations, confirmationsRequired, executor } = detailedExecutionInfo
+  const { confirmationsRequired, executor } = detailedExecutionInfo
 
   const confirmationsCount = confirmations.length
   const canExecute = wallet?.address ? isExecutable(txSummary, wallet.address, safe) : false
@@ -137,9 +157,7 @@ export const TxSigners = ({
       <StyledStep $bold $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
         <StepLabel icon={isConfirmed ? <CheckIcon /> : <CircleIcon />}>
           Confirmations{' '}
-          <Box className={css.confirmationsTotal}>
-            ({`${confirmationsCount} of ${detailedExecutionInfo.confirmationsRequired}`})
-          </Box>
+          <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
         </StepLabel>
       </StyledStep>
       {!hideConfirmations && confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value))}
