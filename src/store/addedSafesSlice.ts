@@ -36,7 +36,7 @@ export const addedSafesSlice = createSlice({
       // Otherwise, migrate
       return action.payload
     },
-    setAddedSafes: (state, action: PayloadAction<AddedSafesState>) => {
+    setAddedSafes: (_, action: PayloadAction<AddedSafesState>) => {
       return action.payload
     },
     addOrUpdateSafe: (state, { payload }: PayloadAction<{ safe: SafeInfo }>) => {

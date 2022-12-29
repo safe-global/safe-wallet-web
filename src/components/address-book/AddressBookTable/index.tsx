@@ -20,10 +20,11 @@ import Track from '@/components/common/Track'
 import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
 import SvgIcon from '@mui/material/SvgIcon'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
-import AddressBookIcon from '@/public/images/address-book/address-book.svg'
+import NoEntriesIcon from '@/public/images/address-book/no-entries.svg'
 import { useCurrentChain } from '@/hooks/useChains'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
+import { Box } from '@mui/material'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -140,10 +141,12 @@ const AddressBookTable = () => {
         {filteredEntries.length > 0 ? (
           <EnhancedTable rows={rows} headCells={headCells} />
         ) : (
-          <PagePlaceholder
-            img={<AddressBookIcon />}
-            text={`No entries found${chain ? ` on ${chain.chainName}` : ''}`}
-          />
+          <Box bgcolor="background.paper" borderRadius={1}>
+            <PagePlaceholder
+              img={<NoEntriesIcon />}
+              text={`No entries found${chain ? ` on ${chain.chainName}` : ''}`}
+            />
+          </Box>
         )}
       </main>
 

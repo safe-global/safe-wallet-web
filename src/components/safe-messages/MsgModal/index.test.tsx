@@ -26,6 +26,7 @@ describe('MsgModal', () => {
 
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
+        version: '1.3.0',
         address: {
           value: hexZeroPad('0x1', 20),
         },
@@ -213,6 +214,7 @@ describe('MsgModal', () => {
     expect(proposalSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         safe: {
+          version: '1.3.0',
           address: {
             value: hexZeroPad('0x1', 20),
           },
@@ -270,6 +272,7 @@ describe('MsgModal', () => {
     expect(confirmationSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         safe: {
+          version: '1.3.0',
           address: {
             value: hexZeroPad('0x1', 20),
           },

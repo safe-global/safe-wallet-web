@@ -48,7 +48,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
 
         <div className={txDetailsCss.txSummary}>
           <TxDataRow title="Message:">
-            <Msg message={msg.message} />
+            <Msg message={msg.message} defaultExpanded />
           </TxDataRow>
           <TxDataRow title="SafeMessage:">{generateDataRowValue(safeMessage, 'hash')}</TxDataRow>
           <TxDataRow title="SafeMessage hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>

@@ -31,27 +31,27 @@ const Footer = (): ReactElement | null => {
           <Typography variant="caption">&copy;2022 Safe Ecosystem Foundation</Typography>
         </li>
         <li>
-          <ExternalLink suppressIcon href="https://safe.global/terms">
+          <ExternalLink noIcon href="https://safe.global/terms">
             Terms
           </ExternalLink>
         </li>
         <li>
-          <ExternalLink suppressIcon href="https://safe.global/privacy">
+          <ExternalLink noIcon href="https://safe.global/privacy">
             Privacy
           </ExternalLink>
         </li>
         <li>
-          <ExternalLink suppressIcon href="https://safe.global/licenses">
+          <ExternalLink noIcon href="https://safe.global/licenses">
             Licenses
           </ExternalLink>
         </li>
         <li>
-          <ExternalLink suppressIcon href="https://safe.global/imprint">
+          <ExternalLink noIcon href="https://safe.global/imprint">
             Imprint
           </ExternalLink>
         </li>
         <li>
-          <ExternalLink suppressIcon href="https://safe.global/cookie">
+          <ExternalLink noIcon href="https://safe.global/cookie">
             Cookie Policy
           </ExternalLink>
           &nbsp;&mdash;&nbsp;
@@ -60,7 +60,7 @@ const Footer = (): ReactElement | null => {
           </Link>
         </li>
         <li>
-          <ExternalLink suppressIcon href={`${packageJson.homepage}/releases/tag/v${packageJson.version}`}>
+          <ExternalLink noIcon href={`${packageJson.homepage}/releases/tag/v${packageJson.version}`}>
             v{packageJson.version}
           </ExternalLink>
         </li>

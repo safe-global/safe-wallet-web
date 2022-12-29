@@ -36,6 +36,7 @@ describe('safeMsgSender', () => {
       const safeMsgDispatchSpy = jest.spyOn(events, 'safeMsgDispatch')
 
       const safe = {
+        version: '1.3.0',
         chainId: 1,
         address: {
           value: '0x789',
@@ -66,6 +67,7 @@ describe('safeMsgSender', () => {
       const safeMsgDispatchSpy = jest.spyOn(events, 'safeMsgDispatch')
 
       const safe = {
+        version: '1.3.0',
         chainId: 1,
         address: {
           value: '0x789',
@@ -103,6 +105,7 @@ describe('safeMsgSender', () => {
       const safeMsgDispatchSpy = jest.spyOn(events, 'safeMsgDispatch')
 
       const safe = {
+        version: '1.3.0',
         chainId: 1,
         address: {
           value: '0x789',
@@ -130,6 +133,7 @@ describe('safeMsgSender', () => {
       const safeMsgDispatchSpy = jest.spyOn(events, 'safeMsgDispatch')
 
       const safe = {
+        version: '1.3.0',
         chainId: 1,
         address: {
           value: '0x789',
