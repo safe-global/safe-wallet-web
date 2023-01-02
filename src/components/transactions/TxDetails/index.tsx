@@ -125,9 +125,13 @@ const TxDetails = ({
   const chainId = useChainId()
   const { safe } = useSafeInfo()
 
-  const [txDetailsData, error, loading] = useAsync<TransactionDetails>(async () => {
-    return txDetails || getTransactionDetails(chainId, txSummary.id)
-  }, [txDetails, chainId, txSummary.id, safe.txQueuedTag])
+  const [txDetailsData, error, loading] = useAsync<TransactionDetails>(
+    async () => {
+      return txDetails || getTransactionDetails(chainId, txSummary.id)
+    },
+    [txDetails, chainId, txSummary.id, safe.txQueuedTag],
+    false,
+  )
 
   return (
     <div className={css.container}>
