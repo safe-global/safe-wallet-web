@@ -9,6 +9,7 @@ import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 import { useRouter } from 'next/router'
 import useIsSafeOwner from './useIsSafeOwner'
 import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 const OLD_APP_URL = 'https://gnosis-safe.io/app'
 
@@ -26,12 +27,14 @@ const useSafeNotifications = (): void => {
   const { safe } = useSafeInfo()
   const { chainId, version, implementationVersionState } = safe
   const isOwner = useIsSafeOwner()
+  const safeAddress = useSafeAddress()
 
   /**
    * Show a notification when the Safe version is out of date
    */
 
   useEffect(() => {
+    if (safe.address.value !== safeAddress) return
     if (!isOwner) return
     if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
@@ -61,7 +64,7 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, implementationVersionState, version, query.safe, isOwner])
+  }, [dispatch, implementationVersionState, version, query.safe, isOwner, safe.address.value, safeAddress])
 
   /**
    * Show a notification when the Safe master copy is not supported
