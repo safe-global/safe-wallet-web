@@ -24,17 +24,17 @@ const CLI_LINK = {
 const useSafeNotifications = (): void => {
   const dispatch = useAppDispatch()
   const { query } = useRouter()
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const { chainId, version, implementationVersionState } = safe
   const isOwner = useIsSafeOwner()
-  const safeAddress = useSafeAddress()
+  const urlSafeAddress = useSafeAddress()
 
   /**
    * Show a notification when the Safe version is out of date
    */
 
   useEffect(() => {
-    if (safe.address.value !== safeAddress) return
+    if (safeAddress !== urlSafeAddress) return
     if (!isOwner) return
     if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
@@ -64,7 +64,7 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, implementationVersionState, version, query.safe, isOwner, safe.address.value, safeAddress])
+  }, [dispatch, implementationVersionState, version, query.safe, isOwner, safeAddress, urlSafeAddress])
 
   /**
    * Show a notification when the Safe master copy is not supported
