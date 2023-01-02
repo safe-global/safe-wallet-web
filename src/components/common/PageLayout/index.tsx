@@ -7,13 +7,18 @@ import SafeLoadingError from '../SafeLoadingError'
 import Footer from '../Footer'
 import SideDrawer from './SideDrawer'
 import PsaBanner from '../PsaBanner'
+import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true)
+  const router = useRouter()
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev)
   }
+
+  const showFooter = router.pathname.startsWith(AppRoutes.settings.index)
 
   return (
     <>
@@ -29,7 +34,7 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
           <SafeLoadingError>{children}</SafeLoadingError>
         </div>
 
-        <Footer />
+        {showFooter && <Footer />}
       </div>
     </>
   )

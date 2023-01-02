@@ -20,6 +20,10 @@ const isNewSafeRoute = (pathname: string): boolean => {
   return pathname === AppRoutes.newSafe.create
 }
 
+const isWelcomeRoute = (pathname: string): boolean => {
+  return pathname === AppRoutes.welcome
+}
+
 const isAppShareRoute = (pathname: string): boolean => {
   return pathname === AppRoutes.share.safeApp
 }
@@ -36,7 +40,11 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
 
   useEffect(() => {
     const closeSidebar =
-      isSmallScreen || isSafeAppRoute(pathname, query) || isAppShareRoute(pathname) || isNewSafeRoute(pathname)
+      isSmallScreen ||
+      isSafeAppRoute(pathname, query) ||
+      isAppShareRoute(pathname) ||
+      isNewSafeRoute(pathname) ||
+      isWelcomeRoute(pathname)
     onToggle(!closeSidebar)
   }, [isSmallScreen, onToggle, pathname, query])
 

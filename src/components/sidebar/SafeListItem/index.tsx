@@ -56,6 +56,7 @@ const SafeListItem = ({
     <ListItem
       className={css.container}
       disablePadding
+      sx={{ '& .MuiListItemSecondaryAction-root': { right: '24px' } }}
       secondaryAction={
         noActions ? undefined : (
           <Box display="flex" alignItems="center" gap={1}>
