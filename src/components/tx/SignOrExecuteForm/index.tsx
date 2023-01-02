@@ -238,7 +238,7 @@ const SignOrExecuteForm = ({
 
         <TxSimulation
           gasLimit={advancedParams.gasLimit?.toNumber()}
-          transactions={safeTx}
+          transactions={tx}
           canExecute={canExecute}
           disabled={submitDisabled}
         />
