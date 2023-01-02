@@ -22,7 +22,8 @@
   border-radius: 8px;
   font-weight: bold;
   font-size: 12px;
-  background-color: var(--color-secondary-background);
+  background-color: var(--color-secondary-light);
+  color: var(--color-static-main);
   text-align: center;
 }
 

@@ -36,12 +36,7 @@ const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {
           <Box gridArea="confirmations">
             {isMultisigExecutionInfo(transaction.executionInfo) ? (
               <Box className={css.confirmationsCount}>
-                <SvgIcon
-                  component={OwnersIcon}
-                  inheritViewBox
-                  fontSize="small"
-                  sx={{ color: ({ palette }) => palette.text.primary }}
-                />
+                <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" />
                 <Typography variant="caption" fontWeight="bold">
                   {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
                 </Typography>
