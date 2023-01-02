@@ -1,6 +1,4 @@
 # Environments
-
-⚠️ URLs to be updated!
 We have several environments where the app can be deployed:
 
 
@@ -8,7 +6,6 @@ We have several environments where the app can be deployed:
 |---|---|---|---|---|
 |local|http://localhost:3000/app|local development|`yarn start`|staging|
 |PRs   |`https://<PR_NAME>--webcore.review-web-core.5afe.dev/`|peer review & feature QA|for all PRs on push|staging|
-|release PRs|`https://<PR_NAME>--webcore.review-web-core.5afe.dev/`|pre-release regression testing|in PRs to `main`|**production** (sic!)|
 |dev  |https://safe-web-core.dev.5afe.dev/|preview of all WIP features|on push to the `dev` branch|staging|
 |staging|https://safe-web-core.staging.5afe.dev/|preview of features before a release|on push to `main`|staging|
 |production|https://app.safe.global/|live app|deployed by DevOps (see the [Release Procedure](release-procedure.md))|**production**|
