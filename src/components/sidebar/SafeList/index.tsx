@@ -68,25 +68,29 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
     setOpen((prev) => ({ ...prev, [chainId]: open }))
   }
 
+  const showAddButton = router.pathname !== AppRoutes.welcome
+
   return (
     <div className={css.container}>
       <div className={css.header}>
         <Typography variant="h4" display="inline" fontWeight={700}>
           My Safes
         </Typography>
-        <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
-          <Link href={{ pathname: AppRoutes.welcome }} passHref>
-            <Button
-              disableElevation
-              size="small"
-              variant="outlined"
-              onClick={closeDrawer}
-              startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-            >
-              Add
-            </Button>
-          </Link>
-        </Track>
+        {showAddButton && (
+          <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
+            <Link href={{ pathname: AppRoutes.welcome }} passHref>
+              <Button
+                disableElevation
+                size="small"
+                variant="outlined"
+                onClick={closeDrawer}
+                startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+              >
+                Add
+              </Button>
+            </Link>
+          </Track>
+        )}
       </div>
 
       {configs.map((chain) => {
@@ -116,7 +120,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
 
             {/* No Safes yet */}
             {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
-              <Typography variant="body2" color="primary.light" py={2}>
+              <Typography variant="body2" color="primary.light" py={2} textAlign="center">
                 <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
                   Create or add
                 </Link>{' '}
