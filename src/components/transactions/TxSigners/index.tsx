@@ -10,9 +10,6 @@ import {
   Typography,
   type ListItemIconProps,
 } from '@mui/material'
-import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUncheckedOutlined'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import CancelIcon from '@mui/icons-material/Cancel'
 import type {
   DetailedExecutionInfo,
   TransactionDetails,
@@ -30,16 +27,15 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import palette from '@/styles/colors'
 import CreatedIcon from '@/public/images/common/created.svg'
 import DotIcon from '@/public/images/common/dot.svg'
+import CircleIcon from '@/public/images/common/circle.svg'
+import CheckIcon from '@/public/images/common/circle-check.svg'
+import CancelIcon from '@/public/images/common/cancel.svg'
 
-// TODO: replace MUI icons by .svg
-const TxRejectionIcon = () => <CancelIcon className={css.icon} />
-const CheckIcon = () => <CheckCircleIcon className={css.icon} />
-const CircleIcon = () => (
-  <RadioButtonUncheckedOutlinedIcon className={css.icon} sx={{ stroke: 'currentColor', strokeWidth: '1px' }} />
-)
-
-// New Icons
+// Icons
 const Created = () => <SvgIcon component={CreatedIcon} inheritViewBox className={css.icon} />
+const MissingConfirmation = () => <SvgIcon component={CircleIcon} inheritViewBox className={css.icon} />
+const Check = () => <SvgIcon component={CheckIcon} inheritViewBox className={css.icon} />
+const Cancel = () => <SvgIcon component={CancelIcon} inheritViewBox className={css.icon} />
 const Dot = () => <SvgIcon component={DotIcon} inheritViewBox className={css.dot} />
 
 enum StepState {
@@ -122,7 +118,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
           {isCancellationTxInfo(txInfo) ? (
             <>
               <StyledListItemIcon $state={StepState.ERROR}>
-                <TxRejectionIcon />
+                <Cancel />
               </StyledListItemIcon>
               <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>On-chain rejection created</ListItemText>
             </>
@@ -138,7 +134,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
 
         <ListItem>
           <StyledListItemIcon $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
-            {isConfirmed ? <CheckIcon /> : <CircleIcon />}
+            {isConfirmed ? <Check /> : <MissingConfirmation />}
           </StyledListItemIcon>
           <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
             Confirmations{' '}
@@ -172,7 +168,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
         )}
         <ListItem>
           <StyledListItemIcon $state={executor ? StepState.CONFIRMED : StepState.DISABLED}>
-            {executor ? <CheckIcon /> : <CircleIcon />}
+            {executor ? <Check /> : <MissingConfirmation />}
           </StyledListItemIcon>
           <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
             {executor ? 'Executed' : isPending ? 'Executing' : 'Can be executed'}
