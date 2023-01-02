@@ -226,8 +226,12 @@ describe('AppsPage', () => {
       const riskCheckbox = await screen.findByText(
         /This app is not part of Safe and I agree to use it at my own risk\./,
       )
-      fireEvent.click(riskCheckbox)
-      fireEvent.click(riskCheckbox)
+      await act(() => {
+        fireEvent.click(riskCheckbox)
+      })
+      await act(() => {
+        fireEvent.click(riskCheckbox)
+      })
       fireEvent.click(screen.getByText('Add'))
 
       await waitFor(() => expect(screen.getByText('Accepting the disclaimer is mandatory')).toBeInTheDocument())
