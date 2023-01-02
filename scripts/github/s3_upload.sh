@@ -4,16 +4,16 @@ set -ev
 
 cd out
 
-# First, upload the new files w/o deleting the old ones
-aws s3 sync . $BUCKET
+# First, upload new files w/o deleting the old ones
+aws s3 sync . $BUCKET --exclude "*.html"
 
 # Second, upload them again but delete the old files this time
 # This allows for a no-downtime deployment
-aws s3 sync . $BUCKET --delete
+aws s3 sync . $BUCKET --delete --exclude "*.html"
 
-# Finally, upload all HTML files again but w/o an extention so that URLs like /welcome open the right page
+# Finally, upload HTML files but w/o an extention so that URLs like /welcome open the right file
 for file in $(find . -name '*.html' | sed 's|^\./||'); do
-    aws s3 cp ${file%} $BUCKET/${file%.*} --content-type 'text/html'
+    aws s3 cp ${file%} $BUCKET/${file%.*} --content-type "text/html"
 done
 
 cd -
