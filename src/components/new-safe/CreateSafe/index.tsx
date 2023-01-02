@@ -65,7 +65,7 @@ const staticHints: Record<
             Not sure how many owners and confirmations you need for your Safe?
             <br />
             <ExternalLink
-              href="https://help.gnosis-safe.io/en/articles/4772567-what-safe-setup-should-i-use"
+              href="https://help.safe.global/en/articles/4772567-what-safe-setup-should-i-use"
               fontWeight="bold"
             >
               Learn more about setting up your Safe.
