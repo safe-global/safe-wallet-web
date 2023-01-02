@@ -24,7 +24,7 @@ const NewSafe = () => {
         <div className={css.main}>
           <div className={css.content}>
             <Typography variant="h1" fontSize={52} lineHeight={1} letterSpacing={-1.5} mb={1}>
-              Welcome to the Safe.
+              Welcome to the Safe
             </Typography>
             <Typography mb={6}>
               Safe is the most trusted platform to manage digital assets.
