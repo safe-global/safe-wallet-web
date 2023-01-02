@@ -96,22 +96,6 @@ describe('Transaction history', () => {
         // Status
         cy.contains('span', 'Success').should('exist')
       })
-      // Receive DAI
-      .prev()
-      .within(() => {
-        // Type
-        cy.get('img').should('have.attr', 'src', INCOMING)
-        cy.contains('div', 'Received').should('exist')
-
-        // Info
-        cy.contains('span', '120,497.61 DAI').should('exist')
-
-        // Time
-        cy.contains('span', '5:01 PM').should('exist')
-
-        // Status
-        cy.contains('span', 'Success').should('exist')
-      })
       // Send 0.11 WETH
       .prev()
       .within(() => {

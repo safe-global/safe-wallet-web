@@ -9,7 +9,6 @@ inputs:
   prod:  # id of input
     description: 'Production build flag'
     required: false
-    default: false
 
 runs:
   using: 'composite'
