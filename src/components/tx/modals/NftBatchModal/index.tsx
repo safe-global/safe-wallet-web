@@ -3,28 +3,27 @@ import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescri
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import type { TxModalProps } from '@/components/tx/TxModal'
 import TxModal from '@/components/tx/TxModal'
-import SendNftForm from './SendNftForm'
-import ReviewNftTx from './ReviewNftTx'
+import SendNftBatch from './SendNftBatch'
+import ReviewNftBatch from './ReviewNftBatch'
 
 export type NftTransferParams = {
   recipient: string
-  token: SafeCollectibleResponse
-  txNonce?: number
+  tokens: SafeCollectibleResponse[]
 }
 
 export const NftTransferSteps: TxStepperProps['steps'] = [
   {
-    label: 'Send NFT',
-    render: (data, onSubmit) => <SendNftForm onSubmit={onSubmit} params={data as NftTransferParams} />,
+    label: 'Send NFTs',
+    render: (data, onSubmit) => <SendNftBatch onSubmit={onSubmit} params={data as NftTransferParams} />,
   },
   {
     label: 'Review transaction',
-    render: (data, onSubmit) => <ReviewNftTx onSubmit={onSubmit} params={data as NftTransferParams} />,
+    render: (data, onSubmit) => <ReviewNftBatch onSubmit={onSubmit} params={data as NftTransferParams} />,
   },
 ]
 
-const NftTransferModal = (props: Omit<TxModalProps, 'steps'>): ReactElement => {
+const NftBatchModal = (props: Omit<TxModalProps, 'steps'>): ReactElement => {
   return <TxModal {...props} steps={NftTransferSteps} />
 }
 
-export default NftTransferModal
+export default NftBatchModal

@@ -35,7 +35,7 @@ const CreationModal = ({
   open: boolean
   onClose: () => void
   onTokenModalOpen: () => void
-  onNFTModalOpen: () => void
+  onNFTModalOpen?: () => void
   onContractInteraction: () => void
   shouldShowTxBuilder: boolean
 }) => {
@@ -46,7 +46,8 @@ const CreationModal = ({
       <DialogContent>
         <Box display="flex" flexDirection="column" alignItems="center" gap={2} pt={7} pb={4} width={240} m="auto">
           <SendTokensButton onClick={onTokenModalOpen} />
-          <SendNFTsButton onClick={onNFTModalOpen} />
+
+          {onNFTModalOpen && <SendNFTsButton onClick={onNFTModalOpen} />}
 
           {txBuilder.app && shouldShowTxBuilder && (
             <Link href={txBuilder.link} passHref>
