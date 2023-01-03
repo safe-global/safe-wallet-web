@@ -27,7 +27,7 @@ export const OwnerRow = ({
 }) => {
   const wallet = useWallet()
   const fieldName = `${groupName}.${index}`
-  const { control, getValues, setValue } = useFormContext()
+  const { control, getValues, setValue, trigger } = useFormContext()
   const owners = useWatch({
     control,
     name: groupName,
@@ -51,6 +51,10 @@ export const OwnerRow = ({
   )
 
   const { ens, name, resolving } = useAddressResolver(owner.address)
+
+  useEffect(() => {
+    trigger()
+  }, [trigger, owners])
 
   useEffect(() => {
     if (ens) {
