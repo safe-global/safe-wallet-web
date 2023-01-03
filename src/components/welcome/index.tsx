@@ -9,8 +9,9 @@ import css from './styles.module.css'
 import NewSafeIcon from '@/public/images/welcome/new-safe.svg'
 import LoadSafeIcon from '@/public/images/welcome/load-safe.svg'
 import useWallet from '@/hooks/wallets/useWallet'
-import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
+import Keyhole from '@/components/common/icons/KeyholeIcon/keyhole.svg'
+import CircularIcon from '@/components/common/icons/CircularIcon'
 
 const NewSafe = () => {
   const router = useRouter()
@@ -70,7 +71,7 @@ const NewSafe = () => {
           ) : (
             <ButtonBase className={css.button} onClick={connectWallet} disableRipple>
               <Box display="flex" alignItems="center" gap={2} textAlign="left">
-                <KeyholeIcon />
+                <CircularIcon icon={Keyhole} size={40} />
                 <Typography variant="h4" fontWeight={700}>
                   Connect wallet to start using Safe.
                 </Typography>
