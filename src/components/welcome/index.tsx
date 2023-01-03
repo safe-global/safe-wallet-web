@@ -27,10 +27,17 @@ const NewSafe = () => {
       </Grid>
       <Grid item xs={12} md={8} lg={8.5}>
         <div className={css.content}>
-          <Typography variant="h1" fontSize={[44, null, 52]} lineHeight={1} letterSpacing={-1.5} mb={1}>
+          <Typography
+            variant="h1"
+            fontSize={[44, null, 52]}
+            lineHeight={1}
+            letterSpacing={-1.5}
+            color="static.main"
+            mb={1}
+          >
             Welcome to the Safe
           </Typography>
-          <Typography mb={5}>
+          <Typography mb={5} color="static.main">
             The most trusted decentralized custody protocol and collective asset management platform.
           </Typography>
           {wallet ? (
@@ -42,7 +49,7 @@ const NewSafe = () => {
                     Create Safe
                   </Typography>
                   <Typography variant="body2" mb={3}>
-                    New Safe that is controlled by one or multiple owners.{' '}
+                    A new Safe that is controlled by one or multiple owners.
                   </Typography>
                   <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
                     <Button variant="contained" onClick={() => router.push(AppRoutes.newSafe.create)}>
@@ -73,7 +80,7 @@ const NewSafe = () => {
               <Box display="flex" alignItems="center" gap={2} textAlign="left">
                 <CircularIcon icon={Keyhole} size={40} />
                 <Typography variant="h4" fontWeight={700}>
-                  Connect wallet to start using Safe.
+                  Connect wallet to start using Safe
                 </Typography>
               </Box>
             </ButtonBase>
