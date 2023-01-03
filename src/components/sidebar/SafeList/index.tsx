@@ -71,7 +71,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
     setOpen((prev) => ({ ...prev, [chainId]: open }))
   }
 
-  const showAddButton = router.pathname !== AppRoutes.welcome
+  const isWelcomePage = router.pathname === AppRoutes.welcome
 
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
 
@@ -81,7 +81,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
         <Typography variant="h4" display="inline" fontWeight={700}>
           My Safes
         </Typography>
-        {showAddButton && (
+        {!isWelcomePage && (
           <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
             <Link href={{ pathname: AppRoutes.welcome }} passHref>
               <Button
@@ -102,9 +102,13 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
         <Box display="flex" flexDirection="column" alignItems="center" py={6}>
           <SvgIcon component={LoadingIcon} inheritViewBox sx={{ width: '85px', height: '80px' }} />
           <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
-            <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
-              <MuiLink>Create or add</MuiLink>
-            </Link>{' '}
+            {!isWelcomePage ? (
+              <Link href={{ pathname: AppRoutes.welcome, query: router.query }} passHref>
+                <MuiLink onClick={closeDrawer}>Create or add</MuiLink>
+              </Link>
+            ) : (
+              <>Create or add</>
+            )}{' '}
             an existing Safe
           </Typography>
         </Box>
@@ -139,9 +143,13 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
               {/* No Safes yet */}
               {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
                 <Typography variant="body2" color="primary.light" py={2} textAlign="center">
-                  <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
-                    <MuiLink>Create or add</MuiLink>
-                  </Link>{' '}
+                  {!isWelcomePage ? (
+                    <Link href={{ pathname: AppRoutes.welcome, query: router.query }} passHref>
+                      <MuiLink onClick={closeDrawer}>Create or add</MuiLink>
+                    </Link>
+                  ) : (
+                    <>Create or add</>
+                  )}{' '}
                   an existing Safe on this network
                 </Typography>
               )}
