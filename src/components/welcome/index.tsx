@@ -54,10 +54,10 @@ const NewSafe = () => {
                 <Paper sx={{ padding: 4, height: 1 }}>
                   <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                   <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                    Load Existing Safe
+                    Add Existing Safe
                   </Typography>
                   <Typography variant="body2" mb={3}>
-                    Already have a Safe? Load your Safe using your Safe address.
+                    Already have a Safe? Add your Safe using your Safe address.
                   </Typography>
                   <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
                     <Button variant="outlined" onClick={() => router.push('/load')}>
