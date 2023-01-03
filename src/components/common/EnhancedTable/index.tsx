@@ -22,6 +22,7 @@ type EnhancedCell = {
   rawValue: string | number
   sticky?: boolean
   hide?: boolean
+  collapsed?: boolean
 }
 
 type EnhancedRow = {
@@ -148,6 +149,8 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
                       className={classNames({
                         sticky: cell.sticky,
                         [css.hide]: cell.hide,
+                        [css.collapsed]: cell.collapsed,
+                        [css.tableCell]: true,
                       })}
                     >
                       {cell.content}

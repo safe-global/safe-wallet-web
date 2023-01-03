@@ -8,9 +8,11 @@ const TokenMenu = ({
   cancel,
   selectedAssetCount,
   showHiddenAssets,
+  deselectAll,
 }: {
   saveChanges: () => void
   cancel: () => void
+  deselectAll: () => void
   selectedAssetCount: number
   showHiddenAssets: boolean
 }) => {
@@ -29,8 +31,11 @@ const TokenMenu = ({
         <Button onClick={cancel} className={css.cancelButton} size="small" variant="outlined">
           Cancel
         </Button>
+        <Button onClick={deselectAll} className={css.cancelButton} size="small" variant="outlined">
+          Deselect all
+        </Button>
         <Button onClick={saveChanges} className={css.applyButton} size="small" variant="contained">
-          Apply
+          Save
         </Button>
       </div>
     </Box>

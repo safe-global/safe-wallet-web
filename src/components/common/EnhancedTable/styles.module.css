@@ -2,6 +2,15 @@
   display: none;
 }
 
+.tableCell {
+  transition: padding 0s;
+}
+
+.collapsed {
+  padding: 0px !important;
+  transition: padding 300ms ease-in-out;
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;

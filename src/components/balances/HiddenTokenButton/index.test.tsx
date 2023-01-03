@@ -3,13 +3,13 @@ import { fireEvent, render } from '@/tests/test-utils'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { safeParseUnits } from '@/utils/formatters'
-import HiddenTokenToggle from '.'
+import HiddenTokenButton from '.'
 import { useState } from 'react'
 
 const TestComponent = () => {
   const [showHidden, setShowHidden] = useState(false)
   return (
-    <HiddenTokenToggle showHiddenAssets={showHidden} toggleShowHiddenAssets={() => setShowHidden((prev) => !prev)} />
+    <HiddenTokenButton showHiddenAssets={showHidden} toggleShowHiddenAssets={() => setShowHidden((prev) => !prev)} />
   )
 }
 

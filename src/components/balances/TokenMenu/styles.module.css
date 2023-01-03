@@ -22,11 +22,11 @@
   align-items: center;
   margin-top: -24px;
   margin-bottom: -42px; /* 24 + 42 is the height of the box itself, causes the table to not scroll on first selection */
-  gap: var(--space-1);
 }
 
 .cancelButton {
   padding: 4px 10px;
+  margin-left: var(--space-1);
 }
 
 .applyButton {

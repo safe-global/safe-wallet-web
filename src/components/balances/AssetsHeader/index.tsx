@@ -6,7 +6,7 @@ import PageHeader from '@/components/common/PageHeader'
 import CurrencySelect from '@/components/balances/CurrencySelect'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 
-import HiddenTokenToggle from '../HiddenTokenToggle'
+import HiddenTokenButton from '../HiddenTokenButton'
 
 const AssetsHeader = ({
   hiddenAssets = false,
@@ -28,7 +28,7 @@ const AssetsHeader = ({
             <NavTabs tabs={balancesNavItems} />
             <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
               {hiddenAssets && (
-                <HiddenTokenToggle
+                <HiddenTokenButton
                   showHiddenAssets={showHiddenAssets}
                   toggleShowHiddenAssets={toggleShowHiddenAssets}
                 />
