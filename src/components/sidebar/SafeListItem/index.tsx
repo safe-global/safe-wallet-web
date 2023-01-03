@@ -65,7 +65,7 @@ const SafeListItem = ({
               address={address}
               onClick={closeDrawer}
               href={{
-                pathname: AppRoutes.load,
+                pathname: AppRoutes.newSafe.load,
                 query: { chain: shortName, address },
               }}
             />

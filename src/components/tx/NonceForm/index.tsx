@@ -20,8 +20,13 @@ type NonceFormProps = {
   readonly?: boolean
 }
 
-// eslint-disable-next-line react/display-name
-const NonceFormOption = memo(({ nonce, ...props }: { nonce: number } & MenuItemProps): ReactElement => {
+const NonceFormOption = memo(function NonceFormOption({
+  nonce,
+  menuItemProps,
+}: {
+  nonce: number
+  menuItemProps: MenuItemProps
+}): ReactElement {
   const addressBook = useAddressBook()
   const transactions = useQueuedTxByNonce(nonce)
 
@@ -31,7 +36,7 @@ const NonceFormOption = memo(({ nonce, ...props }: { nonce: number } & MenuItemP
   }, [addressBook, transactions])
 
   return (
-    <MenuItem key={nonce} {...props}>
+    <MenuItem key={nonce} {...menuItemProps}>
       {nonce} ({label} transaction)
     </MenuItem>
   )
@@ -105,7 +110,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
       options={options}
       disabled={nonce == null || readonly}
       getOptionLabel={(option) => option.toString()}
-      renderOption={(props, option) => <NonceFormOption nonce={option} {...props} />}
+      renderOption={(props, option: number) => <NonceFormOption menuItemProps={props} nonce={option} />}
       disableClearable
       componentsProps={{
         paper: {

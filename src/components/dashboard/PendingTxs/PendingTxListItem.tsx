@@ -3,12 +3,13 @@ import type { LinkProps } from 'next/link'
 import type { ReactElement } from 'react'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box } from '@mui/material'
+import { Box, SvgIcon, Typography } from '@mui/material'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import TxInfo from '@/components/transactions/TxInfo'
 import TxType from '@/components/transactions/TxType'
 import css from './styles.module.css'
 import classNames from 'classnames'
+import OwnersIcon from '@/public/images/common/owners.svg'
 
 type PendingTxType = {
   transaction: TransactionSummary
@@ -35,7 +36,10 @@ const PendingTx = ({ transaction, url }: PendingTxType): ReactElement => {
           <Box gridArea="confirmations">
             {isMultisigExecutionInfo(transaction.executionInfo) ? (
               <Box className={css.confirmationsCount}>
-                {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
+                <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" />
+                <Typography variant="caption" fontWeight="bold">
+                  {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
+                </Typography>
               </Box>
             ) : (
               <Box flexGrow={1} />

@@ -15,6 +15,9 @@
 }
 
 .confirmationsCount {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
   padding: var(--space-1) 12px;
   border-radius: 8px;
   font-weight: bold;
