@@ -75,18 +75,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer: () => void }): ReactElement =>
 
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
 
-  const NoSafe = (
-    <Box display="flex" flexDirection="column" alignItems="center" py={6}>
-      <SvgIcon component={LoadingIcon} inheritViewBox sx={{ width: '85px', height: '80px' }} />
-      <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
-        <Link href={{ href: AppRoutes.welcome, query: router.query }} passHref>
-          <MuiLink>Create or add</MuiLink>
-        </Link>{' '}
-        an existing Safe
-      </Typography>
-    </Box>
-  )
-
   return (
     <div className={css.container}>
       <div className={css.header}>
