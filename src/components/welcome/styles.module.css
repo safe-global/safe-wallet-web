@@ -33,17 +33,6 @@
   padding-top: 184px;
 }
 
-.button {
-  transition: background-color 0.3s;
-  background: var(--color-background-paper);
-  padding: var(--space-3);
-  border-radius: 6px;
-}
-
-.button:hover {
-  background-color: var(--color-secondary-light);
-}
-
 @media (max-width: 1200px) {
   .content {
     padding: var(--space-8);

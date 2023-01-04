@@ -16,16 +16,12 @@ const OWNER_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 describe('Load existing Safe', () => {
   before(() => {
-    cy.connectE2EWallet()
-
     cy.visit('/welcome?chain=matic')
     cy.contains('Accept selection').click()
 
     // Close banner
     cy.get('[data-testid=CloseIcon]').click()
-  })
 
-  it('should enter load safe form', () => {
     // Enters Loading Safe form
     cy.contains('button', 'Add existing Safe').click()
     cy.contains('Connect wallet & select network')
