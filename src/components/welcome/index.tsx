@@ -59,7 +59,7 @@ const NewSafe = () => {
             The most trusted decentralized custody protocol and collective asset management platform.
           </Typography>
           <Grid container spacing={3} sx={{ maxWidth: '800px' }}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} lg={6}>
               <Paper sx={{ padding: 4, height: 1 }}>
                 <SvgIcon component={NewSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
@@ -75,7 +75,7 @@ const NewSafe = () => {
                 </Track>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} lg={6}>
               <Paper sx={{ padding: 4, height: 1 }}>
                 <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
