@@ -39,8 +39,8 @@ export const ASSETS_EVENTS = {
     action: 'Hide',
     category: ASSETS_CATEGORY,
   },
-  UNHIDE: {
-    action: 'Unhide',
+  HIDE_CHECKBOX: {
+    action: 'Check hidden token',
     category: ASSETS_CATEGORY,
   },
 }
