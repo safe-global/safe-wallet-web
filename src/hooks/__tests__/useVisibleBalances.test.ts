@@ -1,10 +1,13 @@
 import { type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import * as store from '@/store'
 import { renderHook } from '@/tests/test-utils'
-import useBalances from '../useBalances'
 import { hexZeroPad } from 'ethers/lib/utils'
+import { useVisibleBalances } from '../useVisibleBalances'
 
-describe('useBalances', () => {
+describe('useVisibleBalances', () => {
+  const hiddenTokenAddress = hexZeroPad('0x2', 20)
+  const visibleTokenAddress = hexZeroPad('0x3', 20)
+
   test('empty balance', () => {
     const balance: SafeBalanceResponse = {
       fiatTotal: '0',
@@ -13,17 +16,28 @@ describe('useBalances', () => {
     jest.spyOn(store, 'useAppSelector').mockImplementation((selector) =>
       selector({
         balances: { data: balance, error: undefined, loading: false },
-      } as store.RootState),
+        settings: {
+          currency: 'USD',
+          shortName: {
+            copy: true,
+            qr: true,
+            show: true,
+          },
+          theme: {
+            darkMode: false,
+          },
+          hiddenTokens: { ['4']: [hiddenTokenAddress] },
+        },
+      } as unknown as store.RootState),
     )
 
-    const { result } = renderHook(() => useBalances())
+    const { result } = renderHook(() => useVisibleBalances())
 
     expect(result.current.balances.fiatTotal).toEqual('0')
     expect(result.current.balances.items).toHaveLength(0)
   })
 
-  test('return all balances', () => {
-    const tokenAddress = hexZeroPad('0x2', 20)
+  test('return only visible balance', () => {
     const balance: SafeBalanceResponse = {
       fiatTotal: '100',
       items: [
@@ -32,7 +46,7 @@ describe('useBalances', () => {
           fiatBalance: '40',
           fiatConversion: '1',
           tokenInfo: {
-            address: tokenAddress,
+            address: hiddenTokenAddress,
             decimals: 18,
             logoUri: '',
             name: 'Hidden Token',
@@ -45,7 +59,7 @@ describe('useBalances', () => {
           fiatBalance: '60',
           fiatConversion: '1',
           tokenInfo: {
-            address: tokenAddress,
+            address: visibleTokenAddress,
             decimals: 18,
             logoUri: '',
             name: 'Visible Token',
@@ -59,12 +73,24 @@ describe('useBalances', () => {
     jest.spyOn(store, 'useAppSelector').mockImplementation((selector) =>
       selector({
         balances: { data: balance, error: undefined, loading: false },
-      } as store.RootState),
+        settings: {
+          currency: 'USD',
+          shortName: {
+            copy: true,
+            qr: true,
+            show: true,
+          },
+          theme: {
+            darkMode: false,
+          },
+          hiddenTokens: { ['4']: [hiddenTokenAddress] },
+        },
+      } as unknown as store.RootState),
     )
 
-    const { result } = renderHook(() => useBalances())
+    const { result } = renderHook(() => useVisibleBalances())
 
     expect(result.current.balances.fiatTotal).toEqual('100')
-    expect(result.current.balances.items).toHaveLength(2)
+    expect(result.current.balances.items).toHaveLength(1)
   })
 })

@@ -13,7 +13,7 @@ const HiddenTokenButton = ({
   toggleShowHiddenAssets?: () => void
   showHiddenAssets?: boolean
 }): ReactElement | null => {
-  const { balances } = useBalances(true)
+  const { balances } = useBalances()
   const currentHiddenAssets = useHiddenTokens()
 
   const hiddenAssetCount =

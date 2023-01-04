@@ -57,7 +57,7 @@ const AssetsTable = ({
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
   const isGranted = useIsGranted()
   const hiddenAssets = useHiddenTokens()
-  const { balances } = useBalances(true)
+  const { balances } = useBalances()
 
   const { isAssetSelected, toggleAsset, hidingAsset, hideAsset, cancel, deselectAll, saveChanges } = useHideAssets(() =>
     setShowHiddenAssets(false),

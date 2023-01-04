@@ -12,7 +12,7 @@ import NoAssetsIcon from '@/public/images/balances/no-assets.svg'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 
 const Balances: NextPage = () => {
-  const { balances, loading, error } = useBalances(true)
+  const { balances, loading, error } = useBalances()
   const hiddenAssets = useHiddenTokens()
   const [showHiddenAssets, setShowHiddenAssets] = useState(false)
   const toggleShowHiddenAssets = () => setShowHiddenAssets((prev) => !prev)
