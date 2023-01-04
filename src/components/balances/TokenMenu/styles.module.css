@@ -14,7 +14,7 @@
   position: sticky;
   top: 111px; /* under AssetHeader */
   z-index: 1;
-  padding: var(--space-2);
+  padding: var(--space-2) 0;
   background-color: var(--color-background-default);
   display: flex;
   flex-wrap: wrap;

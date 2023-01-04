@@ -16,11 +16,6 @@ export const ASSETS_EVENTS = {
     action: 'Change currency',
     category: ASSETS_CATEGORY,
   },
-  TOGGLE_HIDDEN_ASSETS: {
-    event: EventType.META,
-    action: 'Toggle hidden assets',
-    category: ASSETS_CATEGORY,
-  },
   DIFFERING_TOKENS: {
     event: EventType.META,
     action: 'Tokens',
@@ -31,12 +26,16 @@ export const ASSETS_EVENTS = {
     action: 'Hidden tokens',
     category: ASSETS_CATEGORY,
   },
+  SHOW_HIDDEN_ASSETS: {
+    action: 'Show hidden assets',
+    category: ASSETS_CATEGORY,
+  },
   SEND: {
     action: 'Send',
     category: ASSETS_CATEGORY,
   },
-  HIDE: {
-    action: 'Hide',
+  HIDE_TOKEN: {
+    action: 'Hide single token',
     category: ASSETS_CATEGORY,
   },
   CANCEL_HIDE_DIALOG: {

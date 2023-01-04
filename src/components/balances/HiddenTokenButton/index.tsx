@@ -20,7 +20,7 @@ const HiddenTokenButton = ({
     balances.items?.filter((item) => currentHiddenAssets.includes(item.tokenInfo.address)).length || 0
 
   return (
-    <Track {...ASSETS_EVENTS.TOGGLE_HIDDEN_ASSETS}>
+    <Track {...ASSETS_EVENTS.SHOW_HIDDEN_ASSETS}>
       <Button
         sx={{ gap: 1, padding: 1, borderWidth: '1px !important', borderColor: ({ palette }) => palette.border.main }}
         disabled={showHiddenAssets}
