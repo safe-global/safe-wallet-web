@@ -12,7 +12,7 @@
 
 .stickyBox {
   position: sticky;
-  top: 123px; /* under AssetHeader */
+  top: 111px; /* under AssetHeader */
   z-index: 1;
   padding: var(--space-2);
   background-color: var(--color-background-default);
@@ -21,7 +21,6 @@
   flex-direction: row;
   align-items: center;
   margin-top: -24px;
-  margin-bottom: -42px; /* 24 + 42 is the height of the box itself, causes the table to not scroll on first selection */
 }
 
 .cancelButton {
