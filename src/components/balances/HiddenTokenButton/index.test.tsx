@@ -20,7 +20,7 @@ describe('HiddenTokenToggle', () => {
     jest.spyOn(useChainId, 'default').mockReturnValue('5')
   })
 
-  test('toggle hidden assets', async () => {
+  test('button disabled if hidden assets are visible', async () => {
     const mockHiddenAssets = {
       '5': [hexZeroPad('0x3', 20)],
     }
@@ -77,66 +77,9 @@ describe('HiddenTokenToggle', () => {
         },
       },
     })
-
-    expect(result.queryByTestId('VisibilityOutlinedIcon')).not.toBeNull()
-    expect(result.queryByTestId('VisibilityOffOutlinedIcon')).toBeNull()
-
     fireEvent.click(result.getByTestId('toggle-hidden-assets'))
 
-    expect(result.queryByTestId('VisibilityOutlinedIcon')).toBeNull()
-    expect(result.queryByTestId('VisibilityOffOutlinedIcon')).not.toBeNull()
-
-    fireEvent.click(result.getByTestId('toggle-hidden-assets'))
-
-    expect(result.queryByTestId('VisibilityOutlinedIcon')).not.toBeNull()
-    expect(result.queryByTestId('VisibilityOffOutlinedIcon')).toBeNull()
-  })
-
-  test('Do not render hidden tokens toggle if none are hidden', () => {
-    const mockHiddenAssets = {
-      '5': [hexZeroPad('0x3', 20)],
-    }
-
-    const mockBalances = {
-      data: {
-        fiatTotal: '300',
-        items: [
-          {
-            balance: safeParseUnits('100', 18)!.toString(),
-            fiatBalance: '100',
-            fiatConversion: '1',
-            tokenInfo: {
-              address: hexZeroPad('0x2', 20),
-              decimals: 18,
-              logoUri: '',
-              name: 'DAI',
-              symbol: 'DAI',
-              type: TokenType.ERC20,
-            },
-          },
-        ],
-      },
-      loading: false,
-      error: undefined,
-    }
-    const result = render(<TestComponent />, {
-      initialReduxState: {
-        balances: mockBalances,
-        settings: {
-          currency: 'usd',
-          hiddenTokens: mockHiddenAssets,
-          shortName: {
-            show: true,
-            copy: true,
-            qr: true,
-          },
-          theme: {
-            darkMode: true,
-          },
-        },
-      },
-    })
-
-    expect(result.queryByTestId('toggle-hidden-assets')).toBeNull()
+    // Now it is disabled
+    expect(result.getByTestId('toggle-hidden-assets')).toBeDisabled()
   })
 })

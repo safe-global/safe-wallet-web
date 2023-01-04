@@ -1,5 +1,5 @@
 import { useState, type ReactElement, useCallback, useMemo } from 'react'
-import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Collapse } from '@mui/material'
+import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
@@ -20,6 +20,9 @@ import useChainId from '@/hooks/useChainId'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import { useAppDispatch } from '@/store'
 import { setHiddenTokensForChain } from '@/store/settingsSlice'
+
+// This is the default for MUI Collapse
+export const COLLAPSE_TIMEOUT_MS = 300
 
 const isNativeToken = (tokenInfo: TokenInfo) => {
   return tokenInfo.type === TokenType.NATIVE_TOKEN
@@ -128,7 +131,7 @@ const AssetsTable = ({
         const newHiddenAssets = [...hiddenAssets, address]
         dispatch(setHiddenTokensForChain({ chainId, assets: newHiddenAssets }))
         setHidingAsset(undefined)
-      }, 300)
+      }, COLLAPSE_TIMEOUT_MS)
     },
     [chainId, dispatch, hiddenAssets],
   )
@@ -148,42 +151,33 @@ const AssetsTable = ({
 
     return {
       selected: !isNative && isSelected,
+      collapsed: item.tokenInfo.address === hidingAsset,
       cells: {
         asset: {
           rawValue: item.tokenInfo.name,
           collapsed: item.tokenInfo.address === hidingAsset,
           content: (
-            <Collapse in={item.tokenInfo.address !== hidingAsset} enter={false}>
-              <div className={css.token}>
-                <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
+            <div className={css.token}>
+              <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
 
-                <Typography>{item.tokenInfo.name}</Typography>
+              <Typography>{item.tokenInfo.name}</Typography>
 
-                {!isNative && <TokenExplorerLink address={item.tokenInfo.address} />}
-              </div>
-            </Collapse>
+              {!isNative && <TokenExplorerLink address={item.tokenInfo.address} />}
+            </div>
           ),
         },
         balance: {
           rawValue: Number(item.balance) / 10 ** item.tokenInfo.decimals,
           collapsed: item.tokenInfo.address === hidingAsset,
           content: (
-            <Collapse in={item.tokenInfo.address !== hidingAsset} enter={false}>
-              {' '}
-              <TokenAmount
-                value={item.balance}
-                decimals={item.tokenInfo.decimals}
-                tokenSymbol={item.tokenInfo.symbol}
-              />
-            </Collapse>
+            <TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} tokenSymbol={item.tokenInfo.symbol} />
           ),
         },
         value: {
           rawValue: rawFiatValue,
           collapsed: item.tokenInfo.address === hidingAsset,
           content: (
-            <Collapse in={item.tokenInfo.address !== hidingAsset} enter={false}>
-              {' '}
+            <>
               <FiatValue value={item.fiatBalance} />
               {rawFiatValue === 0 && (
                 <Tooltip title="Value may be zero due to missing token price information" placement="top" arrow>
@@ -198,7 +192,7 @@ const AssetsTable = ({
                   </span>
                 </Tooltip>
               )}
-            </Collapse>
+            </>
           ),
         },
         actions: {
@@ -206,45 +200,43 @@ const AssetsTable = ({
           sticky: true,
           collapsed: item.tokenInfo.address === hidingAsset,
           content: (
-            <Collapse in={item.tokenInfo.address !== hidingAsset} enter={false}>
-              <Box display="flex" flexDirection="row" gap={1} alignItems="center">
-                <>
-                  {!shouldHideSend && (
-                    <Track {...ASSETS_EVENTS.SEND}>
-                      <Button
-                        sx={{ visibility: showHiddenAssets ? 'hidden' : 'visible' }}
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={() => setSelectedAsset(item.tokenInfo.address)}
-                      >
-                        Send
-                      </Button>
-                    </Track>
-                  )}
-                  {showHiddenAssets ? (
-                    <Checkbox
+            <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+              <>
+                {!shouldHideSend && (
+                  <Track {...ASSETS_EVENTS.SEND}>
+                    <Button
+                      sx={{ visibility: showHiddenAssets ? 'hidden' : 'visible' }}
+                      variant="contained"
+                      color="primary"
                       size="small"
-                      disabled={isNative}
-                      checked={isSelected}
-                      onClick={() => toggleAsset(item.tokenInfo.address)}
-                    />
-                  ) : (
-                    <Track {...ASSETS_EVENTS.HIDE}>
-                      <Tooltip title="Hide asset" arrow disableInteractive>
-                        <IconButton
-                          disabled={isNative || hidingAsset !== undefined}
-                          size="medium"
-                          onClick={() => hideAsset(item.tokenInfo.address)}
-                        >
-                          <VisibilityOutlined fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Track>
-                  )}
-                </>
-              </Box>
-            </Collapse>
+                      onClick={() => setSelectedAsset(item.tokenInfo.address)}
+                    >
+                      Send
+                    </Button>
+                  </Track>
+                )}
+                {showHiddenAssets ? (
+                  <Checkbox
+                    size="small"
+                    disabled={isNative}
+                    checked={isSelected}
+                    onClick={() => toggleAsset(item.tokenInfo.address)}
+                  />
+                ) : (
+                  <Track {...ASSETS_EVENTS.HIDE}>
+                    <Tooltip title="Hide asset" arrow disableInteractive>
+                      <IconButton
+                        disabled={isNative || hidingAsset !== undefined}
+                        size="medium"
+                        onClick={() => hideAsset(item.tokenInfo.address)}
+                      >
+                        <VisibilityOutlined fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Track>
+                )}
+              </>
+            </Box>
           ),
         },
       },

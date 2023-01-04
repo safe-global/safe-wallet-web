@@ -16,17 +16,18 @@ import type { PaperTypeMap } from '@mui/material/Paper/Paper'
 import classNames from 'classnames'
 
 import css from './styles.module.css'
+import { Collapse } from '@mui/material'
 
 type EnhancedCell = {
   content: ReactNode
   rawValue: string | number
   sticky?: boolean
   hide?: boolean
-  collapsed?: boolean
 }
 
 type EnhancedRow = {
   selected?: boolean
+  collapsed?: boolean
   cells: Record<string, EnhancedCell>
 }
 
@@ -142,18 +143,24 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
           <TableBody>
             {pagedRows.length > 0 ? (
               pagedRows.map((row, index) => (
-                <TableRow tabIndex={-1} key={index} selected={row.selected}>
+                <TableRow
+                  tabIndex={-1}
+                  key={index}
+                  selected={row.selected}
+                  className={row.collapsed ? css.collapsedRow : undefined}
+                >
                   {Object.entries(row.cells).map(([key, cell]) => (
                     <TableCell
                       key={key}
                       className={classNames({
                         sticky: cell.sticky,
                         [css.hide]: cell.hide,
-                        [css.collapsed]: cell.collapsed,
-                        [css.tableCell]: true,
+                        [css.collapsedCell]: row.collapsed,
                       })}
                     >
-                      {cell.content}
+                      <Collapse key={index} in={!row.collapsed} enter={false}>
+                        {cell.content}
+                      </Collapse>
                     </TableCell>
                   ))}
                 </TableRow>
