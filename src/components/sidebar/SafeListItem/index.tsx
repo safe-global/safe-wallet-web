@@ -30,8 +30,8 @@ const SafeListItem = ({
 }: {
   address: string
   chainId: string
-  closeDrawer: () => void
   shouldScrollToSafe: boolean
+  closeDrawer?: () => void
   threshold?: string | number
   owners?: string | number
   noActions?: boolean
@@ -56,7 +56,7 @@ const SafeListItem = ({
     <ListItem
       className={css.container}
       disablePadding
-      sx={{ '& .MuiListItemSecondaryAction-root': { right: '24px' } }}
+      sx={{ '& .MuiListItemSecondaryAction-root': { right: 24 } }}
       secondaryAction={
         noActions ? undefined : (
           <Box display="flex" alignItems="center" gap={1}>

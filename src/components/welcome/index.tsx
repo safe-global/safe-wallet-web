@@ -42,12 +42,12 @@ const NewSafe = () => {
 
           <AccordionDetails sx={{ padding: 0 }}>
             <div className={css.sidebar}>
-              <SafeList closeDrawer={() => {}} />
+              <SafeList />
             </div>
           </AccordionDetails>
         </Accordion>
         <Box className={css.sidebar} display={{ xs: 'none', md: 'block' }}>
-          <SafeList closeDrawer={() => {}} />
+          <SafeList />
         </Box>
       </Grid>
       <Grid item flex={1}>
