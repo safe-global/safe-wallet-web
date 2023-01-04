@@ -23,11 +23,11 @@ describe('Load existing Safe', () => {
 
     // Close banner
     cy.get('[data-testid=CloseIcon]').click()
+  })
 
+  it('should enter load safe form', () => {
     // Enters Loading Safe form
-    cy.contains('button', 'Add existing Safe', {
-      timeout: 60_000,
-    }).click()
+    cy.contains('button', 'Add existing Safe').click()
     cy.contains('Connect wallet & select network')
   })
 
