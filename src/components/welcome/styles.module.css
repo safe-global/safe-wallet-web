@@ -1,22 +1,24 @@
 .sidebar {
   background: var(--color-background-paper);
   border-radius: 6px;
-  height: calc(100vh - var(--header-height) - var(--footer-height) - 24px);
-  overflow: auto;
 }
 
-.accordion :global .MuiAccordionDetails-root > div > div > div:first-child {
+.accordion :global .MuiAccordionDetails-root > div > div > div:first-child,
+.accordion :global .MuiAccordionSummary-expandIconWrapper {
   display: none;
 }
 
 .accordion {
   border: 0;
+  height: calc(100vh - var(--header-height) - var(--footer-height) - 24px);
+  overflow: auto;
 }
 
 .accordion :global .MuiAccordionSummary-root {
   background: transparent !important;
   padding: var(--space-3);
   border-bottom: 1px solid var(--color-border-light);
+  pointer-events: none;
 }
 
 .accordion :global .MuiAccordionSummary-content {
@@ -42,6 +44,18 @@
 @media (max-width: 900px) {
   .sidebar {
     height: 100%;
+  }
+
+  .accordion {
+    height: auto;
+  }
+
+  .accordion :global .MuiAccordionSummary-root {
+    pointer-events: auto;
+  }
+
+  .accordion :global .MuiAccordionSummary-expandIconWrapper {
+    display: block;
   }
 }
 

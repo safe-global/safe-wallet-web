@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Grid,
   Paper,
   SvgIcon,
   Typography,
-  Box,
   AccordionSummary,
   AccordionDetails,
   Accordion,
+  useMediaQuery,
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS, LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
@@ -19,14 +19,26 @@ import css from './styles.module.css'
 import NewSafeIcon from '@/public/images/welcome/new-safe.svg'
 import LoadSafeIcon from '@/public/images/welcome/load-safe.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { useTheme } from '@mui/material/styles'
 
 const NewSafe = () => {
+  const [expanded, setExpanded] = useState(true)
   const router = useRouter()
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+
+  useEffect(() => {
+    setExpanded(!isSmallScreen)
+  }, [isSmallScreen])
+
+  const toggleSafeList = () => {
+    return isSmallScreen ? setExpanded((prev) => !prev) : null
+  }
 
   return (
     <Grid container spacing={3} mb={-3}>
       <Grid item xs={12} md={4} lg={3.5} minWidth={{ md: 400 }}>
-        <Accordion className={css.accordion} defaultExpanded={false} sx={{ display: { xs: 'block', md: 'none' } }}>
+        <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h4" display="inline" fontWeight={700}>
               My Safes
@@ -39,10 +51,8 @@ const NewSafe = () => {
             </div>
           </AccordionDetails>
         </Accordion>
-        <Box className={css.sidebar} display={{ xs: 'none', md: 'block' }}>
-          <SafeList />
-        </Box>
       </Grid>
+
       <Grid item flex={1}>
         <div className={css.content}>
           <Typography
@@ -55,9 +65,11 @@ const NewSafe = () => {
           >
             Welcome to the Safe
           </Typography>
+
           <Typography mb={5} color="static.main">
             The most trusted decentralized custody protocol and collective asset management platform.
           </Typography>
+
           <Grid container spacing={3} sx={{ maxWidth: '800px' }}>
             <Grid item xs={12} lg={6}>
               <Paper sx={{ padding: 4, height: 1 }}>
@@ -75,6 +87,7 @@ const NewSafe = () => {
                 </Track>
               </Paper>
             </Grid>
+
             <Grid item xs={12} lg={6}>
               <Paper sx={{ padding: 4, height: 1 }}>
                 <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
