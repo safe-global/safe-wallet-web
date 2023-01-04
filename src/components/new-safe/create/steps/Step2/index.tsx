@@ -43,7 +43,7 @@ const CreateSafeStep2 = ({
   useSyncSafeCreationStep(setStep)
 
   const formMethods = useForm<CreateSafeStep2Form>({
-    mode: 'all',
+    mode: 'onChange',
     defaultValues: {
       [CreateSafeStep2Fields.owners]: data.owners,
       [CreateSafeStep2Fields.threshold]: data.threshold,
@@ -64,7 +64,7 @@ const CreateSafeStep2 = ({
     // Set threshold if it's greater than the number of owners
     setValue(CreateSafeStep2Fields.threshold, Math.min(threshold, ownerFields.length - 1))
     remove(index)
-    trigger()
+    trigger(CreateSafeStep2Fields.owners)
   }
 
   const isDisabled = isWrongChain || !formState.isValid
