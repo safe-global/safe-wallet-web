@@ -24,7 +24,7 @@ const NewSafe = () => {
   const router = useRouter()
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} mb={-3}>
       <Grid item xs={12} md={4} lg={3.5} minWidth={{ md: 400 }}>
         <Accordion className={css.accordion} defaultExpanded={false} sx={{ display: { xs: 'block', md: 'none' } }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
