@@ -5,35 +5,14 @@ import DoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRightRo
 import DoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded'
 import { useRouter } from 'next/router'
 import classnames from 'classnames'
-import { type ParsedUrlQuery } from 'querystring'
 
 import Sidebar from '@/components/sidebar/Sidebar'
 import css from './styles.module.css'
-import { AppRoutes } from '@/config/routes'
+import { isSafeAppRoute, isLoadSafeRoute, isNewSafeRoute, isWelcomeRoute, isAppShareRoute } from '@/utils/route'
 
 type SideDrawerProps = {
   isOpen: boolean
   onToggle: (isOpen: boolean) => void
-}
-
-const isNewSafeRoute = (pathname: string): boolean => {
-  return pathname === AppRoutes.newSafe.create
-}
-
-const isWelcomeRoute = (pathname: string): boolean => {
-  return pathname === AppRoutes.welcome
-}
-
-const isLoadSafeRoute = (pathname: string): boolean => {
-  return pathname === AppRoutes.newSafe.load
-}
-
-const isAppShareRoute = (pathname: string): boolean => {
-  return pathname === AppRoutes.share.safeApp
-}
-
-const isSafeAppRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
-  return pathname === AppRoutes.apps && !!query.appUrl
 }
 
 const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
