@@ -25,10 +25,8 @@
 
 .cancelButton {
   padding: 4px 10px;
-  margin-left: var(--space-1);
 }
 
 .applyButton {
-  margin-left: var(--space-1);
   padding: 6px var(--space-3);
 }

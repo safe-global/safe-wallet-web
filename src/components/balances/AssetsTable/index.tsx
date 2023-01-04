@@ -67,9 +67,7 @@ const AssetsTable = ({
     () =>
       showHiddenAssets
         ? balances.items
-        : balances.items?.filter(
-            (item) => item.tokenInfo.type === TokenType.NATIVE_TOKEN || !hiddenAssets.includes(item.tokenInfo.address),
-          ),
+        : balances.items?.filter((item) => !hiddenAssets.includes(item.tokenInfo.address)),
     [hiddenAssets, balances.items, showHiddenAssets],
   )
 
@@ -83,7 +81,7 @@ const AssetsTable = ({
     const isSelected = isAssetSelected(item.tokenInfo.address)
 
     return {
-      selected: !isNative && isSelected,
+      selected: isSelected,
       collapsed: item.tokenInfo.address === hidingAsset,
       cells: {
         asset: {
@@ -149,19 +147,12 @@ const AssetsTable = ({
                   </Track>
                 )}
                 {showHiddenAssets ? (
-                  <Track {...ASSETS_EVENTS.HIDE_CHECKBOX}>
-                    <Checkbox
-                      size="small"
-                      disabled={isNative}
-                      checked={isSelected}
-                      onClick={() => toggleAsset(item.tokenInfo.address)}
-                    />
-                  </Track>
+                  <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
                 ) : (
                   <Track {...ASSETS_EVENTS.HIDE}>
                     <Tooltip title="Hide asset" arrow disableInteractive>
                       <IconButton
-                        disabled={isNative || hidingAsset !== undefined}
+                        disabled={hidingAsset !== undefined}
                         size="medium"
                         onClick={() => hideAsset(item.tokenInfo.address)}
                       >

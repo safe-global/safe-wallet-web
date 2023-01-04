@@ -39,8 +39,16 @@ export const ASSETS_EVENTS = {
     action: 'Hide',
     category: ASSETS_CATEGORY,
   },
-  HIDE_CHECKBOX: {
-    action: 'Check hidden token',
+  CANCEL_HIDE_DIALOG: {
+    action: 'Cancel hide dialog',
+    category: ASSETS_CATEGORY,
+  },
+  SAVE_HIDE_DIALOG: {
+    action: 'Save hide dialog',
+    category: ASSETS_CATEGORY,
+  },
+  DESELECT_ALL_HIDE_DIALOG: {
+    action: 'Deselect all hide dialog',
     category: ASSETS_CATEGORY,
   },
 }
