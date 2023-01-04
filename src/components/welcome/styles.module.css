@@ -44,15 +44,21 @@
   background-color: var(--color-secondary-light);
 }
 
+@media (max-width: 1200px) {
+  .content {
+    padding: var(--space-8);
+  }
+}
+
 @media (max-width: 900px) {
   .sidebar {
     height: 100%;
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 600px) {
   .content {
-    padding: var(--space-8);
+    padding: var(--space-4);
   }
 }
 

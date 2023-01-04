@@ -32,7 +32,7 @@ const NewSafe = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={4} lg={3.5}>
+      <Grid item xs={12} md={4} lg={3.5} minWidth={{ md: 400 }}>
         <Accordion className={css.accordion} defaultExpanded={false} sx={{ display: { xs: 'block', md: 'none' } }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h4" display="inline" fontWeight={700}>
@@ -50,7 +50,7 @@ const NewSafe = () => {
           <SafeList closeDrawer={() => {}} />
         </Box>
       </Grid>
-      <Grid item xs={12} md={8} lg={8.5}>
+      <Grid item flex={1}>
         <div className={css.content}>
           <Typography
             variant="h1"
