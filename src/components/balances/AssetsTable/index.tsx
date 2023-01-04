@@ -1,4 +1,4 @@
-import { useState, type ReactElement, useCallback, useMemo } from 'react'
+import { useState, type ReactElement, useMemo } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -16,13 +16,8 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import { VisibilityOutlined } from '@mui/icons-material'
 import TokenMenu from '../TokenMenu'
 import useBalances from '@/hooks/useBalances'
-import useChainId from '@/hooks/useChainId'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
-import { useAppDispatch } from '@/store'
-import { setHiddenTokensForChain } from '@/store/settingsSlice'
-
-// This is the default for MUI Collapse
-export const COLLAPSE_TIMEOUT_MS = 300
+import { useHideAssets } from './useHideAssets'
 
 const isNativeToken = (tokenInfo: TokenInfo) => {
   return tokenInfo.type === TokenType.NATIVE_TOKEN
@@ -61,49 +56,11 @@ const AssetsTable = ({
 }): ReactElement => {
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
   const isGranted = useIsGranted()
-  const [assetsToHide, setAssetsToHide] = useState<string[]>([])
-  const [assetsToUnhide, setAssetsToUnhide] = useState<string[]>([])
   const hiddenAssets = useHiddenTokens()
   const { balances } = useBalances(true)
-  const dispatch = useAppDispatch()
-  const chainId = useChainId()
-  const [hidingAsset, setHidingAsset] = useState<string>()
 
-  // TODO: move logic into hook
-  const toggleAsset = useCallback(
-    (address: string) => {
-      if (assetsToHide.includes(address)) {
-        assetsToHide.splice(assetsToHide.indexOf(address), 1)
-        setAssetsToHide([...assetsToHide])
-        return
-      }
-
-      if (assetsToUnhide.includes(address)) {
-        assetsToUnhide.splice(assetsToUnhide.indexOf(address), 1)
-        setAssetsToUnhide([...assetsToUnhide])
-        return
-      }
-
-      const assetIsHidden = hiddenAssets.includes(address)
-      if (!assetIsHidden) {
-        setAssetsToHide([...assetsToHide, address])
-      } else {
-        setAssetsToUnhide([...assetsToUnhide, address])
-      }
-    },
-    [assetsToHide, assetsToUnhide, hiddenAssets],
-  )
-
-  const deselectAll = useCallback(() => {
-    setAssetsToHide([])
-    setAssetsToUnhide([...hiddenAssets])
-  }, [hiddenAssets])
-
-  // Assets are selected if they are either hidden or marked for hiding
-  const isAssetSelected = useCallback(
-    (address: string) =>
-      (hiddenAssets.includes(address) && !assetsToUnhide.includes(address)) || assetsToHide.includes(address),
-    [assetsToHide, assetsToUnhide, hiddenAssets],
+  const { isAssetSelected, toggleAsset, hidingAsset, hideAsset, cancel, deselectAll, saveChanges } = useHideAssets(() =>
+    setShowHiddenAssets(false),
   )
 
   const visibleAssets = useMemo(
@@ -117,30 +74,6 @@ const AssetsTable = ({
   )
 
   const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
-
-  const cancel = useCallback(() => {
-    setAssetsToHide([])
-    setAssetsToUnhide([])
-    setShowHiddenAssets(false)
-  }, [setShowHiddenAssets])
-
-  const hideAsset = useCallback(
-    (address: string) => {
-      setHidingAsset(address)
-      setTimeout(() => {
-        const newHiddenAssets = [...hiddenAssets, address]
-        dispatch(setHiddenTokensForChain({ chainId, assets: newHiddenAssets }))
-        setHidingAsset(undefined)
-      }, COLLAPSE_TIMEOUT_MS)
-    },
-    [chainId, dispatch, hiddenAssets],
-  )
-
-  const saveChanges = useCallback(() => {
-    const newHiddenAssets = [...hiddenAssets.filter((asset) => !assetsToUnhide.includes(asset)), ...assetsToHide]
-    dispatch(setHiddenTokensForChain({ chainId, assets: newHiddenAssets }))
-    cancel()
-  }, [assetsToHide, assetsToUnhide, chainId, dispatch, hiddenAssets, cancel])
 
   const shouldHideSend = !isGranted
 

@@ -4,7 +4,8 @@ import { safeParseUnits } from '@/utils/formatters'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { useState } from 'react'
-import AssetsTable, { COLLAPSE_TIMEOUT_MS } from '.'
+import AssetsTable from '.'
+import { COLLAPSE_TIMEOUT_MS } from './useHideAssets'
 
 const getParentRow = (element: HTMLElement | null) => {
   while (element !== null) {
