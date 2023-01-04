@@ -5,6 +5,24 @@
   overflow: auto;
 }
 
+.accordion :global .MuiAccordionDetails-root > div > div > div:first-child {
+  display: none;
+}
+
+.accordion {
+  border: 0;
+}
+
+.accordion :global .MuiAccordionSummary-root {
+  background: transparent !important;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.accordion :global .MuiAccordionSummary-content {
+  margin: 0;
+}
+
 .content {
   background: linear-gradient(-90deg, #10ff84, #5fddff);
   background-size: 200% 200%;

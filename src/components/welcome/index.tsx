@@ -1,5 +1,16 @@
 import React from 'react'
-import { Button, Grid, Paper, SvgIcon, Typography, ButtonBase, Box } from '@mui/material'
+import {
+  Button,
+  Grid,
+  Paper,
+  SvgIcon,
+  Typography,
+  ButtonBase,
+  Box,
+  AccordionSummary,
+  AccordionDetails,
+  Accordion,
+} from '@mui/material'
 import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS, LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import Track from '../common/Track'
@@ -12,6 +23,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import Keyhole from '@/components/common/icons/KeyholeIcon/keyhole.svg'
 import CircularIcon from '@/components/common/icons/CircularIcon'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 const NewSafe = () => {
   const router = useRouter()
@@ -21,9 +33,22 @@ const NewSafe = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={4} lg={3.5}>
-        <div className={css.sidebar}>
+        <Accordion className={css.accordion} defaultExpanded={false} sx={{ display: { xs: 'block', md: 'none' } }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h4" display="inline" fontWeight={700}>
+              My Safes
+            </Typography>
+          </AccordionSummary>
+
+          <AccordionDetails sx={{ padding: 0 }}>
+            <div className={css.sidebar}>
+              <SafeList closeDrawer={() => {}} />
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        <Box className={css.sidebar} display={{ xs: 'none', md: 'block' }}>
           <SafeList closeDrawer={() => {}} />
-        </div>
+        </Box>
       </Grid>
       <Grid item xs={12} md={8} lg={8.5}>
         <div className={css.content}>
