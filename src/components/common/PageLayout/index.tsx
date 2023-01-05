@@ -7,13 +7,23 @@ import SafeLoadingError from '../SafeLoadingError'
 import Footer from '../Footer'
 import SideDrawer from './SideDrawer'
 import PsaBanner from '../PsaBanner'
+import { isAppShareRoute, isIndexRoute, isLoadSafeRoute, isNewSafeRoute, isWelcomeRoute } from '@/utils/route'
+import { useRouter } from 'next/router'
 
 const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true)
+  const router = useRouter()
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev)
   }
+
+  const showSidebar =
+    !isAppShareRoute(router.pathname) &&
+    !isNewSafeRoute(router.pathname) &&
+    !isLoadSafeRoute(router.pathname) &&
+    !isWelcomeRoute(router.pathname) &&
+    !isIndexRoute(router.pathname)
 
   return (
     <div className={css.pageContainer}>
@@ -22,9 +32,9 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
         <Header onMenuToggle={toggleSidebar} />
       </header>
 
-      <SideDrawer isOpen={isSidebarOpen} onToggle={setSidebarOpen} />
+      {showSidebar && <SideDrawer isOpen={isSidebarOpen} onToggle={setSidebarOpen} />}
 
-      <div className={classnames(css.main, !isSidebarOpen && css.mainNoSidebar)}>
+      <div className={classnames(css.main, (!isSidebarOpen || !showSidebar) && css.mainNoSidebar)}>
         <div className={css.content}>
           <SafeLoadingError>{children}</SafeLoadingError>
         </div>
