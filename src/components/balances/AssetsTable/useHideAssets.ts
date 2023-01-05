@@ -20,7 +20,7 @@ export const useHideAssets = (closeDialog: () => void) => {
     (address: string) => {
       if (assetsToHide.includes(address)) {
         const newAssetsToHide = [...assetsToHide]
-        // newAssetsToHide.splice(newAssetsToHide.indexOf(address), 1)
+        newAssetsToHide.splice(newAssetsToHide.indexOf(address), 1)
         setAssetsToHide(newAssetsToHide)
         return
       }
