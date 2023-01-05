@@ -30,9 +30,9 @@ export const useHideAssets = (closeDialog: () => void) => {
 
       const assetIsHidden = hiddenAssets.includes(address)
       if (!assetIsHidden) {
-        setAssetsToHide([...assetsToHide, address])
+        setAssetsToHide(assetsToHide.concat(address))
       } else {
-        setAssetsToUnhide([...assetsToUnhide, address])
+        setAssetsToUnhide(assetsToUnhide.concat(address))
       }
     },
     [assetsToHide, assetsToUnhide, hiddenAssets],
