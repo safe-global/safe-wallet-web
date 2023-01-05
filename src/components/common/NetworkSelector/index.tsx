@@ -24,7 +24,7 @@ const NetworkSelector = (): ReactElement => {
 
     trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: selectedChainId })
 
-    const shouldKeepPath = [AppRoutes.load, AppRoutes.open, AppRoutes.newSafe.create].includes(router.pathname)
+    const shouldKeepPath = [AppRoutes.newSafe.create, AppRoutes.newSafe.load].includes(router.pathname)
 
     const newRoute = {
       pathname: shouldKeepPath ? router.pathname : '/',

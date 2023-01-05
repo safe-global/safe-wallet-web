@@ -10,14 +10,12 @@ const TxConfirmations = ({
   requiredConfirmations: number
   submittedConfirmations: number
 }): ReactElement => {
+  const confirmationColor = requiredConfirmations > submittedConfirmations ? 'border' : 'primary'
+
   return (
     <>
-      <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" color="border" />
-      <Typography
-        variant="caption"
-        fontWeight="bold"
-        color={requiredConfirmations > submittedConfirmations ? 'border.main' : 'primary'}
-      >
+      <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" color={confirmationColor} />
+      <Typography variant="caption" fontWeight="bold" color={confirmationColor}>
         {submittedConfirmations} out of {requiredConfirmations}
       </Typography>
     </>
