@@ -137,7 +137,7 @@ const NotificationCenter = (): ReactElement => {
             <div className={css.popoverFooter}>
               <IconButton onClick={() => setShowAll((prev) => !prev)} disableRipple className={css.expandButton}>
                 <UnreadBadge
-                  invisible={unreadCount <= NOTIFICATION_CENTER_LIMIT}
+                  invisible={showAll || unreadCount <= NOTIFICATION_CENTER_LIMIT}
                   anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'left',
