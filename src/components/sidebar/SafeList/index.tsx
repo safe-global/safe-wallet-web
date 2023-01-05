@@ -29,7 +29,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
-import { isWelcomeRoute } from '@/utils/route'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -73,7 +72,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   }
 
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
-  const isWelcomePage = isWelcomeRoute(router.pathname)
+  const isWelcomePage = router.pathname === AppRoutes.welcome
 
   return (
     <div className={css.container}>

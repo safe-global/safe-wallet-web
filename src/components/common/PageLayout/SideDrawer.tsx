@@ -1,18 +1,23 @@
 import { useEffect, type ReactElement } from 'react'
 import { IconButton, Drawer, useMediaQuery } from '@mui/material'
+import type { ParsedUrlQuery } from 'querystring'
 import { useTheme } from '@mui/material/styles'
 import DoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRightRounded'
 import DoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded'
 import { useRouter } from 'next/router'
-import classnames from 'classnames'
 
+import classnames from 'classnames'
 import Sidebar from '@/components/sidebar/Sidebar'
 import css from './styles.module.css'
-import { isSafeAppRoute } from '@/utils/route'
+import { AppRoutes } from '@/config/routes'
 
 type SideDrawerProps = {
   isOpen: boolean
   onToggle: (isOpen: boolean) => void
+}
+
+const isSafeAppRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
+  return pathname === AppRoutes.apps && !!query.appUrl
 }
 
 const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
