@@ -18,7 +18,7 @@ describe('Dashboard', () => {
       // Prefix is separated across elements in EthHashInfo
       cy.contains('0xCD4FddB8FfA90012DFE11eD4bf258861204FeEAE').should('exist')
       cy.contains('1/1')
-      cy.get(`a[href="/balances?safe=${encodeURIComponent(SAFE)}"] button`).contains('View assets')
+      cy.get(`a[href="/balances?safe=${encodeURIComponent(SAFE)}"]`).contains('View assets')
       cy.contains('p', 'Tokens').next().contains('3')
       cy.contains('p', 'NFTs').next().contains('0')
     })
