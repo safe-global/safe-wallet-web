@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Grid,
   Paper,
   SvgIcon,
   Typography,
-  Box,
   AccordionSummary,
   AccordionDetails,
   Accordion,
+  useMediaQuery,
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS, LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
@@ -19,14 +19,26 @@ import css from './styles.module.css'
 import NewSafeIcon from '@/public/images/welcome/new-safe.svg'
 import LoadSafeIcon from '@/public/images/welcome/load-safe.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { useTheme } from '@mui/material/styles'
 
 const NewSafe = () => {
+  const [expanded, setExpanded] = useState(true)
   const router = useRouter()
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+
+  useEffect(() => {
+    setExpanded(!isSmallScreen)
+  }, [isSmallScreen])
+
+  const toggleSafeList = () => {
+    return isSmallScreen ? setExpanded((prev) => !prev) : null
+  }
 
   return (
     <Grid container spacing={3} p={3} flex={1}>
       <Grid item xs={12} md={4} lg={3.5} minWidth={{ md: 400 }}>
-        <Accordion className={css.accordion} defaultExpanded={false} sx={{ display: { xs: 'block', md: 'none' } }}>
+        <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h4" display="inline" fontWeight={700}>
               My Safes
@@ -34,19 +46,16 @@ const NewSafe = () => {
           </AccordionSummary>
 
           <AccordionDetails sx={{ padding: 0 }}>
-            <div className={css.sidebar}>
+            <aside className={css.sidebar}>
               <SafeList />
-            </div>
+            </aside>
           </AccordionDetails>
         </Accordion>
-        <Box className={css.sidebar} display={{ xs: 'none', md: 'block' }}>
-          <SafeList />
-        </Box>
       </Grid>
 
       <Grid item flex={1}>
-        <div className={css.center}>
-          <div className={css.content}>
+        <div className={css.content}>
+          <div>
             <Typography
               variant="h1"
               fontSize={[44, null, 52]}
