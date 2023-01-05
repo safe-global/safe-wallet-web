@@ -1,6 +1,10 @@
 import { AppRoutes } from '@/config/routes'
 import type { ParsedUrlQuery } from 'querystring'
 
+export const isIndexRoute = (pathname: string): boolean => {
+  return pathname === AppRoutes.index
+}
+
 export const isNewSafeRoute = (pathname: string): boolean => {
   return pathname === AppRoutes.newSafe.create
 }

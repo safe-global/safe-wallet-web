@@ -8,7 +8,7 @@ import classnames from 'classnames'
 
 import Sidebar from '@/components/sidebar/Sidebar'
 import css from './styles.module.css'
-import { isSafeAppRoute, isLoadSafeRoute, isNewSafeRoute, isWelcomeRoute, isAppShareRoute } from '@/utils/route'
+import { isSafeAppRoute } from '@/utils/route'
 
 type SideDrawerProps = {
   isOpen: boolean
@@ -22,13 +22,7 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   const showSidebarToggle = isSafeAppRoute(pathname, query) && !isSmallScreen
 
   useEffect(() => {
-    const closeSidebar =
-      isSmallScreen ||
-      isSafeAppRoute(pathname, query) ||
-      isAppShareRoute(pathname) ||
-      isNewSafeRoute(pathname) ||
-      isLoadSafeRoute(pathname) ||
-      isWelcomeRoute(pathname)
+    const closeSidebar = isSmallScreen || isSafeAppRoute(pathname, query)
     onToggle(!closeSidebar)
   }, [isSmallScreen, onToggle, pathname, query])
 
