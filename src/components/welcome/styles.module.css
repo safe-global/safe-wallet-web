@@ -5,6 +5,7 @@
 
 .accordion {
   border: 0;
+  height: 100%;
 }
 
 .accordion :global .MuiAccordionSummary-root {
