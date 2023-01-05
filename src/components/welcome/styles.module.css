@@ -18,8 +18,8 @@
   margin: 0;
 }
 
-.sidebar {
-  height: calc(100vh - var(--header-height) - var(--footer-height));
+.sidebar :global .MuiPaper-root {
+  height: calc(100vh - var(--header-height) - var(--footer-height) - 24px);
   overflow: auto;
 }
 
@@ -37,7 +37,7 @@
 }
 
 @media (max-width: 900px) {
-  .sidebar {
+  .sidebar :global .MuiPaper-root {
     height: 100%;
   }
 
