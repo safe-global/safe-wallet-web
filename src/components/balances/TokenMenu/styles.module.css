@@ -4,7 +4,6 @@
   flex: 1;
   gap: var(--space-1);
   padding: 5px var(--space-2);
-  margin-right: var(--space-3);
   background-color: var(--color-background-light);
   border-radius: 6px;
   min-width: 185px;
@@ -21,6 +20,13 @@
   flex-direction: row;
   align-items: center;
   margin-top: -24px;
+  gap: var(--space-3);
+}
+
+@media (max-width: 600px) {
+  .stickyBox {
+    margin-top: -16px;
+  }
 }
 
 .cancelButton {
