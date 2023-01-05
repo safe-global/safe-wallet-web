@@ -26,7 +26,7 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
     !isIndexRoute(router.pathname)
 
   return (
-    <div className={css.pageContainer}>
+    <>
       <header className={css.header}>
         <PsaBanner />
         <Header onMenuToggle={toggleSidebar} />
@@ -41,7 +41,7 @@ const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
 
         <Footer />
       </div>
-    </div>
+    </>
   )
 }
 
