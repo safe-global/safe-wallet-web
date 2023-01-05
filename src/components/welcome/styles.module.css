@@ -1,11 +1,4 @@
-.sidebar {
-  background: var(--color-background-paper);
-  border-radius: 6px;
-  height: 100%;
-  overflow: auto;
-}
-
-.accordion :global .MuiAccordionDetails-root > div > div > div:first-child,
+.accordion :global .MuiAccordionDetails-root > div > div:first-child,
 .accordion :global .MuiAccordionSummary-expandIconWrapper {
   display: none;
 }

@@ -46,67 +46,67 @@ const NewSafe = () => {
           </AccordionSummary>
 
           <AccordionDetails sx={{ padding: 0 }}>
-            <aside className={css.sidebar}>
-              <SafeList />
-            </aside>
+            <SafeList />
           </AccordionDetails>
         </Accordion>
       </Grid>
 
       <Grid item flex={1}>
         <div className={css.content}>
-          <div>
-            <Typography
-              variant="h1"
-              fontSize={[44, null, 52]}
-              lineHeight={1}
-              letterSpacing={-1.5}
-              color="static.main"
-              mb={1}
-            >
-              Welcome to the Safe
-            </Typography>
+          <Typography
+            variant="h1"
+            fontSize={[44, null, 52]}
+            lineHeight={1}
+            letterSpacing={-1.5}
+            color="static.main"
+            mb={1}
+          >
+            Welcome to the Safe
+          </Typography>
 
-            <Typography mb={5} color="static.main">
-              The most trusted decentralized custody protocol and collective asset management platform.
-            </Typography>
+          <Typography mb={5} color="static.main">
+            The most trusted decentralized custody protocol and collective asset management platform.
+          </Typography>
 
-            <Grid container spacing={3} sx={{ maxWidth: '800px' }}>
-              <Grid item xs={12} lg={6}>
-                <Paper sx={{ padding: 4, height: 1 }}>
-                  <SvgIcon component={NewSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
-                  <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                    Create Safe
-                  </Typography>
-                  <Typography variant="body2" mb={3}>
-                    A new Safe that is controlled by one or multiple owners.
-                  </Typography>
-                  <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
-                    <Button variant="contained" onClick={() => router.push(AppRoutes.newSafe.create)}>
-                      + Create new Safe
-                    </Button>
-                  </Track>
-                </Paper>
-              </Grid>
+          <Grid container spacing={3} sx={{ maxWidth: '800px' }}>
+            <Grid item xs={12} lg={6}>
+              <Paper sx={{ padding: 4, height: 1 }}>
+                <SvgIcon component={NewSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
+                <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
+                  Create Safe
+                </Typography>
 
-              <Grid item xs={12} lg={6}>
-                <Paper sx={{ padding: 4, height: 1 }}>
-                  <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
-                  <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                    Add existing Safe
-                  </Typography>
-                  <Typography variant="body2" mb={3}>
-                    Already have a Safe? Add your Safe using your Safe address.
-                  </Typography>
-                  <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
-                    <Button variant="outlined" onClick={() => router.push(AppRoutes.newSafe.load)}>
-                      Add existing Safe
-                    </Button>
-                  </Track>
-                </Paper>
-              </Grid>
+                <Typography variant="body2" mb={3}>
+                  A new Safe that is controlled by one or multiple owners.
+                </Typography>
+
+                <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
+                  <Button variant="contained" onClick={() => router.push(AppRoutes.newSafe.create)}>
+                    + Create new Safe
+                  </Button>
+                </Track>
+              </Paper>
             </Grid>
-          </div>
+
+            <Grid item xs={12} lg={6}>
+              <Paper sx={{ padding: 4, height: 1 }}>
+                <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
+                <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
+                  Add existing Safe
+                </Typography>
+
+                <Typography variant="body2" mb={3}>
+                  Already have a Safe? Add your Safe using your Safe address.
+                </Typography>
+
+                <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
+                  <Button variant="outlined" onClick={() => router.push(AppRoutes.newSafe.load)}>
+                    Add existing Safe
+                  </Button>
+                </Track>
+              </Paper>
+            </Grid>
+          </Grid>
         </div>
       </Grid>
     </Grid>
