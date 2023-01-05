@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '@/components/new-safe/create/OverviewWidget'
-import type { NamedAddress } from '@/components/create-safe/types'
+import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { TxStepperProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import CreateSafeStep0 from '@/components/new-safe/create/steps/Step0'
 import CreateSafeStep1 from '@/components/new-safe/create/steps/Step1'

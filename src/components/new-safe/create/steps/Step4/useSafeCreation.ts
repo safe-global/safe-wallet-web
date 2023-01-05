@@ -5,8 +5,10 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { EthersError } from '@/utils/ethers-utils'
 import type { PendingSafeData } from '@/components/new-safe/create/steps/Step4/index'
-import type { PendingSafeTx } from '@/components/create-safe/types'
+import type { PendingSafeTx } from '@/components/new-safe/create/types'
 import {
+  createNewSafe,
+  getSafeDeployProps,
   checkSafeCreationTx,
   getSafeCreationTxInfo,
   handleSafeCreationError,
@@ -16,7 +18,6 @@ import {
 import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
-import { createNewSafe, getSafeDeployProps } from '@/components/create-safe/logic'
 
 export enum SafeCreationStatus {
   AWAITING,

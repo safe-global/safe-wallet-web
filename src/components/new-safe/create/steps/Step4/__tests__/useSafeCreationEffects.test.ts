@@ -1,17 +1,12 @@
 import { renderHook } from '@/tests/test-utils'
-import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
-import * as router from 'next/router'
-import type { NextRouter } from 'next/router'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/Step4/useSafeCreation'
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import * as web3 from '@/hooks/wallets/web3'
-import * as pendingSafe from '@/components/create-safe/logic'
-import * as chainIdModule from '@/hooks/useChainId'
+import * as pendingSafe from '@/components/new-safe/create/steps/Step4/logic'
 import { Web3Provider } from '@ethersproject/providers'
-import type { PendingSafeData } from '@/components/create-safe/types.d'
-import { AppRoutes } from '@/config/routes'
-import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
-import useSafeCreationEffects from '@/components/create-safe/status/useSafeCreationEffects'
-import type { NamedAddress } from '@/components/create-safe/types'
+import type { PendingSafeData } from '@/components/new-safe/create/types'
+import useSafeCreationEffects from '@/components/new-safe/create/steps/Step4/useSafeCreationEffects'
+import type { NamedAddress } from '@/components/new-safe/create/types'
 
 describe('useSafeCreationEffects', () => {
   beforeEach(() => {
@@ -89,40 +84,5 @@ describe('useSafeCreationEffects', () => {
     )
 
     expect(pollSafeInfoSpy).not.toHaveBeenCalled()
-  })
-
-  it('should navigate to the dashboard on INDEXED', async () => {
-    jest.spyOn(chainIdModule, 'default').mockReturnValue('4')
-    const pushMock = jest.fn()
-    jest.spyOn(router, 'useRouter').mockReturnValue({
-      push: pushMock,
-    } as unknown as NextRouter)
-
-    // Prevent backOff logging after test is completed
-    jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn())
-
-    const setStatusSpy = jest.fn()
-    const setPendingSafeSpy = jest.fn()
-
-    renderHook(
-      () =>
-        useSafeCreationEffects({
-          status: SafeCreationStatus.INDEXED,
-          pendingSafe: { safeAddress: '0x10' } as PendingSafeData,
-          setPendingSafe: setPendingSafeSpy,
-          setStatus: setStatusSpy,
-        }),
-      {
-        initialReduxState: {
-          chains: {
-            data: CONFIG_SERVICE_CHAINS,
-            error: undefined,
-            loading: false,
-          },
-        },
-      },
-    )
-
-    expect(pushMock).toHaveBeenCalledWith({ pathname: AppRoutes.home, query: { safe: 'rin:0x10' } })
   })
 })

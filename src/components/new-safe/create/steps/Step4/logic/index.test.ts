@@ -3,10 +3,10 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { checkSafeCreationTx, handleSafeCreationError } from '@/components/create-safe/logic'
-import { SafeCreationStatus } from '@/components/create-safe/status/useSafeCreation'
+import { checkSafeCreationTx, handleSafeCreationError } from '@/components/new-safe/create/steps/Step4/logic'
 import { ErrorCode } from '@ethersproject/logger'
 import { EthersTxReplacedReason } from '@/utils/ethers-utils'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/Step4/useSafeCreation'
 
 const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
 
@@ -47,7 +47,7 @@ describe('checkSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0', jest.fn())
 
     expect(result).toBe(SafeCreationStatus.SUCCESS)
   })
@@ -59,7 +59,7 @@ describe('checkSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0', jest.fn())
 
     expect(result).toBe(SafeCreationStatus.REVERTED)
   })
@@ -74,7 +74,7 @@ describe('checkSafeCreationTx', () => {
 
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
 
-    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0', jest.fn())
 
     expect(result).toBe(SafeCreationStatus.TIMEOUT)
   })
@@ -87,7 +87,7 @@ describe('checkSafeCreationTx', () => {
     }
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
 
-    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0', jest.fn())
 
     expect(result).toBe(SafeCreationStatus.SUCCESS)
   })
@@ -100,7 +100,7 @@ describe('checkSafeCreationTx', () => {
     }
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
 
-    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0')
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0', jest.fn())
 
     expect(result).toBe(SafeCreationStatus.ERROR)
   })

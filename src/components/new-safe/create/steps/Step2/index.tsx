@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 
 import AddIcon from '@/public/images/common/add.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import type { NamedAddress } from '@/components/create-safe/types'
+import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafeInfos'

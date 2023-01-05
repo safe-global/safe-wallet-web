@@ -14,7 +14,7 @@ import type { AlertColor } from '@mui/material'
 import type { ReactElement } from 'react'
 import LightbulbIcon from '@/public/images/common/lightbulb.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import css from './styles.module.css'
+import css from 'src/components/new-safe/create/InfoWidget/styles.module.css'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 
 type InfoWidgetProps = {

@@ -1,9 +1,9 @@
 import { renderHook } from '@/tests/test-utils'
-import { SafeCreationStatus, useSafeCreation } from '@/components/create-safe/status/useSafeCreation'
+import { SafeCreationStatus, useSafeCreation } from '@/components/new-safe/create/steps/Step4/useSafeCreation'
 import * as web3 from '@/hooks/wallets/web3'
 import * as chain from '@/hooks/useChains'
 import * as wallet from '@/hooks/wallets/useWallet'
-import * as logic from '@/components/create-safe/logic'
+import * as logic from '@/components/new-safe/create/steps/Step4/logic'
 import * as contracts from '@/services/contracts/safeContracts'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -47,6 +47,7 @@ describe('useSafeCreation', () => {
     } as unknown as ChainInfo
 
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
+    jest.spyOn(web3, 'getWeb3').mockImplementation(() => mockProvider)
     jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
     jest.spyOn(chain, 'useCurrentChain').mockImplementation(() => mockChain)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)

@@ -2,7 +2,7 @@ import type { AppThunk } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import type { NamedAddress } from '../types'
+import type { NamedAddress } from '@/components/new-safe/create/types'
 
 export const updateAddressBook = (
   chainId: string,
