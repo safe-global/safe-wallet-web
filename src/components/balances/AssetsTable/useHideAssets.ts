@@ -19,14 +19,16 @@ export const useHideAssets = (closeDialog: () => void) => {
   const toggleAsset = useCallback(
     (address: string) => {
       if (assetsToHide.includes(address)) {
-        assetsToHide.splice(assetsToHide.indexOf(address), 1)
-        setAssetsToHide([...assetsToHide])
+        const newAssetsToHide = [...assetsToHide]
+        // newAssetsToHide.splice(newAssetsToHide.indexOf(address), 1)
+        setAssetsToHide(newAssetsToHide)
         return
       }
 
       if (assetsToUnhide.includes(address)) {
-        assetsToUnhide.splice(assetsToUnhide.indexOf(address), 1)
-        setAssetsToUnhide([...assetsToUnhide])
+        const newAssetsToUnhide = [...assetsToUnhide]
+        newAssetsToUnhide.splice(newAssetsToUnhide.indexOf(address), 1)
+        setAssetsToUnhide(newAssetsToUnhide)
         return
       }
 
