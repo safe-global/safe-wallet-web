@@ -57,6 +57,7 @@ export const _shouldExpandSafeList = ({
 }
 
 const MAX_EXPANDED_SAFES = 3
+const NO_SAFE_MESSAGE = 'Create a new safe or add'
 
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
@@ -103,12 +104,12 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
           <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
             {!isWelcomePage ? (
               <Link href={{ pathname: AppRoutes.welcome, query: router.query }} passHref>
-                <MuiLink onClick={closeDrawer}>Create or add</MuiLink>
+                <MuiLink onClick={closeDrawer}>{NO_SAFE_MESSAGE}</MuiLink>
               </Link>
             ) : (
-              <>Create or add</>
+              <>{NO_SAFE_MESSAGE}</>
             )}{' '}
-            an existing Safe
+            an existing one
           </Typography>
         </Box>
       )}
@@ -141,15 +142,15 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
               {/* No Safes yet */}
               {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
-                <Typography variant="body2" color="primary.light" py={2} textAlign="center">
+                <Typography variant="body2" color="primary.light" p={2} textAlign="center">
                   {!isWelcomePage ? (
                     <Link href={{ pathname: AppRoutes.welcome, query: router.query }} passHref>
-                      <MuiLink onClick={closeDrawer}>Create or add</MuiLink>
+                      <MuiLink onClick={closeDrawer}>{NO_SAFE_MESSAGE}</MuiLink>
                     </Link>
                   ) : (
-                    <>Create or add</>
+                    <>{NO_SAFE_MESSAGE}</>
                   )}{' '}
-                  an existing Safe on this network
+                  an existing one on this network
                 </Typography>
               )}
 
