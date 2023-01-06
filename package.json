@@ -29,7 +29,7 @@
     "static-serve": "yarn build && yarn export && yarn serve",
     "serve": "npx -y http-server out",
     "allow-scripts": "node ./node_modules/@lavamoat/allow-scripts/src/cli.js",
-    "setup": "yarn install --frozen-lockfile && yarn allow-scripts && yarn generate-types && yarn css-vars"
+    "setup": "yarn install --frozen-lockfile && yarn allow-scripts --experimental-bins && yarn generate-types && yarn css-vars"
   },
   "pre-commit": [
     "lint"
