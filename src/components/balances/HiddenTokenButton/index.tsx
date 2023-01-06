@@ -6,6 +6,8 @@ import useBalances from '@/hooks/useBalances'
 import { VisibilityOutlined } from '@mui/icons-material'
 import Track from '@/components/common/Track'
 
+import css from './styles.module.css'
+
 const HiddenTokenButton = ({
   toggleShowHiddenAssets,
   showHiddenAssets,
@@ -22,6 +24,7 @@ const HiddenTokenButton = ({
   return (
     <Track {...ASSETS_EVENTS.SHOW_HIDDEN_ASSETS}>
       <Button
+        className={css.hiddenTokenButton}
         sx={{ gap: 1, padding: 1, borderWidth: '1px !important', borderColor: ({ palette }) => palette.border.main }}
         disabled={showHiddenAssets}
         onClick={toggleShowHiddenAssets}

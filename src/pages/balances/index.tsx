@@ -5,8 +5,8 @@ import { CircularProgress } from '@mui/material'
 import AssetsTable from '@/components/balances/AssetsTable'
 import AssetsHeader from '@/components/balances/AssetsHeader'
 import useBalances from '@/hooks/useBalances'
-import { useEffect, useState } from 'react'
-import { trackEvent, ASSETS_EVENTS } from '@/services/analytics'
+import { useState } from 'react'
+
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoAssetsIcon from '@/public/images/balances/no-assets.svg'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
@@ -16,18 +16,6 @@ const Balances: NextPage = () => {
   const hiddenAssets = useHiddenTokens()
   const [showHiddenAssets, setShowHiddenAssets] = useState(false)
   const toggleShowHiddenAssets = () => setShowHiddenAssets((prev) => !prev)
-
-  useEffect(() => {
-    if (!loading && balances.items.length === 0) {
-      trackEvent({ ...ASSETS_EVENTS.DIFFERING_TOKENS, label: balances.items.length })
-    }
-  }, [balances, loading])
-
-  useEffect(() => {
-    if (hiddenAssets) {
-      trackEvent({ ...ASSETS_EVENTS.HIDDEN_TOKENS, label: Object.keys(hiddenAssets).length })
-    }
-  }, [hiddenAssets])
 
   return (
     <>

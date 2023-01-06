@@ -1,4 +1,5 @@
 import * as useChainId from '@/hooks/useChainId'
+import useHiddenTokens from '@/hooks/useHiddenTokens'
 import { act, fireEvent, getByRole, getByTestId, render, waitFor } from '@/tests/test-utils'
 import { safeParseUnits } from '@/utils/formatters'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -19,10 +20,16 @@ const getParentRow = (element: HTMLElement | null) => {
 
 const TestComponent = () => {
   const [showHidden, setShowHidden] = useState(false)
+  const hiddenTokens = useHiddenTokens()
   return (
     <>
       <AssetsTable showHiddenAssets={showHidden} setShowHiddenAssets={setShowHidden} />
       <button data-testid="showHidden" onClick={() => setShowHidden((prev) => !prev)} />
+      <ul>
+        {hiddenTokens.map((token) => (
+          <li key={token}>{token}</li>
+        ))}
+      </ul>
     </>
   )
 }
@@ -131,7 +138,7 @@ describe('AssetsTable', () => {
 
   test('Deselect all and save', async () => {
     const mockHiddenAssets = {
-      '5': [hexZeroPad('0x2', 20), hexZeroPad('0x3', 20)],
+      '5': [hexZeroPad('0x2', 20), hexZeroPad('0x3', 20), hexZeroPad('0xdead', 20)],
     }
     const mockBalances = {
       data: {
@@ -197,6 +204,11 @@ describe('AssetsTable', () => {
       expect(result.queryByText('200 SPM')).not.toBeNull()
     })
 
+    // Expect 3 hidden token addresses
+    expect(result.queryByText(hexZeroPad('0x2', 20))).not.toBeNull()
+    expect(result.queryByText(hexZeroPad('0x3', 20))).not.toBeNull()
+    expect(result.queryByText(hexZeroPad('0xdead', 20))).not.toBeNull()
+
     fireEvent.click(result.getByText('Deselect all'))
     fireEvent.click(result.getByText('Save'))
 
@@ -207,6 +219,11 @@ describe('AssetsTable', () => {
       expect(result.queryByText('100 DAI')).not.toBeNull()
       expect(result.queryByText('200 SPM')).not.toBeNull()
     })
+
+    // Expect one hidden token, which was not part of the current balance
+    expect(result.queryByText(hexZeroPad('0x2', 20))).toBeNull()
+    expect(result.queryByText(hexZeroPad('0x3', 20))).toBeNull()
+    expect(result.queryByText(hexZeroPad('0xdead', 20))).not.toBeNull()
   })
 
   test('immediately hide visible assets', async () => {

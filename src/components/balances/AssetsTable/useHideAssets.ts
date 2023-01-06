@@ -1,3 +1,4 @@
+import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import { useAppDispatch } from '@/store'
@@ -10,6 +11,7 @@ export const COLLAPSE_TIMEOUT_MS = 300
 export const useHideAssets = (closeDialog: () => void) => {
   const dispatch = useAppDispatch()
   const chainId = useChainId()
+  const { balances } = useBalances()
 
   const [assetsToHide, setAssetsToHide] = useState<string[]>([])
   const [assetsToUnhide, setAssetsToUnhide] = useState<string[]>([])
@@ -38,10 +40,15 @@ export const useHideAssets = (closeDialog: () => void) => {
     [assetsToHide, assetsToUnhide, hiddenAssets],
   )
 
+  /**
+   * Unhide all assets which are included in the current Safe's balance.
+   */
   const deselectAll = useCallback(() => {
     setAssetsToHide([])
-    setAssetsToUnhide([...hiddenAssets])
-  }, [hiddenAssets])
+    setAssetsToUnhide([
+      ...hiddenAssets.filter((asset) => balances.items.some((item) => item.tokenInfo.address === asset)),
+    ])
+  }, [hiddenAssets, balances])
 
   // Assets are selected if they are either hidden or marked for hiding
   const isAssetSelected = useCallback(
