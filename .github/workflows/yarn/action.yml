@@ -13,4 +13,4 @@ runs:
 
     - name: Yarn install
       shell: bash
-      run: yarn install --immutable
+      run: yarn setup

@@ -22,13 +22,14 @@
     "generate-types:safeDeployments": "typechain --target ethers-v5 --out-dir src/types/contracts ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json",
     "generate-types:spendingLimit": "typechain --target ethers-v5 --out-dir src/types/contracts ./node_modules/@gnosis.pm/safe-modules-deployments/dist/assets/**/*.json",
     "generate-types": "yarn generate-types:safeDeployments && yarn generate-types:spendingLimit",
-    "postinstall": "yarn generate-types && yarn css-vars",
     "analyze": "cross-env ANALYZE=true yarn build",
     "cypress:open": "cross-env TZ=UTC cypress open",
     "cypress:run": "cypress run",
     "cypress:ci": "yarn cypress:run --config baseUrl=http://localhost:8080 --spec cypress/e2e/smoke/*.cy.js",
     "static-serve": "yarn build && yarn export && yarn serve",
-    "serve": "npx -y http-server out"
+    "serve": "npx -y http-server out",
+    "allow-scripts": "node ./node_modules/@lavamoat/allow-scripts/src/cli.js",
+    "setup": "yarn install --frozen-lockfile && yarn allow-scripts && yarn generate-types && yarn css-vars"
   },
   "pre-commit": [
     "lint"
@@ -83,6 +84,8 @@
     "semver": "^7.3.7"
   },
   "devDependencies": {
+    "@lavamoat/allow-scripts": "^2.3.0",
+    "@lavamoat/preinstall-always-fail": "^1.0.0",
     "@next/bundle-analyzer": "^13.1.1",
     "@safe-global/safe-core-sdk-types": "^1.8.0",
     "@sentry/types": "^7.28.1",
@@ -121,5 +124,48 @@
     "typescript": "4.9.4",
     "typescript-plugin-css-modules": "^4.1.1",
     "whatwg-fetch": "3.6.2"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "$root$": false,
+      "@lavamoat/preinstall-always-fail": false,
+      "@truffle/hdwallet-provider>web3": false,
+      "@truffle/hdwallet-provider>web3>web3-bzz": false,
+      "@truffle/hdwallet-provider>web3>web3-shh": false,
+      "@web3-onboard/coinbase>@coinbase/wallet-sdk>@solana/web3.js>bigint-buffer": false,
+      "@web3-onboard/coinbase>@coinbase/wallet-sdk>keccak": false,
+      "@web3-onboard/core>svelte-i18n>cli-color>es5-ext": false,
+      "@web3-onboard/trezor>eth-crypto>eccrypto": false,
+      "@web3-onboard/trezor>eth-crypto>eccrypto>secp256k1": false,
+      "@web3-onboard/trezor>hdkey>secp256k1": false,
+      "cypress": false,
+      "eslint-config-next>eslint-plugin-jsx-a11y>aria-query>@babel/runtime-corejs3>core-js-pure": false,
+      "ethers>@ethersproject/providers>ws>bufferutil": false,
+      "ethers>@ethersproject/providers>ws>utf-8-validate": false,
+      "pre-commit": false,
+      "pre-commit>spawn-sync": false
+    },
+    "allowBins": {
+      "allow-scripts": "node_modules/@lavamoat/allow-scripts/src/cli.js",
+      "semver": "node_modules/semver/bin/semver.js",
+      "cross-env": "node_modules/cross-env/src/bin/cross-env.js",
+      "cross-env-shell": "node_modules/cross-env/src/bin/cross-env-shell.js",
+      "cypress": "node_modules/cypress/bin/cypress",
+      "eslint": "node_modules/eslint/bin/eslint.js",
+      "eslint-config-prettier": "node_modules/eslint-config-prettier/bin/cli.js",
+      "jest": "node_modules/jest/bin/jest.js",
+      "next": "node_modules/next/dist/bin/next",
+      "prettier": "node_modules/prettier/bin-prettier.js",
+      "ts-node": "node_modules/ts-node/dist/bin.js",
+      "ts-node-cwd": "node_modules/ts-node/dist/bin-cwd.js",
+      "ts-node-esm": "node_modules/ts-node/dist/bin-esm.js",
+      "ts-node-script": "node_modules/ts-node/dist/bin-script.js",
+      "ts-node-transpile-only": "node_modules/ts-node/dist/bin-transpile.js",
+      "ts-script": "node_modules/ts-node/dist/bin-script-deprecated.js",
+      "ts-prune": "node_modules/ts-prune/lib/index.js",
+      "typechain": "node_modules/typechain/dist/cli/cli.js",
+      "tsc": "node_modules/typescript/bin/tsc",
+      "tsserver": "node_modules/typescript/bin/tsserver"
+    }
   }
 }
