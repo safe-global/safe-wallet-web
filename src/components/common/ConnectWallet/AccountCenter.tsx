@@ -100,7 +100,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
 
           <ChainSwitcher fullWidth />
 
-          <Button variant="outlined" size="small" onClick={handleSwitchWallet} fullWidth>
+          <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
             Switch wallet
           </Button>
 
