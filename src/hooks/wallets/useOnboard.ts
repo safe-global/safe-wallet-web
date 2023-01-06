@@ -105,18 +105,25 @@ export const connectWallet = async (onboard: OnboardAPI, options?: Parameters<On
   }
 }
 
-// A workaround for a bug in onboard.js that shows an account select popup
+// A workaround for an onboard "feature" that shows a defunct account select popup
 // See https://github.com/blocknative/web3-onboard/issues/888
 export const closeAccountSelectionModal = () => {
   const maxTries = 100
+  const modalText = 'Please switch the active account'
   let tries = 0
+
   const timer = setInterval(() => {
-    const okButton: HTMLButtonElement | null | undefined = document
-      .querySelector('onboard-v2')
-      ?.shadowRoot?.querySelector('.button-neutral-solid.rounded')
-    okButton?.click()
+    const onboardModal = document.querySelector('onboard-v2')?.shadowRoot
+    const isActionRequired = onboardModal?.textContent?.includes(modalText)
+
+    if (isActionRequired) {
+      // Dismiss the modal
+      ;(onboardModal?.querySelector('.background') as HTMLElement)?.click()
+      tries = maxTries
+    }
+
     tries += 1
-    if (okButton || tries >= maxTries) clearInterval(timer)
+    if (tries >= maxTries) clearInterval(timer)
   }, 100)
 }
 
