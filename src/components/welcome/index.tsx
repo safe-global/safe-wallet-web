@@ -45,7 +45,7 @@ const NewSafe = () => {
             </Typography>
           </AccordionSummary>
 
-          <AccordionDetails sx={{ padding: 0 }}>
+          <AccordionDetails sx={{ padding: 0 }} onClick={(event) => event.stopPropagation()}>
             <SafeList />
           </AccordionDetails>
         </Accordion>
