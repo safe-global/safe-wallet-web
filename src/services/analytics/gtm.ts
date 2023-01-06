@@ -19,6 +19,8 @@ import {
 import type { AnalyticsEvent, EventLabel, SafeAppSDKEvent } from './types'
 import { EventType } from './types'
 import { SAFE_APPS_SDK_CATEGORY } from './events'
+import { getAbTest } from '../tracking/abTesting'
+import type { AbTest } from '../tracking/abTesting'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
@@ -70,6 +72,7 @@ export const gtmClear = TagManager.disable
 type GtmEvent = {
   event: EventType
   chainId: string
+  abTest?: AbTest
 }
 
 type ActionGtmEvent = GtmEvent & {
@@ -102,6 +105,12 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
 
   if (eventData.label) {
     gtmEvent.eventLabel = eventData.label
+  }
+
+  const abTest = getAbTest()
+
+  if (abTest) {
+    gtmEvent.abTest = abTest
   }
 
   gtmSend(gtmEvent)
