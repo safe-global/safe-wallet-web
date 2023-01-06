@@ -8,14 +8,14 @@ import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEsti
 import { formatVisualAmount } from '@/utils/formatters'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
-import css from '@/components/new-safe/create/steps/Step3/styles.module.css'
+import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { getFallbackHandlerContractInstance } from '@/services/contracts/safeContracts'
-import { computeNewSafeAddress } from '@/components/new-safe/create/steps/Step4/logic'
+import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/create/steps/Step4'
+import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/create/steps/StatusStep'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
@@ -23,7 +23,7 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import palette from '@/styles/colors'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 
-const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
+const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
   useSyncSafeCreationStep(setStep)
   const chain = useCurrentChain()
@@ -159,4 +159,4 @@ const CreateSafeStep3 = ({ data, onSubmit, onBack, setStep }: StepRenderProps<Ne
   )
 }
 
-export default CreateSafeStep3
+export default ReviewStep

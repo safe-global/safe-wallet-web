@@ -4,7 +4,7 @@ import { useWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { EthersError } from '@/utils/ethers-utils'
-import type { PendingSafeData } from '@/components/new-safe/create/steps/Step4/index'
+import type { PendingSafeData } from '@/components/new-safe/create/steps/StatusStep/index'
 import type { PendingSafeTx } from '@/components/new-safe/create/types'
 import {
   createNewSafe,
@@ -14,7 +14,7 @@ import {
   handleSafeCreationError,
   SAFE_CREATION_ERROR_KEY,
   showSafeCreationError,
-} from '@/components/new-safe/create/steps/Step4/logic'
+} from '@/components/new-safe/create/logic'
 import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'

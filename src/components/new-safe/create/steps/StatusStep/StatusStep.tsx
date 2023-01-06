@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Box, Skeleton, StepLabel, SvgIcon } from '@mui/material'
-import css from '@/components/new-safe/create/steps/Step4/styles.module.css'
+import css from '@/components/new-safe/create/steps/StatusStep/styles.module.css'
 import CircleIcon from '@mui/icons-material/Circle'
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
 import Identicon from '@/components/common/Identicon'

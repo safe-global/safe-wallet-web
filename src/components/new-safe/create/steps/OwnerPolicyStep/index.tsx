@@ -8,29 +8,29 @@ import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafeInfos'
-import { useSafeSetupHints } from '@/components/new-safe/create/steps/Step2/useSafeSetupHints'
+import { useSafeSetupHints } from '@/components/new-safe/create/steps/OwnerPolicyStep/useSafeSetupHints'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import css from '@/components/new-safe/create/steps/Step2/styles.module.css'
+import css from '@/components/new-safe/create/steps/OwnerPolicyStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import OwnerRow from '@/components/new-safe/OwnerRow'
 
-enum CreateSafeStep2Fields {
+enum OwnerPolicyStepFields {
   owners = 'owners',
   threshold = 'threshold',
 }
 
-export type CreateSafeStep2Form = {
-  [CreateSafeStep2Fields.owners]: NamedAddress[]
-  [CreateSafeStep2Fields.threshold]: number
+export type OwnerPolicyStepForm = {
+  [OwnerPolicyStepFields.owners]: NamedAddress[]
+  [OwnerPolicyStepFields.threshold]: number
 }
 
-const STEP_2_FORM_ID = 'create-safe-step-2-form'
+const OWNER_POLICY_STEP_FORM_ID = 'create-safe-owner-policy-step-form'
 
-const CreateSafeStep2 = ({
+const OwnerPolicyStep = ({
   onSubmit,
   onBack,
   data,
@@ -42,27 +42,27 @@ const CreateSafeStep2 = ({
   const isWrongChain = useIsWrongChain()
   useSyncSafeCreationStep(setStep)
 
-  const formMethods = useForm<CreateSafeStep2Form>({
+  const formMethods = useForm<OwnerPolicyStepForm>({
     mode: 'all',
     defaultValues: {
-      [CreateSafeStep2Fields.owners]: data.owners,
-      [CreateSafeStep2Fields.threshold]: data.threshold,
+      [OwnerPolicyStepFields.owners]: data.owners,
+      [OwnerPolicyStepFields.threshold]: data.threshold,
     },
   })
 
   const { handleSubmit, control, watch, formState, getValues, setValue } = formMethods
 
-  const threshold = watch(CreateSafeStep2Fields.threshold)
+  const threshold = watch(OwnerPolicyStepFields.threshold)
 
   const {
     fields: ownerFields,
     append: appendOwner,
     remove,
-  } = useFieldArray({ control, name: CreateSafeStep2Fields.owners })
+  } = useFieldArray({ control, name: OwnerPolicyStepFields.owners })
 
   const removeOwner = (index: number): void => {
     // Set threshold if it's greater than the number of owners
-    setValue(CreateSafeStep2Fields.threshold, Math.min(threshold, ownerFields.length - 1))
+    setValue(OwnerPolicyStepFields.threshold, Math.min(threshold, ownerFields.length - 1))
     remove(index)
   }
 
@@ -90,7 +90,7 @@ const CreateSafeStep2 = ({
   })
 
   return (
-    <form onSubmit={onFormSubmit} id={STEP_2_FORM_ID}>
+    <form onSubmit={onFormSubmit} id={OWNER_POLICY_STEP_FORM_ID}>
       <FormProvider {...formMethods}>
         <Box className={layoutCss.row}>
           {ownerFields.map((field, i) => (
@@ -98,7 +98,7 @@ const CreateSafeStep2 = ({
               key={field.id}
               index={i}
               removable={i > 0}
-              groupName={CreateSafeStep2Fields.owners}
+              groupName={OwnerPolicyStepFields.owners}
               remove={removeOwner}
             />
           ))}
@@ -146,7 +146,7 @@ const CreateSafeStep2 = ({
           </Typography>
           <Box display="flex" alignItems="center">
             <Controller
-              name={CreateSafeStep2Fields.threshold}
+              name={OwnerPolicyStepFields.threshold}
               control={control}
               render={({ field }) => (
                 <Select {...field} className={css.select}>
@@ -179,4 +179,4 @@ const CreateSafeStep2 = ({
   )
 }
 
-export default CreateSafeStep2
+export default OwnerPolicyStep

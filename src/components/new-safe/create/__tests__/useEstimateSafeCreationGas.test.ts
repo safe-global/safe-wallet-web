@@ -1,4 +1,4 @@
-import * as sender from '@/components/new-safe/create/steps/Step4/logic'
+import * as sender from '@/components/new-safe/create/logic'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
 import * as chainIdModule from '@/hooks/useChainId'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'

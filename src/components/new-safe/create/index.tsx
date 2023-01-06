@@ -5,11 +5,11 @@ import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '@/components/new-safe/create/OverviewWidget'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { TxStepperProps } from '@/components/new-safe/CardStepper/useCardStepper'
-import CreateSafeStep0 from '@/components/new-safe/create/steps/Step0'
-import CreateSafeStep1 from '@/components/new-safe/create/steps/Step1'
-import CreateSafeStep2 from '@/components/new-safe/create/steps/Step2'
-import CreateSafeStep3 from '@/components/new-safe/create/steps/Step3'
-import { CreateSafeStatus } from '@/components/new-safe/create/steps/Step4'
+import ConnectWalletStep from '@/components/new-safe/create/steps/ConnectWalletStep'
+import SetNameStep from '@/components/new-safe/create/steps/SetNameStep'
+import OwnerPolicyStep from '@/components/new-safe/create/steps/OwnerPolicyStep'
+import ReviewStep from '@/components/new-safe/create/steps/ReviewStep'
+import { CreateSafeStatus } from '@/components/new-safe/create/steps/StatusStep'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CardStepper } from '@/components/new-safe/CardStepper'
 import { AppRoutes } from '@/config/routes'
@@ -116,21 +116,21 @@ const CreateSafe = () => {
       title: 'Connect wallet',
       subtitle: 'The connected wallet will pay the network fees for the Safe creation.',
       render: (data, onSubmit, onBack, setStep) => (
-        <CreateSafeStep0 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+        <ConnectWalletStep data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
       ),
     },
     {
       title: 'Select network and name your Safe',
       subtitle: 'Select the network on which to create your Safe',
       render: (data, onSubmit, onBack, setStep) => (
-        <CreateSafeStep1 setSafeName={setSafeName} data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+        <SetNameStep setSafeName={setSafeName} data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
       ),
     },
     {
       title: 'Owners and confirmations',
       subtitle: 'Set the owner wallets of your Safe and how many need to confirm to execute a valid transaction.',
       render: (data, onSubmit, onBack, setStep) => (
-        <CreateSafeStep2
+        <OwnerPolicyStep
           setDynamicHint={setDynamicHint}
           data={data}
           onSubmit={onSubmit}
@@ -144,7 +144,7 @@ const CreateSafe = () => {
       subtitle:
         "You're about to create a new Safe and will have to confirm the transaction with your connected wallet.",
       render: (data, onSubmit, onBack, setStep) => (
-        <CreateSafeStep3 data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+        <ReviewStep data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
       ),
     },
     {

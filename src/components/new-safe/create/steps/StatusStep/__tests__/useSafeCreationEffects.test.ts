@@ -1,11 +1,11 @@
 import { renderHook } from '@/tests/test-utils'
-import { SafeCreationStatus } from '@/components/new-safe/create/steps/Step4/useSafeCreation'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import * as web3 from '@/hooks/wallets/web3'
-import * as pendingSafe from '@/components/new-safe/create/steps/Step4/logic'
+import * as pendingSafe from '@/components/new-safe/create/logic'
 import { Web3Provider } from '@ethersproject/providers'
 import type { PendingSafeData } from '@/components/new-safe/create/types'
-import useSafeCreationEffects from '@/components/new-safe/create/steps/Step4/useSafeCreationEffects'
+import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusStep/useSafeCreationEffects'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 
 describe('useSafeCreationEffects', () => {

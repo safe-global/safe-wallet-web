@@ -7,7 +7,7 @@ import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardS
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 
-import css from '@/components/new-safe/create/steps/Step1/styles.module.css'
+import css from '@/components/new-safe/create/steps/SetNameStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
@@ -15,17 +15,17 @@ import NameInput from '@/components/common/NameInput'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import ExternalLink from '@/components/common/ExternalLink'
 
-type CreateSafeStep1Form = {
+type SetNameStepForm = {
   name: string
 }
 
-enum CreateSafeStep1Fields {
+enum SetNameStepFields {
   name = 'name',
 }
 
-const STEP_1_FORM_ID = 'create-safe-step-1-form'
+const SET_NAME_STEP_FORM_ID = 'create-safe-set-name-step-form'
 
-function CreateSafeStep1({
+function SetNameStep({
   data,
   onSubmit,
   setStep,
@@ -35,10 +35,10 @@ function CreateSafeStep1({
   const isWrongChain = useIsWrongChain()
   useSyncSafeCreationStep(setStep)
 
-  const formMethods = useForm<CreateSafeStep1Form>({
+  const formMethods = useForm<SetNameStepForm>({
     mode: 'all',
     defaultValues: {
-      [CreateSafeStep1Fields.name]: data.name,
+      [SetNameStepFields.name]: data.name,
     },
   })
 
@@ -61,13 +61,13 @@ function CreateSafeStep1({
 
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onFormSubmit)} id={STEP_1_FORM_ID}>
+      <form onSubmit={handleSubmit(onFormSubmit)} id={SET_NAME_STEP_FORM_ID}>
         <Box className={layoutCss.row}>
           <Grid container spacing={1}>
             <Grid item xs={12} md={8}>
               <NameInput
-                name={CreateSafeStep1Fields.name}
-                label={errors?.[CreateSafeStep1Fields.name]?.message || 'Name'}
+                name={SetNameStepFields.name}
+                label={errors?.[SetNameStepFields.name]?.message || 'Name'}
                 placeholder={fallbackName}
                 InputLabelProps={{ shrink: true }}
                 InputProps={{
@@ -118,4 +118,4 @@ function CreateSafeStep1({
   )
 }
 
-export default CreateSafeStep1
+export default SetNameStep

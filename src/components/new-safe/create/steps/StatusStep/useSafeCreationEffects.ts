@@ -1,12 +1,12 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { useEffect } from 'react'
-import { pollSafeInfo } from '@/components/new-safe/create/steps/Step4/logic'
-import { SafeCreationStatus } from '@/components/new-safe/create/steps/Step4/useSafeCreation'
+import { pollSafeInfo } from '@/components/new-safe/create/logic'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
-import { updateAddressBook } from '@/components/new-safe/create/steps/Step4/logic/address-book'
+import { updateAddressBook } from '@/components/new-safe/create/logic/address-book'
 import { useAppDispatch } from '@/store'
 import useChainId from '@/hooks/useChainId'
-import type { PendingSafeData } from '@/components/new-safe/create/steps/Step4/index'
+import type { PendingSafeData } from '@/components/new-safe/create/steps/StatusStep/index'
 
 const useSafeCreationEffects = ({
   pendingSafe,

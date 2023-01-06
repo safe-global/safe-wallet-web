@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
-import css from '@/components/new-safe/create/steps/Step4/LoadingSpinner/styles.module.css'
+import css from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner/styles.module.css'
 import classnames from 'classnames'
-import { SafeCreationStatus } from '@/components/new-safe/create/steps/Step4/useSafeCreation'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { useCallback, useEffect, useRef } from 'react'
 
 const rectTlEndTransform = 'translateX(0) translateY(20px) scaleY(1.1)'

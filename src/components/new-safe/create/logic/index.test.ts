@@ -3,10 +3,10 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { checkSafeCreationTx, handleSafeCreationError } from '@/components/new-safe/create/steps/Step4/logic'
+import { checkSafeCreationTx, handleSafeCreationError } from '@/components/new-safe/create/logic/index'
 import { ErrorCode } from '@ethersproject/logger'
 import { EthersTxReplacedReason } from '@/utils/ethers-utils'
-import { SafeCreationStatus } from '@/components/new-safe/create/steps/Step4/useSafeCreation'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 
 const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
 

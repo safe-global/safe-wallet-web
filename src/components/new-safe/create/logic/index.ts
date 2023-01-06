@@ -7,7 +7,7 @@ import {
 } from '@/services/contracts/safeContracts'
 import type { ConnectedWallet } from '@/services/onboard'
 import { BigNumber } from '@ethersproject/bignumber'
-import { SafeCreationStatus } from '@/components/new-safe/create/steps/Step4/useSafeCreation'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { Errors, logError } from '@/services/exceptions'
 import { ErrorCode } from '@ethersproject/logger'
