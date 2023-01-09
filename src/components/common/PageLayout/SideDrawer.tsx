@@ -27,7 +27,15 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   const showSidebarToggle = isSafeAppRoute(pathname, query) && !isSmallScreen
 
   useEffect(() => {
-    const closeSidebar = isSmallScreen || isSafeAppRoute(pathname, query)
+    const hideSidebar = [
+      AppRoutes.share.safeApp,
+      AppRoutes.newSafe.create,
+      AppRoutes.newSafe.load,
+      AppRoutes.welcome,
+      AppRoutes.index,
+    ].includes(pathname)
+
+    const closeSidebar = isSmallScreen || isSafeAppRoute(pathname, query) || hideSidebar
     onToggle(!closeSidebar)
   }, [isSmallScreen, onToggle, pathname, query])
 
