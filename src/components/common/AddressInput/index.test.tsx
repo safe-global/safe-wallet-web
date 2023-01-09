@@ -124,6 +124,31 @@ describe('AddressInput tests', () => {
     await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_B} is wrong`, { exact: false })).toBeDefined())
   })
 
+  it('should show a spinner when validation is in progress', async () => {
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+    const { input, utils } = setup('', async (val) => {
+      await sleep(2000)
+      return `${val} is wrong`
+    })
+
+    act(() => {
+      fireEvent.change(input, { target: { value: `gor:${TEST_ADDRESS_A}` } })
+      jest.advanceTimersByTime(1000)
+    })
+
+    await waitFor(() => {
+      expect(utils.getByRole('progressbar')).toBeDefined()
+      expect(utils.queryByLabelText(`${TEST_ADDRESS_A} is wrong`, { exact: false })).toBeNull()
+    })
+
+    act(() => {
+      jest.advanceTimersByTime(1000)
+    })
+
+    await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_A} is wrong`, { exact: false })).toBeDefined())
+  })
+
   it('should resolve ENS names', async () => {
     const { input } = setup('')
 
