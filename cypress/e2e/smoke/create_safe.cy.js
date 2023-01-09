@@ -1,7 +1,8 @@
 describe('Create Safe', () => {
+  before(() => {
+    cy.setLocalStorage('SAFE_v2__lastWallet', JSON.stringify('E2E Wallet'))
+  })
   it('should create a new Safe', () => {
-    cy.connectE2EWallet()
-
     cy.visit('/welcome')
 
     // Close cookie banner
