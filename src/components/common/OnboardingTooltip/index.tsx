@@ -13,11 +13,13 @@ export const OnboardingTooltip = ({
   widgetLocalStorageId,
   text,
   initiallyShown = true,
+  className,
 }: {
   children: React.ReactElement
   widgetLocalStorageId: string
   text: string
   initiallyShown?: boolean
+  className?: string
 }): React.ReactElement => {
   const [widgetHidden = !initiallyShown, setWidgetHidden] = useLocalStorage<boolean>(widgetLocalStorageId)
   const isDarkMode = useDarkMode()
@@ -26,6 +28,9 @@ export const OnboardingTooltip = ({
     children
   ) : (
     <Tooltip
+      PopperProps={{
+        className,
+      }}
       open
       arrow
       title={

@@ -1,5 +1,6 @@
 @media (max-width: 600px) {
-  .hiddenTokenButton {
+  .hiddenTokenButton,
+  .hiddenTokenButton .MuiTooltip-tooltip {
     display: none;
   }
 }
