@@ -11,6 +11,7 @@ import type { NamedAddress } from '@/components/new-safe/create/types'
 import useWallet from '@/hooks/wallets/useWallet'
 import { sameAddress } from '@/utils/addresses'
 import css from './styles.module.css'
+import classNames from 'classnames'
 
 export const OwnerRow = ({
   index,
@@ -63,8 +64,17 @@ export const OwnerRow = ({
     }
   }, [ens, setValue, getValues, name, fieldName])
 
+  const walletIsOwner = owner.address === wallet?.address
+
   return (
-    <Grid container spacing={3} alignItems="center" marginBottom={3} flexWrap={['wrap', undefined, 'nowrap']}>
+    <Grid
+      container
+      spacing={3}
+      alignItems="center"
+      marginBottom={3}
+      flexWrap={['wrap', undefined, 'nowrap']}
+      className={classNames({ [css.helper]: walletIsOwner })}
+    >
       <Grid item xs={12} md={readOnly ? 5 : 4}>
         <FormControl fullWidth>
           <NameInput
@@ -73,7 +83,7 @@ export const OwnerRow = ({
             label="Owner name"
             InputLabelProps={{ shrink: true }}
             placeholder={ens || `Owner ${index + 1}`}
-            helperText={owner.address === wallet?.address && 'Your connected wallet'}
+            helperText={walletIsOwner && 'Your connected wallet'}
             InputProps={{
               endAdornment: resolving ? (
                 <InputAdornment position="end">
