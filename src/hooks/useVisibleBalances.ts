@@ -21,8 +21,11 @@ const truncateNumber = (balance: string): string => {
   return currentPrecision < PRECISION ? balance : balance.slice(0, floatingPointPosition + PRECISION + 1)
 }
 
-const filterHiddenBalances = (balances: SafeBalanceResponse, hiddenAssets: string[]): SafeBalanceResponse => {
-  const fiatTotalVisible = safeFormatUnits(
+const filterHiddenTokens = (items: SafeBalanceResponse['items'], hiddenAssets: string[]) =>
+  items.filter((balanceItem) => !hiddenAssets.includes(balanceItem.tokenInfo.address))
+
+const getVisibleFiatTotal = (balances: SafeBalanceResponse, hiddenAssets: string[]): string => {
+  return safeFormatUnits(
     balances.items
       .reduce((acc, balanceItem) => {
         if (hiddenAssets.includes(balanceItem.tokenInfo.address)) {
@@ -33,12 +36,6 @@ const filterHiddenBalances = (balances: SafeBalanceResponse, hiddenAssets: strin
       .toString(),
     PRECISION,
   )
-
-  const balanceItemsVisible = balances.items.filter(
-    (balanceItem) => !hiddenAssets.includes(balanceItem.tokenInfo.address),
-  )
-
-  return { fiatTotal: fiatTotalVisible, items: balanceItemsVisible }
 }
 
 export const useVisibleBalances = (): {
@@ -52,7 +49,10 @@ export const useVisibleBalances = (): {
   return useMemo(
     () => ({
       ...balances,
-      balances: filterHiddenBalances(balances.balances, hiddenTokens),
+      balances: {
+        items: filterHiddenTokens(balances.balances.items, hiddenTokens),
+        fiatTotal: getVisibleFiatTotal(balances.balances, hiddenTokens),
+      },
     }),
     [balances, hiddenTokens],
   )
