@@ -51,6 +51,7 @@ button {
 
 :root {
   --header-height: var(--header-inner-height);
+  --footer-height: 67px;
 }
 
 .psaBanner:root {
