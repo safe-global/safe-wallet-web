@@ -40,7 +40,7 @@ Here's the list of all the required and optional variables:
 
 If you don't provide some of the optional vars, the corresponding features will be disabled in the UI.
 
-### Runing the app locally
+### Running the app locally
 
 Install the dependencies:
 
@@ -100,11 +100,11 @@ yarn cmp MyNewComponent
 ```
 
 ## Frameworks
+ * [Safe Core SDK](https://github.com/safe-global/safe-core-sdk)
+ * [Safe Gateway SDK](https://github.com/safe-global/safe-gateway-typescript-sdk)
  * Next.js
  * React
  * Redux
  * MUI
  * ethers.js
  * web3-onboard
- * [Safe Core SDK](https://github.com/safe-global/safe-core-sdk)
- * [Gateway SDK](https://github.com/safe-global/safe-react-gateway-sdk)
