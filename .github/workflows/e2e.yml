@@ -22,6 +22,8 @@ jobs:
           ./node_modules/.bin/cypress install
 
       - uses: ./.github/workflows/build
+        env:
+          NEXT_PUBLIC_CYPRESS_MNEMONIC: ${ { secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC } }
         with:
           secrets: ${{ toJSON(secrets) }}
 
