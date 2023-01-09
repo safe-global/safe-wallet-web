@@ -1,4 +1,4 @@
-name: 'Lint'
+name: 'Verify allow scripts'
 on: [pull_request]
 
 jobs:
@@ -14,4 +14,4 @@ jobs:
 
       - uses: ./.github/workflows/yarn
 
-      - run: bash ./scripts/github/prepare_production_deployment.sh
+      - run: bash ./scripts/verify-allow-scripts.sh
