@@ -1,8 +1,0 @@
-name: 'Verify allow scripts'
-
-description: 'Verifies that allow-scripts is up-to-date'
-
-runs:
-  using: 'composite'
-  steps:
-    - run: bash ./scripts/github/prepare_production_deployment.sh

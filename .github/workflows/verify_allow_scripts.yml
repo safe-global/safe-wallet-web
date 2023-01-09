@@ -1,0 +1,17 @@
+name: 'Lint'
+on: [pull_request]
+
+jobs:
+  verify_allow_scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/yarn
+
+      - run: bash ./scripts/github/prepare_production_deployment.sh
