@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { CircularProgress } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 
 import AssetsTable from '@/components/balances/AssetsTable'
 import AssetsHeader from '@/components/balances/AssetsHeader'
@@ -10,6 +10,8 @@ import { useState } from 'react'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoAssetsIcon from '@/public/images/balances/no-assets.svg'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
+import HiddenTokenButton from '@/components/balances/HiddenTokenButton'
+import CurrencySelect from '@/components/balances/CurrencySelect'
 
 const Balances: NextPage = () => {
   const { balances, loading, error } = useBalances()
@@ -23,12 +25,14 @@ const Balances: NextPage = () => {
         <title>Safe – Assets</title>
       </Head>
 
-      <AssetsHeader
-        showHiddenAssets={showHiddenAssets}
-        toggleShowHiddenAssets={toggleShowHiddenAssets}
-        currencySelect
-        hiddenAssets
-      />
+      <AssetsHeader>
+        <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+          {hiddenAssets && (
+            <HiddenTokenButton showHiddenAssets={showHiddenAssets} toggleShowHiddenAssets={toggleShowHiddenAssets} />
+          )}
+          <CurrencySelect />
+        </Box>
+      </AssetsHeader>
 
       <main>
         {loading && <CircularProgress size={20} sx={{ marginTop: 2 }} />}
