@@ -9,18 +9,13 @@
   gap: var(--space-1);
 }
 
-
-.tableRow {
-  display: flex;
-}
-
 .tableCard {
   padding: var(--space-1) var(--space-2);
   display: none;
 }
 
 @media (max-width: 900px) {
-  .tableRow {
+  .rowCell {
     display: none;
   }
 

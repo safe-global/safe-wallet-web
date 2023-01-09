@@ -17,7 +17,7 @@ import classNames from 'classnames'
 
 import css from './styles.module.css'
 import { Card, Typography } from '@mui/material'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import PrefixedEthHashInfo from '@/components/common/EthHashInfo'
 
 type EnhancedRow = Record<
   string,
@@ -144,25 +144,23 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
                 return (
                   <>
                     <TableRow tabIndex={-1} key={index}>
-                      <Box className={css.tableRow}>
-                        {Object.entries(row).map(([key, cell]) => {
-                          return (
-                            <TableCell
-                              key={key}
-                              className={classNames({
-                                sticky: cell.sticky,
-                                [css.hide]: cell.hide,
-                              })}
-                            >
-                              {cell.content}
-                            </TableCell>
-                          )
-                        })}
-                      </Box>
-                      <td colSpan={3}>
+                      {Object.entries(row).map(([key, cell]) => {
+                        return (
+                          <TableCell
+                            key={key}
+                            className={classNames(css.rowCell, {
+                              sticky: cell.sticky,
+                              [css.hide]: cell.hide,
+                            })}
+                          >
+                            {cell.content}
+                          </TableCell>
+                        )
+                      })}
+                      <TableCell colSpan={3}>
                         <Card className={css.tableCard} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                           <Typography variant="body2">{row.name.content}</Typography>
-                          <EthHashInfo
+                          <PrefixedEthHashInfo
                             address={row.address.rawValue.toString()}
                             showName={false}
                             shortAddress={false}
@@ -171,7 +169,7 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
                           />
                           {row.actions.content}
                         </Card>
-                      </td>
+                      </TableCell>
                     </TableRow>
                   </>
                 )
