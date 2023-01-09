@@ -6,6 +6,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  type Palette,
   SvgIcon,
   Typography,
   type ListItemIconProps,
@@ -22,9 +23,7 @@ import { isCancellationTxInfo, isExecutable, isMultisigDetailedExecutionInfo } f
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 import css from './styles.module.css'
-import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import palette from '@/styles/colors'
 import CreatedIcon from '@/public/images/common/created.svg'
 import DotIcon from '@/public/images/common/dot.svg'
 import CircleIcon from '@/public/images/common/circle.svg'
@@ -32,9 +31,27 @@ import CheckIcon from '@/public/images/common/circle-check.svg'
 import CancelIcon from '@/public/images/common/cancel.svg'
 
 // Icons
-const Created = () => <SvgIcon component={CreatedIcon} inheritViewBox className={css.icon} />
+const Created = () => (
+  <SvgIcon
+    component={CreatedIcon}
+    inheritViewBox
+    className={css.icon}
+    sx={{
+      '& path:last-of-type': { fill: ({ palette }) => palette.background.paper },
+    }}
+  />
+)
 const MissingConfirmation = () => <SvgIcon component={CircleIcon} inheritViewBox className={css.icon} />
-const Check = () => <SvgIcon component={CheckIcon} inheritViewBox className={css.icon} />
+const Check = () => (
+  <SvgIcon
+    component={CheckIcon}
+    inheritViewBox
+    className={css.icon}
+    sx={{
+      '& path:last-of-type': { fill: ({ palette }) => palette.background.paper },
+    }}
+  />
+)
 const Cancel = () => <SvgIcon component={CancelIcon} inheritViewBox className={css.icon} />
 const Dot = () => <SvgIcon component={DotIcon} inheritViewBox className={css.dot} />
 
@@ -45,7 +62,7 @@ enum StepState {
   ERROR = 'ERROR',
 }
 
-const getStepColor = (state: StepState): string => {
+const getStepColor = (state: StepState, palette: Palette): string => {
   const colors: { [key in StepState]: string } = {
     [StepState.CONFIRMED]: palette.primary.main,
     [StepState.ACTIVE]: palette.warning.dark,
@@ -62,12 +79,12 @@ const StyledListItemIcon = ({
   $state: StepState
 } & ListItemIconProps) => (
   <ListItemIcon
-    sx={{
+    sx={({ palette }) => ({
       '.MuiSvgIcon-root': {
-        color: getStepColor($state),
+        color: getStepColor($state, palette),
         alignItems: 'center',
       },
-    }}
+    })}
     {...rest}
   />
 )
@@ -138,9 +155,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
           </StyledListItemIcon>
           <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
             Confirmations{' '}
-            <Box className={txSignersCss.confirmationsTotal}>
-              ({`${confirmationsCount} of ${confirmationsRequired}`})
-            </Box>
+            <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
           </ListItemText>
         </ListItem>
         {!hideConfirmations &&
