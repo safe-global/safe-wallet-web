@@ -43,14 +43,14 @@ const OwnerPolicyStep = ({
   useSyncSafeCreationStep(setStep)
 
   const formMethods = useForm<OwnerPolicyStepForm>({
-    mode: 'all',
+    mode: 'onChange',
     defaultValues: {
       [OwnerPolicyStepFields.owners]: data.owners,
       [OwnerPolicyStepFields.threshold]: data.threshold,
     },
   })
 
-  const { handleSubmit, control, watch, formState, getValues, setValue } = formMethods
+  const { handleSubmit, control, watch, formState, getValues, setValue, trigger } = formMethods
 
   const threshold = watch(OwnerPolicyStepFields.threshold)
 
@@ -64,6 +64,7 @@ const OwnerPolicyStep = ({
     // Set threshold if it's greater than the number of owners
     setValue(OwnerPolicyStepFields.threshold, Math.min(threshold, ownerFields.length - 1))
     remove(index)
+    trigger(OwnerPolicyStepFields.owners)
   }
 
   const isDisabled = isWrongChain || !formState.isValid
