@@ -1,6 +1,7 @@
 {
   "name": "Safe",
   "short_name": "Safe",
+  "description": "Safe (prev. Gnosis Safe) is the most trusted platform to manage digital assets on Ethereum and multiple EVMs. Over $40B secured.",
   "icons": [
     {
       "src": "/favicons/android-chrome-192x192.png",
@@ -13,5 +14,6 @@
       "type": "image/png"
     }
   ],
+  "start_url": "/",
   "display": "standalone"
 }
