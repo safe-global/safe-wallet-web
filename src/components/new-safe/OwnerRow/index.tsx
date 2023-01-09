@@ -43,11 +43,12 @@ export const OwnerRow = ({
 
   const validateSafeAddress = useCallback(
     async (address: string) => {
+      const owners = getValues('owners')
       if (owners.filter((owner: NamedAddress) => sameAddress(owner.address, address)).length > 1) {
         return 'Owner is already added'
       }
     },
-    [owners],
+    [getValues],
   )
 
   const { ens, name, resolving } = useAddressResolver(owner.address)
