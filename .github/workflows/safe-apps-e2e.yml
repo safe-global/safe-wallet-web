@@ -25,6 +25,7 @@ jobs:
       - uses: ./.github/workflows/build
         with:
           secrets: ${{ toJSON(secrets) }}
+          e2e_mnemonic: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}
 
       - name: Serve
         run: yarn serve &
