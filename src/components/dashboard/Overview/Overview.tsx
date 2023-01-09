@@ -153,11 +153,9 @@ const Overview = (): ReactElement => {
               <Grid item>
                 <Box display="flex" height={1} alignItems="flex-end" justifyContent="flex-end">
                   <Link href={assetsLink} passHref>
-                    <a>
-                      <Button size="medium" variant="contained" color="primary">
-                        View assets
-                      </Button>
-                    </a>
+                    <Button size="medium" variant="contained" color="primary">
+                      View assets
+                    </Button>
                   </Link>
                 </Box>
               </Grid>

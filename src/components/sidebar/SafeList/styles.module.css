@@ -6,7 +6,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-2) var(--space-1) 0;
+  padding: var(--space-3) var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .chainDivider {
@@ -14,7 +15,7 @@
   border-radius: 8px;
   text-transform: none;
   height: 27px;
-  margin: var(--space-1);
+  margin: var(--space-2);
 }
 
 .ownedLabelWrapper {
