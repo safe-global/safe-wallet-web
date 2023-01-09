@@ -36,4 +36,3 @@ jobs:
           config: baseUrl=http://localhost:8080
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          CYPRESS_MNEMONIC: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}

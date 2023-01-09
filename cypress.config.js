@@ -5,7 +5,7 @@ export default defineConfig({
   trashAssetsBeforeRuns: true,
 
   env: {
-    CYPRESS_MNEMONIC: process.env.CYPRESS_MNEMONIC,
+    NEXT_PUBLIC_CYPRESS_MNEMONIC: process.env.NEXT_PUBLIC_CYPRESS_MNEMONIC,
   },
 
   retries: {
