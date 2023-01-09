@@ -81,6 +81,7 @@ const AssetsTable = ({
     const isSelected = isAssetSelected(item.tokenInfo.address)
 
     return {
+      key: item.tokenInfo.address,
       selected: isSelected,
       collapsed: item.tokenInfo.address === hidingAsset,
       cells: {

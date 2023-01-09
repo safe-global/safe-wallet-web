@@ -28,6 +28,7 @@ type EnhancedCell = {
 type EnhancedRow = {
   selected?: boolean
   collapsed?: boolean
+  key?: string
   cells: Record<string, EnhancedCell>
 }
 
@@ -145,7 +146,7 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
               pagedRows.map((row, index) => (
                 <TableRow
                   tabIndex={-1}
-                  key={index}
+                  key={row.key ?? index}
                   selected={row.selected}
                   className={row.collapsed ? css.collapsedRow : undefined}
                 >
