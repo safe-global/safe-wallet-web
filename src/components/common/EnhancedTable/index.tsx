@@ -16,6 +16,8 @@ import type { PaperTypeMap } from '@mui/material/Paper/Paper'
 import classNames from 'classnames'
 
 import css from './styles.module.css'
+import { Card, Typography } from '@mui/material'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 type EnhancedRow = Record<
   string,
@@ -138,21 +140,42 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
             {pagedRows.length > 0 ? (
-              pagedRows.map((row, index) => (
-                <TableRow tabIndex={-1} key={index}>
-                  {Object.entries(row).map(([key, cell]) => (
-                    <TableCell
-                      key={key}
-                      className={classNames({
-                        sticky: cell.sticky,
-                        [css.hide]: cell.hide,
-                      })}
-                    >
-                      {cell.content}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              pagedRows.map((row, index) => {
+                return (
+                  <>
+                    <TableRow tabIndex={-1} key={index}>
+                      <Box className={css.tableRow}>
+                        {Object.entries(row).map(([key, cell]) => {
+                          return (
+                            <TableCell
+                              key={key}
+                              className={classNames({
+                                sticky: cell.sticky,
+                                [css.hide]: cell.hide,
+                              })}
+                            >
+                              {cell.content}
+                            </TableCell>
+                          )
+                        })}
+                      </Box>
+                      <td colSpan={3}>
+                        <Card className={css.tableCard} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                          <Typography variant="body2">{row.name.content}</Typography>
+                          <EthHashInfo
+                            address={row.address.rawValue.toString()}
+                            showName={false}
+                            shortAddress={false}
+                            hasExplorer
+                            showCopyButton
+                          />
+                          {row.actions.content}
+                        </Card>
+                      </td>
+                    </TableRow>
+                  </>
+                )
+              })
             ) : (
               // Prevent no `tbody` rows hydration error
               <TableRow>
