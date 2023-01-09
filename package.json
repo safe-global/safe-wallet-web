@@ -76,7 +76,7 @@
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-gtm-module": "^2.0.11",
-    "react-hook-form": "^7.41.3",
+    "react-hook-form": "7.41.1",
     "react-papaparse": "^4.0.2",
     "react-qr-reader": "2.2.1",
     "react-redux": "^8.0.2",
