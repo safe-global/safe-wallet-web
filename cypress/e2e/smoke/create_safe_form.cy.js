@@ -2,8 +2,11 @@ const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED'
 const OWNER_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 describe('Create Safe form', () => {
+  before(() => {
+    localStorage.setItem('SAFE_v2__lastWallet', JSON.stringify('E2E Wallet'))
+  })
   it('should navigate to the form', () => {
-    cy.connectE2EWallet()
+    //cy.connectE2EWallet()
 
     cy.visit('/welcome')
 
