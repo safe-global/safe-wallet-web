@@ -4,6 +4,10 @@ export default defineConfig({
   projectId: 'exhdra',
   trashAssetsBeforeRuns: true,
 
+  env: {
+    NEXT_PUBLIC_CYPRESS_MNEMONIC: process.env.NEXT_PUBLIC_CYPRESS_MNEMONIC,
+  },
+
   retries: {
     runMode: 2,
     openMode: 0,
