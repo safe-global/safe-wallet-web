@@ -9,7 +9,6 @@ import { formatCurrency } from '@/utils/formatNumber'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
-import useBalances from '@/hooks/useBalances'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
 
@@ -27,10 +26,11 @@ import QrCodeButton from '../QrCodeButton'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { SvgIcon } from '@mui/material'
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
-  const { balances, loading: balancesLoading } = useBalances()
+  const { balances, loading: balancesLoading } = useVisibleBalances()
   const { safe, safeAddress, safeLoading } = useSafeInfo()
   const { threshold, owners } = safe
   const chain = useCurrentChain()
