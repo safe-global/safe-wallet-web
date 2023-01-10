@@ -46,6 +46,10 @@ declare module '@mui/material/Button' {
   interface ButtonPropsSizeOverrides {
     stretched: true
   }
+
+  interface ButtonPropsColorOverrides {
+    background: true
+  }
 }
 
 const initTheme = (darkMode: boolean) => {
