@@ -39,7 +39,7 @@ export const OnboardingTooltip = ({
           <span>{text}</span>
           <Button
             size="small"
-            color={isDarkMode ? undefined : 'secondary'}
+            color={isDarkMode ? 'background' : 'secondary'}
             variant="text"
             sx={{ whiteSpace: 'nowrap' }}
             onClick={() => setWidgetHidden(true)}
