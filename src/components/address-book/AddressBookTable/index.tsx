@@ -82,44 +82,46 @@ const AddressBookTable = () => {
   }, [addressBookEntries, searchQuery])
 
   const rows = filteredEntries.map(([address, name]) => ({
-    name: {
-      rawValue: name,
-      content: name,
-    },
-    address: {
-      rawValue: address,
-      content: <EthHashInfo address={address} showName={false} shortAddress={false} hasExplorer showCopyButton />,
-    },
-    actions: {
-      rawValue: '',
-      sticky: true,
-      content: (
-        <div className={tableCss.actions}>
-          <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
-            <Tooltip title="Edit entry" placement="top">
-              <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)} size="small">
-                <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Track>
-
-          <Track {...ADDRESS_BOOK_EVENTS.DELETE_ENTRY}>
-            <Tooltip title="Delete entry" placement="top">
-              <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)} size="small">
-                <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Track>
-
-          {isGranted && (
-            <Track {...ADDRESS_BOOK_EVENTS.SEND}>
-              <Button variant="contained" color="primary" size="small" onClick={() => setSelectedAddress(address)}>
-                Send
-              </Button>
+    cells: {
+      name: {
+        rawValue: name,
+        content: name,
+      },
+      address: {
+        rawValue: address,
+        content: <EthHashInfo address={address} showName={false} shortAddress={false} hasExplorer showCopyButton />,
+      },
+      actions: {
+        rawValue: '',
+        sticky: true,
+        content: (
+          <div className={tableCss.actions}>
+            <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
+              <Tooltip title="Edit entry" placement="top">
+                <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)} size="small">
+                  <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Track>
-          )}
-        </div>
-      ),
+
+            <Track {...ADDRESS_BOOK_EVENTS.DELETE_ENTRY}>
+              <Tooltip title="Delete entry" placement="top">
+                <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)} size="small">
+                  <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Track>
+
+            {isGranted && (
+              <Track {...ADDRESS_BOOK_EVENTS.SEND}>
+                <Button variant="contained" color="primary" size="small" onClick={() => setSelectedAddress(address)}>
+                  Send
+                </Button>
+              </Track>
+            )}
+          </div>
+        ),
+      },
     },
   }))
 

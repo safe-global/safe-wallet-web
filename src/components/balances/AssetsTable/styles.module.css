@@ -3,7 +3,8 @@
   transition: opacity 0.2s;
 }
 
-.container tr:hover td:last-of-type button {
+.container tr:hover td:last-of-type button,
+.container td:last-of-type button:focus-visible {
   opacity: 1;
 }
 
