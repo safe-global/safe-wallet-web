@@ -7,3 +7,8 @@ export const hashTypedData = (typedData: EIP712TypedData): string => {
   const { EIP712Domain: _, ...types } = typedData.types
   return _TypedDataEncoder.hash(typedData.domain as TypedDataDomain, types, typedData.message)
 }
+
+export const normalizeTypedData = (typedData: EIP712TypedData) => {
+  const { EIP712Domain: _, ...types } = typedData.types
+  return _TypedDataEncoder.getPayload(typedData.domain as TypedDataDomain, types, typedData.message)
+}
