@@ -2092,10 +2092,17 @@
     "@gnosis.pm/safe-react-gateway-sdk" "^3.1.3"
     ethers "^5.6.8"
 
-"@gnosis.pm/safe-deployments@1.17.0", "@gnosis.pm/safe-deployments@^1.17.0":
+"@gnosis.pm/safe-deployments@1.17.0":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.17.0.tgz#52a7b0e75c08b4a829f491b594e2babbdd6606c5"
   integrity sha512-vfl13IuSMqJZxTPraRcKZqJcaSCDWTt/JXH6VURa8LHMYATOqd96IGbqqOKRPAgSzAyXpA2thOD4YUQ0X8XKyQ==
+  dependencies:
+    semver "^7.3.7"
+
+"@gnosis.pm/safe-deployments@^1.18.0":
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.18.0.tgz#bc795681056837ab0784a9bf5f590ef2b12b5fe7"
+  integrity sha512-6BL60bvCP2lS9GrDhd4bY+lcxo2wBS+h745AODiLIn46R+ywKJsch6LMD3cUQE5KBYhaNJdTmSYONcLrplFnVg==
   dependencies:
     semver "^7.3.7"
 
