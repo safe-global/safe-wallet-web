@@ -33,7 +33,7 @@
 
   .mobileColumn tbody td {
     display: block;
-    padding-left: 16px !important;
+    padding-left: var(--space-2) !important;
     background: inherit;
   }
 }
