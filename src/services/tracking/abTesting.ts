@@ -1,8 +1,9 @@
-/*
- Holds current abTest identifiers e.g.
- SAFE_CREATION = 'safe-creation'
+/**
+ * Holds current A/B test identifiers.
  */
-export const enum AbTest {}
+export const enum AbTest {
+  HIDE_TOKEN_PROMO = 'hide_token_promo',
+}
 
 let _abTest: AbTest | null = null
 
