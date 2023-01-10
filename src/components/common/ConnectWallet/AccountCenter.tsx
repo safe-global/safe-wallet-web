@@ -5,7 +5,7 @@ import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import useOnboard, { lastWalletStorage } from '@/hooks/wallets/useOnboard'
+import useOnboard, { closeAccountSelectionModal, connectWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
@@ -20,6 +20,14 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const addressBook = useAddressBook()
 
+  const handleSwitchWallet = () => {
+    if (onboard) {
+      handleClose()
+      connectWallet(onboard)
+      closeAccountSelectionModal()
+    }
+  }
+
   const handleDisconnect = () => {
     if (!wallet) return
 
@@ -27,7 +35,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
       label: wallet.label,
     })
 
-    lastWalletStorage.remove()
+    handleClose()
   }
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -91,6 +99,10 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           </Box>
 
           <ChainSwitcher fullWidth />
+
+          <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
+            Switch wallet
+          </Button>
 
           <Button onClick={handleDisconnect} variant="danger" size="small" fullWidth disableElevation>
             Disconnect

@@ -19,7 +19,7 @@ export type ConnectedWallet = {
   provider: EIP1193Provider
 }
 
-export const lastWalletStorage = localItem<string>('lastWallet')
+const lastWalletStorage = localItem<string>('lastWallet')
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
@@ -61,24 +61,24 @@ const getWalletConnectLabel = async ({ label, provider }: ConnectedWallet): Prom
   return peerWallet ?? UNKNOWN_PEER
 }
 
-const trackWalletType = async (wallet: ConnectedWallet) => {
+const trackWalletType = (wallet: ConnectedWallet) => {
   trackEvent({ ...WALLET_EVENTS.CONNECT, label: wallet.label })
 
-  const wcLabel = await getWalletConnectLabel(wallet)
-
-  if (wcLabel) {
-    trackEvent({
-      ...WALLET_EVENTS.WALLET_CONNECT,
-      label: wcLabel,
+  getWalletConnectLabel(wallet)
+    .then((wcLabel) => {
+      trackEvent({
+        ...WALLET_EVENTS.WALLET_CONNECT,
+        label: wcLabel,
+      })
     })
-  }
+    .catch(() => null)
 }
 
 // Detect mobile devices
 const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
 // Wrapper that tracks/sets the last used wallet
-export const connectWallet = (onboard: OnboardAPI, options?: Parameters<OnboardAPI['connectWallet']>[0]) => {
+export const connectWallet = async (onboard: OnboardAPI, options?: Parameters<OnboardAPI['connectWallet']>[0]) => {
   // On mobile, automatically choose WalletConnect
   if (!options && isMobile()) {
     options = {
@@ -86,19 +86,45 @@ export const connectWallet = (onboard: OnboardAPI, options?: Parameters<OnboardA
     }
   }
 
-  return onboard
-    .connectWallet(options)
-    .then(async (wallets) => {
-      const newWallet = getConnectedWallet(wallets)
+  try {
+    await onboard.connectWallet(options)
+  } catch (e) {
+    logError(Errors._302, (e as Error).message)
+    return
+  }
 
-      if (newWallet) {
-        lastWalletStorage.set(newWallet.label)
+  // Save the last used wallet and track the wallet type
+  const newWallet = getConnectedWallet(onboard.state.get().wallets)
 
-        await trackWalletType(newWallet)
-        return newWallet
-      }
-    })
-    .catch((e) => logError(Errors._302, (e as Error).message))
+  if (newWallet) {
+    // Save
+    lastWalletStorage.set(newWallet.label)
+
+    // Track
+    trackWalletType(newWallet)
+  }
+}
+
+// A workaround for an onboard "feature" that shows a defunct account select popup
+// See https://github.com/blocknative/web3-onboard/issues/888
+export const closeAccountSelectionModal = () => {
+  const maxTries = 100
+  const modalText = 'Please switch the active account'
+  let tries = 0
+
+  const timer = setInterval(() => {
+    const onboardModal = document.querySelector('onboard-v2')?.shadowRoot
+    const isActionRequired = onboardModal?.textContent?.includes(modalText)
+
+    if (isActionRequired) {
+      // Dismiss the modal
+      ;(onboardModal?.querySelector('.background') as HTMLElement)?.click()
+      tries = maxTries
+    }
+
+    tries += 1
+    if (tries >= maxTries) clearInterval(timer)
+  }, 100)
 }
 
 // Disable/enable wallets according to chain and cache the last used wallet

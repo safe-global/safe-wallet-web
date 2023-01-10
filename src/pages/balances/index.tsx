@@ -9,13 +9,11 @@ import { useState } from 'react'
 
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoAssetsIcon from '@/public/images/balances/no-assets.svg'
-import useHiddenTokens from '@/hooks/useHiddenTokens'
 import HiddenTokenButton from '@/components/balances/HiddenTokenButton'
 import CurrencySelect from '@/components/balances/CurrencySelect'
 
 const Balances: NextPage = () => {
-  const { balances, loading, error } = useBalances()
-  const hiddenAssets = useHiddenTokens()
+  const { loading, error } = useBalances()
   const [showHiddenAssets, setShowHiddenAssets] = useState(false)
   const toggleShowHiddenAssets = () => setShowHiddenAssets((prev) => !prev)
 
@@ -27,9 +25,7 @@ const Balances: NextPage = () => {
 
       <AssetsHeader>
         <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-          {hiddenAssets && (
-            <HiddenTokenButton showHiddenAssets={showHiddenAssets} toggleShowHiddenAssets={toggleShowHiddenAssets} />
-          )}
+          <HiddenTokenButton showHiddenAssets={showHiddenAssets} toggleShowHiddenAssets={toggleShowHiddenAssets} />
           <CurrencySelect />
         </Box>
       </AssetsHeader>
