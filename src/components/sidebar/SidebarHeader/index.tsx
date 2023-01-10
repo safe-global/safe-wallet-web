@@ -1,5 +1,4 @@
-import type { ReactElement } from 'react'
-import { useEffect, useState } from 'react'
+import { type ReactElement, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
@@ -30,16 +29,16 @@ import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
-  const { balances, loading: balancesLoading } = useVisibleBalances()
+  const { balances } = useVisibleBalances()
   const { safe, safeAddress, safeLoading } = useSafeInfo()
   const { threshold, owners } = safe
   const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
-  const [fiatTotal, setFiatTotal] = useState<string>('')
 
-  useEffect(() => {
-    setFiatTotal(balancesLoading ? '' : formatCurrency(balances.fiatTotal, currency))
-  }, [currency, balances.fiatTotal, balancesLoading])
+  const fiatTotal = useMemo(
+    () => (balances.fiatTotal ? formatCurrency(balances.fiatTotal, currency) : ''),
+    [currency, balances.fiatTotal],
+  )
 
   const addressCopyText = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
 

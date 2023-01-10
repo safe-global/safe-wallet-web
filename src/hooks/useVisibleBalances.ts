@@ -43,17 +43,17 @@ export const useVisibleBalances = (): {
   loading: boolean
   error?: string
 } => {
-  const balances = useBalances()
+  const data = useBalances()
   const hiddenTokens = useHiddenTokens()
 
   return useMemo(
     () => ({
-      ...balances,
+      ...data,
       balances: {
-        items: filterHiddenTokens(balances.balances.items, hiddenTokens),
-        fiatTotal: getVisibleFiatTotal(balances.balances, hiddenTokens),
+        items: filterHiddenTokens(data.balances.items, hiddenTokens),
+        fiatTotal: data.balances.fiatTotal ? getVisibleFiatTotal(data.balances, hiddenTokens) : '',
       },
     }),
-    [balances, hiddenTokens],
+    [data, hiddenTokens],
   )
 }
