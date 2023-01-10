@@ -71,15 +71,7 @@ const AddressBookHeader = ({ handleOpenModal, searchQuery, onSearchQueryChange }
               size="small"
             />
           </Grid>
-          <Grid
-            item
-            xs={12}
-            md={7}
-            display="flex"
-            justifyContent={['space-between', , 'flex-end']}
-            alignItems="center"
-            sx={{ '& *:first-of-type > button': { paddingLeft: 0 }, '& *:last-of-type > button': { paddingRight: 0 } }}
-          >
+          <Grid item xs={12} md={7} display="flex" justifyContent={['space-between', , 'flex-end']} alignItems="center">
             <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
               <HeaderButton onClick={handleOpenModal(ModalType.IMPORT)} icon={ImportIcon}>
                 Import
