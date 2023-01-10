@@ -12,14 +12,11 @@ import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import Paper from '@mui/material/Paper'
 import { visuallyHidden } from '@mui/utils'
-import type { PaperTypeMap } from '@mui/material/Paper/Paper'
 import classNames from 'classnames'
 
 import css from './styles.module.css'
-import { Card, Typography } from '@mui/material'
-import PrefixedEthHashInfo from '@/components/common/EthHashInfo'
 
-type EnhancedRow = Record<
+export type EnhancedRow = Record<
   string,
   {
     content: ReactNode
@@ -104,12 +101,12 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
 type EnhancedTableProps = {
   rows: EnhancedRow[]
   headCells: EnhancedHeadCell[]
-  variant?: PaperTypeMap['props']['variant']
+  CellCard?: React.FC<{ row: EnhancedRow; className?: string }>
 }
 
 const pageSizes = [10, 25, 100]
 
-function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
+function EnhancedTable({ rows, headCells, CellCard }: EnhancedTableProps) {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
   const [orderBy, setOrderBy] = useState<string>('')
   const [page, setPage] = useState<number>(0)
@@ -135,43 +132,30 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <TableContainer component={Paper} sx={{ width: '100%', mb: 2 }} variant={variant}>
+      <TableContainer component={Paper} sx={{ width: '100%', mb: 2 }}>
         <Table aria-labelledby="tableTitle">
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
             {pagedRows.length > 0 ? (
               pagedRows.map((row, index) => {
                 return (
-                  <>
-                    <TableRow tabIndex={-1} key={index}>
-                      {Object.entries(row).map(([key, cell]) => {
-                        return (
-                          <TableCell
-                            key={key}
-                            className={classNames(css.rowCell, {
-                              sticky: cell.sticky,
-                              [css.hide]: cell.hide,
-                            })}
-                          >
-                            {cell.content}
-                          </TableCell>
-                        )
-                      })}
-                      <TableCell colSpan={3}>
-                        <Card className={css.tableCard} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                          <Typography variant="body2">{row.name.content}</Typography>
-                          <PrefixedEthHashInfo
-                            address={row.address.rawValue.toString()}
-                            showName={false}
-                            shortAddress={false}
-                            hasExplorer
-                            showCopyButton
-                          />
-                          {row.actions.content}
-                        </Card>
-                      </TableCell>
-                    </TableRow>
-                  </>
+                  <TableRow tabIndex={-1} key={index}>
+                    {CellCard && <CellCard row={row} className={css.cellCard} />}
+                    {Object.entries(row).map(([key, cell]) => {
+                      return (
+                        <TableCell
+                          key={key}
+                          className={classNames({
+                            sticky: cell.sticky,
+                            [css.hide]: cell.hide,
+                            [css.normalRow]: CellCard,
+                          })}
+                        >
+                          {cell.content}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
                 )
               })
             ) : (

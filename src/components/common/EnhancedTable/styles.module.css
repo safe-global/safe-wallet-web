@@ -9,17 +9,16 @@
   gap: var(--space-1);
 }
 
-.tableCard {
-  padding: var(--space-1) var(--space-2);
+.cellCard {
   display: none;
 }
 
 @media (max-width: 900px) {
-  .rowCell {
-    display: none;
+  .cellCard {
+    display: table-cell;
   }
 
-  .tableCard {
-    display: flex;
+  .normalRow {
+    display: none;
   }
 }

@@ -12,7 +12,6 @@ import Tooltip from '@mui/material/Tooltip'
 import RemoveDialog from '@/components/address-book/RemoveDialog'
 import useIsGranted from '@/hooks/useIsGranted'
 import NewTxModal from '@/components/tx/modals/NewTxModal'
-import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import AddressBookHeader from '../AddressBookHeader'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -25,6 +24,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 import { Box } from '@mui/material'
+import TableCard from '@/components/address-book/TableCard'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -113,13 +113,7 @@ const AddressBookTable = () => {
 
           {isGranted && (
             <Track {...ADDRESS_BOOK_EVENTS.SEND}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => setSelectedAddress(address)}
-                className={css.sendButton}
-              >
+              <Button variant="contained" color="primary" size="small" onClick={() => setSelectedAddress(address)}>
                 Send
               </Button>
             </Track>
@@ -139,7 +133,7 @@ const AddressBookTable = () => {
 
       <main>
         {filteredEntries.length > 0 ? (
-          <EnhancedTable rows={rows} headCells={headCells} />
+          <EnhancedTable rows={rows} headCells={headCells} CellCard={TableCard} />
         ) : (
           <Box bgcolor="background.paper" borderRadius={1}>
             <PagePlaceholder
