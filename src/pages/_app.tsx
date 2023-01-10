@@ -72,7 +72,12 @@ interface WebCoreAppProps extends AppProps {
   emotionCache?: EmotionCache
 }
 
-const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: WebCoreAppProps): ReactElement => {
+const WebCoreApp = ({
+  Component,
+  pageProps,
+  router,
+  emotionCache = clientSideEmotionCache,
+}: WebCoreAppProps): ReactElement => {
   return (
     <StoreHydrator>
       <Head>
@@ -86,7 +91,7 @@ const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCach
 
           <InitApp />
 
-          <PageLayout>
+          <PageLayout pathname={router.pathname}>
             <Component {...pageProps} />
           </PageLayout>
 

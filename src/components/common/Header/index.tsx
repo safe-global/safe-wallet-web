@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react'
 import { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import { IconButton, Paper } from '@mui/material'
@@ -16,7 +17,7 @@ import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
 
 type HeaderProps = {
-  onMenuToggle: () => void
+  onMenuToggle: Dispatch<SetStateAction<boolean>>
 }
 
 const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
@@ -28,10 +29,14 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   // Logo link: if on Dashboard, link to Welcome, otherwise to the root (which redirects to either Dashboard or Welcome)
   const logoHref = router.pathname === AppRoutes.home ? AppRoutes.welcome : AppRoutes.index
 
+  const handleMenuToggle = () => {
+    onMenuToggle((isOpen) => !isOpen)
+  }
+
   return (
     <Paper className={css.container}>
       <div className={classnames(css.element, css.menuButton)}>
-        <IconButton onClick={onMenuToggle} size="large" edge="start" color="default" aria-label="menu">
+        <IconButton onClick={handleMenuToggle} size="large" edge="start" color="default" aria-label="menu">
           <MenuIcon />
         </IconButton>
       </div>
