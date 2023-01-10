@@ -40,7 +40,7 @@
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@gnosis.pm/safe-apps-sdk": "^7.8.0",
-    "@gnosis.pm/safe-deployments": "^1.17.0",
+    "@gnosis.pm/safe-deployments": "^1.18.0",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.11.2",
