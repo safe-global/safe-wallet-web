@@ -4,10 +4,6 @@ export default defineConfig({
   projectId: 'exhdra',
   trashAssetsBeforeRuns: true,
 
-  env: {
-    CYPRESS_MNEMONIC: process.env.CYPRESS_MNEMONIC,
-  },
-
   retries: {
     runMode: 2,
     openMode: 0,
@@ -15,9 +11,7 @@ export default defineConfig({
 
   e2e: {
     baseUrl: 'http://localhost:3000',
-
-    setupNodeEvents(on, config) {
-      // implement node event listeners here
-    },
   },
+
+  chromeWebSecurity: false,
 })

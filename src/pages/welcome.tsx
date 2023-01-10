@@ -4,13 +4,13 @@ import NewSafe from '@/components/welcome'
 
 const Welcome: NextPage = () => {
   return (
-    <main>
+    <>
       <Head>
         <title>Safe – Welcome</title>
       </Head>
 
       <NewSafe />
-    </main>
+    </>
   )
 }
 

@@ -96,6 +96,21 @@ describe('Transaction history', () => {
         // Status
         cy.contains('span', 'Success').should('exist')
       })
+      // Receive 120 DAI
+      .prev()
+      .within(() => {
+        // Type
+        cy.contains('div', 'Received').should('exist')
+
+        // Info
+        cy.contains('span', '120,497.61 DAI').should('exist')
+
+        // Time
+        cy.contains('span', '5:01 PM').should('exist')
+
+        // Status
+        cy.contains('span', 'Success').should('exist')
+      })
       // Send 0.11 WETH
       .prev()
       .within(() => {

@@ -58,41 +58,43 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
         const formattedSpent = safeFormatUnits(spent, token?.tokenInfo.decimals)
 
         return {
-          beneficiary: {
-            rawValue: spendingLimit.beneficiary,
-            content: (
-              <EthHashInfo address={spendingLimit.beneficiary} shortAddress={false} hasExplorer showCopyButton />
-            ),
-          },
-          spent: {
-            rawValue: spendingLimit.spent,
-            content: (
-              <Box display="flex" alignItems="center" gap={1}>
-                <TokenIcon logoUri={token?.tokenInfo.logoUri} tokenSymbol={token?.tokenInfo.symbol} />
-                {`${formattedSpent} of ${formattedAmount} ${token?.tokenInfo.symbol}`}
-              </Box>
-            ),
-          },
-          resetTime: {
-            rawValue: spendingLimit.resetTimeMin,
-            content: (
-              <SpendingLimitLabel
-                label={relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}
-                isOneTime={spendingLimit.resetTimeMin === '0'}
-              />
-            ),
-          },
-          actions: {
-            rawValue: '',
-            sticky: true,
-            hide: shouldHideactions,
-            content: (
-              <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
-                <IconButton onClick={() => onRemove(spendingLimit)} color="error" size="small">
-                  <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-                </IconButton>
-              </Track>
-            ),
+          cells: {
+            beneficiary: {
+              rawValue: spendingLimit.beneficiary,
+              content: (
+                <EthHashInfo address={spendingLimit.beneficiary} shortAddress={false} hasExplorer showCopyButton />
+              ),
+            },
+            spent: {
+              rawValue: spendingLimit.spent,
+              content: (
+                <Box display="flex" alignItems="center" gap={1}>
+                  <TokenIcon logoUri={token?.tokenInfo.logoUri} tokenSymbol={token?.tokenInfo.symbol} />
+                  {`${formattedSpent} of ${formattedAmount} ${token?.tokenInfo.symbol}`}
+                </Box>
+              ),
+            },
+            resetTime: {
+              rawValue: spendingLimit.resetTimeMin,
+              content: (
+                <SpendingLimitLabel
+                  label={relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}
+                  isOneTime={spendingLimit.resetTimeMin === '0'}
+                />
+              ),
+            },
+            actions: {
+              rawValue: '',
+              sticky: true,
+              hide: shouldHideactions,
+              content: (
+                <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
+                  <IconButton onClick={() => onRemove(spendingLimit)} color="error" size="small">
+                    <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                  </IconButton>
+                </Track>
+              ),
+            },
           },
         }
       }),

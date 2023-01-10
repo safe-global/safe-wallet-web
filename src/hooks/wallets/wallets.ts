@@ -78,10 +78,6 @@ export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   )
 }
 
-export const isWalletConnect = (wallet: ConnectedWallet): boolean => {
-  return wallet.label.toUpperCase() === WALLET_KEYS.WALLETCONNECT
-}
-
 export const isSafeMobileWallet = (wallet: ConnectedWallet): boolean => {
   return wallet.label === PAIRING_MODULE_LABEL
 }
@@ -99,5 +95,5 @@ export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
 }
 
 export const shouldUseEthSignMethod = (wallet: ConnectedWallet): boolean => {
-  return isHardwareWallet(wallet) || isSafeMobileWallet(wallet) || isWalletConnect(wallet)
+  return isHardwareWallet(wallet) || isSafeMobileWallet(wallet)
 }

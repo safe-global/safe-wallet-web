@@ -22,7 +22,7 @@
   --onboard-success-600: var(--color-secondary-light);
   --onboard-success-700: var(--color-success-dark);
 
-  --onboard-danger-500: var(--color-error-light);
+  --onboard-danger-500: var(--color-error-main);
   --onboard-danger-600: var(--color-error-main);
   --onboard-danger-700: var(--color-error-dark);
 
@@ -82,6 +82,11 @@
 
 #walletconnect-wrapper {
   color: #162d45;
+}
+
+#walletconnect-wrapper .walletconnect-modal__footer {
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 /* Keystone modal */

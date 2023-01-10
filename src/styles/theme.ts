@@ -299,6 +299,13 @@ const initTheme = (darkMode: boolean) => {
           },
         },
       },
+      MuiToggleButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+          },
+        },
+      },
       MuiAlert: {
         styleOverrides: {
           standardError: ({ theme }) => ({
@@ -399,6 +406,9 @@ const initTheme = (darkMode: boolean) => {
             },
 
             '& .MuiTableRow-root:hover': {
+              backgroundColor: theme.palette.background.light,
+            },
+            '& .MuiTableRow-root.Mui-selected': {
               backgroundColor: theme.palette.background.light,
             },
           }),

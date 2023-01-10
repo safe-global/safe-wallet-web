@@ -18,7 +18,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import TokenIcon from '@/components/common/TokenIcon'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
-import useBalances from '@/hooks/useBalances'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import SendFromBlock from '../../SendFromBlock'
@@ -32,6 +31,7 @@ import { sameAddress } from '@/utils/addresses'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import useIsSafeTokenPaused from '@/components/tx/modals/TokenTransferModal/useIsSafeTokenPaused'
 import NumberField from '@/components/common/NumberField'
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -73,7 +73,7 @@ type SendAssetsFormProps = {
 }
 
 const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: SendAssetsFormProps): ReactElement => {
-  const { balances } = useBalances()
+  const { balances } = useVisibleBalances()
   const addressBook = useAddressBook()
   const chainId = useChainId()
   const safeTokenAddress = getSafeTokenAddress(chainId)
@@ -116,10 +116,10 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
   const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
 
   const onMaxAmountClick = () => {
-    if (!selectedToken || !spendingLimitAmount) return
+    if (!selectedToken) return
 
     const amount =
-      spendingLimit && isSpendingLimitType && spendingLimitAmount.lte(selectedToken.balance)
+      isSpendingLimitType && spendingLimitAmount && spendingLimitAmount.lte(selectedToken.balance)
         ? spendingLimitAmount.toString()
         : selectedToken.balance
 

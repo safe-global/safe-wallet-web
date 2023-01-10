@@ -1,6 +1,6 @@
 # <img src="https://user-images.githubusercontent.com/381895/186411381-e05075ff-7565-4b4e-925e-bb1e85cb165b.png" height="60" width="60" valign="middle" /> Safe Web Core
 
-[![GitHub license](https://img.shields.io/github/license/safe-global/web-core)](https://github.com/safe-global/web-core/blob/main/LICENSE.md)
+[![License](https://img.shields.io/github/license/safe-global/web-core)](https://github.com/safe-global/web-core/blob/main/LICENSE)
 ![Tests](https://img.shields.io/github/actions/workflow/status/safe-global/web-core/test.yml?branch=main&label=tests)
 ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/safe-global/web-core)
 [![GitPOAP Badge](https://public-api.gitpoap.io/v1/repo/safe-global/web-core/badge)](https://www.gitpoap.io/gh/safe-global/web-core)
@@ -40,7 +40,7 @@ Here's the list of all the required and optional variables:
 
 If you don't provide some of the optional vars, the corresponding features will be disabled in the UI.
 
-### Runing the app locally
+### Running the app locally
 
 Install the dependencies:
 
@@ -100,11 +100,11 @@ yarn cmp MyNewComponent
 ```
 
 ## Frameworks
+ * [Safe Core SDK](https://github.com/safe-global/safe-core-sdk)
+ * [Safe Gateway SDK](https://github.com/safe-global/safe-gateway-typescript-sdk)
  * Next.js
  * React
  * Redux
  * MUI
  * ethers.js
  * web3-onboard
- * [Safe Core SDK](https://github.com/safe-global/safe-core-sdk)
- * [Gateway SDK](https://github.com/safe-global/safe-react-gateway-sdk)

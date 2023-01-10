@@ -1,12 +1,12 @@
 import { useEffect, type ReactElement } from 'react'
 import { IconButton, Drawer, useMediaQuery } from '@mui/material'
+import type { ParsedUrlQuery } from 'querystring'
 import { useTheme } from '@mui/material/styles'
 import DoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRightRounded'
 import DoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded'
 import { useRouter } from 'next/router'
-import classnames from 'classnames'
-import { type ParsedUrlQuery } from 'querystring'
 
+import classnames from 'classnames'
 import Sidebar from '@/components/sidebar/Sidebar'
 import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
@@ -14,14 +14,6 @@ import { AppRoutes } from '@/config/routes'
 type SideDrawerProps = {
   isOpen: boolean
   onToggle: (isOpen: boolean) => void
-}
-
-const isNewSafeRoute = (pathname: string): boolean => {
-  return pathname === AppRoutes.newSafe.create
-}
-
-const isAppShareRoute = (pathname: string): boolean => {
-  return pathname === AppRoutes.share.safeApp
 }
 
 const isSafeAppRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
@@ -35,8 +27,15 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   const showSidebarToggle = isSafeAppRoute(pathname, query) && !isSmallScreen
 
   useEffect(() => {
-    const closeSidebar =
-      isSmallScreen || isSafeAppRoute(pathname, query) || isAppShareRoute(pathname) || isNewSafeRoute(pathname)
+    const hideSidebar = [
+      AppRoutes.share.safeApp,
+      AppRoutes.newSafe.create,
+      AppRoutes.newSafe.load,
+      AppRoutes.welcome,
+      AppRoutes.index,
+    ].includes(pathname)
+
+    const closeSidebar = isSmallScreen || isSafeAppRoute(pathname, query) || hideSidebar
     onToggle(!closeSidebar)
   }, [isSmallScreen, onToggle, pathname, query])
 

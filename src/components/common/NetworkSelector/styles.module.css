@@ -7,8 +7,9 @@
   display: none;
 }
 
-.select *:focus {
-  background: inherit;
+.select *:focus-visible {
+  outline: 5px auto Highlight;
+  outline: 5px auto -webkit-focus-ring-color;
 }
 
 .select :global .MuiSelect-select {
