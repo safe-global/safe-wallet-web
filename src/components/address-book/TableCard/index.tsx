@@ -13,15 +13,15 @@ const TableCard = ({ row, className }: TableCardProps) => {
   return (
     <TableCell colSpan={3} className={className}>
       <Card className={css.tableCard}>
-        <Typography variant="body2">{row.name.content}</Typography>
+        <Typography variant="body2">{row.cells.name.content}</Typography>
         <PrefixedEthHashInfo
-          address={row.address.rawValue.toString()}
+          address={row.cells.address.rawValue.toString()}
           showName={false}
           shortAddress={false}
           hasExplorer
           showCopyButton
         />
-        {row.actions.content}
+        {row.cells.actions.content}
       </Card>
     </TableCell>
   )

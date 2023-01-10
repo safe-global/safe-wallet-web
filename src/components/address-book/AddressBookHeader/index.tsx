@@ -78,7 +78,7 @@ const AddressBookHeader = ({ handleOpenModal, searchQuery, onSearchQueryChange }
             display="flex"
             justifyContent={['space-between', , 'flex-end']}
             alignItems="center"
-            sx={{ '& button:first-of-type': { paddingLeft: 0 }, '& button:last-of-type': { paddingRight: 0 } }}
+            sx={{ '& *:first-of-type > button': { paddingLeft: 0 }, '& *:last-of-type > button': { paddingRight: 0 } }}
           >
             <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
               <HeaderButton onClick={handleOpenModal(ModalType.IMPORT)} icon={ImportIcon}>
