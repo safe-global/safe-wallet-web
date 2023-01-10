@@ -24,7 +24,7 @@ type EnhancedCell = {
   hide?: boolean
 }
 
-export type EnhancedRow = {
+type EnhancedRow = {
   selected?: boolean
   collapsed?: boolean
   key?: string
@@ -106,12 +106,12 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
 type EnhancedTableProps = {
   rows: EnhancedRow[]
   headCells: EnhancedHeadCell[]
-  CellCard?: React.FC<{ row: EnhancedRow; className?: string }>
+  mobileVariant?: boolean
 }
 
 const pageSizes = [10, 25, 100]
 
-function EnhancedTable({ rows, headCells, CellCard }: EnhancedTableProps) {
+function EnhancedTable({ rows, headCells, mobileVariant }: EnhancedTableProps) {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
   const [orderBy, setOrderBy] = useState<string>('')
   const [page, setPage] = useState<number>(0)
@@ -138,7 +138,7 @@ function EnhancedTable({ rows, headCells, CellCard }: EnhancedTableProps) {
   return (
     <Box sx={{ width: '100%' }}>
       <TableContainer component={Paper} sx={{ width: '100%', mb: 2 }}>
-        <Table aria-labelledby="tableTitle">
+        <Table aria-labelledby="tableTitle" className={mobileVariant ? css.mobileColumn : undefined}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
             {pagedRows.length > 0 ? (
@@ -149,7 +149,6 @@ function EnhancedTable({ rows, headCells, CellCard }: EnhancedTableProps) {
                   selected={row.selected}
                   className={row.collapsed ? css.collapsedRow : undefined}
                 >
-                  {CellCard && <CellCard row={row} className={css.cellCard} />}
                   {Object.entries(row.cells).map(([key, cell]) => (
                     <TableCell
                       key={key}
@@ -157,7 +156,6 @@ function EnhancedTable({ rows, headCells, CellCard }: EnhancedTableProps) {
                         sticky: cell.sticky,
                         [css.hide]: cell.hide,
                         [css.collapsedCell]: row.collapsed,
-                        [css.normalRow]: CellCard,
                       })}
                     >
                       <Collapse key={index} in={!row.collapsed} enter={false}>

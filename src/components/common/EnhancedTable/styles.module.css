@@ -22,17 +22,18 @@
   gap: var(--space-1);
 }
 
-.cellCard {
-  display: none;
-  padding: 0 !important;
-}
-
 @media (max-width: 900px) {
-  .cellCard {
-    display: table-cell;
+  .mobileColumn thead th {
+    display: none;
   }
 
-  .normalRow {
-    display: none;
+  .mobileColumn thead th:first-of-type {
+    display: block;
+  }
+
+  .mobileColumn tbody td {
+    display: block;
+    padding-left: 16px !important;
+    background: inherit;
   }
 }

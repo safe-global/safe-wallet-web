@@ -24,7 +24,6 @@ import { useCurrentChain } from '@/hooks/useChains'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 import { Box } from '@mui/material'
-import TableCard from '@/components/address-book/TableCard'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -135,7 +134,7 @@ const AddressBookTable = () => {
 
       <main>
         {filteredEntries.length > 0 ? (
-          <EnhancedTable rows={rows} headCells={headCells} CellCard={TableCard} />
+          <EnhancedTable rows={rows} headCells={headCells} mobileVariant />
         ) : (
           <Box bgcolor="background.paper" borderRadius={1}>
             <PagePlaceholder
