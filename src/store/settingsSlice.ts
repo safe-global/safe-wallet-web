@@ -56,8 +56,8 @@ export const settingsSlice = createSlice({
     },
     setHiddenTokensForChain: (state, { payload }: PayloadAction<{ chainId: string; assets: string[] }>) => {
       const { chainId, assets } = payload
-      state.hiddenTokens = {}
-      state.hiddenTokens[chainId] ??= assets
+      state.hiddenTokens ??= {}
+      state.hiddenTokens[chainId] = assets
     },
   },
 })
