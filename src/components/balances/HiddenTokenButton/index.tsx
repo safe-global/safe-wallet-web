@@ -7,9 +7,9 @@ import { VisibilityOutlined } from '@mui/icons-material'
 import Track from '@/components/common/Track'
 
 import css from './styles.module.css'
-import useABTesting from '@/services/tracking/useABTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 import { OnboardingTooltip } from '@/components/common/OnboardingTooltip'
+import useABTesting from '@/services/tracking/useAbTesting'
 
 const LS_ONBOARDING = 'ONBOARDING_HIDDEN_TOKEN_BUTTON'
 

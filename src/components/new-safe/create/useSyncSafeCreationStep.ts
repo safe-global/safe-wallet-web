@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
-import type { PendingSafeData } from '@/components/new-safe/create/steps/Step4'
+import type { PendingSafeData } from '@/components/new-safe/create/steps/StatusStep'
 import type { NewSafeFormData } from '@/components/new-safe/create/index'
-import { SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/create/steps/Step4'
+import { SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/create/steps/StatusStep'
 import useWallet from '@/hooks/wallets/useWallet'
 
 const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => {
