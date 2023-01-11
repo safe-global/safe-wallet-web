@@ -17,7 +17,7 @@ type SideDrawerProps = {
 }
 
 const isSafeAppRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
-  return pathname === AppRoutes.apps && !!query.appUrl
+  return pathname === AppRoutes.apps.index && !!query.appUrl
 }
 
 const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {

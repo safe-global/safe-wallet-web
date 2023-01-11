@@ -1,0 +1,68 @@
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import RadioGroup from '@mui/material/RadioGroup'
+import Radio from '@mui/material/Radio'
+import FormControl from '@mui/material/FormControl'
+
+import GridViewIcon from '@/public/images/apps/grid-view-icon.svg'
+import GridViewIconChecked from '@/public/images/apps/grid-view-icon-checked.svg'
+import ListViewIcon from '@/public/images/apps/list-view-icon.svg'
+import ListViewIconChecked from '@/public/images/apps/list-view-icon-checked.svg'
+import { GRID_VIEW_MODE, LIST_VIEW_MODE } from '@/components/new-safe-apps/SafeAppCard/SafeAppCard'
+import type { SafeAppsViewMode } from '@/components/new-safe-apps/SafeAppCard/SafeAppCard'
+
+type SafeAppsListHeaderProps = {
+  amount?: number
+  safeAppsViewMode: SafeAppsViewMode
+  setSafeAppsViewMode: (viewMode: SafeAppsViewMode) => void
+}
+
+const SafeAppsListHeader = ({ amount, safeAppsViewMode, setSafeAppsViewMode }: SafeAppsListHeaderProps) => {
+  return (
+    <Stack display="flex" flexDirection="row" justifyContent="space-between">
+      <Typography variant="body2" color="text.secondary" mb={1.5} mt={0.5}>
+        ALL ({amount || 0})
+      </Typography>
+
+      {/* switch Safe Apps view mode radio buttons */}
+      <FormControl>
+        <RadioGroup
+          value={safeAppsViewMode}
+          aria-label="safe apps view mode selector"
+          name="safe-apps-view-mode"
+          sx={{ flexDirection: 'row' }}
+          onChange={(e, viewMode) => {
+            setSafeAppsViewMode(viewMode as SafeAppsViewMode)
+          }}
+        >
+          {/* Grid view radio button */}
+          <Radio
+            value={GRID_VIEW_MODE}
+            disableRipple
+            color="default"
+            checkedIcon={<GridViewIconChecked />}
+            icon={<GridViewIcon />}
+            sx={{ padding: '4px' }}
+            inputProps={{
+              'aria-label': 'Grid view mode',
+            }}
+          />
+          {/* Grid view radio button */}
+          <Radio
+            value={LIST_VIEW_MODE}
+            disableRipple
+            color="default"
+            checkedIcon={<ListViewIconChecked />}
+            icon={<ListViewIcon />}
+            sx={{ padding: '4px' }}
+            inputProps={{
+              'aria-label': 'List view mode',
+            }}
+          />
+        </RadioGroup>
+      </FormControl>
+    </Stack>
+  )
+}
+
+export default SafeAppsListHeader

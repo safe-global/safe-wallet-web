@@ -1,0 +1,42 @@
+.safeAppContainer {
+  height: 100%;
+}
+
+.safeAppHeader {
+  padding: var(--space-3) var(--space-2) 0 var(--space-2);
+}
+
+.safeAppContent {
+  padding: var(--space-2);
+  padding-bottom: 20px !important;
+}
+
+.safeAppTitle {
+  line-height: 175%;
+  margin: 0;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.safeAppDescription {
+  /* Truncate Safe App Description (3 lines) */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.safeAppTagContainer {
+  padding-top: var(--space-2);
+}
+
+.safeAppTagLabel {
+  border-radius: 4px;
+  height: 24px;
+}
+
+.safeAppTagLabel > * {
+  padding: var(--space-1);
+}

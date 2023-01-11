@@ -1,0 +1,4 @@
+.drawerContainer {
+  padding: var(--header-height) var(--space-2) 0 var(--space-2);
+  width: 450px;
+}

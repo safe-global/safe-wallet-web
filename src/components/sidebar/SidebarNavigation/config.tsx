@@ -40,7 +40,7 @@ export const navItems: NavItem[] = [
   {
     label: 'Apps',
     icon: <SvgIcon component={AppsIcon} inheritViewBox />,
-    href: AppRoutes.apps,
+    href: AppRoutes.apps.index,
   },
   {
     label: 'Settings',
@@ -95,5 +95,20 @@ export const settingsNavItems = [
   {
     label: 'Data',
     href: AppRoutes.settings.data,
+  },
+]
+
+export const safeAppsNavItems = [
+  {
+    label: 'All Apps',
+    href: AppRoutes.apps.index,
+  },
+  {
+    label: 'Bookmarked Apps',
+    href: AppRoutes.apps.bookmarked,
+  },
+  {
+    label: 'My Custom Apps',
+    href: AppRoutes.apps.custom,
   },
 ]

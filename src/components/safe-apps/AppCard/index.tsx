@@ -203,7 +203,7 @@ const AppCard = ({ safeApp, pinned, onPin, onDelete, variant = 'default' }: AppC
   }
 
   const url: UrlObject = router.query.safe
-    ? { pathname: AppRoutes.apps, query: { safe: router.query.safe, appUrl: safeApp.url } }
+    ? { pathname: AppRoutes.apps.index, query: { safe: router.query.safe, appUrl: safeApp.url } }
     : shareUrlObj
 
   const shareUrl = resolveHref(router, shareUrlObj)

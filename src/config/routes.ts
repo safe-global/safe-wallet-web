@@ -4,7 +4,11 @@ export const AppRoutes = {
   index: '/',
   import: '/import',
   home: '/home',
-  apps: '/apps',
+  apps: {
+    index: '/apps',
+    bookmarked: '/apps/bookmarked',
+    custom: '/apps/custom',
+  },
   addressBook: '/address-book',
   balances: {
     nfts: '/balances/nfts',

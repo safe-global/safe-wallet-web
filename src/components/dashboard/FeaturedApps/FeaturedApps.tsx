@@ -33,7 +33,10 @@ export const FeaturedApps = (): ReactElement | null => {
           <StyledGrid container>
             {featuredApps?.map((app) => (
               <StyledGridItem item xs md key={app.id}>
-                <NextLink passHref href={{ pathname: AppRoutes.apps, query: { ...router.query, appUrl: app.url } }}>
+                <NextLink
+                  passHref
+                  href={{ pathname: AppRoutes.apps.index, query: { ...router.query, appUrl: app.url } }}
+                >
                   <a>
                     <Card>
                       <Grid container alignItems="center" spacing={3}>

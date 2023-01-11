@@ -1,0 +1,59 @@
+.addCustomAppContainer {
+  padding: 0;
+}
+
+.addCustomAppFields {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+}
+
+.addCustomAppHelp {
+  display: flex;
+  align-items: center;
+  border-top: 2px solid var(--color-border-light);
+  padding: var(--space-3);
+}
+
+.addCustomAppHelpLink {
+  text-decoration: none;
+  margin-left: calc(var(--space-1) / 2);
+}
+
+.addCustomAppHelpIcon {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+
+.customAppContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid var(--color-text-primary);
+  border-radius: 6px;
+  padding: var(--space-3);
+}
+
+.customAppCheckIcon {
+  position: absolute;
+  top: 27px;
+  right: 25px;
+}
+
+.customAppPlaceholderContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border-main);
+  border-radius: 6px;
+  padding: 16px 12px;
+}
+
+.customAppPlaceholderIconDefault > path {
+  fill: var(--color-text-secondary);
+}
+
+.customAppPlaceholderIconError > path {
+  fill: var(--color-error-main);
+}

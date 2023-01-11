@@ -18,7 +18,7 @@ const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
   return {
     app,
     link: {
-      pathname: AppRoutes.apps,
+      pathname: AppRoutes.apps.index,
       query: { safe: router.query.safe, appUrl: app?.url },
     },
   }
