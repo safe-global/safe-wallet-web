@@ -3,13 +3,15 @@ import useOnboard, { type ConnectedWallet, getConnectedWallet } from './useOnboa
 
 const useWallet = (): ConnectedWallet | null => {
   const onboard = useOnboard()
-  const [wallet, setWallet] = useState<ConnectedWallet | null>(null)
+  const onboardWallets = onboard?.state.get().wallets || []
+  const [wallet, setWallet] = useState<ConnectedWallet | null>(getConnectedWallet(onboardWallets))
 
   useEffect(() => {
     if (!onboard) return
 
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
-      setWallet(getConnectedWallet(wallets))
+      const newWallet = getConnectedWallet(wallets)
+      setWallet(newWallet)
     })
 
     return () => {
