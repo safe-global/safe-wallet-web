@@ -8,15 +8,9 @@ const useWallet = (): ConnectedWallet | null => {
   useEffect(() => {
     if (!onboard) return
 
-    const onWallet = () => {
-      const onboardWallets = onboard?.state.get().wallets || []
-      const currWallet = getConnectedWallet(onboardWallets)
-      setWallet(currWallet)
-    }
-
-    onWallet()
-
-    const walletSubscription = onboard.state.select('wallets').subscribe(onWallet)
+    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
+      setWallet(getConnectedWallet(wallets))
+    })
 
     return () => {
       walletSubscription.unsubscribe()
