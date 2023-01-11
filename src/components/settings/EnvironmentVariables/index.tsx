@@ -47,22 +47,23 @@ const EnvironmentVariables = () => {
       <Grid container direction="row" justifyContent="space-between" spacing={3} mb={2}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
-            Environment Variables
+            Environment variables
           </Typography>
         </Grid>
 
         <Grid item xs>
-          <Typography mb={3}>Only change these if you know what you are doing.</Typography>
+          <Typography mb={3}>
+            You can override some of our default APIs here in case you need to. Proceed at your own risk.
+          </Typography>
           <FormProvider {...formMethods}>
             <form onSubmit={onSubmit}>
+              <Typography fontWeight={700} mb={1}>
+                Client gateway
+              </Typography>
               <TextField
                 {...register(EnvVariablesField.cgw)}
-                label="Client Gateway"
                 variant="outlined"
                 placeholder={!cgw ? GATEWAY_URL_PRODUCTION : ''}
-                InputLabelProps={{
-                  shrink: true,
-                }}
                 InputProps={{
                   endAdornment: cgw ? (
                     <InputAdornment position="end">
