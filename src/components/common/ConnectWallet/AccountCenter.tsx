@@ -100,9 +100,12 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
 
           <ChainSwitcher fullWidth />
 
-          <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
-            Switch wallet
-          </Button>
+          {/* FIXME: onboard/SDK initialization when switching wallets */}
+          {false && (
+            <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
+              Switch wallet
+            </Button>
+          )}
 
           <Button onClick={handleDisconnect} variant="danger" size="small" fullWidth disableElevation>
             Disconnect
