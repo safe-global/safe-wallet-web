@@ -34,7 +34,7 @@ export const useInitSafeCoreSDK = () => {
         trackError(ErrorCodes._105, (e as Error).message)
 
         // Disconnect the wallet
-        onboard?.disconnectWallet({ label: wallet.label })
+        onboard.disconnectWallet({ label: wallet.label })
       })
   }, [onboard, wallet, safe.chainId, safe.address.value, safe.version, safeLoaded, dispatch])
 }
