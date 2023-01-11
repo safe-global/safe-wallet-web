@@ -3,8 +3,9 @@ import { useInitSafeCoreSDK } from '@/hooks/coreSDK/useInitSafeCoreSDK'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import * as coreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import * as useWallet from '@/hooks/wallets/useWallet'
+import * as useOnboard from '@/hooks/wallets/useOnboard'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { EIP1193Provider } from '@web3-onboard/core'
+import type { EIP1193Provider, OnboardAPI } from '@web3-onboard/core'
 import { act } from '@testing-library/react'
 import type Safe from '@safe-global/safe-core-sdk'
 
@@ -30,11 +31,16 @@ describe('useInitSafeCoreSDK hook', () => {
     provider: null as unknown as EIP1193Provider,
   }
 
+  const mockOnboard = {
+    disconnectWallet: jest.fn(),
+  } as unknown as OnboardAPI
+
   beforeEach(() => {
     jest.clearAllMocks()
 
     jest.spyOn(useSafeInfo, 'default').mockReturnValue(mockSafeInfo)
     jest.spyOn(useWallet, 'default').mockReturnValue(mockWallet)
+    jest.spyOn(useOnboard, 'default').mockReturnValue(mockOnboard)
   })
 
   it('initializes a Core SDK instance', async () => {
