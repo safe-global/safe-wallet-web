@@ -18,14 +18,14 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
     register,
     setValue,
     control,
-    formState: { errors, isValidating },
+    formState: { errors },
     trigger,
   } = useFormContext()
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
   const watchedValue = useWatch({ name, control })
   const currentShortName = currentChain?.shortName || ''
-  const [localLoading, setLocalLoading] = useState<boolean>(false)
+  const [isValidating, setIsValidating] = useState<boolean>(false)
 
   // Fetch an ENS resolution for the current address
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
@@ -55,10 +55,6 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
     }
   }, [address, currentShortName, setAddressValue])
 
-  useEffect(() => {
-    setLocalLoading(false)
-  }, [isValidating])
-
   return (
     <Grid container alignItems="center" gap={1}>
       <Grid item flexGrow={1}>
@@ -77,7 +73,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
               <InputAdornment position="end">{currentShortName}:</InputAdornment>
             ),
 
-            endAdornment: (resolving || isValidating || localLoading) && (
+            endAdornment: (resolving || isValidating) && (
               <InputAdornment position="end">
                 <CircularProgress size={20} />
               </InputAdornment>
@@ -94,16 +90,18 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
             required,
 
             setValueAs: (value: string): string => {
-              setLocalLoading(true)
               rawValueRef.current = value
               // This also checksums the address
               return parsePrefixedAddress(value).address
             },
 
-            validate: () => {
+            validate: async () => {
               const value = rawValueRef.current
               if (value) {
-                return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
+                setIsValidating(true)
+                const result = validatePrefixed(value) || (await validate?.(parsePrefixedAddress(value).address))
+                setIsValidating(false)
+                return result
               }
             },
 
