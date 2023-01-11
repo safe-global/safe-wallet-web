@@ -96,6 +96,7 @@ describe('AssetsTable', () => {
           theme: {
             darkMode: true,
           },
+          env: {},
         },
       },
     })
@@ -190,6 +191,7 @@ describe('AssetsTable', () => {
           theme: {
             darkMode: true,
           },
+          env: {},
         },
       },
     })
@@ -280,6 +282,7 @@ describe('AssetsTable', () => {
           theme: {
             darkMode: true,
           },
+          env: {},
         },
       },
     })
@@ -367,6 +370,7 @@ describe('AssetsTable', () => {
           theme: {
             darkMode: true,
           },
+          env: {},
         },
       },
     })

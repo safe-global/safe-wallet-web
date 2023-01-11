@@ -21,6 +21,7 @@ export const AppRoutes = {
     index: '/settings',
     data: '/settings/data',
     appearance: '/settings/appearance',
+    environmentVariables: '/settings/environment-variables',
     safeApps: {
       index: '/settings/safe-apps',
     },

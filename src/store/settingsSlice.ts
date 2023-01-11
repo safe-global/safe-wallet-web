@@ -20,6 +20,9 @@ export type SettingsState = {
   theme: {
     darkMode?: boolean
   }
+  env: {
+    cgw?: string
+  }
 }
 
 const initialState: SettingsState = {
@@ -33,6 +36,7 @@ const initialState: SettingsState = {
     qr: true,
   },
   theme: {},
+  env: {},
 }
 
 export const settingsSlice = createSlice({
@@ -59,11 +63,21 @@ export const settingsSlice = createSlice({
       state.hiddenTokens ??= {}
       state.hiddenTokens[chainId] = assets
     },
+    setCgw: (state, { payload }: PayloadAction<SettingsState['env']['cgw']>) => {
+      state.env.cgw = payload
+    },
   },
 })
 
-export const { setCurrency, setShowShortName, setCopyShortName, setQrShortName, setDarkMode, setHiddenTokensForChain } =
-  settingsSlice.actions
+export const {
+  setCurrency,
+  setShowShortName,
+  setCopyShortName,
+  setQrShortName,
+  setDarkMode,
+  setHiddenTokensForChain,
+  setCgw,
+} = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
 
