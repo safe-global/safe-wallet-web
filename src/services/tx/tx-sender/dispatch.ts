@@ -158,14 +158,13 @@ export const dispatchBatchExecution = async (
 ) => {
   const groupKey = multiSendTxData
 
-  txs.forEach(({ txId }) => {
-    txDispatch(TxEvent.EXECUTING, { txId, groupKey })
-  })
-
   let result: TransactionResult | undefined
 
   try {
     result = await multiSendContract.contract.connect(provider.getSigner()).multiSend(multiSendTxData)
+    txs.forEach(({ txId }) => {
+      txDispatch(TxEvent.EXECUTING, { txId, groupKey })
+    })
   } catch (err) {
     txs.forEach(({ txId }) => {
       txDispatch(TxEvent.FAILED, { txId, error: err as Error, groupKey })
@@ -228,8 +227,6 @@ export const dispatchSpendingLimitTxExecution = async (
 
   const id = JSON.stringify(txParams)
 
-  txDispatch(TxEvent.EXECUTING, { groupKey: id })
-
   let result: ContractTransaction | undefined
   try {
     result = await contract.executeAllowanceTransfer(
@@ -243,6 +240,7 @@ export const dispatchSpendingLimitTxExecution = async (
       txParams.signature,
       txOptions,
     )
+    txDispatch(TxEvent.EXECUTING, { groupKey: id })
   } catch (error) {
     txDispatch(TxEvent.FAILED, { groupKey: id, error: error as Error })
     throw error
