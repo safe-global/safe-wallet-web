@@ -15,7 +15,7 @@ import SafeAppActionButtons from '../SafeAppActionButtons/SafeAppActionButtons'
 import CloseIcon from '@/public/images/common/close.svg'
 
 import css from './styles.module.css'
-import SafeAppsTags from '../SafeAppsTags/SafeAppsTags'
+import SafeAppTags from '../SafeAppTags/SafeAppTags'
 
 type SafeAppPreviewDrawerProps = {
   safeApp?: SafeAppData
@@ -67,7 +67,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         </Typography>
 
         {/* Tags */}
-        <SafeAppsTags tags={safeApp?.tags || []} />
+        <SafeAppTags tags={safeApp?.tags || []} />
 
         {/* Networks */}
         <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>

@@ -3,11 +3,11 @@ import Chip from '@mui/material/Chip'
 
 import css from './styles.module.css'
 
-type SafeAppsTagsProps = {
+type SafeAppTagsProps = {
   tags: string[]
 }
 
-const SafeAppsTags = ({ tags = [] }: SafeAppsTagsProps) => {
+const SafeAppTags = ({ tags = [] }: SafeAppTagsProps) => {
   return (
     <Stack className={css.safeAppTagContainer} flexDirection="row" gap={1} flexWrap="wrap">
       {tags.map((tag) => (
@@ -17,4 +17,4 @@ const SafeAppsTags = ({ tags = [] }: SafeAppsTagsProps) => {
   )
 }
 
-export default SafeAppsTags
+export default SafeAppTags

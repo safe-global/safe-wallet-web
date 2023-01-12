@@ -15,7 +15,7 @@ import SafeAppIconCard from '@/components/new-safe-apps/SafeAppIconCard/SafeAppI
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
 import SafeAppActionButtons from '../SafeAppActionButtons/SafeAppActionButtons'
-import SafeAppsTags from '../SafeAppsTags/SafeAppsTags'
+import SafeAppTags from '../SafeAppTags/SafeAppTags'
 
 export type SafeAppsViewMode = 'list-view' | 'grid-view'
 
@@ -133,7 +133,7 @@ const SafeAppCardGridView = ({
             </Typography>
 
             {/* Safe App Tags */}
-            <SafeAppsTags tags={safeApp.tags} />
+            <SafeAppTags tags={safeApp.tags} />
           </CardContent>
         </Card>
       </a>
