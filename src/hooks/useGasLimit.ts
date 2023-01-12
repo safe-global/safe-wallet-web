@@ -5,12 +5,15 @@ import { encodeSignatures } from '@/services/tx/encodeSignatures'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import useAsync from '@/hooks/useAsync'
+import useChainId from '@/hooks/useChainId'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import useIsSafeOwner from './useIsSafeOwner'
 import { Errors, logError } from '@/services/exceptions'
+
+const GNOSIS_CHAIN_ID = '100'
 
 const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string): string => {
   const EXEC_TX_METHOD = 'execTransaction'
@@ -44,6 +47,7 @@ const useGasLimit = (
   const wallet = useWallet()
   const walletAddress = wallet?.address
   const isOwner = useIsSafeOwner()
+  const currentChainId = useChainId()
 
   const encodedSafeTx = useMemo<string>(() => {
     if (!safeTx || !safeSDK || !walletAddress) {
@@ -60,12 +64,23 @@ const useGasLimit = (
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>(() => {
     if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return
 
-    return web3ReadOnly.estimateGas({
-      to: safeAddress,
-      from: walletAddress,
-      data: encodedSafeTx,
-      type: operationType,
-    })
+    return web3ReadOnly
+      .estimateGas({
+        to: safeAddress,
+        from: walletAddress,
+        data: encodedSafeTx,
+        type: operationType,
+      })
+      .then((gasLimit) => {
+        // Due to a bug in Nethermind estimation we need to increment 30% the gasLimit
+        // when the safeTxGas is defined and not 0.
+        const safeTxGas = safeTx?.data?.safeTxGas
+        if (safeTxGas && safeTxGas !== 0 && currentChainId === GNOSIS_CHAIN_ID) {
+          return gasLimit.mul(130).div(100)
+        }
+
+        return gasLimit
+      })
   }, [safeAddress, walletAddress, encodedSafeTx, web3ReadOnly, operationType])
 
   useEffect(() => {
