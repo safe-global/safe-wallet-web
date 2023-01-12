@@ -117,9 +117,11 @@ const SafeAppList = ({
       <SafeAppPreviewDrawer
         isOpen={isAppPreviewDrawerOpen}
         safeApp={selectedSafeApp}
+        isBookmarked={selectedSafeApp && bookmarkedSafeAppsId?.has(selectedSafeApp.id)}
         onClose={() => {
           setIsAppPreviewDrawerOpen(false)
         }}
+        onBookmark={onBookmarkSafeApp}
       />
     </>
   )

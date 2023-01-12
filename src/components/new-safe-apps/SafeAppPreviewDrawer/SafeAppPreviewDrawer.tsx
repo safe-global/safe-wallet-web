@@ -19,10 +19,12 @@ import css from './styles.module.css'
 type SafeAppPreviewDrawerProps = {
   safeApp?: SafeAppData
   isOpen: boolean
+  isBookmarked?: boolean
   onClose: () => void
+  onBookmark?: (safeAppId: number) => void
 }
 
-const SafeAppPreviewDrawer = ({ isOpen, safeApp, onClose }: SafeAppPreviewDrawerProps) => {
+const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookmark }: SafeAppPreviewDrawerProps) => {
   const router = useRouter()
   const safeAppUrl = getSafeAppUrl(router, safeApp?.url || '')
 
@@ -33,8 +35,8 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, onClose }: SafeAppPreviewDrawer
 
         {safeApp && (
           <Box display="flex" justifyContent="right">
-            <SafeAppActionButtons safeApp={safeApp} isBookmarked={false} onBookmarkSafeApp={() => {}} />
-            <Tooltip title={`Close ${safeApp.name} info`} placement="top">
+            <SafeAppActionButtons safeApp={safeApp} isBookmarked={isBookmarked} onBookmarkSafeApp={onBookmark} />
+            <Tooltip title={`Close ${safeApp.name} preview`} placement="top">
               <IconButton
                 aria-label="close"
                 onClick={onClose}
