@@ -32,7 +32,7 @@ import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 import type { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
-import { selectSettings } from '@/store/settingsSlice'
+import { selectRpc } from '@/store/settingsSlice'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -69,15 +69,15 @@ const useAppCommunicator = (
   handlers: UseAppCommunicatorHandlers,
 ): AppCommunicator | undefined => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
-  const settings = useAppSelector(selectSettings)
+  const customRpc = useAppSelector(selectRpc)
 
   const safeAppWeb3Provider = useMemo(() => {
     if (!chain) {
       return
     }
 
-    return createSafeAppsWeb3Provider(chain.rpcUri, settings.env.rpc[chain.chainId])
-  }, [chain, settings.env.rpc])
+    return createSafeAppsWeb3Provider(chain.rpcUri, customRpc[chain.chainId])
+  }, [chain, customRpc])
 
   useEffect(() => {
     let communicatorInstance: AppCommunicator

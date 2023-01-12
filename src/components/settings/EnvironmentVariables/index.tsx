@@ -4,19 +4,21 @@ import { Paper, Grid, Typography, TextField, Button, Tooltip, IconButton } from 
 import InputAdornment from '@mui/material/InputAdornment'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSettings, setCgw, setRpc } from '@/store/settingsSlice'
-import { GATEWAY_URL_PRODUCTION } from '@/config/constants'
+import { selectSettings, setCgw, setRpc, setTenderly } from '@/store/settingsSlice'
+import { GATEWAY_URL_PRODUCTION, TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 
 export enum EnvVariablesField {
   cgw = 'cgw',
   rpc = 'rpc',
+  tenderly = 'tenderly',
 }
 
 export type EnvVariablesFormData = {
   [EnvVariablesField.cgw]: string
   [EnvVariablesField.rpc]: string
+  [EnvVariablesField.tenderly]: string
 }
 
 const EnvironmentVariables = () => {
@@ -30,6 +32,7 @@ const EnvironmentVariables = () => {
     defaultValues: {
       [EnvVariablesField.cgw]: settings.env.cgw ?? '',
       [EnvVariablesField.rpc]: settings.env.rpc[chainId] ?? '',
+      [EnvVariablesField.tenderly]: settings.env.tenderly ?? '',
     },
   })
 
@@ -37,10 +40,12 @@ const EnvironmentVariables = () => {
 
   const cgw = watch(EnvVariablesField.cgw)
   const rpc = watch(EnvVariablesField.rpc)
+  const tenderly = watch(EnvVariablesField.tenderly)
 
   const onSubmit = handleSubmit((data) => {
     dispatch(setCgw(data[EnvVariablesField.cgw]))
     dispatch(setRpc({ chainId, rpc: data[EnvVariablesField.rpc] }))
+    dispatch(setTenderly(data[EnvVariablesField.tenderly]))
     location.reload()
   })
 
@@ -55,6 +60,10 @@ const EnvironmentVariables = () => {
   useEffect(() => {
     reset({ [EnvVariablesField.rpc]: settings.env.rpc[chainId] })
   }, [reset, settings.env.rpc, chainId])
+
+  useEffect(() => {
+    reset({ [EnvVariablesField.tenderly]: settings.env.tenderly })
+  }, [reset, settings.env.tenderly])
 
   return (
     <Paper sx={{ padding: 4 }}>
@@ -78,7 +87,7 @@ const EnvironmentVariables = () => {
               <TextField
                 {...register(EnvVariablesField.cgw)}
                 variant="outlined"
-                placeholder={!cgw ? GATEWAY_URL_PRODUCTION : ''}
+                placeholder={GATEWAY_URL_PRODUCTION}
                 InputProps={{
                   endAdornment: cgw ? (
                     <InputAdornment position="end">
@@ -99,12 +108,33 @@ const EnvironmentVariables = () => {
               <TextField
                 {...register(EnvVariablesField.rpc)}
                 variant="outlined"
-                placeholder={!rpc ? chain?.rpcUri.value : ''}
+                placeholder={chain?.rpcUri.value}
                 InputProps={{
                   endAdornment: rpc ? (
                     <InputAdornment position="end">
                       <Tooltip title="Reset to default value">
                         <IconButton onClick={() => onReset(EnvVariablesField.rpc)} size="small" color="primary">
+                          <RotateLeftIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  ) : null,
+                }}
+                fullWidth
+              />
+
+              <Typography fontWeight={700} mb={1} mt={2}>
+                Tenderly
+              </Typography>
+              <TextField
+                {...register(EnvVariablesField.tenderly)}
+                variant="outlined"
+                placeholder={TENDERLY_SIMULATE_ENDPOINT_URL}
+                InputProps={{
+                  endAdornment: tenderly ? (
+                    <InputAdornment position="end">
+                      <Tooltip title="Reset to default value">
+                        <IconButton onClick={() => onReset(EnvVariablesField.tenderly)} size="small" color="primary">
                           <RotateLeftIcon />
                         </IconButton>
                       </Tooltip>

@@ -11,7 +11,7 @@ import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { useInitPairing } from '@/services/pairing/hooks'
 import { isWalletUnlocked, WalletNames } from '@/utils/wallets'
 import { useAppSelector } from '@/store'
-import { selectSettings, type SettingsState } from '@/store/settingsSlice'
+import { selectRpc, type SettingsState } from '@/store/settingsSlice'
 
 export type ConnectedWallet = {
   label: string
@@ -134,15 +134,15 @@ export const useInitOnboard = () => {
   const { configs } = useChains()
   const chain = useCurrentChain()
   const onboard = useStore()
-  const settings = useAppSelector(selectSettings)
+  const customRpc = useAppSelector(selectRpc)
 
   useInitPairing()
 
   useEffect(() => {
     if (configs.length > 0) {
-      initOnboard(configs, settings.env.rpc)
+      void initOnboard(configs, customRpc)
     }
-  }, [configs, settings.env.rpc])
+  }, [configs, customRpc])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {

@@ -22,6 +22,7 @@ export type SettingsState = {
   }
   env: {
     cgw?: string
+    tenderly?: string
     rpc: {
       [chainId: string]: string
     }
@@ -76,6 +77,9 @@ export const settingsSlice = createSlice({
       state.env.rpc ??= {}
       state.env.rpc[chainId] = rpc
     },
+    setTenderly: (state, { payload }: PayloadAction<SettingsState['env']['tenderly']>) => {
+      state.env.tenderly = payload
+    },
   },
 })
 
@@ -88,6 +92,7 @@ export const {
   setHiddenTokensForChain,
   setCgw,
   setRpc,
+  setTenderly,
 } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
@@ -99,3 +104,10 @@ export const selectCurrency = (state: RootState): SettingsState['currency'] => {
 export const selectHiddenTokensPerChain = (state: RootState, chainId: string): string[] => {
   return state[settingsSlice.name].hiddenTokens?.[chainId] || []
 }
+
+export const selectCgw = (state: RootState): SettingsState['env']['cgw'] => state[settingsSlice.name].env.cgw
+
+export const selectRpc = (state: RootState): SettingsState['env']['rpc'] => state[settingsSlice.name].env.rpc
+
+export const selectTenderly = (state: RootState): SettingsState['env']['tenderly'] =>
+  state[settingsSlice.name].env.tenderly
