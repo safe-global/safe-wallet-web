@@ -4,7 +4,7 @@ import Drawer from '@mui/material/Drawer'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import { Chip, IconButton, Stack, SvgIcon } from '@mui/material'
+import { IconButton, SvgIcon } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -15,6 +15,7 @@ import SafeAppActionButtons from '../SafeAppActionButtons/SafeAppActionButtons'
 import CloseIcon from '@/public/images/common/close.svg'
 
 import css from './styles.module.css'
+import SafeAppsTags from '../SafeAppsTags/SafeAppsTags'
 
 type SafeAppPreviewDrawerProps = {
   safeApp?: SafeAppData
@@ -66,13 +67,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         </Typography>
 
         {/* Tags */}
-        {safeApp && safeApp.tags.length > 0 && (
-          <Stack className={css.safeAppTagContainer} flexDirection="row" gap={1} flexWrap="wrap">
-            {safeApp.tags.map((tag) => (
-              <Chip className={css.safeAppTagLabel} key={tag} label={tag} />
-            ))}
-          </Stack>
-        )}
+        <SafeAppsTags tags={safeApp?.tags || []} />
 
         {/* Networks */}
         <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>

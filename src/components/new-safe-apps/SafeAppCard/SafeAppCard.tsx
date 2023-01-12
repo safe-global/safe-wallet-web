@@ -4,8 +4,6 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
-import Chip from '@mui/material/Chip'
 import Box from '@mui/material/Box'
 import { resolveHref } from 'next/dist/shared/lib/router/router'
 import type { SyntheticEvent } from 'react'
@@ -17,6 +15,7 @@ import SafeAppIconCard from '@/components/new-safe-apps/SafeAppIconCard/SafeAppI
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
 import SafeAppActionButtons from '../SafeAppActionButtons/SafeAppActionButtons'
+import SafeAppsTags from '../SafeAppsTags/SafeAppsTags'
 
 export type SafeAppsViewMode = 'list-view' | 'grid-view'
 
@@ -134,13 +133,7 @@ const SafeAppCardGridView = ({
             </Typography>
 
             {/* Safe App Tags */}
-            {safeApp.tags.length > 0 && (
-              <Stack className={css.safeAppTagContainer} flexDirection="row" gap={1} flexWrap="wrap">
-                {safeApp.tags.map((tag) => (
-                  <Chip className={css.safeAppTagLabel} key={tag} label={tag} />
-                ))}
-              </Stack>
-            )}
+            <SafeAppsTags tags={safeApp.tags} />
           </CardContent>
         </Card>
       </a>
