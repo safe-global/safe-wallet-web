@@ -159,15 +159,14 @@ export const getProxyFactoryContractInstance = (chainId: string, safeVersion: st
 }
 
 // Fallback handler
-
-const getFallbackHandlerContractDeployment = (chainId: string) => {
+export const getFallbackHandlerContractDeployment = (chainId: string, version = LATEST_SAFE_VERSION) => {
   return (
     getFallbackHandlerDeployment({
-      version: LATEST_SAFE_VERSION,
+      version,
       network: chainId,
     }) ||
     getFallbackHandlerDeployment({
-      version: LATEST_SAFE_VERSION,
+      version,
     })
   )
 }

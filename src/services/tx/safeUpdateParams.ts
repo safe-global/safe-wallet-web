@@ -44,3 +44,18 @@ export const createUpdateSafeTxs = (safe: SafeInfo, chain: ChainInfo): MetaTrans
 
   return txs
 }
+
+export const createSetFallbackHandlerTx = (safe: SafeInfo, chain: ChainInfo): MetaTransactionData => {
+  assertValidSafeVersion(safe.version)
+
+  const fallbackHandlerAddress = getFallbackHandlerContractInstance(chain.chainId).getAddress()
+  const safeContractInstance = getGnosisSafeContractInstance(chain, safe.version)
+  const changeFallbackHandlerCallData = safeContractInstance.encode('setFallbackHandler', [fallbackHandlerAddress])
+
+  return {
+    to: safe.address.value,
+    value: '0',
+    data: changeFallbackHandlerCallData,
+    operation: OperationType.Call,
+  }
+}

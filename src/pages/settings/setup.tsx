@@ -8,6 +8,7 @@ import { RequiredConfirmation } from '@/components/settings/RequiredConfirmation
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import useIsGranted from '@/hooks/useIsGranted'
+import { FallbackHandlerVersion } from '@/components/settings/FallbackHandlerVersion'
 
 const Setup: NextPage = () => {
   const { safe } = useSafeInfo()
@@ -51,8 +52,11 @@ const Setup: NextPage = () => {
               </Typography>
             </Grid>
 
-            <Grid item xs>
+            <Grid item lg={4} xs={12}>
               <ContractVersion isGranted={isGranted} />
+            </Grid>
+            <Grid item lg={4} xs={12}>
+              <FallbackHandlerVersion isGranted={isGranted} />
             </Grid>
           </Grid>
         </Paper>
