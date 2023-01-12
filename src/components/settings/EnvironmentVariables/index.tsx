@@ -4,18 +4,24 @@ import { Paper, Grid, Typography, TextField, Button, Tooltip, IconButton } from 
 import InputAdornment from '@mui/material/InputAdornment'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSettings, setCgw } from '@/store/settingsSlice'
+import { selectSettings, setCgw, setRpc } from '@/store/settingsSlice'
 import { GATEWAY_URL_PRODUCTION } from '@/config/constants'
+import useChainId from '@/hooks/useChainId'
+import { useCurrentChain } from '@/hooks/useChains'
 
 export enum EnvVariablesField {
   cgw = 'cgw',
+  rpc = 'rpc',
 }
 
 export type EnvVariablesFormData = {
   [EnvVariablesField.cgw]: string
+  [EnvVariablesField.rpc]: string
 }
 
 const EnvironmentVariables = () => {
+  const chainId = useChainId()
+  const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
   const dispatch = useAppDispatch()
 
@@ -23,24 +29,32 @@ const EnvironmentVariables = () => {
     mode: 'onChange',
     defaultValues: {
       [EnvVariablesField.cgw]: settings.env.cgw ?? '',
+      [EnvVariablesField.rpc]: settings.env.rpc[chainId] ?? '',
     },
   })
 
   const { register, handleSubmit, reset, setValue, watch } = formMethods
 
   const cgw = watch(EnvVariablesField.cgw)
+  const rpc = watch(EnvVariablesField.rpc)
 
   const onSubmit = handleSubmit((data) => {
     dispatch(setCgw(data[EnvVariablesField.cgw]))
+    dispatch(setRpc({ chainId, rpc: data[EnvVariablesField.rpc] }))
+    location.reload()
   })
 
-  const onResetCgw = () => {
-    setValue(EnvVariablesField.cgw, '')
+  const onReset = (name: EnvVariablesField) => {
+    setValue(name, '')
   }
 
   useEffect(() => {
     reset({ [EnvVariablesField.cgw]: settings.env.cgw })
   }, [reset, settings.env.cgw])
+
+  useEffect(() => {
+    reset({ [EnvVariablesField.rpc]: settings.env.rpc[chainId] })
+  }, [reset, settings.env.rpc, chainId])
 
   return (
     <Paper sx={{ padding: 4 }}>
@@ -55,6 +69,7 @@ const EnvironmentVariables = () => {
           <Typography mb={3}>
             You can override some of our default APIs here in case you need to. Proceed at your own risk.
           </Typography>
+
           <FormProvider {...formMethods}>
             <form onSubmit={onSubmit}>
               <Typography fontWeight={700} mb={1}>
@@ -68,7 +83,7 @@ const EnvironmentVariables = () => {
                   endAdornment: cgw ? (
                     <InputAdornment position="end">
                       <Tooltip title="Reset to default value">
-                        <IconButton onClick={onResetCgw} size="small" color="primary">
+                        <IconButton onClick={() => onReset(EnvVariablesField.cgw)} size="small" color="primary">
                           <RotateLeftIcon />
                         </IconButton>
                       </Tooltip>
@@ -77,6 +92,28 @@ const EnvironmentVariables = () => {
                 }}
                 fullWidth
               />
+
+              <Typography fontWeight={700} mb={1} mt={2}>
+                RPC provider
+              </Typography>
+              <TextField
+                {...register(EnvVariablesField.rpc)}
+                variant="outlined"
+                placeholder={!rpc ? chain?.rpcUri.value : ''}
+                InputProps={{
+                  endAdornment: rpc ? (
+                    <InputAdornment position="end">
+                      <Tooltip title="Reset to default value">
+                        <IconButton onClick={() => onReset(EnvVariablesField.rpc)} size="small" color="primary">
+                          <RotateLeftIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  ) : null,
+                }}
+                fullWidth
+              />
+
               <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
                 Save
               </Button>

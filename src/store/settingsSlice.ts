@@ -22,6 +22,9 @@ export type SettingsState = {
   }
   env: {
     cgw?: string
+    rpc: {
+      [chainId: string]: string
+    }
   }
 }
 
@@ -36,7 +39,9 @@ const initialState: SettingsState = {
     qr: true,
   },
   theme: {},
-  env: {},
+  env: {
+    rpc: {},
+  },
 }
 
 export const settingsSlice = createSlice({
@@ -66,6 +71,11 @@ export const settingsSlice = createSlice({
     setCgw: (state, { payload }: PayloadAction<SettingsState['env']['cgw']>) => {
       state.env.cgw = payload
     },
+    setRpc: (state, { payload }: PayloadAction<{ chainId: string; rpc: string }>) => {
+      const { chainId, rpc } = payload
+      state.env.rpc ??= {}
+      state.env.rpc[chainId] = rpc
+    },
   },
 })
 
@@ -77,6 +87,7 @@ export const {
   setDarkMode,
   setHiddenTokensForChain,
   setCgw,
+  setRpc,
 } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]

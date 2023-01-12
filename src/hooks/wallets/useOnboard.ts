@@ -10,6 +10,8 @@ import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { useInitPairing } from '@/services/pairing/hooks'
 import { isWalletUnlocked, WalletNames } from '@/utils/wallets'
+import { useAppSelector } from '@/store'
+import { selectSettings, type SettingsState } from '@/store/settingsSlice'
 
 export type ConnectedWallet = {
   label: string
@@ -23,10 +25,10 @@ const lastWalletStorage = localItem<string>('lastWallet')
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
-export const initOnboard = async (chainConfigs: ChainInfo[]) => {
+export const initOnboard = async (chainConfigs: ChainInfo[], rpcConfig: SettingsState['env']['rpc']) => {
   const { createOnboard } = await import('@/services/onboard')
   if (!getStore()) {
-    setStore(createOnboard(chainConfigs))
+    setStore(createOnboard(chainConfigs, rpcConfig))
   }
 }
 
@@ -132,14 +134,15 @@ export const useInitOnboard = () => {
   const { configs } = useChains()
   const chain = useCurrentChain()
   const onboard = useStore()
+  const settings = useAppSelector(selectSettings)
 
   useInitPairing()
 
   useEffect(() => {
     if (configs.length > 0) {
-      initOnboard(configs)
+      initOnboard(configs, settings.env.rpc)
     }
-  }, [configs])
+  }, [configs, settings.env.rpc])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {

@@ -74,7 +74,9 @@ describe('HiddenTokenToggle', () => {
           theme: {
             darkMode: true,
           },
-          env: {},
+          env: {
+            rpc: {},
+          },
         },
       },
     })
