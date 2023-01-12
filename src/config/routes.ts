@@ -3,6 +3,7 @@ export const AppRoutes = {
   welcome: '/welcome',
   index: '/',
   import: '/import',
+  environmentVariables: '/environment-variables',
   home: '/home',
   apps: '/apps',
   addressBook: '/address-book',
