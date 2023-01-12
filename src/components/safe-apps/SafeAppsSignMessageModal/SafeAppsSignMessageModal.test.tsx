@@ -1,10 +1,14 @@
 import { Methods } from '@gnosis.pm/safe-apps-sdk'
+import * as web3 from '../../../hooks/wallets/web3'
+import { Web3Provider } from '@ethersproject/providers'
 import { render, screen } from '@/tests/test-utils'
 import SafeAppsSignMessageModal from './'
 import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 
 describe('SafeAppsSignMessageModal', () => {
   test('can handle messages with EIP712Domain type in the JSON-RPC payload', () => {
+    jest.spyOn(web3, 'getWeb3').mockImplementation(() => new Web3Provider(jest.fn()))
+
     render(
       <SafeAppsSignMessageModal
         onClose={() => {}}
