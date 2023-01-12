@@ -115,12 +115,11 @@ export const dispatchTxExecution = async (
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
   const eventParams = txId ? { txId } : { groupKey: await sdkUnchecked.getTransactionHash(safeTx) }
 
-  txDispatch(TxEvent.EXECUTING, eventParams)
-
   // Execute the tx
   let result: TransactionResult | undefined
   try {
     result = await sdkUnchecked.executeTransaction(safeTx, txOptions)
+    txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { ...eventParams, error: error as Error })
     throw error
