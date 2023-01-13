@@ -9,10 +9,10 @@ import SafeAppCard, { GRID_VIEW_MODE, LIST_VIEW_MODE } from '@/components/new-sa
 import type { SafeAppsViewMode } from '@/components/new-safe-apps/SafeAppCard/SafeAppCard'
 import AddCustomSafeAppCard from '@/components/new-safe-apps/AddCustomSafeAppCard/AddCustomSafeAppCard'
 import SafeAppPreviewDrawer from '@/components/new-safe-apps/SafeAppPreviewDrawer/SafeAppPreviewDrawer'
-
+import SafeAppsListHeader from '@/components/new-safe-apps/SafeAppsListHeader/SafeAppsListHeader'
+import SafeAppsZeroResultsPlaceholder from '@/components/new-safe-apps/SafeAppsZeroResultsPlaceholder/SafeAppsZeroResultsPlaceholder'
 import { useAppsSearch } from '@/hooks/safe-apps/useAppsSearch'
 import { useAppsFilterByCategory } from '@/hooks/safe-apps/useAppsFilterByCategory'
-import SafeAppsListHeader from '../SafeAppsListHeader/SafeAppsListHeader'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -49,6 +49,8 @@ const SafeAppList = ({
     setIsAppPreviewDrawerOpen(true)
   }
 
+  const showZeroResultsPlaceholder = filteredAppsByQuery && filteredApps.length === 0
+
   return (
     <>
       {/* Safe Apps Filters */}
@@ -63,7 +65,7 @@ const SafeAppList = ({
 
       {/* Safe Apps List Header */}
       <SafeAppsListHeader
-        amount={safeAppsList.length}
+        amount={filteredApps.length}
         safeAppsViewMode={safeAppsViewMode}
         setSafeAppsViewMode={setSafeAppsViewMode}
       />
@@ -112,6 +114,9 @@ const SafeAppList = ({
           })}
         </Grid>
       )}
+
+      {/* Zero results placeholder */}
+      {showZeroResultsPlaceholder && <SafeAppsZeroResultsPlaceholder searchQuery={query} />}
 
       {/* Safe App Preview Drawer */}
       <SafeAppPreviewDrawer
