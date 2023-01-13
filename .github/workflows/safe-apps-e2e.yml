@@ -16,34 +16,16 @@ jobs:
 
       - uses: actions/checkout@v3
 
-      - name: Yarn cache
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
+      - uses: ./.github/workflows/yarn
 
-      - name: Yarn install
+      - name: Install Cypress
         run: |
-          yarn install --immutable
           ./node_modules/.bin/cypress install
 
-      - name: Build
-        run: yarn build && yarn export
-        env:
-          NEXT_PUBLIC_BEAMER_ID: ${{ secrets.NEXT_PUBLIC_BEAMER_ID }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH }}
-          NEXT_PUBLIC_INFURA_TOKEN: ${{ secrets.NEXT_PUBLIC_INFURA_TOKEN }}
-          NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN: ${{ secrets.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN }}
-          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
-          NEXT_PUBLIC_TENDERLY_ORG_NAME: ${{ secrets.NEXT_PUBLIC_TENDERLY_ORG_NAME }}
-          NEXT_PUBLIC_TENDERLY_PROJECT_NAME: ${{ secrets.NEXT_PUBLIC_TENDERLY_PROJECT_NAME }}
-          NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL }}
-          NEXT_PUBLIC_FORTMATIC_KEY: ${{ secrets.NEXT_PUBLIC_FORTMATIC_KEY }}
-          NEXT_PUBLIC_PORTIS_KEY: ${{ secrets.NEXT_PUBLIC_PORTIS_KEY }}
-          NEXT_PUBLIC_CYPRESS_MNEMONIC: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}
+      - uses: ./.github/workflows/build
+        with:
+          secrets: ${{ toJSON(secrets) }}
+          e2e_mnemonic: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}
 
       - name: Serve
         run: yarn serve &
@@ -57,4 +39,3 @@ jobs:
         env:
           CYPRESS_PROJECT_ID: okn21k
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_SAFE_APPS_RECORD_KEY }}
-          CYPRESS_MNEMONIC: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}

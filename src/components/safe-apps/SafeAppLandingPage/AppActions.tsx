@@ -1,5 +1,5 @@
 import { Box, Button, MenuItem, Select, Typography, Grid, FormControl, InputLabel } from '@mui/material'
-import type { ChainInfo, SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo, SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import type { UrlObject } from 'url'
@@ -71,7 +71,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
     case shouldCreateSafe:
       const redirect = `${AppRoutes.apps}?appUrl=${appUrl}`
       const createSafeHrefWithRedirect: UrlObject = {
-        pathname: AppRoutes.open,
+        pathname: AppRoutes.newSafe.create,
         query: { safeViewRedirectURL: redirect, chain: chain.shortName },
       }
       button = (

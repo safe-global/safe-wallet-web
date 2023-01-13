@@ -1,5 +1,5 @@
 import type { Middleware } from '@reduxjs/toolkit'
-import type { TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RootState } from '@/store'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'

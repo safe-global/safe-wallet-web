@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
-import type { SafeAppsResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getSafeApps } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppsResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import { getSafeApps } from '@safe-global/safe-gateway-typescript-sdk'
 import { Errors, logError } from '@/services/exceptions'
 import useChainId from '@/hooks/useChainId'
 import type { AsyncResult } from '../useAsync'
@@ -15,9 +15,11 @@ const cachedGetSafeApps = (chainId: string): ReturnType<typeof getSafeApps> | un
     cache[chainId] = getSafeApps(chainId, { client_url: window.location.origin })
 
     // Clear the cache the promise resolves with a small delay
-    cache[chainId]?.finally(() => {
-      setTimeout(() => (cache[chainId] = undefined), 100)
-    })
+    cache[chainId]
+      ?.catch(() => null)
+      .then(() => {
+        setTimeout(() => (cache[chainId] = undefined), 100)
+      })
   }
 
   return cache[chainId]

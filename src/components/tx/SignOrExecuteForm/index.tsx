@@ -1,14 +1,8 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
 import { Button, DialogContent, Typography } from '@mui/material'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
-import {
-  dispatchTxExecution,
-  dispatchTxProposal,
-  dispatchTxSigning,
-  createTx,
-  dispatchOnChainSigning,
-} from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -26,13 +20,13 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 import type { Web3Provider } from '@ethersproject/providers'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { sameString } from '@gnosis.pm/safe-core-sdk/dist/src/utils'
+import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
-  onSubmit: (txId: string) => void
+  onSubmit: (txId?: string) => void
   children?: ReactNode
   error?: Error
   isExecutable?: boolean
@@ -69,6 +63,8 @@ const SignOrExecuteForm = ({
   const provider = useWeb3()
   const currentChain = useCurrentChain()
 
+  const { createTx, dispatchTxProposal, dispatchOnChainSigning, dispatchTxSigning, dispatchTxExecution } = useTxSender()
+
   // Check that the transaction is executable
   const isNewExecutableTx = !txId && safe.threshold === 1
   const isCorrectNonce = tx?.data.nonce === safe.nonce
@@ -97,8 +93,8 @@ const SignOrExecuteForm = ({
 
   // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
-  // Nonce cannot be edited if the tx is already signed, or it's a rejection
-  const nonceReadonly = !!tx?.signatures.size || isRejection
+  // Nonce cannot be edited if the tx is already proposed, or signed, or it's a rejection
+  const nonceReadonly = !!txId || !!tx?.signatures.size || isRejection
 
   // Assert that wallet, tx and provider are defined
   const assertDependencies = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
@@ -118,15 +114,28 @@ const SignOrExecuteForm = ({
       txId,
       origin,
     })
+
+    /**
+     * We need to handle this case because of the way useTxSender is designed,
+     * but it should never happen here because this function is explicitly called
+     * through a user interaction
+     */
+    if (!proposedTx) {
+      throw new Error('Could not propose transaction')
+    }
+
     return proposedTx.txId
   }
 
   // Sign transaction
-  const onSign = async (): Promise<string> => {
+  const onSign = async (): Promise<string | undefined> => {
     const [connectedWallet, createdTx, provider] = assertDependencies()
 
     // Smart contract wallets must sign via an on-chain tx
     if (await isSmartContractWallet(connectedWallet)) {
+      // If the first signature is a smart contract wallet, we have to propose w/o signatures
+      // Otherwise the backend won't pick up the tx
+      // The signature will be added once the on-chain signature is indexed
       const id = txId || (await proposeTx(createdTx))
       await dispatchOnChainSigning(createdTx, provider, id)
       return id
@@ -135,20 +144,29 @@ const SignOrExecuteForm = ({
     // Otherwise, sign off-chain
     const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
     const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
+
+    /**
+     * We need to handle this case because of the way useTxSender is designed,
+     * but it should never happen here because this function is explicitly called
+     * through a user interaction
+     */
+    if (!signedTx) {
+      throw new Error('Could not sign transaction')
+    }
+
     return await proposeTx(signedTx)
   }
 
   // Execute transaction
-  const onExecute = async (): Promise<string> => {
+  const onExecute = async (): Promise<string | undefined> => {
     const [, createdTx, provider] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
-    const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    await dispatchTxExecution(createdTx, provider, txOptions, id)
+    await dispatchTxExecution(createdTx, provider, txOptions, txId)
 
-    return id
+    return txId
   }
 
   // On modal submit
@@ -157,7 +175,7 @@ const SignOrExecuteForm = ({
     setIsSubmittable(false)
     setSubmitError(undefined)
 
-    let id: string
+    let id: string | undefined
     try {
       id = await (willExecute ? onExecute() : onSign())
     } catch (err) {
@@ -220,7 +238,7 @@ const SignOrExecuteForm = ({
 
         <TxSimulation
           gasLimit={advancedParams.gasLimit?.toNumber()}
-          transactions={safeTx}
+          transactions={tx}
           canExecute={canExecute}
           disabled={submitDisabled}
         />

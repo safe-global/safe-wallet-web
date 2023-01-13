@@ -1,0 +1,17 @@
+.name :global .MuiFormHelperText-root {
+  position: absolute;
+  bottom: -20px;
+}
+
+@media (max-width: 900px) {
+  .name :global .MuiFormHelperText-root {
+    position: relative;
+    bottom: 0;
+  }
+}
+
+@media (min-width: 900px) {
+  .helper {
+    margin-bottom: var(--space-5);
+  }
+}

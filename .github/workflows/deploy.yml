@@ -12,35 +12,36 @@ jobs:
   deploy:
     if: ${{ false }} # disable in favor of deploy-preview/deploy-prod
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
     name: Deploy to dev/staging
+
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.8.0
         with:
           access_token: ${{ github.token }}
 
+      # Post a PR comment before deploying
+      - name: Post a comment while building
+        if: github.event.number
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: praul
+          message: |
+            ## Branch preview
+            ⏳ Deploying a preview site...
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+
       - uses: actions/checkout@v3
 
-      - name: Install Node modules
-        run: yarn install --immutable
+      - uses: ./.github/workflows/yarn
 
-      - name: Build
-        run: yarn build && yarn export
-        env:
-          NEXT_PUBLIC_BEAMER_ID: ${{ secrets.NEXT_PUBLIC_BEAMER_ID }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH }}
-          NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH: ${{ secrets.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH }}
-          NEXT_PUBLIC_INFURA_TOKEN: ${{ secrets.NEXT_PUBLIC_INFURA_TOKEN }}
-          NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN: ${{ secrets.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN }}
-          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
-          NEXT_PUBLIC_TENDERLY_ORG_NAME: ${{ secrets.NEXT_PUBLIC_TENDERLY_ORG_NAME }}
-          NEXT_PUBLIC_TENDERLY_PROJECT_NAME: ${{ secrets.NEXT_PUBLIC_TENDERLY_PROJECT_NAME }}
-          NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL }}
-          NEXT_PUBLIC_FORTMATIC_KEY: ${{ secrets.NEXT_PUBLIC_FORTMATIC_KEY }}
-          NEXT_PUBLIC_PORTIS_KEY: ${{ secrets.NEXT_PUBLIC_PORTIS_KEY }}
-          NEXT_PUBLIC_WC_BRIDGE: ${{ secrets.NEXT_PUBLIC_WC_BRIDGE }}
+      - uses: ./.github/workflows/build
+        with:
+          secrets: ${{ toJSON(secrets) }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -63,19 +64,34 @@ jobs:
           BUCKET: s3://${{ secrets.AWS_DEVELOPMENT_BUCKET_NAME }}
         run: bash ./scripts/github/s3_upload.sh
 
-      # PRs
+      ### PRs ###
+
+      # Extract branch name
+      - name: Extract branch name
+        shell: bash
+        ## Cut off "refs/heads/" and only allow alphanumeric characters,
+        ## e.g. "refs/heads/features/hello-1.2.0" -> "features_hello_1_2_0"
+        run: echo "##[set-output name=branch;]$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///' | sed 's/[^a-z0-9]/_/ig')"
+        id: extract_branch
+
+      # Deploy to S3
       - name: Deploy PR branch
-        if: github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
+        if: github.event.number
         env:
-          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/pr${{ github.event.number }}
+          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/${{ steps.extract_branch.outputs.branch }}
         run: bash ./scripts/github/s3_upload.sh
 
-      - name: 'Post the deployment links in the PR'
-        if: success() && github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main'
-        uses: mshick/add-pr-comment@v1
+      # Comnment
+      - name: Post a deployment link in the PR
+        if: always() && github.event.number
+        uses: mshick/add-pr-comment@v2
         with:
+          message-id: praul
           message: |
             ## Branch preview
-            https://pr${{ github.event.number }}--webcore.review-react-br.5afe.dev
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
+            ✅  Deploy successful!
+
+            https://${{ steps.extract_branch.outputs.branch }}--webcore.review-web-core.5afe.dev
+          message-failure: |
+            ## Branch preview
+            ❌  Deploy failed!

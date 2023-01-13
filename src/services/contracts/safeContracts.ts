@@ -12,13 +12,13 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { Contract } from 'ethers'
 import { Interface } from '@ethersproject/abi'
 import semverSatisfies from 'semver/functions/satisfies'
-import type { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getMasterCopies, type ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import type { GetContractProps, SafeVersion } from '@gnosis.pm/safe-core-sdk-types'
-import { type Compatibility_fallback_handler } from '@/types/contracts/Compatibility_fallback_handler'
-import { type Sign_message_lib } from '@/types/contracts/Sign_message_lib'
-import { createEthersAdapter, isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
+import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { getMasterCopies, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { type Sign_message_lib } from '@/types/contracts/v1.3.0/Sign_message_lib'
+import { assertValidSafeVersion, createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { sameAddress } from '@/utils/addresses'
+import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
 
 export const isValidMasterCopy = async (chainId: string, address: string): Promise<boolean> => {
   const masterCopies = await getMasterCopies(chainId)
@@ -27,11 +27,9 @@ export const isValidMasterCopy = async (chainId: string, address: string): Promi
 
 export const _getValidatedGetContractProps = (
   chainId: string,
-  safeVersion: string,
+  safeVersion: SafeInfo['version'],
 ): Pick<GetContractProps, 'chainId' | 'safeVersion'> => {
-  if (!isValidSafeVersion(safeVersion)) {
-    throw new Error(`${safeVersion} is not a valid Safe version`)
-  }
+  assertValidSafeVersion(safeVersion)
 
   // SDK request here: https://github.com/safe-global/safe-core-sdk/issues/261
   // Remove '+L2'/'+Circles' metadata from version
@@ -125,7 +123,10 @@ export const getMultiSendCallOnlyContractAddress = (chainId: string): string | u
   return deployment?.networkAddresses[chainId]
 }
 
-export const getMultiSendCallOnlyContractInstance = (chainId: string, safeVersion: string = LATEST_SAFE_VERSION) => {
+export const getMultiSendCallOnlyContractInstance = (
+  chainId: string,
+  safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION,
+) => {
   const ethAdapter = createEthersAdapter()
 
   return ethAdapter.getMultiSendCallOnlyContract({
@@ -171,17 +172,16 @@ const getFallbackHandlerContractDeployment = (chainId: string) => {
   )
 }
 
-// SDK request here: https://github.com/safe-global/safe-core-sdk/issues/262
-export const getFallbackHandlerContractInstance = (chainId: string): Compatibility_fallback_handler => {
-  const fallbackHandlerDeployment = getFallbackHandlerContractDeployment(chainId)
+export const getFallbackHandlerContractInstance = (
+  chainId: string,
+  safeVersion: string = LATEST_SAFE_VERSION,
+): CompatibilityFallbackHandlerEthersContract => {
+  const ethAdapter = createEthersAdapter()
 
-  if (!fallbackHandlerDeployment) {
-    throw new Error(`FallbackHandler contract not found for chainId: ${chainId}`)
-  }
-
-  const contractAddress = fallbackHandlerDeployment.networkAddresses[chainId]
-
-  return new Contract(contractAddress, new Interface(fallbackHandlerDeployment.abi)) as Compatibility_fallback_handler
+  return ethAdapter.getCompatibilityFallbackHandlerContract({
+    singletonDeployment: getFallbackHandlerContractDeployment(chainId),
+    ..._getValidatedGetContractProps(chainId, safeVersion),
+  })
 }
 
 // Sign messages deployment

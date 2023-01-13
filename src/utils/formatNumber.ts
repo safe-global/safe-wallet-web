@@ -103,6 +103,21 @@ export const formatAmount = (number: string | number, precision?: number): strin
   return format(number, formatter.format)
 }
 
+/**
+ * Returns a formatted number with a defined precision not adhering to our style guide compact notation
+ * @param number Number to format
+ * @param precision Fraction digits to show
+ */
+export const formatAmountPrecise = (number: string | number, precision: number): string => {
+  const float = Number(number)
+
+  const formatter = new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: precision,
+  })
+
+  return formatter.format(float)
+}
+
 // Fiat formatting
 
 const getMinimumCurrencyDenominator = memoize((currency: string): number => {

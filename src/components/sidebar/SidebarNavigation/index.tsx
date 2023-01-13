@@ -1,7 +1,7 @@
 import React, { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import ListItem from '@mui/material/ListItem'
-import { ImplementationVersionState } from '@gnosis.pm/safe-react-gateway-sdk'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 
 import {
   SidebarList,

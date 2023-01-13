@@ -1,11 +1,12 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Paper, Grid, Link, Typography, Box } from '@mui/material'
+import { Paper, Grid, Typography, Box } from '@mui/material'
 import { gte } from 'semver'
 import { RemoveGuard } from './RemoveGuard'
 import useIsGranted from '@/hooks/useIsGranted'
 
 import css from './styles.module.css'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const NoTransactionGuard = () => {
   return (
@@ -31,7 +32,7 @@ const GUARD_SUPPORTED_SAFE_VERSION = '1.3.0'
 const TransactionGuards = () => {
   const { safe, safeLoaded } = useSafeInfo()
 
-  const isVersionWithGuards = safeLoaded && gte(safe.version, GUARD_SUPPORTED_SAFE_VERSION)
+  const isVersionWithGuards = safeLoaded && safe.version && gte(safe.version, GUARD_SUPPORTED_SAFE_VERSION)
 
   if (!isVersionWithGuards) {
     return null
@@ -52,13 +53,9 @@ const TransactionGuards = () => {
               Transaction guards impose additional constraints that are checked prior to executing a Safe transaction.
               Transaction guards are potentially risky, so make sure to only use transaction guards from trusted
               sources. Learn more about transaction guards{' '}
-              <Link
-                href="https://help.gnosis-safe.io/en/articles/5324092-what-is-a-transaction-guard"
-                rel="noreferrer noopener"
-                target="_blank"
-              >
+              <ExternalLink href="https://help.safe.global/en/articles/5324092-what-is-a-transaction-guard">
                 here
-              </Link>
+              </ExternalLink>
               .
             </Typography>
             {safe.guard ? (

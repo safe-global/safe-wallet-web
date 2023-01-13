@@ -11,7 +11,7 @@ import type {
   DetailedExecutionInfo,
   TransactionDetails,
   TransactionSummary,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+} from '@safe-global/safe-gateway-typescript-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsPending from '@/hooks/useIsPending'
@@ -137,9 +137,7 @@ export const TxSigners = ({
       <StyledStep $bold $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
         <StepLabel icon={isConfirmed ? <CheckIcon /> : <CircleIcon />}>
           Confirmations{' '}
-          <Box className={css.confirmationsTotal}>
-            ({`${confirmationsCount} of ${detailedExecutionInfo.confirmationsRequired}`})
-          </Box>
+          <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
         </StepLabel>
       </StyledStep>
       {!hideConfirmations && confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value))}

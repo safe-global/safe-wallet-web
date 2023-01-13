@@ -7,12 +7,19 @@ import { StepContent } from '@mui/material'
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import { useTxStepper } from '@/components/tx/TxStepper/useTxStepper'
 
-const VerticalTxStepper = ({ steps, initialData, initialStep, onClose }: TxStepperProps): ReactElement => {
+const VerticalTxStepper = ({
+  steps,
+  initialData,
+  initialStep,
+  onClose,
+  eventCategory,
+}: TxStepperProps): ReactElement => {
   const { onBack, onSubmit, setStep, activeStep, stepData } = useTxStepper({
     steps,
     initialData,
     initialStep,
     onClose,
+    eventCategory,
   })
 
   return (

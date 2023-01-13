@@ -79,6 +79,7 @@ class AppCommunicator {
 
   clear = (): void => {
     window.removeEventListener('message', this.handleIncomingMessage)
+    this.handlers.clear()
   }
 }
 

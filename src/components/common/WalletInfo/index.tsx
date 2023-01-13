@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import WalletIcon from '@/components/common/WalletIcon'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
 

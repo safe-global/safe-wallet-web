@@ -1,4 +1,4 @@
-import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import extractTxInfo from '../extractTxInfo'
 
 describe('extractTxInfo', () => {

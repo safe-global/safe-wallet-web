@@ -1,8 +1,7 @@
-import * as useBalances from '@/hooks/useBalances'
 import * as nextRouter from 'next/router'
 import useChainId from '@/hooks/useChainId'
 import { render, waitFor } from '@/tests/test-utils'
-import { SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import { BigNumber } from 'ethers'
 import SafeTokenWidget from '..'
 import { hexZeroPad } from 'ethers/lib/utils'
@@ -53,29 +52,21 @@ describe('SafeTokenWidget', () => {
 
   it('Should render nothing for unsupported chains', () => {
     ;(useChainId as jest.Mock).mockImplementationOnce(jest.fn(() => '100'))
-
-    jest.spyOn(useBalances, 'default').mockImplementation(() => ({
-      balances: {
-        fiatTotal: '0',
-        items: [],
-      },
-      loading: true,
-      error: undefined,
-    }))
+    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [BigNumber.from(0), false])
 
     const result = render(<SafeTokenWidget />)
     expect(result.baseElement).toContainHTML('<body><div /></body>')
   })
 
   it('Should display 0 if Safe has no SAFE token', async () => {
-    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => BigNumber.from(0))
+    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [BigNumber.from(0), false])
 
     const result = render(<SafeTokenWidget />)
     await waitFor(() => expect(result.baseElement).toHaveTextContent('0'))
   })
 
   it('Should display the value formatted correctly', async () => {
-    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => BigNumber.from('472238796133701648384'))
+    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [BigNumber.from('472238796133701648384'), false])
 
     // to avoid failing tests in some environments
     const NumberFormat = Intl.NumberFormat
@@ -91,7 +82,7 @@ describe('SafeTokenWidget', () => {
   })
 
   it('Should render a link to the claiming app', async () => {
-    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => BigNumber.from(420000))
+    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [BigNumber.from(420000), false])
 
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {

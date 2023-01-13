@@ -1,7 +1,7 @@
 import { render, waitFor } from '@/tests/test-utils'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import SafeModules from '..'
-import type { AddressEx, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { AddressEx, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
 
 const MOCK_MODULE_1 = ethers.utils.hexZeroPad('0x1', 20)

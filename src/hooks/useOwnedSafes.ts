@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { getOwnedSafes, type OwnedSafes } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getOwnedSafes, type OwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useChainId from '@/hooks/useChainId'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'

@@ -40,4 +40,8 @@ export const MODALS_EVENTS = {
     action: 'Simulate transaction',
     category: MODALS_CATEGORY,
   },
+  REJECT_TX: {
+    action: 'Reject transaction',
+    category: MODALS_CATEGORY,
+  },
 }

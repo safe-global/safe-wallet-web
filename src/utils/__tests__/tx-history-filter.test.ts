@@ -1,4 +1,8 @@
-import { getIncomingTransfers, getMultisigTransactions, getModuleTransactions } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  getIncomingTransfers,
+  getMultisigTransactions,
+  getModuleTransactions,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import * as router from 'next/router'
 
 import type { TxFilterType } from '@/utils/tx-history-filter'
@@ -15,7 +19,7 @@ import { renderHook } from '@/tests/test-utils'
 import type { NextRouter } from 'next/router'
 import { type TxFilterFormState } from '@/components/transactions/TxFilterForm'
 
-jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
+jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   getIncomingTransfers: jest.fn(() => Promise.resolve({ results: [] })),
   getMultisigTransactions: jest.fn(() => Promise.resolve({ results: [] })),
   getModuleTransactions: jest.fn(() => Promise.resolve({ results: [] })),

@@ -13,15 +13,21 @@ import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import OwnedSafes from '../OwnedSafes'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const Sidebar = (): ReactElement => {
   const router = useRouter()
+  const wallet = useWallet()
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
   const isSafeRoute = !!router.query?.safe
 
   const onDrawerToggle = () => {
     trackEvent({ ...OVERVIEW_EVENTS.SIDEBAR, label: isDrawerOpen ? 'Close' : 'Open' })
     setIsDrawerOpen((prev) => !prev)
+  }
+
+  if (wallet?.sanctioned) {
+    return <div />
   }
 
   return (

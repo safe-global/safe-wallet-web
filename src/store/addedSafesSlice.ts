@@ -1,7 +1,7 @@
 import type { Middleware } from '@reduxjs/toolkit'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { AddressEx, SafeBalanceResponse, SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { AddressEx, SafeBalanceResponse, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RootState } from '.'
 import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
@@ -36,7 +36,7 @@ export const addedSafesSlice = createSlice({
       // Otherwise, migrate
       return action.payload
     },
-    setAddedSafes: (state, action: PayloadAction<AddedSafesState>) => {
+    setAddedSafes: (_, action: PayloadAction<AddedSafesState>) => {
       return action.payload
     },
     addOrUpdateSafe: (state, { payload }: PayloadAction<{ safe: SafeInfo }>) => {
@@ -81,6 +81,7 @@ export const addedSafesSlice = createSlice({
     },
   },
   extraReducers(builder) {
+    // @ts-ignore TODO: introduced with RTK 1.9.0 need to migrate
     builder.addCase(safeInfoSlice.actions.set.type, (state, { payload }: PayloadAction<Loadable<SafeInfo>>) => {
       if (!payload.data) {
         return

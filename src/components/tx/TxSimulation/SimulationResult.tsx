@@ -1,10 +1,11 @@
-import { Alert, AlertTitle, Typography, Link } from '@mui/material'
+import { Alert, AlertTitle, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import type { TenderlySimulation } from '@/components/tx/TxSimulation/types'
 import { FETCH_STATUS } from '@/components/tx/TxSimulation/types'
 
 import css from './styles.module.css'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type SimulationResultProps = {
   simulationRequestStatus: string
@@ -45,10 +46,7 @@ export const SimulationResult = ({
           <Typography>
             The transaction failed during the simulation throwing error <b>{simulation?.transaction.error_message}</b>{' '}
             in the contract at <b>{simulation?.transaction.error_info?.address}</b>. Full simulation report is available{' '}
-            <Link href={simulationLink} target="_blank" rel="noreferrer">
-              <b>on Tenderly</b>
-            </Link>
-            .
+            <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
           </Typography>
         )}
       </Alert>
@@ -64,10 +62,7 @@ export const SimulationResult = ({
 
       <Typography>
         The transaction was successfully simulated. Full simulation report is available{' '}
-        <Link href={simulationLink} target="_blank" rel="noreferrer">
-          <b>on Tenderly</b>
-        </Link>
-        .
+        <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
       </Typography>
     </Alert>
   )

@@ -18,10 +18,10 @@ import SendFromBlock from '../../SendFromBlock'
 import ErrorMessage from '../../ErrorMessage'
 import { type NftTransferParams } from '.'
 import useCollectibles from '@/hooks/useCollectibles'
-import type { SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import ImageFallback from '@/components/common/ImageFallback'
 import useAddressBook from '@/hooks/useAddressBook'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import SendToBlock from '@/components/tx/SendToBlock'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
 
 enum Field {
@@ -110,7 +110,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
           <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
             {addressBook[recipient] ? (
               <Box onClick={() => setValue(Field.recipient, '')}>
-                <EthHashInfo address={recipient} shortAddress={false} hasExplorer showCopyButton />
+                <SendToBlock address={recipient} />
               </Box>
             ) : (
               <AddressBookInput name={Field.recipient} label="Recipient" />

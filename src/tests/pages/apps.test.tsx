@@ -1,11 +1,11 @@
 import React from 'react'
-import * as safeAppsGatewaySDK from '@gnosis.pm/safe-react-gateway-sdk'
+import * as safeAppsGatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
 import { render, screen, waitFor, fireEvent, act } from '../test-utils'
 import AppsPage from '@/pages/apps'
 import * as safeAppsService from '@/services/safe-apps/manifest'
 
-jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
-  ...jest.requireActual('@gnosis.pm/safe-react-gateway-sdk'),
+jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
+  ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
   getSafeApps: (chainId: string) =>
     Promise.resolve([
       {
@@ -226,8 +226,12 @@ describe('AppsPage', () => {
       const riskCheckbox = await screen.findByText(
         /This app is not part of Safe and I agree to use it at my own risk\./,
       )
-      fireEvent.click(riskCheckbox)
-      fireEvent.click(riskCheckbox)
+      await act(() => {
+        fireEvent.click(riskCheckbox)
+      })
+      await act(() => {
+        fireEvent.click(riskCheckbox)
+      })
       fireEvent.click(screen.getByText('Add'))
 
       await waitFor(() => expect(screen.getByText('Accepting the disclaimer is mandatory')).toBeInTheDocument())

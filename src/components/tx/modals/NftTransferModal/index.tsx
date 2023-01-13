@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { type SafeCollectibleResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import type { TxModalProps } from '@/components/tx/TxModal'
 import TxModal from '@/components/tx/TxModal'
@@ -9,6 +9,7 @@ import ReviewNftTx from './ReviewNftTx'
 export type NftTransferParams = {
   recipient: string
   token: SafeCollectibleResponse
+  txNonce?: number
 }
 
 export const NftTransferSteps: TxStepperProps['steps'] = [

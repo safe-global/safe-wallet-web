@@ -1,4 +1,4 @@
-import { type TokenInfo, type SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type TokenInfo, type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { createSelector } from '@reduxjs/toolkit'
 import { makeLoadableSlice } from './common'
 

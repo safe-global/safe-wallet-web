@@ -1,14 +1,11 @@
 .container {
   position: relative;
-  height: 40px;
-  width: 40px;
 }
 
 .threshold {
   position: absolute;
-  margin-top: -6px;
-  margin-left: -16px;
-  left: 36px;
+  top: -6px;
+  right: -6px;
   z-index: 1;
   border-radius: 100%;
   font-size: 12px;

@@ -1,10 +1,11 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Paper, Grid, Typography, Box, Link } from '@mui/material'
+import { Paper, Grid, Typography, Box } from '@mui/material'
 
 import css from './styles.module.css'
 import { RemoveModule } from '@/components/settings/SafeModules/RemoveModule'
 import useIsGranted from '@/hooks/useIsGranted'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const NoModules = () => {
   return (
@@ -50,9 +51,7 @@ const SafeModules = () => {
             <Typography>
               Modules allow you to customize the access-control logic of your Safe. Modules are potentially risky, so
               make sure to only use modules from trusted sources. Learn more about modules{' '}
-              <Link href="https://docs.gnosis-safe.io/contracts/modules-1" rel="noreferrer noopener" target="_blank">
-                here
-              </Link>
+              <ExternalLink href="https://docs.safe.global/contracts/modules-1">here</ExternalLink>
             </Typography>
             {safeModules.length === 0 ? (
               <NoModules />

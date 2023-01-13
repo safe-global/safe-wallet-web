@@ -1,20 +1,21 @@
-import { Box, Button, Link, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { useState } from 'react'
 
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 import TxModal from '@/components/tx/TxModal'
 
-import { createMultiSendCallOnlyTx } from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const UpdateSafeSteps: TxStepperProps['steps'] = [
   {
@@ -40,16 +41,17 @@ const UpdateSafeDialog = () => {
   )
 }
 
-const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (txId: string) => void }) => {
+const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (txId?: string) => void }) => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
+  const { createMultiSendCallOnlyTx } = useTxSender()
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!chain || !safeLoaded) return
 
     const txs = createUpdateSafeTxs(safe, chain)
     return createMultiSendCallOnlyTx(txs)
-  }, [chain, safe, safeLoaded])
+  }, [chain, safe, safeLoaded, createMultiSendCallOnlyTx])
 
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>
@@ -59,13 +61,9 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (txId: string) => void }
 
       <Typography mb={2}>
         To check details about updates added by this smart contract version please visit{' '}
-        <Link
-          rel="noreferrer noopener"
-          href={`https://github.com/gnosis/safe-contracts/releases/tag/v${LATEST_SAFE_VERSION}`}
-          target="_blank"
-        >
+        <ExternalLink href={`https://github.com/safe-global/safe-contracts/releases/tag/v${LATEST_SAFE_VERSION}`}>
           latest Safe contracts changelog
-        </Link>
+        </ExternalLink>
       </Typography>
 
       <Typography mb={2}>

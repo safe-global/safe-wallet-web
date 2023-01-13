@@ -1,14 +1,14 @@
 import useAsync from '@/hooks/useAsync'
-import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getMultiSendCallOnlyContractInstance } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { encodeMultiSendData } from '@gnosis.pm/safe-core-sdk/dist/src/utils/transactions/utils'
+import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { Button, DialogContent, Typography } from '@mui/material'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import SendToBlock from '@/components/tx/SendToBlock'
 import { useMemo, useState } from 'react'
-import { dispatchBatchExecution } from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { Errors, logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -23,6 +23,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
   const provider = useWeb3()
+  const { dispatchBatchExecution } = useTxSender()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -31,12 +32,12 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [data.txs, chain?.chainId])
 
   const multiSendContract = useMemo(() => {
-    if (!chain?.chainId) return
+    if (!chain?.chainId || !safe.version) return
     return getMultiSendCallOnlyContractInstance(chain.chainId, safe.version)
   }, [chain?.chainId, safe.version])
 
   const multiSendTxs = useMemo(() => {
-    if (!txsWithDetails || !chain) return
+    if (!txsWithDetails || !chain || !safe.version) return
     return getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
   }, [chain, safe.address.value, safe.version, txsWithDetails])
 
@@ -74,10 +75,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
           over the execute button.
         </Typography>
 
-        <Typography color="primary.light">Interact with:</Typography>
-        {multiSendContract && (
-          <EthHashInfo address={multiSendContract.getAddress()} shortAddress={false} hasExplorer showCopyButton />
-        )}
+        {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with:" />}
 
         {multiSendTxData && (
           <>

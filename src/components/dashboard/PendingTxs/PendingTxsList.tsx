@@ -1,12 +1,11 @@
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { groupConflictingTxs } from '@/utils/tx-list'
+import { getLatestTransactions } from '@/utils/tx-list'
 import styled from '@emotion/styled'
 import { Box, Skeleton, Typography } from '@mui/material'
 import { Card, ViewAllLink, WidgetBody, WidgetContainer } from '../styled'
 import PendingTxListItem from './PendingTxListItem'
-import { isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
 import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
@@ -48,14 +47,7 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
   const router = useRouter()
   const url = `${AppRoutes.transactions.queue}?safe=${router.query.safe}`
 
-  const queuedTxns = useMemo(() => {
-    return (
-      groupConflictingTxs(page?.results || [])
-        // Get latest transaction if there are conflicting ones
-        .map((group) => (Array.isArray(group) ? group[0] : group))
-        .filter(isTransactionListItem)
-    )
-  }, [page?.results])
+  const queuedTxns = useMemo(() => getLatestTransactions(page?.results), [page?.results])
 
   const queuedTxsToDisplay = queuedTxns.slice(0, size)
 

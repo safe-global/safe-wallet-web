@@ -1,6 +1,7 @@
+import ExternalLink from '@/components/common/ExternalLink'
 import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
-import type { MultisigExecutionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Box, Link, Typography } from '@mui/material'
+import type { MultisigExecutionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 
 interface Props {
@@ -21,10 +22,8 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
       <Typography mr={2}>{message}</Typography>
       {!isTxExecuted && (
         <Box mt={2} sx={{ width: 'fit-content' }}>
-          <Link
-            href="https://help.gnosis-safe.io/en/articles/4738501-why-do-i-need-to-pay-for-cancelling-a-transaction"
-            target="_blank"
-            rel="noreferrer"
+          <ExternalLink
+            href="https://help.safe.global/en/articles/4738501-why-do-i-need-to-pay-for-cancelling-a-transaction"
             title="Why do I need to pay for rejecting a transaction?"
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -32,7 +31,7 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
                 Why do I need to pay for rejecting a transaction?
               </Typography>
             </Box>
-          </Link>
+          </ExternalLink>
         </Box>
       )}
     </>
