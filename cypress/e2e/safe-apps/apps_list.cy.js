@@ -42,7 +42,8 @@ describe('The Safe Apps list', () => {
       cy.findAllByLabelText(/unpin transaction builder/i)
         .first()
         .click()
-      cy.findByText(/pinned apps.*0/i).should('exist')
+      cy.findByText(/no apps found/i).should('exist')
+      cy.findByText('ALL (0)').should('exist')
     })
   })
 
@@ -51,7 +52,7 @@ describe('The Safe Apps list', () => {
       cy.intercept('GET', 'https://my-invalid-custom-app.com/manifest.json', {
         name: 'My Custom App',
       })
-
+      cy.findByText(/my custom apps/i).click()
       cy.findByText(/add custom app/i).click({ force: true })
       cy.findByLabelText(/app url/i)
         .clear()
@@ -72,7 +73,8 @@ describe('The Safe Apps list', () => {
       cy.findByRole('heading', { name: /my custom app/i }).should('exist')
       cy.findByRole('checkbox').click()
       cy.findByRole('button', { name: /add/i }).click()
-      cy.findByText(/pinned apps \(0\)/i).should('exist')
+      cy.findByText('ALL (1)').should('exist')
+      cy.findByText(/my custom app description/i).should('exist')
     })
   })
 })
