@@ -6,7 +6,6 @@ import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import SafeAppsFilters from '@/components/new-safe-apps/SafeAppsFilters/SafeAppsFilters'
 import SafeAppCard, { GRID_VIEW_MODE, LIST_VIEW_MODE } from '@/components/new-safe-apps/SafeAppCard/SafeAppCard'
-import type { safeAppCatogoryOptionType } from '@/components/new-safe-apps/SafeAppsFilters/SafeAppsFilters'
 import type { SafeAppsViewMode } from '@/components/new-safe-apps/SafeAppCard/SafeAppCard'
 import AddCustomSafeAppCard from '@/components/new-safe-apps/AddCustomSafeAppCard/AddCustomSafeAppCard'
 import SafeAppPreviewDrawer from '@/components/new-safe-apps/SafeAppPreviewDrawer/SafeAppPreviewDrawer'
@@ -36,11 +35,11 @@ const SafeAppList = ({
   const [safeAppPreviewDrawer, setSafeAppPreviewDrawer] = useState<SafeAppData>()
 
   const [query, setQuery] = useState<string>('')
-  const [categories, setCategories] = useState<safeAppCatogoryOptionType[]>([])
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [optimizedBatch, setOptimizedBatch] = useState<boolean>(false)
 
   const filteredAppsByQuery = useAppsSearch(safeAppsList, query)
-  const filteredApps = useAppsFilterByCategory(filteredAppsByQuery, categories)
+  const filteredApps = useAppsFilterByCategory(filteredAppsByQuery, selectedCategories)
 
   const onClickSafeApp = (safeApp: SafeAppData) => (event: SyntheticEvent) => {
     event.preventDefault()
@@ -54,8 +53,9 @@ const SafeAppList = ({
       {showFilters && (
         <SafeAppsFilters
           onChangeQuery={setQuery}
-          onChangeFilterCategory={setCategories}
+          onChangeFilterCategory={setSelectedCategories}
           onChangeOptimizedWithBatch={setOptimizedBatch}
+          selectedCategories={selectedCategories}
         />
       )}
 

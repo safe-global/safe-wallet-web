@@ -2,14 +2,20 @@ import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
 import SvgIcon from '@mui/material/SvgIcon'
-import Autocomplete from '@mui/material/Autocomplete'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import ListItemText from '@mui/material/ListItemText'
+import Select from '@mui/material/Select'
+import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import FormLabel from '@mui/material/FormLabel'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
+import Tooltip from '@mui/material/Tooltip'
+import CloseIcon from '@mui/icons-material/Close'
+import type { SelectChangeEvent } from '@mui/material/Select'
 
 import SearchIcon from '@/public/images/common/search.svg'
 import BatchIcon from '@/public/images/apps/batch-icon.svg'
@@ -22,18 +28,20 @@ export type safeAppCatogoryOptionType = {
 
 type SafeAppsFiltersProps = {
   onChangeQuery: (newQuery: string) => void
-  onChangeFilterCategory: (newCategory: safeAppCatogoryOptionType[]) => void
+  onChangeFilterCategory: (category: string[]) => void
   onChangeOptimizedWithBatch: (optimizedWithBatch: boolean) => void
+  selectedCategories: string[]
 }
 
 const SafeAppsFilters = ({
   onChangeQuery,
   onChangeFilterCategory,
   onChangeOptimizedWithBatch,
+  selectedCategories,
 }: SafeAppsFiltersProps) => {
   return (
     <Grid container spacing={2} className={css.filterContainer}>
-      <Grid item xs={12} md={6} xl={4}>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
         {/* Search by name */}
         <TextField
           id="search-by-name"
@@ -61,48 +69,65 @@ const SafeAppsFilters = ({
       </Grid>
 
       {/* Select Category */}
-      <Grid item xs={6} md={3} xl={3}>
-        <Autocomplete
-          multiple
-          limitTags={0}
-          id="checkboxes-tags-demo"
-          aria-label="Filter by Safe App catagory"
-          options={safeAppsCategories}
-          onChange={(e, value) => {
-            onChangeFilterCategory(value)
-          }}
-          // hide selected options Component (Chip MUI Component)
-          ChipProps={{
-            sx: { display: 'none' },
-          }}
-          getLimitTagsText={(more) => `${more} category selected`}
-          disableCloseOnSelect
-          getOptionLabel={(option) => option.label}
-          renderOption={(props, option, { selected }) => (
-            <li {...props}>
-              <Checkbox
-                icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                checkedIcon={<CheckBoxIcon fontSize="small" />}
-                style={{ marginRight: 8 }}
-                checked={selected}
-              />
-              {option.label}
-            </li>
+      <Grid item xs={12} sm={6} md={3} lg={3}>
+        <FormControl fullWidth>
+          <InputLabel id="select-safe-app-category-label" shrink>
+            Category
+          </InputLabel>
+          <Select
+            labelId="select-safe-app-category-label"
+            id="safe-app-category-selector"
+            displayEmpty
+            multiple
+            value={selectedCategories}
+            onChange={(event: SelectChangeEvent<string[]>) => {
+              onChangeFilterCategory(event.target.value as string[])
+            }}
+            input={<OutlinedInput label="Category" fullWidth notched sx={{ paddingRight: '18px' }} />}
+            renderValue={(selected) =>
+              selected.length === 0 ? 'Select category' : `${selected.length} categories selected`
+            }
+            fullWidth
+            MenuProps={categoryMenuProps}
+          >
+            {safeAppsCategories.map((category) => (
+              <MenuItem
+                sx={{ padding: '0 6px 2px 6px', height: CATEGORY_OPTION_HEIGHT }}
+                key={category.value}
+                value={category.value}
+                disableGutters
+              >
+                <Checkbox
+                  disableRipple
+                  sx={{ '& .MuiSvgIcon-root': { fontSize: 24 }, padding: '3px' }}
+                  checked={selectedCategories.includes(category.value)}
+                />
+                <ListItemText primary={category.label} primaryTypographyProps={{ fontSize: 14, paddingLeft: '5px' }} />
+              </MenuItem>
+            ))}
+          </Select>
+
+          {/* clear selected categories button */}
+          {selectedCategories.length > 0 && (
+            <Tooltip title="clear selected categories" placement="top">
+              <IconButton
+                onClick={() => {
+                  onChangeFilterCategory([])
+                }}
+                sx={{ position: 'absolute', top: '16px', right: '28px' }}
+                color="default"
+                component="label"
+                size="small"
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           )}
-          fullWidth
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={'Category'}
-              placeholder="Select category"
-              InputLabelProps={{ shrink: true }}
-            />
-          )}
-        />
+        </FormControl>
       </Grid>
 
       {/* Optimized with Batch Transaction */}
-      <Grid item xs={6} md={3} xl={3}>
+      <Grid item xs={12} sm={6} md={3} lg={3}>
         <FormControl variant="standard">
           <FormLabel>Optimized with</FormLabel>
           <FormControlLabel
@@ -123,6 +148,21 @@ const SafeAppsFilters = ({
 }
 
 export default SafeAppsFilters
+
+const CATEGORY_OPTION_HEIGHT = 34
+const CATEGORY_OPTION_PADDING_TOP = 8
+const ITEMS_SHOWED = 11.5
+const categoryMenuProps = {
+  sx: {
+    '& .MuiList-root': { padding: '9px 0' },
+  },
+  PaperProps: {
+    style: {
+      maxHeight: CATEGORY_OPTION_HEIGHT * ITEMS_SHOWED + CATEGORY_OPTION_PADDING_TOP,
+      overflow: 'scroll',
+    },
+  },
+}
 
 export const safeAppsCategories = [
   {

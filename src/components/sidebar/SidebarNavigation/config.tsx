@@ -100,15 +100,15 @@ export const settingsNavItems = [
 
 export const safeAppsNavItems = [
   {
-    label: 'All Apps',
+    label: 'All apps',
     href: AppRoutes.apps.index,
   },
   {
-    label: 'Bookmarked Apps',
+    label: 'Bookmarked apps',
     href: AppRoutes.apps.bookmarked,
   },
   {
-    label: 'My Custom Apps',
+    label: 'My custom apps',
     href: AppRoutes.apps.custom,
   },
 ]

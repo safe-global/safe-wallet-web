@@ -1,16 +1,19 @@
 import { useState } from 'react'
+import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import Typography from '@mui/material/Typography'
-import Link from '@mui/material/Link'
+import MUILink from '@mui/material/Link'
 import Fab from '@mui/material/Fab'
 import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
 
-import css from './styles.module.css'
 import CodeIcon from '@/public/images/apps/code-icon.svg'
+import css from './styles.module.css'
 
 const SafeAppsSDKLink = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
+
+  const safeAppsSDKUrl = 'https://github.com/safe-global/safe-apps-sdk'
 
   return (
     <Box className={css.position} onMouseEnter={() => setOpenModal(true)} onMouseLeave={() => setOpenModal(false)}>
@@ -18,14 +21,16 @@ const SafeAppsSDKLink = () => {
         {
           <Box className={css.container}>
             <CodeIcon />
+
             <Typography variant="h6" className={css.title}>
               How to build on Safe?
             </Typography>
 
-            <Link rel="noreferrer noopener" target="_blank" href="https://github.com/safe-global/safe-apps-sdk">
-              Learn more about Safe Apps SDK
+            <Link href={safeAppsSDKUrl} passHref>
+              <MUILink rel="noreferrer noopener" target="_blank" href={safeAppsSDKUrl} className={css.link}>
+                Learn more about Safe Apps SDK
+              </MUILink>
             </Link>
-            <Typography> </Typography>
           </Box>
         }
       </Collapse>

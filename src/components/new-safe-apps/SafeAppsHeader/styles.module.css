@@ -1,6 +1,6 @@
 .container {
   padding: var(--space-12) var(--space-3) 0;
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-5);
   background-color: var(--color-background-main);
 }
 
