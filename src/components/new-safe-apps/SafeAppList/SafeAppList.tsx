@@ -49,7 +49,7 @@ const SafeAppList = ({
     setIsAppPreviewDrawerOpen(true)
   }
 
-  const showZeroResultsPlaceholder = filteredAppsByQuery && filteredApps.length === 0
+  const showZeroResultsPlaceholder = query && filteredApps.length === 0
 
   return (
     <>
