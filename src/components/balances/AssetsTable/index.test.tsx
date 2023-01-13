@@ -98,6 +98,7 @@ describe('AssetsTable', () => {
           },
           env: {
             rpc: {},
+            tenderly: {},
           },
         },
       },
@@ -195,6 +196,7 @@ describe('AssetsTable', () => {
           },
           env: {
             rpc: {},
+            tenderly: {},
           },
         },
       },
@@ -288,6 +290,7 @@ describe('AssetsTable', () => {
           },
           env: {
             rpc: {},
+            tenderly: {},
           },
         },
       },
@@ -378,6 +381,7 @@ describe('AssetsTable', () => {
           },
           env: {
             rpc: {},
+            tenderly: {},
           },
         },
       },

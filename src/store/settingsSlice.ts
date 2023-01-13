@@ -23,7 +23,10 @@ export type SettingsState = {
   }
   env: {
     cgw?: string
-    tenderly?: string
+    tenderly: {
+      url?: string
+      accessToken?: string
+    }
     rpc: {
       [chainId: string]: string
     }
@@ -44,7 +47,10 @@ const initialState: SettingsState = {
   env: {
     cgw: '',
     rpc: {},
-    tenderly: '',
+    tenderly: {
+      url: '',
+      accessToken: '',
+    },
   },
 }
 

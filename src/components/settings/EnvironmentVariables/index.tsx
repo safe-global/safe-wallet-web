@@ -15,13 +15,15 @@ import ExternalLink from '@/components/common/ExternalLink'
 export enum EnvVariablesField {
   cgw = 'cgw',
   rpc = 'rpc',
-  tenderly = 'tenderly',
+  tenderlyURL = 'tenderlyURL',
+  tenderlyToken = 'tenderlyToken',
 }
 
 export type EnvVariablesFormData = {
   [EnvVariablesField.cgw]: string
   [EnvVariablesField.rpc]: string
-  [EnvVariablesField.tenderly]: string
+  [EnvVariablesField.tenderlyURL]: string
+  [EnvVariablesField.tenderlyToken]: string
 }
 
 const EnvironmentVariables = () => {
@@ -35,7 +37,8 @@ const EnvironmentVariables = () => {
     defaultValues: {
       [EnvVariablesField.cgw]: settings.env.cgw ?? '',
       [EnvVariablesField.rpc]: settings.env.rpc[chainId] ?? '',
-      [EnvVariablesField.tenderly]: settings.env.tenderly ?? '',
+      [EnvVariablesField.tenderlyURL]: settings.env.tenderly.url ?? '',
+      [EnvVariablesField.tenderlyToken]: settings.env.tenderly.accessToken ?? '',
     },
   })
 
@@ -43,13 +46,16 @@ const EnvironmentVariables = () => {
 
   const cgw = watch(EnvVariablesField.cgw)
   const rpc = watch(EnvVariablesField.rpc)
-  const tenderly = watch(EnvVariablesField.tenderly)
+  const tenderlyURL = watch(EnvVariablesField.tenderlyURL)
+  const tenderlyToken = watch(EnvVariablesField.tenderlyToken)
 
   const onSubmit = handleSubmit((data) => {
     trackEvent({ ...SETTINGS_EVENTS.ENV_VARIABLES.SAVE })
     dispatch(setCgw(data[EnvVariablesField.cgw]))
     dispatch(setRpc({ chainId, rpc: data[EnvVariablesField.rpc] }))
-    dispatch(setTenderly(data[EnvVariablesField.tenderly]))
+    dispatch(
+      setTenderly({ url: data[EnvVariablesField.tenderlyURL], accessToken: data[EnvVariablesField.tenderlyToken] }),
+    )
     location.reload()
   })
 
@@ -66,7 +72,8 @@ const EnvironmentVariables = () => {
   }, [reset, settings.env.rpc, chainId])
 
   useEffect(() => {
-    reset({ [EnvVariablesField.tenderly]: settings.env.tenderly })
+    reset({ [EnvVariablesField.tenderlyURL]: settings.env.tenderly.url })
+    reset({ [EnvVariablesField.tenderlyToken]: settings.env.tenderly.accessToken })
   }, [reset, settings.env.tenderly])
 
   return (
@@ -85,7 +92,7 @@ const EnvironmentVariables = () => {
 
           <FormProvider {...formMethods}>
             <form onSubmit={onSubmit}>
-              <Typography fontWeight={700} mb={1}>
+              <Typography fontWeight={700} mb={2} mt={3}>
                 Client gateway
                 <Tooltip
                   placement="top"
@@ -128,7 +135,7 @@ const EnvironmentVariables = () => {
                 fullWidth
               />
 
-              <Typography fontWeight={700} mb={1} mt={2}>
+              <Typography fontWeight={700} mb={2} mt={3}>
                 RPC provider
                 <Tooltip
                   placement="top"
@@ -165,12 +172,22 @@ const EnvironmentVariables = () => {
                 fullWidth
               />
 
-              <Typography fontWeight={700} mb={1} mt={2}>
+              <Typography fontWeight={700} mb={2} mt={3}>
                 Tenderly
                 <Tooltip
                   placement="top"
                   arrow
-                  title="You can use your own Tenderly project to keep track of all your transaction simulations."
+                  title={
+                    <>
+                      You can use your own Tenderly project to keep track of all your transaction simulations.{' '}
+                      <ExternalLink
+                        color="secondary"
+                        href="https://docs.tenderly.co/simulations-and-forks/simulation-api/configuration-of-api-access"
+                      >
+                        Read more
+                      </ExternalLink>
+                    </>
+                  }
                 >
                   <span>
                     <SvgIcon
@@ -183,23 +200,61 @@ const EnvironmentVariables = () => {
                   </span>
                 </Tooltip>
               </Typography>
-              <TextField
-                {...register(EnvVariablesField.tenderly)}
-                variant="outlined"
-                placeholder={TENDERLY_SIMULATE_ENDPOINT_URL}
-                InputProps={{
-                  endAdornment: tenderly ? (
-                    <InputAdornment position="end">
-                      <Tooltip title="Reset to default value">
-                        <IconButton onClick={() => onReset(EnvVariablesField.tenderly)} size="small" color="primary">
-                          <RotateLeftIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </InputAdornment>
-                  ) : null,
-                }}
-                fullWidth
-              />
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    {...register(EnvVariablesField.tenderlyURL)}
+                    variant="outlined"
+                    label="Tenderly API URL"
+                    placeholder={TENDERLY_SIMULATE_ENDPOINT_URL}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    InputProps={{
+                      endAdornment: tenderlyURL ? (
+                        <InputAdornment position="end">
+                          <Tooltip title="Reset to default value">
+                            <IconButton
+                              onClick={() => onReset(EnvVariablesField.tenderlyURL)}
+                              size="small"
+                              color="primary"
+                            >
+                              <RotateLeftIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </InputAdornment>
+                      ) : null,
+                    }}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    {...register(EnvVariablesField.tenderlyToken)}
+                    variant="outlined"
+                    label="Tenderly access token"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    InputProps={{
+                      endAdornment: tenderlyToken ? (
+                        <InputAdornment position="end">
+                          <Tooltip title="Reset to default value">
+                            <IconButton
+                              onClick={() => onReset(EnvVariablesField.tenderlyToken)}
+                              size="small"
+                              color="primary"
+                            >
+                              <RotateLeftIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </InputAdornment>
+                      ) : null,
+                    }}
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
 
               <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
                 Save

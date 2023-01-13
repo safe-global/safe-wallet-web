@@ -29,12 +29,24 @@ export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
 
 export const getSimulation = async (
   tx: TenderlySimulatePayload,
-  customUrl: SettingsState['env']['tenderly'],
+  customTenderly: SettingsState['env']['tenderly'],
 ): Promise<TenderlySimulation> => {
-  const data = await fetch(customUrl ? customUrl : TENDERLY_SIMULATE_ENDPOINT_URL, {
+  const requestObject: RequestInit = {
     method: 'POST',
     body: JSON.stringify(tx),
-  }).then((res) => {
+  }
+
+  if (customTenderly.accessToken) {
+    requestObject.headers = {
+      'content-type': 'application/JSON',
+      'X-Access-Key': customTenderly.accessToken,
+    }
+  }
+
+  const data = await fetch(
+    customTenderly.url ? customTenderly.url : TENDERLY_SIMULATE_ENDPOINT_URL,
+    requestObject,
+  ).then((res) => {
     if (res.ok) {
       return res.json()
     }

@@ -76,6 +76,7 @@ describe('HiddenTokenToggle', () => {
           },
           env: {
             rpc: {},
+            tenderly: {},
           },
         },
       },
