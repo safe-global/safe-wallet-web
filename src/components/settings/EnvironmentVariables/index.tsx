@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
-import { Paper, Grid, Typography, TextField, Button, Tooltip, IconButton } from '@mui/material'
+import { Paper, Grid, Typography, TextField, Button, Tooltip, IconButton, SvgIcon } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -9,6 +9,8 @@ import { GATEWAY_URL_PRODUCTION, TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ExternalLink from '@/components/common/ExternalLink'
 
 export enum EnvVariablesField {
   cgw = 'cgw',
@@ -85,6 +87,28 @@ const EnvironmentVariables = () => {
             <form onSubmit={onSubmit}>
               <Typography fontWeight={700} mb={1}>
                 Client gateway
+                <Tooltip
+                  placement="top"
+                  arrow
+                  title={
+                    <>
+                      You can spin up your own client gateway to serve transaction data.{' '}
+                      <ExternalLink color="secondary" href="https://github.com/safe-global/safe-client-gateway">
+                        Read more
+                      </ExternalLink>
+                    </>
+                  }
+                >
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      fontSize="small"
+                      color="border"
+                      sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                    />
+                  </span>
+                </Tooltip>
               </Typography>
               <TextField
                 {...register(EnvVariablesField.cgw)}
@@ -106,7 +130,23 @@ const EnvironmentVariables = () => {
 
               <Typography fontWeight={700} mb={1} mt={2}>
                 RPC provider
+                <Tooltip
+                  placement="top"
+                  arrow
+                  title="Any provider that implements the Ethereum JSON-RPC standard can be used."
+                >
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      fontSize="small"
+                      color="border"
+                      sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                    />
+                  </span>
+                </Tooltip>
               </Typography>
+
               <TextField
                 {...register(EnvVariablesField.rpc)}
                 variant="outlined"
@@ -127,6 +167,21 @@ const EnvironmentVariables = () => {
 
               <Typography fontWeight={700} mb={1} mt={2}>
                 Tenderly
+                <Tooltip
+                  placement="top"
+                  arrow
+                  title="You can use your own Tenderly project to keep track of all your transaction simulations."
+                >
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      fontSize="small"
+                      color="border"
+                      sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                    />
+                  </span>
+                </Tooltip>
               </Typography>
               <TextField
                 {...register(EnvVariablesField.tenderly)}
