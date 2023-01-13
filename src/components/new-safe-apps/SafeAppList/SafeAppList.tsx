@@ -32,7 +32,8 @@ const SafeAppList = ({
   removeCustomApp,
 }: SafeAppListProps) => {
   const [safeAppsViewMode, setSafeAppsViewMode] = useState<SafeAppsViewMode>(GRID_VIEW_MODE)
-  const [safeAppPreviewDrawer, setSafeAppPreviewDrawer] = useState<SafeAppData>()
+  const [selectedSafeApp, setSelectedSafeApp] = useState<SafeAppData>()
+  const [isAppPreviewDrawerOpen, setIsAppPreviewDrawerOpen] = useState<boolean>(false)
 
   const [query, setQuery] = useState<string>('')
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
@@ -44,7 +45,8 @@ const SafeAppList = ({
   const onClickSafeApp = (safeApp: SafeAppData) => (event: SyntheticEvent) => {
     event.preventDefault()
 
-    setSafeAppPreviewDrawer(safeApp)
+    setSelectedSafeApp(safeApp)
+    setIsAppPreviewDrawerOpen(true)
   }
 
   return (
@@ -113,9 +115,11 @@ const SafeAppList = ({
 
       {/* Safe App Preview Drawer */}
       <SafeAppPreviewDrawer
-        isOpen={Boolean(safeAppPreviewDrawer)}
-        safeApp={safeAppPreviewDrawer}
-        onClose={() => setSafeAppPreviewDrawer(undefined)}
+        isOpen={isAppPreviewDrawerOpen}
+        safeApp={selectedSafeApp}
+        isBookmarked={selectedSafeApp && bookmarkedSafeAppsId?.has(selectedSafeApp.id)}
+        onClose={() => setIsAppPreviewDrawerOpen(false)}
+        onBookmark={onBookmarkSafeApp}
       />
     </>
   )
