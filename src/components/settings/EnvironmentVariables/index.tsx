@@ -8,6 +8,7 @@ import { selectSettings, setCgw, setRpc, setTenderly } from '@/store/settingsSli
 import { GATEWAY_URL_PRODUCTION, TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
+import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 
 export enum EnvVariablesField {
   cgw = 'cgw',
@@ -43,6 +44,7 @@ const EnvironmentVariables = () => {
   const tenderly = watch(EnvVariablesField.tenderly)
 
   const onSubmit = handleSubmit((data) => {
+    trackEvent({ ...SETTINGS_EVENTS.ENV_VARIABLES.SAVE })
     dispatch(setCgw(data[EnvVariablesField.cgw]))
     dispatch(setRpc({ chainId, rpc: data[EnvVariablesField.rpc] }))
     dispatch(setTenderly(data[EnvVariablesField.tenderly]))

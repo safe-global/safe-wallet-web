@@ -92,4 +92,10 @@ export const SETTINGS_EVENTS = {
       category: SETTINGS_CATEGORY,
     },
   },
+  ENV_VARIABLES: {
+    SAVE: {
+      action: 'Environment variables changed',
+      category: SETTINGS_CATEGORY,
+    },
+  },
 }
