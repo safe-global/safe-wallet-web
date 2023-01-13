@@ -4,7 +4,8 @@ import Drawer from '@mui/material/Drawer'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import { IconButton, SvgIcon } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -12,10 +13,9 @@ import { getSafeAppUrl } from '@/components/new-safe-apps/SafeAppCard/SafeAppCar
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SafeAppIconCard from '../SafeAppIconCard/SafeAppIconCard'
 import SafeAppActionButtons from '../SafeAppActionButtons/SafeAppActionButtons'
-import CloseIcon from '@/public/images/common/close.svg'
-
-import css from './styles.module.css'
 import SafeAppTags from '../SafeAppTags/SafeAppTags'
+import CloseIcon from '@/public/images/common/close.svg'
+import css from './styles.module.css'
 
 type SafeAppPreviewDrawerProps = {
   safeApp?: SafeAppData
@@ -39,7 +39,6 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
             <SafeAppActionButtons safeApp={safeApp} isBookmarked={isBookmarked} onBookmarkSafeApp={onBookmark} />
             <Tooltip title={`Close ${safeApp.name} preview`} placement="top">
               <IconButton
-                aria-label="close"
                 onClick={onClose}
                 size="small"
                 sx={{
