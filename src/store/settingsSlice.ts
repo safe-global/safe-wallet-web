@@ -1,7 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/store'
+import isEqual from 'lodash/isEqual'
 
 export type SettingsState = {
   currency: string
@@ -41,7 +42,9 @@ const initialState: SettingsState = {
   },
   theme: {},
   env: {
+    cgw: '',
     rpc: {},
+    tenderly: '',
   },
 }
 
@@ -75,7 +78,10 @@ export const settingsSlice = createSlice({
     setRpc: (state, { payload }: PayloadAction<{ chainId: string; rpc: string }>) => {
       const { chainId, rpc } = payload
       state.env.rpc ??= {}
-      state.env.rpc[chainId] = rpc
+
+      if (rpc) {
+        state.env.rpc[chainId] = rpc
+      }
     },
     setTenderly: (state, { payload }: PayloadAction<SettingsState['env']['tenderly']>) => {
       state.env.tenderly = payload
@@ -105,9 +111,10 @@ export const selectHiddenTokensPerChain = (state: RootState, chainId: string): s
   return state[settingsSlice.name].hiddenTokens?.[chainId] || []
 }
 
-export const selectCgw = (state: RootState): SettingsState['env']['cgw'] => state[settingsSlice.name].env.cgw
+export const selectCgw = createSelector(selectSettings, (settings) => settings.env.cgw)
 
-export const selectRpc = (state: RootState): SettingsState['env']['rpc'] => state[settingsSlice.name].env.rpc
+export const selectRpc = createSelector(selectSettings, (settings) => settings.env.rpc)
 
-export const selectTenderly = (state: RootState): SettingsState['env']['tenderly'] =>
-  state[settingsSlice.name].env.tenderly
+export const selectTenderly = createSelector(selectSettings, (settings) => settings.env.tenderly)
+
+export const isEnvInitialState = createSelector(selectSettings, (settings) => isEqual(settings.env, initialState.env))
