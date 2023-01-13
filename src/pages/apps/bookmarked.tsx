@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import SafeAppsHeader from '@/components/new-safe-apps/SafeAppsHeader/SafeAppsHeader'
 import SafeAppList from '@/components/new-safe-apps/SafeAppList/SafeAppList'
+import SafeAppsSDKLink from '@/components/new-safe-apps/SafeAppsSDKLink/SafeAppsSDKLink'
 
 const BookmarkedSafeApps: NextPage = () => {
   // TODO: create a custom hook instead of use useSafeApps
@@ -18,6 +19,8 @@ const BookmarkedSafeApps: NextPage = () => {
       <Head>
         <title>Bookmarked Safe Apps</title>
       </Head>
+
+      <SafeAppsSDKLink />
 
       <SafeAppsHeader />
 
