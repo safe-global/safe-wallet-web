@@ -31,7 +31,8 @@ describe('The Safe Apps list', () => {
       cy.findByRole('textbox').clear()
       cy.findByLabelText(/pin walletconnect/i).click()
       cy.findByLabelText(/pin transaction builder/i).click()
-      cy.findByText('Pinned apps (2)').should('exist')
+      cy.findByText(/bookmarked apps/i).click()
+      cy.findByText('ALL (2)').should('exist')
     })
 
     it('should allow to unpin apps', () => {
