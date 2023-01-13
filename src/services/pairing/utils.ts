@@ -1,6 +1,10 @@
+import { addDays, isAfter } from 'date-fns'
+import type { IWalletConnectSession } from '@walletconnect/types'
 import type WalletConnect from '@walletconnect/client'
 
 import { CGW_NAMES, WALLET_KEYS } from '@/hooks/wallets/wallets'
+import local from '@/services/local-storage/local'
+import { PAIRING_MODULE_STORAGE_ID } from '@/services/pairing/connector'
 
 export const formatPairingUri = (wcUri: string) => {
   const PAIRING_MODULE_URI_PREFIX = 'safe-'
@@ -27,4 +31,29 @@ export const killPairingSession = (connector: InstanceType<typeof WalletConnect>
 
 export const isPairingSupported = (disabledWallets?: string[]) => {
   return !!disabledWallets?.length && !disabledWallets.includes(CGW_NAMES[WALLET_KEYS.PAIRING] as string)
+}
+
+export const _isPairingSessionExpired = (session: IWalletConnectSession): boolean => {
+  // WC appends 3 digits to the timestamp. NOTE: This may change in WC v2
+  const sessionTimestamp = session.handshakeId.toString().slice(0, -3)
+  // The session is valid for 24h (mobile clears it on their end)
+  const expirationDate = addDays(new Date(+sessionTimestamp), 1)
+
+  return isAfter(Date.now(), expirationDate)
+}
+
+export const hasValidPairingSession = (): boolean => {
+  const cachedSession = local.getItem<IWalletConnectSession>(PAIRING_MODULE_STORAGE_ID)
+
+  if (!cachedSession) {
+    return false
+  }
+
+  const isExpired = _isPairingSessionExpired(cachedSession)
+
+  if (isExpired) {
+    local.removeItem(PAIRING_MODULE_STORAGE_ID)
+  }
+
+  return !isExpired
 }

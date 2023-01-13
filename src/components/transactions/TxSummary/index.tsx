@@ -1,7 +1,7 @@
 import type { Palette } from '@mui/material'
 import { Box, CircularProgress, SvgIcon, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
-import { type Transaction, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type Transaction, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
@@ -54,6 +54,8 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
     : undefined
 
   const displayConfirmations = isQueue && !!submittedConfirmations && !!requiredConfirmations
+  const confirmationColor =
+    displayConfirmations && requiredConfirmations > submittedConfirmations ? 'border' : 'primary'
 
   return (
     <Box
@@ -82,12 +84,8 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
 
       {displayConfirmations && (
         <Box gridArea="confirmations" display="flex" alignItems="center" gap={1}>
-          <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" color="border" />
-          <Typography
-            variant="caption"
-            fontWeight="bold"
-            color={requiredConfirmations > submittedConfirmations ? 'border.main' : 'primary'}
-          >
+          <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" color={confirmationColor} />
+          <Typography variant="caption" fontWeight="bold" color={confirmationColor}>
             {submittedConfirmations} out of {requiredConfirmations}
           </Typography>
         </Box>

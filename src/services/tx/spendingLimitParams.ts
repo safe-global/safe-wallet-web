@@ -1,4 +1,4 @@
-import type { MetaTransactionData } from '@gnosis.pm/safe-core-sdk-types'
+import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { getSpendingLimitInterface } from '@/services/contracts/spendingLimitContracts'
 
 export const createAddDelegateTx = (delegate: string, spendingLimitAddress: string): MetaTransactionData => {

@@ -5,8 +5,8 @@ import {
   getModuleTransactions,
   getMultisigTransactions,
   type TransactionListPage,
-} from '@gnosis.pm/safe-react-gateway-sdk'
-import type { operations } from '@gnosis.pm/safe-react-gateway-sdk/dist/types/api'
+} from '@safe-global/safe-gateway-typescript-sdk'
+import type { operations } from '@safe-global/safe-gateway-typescript-sdk/dist/types/api'
 import type { ParsedUrlQuery } from 'querystring'
 import { startOfDay, endOfDay } from 'date-fns'
 

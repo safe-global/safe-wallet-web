@@ -46,6 +46,10 @@ declare module '@mui/material/Button' {
   interface ButtonPropsSizeOverrides {
     stretched: true
   }
+
+  interface ButtonPropsColorOverrides {
+    background: true
+  }
 }
 
 const initTheme = (darkMode: boolean) => {
@@ -299,6 +303,13 @@ const initTheme = (darkMode: boolean) => {
           },
         },
       },
+      MuiToggleButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+          },
+        },
+      },
       MuiAlert: {
         styleOverrides: {
           standardError: ({ theme }) => ({
@@ -401,6 +412,9 @@ const initTheme = (darkMode: boolean) => {
             '& .MuiTableRow-root:hover': {
               backgroundColor: theme.palette.background.light,
             },
+            '& .MuiTableRow-root.Mui-selected': {
+              backgroundColor: theme.palette.background.light,
+            },
           }),
         },
       },
@@ -488,7 +502,7 @@ const initTheme = (darkMode: boolean) => {
       MuiLink: {
         styleOverrides: {
           root: ({ theme }) => ({
-            textDecoration: 'none',
+            fontWeight: 700,
             '&:hover': {
               color: theme.palette.primary.light,
             },

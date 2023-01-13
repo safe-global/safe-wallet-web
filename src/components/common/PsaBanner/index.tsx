@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from 'react'
+import { useEffect } from 'react'
 import { isEmpty } from 'lodash'
-import type { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import { IconButton } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import styles from './index.module.css'
@@ -49,6 +50,12 @@ const PsaBanner = (): ReactElement | null => {
   const onClose = () => {
     setClosed(true)
   }
+
+  useEffect(() => {
+    const className = 'psaBanner'
+    document.documentElement.classList?.toggle(className, showBanner)
+    return () => document.documentElement.classList?.remove(className)
+  }, [showBanner])
 
   return showBanner ? (
     <div className={styles.banner}>

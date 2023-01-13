@@ -8,7 +8,6 @@ import {
   MenuItem,
   Select,
   Switch,
-  TextField,
   Typography,
   RadioGroup,
   FormControlLabel,
@@ -17,12 +16,13 @@ import {
 } from '@mui/material'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { validateAmount } from '@/utils/validation'
-import useBalances from '@/hooks/useBalances'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import useChainId from '@/hooks/useChainId'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import { parseUnits } from 'ethers/lib/utils'
+import NumberField from '@/components/common/NumberField'
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 
 export type NewSpendingLimitData = {
   beneficiary: string
@@ -49,7 +49,7 @@ export const _validateSpendingLimit = (val: string, decimals?: number) => {
 export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
   const chainId = useChainId()
   const [showResetTime, setShowResetTime] = useState<boolean>(false)
-  const { balances } = useBalances()
+  const { balances } = useVisibleBalances()
 
   const resetTimeOptions = useMemo(() => getResetTimeOptions(chainId), [chainId])
 
@@ -107,10 +107,9 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
           </FormControl>
 
           <FormControl fullWidth>
-            <TextField
+            <NumberField
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
-              autoComplete="off"
               required
               {...register('amount', {
                 required: true,

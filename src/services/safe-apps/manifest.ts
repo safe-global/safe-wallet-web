@@ -1,6 +1,6 @@
 import type { AllowedFeatures, SafeAppDataWithPermissions } from '@/components/safe-apps/types'
 import { isRelativeUrl, trimTrailingSlash } from '@/utils/url'
-import { SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 
 type AppManifestIcon = {
   src: string

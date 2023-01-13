@@ -39,10 +39,10 @@ const NotificationCenterItem = ({
   const requiresAction = !isRead && !!link
 
   const secondaryText = (
-    <div className={css.secondaryText}>
+    <span className={css.secondaryText}>
       <span>{formatTimeInWords(timestamp)}</span>
       <NotificationLink link={link} onClick={handleClose} />
-    </div>
+    </span>
   )
 
   return (

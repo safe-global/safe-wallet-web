@@ -41,7 +41,7 @@ const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
     {/* PWA primary color and manifest */}
     <meta name="theme-color" content={palette.background.main} media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content={darkPalette.background.main} media="(prefers-color-scheme: dark)" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="/safe.webmanifest" />
 
     {/* Favicons */}
     <link rel="shortcut icon" href="/favicons/favicon.ico" />

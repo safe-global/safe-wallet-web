@@ -1,7 +1,7 @@
 import { type ReactElement, useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
-import { type TransactionListPage } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import type useTxHistory from '@/hooks/useTxHistory'
 import useTxQueue from '@/hooks/useTxQueue'

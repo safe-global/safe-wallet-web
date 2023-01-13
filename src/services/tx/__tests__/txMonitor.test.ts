@@ -72,7 +72,6 @@ describe('txMonitor', () => {
       expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
         txId: '0x0',
         error: new Error('Transaction reverted by EVM.'),
-        receipt,
       })
     })
 

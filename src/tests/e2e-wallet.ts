@@ -1,4 +1,4 @@
-import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { WalletInit } from '@web3-onboard/common'
 
 import { CYPRESS_MNEMONIC } from '@/config/constants'

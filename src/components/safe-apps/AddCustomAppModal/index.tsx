@@ -9,12 +9,11 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
-  Link,
   Box,
   FormHelperText,
 } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import ModalDialog from '@/components/common/ModalDialog'
 import { isValidURL } from '@/utils/validation'
@@ -29,6 +28,7 @@ import CustomAppPlaceholder from './CustomAppPlaceholder'
 import CustomApp from './CustomApp'
 
 import css from './styles.module.css'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type Props = {
   open: boolean
@@ -44,7 +44,7 @@ type CustomAppFormData = {
   safeApp: SafeAppData
 }
 
-const HELP_LINK = 'https://docs.gnosis-safe.io/build/sdks/safe-apps'
+const HELP_LINK = 'https://docs.safe.global/build/sdks/safe-apps'
 const APP_ALREADY_IN_THE_LIST_ERROR = 'This app is already in the list'
 const MANIFEST_ERROR = "The app doesn't support Safe App functionality"
 const INVALID_URL_ERROR = 'The url is invalid'
@@ -152,15 +152,10 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
           <div className={css.addCustomAppHelp}>
             <InfoOutlinedIcon className={css.addCustomAppHelpIcon} />
             <Typography ml={0.5}>Learn more about building</Typography>
-            <Link
-              className={css.addCustomAppHelpLink}
-              href={HELP_LINK}
-              target="_blank"
-              rel="noreferrer"
-              fontWeight={700}
-            >
-              Safe Apps.
-            </Link>
+            <ExternalLink className={css.addCustomAppHelpLink} href={HELP_LINK} fontWeight={700}>
+              Safe Apps
+            </ExternalLink>
+            .
           </div>
         </DialogContent>
 

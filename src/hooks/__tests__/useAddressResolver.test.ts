@@ -5,8 +5,8 @@ import * as domains from '@/services/ens'
 import * as web3 from '@/hooks/wallets/web3'
 import * as useChains from '@/hooks/useChains'
 import { renderHook, waitFor } from '@/tests/test-utils'
-import type { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 const ADDRESS1 = ethers.utils.hexZeroPad('0x1', 20)

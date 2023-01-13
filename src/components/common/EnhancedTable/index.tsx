@@ -16,16 +16,21 @@ import type { PaperTypeMap } from '@mui/material/Paper/Paper'
 import classNames from 'classnames'
 
 import css from './styles.module.css'
+import { Collapse } from '@mui/material'
 
-type EnhancedRow = Record<
-  string,
-  {
-    content: ReactNode
-    rawValue: string | number
-    sticky?: boolean
-    hide?: boolean
-  }
->
+type EnhancedCell = {
+  content: ReactNode
+  rawValue: string | number
+  sticky?: boolean
+  hide?: boolean
+}
+
+type EnhancedRow = {
+  selected?: boolean
+  collapsed?: boolean
+  key?: string
+  cells: Record<string, EnhancedCell>
+}
 
 type EnhancedHeadCell = {
   id: string
@@ -36,10 +41,10 @@ type EnhancedHeadCell = {
 }
 
 function descendingComparator(a: EnhancedRow, b: EnhancedRow, orderBy: string) {
-  if (b[orderBy].rawValue < a[orderBy].rawValue) {
+  if (b.cells[orderBy].rawValue < a.cells[orderBy].rawValue) {
     return -1
   }
-  if (b[orderBy].rawValue > a[orderBy].rawValue) {
+  if (b.cells[orderBy].rawValue > a.cells[orderBy].rawValue) {
     return 1
   }
   return 0
@@ -139,16 +144,24 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
           <TableBody>
             {pagedRows.length > 0 ? (
               pagedRows.map((row, index) => (
-                <TableRow tabIndex={-1} key={index}>
-                  {Object.entries(row).map(([key, cell]) => (
+                <TableRow
+                  tabIndex={-1}
+                  key={row.key ?? index}
+                  selected={row.selected}
+                  className={row.collapsed ? css.collapsedRow : undefined}
+                >
+                  {Object.entries(row.cells).map(([key, cell]) => (
                     <TableCell
                       key={key}
                       className={classNames({
                         sticky: cell.sticky,
                         [css.hide]: cell.hide,
+                        [css.collapsedCell]: row.collapsed,
                       })}
                     >
-                      {cell.content}
+                      <Collapse key={index} in={!row.collapsed} enter={false}>
+                        {cell.content}
+                      </Collapse>
                     </TableCell>
                   ))}
                 </TableRow>

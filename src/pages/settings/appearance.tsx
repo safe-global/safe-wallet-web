@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, FormGroup, Grid, Link, Paper, Typography, Switch } from '@mui/material'
+import { Checkbox, FormControlLabel, FormGroup, Grid, Paper, Typography, Switch } from '@mui/material'
 import type { ChangeEvent } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
@@ -8,6 +8,7 @@ import { selectSettings, setCopyShortName, setDarkMode, setShowShortName } from 
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const Appearance: NextPage = () => {
   const dispatch = useAppDispatch()
@@ -51,10 +52,8 @@ const Appearance: NextPage = () => {
             <Grid item xs>
               <Typography mb={2}>
                 Choose whether to prepend{' '}
-                <Link href="https://eips.ethereum.org/EIPS/eip-3770" target="_blank" rel="noopener noreferrer">
-                  EIP-3770
-                </Link>{' '}
-                address prefixes across all Safes.
+                <ExternalLink href="https://eips.ethereum.org/EIPS/eip-3770">EIP-3770</ExternalLink> address prefixes
+                across all Safes.
               </Typography>
               <FormGroup>
                 <FormControlLabel

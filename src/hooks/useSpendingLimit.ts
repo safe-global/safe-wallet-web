@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import type { TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'

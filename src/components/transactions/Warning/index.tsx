@@ -1,9 +1,10 @@
 import type { ReactElement } from 'react'
-import { Alert, Link, SvgIcon, Tooltip } from '@mui/material'
+import { Alert, SvgIcon, Tooltip } from '@mui/material'
 import type { AlertColor } from '@mui/material'
 
 import InfoOutlinedIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const Warning = ({
   title,
@@ -29,7 +30,7 @@ const Warning = ({
 }
 
 const UNEXPECTED_DELEGATE_ARTICLE =
-  'https://help.gnosis-safe.io/en/articles/6302452-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction'
+  'https://help.safe.global/en/articles/6302452-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction'
 
 export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): ReactElement => {
   const severity = showWarning ? 'warning' : 'success'
@@ -41,9 +42,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
           {showWarning && (
             <>
               <br />
-              <Link href={UNEXPECTED_DELEGATE_ARTICLE} rel="noopener noreferrer" target="_blank">
-                Learn more
-              </Link>
+              <ExternalLink href={UNEXPECTED_DELEGATE_ARTICLE}>Learn more</ExternalLink>
             </>
           )}
         </>
@@ -56,7 +55,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
 
 export const ThresholdWarning = (): ReactElement => (
   <Warning
-    title="This transaction potentially alters the number of confirmations required to execute a transaction."
+    title="This transaction potentially alters the number of confirmations required to execute a transaction. Please verify before signing."
     severity="warning"
     text="Confirmation policy change"
   />

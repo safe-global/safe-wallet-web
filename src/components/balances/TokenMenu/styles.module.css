@@ -1,0 +1,38 @@
+.hideTokensHeader {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  gap: var(--space-1);
+  padding: 5px var(--space-2);
+  background-color: var(--color-background-light);
+  border-radius: 6px;
+  min-width: 185px;
+}
+
+.stickyBox {
+  position: sticky;
+  top: 111px; /* under AssetHeader */
+  z-index: 1;
+  padding: var(--space-2) 0;
+  background-color: var(--color-background-default);
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  margin-top: -24px;
+  gap: var(--space-3);
+}
+
+@media (max-width: 600px) {
+  .stickyBox {
+    margin-top: -16px;
+  }
+}
+
+.cancelButton {
+  padding: 4px 10px;
+}
+
+.applyButton {
+  padding: 6px var(--space-3);
+}

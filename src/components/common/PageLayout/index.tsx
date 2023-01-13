@@ -5,19 +5,17 @@ import Header from '@/components/common//Header'
 import css from './styles.module.css'
 import SafeLoadingError from '../SafeLoadingError'
 import Footer from '../Footer'
-import SideDrawer from './SideDrawer'
+import SideDrawer, { isNoSidebarRoute } from './SideDrawer'
+import PsaBanner from '../PsaBanner'
 
-const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
-  const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true)
-
-  const toggleSidebar = () => {
-    setSidebarOpen((prev) => !prev)
-  }
+const PageLayout = ({ pathname, children }: { pathname: string; children: ReactElement }): ReactElement => {
+  const [isSidebarOpen, setSidebarOpen] = useState<boolean>(!isNoSidebarRoute(pathname))
 
   return (
     <>
       <header className={css.header}>
-        <Header onMenuToggle={toggleSidebar} />
+        <PsaBanner />
+        <Header onMenuToggle={setSidebarOpen} />
       </header>
 
       <SideDrawer isOpen={isSidebarOpen} onToggle={setSidebarOpen} />

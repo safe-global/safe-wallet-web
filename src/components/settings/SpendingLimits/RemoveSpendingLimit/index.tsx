@@ -2,9 +2,9 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { getSpendingLimitInterface, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import useChainId from '@/hooks/useChainId'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { createTx } from '@/services/tx/txSender'
+import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
-import type { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Typography } from '@mui/material'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
@@ -20,8 +20,9 @@ export const RemoveSpendingLimit = ({
   onSubmit,
 }: {
   data: SpendingLimitState
-  onSubmit: (txId: string) => void
+  onSubmit: (txId?: string) => void
 }) => {
+  const { createTx } = useTxSender()
   const chainId = useChainId()
   const provider = useWeb3()
   const { balances } = useBalances()
@@ -41,9 +42,9 @@ export const RemoveSpendingLimit = ({
     }
 
     return createTx(txParams)
-  }, [provider, chainId, data.beneficiary, data.token])
+  }, [provider, chainId, data.beneficiary, data.token, createTx])
 
-  const onFormSubmit = (txId: string) => {
+  const onFormSubmit = (txId?: string) => {
     trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
 
     onSubmit(txId)

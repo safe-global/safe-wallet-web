@@ -1,12 +1,12 @@
 import type { ReactElement } from 'react'
 import { useContext } from 'react'
-import { Box, Link, Paper, Typography } from '@mui/material'
-import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
-import type { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Box, Paper, Typography } from '@mui/material'
+import type { Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import css from './styles.module.css'
 import { ReplaceTxHoverContext, ReplaceTxHoverProvider } from './ReplaceTxHoverProvider'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const Disclaimer = ({ nonce }: { nonce?: number }) => (
   <Box className={css.disclaimerContainer}>
@@ -15,16 +15,13 @@ const Disclaimer = ({ nonce }: { nonce?: number }) => (
       These transactions conflict as they use the same nonce. Executing one will automatically replace the other(s).
     </Typography>
 
-    <Link
-      href="https://help.gnosis-safe.io/en/articles/4730252-why-are-transactions-with-the-same-nonce-conflicting-with-each-other"
-      target="_blank"
-      rel="noreferrer"
+    <ExternalLink
+      href="https://help.safe.global/en/articles/4730252-why-are-transactions-with-the-same-nonce-conflicting-with-each-other"
       title="Why are transactions with the same nonce conflicting with each other?"
       className={css.link}
     >
       Learn more
-      <OpenInNewRoundedIcon fontSize="small" />
-    </Link>
+    </ExternalLink>
   </Box>
 )
 

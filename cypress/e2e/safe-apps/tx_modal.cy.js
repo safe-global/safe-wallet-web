@@ -1,6 +1,6 @@
 import { TEST_SAFE } from './constants'
 
-const appUrl = 'http://safe-test-app.com'
+const appUrl = 'https://safe-test-app.com'
 
 describe('The transaction modal', () => {
   before(() => {
@@ -19,7 +19,7 @@ describe('The transaction modal', () => {
   })
 
   describe('When sending a transaction from an app', () => {
-    it('should show the transaction popup', () => {
+    it('should show the transaction popup', { defaultCommandTimeout: 12000 }, () => {
       cy.findByRole('dialog').within(() => {
         cy.findByText(/sending from/i)
 

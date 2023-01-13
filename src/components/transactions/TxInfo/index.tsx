@@ -6,8 +6,8 @@ import type {
   TransactionInfo,
   MultiSend,
   SettingsChange,
-} from '@gnosis.pm/safe-react-gateway-sdk'
-import { SettingsInfoType } from '@gnosis.pm/safe-react-gateway-sdk'
+} from '@safe-global/safe-gateway-typescript-sdk'
+import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 import {
   isCreationTxInfo,

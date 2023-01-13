@@ -1,6 +1,6 @@
 import React, { type ReactElement } from 'react'
-import type { TransactionDetails, TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getTransactionDetails, Operation } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionDetails, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
+import { getTransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, CircularProgress } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
@@ -30,6 +30,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/Warning'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -47,11 +48,9 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   const isUnsigned =
     isMultisigExecutionInfo(txSummary.executionInfo) && txSummary.executionInfo.confirmationsSubmitted === 0
 
-  // FIXME: remove "&& false" after https://github.com/safe-global/web-core/issues/1261 is fixed
   const isUntrusted =
     isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
-    txDetails.detailedExecutionInfo.trusted === false &&
-    false
+    txDetails.detailedExecutionInfo.trusted === false
 
   return (
     <>
@@ -124,10 +123,15 @@ const TxDetails = ({
   txDetails?: TransactionDetails // optional
 }): ReactElement => {
   const chainId = useChainId()
+  const { safe } = useSafeInfo()
 
-  const [txDetailsData, error, loading] = useAsync<TransactionDetails>(async () => {
-    return txDetails || getTransactionDetails(chainId, txSummary.id)
-  }, [txDetails, chainId, txSummary.id])
+  const [txDetailsData, error, loading] = useAsync<TransactionDetails>(
+    async () => {
+      return txDetails || getTransactionDetails(chainId, txSummary.id)
+    },
+    [txDetails, chainId, txSummary.id, safe.txQueuedTag],
+    false,
+  )
 
   return (
     <div className={css.container}>

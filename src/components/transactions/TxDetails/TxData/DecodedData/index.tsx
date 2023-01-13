@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'

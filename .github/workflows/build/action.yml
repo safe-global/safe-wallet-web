@@ -1,0 +1,37 @@
+name: 'Build'
+
+description: 'Build the app'
+
+inputs:
+  secrets:
+    required: true
+
+  prod:  # id of input
+    description: 'Production build flag'
+    required: false
+
+  e2e_mnemonic:
+    description: 'Mnemonic for the E2E tests'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Build
+      shell: bash
+      run: yarn build && yarn export
+      env:
+        NEXT_PUBLIC_IS_PRODUCTION: ${{ inputs.prod }}
+        NEXT_PUBLIC_BEAMER_ID: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_BEAMER_ID }}
+        NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH }}
+        NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID }}
+        NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH }}
+        NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH }}
+        NEXT_PUBLIC_INFURA_TOKEN: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_INFURA_TOKEN }}
+        NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN }}
+        NEXT_PUBLIC_SENTRY_DSN: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SENTRY_DSN }}
+        NEXT_PUBLIC_TENDERLY_ORG_NAME: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_TENDERLY_ORG_NAME }}
+        NEXT_PUBLIC_TENDERLY_PROJECT_NAME: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_TENDERLY_PROJECT_NAME }}
+        NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL }}
+        NEXT_PUBLIC_WC_BRIDGE: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_WC_BRIDGE }}
+        NEXT_PUBLIC_CYPRESS_MNEMONIC: ${{ inputs.e2e_mnemonic }}

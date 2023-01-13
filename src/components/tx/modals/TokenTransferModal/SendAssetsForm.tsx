@@ -10,24 +10,23 @@ import {
   MenuItem,
   Select,
   Typography,
-  TextField,
   DialogContent,
   Box,
   SvgIcon,
 } from '@mui/material'
-import { type TokenInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import TokenIcon from '@/components/common/TokenIcon'
 import css from './styles.module.css'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
-import useBalances from '@/hooks/useBalances'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import SendFromBlock from '../../SendFromBlock'
 import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import SendToBlock from '@/components/tx/SendToBlock'
 import useAddressBook from '@/hooks/useAddressBook'
 import { SANCTIONED_ADDRESSES, SANCTIONED_ADDRESS_MESSAGE } from '@/utils/ofac-sanctioned-addresses'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
@@ -35,6 +34,8 @@ import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import useIsSafeTokenPaused from '@/components/tx/modals/TokenTransferModal/useIsSafeTokenPaused'
+import NumberField from '@/components/common/NumberField'
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -72,12 +73,13 @@ export type SendAssetsFormData = {
 
 type SendAssetsFormProps = {
   formData?: SendAssetsFormData
+  disableSpendingLimit?: boolean
   onSubmit: (formData: SendAssetsFormData) => void
 }
 
-const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactElement => {
+const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: SendAssetsFormProps): ReactElement => {
   const [OFACError, setOFACError] = useState<string>()
-  const { balances } = useBalances()
+  const { balances } = useVisibleBalances()
   const addressBook = useAddressBook()
   const chainId = useChainId()
   const safeTokenAddress = getSafeTokenAddress(chainId)
@@ -88,7 +90,9 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
       [SendAssetsField.recipient]: formData?.[SendAssetsField.recipient] || '',
       [SendAssetsField.tokenAddress]: formData?.[SendAssetsField.tokenAddress] || '',
       [SendAssetsField.amount]: formData?.[SendAssetsField.amount] || '',
-      [SendAssetsField.type]: formData?.[SendAssetsField.type] || SendTxType.multiSig,
+      [SendAssetsField.type]: disableSpendingLimit
+        ? SendTxType.multiSig
+        : formData?.[SendAssetsField.type] || SendTxType.multiSig,
     },
     mode: 'onChange',
     delayError: 500,
@@ -116,12 +120,14 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
 
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
 
+  const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
+
   const onMaxAmountClick = () => {
     if (!selectedToken) return
 
     const amount =
-      spendingLimit && isSpendingLimitType
-        ? Math.min(+spendingLimit.amount, +selectedToken.balance).toString()
+      isSpendingLimitType && spendingLimitAmount && spendingLimitAmount.lte(selectedToken.balance)
+        ? spendingLimitAmount.toString()
         : selectedToken.balance
 
     setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
@@ -148,7 +154,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
           <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
             {addressBook[recipient] ? (
               <Box onClick={() => setValue(SendAssetsField.recipient, '')}>
-                <EthHashInfo address={recipient} shortAddress={false} hasExplorer showCopyButton />
+                <SendToBlock address={recipient} />
               </Box>
             ) : (
               <AddressBookInput name={SendAssetsField.recipient} label="Recipient" />
@@ -186,15 +192,16 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
             </Box>
           )}
 
-          {!!spendingLimit && (
-            <SpendingLimitRow spendingLimit={spendingLimit} selectedToken={selectedToken?.tokenInfo} />
+          {!disableSpendingLimit && !!spendingLimitAmount && (
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
+            </FormControl>
           )}
 
           <FormControl fullWidth sx={{ mt: 2 }}>
-            <TextField
+            <NumberField
               label={errors.amount?.message || 'Amount'}
               error={!!errors.amount}
-              autoComplete="off"
               InputProps={{
                 endAdornment: (
                   <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
@@ -211,7 +218,7 @@ const SendAssetsForm = ({ onSubmit, formData }: SendAssetsFormProps): ReactEleme
                 required: true,
                 validate: (val) => {
                   const decimals = selectedToken?.tokenInfo.decimals
-                  const max = isSpendingLimitType ? spendingLimit?.amount : selectedToken?.balance
+                  const max = isSpendingLimitType ? spendingLimitAmount?.toString() : selectedToken?.balance
                   return validateLimitedAmount(val, decimals, max) || validateDecimalLength(val, decimals)
                 },
               })}

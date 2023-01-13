@@ -36,12 +36,33 @@ button {
   font: inherit;
 }
 
+:focus-visible {
+  outline: 5px auto Highlight;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
 * {
   box-sizing: border-box;
 }
 
 :root {
-  --header-height: 52px;
+  --header-inner-height: 52px;
+}
+
+:root {
+  --header-height: var(--header-inner-height);
+  --footer-height: 67px;
+}
+
+.psaBanner:root {
+  --header-height: calc(var(--header-inner-height) * 2);
+}
+
+/* On mobile, the banner text is two lines + padding */
+@media (max-width: 600px) {
+  .psaBanner:root {
+    --header-height: calc(var(--header-inner-height) * 2 + 16px);
+  }
 }
 
 input::-webkit-outer-spin-button,
@@ -89,7 +110,7 @@ input[type='number'] {
 }
 
 body.beamerAnnouncementBarTopActive {
-  padding-top: 0px !important;
+  padding-top: 0 !important;
 }
 
 #beamerLastPostTitle {

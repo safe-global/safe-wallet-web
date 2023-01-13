@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { getSafeInfo, type SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getSafeInfo, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync, { type AsyncResult } from '../useAsync'
 import useSafeAddress from '../useSafeAddress'
 import { useChainId } from '../useChainId'

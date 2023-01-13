@@ -1,6 +1,6 @@
 import type { ChangeEvent, ReactElement } from 'react'
-import { Checkbox, FormControlLabel, Tooltip } from '@mui/material'
-import InfoIcon from '@mui/icons-material/Info'
+import { Checkbox, FormControlLabel, SvgIcon, Tooltip } from '@mui/material'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 
 const ExecuteCheckbox = ({
@@ -25,7 +25,15 @@ const ExecuteCheckbox = ({
           : 'If you want to sign the transaction now but manually execute it later, uncheck this box.'
       }
     >
-      <InfoIcon fontSize="small" sx={{ verticalAlign: 'middle', marginLeft: 0.5 }} />
+      <span>
+        <SvgIcon
+          component={InfoIcon}
+          inheritViewBox
+          fontSize="small"
+          color="border"
+          sx={{ verticalAlign: 'middle', marginLeft: 0.5 }}
+        />
+      </span>
     </Tooltip>
   )
 

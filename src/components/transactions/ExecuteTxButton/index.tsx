@@ -1,6 +1,6 @@
 import type { SyntheticEvent } from 'react'
 import { useState, type ReactElement, useContext } from 'react'
-import { type TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { Button, Tooltip, SvgIcon } from '@mui/material'
 
 import useSafeInfo from '@/hooks/useSafeInfo'

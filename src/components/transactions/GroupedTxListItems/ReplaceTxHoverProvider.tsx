@@ -1,5 +1,5 @@
 import { createContext, useMemo, useState, type Dispatch, type ReactElement, type SetStateAction } from 'react'
-import type { Transaction } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'

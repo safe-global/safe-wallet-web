@@ -1,8 +1,10 @@
-import { useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import useLastSafe from '@/hooks/useLastSafe'
 import { AppRoutes } from '@/config/routes'
+
+const useIsomorphicEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
@@ -10,7 +12,7 @@ const IndexPage: NextPage = () => {
   const lastSafe = useLastSafe()
   const safeAddress = safe || lastSafe
 
-  useLayoutEffect(() => {
+  useIsomorphicEffect(() => {
     router.replace(
       safeAddress
         ? `${AppRoutes.home}?safe=${safeAddress}`

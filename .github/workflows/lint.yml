@@ -12,14 +12,7 @@ jobs:
 
       - uses: actions/checkout@v3
 
-      - name: Yarn cache
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Yarn install
-        run: yarn install --immutable
+      - uses: ./.github/workflows/yarn
 
       - uses: Maggi64/eslint-plus-action@master
         with:

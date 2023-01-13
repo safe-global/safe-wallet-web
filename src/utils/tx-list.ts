@@ -1,4 +1,4 @@
-import type { Transaction, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { Transaction, TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
 import { isConflictHeaderListItem, isNoneConflictType, isTransactionListItem } from '@/utils/transaction-guards'
 
 type GroupedTxs = Array<TransactionListItem | Transaction[]>
@@ -27,4 +27,13 @@ export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => 
       }
       return item
     })
+}
+
+export const getLatestTransactions = (list: TransactionListItem[] = []): Transaction[] => {
+  return (
+    groupConflictingTxs(list)
+      // Get latest transaction if there are conflicting ones
+      .map((group) => (Array.isArray(group) ? group[0] : group))
+      .filter(isTransactionListItem)
+  )
 }

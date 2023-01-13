@@ -6,7 +6,6 @@ import { useAppDispatch } from '@/store'
 import { openCookieBanner } from '@/store/popupSlice'
 import { AppRoutes } from '@/config/routes'
 import packageJson from '../../../../package.json'
-// import AppstoreButton from '../AppStoreButton'
 
 const footerPages = [AppRoutes.welcome, AppRoutes.settings.index]
 
@@ -28,7 +27,7 @@ const Footer = (): ReactElement | null => {
       <ul>
         <li>
           <Typography variant="caption">
-            &copy;2022 Deployed by cLabs - Forked from the Safe Ecosystem Foundation
+            &copy;2022-{new Date().getFullYear()} Deployed by cLabs - Forked from the Safe Ecosystem Foundation
           </Typography>
         </li>
         <li>

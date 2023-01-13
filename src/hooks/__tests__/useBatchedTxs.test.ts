@@ -6,7 +6,7 @@ import type {
   TransactionListItem,
   TransactionSummary,
   TransferInfo,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+} from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConflictType,
   DetailedExecutionInfoType,
@@ -15,7 +15,7 @@ import {
   TransactionStatus,
   TransactionTokenType,
   TransferDirection,
-} from '@gnosis.pm/safe-react-gateway-sdk'
+} from '@safe-global/safe-gateway-typescript-sdk'
 import { getBatchableTransactions } from '@/hooks/useBatchedTxs'
 
 const mockAddressEx: AddressEx = {

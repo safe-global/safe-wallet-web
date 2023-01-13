@@ -1,6 +1,6 @@
 import { shouldUseEthSignMethod } from '@/hooks/wallets/wallets'
 import type { ConnectedWallet } from '@/services/onboard'
-import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants'
+import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import type { EIP1193Provider } from '@web3-onboard/core'
 
 describe('shouldUseEthSignMethod', () => {
@@ -43,7 +43,7 @@ describe('shouldUseEthSignMethod', () => {
     expect(result).toBe(true)
   })
 
-  it('returns true for WalletConnect', () => {
+  it('returns false for WalletConnect', () => {
     const mockWallet: ConnectedWallet = {
       address: ZERO_ADDRESS,
       chainId: '4',
@@ -53,7 +53,7 @@ describe('shouldUseEthSignMethod', () => {
 
     const result = shouldUseEthSignMethod(mockWallet)
 
-    expect(result).toBe(true)
+    expect(result).toBe(false)
   })
 
   it('returns false for MetaMask', () => {

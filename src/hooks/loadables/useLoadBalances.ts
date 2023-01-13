@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { getBalances, type SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getBalances, type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
 import useAsync, { type AsyncResult } from '../useAsync'
 import { Errors, logError } from '@/services/exceptions'

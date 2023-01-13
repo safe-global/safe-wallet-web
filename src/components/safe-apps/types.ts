@@ -1,4 +1,4 @@
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 export enum PermissionStatus {
   GRANTED = 'granted',

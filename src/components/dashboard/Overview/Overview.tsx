@@ -7,7 +7,6 @@ import { Box, Button, Grid, Skeleton, Typography } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
-import useBalances from '@/hooks/useBalances'
 import SafeIcon from '@/components/common/SafeIcon'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -15,6 +14,7 @@ import { AppRoutes } from '@/config/routes'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useCollectibles from '@/hooks/useCollectibles'
 import type { UrlObject } from 'url'
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 
 const IdenticonContainer = styled.div`
   position: relative;
@@ -83,7 +83,7 @@ const Overview = (): ReactElement => {
   const router = useRouter()
   const safeAddress = useSafeAddress()
   const { safe, safeLoading } = useSafeInfo()
-  const { balances } = useBalances()
+  const { balances } = useVisibleBalances()
   const [nfts] = useCollectibles()
   const chain = useCurrentChain()
   const { chainId } = chain || {}
@@ -113,9 +113,7 @@ const Overview = (): ReactElement => {
         ) : (
           <Card>
             <Grid container pb={2}>
-              <Grid item xs={2}>
-                <SafeIcon address={safeAddress} threshold={safe.threshold} owners={safe.owners.length} size={48} />
-              </Grid>
+              <SafeIcon address={safeAddress} threshold={safe.threshold} owners={safe.owners.length} size={48} />
 
               <Grid item xs />
 
@@ -155,11 +153,9 @@ const Overview = (): ReactElement => {
               <Grid item>
                 <Box display="flex" height={1} alignItems="flex-end" justifyContent="flex-end">
                   <Link href={assetsLink} passHref>
-                    <a>
-                      <Button size="medium" variant="contained" color="primary">
-                        View assets
-                      </Button>
-                    </a>
+                    <Button size="medium" variant="contained" color="primary">
+                      View assets
+                    </Button>
                   </Link>
                 </Box>
               </Grid>

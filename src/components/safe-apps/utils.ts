@@ -1,5 +1,5 @@
 import { isHexString, toUtf8String } from 'ethers/lib/utils'
-import { SafeAppAccessPolicyTypes } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { formatVisualAmount } from '@/utils/formatters'
 import { validateAddress } from '@/utils/validation'
@@ -73,4 +73,12 @@ export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
     tags: [],
     safeAppsPermissions: [],
   }
+}
+
+export const getOrigin = (url?: string): string => {
+  if (!url) return ''
+
+  const { origin } = new URL(url)
+
+  return origin
 }

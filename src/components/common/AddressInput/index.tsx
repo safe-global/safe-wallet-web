@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 import { useEffect, useCallback, useRef, useMemo } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
 import { useFormContext, useWatch, type Validate, get } from 'react-hook-form'
-import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
 import useNameResolver from './useNameResolver'
@@ -18,7 +18,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
     register,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, isValidating },
     trigger,
   } = useFormContext()
   const currentChain = useCurrentChain()
@@ -72,7 +72,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
               <InputAdornment position="end">{currentShortName}:</InputAdornment>
             ),
 
-            endAdornment: resolving && (
+            endAdornment: (resolving || isValidating) && (
               <InputAdornment position="end">
                 <CircularProgress size={20} />
               </InputAdornment>

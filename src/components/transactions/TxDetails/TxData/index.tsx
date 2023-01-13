@@ -12,7 +12,7 @@ import {
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
 import { SpendingLimits } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
-import type { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ReactElement } from 'react'
 import RejectionTxInfo from '@/components/transactions/TxDetails/TxData/Rejection'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'

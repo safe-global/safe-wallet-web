@@ -1,7 +1,7 @@
-import { getMasterCopies } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getMasterCopies } from '@safe-global/safe-gateway-typescript-sdk'
 import { _getValidatedGetContractProps, isValidMasterCopy } from '../contracts/safeContracts'
 
-jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => ({
+jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   getMasterCopies: jest.fn(),
 }))
 

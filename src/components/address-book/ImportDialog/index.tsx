@@ -1,7 +1,6 @@
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
-import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { useCSVReader, formatFileSize } from 'react-papaparse'
 import type { ParseResult } from 'papaparse'
@@ -17,6 +16,7 @@ import { abCsvReaderValidator, abOnUploadValidator } from './validation'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { Errors, logError } from '@/services/exceptions'
 import FileUpload, { FileTypes, type FileInfo } from '@/components/common/FileUpload'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']
 
@@ -153,14 +153,12 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
         <Typography>
           Only CSV files exported from a Safe can be imported.
           <br />
-          <Link
-            href="https://help.gnosis-safe.io/en/articles/5299068-address-book-export-and-import"
-            target="_blank"
-            rel="noreferrer"
+          <ExternalLink
+            href="https://help.safe.global/en/articles/5299068-address-book-export-and-import"
             title="Learn about the address book import and export"
           >
             Learn about the address book import and export
-          </Link>
+          </ExternalLink>
         </Typography>
       </DialogContent>
       <DialogActions>
