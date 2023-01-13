@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Grid from '@mui/material/Grid'
-
 import type { SyntheticEvent } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -11,8 +10,7 @@ import AddCustomSafeAppCard from '@/components/new-safe-apps/AddCustomSafeAppCar
 import SafeAppPreviewDrawer from '@/components/new-safe-apps/SafeAppPreviewDrawer/SafeAppPreviewDrawer'
 import SafeAppsListHeader from '@/components/new-safe-apps/SafeAppsListHeader/SafeAppsListHeader'
 import SafeAppsZeroResultsPlaceholder from '@/components/new-safe-apps/SafeAppsZeroResultsPlaceholder/SafeAppsZeroResultsPlaceholder'
-import { useAppsSearch } from '@/hooks/safe-apps/useAppsSearch'
-import { useAppsFilterByCategory } from '@/hooks/safe-apps/useAppsFilterByCategory'
+import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -35,12 +33,8 @@ const SafeAppList = ({
   const [selectedSafeApp, setSelectedSafeApp] = useState<SafeAppData>()
   const [isAppPreviewDrawerOpen, setIsAppPreviewDrawerOpen] = useState<boolean>(false)
 
-  const [query, setQuery] = useState<string>('')
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [optimizedBatch, setOptimizedBatch] = useState<boolean>(false)
-
-  const filteredAppsByQuery = useAppsSearch(safeAppsList, query)
-  const filteredApps = useAppsFilterByCategory(filteredAppsByQuery, selectedCategories)
+  const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
+    useSafeAppsFilters(safeAppsList)
 
   const onClickSafeApp = (safeApp: SafeAppData) => (event: SyntheticEvent) => {
     event.preventDefault()
@@ -58,7 +52,7 @@ const SafeAppList = ({
         <SafeAppsFilters
           onChangeQuery={setQuery}
           onChangeFilterCategory={setSelectedCategories}
-          onChangeOptimizedWithBatch={setOptimizedBatch}
+          onChangeOptimizedWithBatch={setOptimizedWithBatchFilter}
           selectedCategories={selectedCategories}
         />
       )}

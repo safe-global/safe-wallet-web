@@ -20,7 +20,8 @@ type SafeAppsListHeaderProps = {
 const SafeAppsListHeader = ({ amount, safeAppsViewMode, setSafeAppsViewMode }: SafeAppsListHeaderProps) => {
   return (
     <Stack display="flex" flexDirection="row" justifyContent="space-between">
-      <Typography variant="body2" color="text.secondary" mb={1.5} mt={0.5}>
+      {/* Safe Apps count */}
+      <Typography variant="body2" color="primary.light" mb={2} mt={1.5} fontSize="12px" letterSpacing="0.4px">
         ALL ({amount || 0})
       </Typography>
 

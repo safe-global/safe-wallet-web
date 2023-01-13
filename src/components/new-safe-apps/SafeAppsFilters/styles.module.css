@@ -6,3 +6,8 @@
 
   padding: var(--space-1) 0 var(--space-1) 0;
 }
+
+.optimizedWithBatchLabel {
+  font-size: 12px;
+  color: var(--color-text-primary);
+}

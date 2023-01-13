@@ -129,7 +129,7 @@ const SafeAppsFilters = ({
       {/* Optimized with Batch Transaction */}
       <Grid item xs={12} sm={6} md={3} lg={3}>
         <FormControl variant="standard">
-          <FormLabel>Optimized with</FormLabel>
+          <FormLabel className={css.optimizedWithBatchLabel}>Optimized with</FormLabel>
           <FormControlLabel
             control={<Checkbox />}
             onChange={(e, value) => {
