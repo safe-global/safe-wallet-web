@@ -94,12 +94,12 @@ const SafeAppActionButtons = ({
 
 export default SafeAppActionButtons
 
-export const getShareSafeAppUrl = (router: NextRouter, safeAppUrl: string, currentChain?: ChainInfo) => {
+export const getShareSafeAppUrl = (router: NextRouter, appUrl: string, currentChain?: ChainInfo) => {
   const shareUrlObj: UrlObject = {
     protocol: typeof window !== 'undefined' ? window.location.protocol : '',
     host: typeof window !== 'undefined' ? window.location.host : '',
     pathname: AppRoutes.share.safeApp,
-    query: { appUrl: encodeURIComponent(safeAppUrl), chain: currentChain?.shortName },
+    query: { appUrl, chain: currentChain?.shortName },
   }
 
   return resolveHref(router, shareUrlObj)
