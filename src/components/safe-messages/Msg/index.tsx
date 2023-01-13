@@ -23,14 +23,14 @@ const Msg = ({
   }
 
   return (
-    <>
+    <div className={css.overflow}>
+      <pre className={css.pre}>
+        <code className={!showMsg ? css.truncated : undefined}>{JSON.stringify(message, null, 2)}</code>
+      </pre>
       <Link component="button" onClick={handleToggleMsg} fontSize="medium" className={css.toggle}>
         {showMsg ? 'Hide' : 'Show all'}
       </Link>
-      <pre>
-        <code className={!showMsg ? css.truncated : undefined}>{JSON.stringify(message, null, 2)}</code>
-      </pre>
-    </>
+    </div>
   )
 }
 

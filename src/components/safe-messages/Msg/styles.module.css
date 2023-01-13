@@ -1,6 +1,7 @@
 .toggle {
   font-weight: 700;
   text-decoration: underline;
+  text-align: left;
 }
 
 .truncated {
@@ -9,4 +10,12 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   max-height: 9ex;
+}
+
+.overflow {
+  overflow: auto;
+}
+
+.pre {
+  margin: 0;
 }
