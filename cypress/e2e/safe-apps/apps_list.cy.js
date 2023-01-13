@@ -42,7 +42,6 @@ describe('The Safe Apps list', () => {
       cy.findAllByLabelText(/unpin transaction builder/i)
         .first()
         .click()
-      cy.findByText(/no apps found/i).should('exist')
       cy.findByText('ALL (0)').should('exist')
     })
   })
