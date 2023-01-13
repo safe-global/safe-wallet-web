@@ -123,7 +123,7 @@ export const OwnerRow = ({
         >
           {removable && (
             <>
-              <IconButton onClick={() => remove?.(index)}>
+              <IconButton onClick={() => remove?.(index)} aria-label="Remove owner">
                 <SvgIcon component={DeleteIcon} inheritViewBox />
               </IconButton>
             </>
