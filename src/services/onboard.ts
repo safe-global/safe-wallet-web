@@ -1,9 +1,9 @@
-import Onboard, { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { hexValue } from '@ethersproject/bytes'
 import { getAllWallets, getRecommendedInjectedWallets } from '@/hooks/wallets/wallets'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'
 import type { EnvState } from '@/store/settingsSlice'
+import { hexValue } from '@ethersproject/bytes'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import Onboard, { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 
 export type ConnectedWallet = {
   label: string
@@ -49,10 +49,10 @@ export const createOnboard = (
     },
 
     appMetadata: {
-      name: 'Safe{Wallet}',
+      name: 'Celo Safe',
       // Both heights need be set to correctly size the image in the connecting screen/modal
       icon: '<svg height="100%"><image href="/images/safe-logo-green.png" height="100%" /></svg>',
-      description: 'Please select a wallet to connect to Safe{Wallet}',
+      description: 'Please select a wallet to connect to Celo Safe',
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
 
