@@ -11,6 +11,7 @@ import SafeAppPreviewDrawer from '@/components/new-safe-apps/SafeAppPreviewDrawe
 import SafeAppsListHeader from '@/components/new-safe-apps/SafeAppsListHeader/SafeAppsListHeader'
 import SafeAppsZeroResultsPlaceholder from '@/components/new-safe-apps/SafeAppsZeroResultsPlaceholder/SafeAppsZeroResultsPlaceholder'
 import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
+import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -30,17 +31,24 @@ const SafeAppList = ({
   removeCustomApp,
 }: SafeAppListProps) => {
   const [safeAppsViewMode, setSafeAppsViewMode] = useState<SafeAppsViewMode>(GRID_VIEW_MODE)
-  const [selectedSafeApp, setSelectedSafeApp] = useState<SafeAppData>()
-  const [isAppPreviewDrawerOpen, setIsAppPreviewDrawerOpen] = useState<boolean>(false)
+  const {
+    safeApp: selectedSafeApp,
+    setSafeApp: setSelectedSafeApp,
+    isOpen: isAppPreviewDrawerOpen,
+    setIsOpen: setIsAppPreviewDrawerOpen,
+  } = useSafeAppPreviewDrawer()
 
   const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
     useSafeAppsFilters(safeAppsList)
 
   const onClickSafeApp = (safeApp: SafeAppData) => (event: SyntheticEvent) => {
-    event.preventDefault()
+    const isCustomApp = safeApp.id < 1
 
-    setSelectedSafeApp(safeApp)
-    setIsAppPreviewDrawerOpen(true)
+    if (!isCustomApp) {
+      event.preventDefault()
+      setSelectedSafeApp(safeApp)
+      setIsAppPreviewDrawerOpen(true)
+    }
   }
 
   const showZeroResultsPlaceholder = query && filteredApps.length === 0
