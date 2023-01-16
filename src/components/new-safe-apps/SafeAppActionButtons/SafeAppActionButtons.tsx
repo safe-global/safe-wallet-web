@@ -21,7 +21,7 @@ type SafeAppActionButtonsProps = {
   safeApp: SafeAppData
   isBookmarked?: boolean
   onBookmarkSafeApp?: (safeAppId: number) => void
-  removeCustomApp?: (safeAppId: number) => void
+  removeCustomApp?: (safeApp: SafeAppData) => void
 }
 
 const SafeAppActionButtons = ({
@@ -81,7 +81,7 @@ const SafeAppActionButtons = ({
             onClick={(event) => {
               event.preventDefault()
               event.stopPropagation()
-              removeCustomApp(safeApp.id)
+              removeCustomApp(safeApp)
             }}
           >
             <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />

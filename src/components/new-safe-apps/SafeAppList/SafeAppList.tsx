@@ -18,7 +18,7 @@ type SafeAppListProps = {
   onBookmarkSafeApp?: (safeAppId: number) => void
   showFilters?: boolean
   addCustomApp?: (safeApp: SafeAppData) => void
-  removeCustomApp?: (safeAppId: number) => void
+  removeCustomApp?: (safeApp: SafeAppData) => void
 }
 
 const SafeAppList = ({

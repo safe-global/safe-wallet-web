@@ -28,7 +28,7 @@ type SafeAppCardProps = {
   viewMode?: SafeAppsViewMode
   isBookmarked?: boolean
   onBookmarkSafeApp?: (safeAppId: number) => void
-  removeCustomApp?: (safeAppId: number) => void
+  removeCustomApp?: (safeApp: SafeAppData) => void
 }
 
 const SafeAppCard = ({
@@ -89,7 +89,7 @@ type SafeAppCardViewProps = {
   safeAppUrl: string
   isBookmarked?: boolean
   onBookmarkSafeApp?: (safeAppId: number) => void
-  removeCustomApp?: (safeAppId: number) => void
+  removeCustomApp?: (safeApp: SafeAppData) => void
 }
 
 const SafeAppCardGridView = ({
