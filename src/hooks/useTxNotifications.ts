@@ -61,6 +61,14 @@ const getTxLink = (txId: string, chain: ChainInfo, safeAddress: string): { href:
   }
 }
 
+const getTxExplorerLink = (txHash: string, chain: ChainInfo): { href: LinkProps['href']; title: string } => {
+  const { href } = getExplorerLink(txHash, chain.blockExplorerUriTemplate)
+  return {
+    href,
+    title: 'View on explorer',
+  }
+}
+
 const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
@@ -90,11 +98,7 @@ const useTxNotifications = (): void => {
             detailedMessage: isError ? detail.error.message : undefined,
             groupKey,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
-            link: txId
-              ? getTxLink(txId, chain, safeAddress)
-              : txHash
-              ? getExplorerLink(txHash, chain.blockExplorerUriTemplate)
-              : undefined,
+            link: txId ? getTxLink(txId, chain, safeAddress) : txHash ? getTxExplorerLink(txHash, chain) : undefined,
           }),
         )
       }),
