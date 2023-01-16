@@ -66,10 +66,12 @@ const trackWalletType = (wallet: ConnectedWallet) => {
 
   getWalletConnectLabel(wallet)
     .then((wcLabel) => {
-      trackEvent({
-        ...WALLET_EVENTS.WALLET_CONNECT,
-        label: wcLabel,
-      })
+      if (wcLabel) {
+        trackEvent({
+          ...WALLET_EVENTS.WALLET_CONNECT,
+          label: wcLabel,
+        })
+      }
     })
     .catch(() => null)
 }
