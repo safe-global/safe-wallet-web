@@ -31,8 +31,6 @@ import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
-import useABTesting from '@/services/tracking/useABTesting'
-import { AbTest } from '@/services/tracking/abTesting'
 
 import useSafeMessageNotifications from '@/hooks/useSafeMessageNotifications'
 import useSafeMessagePendingStatuses from '@/hooks/useSafeMessagePendingStatuses'
@@ -56,7 +54,6 @@ const InitApp = (): null => {
   useSafeMessagePendingStatuses()
   useTxTracking()
   useBeamer()
-  useABTesting(AbTest.SAFE_CREATION)
 
   return null
 }
@@ -80,7 +77,12 @@ interface WebCoreAppProps extends AppProps {
   emotionCache?: EmotionCache
 }
 
-const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: WebCoreAppProps): ReactElement => {
+const WebCoreApp = ({
+  Component,
+  pageProps,
+  router,
+  emotionCache = clientSideEmotionCache,
+}: WebCoreAppProps): ReactElement => {
   return (
     <StoreHydrator>
       <Head>
@@ -94,7 +96,7 @@ const WebCoreApp = ({ Component, pageProps, emotionCache = clientSideEmotionCach
 
           <InitApp />
 
-          <PageLayout>
+          <PageLayout pathname={router.pathname}>
             <Component {...pageProps} />
           </PageLayout>
 

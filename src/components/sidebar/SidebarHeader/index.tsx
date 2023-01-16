@@ -1,7 +1,5 @@
-import type { ReactElement } from 'react'
-import { useEffect, useState } from 'react'
+import { type ReactElement, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
-import type { IconButtonProps } from '@mui/material/IconButton'
 import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 import Tooltip from '@mui/material/Tooltip'
@@ -10,7 +8,6 @@ import { formatCurrency } from '@/utils/formatNumber'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
-import useBalances from '@/hooks/useBalances'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
 
@@ -28,31 +25,20 @@ import QrCodeButton from '../QrCodeButton'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { SvgIcon } from '@mui/material'
-
-const HeaderIconButton = ({
-  title,
-  children,
-  ...props
-}: { title: string } & Omit<IconButtonProps, 'className' | 'disableRipple' | 'sx'>) => (
-  <Tooltip title={title} placement="top">
-    <IconButton className={css.iconButton} {...props}>
-      {children}
-    </IconButton>
-  </Tooltip>
-)
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
-  const { balances, loading: balancesLoading } = useBalances()
+  const { balances } = useVisibleBalances()
   const { safe, safeAddress, safeLoading } = useSafeInfo()
   const { threshold, owners } = safe
   const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
-  const [fiatTotal, setFiatTotal] = useState<string>('')
 
-  useEffect(() => {
-    setFiatTotal(balancesLoading ? '' : formatCurrency(balances.fiatTotal, currency))
-  }, [currency, balances.fiatTotal, balancesLoading])
+  const fiatTotal = useMemo(
+    () => (balances.fiatTotal ? formatCurrency(balances.fiatTotal, currency) : ''),
+    [currency, balances.fiatTotal],
+  )
 
   const addressCopyText = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
 
@@ -88,9 +74,11 @@ const SafeHeader = (): ReactElement => {
         <div className={css.iconButtons}>
           <Track {...OVERVIEW_EVENTS.SHOW_QR}>
             <QrCodeButton>
-              <HeaderIconButton title="Open QR code">
-                <SvgIcon component={QrIconBold} inheritViewBox color="primary" fontSize="small" />
-              </HeaderIconButton>
+              <Tooltip title="Open QR code" placement="top">
+                <IconButton className={css.iconButton}>
+                  <SvgIcon component={QrIconBold} inheritViewBox color="primary" fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </QrCodeButton>
           </Track>
 
@@ -101,11 +89,16 @@ const SafeHeader = (): ReactElement => {
           </Track>
 
           <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
-            <a target="_blank" rel="noreferrer" href={blockExplorerLink?.href || ''}>
-              <HeaderIconButton title={blockExplorerLink?.title || ''}>
+            <Tooltip title={blockExplorerLink?.title || ''} placement="top">
+              <IconButton
+                className={css.iconButton}
+                target="_blank"
+                rel="noreferrer"
+                href={blockExplorerLink?.href || ''}
+              >
                 <SvgIcon component={LinkIconBold} inheritViewBox fontSize="small" color="primary" />
-              </HeaderIconButton>
-            </a>
+              </IconButton>
+            </Tooltip>
           </Track>
         </div>
       </div>

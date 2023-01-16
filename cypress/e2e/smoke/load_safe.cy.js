@@ -23,7 +23,7 @@ describe('Load existing Safe', () => {
     cy.get('[data-testid=CloseIcon]').click()
 
     // Enters Loading Safe form
-    cy.contains('Add existing Safe').click()
+    cy.contains('button', 'Add existing Safe').click()
     cy.contains('Connect wallet & select network')
   })
 

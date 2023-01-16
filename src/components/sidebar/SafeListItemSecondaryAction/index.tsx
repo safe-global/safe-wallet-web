@@ -21,7 +21,7 @@ const SafeListItemSecondaryAction = ({
 }: {
   chainId: string
   address: string
-  onClick: () => void
+  onClick?: () => void
   href?: LinkProps['href']
 }) => {
   const { configs } = useChains()
@@ -39,7 +39,7 @@ const SafeListItemSecondaryAction = ({
           disableElevation
           onClick={(e) => {
             e.stopPropagation()
-            onClick()
+            onClick?.()
           }}
         >
           Add Safe

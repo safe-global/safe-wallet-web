@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { useEffect, useCallback, useRef, useMemo } from 'react'
+import { useEffect, useCallback, useRef, useMemo, useState } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
 import { useFormContext, useWatch, type Validate, get } from 'react-hook-form'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
@@ -25,6 +25,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
   const rawValueRef = useRef<string>('')
   const watchedValue = useWatch({ name, control })
   const currentShortName = currentChain?.shortName || ''
+  const [isValidating, setIsValidating] = useState<boolean>(false)
 
   // Fetch an ENS resolution for the current address
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
@@ -72,7 +73,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
               <InputAdornment position="end">{currentShortName}:</InputAdornment>
             ),
 
-            endAdornment: resolving && (
+            endAdornment: (resolving || isValidating) && (
               <InputAdornment position="end">
                 <CircularProgress size={20} />
               </InputAdornment>
@@ -94,10 +95,13 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
               return parsePrefixedAddress(value).address
             },
 
-            validate: () => {
+            validate: async () => {
               const value = rawValueRef.current
               if (value) {
-                return validatePrefixed(value) || validate?.(parsePrefixedAddress(value).address)
+                setIsValidating(true)
+                const result = validatePrefixed(value) || (await validate?.(parsePrefixedAddress(value).address))
+                setIsValidating(false)
+                return result
               }
             },
 
