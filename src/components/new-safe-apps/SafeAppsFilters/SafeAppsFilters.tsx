@@ -128,20 +128,28 @@ const SafeAppsFilters = ({
 
       {/* Optimized with Batch Transaction */}
       <Grid item xs={12} sm={6} md={3} lg={3}>
-        <FormControl variant="standard">
-          <FormLabel className={css.optimizedWithBatchLabel}>Optimized with</FormLabel>
-          <FormControlLabel
-            control={<Checkbox />}
-            onChange={(e, value) => {
-              onChangeOptimizedWithBatch(value)
-            }}
-            label={
-              <Box display="flex" alignItems="center" gap={1}>
-                <span>Batch transactions</span> <BatchIcon />
-              </Box>
-            }
-          />
-        </FormControl>
+        <Tooltip
+          title={
+            <div style={{ textAlign: 'center' }}>
+              Merge multiple transactions into one to save time and gas fees inside apps offering this feature
+            </div>
+          }
+        >
+          <FormControl variant="standard">
+            <FormLabel className={css.optimizedWithBatchLabel}>Optimized with</FormLabel>
+            <FormControlLabel
+              control={<Checkbox />}
+              onChange={(e, value) => {
+                onChangeOptimizedWithBatch(value)
+              }}
+              label={
+                <Box display="flex" alignItems="center" gap={1}>
+                  <span>Batch transactions</span> <BatchIcon />
+                </Box>
+              }
+            />
+          </FormControl>
+        </Tooltip>
       </Grid>
     </Grid>
   )
