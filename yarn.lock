@@ -1077,6 +1077,11 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
+"@cometchat-pro/chat@3.0.10":
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/@cometchat-pro/chat/-/chat-3.0.10.tgz#409f85b03d4de29a1ed7623aaba493e135ecbf72"
+  integrity sha512-krbu27SPRKQXMGoamy9tOJMkRAtlJqIpsoZIy5//F6p4tON6XUVDzk8X8UhFXAqTMqEXzCnUPFKS9kyQBH80pg==
+
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz#00629c35a688e05a88b1cda684fb9d5e73f000a1"

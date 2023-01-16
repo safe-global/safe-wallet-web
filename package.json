@@ -33,6 +33,7 @@
     "lint"
   ],
   "dependencies": {
+    "@cometchat-pro/chat": "3.0.10",
     "@date-io/date-fns": "^2.15.0",
     "@emotion/cache": "^11.10.1",
     "@emotion/react": "^11.10.0",

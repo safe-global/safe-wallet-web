@@ -5,6 +5,7 @@ import HomeIcon from '@/public/images/sidebar/home.svg'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import TransactionIcon from '@/public/images/sidebar/transactions.svg'
 import ABIcon from '@/public/images/sidebar/address-book.svg'
+import ChatIcon from '@/public/images/chat/chat-icon.svg'
 import AppsIcon from '@/public/images/apps/apps-icon.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import { SvgIcon } from '@mui/material'
@@ -21,6 +22,11 @@ export const navItems: NavItem[] = [
     label: 'Home',
     icon: <SvgIcon component={HomeIcon} inheritViewBox />,
     href: AppRoutes.home,
+  },
+  {
+    label: 'Chat',
+    icon: <SvgIcon component={ChatIcon} inheritViewBox />,
+    href: AppRoutes.chat,
   },
   {
     label: 'Assets',
