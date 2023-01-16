@@ -76,7 +76,7 @@ const useAppCommunicator = (
       return
     }
 
-    return createSafeAppsWeb3Provider(chain.rpcUri, customRpc[chain.chainId])
+    return createSafeAppsWeb3Provider(chain.rpcUri, customRpc?.[chain.chainId])
   }, [chain, customRpc])
 
   useEffect(() => {

@@ -14,7 +14,7 @@ import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { BigNumber } from 'ethers'
-import { type SettingsState } from '@/store/settingsSlice'
+import type { EnvState } from '@/store/settingsSlice'
 
 export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
   if (!chain) {
@@ -29,14 +29,14 @@ export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
 
 export const getSimulation = async (
   tx: TenderlySimulatePayload,
-  customTenderly: SettingsState['env']['tenderly'],
+  customTenderly: EnvState['tenderly'] | undefined,
 ): Promise<TenderlySimulation> => {
   const requestObject: RequestInit = {
     method: 'POST',
     body: JSON.stringify(tx),
   }
 
-  if (customTenderly.accessToken) {
+  if (customTenderly?.accessToken) {
     requestObject.headers = {
       'content-type': 'application/JSON',
       'X-Access-Key': customTenderly.accessToken,
@@ -44,7 +44,7 @@ export const getSimulation = async (
   }
 
   const data = await fetch(
-    customTenderly.url ? customTenderly.url : TENDERLY_SIMULATE_ENDPOINT_URL,
+    customTenderly?.url ? customTenderly.url : TENDERLY_SIMULATE_ENDPOINT_URL,
     requestObject,
   ).then((res) => {
     if (res.ok) {

@@ -1,10 +1,9 @@
-import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { Paper, Grid, Typography, TextField, Button, Tooltip, IconButton, SvgIcon } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSettings, setCgw, setRpc, setTenderly } from '@/store/settingsSlice'
+import { selectSettings, setEnv } from '@/store/settingsSlice'
 import { GATEWAY_URL_PRODUCTION, TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -34,11 +33,11 @@ const EnvironmentVariables = () => {
 
   const formMethods = useForm<EnvVariablesFormData>({
     mode: 'onChange',
-    defaultValues: {
-      [EnvVariablesField.cgw]: settings.env.cgw ?? '',
-      [EnvVariablesField.rpc]: settings.env.rpc[chainId] ?? '',
-      [EnvVariablesField.tenderlyURL]: settings.env.tenderly.url ?? '',
-      [EnvVariablesField.tenderlyToken]: settings.env.tenderly.accessToken ?? '',
+    values: {
+      [EnvVariablesField.cgw]: settings.env?.cgw ?? '',
+      [EnvVariablesField.rpc]: settings.env?.rpc[chainId] ?? '',
+      [EnvVariablesField.tenderlyURL]: settings.env?.tenderly.url ?? '',
+      [EnvVariablesField.tenderlyToken]: settings.env?.tenderly.accessToken ?? '',
     },
   })
 
@@ -51,10 +50,15 @@ const EnvironmentVariables = () => {
 
   const onSubmit = handleSubmit((data) => {
     trackEvent({ ...SETTINGS_EVENTS.ENV_VARIABLES.SAVE })
-    dispatch(setCgw(data[EnvVariablesField.cgw]))
-    dispatch(setRpc({ chainId, rpc: data[EnvVariablesField.rpc] }))
     dispatch(
-      setTenderly({ url: data[EnvVariablesField.tenderlyURL], accessToken: data[EnvVariablesField.tenderlyToken] }),
+      setEnv({
+        cgw: data[EnvVariablesField.cgw],
+        rpc: data[EnvVariablesField.rpc] ? { [chainId]: data[EnvVariablesField.rpc] } : {},
+        tenderly: {
+          url: data[EnvVariablesField.tenderlyURL],
+          accessToken: data[EnvVariablesField.tenderlyToken],
+        },
+      }),
     )
     location.reload()
   })
@@ -62,19 +66,6 @@ const EnvironmentVariables = () => {
   const onReset = (name: EnvVariablesField) => {
     setValue(name, '')
   }
-
-  useEffect(() => {
-    reset({ [EnvVariablesField.cgw]: settings.env.cgw })
-  }, [reset, settings.env.cgw])
-
-  useEffect(() => {
-    reset({ [EnvVariablesField.rpc]: settings.env.rpc[chainId] })
-  }, [reset, settings.env.rpc, chainId])
-
-  useEffect(() => {
-    reset({ [EnvVariablesField.tenderlyURL]: settings.env.tenderly.url })
-    reset({ [EnvVariablesField.tenderlyToken]: settings.env.tenderly.accessToken })
-  }, [reset, settings.env.tenderly])
 
   return (
     <Paper sx={{ padding: 4 }}>

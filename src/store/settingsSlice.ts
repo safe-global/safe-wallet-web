@@ -4,6 +4,17 @@ import { createSelector, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 import isEqual from 'lodash/isEqual'
 
+export type EnvState = {
+  cgw?: string
+  tenderly: {
+    url?: string
+    accessToken?: string
+  }
+  rpc: {
+    [chainId: string]: string
+  }
+}
+
 export type SettingsState = {
   currency: string
 
@@ -21,16 +32,7 @@ export type SettingsState = {
   theme: {
     darkMode?: boolean
   }
-  env: {
-    cgw?: string
-    tenderly: {
-      url?: string
-      accessToken?: string
-    }
-    rpc: {
-      [chainId: string]: string
-    }
-  }
+  env: EnvState | undefined
 }
 
 const initialState: SettingsState = {
@@ -78,19 +80,8 @@ export const settingsSlice = createSlice({
       state.hiddenTokens ??= {}
       state.hiddenTokens[chainId] = assets
     },
-    setCgw: (state, { payload }: PayloadAction<SettingsState['env']['cgw']>) => {
-      state.env.cgw = payload
-    },
-    setRpc: (state, { payload }: PayloadAction<{ chainId: string; rpc: string }>) => {
-      const { chainId, rpc } = payload
-      state.env.rpc ??= {}
-
-      if (rpc) {
-        state.env.rpc[chainId] = rpc
-      }
-    },
-    setTenderly: (state, { payload }: PayloadAction<SettingsState['env']['tenderly']>) => {
-      state.env.tenderly = payload
+    setEnv: (state, { payload }: PayloadAction<EnvState>) => {
+      state.env = payload
     },
   },
 })
@@ -102,9 +93,7 @@ export const {
   setQrShortName,
   setDarkMode,
   setHiddenTokensForChain,
-  setCgw,
-  setRpc,
-  setTenderly,
+  setEnv,
 } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
@@ -117,10 +106,10 @@ export const selectHiddenTokensPerChain = (state: RootState, chainId: string): s
   return state[settingsSlice.name].hiddenTokens?.[chainId] || []
 }
 
-export const selectCgw = createSelector(selectSettings, (settings) => settings.env.cgw)
+export const selectCgw = createSelector(selectSettings, (settings) => settings.env?.cgw)
 
-export const selectRpc = createSelector(selectSettings, (settings) => settings.env.rpc)
+export const selectRpc = createSelector(selectSettings, (settings) => settings.env?.rpc)
 
-export const selectTenderly = createSelector(selectSettings, (settings) => settings.env.tenderly)
+export const selectTenderly = createSelector(selectSettings, (settings) => settings.env?.tenderly)
 
 export const isEnvInitialState = createSelector(selectSettings, (settings) => isEqual(settings.env, initialState.env))

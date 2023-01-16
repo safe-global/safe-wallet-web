@@ -11,7 +11,7 @@ import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { useInitPairing } from '@/services/pairing/hooks'
 import { isWalletUnlocked, WalletNames } from '@/utils/wallets'
 import { useAppSelector } from '@/store'
-import { selectRpc, type SettingsState } from '@/store/settingsSlice'
+import { type EnvState, selectRpc } from '@/store/settingsSlice'
 
 export type ConnectedWallet = {
   label: string
@@ -25,7 +25,7 @@ const lastWalletStorage = localItem<string>('lastWallet')
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
-export const initOnboard = async (chainConfigs: ChainInfo[], rpcConfig: SettingsState['env']['rpc']) => {
+export const initOnboard = async (chainConfigs: ChainInfo[], rpcConfig: EnvState['rpc'] | undefined) => {
   const { createOnboard } = await import('@/services/onboard')
   if (!getStore()) {
     setStore(createOnboard(chainConfigs, rpcConfig))
