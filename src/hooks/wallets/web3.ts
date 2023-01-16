@@ -15,7 +15,7 @@ export const getRpcServiceUrl = (rpcUri: RpcUri): string => {
 }
 
 export const createWeb3ReadOnly = (rpcUri: RpcUri, customRpc?: string): JsonRpcProvider => {
-  return new JsonRpcProvider({ url: customRpc ? customRpc : getRpcServiceUrl(rpcUri), timeout: 10_000 })
+  return new JsonRpcProvider({ url: customRpc || getRpcServiceUrl(rpcUri), timeout: 10_000 })
 }
 
 export const createWeb3 = (walletProvider: EIP1193Provider): Web3Provider => {
@@ -24,7 +24,7 @@ export const createWeb3 = (walletProvider: EIP1193Provider): Web3Provider => {
 
 export const createSafeAppsWeb3Provider = (safeAppsRpcUri: RpcUri, customRpc?: string): JsonRpcProvider => {
   return new JsonRpcProvider({
-    url: customRpc ? customRpc : formatRpcServiceUrl(safeAppsRpcUri, SAFE_APPS_INFURA_TOKEN),
+    url: customRpc || formatRpcServiceUrl(safeAppsRpcUri, SAFE_APPS_INFURA_TOKEN),
     timeout: 10_000,
   })
 }
