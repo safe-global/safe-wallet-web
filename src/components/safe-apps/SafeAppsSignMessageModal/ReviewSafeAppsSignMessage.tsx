@@ -36,7 +36,7 @@ const ReviewSafeAppsSignMessage = ({
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
 
   const signMessageDeploymentInstance = useMemo(() => getSignMessageLibDeploymentContractInstance(chainId), [chainId])
-  const signMessageAddress = signMessageDeploymentInstance.address
+  const signMessageAddress = signMessageDeploymentInstance.getAddress()
 
   const readableData = useMemo(() => {
     if (isTextMessage) {
@@ -50,9 +50,7 @@ const ReviewSafeAppsSignMessage = ({
     let txData
 
     if (isTextMessage) {
-      txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [
-        hashMessage(getDecodedMessage(message)),
-      ])
+      txData = signMessageDeploymentInstance.encode('signMessage', [hashMessage(getDecodedMessage(message))])
     } else if (isTypedMessage) {
       const typesCopy = { ...message.types }
 
@@ -61,7 +59,7 @@ const ReviewSafeAppsSignMessage = ({
       // The types are not allowed to be recursive, so ever type must either be used by another type, or be
       // the primary type. And there must only be one type that is not used by any other type.
       delete typesCopy.EIP712Domain
-      txData = signMessageDeploymentInstance.interface.encodeFunctionData('signMessage', [
+      txData = signMessageDeploymentInstance.encode('signMessage', [
         _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }

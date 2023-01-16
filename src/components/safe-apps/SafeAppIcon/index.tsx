@@ -1,17 +1,19 @@
 import { type ReactElement, memo } from 'react'
 
-const getIframeContent = (src: string): string => {
-  return `<style>
-    html, body {
-      padding: 0;
-      margin: 0;
-      background-color: transparent;
-      height: 100%;
-    }
-    body {
-      background: url('${src}') center center/contain no-repeat;
-    }
-  </style>`
+const APP_LOGO_FALLBACK_IMAGE = `/images/apps/app-placeholder.svg`
+
+const getIframeContent = (url: string, width: number, height: number): string => {
+  return `
+     <body style="margin: 0;">
+       <img src="${encodeURI(url)}" alt="App logo" width="${width}" height="${height}" />
+       <script>
+          document.querySelector("img").onerror = (e) => {
+           e.target.onerror = null
+           e.target.src = "${APP_LOGO_FALLBACK_IMAGE}"
+         }
+       </script>
+     </body>
+  `
 }
 
 const SafeAppIcon = ({
@@ -27,14 +29,13 @@ const SafeAppIcon = ({
 }): ReactElement => {
   return (
     <iframe
-      srcDoc={getIframeContent(src)}
       title={alt}
-      sandbox=""
+      srcDoc={getIframeContent(src, width, height)}
+      sandbox="allow-scripts"
       referrerPolicy="strict-origin"
-      frameBorder={0}
       width={width}
       height={height}
-      style={{ pointerEvents: 'none' }}
+      style={{ pointerEvents: 'none', border: 0 }}
       tabIndex={-1}
     />
   )
