@@ -1,11 +1,13 @@
 import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
+import { isObjectEIP712TypedData } from '@gnosis.pm/safe-apps-sdk'
 import type { TypedDataDomain } from 'ethers'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
 import { generateSafeMessageHash, generateSafeMessageTypedData } from '@/utils/safe-messages'
+import { normalizeTypedData } from '@/utils/web3'
 
 export const dispatchSafeMsgProposal = async ({
   signer,
@@ -30,8 +32,13 @@ export const dispatchSafeMsgProposal = async ({
       typedData.message,
     )
 
+    let normalizedMessage = message
+    if (isObjectEIP712TypedData(message)) {
+      normalizedMessage = normalizeTypedData(message)
+    }
+
     await proposeSafeMessage(safe.chainId, safe.address.value, {
-      message,
+      message: normalizedMessage,
       signature,
       safeAppId,
     })
