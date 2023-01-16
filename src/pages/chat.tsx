@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import Chat from '../components/chat'
 
 const Home: NextPage = () => {
   return (
@@ -8,7 +9,9 @@ const Home: NextPage = () => {
         <title>Safe – Chat</title>
       </Head>
 
-      <main>Chat</main>
+      <main>
+        <Chat id={''} group={''} />
+      </main>
     </>
   )
 }

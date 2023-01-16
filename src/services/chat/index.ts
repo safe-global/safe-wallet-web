@@ -1,5 +1,4 @@
 import { CometChat } from '@cometchat-pro/chat'
-import { getGlobalState } from '../store'
 
 const CONSTANTS = {
   APP_ID: process.env.REACT_APP_COMET_CHAT_APP_ID,
@@ -11,16 +10,17 @@ const initCometChat = async () => {
   const appID = CONSTANTS.APP_ID
   const region = CONSTANTS.REGION
 
-  const appSetting = new CometChat.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build()
+  const appSetting = new CometChat.AppSettingsBuilder()?.subscribePresenceForAllUsers()?.setRegion(region)?.build()
 
-  await CometChat.init(appID, appSetting)
-    .then(() => console.log('Initialization completed successfully'))
-    .catch((error) => console.log(error))
+  window !== undefined &&
+    (await CometChat.init(appID, appSetting)
+      .then(() => console.log('Initialization completed successfully'))
+      .catch((error) => console.log(error)))
 }
 
 const loginWithCometChat = async () => {
   const authKey = CONSTANTS.Auth_Key
-  const UID = getGlobalState('connectedAccount')
+  const UID = `0xc0163E58648b247c143023CFB26C2BAA42C9d9A9`
 
   return new Promise(async (resolve, reject) => {
     await CometChat.login(UID, authKey)
@@ -31,7 +31,7 @@ const loginWithCometChat = async () => {
 
 const signUpWithCometChat = async () => {
   const authKey = CONSTANTS.Auth_Key
-  const UID = getGlobalState('connectedAccount')
+  const UID = `0xc0163E58648b247c143023CFB26C2BAA42C9d9A9`
   const user = new CometChat.User(UID)
 
   user.setName(UID)
@@ -45,6 +45,7 @@ const signUpWithCometChat = async () => {
 const logOutWithCometChat = async () => {
   return new Promise(async (resolve, reject) => {
     await CometChat.logout()
+      //@ts-ignore
       .then(() => resolve())
       .catch(() => reject())
   })
@@ -83,6 +84,7 @@ const joinGroup = async (GUID: any) => {
   const password = ''
 
   return new Promise(async (resolve, reject) => {
+    //@ts-ignore
     await CometChat.joinGroup(GUID, groupType, password)
       .then((group) => resolve(group))
       .catch((error) => reject(error))
@@ -96,6 +98,7 @@ const getMessages = async (UID: any) => {
   return new Promise(async (resolve, reject) => {
     await messagesRequest
       .fetchPrevious()
+      //@ts-ignore
       .then((messages) => resolve(messages.filter((msg) => msg.type == 'text')))
       .catch((error) => reject(error))
   })
