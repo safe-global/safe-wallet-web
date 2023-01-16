@@ -12,6 +12,11 @@ export type SettingsState = {
       }
     | undefined /* This was added to the slice later, so hydration will set it to undefined initially */
 
+  tokenList:
+    | 'ALL'
+    | 'DEFAULT'
+    | undefined /* This was added to the slice later, so hydration will set it to undefined initially */
+
   shortName: {
     show: boolean
     copy: boolean
@@ -24,6 +29,8 @@ export type SettingsState = {
 
 const initialState: SettingsState = {
   currency: 'usd',
+
+  tokenList: 'DEFAULT',
 
   hiddenTokens: {},
 
@@ -59,11 +66,21 @@ export const settingsSlice = createSlice({
       state.hiddenTokens ??= {}
       state.hiddenTokens[chainId] = assets
     },
+    setTokenList: (state, { payload }: PayloadAction<SettingsState['tokenList']>) => {
+      state.tokenList = payload
+    },
   },
 })
 
-export const { setCurrency, setShowShortName, setCopyShortName, setQrShortName, setDarkMode, setHiddenTokensForChain } =
-  settingsSlice.actions
+export const {
+  setCurrency,
+  setShowShortName,
+  setCopyShortName,
+  setQrShortName,
+  setDarkMode,
+  setHiddenTokensForChain,
+  setTokenList,
+} = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
 

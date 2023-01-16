@@ -66,6 +66,7 @@ describe('HiddenTokenToggle', () => {
         settings: {
           currency: 'usd',
           hiddenTokens: mockHiddenAssets,
+          tokenList: 'ALL',
           shortName: {
             show: true,
             copy: true,

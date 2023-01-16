@@ -88,6 +88,7 @@ describe('AssetsTable', () => {
         settings: {
           currency: 'usd',
           hiddenTokens: mockHiddenAssets,
+          tokenList: 'ALL',
           shortName: {
             show: true,
             copy: true,
@@ -182,6 +183,7 @@ describe('AssetsTable', () => {
         settings: {
           currency: 'usd',
           hiddenTokens: mockHiddenAssets,
+          tokenList: 'ALL',
           shortName: {
             show: true,
             copy: true,
@@ -272,6 +274,7 @@ describe('AssetsTable', () => {
         settings: {
           currency: 'usd',
           hiddenTokens: mockHiddenAssets,
+          tokenList: 'ALL',
           shortName: {
             show: true,
             copy: true,
@@ -359,6 +362,7 @@ describe('AssetsTable', () => {
         settings: {
           currency: 'usd',
           hiddenTokens: mockHiddenAssets,
+          tokenList: 'ALL',
           shortName: {
             show: true,
             copy: true,
