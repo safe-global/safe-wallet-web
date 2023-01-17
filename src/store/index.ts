@@ -66,7 +66,7 @@ export const _hydrationReducer: typeof rootReducer = (state, action) => {
      * When changing the schema of a Redux slice, previously stored data in LS might become incompatible.
      * To avoid this, we should always migrate the data on a case-by-case basis in the corresponding slice.
      * However, as a catch-all measure, we attempt to merge the stored data with the initial Redux state,
-     * so that any new properties added to the slice are not overwritten as undefined.
+     * so that any newly added properties in the initial state are preserved, and existing properties are taken from the LS.
      *
      * @see https://lodash.com/docs/4.17.15#merge
      */
