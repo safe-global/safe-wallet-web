@@ -37,6 +37,16 @@ const SafeAppList = ({
 
   const showZeroResultsPlaceholder = query && filteredApps.length === 0
 
+  const handleSafeAppClick = (safeApp: SafeAppData) => {
+    const isCustomApp = safeApp.id < 0
+
+    if (isCustomApp) {
+      return
+    }
+
+    openPreviewDrawer(safeApp)
+  }
+
   return (
     <>
       {/* Safe Apps Filters */}
@@ -75,7 +85,7 @@ const SafeAppList = ({
                   isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
                   onBookmarkSafeApp={onBookmarkSafeApp}
                   removeCustomApp={removeCustomApp}
-                  onClickSafeApp={() => openPreviewDrawer(safeApp)}
+                  onClickSafeApp={safeApp.id > 1 ? () => openPreviewDrawer(safeApp) : undefined}
                 />
               </Grid>
             )
@@ -93,7 +103,7 @@ const SafeAppList = ({
                   isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
                   onBookmarkSafeApp={onBookmarkSafeApp}
                   removeCustomApp={removeCustomApp}
-                  onClickSafeApp={() => openPreviewDrawer(safeApp)}
+                  onClickSafeApp={() => handleSafeAppClick(safeApp)}
                 />
               </Grid>
             )

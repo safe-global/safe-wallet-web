@@ -12,17 +12,10 @@ const useSafeAppPreviewDrawer = (): ReturnType => {
   const [previewDrawerApp, setPreviewDrawerApp] = useState<SafeAppData>()
   const [isPreviewDrawerOpen, setIsPreviewDrawerOpen] = useState<boolean>(false)
 
-  const openPreviewDrawer = useCallback(
-    (safeApp: SafeAppData) => {
-      const isCustomApp = previewDrawerApp && previewDrawerApp.id < 1
-
-      if (!isCustomApp) {
-        setPreviewDrawerApp(safeApp)
-        setIsPreviewDrawerOpen(true)
-      }
-    },
-    [previewDrawerApp],
-  )
+  const openPreviewDrawer = useCallback((safeApp: SafeAppData) => {
+    setPreviewDrawerApp(safeApp)
+    setIsPreviewDrawerOpen(true)
+  }, [])
 
   const closePreviewDrawer = useCallback(() => {
     setIsPreviewDrawerOpen(false)
