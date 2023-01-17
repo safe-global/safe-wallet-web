@@ -60,7 +60,7 @@ export const getPersistedState = () => {
   return getPreloadedState(persistedSlices)
 }
 
-const hydrationReducer: typeof rootReducer = (state, action) => {
+export const _hydrationReducer: typeof rootReducer = (state, action) => {
   if (action.type === HYDRATE_ACTION) {
     // `merge` mutates the first argument, so we need to create a new object
     return merge({}, state, action.payload)
@@ -70,7 +70,7 @@ const hydrationReducer: typeof rootReducer = (state, action) => {
 
 const makeStore = (initialState?: Record<string, any>) => {
   return configureStore({
-    reducer: hydrationReducer,
+    reducer: _hydrationReducer,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
     devTools: !IS_PRODUCTION,
     preloadedState: initialState,
@@ -80,7 +80,7 @@ const makeStore = (initialState?: Record<string, any>) => {
 export const StoreHydrator = createStoreHydrator(makeStore)
 
 export type AppDispatch = ReturnType<typeof makeStore>['dispatch']
-export type RootState = ReturnType<typeof hydrationReducer>
+export type RootState = ReturnType<typeof _hydrationReducer>
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AnyAction>
 
