@@ -15,13 +15,11 @@ const Threshold = ({ threshold, owners }: ThresholdProps): ReactElement => (
   </Box>
 )
 
-const PendingActionsBadge = ({ queuedTxs }: { queuedTxs?: number }): ReactElement => {
-  return (
-    <Box className={classnames(css.badge, css.pending)} sx={{ color: ({ palette }) => palette.static.main }}>
-      {queuedTxs}
-    </Box>
-  )
-}
+const PendingActionsBadge = ({ queuedTxs }: { queuedTxs: number }): ReactElement => (
+  <Box className={classnames(css.badge, css.pending)} sx={{ color: ({ palette }) => palette.static.main }}>
+    {queuedTxs}
+  </Box>
+)
 
 interface SafeIconProps extends IdenticonProps {
   threshold?: ThresholdProps['threshold']
@@ -34,7 +32,7 @@ const SafeIcon = ({ address, threshold, owners, size, queuedTxs }: SafeIconProps
   <div className={css.container}>
     {threshold && owners ? <Threshold threshold={threshold} owners={owners} /> : null}
     <Identicon address={address} size={size} />
-    {queuedTxs && <PendingActionsBadge queuedTxs={queuedTxs} />}
+    {!!queuedTxs && <PendingActionsBadge queuedTxs={queuedTxs} />}
   </div>
 )
 

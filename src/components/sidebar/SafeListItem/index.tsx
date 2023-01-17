@@ -35,6 +35,7 @@ const SafeListItem = ({
   threshold?: string | number
   owners?: string | number
   noActions?: boolean
+  queuedTxs?: number
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()

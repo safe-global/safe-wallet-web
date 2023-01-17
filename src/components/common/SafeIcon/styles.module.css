@@ -27,5 +27,5 @@
 .pending {
   bottom: -6px;
   left: -6px;
-  background-color: orange;
+  background-color: var(--color-info-main);
 }

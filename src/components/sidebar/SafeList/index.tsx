@@ -30,6 +30,8 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
 import UpdateIcon from '@/public/images/common/update.svg'
+import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
+import { isTransactionListItem } from '@/utils/transaction-guards'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -67,6 +69,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
+  const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, number>>({})
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const toggleOpen = (chainId: string, open: boolean) => {
@@ -75,6 +78,18 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
   const isWelcomePage = router.pathname === AppRoutes.welcome
+
+  const handleFetchQueued = async () => {
+    const fetchedQueuedTxs: Record<string, number> = {}
+
+    Object.entries(addedSafes).forEach(([chainId, safes]) => {
+      Object.keys(safes).forEach(async (safeAddress) => {
+        const result = await getTransactionQueue(chainId, safeAddress)
+        fetchedQueuedTxs[safeAddress] = result.results.filter(isTransactionListItem).length
+      })
+    })
+    setSafeQueuedTxs(fetchedQueuedTxs)
+  }
 
   return (
     <div className={css.container}>
@@ -86,11 +101,11 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
           disableElevation
           size="small"
           variant="outlined"
-          onClick={() => console.log('fetch the queue')}
+          onClick={handleFetchQueued}
           startIcon={<SvgIcon component={UpdateIcon} inheritViewBox fontSize="small" />}
           sx={{ color: 'orange' }}
         >
-          Fetch
+          Update
         </Button>
         {!isWelcomePage && (
           <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
@@ -176,6 +191,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                     chainId={chain.chainId}
                     closeDrawer={closeDrawer}
                     shouldScrollToSafe
+                    queuedTxs={safeQueuedTxs[address]}
                   />
                 ))}
 
