@@ -1,5 +1,12 @@
 .safeAppContainer {
   height: 100%;
+  transition: background-color 0.3s ease-in-out, border 0.3s ease-in-out;
+  border: 1px solid transparent;
+}
+
+.safeAppContainer:hover {
+  background-color: var(--color-background-light);
+  border: 1px solid var(--color-secondary-light);
 }
 
 .safeAppHeader {

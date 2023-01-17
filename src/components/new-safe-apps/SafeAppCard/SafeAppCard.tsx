@@ -13,9 +13,9 @@ import type { UrlObject } from 'url'
 
 import SafeAppIconCard from '@/components/new-safe-apps/SafeAppIconCard/SafeAppIconCard'
 import { AppRoutes } from '@/config/routes'
-import css from './styles.module.css'
 import SafeAppActionButtons from '../SafeAppActionButtons/SafeAppActionButtons'
 import SafeAppTags from '../SafeAppTags/SafeAppTags'
+import css from './styles.module.css'
 
 export type SafeAppsViewMode = 'list-view' | 'grid-view'
 
