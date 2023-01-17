@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getMessages, listenForMessage, sendMessage } from '../../services/chat'
+
+import { getMessages, initCometChat, listenForMessage, sendMessage } from '../../services/chat'
 
 //@ts-ignore
 const Chat = ({ id, group }) => {
@@ -23,6 +24,7 @@ const Chat = ({ id, group }) => {
   }
 
   useEffect(() => {
+    initCometChat()
     async function getM() {
       await getMessages(`pid_${connectedAccount}`)
         .then((msgs) => {

@@ -77,7 +77,6 @@ const Apps: NextPage = () => {
       <Head>
         <title>Safe Apps</title>
       </Head>
-
       <SafeAppList />
     </>
   )

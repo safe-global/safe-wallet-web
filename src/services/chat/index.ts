@@ -12,10 +12,9 @@ const initCometChat = async () => {
 
   const appSetting = new CometChat.AppSettingsBuilder()?.subscribePresenceForAllUsers()?.setRegion(region)?.build()
 
-  window !== undefined &&
-    (await CometChat.init(appID, appSetting)
-      .then(() => console.log('Initialization completed successfully'))
-      .catch((error) => console.log(error)))
+  await CometChat.init(appID, appSetting)
+    .then(() => console.log('Initialization completed successfully'))
+    .catch((error) => console.log(error))
 }
 
 const loginWithCometChat = async () => {

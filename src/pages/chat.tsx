@@ -1,8 +1,16 @@
 import type { NextPage } from 'next'
+import { useEffect } from 'react'
 import Head from 'next/head'
-import Chat from '../components/chat'
+import dynamic from 'next/dynamic'
+
+const CometChatNoSSR = dynamic(() => import('../components/chat/index'), { ssr: false })
 
 const Home: NextPage = () => {
+  useEffect(() => {
+    //@ts-ignore
+    window.CometChat = require('@cometchat-pro/chat').CometChat
+  })
+
   return (
     <>
       <Head>
@@ -10,7 +18,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-        <Chat id={''} group={''} />
+        <CometChatNoSSR id={''} group={''} />
       </main>
     </>
   )
