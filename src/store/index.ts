@@ -62,7 +62,19 @@ export const getPersistedState = () => {
 
 export const _hydrationReducer: typeof rootReducer = (state, action) => {
   if (action.type === HYDRATE_ACTION) {
-    // `merge` mutates the first argument, so we need to create a new object
+    /**
+     * `merge` is required when adding new properties to slices, otherwise the new properties will be lost
+     * when the store is rehydrated. It recursively merges own/inherited enumerable string keyed properties
+     * of source objects into destination object.
+     *
+     * Source properties that resolve to `undefined` are skipped (e.g. empty persisted state) if a destination
+     * value exists (initial state). Array and plain object properties are merged recursively. Other objects
+     * and value types are overridden by assignment. Source objects are applied from left to right. Subsequent
+     * sources overwrite property assignments of previous sources.
+     *
+     * @see https://lodash.com/docs/4.17.15#merge
+     */
+
     return merge({}, state, action.payload)
   }
   return rootReducer(state, action)
