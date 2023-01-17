@@ -9,7 +9,7 @@ import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { getSafeAppUrl } from '@/components/new-safe-apps/SafeAppCard/SafeAppCard'
+import { getSafeAppUrl } from '@/components/safe-apps/SafeAppCard/SafeAppCard'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SafeAppIconCard from '../SafeAppIconCard/SafeAppIconCard'
 import SafeAppActionButtons from '../SafeAppActionButtons/SafeAppActionButtons'

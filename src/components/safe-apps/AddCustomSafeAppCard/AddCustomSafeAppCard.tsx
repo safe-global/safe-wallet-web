@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import AddCustomAppIcon from '@/public/images/apps/add-custom-app.svg'
-import { AddCustomAppModal } from '@/components/new-safe-apps/AddCustomAppModal'
+import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
 
 type Props = { onSave: (data: SafeAppData) => void; safeAppList: SafeAppData[] }
 

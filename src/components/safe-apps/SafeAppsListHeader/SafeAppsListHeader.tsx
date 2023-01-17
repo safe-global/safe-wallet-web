@@ -8,8 +8,8 @@ import GridViewIcon from '@/public/images/apps/grid-view-icon.svg'
 import GridViewIconChecked from '@/public/images/apps/grid-view-icon-checked.svg'
 import ListViewIcon from '@/public/images/apps/list-view-icon.svg'
 import ListViewIconChecked from '@/public/images/apps/list-view-icon-checked.svg'
-import { GRID_VIEW_MODE, LIST_VIEW_MODE } from '@/components/new-safe-apps/SafeAppCard/SafeAppCard'
-import type { SafeAppsViewMode } from '@/components/new-safe-apps/SafeAppCard/SafeAppCard'
+import { GRID_VIEW_MODE, LIST_VIEW_MODE } from '@/components/safe-apps/SafeAppCard/SafeAppCard'
+import type { SafeAppsViewMode } from '@/components/safe-apps/SafeAppCard/SafeAppCard'
 
 type SafeAppsListHeaderProps = {
   amount?: number

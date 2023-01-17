@@ -14,7 +14,7 @@
     "lint:fix": "next lint --fix",
     "prettier": "prettier -w \"{src,cypress,mocks,scripts}/**/*.{ts,tsx,css,js}\"",
     "fix": "yarn lint:fix && ts-prune && yarn prettier",
-    "test": "cross-env TZ=CET DEBUG_PRINT_LIMIT=30000 jest",
+    "test": "cross-env TZ=CET DEBUG_PRINT_LIMIT=30000 jest --watchAll",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --outputFile=jest.results.json",
     "cmp": "./scripts/cmp.sh",
     "routes": "node scripts/generate-routes.js > src/config/routes.ts && prettier -w src/config/routes.ts && cat src/config/routes.ts",
