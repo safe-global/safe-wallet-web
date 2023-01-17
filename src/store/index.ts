@@ -6,6 +6,7 @@ import {
   type AnyAction,
 } from '@reduxjs/toolkit'
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
+import merge from 'lodash/merge'
 import { IS_PRODUCTION } from '@/config/constants'
 import { createStoreHydrator, HYDRATE_ACTION } from './storeHydrator'
 import { chainsSlice } from './chainsSlice'
@@ -61,10 +62,8 @@ export const getPersistedState = () => {
 
 const hydrationReducer: typeof rootReducer = (state, action) => {
   if (action.type === HYDRATE_ACTION) {
-    return {
-      ...state,
-      ...action.payload,
-    }
+    // `merge` mutates the first argument, so we need to create a new object
+    return merge({}, state, action.payload)
   }
   return rootReducer(state, action)
 }
