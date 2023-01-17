@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Grid from '@mui/material/Grid'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -37,15 +37,16 @@ const SafeAppList = ({
 
   const showZeroResultsPlaceholder = query && filteredApps.length === 0
 
-  const handleSafeAppClick = (safeApp: SafeAppData) => {
-    const isCustomApp = safeApp.id < 0
+  const handleSafeAppClick = useCallback(
+    (safeApp: SafeAppData) => {
+      const isCustomApp = safeApp.id < 1
 
-    if (isCustomApp) {
-      return
-    }
+      if (isCustomApp) return
 
-    openPreviewDrawer(safeApp)
-  }
+      return () => openPreviewDrawer(safeApp)
+    },
+    [openPreviewDrawer],
+  )
 
   return (
     <>
@@ -85,7 +86,7 @@ const SafeAppList = ({
                   isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
                   onBookmarkSafeApp={onBookmarkSafeApp}
                   removeCustomApp={removeCustomApp}
-                  onClickSafeApp={safeApp.id > 1 ? () => openPreviewDrawer(safeApp) : undefined}
+                  onClickSafeApp={handleSafeAppClick(safeApp)}
                 />
               </Grid>
             )
@@ -103,7 +104,7 @@ const SafeAppList = ({
                   isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
                   onBookmarkSafeApp={onBookmarkSafeApp}
                   removeCustomApp={removeCustomApp}
-                  onClickSafeApp={() => handleSafeAppClick(safeApp)}
+                  onClickSafeApp={handleSafeAppClick(safeApp)}
                 />
               </Grid>
             )

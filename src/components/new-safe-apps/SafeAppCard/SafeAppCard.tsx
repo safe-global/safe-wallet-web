@@ -45,11 +45,6 @@ const SafeAppCard = ({
 
   const isListViewMode = viewMode === LIST_VIEW_MODE
 
-  const handleClickSafeApp = (e: SyntheticEvent) => {
-    e.preventDefault()
-    onClickSafeApp?.()
-  }
-
   if (isListViewMode) {
     return (
       <SafeAppCardListView
