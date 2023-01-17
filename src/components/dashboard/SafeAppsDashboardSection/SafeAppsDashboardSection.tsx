@@ -55,7 +55,7 @@ export default SafeAppsDashboardSection
 
 const ExploreSafeAppsCard = () => {
   const router = useRouter()
-  const safeAppsLink = `${AppRoutes.apps}?safe=${router.query.safe}`
+  const safeAppsLink = `${AppRoutes.apps.index}?safe=${router.query.safe}`
 
   return (
     <AppCardContainer url={safeAppsLink}>
