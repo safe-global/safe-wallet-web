@@ -205,8 +205,8 @@ describe('AppsPage', () => {
       })
     })
 
-    it('Adds a Custom Safe App', async () => {
-      const APP_URL = 'https://apps.gnosis-safe.io/compound'
+    it('adds a Custom Safe App', async () => {
+      const APP_URL = 'https://apps.safe.global/test-custom-app'
 
       jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
         id: 12345,
@@ -295,7 +295,7 @@ describe('AppsPage', () => {
     })
 
     it('Requires risk acknowledgment checkbox to add the app', async () => {
-      const APP_URL = 'https://apps.gnosis-safe.io/compound'
+      const APP_URL = 'https://apps.safe.global/test-custom-app'
 
       jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
         id: 12345,
@@ -341,7 +341,7 @@ describe('AppsPage', () => {
     })
 
     it('allows removing custom apps', async () => {
-      const APP_URL = 'https://apps.gnosis-safe.io/compound'
+      const APP_URL = 'https://apps.safe.global/test-custom-app'
 
       jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
         id: 12345,
