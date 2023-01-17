@@ -3,7 +3,7 @@ import type { EIP712TypedData, Methods, RequestId } from '@gnosis.pm/safe-apps-s
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import type { TxModalProps } from '@/components/tx/TxModal'
 import TxModal from '@/components/tx/TxModal'
-import SafeAppsModalLabel from '../SafeAppsModalLabel'
+import SafeAppsModalLabel from '@/components/safe-apps/SafeAppsModalLabel'
 import ReviewSafeAppsSignMessage from './ReviewSafeAppsSignMessage'
 
 export type SafeAppsSignMessageParams = {

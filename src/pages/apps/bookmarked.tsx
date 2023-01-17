@@ -2,9 +2,9 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
-import SafeAppsHeader from '@/components/new-safe-apps/SafeAppsHeader/SafeAppsHeader'
-import SafeAppList from '@/components/new-safe-apps/SafeAppList/SafeAppList'
-import SafeAppsSDKLink from '@/components/new-safe-apps/SafeAppsSDKLink/SafeAppsSDKLink'
+import SafeAppsHeader from '@/components/safe-apps/SafeAppsHeader/SafeAppsHeader'
+import SafeAppList from '@/components/safe-apps/SafeAppList/SafeAppList'
+import SafeAppsSDKLink from '@/components/safe-apps/SafeAppsSDKLink/SafeAppsSDKLink'
 
 const BookmarkedSafeApps: NextPage = () => {
   // TODO: create a custom hook instead of use useSafeApps

@@ -14,12 +14,12 @@ import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import type { SafeAppsSignMessageParams } from '../SafeAppsSignMessageModal'
+import type { SafeAppsSignMessageParams } from '@/components/safe-apps/SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
 import useTxSender from '@/hooks/useTxSender'
-import { getDecodedMessage } from '../utils'
+import { getDecodedMessage } from '@/components/safe-apps/utils'
 
 type ReviewSafeAppsSignMessageProps = {
   safeAppsSignMessage: SafeAppsSignMessageParams

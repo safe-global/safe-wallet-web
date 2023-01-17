@@ -11,7 +11,7 @@ import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { NextRouter } from 'next/router'
 import type { UrlObject } from 'url'
 
-import SafeAppIconCard from '@/components/new-safe-apps/SafeAppIconCard/SafeAppIconCard'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard/SafeAppIconCard'
 import { AppRoutes } from '@/config/routes'
 import SafeAppActionButtons from '../SafeAppActionButtons/SafeAppActionButtons'
 import SafeAppTags from '../SafeAppTags/SafeAppTags'

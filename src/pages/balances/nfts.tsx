@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { Alert, AlertTitle, Box, Grid, Typography } from '@mui/material'
 import AssetsHeader from '@/components/balances/AssetsHeader'
 import NftCollections from '@/components/nfts/NftCollections'
-import { AppCard } from '@/components/safe-apps/AppCard'
+import SafeAppCard from '@/components/safe-apps/SafeAppCard/SafeAppCard'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 
@@ -23,9 +23,9 @@ const NftApps = memo(function NftApps(): ReactElement | null {
       </Typography>
 
       <Grid container spacing={3}>
-        {nftApps.map((nftApp) => (
-          <Grid item xs={12} md={4} lg={3} key={nftApp.id}>
-            <AppCard safeApp={nftApp} />
+        {nftApps.map((nftSafeApp) => (
+          <Grid item xs={12} md={4} lg={3} key={nftSafeApp.id}>
+            <SafeAppCard safeApp={nftSafeApp} />
           </Grid>
         ))}
       </Grid>
