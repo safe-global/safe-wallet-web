@@ -1,5 +1,5 @@
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useState } from 'react'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 type ReturnType = {
   isPreviewDrawerOpen: boolean
