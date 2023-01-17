@@ -2,10 +2,8 @@
   position: relative;
 }
 
-.threshold {
+.badge {
   position: absolute;
-  top: -6px;
-  right: -6px;
   z-index: 1;
   border-radius: 100%;
   font-size: 12px;
@@ -18,5 +16,16 @@
   align-items: center;
   line-height: 16px;
   font-weight: 700;
+}
+
+.threshold {
+  top: -6px;
+  right: -6px;
   background-color: var(--color-secondary-light);
+}
+
+.pending {
+  bottom: -6px;
+  left: -6px;
+  background-color: orange;
 }

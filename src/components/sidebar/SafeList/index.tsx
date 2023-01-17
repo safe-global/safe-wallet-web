@@ -29,6 +29,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
+import UpdateIcon from '@/public/images/common/update.svg'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -81,6 +82,16 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
         <Typography variant="h4" display="inline" fontWeight={700}>
           My Safes
         </Typography>
+        <Button
+          disableElevation
+          size="small"
+          variant="outlined"
+          onClick={() => console.log('fetch the queue')}
+          startIcon={<SvgIcon component={UpdateIcon} inheritViewBox fontSize="small" />}
+          sx={{ color: 'orange' }}
+        >
+          Fetch
+        </Button>
         {!isWelcomePage && (
           <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
             <Link href={{ pathname: AppRoutes.welcome }} passHref>
@@ -118,8 +129,8 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
         configs.map((chain) => {
           const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
           const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
-          const isCurrentChain = chain.chainId === chainId
           const addedSafeEntriesOnChain = Object.entries(addedSafesOnChain)
+          const isCurrentChain = chain.chainId === chainId
 
           if (!isCurrentChain && !ownedSafesOnChain.length && !addedSafeEntriesOnChain.length) {
             return null
