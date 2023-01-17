@@ -1,5 +1,5 @@
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 type ReturnType = {
   isPreviewDrawerOpen: boolean
@@ -12,18 +12,21 @@ const useSafeAppPreviewDrawer = (): ReturnType => {
   const [previewDrawerApp, setPreviewDrawerApp] = useState<SafeAppData>()
   const [isPreviewDrawerOpen, setIsPreviewDrawerOpen] = useState<boolean>(false)
 
-  const openPreviewDrawer = (safeApp: SafeAppData) => {
-    const isCustomApp = previewDrawerApp && previewDrawerApp.id < 1
+  const openPreviewDrawer = useCallback(
+    (safeApp: SafeAppData) => {
+      const isCustomApp = previewDrawerApp && previewDrawerApp.id < 1
 
-    if (!isCustomApp) {
-      setPreviewDrawerApp(safeApp)
-      setIsPreviewDrawerOpen(true)
-    }
-  }
+      if (!isCustomApp) {
+        setPreviewDrawerApp(safeApp)
+        setIsPreviewDrawerOpen(true)
+      }
+    },
+    [previewDrawerApp],
+  )
 
-  const closePreviewDrawer = () => {
+  const closePreviewDrawer = useCallback(() => {
     setIsPreviewDrawerOpen(false)
-  }
+  }, [])
 
   return { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer }
 }
