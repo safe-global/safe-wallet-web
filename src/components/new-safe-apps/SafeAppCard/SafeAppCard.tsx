@@ -24,7 +24,7 @@ export const LIST_VIEW_MODE: SafeAppsViewMode = 'list-view'
 
 type SafeAppCardProps = {
   safeApp: SafeAppData
-  onClickSafeApp?: (event: SyntheticEvent) => void
+  onClickSafeApp?: () => void
   viewMode?: SafeAppsViewMode
   isBookmarked?: boolean
   onBookmarkSafeApp?: (safeAppId: number) => void
@@ -45,6 +45,11 @@ const SafeAppCard = ({
 
   const isListViewMode = viewMode === LIST_VIEW_MODE
 
+  const handleClickSafeApp = (e: SyntheticEvent) => {
+    e.preventDefault()
+    onClickSafeApp?.()
+  }
+
   if (isListViewMode) {
     return (
       <SafeAppCardListView
@@ -53,7 +58,7 @@ const SafeAppCard = ({
         isBookmarked={isBookmarked}
         onBookmarkSafeApp={onBookmarkSafeApp}
         removeCustomApp={removeCustomApp}
-        onClickSafeApp={onClickSafeApp}
+        onClickSafeApp={handleClickSafeApp}
       />
     )
   }
@@ -66,7 +71,7 @@ const SafeAppCard = ({
       isBookmarked={isBookmarked}
       onBookmarkSafeApp={onBookmarkSafeApp}
       removeCustomApp={removeCustomApp}
-      onClickSafeApp={onClickSafeApp}
+      onClickSafeApp={handleClickSafeApp}
     />
   )
 }

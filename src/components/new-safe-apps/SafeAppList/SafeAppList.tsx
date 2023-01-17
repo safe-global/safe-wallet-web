@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Grid from '@mui/material/Grid'
-import type { SyntheticEvent } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import SafeAppsFilters from '@/components/new-safe-apps/SafeAppsFilters/SafeAppsFilters'
@@ -11,6 +10,7 @@ import SafeAppPreviewDrawer from '@/components/new-safe-apps/SafeAppPreviewDrawe
 import SafeAppsListHeader from '@/components/new-safe-apps/SafeAppsListHeader/SafeAppsListHeader'
 import SafeAppsZeroResultsPlaceholder from '@/components/new-safe-apps/SafeAppsZeroResultsPlaceholder/SafeAppsZeroResultsPlaceholder'
 import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
+import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -30,18 +30,10 @@ const SafeAppList = ({
   removeCustomApp,
 }: SafeAppListProps) => {
   const [safeAppsViewMode, setSafeAppsViewMode] = useState<SafeAppsViewMode>(GRID_VIEW_MODE)
-  const [selectedSafeApp, setSelectedSafeApp] = useState<SafeAppData>()
-  const [isAppPreviewDrawerOpen, setIsAppPreviewDrawerOpen] = useState<boolean>(false)
+  const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
 
   const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
     useSafeAppsFilters(safeAppsList)
-
-  const onClickSafeApp = (safeApp: SafeAppData) => (event: SyntheticEvent) => {
-    event.preventDefault()
-
-    setSelectedSafeApp(safeApp)
-    setIsAppPreviewDrawerOpen(true)
-  }
 
   const showZeroResultsPlaceholder = query && filteredApps.length === 0
 
@@ -83,7 +75,7 @@ const SafeAppList = ({
                   isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
                   onBookmarkSafeApp={onBookmarkSafeApp}
                   removeCustomApp={removeCustomApp}
-                  onClickSafeApp={onClickSafeApp(safeApp)}
+                  onClickSafeApp={() => openPreviewDrawer(safeApp)}
                 />
               </Grid>
             )
@@ -101,7 +93,7 @@ const SafeAppList = ({
                   isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
                   onBookmarkSafeApp={onBookmarkSafeApp}
                   removeCustomApp={removeCustomApp}
-                  onClickSafeApp={onClickSafeApp(safeApp)}
+                  onClickSafeApp={() => openPreviewDrawer(safeApp)}
                 />
               </Grid>
             )
@@ -114,10 +106,10 @@ const SafeAppList = ({
 
       {/* Safe App Preview Drawer */}
       <SafeAppPreviewDrawer
-        isOpen={isAppPreviewDrawerOpen}
-        safeApp={selectedSafeApp}
-        isBookmarked={selectedSafeApp && bookmarkedSafeAppsId?.has(selectedSafeApp.id)}
-        onClose={() => setIsAppPreviewDrawerOpen(false)}
+        isOpen={isPreviewDrawerOpen}
+        safeApp={previewDrawerApp}
+        isBookmarked={previewDrawerApp && bookmarkedSafeAppsId?.has(previewDrawerApp.id)}
+        onClose={closePreviewDrawer}
         onBookmark={onBookmarkSafeApp}
       />
     </>
