@@ -4,14 +4,13 @@ import useTxHistory from '@/hooks/useTxHistory'
 import PaginatedTxns from '@/components/common/PaginatedTxns'
 import TxHeader from '@/components/transactions/TxHeader'
 import { Box } from '@mui/material'
-import NavTabs from '@/components/common/NavTabs'
-import { transactionNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import { useState } from 'react'
 import Button from '@mui/material/Button'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TxFilterForm from '@/components/transactions/TxFilterForm'
 import { useTxFilter } from '@/utils/tx-history-filter'
+import { TransactionNavigation } from './navigation'
 
 const History: NextPage = () => {
   const [filter] = useTxFilter()
@@ -32,7 +31,7 @@ const History: NextPage = () => {
       <TxHeader
         action={
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <NavTabs tabs={transactionNavItems} />
+            <TransactionNavigation />
             <Button variant="outlined" onClick={toggleFilter} size="small" endIcon={<ExpandIcon />}>
               {filter?.type ?? 'Filter'}
             </Button>

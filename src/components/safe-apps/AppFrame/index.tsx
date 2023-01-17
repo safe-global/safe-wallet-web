@@ -5,7 +5,7 @@ import { useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { getBalances, getTransactionDetails, getSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { getBalances, getTransactionDetails, getSafeMessage, FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import type { AddressBookItem, EIP712TypedData, RequestId, SafeSettings } from '@gnosis.pm/safe-apps-sdk'
 import { Methods } from '@gnosis.pm/safe-apps-sdk'
 
@@ -44,6 +44,7 @@ import { supportsEIP1271 } from '@/utils/safe-messages'
 import css from './styles.module.css'
 import SafeAppIframe from './SafeAppIframe'
 import useGetSafeInfo from './useGetSafeInfo'
+import { hasFeature } from '@/utils/chains'
 
 const UNKNOWN_APP_NAME = 'Unknown App'
 
@@ -121,7 +122,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       }
     },
     onSetSafeSettings: (safeSettings: SafeSettings) => {
-      const isEIP1271Supported = supportsEIP1271(safe)
+      const isEIP1271Supported = supportsEIP1271(safe) && chain && hasFeature(chain, FEATURES.EIP1271)
       const newSettings: SafeSettings = {
         ...settings,
         offChainSigning: isEIP1271Supported && !!safeSettings.offChainSigning,

@@ -3,10 +3,9 @@ import type { NextPage } from 'next'
 
 import PaginatedMsgs from '@/components/safe-messages/PaginatedMsgs'
 import TxHeader from '@/components/transactions/TxHeader'
-import NavTabs from '@/components/common/NavTabs'
-import { transactionNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import { Box } from '@mui/material'
 import SignedMessagesHelpLink from '@/components/transactions/SignedMessagesHelpLink'
+import { TransactionNavigation } from './navigation'
 
 const Messages: NextPage = () => {
   return (
@@ -18,7 +17,7 @@ const Messages: NextPage = () => {
       <TxHeader
         action={
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <NavTabs tabs={transactionNavItems} />
+            <TransactionNavigation />
             <SignedMessagesHelpLink />
           </Box>
         }

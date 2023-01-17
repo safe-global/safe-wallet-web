@@ -3011,10 +3011,10 @@
     "@safe-global/safe-core-sdk-utils" "^1.6.0"
     ethers "5.7.2"
 
-"@safe-global/safe-gateway-typescript-sdk@^3.5.5":
-  version "3.5.5"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.5.5.tgz#a41b4c8b4cbe7ecb9fdf454008f970de9fa02576"
-  integrity sha512-Nde7GivRTKYSn4h5H2ixW7MxcSFUhg9Bd5BgdJDjFlOYnCU85vZ5Pwu+tRpWYzXTAhVVvCG8fvMXoT9uQcG4ZA==
+"@safe-global/safe-gateway-typescript-sdk@^3.5.6":
+  version "3.5.6"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.5.6.tgz#f722b97b4060a7110a987bdf25847af1c70bc92e"
+  integrity sha512-Q/cNSEQDYIfkTWKoNpchxkpsNcNuRsZbhZcun58RiSOOjpAg8nUBjCGeDJabBndu3ToZfMACLvkKFi61ceZjkg==
   dependencies:
     cross-fetch "^3.1.5"
 
