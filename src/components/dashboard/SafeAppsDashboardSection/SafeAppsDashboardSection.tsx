@@ -7,9 +7,8 @@ import Button from '@mui/material/Button'
 import { WidgetContainer } from '../styled'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
-import { AppCardContainer } from '@/components/safe-apps/AppCard'
 import SafeAppPreviewDrawer from '@/components/new-safe-apps/SafeAppPreviewDrawer/SafeAppPreviewDrawer'
-import SafeAppCard from '@/components/new-safe-apps/SafeAppCard/SafeAppCard'
+import SafeAppCard, { SafeAppCardContainer } from '@/components/new-safe-apps/SafeAppCard/SafeAppCard'
 import { AppRoutes } from '@/config/routes'
 import ExploreSafeAppsIcon from '@/public/images/apps/explore.svg'
 
@@ -58,14 +57,22 @@ const ExploreSafeAppsCard = () => {
   const safeAppsLink = `${AppRoutes.apps.index}?safe=${router.query.safe}`
 
   return (
-    <AppCardContainer url={safeAppsLink}>
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={1}>
+    <SafeAppCardContainer safeAppUrl={safeAppsLink}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        height="100%"
+        gap={1}
+        padding={2}
+      >
         <ExploreSafeAppsIcon alt="Explore Safe Apps icon" />
 
         <Button variant="contained" size="small">
           Explore Safe Apps
         </Button>
       </Box>
-    </AppCardContainer>
+    </SafeAppCardContainer>
   )
 }

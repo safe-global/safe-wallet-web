@@ -6,7 +6,7 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { resolveHref } from 'next/dist/shared/lib/router/router'
-import type { SyntheticEvent } from 'react'
+import type { ReactNode, SyntheticEvent } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { NextRouter } from 'next/router'
 import type { UrlObject } from 'url'
@@ -58,7 +58,7 @@ const SafeAppCard = ({
         isBookmarked={isBookmarked}
         onBookmarkSafeApp={onBookmarkSafeApp}
         removeCustomApp={removeCustomApp}
-        onClickSafeApp={handleClickSafeApp}
+        onClickSafeApp={onClickSafeApp}
       />
     )
   }
@@ -71,7 +71,7 @@ const SafeAppCard = ({
       isBookmarked={isBookmarked}
       onBookmarkSafeApp={onBookmarkSafeApp}
       removeCustomApp={removeCustomApp}
-      onClickSafeApp={handleClickSafeApp}
+      onClickSafeApp={onClickSafeApp}
     />
   )
 }
@@ -90,7 +90,7 @@ export const getSafeAppUrl = (router: NextRouter, safeAppUrl: string) => {
 
 type SafeAppCardViewProps = {
   safeApp: SafeAppData
-  onClickSafeApp?: (event: SyntheticEvent) => void
+  onClickSafeApp?: () => void
   safeAppUrl: string
   isBookmarked?: boolean
   onBookmarkSafeApp?: (safeAppId: number) => void
@@ -106,43 +106,39 @@ const SafeAppCardGridView = ({
   removeCustomApp,
 }: SafeAppCardViewProps) => {
   return (
-    <Link href={safeAppUrl} passHref>
-      <a rel="noreferrer" onClick={onClickSafeApp}>
-        <Card className={css.safeAppContainer}>
-          {/* Safe App Header */}
-          <CardHeader
-            className={css.safeAppHeader}
-            avatar={<SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />}
-            action={
-              <>
-                {/* Safe App Action Buttons */}
-                <SafeAppActionButtons
-                  safeApp={safeApp}
-                  isBookmarked={isBookmarked}
-                  onBookmarkSafeApp={onBookmarkSafeApp}
-                  removeCustomApp={removeCustomApp}
-                />
-              </>
-            }
-          />
+    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
+      {/* Safe App Header */}
+      <CardHeader
+        className={css.safeAppHeader}
+        avatar={<SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />}
+        action={
+          <>
+            {/* Safe App Action Buttons */}
+            <SafeAppActionButtons
+              safeApp={safeApp}
+              isBookmarked={isBookmarked}
+              onBookmarkSafeApp={onBookmarkSafeApp}
+              removeCustomApp={removeCustomApp}
+            />
+          </>
+        }
+      />
 
-          <CardContent className={css.safeAppContent}>
-            {/* Safe App Title */}
-            <Typography className={css.safeAppTitle} gutterBottom variant="h5">
-              {safeApp.name}
-            </Typography>
+      <CardContent className={css.safeAppContent}>
+        {/* Safe App Title */}
+        <Typography className={css.safeAppTitle} gutterBottom variant="h5">
+          {safeApp.name}
+        </Typography>
 
-            {/* Safe App Description */}
-            <Typography className={css.safeAppDescription} variant="body2" color="text.secondary">
-              {safeApp.description}
-            </Typography>
+        {/* Safe App Description */}
+        <Typography className={css.safeAppDescription} variant="body2" color="text.secondary">
+          {safeApp.description}
+        </Typography>
 
-            {/* Safe App Tags */}
-            <SafeAppTags tags={safeApp.tags} />
-          </CardContent>
-        </Card>
-      </a>
-    </Link>
+        {/* Safe App Tags */}
+        <SafeAppTags tags={safeApp.tags} />
+      </CardContent>
+    </SafeAppCardContainer>
   )
 }
 
@@ -155,39 +151,58 @@ const SafeAppCardListView = ({
   removeCustomApp,
 }: SafeAppCardViewProps) => {
   return (
-    <Link href={safeAppUrl} passHref>
-      <a rel="noreferrer" onClick={onClickSafeApp}>
-        <Card className={css.safeAppContainer}>
-          {/* Safe App Header */}
-          <CardHeader
-            avatar={
-              <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
-                <SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
+    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
+      {/* Safe App Header */}
+      <CardHeader
+        avatar={
+          <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
+            <SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
 
-                {/* Safe App Title */}
-                <Typography className={css.safeAppTitle} gutterBottom variant="h5">
-                  {safeApp.name}
-                </Typography>
-              </Box>
-            }
-            sx={{
-              '& > .MuiCardHeader-action': {
-                alignSelf: 'center',
-              },
-            }}
-            action={
-              <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-                {/* Safe App Action Buttons */}
-                <SafeAppActionButtons
-                  safeApp={safeApp}
-                  isBookmarked={isBookmarked}
-                  onBookmarkSafeApp={onBookmarkSafeApp}
-                  removeCustomApp={removeCustomApp}
-                />
-              </Box>
-            }
-          />
-        </Card>
+            {/* Safe App Title */}
+            <Typography className={css.safeAppTitle} gutterBottom variant="h5">
+              {safeApp.name}
+            </Typography>
+          </Box>
+        }
+        sx={{
+          '& > .MuiCardHeader-action': {
+            alignSelf: 'center',
+          },
+        }}
+        action={
+          <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+            {/* Safe App Action Buttons */}
+            <SafeAppActionButtons
+              safeApp={safeApp}
+              isBookmarked={isBookmarked}
+              onBookmarkSafeApp={onBookmarkSafeApp}
+              removeCustomApp={removeCustomApp}
+            />
+          </Box>
+        }
+      />
+    </SafeAppCardContainer>
+  )
+}
+
+type SafeAppCardContainerProps = {
+  onClickSafeApp?: () => void
+  safeAppUrl: string
+  children: ReactNode
+}
+
+export const SafeAppCardContainer = ({ children, safeAppUrl, onClickSafeApp }: SafeAppCardContainerProps) => {
+  const handleClickSafeApp = (event: SyntheticEvent) => {
+    if (onClickSafeApp) {
+      event.preventDefault()
+      onClickSafeApp()
+    }
+  }
+
+  return (
+    <Link href={safeAppUrl} passHref>
+      <a rel="noreferrer" onClick={handleClickSafeApp}>
+        <Card className={css.safeAppContainer}>{children}</Card>
       </a>
     </Link>
   )

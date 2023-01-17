@@ -274,7 +274,7 @@ describe('AppsPage', () => {
     })
 
     it('Shows an error label if the app doesnt support Safe App functionality', async () => {
-      const APP_URL = 'https://google.com'
+      const INVALID_SAFE_APP_URL = 'https://google.com'
       render(<CustomSafeAppsPage />, {
         routerProps: {
           pathname: '/apps/custom',
@@ -290,7 +290,7 @@ describe('AppsPage', () => {
       })
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
       const appURLInput = screen.getByLabelText(/App URL/)
-      fireEvent.change(appURLInput, { target: { value: APP_URL } })
+      fireEvent.change(appURLInput, { target: { value: INVALID_SAFE_APP_URL } })
       await screen.findByText(/the app doesn't support safe app functionality/i)
     })
 
