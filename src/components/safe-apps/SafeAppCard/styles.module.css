@@ -22,6 +22,8 @@
   line-height: 175%;
   margin: 0;
 
+  flex-grow: 1;
+
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -4,6 +4,7 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
+import CardActions from '@mui/material/CardActions'
 import Box from '@mui/material/Box'
 import { resolveHref } from 'next/dist/shared/lib/router/router'
 import type { ReactNode, SyntheticEvent } from 'react'
@@ -73,7 +74,6 @@ const SafeAppCard = ({
 
 export default SafeAppCard
 
-// TODO: move to utils ??
 export const getSafeAppUrl = (router: NextRouter, safeAppUrl: string) => {
   const shareUrlObj: UrlObject = {
     pathname: AppRoutes.apps.index,
@@ -147,35 +147,27 @@ const SafeAppCardListView = ({
 }: SafeAppCardViewProps) => {
   return (
     <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
-      {/* Safe App Header */}
-      <CardHeader
-        avatar={
-          <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
-            <SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
+      <CardContent>
+        <Box display="flex" flexDirection="row" alignItems="center" gap={2} overflow={'hidden'}>
+          {/* Safe App Icon */}
+          <SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
 
-            {/* Safe App Title */}
-            <Typography className={css.safeAppTitle} gutterBottom variant="h5">
-              {safeApp.name}
-            </Typography>
-          </Box>
-        }
-        sx={{
-          '& > .MuiCardHeader-action': {
-            alignSelf: 'center',
-          },
-        }}
-        action={
-          <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-            {/* Safe App Action Buttons */}
+          {/* Safe App Title */}
+          <Typography className={css.safeAppTitle} gutterBottom variant="h5">
+            {safeApp.name}
+          </Typography>
+
+          {/* Safe App Action Buttons */}
+          <CardActions>
             <SafeAppActionButtons
               safeApp={safeApp}
               isBookmarked={isBookmarked}
               onBookmarkSafeApp={onBookmarkSafeApp}
               removeCustomApp={removeCustomApp}
             />
-          </Box>
-        }
-      />
+          </CardActions>
+        </Box>
+      </CardContent>
     </SafeAppCardContainer>
   )
 }
