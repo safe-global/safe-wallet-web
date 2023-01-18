@@ -69,7 +69,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, number>>({})
+  const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, string | undefined>>({})
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const toggleOpen = (chainId: string, open: boolean) => {
@@ -80,12 +80,17 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const isWelcomePage = router.pathname === AppRoutes.welcome
 
   const handleFetchQueued = async () => {
-    const fetchedQueuedTxs: Record<string, number> = {}
+    const fetchedQueuedTxs: Record<string, string | undefined> = {}
 
     for (let [chainId, safes] of Object.entries(addedSafes)) {
       for (let safeAddress of Object.keys(safes)) {
         const result = await getTransactionQueue(chainId, safeAddress)
-        fetchedQueuedTxs[safeAddress] = result.results.filter(isTransactionListItem).length
+
+        if (result.results.length === 0) continue
+
+        fetchedQueuedTxs[safeAddress] = `${result.results.filter(isTransactionListItem).length}${
+          result.next ? '+' : ''
+        }`
       }
     }
 

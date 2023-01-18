@@ -15,7 +15,7 @@ const Threshold = ({ threshold, owners }: ThresholdProps): ReactElement => (
   </Box>
 )
 
-const PendingActionsBadge = ({ queuedTxs }: { queuedTxs: number }): ReactElement => (
+const PendingActionsBadge = ({ queuedTxs }: { queuedTxs: string }): ReactElement => (
   <Tooltip title="queued transactions at this Safe" placement="top">
     <Box className={classnames(css.badge, css.pending)} sx={{ color: ({ palette }) => palette.static.main }}>
       {queuedTxs}
@@ -27,7 +27,7 @@ interface SafeIconProps extends IdenticonProps {
   threshold?: ThresholdProps['threshold']
   owners?: ThresholdProps['owners']
   size?: number
-  queuedTxs?: number
+  queuedTxs?: string
 }
 
 const SafeIcon = ({ address, threshold, owners, size, queuedTxs }: SafeIconProps): ReactElement => (
