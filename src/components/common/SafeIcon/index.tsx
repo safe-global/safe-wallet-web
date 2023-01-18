@@ -16,7 +16,7 @@ const Threshold = ({ threshold, owners }: ThresholdProps): ReactElement => (
 )
 
 const PendingActionsBadge = ({ queuedTxs }: { queuedTxs: string }): ReactElement => (
-  <Tooltip title="queued transactions at this Safe" placement="top">
+  <Tooltip title={`${queuedTxs} pending transactions`} placement="top">
     <Box className={classnames(css.badge, css.pending)} sx={{ color: ({ palette }) => palette.static.main }}>
       {queuedTxs}
     </Box>
