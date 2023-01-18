@@ -29,7 +29,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
-import UpdateIcon from '@/public/images/common/update.svg'
+import SearchIcon from '@/public/images/common/search.svg'
 import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
@@ -122,10 +122,9 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
               size="small"
               variant="outlined"
               onClick={handleFetchQueued}
-              startIcon={<SvgIcon component={UpdateIcon} inheritViewBox fontSize="small" />}
-              sx={{ color: ({ palette }) => palette.info.main }}
+              startIcon={<SvgIcon component={SearchIcon} inheritViewBox fontSize="small" />}
             >
-              Update
+              Tx queue
             </Button>
             {!isWelcomePage && (
               <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
