@@ -147,7 +147,9 @@ const MsgModal = ({
           <Typography variant="body1" textAlign="center" mb={2}>
             This action will confirm the message and add your confirmation to the prepared signature.
           </Typography>
-          <Typography fontWeight={700}>Message:</Typography>
+          <Typography fontWeight={700} mb={1}>
+            Message:
+          </Typography>
           <Typography variant="body2">
             <Msg message={decodedMessage} />
           </Typography>

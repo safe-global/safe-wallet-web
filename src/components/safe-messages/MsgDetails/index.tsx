@@ -51,9 +51,10 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
           <TxDataRow title="Last modified:">{formatDateTime(msg.modifiedTimestamp)}</TxDataRow>
           <TxDataRow title="Message hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>
           <TxDataRow title="SafeMessage:">{generateDataRowValue(safeMessage, 'hash')}</TxDataRow>
-          <TxDataRow title="Message:">
-            <Msg message={msg.message} defaultExpanded />
-          </TxDataRow>
+          <Typography fontWeight={700} mb={1}>
+            Message:
+          </Typography>
+          <Msg message={msg.message} />
         </div>
 
         {msg.preparedSignature && (
