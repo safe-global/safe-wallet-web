@@ -10,6 +10,10 @@ inputs:
     description: 'Production build flag'
     required: false
 
+  e2e_mnemonic:
+    description: 'Mnemonic for the E2E tests'
+    required: false
+
 runs:
   using: 'composite'
   steps:
@@ -30,3 +34,4 @@ runs:
         NEXT_PUBLIC_TENDERLY_PROJECT_NAME: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_TENDERLY_PROJECT_NAME }}
         NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL }}
         NEXT_PUBLIC_WC_BRIDGE: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_WC_BRIDGE }}
+        NEXT_PUBLIC_CYPRESS_MNEMONIC: ${{ inputs.e2e_mnemonic }}

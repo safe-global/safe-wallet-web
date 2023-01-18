@@ -1,4 +1,4 @@
-import InfoWidget from '@/components/create-safe/InfoWidget'
+import InfoWidget from '@/components/new-safe/create/InfoWidget'
 import { Grid } from '@mui/material'
 import type { AlertColor } from '@mui/material'
 import { type ReactElement } from 'react'

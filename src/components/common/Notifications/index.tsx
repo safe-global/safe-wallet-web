@@ -26,10 +26,11 @@ export const NotificationLink = ({
     return null
   }
 
-  const isExternal = typeof link.href === 'string' ? !isRelativeUrl(link.href) : link.href.host || link.href.hostname
+  const isExternal =
+    typeof link.href === 'string' ? !isRelativeUrl(link.href) : !!(link.href.host || link.href.hostname)
 
   return (
-    <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title}>
+    <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title} as="span">
       <NextLink href={link.href} passHref>
         <Link
           className={css.link}

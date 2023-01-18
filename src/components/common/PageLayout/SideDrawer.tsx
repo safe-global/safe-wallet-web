@@ -20,14 +20,25 @@ const isSafeAppRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
   return pathname === AppRoutes.apps.index && !!query.appUrl
 }
 
+export const isNoSidebarRoute = (pathname: string): boolean => {
+  return [
+    AppRoutes.share.safeApp,
+    AppRoutes.newSafe.create,
+    AppRoutes.newSafe.load,
+    AppRoutes.welcome,
+    AppRoutes.index,
+  ].includes(pathname)
+}
+
 const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   const { pathname, query } = useRouter()
   const { breakpoints } = useTheme()
-  const isSmallScreen = useMediaQuery(`(max-width: ${breakpoints.values.md}px)`)
+  const isSmallScreen = useMediaQuery(breakpoints.down('md'))
   const showSidebarToggle = isSafeAppRoute(pathname, query) && !isSmallScreen
 
   useEffect(() => {
-    const closeSidebar = isSmallScreen || isSafeAppRoute(pathname, query)
+    const hideSidebar = isNoSidebarRoute(pathname)
+    const closeSidebar = hideSidebar || isSmallScreen || isSafeAppRoute(pathname, query)
     onToggle(!closeSidebar)
   }, [isSmallScreen, onToggle, pathname, query])
 

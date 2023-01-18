@@ -36,7 +36,7 @@ import {
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
 import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
-import type { NamedAddress } from '@/components/create-safe/types'
+import type { NamedAddress } from '@/components/new-safe/create/types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)

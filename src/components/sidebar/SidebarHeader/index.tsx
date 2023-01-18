@@ -1,5 +1,4 @@
-import type { ReactElement } from 'react'
-import { useEffect, useState } from 'react'
+import { type ReactElement, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
@@ -9,7 +8,6 @@ import { formatCurrency } from '@/utils/formatNumber'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
-import useBalances from '@/hooks/useBalances'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
 
@@ -27,19 +25,20 @@ import QrCodeButton from '../QrCodeButton'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { SvgIcon } from '@mui/material'
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
-  const { balances, loading: balancesLoading } = useBalances()
+  const { balances } = useVisibleBalances()
   const { safe, safeAddress, safeLoading } = useSafeInfo()
   const { threshold, owners } = safe
   const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
-  const [fiatTotal, setFiatTotal] = useState<string>('')
 
-  useEffect(() => {
-    setFiatTotal(balancesLoading ? '' : formatCurrency(balances.fiatTotal, currency))
-  }, [currency, balances.fiatTotal, balancesLoading])
+  const fiatTotal = useMemo(
+    () => (balances.fiatTotal ? formatCurrency(balances.fiatTotal, currency) : ''),
+    [currency, balances.fiatTotal],
+  )
 
   const addressCopyText = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
 

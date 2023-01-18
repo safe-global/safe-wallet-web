@@ -12,7 +12,6 @@ import Tooltip from '@mui/material/Tooltip'
 import RemoveDialog from '@/components/address-book/RemoveDialog'
 import useIsGranted from '@/hooks/useIsGranted'
 import NewTxModal from '@/components/tx/modals/NewTxModal'
-import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import AddressBookHeader from '../AddressBookHeader'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -82,50 +81,46 @@ const AddressBookTable = () => {
   }, [addressBookEntries, searchQuery])
 
   const rows = filteredEntries.map(([address, name]) => ({
-    name: {
-      rawValue: name,
-      content: name,
-    },
-    address: {
-      rawValue: address,
-      content: <EthHashInfo address={address} showName={false} shortAddress={false} hasExplorer showCopyButton />,
-    },
-    actions: {
-      rawValue: '',
-      sticky: true,
-      content: (
-        <div className={tableCss.actions}>
-          <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
-            <Tooltip title="Edit entry" placement="top">
-              <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)} size="small">
-                <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Track>
-
-          <Track {...ADDRESS_BOOK_EVENTS.DELETE_ENTRY}>
-            <Tooltip title="Delete entry" placement="top">
-              <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)} size="small">
-                <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Track>
-
-          {isGranted && (
-            <Track {...ADDRESS_BOOK_EVENTS.SEND}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => setSelectedAddress(address)}
-                className={css.sendButton}
-              >
-                Send
-              </Button>
+    cells: {
+      name: {
+        rawValue: name,
+        content: name,
+      },
+      address: {
+        rawValue: address,
+        content: <EthHashInfo address={address} showName={false} shortAddress={false} hasExplorer showCopyButton />,
+      },
+      actions: {
+        rawValue: '',
+        sticky: true,
+        content: (
+          <div className={tableCss.actions}>
+            <Track {...ADDRESS_BOOK_EVENTS.EDIT_ENTRY}>
+              <Tooltip title="Edit entry" placement="top">
+                <IconButton onClick={() => handleOpenModalWithValues(ModalType.ENTRY, address, name)} size="small">
+                  <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Track>
-          )}
-        </div>
-      ),
+
+            <Track {...ADDRESS_BOOK_EVENTS.DELETE_ENTRY}>
+              <Tooltip title="Delete entry" placement="top">
+                <IconButton onClick={() => handleOpenModalWithValues(ModalType.REMOVE, address, name)} size="small">
+                  <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Track>
+
+            {isGranted && (
+              <Track {...ADDRESS_BOOK_EVENTS.SEND}>
+                <Button variant="contained" color="primary" size="small" onClick={() => setSelectedAddress(address)}>
+                  Send
+                </Button>
+              </Track>
+            )}
+          </div>
+        ),
+      },
     },
   }))
 
@@ -139,7 +134,7 @@ const AddressBookTable = () => {
 
       <main>
         {filteredEntries.length > 0 ? (
-          <EnhancedTable rows={rows} headCells={headCells} />
+          <EnhancedTable rows={rows} headCells={headCells} mobileVariant />
         ) : (
           <Box bgcolor="background.paper" borderRadius={1}>
             <PagePlaceholder

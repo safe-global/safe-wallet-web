@@ -7,6 +7,7 @@ import { useAppSelector } from '@/store'
 import useChainId from '@/hooks/useChainId'
 import useBalances from '@/hooks/useBalances'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import useHiddenTokens from '@/hooks/useHiddenTokens'
 
 // Track meta events on app load
 const useMetaEvents = (isAnalyticsEnabled: boolean) => {
@@ -45,6 +46,16 @@ const useMetaEvents = (isAnalyticsEnabled: boolean) => {
 
     gtmTrack({ ...ASSETS_EVENTS.DIFFERING_TOKENS, label: totalTokens })
   }, [isAnalyticsEnabled, totalTokens, safeAddress, chainId])
+
+  // Manually hidden tokens
+  const hiddenTokens = useHiddenTokens()
+  const totalHiddenFromBalance =
+    balances?.items.filter((item) => hiddenTokens.includes(item.tokenInfo.address)).length || 0
+  useEffect(() => {
+    if (!isAnalyticsEnabled || !safeAddress || totalTokens <= 0) return
+
+    gtmTrack({ ...ASSETS_EVENTS.HIDDEN_TOKENS, label: totalHiddenFromBalance })
+  }, [isAnalyticsEnabled, safeAddress, totalHiddenFromBalance, totalTokens])
 }
 
 export default useMetaEvents
