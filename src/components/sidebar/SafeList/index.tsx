@@ -32,6 +32,7 @@ import LoadingIcon from '@/public/images/common/loading.svg'
 import UpdateIcon from '@/public/images/common/update.svg'
 import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
 import { isTransactionListItem } from '@/utils/transaction-guards'
+import useTxQueue from '@/hooks/useTxQueue'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -64,12 +65,13 @@ const NO_SAFE_MESSAGE = 'Create a new safe or add'
 
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
-  const chainId = useChainId()
-  const { safeAddress, safe } = useSafeInfo()
+  const currentChainId = useChainId()
+  const { safeAddress: currentSafeAddress, safe } = useSafeInfo()
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
   const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, string | undefined>>({})
+  const { page } = useTxQueue()
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const toggleOpen = (chainId: string, open: boolean) => {
@@ -84,6 +86,16 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
     for (let [chainId, safes] of Object.entries(addedSafes)) {
       for (let safeAddress of Object.keys(safes)) {
+        // do not request queued txs again for the current Safe
+        if (currentChainId === chainId && sameAddress(currentSafeAddress, safeAddress) && page) {
+          if (page.results.length === 0) continue
+
+          fetchedQueuedTxs[currentSafeAddress] = `${page.results.filter(isTransactionListItem).length}${
+            page.next ? '+' : ''
+          }`
+          continue
+        }
+
         const result = await getTransactionQueue(chainId, safeAddress)
 
         if (result.results.length === 0) continue
@@ -155,7 +167,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
           const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
           const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
           const addedSafeEntriesOnChain = Object.entries(addedSafesOnChain)
-          const isCurrentChain = chain.chainId === chainId
+          const isCurrentChain = chain.chainId === currentChainId
 
           if (!isCurrentChain && !ownedSafesOnChain.length && !addedSafeEntriesOnChain.length) {
             return null
@@ -166,7 +178,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
               ? open[chain.chainId]
               : _shouldExpandSafeList({
                   isCurrentChain,
-                  safeAddress,
+                  safeAddress: currentSafeAddress,
                   ownedSafesOnChain,
                   addedSafesOnChain,
                 })
@@ -206,11 +218,11 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                 ))}
 
                 {isCurrentChain &&
-                  safeAddress &&
-                  !addedSafesOnChain[safeAddress] &&
-                  !ownedSafesOnChain.includes(safeAddress) && (
+                  currentSafeAddress &&
+                  !addedSafesOnChain[currentSafeAddress] &&
+                  !ownedSafesOnChain.includes(currentSafeAddress) && (
                     <SafeListItem
-                      address={safeAddress}
+                      address={currentSafeAddress}
                       threshold={safe.threshold}
                       owners={safe.owners.length}
                       chainId={safe.chainId}
@@ -230,7 +242,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                     </Typography>
                   </div>
 
-                  <Collapse key={chainId} in={isOpen}>
+                  <Collapse key={currentChainId} in={isOpen}>
                     <List sx={{ py: 0 }}>
                       {ownedSafesOnChain.map((address) => (
                         <SafeListItem
