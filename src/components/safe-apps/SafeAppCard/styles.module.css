@@ -1,5 +1,4 @@
 .safeAppContainer {
-  height: 100%;
   transition: background-color 0.3s ease-in-out, border 0.3s ease-in-out;
   border: 1px solid transparent;
 }
@@ -15,7 +14,6 @@
 
 .safeAppContent {
   padding: var(--space-2);
-  padding-bottom: 20px !important;
 }
 
 .safeAppTitle {

@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react'
-import Grid from '@mui/material/Grid'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import classnames from 'classnames'
 
 import SafeAppsFilters from '@/components/safe-apps/SafeAppsFilters/SafeAppsFilters'
-import SafeAppCard, { GRID_VIEW_MODE, LIST_VIEW_MODE } from '@/components/safe-apps/SafeAppCard/SafeAppCard'
+import SafeAppCard, { GRID_VIEW_MODE } from '@/components/safe-apps/SafeAppCard/SafeAppCard'
 import type { SafeAppsViewMode } from '@/components/safe-apps/SafeAppCard/SafeAppCard'
 import AddCustomSafeAppCard from '@/components/safe-apps/AddCustomSafeAppCard/AddCustomSafeAppCard'
 import SafeAppPreviewDrawer from '@/components/safe-apps/SafeAppPreviewDrawer/SafeAppPreviewDrawer'
@@ -11,6 +11,7 @@ import SafeAppsListHeader from '@/components/safe-apps/SafeAppsListHeader/SafeAp
 import SafeAppsZeroResultsPlaceholder from '@/components/safe-apps/SafeAppsZeroResultsPlaceholder/SafeAppsZeroResultsPlaceholder'
 import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
 import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
+import css from './styles.module.css'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -67,50 +68,35 @@ const SafeAppList = ({
         setSafeAppsViewMode={setSafeAppsViewMode}
       />
 
-      {safeAppsViewMode === GRID_VIEW_MODE ? (
-        // Safe Apps Grid view
-        <Grid container rowSpacing={3} columnSpacing={3} component="ul" sx={{ listStyleType: 'none', padding: 0 }}>
-          {/* Add Custom Safe App Card */}
-          {addCustomApp && (
-            <Grid item xs={12} sm={6} md={4} xl={3} component="li">
-              <AddCustomSafeAppCard safeAppList={safeAppsList} onSave={addCustomApp} />
-            </Grid>
-          )}
+      {/* Safe App List */}
+      <ul
+        className={classnames(
+          css.safeAppsContainer,
+          safeAppsViewMode === GRID_VIEW_MODE ? css.safeAppsGridViewContainer : css.safeAppsListViewContainer,
+        )}
+      >
+        {/* Add Custom Safe App Card */}
+        {addCustomApp && (
+          <li>
+            <AddCustomSafeAppCard safeAppList={safeAppsList} onSave={addCustomApp} />
+          </li>
+        )}
 
-          {filteredApps.map((safeApp) => {
-            return (
-              <Grid key={safeApp.id} item xs={12} sm={6} md={4} xl={3} component="li">
-                <SafeAppCard
-                  safeApp={safeApp}
-                  viewMode={GRID_VIEW_MODE}
-                  isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
-                  onBookmarkSafeApp={onBookmarkSafeApp}
-                  removeCustomApp={removeCustomApp}
-                  onClickSafeApp={handleSafeAppClick(safeApp)}
-                />
-              </Grid>
-            )
-          })}
-        </Grid>
-      ) : (
-        // Safe Apps List view
-        <Grid container rowSpacing={2} columnSpacing={2} component="ul" sx={{ listStyleType: 'none', padding: 0 }}>
-          {filteredApps.map((safeApp) => {
-            return (
-              <Grid key={safeApp.id} item xs={12} md={6} xl={4} component="li">
-                <SafeAppCard
-                  safeApp={safeApp}
-                  viewMode={LIST_VIEW_MODE}
-                  isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
-                  onBookmarkSafeApp={onBookmarkSafeApp}
-                  removeCustomApp={removeCustomApp}
-                  onClickSafeApp={handleSafeAppClick(safeApp)}
-                />
-              </Grid>
-            )
-          })}
-        </Grid>
-      )}
+        {filteredApps.map((safeApp) => {
+          return (
+            <li key={safeApp.id}>
+              <SafeAppCard
+                safeApp={safeApp}
+                viewMode={safeAppsViewMode}
+                isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
+                onBookmarkSafeApp={onBookmarkSafeApp}
+                removeCustomApp={removeCustomApp}
+                onClickSafeApp={handleSafeAppClick(safeApp)}
+              />
+            </li>
+          )
+        })}
+      </ul>
 
       {/* Zero results placeholder */}
       {showZeroResultsPlaceholder && <SafeAppsZeroResultsPlaceholder searchQuery={query} />}

@@ -101,7 +101,7 @@ const SafeAppCardGridView = ({
   removeCustomApp,
 }: SafeAppCardViewProps) => {
   return (
-    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
+    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp} height={'100%'}>
       {/* Safe App Header */}
       <CardHeader
         className={css.safeAppHeader}
@@ -176,9 +176,10 @@ type SafeAppCardContainerProps = {
   onClickSafeApp?: () => void
   safeAppUrl: string
   children: ReactNode
+  height?: string
 }
 
-export const SafeAppCardContainer = ({ children, safeAppUrl, onClickSafeApp }: SafeAppCardContainerProps) => {
+export const SafeAppCardContainer = ({ children, safeAppUrl, onClickSafeApp, height }: SafeAppCardContainerProps) => {
   const handleClickSafeApp = (event: SyntheticEvent) => {
     if (onClickSafeApp) {
       event.preventDefault()
@@ -189,7 +190,9 @@ export const SafeAppCardContainer = ({ children, safeAppUrl, onClickSafeApp }: S
   return (
     <Link href={safeAppUrl} passHref>
       <a rel="noreferrer" onClick={handleClickSafeApp}>
-        <Card className={css.safeAppContainer}>{children}</Card>
+        <Card className={css.safeAppContainer} sx={{ height }}>
+          {children}
+        </Card>
       </a>
     </Link>
   )

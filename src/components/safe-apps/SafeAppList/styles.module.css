@@ -1,0 +1,14 @@
+.safeAppsContainer {
+  display: grid;
+  grid-gap: var(--space-3);
+  list-style-type: none;
+  padding: 0;
+}
+
+.safeAppsGridViewContainer {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.safeAppsListViewContainer {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
