@@ -4,7 +4,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { hasFeature } from '@/utils/chains'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 
-export const TransactionNavigation = () => {
+const TxNavigation = () => {
   const chain = useCurrentChain()
   debugger
   const isEIP1271 = chain && hasFeature(chain, FEATURES.EIP1271)
@@ -13,3 +13,5 @@ export const TransactionNavigation = () => {
     <NavTabs tabs={isEIP1271 ? transactionNavItems : transactionNavItems.filter((item) => item.label !== 'Messages')} />
   )
 }
+
+export default TxNavigation

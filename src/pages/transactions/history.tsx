@@ -10,7 +10,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TxFilterForm from '@/components/transactions/TxFilterForm'
 import { useTxFilter } from '@/utils/tx-history-filter'
-import { TransactionNavigation } from './navigation'
+import TxNavigation from '../../components/transactions/TxNavigation'
 
 const History: NextPage = () => {
   const [filter] = useTxFilter()
@@ -31,7 +31,7 @@ const History: NextPage = () => {
       <TxHeader
         action={
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <TransactionNavigation />
+            <TxNavigation />
             <Button variant="outlined" onClick={toggleFilter} size="small" endIcon={<ExpandIcon />}>
               {filter?.type ?? 'Filter'}
             </Button>

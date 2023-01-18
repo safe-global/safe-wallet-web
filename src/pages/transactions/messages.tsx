@@ -5,7 +5,7 @@ import PaginatedMsgs from '@/components/safe-messages/PaginatedMsgs'
 import TxHeader from '@/components/transactions/TxHeader'
 import { Box } from '@mui/material'
 import SignedMessagesHelpLink from '@/components/transactions/SignedMessagesHelpLink'
-import { TransactionNavigation } from './navigation'
+import TxNavigation from '../../components/transactions/TxNavigation'
 
 const Messages: NextPage = () => {
   return (
@@ -17,7 +17,7 @@ const Messages: NextPage = () => {
       <TxHeader
         action={
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <TransactionNavigation />
+            <TxNavigation />
             <SignedMessagesHelpLink />
           </Box>
         }

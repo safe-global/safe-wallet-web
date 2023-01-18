@@ -6,7 +6,7 @@ import TxHeader from '@/components/transactions/TxHeader'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
 import { Box } from '@mui/material'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
-import { TransactionNavigation } from './navigation'
+import TxNavigation from '../../components/transactions/TxNavigation'
 
 const Queue: NextPage = () => {
   return (
@@ -19,7 +19,7 @@ const Queue: NextPage = () => {
         <TxHeader
           action={
             <Box display="flex" justifyContent="space-between" alignItems="center">
-              <TransactionNavigation />
+              <TxNavigation />
               <BatchExecuteButton />
             </Box>
           }
