@@ -82,12 +82,13 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const handleFetchQueued = async () => {
     const fetchedQueuedTxs: Record<string, number> = {}
 
-    Object.entries(addedSafes).forEach(([chainId, safes]) => {
-      Object.keys(safes).forEach(async (safeAddress) => {
+    for (let [chainId, safes] of Object.entries(addedSafes)) {
+      for (let safeAddress of Object.keys(safes)) {
         const result = await getTransactionQueue(chainId, safeAddress)
         fetchedQueuedTxs[safeAddress] = result.results.filter(isTransactionListItem).length
-      })
-    })
+      }
+    }
+
     setSafeQueuedTxs(fetchedQueuedTxs)
   }
 
