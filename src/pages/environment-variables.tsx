@@ -6,7 +6,7 @@ const EnvironmentVariablesPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe – Environment Variables</title>
+        <title>Safe – Environment variables</title>
       </Head>
 
       <main>

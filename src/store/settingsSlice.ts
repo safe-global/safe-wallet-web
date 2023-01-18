@@ -5,7 +5,6 @@ import type { RootState } from '@/store'
 import isEqual from 'lodash/isEqual'
 
 export type EnvState = {
-  cgw?: string
   tenderly: {
     url?: string
     accessToken?: string
@@ -32,7 +31,7 @@ export type SettingsState = {
   theme: {
     darkMode?: boolean
   }
-  env: EnvState | undefined
+  env?: EnvState
 }
 
 const initialState: SettingsState = {
@@ -47,7 +46,6 @@ const initialState: SettingsState = {
   },
   theme: {},
   env: {
-    cgw: '',
     rpc: {},
     tenderly: {
       url: '',
@@ -106,10 +104,11 @@ export const selectHiddenTokensPerChain = (state: RootState, chainId: string): s
   return state[settingsSlice.name].hiddenTokens?.[chainId] || []
 }
 
-export const selectCgw = createSelector(selectSettings, (settings) => settings.env?.cgw)
-
 export const selectRpc = createSelector(selectSettings, (settings) => settings.env?.rpc)
 
 export const selectTenderly = createSelector(selectSettings, (settings) => settings.env?.tenderly)
 
-export const isEnvInitialState = createSelector(selectSettings, (settings) => isEqual(settings.env, initialState.env))
+export const isEnvInitialState = createSelector(
+  selectSettings,
+  (settings) => !settings.env || isEqual(settings.env, initialState.env),
+)
