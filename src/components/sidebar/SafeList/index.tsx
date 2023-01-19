@@ -29,7 +29,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
-import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
+import { getTransactionQueue, type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { Errors, logError } from '@/services/exceptions'
@@ -70,7 +70,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  console.log('addedSafes', addedSafes)
   const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, string | undefined>>()
   const { page } = useTxQueue()
 
@@ -86,35 +85,32 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     // do not run the function if safeQueuedTxs already populated
     if (safeQueuedTxs !== undefined) return
 
-    const fetchedQueuedTxs: Record<string, string | undefined> = {}
+    const queuedTxsByChain: Record<string, string | undefined> = {}
+
+    const addToQueuedTxs = (address: string, page: TransactionListPage) => {
+      if (page.results.length === 0) return
+
+      queuedTxsByChain[address] = `${page.results.filter(isTransactionListItem).length}${page.next ? '+' : ''}`
+    }
 
     for (let [chainId, safes] of Object.entries(addedSafes)) {
       for (let safeAddress of Object.keys(safes)) {
         // do not request queued txs again for the current Safe
         if (currentChainId === chainId && sameAddress(currentSafeAddress, safeAddress) && page) {
-          if (page.results.length === 0) continue
-
-          fetchedQueuedTxs[currentSafeAddress] = `${page.results.filter(isTransactionListItem).length}${
-            page.next ? '+' : ''
-          }`
+          addToQueuedTxs(safeAddress, page)
           continue
         }
 
         try {
           const result = await getTransactionQueue(chainId, safeAddress)
-
-          if (result.results.length === 0) continue
-
-          fetchedQueuedTxs[safeAddress] = `${result.results.filter(isTransactionListItem).length}${
-            result.next ? '+' : ''
-          }`
+          addToQueuedTxs(safeAddress, result)
         } catch (error) {
           logError(Errors._603)
         }
       }
     }
 
-    setSafeQueuedTxs(fetchedQueuedTxs)
+    setSafeQueuedTxs(queuedTxsByChain)
   }, [addedSafes, currentChainId, currentSafeAddress, page, safeQueuedTxs])
 
   useEffect(() => {
