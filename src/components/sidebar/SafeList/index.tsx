@@ -29,6 +29,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
+import UpdateIcon from '@/public/images/common/update.svg'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -77,25 +78,38 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   return (
     <div className={css.container}>
-      <div className={css.header}>
-        <Typography variant="h4" display="inline" fontWeight={700}>
-          My Safes
-        </Typography>
-        {!isWelcomePage && (
-          <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
-            <Link href={{ pathname: AppRoutes.welcome }} passHref>
-              <Button
-                disableElevation
-                size="small"
-                variant="outlined"
-                onClick={closeDrawer}
-                startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-              >
-                Add
-              </Button>
-            </Link>
-          </Track>
-        )}
+      <div className={css.headerWrapper}>
+        <div className={css.header}>
+          <Typography variant="h4" display="inline" fontWeight={700}>
+            My Safes
+          </Typography>
+          <div className={css.headerButtons}>
+            <Button
+              disableElevation
+              size="small"
+              variant="outlined"
+              onClick={() => console.log('mock')}
+              startIcon={<SvgIcon component={UpdateIcon} inheritViewBox fontSize="small" />}
+            >
+              My actions
+            </Button>
+            {!isWelcomePage && (
+              <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
+                <Link href={{ pathname: AppRoutes.welcome }} passHref>
+                  <Button
+                    disableElevation
+                    size="small"
+                    variant="outlined"
+                    onClick={closeDrawer}
+                    startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+                  >
+                    Add
+                  </Button>
+                </Link>
+              </Track>
+            )}
+          </div>
+        </div>
       </div>
 
       {hasNoSafes && (
