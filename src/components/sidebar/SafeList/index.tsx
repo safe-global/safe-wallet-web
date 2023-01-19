@@ -1,4 +1,4 @@
-import React, { Fragment, useState, type ReactElement } from 'react'
+import React, { Fragment, useCallback, useEffect, useState, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import List from '@mui/material/List'
@@ -29,7 +29,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
-import SearchIcon from '@/public/images/common/search.svg'
 import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
@@ -70,7 +69,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, string | undefined>>({})
+  const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, string | undefined>>()
   const { page } = useTxQueue()
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
@@ -81,7 +80,10 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
   const isWelcomePage = router.pathname === AppRoutes.welcome
 
-  const handleFetchQueued = async () => {
+  const handleFetchQueued = useCallback(async () => {
+    // do not run the function if safeQueuedTxs already populated
+    if (safeQueuedTxs !== undefined) return
+
     const fetchedQueuedTxs: Record<string, string | undefined> = {}
 
     for (let [chainId, safes] of Object.entries(addedSafes)) {
@@ -107,7 +109,11 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     }
 
     setSafeQueuedTxs(fetchedQueuedTxs)
-  }
+  }, [addedSafes, currentChainId, currentSafeAddress, page, safeQueuedTxs])
+
+  useEffect(() => {
+    handleFetchQueued()
+  }, [handleFetchQueued])
 
   return (
     <div className={css.container}>
@@ -116,32 +122,22 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
           <Typography variant="h4" display="inline" fontWeight={700}>
             My Safes
           </Typography>
-          <div className={css.headerButtons}>
-            <Button
-              disableElevation
-              size="small"
-              variant="outlined"
-              onClick={handleFetchQueued}
-              startIcon={<SvgIcon component={SearchIcon} inheritViewBox fontSize="small" />}
-            >
-              Tx queue
-            </Button>
-            {!isWelcomePage && (
-              <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
-                <Link href={{ pathname: AppRoutes.welcome }} passHref>
-                  <Button
-                    disableElevation
-                    size="small"
-                    variant="outlined"
-                    onClick={closeDrawer}
-                    startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-                  >
-                    Add
-                  </Button>
-                </Link>
-              </Track>
-            )}
-          </div>
+
+          {!isWelcomePage && (
+            <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
+              <Link href={{ pathname: AppRoutes.welcome }} passHref>
+                <Button
+                  disableElevation
+                  size="small"
+                  variant="outlined"
+                  onClick={closeDrawer}
+                  startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+                >
+                  Add
+                </Button>
+              </Link>
+            </Track>
+          )}
         </div>
       </div>
 
@@ -212,7 +208,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                     chainId={chain.chainId}
                     closeDrawer={closeDrawer}
                     shouldScrollToSafe
-                    queuedTxs={safeQueuedTxs[address]}
+                    queuedTxs={safeQueuedTxs?.[address]}
                   />
                 ))}
 
