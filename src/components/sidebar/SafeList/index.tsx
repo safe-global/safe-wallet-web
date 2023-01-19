@@ -60,6 +60,11 @@ export const _shouldExpandSafeList = ({
 const MAX_EXPANDED_SAFES = 3
 const NO_SAFE_MESSAGE = 'Create a new safe or add'
 
+export type SafeActions = {
+  signing: string | undefined
+  execution: string | undefined
+}
+
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
   const chainId = useChainId()
@@ -67,6 +72,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
+  const [safeRequiredActions, setSafeRequiredActions] = useState<Record<string, Record<string, SafeActions>>>({})
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const toggleOpen = (chainId: string, open: boolean) => {
@@ -75,6 +81,27 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
   const isWelcomePage = router.pathname === AppRoutes.welcome
+
+  const handleFetchMyActions = async () => {
+    const addedAndOwned: Record<string, Record<string, SafeActions>> = {}
+    for (let [chainId, safes] of Object.entries(addedSafes)) {
+      const ownedSafesOnChain = ownedSafes[chainId] ?? []
+
+      Object.keys(safes).reduce((acc, safe) => {
+        if (ownedSafesOnChain.includes(safe)) {
+          acc[chainId] = {
+            ...acc[chainId],
+            [safe]: { signing: '3', execution: '1' },
+          }
+        }
+
+        return acc
+      }, addedAndOwned)
+    }
+
+    console.log('added Safes that I own', addedAndOwned)
+    setSafeRequiredActions(addedAndOwned)
+  }
 
   return (
     <div className={css.container}>
@@ -88,8 +115,9 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
               disableElevation
               size="small"
               variant="outlined"
-              onClick={() => console.log('mock')}
+              onClick={handleFetchMyActions}
               startIcon={<SvgIcon component={UpdateIcon} inheritViewBox fontSize="small" />}
+              sx={{ color: 'orange' }}
             >
               My actions
             </Button>
@@ -179,6 +207,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                     chainId={chain.chainId}
                     closeDrawer={closeDrawer}
                     shouldScrollToSafe
+                    requiredActions={safeRequiredActions?.[chain.chainId]?.[address]}
                   />
                 ))}
 
