@@ -2,6 +2,8 @@
 
 set -ev
 
+cp $CHECKSUM_FILE ./out
+
 cd out
 
 # First, upload the new files w/o deleting the old ones
