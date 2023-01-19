@@ -1,21 +1,6 @@
-.toggle {
-  font-weight: 700;
-  text-decoration: underline;
-  text-align: left;
-}
-
-.truncated {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  max-height: 9ex;
-}
-
-.overflow {
-  overflow: auto;
-}
-
-.pre {
-  margin: 0;
+.msg :global .MuiInputBase-input {
+  white-space: pre;
+  font-family: monospace;
+  font-size: 0.85rem;
+  -webkit-text-fill-color: var(--color-text-primary);
 }
