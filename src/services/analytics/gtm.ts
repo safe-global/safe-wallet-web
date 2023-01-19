@@ -104,8 +104,8 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
     eventAction: eventData.action,
   }
 
-  if (eventData.event === EventType.META) {
-    gtmEvent.eventType = EventType.META
+  if (eventData.event) {
+    gtmEvent.eventType = eventData.event
   } else {
     gtmEvent.eventType = undefined
   }
