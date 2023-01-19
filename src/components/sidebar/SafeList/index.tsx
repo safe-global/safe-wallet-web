@@ -32,6 +32,7 @@ import LoadingIcon from '@/public/images/common/loading.svg'
 import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
+import { Errors, logError } from '@/services/exceptions'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -69,6 +70,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
+  console.log('addedSafes', addedSafes)
   const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, string | undefined>>()
   const { page } = useTxQueue()
 
@@ -98,13 +100,17 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
           continue
         }
 
-        const result = await getTransactionQueue(chainId, safeAddress)
+        try {
+          const result = await getTransactionQueue(chainId, safeAddress)
 
-        if (result.results.length === 0) continue
+          if (result.results.length === 0) continue
 
-        fetchedQueuedTxs[safeAddress] = `${result.results.filter(isTransactionListItem).length}${
-          result.next ? '+' : ''
-        }`
+          fetchedQueuedTxs[safeAddress] = `${result.results.filter(isTransactionListItem).length}${
+            result.next ? '+' : ''
+          }`
+        } catch (error) {
+          logError(Errors._603)
+        }
       }
     }
 
