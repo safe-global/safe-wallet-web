@@ -26,13 +26,11 @@ import InfiniteScroll from '@/components/common/InfiniteScroll'
 
 enum Field {
   recipient = 'recipient',
-  tokenAddress = 'tokenAddress',
   tokenId = 'tokenId',
 }
 
 type FormData = {
   [Field.recipient]: string
-  [Field.tokenAddress]: string
   [Field.tokenId]: string
 }
 
@@ -72,8 +70,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
   const formMethods = useForm<FormData>({
     defaultValues: {
       [Field.recipient]: params?.recipient || '',
-      [Field.tokenAddress]: params?.token?.address || '',
-      [Field.tokenId]: params?.token?.id || '',
+      [Field.tokenId]: params?.token ? `${params.token.address};${params.token.id}` : '',
     },
   })
   const {
@@ -86,7 +83,8 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
   const recipient = watch(Field.recipient)
 
   const onFormSubmit = (data: FormData) => {
-    const token = combinedNfts.find((item) => item.id === data.tokenId)
+    const [selectedTokenAddress, selectedTokenId] = data.tokenId.split(';')
+    const token = combinedNfts.find((item) => item.id === selectedTokenId && item.address === selectedTokenAddress)
     if (!token) return
     onSubmit({
       recipient: data.recipient,
@@ -133,7 +131,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                   error={!!errors.tokenId}
                 >
                   {combinedNfts.map((item) => (
-                    <MenuItem key={item.address + item.id} value={item.id}>
+                    <MenuItem key={item.address + item.id} value={`${item.address};${item.id}`}>
                       <NftMenuItem
                         image={item.imageUri || item.logoUri}
                         name={`${item.tokenName || item.tokenSymbol || ''} #${item.id}`}
