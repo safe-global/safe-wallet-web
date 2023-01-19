@@ -71,8 +71,8 @@ const useGasLimit = (
         type: operationType,
       })
       .then((gasLimit) => {
-        // Due to a bug in Nethermind estimation we need to increment 30% the gasLimit
-        // when the safeTxGas is defined and not 0.
+        // Due to a bug in Nethermind estimation, we need to increment the gasLimit by 30%
+        // when the safeTxGas is defined and not 0. Currently Nethermind is used only for Gnosis Chain.
         const safeTxGas = safeTx?.data?.safeTxGas
         if (currentChainId === chains.gno && safeTxGas && safeTxGas !== 0) {
           return gasLimit.mul(130).div(100)
