@@ -39,6 +39,16 @@ export type SendNftFormProps = {
   params?: NftTransferParams
 }
 
+const toNftValue = (nft: SafeCollectibleResponse): string => `${nft.address};${nft.id}`
+
+const parseNftValue = (value: string): { address: string; id: string } => {
+  const splitValue = value.split(';')
+  return {
+    address: splitValue[0],
+    id: splitValue[1],
+  }
+}
+
 const NftMenuItem = ({ image, name, description }: { image: string; name: string; description?: string }) => (
   <Grid container spacing={1} alignItems="center" wrap="nowrap" sx={{ maxWidth: '530px' }}>
     <Grid item>
@@ -70,7 +80,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
   const formMethods = useForm<FormData>({
     defaultValues: {
       [Field.recipient]: params?.recipient || '',
-      [Field.tokenId]: params?.token ? `${params.token.address};${params.token.id}` : '',
+      [Field.tokenId]: params?.token ? toNftValue(params.token) : '',
     },
   })
   const {
@@ -83,7 +93,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
   const recipient = watch(Field.recipient)
 
   const onFormSubmit = (data: FormData) => {
-    const [selectedTokenAddress, selectedTokenId] = data.tokenId.split(';')
+    const { address: selectedTokenAddress, id: selectedTokenId } = parseNftValue(data.tokenId)
     const token = combinedNfts.find((item) => item.id === selectedTokenId && item.address === selectedTokenAddress)
     if (!token) return
     onSubmit({
@@ -131,7 +141,7 @@ const SendNftForm = ({ params, onSubmit }: SendNftFormProps) => {
                   error={!!errors.tokenId}
                 >
                   {combinedNfts.map((item) => (
-                    <MenuItem key={item.address + item.id} value={`${item.address};${item.id}`}>
+                    <MenuItem key={item.address + item.id} value={toNftValue(item)}>
                       <NftMenuItem
                         image={item.imageUri || item.logoUri}
                         name={`${item.tokenName || item.tokenSymbol || ''} #${item.id}`}
