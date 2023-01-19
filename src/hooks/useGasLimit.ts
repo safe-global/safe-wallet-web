@@ -7,13 +7,12 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import chains from '@/config/chains'
 import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import useIsSafeOwner from './useIsSafeOwner'
 import { Errors, logError } from '@/services/exceptions'
-
-const GNOSIS_CHAIN_ID = '100'
 
 const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string): string => {
   const EXEC_TX_METHOD = 'execTransaction'
@@ -75,7 +74,7 @@ const useGasLimit = (
         // Due to a bug in Nethermind estimation we need to increment 30% the gasLimit
         // when the safeTxGas is defined and not 0.
         const safeTxGas = safeTx?.data?.safeTxGas
-        if (safeTxGas && safeTxGas !== 0 && currentChainId === GNOSIS_CHAIN_ID) {
+        if (currentChainId === chains.gno && safeTxGas && safeTxGas !== 0) {
           return gasLimit.mul(130).div(100)
         }
 
