@@ -29,7 +29,11 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
-import UpdateIcon from '@/public/images/common/update.svg'
+import SearchIcon from '@/public/images/common/search.svg'
+import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
+import { Errors, logError } from '@/services/exceptions'
+import { isAwaitingExecution, isExecutable, isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
+import useWallet from '@/hooks/wallets/useWallet'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -61,14 +65,15 @@ const MAX_EXPANDED_SAFES = 3
 const NO_SAFE_MESSAGE = 'Create a new safe or add'
 
 export type SafeActions = {
-  signing: string | undefined
-  execution: string | undefined
+  signing: string | number | undefined
+  execution: string | number | undefined
 }
 
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
   const chainId = useChainId()
   const { safeAddress, safe } = useSafeInfo()
+  const wallet = useWallet()
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
@@ -91,7 +96,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
         if (ownedSafesOnChain.includes(safe)) {
           acc[chainId] = {
             ...acc[chainId],
-            [safe]: { signing: '3', execution: '1' },
+            [safe]: { signing: undefined, execution: undefined },
           }
         }
 
@@ -99,7 +104,31 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
       }, addedAndOwned)
     }
 
-    console.log('added Safes that I own', addedAndOwned)
+    // calculate the missing actions
+    for (let [chainId, safes] of Object.entries(addedAndOwned)) {
+      for (let safeAddress of Object.keys(safes)) {
+        try {
+          const result = await getTransactionQueue(chainId, safeAddress)
+          const txs = result.results.filter(isTransactionListItem)
+
+          txs.reduce((acc, tx) => {
+            if (isSignableBy(tx.transaction, wallet?.address || '')) {
+              acc[chainId][safeAddress].signing = Number(acc[chainId]?.[safeAddress]?.signing || 0) + 1
+            }
+            if (
+              isExecutable(tx.transaction, wallet?.address || '', safe) ||
+              isAwaitingExecution(tx.transaction.txStatus)
+            ) {
+              acc[chainId][safeAddress].execution = Number(acc[chainId]?.[safeAddress]?.execution || 0) + 1
+            }
+            return acc
+          }, addedAndOwned)
+        } catch (error) {
+          logError(Errors._603)
+        }
+      }
+    }
+
     setSafeRequiredActions(addedAndOwned)
   }
 
@@ -116,7 +145,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
               size="small"
               variant="outlined"
               onClick={handleFetchMyActions}
-              startIcon={<SvgIcon component={UpdateIcon} inheritViewBox fontSize="small" />}
+              startIcon={<SvgIcon component={SearchIcon} inheritViewBox fontSize="small" />}
               sx={{ color: 'orange' }}
             >
               My actions

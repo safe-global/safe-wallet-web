@@ -112,13 +112,13 @@ const SafeListItem = ({
             <IconButton onClick={() => console.log('open tx queue')} sx={{ color: 'orange' }} size="small">
               <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" />
               <Typography variant="body2" sx={{ color: 'orange', marginLeft: '8px' }}>
-                {`${requiredActions?.signing} txs to confirm`}
+                {`${requiredActions?.signing || 0} txs to confirm`}
               </Typography>
             </IconButton>
             <IconButton onClick={() => console.log('open tx queue')} color="primary" size="small">
               <SvgIcon component={RocketIcon} inheritViewBox fontSize="small" />
               <Typography variant="body2" color="primary" sx={{ marginLeft: '8px' }}>
-                {`${requiredActions?.execution} txs to execute`}
+                {`${requiredActions?.execution || 0} txs to execute`}
               </Typography>
             </IconButton>
           </Box>
