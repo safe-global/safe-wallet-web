@@ -129,18 +129,10 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
   const canExecute = wallet?.address ? isExecutable(txSummary, wallet.address, safe) : false
   const confirmationsNeeded = confirmationsRequired - confirmations.length
   const isConfirmed = confirmationsNeeded <= 0 || canExecute
-  const showExecutor = executor || !isConfirmed
 
   return (
     <>
-      <List
-        className={css.signers}
-        sx={{
-          '::before': {
-            height: `calc(100% - ${showExecutor ? '80px' : '40px'})`,
-          },
-        }}
-      >
+      <List className={css.signers}>
         <ListItem>
           {isCancellationTxInfo(txInfo) ? (
             <>
@@ -199,30 +191,26 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
             {executor ? 'Executed' : isPending ? txStatus : 'Can be executed'}
           </ListItemText>
         </ListItem>
-        {showExecutor && (
-          <ListItem>
-            {executor ? (
-              <Box className={css.listFooter}>
-                <EthHashInfo
-                  address={executor.value}
-                  name={executor.name}
-                  customAvatar={executor.logoUri}
-                  hasExplorer
-                  showCopyButton
-                />
-              </Box>
-            ) : (
-              !isConfirmed && (
-                <Box className={css.listFooter}>
-                  <Typography sx={({ palette }) => ({ color: palette.border.main })}>
-                    Can be executed once the threshold is reached
-                  </Typography>
-                </Box>
-              )
-            )}
-          </ListItem>
-        )}
       </List>
+      {executor ? (
+        <Box className={css.listFooter}>
+          <EthHashInfo
+            address={executor.value}
+            name={executor.name}
+            customAvatar={executor.logoUri}
+            hasExplorer
+            showCopyButton
+          />
+        </Box>
+      ) : (
+        !isConfirmed && (
+          <Box className={css.listFooter}>
+            <Typography sx={({ palette }) => ({ color: palette.border.main })}>
+              Can be executed once the threshold is reached
+            </Typography>
+          </Box>
+        )
+      )}
     </>
   )
 }
