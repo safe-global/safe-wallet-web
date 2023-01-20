@@ -25,6 +25,23 @@ jobs:
       - name: Download source
         run: curl -sL "${{ github.event.release.tarball_url }}" >"$ARCHIVE_NAME".tar.gz
 
+      - name: Unzip source
+        run: mkdir "$ARCHIVE_NAME" && tar -xzf "$ARCHIVE_NAME".tar.gz -C "$ARCHIVE_NAME" --strip-components 1
+
+      # Remove everything except the build files
+      - name: Clean source
+        run: |
+          mkdir tempout
+          cd $ARCHIVE_NAME
+          mv ./out/* ../tempout
+          rm -rf *
+          rm -rf .gitignore
+          rm -rf .github
+          mv ../tempout/* .
+
+      - name: Create archive
+        run: tar -czf "$ARCHIVE_NAME".tar.gz "$ARCHIVE_NAME"
+
       - name: Create checksum
         run: sha256sum "$ARCHIVE_NAME".tar.gz > ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
 
