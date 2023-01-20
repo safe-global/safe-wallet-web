@@ -2,7 +2,9 @@
 
 set -ev
 
-cp $CHECKSUM_FILE ./out
+if [ -n "$1" ]; then
+  cp $CHECKSUM_FILE ./out/$CHECKSUM_FILE
+fi
 
 cd out
 
