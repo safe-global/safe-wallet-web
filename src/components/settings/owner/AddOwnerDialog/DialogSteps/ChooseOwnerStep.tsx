@@ -90,7 +90,7 @@ export const ChooseOwnerStep = ({
             </FormControl>
 
             <FormControl>
-              <AddressBookInput name="address" label="Owner address" validate={combinedValidate} />
+              <AddressBookInput name="address" label="Owner" validate={combinedValidate} />
             </FormControl>
           </Box>
 

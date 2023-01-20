@@ -12,7 +12,7 @@ import {
   Box,
   SvgIcon,
 } from '@mui/material'
-import { FEATURES, type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import TokenIcon from '@/components/common/TokenIcon'
@@ -32,8 +32,6 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import useIsSafeTokenPaused from '@/components/tx/modals/TokenTransferModal/useIsSafeTokenPaused'
 import NumberField from '@/components/common/NumberField'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
-import { useCurrentChain } from '@/hooks/useChains'
-import { hasFeature } from '@/utils/chains'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -80,8 +78,6 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
   const chainId = useChainId()
   const safeTokenAddress = getSafeTokenAddress(chainId)
   const isSafeTokenPaused = useIsSafeTokenPaused()
-  const chainInfo = useCurrentChain()
-  const isDomainLookupEnabled = !!chainInfo && hasFeature(chainInfo, FEATURES.DOMAIN_LOOKUP)
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: {
@@ -146,10 +142,7 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
                 <SendToBlock address={recipient} />
               </Box>
             ) : (
-              <AddressBookInput
-                name={SendAssetsField.recipient}
-                label={`Recipient address${isDomainLookupEnabled ? ' or ENS' : ''}`}
-              />
+              <AddressBookInput name={SendAssetsField.recipient} label="Recipient" />
             )}
           </FormControl>
 
