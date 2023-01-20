@@ -109,10 +109,10 @@ export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
   provider: Web3Provider,
   txOptions: TransactionOptions,
-  txId?: string,
+  txId: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
-  const eventParams = txId ? { txId } : { groupKey: await sdkUnchecked.getTransactionHash(safeTx) }
+  const eventParams = { txId }
 
   // Execute the tx
   let result: TransactionResult | undefined

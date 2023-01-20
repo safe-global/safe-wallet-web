@@ -162,11 +162,11 @@ const SignOrExecuteForm = ({
     const [, createdTx, provider] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
+    const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
+    await dispatchTxExecution(createdTx, provider, txOptions, id)
 
-    await dispatchTxExecution(createdTx, provider, txOptions, txId)
-
-    return txId
+    return id
   }
 
   // On modal submit
