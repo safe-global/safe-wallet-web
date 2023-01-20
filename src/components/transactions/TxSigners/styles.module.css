@@ -44,7 +44,6 @@
 }
 
 .listFooter {
-  display: block;
   margin-left: var(--space-4);
   margin-top: calc(var(--space-1) * -1);
 }
