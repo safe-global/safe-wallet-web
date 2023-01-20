@@ -32,6 +32,9 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import useIsSafeTokenPaused from '@/components/tx/modals/TokenTransferModal/useIsSafeTokenPaused'
 import NumberField from '@/components/common/NumberField'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
+import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
+import { useAppSelector } from '@/store'
+import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -72,12 +75,19 @@ type SendAssetsFormProps = {
   onSubmit: (formData: SendAssetsFormData) => void
 }
 
-const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: SendAssetsFormProps): ReactElement => {
+const SendAssetsForm = ({
+  onSubmit,
+  formData,
+  // Spending limits only disabled upon replacement, which pure spending limit beneficiaries can't do
+  disableSpendingLimit = false,
+}: SendAssetsFormProps): ReactElement => {
   const { balances } = useVisibleBalances()
   const addressBook = useAddressBook()
   const chainId = useChainId()
   const safeTokenAddress = getSafeTokenAddress(chainId)
   const isSafeTokenPaused = useIsSafeTokenPaused()
+  const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
+  const spendingLimits = useAppSelector(selectSpendingLimits)
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: {
@@ -86,6 +96,8 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
       [SendAssetsField.amount]: formData?.[SendAssetsField.amount] || '',
       [SendAssetsField.type]: disableSpendingLimit
         ? SendTxType.multiSig
+        : isOnlySpendingLimitBeneficiary
+        ? SendTxType.spendingLimit
         : formData?.[SendAssetsField.type] || SendTxType.multiSig,
     },
     mode: 'onChange',
@@ -114,6 +126,12 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
 
   const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
+
+  const items = isOnlySpendingLimitBeneficiary
+    ? balances.items.filter(({ tokenInfo }) => {
+        return spendingLimits?.some(({ token }) => sameAddress(tokenInfo.address, token))
+      })
+    : balances.items
 
   const onMaxAmountClick = () => {
     if (!selectedToken) return
@@ -160,7 +178,7 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
                 onChange: () => setValue(SendAssetsField.amount, ''),
               })}
             >
-              {balances.items.map((item) => (
+              {items.map((item) => (
                 <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
                   <AutocompleteItem {...item} />
                 </MenuItem>
