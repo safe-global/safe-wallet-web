@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import useWallet from '@/hooks/wallets/useWallet'
 import { getMessages, initCometChat, listenForMessage, sendMessage, createNewGroup } from '../../services/chat'
 
 //@ts-ignore
@@ -8,7 +9,7 @@ const Chat = ({ user }) => {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [group, setGroup] = useState<any>()
-  const connectedAccount = '0xc0163E58648b247c143023CFB26C2BAA42C9d9A9'
+  const wallet = useWallet()
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -29,7 +30,7 @@ const Chat = ({ user }) => {
   useEffect(() => {
     initCometChat()
     async function getM() {
-      await getMessages(`pid_${connectedAccount}`)
+      await getMessages(`pid_${wallet?.address!}`)
         .then((msgs) => {
           //@ts-ignore
           setMessages(msgs)
@@ -37,7 +38,7 @@ const Chat = ({ user }) => {
         })
         .catch((error) => console.log(error))
 
-      await listenForMessage(`pid_${connectedAccount}`)
+      await listenForMessage(`pid_${wallet?.address!}`)
         .then((msg) => {
           //@ts-ignore
           setMessages((prevState) => [...prevState, msg])

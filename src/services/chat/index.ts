@@ -17,9 +17,9 @@ const initCometChat = async () => {
     .catch((error) => console.log(error))
 }
 
-const loginWithCometChat = async () => {
+const loginWithCometChat = async (wallet: string) => {
   const authKey = CONSTANTS.Auth_Key
-  const UID = `0xc0163E58648b247c143023CFB26C2BAA42C9d9A9`
+  const UID = wallet
 
   return new Promise(async (resolve, reject) => {
     await CometChat.login(UID, authKey)
@@ -28,9 +28,9 @@ const loginWithCometChat = async () => {
   })
 }
 
-const signUpWithCometChat = async () => {
+const signUpWithCometChat = async (wallet: string) => {
   const authKey = CONSTANTS.Auth_Key
-  const UID = `0xc0163E58648b247c143023CFB26C2BAA42C9d9A9`
+  const UID = wallet
   const user = new CometChat.User(UID)
 
   user.setName(UID)

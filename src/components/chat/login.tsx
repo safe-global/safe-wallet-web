@@ -1,12 +1,15 @@
 import { toast } from 'react-toastify'
+import useWallet from '@/hooks/wallets/useWallet'
 import { loginWithCometChat, signUpWithCometChat } from '../../services/chat'
 
 //@ts-ignore
 const Login = ({ setCurrentUser }) => {
+  const wallet = useWallet()
+
   const handleLogin = async () => {
     await toast.promise(
       new Promise(async (resolve, reject) => {
-        await loginWithCometChat()
+        await loginWithCometChat(wallet?.address!)
           .then((user) => {
             setCurrentUser(user)
             console.log(user)
@@ -27,7 +30,7 @@ const Login = ({ setCurrentUser }) => {
   const handleSignup = async () => {
     await toast.promise(
       new Promise(async (resolve, reject) => {
-        await signUpWithCometChat()
+        await signUpWithCometChat(wallet?.address!)
           .then((user) => {
             console.log(user)
             resolve(user)

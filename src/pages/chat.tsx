@@ -15,7 +15,6 @@ const Home: NextPage = () => {
   })
 
   const [currentUser, setCurrentUser] = useState<any>()
-  const currentUserAddress = '0x1d9f081BdA444671A1212cE5Be88eD06bdf6b9e9'
 
   return (
     <>
