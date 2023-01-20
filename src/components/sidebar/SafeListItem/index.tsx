@@ -22,7 +22,35 @@ import { sameAddress } from '@/utils/addresses'
 import type { SafeActions } from '@/components/sidebar/SafeList'
 import CheckIcon from '@/public/images/common/check.svg'
 import RocketIcon from '@/public/images/transactions/rocket.svg'
-import { IconButton, SvgIcon, Typography } from '@mui/material'
+import { Button, SvgIcon, Tooltip, Typography } from '@mui/material'
+
+const ActionsButton = ({
+  icon,
+  actions,
+  variant,
+}: {
+  icon: any
+  actions: string | number | undefined
+  variant: 'sign' | 'execute'
+}) => {
+  return (
+    <Tooltip title={`required actions to ${variant}`} placement="top">
+      <Button
+        onClick={() => console.log('open tx queue')}
+        sx={{
+          color: ({ palette }) => palette.static.main,
+          backgroundColor: ({ palette }) => palette.info.light,
+          borderRadius: '6px',
+          padding: '0px',
+          height: '28px',
+        }}
+        startIcon={<SvgIcon component={icon} inheritViewBox fontSize="small" />}
+      >
+        <Typography variant="body2">{actions || 0}</Typography>
+      </Button>
+    </Tooltip>
+  )
+}
 
 const SafeListItem = ({
   address,
@@ -50,6 +78,7 @@ const SafeListItem = ({
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const name = allAddressBooks[chainId]?.[address]
   const shortName = chain?.shortName || ''
+  const hasRequiredActions = requiredActions !== undefined
 
   // Scroll to the current Safe
   useEffect(() => {
@@ -62,7 +91,7 @@ const SafeListItem = ({
     <ListItem
       className={css.container}
       disablePadding
-      sx={{ '& .MuiListItemSecondaryAction-root': { right: 24 } }}
+      sx={{ '& .MuiListItemSecondaryAction-root': { right: hasRequiredActions ? 80 : 24 } }}
       secondaryAction={
         noActions ? undefined : (
           <Box display="flex" alignItems="center" gap={1}>
@@ -80,7 +109,7 @@ const SafeListItem = ({
         )
       }
     >
-      <Box display="flex" flexDirection="column" flexGrow={1}>
+      <Box display="flex" flexDirection="row" flexGrow={1}>
         <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
           <ListItemButton
             key={address}
@@ -107,20 +136,17 @@ const SafeListItem = ({
             />
           </ListItemButton>
         </Link>
-        {requiredActions !== undefined && (
-          <Box sx={{ margin: '0 auto' }}>
-            <IconButton onClick={() => console.log('open tx queue')} sx={{ color: 'orange' }} size="small">
-              <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" />
-              <Typography variant="body2" sx={{ color: 'orange', marginLeft: '8px' }}>
-                {`${requiredActions?.signing || 0} txs to confirm`}
-              </Typography>
-            </IconButton>
-            <IconButton onClick={() => console.log('open tx queue')} color="primary" size="small">
-              <SvgIcon component={RocketIcon} inheritViewBox fontSize="small" />
-              <Typography variant="body2" color="primary" sx={{ marginLeft: '8px' }}>
-                {`${requiredActions?.execution || 0} txs to execute`}
-              </Typography>
-            </IconButton>
+        {hasRequiredActions && (
+          <Box
+            display="flex"
+            flexDirection="column"
+            gap="4px"
+            justifyContent="space-around"
+            paddingLeft="16px"
+            className="delete"
+          >
+            <ActionsButton icon={CheckIcon} actions={requiredActions?.signing} variant="sign" />
+            <ActionsButton icon={RocketIcon} actions={requiredActions?.execution} variant="execute" />
           </Box>
         )}
       </Box>

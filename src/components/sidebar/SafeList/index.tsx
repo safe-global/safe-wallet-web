@@ -34,6 +34,7 @@ import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
 import { Errors, logError } from '@/services/exceptions'
 import { isAwaitingExecution, isExecutable, isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
+import WalletIcon from '@/components/common/WalletIcon'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -144,18 +145,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
             My Safes
           </Typography>
           <div className={css.headerButtons}>
-            {wallet?.address && (
-              <Button
-                disableElevation
-                size="small"
-                variant="outlined"
-                onClick={handleFetchMyActions}
-                startIcon={<SvgIcon component={SearchIcon} inheritViewBox fontSize="small" />}
-                sx={{ color: 'orange' }}
-              >
-                My actions
-              </Button>
-            )}
             {!isWelcomePage && (
               <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
                 <Link href={{ pathname: AppRoutes.welcome }} passHref>
@@ -170,6 +159,18 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                   </Button>
                 </Link>
               </Track>
+            )}
+            {wallet?.address && (
+              <Button
+                disableElevation
+                size="small"
+                variant="outlined"
+                onClick={handleFetchMyActions}
+                endIcon={<SvgIcon component={SearchIcon} inheritViewBox fontSize="small" />}
+                sx={{ color: ({ palette }) => palette.info.main, padding: '0' }}
+              >
+                <WalletIcon provider={wallet.label} />
+              </Button>
             )}
           </div>
         </div>
