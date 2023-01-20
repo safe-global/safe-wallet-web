@@ -35,6 +35,7 @@ import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import { useAppSelector } from '@/store'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
+import useWallet from '@/hooks/wallets/useWallet'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -88,6 +89,7 @@ const SendAssetsForm = ({
   const isSafeTokenPaused = useIsSafeTokenPaused()
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
+  const wallet = useWallet()
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: {
@@ -129,7 +131,9 @@ const SendAssetsForm = ({
 
   const items = isOnlySpendingLimitBeneficiary
     ? balances.items.filter(({ tokenInfo }) => {
-        return spendingLimits?.some(({ token }) => sameAddress(tokenInfo.address, token))
+        return spendingLimits?.some(({ beneficiary, token }) => {
+          return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token)
+        })
       })
     : balances.items
 
