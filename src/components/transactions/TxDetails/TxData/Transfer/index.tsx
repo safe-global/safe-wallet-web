@@ -5,7 +5,6 @@ import type { TransactionStatus, Transfer } from '@safe-global/safe-gateway-type
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
-import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
 
 type TransferTxInfoProps = {
   txInfo: Transfer
@@ -33,8 +32,7 @@ const TransferTxInfo = ({ txInfo, txStatus }: TransferTxInfoProps) => {
     <Box>
       <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} />
       <Box display="flex" alignItems="center">
-        <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
-        <TransferActions address={address} txInfo={txInfo} />
+        <EthHashInfo address={address} shortAddress={false} TXInfo={txInfo} hasExplorer showCopyButton />
       </Box>
     </Box>
   )
