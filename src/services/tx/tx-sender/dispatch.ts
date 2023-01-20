@@ -59,11 +59,11 @@ export const dispatchTxProposal = async ({
  */
 export const dispatchTxSigning = async (
   safeTx: SafeTransaction,
-  shouldEthSign: boolean,
+  isLegacySignMethod: boolean,
   txId?: string,
 ): Promise<SafeTransaction> => {
   const sdk = getAndValidateSafeSDK()
-  const signingMethod = shouldEthSign ? 'eth_sign' : 'eth_signTypedData'
+  const signingMethod = isLegacySignMethod ? ('eth_signTypedData_v3' as 'eth_signTypedData') : 'eth_signTypedData'
 
   let signedTx: SafeTransaction | undefined
   try {
