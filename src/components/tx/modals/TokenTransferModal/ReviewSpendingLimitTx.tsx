@@ -86,7 +86,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
     try {
       await dispatchSpendingLimitTxExecution(txParams, txOptions, chainId, provider)
 
-      onSubmit('')
+      onSubmit()
     } catch (err) {
       logError(Errors._801, (err as Error).message)
       setIsSubmittable(true)
