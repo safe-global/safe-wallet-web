@@ -2,8 +2,8 @@
 
 set -ev
 
-if [ -n "$1" ]; then
-  cp $CHECKSUM_FILE ./out/$CHECKSUM_FILE
+if [[ -n $CHECKSUM_FILE ]]; then
+  cp ./$CHECKSUM_FILE ./out/$CHECKSUM_FILE
 fi
 
 cd out

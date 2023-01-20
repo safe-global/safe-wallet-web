@@ -9,7 +9,23 @@ on:
       - main
 
 jobs:
+  test-deploy:
+    runs-on: ubuntu-latest
+    name: Test file deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create checksum
+        run: echo "Teststring" > checksum.txt
+
+      # Upload the checksum file so that it can be reused in the next job
+      - uses: actions/upload-artifact@v2
+        with:
+          name: checksum-file
+          path: checksum.txt
   deploy:
+    needs: test-deploy
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -73,11 +89,16 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///' | sed 's/[^a-z0-9]/_/ig')"
         id: extract_branch
 
+      - uses: actions/download-artifact@v2
+        with:
+          name: checksum-file
+
       # Deploy to S3
       - name: Deploy PR branch
         if: github.event.number
         env:
           BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/${{ steps.extract_branch.outputs.branch }}
+          CHECKSUM_FILE: checksum.txt
         run: bash ./scripts/github/s3_upload.sh
 
       # Comnment
