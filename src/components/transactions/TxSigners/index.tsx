@@ -29,6 +29,7 @@ import DotIcon from '@/public/images/common/dot.svg'
 import CircleIcon from '@/public/images/common/circle.svg'
 import CheckIcon from '@/public/images/common/circle-check.svg'
 import CancelIcon from '@/public/images/common/cancel.svg'
+import useTransactionStatus from '@/hooks/useTransactionStatus'
 
 // Icons
 const Created = () => (
@@ -110,6 +111,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
   const { detailedExecutionInfo, txInfo, txId } = txDetails
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(detailedExecutionInfo))
   const isPending = useIsPending(txId)
+  const txStatus = useTransactionStatus(txSummary)
   const wallet = useWallet()
   const { safe } = useSafeInfo()
 
@@ -186,7 +188,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
             {executor ? <Check /> : <MissingConfirmation />}
           </StyledListItemIcon>
           <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
-            {executor ? 'Executed' : isPending ? 'Executing' : 'Can be executed'}
+            {executor ? 'Executed' : isPending ? txStatus : 'Can be executed'}
           </ListItemText>
         </ListItem>
       </List>
