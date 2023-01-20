@@ -19,7 +19,7 @@ export type ConnectedWallet = {
   provider: EIP1193Provider
 }
 
-const lastWalletStorage = localItem<string>('lastWallet')
+export const lastWalletStorage = localItem<string>('lastWallet')
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
