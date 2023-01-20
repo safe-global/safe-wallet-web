@@ -18,7 +18,6 @@
   border-left: 2px solid var(--color-border-light);
   left: 15px;
   top: 20px;
-  height: calc(100% - 40px);
 }
 
 .signers :global .MuiListItem-root:first-of-type {
@@ -45,6 +44,7 @@
 }
 
 .listFooter {
+  display: block;
   margin-left: var(--space-4);
   margin-top: calc(var(--space-1) * -1);
 }

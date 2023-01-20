@@ -29,6 +29,7 @@ import DotIcon from '@/public/images/common/dot.svg'
 import CircleIcon from '@/public/images/common/circle.svg'
 import CheckIcon from '@/public/images/common/circle-check.svg'
 import CancelIcon from '@/public/images/common/cancel.svg'
+import useTransactionStatus from '@/hooks/useTransactionStatus'
 
 // Icons
 const Created = () => (
@@ -110,6 +111,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
   const { detailedExecutionInfo, txInfo, txId } = txDetails
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(detailedExecutionInfo))
   const isPending = useIsPending(txId)
+  const txStatus = useTransactionStatus(txSummary)
   const wallet = useWallet()
   const { safe } = useSafeInfo()
 
@@ -127,10 +129,18 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
   const canExecute = wallet?.address ? isExecutable(txSummary, wallet.address, safe) : false
   const confirmationsNeeded = confirmationsRequired - confirmations.length
   const isConfirmed = confirmationsNeeded <= 0 || canExecute
+  const showExecutor = executor || !isConfirmed
 
   return (
     <>
-      <List className={css.signers}>
+      <List
+        className={css.signers}
+        sx={{
+          '::before': {
+            height: `calc(100% - ${showExecutor ? '80px' : '40px'})`,
+          },
+        }}
+      >
         <ListItem>
           {isCancellationTxInfo(txInfo) ? (
             <>
@@ -186,29 +196,33 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
             {executor ? <Check /> : <MissingConfirmation />}
           </StyledListItemIcon>
           <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
-            {executor ? 'Executed' : isPending ? 'Executing' : 'Can be executed'}
+            {executor ? 'Executed' : isPending ? txStatus : 'Can be executed'}
           </ListItemText>
         </ListItem>
+        {showExecutor && (
+          <ListItem>
+            {executor ? (
+              <Box className={css.listFooter}>
+                <EthHashInfo
+                  address={executor.value}
+                  name={executor.name}
+                  customAvatar={executor.logoUri}
+                  hasExplorer
+                  showCopyButton
+                />
+              </Box>
+            ) : (
+              !isConfirmed && (
+                <Box className={css.listFooter}>
+                  <Typography sx={({ palette }) => ({ color: palette.border.main })}>
+                    Can be executed once the threshold is reached
+                  </Typography>
+                </Box>
+              )
+            )}
+          </ListItem>
+        )}
       </List>
-      {executor ? (
-        <Box className={css.listFooter}>
-          <EthHashInfo
-            address={executor.value}
-            name={executor.name}
-            customAvatar={executor.logoUri}
-            hasExplorer
-            showCopyButton
-          />
-        </Box>
-      ) : (
-        !isConfirmed && (
-          <Box className={css.listFooter}>
-            <Typography sx={({ palette }) => ({ color: palette.border.main })}>
-              Can be executed once the threshold is reached
-            </Typography>
-          </Box>
-        )
-      )}
     </>
   )
 }
