@@ -249,7 +249,7 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '345' })
     })
 
-    it('should sign a tx with eth_sign if a hardware wallet/pairing is connected', async () => {
+    it('should sign a tx with eth_signTypedData_v3 if a hardware wallet/pairing is connected', async () => {
       const tx = await createTx({
         to: '0x123',
         value: '1',
@@ -260,7 +260,7 @@ describe('txSender', () => {
       const signedTx = await dispatchTxSigning(tx, true, '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
+      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v3')
       expect(signedTx).not.toBe(tx)
     })
   })
