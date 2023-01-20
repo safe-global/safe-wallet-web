@@ -21,6 +21,10 @@ export type ConnectedWallet = {
 
 const lastWalletStorage = localItem<string>('lastWallet')
 
+export const forgetLastWallet = () => {
+  lastWalletStorage.remove()
+}
+
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
 export const initOnboard = async (chainConfigs: ChainInfo[]) => {
@@ -66,10 +70,12 @@ const trackWalletType = (wallet: ConnectedWallet) => {
 
   getWalletConnectLabel(wallet)
     .then((wcLabel) => {
-      trackEvent({
-        ...WALLET_EVENTS.WALLET_CONNECT,
-        label: wcLabel,
-      })
+      if (wcLabel) {
+        trackEvent({
+          ...WALLET_EVENTS.WALLET_CONNECT,
+          label: wcLabel,
+        })
+      }
     })
     .catch(() => null)
 }

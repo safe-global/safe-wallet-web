@@ -1,13 +1,17 @@
 import { useState, type ReactElement } from 'react'
-import type { Palette } from '@mui/material'
-import { Box, Link, Step, StepConnector, StepContent, StepLabel, Stepper, type StepProps } from '@mui/material'
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
-import AddCircleIcon from '@mui/icons-material/AddCircle'
-import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUncheckedOutlined'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import CancelIcon from '@mui/icons-material/Cancel'
+import {
+  Box,
+  Link,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  type Palette,
+  SvgIcon,
+  Typography,
+  type ListItemIconProps,
+} from '@mui/material'
 import type {
-  AddressEx,
   DetailedExecutionInfo,
   TransactionDetails,
   TransactionSummary,
@@ -20,17 +24,36 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 
 import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import CreatedIcon from '@/public/images/common/created.svg'
+import DotIcon from '@/public/images/common/dot.svg'
+import CircleIcon from '@/public/images/common/circle.svg'
+import CheckIcon from '@/public/images/common/circle-check.svg'
+import CancelIcon from '@/public/images/common/cancel.svg'
 
 // Icons
-
-const TxCreationIcon = () => <AddCircleIcon className={css.icon} />
-const TxRejectionIcon = () => <CancelIcon className={css.icon} />
-const CheckIcon = () => <CheckCircleIcon className={css.icon} />
-
-const CircleIcon = () => (
-  <RadioButtonUncheckedOutlinedIcon className={css.icon} sx={{ stroke: 'currentColor', strokeWidth: '1px' }} />
+const Created = () => (
+  <SvgIcon
+    component={CreatedIcon}
+    inheritViewBox
+    className={css.icon}
+    sx={{
+      '& path:last-of-type': { fill: ({ palette }) => palette.background.paper },
+    }}
+  />
 )
-const DotIcon = () => <FiberManualRecordIcon className={css.icon} />
+const MissingConfirmation = () => <SvgIcon component={CircleIcon} inheritViewBox className={css.icon} />
+const Check = () => (
+  <SvgIcon
+    component={CheckIcon}
+    inheritViewBox
+    className={css.icon}
+    sx={{
+      '& path:last-of-type': { fill: ({ palette }) => palette.background.paper },
+    }}
+  />
+)
+const Cancel = () => <SvgIcon component={CancelIcon} inheritViewBox className={css.icon} />
+const Dot = () => <SvgIcon component={DotIcon} inheritViewBox className={css.dot} />
 
 enum StepState {
   CONFIRMED = 'CONFIRMED',
@@ -49,19 +72,15 @@ const getStepColor = (state: StepState, palette: Palette): string => {
   return colors[state]
 }
 
-type StyledStepProps = {
-  $bold?: boolean
+const StyledListItemIcon = ({
+  $state,
+  ...rest
+}: {
   $state: StepState
-}
-const StyledStep = ({ $bold, $state, sx, ...rest }: StyledStepProps & StepProps) => (
-  <Step
+} & ListItemIconProps) => (
+  <ListItemIcon
     sx={({ palette }) => ({
-      '.MuiStepLabel-label': {
-        fontWeight: `${$bold ? 'bold' : 'normal'} !important`,
-        color: palette.text.primary,
-        fontSize: '16px !important',
-      },
-      '.MuiStepLabel-iconContainer': {
+      '.MuiSvgIcon-root': {
         color: getStepColor($state, palette),
         alignItems: 'center',
       },
@@ -82,21 +101,12 @@ const shouldHideConfirmations = (detailedExecutionInfo?: DetailedExecutionInfo):
   return isConfirmed || detailedExecutionInfo.confirmations.length > 3
 }
 
-const getConfirmationStep = ({ value, name }: AddressEx, key: string | undefined = undefined): ReactElement => (
-  <StyledStep key={key} $state={StepState.CONFIRMED}>
-    <StepLabel icon={<DotIcon />}>
-      <EthHashInfo address={value} name={name} hasExplorer showCopyButton />
-    </StepLabel>
-  </StyledStep>
-)
-
-export const TxSigners = ({
-  txDetails,
-  txSummary,
-}: {
+type TxSignersProps = {
   txDetails: TransactionDetails
   txSummary: TransactionSummary
-}): ReactElement | null => {
+}
+
+export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElement | null => {
   const { detailedExecutionInfo, txInfo, txId } = txDetails
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(detailedExecutionInfo))
   const isPending = useIsPending(txId)
@@ -116,63 +126,90 @@ export const TxSigners = ({
   const confirmationsCount = confirmations.length
   const canExecute = wallet?.address ? isExecutable(txSummary, wallet.address, safe) : false
   const confirmationsNeeded = confirmationsRequired - confirmations.length
-  const isConfirmed = confirmationsNeeded <= 0 || isPending || canExecute
+  const isConfirmed = confirmationsNeeded <= 0 || canExecute
 
   return (
-    <Stepper
-      orientation="vertical"
-      nonLinear
-      connector={<StepConnector sx={{ padding: '3px 0' }} />}
-      className={css.stepper}
-    >
-      {isCancellationTxInfo(txInfo) ? (
-        <StyledStep $bold $state={StepState.ERROR}>
-          <StepLabel icon={<TxRejectionIcon />}>On-chain rejection created</StepLabel>
-        </StyledStep>
-      ) : (
-        <StyledStep $bold $state={StepState.CONFIRMED}>
-          <StepLabel icon={<TxCreationIcon />}>Created</StepLabel>
-        </StyledStep>
-      )}
-      <StyledStep $bold $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
-        <StepLabel icon={isConfirmed ? <CheckIcon /> : <CircleIcon />}>
-          Confirmations{' '}
-          <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
-        </StepLabel>
-      </StyledStep>
-      {!hideConfirmations && confirmations.map(({ signer }) => getConfirmationStep(signer, signer.value))}
-      {confirmations.length > 0 && (
-        <StyledStep $state={StepState.CONFIRMED}>
-          <StepLabel icon={<DotIcon />}>
-            <Link component="button" onClick={toggleHide} fontSize="medium">
-              {hideConfirmations ? 'Show all' : 'Hide all'}
-            </Link>
-          </StepLabel>
-        </StyledStep>
-      )}
-      <StyledStep expanded $bold $state={executor ? StepState.CONFIRMED : StepState.DISABLED}>
-        <StepLabel icon={executor ? <CheckIcon /> : <CircleIcon />} sx={{ marginBottom: 1, fontWeight: 'bold' }}>
-          {executor ? 'Executed' : isPending ? 'Executing' : 'Can be executed'}
-        </StepLabel>
-        {executor ? (
-          <StepContent>
-            <EthHashInfo
-              address={executor.value}
-              name={executor.name}
-              customAvatar={executor.logoUri}
-              hasExplorer
-              showCopyButton
-            />
-          </StepContent>
-        ) : (
-          !isConfirmed && (
-            <StepContent sx={({ palette }) => ({ color: palette.border.main })}>
-              Can be executed once the threshold is reached
-            </StepContent>
-          )
+    <>
+      <List className={css.signers}>
+        <ListItem>
+          {isCancellationTxInfo(txInfo) ? (
+            <>
+              <StyledListItemIcon $state={StepState.ERROR}>
+                <Cancel />
+              </StyledListItemIcon>
+              <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>On-chain rejection created</ListItemText>
+            </>
+          ) : (
+            <>
+              <StyledListItemIcon $state={StepState.CONFIRMED}>
+                <Created />
+              </StyledListItemIcon>
+              <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
+            </>
+          )}
+        </ListItem>
+
+        <ListItem>
+          <StyledListItemIcon $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
+            {isConfirmed ? <Check /> : <MissingConfirmation />}
+          </StyledListItemIcon>
+          <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
+            Confirmations{' '}
+            <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
+          </ListItemText>
+        </ListItem>
+        {!hideConfirmations &&
+          confirmations.map(({ signer }) => (
+            <ListItem key={signer.value} sx={{ py: 0 }}>
+              <StyledListItemIcon $state={StepState.CONFIRMED}>
+                <Dot />
+              </StyledListItemIcon>
+              <ListItemText>
+                <EthHashInfo address={signer.value} name={signer.name} hasExplorer showCopyButton />
+              </ListItemText>
+            </ListItem>
+          ))}
+        {confirmations.length > 0 && (
+          <ListItem>
+            <StyledListItemIcon $state={StepState.CONFIRMED}>
+              <Dot />
+            </StyledListItemIcon>
+            <ListItemText>
+              <Link component="button" onClick={toggleHide} fontSize="medium">
+                {hideConfirmations ? 'Show all' : 'Hide all'}
+              </Link>
+            </ListItemText>
+          </ListItem>
         )}
-      </StyledStep>
-    </Stepper>
+        <ListItem>
+          <StyledListItemIcon $state={executor ? StepState.CONFIRMED : StepState.DISABLED}>
+            {executor ? <Check /> : <MissingConfirmation />}
+          </StyledListItemIcon>
+          <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
+            {executor ? 'Executed' : isPending ? 'Executing' : 'Can be executed'}
+          </ListItemText>
+        </ListItem>
+      </List>
+      {executor ? (
+        <Box className={css.listFooter}>
+          <EthHashInfo
+            address={executor.value}
+            name={executor.name}
+            customAvatar={executor.logoUri}
+            hasExplorer
+            showCopyButton
+          />
+        </Box>
+      ) : (
+        !isConfirmed && (
+          <Box className={css.listFooter}>
+            <Typography sx={({ palette }) => ({ color: palette.border.main })}>
+              Can be executed once the threshold is reached
+            </Typography>
+          </Box>
+        )
+      )}
+    </>
   )
 }
 

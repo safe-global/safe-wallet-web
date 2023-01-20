@@ -27,8 +27,4 @@
   .container td:last-of-type button {
     opacity: 1;
   }
-
-  .sendButton {
-    display: none;
-  }
 }
