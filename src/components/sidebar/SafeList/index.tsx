@@ -1,4 +1,4 @@
-import React, { Fragment, useState, type ReactElement } from 'react'
+import React, { Fragment, useEffect, useState, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import List from '@mui/material/List'
@@ -87,6 +87,10 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
   const isWelcomePage = router.pathname === AppRoutes.welcome
 
+  useEffect(() => {
+    setSafeRequiredActions({})
+  }, [wallet?.address])
+
   const handleFetchMyActions = async () => {
     const addedAndOwned: Record<string, Record<string, SafeActions>> = {}
     for (let [chainId, safes] of Object.entries(addedSafes)) {
@@ -104,7 +108,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
       }, addedAndOwned)
     }
 
-    // calculate the missing actions
+    // calculate the required actions
     for (let [chainId, safes] of Object.entries(addedAndOwned)) {
       for (let safeAddress of Object.keys(safes)) {
         try {
@@ -140,16 +144,18 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
             My Safes
           </Typography>
           <div className={css.headerButtons}>
-            <Button
-              disableElevation
-              size="small"
-              variant="outlined"
-              onClick={handleFetchMyActions}
-              startIcon={<SvgIcon component={SearchIcon} inheritViewBox fontSize="small" />}
-              sx={{ color: 'orange' }}
-            >
-              My actions
-            </Button>
+            {wallet?.address && (
+              <Button
+                disableElevation
+                size="small"
+                variant="outlined"
+                onClick={handleFetchMyActions}
+                startIcon={<SvgIcon component={SearchIcon} inheritViewBox fontSize="small" />}
+                sx={{ color: 'orange' }}
+              >
+                My actions
+              </Button>
+            )}
             {!isWelcomePage && (
               <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
                 <Link href={{ pathname: AppRoutes.welcome }} passHref>
