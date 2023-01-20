@@ -1,13 +1,5 @@
 .container {
   overflow-y: auto;
-  position: relative;
-}
-
-.headerWrapper {
-  position: sticky;
-  top: 0px;
-  z-index: 2;
-  background-color: var(--color-background-paper);
 }
 
 .header {

@@ -119,28 +119,26 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   return (
     <div className={css.container}>
-      <div className={css.headerWrapper}>
-        <div className={css.header}>
-          <Typography variant="h4" display="inline" fontWeight={700}>
-            My Safes
-          </Typography>
+      <div className={css.header}>
+        <Typography variant="h4" display="inline" fontWeight={700}>
+          My Safes
+        </Typography>
 
-          {!isWelcomePage && (
-            <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
-              <Link href={{ pathname: AppRoutes.welcome }} passHref>
-                <Button
-                  disableElevation
-                  size="small"
-                  variant="outlined"
-                  onClick={closeDrawer}
-                  startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-                >
-                  Add
-                </Button>
-              </Link>
-            </Track>
-          )}
-        </div>
+        {!isWelcomePage && (
+          <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
+            <Link href={{ pathname: AppRoutes.welcome }} passHref>
+              <Button
+                disableElevation
+                size="small"
+                variant="outlined"
+                onClick={closeDrawer}
+                startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+              >
+                Add
+              </Button>
+            </Link>
+          </Track>
+        )}
       </div>
 
       {hasNoSafes && (
