@@ -15,12 +15,13 @@ import MsgSigners from '@/components/safe-messages/MsgSigners'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignMsgButton from '@/components/safe-messages/SignMsgButton'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import Msg from '@/components/safe-messages/Msg'
 import { generateSafeMessageMessage } from '@/utils/safe-messages'
 
 import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
 import singleTxDecodedCss from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded/styles.module.css'
 import infoDetailsCss from '@/components/transactions/InfoDetails/styles.module.css'
+import { DecodedMsg } from '../DecodedMsg'
+import CopyButton from '@/components/common/CopyButton'
 
 const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const wallet = useWallet()
@@ -51,10 +52,13 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
           <TxDataRow title="Last modified:">{formatDateTime(msg.modifiedTimestamp)}</TxDataRow>
           <TxDataRow title="Message hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>
           <TxDataRow title="SafeMessage:">{generateDataRowValue(safeMessage, 'hash')}</TxDataRow>
-          <Typography fontWeight={700} mb={1}>
-            Message:
-          </Typography>
-          <Msg message={msg.message} />
+          <TxDataRow title="Raw Message">
+            <Box display="flex" alignItems="center">
+              <div>{JSON.stringify(msg.message, null, 2).length} characters</div>
+              <CopyButton text={JSON.stringify(msg.message, null, 2)} />
+            </Box>
+          </TxDataRow>
+          <DecodedMsg message={msg.message} />
         </div>
 
         {msg.preparedSignature && (
