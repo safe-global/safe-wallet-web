@@ -40,11 +40,11 @@ export const DecodedMsg = ({ message }: { message: SafeMessage['message'] }): Re
         const isArrayValueParam = Array.isArray(paramValue)
         const isNested = isObject(paramValue)
         const inlineType = isAddress(paramValue as string) ? 'address' : isByte(type) ? 'bytes' : undefined
-
+        const paramValueAsString = typeof paramValue === 'string' ? paramValue : JSON.stringify(paramValue, null, 2)
         return (
           <TxDataRow key={`${primaryType}_param-${index}`} title={`${param[0]}(${type}):`}>
             {isArrayValueParam ? (
-              <Value method={primaryType} type={type} value={JSON.stringify(paramValue, null, 2)} />
+              <Value method={primaryType} type={type} value={paramValueAsString} />
             ) : isNested ? (
               <Box
                 sx={{
@@ -57,10 +57,10 @@ export const DecodedMsg = ({ message }: { message: SafeMessage['message'] }): Re
                   padding: 1,
                 }}
               >
-                {JSON.stringify(paramValue, null, 2)}
+                {paramValueAsString}
               </Box>
             ) : (
-              generateDataRowValue(paramValue as string, inlineType, true)
+              generateDataRowValue(paramValueAsString, inlineType, true)
             )}
           </TxDataRow>
         )
