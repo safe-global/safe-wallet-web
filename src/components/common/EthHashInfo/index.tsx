@@ -12,8 +12,6 @@ import { selectSettings } from '@/store/settingsSlice'
 import { selectChainById } from '@/store/chainsSlice'
 import useChainId from '@/hooks/useChainId'
 import { ethers } from 'ethers'
-import type { Transfer } from '@safe-global/safe-gateway-typescript-sdk'
-import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
 
 type EthHashInfoProps = {
   address: string
@@ -28,7 +26,7 @@ type EthHashInfoProps = {
   customAvatar?: string
   hasExplorer?: boolean
   avatarSize?: number
-  TXInfo: Transfer
+  children?: React.ReactNode
 }
 
 const EthHashInfo = ({
@@ -43,7 +41,8 @@ const EthHashInfo = ({
   name,
   showCopyButton,
   hasExplorer,
-  TXInfo,
+
+  children,
 }: EthHashInfoProps): ReactElement => {
   const [fallbackToIdenticon, setFallbackToIdenticon] = useState(false)
   const shouldPrefix = ethers.utils.isAddress(address)
@@ -79,13 +78,13 @@ const EthHashInfo = ({
             <span className={css.mobileAddress}>{shortenAddress(address)}</span>
             <span className={css.desktopAddress}>{shortAddress ? shortenAddress(address) : address}</span>
           </Typography>
-          <TransferActions address={address} txInfo={TXInfo} />
 
           {showCopyButton && (
             <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldPrefix && copyPrefix} />
           )}
 
           {hasExplorer && <ExplorerLink address={address} />}
+          {children}
         </Box>
       </div>
     </div>
@@ -110,7 +109,9 @@ const PrefixedEthHashInfo = ({
       copyPrefix={settings.shortName.copy}
       {...props}
       name={name}
-    />
+    >
+      {props.children}
+    </EthHashInfo>
   )
 }
 
