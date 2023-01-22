@@ -11,6 +11,11 @@
   word-break: break-all;
 }
 
+.detailstitle {
+  font-weight: 400;
+  word-break: break-all;
+}
+
 .gridRow > * {
   flex-shrink: 0;
 }
