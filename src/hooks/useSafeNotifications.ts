@@ -11,8 +11,6 @@ import useIsSafeOwner from './useIsSafeOwner'
 import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
 import useSafeAddress from '@/hooks/useSafeAddress'
 
-const OLD_APP_URL = 'https://gnosis-safe.io/app'
-
 const CLI_LINK = {
   href: 'https://github.com/5afe/safe-cli',
   title: 'Get CLI',
@@ -46,12 +44,12 @@ const useSafeNotifications = (): void => {
         groupKey: 'safe-outdated-version',
 
         message: isOldSafe
-          ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the old web app here.`
+          ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the CLI.`
           : `Your Safe version ${version} is out of date. Please update it.`,
 
         link: {
           href: isOldSafe
-            ? `${OLD_APP_URL}/${query.safe}/settings/details`
+            ? CLI_LINK
             : {
                 pathname: AppRoutes.settings.setup,
                 query: { safe: query.safe },
