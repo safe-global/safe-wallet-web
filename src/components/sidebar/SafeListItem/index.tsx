@@ -19,6 +19,10 @@ import Box from '@mui/material/Box'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
+import type { SafeActions } from '@/components/sidebar/SafeList'
+import { IconButton, SvgIcon, Typography } from '@mui/material'
+import CheckIcon from '@/public/images/common/check.svg'
+import RocketIcon from '@/public/images/transactions/rocket.svg'
 
 const SafeListItem = ({
   address,
@@ -26,6 +30,7 @@ const SafeListItem = ({
   closeDrawer,
   shouldScrollToSafe,
   noActions = false,
+  queuedTxs,
   ...rest
 }: {
   address: string
@@ -35,7 +40,7 @@ const SafeListItem = ({
   threshold?: string | number
   owners?: string | number
   noActions?: boolean
-  queuedTxs?: string
+  queuedTxs?: SafeActions
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()
@@ -45,6 +50,7 @@ const SafeListItem = ({
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const name = allAddressBooks[chainId]?.[address]
   const shortName = chain?.shortName || ''
+  const { queued, execution, signing } = queuedTxs || {}
 
   // Scroll to the current Safe
   useEffect(() => {
@@ -75,32 +81,50 @@ const SafeListItem = ({
         )
       }
     >
-      <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
-        <ListItemButton
-          key={address}
-          onClick={closeDrawer}
-          selected={isCurrentSafe}
-          className={classnames(css.safe, { [css.open]: isCurrentSafe })}
-          ref={safeRef}
-        >
-          <ListItemIcon>
-            <SafeIcon address={address} {...rest} />
-          </ListItemIcon>
-          <ListItemText
-            sx={noActions ? undefined : { pr: 10 }}
-            primaryTypographyProps={{
-              variant: 'body2',
-              component: 'div',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-            }}
-            secondaryTypographyProps={{ component: 'div', color: 'primary' }}
-            primary={name || ''}
-            secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
-          />
-        </ListItemButton>
-      </Link>
+      <Box display="flex" flexDirection="column" flexGrow={1}>
+        <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
+          <ListItemButton
+            key={address}
+            onClick={closeDrawer}
+            selected={isCurrentSafe}
+            className={classnames(css.safe, { [css.open]: isCurrentSafe })}
+            ref={safeRef}
+          >
+            <ListItemIcon>
+              <SafeIcon address={address} queuedTxs={queued} {...rest} />
+            </ListItemIcon>
+            <ListItemText
+              sx={noActions ? undefined : { pr: 10 }}
+              primaryTypographyProps={{
+                variant: 'body2',
+                component: 'div',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+              }}
+              secondaryTypographyProps={{ component: 'div', color: 'primary' }}
+              primary={name || ''}
+              secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
+            />
+          </ListItemButton>
+        </Link>
+        {(signing || execution) !== undefined && (
+          <Box sx={{ margin: '0 auto' }}>
+            <IconButton onClick={() => console.log('open tx queue')} sx={{ color: 'orange' }} size="small">
+              <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" />
+              <Typography variant="body2" sx={{ color: 'orange', marginLeft: '8px' }}>
+                {`${signing || 0} txs to confirm`}
+              </Typography>
+            </IconButton>
+            <IconButton onClick={() => console.log('open tx queue')} color="primary" size="small">
+              <SvgIcon component={RocketIcon} inheritViewBox fontSize="small" />
+              <Typography variant="body2" color="primary" sx={{ marginLeft: '8px' }}>
+                {`${execution || 0} txs to execute`}
+              </Typography>
+            </IconButton>
+          </Box>
+        )}
+      </Box>
     </ListItem>
   )
 }

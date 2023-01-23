@@ -4,6 +4,7 @@ import { Box, Tooltip } from '@mui/material'
 import css from './styles.module.css'
 import Identicon, { type IdenticonProps } from '../Identicon'
 import classnames from 'classnames'
+import type { SafeActions } from '@/components/sidebar/SafeList'
 
 interface ThresholdProps {
   threshold: number | string
@@ -15,7 +16,7 @@ const Threshold = ({ threshold, owners }: ThresholdProps): ReactElement => (
   </Box>
 )
 
-const PendingActionsBadge = ({ queuedTxs }: { queuedTxs: string }): ReactElement => (
+const PendingActionsBadge = ({ queuedTxs }: { queuedTxs: SafeActions['queued'] }): ReactElement => (
   <Tooltip title={`${queuedTxs} pending transaction(s)`} placement="top">
     <Box className={classnames(css.badge, css.pending)} sx={{ color: ({ palette }) => palette.static.main }}>
       {queuedTxs}
@@ -27,7 +28,7 @@ interface SafeIconProps extends IdenticonProps {
   threshold?: ThresholdProps['threshold']
   owners?: ThresholdProps['owners']
   size?: number
-  queuedTxs?: string
+  queuedTxs?: SafeActions['queued']
 }
 
 const SafeIcon = ({ address, threshold, owners, size, queuedTxs }: SafeIconProps): ReactElement => (

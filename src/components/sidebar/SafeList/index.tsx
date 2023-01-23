@@ -30,9 +30,10 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
 import { getTransactionQueue, type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
-import { isTransactionListItem } from '@/utils/transaction-guards'
+import { isAwaitingExecution, isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { Errors, logError } from '@/services/exceptions'
+import useWallet from '@/hooks/wallets/useWallet'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -63,6 +64,12 @@ export const _shouldExpandSafeList = ({
 const MAX_EXPANDED_SAFES = 3
 const NO_SAFE_MESSAGE = 'Create a new safe or add'
 
+export type SafeActions = {
+  queued?: string | number | undefined
+  signing?: string | number | undefined
+  execution?: string | number | undefined
+}
+
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
   const currentChainId = useChainId()
@@ -70,8 +77,9 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, Record<string, string | undefined>>>()
+  const [safeTxsActions, setSafeTxsActions] = useState<Record<string, Record<string, SafeActions>>>()
   const { page } = useTxQueue()
+  const wallet = useWallet()
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const toggleOpen = (chainId: string, open: boolean) => {
@@ -83,41 +91,82 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   const handleFetchQueued = useCallback(async () => {
     // do not run the function if safeQueuedTxs already populated
-    if (safeQueuedTxs !== undefined) return
+    if (safeTxsActions !== undefined) return
 
-    const queuedTxsByChain: Record<string, Record<string, string | undefined>> = {}
+    const txsActionsByChain: Record<string, Record<string, SafeActions>> = {}
 
-    const addToQueuedTxs = (chainId: string, address: string, page: TransactionListPage) => {
+    // TODO: try to solve the slow iteration
+    setSafeTxsActions(txsActionsByChain)
+
+    const addActionsToTxs = (chainId: string, address: string, page: TransactionListPage, isSafeOwned: boolean) => {
       if (page.results.length === 0) return
 
-      queuedTxsByChain[chainId] = {
-        [address]: `${page.results.filter(isTransactionListItem).length}${page.next ? '+' : ''}`,
+      if (isSafeOwned) {
+        const txs = page.results.filter(isTransactionListItem)
+
+        txs.reduce((acc, tx) => {
+          if (isSignableBy(tx.transaction, wallet?.address || '')) {
+            acc[chainId] = {
+              ...(acc[chainId] || {}),
+              [address]: {
+                ...(acc[chainId]?.[address] || {}),
+                signing: Number(acc[chainId]?.[address]?.signing || 0) + 1,
+              },
+            }
+          }
+          if (isAwaitingExecution(tx.transaction.txStatus)) {
+            acc[chainId] = {
+              ...(acc[chainId] || {}),
+              [address]: {
+                ...(acc[chainId]?.[address] || {}),
+                execution: Number(acc[chainId]?.[address]?.execution || 0) + 1,
+              },
+            }
+          }
+          return acc
+        }, txsActionsByChain)
+      }
+
+      txsActionsByChain[chainId] = {
+        ...(txsActionsByChain[chainId] ?? {}),
+        [address]: {
+          ...txsActionsByChain[chainId]?.[address],
+          queued: `${page.results.filter(isTransactionListItem).length}${page.next ? '+' : ''}`,
+        },
       }
     }
 
     for (let [chainId, safes] of Object.entries(addedSafes)) {
+      const ownedSafesOnChain = ownedSafes[chainId] ?? []
+
       for (let safeAddress of Object.keys(safes)) {
+        const isOwned = ownedSafesOnChain.includes(safeAddress)
+
         // do not request queued txs again for the current Safe
         if (currentChainId === chainId && sameAddress(currentSafeAddress, safeAddress) && page) {
-          addToQueuedTxs(chainId, safeAddress, page)
+          addActionsToTxs(chainId, safeAddress, page, isOwned)
           continue
         }
 
         try {
           const result = await getTransactionQueue(chainId, safeAddress)
-          addToQueuedTxs(chainId, safeAddress, result)
+          addActionsToTxs(chainId, safeAddress, result, isOwned)
         } catch (error) {
           logError(Errors._603)
         }
       }
     }
 
-    setSafeQueuedTxs(queuedTxsByChain)
-  }, [addedSafes, currentChainId, currentSafeAddress, page, safeQueuedTxs])
+    setSafeTxsActions(txsActionsByChain)
+  }, [addedSafes, currentChainId, currentSafeAddress, ownedSafes, page, safeTxsActions, wallet?.address])
 
   useEffect(() => {
     handleFetchQueued()
   }, [handleFetchQueued])
+
+  useEffect(() => {
+    setSafeTxsActions({})
+  }, [wallet?.address])
 
   return (
     <div className={css.container}>
@@ -210,7 +259,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                     chainId={chain.chainId}
                     closeDrawer={closeDrawer}
                     shouldScrollToSafe
-                    queuedTxs={safeQueuedTxs?.[chain.chainId]?.[address]}
+                    queuedTxs={safeTxsActions?.[chain.chainId]?.[address]}
                   />
                 ))}
 
