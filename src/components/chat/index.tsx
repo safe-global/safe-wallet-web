@@ -1,21 +1,32 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import useWallet from '@/hooks/wallets/useWallet'
-import { getMessages, initCometChat, listenForMessage, sendMessage, createNewGroup } from '../../services/chat'
+import {
+  getMessages,
+  initCometChat,
+  listenForMessage,
+  sendMessage,
+  createNewGroup,
+  getGroup,
+} from '../../services/chat'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 //@ts-ignore
 const Chat = ({ user }) => {
+  const { safe, safeAddress } = useSafeInfo()
   console.log('loaded')
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [group, setGroup] = useState<any>()
   const wallet = useWallet()
 
+  console.log(safe, safeAddress)
+
   const handleSubmit = async (e: any) => {
     e.preventDefault()
 
     if (!message) return
-    await sendMessage(`pid_${'safe'}`, message)
+    await sendMessage(`pid_${safeAddress}`, message)
       .then(async (msg: any) => {
         //@ts-ignore
         setMessages((prevState) => [...prevState, msg])
@@ -30,7 +41,7 @@ const Chat = ({ user }) => {
   useEffect(() => {
     initCometChat()
     async function getM() {
-      await getMessages(`pid_${wallet?.address!}`)
+      await getMessages(`pid_${safeAddress!}`)
         .then((msgs) => {
           //@ts-ignore
           setMessages(msgs)
@@ -38,7 +49,7 @@ const Chat = ({ user }) => {
         })
         .catch((error) => console.log(error))
 
-      await listenForMessage(`pid_${wallet?.address!}`)
+      await listenForMessage(`pid_${safeAddress!}`)
         .then((msg) => {
           //@ts-ignore
           setMessages((prevState) => [...prevState, msg])
@@ -47,7 +58,7 @@ const Chat = ({ user }) => {
         .catch((error) => console.log(error))
     }
     getM()
-  }, [])
+  }, [group])
 
   const scrollToEnd = () => {
     const elmnt = document.getElementById('messages-container')
@@ -63,7 +74,33 @@ const Chat = ({ user }) => {
 
     await toast.promise(
       new Promise(async (resolve, reject) => {
-        await createNewGroup(`pid_${'safe'}`, 'safe')
+        await createNewGroup(`pid_${safeAddress}`, 'safe')
+          .then((gp) => {
+            setGroup(gp)
+            resolve(gp)
+          })
+          .catch((error) => {
+            reject(new Error(error))
+            console.log(error)
+          })
+      }),
+      {
+        pending: 'Creating...',
+        success: 'Group created 👌',
+        error: 'Encountered error 🤯',
+      },
+    )
+  }
+
+  const handleGetGroup = async () => {
+    if (!user) {
+      toast.warning('You need to login or sign up first.')
+      return
+    }
+
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await getGroup(`pid_${safeAddress}`)
           .then((gp) => {
             setGroup(gp)
             resolve(gp)
@@ -86,7 +123,7 @@ const Chat = ({ user }) => {
         <div id="messages-container">
           {messages.map((msg, i) => (
             //@ts-ignore
-            <Message isOwner={msg.sender.uid == connectedAccount} owner={msg.sender.uid} msg={msg.text} key={i} />
+            <Message isOwner={msg.sender.uid == wallet?.address} owner={msg.sender.uid} msg={msg.text} key={i} />
           ))}
         </div>
 
@@ -104,15 +141,18 @@ const Chat = ({ user }) => {
         </form>
 
         {!group ? (
-          <button
-            type="button"
-            className="shadow-sm shadow-black text-white
-            bg-red-500 hover:bg-red-700 md:text-xs p-2.5
-            rounded-sm cursor-pointer font-light"
-            onClick={handleCreateGroup}
-          >
-            Create Group
-          </button>
+          <>
+            <button
+              type="button"
+              className="shadow-sm shadow-black text-white
+              bg-red-500 hover:bg-red-700 md:text-xs p-2.5
+              rounded-sm cursor-pointer font-light"
+              onClick={handleCreateGroup}
+            >
+              Create Group
+            </button>
+            <button onClick={handleGetGroup}>Get Group</button>
+          </>
         ) : null}
       </div>
     </div>
