@@ -1,8 +1,5 @@
-import { Typography, Link as MuiLink } from '@mui/material'
-import Link from 'next/link'
+import { Typography, Link } from '@mui/material'
 import type { FallbackRender } from '@sentry/react'
-import type { ComponentProps } from 'react'
-import type { Router } from 'next/router'
 
 import { IS_PRODUCTION } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
@@ -12,9 +9,7 @@ import css from '@/components/common/ErrorBoundary/styles.module.css'
 import CircularIcon from '../icons/CircularIcon'
 import ExternalLink from '../ExternalLink'
 
-type Props = ComponentProps<FallbackRender> & { router: Router }
-
-const ErrorBoundary = ({ error, componentStack, resetError, router }: Props) => {
+const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
   return (
     <div className={css.container}>
       <div className={css.wrapper}>
@@ -29,9 +24,7 @@ const ErrorBoundary = ({ error, componentStack, resetError, router }: Props) => 
         {IS_PRODUCTION ? (
           <Typography color="text.primary">
             In case the problem persists, please reach out to us via our{' '}
-            <Link href="https://help.safe.global" passHref target="_blank" rel="noopener noreferrer">
-              <ExternalLink>Help Center</ExternalLink>
-            </Link>
+            <ExternalLink href="https://help.safe.global">Help Center</ExternalLink>
           </Typography>
         ) : (
           <>
@@ -40,21 +33,9 @@ const ErrorBoundary = ({ error, componentStack, resetError, router }: Props) => 
             <Typography color="error">{componentStack}</Typography>
           </>
         )}
-        <Typography mt={2}>
-          <Link href={AppRoutes.welcome} passHref color="primary">
-            <MuiLink
-              onClick={(e) => {
-                e.stopPropagation()
-
-                // We need to wait for navigation to finish otherwise error will be thrown
-                // from the current page again
-                router.push(AppRoutes.welcome).then(resetError)
-              }}
-            >
-              Go Home
-            </MuiLink>
-          </Link>
-        </Typography>
+        <Link href={AppRoutes.welcome} color="primary" mt={2}>
+          Go home
+        </Link>
       </div>
     </div>
   )

@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
 import PairingDescription from '@/components/common/PairingDetails/PairingDescription'
 import { StoreHydrator } from '@/store'
-import { ThemeProvider } from '@/pages/_app'
+import { AppProviders } from '@/pages/_app'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import css from './styles.module.css'
 
@@ -59,7 +59,7 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
 
   return (
     <StoreHydrator>
-      <ThemeProvider>
+      <AppProviders>
         <Dialog open={open} onClose={handleClose} disablePortal className={css.modal}>
           <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between' }}>
             {PAIRING_MODULE_LABEL}
@@ -79,7 +79,7 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
             <PairingDescription />
           </DialogContent>
         </Dialog>
-      </ThemeProvider>
+      </AppProviders>
     </StoreHydrator>
   )
 }

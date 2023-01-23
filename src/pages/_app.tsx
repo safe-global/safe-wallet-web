@@ -4,7 +4,7 @@ import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import CssBaseline from '@mui/material/CssBaseline'
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import { setBaseUrl as setGatewayBaseUrl } from '@safe-global/safe-gateway-typescript-sdk'
 import { CacheProvider, type EmotionCache } from '@emotion/react'
 import '@/styles/globals.css'
@@ -56,10 +56,16 @@ const InitApp = (): null => {
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
 
-export const ThemeProvider = ({ children }: { children: ReactNode | ReactNode[] }) => {
+export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }) => {
   const theme = useLightDarkTheme()
 
-  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
+  return (
+    <ThemeProvider theme={theme}>
+      <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
+        {children}
+      </Sentry.ErrorBoundary>
+    </ThemeProvider>
+  )
 }
 
 interface WebCoreAppProps extends AppProps {
@@ -80,21 +86,19 @@ const WebCoreApp = ({
       </Head>
 
       <CacheProvider value={emotionCache}>
-        <ThemeProvider>
-          <Sentry.ErrorBoundary showDialog fallback={(props) => <ErrorBoundary {...props} router={router} />}>
-            <CssBaseline />
+        <AppProviders>
+          <CssBaseline />
 
-            <InitApp />
+          <InitApp />
 
-            <PageLayout pathname={router.pathname}>
-              <Component {...pageProps} />
-            </PageLayout>
+          <PageLayout pathname={router.pathname}>
+            <Component {...pageProps} />
+          </PageLayout>
 
-            <CookieBanner />
+          <CookieBanner />
 
-            <Notifications />
-          </Sentry.ErrorBoundary>
-        </ThemeProvider>
+          <Notifications />
+        </AppProviders>
       </CacheProvider>
     </StoreHydrator>
   )
