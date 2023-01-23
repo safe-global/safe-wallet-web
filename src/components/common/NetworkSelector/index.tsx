@@ -1,5 +1,5 @@
 import type { SelectChangeEvent } from '@mui/material'
-import { MenuItem, Select, Skeleton } from '@mui/material'
+import { Box, MenuItem, Select, Skeleton } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains from '@/hooks/useChains'
 import { useRouter } from 'next/router'
@@ -76,7 +76,9 @@ const NetworkSelector = (): ReactElement => {
       })}
     </Select>
   ) : (
-    <Skeleton width={94} height={31} />
+    <Box px={2}>
+      <Skeleton width={94} height={31} />
+    </Box>
   )
 }
 

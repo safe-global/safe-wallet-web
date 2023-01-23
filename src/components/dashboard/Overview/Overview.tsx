@@ -47,7 +47,7 @@ const SkeletonOverview = (
           <Skeleton variant="circular" width="48px" height="48px" />
         </IdenticonContainer>
 
-        <Box mb={2}>
+        <Box mb={4} mt={4}>
           <Typography fontSize="lg">
             <Skeleton variant="text" height={28} />
           </Typography>
@@ -60,7 +60,7 @@ const SkeletonOverview = (
     </Grid>
     <Grid container>
       <Grid item xs={3}>
-        <Typography color="inputDefault" fontSize="lg">
+        <Typography color="border.main" variant="body2">
           Tokens
         </Typography>
         <StyledText fontSize="lg">
@@ -68,7 +68,7 @@ const SkeletonOverview = (
         </StyledText>
       </Grid>
       <Grid item xs={3}>
-        <Typography color="inputDefault" fontSize="lg">
+        <Typography color="border.main" variant="body2">
           NFTs
         </Typography>
         <StyledText fontSize="lg">
@@ -82,7 +82,7 @@ const SkeletonOverview = (
 const Overview = (): ReactElement => {
   const router = useRouter()
   const safeAddress = useSafeAddress()
-  const { safe, safeLoading } = useSafeInfo()
+  const { safe, safeLoading, safeLoaded } = useSafeInfo()
   const { balances } = useVisibleBalances()
   const [nfts] = useCollectibles()
   const chain = useCurrentChain()
@@ -101,6 +101,8 @@ const Overview = (): ReactElement => {
   const tokenCount = useMemo(() => balances.items.filter((token) => token.balance !== '0').length, [balances])
   const nftsCount = useMemo(() => (nfts ? `${nfts.next ? '>' : ''}${nfts.results.length}` : ''), [nfts])
 
+  const isInitialState = !safeLoaded && !safeLoading
+
   return (
     <WidgetContainer>
       <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
@@ -108,7 +110,7 @@ const Overview = (): ReactElement => {
       </Typography>
 
       <WidgetBody>
-        {safeLoading ? (
+        {safeLoading || isInitialState ? (
           SkeletonOverview
         ) : (
           <Card>
@@ -123,7 +125,11 @@ const Overview = (): ReactElement => {
             </Grid>
 
             <Box mt={2} mb={4}>
-              <EthHashInfo showAvatar={false} address={safeAddress} shortAddress={false} showCopyButton hasExplorer />
+              {safeAddress ? (
+                <EthHashInfo showAvatar={false} address={safeAddress} shortAddress={false} showCopyButton hasExplorer />
+              ) : (
+                <Skeleton />
+              )}
             </Box>
 
             <Grid container>
@@ -133,7 +139,7 @@ const Overview = (): ReactElement => {
                     <Typography color="border.main" variant="body2">
                       Tokens
                     </Typography>
-                    <StyledText fontSize="lg">{tokenCount}</StyledText>
+                    <StyledText fontSize="lg">{tokenCount || <ValueSkeleton />}</StyledText>
                   </a>
                 </Link>
               </Grid>
