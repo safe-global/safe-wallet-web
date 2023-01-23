@@ -5,6 +5,7 @@ import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import css from './styles.module.css'
 import useChainId from '@/hooks/useChainId'
+import { Skeleton } from '@mui/material'
 
 type ChainIndicatorProps = {
   chainId?: string
@@ -35,10 +36,12 @@ const ChainIndicator = ({
 
   if (!chainConfig?.chainName && !renderWhiteSpaceIfNoChain) return null
 
-  return (
+  return chainConfig?.chainName ? (
     <span style={style} className={classnames(inline ? css.inlineIndicator : css.indicator, className)}>
-      {chainConfig?.chainName || ' '}
+      {chainConfig.chainName}
     </span>
+  ) : (
+    <Skeleton width="100%" height="22px" variant="rectangular" sx={{ flexShrink: 0 }} />
   )
 }
 
