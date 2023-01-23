@@ -79,6 +79,7 @@ type ActionGtmEvent = GtmEvent & {
   eventCategory: string
   eventAction: string
   eventLabel?: EventLabel
+  eventType?: EventType
 }
 
 type PageviewGtmEvent = GtmEvent & {
@@ -103,8 +104,17 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
     eventAction: eventData.action,
   }
 
+  if (eventData.event) {
+    gtmEvent.eventType = eventData.event
+  } else {
+    gtmEvent.eventType = undefined
+  }
+
   if (eventData.label) {
     gtmEvent.eventLabel = eventData.label
+  } else {
+    // Otherwise, whatever was in the datalayer before will be reused
+    gtmEvent.eventLabel = undefined
   }
 
   const abTest = getAbTest()
