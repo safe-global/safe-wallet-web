@@ -8,7 +8,7 @@ import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isSmartContractWallet, shouldUseEthSignMethod } from '@/hooks/wallets/wallets'
+import { isSmartContractWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -142,8 +142,7 @@ const SignOrExecuteForm = ({
     }
 
     // Otherwise, sign off-chain
-    const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
-    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
+    const signedTx = await dispatchTxSigning(createdTx, connectedWallet, txId)
 
     /**
      * We need to handle this case because of the way useTxSender is designed,

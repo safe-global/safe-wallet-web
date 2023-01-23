@@ -11,6 +11,10 @@ import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { getAndValidateSafeSDK, getUncheckedSafeSDK } from './sdk'
+import { isWalletRejection } from '@/utils/wallets'
+import { shouldUseEthSignMethod } from '@/hooks/wallets/wallets'
+import type { ConnectedWallet } from '@/services/onboard'
+import type Safe from '@safe-global/safe-core-sdk'
 
 /**
  * Propose a transaction
@@ -57,20 +61,47 @@ export const dispatchTxProposal = async ({
 /**
  * Sign a transaction
  */
+
+type SigningMethods = Parameters<Safe['signTransaction']>[1]
+
+/**
+ * It's not possible to determine if a hardware wallet is connected via MetaMask. We therefore
+ * try to sign with EIP-712 if a wallet supports it, otherwise falling back to `eth_sign`.
+ */
+const getSupportedSigningMethods = (wallet: ConnectedWallet): SigningMethods[] => {
+  if (shouldUseEthSignMethod(wallet)) {
+    return ['eth_sign']
+  }
+
+  return ['eth_signTypedData_v4', 'eth_signTypedData_v3', 'eth_signTypedData', 'eth_sign']
+}
+
 export const dispatchTxSigning = async (
   safeTx: SafeTransaction,
-  shouldEthSign: boolean,
+  wallet: ConnectedWallet,
   txId?: string,
-): Promise<SafeTransaction> => {
+): Promise<SafeTransaction | undefined> => {
   const sdk = getAndValidateSafeSDK()
-  const signingMethod = shouldEthSign ? 'eth_sign' : 'eth_signTypedData'
 
   let signedTx: SafeTransaction | undefined
-  try {
-    signedTx = await sdk.signTransaction(safeTx, signingMethod)
-  } catch (error) {
-    txDispatch(TxEvent.SIGN_FAILED, { txId, error: error as Error })
-    throw error
+
+  for (const signingMethod of getSupportedSigningMethods(wallet)) {
+    try {
+      signedTx = await sdk.signTransaction(safeTx, signingMethod)
+
+      break
+    } catch (_error) {
+      const error = _error as Error
+
+      // Try next signing method if the did not reject the transaction
+      if (!isWalletRejection(error)) {
+        continue
+      }
+
+      txDispatch(TxEvent.SIGN_FAILED, { txId, error })
+
+      throw error
+    }
   }
 
   txDispatch(TxEvent.SIGNED, { txId })
