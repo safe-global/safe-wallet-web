@@ -14,9 +14,9 @@ const SendFromBlock = (): ReactElement => {
         Sending from
       </Typography>
 
-      <Box sx={({ typography }) => typography.body2}>
+      <Typography variant="body2" component="div">
         <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
-      </Box>
+      </Typography>
 
       <SouthIcon className={css.arrow} />
     </Box>
