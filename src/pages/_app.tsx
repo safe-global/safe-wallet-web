@@ -1,10 +1,8 @@
 import Sentry from '@/services/sentry' // needs to be imported first
-import type { ReactNode } from 'react'
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import CssBaseline from '@mui/material/CssBaseline'
-import { ThemeProvider } from '@mui/material/styles'
 import { setBaseUrl as setGatewayBaseUrl } from '@safe-global/safe-gateway-typescript-sdk'
 import { CacheProvider, type EmotionCache } from '@emotion/react'
 import '@/styles/globals.css'
@@ -23,7 +21,6 @@ import { useInitSession } from '@/hooks/useInitSession'
 import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
-import { useLightDarkTheme } from '@/hooks/useDarkMode'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { useTxTracking } from '@/hooks/useTxTracking'
 import useGtm from '@/services/analytics/useGtm'
@@ -56,18 +53,6 @@ const InitApp = (): null => {
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
 
-export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }) => {
-  const theme = useLightDarkTheme()
-
-  return (
-    <ThemeProvider theme={theme}>
-      <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-        {children}
-      </Sentry.ErrorBoundary>
-    </ThemeProvider>
-  )
-}
-
 interface WebCoreAppProps extends AppProps {
   emotionCache?: EmotionCache
 }
@@ -86,7 +71,7 @@ const WebCoreApp = ({
       </Head>
 
       <CacheProvider value={emotionCache}>
-        <AppProviders>
+        <Sentry.ErrorBoundary showDialog fallback={(props) => <ErrorBoundary {...props} router={router} />}>
           <CssBaseline />
 
           <InitApp />
@@ -98,7 +83,7 @@ const WebCoreApp = ({
           <CookieBanner />
 
           <Notifications />
-        </AppProviders>
+        </Sentry.ErrorBoundary>
       </CacheProvider>
     </StoreHydrator>
   )

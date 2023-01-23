@@ -1,6 +1,8 @@
 import { Typography, Link as MuiLink } from '@mui/material'
 import Link from 'next/link'
 import type { FallbackRender } from '@sentry/react'
+import type { ComponentProps } from 'react'
+import type { Router } from 'next/router'
 
 import { IS_PRODUCTION } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
@@ -10,7 +12,9 @@ import css from '@/components/common/ErrorBoundary/styles.module.css'
 import CircularIcon from '../icons/CircularIcon'
 import ExternalLink from '../ExternalLink'
 
-const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
+type Props = ComponentProps<FallbackRender> & { router: Router }
+
+const ErrorBoundary = ({ error, componentStack, resetError, router }: Props) => {
   return (
     <div className={css.container}>
       <div className={css.wrapper}>
@@ -37,8 +41,18 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
           </>
         )}
         <Typography mt={2}>
-          <Link href={AppRoutes.welcome} passHref target="_blank" rel="noopener noreferrer" color="primary">
-            <MuiLink>Go Home</MuiLink>
+          <Link href={AppRoutes.welcome} passHref color="primary">
+            <MuiLink
+              onClick={(e) => {
+                e.stopPropagation()
+
+                // We need to wait for navigation to finish otherwise error will be thrown
+                // from the current page again
+                router.push(AppRoutes.welcome).then(resetError)
+              }}
+            >
+              Go Home
+            </MuiLink>
           </Link>
         </Typography>
       </div>

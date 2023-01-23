@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, IconButton, ThemeProvider } from '@mui/material'
 import { createRoot } from 'react-dom/client'
 import CloseIcon from '@mui/icons-material/Close'
 import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
 import PairingDescription from '@/components/common/PairingDetails/PairingDescription'
 import { StoreHydrator } from '@/store'
-import { AppProviders } from '@/pages/_app'
+import { useLightDarkTheme } from '@/hooks/useDarkMode'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import css from './styles.module.css'
 
@@ -50,6 +50,7 @@ const close = () => {
 
 const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
   const [open, setOpen] = useState(true)
+  const theme = useLightDarkTheme()
 
   const handleClose = () => {
     cb()
@@ -59,7 +60,7 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
 
   return (
     <StoreHydrator>
-      <AppProviders>
+      <ThemeProvider theme={theme}>
         <Dialog open={open} onClose={handleClose} disablePortal className={css.modal}>
           <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between' }}>
             {PAIRING_MODULE_LABEL}
@@ -79,7 +80,7 @@ const Modal = ({ uri, cb }: { uri: string; cb: () => void }) => {
             <PairingDescription />
           </DialogContent>
         </Dialog>
-      </AppProviders>
+      </ThemeProvider>
     </StoreHydrator>
   )
 }
