@@ -70,7 +70,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, string | undefined>>()
+  const [safeQueuedTxs, setSafeQueuedTxs] = useState<Record<string, Record<string, string | undefined>>>()
   const { page } = useTxQueue()
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
@@ -85,25 +85,27 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     // do not run the function if safeQueuedTxs already populated
     if (safeQueuedTxs !== undefined) return
 
-    const queuedTxsByChain: Record<string, string | undefined> = {}
+    const queuedTxsByChain: Record<string, Record<string, string | undefined>> = {}
 
-    const addToQueuedTxs = (address: string, page: TransactionListPage) => {
+    const addToQueuedTxs = (chainId: string, address: string, page: TransactionListPage) => {
       if (page.results.length === 0) return
 
-      queuedTxsByChain[address] = `${page.results.filter(isTransactionListItem).length}${page.next ? '+' : ''}`
+      queuedTxsByChain[chainId] = {
+        [address]: `${page.results.filter(isTransactionListItem).length}${page.next ? '+' : ''}`,
+      }
     }
 
     for (let [chainId, safes] of Object.entries(addedSafes)) {
       for (let safeAddress of Object.keys(safes)) {
         // do not request queued txs again for the current Safe
         if (currentChainId === chainId && sameAddress(currentSafeAddress, safeAddress) && page) {
-          addToQueuedTxs(safeAddress, page)
+          addToQueuedTxs(chainId, safeAddress, page)
           continue
         }
 
         try {
           const result = await getTransactionQueue(chainId, safeAddress)
-          addToQueuedTxs(safeAddress, result)
+          addToQueuedTxs(chainId, safeAddress, result)
         } catch (error) {
           logError(Errors._603)
         }
@@ -208,7 +210,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                     chainId={chain.chainId}
                     closeDrawer={closeDrawer}
                     shouldScrollToSafe
-                    queuedTxs={safeQueuedTxs?.[address]}
+                    queuedTxs={safeQueuedTxs?.[chain.chainId]?.[address]}
                   />
                 ))}
 
