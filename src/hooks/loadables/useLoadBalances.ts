@@ -22,7 +22,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
         trusted: isDefaultTokenList(settings.tokenList),
       })
     },
-    [safe, currency, settings.tokenList], // Reload either when the Safe is updated or the currency changes
+    [safe, currency, settings.tokenList], // Reload either when the Safe is updated, the currency changes or a different token list gets selected
     false, // Don't clear data between SafeInfo polls
   )
 
