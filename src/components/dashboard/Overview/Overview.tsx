@@ -47,7 +47,7 @@ const SkeletonOverview = (
           <Skeleton variant="circular" width="48px" height="48px" />
         </IdenticonContainer>
 
-        <Box mb={4} mt={4}>
+        <Box my={4}>
           <Typography fontSize="lg">
             <Skeleton variant="text" height={28} />
           </Typography>

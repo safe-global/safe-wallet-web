@@ -38,7 +38,7 @@ const ChainIndicator = ({
 
   return chainConfig?.chainName ? (
     <span style={style} className={classnames(inline ? css.inlineIndicator : css.indicator, className)}>
-      {chainConfig.chainName || ' '}
+      {chainConfig.chainName}
     </span>
   ) : (
     <Skeleton width="100%" height="22px" variant="rectangular" sx={{ flexShrink: 0 }} />
