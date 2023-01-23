@@ -5,14 +5,25 @@ on:
     types: [published]
 
 jobs:
-  sign-release:
+  release:
     runs-on: ubuntu-latest
-    name: Sign release and generate checksum
+    name: Deploy release
     env:
       ARCHIVE_NAME: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/yarn
+
+      - uses: ./.github/workflows/build
+        with:
+          secrets: ${{ toJSON(secrets) }}
+          prod: ${{ true }}
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v5
@@ -27,12 +38,6 @@ jobs:
 
       - name: Create checksum
         run: sha256sum "$ARCHIVE_NAME".tar.gz > ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-
-      # Upload the checksum file so that it can be reused in the next job
-      - uses: actions/upload-artifact@v2
-        with:
-          name: checksum-file
-          path: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
 
       - name: Sign archive
         run: gpg --armor --detach-sign "$ARCHIVE_NAME".tar.gz
@@ -66,24 +71,6 @@ jobs:
           asset_content_type: text/plain
         env:
           GITHUB_TOKEN: ${{ github.token }}
-  release:
-    needs: sign-release
-    runs-on: ubuntu-latest
-    name: Deploy release
-    steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.8.0
-        with:
-          access_token: ${{ github.token }}
-
-      - uses: actions/checkout@v3
-
-      - uses: ./.github/workflows/yarn
-
-      - uses: ./.github/workflows/build
-        with:
-          secrets: ${{ toJSON(secrets) }}
-          prod: ${{ true }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -100,7 +87,7 @@ jobs:
       - name: 'Upload release build files for production'
         env:
           BUCKET: s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}
-          CHECKSUM_FILE: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}-sha256-checksum.txt
+          CHECKSUM_FILE: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
         run: bash ./scripts/github/s3_upload.sh
 
       # Script to prepare production deployments
