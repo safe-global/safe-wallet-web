@@ -101,12 +101,7 @@ export const OwnerRow = ({
           </Typography>
         ) : (
           <FormControl fullWidth>
-            <AddressBookInput
-              name={`${fieldName}.address`}
-              label="Owner address"
-              validate={validateSafeAddress}
-              deps={deps}
-            />
+            <AddressBookInput name={`${fieldName}.address`} label="Owner" validate={validateSafeAddress} deps={deps} />
           </FormControl>
         )}
       </Grid>
