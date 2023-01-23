@@ -93,7 +93,7 @@ export const dispatchTxSigning = async (
     } catch (_error) {
       const error = _error as Error
 
-      // Try next signing method if the did not reject the transaction
+      // Try next signing method if the user did not reject the transaction
       if (!isWalletRejection(error)) {
         continue
       }
