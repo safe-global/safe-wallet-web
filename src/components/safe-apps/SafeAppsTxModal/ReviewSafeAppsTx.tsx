@@ -19,6 +19,7 @@ import type { SafeAppsTxParams } from '.'
 import { isEmptyHexData } from '@/utils/hex'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
+import { ApprovalEditor } from './ApprovalEditor'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -69,8 +70,8 @@ const ReviewSafeAppsTx = ({
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
       <>
+        <ApprovalEditor txs={txs} updateTxs={() => {}} />
         <SendFromBlock />
-
         {safeTx && (
           <>
             <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />

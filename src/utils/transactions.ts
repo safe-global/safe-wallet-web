@@ -30,6 +30,7 @@ import type { TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import { hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
+import { type BigNumber, ethers } from 'ethers'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -192,4 +193,40 @@ export const getTxOrigin = (app?: SafeAppData): string | undefined => {
   }
 
   return origin
+}
+
+/**
+ * Decodes the data of a multiSend tx into its separate txs
+ *
+ * This function is currently not tested as it's only used by jest tests to decode and check created multiSend txs
+ *
+ * @param data tx.data
+ * @returns Array of multiSend MetaTransactionData
+ */
+export const decodeMultiSendTxs = (data: string): MetaTransactionData[] => {
+  const multiSendInterface = new ethers.utils.Interface([
+    'function multiSend(bytes memory transactions) public payable ',
+  ])
+  const abiCoder = new ethers.utils.AbiCoder()
+  // decode multiSend and remove '0x'
+  let remainingData = multiSendInterface.decodeFunctionData('multiSend', data)[0].slice(2)
+
+  const txs: MetaTransactionData[] = []
+  while (remainingData.length > 0) {
+    const txDataEncoded = ethers.utils.hexZeroPad(`0x${remainingData.slice(2, 170)}`, 32 * 3)
+    const [txTo, txValue, txDataByteLength] = abiCoder.decode(['address', 'uint256', 'uint256'], txDataEncoded)
+    remainingData = remainingData.slice(170)
+
+    const dataLength = (txDataByteLength as BigNumber).toNumber() * 2
+    let txData = `0x${remainingData.slice(0, dataLength)}`
+    remainingData = remainingData.slice(dataLength)
+    txs.push({
+      to: txTo.toString(),
+      value: txValue.toString(),
+      data: txData,
+      operation: 0,
+    })
+  }
+
+  return txs
 }
