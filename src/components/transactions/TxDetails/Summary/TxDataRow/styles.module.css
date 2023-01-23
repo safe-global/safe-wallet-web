@@ -14,6 +14,7 @@
 .detailstitle {
   font-weight: 400;
   word-break: break-all;
+  color: var(--color-text-secondary);
 }
 
 .gridRow > * {

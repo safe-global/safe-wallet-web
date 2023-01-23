@@ -15,9 +15,7 @@ export const TxDataRow = ({ title, children }: TxDataRowProps): ReactElement | n
   if (children == undefined) return null
   return (
     <div className={css.gridRow}>
-      <Typography className={css.detailstitle} color="text.secondary">
-        {title}
-      </Typography>
+      <div className={css.detailstitle}>{title}</div>
 
       <Typography component="div">{children}</Typography>
     </div>
