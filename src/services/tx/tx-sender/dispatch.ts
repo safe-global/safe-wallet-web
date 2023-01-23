@@ -1,4 +1,4 @@
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
 import type { Web3Provider } from '@ethersproject/providers'
 import type { EthersError } from '@/utils/ethers-utils'
@@ -12,9 +12,8 @@ import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { getAndValidateSafeSDK, getUncheckedSafeSDK } from './sdk'
 import { isWalletRejection } from '@/utils/wallets'
-import { shouldUseEthSignMethod } from '@/hooks/wallets/wallets'
+import { getSupportedSigningMethods } from '@/hooks/wallets/wallets'
 import type { ConnectedWallet } from '@/services/onboard'
-import type Safe from '@safe-global/safe-core-sdk'
 
 /**
  * Propose a transaction
@@ -61,31 +60,22 @@ export const dispatchTxProposal = async ({
 /**
  * Sign a transaction
  */
-
-type SigningMethods = Parameters<Safe['signTransaction']>[1]
-
-/**
- * It's not possible to determine if a hardware wallet is connected via MetaMask. We therefore
- * try to sign with EIP-712 if a wallet supports it, otherwise falling back to `eth_sign`.
- */
-const getSupportedSigningMethods = (wallet: ConnectedWallet): SigningMethods[] => {
-  if (shouldUseEthSignMethod(wallet)) {
-    return ['eth_sign']
-  }
-
-  return ['eth_signTypedData_v4', 'eth_signTypedData_v3', 'eth_signTypedData', 'eth_sign']
-}
-
-export const dispatchTxSigning = async (
-  safeTx: SafeTransaction,
-  wallet: ConnectedWallet,
-  txId?: string,
-): Promise<SafeTransaction | undefined> => {
+export const dispatchTxSigning = async ({
+  safeTx,
+  safeVersion,
+  wallet,
+  txId,
+}: {
+  safeTx: SafeTransaction
+  safeVersion: SafeInfo['version']
+  wallet: ConnectedWallet
+  txId?: string
+}): Promise<SafeTransaction | undefined> => {
   const sdk = getAndValidateSafeSDK()
 
   let signedTx: SafeTransaction | undefined
 
-  for (const signingMethod of getSupportedSigningMethods(wallet)) {
+  for (const signingMethod of getSupportedSigningMethods(safeVersion, wallet)) {
     try {
       signedTx = await sdk.signTransaction(safeTx, signingMethod)
 
