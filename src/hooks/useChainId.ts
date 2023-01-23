@@ -49,12 +49,10 @@ export const useChainId = (): string => {
   const wallet = useWallet()
   const chains = useChains()
 
-  const fallbackChainId =
-    wallet?.chainId && chains?.configs.some(({ chainId }) => chainId === wallet.chainId)
-      ? wallet.chainId
-      : defaultChainId
+  const walletChainId =
+    wallet?.chainId && chains?.configs.some(({ chainId }) => chainId === wallet.chainId) ? wallet.chainId : undefined
 
-  return urlChainId || session.lastChainId || fallbackChainId
+  return urlChainId || walletChainId || session.lastChainId || defaultChainId
 }
 
 export default useChainId
