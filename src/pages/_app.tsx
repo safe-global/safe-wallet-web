@@ -1,8 +1,10 @@
 import Sentry from '@/services/sentry' // needs to be imported first
+import type { ReactNode } from 'react'
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import CssBaseline from '@mui/material/CssBaseline'
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 import { setBaseUrl as setGatewayBaseUrl } from '@safe-global/safe-gateway-typescript-sdk'
 import { CacheProvider, type EmotionCache } from '@emotion/react'
 import '@/styles/globals.css'
@@ -22,6 +24,7 @@ import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
+import { useLightDarkTheme } from '@/hooks/useDarkMode'
 import { useTxTracking } from '@/hooks/useTxTracking'
 import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
@@ -53,6 +56,12 @@ const InitApp = (): null => {
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
 
+export const ThemeProvider = ({ children }: { children: ReactNode | ReactNode[] }) => {
+  const theme = useLightDarkTheme()
+
+  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
+}
+
 interface WebCoreAppProps extends AppProps {
   emotionCache?: EmotionCache
 }
@@ -71,19 +80,21 @@ const WebCoreApp = ({
       </Head>
 
       <CacheProvider value={emotionCache}>
-        <Sentry.ErrorBoundary showDialog fallback={(props) => <ErrorBoundary {...props} router={router} />}>
-          <CssBaseline />
+        <ThemeProvider>
+          <Sentry.ErrorBoundary showDialog fallback={(props) => <ErrorBoundary {...props} router={router} />}>
+            <CssBaseline />
 
-          <InitApp />
+            <InitApp />
 
-          <PageLayout pathname={router.pathname}>
-            <Component {...pageProps} />
-          </PageLayout>
+            <PageLayout pathname={router.pathname}>
+              <Component {...pageProps} />
+            </PageLayout>
 
-          <CookieBanner />
+            <CookieBanner />
 
-          <Notifications />
-        </Sentry.ErrorBoundary>
+            <Notifications />
+          </Sentry.ErrorBoundary>
+        </ThemeProvider>
       </CacheProvider>
     </StoreHydrator>
   )
