@@ -309,7 +309,7 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
     })
 
-    it.only('should not iterate over the sequential signing method if the previous was a rejection error', async () => {
+    it('should not iterate over the sequential signing method if the previous was a rejection error', async () => {
       ;(mockSafeSDK.signTransaction as jest.Mock)
         .mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData_v4`
         .mockImplementationOnce(() => Promise.reject(new Error('rejected'))) // `eth_signTypedData_v3`
