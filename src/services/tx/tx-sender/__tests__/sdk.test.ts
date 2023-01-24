@@ -7,7 +7,7 @@ describe('getSupportedSigningMethods', () => {
     expect(result).toEqual(['eth_signTypedData'])
   })
 
-  it('should return `eth_signTypedData` for invalid Safes', () => {
+  it("should return `eth_signTypedData` for unsupported contracts (backend returns `SafeInfo['version']` as `null`)", () => {
     const result = _getSupportedSigningMethods(null)
 
     expect(result).toEqual(['eth_signTypedData'])
