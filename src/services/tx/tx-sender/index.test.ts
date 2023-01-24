@@ -252,8 +252,6 @@ describe('txSender', () => {
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
 
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v4')
-      expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v3')
-      expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
       expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_sign')
 
       expect(signedTx).not.toBe(tx)
@@ -280,8 +278,6 @@ describe('txSender', () => {
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
 
       expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v4')
-      expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v3')
-      expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
 
       expect(signedTx).not.toBe(tx)
@@ -290,10 +286,8 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
     })
 
-    it('should only iterate over EIP-712 signing methods on older Safes', async () => {
-      ;(mockSafeSDK.signTransaction as jest.Mock)
-        .mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData_v4`
-        .mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData_v3`
+    it('should only iterate over `eth_signTypedData_v4` on older Safes', async () => {
+      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData_v4`
 
       const tx = await createTx({
         to: '0x123',
@@ -313,8 +307,6 @@ describe('txSender', () => {
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v4')
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v3')
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
       expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_sign')
 
       expect(signedTx).not.toBe(tx)
@@ -323,11 +315,8 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
     })
 
-    it('should iterate over every signing method on newer Safes', async () => {
-      ;(mockSafeSDK.signTransaction as jest.Mock)
-        .mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData_v4`
-        .mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData_v3`
-        .mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData`
+    it('should iterate over each signing method on newer Safes', async () => {
+      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData_v4`
 
       const tx = await createTx({
         to: '0x123',
@@ -347,8 +336,6 @@ describe('txSender', () => {
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v4')
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v3')
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
 
       expect(signedTx).not.toBe(tx)
@@ -358,9 +345,7 @@ describe('txSender', () => {
     })
 
     it('should not iterate over the sequential signing method if the previous threw a rejection error', async () => {
-      ;(mockSafeSDK.signTransaction as jest.Mock)
-        .mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData_v4`
-        .mockImplementationOnce(() => Promise.reject(new Error('rejected'))) // `eth_signTypedData_v3`
+      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('rejected'))) // `eth_signTypedData_v4`
 
       const tx = await createTx({
         to: '0x123',
@@ -383,8 +368,6 @@ describe('txSender', () => {
         expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
         expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v4')
-        expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v3')
-        expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
         expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_sign')
 
         expect(signedTx).not.toBe(tx)

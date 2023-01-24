@@ -1,6 +1,6 @@
 import { CYPRESS_MNEMONIC, TREZOR_APP_URL, TREZOR_EMAIL, WC_BRIDGE } from '@/config/constants'
 import { type RecommendedInjectedWallets, type WalletInit } from '@web3-onboard/common/dist/types.d'
-import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import coinbaseModule from '@web3-onboard/coinbase'
 import injectedWalletModule, { ProviderLabel } from '@web3-onboard/injected-wallets'
@@ -15,8 +15,6 @@ import e2eWalletModule from '@/tests/e2e-wallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import type Safe from '@safe-global/safe-core-sdk'
-import semverSatisfies from 'semver/functions/satisfies'
 
 export const enum WALLET_KEYS {
   COINBASE = 'COINBASE',
@@ -98,25 +96,4 @@ export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
 
 export const shouldUseEthSignMethod = (wallet: ConnectedWallet): boolean => {
   return isHardwareWallet(wallet) || isSafeMobileWallet(wallet)
-}
-
-type SigningMethods = Parameters<Safe['signTransaction']>[1]
-
-export const getSupportedSigningMethods = (
-  safeVersion: SafeInfo['version'],
-  wallet: ConnectedWallet,
-): SigningMethods[] => {
-  const EIP712_METHODS: SigningMethods[] = ['eth_signTypedData_v4', 'eth_signTypedData_v3', 'eth_signTypedData']
-
-  const safeSupportsEthSign = !!safeVersion && semverSatisfies(safeVersion, '>=1.1.0')
-  if (!safeSupportsEthSign) {
-    return EIP712_METHODS
-  }
-
-  if (shouldUseEthSignMethod(wallet)) {
-    return ['eth_sign']
-  }
-
-  // Hardware wallet may be connected via MetaMask so we try `eth_sign` after EIP-712
-  return [...EIP712_METHODS, 'eth_sign']
 }

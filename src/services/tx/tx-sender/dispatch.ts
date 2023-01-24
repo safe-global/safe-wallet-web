@@ -10,9 +10,7 @@ import type { ContractTransaction } from 'ethers'
 import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
-import { getAndValidateSafeSDK, getUncheckedSafeSDK } from './sdk'
-import { isWalletRejection } from '@/utils/wallets'
-import { getSupportedSigningMethods } from '@/hooks/wallets/wallets'
+import { getAndValidateSafeSDK, getUncheckedSafeSDK, tryOffChainSigning } from './sdk'
 import type { ConnectedWallet } from '@/services/onboard'
 
 /**
@@ -71,27 +69,13 @@ export const dispatchTxSigning = async ({
   wallet: ConnectedWallet
   txId?: string
 }): Promise<SafeTransaction | undefined> => {
-  const sdk = getAndValidateSafeSDK()
-
   let signedTx: SafeTransaction | undefined
 
-  for (const signingMethod of getSupportedSigningMethods(safeVersion, wallet)) {
-    try {
-      signedTx = await sdk.signTransaction(safeTx, signingMethod)
-
-      break
-    } catch (_error) {
-      const error = _error as Error
-
-      // Try next signing method if the user did not reject the transaction
-      if (!isWalletRejection(error)) {
-        continue
-      }
-
-      txDispatch(TxEvent.SIGN_FAILED, { txId, error })
-
-      throw error
-    }
+  try {
+    signedTx = await tryOffChainSigning({ safeTx, safeVersion, wallet, txId })
+  } catch (error) {
+    txDispatch(TxEvent.SIGN_FAILED, { txId, error: error as Error })
+    throw error
   }
 
   txDispatch(TxEvent.SIGNED, { txId })
