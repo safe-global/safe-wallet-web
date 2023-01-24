@@ -36,26 +36,26 @@ const useSafeNotifications = (): void => {
     if (!isOwner) return
     if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
-    const isOldSafe = !isValidSafeVersion(version)
+    const isUnsupported = !isValidSafeVersion(version)
 
     const id = dispatch(
       showNotification({
         variant: 'warning',
         groupKey: 'safe-outdated-version',
 
-        message: isOldSafe
+        message: isUnsupported
           ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the CLI.`
           : `Your Safe version ${version} is out of date. Please update it.`,
 
-        link: {
-          href: isOldSafe
-            ? CLI_LINK
-            : {
+        link: isUnsupported
+          ? CLI_LINK
+          : {
+              href: {
                 pathname: AppRoutes.settings.setup,
                 query: { safe: query.safe },
               },
-          title: 'Update Safe',
-        },
+              title: 'Update Safe',
+            },
       }),
     )
 
