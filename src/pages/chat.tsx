@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
+import useSafeAddress from '@/hooks/useSafeAddress'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+
+const JoinNoSSR = dynamic(() => import('../components/chat/join'), { ssr: false })
 
 const CometChatNoSSR = dynamic(() => import('../components/chat/index'), { ssr: false })
 
@@ -20,6 +23,7 @@ const Home: NextPage = () => {
   const [currentUser, setCurrentUser] = useState<any>()
   const [ownerStatus, setOwnerStatus] = useState<boolean>()
 
+  const safeAddress = useSafeAddress
   const allOwnedSafes = useOwnedSafes()
   const { safe } = useSafeInfo()
   const wallet = useWallet()
@@ -55,6 +59,7 @@ const Home: NextPage = () => {
               {owners?.map((owner) => (
                 <div key={owner.value}>{owner.value}</div>
               ))}
+              <JoinNoSSR />
             </div>
           </>
         ) : (

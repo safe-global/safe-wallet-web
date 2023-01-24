@@ -57,7 +57,7 @@ const Chat = ({ user }) => {
         .catch((error) => console.log(error))
     }
     getM()
-  }, [group])
+  }, [group, wallet, user])
 
   const scrollToEnd = () => {
     const elmnt = document.getElementById('messages-container')
