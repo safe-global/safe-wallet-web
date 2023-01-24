@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
-import useSafeAddress from '@/hooks/useSafeAddress'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 
@@ -23,7 +22,6 @@ const Home: NextPage = () => {
   const [currentUser, setCurrentUser] = useState<any>()
   const [ownerStatus, setOwnerStatus] = useState<boolean>()
 
-  const safeAddress = useSafeAddress
   const allOwnedSafes = useOwnedSafes()
   const { safe } = useSafeInfo()
   const wallet = useWallet()

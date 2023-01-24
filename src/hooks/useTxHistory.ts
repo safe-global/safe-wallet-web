@@ -32,7 +32,7 @@ const useTxHistory = (
 
   // The latest page of the history is always in the store
   const historyState = useAppSelector(selectTxHistory)
-
+  console.log(historyState)
   // Return the new page or the stored page
   return filter || pageUrl
     ? {
