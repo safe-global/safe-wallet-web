@@ -1,9 +1,9 @@
 import { CometChat } from '@cometchat-pro/chat'
 
 const CONSTANTS = {
-  APP_ID: process.env.REACT_APP_COMET_CHAT_APP_ID,
-  REGION: process.env.REACT_APP_COMET_CHAT_REGION,
-  Auth_Key: process.env.REACT_APP_COMET_CHAT_AUTH_KEY,
+  APP_ID: '2305753c92f334da',
+  REGION: 'US',
+  Auth_Key: '5f9d917c6a21f386ea12e8a3b76561d094fee732',
 }
 
 const initCometChat = async () => {

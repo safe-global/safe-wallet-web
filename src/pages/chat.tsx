@@ -1,6 +1,8 @@
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useWallet from '@/hooks/wallets/useWallet'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 
@@ -16,9 +18,26 @@ const Home: NextPage = () => {
   })
 
   const [currentUser, setCurrentUser] = useState<any>()
+  const [ownerStatus, setOwnerStatus] = useState<boolean>()
+
   const allOwnedSafes = useOwnedSafes()
+  const { safe } = useSafeInfo()
+  const wallet = useWallet()
+  const owners = safe?.owners!
 
   console.log(allOwnedSafes)
+
+  useEffect(() => {
+    let isOwnerArr: any[] = []
+    if (owners && wallet?.address) {
+      owners.map((owner) => {
+        if (owner.value == wallet.address) {
+          isOwnerArr.push(wallet.address)
+        }
+      })
+      isOwnerArr.length > 0 ? setOwnerStatus(true) : setOwnerStatus(false)
+    }
+  }, [owners, wallet])
 
   return (
     <>
@@ -27,8 +46,20 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-        {!currentUser ? <CometChatLoginNoSSR setCurrentUser={setCurrentUser} /> : <div></div>}
-        <CometChatNoSSR user={currentUser} />
+        {ownerStatus ? (
+          <>
+            {!currentUser ? <CometChatLoginNoSSR setCurrentUser={setCurrentUser} /> : <div></div>}
+            <CometChatNoSSR user={currentUser} />
+            <div style={{ border: '2px solid white', padding: '2em', marginTop: '2em' }}>
+              Group Members:
+              {owners?.map((owner) => (
+                <div key={owner.value}>{owner.value}</div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div> You are not an owner on this safe. </div>
+        )}
       </main>
     </>
   )

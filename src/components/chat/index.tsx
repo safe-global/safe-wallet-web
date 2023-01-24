@@ -14,13 +14,12 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 //@ts-ignore
 const Chat = ({ user }) => {
   const { safe, safeAddress } = useSafeInfo()
-  console.log('loaded')
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [group, setGroup] = useState<any>()
   const wallet = useWallet()
 
-  console.log(safe, safeAddress)
+  console.log(safe.owners)
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -115,15 +114,27 @@ const Chat = ({ user }) => {
     )
   }
 
+  useEffect(() => {
+    if (user) {
+      handleGetGroup()
+    }
+  }, [user])
+
   return (
     <div>
       <h2>Safe Chat</h2>
       <h4>Join the Live Chat</h4>
       <div>
         <div id="messages-container">
-          {messages.map((msg, i) => (
+          {messages.map((msg: any, i) => (
             //@ts-ignore
-            <Message isOwner={msg.sender.uid == wallet?.address} owner={msg.sender.uid} msg={msg.text} key={i} />
+            <Message
+              isOwner={msg.sender.name === wallet?.address}
+              owner={msg.sender.uid}
+              msg={msg.text}
+              key={i}
+              data={msg}
+            />
           ))}
         </div>
 
@@ -160,12 +171,12 @@ const Chat = ({ user }) => {
 }
 
 //@ts-ignore
-const Message = ({ msg, owner, isOwner }) => (
+const Message = ({ msg, owner, isOwner, data }) => (
   <div>
     <div>
       <div>
-        <span>{isOwner ? '@You' : owner}</span>
-        <span>{msg}</span>
+        <span>{isOwner ? '@You' : owner}: </span>
+        <span> {msg}</span>
       </div>
     </div>
   </div>
