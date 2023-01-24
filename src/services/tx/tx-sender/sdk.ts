@@ -52,7 +52,7 @@ export const _getSupportedSigningMethods = (safeVersion: SafeInfo['version']): S
 export const tryOffChainSigning = async (
   safeTx: SafeTransaction,
   safeVersion: SafeInfo['version'],
-): Promise<SafeTransaction | undefined> => {
+): Promise<SafeTransaction> => {
   const sdk = getAndValidateSafeSDK()
 
   const signingMethods = _getSupportedSigningMethods(safeVersion)
@@ -68,4 +68,7 @@ export const tryOffChainSigning = async (
       }
     }
   }
+
+  // Won't be reached, but TS otherwise complains
+  throw new Error('No supported signing methods')
 }
