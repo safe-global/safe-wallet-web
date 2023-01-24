@@ -149,8 +149,8 @@ describe('MsgModal', () => {
         />,
       )
 
-      Object.keys(EXAMPLE_MESSAGE.types).forEach((key) => {
-        expect(getByText(key, { exact: false })).toBeInTheDocument()
+      Object.keys(EXAMPLE_MESSAGE.message).forEach((key) => {
+        expect(getByText(`${key}(`, { exact: false })).toBeInTheDocument()
       })
 
       expect(getByText('Hello EIP-1271!', { exact: false })).toBeInTheDocument()
