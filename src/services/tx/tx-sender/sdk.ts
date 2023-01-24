@@ -55,15 +55,17 @@ export const tryOffChainSigning = async (
   let signedTx: SafeTransaction | undefined
 
   for await (const signingMethod of _getSupportedSigningMethods(safeVersion)) {
+    console.log('Trying signing method', signingMethod)
     try {
       signedTx = await sdk.signTransaction(safeTx, signingMethod)
 
       break
     } catch (error) {
-      // Try next signing method if the user did not reject the transaction
       if (isWalletRejection(error as Error)) {
         throw error
       }
+
+      // Try next signing method if the user did not reject the transaction
     }
   }
 
