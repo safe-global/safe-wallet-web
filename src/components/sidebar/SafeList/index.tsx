@@ -30,7 +30,7 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
 import { getTransactionQueue, type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
-import { isAwaitingExecution, isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
+import { isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
 import useTxQueue from '@/hooks/useTxQueue'
 import { Errors, logError } from '@/services/exceptions'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -65,9 +65,8 @@ const MAX_EXPANDED_SAFES = 3
 const NO_SAFE_MESSAGE = 'Create a new safe or add'
 
 export type SafeActions = {
-  queued?: string | number | undefined
-  signing?: string | number | undefined
-  execution?: string | number | undefined
+  queued?: string | number
+  signing?: string | number
 }
 
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
@@ -111,15 +110,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
               [address]: {
                 ...(acc[chainId]?.[address] || {}),
                 signing: Number(acc[chainId]?.[address]?.signing || 0) + 1,
-              },
-            }
-          }
-          if (isAwaitingExecution(tx.transaction.txStatus)) {
-            acc[chainId] = {
-              ...(acc[chainId] || {}),
-              [address]: {
-                ...(acc[chainId]?.[address] || {}),
-                execution: Number(acc[chainId]?.[address]?.execution || 0) + 1,
               },
             }
           }

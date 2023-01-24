@@ -20,9 +20,12 @@ import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
 import type { SafeActions } from '@/components/sidebar/SafeList'
-import { IconButton, SvgIcon, Typography } from '@mui/material'
+import { ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
 import CheckIcon from '@/public/images/common/check.svg'
-import RocketIcon from '@/public/images/transactions/rocket.svg'
+import WalletIcon from '@/components/common/WalletIcon'
+import useWallet from '@/hooks/wallets/useWallet'
+import NextLink from 'next/link'
+import { shortenAddress } from '@/utils/formatters'
 
 const SafeListItem = ({
   address,
@@ -50,7 +53,10 @@ const SafeListItem = ({
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const name = allAddressBooks[chainId]?.[address]
   const shortName = chain?.shortName || ''
-  const { queued, execution, signing } = queuedTxs || {}
+  const { queued = 0, signing = 0 } = queuedTxs || {}
+  const wallet = useWallet()
+  const url = `${AppRoutes.transactions.queue}?safe=${shortName}:${address}`
+  const shortAddress = shortenAddress(wallet?.address || '')
 
   // Scroll to the current Safe
   useEffect(() => {
@@ -60,72 +66,80 @@ const SafeListItem = ({
   }, [isCurrentSafe, shouldScrollToSafe])
 
   return (
-    <ListItem
-      className={css.container}
-      disablePadding
-      sx={{ '& .MuiListItemSecondaryAction-root': { right: 24 } }}
-      secondaryAction={
-        noActions ? undefined : (
-          <Box display="flex" alignItems="center" gap={1}>
-            <SafeListItemSecondaryAction
-              chainId={chainId}
-              address={address}
+    <Box display="flex" flexDirection="row">
+      <ListItem
+        className={css.container}
+        disablePadding
+        sx={{ '& .MuiListItemSecondaryAction-root': { right: 16 } }}
+        secondaryAction={
+          noActions ? undefined : (
+            <Box display="flex" alignItems="center" gap={1}>
+              <SafeListItemSecondaryAction
+                chainId={chainId}
+                address={address}
+                onClick={closeDrawer}
+                href={{
+                  pathname: AppRoutes.newSafe.load,
+                  query: { chain: shortName, address },
+                }}
+              />
+              <SafeListContextMenu name={name} address={address} chainId={chainId} />
+            </Box>
+          )
+        }
+      >
+        <Box display="flex" flexDirection="row" flexGrow={1}>
+          <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
+            <ListItemButton
+              key={address}
               onClick={closeDrawer}
-              href={{
-                pathname: AppRoutes.newSafe.load,
-                query: { chain: shortName, address },
-              }}
-            />
-            <SafeListContextMenu name={name} address={address} chainId={chainId} />
-          </Box>
-        )
-      }
-    >
-      <Box display="flex" flexDirection="column" flexGrow={1}>
-        <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
-          <ListItemButton
-            key={address}
-            onClick={closeDrawer}
-            selected={isCurrentSafe}
-            className={classnames(css.safe, { [css.open]: isCurrentSafe })}
-            ref={safeRef}
-          >
-            <ListItemIcon>
-              <SafeIcon address={address} queuedTxs={queued} {...rest} />
-            </ListItemIcon>
-            <ListItemText
-              sx={noActions ? undefined : { pr: 10 }}
-              primaryTypographyProps={{
-                variant: 'body2',
-                component: 'div',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-              }}
-              secondaryTypographyProps={{ component: 'div', color: 'primary' }}
-              primary={name || ''}
-              secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
-            />
-          </ListItemButton>
-        </Link>
-        {(signing || execution) !== undefined && (
-          <Box sx={{ margin: '0 auto' }}>
-            <IconButton onClick={() => console.log('open tx queue')} sx={{ color: 'orange' }} size="small">
-              <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" />
-              <Typography variant="body2" sx={{ color: 'orange', marginLeft: '8px' }}>
-                {`${signing || 0} txs to confirm`}
-              </Typography>
-            </IconButton>
-            <IconButton onClick={() => console.log('open tx queue')} color="primary" size="small">
-              <SvgIcon component={RocketIcon} inheritViewBox fontSize="small" />
-              <Typography variant="body2" color="primary" sx={{ marginLeft: '8px' }}>
-                {`${execution || 0} txs to execute`}
-              </Typography>
-            </IconButton>
-          </Box>
+              selected={isCurrentSafe}
+              className={classnames(css.safe, { [css.open]: isCurrentSafe })}
+              ref={safeRef}
+            >
+              <ListItemIcon>
+                <SafeIcon address={address} {...rest} />
+              </ListItemIcon>
+              <ListItemText
+                sx={noActions ? undefined : { pr: 10 }}
+                primaryTypographyProps={{
+                  variant: 'body2',
+                  component: 'div',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                }}
+                secondaryTypographyProps={{ component: 'div', color: 'primary' }}
+                primary={name || ''}
+                secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
+              />
+            </ListItemButton>
+          </Link>
+        </Box>
+      </ListItem>
+      <Box className={css.pendingButtons}>
+        {wallet && signing > 0 && (
+          <NextLink href={url} passHref>
+            <Tooltip title={`${shortAddress} can confirm ${signing} transaction(s)`} placement="top" arrow>
+              <ButtonBase className={css.pendingButton}>
+                <WalletIcon provider={wallet.label} />
+                <Typography variant="body2">{signing}</Typography>
+              </ButtonBase>
+            </Tooltip>
+          </NextLink>
+        )}
+        {!!queued && (
+          <NextLink href={url} passHref>
+            <Tooltip title={`${queued} transactions in the queue`} placement="top" arrow>
+              <ButtonBase className={css.pendingButton}>
+                <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" />
+                <Typography variant="body2">{queued}</Typography>
+              </ButtonBase>
+            </Tooltip>
+          </NextLink>
         )}
       </Box>
-    </ListItem>
+    </Box>
   )
 }
 
