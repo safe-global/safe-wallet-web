@@ -10,7 +10,7 @@ import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 import tallyhoModule from '@web3-onboard/tallyho'
 
-import pairingModule, { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
+import pairingModule from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
@@ -78,10 +78,6 @@ export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   )
 }
 
-export const isSafeMobileWallet = (wallet: ConnectedWallet): boolean => {
-  return wallet.label === PAIRING_MODULE_LABEL
-}
-
 export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
   const provider = getWeb3ReadOnly()
 
@@ -92,8 +88,4 @@ export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
   const code = await provider.getCode(wallet.address)
 
   return code !== EMPTY_DATA
-}
-
-export const shouldUseEthSignMethod = (wallet: ConnectedWallet): boolean => {
-  return isHardwareWallet(wallet) || isSafeMobileWallet(wallet)
 }
