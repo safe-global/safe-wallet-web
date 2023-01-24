@@ -96,7 +96,7 @@ export const OwnerRow = ({
       </Grid>
       <Grid item xs={11} md={7}>
         {readOnly ? (
-          <Typography variant="body2">
+          <Typography variant="body2" component="div">
             <EthHashInfo address={owner.address} shortAddress hasExplorer showCopyButton />
           </Typography>
         ) : (
