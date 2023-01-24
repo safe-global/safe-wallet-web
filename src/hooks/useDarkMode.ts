@@ -1,7 +1,7 @@
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 import { useEffect, useMemo, useState } from 'react'
-import initTheme from '@/styles/theme'
+import { createSafeTheme } from '@safe-global/safe-react-components'
 
 const isSystemDarkMode = (): boolean => {
   if (typeof window === 'undefined' || !window.matchMedia) return false
@@ -26,5 +26,5 @@ export const useLightDarkTheme = () => {
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light')
   }, [isDarkMode])
 
-  return useMemo(() => initTheme(isDarkMode), [isDarkMode])
+  return useMemo(() => createSafeTheme(isDarkMode ? 'dark' : 'light'), [isDarkMode])
 }

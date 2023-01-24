@@ -1,5 +1,5 @@
 import palette from '../src/styles/colors.js'
-import darkPalette from '../src/styles/colors-dark.js'
+import { darkPalette } from '@safe-global/safe-react-components'
 import spacings from '../src/styles/spacings.js'
 
 const cssVars: string[] = []

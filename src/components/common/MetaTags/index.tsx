@@ -1,7 +1,7 @@
 import { IS_PRODUCTION } from '@/config/constants'
 import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securityHeaders'
 import palette from '@/styles/colors'
-import darkPalette from '@/styles/colors-dark'
+import { darkPalette } from '@safe-global/safe-react-components'
 
 const descriptionText =
   'Safe (prev. Gnosis Safe) is the most trusted platform to manage digital assets on Ethereum and multiple EVMs. Over $40B secured.'

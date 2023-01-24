@@ -3,7 +3,7 @@ import type { Shadows } from '@mui/material/styles'
 import type {} from '@mui/x-date-pickers/themeAugmentation'
 
 import palette from './colors'
-import darkPalette from './colors-dark'
+import { darkPalette } from '@safe-global/safe-react-components'
 import { base } from './spacings'
 
 declare module '@mui/material/styles' {

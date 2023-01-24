@@ -48,6 +48,7 @@
     "@safe-global/safe-core-sdk": "^3.2.2",
     "@safe-global/safe-ethers-lib": "^1.8.0",
     "@safe-global/safe-gateway-typescript-sdk": "^3.5.5",
+    "@safe-global/safe-react-components": "file:.yalc/@safe-global/safe-react-components",
     "@sentry/react": "^7.28.1",
     "@sentry/tracing": "^7.28.1",
     "@truffle/hdwallet-provider": "^2.1.4",
