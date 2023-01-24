@@ -46,19 +46,23 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
             />
           </InfoDetails>
         </div>
+        <div className={txDetailsCss.txData}>
+          <InfoDetails
+            title={
+              <>
+                Message <CopyButton text={JSON.stringify(msg.message, null, 2)} />
+              </>
+            }
+          >
+            <DecodedMsg message={msg.message} />
+          </InfoDetails>
+        </div>
 
         <div className={txDetailsCss.txSummary}>
           <TxDataRow title="Created:">{formatDateTime(msg.creationTimestamp)}</TxDataRow>
           <TxDataRow title="Last modified:">{formatDateTime(msg.modifiedTimestamp)}</TxDataRow>
           <TxDataRow title="Message hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>
           <TxDataRow title="SafeMessage:">{generateDataRowValue(safeMessage, 'hash')}</TxDataRow>
-          <TxDataRow title="Raw Message">
-            <Box display="flex" alignItems="center">
-              <div>{JSON.stringify(msg.message, null, 2).length} characters</div>
-              <CopyButton text={JSON.stringify(msg.message, null, 2)} />
-            </Box>
-          </TxDataRow>
-          <DecodedMsg message={msg.message} />
         </div>
 
         {msg.preparedSignature && (

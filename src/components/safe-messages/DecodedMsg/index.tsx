@@ -16,8 +16,6 @@ export const DecodedMsg = ({ message }: { message: SafeMessage['message'] }): Re
     return <Msg message={message} />
   }
 
-  // Hash each data object to one of hash, rawData, address, bytes or undefined (if rendered as string)
-
   // Normalize message such that we know the primaryType
   const normalizedMsg = normalizeTypedData(message) as EIP712TypedData & {
     primaryType: string
@@ -29,8 +27,13 @@ export const DecodedMsg = ({ message }: { message: SafeMessage['message'] }): Re
 
   return (
     <Box>
-      <Typography variant="overline" sx={({ palette }) => ({ color: `${palette.border.main}` })}>
-        <b>{primaryType}</b>
+      <Typography
+        textTransform="uppercase"
+        fontWeight={700}
+        variant="caption"
+        sx={({ palette }) => ({ color: `${palette.border.main}` })}
+      >
+        {primaryType}
       </Typography>
 
       {Object.entries(msg).map((param, index) => {
@@ -48,7 +51,7 @@ export const DecodedMsg = ({ message }: { message: SafeMessage['message'] }): Re
             ) : isNested ? (
               <Box
                 sx={{
-                  border: ({ palette }) => `1px ${palette.border.main} solid`,
+                  border: ({ palette }) => `1px ${palette.border.light} solid`,
                   whiteSpace: 'pre',
                   fontFamily: 'monospace',
                   fontSize: '0.85rem',
