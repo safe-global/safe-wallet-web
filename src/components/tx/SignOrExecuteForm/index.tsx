@@ -26,7 +26,7 @@ import useIsValidExecution from '@/hooks/useIsValidExecution'
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
-  onSubmit: (txId?: string) => void
+  onSubmit: () => void
   children?: ReactNode
   error?: Error
   isExecutable?: boolean
@@ -161,11 +161,11 @@ const SignOrExecuteForm = ({
     const [, createdTx, provider] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
+    const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
+    await dispatchTxExecution(createdTx, provider, txOptions, id)
 
-    await dispatchTxExecution(createdTx, provider, txOptions, txId)
-
-    return txId
+    return id
   }
 
   // On modal submit
@@ -174,9 +174,8 @@ const SignOrExecuteForm = ({
     setIsSubmittable(false)
     setSubmitError(undefined)
 
-    let id: string | undefined
     try {
-      id = await (willExecute ? onExecute() : onSign())
+      await (willExecute ? onExecute() : onSign())
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
@@ -184,7 +183,7 @@ const SignOrExecuteForm = ({
       return
     }
 
-    onSubmit(id)
+    onSubmit()
   }
 
   // On advanced params submit (nonce, gas limit, price, etc)

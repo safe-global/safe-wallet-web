@@ -401,22 +401,6 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { txId })
     })
 
-    it('should execute a tx without a txId', async () => {
-      const safeTx = await createTx({
-        to: '0x123',
-        value: '1',
-        data: '0x0',
-        nonce: 1,
-      })
-
-      await dispatchTxExecution(safeTx, mockProvider, {})
-
-      expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { groupKey: '0x1234567890' })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { groupKey: '0x1234567890' })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { groupKey: '0x1234567890' })
-    })
-
     it('should fail executing a tx', async () => {
       jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() => Promise.reject(new Error('error')))
 
