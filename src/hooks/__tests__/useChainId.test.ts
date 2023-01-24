@@ -3,6 +3,10 @@ import useChainId from '@/hooks/useChainId'
 import { useAppDispatch } from '@/store'
 import { setLastChainId } from '@/store/sessionSlice'
 import { renderHook } from '@/tests/test-utils'
+import * as useWalletHook from '@/hooks/wallets/useWallet'
+import * as useChains from '@/hooks/useChains'
+import type { ConnectedWallet } from '@/services/onboard'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 // mock useRouter
 jest.mock('next/router', () => ({
@@ -105,7 +109,47 @@ describe('useChainId hook', () => {
     expect(result.current).toBe('137')
   })
 
-  it('should return the last used chain id if no chain in the URL', () => {
+  it('should return the wallet chain id if no chain in the URL and it is present in the chain configs', () => {
+    ;(useRouter as any).mockImplementation(() => ({
+      query: {},
+    }))
+
+    jest.spyOn(useWalletHook, 'default').mockImplementation(
+      () =>
+        ({
+          chainId: '1337',
+        } as ConnectedWallet),
+    )
+
+    jest.spyOn(useChains, 'default').mockImplementation(() => ({
+      configs: [{ chainId: '1337' } as ChainInfo],
+    }))
+
+    const { result } = renderHook(() => useChainId())
+    expect(result.current).toBe('1337')
+  })
+
+  it('should return the last used chain id if no chain in the URL and the connect wallet chain id is not present in the chain configs', () => {
+    ;(useRouter as any).mockImplementation(() => ({
+      query: {},
+    }))
+
+    jest.spyOn(useWalletHook, 'default').mockImplementation(
+      () =>
+        ({
+          chainId: '1337',
+        } as ConnectedWallet),
+    )
+
+    jest.spyOn(useChains, 'default').mockImplementation(() => ({
+      configs: [],
+    }))
+
+    const { result } = renderHook(() => useChainId())
+    expect(result.current).toBe('5')
+  })
+
+  it('should return the last used chain id if no wallet is connected and there is no chain in the URL', () => {
     ;(useRouter as any).mockImplementation(() => ({
       query: {},
     }))
