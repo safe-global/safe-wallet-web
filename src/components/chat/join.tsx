@@ -8,7 +8,7 @@ const Join: any = ({}) => {
   const handleJoin = async () => {
     await toast.promise(
       new Promise(async (resolve, reject) => {
-        await joinGroup(safeAddress!)
+        await joinGroup(`pid_${safeAddress}`)
           .then((user) => {
             console.log(user)
             resolve(user)
