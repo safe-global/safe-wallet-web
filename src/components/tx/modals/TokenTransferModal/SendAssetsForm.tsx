@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm, FormProvider, Controller } from 'react-hook-form'
 import {
   Button,
   FormControl,
@@ -98,6 +98,7 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
     resetField,
     watch,
     formState: { errors },
+    control,
   } = formMethods
 
   const recipient = watch(SendAssetsField.recipient)
@@ -147,27 +148,34 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
             )}
           </FormControl>
 
-          <FormControl fullWidth>
-            <InputLabel id="asset-label" required>
-              Select an asset
-            </InputLabel>
-            <Select
-              labelId="asset-label"
-              label={errors.tokenAddress?.message || 'Select an asset'}
-              defaultValue={formData?.tokenAddress || ''}
-              error={!!errors.tokenAddress}
-              {...register(SendAssetsField.tokenAddress, {
-                required: true,
-                onChange: () => resetField(SendAssetsField.amount),
-              })}
-            >
-              {balances.items.map((item) => (
-                <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
-                  <AutocompleteItem {...item} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Controller
+            name={SendAssetsField.tokenAddress}
+            control={control}
+            rules={{ required: true }}
+            render={({ fieldState, field }) => (
+              <FormControl fullWidth>
+                <InputLabel id="asset-label" required>
+                  Select an asset
+                </InputLabel>
+                <Select
+                  labelId="asset-label"
+                  label={fieldState.error?.message || 'Select an asset'}
+                  error={!!fieldState.error}
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e)
+                    resetField(SendAssetsField.amount)
+                  }}
+                >
+                  {balances.items.map((item) => (
+                    <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
+                      <AutocompleteItem {...item} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
 
           {isDisabled && (
             <Box mt={1} display="flex" alignItems="center">
