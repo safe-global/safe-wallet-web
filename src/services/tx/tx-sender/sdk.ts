@@ -39,11 +39,14 @@ type SigningMethods = Parameters<Safe['signTransaction']>[1]
 export const _getSupportedSigningMethods = (safeVersion: SafeInfo['version']): SigningMethods[] => {
   const SAFE_VERSION_SUPPORTS_ETH_SIGN = '>=1.1.0'
 
+  const ETH_SIGN_TYPED_DATA: SigningMethods = 'eth_signTypedData'
+  const ETH_SIGN: SigningMethods = 'eth_sign'
+
   if (!safeVersion || !semverSatisfies(safeVersion, SAFE_VERSION_SUPPORTS_ETH_SIGN)) {
-    return ['eth_signTypedData']
+    return [ETH_SIGN_TYPED_DATA]
   }
 
-  return ['eth_signTypedData', 'eth_sign']
+  return [ETH_SIGN_TYPED_DATA, ETH_SIGN]
 }
 
 export const tryOffChainSigning = async (
@@ -52,15 +55,17 @@ export const tryOffChainSigning = async (
 ): Promise<SafeTransaction | undefined> => {
   const sdk = getAndValidateSafeSDK()
 
-  for await (const signingMethod of _getSupportedSigningMethods(safeVersion)) {
+  const signingMethods = _getSupportedSigningMethods(safeVersion)
+
+  for await (const [i, signingMethod] of signingMethods.entries()) {
     try {
-      return sdk.signTransaction(safeTx, signingMethod)
+      return await sdk.signTransaction(safeTx, signingMethod)
     } catch (error) {
-      if (isWalletRejection(error as Error)) {
+      const isLastSigningMethod = i === signingMethods.length - 1
+
+      if (isWalletRejection(error as Error) || isLastSigningMethod) {
         throw error
       }
-
-      // Try next signing method if the user did not reject the transaction
     }
   }
 }
