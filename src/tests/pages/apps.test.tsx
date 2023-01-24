@@ -1,5 +1,6 @@
 import React from 'react'
 import * as safeAppsGatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   render,
   screen,
@@ -553,7 +554,7 @@ describe('AppsPage', () => {
   })
 })
 
-const transactionBuilderSafeAppMock = {
+const transactionBuilderSafeAppMock: SafeAppData = {
   id: 24,
   url: 'https://cloudflare-ipfs.com/ipfs/QmdVaZxDov4bVARScTLErQSRQoxgqtBad8anWuw3YPQHCs',
   name: 'Transaction Builder',
@@ -566,9 +567,10 @@ const transactionBuilderSafeAppMock = {
     value: ['https://gnosis-safe.io'],
   },
   tags: [],
+  features: [],
 }
 
-const compopundSafeAppMock = {
+const compopundSafeAppMock: SafeAppData = {
   id: 13,
   url: 'https://cloudflare-ipfs.com/ipfs/QmX31xCdhFDmJzoVG33Y6kJtJ5Ujw8r5EJJBrsp8Fbjm7k',
   name: 'Compound',
@@ -580,9 +582,10 @@ const compopundSafeAppMock = {
     type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
   },
   tags: [],
+  features: [],
 }
 
-const ensSafeAppMock = {
+const ensSafeAppMock: SafeAppData = {
   id: 3,
   url: 'https://app.ens.domains',
   name: 'ENS App',
@@ -595,9 +598,10 @@ const ensSafeAppMock = {
     value: ['https://gnosis-safe.io'],
   },
   tags: [],
+  features: [],
 }
 
-const synthetixSafeAppMock = {
+const synthetixSafeAppMock: SafeAppData = {
   id: 14,
   url: 'https://cloudflare-ipfs.com/ipfs/QmXLxxczMH4MBEYDeeN9zoiHDzVkeBmB5rBjA3UniPEFcA',
   name: 'Synthetix',
@@ -609,6 +613,7 @@ const synthetixSafeAppMock = {
     type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
   },
   tags: [],
+  features: [],
 }
 
 const mockedSafeApps = [compopundSafeAppMock, ensSafeAppMock, synthetixSafeAppMock, transactionBuilderSafeAppMock]
