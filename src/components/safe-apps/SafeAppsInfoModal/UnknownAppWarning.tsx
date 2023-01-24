@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material'
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined'
 import Domain from './Domain'
-import palette from '@/styles/colors'
+import { lightPalette as palette } from '@safe-global/safe-react-components'
 
 type UnknownAppWarningProps = {
   url?: string

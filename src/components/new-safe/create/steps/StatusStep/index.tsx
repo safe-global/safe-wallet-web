@@ -19,7 +19,7 @@ import useChainId from '@/hooks/useChainId'
 import { getRedirect } from '@/components/new-safe/create/logic'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { AppRoutes } from '@/config/routes'
-import palette from '@/styles/colors'
+import { lightPalette as palette } from '@safe-global/safe-react-components'
 
 export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 

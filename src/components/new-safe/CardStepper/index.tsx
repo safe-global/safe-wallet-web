@@ -4,7 +4,7 @@ import css from './styles.module.css'
 import { Card, LinearProgress, CardHeader, Avatar, Typography, CardContent } from '@mui/material'
 import type { TxStepperProps } from './useCardStepper'
 import { useCardStepper } from './useCardStepper'
-import palette from '@/styles/colors'
+import { lightPalette as palette } from '@safe-global/safe-react-components'
 
 export function CardStepper<StepperData>(props: TxStepperProps<StepperData>) {
   const [progressColor, setProgressColor] = useState(palette.secondary.main)

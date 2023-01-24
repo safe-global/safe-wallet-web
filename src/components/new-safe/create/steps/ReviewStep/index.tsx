@@ -20,7 +20,7 @@ import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCre
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import palette from '@/styles/colors'
+import { lightPalette as palette } from '@safe-global/safe-react-components'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {

@@ -1,6 +1,6 @@
 import { IS_PRODUCTION } from '@/config/constants'
 import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securityHeaders'
-import palette from '@/styles/colors'
+import { lightPalette as palette } from '@safe-global/safe-react-components'
 import { darkPalette } from '@safe-global/safe-react-components'
 
 const descriptionText =
