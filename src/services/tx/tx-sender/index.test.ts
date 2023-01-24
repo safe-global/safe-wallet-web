@@ -16,7 +16,6 @@ import {
 import { ErrorCode } from '@ethersproject/logger'
 import { waitFor } from '@/tests/test-utils'
 import { Web3Provider } from '@ethersproject/providers'
-import type { ConnectedWallet } from '@/services/onboard'
 
 // Mock getTransactionDetails
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -242,16 +241,11 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning({
-        safeTx: tx,
-        wallet: { label: 'MetaMask' } as ConnectedWallet,
-        txId: '0x345',
-        safeVersion: '1.3.0',
-      })
+      const signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
 
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v4')
+      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
       expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_sign')
 
       expect(signedTx).not.toBe(tx)
@@ -260,34 +254,8 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
     })
 
-    it('should sign a tx with `eth_sign` if a hardware wallet/pairing is connected and the Safe version supports it', async () => {
-      const tx = await createTx({
-        to: '0x123',
-        value: '1',
-        data: '0x0',
-        nonce: 1,
-      })
-
-      const signedTx = await dispatchTxSigning({
-        safeTx: tx,
-        wallet: { label: 'Trezor' } as ConnectedWallet,
-        txId: '0x345',
-        safeVersion: '1.3.0',
-      })
-
-      expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
-
-      expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v4')
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
-
-      expect(signedTx).not.toBe(tx)
-
-      expect(txEvents.txDispatch).not.toHaveBeenCalledWith('SIGN_FAILED', { txId: '0x345', error: new Error('error') })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
-    })
-
-    it('should only iterate over `eth_signTypedData_v4` on older Safes', async () => {
-      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData_v4`
+    it('should only sign with `eth_signTypedData` on older Safes', async () => {
+      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData` fails
 
       const tx = await createTx({
         to: '0x123',
@@ -296,17 +264,11 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      // Theoretically when a hardware wallet is connected via MetaMask
-      const signedTx = await dispatchTxSigning({
-        safeTx: tx,
-        wallet: { label: 'MetaMask' } as ConnectedWallet,
-        txId: '0x345',
-        safeVersion: '1.0.0',
-      })
+      const signedTx = await dispatchTxSigning(tx, '1.0.0', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v4')
+      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
       expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_sign')
 
       expect(signedTx).not.toBe(tx)
@@ -316,7 +278,7 @@ describe('txSender', () => {
     })
 
     it('should iterate over each signing method on newer Safes', async () => {
-      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData_v4`
+      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData` fails
 
       const tx = await createTx({
         to: '0x123',
@@ -325,17 +287,11 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      // Theoretically when a hardware wallet is connected via MetaMask
-      const signedTx = await dispatchTxSigning({
-        safeTx: tx,
-        wallet: { label: 'MetaMask' } as ConnectedWallet,
-        txId: '0x345',
-        safeVersion: '1.3.0',
-      })
+      const signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v4')
+      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
 
       expect(signedTx).not.toBe(tx)
@@ -345,7 +301,7 @@ describe('txSender', () => {
     })
 
     it('should not iterate over the sequential signing method if the previous threw a rejection error', async () => {
-      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('rejected'))) // `eth_signTypedData_v4`
+      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('rejected'))) // `eth_signTypedData` fails
 
       const tx = await createTx({
         to: '0x123',
@@ -357,17 +313,11 @@ describe('txSender', () => {
       let signedTx
 
       try {
-        // Theoretically when a hardware wallet is connected via MetaMask
-        signedTx = await dispatchTxSigning({
-          safeTx: tx,
-          wallet: { label: 'MetaMask' } as ConnectedWallet,
-          txId: '0x345',
-          safeVersion: '1.3.0',
-        })
+        signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
       } catch (error) {
         expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
-        expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData_v4')
+        expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
         expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_sign')
 
         expect(signedTx).not.toBe(tx)

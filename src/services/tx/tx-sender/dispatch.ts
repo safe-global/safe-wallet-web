@@ -11,7 +11,6 @@ import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { getAndValidateSafeSDK, getUncheckedSafeSDK, tryOffChainSigning } from './sdk'
-import type { ConnectedWallet } from '@/services/onboard'
 
 /**
  * Propose a transaction
@@ -58,21 +57,14 @@ export const dispatchTxProposal = async ({
 /**
  * Sign a transaction
  */
-export const dispatchTxSigning = async ({
-  safeTx,
-  safeVersion,
-  wallet,
-  txId,
-}: {
-  safeTx: SafeTransaction
-  safeVersion: SafeInfo['version']
-  wallet: ConnectedWallet
-  txId?: string
-}): Promise<SafeTransaction | undefined> => {
+export const dispatchTxSigning = async (
+  safeTx: SafeTransaction,
+  safeVersion: SafeInfo['version'],
+  txId?: string,
+): Promise<SafeTransaction | undefined> => {
   let signedTx: SafeTransaction | undefined
-
   try {
-    signedTx = await tryOffChainSigning({ safeTx, safeVersion, wallet, txId })
+    signedTx = await tryOffChainSigning(safeTx, safeVersion)
   } catch (error) {
     txDispatch(TxEvent.SIGN_FAILED, { txId, error: error as Error })
     throw error

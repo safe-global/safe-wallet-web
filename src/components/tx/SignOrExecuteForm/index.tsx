@@ -142,12 +142,7 @@ const SignOrExecuteForm = ({
     }
 
     // Otherwise, sign off-chain
-    const signedTx = await dispatchTxSigning({
-      safeTx: createdTx,
-      safeVersion: safe.version,
-      wallet: connectedWallet,
-      txId,
-    })
+    const signedTx = await dispatchTxSigning(createdTx, safe.version, txId)
 
     /**
      * We need to handle this case because of the way useTxSender is designed,
