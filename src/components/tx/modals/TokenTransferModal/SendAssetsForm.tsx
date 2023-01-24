@@ -95,6 +95,7 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
     register,
     handleSubmit,
     setValue,
+    resetField,
     watch,
     formState: { errors },
   } = formMethods
@@ -157,7 +158,7 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
               error={!!errors.tokenAddress}
               {...register(SendAssetsField.tokenAddress, {
                 required: true,
-                onChange: () => setValue(SendAssetsField.amount, ''),
+                onChange: () => resetField(SendAssetsField.amount),
               })}
             >
               {balances.items.map((item) => (
