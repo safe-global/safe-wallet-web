@@ -13,9 +13,11 @@ import type { NextRouter } from 'next/router'
 import type { UrlObject } from 'url'
 
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard/SafeAppIconCard'
+import SafeAppActionButtons from '@/components/safe-apps/SafeAppActionButtons/SafeAppActionButtons'
+import SafeAppTags from '@/components/safe-apps/SafeAppTags/SafeAppTags'
+import { isOptimizedForBatchTransactions } from '@/components/safe-apps/utils'
 import { AppRoutes } from '@/config/routes'
-import SafeAppActionButtons from '../SafeAppActionButtons/SafeAppActionButtons'
-import SafeAppTags from '../SafeAppTags/SafeAppTags'
+import BatchIcon from '@/public/images/apps/batch-icon.svg'
 import css from './styles.module.css'
 
 export type SafeAppsViewMode = 'list-view' | 'grid-view'
@@ -105,7 +107,17 @@ const SafeAppCardGridView = ({
       {/* Safe App Header */}
       <CardHeader
         className={css.safeAppHeader}
-        avatar={<SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />}
+        avatar={
+          <div className={css.safeAppIconContainer}>
+            {/* Batch transactions Icon */}
+            {isOptimizedForBatchTransactions(safeApp) && (
+              <BatchIcon className={css.safeAppBatchIcon} alt="batch transactions icon" />
+            )}
+
+            {/* Safe App Icon */}
+            <SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
+          </div>
+        }
         action={
           <>
             {/* Safe App Action Buttons */}
@@ -148,9 +160,16 @@ const SafeAppCardListView = ({
   return (
     <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
       <CardContent>
-        <Box display="flex" flexDirection="row" alignItems="center" gap={2} overflow={'hidden'}>
-          {/* Safe App Icon */}
-          <SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
+        <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
+          <div className={css.safeAppIconContainer}>
+            {/* Batch transactions Icon */}
+            {isOptimizedForBatchTransactions(safeApp) && (
+              <BatchIcon className={css.safeAppBatchIcon} alt="batch transactions icon" />
+            )}
+
+            {/* Safe App Icon */}
+            <SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
+          </div>
 
           {/* Safe App Title */}
           <Typography className={css.safeAppTitle} gutterBottom variant="h5">

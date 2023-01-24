@@ -16,6 +16,16 @@
   padding: var(--space-2);
 }
 
+.safeAppIconContainer {
+  position: relative;
+}
+
+.safeAppBatchIcon {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+}
+
 .safeAppTitle {
   line-height: 175%;
   margin: 0;

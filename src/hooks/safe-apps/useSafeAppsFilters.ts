@@ -4,6 +4,7 @@ import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { useAppsFilterByCategory } from './useAppsFilterByCategory'
 import { useAppsSearch } from './useAppsSearch'
+import { useAppsFilterByOptimizedForBatch } from './useAppsFilterByOptimizedForBatch'
 
 type ReturnType = {
   query: string
@@ -24,8 +25,7 @@ const useSafeAppsFilters = (safeAppsList: SafeAppData[]): ReturnType => {
 
   const filteredAppsByQueryAndCategories = useAppsFilterByCategory(filteredAppsByQuery, selectedCategories)
 
-  // TODO: Implement optimized with Batch
-  const filteredApps = optimizedWithBatchFilter ? [] : filteredAppsByQueryAndCategories
+  const filteredApps = useAppsFilterByOptimizedForBatch(filteredAppsByQueryAndCategories, optimizedWithBatchFilter)
 
   return {
     query,

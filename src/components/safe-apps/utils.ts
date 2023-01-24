@@ -1,6 +1,8 @@
 import { isHexString, toUtf8String } from 'ethers/lib/utils'
-import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
+import { SafeAppAccessPolicyTypes, SafeAppFeatures } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+
 import { formatVisualAmount } from '@/utils/formatters'
 import { validateAddress } from '@/utils/validation'
 import type { SafeAppDataWithPermissions } from './types'
@@ -72,6 +74,7 @@ export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
     },
     tags: [],
     safeAppsPermissions: [],
+    features: [],
   }
 }
 
@@ -82,3 +85,6 @@ export const getOrigin = (url?: string): string => {
 
   return origin
 }
+
+export const isOptimizedForBatchTransactions = (safeApp: SafeAppData) =>
+  safeApp.features.includes(SafeAppFeatures.BATCHED_TRANSACTIONS)
