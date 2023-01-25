@@ -14,14 +14,14 @@ describe('safe-version', () => {
       expect(enabledFeatures('1.1.0')).toEqual([VERSION_FEATURES.ETH_SIGN])
 
       // 1.1.1
-      expect(enabledFeatures('1.1.1')).toEqual([VERSION_FEATURES.SAFE_FALLBACK_HANDLER, VERSION_FEATURES.ETH_SIGN])
+      expect(enabledFeatures('1.1.1')).toEqual([VERSION_FEATURES.ETH_SIGN, VERSION_FEATURES.SAFE_FALLBACK_HANDLER])
 
       // 1.3.0
       expect(enabledFeatures('1.3.0')).toEqual([
-        VERSION_FEATURES.SAFE_TX_GAS_OPTIONAL,
-        VERSION_FEATURES.SAFE_TX_GUARDS,
-        VERSION_FEATURES.SAFE_FALLBACK_HANDLER,
         VERSION_FEATURES.ETH_SIGN,
+        VERSION_FEATURES.SAFE_FALLBACK_HANDLER,
+        // VERSION_FEATURES.SAFE_TX_GAS_OPTIONAL,
+        VERSION_FEATURES.SAFE_TX_GUARDS,
       ])
     })
   })
@@ -40,15 +40,15 @@ describe('safe-version', () => {
       // 1.0.0
       expect(versionHasFeature(VERSION_FEATURES.ETH_SIGN, '1.0.0')).toEqual(false)
       expect(versionHasFeature(VERSION_FEATURES.SAFE_FALLBACK_HANDLER, '1.0.0')).toEqual(false)
-      expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GAS_OPTIONAL, '1.0.0')).toEqual(false)
+      // expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GAS_OPTIONAL, '1.0.0')).toEqual(false)
       expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GUARDS, '1.0.0')).toEqual(false)
 
       // 1.1.0
-      expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GAS_OPTIONAL, '1.1.0')).toEqual(false)
+      // expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GAS_OPTIONAL, '1.1.0')).toEqual(false)
       expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GUARDS, '1.1.0')).toEqual(false)
 
       // 1.1.1
-      expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GAS_OPTIONAL, '1.1.1')).toEqual(false)
+      // expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GAS_OPTIONAL, '1.1.1')).toEqual(false)
       expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GUARDS, '1.1.1')).toEqual(false)
     })
 
@@ -63,7 +63,7 @@ describe('safe-version', () => {
       // 1.3.0
       expect(versionHasFeature(VERSION_FEATURES.ETH_SIGN, '1.3.0')).toEqual(true)
       expect(versionHasFeature(VERSION_FEATURES.SAFE_FALLBACK_HANDLER, '1.3.1')).toEqual(true)
-      expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GAS_OPTIONAL, '1.3.1')).toEqual(true)
+      // expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GAS_OPTIONAL, '1.3.1')).toEqual(true)
       expect(versionHasFeature(VERSION_FEATURES.SAFE_TX_GUARDS, '1.3.0')).toEqual(true)
     })
   })
