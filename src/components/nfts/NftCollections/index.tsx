@@ -1,17 +1,15 @@
+import type { SyntheticEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, Button, CircularProgress, SvgIcon, Typography } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NftIcon from '@/public/images/common/nft.svg'
-import ArrowIcon from '@/public/images/common/arrow-nw.svg'
 import NftBatchModal from '@/components/tx/modals/NftBatchModal'
-import NftGrid from '../NftGrid'
-import useIsGranted from '@/hooks/useIsGranted'
 import useCollectibles from '@/hooks/useCollectibles'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
-import Track from '@/components/common/Track'
-import { NFT_EVENTS } from '@/services/analytics/events/nfts'
+import NftGrid from '../NftGrid'
+import NftSendForm from '../NftSendForm'
 
 const NftCollections = () => {
   // Track the current NFT page url
@@ -26,8 +24,6 @@ const NftCollections = () => {
   const [showSendModal, setShowSendModal] = useState<boolean>(false)
   // Filter string
   const [filter, setFilter] = useState<string>('')
-  // Whether we can send NFTs
-  const isGranted = useIsGranted()
 
   // Add or remove NFT from the selected list on row click
   const onSelect = (token: SafeCollectibleResponse) => {
@@ -62,52 +58,22 @@ const NftCollections = () => {
     return <PagePlaceholder img={<NftIcon />} text="No NFTs available or none detected" />
   }
 
-  const nftsText = `NFT${selectedNfts.length === 1 ? '' : 's'}`
-  const noSelected = selectedNfts.length === 0
+  const onSendSubmit = (e: SyntheticEvent) => {
+    e.preventDefault()
+    setShowSendModal(true)
+  }
 
   return (
     <>
       {allNfts?.length > 0 && (
-        <>
+        <form onSubmit={onSendSubmit}>
           {/* Batch send form */}
-          <Box pb="12.5px" bgcolor="background.main" display="flex" alignItems="center" gap={1}>
-            <Box bgcolor="secondary.background" py={0.75} px={2} flex={1} borderRadius={1} mr={2}>
-              <Box display="flex" alignItems="center" gap={1.5}>
-                <SvgIcon component={ArrowIcon} inheritViewBox color="border" sx={{ width: 12, height: 12 }} />
-
-                <Typography variant="body2" lineHeight="inherit">
-                  {`${selectedNfts.length} ${nftsText} selected`}
-                </Typography>
-              </Box>
-            </Box>
-
-            <Button
-              onClick={() => setSelectedNfts(noSelected ? allNfts : [])}
-              variant="outlined"
-              size="small"
-              sx={{
-                // The custom padding is needed to align the outlined button with the adjacent filled button
-                py: '6px',
-                minWidth: '10em',
-              }}
-            >
-              {noSelected ? 'Select all' : 'Deselect all'}
-            </Button>
-
-            <Track {...NFT_EVENTS.SEND} label={selectedNfts.length}>
-              <Button
-                onClick={() => setShowSendModal(true)}
-                variant="contained"
-                size="small"
-                disabled={!isGranted || noSelected}
-                sx={{
-                  minWidth: '10em',
-                }}
-              >
-                {!isGranted ? 'Read only' : selectedNfts.length ? `Send ${selectedNfts.length} ${nftsText}` : 'Send'}
-              </Button>
-            </Track>
-          </Box>
+          <NftSendForm
+            selectedNfts={selectedNfts}
+            onSelectAll={() => {
+              setSelectedNfts((prev) => (prev.length ? [] : allNfts))
+            }}
+          />
 
           {/* NFTs table */}
           <NftGrid
@@ -120,7 +86,7 @@ const NftCollections = () => {
             {/* Infinite scroll at the bottom of the table */}
             {nftPage?.next ? <InfiniteScroll onLoadMore={() => setPageUrl(nftPage.next)} /> : null}
           </NftGrid>
-        </>
+        </form>
       )}
 
       {/* Loading error */}
