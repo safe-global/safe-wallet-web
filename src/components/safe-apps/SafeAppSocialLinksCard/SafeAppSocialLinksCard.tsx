@@ -21,7 +21,7 @@ type SafeAppSocialLinksCardProps = {
 const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
   const { socialProfiles, developerWebsite } = safeApp
 
-  const hasSocialLinks = socialProfiles.length > 0
+  const hasSocialLinks = socialProfiles?.length > 0
 
   if (!hasSocialLinks && !developerWebsite) {
     return null
