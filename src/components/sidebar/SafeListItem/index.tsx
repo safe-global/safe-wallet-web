@@ -58,64 +58,62 @@ const SafeListItem = ({
   }, [isCurrentSafe, shouldScrollToSafe])
 
   return (
-    <Box display="flex" flexDirection="row">
-      <ListItem
-        className={classnames(css.container, { [css.pendingButtons]: queued || signing })}
-        disablePadding
-        secondaryAction={
-          noActions ? undefined : (
-            <Box display="flex" alignItems="center" gap={1}>
-              <SafeListItemSecondaryAction
-                chainId={chainId}
-                address={address}
-                onClick={closeDrawer}
-                href={{
-                  pathname: AppRoutes.newSafe.load,
-                  query: { chain: shortName, address },
-                }}
-              />
-              <SafeListContextMenu name={name} address={address} chainId={chainId} />
-            </Box>
-          )
-        }
-      >
-        <Box display="flex" flexDirection="row" flexGrow={1}>
-          <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
-            <ListItemButton
-              key={address}
+    <ListItem
+      className={classnames(css.container, { [css.pendingButtons]: queued || signing })}
+      disablePadding
+      secondaryAction={
+        noActions ? undefined : (
+          <Box display="flex" alignItems="center" gap={1}>
+            <SafeListItemSecondaryAction
+              chainId={chainId}
+              address={address}
               onClick={closeDrawer}
-              selected={isCurrentSafe}
-              className={classnames(css.safe, { [css.open]: isCurrentSafe })}
-              ref={safeRef}
-            >
-              <ListItemIcon>
-                <SafeIcon address={address} {...rest} />
-              </ListItemIcon>
-              <ListItemText
-                sx={noActions ? undefined : { pr: 10 }}
-                primaryTypographyProps={{
-                  variant: 'body2',
-                  component: 'div',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                }}
-                secondaryTypographyProps={{ component: 'div', color: 'primary' }}
-                primary={name || ''}
-                secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
-              />
-            </ListItemButton>
-          </Link>
-        </Box>
-        <PendingActions
-          totalQueued={queued}
-          pendingSignatures={signing}
-          closeDrawer={closeDrawer}
-          shortName={shortName}
-          address={address}
-        />
-      </ListItem>
-    </Box>
+              href={{
+                pathname: AppRoutes.newSafe.load,
+                query: { chain: shortName, address },
+              }}
+            />
+            <SafeListContextMenu name={name} address={address} chainId={chainId} />
+          </Box>
+        )
+      }
+    >
+      <Box display="flex" flexDirection="row" flexGrow={1}>
+        <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
+          <ListItemButton
+            key={address}
+            onClick={closeDrawer}
+            selected={isCurrentSafe}
+            className={classnames(css.safe, { [css.open]: isCurrentSafe })}
+            ref={safeRef}
+          >
+            <ListItemIcon>
+              <SafeIcon address={address} {...rest} />
+            </ListItemIcon>
+            <ListItemText
+              sx={noActions ? undefined : { pr: 10 }}
+              primaryTypographyProps={{
+                variant: 'body2',
+                component: 'div',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+              }}
+              secondaryTypographyProps={{ component: 'div', color: 'primary' }}
+              primary={name || ''}
+              secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
+            />
+          </ListItemButton>
+        </Link>
+      </Box>
+      <PendingActions
+        totalQueued={queued}
+        pendingSignatures={signing}
+        closeDrawer={closeDrawer}
+        shortName={shortName}
+        address={address}
+      />
+    </ListItem>
   )
 }
 
