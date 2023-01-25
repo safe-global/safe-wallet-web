@@ -1,6 +1,8 @@
 import React from 'react'
 import * as safeAppsGatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
+import { SafeAppFeatures } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+
 import {
   render,
   screen,
@@ -41,10 +43,10 @@ describe('AppsPage', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText('Compound')).toBeInTheDocument()
-        expect(screen.getByText('ENS App')).toBeInTheDocument()
-        expect(screen.getByText('Transaction Builder')).toBeInTheDocument()
-        expect(screen.getByText('Synthetix')).toBeInTheDocument()
+        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
       })
     })
 
@@ -97,10 +99,10 @@ describe('AppsPage', () => {
 
       // show Bookmarked Safe Apps only
       await waitFor(() => {
-        expect(screen.queryByText('Compound')).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder')).toBeInTheDocument()
-        expect(screen.queryByText('ENS App')).not.toBeInTheDocument()
-        expect(screen.queryByText('Synthetix')).not.toBeInTheDocument()
+        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+        expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
       })
     })
 
@@ -123,8 +125,8 @@ describe('AppsPage', () => {
 
       // show Bookmarked Safe Apps only
       await waitFor(() => {
-        expect(screen.queryByText('Compound')).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder')).toBeInTheDocument()
+        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
       })
 
       // unpin Transaction Builder Safe App
@@ -132,8 +134,8 @@ describe('AppsPage', () => {
 
       // show Bookmarked Safe Apps only
       await waitFor(() => {
-        expect(screen.queryByText('Compound')).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder')).not.toBeInTheDocument()
+        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).not.toBeInTheDocument()
       })
     })
 
@@ -432,10 +434,10 @@ describe('AppsPage', () => {
         })
 
         await waitFor(() => {
-          expect(screen.getByText('Compound')).toBeInTheDocument()
-          expect(screen.getByText('ENS App')).toBeInTheDocument()
-          expect(screen.getByText('Transaction Builder')).toBeInTheDocument()
-          expect(screen.getByText('Synthetix')).toBeInTheDocument()
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
         })
 
         const query = 'Transaction'
@@ -444,10 +446,10 @@ describe('AppsPage', () => {
         fireEvent.change(searchInput, { target: { value: query } })
 
         await waitFor(() => {
-          expect(screen.queryByText('Compound')).not.toBeInTheDocument()
-          expect(screen.queryByText('ENS App')).not.toBeInTheDocument()
-          expect(screen.queryByText('Transaction Builder')).toBeInTheDocument()
-          expect(screen.queryByText('Synthetix')).not.toBeInTheDocument()
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
         })
       })
 
@@ -462,10 +464,10 @@ describe('AppsPage', () => {
         })
 
         await waitFor(() => {
-          expect(screen.getByText('Compound')).toBeInTheDocument()
-          expect(screen.getByText('ENS App')).toBeInTheDocument()
-          expect(screen.getByText('Transaction Builder')).toBeInTheDocument()
-          expect(screen.getByText('Synthetix')).toBeInTheDocument()
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
         })
 
         const query = transactionBuilderSafeAppMock.description
@@ -474,10 +476,10 @@ describe('AppsPage', () => {
         fireEvent.change(searchInput, { target: { value: query } })
 
         await waitFor(() => {
-          expect(screen.queryByText('Compound')).not.toBeInTheDocument()
-          expect(screen.queryByText('ENS App')).not.toBeInTheDocument()
-          expect(screen.queryByText('Transaction Builder')).toBeInTheDocument()
-          expect(screen.queryByText('Synthetix')).not.toBeInTheDocument()
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
         })
       })
 
@@ -492,10 +494,10 @@ describe('AppsPage', () => {
         })
 
         await waitFor(() => {
-          expect(screen.getByText('Compound')).toBeInTheDocument()
-          expect(screen.getByText('ENS App')).toBeInTheDocument()
-          expect(screen.getByText('Transaction Builder')).toBeInTheDocument()
-          expect(screen.getByText('Synthetix')).toBeInTheDocument()
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
         })
 
         const query = 'zero results'
@@ -505,55 +507,300 @@ describe('AppsPage', () => {
         await act(() => fireEvent.change(searchInput, { target: { value: query } }))
 
         await waitFor(() => {
-          expect(screen.queryByText('Compound')).not.toBeInTheDocument()
-          expect(screen.queryByText('ENS App')).not.toBeInTheDocument()
-          expect(screen.queryByText('Transaction Builder')).not.toBeInTheDocument()
-          expect(screen.queryByText('Synthetix')).not.toBeInTheDocument()
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
 
           // zero results component
           expect(screen.getByText('No apps found', { exact: false })).toBeInTheDocument()
           expect(screen.queryByText('Use WalletConnect')).toBeInTheDocument()
         })
       })
+    })
 
-      describe('filter by category', () => {
-        it('filters by Safe App category', async () => {
-          render(<AppsPage />, {
-            routerProps: {
-              pathname: '/apps',
-              query: {
-                safe: 'matic:0x0000000000000000000000000000000000000000',
-              },
+    describe('filter by category', () => {
+      it('filters by Safe App category', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
             },
-          })
+          },
+        })
 
-          await waitFor(() => {
-            expect(screen.getByText('Compound')).toBeInTheDocument()
-            expect(screen.getByText('ENS App')).toBeInTheDocument()
-            expect(screen.getByText('Transaction Builder')).toBeInTheDocument()
-            expect(screen.getByText('Synthetix')).toBeInTheDocument()
-          })
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
 
-          const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
 
-          await act(() => fireEvent.mouseDown(categorySelector))
+        await act(() => fireEvent.mouseDown(categorySelector))
 
-          const categoriesDropdown = within(screen.getByRole('listbox'))
+        const categoriesDropdown = within(screen.getByRole('listbox'))
 
-          // show some options in the categories dropdown
-          await waitFor(() => expect(categoriesDropdown.getByText('NFT')).toBeInTheDocument())
-          await waitFor(() => expect(categoriesDropdown.getByText('Transaction Builder')).toBeInTheDocument())
-          await waitFor(() => expect(categoriesDropdown.getByText('Dashboard')).toBeInTheDocument())
+        // show some options in the categories dropdown
+        await waitFor(() => expect(categoriesDropdown.getByText('NFT')).toBeInTheDocument())
+        await waitFor(() => expect(categoriesDropdown.getByText('Transaction Builder')).toBeInTheDocument())
+        await waitFor(() => expect(categoriesDropdown.getByText('Dashboard')).toBeInTheDocument())
 
-          // filter by category
-          await act(() => fireEvent.click(categoriesDropdown.getByText('Transaction Builder')))
+        // filter by Transaction Builder category
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Transaction Builder')))
 
-          await waitFor(() => {
-            expect(screen.queryByText('Compound')).not.toBeInTheDocument()
-            expect(screen.queryByText('ENS App')).not.toBeInTheDocument()
-            expect(screen.queryByText('Transaction Builder')).toBeInTheDocument()
-            expect(screen.queryByText('Synthetix')).not.toBeInTheDocument()
-          })
+        // close the dropdown
+        await act(() =>
+          fireEvent.keyDown(screen.getByRole('listbox'), {
+            key: 'Escape',
+            code: 'Escape',
+            keyCode: 27,
+            charCode: 27,
+          }),
+        )
+
+        // 1 categories selected label
+        expect(screen.queryByText('1 categories selected')).toBeInTheDocument()
+
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        })
+      })
+
+      it('clear a selected category', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
+          },
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+
+        await act(() => fireEvent.mouseDown(categorySelector))
+
+        const categoriesDropdown = within(screen.getByRole('listbox'))
+
+        // filter by category
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Transaction Builder')))
+
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        })
+
+        // clear Transaction Builder filter
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Transaction Builder')))
+
+        // close the dropdown
+        await act(() =>
+          fireEvent.keyDown(screen.getByRole('listbox'), {
+            key: 'Escape',
+            code: 'Escape',
+            keyCode: 27,
+            charCode: 27,
+          }),
+        )
+
+        // show all safe apps again
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+      })
+
+      it('clear all selected categories', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
+          },
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+
+        await act(() => fireEvent.mouseDown(categorySelector))
+
+        const categoriesDropdown = within(screen.getByRole('listbox'))
+
+        // filter by category
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Transaction Builder')))
+
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        })
+
+        // close the dropdown
+        await act(() =>
+          fireEvent.keyDown(screen.getByRole('listbox'), {
+            key: 'Escape',
+            code: 'Escape',
+            keyCode: 27,
+            charCode: 27,
+          }),
+        )
+
+        // clear all selected filters
+        await act(() => fireEvent.click(screen.getByLabelText('clear selected categories')))
+
+        // show all safe apps again
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+      })
+    })
+
+    describe('filter by optimized for batch transactions', () => {
+      it('filters by optimized for batch transactions', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
+          },
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        // filter by optimized for batch transactions
+        await act(() => fireEvent.click(screen.getByRole('checkbox', { checked: false })))
+
+        // show only transaction builder safe app
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        })
+      })
+
+      it('clears optimized for batch transactions checkbox', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
+          },
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        // filter by optimized for batch transactions
+        await act(() => fireEvent.click(screen.getByRole('checkbox', { checked: false })))
+
+        // clears the optimized for batch transactions filter
+        await act(() => fireEvent.click(screen.getByRole('checkbox', { checked: true })))
+
+        // show all safe apps
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+      })
+    })
+
+    describe('safe apps view mode', () => {
+      it('switches from Grid view to list view', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
+          },
+        })
+
+        await waitFor(() => {
+          // in the default grid view mode titles & descriptions are present
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+
+          expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
+          expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
+          expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
+          expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
+        })
+
+        // switch list view mode
+        fireEvent.click(screen.getByLabelText('List view mode'))
+
+        await waitFor(() => {
+          // only titles are present
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+
+          // no description is present
+          expect(screen.queryByText(transactionBuilderSafeAppMock.description)).not.toBeInTheDocument()
+          expect(screen.queryByText(compopundSafeAppMock.description)).not.toBeInTheDocument()
+          expect(screen.queryByText(ensSafeAppMock.description)).not.toBeInTheDocument()
+          expect(screen.queryByText(synthetixSafeAppMock.description)).not.toBeInTheDocument()
+        })
+
+        // switch back to grid view mode
+        fireEvent.click(screen.getByLabelText('Grid view mode'))
+
+        await waitFor(() => {
+          // in the default grid view mode titles & descriptions are present
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+
+          expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
+          expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
+          expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
+          expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
         })
       })
     })
@@ -572,8 +819,8 @@ const transactionBuilderSafeAppMock: SafeAppData = {
     type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.DomainAllowlist,
     value: ['https://gnosis-safe.io'],
   },
-  tags: [],
-  features: [],
+  tags: ['transaction-builder'],
+  features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
   socialProfiles: [],
   developerWebsite: '',
 }
