@@ -64,6 +64,40 @@ export const _shouldExpandSafeList = ({
 const MAX_EXPANDED_SAFES = 3
 const NO_SAFE_MESSAGE = 'Create a new safe or add'
 
+export const addActionsToTxs = (
+  chainId: string,
+  address: string,
+  page: TransactionListPage,
+  isSafeOwned: boolean,
+  txsActionsByChain: Record<string, Record<string, SafeActions>>,
+  walletAddress?: string,
+) => {
+  if (page.results.length === 0) return txsActionsByChain
+
+  if (isSafeOwned) {
+    const txs = page.results.filter(isTransactionListItem)
+
+    txs.reduce((acc, tx) => {
+      if (isSignableBy(tx.transaction, walletAddress || '')) {
+        acc[chainId] ??= {}
+        acc[chainId][address] ??= {}
+        acc[chainId][address].signing = Number(acc[chainId]?.[address].signing || 0) + 1
+      }
+      return acc
+    }, txsActionsByChain)
+  }
+
+  txsActionsByChain[chainId] = {
+    ...(txsActionsByChain[chainId] ?? {}),
+    [address]: {
+      ...txsActionsByChain[chainId]?.[address],
+      queued: `${page.results.filter(isTransactionListItem).length}${page.next ? '+' : ''}`,
+    },
+  }
+
+  return txsActionsByChain
+}
+
 export type SafeActions = {
   queued?: string | number
   signing?: string | number
@@ -92,32 +126,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     // do not run the function if safeQueuedTxs already populated
     if (safeTxsActions !== undefined) return
 
-    const txsActionsByChain: Record<string, Record<string, SafeActions>> = {}
-
-    const addActionsToTxs = (chainId: string, address: string, page: TransactionListPage, isSafeOwned: boolean) => {
-      if (page.results.length === 0) return
-
-      if (isSafeOwned) {
-        const txs = page.results.filter(isTransactionListItem)
-
-        txs.reduce((acc, tx) => {
-          if (isSignableBy(tx.transaction, wallet?.address || '')) {
-            acc[chainId] ??= {}
-            acc[chainId][address] ??= {}
-            acc[chainId][address].signing = Number(acc[chainId]?.[address].signing || 0) + 1
-          }
-          return acc
-        }, txsActionsByChain)
-      }
-
-      txsActionsByChain[chainId] = {
-        ...(txsActionsByChain[chainId] ?? {}),
-        [address]: {
-          ...txsActionsByChain[chainId]?.[address],
-          queued: `${page.results.filter(isTransactionListItem).length}${page.next ? '+' : ''}`,
-        },
-      }
-    }
+    let txsActionsByChain: Record<string, Record<string, SafeActions>> = {}
 
     for (let [chainId, safes] of Object.entries(addedSafes)) {
       const ownedSafesOnChain = ownedSafes[chainId] ?? []
@@ -127,13 +136,13 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
         // do not request queued txs again for the current Safe
         if (currentChainId === chainId && sameAddress(currentSafeAddress, safeAddress) && page) {
-          addActionsToTxs(chainId, safeAddress, page, isOwned)
+          txsActionsByChain = addActionsToTxs(chainId, safeAddress, page, isOwned, txsActionsByChain, wallet?.address)
           continue
         }
 
         try {
           const result = await getTransactionQueue(chainId, safeAddress)
-          addActionsToTxs(chainId, safeAddress, result, isOwned)
+          txsActionsByChain = addActionsToTxs(chainId, safeAddress, result, isOwned, txsActionsByChain, wallet?.address)
         } catch (error) {
           logError(Errors._603)
         }
