@@ -94,9 +94,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
     const txsActionsByChain: Record<string, Record<string, SafeActions>> = {}
 
-    // TODO: try to solve the slow iteration
-    setSafeTxsActions(txsActionsByChain)
-
     const addActionsToTxs = (chainId: string, address: string, page: TransactionListPage, isSafeOwned: boolean) => {
       if (page.results.length === 0) return
 
@@ -105,13 +102,9 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
         txs.reduce((acc, tx) => {
           if (isSignableBy(tx.transaction, wallet?.address || '')) {
-            acc[chainId] = {
-              ...(acc[chainId] || {}),
-              [address]: {
-                ...(acc[chainId]?.[address] || {}),
-                signing: Number(acc[chainId]?.[address]?.signing || 0) + 1,
-              },
-            }
+            acc[chainId] ??= {}
+            acc[chainId][address] ??= {}
+            acc[chainId][address].signing = Number(acc[chainId]?.[address].signing || 0) + 1
           }
           return acc
         }, txsActionsByChain)
@@ -155,7 +148,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   }, [handleFetchQueued])
 
   useEffect(() => {
-    setSafeTxsActions({})
+    setSafeTxsActions(undefined)
   }, [wallet?.address])
 
   return (
