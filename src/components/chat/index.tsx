@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import useTxHistory from '@/hooks/useTxHistory'
 import useWallet from '@/hooks/wallets/useWallet'
 import {
   getMessages,
@@ -18,8 +19,9 @@ const Chat = ({ user }) => {
   const [messages, setMessages] = useState([])
   const [group, setGroup] = useState<any>()
   const wallet = useWallet()
+  const txHistory = useTxHistory()
 
-  console.log(safe.owners)
+  console.log(safe.owners, txHistory)
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -134,6 +136,7 @@ const Chat = ({ user }) => {
               msg={msg.text}
               key={i}
               data={msg}
+              timeStamp={msg.sentAt}
             />
           ))}
         </div>
@@ -171,10 +174,15 @@ const Chat = ({ user }) => {
 }
 
 //@ts-ignore
-const Message = ({ msg, owner, isOwner, data }) => (
+const Message = ({ msg, owner, isOwner, data, timeStamp }) => (
   <div>
-    <div>
+    <div
+      onClick={() => {
+        console.log(data)
+      }}
+    >
       <div>
+        <span>{timeStamp}: </span>
         <span>{isOwner ? '@You' : owner}: </span>
         <span> {msg}</span>
       </div>
