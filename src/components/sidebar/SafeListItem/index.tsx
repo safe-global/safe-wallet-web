@@ -26,6 +26,8 @@ import WalletIcon from '@/components/common/WalletIcon'
 import useWallet from '@/hooks/wallets/useWallet'
 import NextLink from 'next/link'
 import { shortenAddress } from '@/utils/formatters'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 
 const SafeListItem = ({
   address,
@@ -120,22 +122,26 @@ const SafeListItem = ({
       <Box className={css.pendingButtons}>
         {wallet && signing > 0 && (
           <NextLink href={url} passHref>
-            <Tooltip title={`${shortAddress} can confirm ${signing} transaction(s)`} placement="top" arrow>
-              <ButtonBase className={css.pendingButton}>
-                <WalletIcon provider={wallet.label} />
-                <Typography variant="body2">{signing}</Typography>
-              </ButtonBase>
-            </Tooltip>
+            <Track {...OVERVIEW_EVENTS.MISSING_SIGNATURES}>
+              <Tooltip title={`${shortAddress} can confirm ${signing} transaction(s)`} placement="top" arrow>
+                <ButtonBase className={css.pendingButton} onClick={closeDrawer}>
+                  <WalletIcon provider={wallet.label} />
+                  <Typography variant="body2">{signing}</Typography>
+                </ButtonBase>
+              </Tooltip>
+            </Track>
           </NextLink>
         )}
         {!!queued && (
           <NextLink href={url} passHref>
-            <Tooltip title={`${queued} transactions in the queue`} placement="top" arrow>
-              <ButtonBase className={css.pendingButton}>
-                <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" />
-                <Typography variant="body2">{queued}</Typography>
-              </ButtonBase>
-            </Tooltip>
+            <Track {...OVERVIEW_EVENTS.QUEUED_TRANSACTIONS}>
+              <Tooltip title={`${queued} transactions in the queue`} placement="top" arrow>
+                <ButtonBase className={css.pendingButton} onClick={closeDrawer}>
+                  <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" />
+                  <Typography variant="body2">{queued}</Typography>
+                </ButtonBase>
+              </Tooltip>
+            </Track>
           </NextLink>
         )}
       </Box>

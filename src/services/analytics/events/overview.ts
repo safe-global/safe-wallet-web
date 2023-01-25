@@ -68,4 +68,12 @@ export const OVERVIEW_EVENTS = {
     action: 'Open Safe Claiming App from widget',
     category: OVERVIEW_CATEGORY,
   },
+  MISSING_SIGNATURES: {
+    action: 'Go to queue from missing signatures',
+    category: OVERVIEW_CATEGORY,
+  },
+  QUEUED_TRANSACTIONS: {
+    action: 'Go to queue from number of queued transactions',
+    category: OVERVIEW_CATEGORY,
+  },
 }
