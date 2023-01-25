@@ -1,30 +1,6 @@
-import { versionHasFeature, enabledFeatures, VERSION_FEATURES } from '../safe-versions'
+import { versionHasFeature, VERSION_FEATURES } from '../safe-versions'
 
 describe('safe-version', () => {
-  describe('enabledFeatures', () => {
-    it('should return an empty array if the version is null', () => {
-      expect(enabledFeatures(null)).toEqual([])
-    })
-
-    it('should return an array of the supported features of the specified version', () => {
-      // 1.0.0
-      expect(enabledFeatures('1.0.0')).toEqual([])
-
-      // 1.1.0
-      expect(enabledFeatures('1.1.0')).toEqual([VERSION_FEATURES.ETH_SIGN])
-
-      // 1.1.1
-      expect(enabledFeatures('1.1.1')).toEqual([VERSION_FEATURES.ETH_SIGN, VERSION_FEATURES.SAFE_FALLBACK_HANDLER])
-
-      // 1.3.0
-      expect(enabledFeatures('1.3.0')).toEqual([
-        VERSION_FEATURES.ETH_SIGN,
-        VERSION_FEATURES.SAFE_FALLBACK_HANDLER,
-        VERSION_FEATURES.SAFE_TX_GUARDS,
-      ])
-    })
-  })
-
   describe('versionHasFeature', () => {
     it('should return an false if the version is null', () => {
       expect(versionHasFeature(VERSION_FEATURES.SAFE_FALLBACK_HANDLER, null)).toEqual(false)

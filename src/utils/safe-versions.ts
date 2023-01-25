@@ -17,25 +17,13 @@ const FEATURES_BY_VERSION: Record<VERSION_FEATURES, string> = {
   [VERSION_FEATURES.SAFE_TX_GUARDS]: '>=1.3.0',
 }
 
-// Note: backend returns `SafeInfo['version']` as `null` for unsupported contracts
+// TODO: import `hasFeature` from SDK once 1.0.0 bug is fixed
 
-const isEnabledByVersion = (feature: VERSION_FEATURES, version: SafeInfo['version']): boolean => {
+export const versionHasFeature = (feature: VERSION_FEATURES, version: SafeInfo['version']): boolean => {
+  // Note: backend returns `SafeInfo['version']` as `null` for unsupported contracts
   if (!version || !(feature in FEATURES_BY_VERSION)) {
     return false
   }
+
   return semverSatisfies(version, FEATURES_BY_VERSION[feature])
-}
-
-export const enabledFeatures = (version: SafeInfo['version']): VERSION_FEATURES[] => {
-  if (!version) {
-    return []
-  }
-  return Object.values(VERSION_FEATURES).filter((feature) => isEnabledByVersion(feature, version))
-}
-
-export const versionHasFeature = (name: VERSION_FEATURES, version: SafeInfo['version']): boolean => {
-  if (!version) {
-    return false
-  }
-  return enabledFeatures(version).includes(name)
 }
