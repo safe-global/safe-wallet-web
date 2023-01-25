@@ -29,11 +29,12 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
-import { getTransactionQueue, type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
-import { isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
+import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
 import useTxQueue from '@/hooks/useTxQueue'
 import { Errors, logError } from '@/services/exceptions'
 import useWallet from '@/hooks/wallets/useWallet'
+import type { SafeTxsActions } from '@/utils/queuedTxsActions'
+import { addActionsToSafeTxs } from '@/utils/queuedTxsActions'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -64,45 +65,6 @@ export const _shouldExpandSafeList = ({
 const MAX_EXPANDED_SAFES = 3
 const NO_SAFE_MESSAGE = 'Create a new safe or add'
 
-export const addActionsToTxs = (
-  chainId: string,
-  address: string,
-  page: TransactionListPage,
-  isSafeOwned: boolean,
-  txsActionsByChain: Record<string, Record<string, SafeActions>>,
-  walletAddress?: string,
-) => {
-  if (page.results.length === 0) return txsActionsByChain
-
-  if (isSafeOwned) {
-    const txs = page.results.filter(isTransactionListItem)
-
-    txs.reduce((acc, tx) => {
-      if (isSignableBy(tx.transaction, walletAddress || '')) {
-        acc[chainId] ??= {}
-        acc[chainId][address] ??= {}
-        acc[chainId][address].signing = Number(acc[chainId]?.[address].signing || 0) + 1
-      }
-      return acc
-    }, txsActionsByChain)
-  }
-
-  txsActionsByChain[chainId] = {
-    ...(txsActionsByChain[chainId] ?? {}),
-    [address]: {
-      ...txsActionsByChain[chainId]?.[address],
-      queued: `${page.results.filter(isTransactionListItem).length}${page.next ? '+' : ''}`,
-    },
-  }
-
-  return txsActionsByChain
-}
-
-export type SafeActions = {
-  queued?: string | number
-  signing?: string | number
-}
-
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
   const currentChainId = useChainId()
@@ -110,7 +72,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  const [safeTxsActions, setSafeTxsActions] = useState<Record<string, Record<string, SafeActions>>>()
+  const [safeTxsActions, setSafeTxsActions] = useState<Record<string, Record<string, SafeTxsActions>>>()
   const { page } = useTxQueue()
   const wallet = useWallet()
 
@@ -126,7 +88,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     // do not run the function if safeQueuedTxs already populated
     if (safeTxsActions !== undefined) return
 
-    let txsActionsByChain: Record<string, Record<string, SafeActions>> = {}
+    let txsActionsByChain: Record<string, Record<string, SafeTxsActions>> = {}
 
     for (let [chainId, safes] of Object.entries(addedSafes)) {
       const ownedSafesOnChain = ownedSafes[chainId] ?? []
@@ -136,13 +98,27 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
         // do not request queued txs again for the current Safe
         if (currentChainId === chainId && sameAddress(currentSafeAddress, safeAddress) && page) {
-          txsActionsByChain = addActionsToTxs(chainId, safeAddress, page, isOwned, txsActionsByChain, wallet?.address)
+          txsActionsByChain = addActionsToSafeTxs(
+            chainId,
+            safeAddress,
+            page,
+            isOwned,
+            txsActionsByChain,
+            wallet?.address,
+          )
           continue
         }
 
         try {
           const result = await getTransactionQueue(chainId, safeAddress)
-          txsActionsByChain = addActionsToTxs(chainId, safeAddress, result, isOwned, txsActionsByChain, wallet?.address)
+          txsActionsByChain = addActionsToSafeTxs(
+            chainId,
+            safeAddress,
+            result,
+            isOwned,
+            txsActionsByChain,
+            wallet?.address,
+          )
         } catch (error) {
           logError(Errors._603)
         }

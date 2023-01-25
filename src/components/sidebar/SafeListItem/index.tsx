@@ -19,7 +19,7 @@ import Box from '@mui/material/Box'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
-import type { SafeActions } from '@/components/sidebar/SafeList'
+import type { SafeTxsActions } from '@/utils/queuedTxsActions'
 import { ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
 import CheckIcon from '@/public/images/common/check.svg'
 import WalletIcon from '@/components/common/WalletIcon'
@@ -45,7 +45,7 @@ const SafeListItem = ({
   threshold?: string | number
   owners?: string | number
   noActions?: boolean
-  queuedTxs?: SafeActions
+  queuedTxs?: SafeTxsActions
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()

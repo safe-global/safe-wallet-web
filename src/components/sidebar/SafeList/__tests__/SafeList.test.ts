@@ -11,7 +11,8 @@ import type {
   TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
-import { addActionsToTxs, _shouldExpandSafeList } from '..'
+import { _shouldExpandSafeList } from '..'
+import { addActionsToSafeTxs } from '@/utils/queuedTxsActions'
 
 describe('SafeList', () => {
   describe('shouldExpandSafeList', () => {
@@ -68,7 +69,7 @@ describe('SafeList', () => {
       const mockSafeAddress = hexZeroPad('0x1', 20)
       const walletAddress = hexZeroPad('0x789', 20)
 
-      const result = addActionsToTxs('5', mockSafeAddress, page, true, {}, walletAddress)
+      const result = addActionsToSafeTxs('5', mockSafeAddress, page, true, {}, walletAddress)
 
       expect(result).toEqual({})
     })
@@ -112,7 +113,7 @@ describe('SafeList', () => {
       const mockSafeAddress = hexZeroPad('0x1', 20)
       const walletAddress = hexZeroPad('0x789', 20)
 
-      const result = addActionsToTxs('5', mockSafeAddress, page, true, {}, walletAddress)
+      const result = addActionsToSafeTxs('5', mockSafeAddress, page, true, {}, walletAddress)
 
       expect(result).toEqual({
         '5': {
@@ -163,7 +164,7 @@ describe('SafeList', () => {
       const mockSafeAddress = hexZeroPad('0x1', 20)
       const walletAddress = hexZeroPad('0x789', 20)
 
-      const result = addActionsToTxs('5', mockSafeAddress, page, false, {}, walletAddress)
+      const result = addActionsToSafeTxs('5', mockSafeAddress, page, false, {}, walletAddress)
 
       expect(result).toEqual({
         '5': {
@@ -191,7 +192,7 @@ describe('SafeList', () => {
       const mockSafeAddress = hexZeroPad('0x1', 20)
       const walletAddress = hexZeroPad('0x789', 20)
 
-      const result = addActionsToTxs('5', mockSafeAddress, page, true, {}, walletAddress)
+      const result = addActionsToSafeTxs('5', mockSafeAddress, page, true, {}, walletAddress)
 
       expect(result).toEqual({
         '5': {
