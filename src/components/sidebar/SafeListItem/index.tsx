@@ -124,7 +124,7 @@ const SafeListItem = ({
           <NextLink href={url} passHref>
             <Track {...OVERVIEW_EVENTS.MISSING_SIGNATURES}>
               <Tooltip title={`${shortAddress} can confirm ${signing} transaction(s)`} placement="top" arrow>
-                <ButtonBase className={css.pendingButton} onClick={closeDrawer}>
+                <ButtonBase className={classnames(css.pendingButton, css.missingSignatures)} onClick={closeDrawer}>
                   <WalletIcon provider={wallet.label} />
                   <Typography variant="body2">{signing}</Typography>
                 </ButtonBase>
@@ -136,7 +136,7 @@ const SafeListItem = ({
           <NextLink href={url} passHref>
             <Track {...OVERVIEW_EVENTS.QUEUED_TRANSACTIONS}>
               <Tooltip title={`${queued} transactions in the queue`} placement="top" arrow>
-                <ButtonBase className={css.pendingButton} onClick={closeDrawer}>
+                <ButtonBase className={classnames(css.pendingButton, css.queued)} onClick={closeDrawer}>
                   <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" />
                   <Typography variant="body2">{queued}</Typography>
                 </ButtonBase>

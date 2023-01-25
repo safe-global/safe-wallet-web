@@ -30,18 +30,33 @@
 }
 
 .pendingButton {
-  color: var(--color-static-main);
-  background-color: var(--color-info-light);
-  width: 48px;
+  width: 52px;
   height: 22px;
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
   display: flex;
   justify-content: space-between;
-  padding: 4px;
+  padding: 4px 8px;
 }
 
 .pendingButton img {
   height: 24px;
   width: 20px;
+}
+
+.missingSignatures {
+  height: 32px;
+  background-color: var(--color-info-light);
+}
+
+[data-theme='dark'] .missingSignatures {
+  background-color: var(--color-info-dark);
+}
+
+.queued {
+  background-color: var(--color-background-main);
+}
+
+[data-theme='dark'] .queued {
+  background-color: var(--color-secondary-dark);
 }
