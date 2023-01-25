@@ -38,7 +38,7 @@ const PendingActions = ({
   return (
     <Box className={css.pendingButtons}>
       {wallet && pendingSignatures > 0 && (
-        <Track {...OVERVIEW_EVENTS.MISSING_SIGNATURES}>
+        <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
           <NextLink href={queueLink} passHref>
             <Tooltip title={`${shortAddress} can confirm ${pendingSignatures} transaction(s)`} placement="top" arrow>
               <ButtonBase
@@ -57,7 +57,7 @@ const PendingActions = ({
         </Track>
       )}
       {!!totalQueued && (
-        <Track {...OVERVIEW_EVENTS.QUEUED_TRANSACTIONS}>
+        <Track {...OVERVIEW_EVENTS.OPEN_QUEUED_TRANSACTIONS}>
           <NextLink href={queueLink} passHref>
             <Tooltip title={`${totalQueued} transactions in the queue`} placement="top" arrow>
               <ButtonBase
