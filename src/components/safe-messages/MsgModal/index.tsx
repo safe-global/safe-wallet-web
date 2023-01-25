@@ -154,7 +154,7 @@ const MsgModal = ({
               text={typeof decodedMessage === 'string' ? decodedMessage : JSON.stringify(decodedMessage, null, 2)}
             />
           </Typography>
-          <DecodedMsg message={decodedMessage} />
+          <DecodedMsg message={decodedMessage} isInModal />
           <Typography fontWeight={700} mt={2}>
             SafeMessage:
           </Typography>

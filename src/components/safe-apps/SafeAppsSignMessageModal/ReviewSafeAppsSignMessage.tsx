@@ -111,7 +111,7 @@ const ReviewSafeAppsSignMessage = ({
         <Typography my={2}>
           <b>Signing message:</b> {readableMessage && <CopyButton text={readableMessage} />}
         </Typography>
-        <DecodedMsg message={decodedMessage} />
+        <DecodedMsg message={decodedMessage} isInModal />
 
         <Box display="flex" alignItems="center" my={2}>
           <SvgIcon component={WarningIcon} inheritViewBox color="warning" />

@@ -4,10 +4,12 @@ import { isByte } from '@/utils/transaction-guards'
 import { type EIP712Normalized, normalizeTypedData } from '@/utils/web3'
 import { Box, Typography } from '@mui/material'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import classNames from 'classnames'
 import { isAddress } from 'ethers/lib/utils'
 import { isObject } from 'lodash'
 import type { ReactElement } from 'react'
 import Msg from '../Msg'
+import css from './styles.module.css'
 
 const EIP712_DOMAIN_TYPE = 'EIP712Domain'
 
@@ -39,14 +41,9 @@ const DecodedTypedObject = ({ displayedType, eip712Msg }: { displayedType: strin
               <Value method={displayedType} type={type} value={paramValueAsString} />
             ) : isNested ? (
               <Box
+                className={css.nestedMsg}
                 sx={{
-                  border: ({ palette }) => `1px ${palette.border.light} solid`,
-                  whiteSpace: 'pre',
-                  fontFamily: 'monospace',
-                  fontSize: '0.85rem',
-                  overflow: 'auto',
-                  borderRadius: '6px',
-                  padding: 1,
+                  borderRadius: (theme) => `${theme.shape.borderRadius}px`,
                 }}
               >
                 {paramValueAsString}
@@ -61,7 +58,13 @@ const DecodedTypedObject = ({ displayedType, eip712Msg }: { displayedType: strin
   )
 }
 
-export const DecodedMsg = ({ message }: { message: SafeMessage['message'] | undefined }): ReactElement | null => {
+export const DecodedMsg = ({
+  message,
+  isInModal = false,
+}: {
+  message: SafeMessage['message'] | undefined
+  isInModal?: boolean
+}): ReactElement | null => {
   const isTextMessage = typeof message === 'string'
 
   if (!message) {
@@ -76,12 +79,9 @@ export const DecodedMsg = ({ message }: { message: SafeMessage['message'] | unde
 
   return (
     <Box
+      className={classNames(css.container, { [css.scrollable]: isInModal })}
       sx={{
-        maxHeight: '300px',
-        overflow: 'auto',
-        padding: 1,
-        border: ({ palette }) => `1px solid ${palette.border.light}`,
-        borderRadius: '6px',
+        borderRadius: (theme) => `${theme.shape.borderRadius}px`,
       }}
     >
       <DecodedTypedObject eip712Msg={normalizedMsg} displayedType={EIP712_DOMAIN_TYPE} />
