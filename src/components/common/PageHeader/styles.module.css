@@ -14,3 +14,9 @@
   font-weight: 700;
   margin-bottom: var(--space-3);
 }
+
+@media (max-width: 600px) {
+  .container {
+    padding: var(--space-3) var(--space-2) 0;
+  }
+}

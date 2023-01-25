@@ -17,7 +17,7 @@ export const isLegacyVersion = (safeVersion: string): boolean => {
 }
 
 export const isValidSafeVersion = (safeVersion?: SafeInfo['version']): safeVersion is SafeVersion => {
-  const SAFE_VERSIONS: SafeVersion[] = ['1.3.0', '1.2.0', '1.1.1']
+  const SAFE_VERSIONS: SafeVersion[] = ['1.3.0', '1.2.0', '1.1.1', '1.0.0']
   return !!safeVersion && SAFE_VERSIONS.some((version) => semverSatisfies(safeVersion, version))
 }
 

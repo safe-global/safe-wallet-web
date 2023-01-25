@@ -8,7 +8,7 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 
 type RejectTxProps = {
   txNonce: number
-  onSubmit: (txId?: string) => void
+  onSubmit: () => void
 }
 
 const RejectTx = ({ txNonce, onSubmit }: RejectTxProps): ReactElement => {

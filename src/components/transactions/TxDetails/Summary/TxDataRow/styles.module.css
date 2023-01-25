@@ -8,6 +8,7 @@
 
 .title {
   color: var(--color-primary-light);
+  font-weight: 400;
   word-break: break-all;
 }
 

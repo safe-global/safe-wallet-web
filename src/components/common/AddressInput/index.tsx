@@ -29,6 +29,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
 
   // Fetch an ENS resolution for the current address
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
+  const label = `${props.label} address${isDomainLookupEnabled ? ' or ENS' : ''}`
   const { address, resolverError, resolving } = useNameResolver(isDomainLookupEnabled ? watchedValue : '')
 
   // errors[name] doesn't work with nested field names like 'safe.address', need to use the lodash get
@@ -61,7 +62,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
         <TextField
           {...props}
           autoComplete="off"
-          label={<>{error?.message || props.label}</>}
+          label={<>{error?.message || label}</>}
           error={!!error}
           fullWidth
           spellCheck={false}

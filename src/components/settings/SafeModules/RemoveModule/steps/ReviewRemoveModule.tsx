@@ -9,13 +9,7 @@ import { useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 
-export const ReviewRemoveModule = ({
-  data,
-  onSubmit,
-}: {
-  data: RemoveModuleData
-  onSubmit: (txId?: string) => void
-}) => {
+export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData; onSubmit: () => void }) => {
   const { createRemoveModuleTx } = useTxSender()
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createRemoveModuleTx(data.address)
@@ -27,10 +21,10 @@ export const ReviewRemoveModule = ({
     }
   }, [safeTxError])
 
-  const onFormSubmit = (txId?: string) => {
+  const onFormSubmit = () => {
     trackEvent(SETTINGS_EVENTS.MODULES.REMOVE_MODULE)
 
-    onSubmit(txId)
+    onSubmit()
   }
 
   return (

@@ -1,26 +1,49 @@
 .icon {
-  height: 20px;
-  width: 20px;
-  margin-right: 2px;
+  height: 16px;
+  width: 16px;
 }
 
-.stepper {
+.dot {
+  height: 10px;
+  width: 10px;
+}
+
+.signers {
   padding: 0;
 }
 
-.stepper :global .MuiStepConnector-line {
-  margin-left: -3px;
-  border-color: var(--color-border-light);
-  border-left-width: 2px;
-  min-height: 14px;
+.signers::before {
+  content: '';
+  position: absolute;
+  border-left: 2px solid var(--color-border-light);
+  left: 15px;
+  top: 20px;
+  height: calc(100% - 40px);
 }
 
-.stepper :global .MuiStepLabel-root {
-  padding: 0 !important;
+.signers :global .MuiListItem-root:first-of-type {
+  padding-top: 0;
+}
+
+.signers :global .MuiListItem-root {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.signers :global .MuiListItemIcon-root {
+  color: var(--color-primary-main);
+  justify-content: center;
+  min-width: 32px;
+  padding: var(--space-1) 0;
+  background-color: var(--color-background-paper);
 }
 
 .confirmationsTotal {
   color: var(--color-border-main);
   display: inline;
   font-weight: normal;
+}
+
+.listFooter {
+  margin-left: var(--space-4);
 }
