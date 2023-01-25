@@ -19,3 +19,17 @@
 .safe:hover {
   background-color: var(--color-secondary-background);
 }
+
+.container :global .MuiListItemSecondaryAction-root {
+  right: 16px;
+}
+
+.pendingButtons :global .MuiListItemSecondaryAction-root {
+  right: 70px;
+}
+
+@media (max-width: 400px) {
+  .pendingButtons :global .MuiListItemSecondaryAction-root {
+    right: 40px;
+  }
+}

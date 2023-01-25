@@ -60,9 +60,8 @@ const SafeListItem = ({
   return (
     <Box display="flex" flexDirection="row">
       <ListItem
-        className={css.container}
+        className={classnames(css.container, { [css.pendingButtons]: queued || signing })}
         disablePadding
-        sx={{ '& .MuiListItemSecondaryAction-root': { right: queued || signing ? 70 : 16 } }}
         secondaryAction={
           noActions ? undefined : (
             <Box display="flex" alignItems="center" gap={1}>
