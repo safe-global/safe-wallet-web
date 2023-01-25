@@ -96,17 +96,12 @@ export const OwnerRow = ({
       </Grid>
       <Grid item xs={11} md={7}>
         {readOnly ? (
-          <Typography variant="body2">
+          <Typography variant="body2" component="div">
             <EthHashInfo address={owner.address} shortAddress hasExplorer showCopyButton />
           </Typography>
         ) : (
           <FormControl fullWidth>
-            <AddressBookInput
-              name={`${fieldName}.address`}
-              label="Owner address"
-              validate={validateSafeAddress}
-              deps={deps}
-            />
+            <AddressBookInput name={`${fieldName}.address`} label="Owner" validate={validateSafeAddress} deps={deps} />
           </FormControl>
         )}
       </Grid>

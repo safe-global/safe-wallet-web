@@ -6,6 +6,7 @@ import {
   type AnyAction,
 } from '@reduxjs/toolkit'
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
+import merge from 'lodash/merge'
 import { IS_PRODUCTION } from '@/config/constants'
 import { createStoreHydrator, HYDRATE_ACTION } from './storeHydrator'
 import { chainsSlice } from './chainsSlice'
@@ -59,19 +60,25 @@ export const getPersistedState = () => {
   return getPreloadedState(persistedSlices)
 }
 
-const hydrationReducer: typeof rootReducer = (state, action) => {
+export const _hydrationReducer: typeof rootReducer = (state, action) => {
   if (action.type === HYDRATE_ACTION) {
-    return {
-      ...state,
-      ...action.payload,
-    }
+    /**
+     * When changing the schema of a Redux slice, previously stored data in LS might become incompatible.
+     * To avoid this, we should always migrate the data on a case-by-case basis in the corresponding slice.
+     * However, as a catch-all measure, we attempt to merge the stored data with the initial Redux state,
+     * so that any newly added properties in the initial state are preserved, and existing properties are taken from the LS.
+     *
+     * @see https://lodash.com/docs/4.17.15#merge
+     */
+
+    return merge({}, state, action.payload)
   }
   return rootReducer(state, action)
 }
 
 const makeStore = (initialState?: Record<string, any>) => {
   return configureStore({
-    reducer: hydrationReducer,
+    reducer: _hydrationReducer,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
     devTools: !IS_PRODUCTION,
     preloadedState: initialState,
@@ -81,7 +88,7 @@ const makeStore = (initialState?: Record<string, any>) => {
 export const StoreHydrator = createStoreHydrator(makeStore)
 
 export type AppDispatch = ReturnType<typeof makeStore>['dispatch']
-export type RootState = ReturnType<typeof hydrationReducer>
+export type RootState = ReturnType<typeof _hydrationReducer>
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AnyAction>
 

@@ -64,12 +64,10 @@ describe('checkSafeCreationTx', () => {
     expect(result).toBe(SafeCreationStatus.REVERTED)
   })
 
-  it('returns TIMEOUT if transaction couldnt be found within the timeout limit', async () => {
+  it('returns TIMEOUT if transaction could not be found within the timeout limit', async () => {
     const mockEthersError = {
       ...new Error(),
-      receipt: {
-        status: 1,
-      },
+      code: ErrorCode.TIMEOUT,
     }
 
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
@@ -173,7 +171,7 @@ describe('handleSafeCreationError', () => {
     expect(result).toEqual(SafeCreationStatus.SUCCESS)
   })
 
-  it('returns TIMEOUT if the tx was not rejected, cancelled or replaced', () => {
+  it('returns ERROR if the tx was not rejected, cancelled or replaced', () => {
     const mockEthersError = {
       ...new Error(),
       code: ErrorCode.UNKNOWN_ERROR,
@@ -183,7 +181,7 @@ describe('handleSafeCreationError', () => {
 
     const result = handleSafeCreationError(mockEthersError)
 
-    expect(result).toEqual(SafeCreationStatus.TIMEOUT)
+    expect(result).toEqual(SafeCreationStatus.ERROR)
   })
 
   it('returns REVERTED if the tx failed', () => {

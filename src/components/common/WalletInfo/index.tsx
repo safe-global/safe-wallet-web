@@ -21,7 +21,7 @@ const WalletInfo = ({ wallet, chain }: { wallet: ConnectedWallet; chain: ChainIn
         <Typography variant="caption" component="div" className={css.walletDetails}>
           {wallet.label} @ {chain.chainName}
         </Typography>
-        <Typography variant="caption" fontWeight="bold">
+        <Typography variant="caption" fontWeight="bold" component="div">
           {wallet.ens ? (
             <div>{wallet.ens}</div>
           ) : (
