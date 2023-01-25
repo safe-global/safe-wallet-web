@@ -6,7 +6,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 import { isWalletRejection } from '@/utils/wallets'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { FEATURES, hasFeature } from '@/utils/safe-versions'
+import { VERSION_FEATURES, versionHasFeature } from '@/utils/safe-versions'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -40,7 +40,7 @@ export const _getSupportedSigningMethods = (safeVersion: SafeInfo['version']): S
   const ETH_SIGN_TYPED_DATA: SigningMethods = 'eth_signTypedData'
   const ETH_SIGN: SigningMethods = 'eth_sign'
 
-  if (!hasFeature(FEATURES.ETH_SIGN, safeVersion)) {
+  if (!versionHasFeature(VERSION_FEATURES.ETH_SIGN, safeVersion)) {
     return [ETH_SIGN_TYPED_DATA]
   }
 
