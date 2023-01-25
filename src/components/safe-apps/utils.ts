@@ -76,6 +76,8 @@ export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
     tags: [],
     safeAppsPermissions: [],
     features: [],
+    socialProfiles: [],
+    developerWebsite: '',
   }
 }
 
@@ -88,4 +90,4 @@ export const getOrigin = (url?: string): string => {
 }
 
 export const isOptimizedForBatchTransactions = (safeApp: SafeAppData) =>
-  safeApp.features.includes(SafeAppFeatures.BATCHED_TRANSACTIONS)
+  safeApp.features?.includes(SafeAppFeatures.BATCHED_TRANSACTIONS)

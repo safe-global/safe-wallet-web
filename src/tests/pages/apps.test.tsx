@@ -219,6 +219,8 @@ describe('AppsPage', () => {
         },
         tags: [],
         features: [],
+        socialProfiles: [],
+        developerWebsite: '',
         chainIds: ['1', '4', '137'],
         iconUrl: '',
         safeAppsPermissions: [],
@@ -309,6 +311,8 @@ describe('AppsPage', () => {
         },
         tags: [],
         features: [],
+        socialProfiles: [],
+        developerWebsite: '',
         chainIds: ['1', '4', '137'],
         iconUrl: '',
         safeAppsPermissions: [],
@@ -356,6 +360,8 @@ describe('AppsPage', () => {
         },
         tags: [],
         features: [],
+        socialProfiles: [],
+        developerWebsite: '',
         chainIds: ['1', '4', '137'],
         iconUrl: '',
         safeAppsPermissions: [],
@@ -568,6 +574,8 @@ const transactionBuilderSafeAppMock: SafeAppData = {
   },
   tags: [],
   features: [],
+  socialProfiles: [],
+  developerWebsite: '',
 }
 
 const compopundSafeAppMock: SafeAppData = {
@@ -583,6 +591,8 @@ const compopundSafeAppMock: SafeAppData = {
   },
   tags: [],
   features: [],
+  socialProfiles: [],
+  developerWebsite: '',
 }
 
 const ensSafeAppMock: SafeAppData = {
@@ -599,6 +609,8 @@ const ensSafeAppMock: SafeAppData = {
   },
   tags: [],
   features: [],
+  socialProfiles: [],
+  developerWebsite: '',
 }
 
 const synthetixSafeAppMock: SafeAppData = {
@@ -614,6 +626,8 @@ const synthetixSafeAppMock: SafeAppData = {
   },
   tags: [],
   features: [],
+  socialProfiles: [],
+  developerWebsite: '',
 }
 
 const mockedSafeApps = [compopundSafeAppMock, ensSafeAppMock, synthetixSafeAppMock, transactionBuilderSafeAppMock]

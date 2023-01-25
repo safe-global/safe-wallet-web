@@ -23,6 +23,8 @@ describe('SafeAppsSignMessageModal', () => {
               chainIds: ['1'],
               tags: [],
               features: [],
+              socialProfiles: [],
+              developerWebsite: '',
               accessControl: {
                 type: SafeAppAccessPolicyTypes.NoRestrictions,
               },

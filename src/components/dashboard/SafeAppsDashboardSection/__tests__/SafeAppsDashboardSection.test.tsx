@@ -21,6 +21,8 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
         },
         tags: [],
         features: [],
+        socialProfiles: [],
+        developerWebsite: '',
       },
       {
         id: 3,
@@ -36,6 +38,8 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
         },
         tags: [],
         features: [],
+        socialProfiles: [],
+        developerWebsite: '',
       },
       {
         id: 14,
@@ -50,6 +54,8 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
         },
         tags: [],
         features: [],
+        socialProfiles: [],
+        developerWebsite: '',
       },
       {
         id: 24,
@@ -65,6 +71,8 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
         },
         tags: [],
         features: [],
+        socialProfiles: [],
+        developerWebsite: '',
       },
     ]),
 }))

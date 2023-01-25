@@ -47,7 +47,7 @@
     "@reduxjs/toolkit": "^1.8.2",
     "@safe-global/safe-core-sdk": "^3.2.2",
     "@safe-global/safe-ethers-lib": "^1.8.0",
-    "@safe-global/safe-gateway-typescript-sdk": "^3.6.0",
+    "@safe-global/safe-gateway-typescript-sdk": "^3.7.0",
     "@sentry/react": "^7.28.1",
     "@sentry/tracing": "^7.28.1",
     "@truffle/hdwallet-provider": "^2.1.4",

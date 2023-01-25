@@ -106,6 +106,8 @@ const fetchSafeAppFromManifest = async (
     accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
     tags: [],
     features: [],
+    socialProfiles: [],
+    developerWebsite: '',
     chainIds: [currentChainId],
     iconUrl,
     safeAppsPermissions: appManifest.safe_apps_permissions || [],

@@ -11,9 +11,10 @@ import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { getSafeAppUrl } from '@/components/safe-apps/SafeAppCard/SafeAppCard'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import SafeAppIconCard from '../SafeAppIconCard/SafeAppIconCard'
-import SafeAppActionButtons from '../SafeAppActionButtons/SafeAppActionButtons'
-import SafeAppTags from '../SafeAppTags/SafeAppTags'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard/SafeAppIconCard'
+import SafeAppActionButtons from '@/components/safe-apps/SafeAppActionButtons/SafeAppActionButtons'
+import SafeAppTags from '@/components/safe-apps/SafeAppTags/SafeAppTags'
+import SafeAppLinksCard from '@/components/safe-apps/SafeAppLinksCard/SafeAppLinksCard'
 import CloseIcon from '@/public/images/common/close.svg'
 import css from './styles.module.css'
 
@@ -85,6 +86,9 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
             Open App
           </Button>
         </Link>
+
+        {/* Safe App Social Links */}
+        {safeApp && <SafeAppLinksCard safeApp={safeApp} />}
       </Box>
     </Drawer>
   )
