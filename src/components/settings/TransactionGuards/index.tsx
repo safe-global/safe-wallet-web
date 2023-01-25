@@ -1,12 +1,12 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Paper, Grid, Typography, Box } from '@mui/material'
-import { gte } from 'semver'
 import { RemoveGuard } from './RemoveGuard'
 import useIsGranted from '@/hooks/useIsGranted'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
+import { FEATURES, hasFeature } from '@/utils/safe-versions'
 
 const NoTransactionGuard = () => {
   return (
@@ -27,12 +27,10 @@ const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId
   )
 }
 
-const GUARD_SUPPORTED_SAFE_VERSION = '1.3.0'
-
 const TransactionGuards = () => {
   const { safe, safeLoaded } = useSafeInfo()
 
-  const isVersionWithGuards = safeLoaded && safe.version && gte(safe.version, GUARD_SUPPORTED_SAFE_VERSION)
+  const isVersionWithGuards = safeLoaded && hasFeature(FEATURES.SAFE_TX_GUARDS, safe.version)
 
   if (!isVersionWithGuards) {
     return null
