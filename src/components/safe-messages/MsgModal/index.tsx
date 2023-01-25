@@ -24,6 +24,7 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 import { DecodedMsg } from '../DecodedMsg'
+import CopyButton from '@/components/common/CopyButton'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
@@ -148,11 +149,12 @@ const MsgModal = ({
             This action will confirm the message and add your confirmation to the prepared signature.
           </Typography>
           <Typography fontWeight={700} mb={1}>
-            Message:
+            Message:{' '}
+            <CopyButton
+              text={typeof decodedMessage === 'string' ? decodedMessage : JSON.stringify(decodedMessage, null, 2)}
+            />
           </Typography>
-          <Typography variant="body2">
-            <DecodedMsg message={decodedMessage} />
-          </Typography>
+          <DecodedMsg message={decodedMessage} />
           <Typography fontWeight={700} mt={2}>
             SafeMessage:
           </Typography>
