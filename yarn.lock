@@ -3029,7 +3029,6 @@
 "@safe-global/safe-react-components@file:.yalc/@safe-global/safe-react-components":
   version "2.0.1"
   dependencies:
-    "@svgr/webpack" "^6.5.1"
     ethereum-blockies-base64 "^1.0.2"
     ethers "^5.7.2"
     react-media "^1.10.0"
@@ -3292,7 +3291,7 @@
     deepmerge "^4.2.2"
     svgo "^2.8.0"
 
-"@svgr/webpack@^6.3.1", "@svgr/webpack@^6.5.1":
+"@svgr/webpack@^6.3.1":
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/@svgr/webpack/-/webpack-6.5.1.tgz#ecf027814fc1cb2decc29dc92f39c3cf691e40e8"
   integrity sha512-cQ/AsnBkXPkEK8cLbv4Dm7JGXq2XrumKnL1dRpJD9rIO2fTIlJI9a1uCciYG1F2aUsox/hJQyNGbt3soDxSRkA==
