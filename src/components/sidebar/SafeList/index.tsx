@@ -67,7 +67,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  const safeTxsActions = usePendingActions()
+  const safePendingActions = usePendingActions()
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const toggleOpen = (chainId: string, open: boolean) => {
@@ -168,7 +168,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                     chainId={chain.chainId}
                     closeDrawer={closeDrawer}
                     shouldScrollToSafe
-                    queuedTxs={safeTxsActions?.[chain.chainId]?.[address]}
+                    pendingActions={safePendingActions?.[chain.chainId]?.[address]}
                   />
                 ))}
 

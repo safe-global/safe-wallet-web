@@ -20,14 +20,7 @@ import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
 import type { SafeTxsActions } from '@/utils/queuedTxsActions'
-import { ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
-import CheckIcon from '@/public/images/common/check.svg'
-import WalletIcon from '@/components/common/WalletIcon'
-import useWallet from '@/hooks/wallets/useWallet'
-import NextLink from 'next/link'
-import { shortenAddress } from '@/utils/formatters'
-import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import PendingActions from '@/components/sidebar/PendingActions'
 
 const SafeListItem = ({
   address,
@@ -35,7 +28,7 @@ const SafeListItem = ({
   closeDrawer,
   shouldScrollToSafe,
   noActions = false,
-  queuedTxs,
+  pendingActions,
   ...rest
 }: {
   address: string
@@ -45,7 +38,7 @@ const SafeListItem = ({
   threshold?: string | number
   owners?: string | number
   noActions?: boolean
-  queuedTxs?: SafeTxsActions
+  pendingActions?: SafeTxsActions
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()
@@ -55,10 +48,7 @@ const SafeListItem = ({
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const name = allAddressBooks[chainId]?.[address]
   const shortName = chain?.shortName || ''
-  const { queued = 0, signing = 0 } = queuedTxs || {}
-  const wallet = useWallet()
-  const url = `${AppRoutes.transactions.queue}?safe=${shortName}:${address}`
-  const shortAddress = shortenAddress(wallet?.address || '')
+  const { queued, signing } = pendingActions || {}
 
   // Scroll to the current Safe
   useEffect(() => {
@@ -72,7 +62,7 @@ const SafeListItem = ({
       <ListItem
         className={css.container}
         disablePadding
-        sx={{ '& .MuiListItemSecondaryAction-root': { right: 16 } }}
+        sx={{ '& .MuiListItemSecondaryAction-root': { right: queued || signing ? 70 : 16 } }}
         secondaryAction={
           noActions ? undefined : (
             <Box display="flex" alignItems="center" gap={1}>
@@ -118,33 +108,14 @@ const SafeListItem = ({
             </ListItemButton>
           </Link>
         </Box>
+        <PendingActions
+          totalQueued={queued}
+          pendingSignatures={signing}
+          closeDrawer={closeDrawer}
+          shortName={shortName}
+          address={address}
+        />
       </ListItem>
-      <Box className={css.pendingButtons}>
-        {wallet && signing > 0 && (
-          <NextLink href={url} passHref>
-            <Track {...OVERVIEW_EVENTS.MISSING_SIGNATURES}>
-              <Tooltip title={`${shortAddress} can confirm ${signing} transaction(s)`} placement="top" arrow>
-                <ButtonBase className={classnames(css.pendingButton, css.missingSignatures)} onClick={closeDrawer}>
-                  <WalletIcon provider={wallet.label} />
-                  <Typography variant="body2">{signing}</Typography>
-                </ButtonBase>
-              </Tooltip>
-            </Track>
-          </NextLink>
-        )}
-        {!!queued && (
-          <NextLink href={url} passHref>
-            <Track {...OVERVIEW_EVENTS.QUEUED_TRANSACTIONS}>
-              <Tooltip title={`${queued} transactions in the queue`} placement="top" arrow>
-                <ButtonBase className={classnames(css.pendingButton, css.queued)} onClick={closeDrawer}>
-                  <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" />
-                  <Typography variant="body2">{queued}</Typography>
-                </ButtonBase>
-              </Tooltip>
-            </Track>
-          </NextLink>
-        )}
-      </Box>
     </Box>
   )
 }
