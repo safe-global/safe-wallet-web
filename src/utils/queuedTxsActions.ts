@@ -6,36 +6,38 @@ export type SafeTxsActions = {
   signing?: string | number
 }
 
-export const addActionsToSafeTxs = (
+export type PendingActionsByChain = {
+  [chainId: string]: { [safeAddress: string]: SafeTxsActions }
+}
+
+export const addPendingActionsByChain = (
   chainId: string,
   address: string,
   page: TransactionListPage,
   isSafeOwned: boolean,
-  txsActionsByChain: Record<string, Record<string, SafeTxsActions>>,
+  pendingActionsByChain: PendingActionsByChain,
   walletAddress?: string,
 ) => {
-  if (page.results.length === 0) return txsActionsByChain
+  if (page.results.length === 0) return pendingActionsByChain
 
+  const txs = page.results.filter(isTransactionListItem)
+
+  // If owner of Safe, add number of signable transactions
   if (isSafeOwned) {
-    const txs = page.results.filter(isTransactionListItem)
-
-    txs.reduce((acc, tx) => {
+    pendingActionsByChain = txs.reduce((acc, tx) => {
       if (isSignableBy(tx.transaction, walletAddress || '')) {
         acc[chainId] ??= {}
         acc[chainId][address] ??= {}
-        acc[chainId][address].signing = Number(acc[chainId]?.[address].signing || 0) + 1
+        acc[chainId][address].signing = Number(acc[chainId][address].signing || 0) + 1
       }
       return acc
-    }, txsActionsByChain)
+    }, pendingActionsByChain)
   }
 
-  txsActionsByChain[chainId] = {
-    ...(txsActionsByChain[chainId] ?? {}),
-    [address]: {
-      ...txsActionsByChain[chainId]?.[address],
-      queued: `${page.results.filter(isTransactionListItem).length}${page.next ? '+' : ''}`,
-    },
-  }
+  // Always add number of queued transactions
+  pendingActionsByChain[chainId] ??= {}
+  pendingActionsByChain[chainId][address] ??= {}
+  pendingActionsByChain[chainId][address].queued = `${txs.length}${page.next ? '+' : ''}`
 
-  return txsActionsByChain
+  return pendingActionsByChain
 }

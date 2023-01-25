@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState, type ReactElement } from 'react'
+import React, { Fragment, useState, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import List from '@mui/material/List'
@@ -29,12 +29,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
-import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
-import useTxQueue from '@/hooks/useTxQueue'
-import { Errors, logError } from '@/services/exceptions'
-import useWallet from '@/hooks/wallets/useWallet'
-import type { SafeTxsActions } from '@/utils/queuedTxsActions'
-import { addActionsToSafeTxs } from '@/utils/queuedTxsActions'
+import usePendingActions from '@/hooks/usePendingActions'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -72,9 +67,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  const [safeTxsActions, setSafeTxsActions] = useState<Record<string, Record<string, SafeTxsActions>>>()
-  const { page } = useTxQueue()
-  const wallet = useWallet()
+  const safeTxsActions = usePendingActions()
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const toggleOpen = (chainId: string, open: boolean) => {
@@ -83,58 +76,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
   const isWelcomePage = router.pathname === AppRoutes.welcome
-
-  const handleFetchQueued = useCallback(async () => {
-    // do not run the function if safeQueuedTxs already populated
-    if (safeTxsActions !== undefined) return
-
-    let txsActionsByChain: Record<string, Record<string, SafeTxsActions>> = {}
-
-    for (let [chainId, safes] of Object.entries(addedSafes)) {
-      const ownedSafesOnChain = ownedSafes[chainId] ?? []
-
-      for (let safeAddress of Object.keys(safes)) {
-        const isOwned = ownedSafesOnChain.includes(safeAddress)
-
-        // do not request queued txs again for the current Safe
-        if (currentChainId === chainId && sameAddress(currentSafeAddress, safeAddress) && page) {
-          txsActionsByChain = addActionsToSafeTxs(
-            chainId,
-            safeAddress,
-            page,
-            isOwned,
-            txsActionsByChain,
-            wallet?.address,
-          )
-          continue
-        }
-
-        try {
-          const result = await getTransactionQueue(chainId, safeAddress)
-          txsActionsByChain = addActionsToSafeTxs(
-            chainId,
-            safeAddress,
-            result,
-            isOwned,
-            txsActionsByChain,
-            wallet?.address,
-          )
-        } catch (error) {
-          logError(Errors._603)
-        }
-      }
-    }
-
-    setSafeTxsActions(txsActionsByChain)
-  }, [addedSafes, currentChainId, currentSafeAddress, ownedSafes, page, safeTxsActions, wallet?.address])
-
-  useEffect(() => {
-    handleFetchQueued()
-  }, [handleFetchQueued])
-
-  useEffect(() => {
-    setSafeTxsActions(undefined)
-  }, [wallet?.address])
 
   return (
     <div className={css.container}>
