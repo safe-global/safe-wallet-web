@@ -6,7 +6,6 @@ import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 
 const TxNavigation = () => {
   const chain = useCurrentChain()
-  debugger
   const isEIP1271 = chain && hasFeature(chain, FEATURES.EIP1271)
 
   return (
