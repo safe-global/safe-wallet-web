@@ -12,7 +12,7 @@ const getChangeFallbackHandlerCallData = (
   chain: ChainInfo,
   safeContractInstance: GnosisSafeContractEthers,
 ): string => {
-  if (hasFeature(FEATURES.SAFE_FALLBACK_HANDLER, safe.version)) {
+  if (!hasFeature(FEATURES.SAFE_FALLBACK_HANDLER, safe.version)) {
     return '0x'
   }
 
