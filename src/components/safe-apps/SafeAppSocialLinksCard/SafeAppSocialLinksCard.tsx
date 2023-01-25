@@ -14,11 +14,11 @@ import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import DiscordIcon from '@/public/images/common/discord-icon.svg'
 import css from './styles.module.css'
 
-type SafeAppLinksCardProps = {
+type SafeAppSocialLinksCardProps = {
   safeApp: SafeAppData
 }
 
-const SafeAppLinksCard = ({ safeApp }: SafeAppLinksCardProps) => {
+const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
   const { socialProfiles, developerWebsite } = safeApp
 
   const hasSocialLinks = socialProfiles.length > 0
@@ -56,7 +56,7 @@ const SafeAppLinksCard = ({ safeApp }: SafeAppLinksCardProps) => {
               Social Media
             </Typography>
 
-            <Box display="flex" mt={0.2}>
+            <Box display="flex" mt={0.2} minHeight="40px">
               {discordSocialLink && (
                 <IconButton aria-label="Discord link" component="a" target="_blank" href={discordSocialLink.url}>
                   <DiscordIcon />
@@ -107,4 +107,4 @@ const SafeAppLinksCard = ({ safeApp }: SafeAppLinksCardProps) => {
   )
 }
 
-export default SafeAppLinksCard
+export default SafeAppSocialLinksCard
