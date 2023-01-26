@@ -123,4 +123,67 @@ describe('addedSafesSlice', () => {
     )
     expect(state).toEqual({ '4': { ['0x0']: {} as SafeInfo } })
   })
+
+  it('should fix corrupt owners', () => {
+    const state = addedSafesSlice.reducer(
+      {
+        '1': {
+          ['0x0']: {
+            owners: [
+              {
+                value: '0x123',
+              },
+            ],
+          } as SafeInfo,
+          ['0x1']: {
+            owners: [
+              {
+                value: { address: '0x123' },
+              },
+              { value: '0x456' },
+            ],
+          } as unknown as SafeInfo,
+        },
+        '4': {
+          ['0x0']: {
+            owners: [
+              {
+                value: { address: '0x123', name: 'Test' },
+              },
+            ],
+          } as unknown as SafeInfo,
+        },
+      },
+      addedSafesSlice.actions.fixOwners(),
+    )
+    expect(state).toEqual({
+      '1': {
+        ['0x0']: {
+          owners: [
+            {
+              value: '0x123',
+            },
+          ],
+        } as SafeInfo,
+        ['0x1']: {
+          owners: [
+            {
+              value: '0x123',
+            },
+            { value: '0x456' },
+          ],
+        } as SafeInfo,
+      },
+      '4': {
+        ['0x0']: {
+          owners: [
+            {
+              value: '0x123',
+              name: 'Test',
+            },
+          ],
+        } as SafeInfo,
+      },
+    })
+  })
 })

@@ -7,6 +7,7 @@ import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { safeFormatUnits } from '@/utils/formatters'
 import type { Loadable } from './common'
+import { migrateAddedSafesOwners } from '@/services/ls-migration/addedSafes'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {
@@ -35,6 +36,17 @@ export const addedSafesSlice = createSlice({
       if (Object.keys(state).length > 0) return state
       // Otherwise, migrate
       return action.payload
+    },
+    fixOwners: (state) => {
+      for (const [chainId, addedSafesOnChain] of Object.entries(state)) {
+        for (const [safeAddress, safe] of Object.entries(addedSafesOnChain)) {
+          // Previously migrated corrupt owners in { address: string, value: string } format
+          if (safe.owners.some(({ value }) => value !== 'string')) {
+            // @ts-expect-error
+            state[chainId][safeAddress].owners = migrateAddedSafesOwners(safe.owners)
+          }
+        }
+      }
     },
     setAddedSafes: (_, action: PayloadAction<AddedSafesState>) => {
       return action.payload

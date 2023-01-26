@@ -23,10 +23,24 @@ type OldAddedSafes = Record<
     address: string
     chainId: string
     ethBalance: string
-    owners: string[]
+    owners: Array<string | { name?: string; address: string }>
     threshold: number
   }
 >
+
+export const migrateAddedSafesOwners = (
+  owners: OldAddedSafes[string]['owners'],
+): AddedSafesState[string][string]['owners'] => {
+  return owners.map((value) => {
+    if (typeof value === 'string') {
+      return { value }
+    }
+    return {
+      value: value.address,
+      ...(value.name && { name: value.name }),
+    }
+  })
+}
 
 export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): AddedSafesState | void => {
   const newAddedSafes: AddedSafesState = {}
@@ -41,7 +55,7 @@ export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): AddedSafesState |
       const safesPerChain = Object.values(legacyAddedSafes).reduce<AddedSafesOnChain>((acc, oldItem) => {
         acc[oldItem.address] = {
           ethBalance: oldItem.ethBalance,
-          owners: oldItem.owners.map((value) => ({ value })),
+          owners: migrateAddedSafesOwners(oldItem.owners),
           threshold: oldItem.threshold,
         }
         return acc
