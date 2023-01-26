@@ -8,7 +8,7 @@ const SendToBlock = ({ address, title = 'Recipient' }: { address: string; title?
         {title}
       </Typography>
 
-      <Typography variant="body2">
+      <Typography variant="body2" component="div">
         <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
       </Typography>
     </Box>

@@ -209,7 +209,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                   {isIncomingFilter && (
                     <Grid item xs={12} md={6}>
                       <AddressBookInput
-                        label="Token address"
+                        label="Token"
                         name={TxFilterFormFieldNames.TOKEN_ADDRESS}
                         required={false}
                         fullWidth

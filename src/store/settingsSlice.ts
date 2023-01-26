@@ -6,11 +6,9 @@ import type { RootState } from '@/store'
 export type SettingsState = {
   currency: string
 
-  hiddenTokens:
-    | {
-        [chainId: string]: string[]
-      }
-    | undefined /* This was added to the slice later, so hydration will set it to undefined initially */
+  hiddenTokens: {
+    [chainId: string]: string[]
+  }
 
   tokenList:
     | 'ALL'
@@ -63,7 +61,6 @@ export const settingsSlice = createSlice({
     },
     setHiddenTokensForChain: (state, { payload }: PayloadAction<{ chainId: string; assets: string[] }>) => {
       const { chainId, assets } = payload
-      state.hiddenTokens ??= {}
       state.hiddenTokens[chainId] = assets
     },
     setTokenList: (state, { payload }: PayloadAction<SettingsState['tokenList']>) => {
