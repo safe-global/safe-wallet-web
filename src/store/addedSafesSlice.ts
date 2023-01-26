@@ -42,8 +42,7 @@ export const addedSafesSlice = createSlice({
         for (const [safeAddress, safe] of Object.entries(addedSafesOnChain)) {
           // Previously migrated corrupt owners in { address: string, value: string } format
           if (safe.owners.some(({ value }) => value !== 'string')) {
-            // @ts-expect-error
-            state[chainId][safeAddress].owners = migrateAddedSafesOwners(safe.owners)
+            state[chainId][safeAddress].owners = migrateAddedSafesOwners(safe.owners.map(({ value }) => value))
           }
         }
       }
