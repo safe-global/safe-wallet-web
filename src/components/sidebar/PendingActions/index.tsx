@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import WalletIcon from '@/components/common/WalletIcon'
@@ -28,10 +28,13 @@ const PendingActionButtons = ({
 }) => {
   const wallet = useWallet()
 
-  const queueLink: UrlObject = {
-    pathname: AppRoutes.transactions.queue,
-    query: { safe: `${shortName}:${safeAddress}` },
-  }
+  const queueLink: UrlObject = useMemo(
+    () => ({
+      pathname: AppRoutes.transactions.queue,
+      query: { safe: `${shortName}:${safeAddress}` },
+    }),
+    [safeAddress, shortName],
+  )
 
   const shortAddress = shortenAddress(wallet?.address || '')
 
