@@ -54,11 +54,7 @@ const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   },
 }
 
-const skeletonRows: EnhancedTableProps['rows'] = [
-  { cells: skeletonCells },
-  { cells: skeletonCells },
-  { cells: skeletonCells },
-]
+const skeletonRows: EnhancedTableProps['rows'] = Array(3).fill({ cells: skeletonCells })
 
 const isNativeToken = (tokenInfo: TokenInfo) => {
   return tokenInfo.type === TokenType.NATIVE_TOKEN
