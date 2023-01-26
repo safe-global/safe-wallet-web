@@ -29,7 +29,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import LoadingIcon from '@/public/images/common/loading.svg'
-import usePendingActions from '@/hooks/usePendingActions'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -67,7 +66,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  const safePendingActions = usePendingActions()
 
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const toggleOpen = (chainId: string, open: boolean) => {
@@ -168,7 +166,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                     chainId={chain.chainId}
                     closeDrawer={closeDrawer}
                     shouldScrollToSafe
-                    pendingActions={safePendingActions?.[chain.chainId]?.[address]}
                   />
                 ))}
 

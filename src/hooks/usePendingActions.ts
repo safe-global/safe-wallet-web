@@ -1,75 +1,43 @@
-import useChainId from '@/hooks/useChainId'
-import useOwnedSafes from '@/hooks/useOwnedSafes'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import useTxQueue from '@/hooks/useTxQueue'
-import useWallet from '@/hooks/wallets/useWallet'
-import { Errors, logError } from '@/services/exceptions'
-import { useAppSelector } from '@/store'
-import { selectAllAddedSafes } from '@/store/addedSafesSlice'
-import { sameAddress } from '@/utils/addresses'
-import type { PendingActionsByChain } from '@/utils/queuedTxsActions'
-import { addPendingActionsByChain } from '@/utils/queuedTxsActions'
-import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
-import { useEffect, useRef, useState } from 'react'
+import { isTransactionListItem } from "@/utils/transaction-guards"
+import { isSignableBy } from "@/utils/transaction-guards"
+import { getTransactionQueue, TransactionListPage } from "@safe-global/safe-gateway-typescript-sdk"
+import { useMemo } from "react"
+import useAsync from "./useAsync"
+import useSafeInfo from "./useSafeInfo"
+import useTxQueue from "./useTxQueue"
+import useWallet from "./wallets/useWallet"
 
-const usePendingActions = () => {
-  const addedSafes = useAppSelector(selectAllAddedSafes)
-  const ownedSafes = useOwnedSafes()
+type PendingActions = {
+  totalQueued: string
+  totalToSign: string
+}
+
+const getSignableCount = (queue: TransactionListPage, walletAddress: string): number => {
+  return queue.results.filter(tx => isTransactionListItem(tx) && isSignableBy(tx.transaction, walletAddress)).length
+}
+
+const usePendingActions = (chainId: string, safeAddress: string): PendingActions => {
   const wallet = useWallet()
-  const currentChainId = useChainId()
   const { safeAddress: currentSafeAddress } = useSafeInfo()
-  const { page } = useTxQueue()
-  const [safeTxsActions, setSafeTxsActions] = useState<PendingActionsByChain>()
-  const isLoading = useRef(false)
+  const { page: currentSafeQueue } = useTxQueue()
+  const isCurrentSafe = currentSafeAddress === safeAddress
 
-  useEffect(() => {
-    if (safeTxsActions || isLoading.current) return
+  // TODO: Don't load for current safe
+  const [loadedQueue] = useAsync<TransactionListPage>(
+    () => {
+      if (isCurrentSafe) return
+      return getTransactionQueue(chainId, safeAddress)
+    }, [chainId, safeAddress, isCurrentSafe]
+  )
 
-    const getPendingActionsByChain = async () => {
-      isLoading.current = true
+  const queue = isCurrentSafe ? currentSafeQueue : loadedQueue
 
-      let pendingActionsByChain: PendingActionsByChain = {}
-
-      // Added Safes across all chains
-      for (const [chainId, safes] of Object.entries(addedSafes)) {
-        const ownedSafesOnChain = ownedSafes[chainId] ?? []
-
-        // Added Safes per chain
-        for (const safeAddress of Object.keys(safes)) {
-          const isOwned = ownedSafesOnChain.includes(safeAddress)
-          const isCurrentSafe = currentChainId === chainId && sameAddress(currentSafeAddress, safeAddress)
-
-          try {
-            const txListPage = isCurrentSafe && page ? page : await getTransactionQueue(chainId, safeAddress)
-
-            pendingActionsByChain = addPendingActionsByChain(
-              chainId,
-              safeAddress,
-              txListPage,
-              isOwned,
-              pendingActionsByChain,
-              wallet?.address,
-            )
-          } catch (error) {
-            logError(Errors._603)
-          }
-        }
-      }
-
-      isLoading.current = false
-
-      setSafeTxsActions(pendingActionsByChain)
-    }
-
-    getPendingActionsByChain()
-  }, [addedSafes, currentChainId, currentSafeAddress, ownedSafes, page, wallet?.address, safeTxsActions])
-
-  useEffect(() => {
-    isLoading.current = false
-    setSafeTxsActions(undefined)
-  }, [wallet?.address])
-
-  return safeTxsActions
+  return useMemo(() => ({
+    // Return +10 if more than one page, otherwise just the length
+    totalQueued: queue ? (queue.next ? '+' : '') + (queue.results.length || '') : '',
+    // Return the queued txs signable by wallet
+    totalToSign: queue ? (getSignableCount(queue, wallet?.address || '') || '').toString() : ''
+  }), [queue, wallet])
 }
 
 export default usePendingActions

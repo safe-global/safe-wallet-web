@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import WalletIcon from '@/components/common/WalletIcon'
@@ -12,35 +12,36 @@ import type { UrlObject } from 'url'
 import css from './styles.module.css'
 import classnames from 'classnames'
 import { AppRoutes } from '@/config/routes'
+import usePendingActions from '@/hooks/usePendingActions'
 
-const PendingActions = ({
-  totalQueued = 0,
-  pendingSignatures = 0,
+const PendingActionButtons = ({
+  totalQueued,
+  totalToSign,
   closeDrawer,
   shortName,
-  address,
+  safeAddress,
 }: {
-  totalQueued?: string | number
-  pendingSignatures?: string | number
+  totalQueued: string
+  totalToSign: string
   closeDrawer?: () => void
   shortName: string
-  address: string
+  safeAddress: string
 }) => {
   const wallet = useWallet()
 
   const queueLink: UrlObject = {
     pathname: AppRoutes.transactions.queue,
-    query: { safe: `${shortName}:${address}` },
+    query: { safe: `${shortName}:${safeAddress}` },
   }
 
   const shortAddress = shortenAddress(wallet?.address || '')
 
   return (
     <Box className={css.pendingButtons}>
-      {wallet && pendingSignatures > 0 && (
+      {wallet && totalToSign && (
         <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
           <NextLink href={queueLink} passHref>
-            <Tooltip title={`${shortAddress} can confirm ${pendingSignatures} transaction(s)`} placement="top" arrow>
+            <Tooltip title={`${shortAddress} can confirm ${totalToSign} transaction(s)`} placement="top" arrow>
               <ButtonBase
                 className={classnames(css.pendingButton, css.missingSignatures)}
                 onClick={closeDrawer}
@@ -50,13 +51,14 @@ const PendingActions = ({
                 }}
               >
                 <WalletIcon provider={wallet.label} />
-                <Typography variant="body2">{pendingSignatures}</Typography>
+                <Typography variant="body2">{totalToSign}</Typography>
               </ButtonBase>
             </Tooltip>
           </NextLink>
         </Track>
       )}
-      {!!totalQueued && (
+
+      {totalQueued && (
         <Track {...OVERVIEW_EVENTS.OPEN_QUEUED_TRANSACTIONS}>
           <NextLink href={queueLink} passHref>
             <Tooltip title={`${totalQueued} transactions in the queue`} placement="top" arrow>
@@ -77,6 +79,28 @@ const PendingActions = ({
         </Track>
       )}
     </Box>
+  )
+}
+
+const PendingActions = ({
+  chainId,
+  safeAddress,
+  ...props
+}: {
+  chainId: string
+  safeAddress: string
+  closeDrawer?: () => void
+}): ReactElement | null => {
+  const { totalQueued, totalToSign } = usePendingActions(chainId, safeAddress)
+  const shortName = ''
+
+  // TODO: Handle the case when we're not connected, at least show the total
+  if (!totalQueued && !totalToSign) {
+    return null
+  }
+
+  return (
+    <PendingActionButtons safeAddress={safeAddress} shortName={shortName} totalQueued={totalQueued} totalToSign={totalToSign} {...props} />
   )
 }
 
