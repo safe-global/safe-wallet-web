@@ -1,5 +1,6 @@
 import * as useChainId from '@/hooks/useChainId'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
+import { TOKEN_LISTS } from '@/store/settingsSlice'
 import { act, fireEvent, getByRole, getByTestId, render, waitFor } from '@/tests/test-utils'
 import { safeParseUnits } from '@/utils/formatters'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -88,7 +89,7 @@ describe('AssetsTable', () => {
         settings: {
           currency: 'usd',
           hiddenTokens: mockHiddenAssets,
-          tokenList: 'ALL',
+          tokenList: TOKEN_LISTS.ALL,
           shortName: {
             show: true,
             copy: true,
@@ -183,7 +184,7 @@ describe('AssetsTable', () => {
         settings: {
           currency: 'usd',
           hiddenTokens: mockHiddenAssets,
-          tokenList: 'ALL',
+          tokenList: TOKEN_LISTS.ALL,
           shortName: {
             show: true,
             copy: true,
@@ -274,7 +275,7 @@ describe('AssetsTable', () => {
         settings: {
           currency: 'usd',
           hiddenTokens: mockHiddenAssets,
-          tokenList: 'ALL',
+          tokenList: TOKEN_LISTS.ALL,
           shortName: {
             show: true,
             copy: true,
@@ -362,7 +363,7 @@ describe('AssetsTable', () => {
         settings: {
           currency: 'usd',
           hiddenTokens: mockHiddenAssets,
-          tokenList: 'ALL',
+          tokenList: TOKEN_LISTS.ALL,
           shortName: {
             show: true,
             copy: true,

@@ -1,6 +1,6 @@
 import { useCurrentChain } from '@/hooks/useChains'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSettings, setTokenList } from '@/store/settingsSlice'
+import { selectSettings, setTokenList, TOKEN_LISTS } from '@/store/settingsSlice'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import type { SelectChangeEvent } from '@mui/material'
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'
@@ -11,8 +11,8 @@ const TokenListSelect = () => {
   const chain = useCurrentChain()
   const hasDefaultTokenlist = chain && hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
 
-  const handleSelectTokenList = (event: SelectChangeEvent<'DEFAULT' | 'ALL'>) => {
-    const selectedString = event.target.value as 'DEFAULT' | 'ALL'
+  const handleSelectTokenList = (event: SelectChangeEvent<TOKEN_LISTS>) => {
+    const selectedString = event.target.value as TOKEN_LISTS
     dispatch(setTokenList(selectedString))
   }
 
@@ -30,8 +30,8 @@ const TokenListSelect = () => {
         label="Tokenlist"
         onChange={handleSelectTokenList}
       >
-        <MenuItem value="DEFAULT">Default tokens</MenuItem>
-        <MenuItem value="ALL">All tokens</MenuItem>
+        <MenuItem value={TOKEN_LISTS.DEFAULT}>Default tokens</MenuItem>
+        <MenuItem value={TOKEN_LISTS.ALL}>All tokens</MenuItem>
       </Select>
     </FormControl>
   )

@@ -3,7 +3,7 @@ import { getBalances, type SafeBalanceResponse } from '@safe-global/safe-gateway
 import { useAppSelector } from '@/store'
 import useAsync, { type AsyncResult } from '../useAsync'
 import { Errors, logError } from '@/services/exceptions'
-import { selectCurrency, selectSettings } from '@/store/settingsSlice'
+import { selectCurrency, selectSettings, TOKEN_LISTS } from '@/store/settingsSlice'
 import { selectSafeInfo } from '@/store/safeInfoSlice'
 import { useCurrentChain } from '../useChains'
 import { FEATURES, hasFeature } from '@/utils/chains'
@@ -14,9 +14,9 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const currency = useAppSelector(selectCurrency)
   const settings = useAppSelector(selectSettings)
   const chain = useCurrentChain()
-  const isDefaultTokenList = useMemo(() => {
-    const hasDefaultList = chain !== undefined && hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
-    return hasDefaultList && (!settings.tokenList || settings.tokenList === 'DEFAULT')
+  const isTrustedTokenList = useMemo(() => {
+    const hasTrustedList = chain !== undefined && hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
+    return hasTrustedList && (!settings.tokenList || settings.tokenList === TOKEN_LISTS.DEFAULT)
   }, [chain, settings.tokenList])
 
   // Re-fetch assets when the entire SafeInfo updates
@@ -24,10 +24,10 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
     async () => {
       if (!safe) return
       return getBalances(safe.chainId, safe.address.value, currency, {
-        trusted: isDefaultTokenList,
+        trusted: isTrustedTokenList,
       })
     },
-    [safe, currency, isDefaultTokenList], // Reload either when the Safe is updated, the currency changes or a different token list gets selected
+    [safe, currency, isTrustedTokenList], // Reload either when the Safe is updated, the currency changes or a different token list gets selected
     false, // Don't clear data between SafeInfo polls
   )
 

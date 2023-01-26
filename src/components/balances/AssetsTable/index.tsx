@@ -6,7 +6,7 @@ import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount from '@/components/common/TokenAmount'
 import TokenIcon from '@/components/common/TokenIcon'
-import EnhancedTable from '@/components/common/EnhancedTable'
+import EnhancedTable, { type EnhancedTableProps } from '@/components/common/EnhancedTable'
 import TokenExplorerLink from '@/components/common/TokenExplorerLink'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import useIsGranted from '@/hooks/useIsGranted'
@@ -19,14 +19,14 @@ import useBalances from '@/hooks/useBalances'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import { useHideAssets } from './useHideAssets'
 
-const skeletonCell = {
+const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
     rawValue: '0x0',
     content: (
       <div className={css.token}>
         <Skeleton variant="rounded" width="26px" height="26px" />
         <Typography>
-          <Skeleton width={'80px'} />
+          <Skeleton width="80px" />
         </Typography>
       </div>
     ),
@@ -35,7 +35,7 @@ const skeletonCell = {
     rawValue: '0',
     content: (
       <Typography>
-        <Skeleton width={'32px'} />
+        <Skeleton width="32px" />
       </Typography>
     ),
   },
@@ -43,7 +43,7 @@ const skeletonCell = {
     rawValue: '0',
     content: (
       <Typography>
-        <Skeleton width={'32px'} />
+        <Skeleton width="32px" />
       </Typography>
     ),
   },
@@ -54,7 +54,11 @@ const skeletonCell = {
   },
 }
 
-const skeletonRows = [{ cells: skeletonCell }, { cells: skeletonCell }, { cells: skeletonCell }]
+const skeletonRows: EnhancedTableProps['rows'] = [
+  { cells: skeletonCells },
+  { cells: skeletonCells },
+  { cells: skeletonCells },
+]
 
 const isNativeToken = (tokenInfo: TokenInfo) => {
   return tokenInfo.type === TokenType.NATIVE_TOKEN

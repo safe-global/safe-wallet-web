@@ -3,6 +3,11 @@ import { createSlice } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/store'
 
+export enum TOKEN_LISTS {
+  DEFAULT = 'DEFAULT',
+  ALL = 'ALL',
+}
+
 export type SettingsState = {
   currency: string
 
@@ -10,10 +15,7 @@ export type SettingsState = {
     [chainId: string]: string[]
   }
 
-  tokenList:
-    | 'ALL'
-    | 'DEFAULT'
-    | undefined /* This was added to the slice later, so hydration will set it to undefined initially */
+  tokenList: TOKEN_LISTS
 
   shortName: {
     show: boolean
@@ -28,7 +30,7 @@ export type SettingsState = {
 const initialState: SettingsState = {
   currency: 'usd',
 
-  tokenList: 'DEFAULT',
+  tokenList: TOKEN_LISTS.DEFAULT,
 
   hiddenTokens: {},
 

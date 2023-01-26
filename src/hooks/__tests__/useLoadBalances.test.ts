@@ -7,6 +7,7 @@ import * as SafeGatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@gnosis.pm/safe-apps-sdk'
 import { FEATURES } from '@/utils/chains'
 import * as useChainId from '@/hooks/useChainId'
+import { TOKEN_LISTS } from '@/store/settingsSlice'
 
 const safeAddress = hexZeroPad('0x1234', 20)
 
@@ -173,7 +174,7 @@ describe('useLoadBalances', () => {
             show: true,
           },
           theme: {},
-          tokenList: 'ALL',
+          tokenList: TOKEN_LISTS.ALL,
         },
       } as store.RootState),
     )
@@ -214,7 +215,7 @@ describe('useLoadBalances', () => {
             show: true,
           },
           theme: {},
-          tokenList: 'ALL',
+          tokenList: TOKEN_LISTS.ALL,
         },
       } as store.RootState),
     )
@@ -258,7 +259,7 @@ describe('useLoadBalances', () => {
             show: true,
           },
           theme: {},
-          tokenList: 'DEFAULT',
+          tokenList: TOKEN_LISTS.DEFAULT,
         },
       } as store.RootState),
     )
@@ -306,7 +307,7 @@ describe('useLoadBalances', () => {
             show: true,
           },
           theme: {},
-          tokenList: 'DEFAULT',
+          tokenList: TOKEN_LISTS.DEFAULT,
         },
       } as store.RootState),
     )
@@ -347,7 +348,7 @@ describe('useLoadBalances', () => {
             show: true,
           },
           theme: {},
-          tokenList: 'ALL',
+          tokenList: TOKEN_LISTS.ALL,
         },
       } as store.RootState),
     )
