@@ -24,12 +24,12 @@
   right: 16px;
 }
 
-.pendingButtons :global .MuiListItemSecondaryAction-root {
+.withPendingButtons :global .MuiListItemSecondaryAction-root {
   right: 70px;
 }
 
 @media (max-width: 400px) {
-  .pendingButtons :global .MuiListItemSecondaryAction-root {
+  .withPendingButtons :global .MuiListItemSecondaryAction-root {
     right: 40px;
   }
 }

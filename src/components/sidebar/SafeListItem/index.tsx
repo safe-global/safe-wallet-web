@@ -59,7 +59,7 @@ const SafeListItem = ({
 
   return (
     <ListItem
-      className={classnames(css.container, { [css.pendingButtons]: totalQueued || totalToSign })}
+      className={classnames(css.container, { [css.withPendingButtons]: totalQueued || totalToSign })}
       disablePadding
       secondaryAction={
         noActions ? undefined : (

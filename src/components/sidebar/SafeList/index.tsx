@@ -61,8 +61,8 @@ const NO_SAFE_MESSAGE = 'Create a new safe or add'
 
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
-  const currentChainId = useChainId()
-  const { safeAddress: currentSafeAddress, safe } = useSafeInfo()
+  const chainId = useChainId()
+  const { safeAddress, safe } = useSafeInfo()
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
@@ -120,7 +120,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
           const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
           const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
           const addedSafeEntriesOnChain = Object.entries(addedSafesOnChain)
-          const isCurrentChain = chain.chainId === currentChainId
+          const isCurrentChain = chain.chainId === chainId
 
           if (!isCurrentChain && !ownedSafesOnChain.length && !addedSafeEntriesOnChain.length) {
             return null
@@ -131,7 +131,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
               ? open[chain.chainId]
               : _shouldExpandSafeList({
                   isCurrentChain,
-                  safeAddress: currentSafeAddress,
+                  safeAddress,
                   ownedSafesOnChain,
                   addedSafesOnChain,
                 })
@@ -171,11 +171,11 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                 ))}
 
                 {isCurrentChain &&
-                  currentSafeAddress &&
-                  !addedSafesOnChain[currentSafeAddress] &&
-                  !ownedSafesOnChain.includes(currentSafeAddress) && (
+                  safeAddress &&
+                  !addedSafesOnChain[safeAddress] &&
+                  !ownedSafesOnChain.includes(safeAddress) && (
                     <SafeListItem
-                      address={currentSafeAddress}
+                      address={safeAddress}
                       threshold={safe.threshold}
                       owners={safe.owners.length}
                       chainId={safe.chainId}
@@ -195,7 +195,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                     </Typography>
                   </div>
 
-                  <Collapse key={currentChainId} in={isOpen}>
+                  <Collapse key={chainId} in={isOpen}>
                     <List sx={{ py: 0 }}>
                       {ownedSafesOnChain.map((address) => (
                         <SafeListItem
