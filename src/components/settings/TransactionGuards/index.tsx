@@ -6,7 +6,8 @@ import useIsGranted from '@/hooks/useIsGranted'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
-import { VERSION_FEATURES, versionHasFeature } from '@/utils/safe-versions'
+import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
+import { hasSafeFeature } from '@/utils/safe-versions'
 
 const NoTransactionGuard = () => {
   return (
@@ -30,7 +31,7 @@ const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId
 const TransactionGuards = () => {
   const { safe, safeLoaded } = useSafeInfo()
 
-  const isVersionWithGuards = safeLoaded && versionHasFeature(VERSION_FEATURES.SAFE_TX_GUARDS, safe.version)
+  const isVersionWithGuards = safeLoaded && hasSafeFeature(SAFE_FEATURES.SAFE_TX_GUARDS, safe.version)
 
   if (!isVersionWithGuards) {
     return null

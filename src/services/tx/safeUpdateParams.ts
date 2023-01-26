@@ -5,14 +5,15 @@ import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-s
 import { getFallbackHandlerContractInstance, getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
-import { VERSION_FEATURES, versionHasFeature } from '@/utils/safe-versions'
+import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
+import { hasSafeFeature } from '@/utils/safe-versions'
 
 const getChangeFallbackHandlerCallData = (
   safe: SafeInfo,
   chain: ChainInfo,
   safeContractInstance: GnosisSafeContractEthers,
 ): string => {
-  if (!versionHasFeature(VERSION_FEATURES.SAFE_FALLBACK_HANDLER, safe.version)) {
+  if (!hasSafeFeature(SAFE_FEATURES.SAFE_FALLBACK_HANDLER, safe.version)) {
     return '0x'
   }
 
