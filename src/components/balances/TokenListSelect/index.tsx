@@ -30,7 +30,7 @@ const TokenListSelect = () => {
         label="Tokenlist"
         onChange={handleSelectTokenList}
       >
-        <MenuItem value={TOKEN_LISTS.DEFAULT}>Default tokens</MenuItem>
+        <MenuItem value={TOKEN_LISTS.TRUSTED}>Default tokens</MenuItem>
         <MenuItem value={TOKEN_LISTS.ALL}>All tokens</MenuItem>
       </Select>
     </FormControl>

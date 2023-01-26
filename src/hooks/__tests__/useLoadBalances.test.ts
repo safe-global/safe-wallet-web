@@ -259,7 +259,7 @@ describe('useLoadBalances', () => {
             show: true,
           },
           theme: {},
-          tokenList: TOKEN_LISTS.DEFAULT,
+          tokenList: TOKEN_LISTS.TRUSTED,
         },
       } as store.RootState),
     )
@@ -307,7 +307,7 @@ describe('useLoadBalances', () => {
             show: true,
           },
           theme: {},
-          tokenList: TOKEN_LISTS.DEFAULT,
+          tokenList: TOKEN_LISTS.TRUSTED,
         },
       } as store.RootState),
     )

@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
 
 export enum TOKEN_LISTS {
-  DEFAULT = 'DEFAULT',
+  TRUSTED = 'TRUSTED',
   ALL = 'ALL',
 }
 
@@ -30,7 +30,7 @@ export type SettingsState = {
 const initialState: SettingsState = {
   currency: 'usd',
 
-  tokenList: TOKEN_LISTS.DEFAULT,
+  tokenList: TOKEN_LISTS.TRUSTED,
 
   hiddenTokens: {},
 

@@ -16,7 +16,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const chain = useCurrentChain()
   const isTrustedTokenList = useMemo(() => {
     const hasTrustedList = chain !== undefined && hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
-    return hasTrustedList && (!settings.tokenList || settings.tokenList === TOKEN_LISTS.DEFAULT)
+    return hasTrustedList && (!settings.tokenList || settings.tokenList === TOKEN_LISTS.TRUSTED)
   }, [chain, settings.tokenList])
 
   // Re-fetch assets when the entire SafeInfo updates
