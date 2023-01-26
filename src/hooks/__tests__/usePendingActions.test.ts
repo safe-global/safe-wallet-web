@@ -1,6 +1,6 @@
 import usePendingActions from '@/hooks/usePendingActions'
 import { renderHook, waitFor } from '@/tests/test-utils'
-import type { TransactionListPage, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeInfo, TransactionListPage, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConflictType,
   DetailedExecutionInfoType,
@@ -11,6 +11,7 @@ import { hexZeroPad } from 'ethers/lib/utils'
 import type { EIP1193Provider } from '@web3-onboard/core'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import * as useTxQueue from '@/hooks/useTxQueue'
+import * as useSafeInfo from '@/hooks/useSafeInfo'
 import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -19,6 +20,10 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
 }))
 
 describe('usePendingActions hook', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should return no pending actions for non-current Safe with an empty queue', () => {
     const chainId = '5'
     const safeAddress = hexZeroPad('0x1', 20)
@@ -36,6 +41,17 @@ describe('usePendingActions hook', () => {
   it('should return no pending actions for current Safe with an empty queue', () => {
     const chainId = '5'
     const safeAddress = hexZeroPad('0x1', 20)
+
+    const mockSafeAddress = hexZeroPad('0x1', 20)
+    jest.spyOn(useSafeInfo, 'default').mockReturnValue({
+      safeAddress: mockSafeAddress,
+      safe: {
+        chainId: '5',
+      } as SafeInfo,
+      safeError: undefined,
+      safeLoading: false,
+      safeLoaded: true,
+    })
 
     const mockPage = {
       error: undefined,
@@ -61,6 +77,17 @@ describe('usePendingActions hook', () => {
       provider: null as unknown as EIP1193Provider,
     }
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
+
+    const mockSafeAddress = hexZeroPad('0x2', 20)
+    jest.spyOn(useSafeInfo, 'default').mockReturnValue({
+      safeAddress: mockSafeAddress,
+      safe: {
+        chainId: '5',
+      } as SafeInfo,
+      safeError: undefined,
+      safeLoading: false,
+      safeLoaded: true,
+    })
 
     const page: TransactionListPage = {
       next: undefined,
@@ -111,7 +138,8 @@ describe('usePendingActions hook', () => {
     })
   })
 
-  it('should return 2 queued txs and 1 pending signature for current Safe with a queue', async () => {
+  it('should return 1 queued txs and 1 pending signature for current Safe with a queue', async () => {
+    const safeAddress = hexZeroPad('0x1', 20)
     const walletAddress = hexZeroPad('0x789', 20)
     const mockWallet = {
       address: walletAddress,
@@ -121,18 +149,29 @@ describe('usePendingActions hook', () => {
     }
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
 
+    const mockSafeAddress = hexZeroPad('0x1', 20)
+    jest.spyOn(useSafeInfo, 'default').mockReturnValue({
+      safeAddress: mockSafeAddress,
+      safe: {
+        chainId: '5',
+      } as SafeInfo,
+      safeError: undefined,
+      safeLoading: false,
+      safeLoaded: true,
+    })
+
     const page: TransactionListPage = {
       next: undefined,
       previous: undefined,
       results: [
         { type: TransactionListItemType.LABEL, label: LabelValue.Next },
-        { type: TransactionListItemType.CONFLICT_HEADER, nonce: 7 },
         {
           type: TransactionListItemType.TRANSACTION,
           transaction: {
+            txStatus: 'AWAITING_CONFIRMATIONS',
             executionInfo: {
               type: DetailedExecutionInfoType.MULTISIG,
-              nonce: 7,
+              nonce: 8,
               confirmationsRequired: 3,
               confirmationsSubmitted: 1,
               missingSigners: [
@@ -141,19 +180,7 @@ describe('usePendingActions hook', () => {
               ],
             },
           } as unknown as TransactionSummary,
-          conflictType: ConflictType.HAS_NEXT,
-        },
-        {
-          type: TransactionListItemType.TRANSACTION,
-          transaction: {
-            executionInfo: {
-              type: DetailedExecutionInfoType.MULTISIG,
-              nonce: 7,
-              confirmationsRequired: 3,
-              confirmationsSubmitted: 3,
-            },
-          } as unknown as TransactionSummary,
-          conflictType: ConflictType.END,
+          conflictType: ConflictType.NONE,
         },
       ],
     }
@@ -161,17 +188,16 @@ describe('usePendingActions hook', () => {
     const mockPage = {
       error: undefined,
       loading: false,
-      page,
+      page: page,
     }
     jest.spyOn(useTxQueue, 'default').mockReturnValue(mockPage)
 
     const chainId = '5'
-    const safeAddress = hexZeroPad('0x1', 20)
 
     const { result } = renderHook(() => usePendingActions(chainId, safeAddress))
 
     await waitFor(() => {
-      expect(result.current).toEqual({ totalQueued: '2', totalToSign: '1' })
+      expect(result.current).toEqual({ totalQueued: '1', totalToSign: '1' })
     })
   })
 })

@@ -4,7 +4,7 @@
   justify-content: center;
   gap: 4px;
   padding-left: 0px;
-  margin-right:  var(--space-2);
+  margin-right: var(--space-2);
 }
 
 .pendingButton {
