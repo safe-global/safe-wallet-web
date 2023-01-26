@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import React, { ReactElement } from 'react'
+import React from 'react'
 import { ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import WalletIcon from '@/components/common/WalletIcon'
@@ -12,7 +12,6 @@ import type { UrlObject } from 'url'
 import css from './styles.module.css'
 import classnames from 'classnames'
 import { AppRoutes } from '@/config/routes'
-import usePendingActions from '@/hooks/usePendingActions'
 
 const PendingActionButtons = ({
   totalQueued,
@@ -82,26 +81,4 @@ const PendingActionButtons = ({
   )
 }
 
-const PendingActions = ({
-  chainId,
-  safeAddress,
-  ...props
-}: {
-  chainId: string
-  safeAddress: string
-  closeDrawer?: () => void
-}): ReactElement | null => {
-  const { totalQueued, totalToSign } = usePendingActions(chainId, safeAddress)
-  const shortName = ''
-
-  // TODO: Handle the case when we're not connected, at least show the total
-  if (!totalQueued && !totalToSign) {
-    return null
-  }
-
-  return (
-    <PendingActionButtons safeAddress={safeAddress} shortName={shortName} totalQueued={totalQueued} totalToSign={totalToSign} {...props} />
-  )
-}
-
-export default PendingActions
+export default PendingActionButtons

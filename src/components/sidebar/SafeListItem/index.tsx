@@ -19,7 +19,8 @@ import Box from '@mui/material/Box'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
-import PendingActions from '@/components/sidebar/PendingActions'
+import PendingActionButtons from '@/components/sidebar/PendingActions'
+import usePendingActions from '@/hooks/usePendingActions'
 
 const SafeListItem = ({
   address,
@@ -27,6 +28,7 @@ const SafeListItem = ({
   closeDrawer,
   shouldScrollToSafe,
   noActions = false,
+  isAdded = false,
   ...rest
 }: {
   address: string
@@ -36,6 +38,7 @@ const SafeListItem = ({
   threshold?: string | number
   owners?: string | number
   noActions?: boolean
+  isAdded?: boolean
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()
@@ -45,6 +48,7 @@ const SafeListItem = ({
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const name = allAddressBooks[chainId]?.[address]
   const shortName = chain?.shortName || ''
+  const { totalQueued, totalToSign } = usePendingActions(chainId, isAdded ? address : undefined)
 
   // Scroll to the current Safe
   useEffect(() => {
@@ -55,7 +59,7 @@ const SafeListItem = ({
 
   return (
     <ListItem
-      className={css.container}
+      className={classnames(css.container, { [css.pendingButtons]: totalQueued || totalToSign })}
       disablePadding
       secondaryAction={
         noActions ? undefined : (
@@ -103,10 +107,12 @@ const SafeListItem = ({
         </Link>
       </Box>
 
-      <PendingActions
-        closeDrawer={closeDrawer}
-        chainId={chainId}
+      <PendingActionButtons
         safeAddress={address}
+        closeDrawer={closeDrawer}
+        shortName={shortName}
+        totalQueued={totalQueued}
+        totalToSign={totalToSign}
       />
     </ListItem>
   )
