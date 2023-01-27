@@ -596,7 +596,7 @@ describe('AppsPage', () => {
 
         const categoriesDropdown = within(screen.getByRole('listbox'))
 
-        // filter byInfrastructure category
+        // filter by Infrastructure category
         await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
 
         await waitFor(() => {
@@ -821,7 +821,7 @@ const transactionBuilderSafeAppMock: SafeAppData = {
     value: ['https://gnosis-safe.io'],
   },
   tags: [
-    'transaction-builder', // internal category are not displayed in the UI
+    'transaction-builder', // this internal category is not displayed in the UI
     'Infrastructure',
   ],
   features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
