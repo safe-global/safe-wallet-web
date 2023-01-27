@@ -37,13 +37,23 @@ export const addedSafesSlice = createSlice({
       // Otherwise, migrate
       return action.payload
     },
-    fixOwners: (state) => {
+    fixLegacyOwners: (state) => {
       for (const [chainId, addedSafesOnChain] of Object.entries(state)) {
         for (const [safeAddress, safe] of Object.entries(addedSafesOnChain)) {
-          // Previously migrated corrupt owners in { address: string, value: string } format
+          // Previously migrated corrupt owners
           if (safe.owners.some(({ value }) => value !== 'string')) {
-            state[chainId][safeAddress].owners = migrateAddedSafesOwners(safe.owners.map(({ value }) => value))
+            const migratedOwners = migrateAddedSafesOwners(safe.owners.map(({ value }) => value))
+
+            if (migratedOwners) {
+              state[chainId][safeAddress].owners = migratedOwners
+            } else {
+              delete state[chainId][safeAddress]
+            }
           }
+        }
+
+        if (Object.keys(state[chainId]).length === 0) {
+          delete state[chainId]
         }
       }
     },

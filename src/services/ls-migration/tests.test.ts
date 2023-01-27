@@ -128,8 +128,62 @@ describe('Local storage migration', () => {
           value: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808',
           name: 'Bob',
         },
-        { value: '0xdef' },
       ])
+    })
+
+    it('should return undefined if there are no owners', () => {
+      const newData = migrateAddedSafesOwners([])
+
+      expect(newData).toEqual(undefined)
+    })
+
+    it('should format invalid owners', () => {
+      const oldOwners = [
+        {
+          address: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808',
+          name: 'Bob',
+        },
+        {
+          address: '0x501E66bF7a8F742FA40509588eE751e93fA354Df',
+          name: 123,
+        },
+        {
+          address: 123,
+          name: 'Alice',
+        },
+        '0xdef',
+        { invalid: 'Object' },
+        null,
+        true,
+      ] as Parameters<typeof migrateAddedSafesOwners>[0]
+
+      const newData = migrateAddedSafesOwners(oldOwners)
+
+      expect(newData).toEqual([
+        {
+          value: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808',
+          name: 'Bob',
+        },
+        {
+          value: '0x501E66bF7a8F742FA40509588eE751e93fA354Df',
+        },
+      ])
+    })
+
+    it('should undefined if all owners are invalid', () => {
+      const oldOwners = [
+        {
+          address: 123,
+          name: 'Alice',
+        },
+        { invalid: 'Object' } as unknown as Parameters<typeof migrateAddedSafesOwners>[0][number],
+        null,
+        true,
+      ] as Parameters<typeof migrateAddedSafesOwners>[0]
+
+      const newData = migrateAddedSafesOwners(oldOwners)
+
+      expect(newData).toEqual(undefined)
     })
   })
 
@@ -150,6 +204,10 @@ describe('Local storage migration', () => {
           owners: [
             '0x501E66bF7a8F742FA40509588eE751e93fA354Df',
             { address: '0x9913B9180C20C6b0F21B6480c84422F6ebc4B808', name: 'Charlie' },
+            { invalid: 'Object' },
+            null,
+            true,
+            123,
           ],
           threshold: 2,
         },
@@ -205,7 +263,6 @@ describe('Local storage migration', () => {
             ethBalance: '0.00001',
             owners: [
               { value: '0x979774d85274A5F63C85786aC4Fa54B9A4f391c2' },
-              { value: '0xdef' },
               { value: '0x1F2504De05f5167650bE5B28c472601Be434b60A' },
             ],
             threshold: 2,

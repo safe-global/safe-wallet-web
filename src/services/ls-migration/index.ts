@@ -16,7 +16,7 @@ const useStorageMigration = (): void => {
 
   useEffect(() => {
     if (isMigrationFinished) {
-      dispatch(addedSafesSlice.actions.fixOwners())
+      dispatch(addedSafesSlice.actions.fixLegacyOwners())
       return
     }
 
